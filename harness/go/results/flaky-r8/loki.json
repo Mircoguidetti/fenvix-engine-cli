@@ -1,0 +1,9505 @@
+{
+ "spec": {
+  "name": "loki",
+  "repo": "grafana/loki",
+  "sha": "55ac7b4a5b05dde1b363a6456cf74c97fcdb06ab",
+  "fix_commit": "88478940140066161bf1d7c885e95e6e99feed80",
+  "fix_date": "2026-09-16T13:36:54.000+01:00",
+  "title": "test(compactor): Fix flaky TestRunTenantLoop_DisablingLogMidRunStopsLogMerge (#24462)",
+  "tests": [
+   "TestRunTenantLoop_DisablingLogMidRunStopsLogMerge"
+  ],
+  "source": "github commit search 'repo:grafana/loki flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestRunTenantLoop_DisablingLogMidRunStopsLogMerge": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./pkg/engine/compactor"
+ ],
+ "imports": [
+  "github.com/grafana/loki/v3/pkg/engine/compactor"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 162.3,
+ "build_det_s": 247.8,
+ "baseline": {
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_PreviousWindowStartsWorker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_InvalidAdvertiseAddr": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresBucket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_SamePrefixMergesRegardlessOfTimestamp": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_KnownConvergedRowKeepsComputedSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompareIndexSortKey": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesLogMergePlans": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MissingToCIsNoWork": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_ZeroEntriesIsNoWork": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_DisabledIsNoop": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresEndpoint": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPlanner_BootShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_TerminalBelowFloorSkips": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinatorMetrics_DeleteTenant": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UsesInputIndexes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_RunsMultipleIndexMergesPerLogMerge": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_EndToEnd": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesAbsoluteSectionIndexes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PerIndexSwaps": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorker_BootShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_InternalObjectOverlapIsConverged": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_Idempotent_NoDuplicateWorkers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_DisabledDuringToCReadFailure_CancelsWorker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_OrdersPhysicalSections": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_AggregatesStatsRows": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_MultiKeySchemaOrdersValuesAndReturnsFQN": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UnknownInputSizePropagates": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_GroupsByTenant": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_ValidateRejectsBadValues": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_UnionsPopulatedWindows": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactJobToCEdgeCases": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MultiIndexSwaps": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_FiltersToEnabledTenants": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskUncompressedLogsSize_UnknownSizePropagates": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_ReadError_PreservesWorkers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_TouchingSectionsAreConverged": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPhaseFlip": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_PopulatesSizeColumns": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexWithOverlappingSectionsIsNoWork": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_UnknownConvergedRowKeepsReplacementsUnknown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DeterministicOutputPaths": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_PostingTimestampsDetectOverlap": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_EnabledButAbsentFromToC_NoWorker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_LogCompactionSortSchemaCompatibility": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_ErrorRetries": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskBounds_AndUncompressedLogsSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_StatsObjectAndSetsSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_LogEnabledRunsBothPhases": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexIsNoWork": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesSortObjectPlans": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_CancelledMidIterationStops": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_RemovedFromToC_CancelsWorker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_SingleRoot": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesFullPostingsBounds": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_ReadsAndValidatesShardCount": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_StartsOneWorkerPerTenant": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_NoStatsRowsForTenantIsConverged": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorseOutcome": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DispatchesIndexMergePlans": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_FailsOnIncompleteDiscovery": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_IndexOnly": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_MissingToCReturnsNotFound": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresSchedulerLookupAddress": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_CancelDrainsGoroutines": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_StartAndCancelSameTick": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWindows_LookbackCountsBackFromCurrent": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresAdvertiseAddr": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DoesNotMergeIndexesAcrossSortSchemas": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_FailsOnUnreadableObject": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_InvalidAdvertiseAddr": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_EmptySortSchema": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompact_SplitsWhenRunsExceedK": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildLogMergePlan": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PartialIndexFailureRetries": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_NilLimitsErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_LogMinCompactionSizeValidation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildSortObjectPlan": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_CurrentMissingPreviousPresent": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_EnabledRejectsBadValues": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_RejectsMixedSchemas": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_MissingObjectZeroSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_PublishesGlobalTimeRange": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_AssignsFreshNodeID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 686.4,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 43502,
+  "outcome": 84,
+  "random": 106
+ },
+ "det0_top_tests_by_events": [
+  [
+   8695,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_LogCompactionSortSchemaCompatibility"
+  ],
+  [
+   4086,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactJobToCEdgeCases"
+  ],
+  [
+   2872,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_EndToEnd"
+  ],
+  [
+   2143,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_ErrorRetries"
+  ],
+  [
+   1527,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_RemovedFromToC_CancelsWorker"
+  ],
+  [
+   1344,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge"
+  ],
+  [
+   1192,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_LogEnabledRunsBothPhases"
+  ],
+  [
+   1152,
+   "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DoesNotMergeIndexesAcrossSortSchemas"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_StartsOneWorkerPerTenant",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 1046,
+    "window": null,
+    "event_a": {
+     "t": 24,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:221",
+     "v": "55900000"
+    },
+    "event_b": {
+     "t": 36,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:221",
+     "v": "55900000"
+    },
+    "reason": "thread",
+    "description": "event #1046: [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:221 = 55900000 (thread 24)  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:221 = 55900000 (thread 36)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_FiltersToEnabledTenants",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 860,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/dataobj/sections/internal/columnar/decoder.go:80",
+     "v": "861000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/timer.go:46",
+     "v": "861000"
+    },
+    "reason": "time",
+    "description": "event #860: [time] time.Now @ pkg/dataobj/sections/internal/columnar/decoder.go:80 = 861000  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/timer.go:46 = 861000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_RemovedFromToC_CancelsWorker",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 860,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/timer.go:46",
+     "v": "861000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/dataobj/sections/internal/columnar/decoder.go:80",
+     "v": "861000"
+    },
+    "reason": "time",
+    "description": "event #860: [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/timer.go:46 = 861000  <>  [time] time.Now @ pkg/dataobj/sections/internal/columnar/decoder.go:80 = 861000"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_PreviousWindowStartsWorker",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 507,
+    "window": null,
+    "event_a": {
+     "t": 14,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/util/rangeio/rangeio.go:461",
+     "v": "506000"
+    },
+    "event_b": {
+     "t": 14,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "5481000"
+    },
+    "reason": "thread",
+    "description": "event #507: [time] time.Now @ pkg/util/rangeio/rangeio.go:461 = 506000 (thread 14)  <>  [time] time.tick @ timer = 5481000 (thread 14)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_ErrorRetries",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 787,
+    "window": null,
+    "event_a": {
+     "t": 39,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "5661000"
+    },
+    "event_b": {
+     "t": 39,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/dataobj/sections/internal/columnar/decoder.go:80",
+     "v": "786000"
+    },
+    "reason": "thread",
+    "description": "event #787: [time] time.tick @ timer = 5661000 (thread 39)  <>  [time] time.Now @ pkg/dataobj/sections/internal/columnar/decoder.go:80 = 786000 (thread 39)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_LogEnabledRunsBothPhases",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 868,
+    "window": null,
+    "event_a": {
+     "t": 55,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "5661000"
+    },
+    "event_b": {
+     "t": 55,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/util/rangeio/rangeio.go:461",
+     "v": "865000"
+    },
+    "reason": "thread",
+    "description": "event #868: [time] time.tick @ timer = 5661000 (thread 55)  <>  [time] time.Now @ pkg/util/rangeio/rangeio.go:461 = 865000 (thread 55)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 1164,
+    "window": null,
+    "event_a": {
+     "t": 125,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "11003000"
+    },
+    "event_b": {
+     "t": 125,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/dataobj/sections/internal/columnar/decoder.go:80",
+     "v": "6079000"
+    },
+    "reason": "thread",
+    "description": "event #1164: [time] time.tick @ timer = 11003000 (thread 125)  <>  [time] time.Now @ pkg/dataobj/sections/internal/columnar/decoder.go:80 = 6079000 (thread 125)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_EndToEnd",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2849,
+    "window": null,
+    "event_a": {
+     "t": 168,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/engine/internal/obslock/obslock.go:153",
+     "v": "2782000"
+    },
+    "event_b": {
+     "t": 58,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/engine/internal/metrictimer/timer.go:141",
+     "v": "2782000"
+    },
+    "reason": "thread",
+    "description": "event #2849: [time] time.Now @ pkg/engine/internal/obslock/obslock.go:153 = 2782000 (thread 168)  <>  [time] time.Now @ pkg/engine/internal/metrictimer/timer.go:141 = 2782000 (thread 58)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_LogCompactionSortSchemaCompatibility",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 1281,
+    "window": null,
+    "event_a": {
+     "t": 64,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/engine/internal/obslock/obslock.go:153",
+     "v": "1271000"
+    },
+    "event_b": {
+     "t": 24,
+     "s": "time",
+     "o": "time.Now",
+     "at": "pkg/engine/internal/metrictimer/timer.go:141",
+     "v": "1271000"
+    },
+    "reason": "thread",
+    "description": "event #1281: [time] time.Now @ pkg/engine/internal/obslock/obslock.go:153 = 1271000 (thread 64)  <>  [time] time.Now @ pkg/engine/internal/metrictimer/timer.go:141 = 1271000 (thread 24)"
+   }
+  },
+  {
+   "nodeid": "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorker_BootShutdown",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 50,
+    "window": null,
+    "event_a": {
+     "t": 14,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "1692501000"
+    },
+    "event_b": {
+     "t": 14,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "1702465000"
+    },
+    "reason": "thread",
+    "description": "event #50: time.timer @ timer returned different values: \"1692501000\" vs \"1702465000\""
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 84,
+  "stable": 74,
+  "diverged": 10,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 8,
+   "time": 2
+  }
+ },
+ "det0": {
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_FiltersToEnabledTenants": [
+   [
+    "passed",
+    "5989cda31ee9ca78568a0fc5c83f57ac"
+   ],
+   [
+    "passed",
+    "b0eb2da896605b068519d5762a451959"
+   ],
+   [
+    "passed",
+    "b0eb2da896605b068519d5762a451959"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_IndexOnly": [
+   [
+    "passed",
+    "b5a54bfb044dabba41a65399edd1ad49"
+   ],
+   [
+    "passed",
+    "b5a54bfb044dabba41a65399edd1ad49"
+   ],
+   [
+    "passed",
+    "b5a54bfb044dabba41a65399edd1ad49"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MissingToCIsNoWork": [
+   [
+    "passed",
+    "cfd5c793bdf0947d0505684a947eac00"
+   ],
+   [
+    "passed",
+    "cfd5c793bdf0947d0505684a947eac00"
+   ],
+   [
+    "passed",
+    "cfd5c793bdf0947d0505684a947eac00"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_TerminalBelowFloorSkips": [
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ],
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ],
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_StartAndCancelSameTick": [
+   [
+    "passed",
+    "18947a002e4797074e3b70ae4c56c1ce"
+   ],
+   [
+    "passed",
+    "18947a002e4797074e3b70ae4c56c1ce"
+   ],
+   [
+    "passed",
+    "18947a002e4797074e3b70ae4c56c1ce"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_MissingToCReturnsNotFound": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_EnabledButAbsentFromToC_NoWorker": [
+   [
+    "passed",
+    "4f0d787990ea62b2f446ccc6581f9275"
+   ],
+   [
+    "passed",
+    "4f0d787990ea62b2f446ccc6581f9275"
+   ],
+   [
+    "passed",
+    "4f0d787990ea62b2f446ccc6581f9275"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_RemovedFromToC_CancelsWorker": [
+   [
+    "passed",
+    "0ce48ecc0a9450ed7dc07bd58d9e092c"
+   ],
+   [
+    "passed",
+    "0ce48ecc0a9450ed7dc07bd58d9e092c"
+   ],
+   [
+    "passed",
+    "bb7696148d7d923cd00c062b94a12012"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DoesNotMergeIndexesAcrossSortSchemas": [
+   [
+    "passed",
+    "3a5c3334a0461c0277023bbe7172f646"
+   ],
+   [
+    "passed",
+    "3a5c3334a0461c0277023bbe7172f646"
+   ],
+   [
+    "passed",
+    "3a5c3334a0461c0277023bbe7172f646"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_CancelledMidIterationStops": [
+   [
+    "passed",
+    "5e99e26df702b527ead695977fa56bad"
+   ],
+   [
+    "passed",
+    "5e99e26df702b527ead695977fa56bad"
+   ],
+   [
+    "passed",
+    "5e99e26df702b527ead695977fa56bad"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DeterministicOutputPaths": [
+   [
+    "passed",
+    "0455600d5e62b6ac4684f25eaafcf270"
+   ],
+   [
+    "passed",
+    "0455600d5e62b6ac4684f25eaafcf270"
+   ],
+   [
+    "passed",
+    "0455600d5e62b6ac4684f25eaafcf270"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_StatsObjectAndSetsSize": [
+   [
+    "passed",
+    "cf12dc0fa40fbec38bf0ec289b04ab72"
+   ],
+   [
+    "passed",
+    "cf12dc0fa40fbec38bf0ec289b04ab72"
+   ],
+   [
+    "passed",
+    "cf12dc0fa40fbec38bf0ec289b04ab72"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_AggregatesStatsRows": [
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_InternalObjectOverlapIsConverged": [
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ],
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ],
+   [
+    "passed",
+    "27453832b4b9acfb8d7f5a807407c673"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PartialIndexFailureRetries": [
+   [
+    "passed",
+    "d36af5137f37cf50e736575a3dfb5805"
+   ],
+   [
+    "passed",
+    "d36af5137f37cf50e736575a3dfb5805"
+   ],
+   [
+    "passed",
+    "d36af5137f37cf50e736575a3dfb5805"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_ReadsAndValidatesShardCount": [
+   [
+    "passed",
+    "4ce5ac6891fe7e569d4acd90a77e94e2"
+   ],
+   [
+    "passed",
+    "4ce5ac6891fe7e569d4acd90a77e94e2"
+   ],
+   [
+    "passed",
+    "4ce5ac6891fe7e569d4acd90a77e94e2"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexIsNoWork": [
+   [
+    "passed",
+    "5198f8e7f03ebd54c6aa96e708a06292"
+   ],
+   [
+    "passed",
+    "5198f8e7f03ebd54c6aa96e708a06292"
+   ],
+   [
+    "passed",
+    "5198f8e7f03ebd54c6aa96e708a06292"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_OrdersPhysicalSections": [
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinatorMetrics_DeleteTenant": [
+   [
+    "passed",
+    "4ec9492922f9e650ad573936b82e3763"
+   ],
+   [
+    "passed",
+    "4ec9492922f9e650ad573936b82e3763"
+   ],
+   [
+    "passed",
+    "4ec9492922f9e650ad573936b82e3763"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_StartsOneWorkerPerTenant": [
+   [
+    "passed",
+    "4707bf0a9877122e56cb2d13ed4c2fa8"
+   ],
+   [
+    "passed",
+    "4707bf0a9877122e56cb2d13ed4c2fa8"
+   ],
+   [
+    "passed",
+    "4b7ccbd38ed0b1941f61d2ead8009ea9"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresAdvertiseAddr": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_AssignsFreshNodeID": [
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_KnownConvergedRowKeepsComputedSize": [
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactJobToCEdgeCases": [
+   [
+    "passed",
+    "69383992bf361420f80f418276f45a4b"
+   ],
+   [
+    "passed",
+    "69383992bf361420f80f418276f45a4b"
+   ],
+   [
+    "passed",
+    "69383992bf361420f80f418276f45a4b"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_CurrentMissingPreviousPresent": [
+   [
+    "passed",
+    "1cba1c0bdf2ef9c2da4ea8187e1bb998"
+   ],
+   [
+    "passed",
+    "1cba1c0bdf2ef9c2da4ea8187e1bb998"
+   ],
+   [
+    "passed",
+    "1cba1c0bdf2ef9c2da4ea8187e1bb998"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPhaseFlip": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_LogMinCompactionSizeValidation": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_RejectsMixedSchemas": [
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorker_BootShutdown": [
+   [
+    "passed",
+    "e9d800d069071fd4b99af68c38a083f1"
+   ],
+   [
+    "passed",
+    "f192536e5bd577008bc3f91f372af5e9"
+   ],
+   [
+    "passed",
+    "0c3f9af0d9df46930ed34b6e188a4695"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_PostingTimestampsDetectOverlap": [
+   [
+    "passed",
+    "d3a35608f5a34e90a51112f2de13688f"
+   ],
+   [
+    "passed",
+    "d3a35608f5a34e90a51112f2de13688f"
+   ],
+   [
+    "passed",
+    "d3a35608f5a34e90a51112f2de13688f"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_ZeroEntriesIsNoWork": [
+   [
+    "passed",
+    "59fc36d8d6e95167c310ef5b520caf27"
+   ],
+   [
+    "passed",
+    "59fc36d8d6e95167c310ef5b520caf27"
+   ],
+   [
+    "passed",
+    "59fc36d8d6e95167c310ef5b520caf27"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_NoStatsRowsForTenantIsConverged": [
+   [
+    "passed",
+    "eecb8a722f201c930d430a93b4de6553"
+   ],
+   [
+    "passed",
+    "eecb8a722f201c930d430a93b4de6553"
+   ],
+   [
+    "passed",
+    "eecb8a722f201c930d430a93b4de6553"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesFullPostingsBounds": [
+   [
+    "passed",
+    "1dc1701508c46a9580fcbf9e0dc04205"
+   ],
+   [
+    "passed",
+    "1dc1701508c46a9580fcbf9e0dc04205"
+   ],
+   [
+    "passed",
+    "1dc1701508c46a9580fcbf9e0dc04205"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_SingleRoot": [
+   [
+    "passed",
+    "4999f341a5c0440e5ef34f36b23b5e54"
+   ],
+   [
+    "passed",
+    "4999f341a5c0440e5ef34f36b23b5e54"
+   ],
+   [
+    "passed",
+    "4999f341a5c0440e5ef34f36b23b5e54"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_ReadError_PreservesWorkers": [
+   [
+    "passed",
+    "4e737af5d7a17fe8ac14ea72a16df2f4"
+   ],
+   [
+    "passed",
+    "4e737af5d7a17fe8ac14ea72a16df2f4"
+   ],
+   [
+    "passed",
+    "4e737af5d7a17fe8ac14ea72a16df2f4"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DispatchesIndexMergePlans": [
+   [
+    "passed",
+    "4651a70e67f5d2c341b2e47bd0e679c5"
+   ],
+   [
+    "passed",
+    "4651a70e67f5d2c341b2e47bd0e679c5"
+   ],
+   [
+    "passed",
+    "4651a70e67f5d2c341b2e47bd0e679c5"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_TouchingSectionsAreConverged": [
+   [
+    "passed",
+    "bca818da9c011de43d634299c8194894"
+   ],
+   [
+    "passed",
+    "bca818da9c011de43d634299c8194894"
+   ],
+   [
+    "passed",
+    "bca818da9c011de43d634299c8194894"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MultiIndexSwaps": [
+   [
+    "passed",
+    "9dd8a90b0523d9278a2298c77484d621"
+   ],
+   [
+    "passed",
+    "9dd8a90b0523d9278a2298c77484d621"
+   ],
+   [
+    "passed",
+    "9dd8a90b0523d9278a2298c77484d621"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesSortObjectPlans": [
+   [
+    "passed",
+    "01bb43e051d62a70e1823787a7041c66"
+   ],
+   [
+    "passed",
+    "01bb43e051d62a70e1823787a7041c66"
+   ],
+   [
+    "passed",
+    "01bb43e051d62a70e1823787a7041c66"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompareIndexSortKey": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_RunsMultipleIndexMergesPerLogMerge": [
+   [
+    "passed",
+    "acf73b7b945c137b3000de111fd69ce5"
+   ],
+   [
+    "passed",
+    "acf73b7b945c137b3000de111fd69ce5"
+   ],
+   [
+    "passed",
+    "acf73b7b945c137b3000de111fd69ce5"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_LogEnabledRunsBothPhases": [
+   [
+    "passed",
+    "29a41c647dc1803408825ba92cf403e9"
+   ],
+   [
+    "passed",
+    "3930cd393bd0750e90d12109db89cd8b"
+   ],
+   [
+    "passed",
+    "e3c62360fe96a973a423957603168e73"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskBounds_AndUncompressedLogsSize": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildSortObjectPlan": [
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_GroupsByTenant": [
+   [
+    "passed",
+    "9fa2f07093875df58c1325e898d55ed5"
+   ],
+   [
+    "passed",
+    "9fa2f07093875df58c1325e898d55ed5"
+   ],
+   [
+    "passed",
+    "9fa2f07093875df58c1325e898d55ed5"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresSchedulerLookupAddress": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskUncompressedLogsSize_UnknownSizePropagates": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWindows_LookbackCountsBackFromCurrent": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_UnionsPopulatedWindows": [
+   [
+    "passed",
+    "ef2a1f16f869f3c8f7446fe43d682ef1"
+   ],
+   [
+    "passed",
+    "ef2a1f16f869f3c8f7446fe43d682ef1"
+   ],
+   [
+    "passed",
+    "ef2a1f16f869f3c8f7446fe43d682ef1"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_InvalidAdvertiseAddr": [
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ],
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ],
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_LogCompactionSortSchemaCompatibility": [
+   [
+    "passed",
+    "31dcbb02af5258e988f4dea399caa523"
+   ],
+   [
+    "passed",
+    "15bae1dee7deeeb7fee0d1ab1d4d8303"
+   ],
+   [
+    "passed",
+    "15bae1dee7deeeb7fee0d1ab1d4d8303"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_SamePrefixMergesRegardlessOfTimestamp": [
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_ErrorRetries": [
+   [
+    "passed",
+    "0b124e591de54b6de835863ba8c6e51f"
+   ],
+   [
+    "passed",
+    "c84325d45a2eccbe2f9df5922f3b0970"
+   ],
+   [
+    "passed",
+    "7449619adaf7e5cc8d4c75f6016e76c7"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_EnabledRejectsBadValues": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UsesInputIndexes": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_DisabledIsNoop": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge": [
+   [
+    "passed",
+    "9b2d021ead17047f5b2ad2e2b34755f8"
+   ],
+   [
+    "passed",
+    "98bd9db6d78a07d336306aa17dfe8fa7"
+   ],
+   [
+    "passed",
+    "39f7ce19735483e80168e6a4c6cab0f9"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesLogMergePlans": [
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPlanner_BootShutdown": [
+   [
+    "passed",
+    "634150de5a9d68d0b89fba9484a4df94"
+   ],
+   [
+    "passed",
+    "634150de5a9d68d0b89fba9484a4df94"
+   ],
+   [
+    "passed",
+    "634150de5a9d68d0b89fba9484a4df94"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_PreviousWindowStartsWorker": [
+   [
+    "passed",
+    "e64d10ca265407f3daf89527af1d46d7"
+   ],
+   [
+    "passed",
+    "c0a1b4c6e2b6c6e256dbc0ca56b8c1f9"
+   ],
+   [
+    "passed",
+    "c6a3ef9904540caa5218853e93820d16"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_PopulatesSizeColumns": [
+   [
+    "passed",
+    "5118b6fde8c44edcd00cc602d2261020"
+   ],
+   [
+    "passed",
+    "5118b6fde8c44edcd00cc602d2261020"
+   ],
+   [
+    "passed",
+    "5118b6fde8c44edcd00cc602d2261020"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompact_SplitsWhenRunsExceedK": [
+   [
+    "passed",
+    "ac01e2fea20b62cf1592ec62c3f38a15"
+   ],
+   [
+    "passed",
+    "ac01e2fea20b62cf1592ec62c3f38a15"
+   ],
+   [
+    "passed",
+    "ac01e2fea20b62cf1592ec62c3f38a15"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_UnknownConvergedRowKeepsReplacementsUnknown": [
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresEndpoint": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_PublishesGlobalTimeRange": [
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ],
+   [
+    "passed",
+    "44d539ca4a26c6b3453648db9aeac5bb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UnknownInputSizePropagates": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_MultiKeySchemaOrdersValuesAndReturnsFQN": [
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ],
+   [
+    "passed",
+    "7d80f74099674ee4a295859fe0b28e3c"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorseOutcome": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_EndToEnd": [
+   [
+    "passed",
+    "46194bd8571c19d997ae920973b8f8e5"
+   ],
+   [
+    "passed",
+    "b68fa684c43a792cf9b3b429f9e96318"
+   ],
+   [
+    "passed",
+    "01666aa02e03740c10652c6df7bfe183"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PerIndexSwaps": [
+   [
+    "passed",
+    "1fa97c45266fe275ed3446ae891b4f54"
+   ],
+   [
+    "passed",
+    "1fa97c45266fe275ed3446ae891b4f54"
+   ],
+   [
+    "passed",
+    "1fa97c45266fe275ed3446ae891b4f54"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildLogMergePlan": [
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ],
+   [
+    "passed",
+    "f54f36677e804cded34ed5c5e4d8db57"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_EmptySortSchema": [
+   [
+    "passed",
+    "5b4c966694c3460189254386238756ab"
+   ],
+   [
+    "passed",
+    "5b4c966694c3460189254386238756ab"
+   ],
+   [
+    "passed",
+    "5b4c966694c3460189254386238756ab"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexWithOverlappingSectionsIsNoWork": [
+   [
+    "passed",
+    "1f1551a3b3dd1e44bc79ca9b51eaee92"
+   ],
+   [
+    "passed",
+    "1f1551a3b3dd1e44bc79ca9b51eaee92"
+   ],
+   [
+    "passed",
+    "1f1551a3b3dd1e44bc79ca9b51eaee92"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_ValidateRejectsBadValues": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_DisabledDuringToCReadFailure_CancelsWorker": [
+   [
+    "passed",
+    "c76d4804bf8c32a1366bb495967053fc"
+   ],
+   [
+    "passed",
+    "c76d4804bf8c32a1366bb495967053fc"
+   ],
+   [
+    "passed",
+    "c76d4804bf8c32a1366bb495967053fc"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_InvalidAdvertiseAddr": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_CancelDrainsGoroutines": [
+   [
+    "passed",
+    "03c009c246c0ff9b1cff3d93b8fcaf71"
+   ],
+   [
+    "passed",
+    "03c009c246c0ff9b1cff3d93b8fcaf71"
+   ],
+   [
+    "passed",
+    "03c009c246c0ff9b1cff3d93b8fcaf71"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_MissingObjectZeroSize": [
+   [
+    "passed",
+    "848b3aa742c0cf7b51cbd729f6d44f6d"
+   ],
+   [
+    "passed",
+    "848b3aa742c0cf7b51cbd729f6d44f6d"
+   ],
+   [
+    "passed",
+    "848b3aa742c0cf7b51cbd729f6d44f6d"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesAbsoluteSectionIndexes": [
+   [
+    "passed",
+    "38843b7d4eb780fdecabad02d46d85c4"
+   ],
+   [
+    "passed",
+    "38843b7d4eb780fdecabad02d46d85c4"
+   ],
+   [
+    "passed",
+    "38843b7d4eb780fdecabad02d46d85c4"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_Idempotent_NoDuplicateWorkers": [
+   [
+    "passed",
+    "6a590e8c5ea846f8b990f8e964791ab6"
+   ],
+   [
+    "passed",
+    "6a590e8c5ea846f8b990f8e964791ab6"
+   ],
+   [
+    "passed",
+    "6a590e8c5ea846f8b990f8e964791ab6"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_NilLimitsErrors": [
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ],
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ],
+   [
+    "passed",
+    "38681f7604173e391c2accde1fa095fb"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_FailsOnUnreadableObject": [
+   [
+    "passed",
+    "cf58489018045264e39cf11cf7991bb8"
+   ],
+   [
+    "passed",
+    "cf58489018045264e39cf11cf7991bb8"
+   ],
+   [
+    "passed",
+    "cf58489018045264e39cf11cf7991bb8"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresBucket": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_FailsOnIncompleteDiscovery": [
+   [
+    "passed",
+    "6aae65285548c4b61cb9ce4624f80859"
+   ],
+   [
+    "passed",
+    "6aae65285548c4b61cb9ce4624f80859"
+   ],
+   [
+    "passed",
+    "6aae65285548c4b61cb9ce4624f80859"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_ValidateRejectsBadValues": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresAdvertiseAddr": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesAbsoluteSectionIndexes": {
+   "1": [
+    "passed",
+    "9d98ddd47738ec5eb1e7e24bee86dba4"
+   ],
+   "2": [
+    "passed",
+    "dafed353f016d0b9e7d5e2f316d075f5"
+   ],
+   "3": [
+    "passed",
+    "ad3b395889dbdb887717b6e3791e6ca4"
+   ],
+   "4": [
+    "passed",
+    "8f5e4b376f43b2ab893657dc45b4e65a"
+   ],
+   "5": [
+    "passed",
+    "5f87a529bfd258e4330ad2d6e18317f9"
+   ],
+   "6": [
+    "passed",
+    "fe49f9871f4e7dc57a384aaf8ca19fee"
+   ],
+   "7": [
+    "passed",
+    "245c121bf9d2b9bdca478769f771b6d3"
+   ],
+   "8": [
+    "passed",
+    "84fe88b4b749478defb220c689e8d8a9"
+   ],
+   "9": [
+    "passed",
+    "6bfba9ea0e3e31f129cb600d55ce3594"
+   ],
+   "10": [
+    "passed",
+    "d4ad39180acf669db2b7da924da4e918"
+   ],
+   "11": [
+    "passed",
+    "1ce24eda3408ceefa501a86ac9c2d68a"
+   ],
+   "12": [
+    "passed",
+    "e5eb1885ff187160d029a52524f9cbe6"
+   ],
+   "13": [
+    "passed",
+    "9fceb75c0195988967f032b3852c2cc0"
+   ],
+   "14": [
+    "passed",
+    "2f15b9bbb7b3a2d522f2ffbc8398c422"
+   ],
+   "15": [
+    "passed",
+    "134a52a22a601f97d207b4d76bc24828"
+   ],
+   "16": [
+    "passed",
+    "2858d6e47801f53c78d7c115b38c7c58"
+   ],
+   "17": [
+    "passed",
+    "e99162a9dee30695645e4cd8639fe118"
+   ],
+   "18": [
+    "passed",
+    "6bde396496c5f7f6263f82e9f76471c3"
+   ],
+   "19": [
+    "passed",
+    "7b0610dfdb0d6eddbfe8eb3f08873484"
+   ],
+   "20": [
+    "passed",
+    "0c3f97241ee4368aabf6a9cc17dccdc8"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_FailsOnUnreadableObject": {
+   "1": [
+    "passed",
+    "3de3da8834ea557a9b12a825306955f9"
+   ],
+   "2": [
+    "passed",
+    "d021533fcd8e5e50f3cf879e3ec17547"
+   ],
+   "3": [
+    "passed",
+    "055fe663c51b61cfca538c3c619f0d28"
+   ],
+   "4": [
+    "passed",
+    "aff74eca3bb27cba949c298ca1a04732"
+   ],
+   "5": [
+    "passed",
+    "c4a4f2fc3a5f28ad8c7f972b5951e0c9"
+   ],
+   "6": [
+    "passed",
+    "7b4a6e11ed885f39a0c0c275e97d7a51"
+   ],
+   "7": [
+    "passed",
+    "e6a6de940833e9ca5e21233111233bb6"
+   ],
+   "8": [
+    "passed",
+    "7142794d1ca2872f7c12547179171529"
+   ],
+   "9": [
+    "passed",
+    "5db2747469ba463e22b9285627e36612"
+   ],
+   "10": [
+    "passed",
+    "4eb4c55f08838fac8b9d41ec11fa5595"
+   ],
+   "11": [
+    "passed",
+    "7f71f9dbd138ca916a2a2f28da55615e"
+   ],
+   "12": [
+    "passed",
+    "6e771f9a5157eb979088d7a283e45663"
+   ],
+   "13": [
+    "passed",
+    "ca914a2b9763d91caa9d7f622a4715fc"
+   ],
+   "14": [
+    "passed",
+    "0f70b53f3b08f23236deba173c5c3b16"
+   ],
+   "15": [
+    "passed",
+    "5753be7448b7a5744e14536e82dc22fd"
+   ],
+   "16": [
+    "passed",
+    "8fd9e113d05e2371ba7e673113cd2fa7"
+   ],
+   "17": [
+    "passed",
+    "3c8932412c28e6676d8073961dcfb1cd"
+   ],
+   "18": [
+    "passed",
+    "5c918fdbb9437bc9b33a18b5355fc96b"
+   ],
+   "19": [
+    "passed",
+    "28fe185a4a3fe4bbda8fb20056dea077"
+   ],
+   "20": [
+    "passed",
+    "ea9e083a38e15bf90e66d79841f03f2a"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskBounds_AndUncompressedLogsSize": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresEndpoint": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestTaskUncompressedLogsSize_UnknownSizePropagates": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_MissingToCReturnsNotFound": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorker_BootShutdown": {
+   "1": [
+    "passed",
+    "f3bd240d8f416dbe5f1cd83770be2d8a"
+   ],
+   "2": [
+    "passed",
+    "68300a2de6d3e7053b1c8ce8117cb224"
+   ],
+   "3": [
+    "passed",
+    "9aa50b49e68fccc6bca1ecd47690deff"
+   ],
+   "4": [
+    "passed",
+    "bf4a8d9d96aa82199bbeae5335275d12"
+   ],
+   "5": [
+    "passed",
+    "78531bd9a4b4ee10d13888796e08239f"
+   ],
+   "6": [
+    "passed",
+    "d3f31f7f065d390d88891d98648bd886"
+   ],
+   "7": [
+    "passed",
+    "c7d3ca0c658b3489108c7b5ea62826a5"
+   ],
+   "8": [
+    "passed",
+    "47948447ae2c0dd29afce1a2d4378d77"
+   ],
+   "9": [
+    "passed",
+    "c970e7a9af60d525a65c06e8a3fd8077"
+   ],
+   "10": [
+    "passed",
+    "6fa81098209a7e48ca7281bd86b1be0d"
+   ],
+   "11": [
+    "passed",
+    "be31fdd6f317f5e7ff3072274c4cf1e2"
+   ],
+   "12": [
+    "passed",
+    "cee03c79e2933770559c43de40780d27"
+   ],
+   "13": [
+    "passed",
+    "a290c17848533cc0f21f4fa571601cad"
+   ],
+   "14": [
+    "passed",
+    "640efbf62d4af03e8edc987c6c299024"
+   ],
+   "15": [
+    "passed",
+    "2554a6213ac0d6179c6ce86851ba0fc9"
+   ],
+   "16": [
+    "passed",
+    "ec6fbdd8a27aac78466456a8b40aa2e1"
+   ],
+   "17": [
+    "passed",
+    "587c1f408d4e2ddd3d1be30667bd7625"
+   ],
+   "18": [
+    "passed",
+    "9e852e26e8c8a9f12d326da3e9848496"
+   ],
+   "19": [
+    "passed",
+    "0f8dad4ce070133aaf1f3ec54bdfabc8"
+   ],
+   "20": [
+    "passed",
+    "94e7cf75b301fdc98c037b8c8abfc1cc"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_TerminalBelowFloorSkips": {
+   "1": [
+    "passed",
+    "a1c8dd6c64455f57428917ce95c43dc3"
+   ],
+   "2": [
+    "passed",
+    "793a5979a41d07690c3fa151ceecfb7a"
+   ],
+   "3": [
+    "passed",
+    "6ab9708767348dcfab76e6a50a8dbd5c"
+   ],
+   "4": [
+    "passed",
+    "76eff6115f3436ff2e3572f5e73e3bcf"
+   ],
+   "5": [
+    "passed",
+    "d959832a99ecb54d2959124753e998bf"
+   ],
+   "6": [
+    "passed",
+    "a1724d7454672e39d466ea0cd375feb5"
+   ],
+   "7": [
+    "passed",
+    "8cb0c183483f4cb12b7919e33ca413ea"
+   ],
+   "8": [
+    "passed",
+    "9605ada4d1279e3484423d659489c1d7"
+   ],
+   "9": [
+    "passed",
+    "33c5dda5d4c9fa8786a62f275eac6c49"
+   ],
+   "10": [
+    "passed",
+    "7d4c8f0ef90954283d01c107f514a751"
+   ],
+   "11": [
+    "passed",
+    "3c5969de2e4db19991c980b1c952930e"
+   ],
+   "12": [
+    "passed",
+    "6287c0c01b8baf389a96fefe49d09202"
+   ],
+   "13": [
+    "passed",
+    "ef4ba3def5a1a9275bd7cd89a747a8ae"
+   ],
+   "14": [
+    "passed",
+    "4b263c56fc602edd12580a59e73fd1d0"
+   ],
+   "15": [
+    "passed",
+    "8bbacc750243f838b241beda01cac8ef"
+   ],
+   "16": [
+    "passed",
+    "503c01d16562475fd8abc6215c26fa5d"
+   ],
+   "17": [
+    "passed",
+    "3c7211f5c2c56ce2a957f33ee3318c20"
+   ],
+   "18": [
+    "passed",
+    "d07509b8783c4059b96c6d559466b8df"
+   ],
+   "19": [
+    "passed",
+    "522af6b0a6f88090a5e0fbb9c9dab64e"
+   ],
+   "20": [
+    "passed",
+    "5c4c98c4d8376b48069b3c8ea4cc06d2"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_FiltersToEnabledTenants": {
+   "1": [
+    "passed",
+    "f70732f66a520460733e8d26c6ed0489"
+   ],
+   "2": [
+    "passed",
+    "2ef21dad50f719fbafe22bb8a6729fba"
+   ],
+   "3": [
+    "passed",
+    "dc988e25315ee752a466dea4ff2e0098"
+   ],
+   "4": [
+    "passed",
+    "6499441791092e491ed85703fdc6cc01"
+   ],
+   "5": [
+    "passed",
+    "4f91ce4d16a0cab6ac78e27285b299cc"
+   ],
+   "6": [
+    "passed",
+    "3ddcd86ad620df9ed9bcec979713b854"
+   ],
+   "7": [
+    "passed",
+    "cdfa8c257f5522b597ed4f9e5d86ab98"
+   ],
+   "8": [
+    "passed",
+    "fe5cfb09f13a0942979ccd49ba9045d0"
+   ],
+   "9": [
+    "passed",
+    "55e60d4e7368e8ee128650a1d48b5a40"
+   ],
+   "10": [
+    "passed",
+    "a18329787c76d144a5d260d439940295"
+   ],
+   "11": [
+    "passed",
+    "adf4f2544deeb4a4192d3e01ba99b6c8"
+   ],
+   "12": [
+    "passed",
+    "ef8eaa8d2a7e9674873b666b2ba99267"
+   ],
+   "13": [
+    "passed",
+    "1b6bef4c588c3f0b79b96725617dbd99"
+   ],
+   "14": [
+    "passed",
+    "68c66f1b72293b7cb5ee2d193fdf98ae"
+   ],
+   "15": [
+    "passed",
+    "942b50aad29aa7c91600cc2dd0ff7e07"
+   ],
+   "16": [
+    "passed",
+    "36c65733997e9d301c2fa88b573b0164"
+   ],
+   "17": [
+    "passed",
+    "60909f1505ff7f9e6c3bbc289e929ba9"
+   ],
+   "18": [
+    "passed",
+    "e5bbe8602175a341b2380a943bf9bc46"
+   ],
+   "19": [
+    "passed",
+    "1d6fd507caac88a9a3794b8308489768"
+   ],
+   "20": [
+    "passed",
+    "91aa267327cf67ec28170927315a2fc7"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PerIndexSwaps": {
+   "1": [
+    "passed",
+    "e1d360cb18e13fc543f7c745af104ece"
+   ],
+   "2": [
+    "passed",
+    "f1a8f8556e95c0840925b144dbd0acf8"
+   ],
+   "3": [
+    "passed",
+    "da425d0c26e656f1a2c0ff6d36dde60f"
+   ],
+   "4": [
+    "passed",
+    "c6326e8a197227943c14a884bb099998"
+   ],
+   "5": [
+    "passed",
+    "8f863fd3755a13682091fa23ad6ba85a"
+   ],
+   "6": [
+    "passed",
+    "fd92cdec712118ffc4b753f36a1e4de1"
+   ],
+   "7": [
+    "passed",
+    "6c862fbef427a91888f3740b57c41ba4"
+   ],
+   "8": [
+    "passed",
+    "66009e647d2fbb3e7512533c2ecf83bb"
+   ],
+   "9": [
+    "passed",
+    "86beb9b808d79157993af3c2f9a5a78b"
+   ],
+   "10": [
+    "passed",
+    "48228a87060d356ff7fbc63c855b6b07"
+   ],
+   "11": [
+    "passed",
+    "646ca9a8cd958863b12b0f96e0b0607e"
+   ],
+   "12": [
+    "passed",
+    "ea8beb46dc8164db71f292a211471cd0"
+   ],
+   "13": [
+    "passed",
+    "9f30377be6531d6e6ecb6e9f85f697fb"
+   ],
+   "14": [
+    "passed",
+    "07100e1e7501fa4231cec35b96f550b3"
+   ],
+   "15": [
+    "passed",
+    "dc24c9fda9f9fba7af79f50eb0f30a28"
+   ],
+   "16": [
+    "passed",
+    "00e50001b1af95ecc3f47813c4f90fb0"
+   ],
+   "17": [
+    "passed",
+    "dc51a667e7bf8fe5dcfd50fa403a5dff"
+   ],
+   "18": [
+    "passed",
+    "d1020e0132d63781e7e4a78e7a25ef06"
+   ],
+   "19": [
+    "passed",
+    "9ecdcc14e61704ce1e8061b674516085"
+   ],
+   "20": [
+    "passed",
+    "86ba3f30ffb9a6dd43fcdc7150788c05"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_Idempotent_NoDuplicateWorkers": {
+   "1": [
+    "passed",
+    "e5e692577f4ec546dfdbe432f1b87006"
+   ],
+   "2": [
+    "passed",
+    "4b8d1917e20a0dda21c971be392b33e8"
+   ],
+   "3": [
+    "passed",
+    "7366aa925b521141f1a773a62217c2ad"
+   ],
+   "4": [
+    "passed",
+    "f4c8ec7ae677bab90f36105bf8d2724f"
+   ],
+   "5": [
+    "passed",
+    "2bdca2ed527dc3f803859617d0e89f74"
+   ],
+   "6": [
+    "passed",
+    "7cce7b74c659956619c75631e3ad5916"
+   ],
+   "7": [
+    "passed",
+    "79e5205c81381939fcc3ccabc20a02b2"
+   ],
+   "8": [
+    "passed",
+    "021bb07c7959603510462d5e2dfcc0d2"
+   ],
+   "9": [
+    "passed",
+    "b4d6edef6b3848a3c8a470ecbf243564"
+   ],
+   "10": [
+    "passed",
+    "4b62278c9826c030f6fe95e78f08c10a"
+   ],
+   "11": [
+    "passed",
+    "f3aeada42372b0f09faf36d0247f0c1c"
+   ],
+   "12": [
+    "passed",
+    "dda7d210316774f8d88a1388971f5937"
+   ],
+   "13": [
+    "passed",
+    "7c3454203fd2fdf1fcd6de66c8c13833"
+   ],
+   "14": [
+    "passed",
+    "9a8cb0a49da8df6f1a923b863020ef0b"
+   ],
+   "15": [
+    "passed",
+    "9bdd365c667cafabb37a0f5af2a323af"
+   ],
+   "16": [
+    "passed",
+    "a6e4626d375e02a6348df501b533d3d5"
+   ],
+   "17": [
+    "passed",
+    "dff1bb9594cb1148c0dded3e7dfaa45d"
+   ],
+   "18": [
+    "passed",
+    "74ffb4121f6773176d4eba790198c05e"
+   ],
+   "19": [
+    "passed",
+    "35143292862ada5198545ccee5c004ef"
+   ],
+   "20": [
+    "passed",
+    "24e19b79f3af539c9b45fa41ac12357f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestIndexSectionRefsFor_UsesFullPostingsBounds": {
+   "1": [
+    "passed",
+    "372f6a379c706a7c389afb7de652f3d7"
+   ],
+   "2": [
+    "passed",
+    "8dc4ea9bb3023ba38b9a3e0685dba991"
+   ],
+   "3": [
+    "passed",
+    "0c1ae058a563fe7b39d10d9fae8b8264"
+   ],
+   "4": [
+    "passed",
+    "0bea9f3d296a8d5123c1154799cda9c7"
+   ],
+   "5": [
+    "passed",
+    "6d883b9f18f0abceac6ff184a9f23bbc"
+   ],
+   "6": [
+    "passed",
+    "0dcc7aa2c52791ef5ccdfe83f2f4ba9f"
+   ],
+   "7": [
+    "passed",
+    "91ca66595e2533ff17a28200b08ffff7"
+   ],
+   "8": [
+    "passed",
+    "aef8b3408d2a6e47d41788a7b668db99"
+   ],
+   "9": [
+    "passed",
+    "5bea564879900370c2675a227664ceef"
+   ],
+   "10": [
+    "passed",
+    "927c906f802507fcab7da9a699f24654"
+   ],
+   "11": [
+    "passed",
+    "383a8e4886e6e5ea36a9514fa753a915"
+   ],
+   "12": [
+    "passed",
+    "f8baecaa05e9c9049a80aba966a0355f"
+   ],
+   "13": [
+    "passed",
+    "77ff0a7f750d84d09d51e78035b5b3ea"
+   ],
+   "14": [
+    "passed",
+    "17791f7d5dc11b8612dd9e001876e3ea"
+   ],
+   "15": [
+    "passed",
+    "d0cb0253bc7287e44d2619b327665e68"
+   ],
+   "16": [
+    "passed",
+    "494d74436b87ce5cf2132834bd03e38a"
+   ],
+   "17": [
+    "passed",
+    "c6f4cadabd22749b8a9aead3fc303283"
+   ],
+   "18": [
+    "passed",
+    "e3808ddab462b6539ca4aed694af2414"
+   ],
+   "19": [
+    "passed",
+    "5be28244b811d690577c55683d25f96e"
+   ],
+   "20": [
+    "passed",
+    "19b061d08ca099ff5c7ab849a4bdabf1"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_PublishesGlobalTimeRange": {
+   "1": [
+    "passed",
+    "453565497c7db76916ef50e0d2413bd5"
+   ],
+   "2": [
+    "passed",
+    "69d0f09378fc805b463bc408369c6095"
+   ],
+   "3": [
+    "passed",
+    "065cc43ef5f21f239a801419898b4437"
+   ],
+   "4": [
+    "passed",
+    "a0a1aaf642dc34c21ba498c14a9b8954"
+   ],
+   "5": [
+    "passed",
+    "affa3b65c7cec6ceb7d4a2adf40b58cf"
+   ],
+   "6": [
+    "passed",
+    "b63b23e92d98b42dae14757a3d5f3c5b"
+   ],
+   "7": [
+    "passed",
+    "7f5ea2dd4dbfe727c94570c32ebd7f51"
+   ],
+   "8": [
+    "passed",
+    "fd9207ab2565cc26f16b75dbb3da3be9"
+   ],
+   "9": [
+    "passed",
+    "787cd1a7b79af8f7f75f18bbd3e7c5ff"
+   ],
+   "10": [
+    "passed",
+    "4975c47b687816b2b999db293e33a61b"
+   ],
+   "11": [
+    "passed",
+    "f0f9a546a41847b36bbbbea48d09c6e5"
+   ],
+   "12": [
+    "passed",
+    "e578cac3aa9bcef7229494f79e216a0c"
+   ],
+   "13": [
+    "passed",
+    "000b185c9bbfcc2eb526e34a8bdce727"
+   ],
+   "14": [
+    "passed",
+    "2fd867288ca4db7678ac888325762510"
+   ],
+   "15": [
+    "passed",
+    "f6d3d66350ae6b9c38b399c31edd731c"
+   ],
+   "16": [
+    "passed",
+    "f1554e562d829ddd04cef867746823eb"
+   ],
+   "17": [
+    "passed",
+    "6048760bce4299de5a7ae6047053f15f"
+   ],
+   "18": [
+    "passed",
+    "2d39c2cb9ce337833a3d236e56da3542"
+   ],
+   "19": [
+    "passed",
+    "df45986312913aebe18bb0d3bcf65254"
+   ],
+   "20": [
+    "passed",
+    "4741ecffae7ae27f5196c53764d7a369"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DeterministicOutputPaths": {
+   "1": [
+    "passed",
+    "0a5f9e468e6156c83c61e2db2a50a26b"
+   ],
+   "2": [
+    "passed",
+    "afdd287e30bf061593dbaadc50671d73"
+   ],
+   "3": [
+    "passed",
+    "10284624f68b3f67ae7e1f36ea44c78f"
+   ],
+   "4": [
+    "passed",
+    "0d89838907971a09521dd9cb9d5f5b58"
+   ],
+   "5": [
+    "passed",
+    "dc772251b5e8b07531e37b443555a0b3"
+   ],
+   "6": [
+    "passed",
+    "3cd3b17f2c0400649e5387b97633bb67"
+   ],
+   "7": [
+    "passed",
+    "f1eee57b637010498feec1abd90c1ed8"
+   ],
+   "8": [
+    "passed",
+    "a11b9828f9da05bbf7941480dd1df897"
+   ],
+   "9": [
+    "passed",
+    "bc087ad4ca0b3ed2a8756ee038fd27b2"
+   ],
+   "10": [
+    "passed",
+    "4c00cba9ef35ed477465d225f994c534"
+   ],
+   "11": [
+    "passed",
+    "be06a9df464e312c01b5d472ad112f39"
+   ],
+   "12": [
+    "passed",
+    "f1ce1a35bedf89090940e04ab766e764"
+   ],
+   "13": [
+    "passed",
+    "165e2e5dac7af4fee55928231e72cb30"
+   ],
+   "14": [
+    "passed",
+    "6c65c4399a4c7d40a284e5c21f5041e5"
+   ],
+   "15": [
+    "passed",
+    "ce2aab2fc57ef3896e45e4667c7bdcf6"
+   ],
+   "16": [
+    "passed",
+    "546391f53052ae947c123f47a3c1f0c7"
+   ],
+   "17": [
+    "passed",
+    "3931fd19757a1c77ca5e1dd218cf4166"
+   ],
+   "18": [
+    "passed",
+    "70e312945fc8f5b8f195cc4a74a34b5b"
+   ],
+   "19": [
+    "passed",
+    "9096fa957fc04301f2102c3fb21a4095"
+   ],
+   "20": [
+    "passed",
+    "0f3399d03e8615c47c648b8e069ee231"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DispatchesIndexMergePlans": {
+   "1": [
+    "passed",
+    "e71d30f0ce531773b564e26fa722589d"
+   ],
+   "2": [
+    "passed",
+    "77768df06d7af134bd983778d1ddd998"
+   ],
+   "3": [
+    "passed",
+    "f595c18588cde1bbd1859028391635c9"
+   ],
+   "4": [
+    "passed",
+    "0696f73523e4d0992db2da59f88646d9"
+   ],
+   "5": [
+    "passed",
+    "12a1cfd51311f4f18985437b71ffc230"
+   ],
+   "6": [
+    "passed",
+    "06ab66653845ebe15a2425c02e52f264"
+   ],
+   "7": [
+    "passed",
+    "c2f796663c9c81ec8c3df245f09f130a"
+   ],
+   "8": [
+    "passed",
+    "faaf9c18b4f9f5a8229a797cfbfe17f1"
+   ],
+   "9": [
+    "passed",
+    "f48e15b1fa7b9f72a18a3ce07026666c"
+   ],
+   "10": [
+    "passed",
+    "697c297cfb51f0446309b3cb8e995b26"
+   ],
+   "11": [
+    "passed",
+    "2dca6a3c0692ce2bc32230b8cca08dcd"
+   ],
+   "12": [
+    "passed",
+    "52ed4e9b0a623c55b72cf2d5d439b9e4"
+   ],
+   "13": [
+    "passed",
+    "b5d6d18b4ee325bf7fe9b2095a2cbc47"
+   ],
+   "14": [
+    "passed",
+    "cb4dc14e5547a51ef4d7d3a3d92a0a71"
+   ],
+   "15": [
+    "passed",
+    "a13d398c4eb7db3b5c1e31e0725365af"
+   ],
+   "16": [
+    "passed",
+    "a7c2925ad47e65a326fdebb69f9df5c4"
+   ],
+   "17": [
+    "passed",
+    "ef941d589f26e4cf7df7b89b4c63e764"
+   ],
+   "18": [
+    "passed",
+    "dd19ccc608083396d0d0489ffd35258a"
+   ],
+   "19": [
+    "passed",
+    "4c4ff4888fc61d9553d6e02539588acc"
+   ],
+   "20": [
+    "passed",
+    "aa7e4703fc760067ef4a0d55c6f42cb2"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_GroupsByTenant": {
+   "1": [
+    "passed",
+    "8d74ad518ac28ac0c6c19716643088e4"
+   ],
+   "2": [
+    "passed",
+    "b09ff2513eded6e7f4f36212f4e5c49a"
+   ],
+   "3": [
+    "passed",
+    "d1444514a5512144a669eb5c2d67efd8"
+   ],
+   "4": [
+    "passed",
+    "0cb288e4077b254683332f39f58af416"
+   ],
+   "5": [
+    "passed",
+    "32e78f9cbb72d256811c431c43a2497a"
+   ],
+   "6": [
+    "passed",
+    "32faa5fcf5ae9d948fff2ba1e8455f8c"
+   ],
+   "7": [
+    "passed",
+    "13a5990a9141aa661413afb69c9bd892"
+   ],
+   "8": [
+    "passed",
+    "8cff2563fff313286d029f06348bb7c1"
+   ],
+   "9": [
+    "passed",
+    "5f8e6c4d69fb33e74496d0a7602533d5"
+   ],
+   "10": [
+    "passed",
+    "54af87dc1cd0df2faaac92d6d25bd51e"
+   ],
+   "11": [
+    "passed",
+    "bab9b7a71acabdb270d5d2172639f099"
+   ],
+   "12": [
+    "passed",
+    "4073b8b8dd692118b899399bb5cb3859"
+   ],
+   "13": [
+    "passed",
+    "c5c35c6c8f7c89075f8b62bc4a89fed4"
+   ],
+   "14": [
+    "passed",
+    "2be53846a0f2bf2bcffabdf71b49a8bf"
+   ],
+   "15": [
+    "passed",
+    "353531f112ba8a9042e193c11d14101f"
+   ],
+   "16": [
+    "passed",
+    "c43baf625a25943ae0ed5f82205293cd"
+   ],
+   "17": [
+    "passed",
+    "61df1135b6a857fe6f794d0c5e8492c3"
+   ],
+   "18": [
+    "passed",
+    "e8acfb76ed699e4360b3b6b0acb51e62"
+   ],
+   "19": [
+    "passed",
+    "e9052702f064a0501d5b07594e0ef613"
+   ],
+   "20": [
+    "passed",
+    "6288733807ed67ef92597c8f07e6abff"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_SamePrefixMergesRegardlessOfTimestamp": {
+   "1": [
+    "passed",
+    "453565497c7db76916ef50e0d2413bd5"
+   ],
+   "2": [
+    "passed",
+    "69d0f09378fc805b463bc408369c6095"
+   ],
+   "3": [
+    "passed",
+    "065cc43ef5f21f239a801419898b4437"
+   ],
+   "4": [
+    "passed",
+    "a0a1aaf642dc34c21ba498c14a9b8954"
+   ],
+   "5": [
+    "passed",
+    "affa3b65c7cec6ceb7d4a2adf40b58cf"
+   ],
+   "6": [
+    "passed",
+    "b63b23e92d98b42dae14757a3d5f3c5b"
+   ],
+   "7": [
+    "passed",
+    "7f5ea2dd4dbfe727c94570c32ebd7f51"
+   ],
+   "8": [
+    "passed",
+    "fd9207ab2565cc26f16b75dbb3da3be9"
+   ],
+   "9": [
+    "passed",
+    "787cd1a7b79af8f7f75f18bbd3e7c5ff"
+   ],
+   "10": [
+    "passed",
+    "4975c47b687816b2b999db293e33a61b"
+   ],
+   "11": [
+    "passed",
+    "f0f9a546a41847b36bbbbea48d09c6e5"
+   ],
+   "12": [
+    "passed",
+    "e578cac3aa9bcef7229494f79e216a0c"
+   ],
+   "13": [
+    "passed",
+    "000b185c9bbfcc2eb526e34a8bdce727"
+   ],
+   "14": [
+    "passed",
+    "2fd867288ca4db7678ac888325762510"
+   ],
+   "15": [
+    "passed",
+    "f6d3d66350ae6b9c38b399c31edd731c"
+   ],
+   "16": [
+    "passed",
+    "f1554e562d829ddd04cef867746823eb"
+   ],
+   "17": [
+    "passed",
+    "6048760bce4299de5a7ae6047053f15f"
+   ],
+   "18": [
+    "passed",
+    "2d39c2cb9ce337833a3d236e56da3542"
+   ],
+   "19": [
+    "passed",
+    "df45986312913aebe18bb0d3bcf65254"
+   ],
+   "20": [
+    "passed",
+    "4741ecffae7ae27f5196c53764d7a369"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresSchedulerLookupAddress": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinatorMetrics_DeleteTenant": {
+   "1": [
+    "passed",
+    "e6dfe820f5c14a45d18ee9360b842e70"
+   ],
+   "2": [
+    "passed",
+    "7871afba00a3185d63512b0e20c38017"
+   ],
+   "3": [
+    "passed",
+    "2ed303fef157225957e3f268ba892ca6"
+   ],
+   "4": [
+    "passed",
+    "de8e396dd79b3bfaa51591b9edafab2d"
+   ],
+   "5": [
+    "passed",
+    "fbff8eff16e907816fcf5eff2e7766bc"
+   ],
+   "6": [
+    "passed",
+    "3e67076eb98361cd0fbb982c482f4a92"
+   ],
+   "7": [
+    "passed",
+    "07f081812dc7ec94d401062c58afe286"
+   ],
+   "8": [
+    "passed",
+    "6cfe851d1166d891da289e45bc62946f"
+   ],
+   "9": [
+    "passed",
+    "fd2436e584078068190c94522d410555"
+   ],
+   "10": [
+    "passed",
+    "8b1b674983e0cae45027aa9d977fb796"
+   ],
+   "11": [
+    "passed",
+    "efa0d508c8da58c564d67671a64c5d9f"
+   ],
+   "12": [
+    "passed",
+    "4e05251afce2ea1a79520b6264b3839d"
+   ],
+   "13": [
+    "passed",
+    "a784a248eaa2f13cc84b6edce2aaaf50"
+   ],
+   "14": [
+    "passed",
+    "461f32e51150ba26007071f6bdc43a2d"
+   ],
+   "15": [
+    "passed",
+    "5a73706aa5058fc2a69e41742530c151"
+   ],
+   "16": [
+    "passed",
+    "9c1b4bc72c7e39fb05b449132bb65a3a"
+   ],
+   "17": [
+    "passed",
+    "c99576b8565c4c36c41c0ea5e0fe69d2"
+   ],
+   "18": [
+    "passed",
+    "d40364535d9b893a4e85ed8093a65489"
+   ],
+   "19": [
+    "passed",
+    "4a02fc1c77f8ddb0ada968b134e1c735"
+   ],
+   "20": [
+    "passed",
+    "035116d11aef1e4530ab8dd330f3178a"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_ZeroEntriesIsNoWork": {
+   "1": [
+    "passed",
+    "50b8d80d278353adb166ce199868eb3d"
+   ],
+   "2": [
+    "passed",
+    "9265d02524d0db5ec14e472279e535d7"
+   ],
+   "3": [
+    "passed",
+    "c367ab55d7cf91d14b4534a2987b4980"
+   ],
+   "4": [
+    "passed",
+    "83e3ea1d42918609c74c2ee10c821130"
+   ],
+   "5": [
+    "passed",
+    "445771bb8fc013a3b8026e1b17068594"
+   ],
+   "6": [
+    "passed",
+    "6760731e7a0b20bb7efa02533e6ae4e2"
+   ],
+   "7": [
+    "passed",
+    "cc0dd8e9fe89f88f28f6a11da56379c5"
+   ],
+   "8": [
+    "passed",
+    "197d065a8184a50ea159883ec489ea48"
+   ],
+   "9": [
+    "passed",
+    "122a8502bcde1de8439153c713c0ce08"
+   ],
+   "10": [
+    "passed",
+    "500ca93e36db77df8455d7cf73ef46c5"
+   ],
+   "11": [
+    "passed",
+    "9611babb12d9ba4eb3e785ca348bd3e7"
+   ],
+   "12": [
+    "passed",
+    "ff382913fbf78c833e0c4a333e82bb11"
+   ],
+   "13": [
+    "passed",
+    "999fea12014d7f813886f24f21ea34de"
+   ],
+   "14": [
+    "passed",
+    "973e597708410474f02705c522a1784d"
+   ],
+   "15": [
+    "passed",
+    "795aa9110d2788e139fc953264f14ba1"
+   ],
+   "16": [
+    "passed",
+    "ac4d8829dd33973b5e538302254097fd"
+   ],
+   "17": [
+    "passed",
+    "972ae1f2578fc3ea05c1018678a875da"
+   ],
+   "18": [
+    "passed",
+    "7c2c03538cc43552c49f2215fa797dd4"
+   ],
+   "19": [
+    "passed",
+    "32f564681e404b01d46320e45ce40788"
+   ],
+   "20": [
+    "passed",
+    "39f90bcb49be5175790eeb9af6fc4a0d"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_UnionsPopulatedWindows": {
+   "1": [
+    "passed",
+    "47cb7794355371b45cc4492a9c451bdc"
+   ],
+   "2": [
+    "passed",
+    "16bd5c0ff9b978139c6bf4a619be104d"
+   ],
+   "3": [
+    "passed",
+    "ec67d2aefc8ebb996a40144371eed413"
+   ],
+   "4": [
+    "passed",
+    "1f45ebba543603b0e597259ce0beeb25"
+   ],
+   "5": [
+    "passed",
+    "6edba77babc4bb998c41483e28d9e9c8"
+   ],
+   "6": [
+    "passed",
+    "eb24b7acd6e6cfa382307425a2a7bd18"
+   ],
+   "7": [
+    "passed",
+    "372ca94b5dcdaba64eedc3652b927844"
+   ],
+   "8": [
+    "passed",
+    "cffc2bc3af6c31e47419784f8b98ffef"
+   ],
+   "9": [
+    "passed",
+    "d1cf7fdc2ecaff3a3265831be1480a83"
+   ],
+   "10": [
+    "passed",
+    "daa652bfd66c18672faa0e9a63e4fec2"
+   ],
+   "11": [
+    "passed",
+    "b8e4d7e8a8d5c79873cdee2193ffdf04"
+   ],
+   "12": [
+    "passed",
+    "26e8f925431165a6be9345ea6f1b71b0"
+   ],
+   "13": [
+    "passed",
+    "602146863224f6962a54002736d76a38"
+   ],
+   "14": [
+    "passed",
+    "f333ba692892626b38e8c741bae63cc8"
+   ],
+   "15": [
+    "passed",
+    "a5957f2082824781337e8f695ff93bfd"
+   ],
+   "16": [
+    "passed",
+    "f2b97f418c3e32ed1debb84745c18412"
+   ],
+   "17": [
+    "passed",
+    "c6484ecb1d0d170b28434a9b74310a48"
+   ],
+   "18": [
+    "passed",
+    "025e236e2fc8d85828195427f26e4ad5"
+   ],
+   "19": [
+    "passed",
+    "cc232642184495077d1dbf5b2811d503"
+   ],
+   "20": [
+    "passed",
+    "040bee22f819740224d007b590a5015b"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompact_SplitsWhenRunsExceedK": {
+   "1": [
+    "passed",
+    "7e098640f101803f6a764c2b8645fd56"
+   ],
+   "2": [
+    "passed",
+    "d77cb561a36d01955bd352a2577d1bef"
+   ],
+   "3": [
+    "passed",
+    "d402a37b6b38c5bf210cbb155db4c62b"
+   ],
+   "4": [
+    "passed",
+    "cf7c687494253587d2d0df7a37fa3b2b"
+   ],
+   "5": [
+    "passed",
+    "fe5e34a9474823f14a81d4e43ce31cd0"
+   ],
+   "6": [
+    "passed",
+    "fc568897c773064dbecbbfdafd1d799e"
+   ],
+   "7": [
+    "passed",
+    "aa29573c0a39ade2b9f9a18078329b1c"
+   ],
+   "8": [
+    "passed",
+    "a6ad2a50f0c17e7c34166351d468e2eb"
+   ],
+   "9": [
+    "passed",
+    "12f1a0bd59578c621ead1f9a87cd7da6"
+   ],
+   "10": [
+    "passed",
+    "48ad253e3103986d4eb7030e7dc0f001"
+   ],
+   "11": [
+    "passed",
+    "0db83a43d11e1ffa5864d5bf4951e98f"
+   ],
+   "12": [
+    "passed",
+    "cbf38af7be6d88bb0d7dfd3eea048624"
+   ],
+   "13": [
+    "passed",
+    "c65102432947e0aa1a43987558f1cb12"
+   ],
+   "14": [
+    "passed",
+    "685db9147f4bc3ce477b5cd7c72a5cc7"
+   ],
+   "15": [
+    "passed",
+    "bcdf8473466d5a4db41f5fcc067fb9d4"
+   ],
+   "16": [
+    "passed",
+    "21b1925a9a3b2f68380e10820541867c"
+   ],
+   "17": [
+    "passed",
+    "cfdc39755fe37f8fcc2992581dc5db1c"
+   ],
+   "18": [
+    "passed",
+    "da8caca6971cd4fbc37f8fcc78851c04"
+   ],
+   "19": [
+    "passed",
+    "5fdfe3a7a4768be0fe6d83fe26201e12"
+   ],
+   "20": [
+    "passed",
+    "1a3b178cb031666e5195d4078941164c"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPlanner_BootShutdown": {
+   "1": [
+    "passed",
+    "fb199734b11d6883e04a70ea62aaf2b6"
+   ],
+   "2": [
+    "passed",
+    "32f7037ae4e3092098d239d95e8a8bad"
+   ],
+   "3": [
+    "passed",
+    "f0af92234c9096507d32faf0f277ffd2"
+   ],
+   "4": [
+    "passed",
+    "268321b257dd065db0cd0d8382f3f325"
+   ],
+   "5": [
+    "passed",
+    "3f8f028fa64a9e791c15c731812c92a3"
+   ],
+   "6": [
+    "passed",
+    "9f7734d68beac60a94e63b11046937a5"
+   ],
+   "7": [
+    "passed",
+    "d9382e7a68db35747c01d9862fc962d2"
+   ],
+   "8": [
+    "passed",
+    "50a8104416cc667fcaf2906660abbaee"
+   ],
+   "9": [
+    "passed",
+    "bbcb798f4cfe1bb9ccff4f1acb15cc62"
+   ],
+   "10": [
+    "passed",
+    "24eb8093d3a9f8a9213165db28dbd4b3"
+   ],
+   "11": [
+    "passed",
+    "cc81728f6ccc795a717f1651bc05adc9"
+   ],
+   "12": [
+    "passed",
+    "7b39c63c78b57a162be133ece1890290"
+   ],
+   "13": [
+    "passed",
+    "59e3fac7291173323e644156cc449c1b"
+   ],
+   "14": [
+    "passed",
+    "a6c7d6259d954ed4298757f1fece8644"
+   ],
+   "15": [
+    "passed",
+    "3552f4dc44d002150b088c7a2e40de31"
+   ],
+   "16": [
+    "passed",
+    "356f1cb13ec5b84cdd7399f8d0d08c92"
+   ],
+   "17": [
+    "passed",
+    "8cb90a23fd5c29f91d212531326c84f3"
+   ],
+   "18": [
+    "passed",
+    "e7cf421a028982598347762bcda01ba8"
+   ],
+   "19": [
+    "passed",
+    "9b8c6a557660a8287f85ceb2bcfcb569"
+   ],
+   "20": [
+    "passed",
+    "8e2c96dd55709e632087c67ff94d46a6"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_AssignsFreshNodeID": {
+   "1": [
+    "passed",
+    "5d411b2b980b624e4fd932d3a9bbbc3c"
+   ],
+   "2": [
+    "passed",
+    "7018bd504b8d4fd4d897fa0cbfa2b7f9"
+   ],
+   "3": [
+    "passed",
+    "a1a88c4f517831477e25f8cc7cf60e27"
+   ],
+   "4": [
+    "passed",
+    "0fb5a685f496e5e6574b353641303d08"
+   ],
+   "5": [
+    "passed",
+    "09d14f575c37ae4172b3697d9c80cfaf"
+   ],
+   "6": [
+    "passed",
+    "ca2af4c1d86de351d903c1cc406464b9"
+   ],
+   "7": [
+    "passed",
+    "2c6b7db305a95f19d98b22a0445d529f"
+   ],
+   "8": [
+    "passed",
+    "7e53faf9fca30d2a0c9d8f95d7ea4999"
+   ],
+   "9": [
+    "passed",
+    "42e103d068a340867f8d8c5e06f0da87"
+   ],
+   "10": [
+    "passed",
+    "463773eff651e9335ac9b906ac28d848"
+   ],
+   "11": [
+    "passed",
+    "a595fcde21526975b6a31e19680cb654"
+   ],
+   "12": [
+    "passed",
+    "783f36e18807d51c8d34a504cf1a3d27"
+   ],
+   "13": [
+    "passed",
+    "ef2e25041dfaea41c9935ca1b1427396"
+   ],
+   "14": [
+    "passed",
+    "62eec0a99fdd977589f2d3e32b2c037e"
+   ],
+   "15": [
+    "passed",
+    "017c0e1aaed35ff3b0d7816834e6f137"
+   ],
+   "16": [
+    "passed",
+    "1ace9b620d966dbe7a33f02e0d1b1768"
+   ],
+   "17": [
+    "passed",
+    "d58202b3a1d0ef37a8986ed7c6f53dd2"
+   ],
+   "18": [
+    "passed",
+    "2ad43d370c3b771d447d22d6af521756"
+   ],
+   "19": [
+    "passed",
+    "93179e16db3647b58dad1250e08d9196"
+   ],
+   "20": [
+    "passed",
+    "b245f1b063414b385b34734e458f0967"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLoadTenantIndexes_PopulatesSizeColumns": {
+   "1": [
+    "passed",
+    "2929a692d86c82c341262242875ca36c"
+   ],
+   "2": [
+    "passed",
+    "279e3a7e068c141d595939135a8a90de"
+   ],
+   "3": [
+    "passed",
+    "61b374c147957ec137f20bbced78fbbe"
+   ],
+   "4": [
+    "passed",
+    "f09d40476943276e5443050652809d1b"
+   ],
+   "5": [
+    "passed",
+    "b674817c66e510af2e57227960821379"
+   ],
+   "6": [
+    "passed",
+    "a6d6af8bb5f33f6d57c5b6d543a69109"
+   ],
+   "7": [
+    "passed",
+    "5142852ca2135187f3004d053ed2bfdc"
+   ],
+   "8": [
+    "passed",
+    "391b8dfd10931bd0118db55774a83cda"
+   ],
+   "9": [
+    "passed",
+    "ce33d83b3492e034cafc4cd729001df2"
+   ],
+   "10": [
+    "passed",
+    "87b802b291364d0cfe808736aad604f5"
+   ],
+   "11": [
+    "passed",
+    "592bcf1a77598d831895a2ca96aae712"
+   ],
+   "12": [
+    "passed",
+    "e9d3a9b25e331f760eb24d3d33e554f8"
+   ],
+   "13": [
+    "passed",
+    "8619dcdcc18f4e3f101bf83f8826b609"
+   ],
+   "14": [
+    "passed",
+    "11212544227a099b0806fbe541f01c55"
+   ],
+   "15": [
+    "passed",
+    "3540f4751afac8807329e52ab1e501fd"
+   ],
+   "16": [
+    "passed",
+    "86a35c233bcf0c46f87bf7865137f4be"
+   ],
+   "17": [
+    "passed",
+    "02de75c942269f2f0eddf3697168b787"
+   ],
+   "18": [
+    "passed",
+    "be3c9064f8a8295994f9c4d572841f5b"
+   ],
+   "19": [
+    "passed",
+    "ad6603f5d481e0bcd2d4d543634a4816"
+   ],
+   "20": [
+    "passed",
+    "1e018dc61ad8c6836385522934eb3ca5"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_InvalidAdvertiseAddr": {
+   "1": [
+    "passed",
+    "b2940151b63aab8255375648db2ddc46"
+   ],
+   "2": [
+    "passed",
+    "a598f18f2903dc1bdfd2400c57963693"
+   ],
+   "3": [
+    "passed",
+    "8e792f6492375ea9cd17ceb298e30c2c"
+   ],
+   "4": [
+    "passed",
+    "53d3b79f7b28e0ce1013cca7f6059630"
+   ],
+   "5": [
+    "passed",
+    "053d12de776d4c485aed0a21dfe0ef89"
+   ],
+   "6": [
+    "passed",
+    "326e45c8949a219d1a377c55839ab6bb"
+   ],
+   "7": [
+    "passed",
+    "7e6019d26007d2ff43244d69762831f4"
+   ],
+   "8": [
+    "passed",
+    "c468508f46dc94d66c10f87f0aa17614"
+   ],
+   "9": [
+    "passed",
+    "673548eaac51fbfa3e60443cecd4cbc2"
+   ],
+   "10": [
+    "passed",
+    "c28630c6c3c75af1bbfcd6eff72ca6b1"
+   ],
+   "11": [
+    "passed",
+    "4831eb129e7729ffbc43e925094173f1"
+   ],
+   "12": [
+    "passed",
+    "9f7741ba17a8d8f2f92899c06d427f97"
+   ],
+   "13": [
+    "passed",
+    "e33512f564f0b6759b3c422e1d1c8820"
+   ],
+   "14": [
+    "passed",
+    "2945a60cc9edf23caea23d5a483ef21e"
+   ],
+   "15": [
+    "passed",
+    "574361dc9cb361e28c0f26ac147f2e13"
+   ],
+   "16": [
+    "passed",
+    "7254273ddc1878d0130e59a4a4d47684"
+   ],
+   "17": [
+    "passed",
+    "f777f7c3d795104b2db9e52a0392ef9b"
+   ],
+   "18": [
+    "passed",
+    "e8cc8a0784f2aa35dc1afb822ad83dc2"
+   ],
+   "19": [
+    "passed",
+    "25a9044b1830d3684880d985eb0f6dcd"
+   ],
+   "20": [
+    "passed",
+    "6fd6afc0150fa70964690ed81007676a"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MultiIndexSwaps": {
+   "1": [
+    "passed",
+    "7f77d1c2c593522469eb57b9b5b34c05"
+   ],
+   "2": [
+    "passed",
+    "d0c8790512c1e075ecc85bf1d1f4f8eb"
+   ],
+   "3": [
+    "passed",
+    "ef493f14202bb781b2157255f6b7dacc"
+   ],
+   "4": [
+    "passed",
+    "34ecbf706d9264e3acff91b4f27a4754"
+   ],
+   "5": [
+    "passed",
+    "5b8b190ffec93e18d55c838f054f2758"
+   ],
+   "6": [
+    "passed",
+    "6bec1e7d2a2ece265541a22db4a59224"
+   ],
+   "7": [
+    "passed",
+    "3b0e1fc1653da2d83f70517516340a37"
+   ],
+   "8": [
+    "passed",
+    "47833accfb05c7a7e855a502eca21b45"
+   ],
+   "9": [
+    "passed",
+    "c9eb17c12117cf178f7327c330b43324"
+   ],
+   "10": [
+    "passed",
+    "13ad6a9f73cdf1862f6d4dc002928535"
+   ],
+   "11": [
+    "passed",
+    "54152e107e78c60c03bcff5bc4d44f08"
+   ],
+   "12": [
+    "passed",
+    "219e8628e3e7b27c55f1796742d41e3b"
+   ],
+   "13": [
+    "passed",
+    "6f32826d3e43db6c8b26a713a3c25469"
+   ],
+   "14": [
+    "passed",
+    "54688d1c9e3044f21cd055519fca10b0"
+   ],
+   "15": [
+    "passed",
+    "4a5f44194122e4c0bd2df6fdc49c985c"
+   ],
+   "16": [
+    "passed",
+    "ab4f3b8318c635e98189a4f67b86c8d6"
+   ],
+   "17": [
+    "passed",
+    "dc5f8408b20cef2e0d0102d519568c98"
+   ],
+   "18": [
+    "passed",
+    "2a025d25fec060e10c2846673569a3b9"
+   ],
+   "19": [
+    "passed",
+    "7aaa90d19d059ff63034cf8110dfa0d6"
+   ],
+   "20": [
+    "passed",
+    "9c5c5b8baffef1b756f527fc81441d35"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_EmptySortSchema": {
+   "1": [
+    "passed",
+    "34af26eab1996f44173f21fd57997eb6"
+   ],
+   "2": [
+    "passed",
+    "c796a49558be6b585fba07c93fa3a0f6"
+   ],
+   "3": [
+    "passed",
+    "fb3240c226633065a6d32daf4c36b61a"
+   ],
+   "4": [
+    "passed",
+    "9cb0a43846550a2311a325bbafb88a33"
+   ],
+   "5": [
+    "passed",
+    "89729ee860da4139bc0a078e62d24a23"
+   ],
+   "6": [
+    "passed",
+    "402d3fd11de53bf5ec586d735e9a6c76"
+   ],
+   "7": [
+    "passed",
+    "e520f01672c14fe7b2c65044370dc973"
+   ],
+   "8": [
+    "passed",
+    "0399dbdfbfb7307c2854caa292974983"
+   ],
+   "9": [
+    "passed",
+    "3c918c93754ffd34882ba6c480162f7c"
+   ],
+   "10": [
+    "passed",
+    "0288848d4ea124626822b416c8f56de2"
+   ],
+   "11": [
+    "passed",
+    "b1a49b287f0965f401f8da2ad96bf071"
+   ],
+   "12": [
+    "passed",
+    "9bebfcc6edc3814c0e0d7c57da1fcdf3"
+   ],
+   "13": [
+    "passed",
+    "0a70b44e1e3e254211474cb709c2f07b"
+   ],
+   "14": [
+    "passed",
+    "592d4a446649065a953bf015e06c7754"
+   ],
+   "15": [
+    "passed",
+    "1cada1447339f2e8377c842a5c75982e"
+   ],
+   "16": [
+    "passed",
+    "a8caaa2e0042a11f2baab1fd14783286"
+   ],
+   "17": [
+    "passed",
+    "75c3074233eb1721e1fc6408983aede0"
+   ],
+   "18": [
+    "passed",
+    "ab892817a30cb97e1352365b2cb98632"
+   ],
+   "19": [
+    "passed",
+    "b96c749221993287533622362c451f59"
+   ],
+   "20": [
+    "passed",
+    "24c478861d49c2c553a186cc22b0d692"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_EnabledButAbsentFromToC_NoWorker": {
+   "1": [
+    "passed",
+    "c8dc3560eaf4ce141ac0e851c1ef6361"
+   ],
+   "2": [
+    "passed",
+    "151733ebc6c29c4915461bcf201850ea"
+   ],
+   "3": [
+    "passed",
+    "0025efbe1298303c226033e3faab587f"
+   ],
+   "4": [
+    "passed",
+    "b331f5f3e5ec9320f24362fd6e0013cf"
+   ],
+   "5": [
+    "passed",
+    "72b5b3b92bc94cbbe60b6eed82f2b714"
+   ],
+   "6": [
+    "passed",
+    "368fbee25452d22706b1c31aa76e8575"
+   ],
+   "7": [
+    "passed",
+    "e78eda8925d58f1bdf04c1d859802bac"
+   ],
+   "8": [
+    "passed",
+    "b3a8376251b4176c3c4e8a126a94832d"
+   ],
+   "9": [
+    "passed",
+    "740c1899983d0c756176d427449998d5"
+   ],
+   "10": [
+    "passed",
+    "5ee786507900edcb52cd16705360e779"
+   ],
+   "11": [
+    "passed",
+    "7a5e257d237a098c5fbcf48683640bfe"
+   ],
+   "12": [
+    "passed",
+    "52430060616212b1352a4abbd973c8a7"
+   ],
+   "13": [
+    "passed",
+    "08c6e6a637d57041e26e317a75dd0785"
+   ],
+   "14": [
+    "passed",
+    "dda5a76ec6471990f12c42f7d72fbe4e"
+   ],
+   "15": [
+    "passed",
+    "ec0294ef8526eb79bca775c30e350df9"
+   ],
+   "16": [
+    "passed",
+    "08a3192ab88d956dbb2a2cb9df189259"
+   ],
+   "17": [
+    "passed",
+    "98d14bc3edbeaec175282ba3bb10b6b9"
+   ],
+   "18": [
+    "passed",
+    "9d4ee367739e606948bbfa8d809ed69b"
+   ],
+   "19": [
+    "passed",
+    "6b204c1fdd157d97b54be48c2c5dbcef"
+   ],
+   "20": [
+    "passed",
+    "4a4dd6885aa1166a8c7f008e4071d078"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_DisabledIsNoop": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_MissingObjectZeroSize": {
+   "1": [
+    "passed",
+    "da70e1042b40a45126f8309c933ea6ae"
+   ],
+   "2": [
+    "passed",
+    "573014450fcf27593833e11df6c326db"
+   ],
+   "3": [
+    "passed",
+    "93d80077fdb65c9d3ebe6325970651f3"
+   ],
+   "4": [
+    "passed",
+    "242df4d9b94703aa30b270a444e895dc"
+   ],
+   "5": [
+    "passed",
+    "27eb8795001e9be71c11ddf2af71e455"
+   ],
+   "6": [
+    "passed",
+    "a65a2e1d73cd73919b6e5722ee34402b"
+   ],
+   "7": [
+    "passed",
+    "1ea8d9f4230b4423d57e4590fae74acc"
+   ],
+   "8": [
+    "passed",
+    "32e01b86bff2066b3f0842eec8c5904e"
+   ],
+   "9": [
+    "passed",
+    "a7f5f0c9e896b87aaa71db003cfe991c"
+   ],
+   "10": [
+    "passed",
+    "5ac4589f9612cefaa7828f2ce91a330e"
+   ],
+   "11": [
+    "passed",
+    "79c176acac3ea067694234043f8b06d0"
+   ],
+   "12": [
+    "passed",
+    "ebf8047c80bcb221f632ea7313139cd7"
+   ],
+   "13": [
+    "passed",
+    "7b5f671ef868a78723b130181111618c"
+   ],
+   "14": [
+    "passed",
+    "6d24a9309a4783ca6a88d070ba56253b"
+   ],
+   "15": [
+    "passed",
+    "cf40ecba3d3323b109ddbb4bcc84a4ab"
+   ],
+   "16": [
+    "passed",
+    "b6f968a15b6b4084c9668fb145d83765"
+   ],
+   "17": [
+    "passed",
+    "522ce284f8403d86a9a9e184724c7273"
+   ],
+   "18": [
+    "passed",
+    "fac06d92d4dd18b589f86d79b6064198"
+   ],
+   "19": [
+    "passed",
+    "25490d7d8c64b4bdd5e82e4c0c516d97"
+   ],
+   "20": [
+    "passed",
+    "c00b3334525139ea984ce7fd3f1cb4bc"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_AggregatesStatsRows": {
+   "1": [
+    "passed",
+    "7f5d5bc27c2b7b5995afde6c670be547"
+   ],
+   "2": [
+    "passed",
+    "6a28f498ba29ef99dc3f81d2b75f4f8a"
+   ],
+   "3": [
+    "passed",
+    "d52f682d21ed2cb8f3151c6cfcf28c70"
+   ],
+   "4": [
+    "passed",
+    "c74be3d526fd2eddda32d55c8aa5a6a0"
+   ],
+   "5": [
+    "passed",
+    "c3cb309dd9b172d272280c5d7c425cd3"
+   ],
+   "6": [
+    "passed",
+    "37c7054ffd0e2d6e6214669a6b040194"
+   ],
+   "7": [
+    "passed",
+    "404efd2af4feffcfde4cab4317766978"
+   ],
+   "8": [
+    "passed",
+    "8c2d4ce01ff313032e8dad4ce51c5e34"
+   ],
+   "9": [
+    "passed",
+    "517707fda6401babb3e2493061fe75f5"
+   ],
+   "10": [
+    "passed",
+    "4d052fab7e79c6773a59a3b1ae3a305c"
+   ],
+   "11": [
+    "passed",
+    "8d0afa0b9997602a2dc02321ba019351"
+   ],
+   "12": [
+    "passed",
+    "6e1260b2bb87ec1f6d83ad86350210e3"
+   ],
+   "13": [
+    "passed",
+    "5db0b606f50f10e28682eee8f869c428"
+   ],
+   "14": [
+    "passed",
+    "6f264882e692b332e7636ef72b8d8d22"
+   ],
+   "15": [
+    "passed",
+    "934a54daae90885c8f369ed9e43f3ecf"
+   ],
+   "16": [
+    "passed",
+    "f73b3b26cd894a208a5b83bda5de6594"
+   ],
+   "17": [
+    "passed",
+    "e941e75c0e6f7667f2d6ac1305cc01b0"
+   ],
+   "18": [
+    "passed",
+    "b8bf030b9238baa0a4cde9b3e640de12"
+   ],
+   "19": [
+    "passed",
+    "b780f16c67ba64dea4d74ee67e5f5894"
+   ],
+   "20": [
+    "passed",
+    "bded85c8770f7914259d4355fdfbfd8f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_CancelDrainsGoroutines": {
+   "1": [
+    "passed",
+    "e03f34c7dfe3f3b40788be78cb7303b3"
+   ],
+   "2": [
+    "passed",
+    "9d1d036efe763153466c09835dd7d0f5"
+   ],
+   "3": [
+    "passed",
+    "432c3a1e55dc24276683861c971bac83"
+   ],
+   "4": [
+    "passed",
+    "3e4151a90b003742ab099bc798ac131d"
+   ],
+   "5": [
+    "passed",
+    "459e12786c6fa6fd03f496fe28ccaddf"
+   ],
+   "6": [
+    "passed",
+    "7cef3defa4f1e6d191d05e89e372f9fb"
+   ],
+   "7": [
+    "passed",
+    "ee779cbb24f4baea9adb96fc43af4c18"
+   ],
+   "8": [
+    "passed",
+    "57f97ab60d04c11e040af3b0c6e8e040"
+   ],
+   "9": [
+    "passed",
+    "d64935be6fb6e4c9cf4fffa61f83dc2c"
+   ],
+   "10": [
+    "passed",
+    "9c737d97c4a244843ee9766a4a2bcb83"
+   ],
+   "11": [
+    "passed",
+    "787c69fbbb6406997ce4df978ccf7659"
+   ],
+   "12": [
+    "passed",
+    "f9d449f11e7a0deff0ac617039bc7bb1"
+   ],
+   "13": [
+    "passed",
+    "551b01fc27799357840e512fbbec7147"
+   ],
+   "14": [
+    "passed",
+    "bf3394a9ac36ceb127fe7c149229a76f"
+   ],
+   "15": [
+    "passed",
+    "bdaf135cb1baef2a6a0f396112f967d0"
+   ],
+   "16": [
+    "passed",
+    "d5e6a892808e71ecc2a38a24f7072918"
+   ],
+   "17": [
+    "passed",
+    "7ea56777b41633eeb9ccf84ee5a09f2c"
+   ],
+   "18": [
+    "passed",
+    "614b5f42a2c409f6ef0e58d93a28f20a"
+   ],
+   "19": [
+    "passed",
+    "ac264ef08c486964cd5e81578898a25c"
+   ],
+   "20": [
+    "passed",
+    "19c56097c0fe49e144547a02af0d53ff"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestDiscoverAll_CurrentMissingPreviousPresent": {
+   "1": [
+    "passed",
+    "7afc4344baf357ed188fbe92d88a8541"
+   ],
+   "2": [
+    "passed",
+    "e925dcdf7677d63d5ec24c3f282b85e9"
+   ],
+   "3": [
+    "passed",
+    "6780affbbb0819257c8cdd243f9e1fc2"
+   ],
+   "4": [
+    "passed",
+    "cc05c1eb20da7db743a0f172eaca2309"
+   ],
+   "5": [
+    "passed",
+    "3221acdaf7c44bb794f8f74c7245017f"
+   ],
+   "6": [
+    "passed",
+    "8547c6d547d5d95d424182f13332a7a9"
+   ],
+   "7": [
+    "passed",
+    "f7ae5f4fbd499ea9fddee05ac5b8a577"
+   ],
+   "8": [
+    "passed",
+    "8ddb00db5bb6aa0cc2609996d9999a8b"
+   ],
+   "9": [
+    "passed",
+    "6926a5c511bd2ed5d9d6d8ba2a220bf6"
+   ],
+   "10": [
+    "passed",
+    "40d62d620c01dbacebdefded2f736124"
+   ],
+   "11": [
+    "passed",
+    "6db271fcebfaad6968cdc64b2ea97bc5"
+   ],
+   "12": [
+    "passed",
+    "ca3a588af7c236468a78f9d62c1c1144"
+   ],
+   "13": [
+    "passed",
+    "cc3a22de84a2fac607a000044534277e"
+   ],
+   "14": [
+    "passed",
+    "83fccbf6d0cf1f4e3419dbb3ec02d23f"
+   ],
+   "15": [
+    "passed",
+    "5e33871284f8396d7004e5893fbc60cc"
+   ],
+   "16": [
+    "passed",
+    "3f2fe0f124d3a8d0bcd39e0f61db5e56"
+   ],
+   "17": [
+    "passed",
+    "4bc49c468e1089f73668e46a7eb13ddd"
+   ],
+   "18": [
+    "passed",
+    "8e1a3fa9971a30631988b56c3dee6737"
+   ],
+   "19": [
+    "passed",
+    "3d1312abec9795a0893d3def1b127404"
+   ],
+   "20": [
+    "passed",
+    "eef516beae7b22b32bbaa65a56416b04"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_ReadError_PreservesWorkers": {
+   "1": [
+    "passed",
+    "a75c6fce0516c04d93d6fd524eb1ed88"
+   ],
+   "2": [
+    "passed",
+    "d3523a936bdb7e3e7aaad93f729b2b58"
+   ],
+   "3": [
+    "passed",
+    "9453f1896425e9dd46e9aad32e5a1b35"
+   ],
+   "4": [
+    "passed",
+    "d1c2d25ce351f04dc679662a4231160c"
+   ],
+   "5": [
+    "passed",
+    "596dac695232d2b939d9ea638ec8e32c"
+   ],
+   "6": [
+    "passed",
+    "7fa068e3178c6774018cc8d3f9a62a8f"
+   ],
+   "7": [
+    "passed",
+    "ff77ec5783e76e99e5e2c6877b023dea"
+   ],
+   "8": [
+    "passed",
+    "6b73390343c03b49c6370ceb33dd5b40"
+   ],
+   "9": [
+    "passed",
+    "d816832ebb2dd808d19cf3a477f8cb48"
+   ],
+   "10": [
+    "passed",
+    "9772cf6b6291e40a1c5c250ec4073c76"
+   ],
+   "11": [
+    "passed",
+    "763c2d0358dd36d2ae4020cacddefd0c"
+   ],
+   "12": [
+    "passed",
+    "f7578952dfb11767d63142eca0a7dc24"
+   ],
+   "13": [
+    "passed",
+    "a352c43b78c32aa47e8db78b9020ca57"
+   ],
+   "14": [
+    "passed",
+    "4c9ff0efb037c13f10fdc31d87f8e2f0"
+   ],
+   "15": [
+    "passed",
+    "c1831dfc2de5ec8a892b59ed01d85c88"
+   ],
+   "16": [
+    "passed",
+    "97e07ad577c176b9efb8808d55620399"
+   ],
+   "17": [
+    "passed",
+    "765edc9c1e72aeda55876d38204afc4a"
+   ],
+   "18": [
+    "passed",
+    "9d046d6de08cb2350515f5530c7e7222"
+   ],
+   "19": [
+    "passed",
+    "7feb149c81003b0013e5848263d16169"
+   ],
+   "20": [
+    "passed",
+    "d5ab288ea46a82779a23629f229be719"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesLogMergePlans": {
+   "1": [
+    "passed",
+    "453565497c7db76916ef50e0d2413bd5"
+   ],
+   "2": [
+    "passed",
+    "69d0f09378fc805b463bc408369c6095"
+   ],
+   "3": [
+    "passed",
+    "065cc43ef5f21f239a801419898b4437"
+   ],
+   "4": [
+    "passed",
+    "a0a1aaf642dc34c21ba498c14a9b8954"
+   ],
+   "5": [
+    "passed",
+    "affa3b65c7cec6ceb7d4a2adf40b58cf"
+   ],
+   "6": [
+    "passed",
+    "b63b23e92d98b42dae14757a3d5f3c5b"
+   ],
+   "7": [
+    "passed",
+    "7f5ea2dd4dbfe727c94570c32ebd7f51"
+   ],
+   "8": [
+    "passed",
+    "fd9207ab2565cc26f16b75dbb3da3be9"
+   ],
+   "9": [
+    "passed",
+    "787cd1a7b79af8f7f75f18bbd3e7c5ff"
+   ],
+   "10": [
+    "passed",
+    "4975c47b687816b2b999db293e33a61b"
+   ],
+   "11": [
+    "passed",
+    "f0f9a546a41847b36bbbbea48d09c6e5"
+   ],
+   "12": [
+    "passed",
+    "e578cac3aa9bcef7229494f79e216a0c"
+   ],
+   "13": [
+    "passed",
+    "000b185c9bbfcc2eb526e34a8bdce727"
+   ],
+   "14": [
+    "passed",
+    "2fd867288ca4db7678ac888325762510"
+   ],
+   "15": [
+    "passed",
+    "f6d3d66350ae6b9c38b399c31edd731c"
+   ],
+   "16": [
+    "passed",
+    "f1554e562d829ddd04cef867746823eb"
+   ],
+   "17": [
+    "passed",
+    "6048760bce4299de5a7ae6047053f15f"
+   ],
+   "18": [
+    "passed",
+    "2d39c2cb9ce337833a3d236e56da3542"
+   ],
+   "19": [
+    "passed",
+    "df45986312913aebe18bb0d3bcf65254"
+   ],
+   "20": [
+    "passed",
+    "4741ecffae7ae27f5196c53764d7a369"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexWithOverlappingSectionsIsNoWork": {
+   "1": [
+    "passed",
+    "3e3a70a42fa39cf19d8641dab3470135"
+   ],
+   "2": [
+    "passed",
+    "88201f56eeb7ce4431382535fa8f03a5"
+   ],
+   "3": [
+    "passed",
+    "81c54e3998bdc3b6f571ea7a3bc63c90"
+   ],
+   "4": [
+    "passed",
+    "e11eeb8ca2d553451454d511ff776f4d"
+   ],
+   "5": [
+    "passed",
+    "f5df6b07afaab3b8313a0b6b91f8d91a"
+   ],
+   "6": [
+    "passed",
+    "819ccf1bca3de65365ff8b12acc6638b"
+   ],
+   "7": [
+    "passed",
+    "35c0751c477ee7a1e3ab792ac5c85e44"
+   ],
+   "8": [
+    "passed",
+    "5d6439f9a7e9cd2881d7eb0e53d0d1e0"
+   ],
+   "9": [
+    "passed",
+    "11220a5eb8325560b419d852c23b4141"
+   ],
+   "10": [
+    "passed",
+    "db9fb42e2c9d5dc5285d0b9a15d34e19"
+   ],
+   "11": [
+    "passed",
+    "b147b6c43985c6cbbf1c6e734208d3f4"
+   ],
+   "12": [
+    "passed",
+    "6495f8ea47df499a25de35428fd0e40a"
+   ],
+   "13": [
+    "passed",
+    "073c46b1ba481cdf989da92b4caa4160"
+   ],
+   "14": [
+    "passed",
+    "5de69eb45aee9cf8390323a637fea578"
+   ],
+   "15": [
+    "passed",
+    "fdf7a310d07f25021b4b0d40d096f32b"
+   ],
+   "16": [
+    "passed",
+    "417ad6fce6622f5275ea39161b4dc50a"
+   ],
+   "17": [
+    "passed",
+    "a3ee530de1e4de330dd5fabab9011ff3"
+   ],
+   "18": [
+    "passed",
+    "ed714bad29c49ec31945c862b5330129"
+   ],
+   "19": [
+    "passed",
+    "634a9f6927a381ccca07960fa5800bae"
+   ],
+   "20": [
+    "passed",
+    "3c2791751bf1816a0bac346b56f2e55f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestFillFileSizes_StatsObjectAndSetsSize": {
+   "1": [
+    "passed",
+    "64507ccf2a3b07be552e34de239f23fa"
+   ],
+   "2": [
+    "passed",
+    "ae6fbb42871f0af05ac3d8ff9fe5872f"
+   ],
+   "3": [
+    "passed",
+    "b26168a941ce23db4a2d04baedb2c4ce"
+   ],
+   "4": [
+    "passed",
+    "a9fc0075efed4a745b993bcac67d9080"
+   ],
+   "5": [
+    "passed",
+    "a1ac66a418028e87754d79c26760d791"
+   ],
+   "6": [
+    "passed",
+    "cabf6418814a68b8ebe44a48f4f0391b"
+   ],
+   "7": [
+    "passed",
+    "7a4b92e5bee0a5be3214c14d34f6997e"
+   ],
+   "8": [
+    "passed",
+    "995e99da6ae3fc27cc265cd6cc0bb5b0"
+   ],
+   "9": [
+    "passed",
+    "df022cdca9c2abed11c3f5d49573e67b"
+   ],
+   "10": [
+    "passed",
+    "460a9611a726f22afc1c1f755d04318e"
+   ],
+   "11": [
+    "passed",
+    "6206b436034a828573aed4dd2daa5d31"
+   ],
+   "12": [
+    "passed",
+    "f2c909d48300d446366fc05dd061a175"
+   ],
+   "13": [
+    "passed",
+    "1301adde42897de48e503841ae61c7ba"
+   ],
+   "14": [
+    "passed",
+    "6566667648c186bfd3f07ba6ee8df99a"
+   ],
+   "15": [
+    "passed",
+    "b7a0030b649a4f828dea5bc2ef15bb08"
+   ],
+   "16": [
+    "passed",
+    "2a46fd92f1d713387f97cdc10196316b"
+   ],
+   "17": [
+    "passed",
+    "21d0232e0e5a1ba822088646d5da7c44"
+   ],
+   "18": [
+    "passed",
+    "7989d33c80a7ec9fef0bbded951150df"
+   ],
+   "19": [
+    "passed",
+    "9a175e50ff84bf02c51dd339c06299dd"
+   ],
+   "20": [
+    "passed",
+    "28e668c6cdca3020755388439828cbd5"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_UnknownConvergedRowKeepsReplacementsUnknown": {
+   "1": [
+    "passed",
+    "453565497c7db76916ef50e0d2413bd5"
+   ],
+   "2": [
+    "passed",
+    "69d0f09378fc805b463bc408369c6095"
+   ],
+   "3": [
+    "passed",
+    "065cc43ef5f21f239a801419898b4437"
+   ],
+   "4": [
+    "passed",
+    "a0a1aaf642dc34c21ba498c14a9b8954"
+   ],
+   "5": [
+    "passed",
+    "affa3b65c7cec6ceb7d4a2adf40b58cf"
+   ],
+   "6": [
+    "passed",
+    "b63b23e92d98b42dae14757a3d5f3c5b"
+   ],
+   "7": [
+    "passed",
+    "7f5ea2dd4dbfe727c94570c32ebd7f51"
+   ],
+   "8": [
+    "passed",
+    "fd9207ab2565cc26f16b75dbb3da3be9"
+   ],
+   "9": [
+    "passed",
+    "787cd1a7b79af8f7f75f18bbd3e7c5ff"
+   ],
+   "10": [
+    "passed",
+    "4975c47b687816b2b999db293e33a61b"
+   ],
+   "11": [
+    "passed",
+    "f0f9a546a41847b36bbbbea48d09c6e5"
+   ],
+   "12": [
+    "passed",
+    "e578cac3aa9bcef7229494f79e216a0c"
+   ],
+   "13": [
+    "passed",
+    "000b185c9bbfcc2eb526e34a8bdce727"
+   ],
+   "14": [
+    "passed",
+    "2fd867288ca4db7678ac888325762510"
+   ],
+   "15": [
+    "passed",
+    "f6d3d66350ae6b9c38b399c31edd731c"
+   ],
+   "16": [
+    "passed",
+    "f1554e562d829ddd04cef867746823eb"
+   ],
+   "17": [
+    "passed",
+    "6048760bce4299de5a7ae6047053f15f"
+   ],
+   "18": [
+    "passed",
+    "2d39c2cb9ce337833a3d236e56da3542"
+   ],
+   "19": [
+    "passed",
+    "df45986312913aebe18bb0d3bcf65254"
+   ],
+   "20": [
+    "passed",
+    "4741ecffae7ae27f5196c53764d7a369"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_OrdersPhysicalSections": {
+   "1": [
+    "passed",
+    "7f5d5bc27c2b7b5995afde6c670be547"
+   ],
+   "2": [
+    "passed",
+    "6a28f498ba29ef99dc3f81d2b75f4f8a"
+   ],
+   "3": [
+    "passed",
+    "d52f682d21ed2cb8f3151c6cfcf28c70"
+   ],
+   "4": [
+    "passed",
+    "c74be3d526fd2eddda32d55c8aa5a6a0"
+   ],
+   "5": [
+    "passed",
+    "c3cb309dd9b172d272280c5d7c425cd3"
+   ],
+   "6": [
+    "passed",
+    "37c7054ffd0e2d6e6214669a6b040194"
+   ],
+   "7": [
+    "passed",
+    "404efd2af4feffcfde4cab4317766978"
+   ],
+   "8": [
+    "passed",
+    "8c2d4ce01ff313032e8dad4ce51c5e34"
+   ],
+   "9": [
+    "passed",
+    "517707fda6401babb3e2493061fe75f5"
+   ],
+   "10": [
+    "passed",
+    "4d052fab7e79c6773a59a3b1ae3a305c"
+   ],
+   "11": [
+    "passed",
+    "8d0afa0b9997602a2dc02321ba019351"
+   ],
+   "12": [
+    "passed",
+    "6e1260b2bb87ec1f6d83ad86350210e3"
+   ],
+   "13": [
+    "passed",
+    "5db0b606f50f10e28682eee8f869c428"
+   ],
+   "14": [
+    "passed",
+    "6f264882e692b332e7636ef72b8d8d22"
+   ],
+   "15": [
+    "passed",
+    "934a54daae90885c8f369ed9e43f3ecf"
+   ],
+   "16": [
+    "passed",
+    "f73b3b26cd894a208a5b83bda5de6594"
+   ],
+   "17": [
+    "passed",
+    "e941e75c0e6f7667f2d6ac1305cc01b0"
+   ],
+   "18": [
+    "passed",
+    "b8bf030b9238baa0a4cde9b3e640de12"
+   ],
+   "19": [
+    "passed",
+    "b780f16c67ba64dea4d74ee67e5f5894"
+   ],
+   "20": [
+    "passed",
+    "bded85c8770f7914259d4355fdfbfd8f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_KnownConvergedRowKeepsComputedSize": {
+   "1": [
+    "passed",
+    "453565497c7db76916ef50e0d2413bd5"
+   ],
+   "2": [
+    "passed",
+    "69d0f09378fc805b463bc408369c6095"
+   ],
+   "3": [
+    "passed",
+    "065cc43ef5f21f239a801419898b4437"
+   ],
+   "4": [
+    "passed",
+    "a0a1aaf642dc34c21ba498c14a9b8954"
+   ],
+   "5": [
+    "passed",
+    "affa3b65c7cec6ceb7d4a2adf40b58cf"
+   ],
+   "6": [
+    "passed",
+    "b63b23e92d98b42dae14757a3d5f3c5b"
+   ],
+   "7": [
+    "passed",
+    "7f5ea2dd4dbfe727c94570c32ebd7f51"
+   ],
+   "8": [
+    "passed",
+    "fd9207ab2565cc26f16b75dbb3da3be9"
+   ],
+   "9": [
+    "passed",
+    "787cd1a7b79af8f7f75f18bbd3e7c5ff"
+   ],
+   "10": [
+    "passed",
+    "4975c47b687816b2b999db293e33a61b"
+   ],
+   "11": [
+    "passed",
+    "f0f9a546a41847b36bbbbea48d09c6e5"
+   ],
+   "12": [
+    "passed",
+    "e578cac3aa9bcef7229494f79e216a0c"
+   ],
+   "13": [
+    "passed",
+    "000b185c9bbfcc2eb526e34a8bdce727"
+   ],
+   "14": [
+    "passed",
+    "2fd867288ca4db7678ac888325762510"
+   ],
+   "15": [
+    "passed",
+    "f6d3d66350ae6b9c38b399c31edd731c"
+   ],
+   "16": [
+    "passed",
+    "f1554e562d829ddd04cef867746823eb"
+   ],
+   "17": [
+    "passed",
+    "6048760bce4299de5a7ae6047053f15f"
+   ],
+   "18": [
+    "passed",
+    "2d39c2cb9ce337833a3d236e56da3542"
+   ],
+   "19": [
+    "passed",
+    "df45986312913aebe18bb0d3bcf65254"
+   ],
+   "20": [
+    "passed",
+    "4741ecffae7ae27f5196c53764d7a369"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompareIndexSortKey": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_InternalObjectOverlapIsConverged": {
+   "1": [
+    "passed",
+    "a1c8dd6c64455f57428917ce95c43dc3"
+   ],
+   "2": [
+    "passed",
+    "793a5979a41d07690c3fa151ceecfb7a"
+   ],
+   "3": [
+    "passed",
+    "6ab9708767348dcfab76e6a50a8dbd5c"
+   ],
+   "4": [
+    "passed",
+    "76eff6115f3436ff2e3572f5e73e3bcf"
+   ],
+   "5": [
+    "passed",
+    "d959832a99ecb54d2959124753e998bf"
+   ],
+   "6": [
+    "passed",
+    "a1724d7454672e39d466ea0cd375feb5"
+   ],
+   "7": [
+    "passed",
+    "8cb0c183483f4cb12b7919e33ca413ea"
+   ],
+   "8": [
+    "passed",
+    "9605ada4d1279e3484423d659489c1d7"
+   ],
+   "9": [
+    "passed",
+    "33c5dda5d4c9fa8786a62f275eac6c49"
+   ],
+   "10": [
+    "passed",
+    "7d4c8f0ef90954283d01c107f514a751"
+   ],
+   "11": [
+    "passed",
+    "3c5969de2e4db19991c980b1c952930e"
+   ],
+   "12": [
+    "passed",
+    "6287c0c01b8baf389a96fefe49d09202"
+   ],
+   "13": [
+    "passed",
+    "ef4ba3def5a1a9275bd7cd89a747a8ae"
+   ],
+   "14": [
+    "passed",
+    "4b263c56fc602edd12580a59e73fd1d0"
+   ],
+   "15": [
+    "passed",
+    "8bbacc750243f838b241beda01cac8ef"
+   ],
+   "16": [
+    "passed",
+    "503c01d16562475fd8abc6215c26fa5d"
+   ],
+   "17": [
+    "passed",
+    "3c7211f5c2c56ce2a957f33ee3318c20"
+   ],
+   "18": [
+    "passed",
+    "d07509b8783c4059b96c6d559466b8df"
+   ],
+   "19": [
+    "passed",
+    "522af6b0a6f88090a5e0fbb9c9dab64e"
+   ],
+   "20": [
+    "passed",
+    "5c4c98c4d8376b48069b3c8ea4cc06d2"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UsesInputIndexes": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_LogEnabledRunsBothPhases": {
+   "1": [
+    "passed",
+    "f7ac6eba42c0e936787e45628f15f6ab"
+   ],
+   "2": [
+    "passed",
+    "a3e2b4222d05bac6e48764b753f91aef"
+   ],
+   "3": [
+    "passed",
+    "ae4585f6e7303572fd16a416ec901187"
+   ],
+   "4": [
+    "passed",
+    "3eb06c7a2f25bbd25fab4a224ccb13ac"
+   ],
+   "5": [
+    "passed",
+    "a5302566edcdd0d6ca05b7dd87e2bcfa"
+   ],
+   "6": [
+    "passed",
+    "d7cec7ed1301bee9cff15081845ac2b2"
+   ],
+   "7": [
+    "passed",
+    "0122888430fd2757ff6c5f11eeeb5187"
+   ],
+   "8": [
+    "passed",
+    "8491b2edc9084fdf64e14965995d55ee"
+   ],
+   "9": [
+    "passed",
+    "ae2ce9f5dd8ac479af380eb641b4589b"
+   ],
+   "10": [
+    "passed",
+    "335cc4da3a1af00214e55a417c2a5122"
+   ],
+   "11": [
+    "passed",
+    "e13c0051e79f571bead7cf5a8cf6017e"
+   ],
+   "12": [
+    "passed",
+    "57948b63b31bd90d8d70b69678bd6848"
+   ],
+   "13": [
+    "passed",
+    "9e32717fd2ea518d829051992b8cffcd"
+   ],
+   "14": [
+    "passed",
+    "1e5a8373dc33e6813263b8c39993f30c"
+   ],
+   "15": [
+    "passed",
+    "1871e2056c9d5deed2e84a2c68d1cad9"
+   ],
+   "16": [
+    "passed",
+    "a5d43f21d433e8054b637188f3160965"
+   ],
+   "17": [
+    "passed",
+    "0ed4319de6e13c029b322552978be7ee"
+   ],
+   "18": [
+    "passed",
+    "9de750b39885c3f32976776e3010a5bc"
+   ],
+   "19": [
+    "passed",
+    "faea19b139bb57459b9dc6be7a58009f"
+   ],
+   "20": [
+    "passed",
+    "65b00925eab8894b17853ee8889cf885"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_DispatchesSortObjectPlans": {
+   "1": [
+    "passed",
+    "db901edcac74d07c46396247e5a5d9ad"
+   ],
+   "2": [
+    "passed",
+    "d15aadefa50dfb9f35b8e9751529280a"
+   ],
+   "3": [
+    "passed",
+    "5f11d5e170ed0446ca4871bbd0b7a27b"
+   ],
+   "4": [
+    "passed",
+    "e6582b3c6b59ce6a0026a0dc7238e085"
+   ],
+   "5": [
+    "passed",
+    "38f429cec249f59244a47f8436870e64"
+   ],
+   "6": [
+    "passed",
+    "0e358995a94754742cc28861ff968e7d"
+   ],
+   "7": [
+    "passed",
+    "93632d05f4459e9d39ed2e3ae447956e"
+   ],
+   "8": [
+    "passed",
+    "0087a99a15d3232a35471d7f18ad1b4a"
+   ],
+   "9": [
+    "passed",
+    "fe31ee47a2b810f99187cd39e2ad15f3"
+   ],
+   "10": [
+    "passed",
+    "0249e6810c757605dfdc7c569251f961"
+   ],
+   "11": [
+    "passed",
+    "524b561245a835fa08e1cbe9671a1174"
+   ],
+   "12": [
+    "passed",
+    "471beb8cfd045910308943d356a67f40"
+   ],
+   "13": [
+    "passed",
+    "b0d9800659bdfdedb3e26e737cbfea44"
+   ],
+   "14": [
+    "passed",
+    "40293523860340d18b3cb0037680b56a"
+   ],
+   "15": [
+    "passed",
+    "145ab25bfd24bdd1bbb9032d2d4db311"
+   ],
+   "16": [
+    "passed",
+    "6fe11006073f29258be3d624b9f3977c"
+   ],
+   "17": [
+    "passed",
+    "f4390d9f1d5d84c22068370b472093fd"
+   ],
+   "18": [
+    "passed",
+    "e997ff23a653ba54b4c87c1abf04efac"
+   ],
+   "19": [
+    "passed",
+    "8648c2cd5ee211532213f9a62893bdd8"
+   ],
+   "20": [
+    "passed",
+    "22914e68139238f8a025f79e5b5a24ef"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_DisabledDuringToCReadFailure_CancelsWorker": {
+   "1": [
+    "passed",
+    "30e51cff761da0a397b5c0ab05794cd3"
+   ],
+   "2": [
+    "passed",
+    "5477d0c4e261cfdc163395ab302230e0"
+   ],
+   "3": [
+    "passed",
+    "0f21f9df7ad7821a3b5339e44b11fff3"
+   ],
+   "4": [
+    "passed",
+    "2b2d272e8284fb158f3010d96783d299"
+   ],
+   "5": [
+    "passed",
+    "524582637d128ce56058a21ef785dfa5"
+   ],
+   "6": [
+    "passed",
+    "012f3d9f47565d91aa29b7aadf9050ae"
+   ],
+   "7": [
+    "passed",
+    "cdfb5ca259414e665cc435e0ea681267"
+   ],
+   "8": [
+    "passed",
+    "fe548b1c836faaf7cf9f3c0579dc1c51"
+   ],
+   "9": [
+    "passed",
+    "42c877e86b784a7b97b4a21d92ff9480"
+   ],
+   "10": [
+    "passed",
+    "a6ac72c61d4de72b87a4d3d8bff2bae2"
+   ],
+   "11": [
+    "passed",
+    "b41f4376e74889c468daf7c2d8944a6b"
+   ],
+   "12": [
+    "passed",
+    "c00e1dd8057eeb29ce70f981bfc5fe8d"
+   ],
+   "13": [
+    "passed",
+    "4915b0ee338865f6369ab6f88e9f20f5"
+   ],
+   "14": [
+    "passed",
+    "90f5e2fc28a060eadb521e8c0ae1d3a1"
+   ],
+   "15": [
+    "passed",
+    "dccf61ea8e1d4f5b4f66d0021c4aa4c1"
+   ],
+   "16": [
+    "passed",
+    "d829539dc82ce49872a1675625f54330"
+   ],
+   "17": [
+    "passed",
+    "4da939d9b62fccc12157e1c5d4707d90"
+   ],
+   "18": [
+    "passed",
+    "d48abf2e0c10d08c2048da2a5ffe1052"
+   ],
+   "19": [
+    "passed",
+    "0627d580503ff814af850873c00cce9c"
+   ],
+   "20": [
+    "passed",
+    "b1ac0cb4a6f6933d67abec1029b822a8"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNew_NilLimitsErrors": {
+   "1": [
+    "passed",
+    "b2940151b63aab8255375648db2ddc46"
+   ],
+   "2": [
+    "passed",
+    "a598f18f2903dc1bdfd2400c57963693"
+   ],
+   "3": [
+    "passed",
+    "8e792f6492375ea9cd17ceb298e30c2c"
+   ],
+   "4": [
+    "passed",
+    "53d3b79f7b28e0ce1013cca7f6059630"
+   ],
+   "5": [
+    "passed",
+    "053d12de776d4c485aed0a21dfe0ef89"
+   ],
+   "6": [
+    "passed",
+    "326e45c8949a219d1a377c55839ab6bb"
+   ],
+   "7": [
+    "passed",
+    "7e6019d26007d2ff43244d69762831f4"
+   ],
+   "8": [
+    "passed",
+    "c468508f46dc94d66c10f87f0aa17614"
+   ],
+   "9": [
+    "passed",
+    "673548eaac51fbfa3e60443cecd4cbc2"
+   ],
+   "10": [
+    "passed",
+    "c28630c6c3c75af1bbfcd6eff72ca6b1"
+   ],
+   "11": [
+    "passed",
+    "4831eb129e7729ffbc43e925094173f1"
+   ],
+   "12": [
+    "passed",
+    "9f7741ba17a8d8f2f92899c06d427f97"
+   ],
+   "13": [
+    "passed",
+    "e33512f564f0b6759b3c422e1d1c8820"
+   ],
+   "14": [
+    "passed",
+    "2945a60cc9edf23caea23d5a483ef21e"
+   ],
+   "15": [
+    "passed",
+    "574361dc9cb361e28c0f26ac147f2e13"
+   ],
+   "16": [
+    "passed",
+    "7254273ddc1878d0130e59a4a4d47684"
+   ],
+   "17": [
+    "passed",
+    "f777f7c3d795104b2db9e52a0392ef9b"
+   ],
+   "18": [
+    "passed",
+    "e8cc8a0784f2aa35dc1afb822ad83dc2"
+   ],
+   "19": [
+    "passed",
+    "25a9044b1830d3684880d985eb0f6dcd"
+   ],
+   "20": [
+    "passed",
+    "6fd6afc0150fa70964690ed81007676a"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactJobToCEdgeCases": {
+   "1": [
+    "passed",
+    "dc10bd83743aacf8ccdd92a9bb56b3a4"
+   ],
+   "2": [
+    "passed",
+    "3d2716b0332fcf0f5f0000c37b907dea"
+   ],
+   "3": [
+    "passed",
+    "9dad30cb8b0fda04e7f04ed7e8bd36e4"
+   ],
+   "4": [
+    "passed",
+    "2ed72b776917e0e5a2a7eff22fb98676"
+   ],
+   "5": [
+    "passed",
+    "f51eaa0d567e7f467ee96154ec6b9f66"
+   ],
+   "6": [
+    "passed",
+    "741b92bfc87c01bb0446391bb0d19042"
+   ],
+   "7": [
+    "passed",
+    "6b7025eef9d198fb1a9b7a735ac522af"
+   ],
+   "8": [
+    "passed",
+    "326c1cc90944fa4fbe1cccf7479b9093"
+   ],
+   "9": [
+    "passed",
+    "2028eddcbe9589587f41b61999c1f3b1"
+   ],
+   "10": [
+    "passed",
+    "0d6610dcfeac32f7f0f0fae7e15def91"
+   ],
+   "11": [
+    "passed",
+    "33b8c146952bd57efebedbb319c2a120"
+   ],
+   "12": [
+    "passed",
+    "c5a4873d44142f07856bb29ca72abe85"
+   ],
+   "13": [
+    "passed",
+    "ee963430a6974eb555270392036b9edd"
+   ],
+   "14": [
+    "passed",
+    "22c5c0d7bd6073a7008f719a8a276b22"
+   ],
+   "15": [
+    "passed",
+    "23e4338a3ec237585a5f31cc514e6767"
+   ],
+   "16": [
+    "passed",
+    "f22a12a7d15b395cf681de8be225f608"
+   ],
+   "17": [
+    "passed",
+    "07b2f0ea604975af3e2cc72755a1d182"
+   ],
+   "18": [
+    "passed",
+    "a0f5fdd058a5e9489fedac0bda021f48"
+   ],
+   "19": [
+    "passed",
+    "a894baaba1c698498bfc353616f93203"
+   ],
+   "20": [
+    "passed",
+    "5115b60fc7fa586f8d965b90aa5a0c83"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_PreviousWindowStartsWorker": {
+   "1": [
+    "passed",
+    "7fc878410d08b539161c1d3b665cd6e3"
+   ],
+   "2": [
+    "passed",
+    "2d874ec2586ec8943439003aaddf3162"
+   ],
+   "3": [
+    "passed",
+    "5fa6bd700de91b4e9a8bd0bd4872f240"
+   ],
+   "4": [
+    "passed",
+    "0e21d4ec0e2a447bdfd3e7022eae08cf"
+   ],
+   "5": [
+    "passed",
+    "fef1959906cb2b9315d89ee434d0d2b5"
+   ],
+   "6": [
+    "passed",
+    "e15345dc6fa51ec6c718153fd86dd321"
+   ],
+   "7": [
+    "passed",
+    "6c87fb872f3d09915a28a6dfcb1b1f43"
+   ],
+   "8": [
+    "passed",
+    "02c045d38c3187f57f45b437f958a9c7"
+   ],
+   "9": [
+    "passed",
+    "cb6f6b0005ca0332c08cfc828fb5b4aa"
+   ],
+   "10": [
+    "passed",
+    "387737ab4ebd895cff4cadda774c384e"
+   ],
+   "11": [
+    "passed",
+    "6f48ea9a2910242660442511964e9a50"
+   ],
+   "12": [
+    "passed",
+    "6a01ec86ca868169378f8dd2c063348a"
+   ],
+   "13": [
+    "passed",
+    "39b5d9b593f24f4b7168ebe2b7ce55d9"
+   ],
+   "14": [
+    "passed",
+    "14ea2855a46e022b09354e91f18ac708"
+   ],
+   "15": [
+    "passed",
+    "fac7c917e69c0f6e98bbd5893c4520f8"
+   ],
+   "16": [
+    "passed",
+    "b787c9ffd517a0c9da938ee950ffb4c9"
+   ],
+   "17": [
+    "passed",
+    "640c2b9c5242d41fce6b4e7d1d5754bc"
+   ],
+   "18": [
+    "passed",
+    "fc86629a2fcda28cef1616493db531c2"
+   ],
+   "19": [
+    "passed",
+    "e84683da2e39082f5a512353f0c738f5"
+   ],
+   "20": [
+    "passed",
+    "fda611fab525575a68d75453661c2091"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWindows_LookbackCountsBackFromCurrent": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_StartAndCancelSameTick": {
+   "1": [
+    "passed",
+    "cffa34577356572126530ba87fe42a99"
+   ],
+   "2": [
+    "passed",
+    "b954ba884025a296c1063ac02c41fa5e"
+   ],
+   "3": [
+    "passed",
+    "9267f9bd67b3063bab116ca23b23fe38"
+   ],
+   "4": [
+    "passed",
+    "b2e7086894233fdbcff70fb7e01b4f6a"
+   ],
+   "5": [
+    "passed",
+    "ad6443e761cd84448489e9f12dea211d"
+   ],
+   "6": [
+    "passed",
+    "b892b5b01d080a9f78662d649f27fa2a"
+   ],
+   "7": [
+    "passed",
+    "8a6bd97d30af02672e4f1acf24aaafc2"
+   ],
+   "8": [
+    "passed",
+    "9f8636669f77ad8b61dd4c4557c7e730"
+   ],
+   "9": [
+    "passed",
+    "11b12a6d3433bc2c3e5e82ec361ee010"
+   ],
+   "10": [
+    "passed",
+    "6263740a1a657dc5931d36d1d4cc1148"
+   ],
+   "11": [
+    "passed",
+    "599e8d1da082253d952265cc3af312ff"
+   ],
+   "12": [
+    "passed",
+    "ee6b0961bb25ded5f772ae76fd014464"
+   ],
+   "13": [
+    "passed",
+    "13b6c3b923beb8bf6b0ab7ce40f633bb"
+   ],
+   "14": [
+    "passed",
+    "d4bbb3f8735678eaadbebf8dfb6d015d"
+   ],
+   "15": [
+    "passed",
+    "faae3ff5dccb680c87bc6a14dcf3258e"
+   ],
+   "16": [
+    "passed",
+    "86ef4f0d7a8cb615c06a2d060c96bff3"
+   ],
+   "17": [
+    "passed",
+    "d3211c9796f5d4d5f912d651852cc7de"
+   ],
+   "18": [
+    "passed",
+    "ef1a945704cf453202181ed27d31a6e8"
+   ],
+   "19": [
+    "passed",
+    "3d1fe43c5960c71b5f8ca33e297d178a"
+   ],
+   "20": [
+    "passed",
+    "61cee301f57e3b4251d7fa8294182af0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_EndToEnd": {
+   "1": [
+    "passed",
+    "3cab8ba7e83553644d3599d35d38de0c"
+   ],
+   "2": [
+    "passed",
+    "062108fa37ee2cb639a9124aecff014f"
+   ],
+   "3": [
+    "passed",
+    "72a8988d65bbae234ff9fc0f98a9dc14"
+   ],
+   "4": [
+    "passed",
+    "3c0f5dfbb60aabe8a7c342b1ade2a2cf"
+   ],
+   "5": [
+    "passed",
+    "3b41c439ef28f678e6d02c8028547cc1"
+   ],
+   "6": [
+    "passed",
+    "6ca90d05e9026a79f561272bca9b872c"
+   ],
+   "7": [
+    "passed",
+    "f334d81e5d1c021d226cc33347f52871"
+   ],
+   "8": [
+    "passed",
+    "0f332bfba252318fad876307fed7583d"
+   ],
+   "9": [
+    "passed",
+    "aedf5d78f5383aa1676e111cfb0b8aee"
+   ],
+   "10": [
+    "passed",
+    "12ef95400becf68836578451b0ecb4b0"
+   ],
+   "11": [
+    "passed",
+    "8e3f2073637ba629aebebedbd5469648"
+   ],
+   "12": [
+    "passed",
+    "0d9da29e9282c402317c29adc35cd6f8"
+   ],
+   "13": [
+    "passed",
+    "3f08106a0c5a142397b7f8063893a201"
+   ],
+   "14": [
+    "passed",
+    "07e6b6e284d4ac2c29cac56a03378dd0"
+   ],
+   "15": [
+    "passed",
+    "5245d4d5bd92077d547a5dada6aab410"
+   ],
+   "16": [
+    "passed",
+    "2f0c026b9cb6b8f5ae4dee37d4e267d7"
+   ],
+   "17": [
+    "passed",
+    "9f120f0f427b6e338cdeba156f614efd"
+   ],
+   "18": [
+    "passed",
+    "134cb73a5bfc2720571595e7ab824c10"
+   ],
+   "19": [
+    "passed",
+    "415a1ebfbae7db20565a3be60694ca4b"
+   ],
+   "20": [
+    "passed",
+    "f9d3c18505f9aa7fdefb3c00639b9bcb"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_RequiresBucket": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_ReadsAndValidatesShardCount": {
+   "1": [
+    "passed",
+    "c5def4106e9cec507a8ac08b7df05f22"
+   ],
+   "2": [
+    "passed",
+    "47f9c87ee23e4021759a581a04f7be33"
+   ],
+   "3": [
+    "passed",
+    "5310d43efe51d7fd7f16e29c8bb2c232"
+   ],
+   "4": [
+    "passed",
+    "dfe40e499f86e1a82de5bf0c4fc5775f"
+   ],
+   "5": [
+    "passed",
+    "9dbaad196c224f06743fe89e4a8bafc9"
+   ],
+   "6": [
+    "passed",
+    "7de7e6bd25dd179958bda037be749285"
+   ],
+   "7": [
+    "passed",
+    "6e7d827c869e67d0e38a8170d7b1eee5"
+   ],
+   "8": [
+    "passed",
+    "e3e26fb231fd0e243f4c9e3b5c91ae5e"
+   ],
+   "9": [
+    "passed",
+    "5c62038248f1c9ad8691d9b9e00b9da7"
+   ],
+   "10": [
+    "passed",
+    "382e9396917da7992e06bfec133d08a2"
+   ],
+   "11": [
+    "passed",
+    "58f84d409487e55113f50ee3a2f2f307"
+   ],
+   "12": [
+    "passed",
+    "05c0b61121498be701c136f83a2dfd80"
+   ],
+   "13": [
+    "passed",
+    "05827af354e8dabf1a2d77647863918d"
+   ],
+   "14": [
+    "passed",
+    "ae4627dde1bf458f28eba2b2ab336a3b"
+   ],
+   "15": [
+    "passed",
+    "92ed741f28b284c6539a01f2b730281e"
+   ],
+   "16": [
+    "passed",
+    "0b1933e5448b74cfb221e8c6721b6a3c"
+   ],
+   "17": [
+    "passed",
+    "458c128a03204252c2eab9811dcec389"
+   ],
+   "18": [
+    "passed",
+    "7a424f926498c24d02bf667f2b4bcb20"
+   ],
+   "19": [
+    "passed",
+    "b829eda2dc0b9703d0d5524b4e21e4ae"
+   ],
+   "20": [
+    "passed",
+    "d65bb1976da0bccd580fdf589f16d747"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_Validate_EnabledRejectsBadValues": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRun_StartsOneWorkerPerTenant": {
+   "1": [
+    "passed",
+    "d75def966487e8c9b989c4e221e8800e"
+   ],
+   "2": [
+    "passed",
+    "ace0b74bf0fa9fe8d8e3646610f4a782"
+   ],
+   "3": [
+    "passed",
+    "03ccdfb8d91a68566bc390a6ec9a96d5"
+   ],
+   "4": [
+    "passed",
+    "955e7c40ab5cd7f0bf982253f0319457"
+   ],
+   "5": [
+    "passed",
+    "b4652518ff2779c71a3568634621c1b4"
+   ],
+   "6": [
+    "passed",
+    "c7485eeadd8ced38cb212873f953a796"
+   ],
+   "7": [
+    "passed",
+    "ad46f3820c91c44510c283ada1a5ddad"
+   ],
+   "8": [
+    "passed",
+    "62e9ff767996a41896c682d83cdbe931"
+   ],
+   "9": [
+    "passed",
+    "689847b381f92e3fb04c685305f200a5"
+   ],
+   "10": [
+    "passed",
+    "587dbe35e4491adaf927a3fb3de64cc2"
+   ],
+   "11": [
+    "passed",
+    "63fb9a0a4c9688ee64e2e26b671a6a8d"
+   ],
+   "12": [
+    "passed",
+    "199d939cc9a88a44c17f3f146bfcc0d2"
+   ],
+   "13": [
+    "passed",
+    "c32d9a1b731085bc702f7294e7fa7aa6"
+   ],
+   "14": [
+    "passed",
+    "508fcab59ef9371668eb33c2eb11e3ae"
+   ],
+   "15": [
+    "passed",
+    "9b1eafd88e224a226a6a4513e927dd9e"
+   ],
+   "16": [
+    "passed",
+    "09b962cde23961486a6ca1553392a192"
+   ],
+   "17": [
+    "passed",
+    "7376d30de63948ecf8a37e6ad2e66cad"
+   ],
+   "18": [
+    "passed",
+    "1cdb4308a0349085948f91cb077e6bb4"
+   ],
+   "19": [
+    "passed",
+    "3e4a69a138488a8282b2fa121b95ce26"
+   ],
+   "20": [
+    "passed",
+    "254d01f872700ec97fc7e6ddb3e7f083"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_SingleIndexIsNoWork": {
+   "1": [
+    "passed",
+    "edae6add3f05beebf9b8ee35ca53d437"
+   ],
+   "2": [
+    "passed",
+    "110f6c88de00a987d5994f62c23c250a"
+   ],
+   "3": [
+    "passed",
+    "61c878be3f74bd2ca8ae817a37f46464"
+   ],
+   "4": [
+    "passed",
+    "0aea2e735afba78de275cc588a2c6edf"
+   ],
+   "5": [
+    "passed",
+    "004b98eda38baffce85eccc5e226a038"
+   ],
+   "6": [
+    "passed",
+    "d6b1f940eab7a2f015cdd18c0a9832bd"
+   ],
+   "7": [
+    "passed",
+    "16d631a2218e8f47e5a378e92e20394b"
+   ],
+   "8": [
+    "passed",
+    "ef4fabfd7d9ac52f30fd02dea37d2419"
+   ],
+   "9": [
+    "passed",
+    "21e9caf21f62e253caaf4e0c3f4cb6b6"
+   ],
+   "10": [
+    "passed",
+    "b84bab1602c7b782cb8f90dbf23a3009"
+   ],
+   "11": [
+    "passed",
+    "4b3d7246a9f2375a4b248fedc1b52979"
+   ],
+   "12": [
+    "passed",
+    "07ceb1ceab3a755f3f78892fa29d2dc6"
+   ],
+   "13": [
+    "passed",
+    "b718f0f8ebfed8f2b469dcc52e79151f"
+   ],
+   "14": [
+    "passed",
+    "7a1a08ba1965c6b8a691cc0f07686252"
+   ],
+   "15": [
+    "passed",
+    "556c624ca7fcacb5ecdc6b666f56c3d4"
+   ],
+   "16": [
+    "passed",
+    "3fdb6a2f50f135153998b29865471d50"
+   ],
+   "17": [
+    "passed",
+    "7d04009b97ac931e118896eb4b5731c7"
+   ],
+   "18": [
+    "passed",
+    "be0dfe06d8abe97cbc29cedcc9162523"
+   ],
+   "19": [
+    "passed",
+    "c0b8c13891e8e213b702a3546a4caac3"
+   ],
+   "20": [
+    "passed",
+    "acdcc71651275e2c34e0ec42a8f02bcf"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_FailsOnIncompleteDiscovery": {
+   "1": [
+    "passed",
+    "afe3618df4ed2f771dce45c1f9462886"
+   ],
+   "2": [
+    "passed",
+    "d596af04defb2f63b554cb37951d8cfb"
+   ],
+   "3": [
+    "passed",
+    "123a8326a0dc32e39acf3c5fddd1a9d7"
+   ],
+   "4": [
+    "passed",
+    "97f34feb2d0a78268429056dff3f16f1"
+   ],
+   "5": [
+    "passed",
+    "a4abc4639bad9f99f3443a49e7813692"
+   ],
+   "6": [
+    "passed",
+    "0e4b202a7e164a80d0f909fbedd82a24"
+   ],
+   "7": [
+    "passed",
+    "31961bfa2c9fd7fea4005eb05f1c33ed"
+   ],
+   "8": [
+    "passed",
+    "b69127187e98c7fac8f4718650009c9e"
+   ],
+   "9": [
+    "passed",
+    "10832617da54dc205365c53526a8185e"
+   ],
+   "10": [
+    "passed",
+    "4c301091813d2f0eb45fe06717327207"
+   ],
+   "11": [
+    "passed",
+    "263fe28675dd1bc37913a39460bfbd73"
+   ],
+   "12": [
+    "passed",
+    "4668e18056875dc77a069487a48b6609"
+   ],
+   "13": [
+    "passed",
+    "5e5e68605928a487501219d3dd41a2c3"
+   ],
+   "14": [
+    "passed",
+    "99d400308014d9f77c3fe580846042e8"
+   ],
+   "15": [
+    "passed",
+    "b934a3c205b3f922b6652fee13130b88"
+   ],
+   "16": [
+    "passed",
+    "4b463dda785d3be3a61fa8f7e8632a4d"
+   ],
+   "17": [
+    "passed",
+    "dca1f28f2cd1cd5902c8592999ee4750"
+   ],
+   "18": [
+    "passed",
+    "0b02f216d30e5540205835d638e3b746"
+   ],
+   "19": [
+    "passed",
+    "ebc86784baaba9e9f3f68d76a2f0192a"
+   ],
+   "20": [
+    "passed",
+    "2b62a82d577105a74402cd5d34065fc9"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge": {
+   "1": [
+    "passed",
+    "4c23e850cd79d92af746134d9c5f347b"
+   ],
+   "2": [
+    "passed",
+    "93280e779c8002f4109914555941de51"
+   ],
+   "3": [
+    "passed",
+    "fdbe18d1494abcef5653235819cbd3ae"
+   ],
+   "4": [
+    "passed",
+    "7ebb618cd61e3fc69888b51cbae0b097"
+   ],
+   "5": [
+    "passed",
+    "ce3799b2bb405f9dae767cc83d1f107d"
+   ],
+   "6": [
+    "passed",
+    "bd12297974892455c84bb57990a7c2de"
+   ],
+   "7": [
+    "passed",
+    "24725f908fdec8cf4289c72d298d88c0"
+   ],
+   "8": [
+    "passed",
+    "b7820ffd70e78ded83a6d3112c560039"
+   ],
+   "9": [
+    "passed",
+    "cace1bd67e3601b2c5417328d6265931"
+   ],
+   "10": [
+    "passed",
+    "99e3fcfdb0930f1e450822e052954626"
+   ],
+   "11": [
+    "passed",
+    "3ac777e450c3ae8728a40f9105467458"
+   ],
+   "12": [
+    "passed",
+    "2f906d910d4c9ab8e642e80f15aecf33"
+   ],
+   "13": [
+    "passed",
+    "0267a9383814f5943dc9b36bc21a6aeb"
+   ],
+   "14": [
+    "passed",
+    "29f8fa1e968addeb498b688864c2c7ff"
+   ],
+   "15": [
+    "passed",
+    "3830ed18694077bd010409cf3ab03824"
+   ],
+   "16": [
+    "passed",
+    "f2e120b479df0da9bf47e6563b7ff9a5"
+   ],
+   "17": [
+    "passed",
+    "4b202c9587fd041555cdb08c3048bc71"
+   ],
+   "18": [
+    "passed",
+    "e5bccc1eadfd23af256d4225b9ba509c"
+   ],
+   "19": [
+    "passed",
+    "031701d22dfbf398610ea426f842e470"
+   ],
+   "20": [
+    "passed",
+    "27734c509378e02a464c0c6afe807823"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunIndexMergePhase_MissingToCIsNoWork": {
+   "1": [
+    "passed",
+    "b47f58360d4e88d561d0f6bd72f28899"
+   ],
+   "2": [
+    "passed",
+    "09daa98f31edc1b5315f719d1b25ad4b"
+   ],
+   "3": [
+    "passed",
+    "b1a5340a103b1de5fd32b72680dd0ce3"
+   ],
+   "4": [
+    "passed",
+    "b8cf48b36183b53020c4edf877a93e89"
+   ],
+   "5": [
+    "passed",
+    "a8fd0100090c84fb0ffd4261799fb183"
+   ],
+   "6": [
+    "passed",
+    "7fdf787127e601d3c9cc8c72f03270b3"
+   ],
+   "7": [
+    "passed",
+    "03acf09914ae107f01df98fb80d7bcf8"
+   ],
+   "8": [
+    "passed",
+    "f0d018d0d012a6aa49099387cd5f82fb"
+   ],
+   "9": [
+    "passed",
+    "6b69bf8e4fcdbe047f352285b8145a52"
+   ],
+   "10": [
+    "passed",
+    "092607c266e5e398739497715989b816"
+   ],
+   "11": [
+    "passed",
+    "a22b8c8ce688462fb27670de475fd236"
+   ],
+   "12": [
+    "passed",
+    "d8a1d0657943b617a4a2eae602d1bf92"
+   ],
+   "13": [
+    "passed",
+    "bd3a59e8460bdf155e280cdac77052dd"
+   ],
+   "14": [
+    "passed",
+    "0a82019b73cf42f5225b7ab5b81d90e4"
+   ],
+   "15": [
+    "passed",
+    "ea625940ac972ceabba5e8375de66ed3"
+   ],
+   "16": [
+    "passed",
+    "5cc082b63d8c9e3a31c0cd157e8307c3"
+   ],
+   "17": [
+    "passed",
+    "2591507f2ed494de6f50c6da5ba7643d"
+   ],
+   "18": [
+    "passed",
+    "bb8115ae0dd08b3b0e56354156ee5581"
+   ],
+   "19": [
+    "passed",
+    "ff26a52ad708e76abd26a3ebf98243b5"
+   ],
+   "20": [
+    "passed",
+    "aef79836d807e956262486dad159007d"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCoordinator_LogCompactionSortSchemaCompatibility": {
+   "1": [
+    "passed",
+    "55378990ffe2afc3cc0807a0b7a9e8a6"
+   ],
+   "2": [
+    "passed",
+    "adcadf29c9521ff781f0b190bbe696c6"
+   ],
+   "3": [
+    "passed",
+    "772e2e3da2748463f5f24cd9fcb5639e"
+   ],
+   "4": [
+    "passed",
+    "9757d3eb792cdc6b70c29420d055dc2b"
+   ],
+   "5": [
+    "passed",
+    "4e3170042c1b9918ced6239d83ba91c2"
+   ],
+   "6": [
+    "passed",
+    "13aec88a19d9e71c58fa331b9ec00143"
+   ],
+   "7": [
+    "passed",
+    "e122fa8c7ab73cb60b432459af4f282d"
+   ],
+   "8": [
+    "passed",
+    "e659a76d51b8d49fb0327763ad393dbe"
+   ],
+   "9": [
+    "passed",
+    "bf4f02263ef335a678ba0bc8c538c436"
+   ],
+   "10": [
+    "passed",
+    "1cf8df2d9f06bb0b128fde802a46ce1f"
+   ],
+   "11": [
+    "passed",
+    "13773ca6edac2cd6f0abac4c025befcf"
+   ],
+   "12": [
+    "passed",
+    "6d15699e2ecf348df2e420d074fabff3"
+   ],
+   "13": [
+    "passed",
+    "13e128835300daa198a79708638a2d10"
+   ],
+   "14": [
+    "passed",
+    "aa2dc6ba61dd31002998de3c16dc9ce4"
+   ],
+   "15": [
+    "passed",
+    "1f6d94d57933e47d45ea08cdb760b68c"
+   ],
+   "16": [
+    "passed",
+    "e88913e9361cedccb0c11471425e9b07"
+   ],
+   "17": [
+    "passed",
+    "19831793a0bf3d4b08c05d52f109f68b"
+   ],
+   "18": [
+    "passed",
+    "9c3d56dd55f8a0acd091b91a14fcb5ab"
+   ],
+   "19": [
+    "passed",
+    "3ec032b8dac522a044295510e7c34cb5"
+   ],
+   "20": [
+    "passed",
+    "6d1cbebce4f8ded5e0654aeb4605fa32"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_PostingTimestampsDetectOverlap": {
+   "1": [
+    "passed",
+    "aabc2a242c126ec5c0044bfb4d7b0eb5"
+   ],
+   "2": [
+    "passed",
+    "174a7a7ca69a8dca6729bd52da02fa0f"
+   ],
+   "3": [
+    "passed",
+    "5e4169b2372e4d60fda0a25038486d6d"
+   ],
+   "4": [
+    "passed",
+    "e2ccf1a743497eb3de595f3c1c5f942e"
+   ],
+   "5": [
+    "passed",
+    "e9861a5a8caef512e8e800288cf9ebe1"
+   ],
+   "6": [
+    "passed",
+    "9ac63323af319f0b533caa4b223dac60"
+   ],
+   "7": [
+    "passed",
+    "c64a3ced53c9384ce4456d873dd1bae1"
+   ],
+   "8": [
+    "passed",
+    "f59634a63c38be12bdf780084d6508bf"
+   ],
+   "9": [
+    "passed",
+    "0f2268f4f77b2440fcac5d2c03757be2"
+   ],
+   "10": [
+    "passed",
+    "84abb8eccb53dcd248ec09d3e4c33048"
+   ],
+   "11": [
+    "passed",
+    "90f1e787d11304c992e851da7fda229d"
+   ],
+   "12": [
+    "passed",
+    "1ae5293b570864efc047b43f68fde8cb"
+   ],
+   "13": [
+    "passed",
+    "100e037f94263a65b12a5f8727873358"
+   ],
+   "14": [
+    "passed",
+    "8615e0db4f62eebdc5113290e350b30f"
+   ],
+   "15": [
+    "passed",
+    "006e54f62a1d5b5d88cbfa7816eefca9"
+   ],
+   "16": [
+    "passed",
+    "ee67bee70309ccaf0d2e75b0996b2330"
+   ],
+   "17": [
+    "passed",
+    "764ef39090a5941962ded12bca1fb526"
+   ],
+   "18": [
+    "passed",
+    "59a75d8d655b51ed84eb0a43fa8528aa"
+   ],
+   "19": [
+    "passed",
+    "fa0f44562d6599927b642d39b21e0229"
+   ],
+   "20": [
+    "passed",
+    "acad63cc46a88a8e58849c935cb56651"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildLogMergePlan": {
+   "1": [
+    "passed",
+    "5d411b2b980b624e4fd932d3a9bbbc3c"
+   ],
+   "2": [
+    "passed",
+    "7018bd504b8d4fd4d897fa0cbfa2b7f9"
+   ],
+   "3": [
+    "passed",
+    "a1a88c4f517831477e25f8cc7cf60e27"
+   ],
+   "4": [
+    "passed",
+    "0fb5a685f496e5e6574b353641303d08"
+   ],
+   "5": [
+    "passed",
+    "09d14f575c37ae4172b3697d9c80cfaf"
+   ],
+   "6": [
+    "passed",
+    "ca2af4c1d86de351d903c1cc406464b9"
+   ],
+   "7": [
+    "passed",
+    "2c6b7db305a95f19d98b22a0445d529f"
+   ],
+   "8": [
+    "passed",
+    "7e53faf9fca30d2a0c9d8f95d7ea4999"
+   ],
+   "9": [
+    "passed",
+    "42e103d068a340867f8d8c5e06f0da87"
+   ],
+   "10": [
+    "passed",
+    "463773eff651e9335ac9b906ac28d848"
+   ],
+   "11": [
+    "passed",
+    "a595fcde21526975b6a31e19680cb654"
+   ],
+   "12": [
+    "passed",
+    "783f36e18807d51c8d34a504cf1a3d27"
+   ],
+   "13": [
+    "passed",
+    "ef2e25041dfaea41c9935ca1b1427396"
+   ],
+   "14": [
+    "passed",
+    "62eec0a99fdd977589f2d3e32b2c037e"
+   ],
+   "15": [
+    "passed",
+    "017c0e1aaed35ff3b0d7816834e6f137"
+   ],
+   "16": [
+    "passed",
+    "1ace9b620d966dbe7a33f02e0d1b1768"
+   ],
+   "17": [
+    "passed",
+    "d58202b3a1d0ef37a8986ed7c6f53dd2"
+   ],
+   "18": [
+    "passed",
+    "2ad43d370c3b771d447d22d6af521756"
+   ],
+   "19": [
+    "passed",
+    "93179e16db3647b58dad1250e08d9196"
+   ],
+   "20": [
+    "passed",
+    "b245f1b063414b385b34734e458f0967"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_TouchingSectionsAreConverged": {
+   "1": [
+    "passed",
+    "b28e0bc709d4d7b29ec0138e3507a5e2"
+   ],
+   "2": [
+    "passed",
+    "a1fe4e28fb745a3c6c3a4f7e10ec36e6"
+   ],
+   "3": [
+    "passed",
+    "e054109befdc6720dd805c69350f4cd5"
+   ],
+   "4": [
+    "passed",
+    "ac065ba1730b172f55aed86e5fbf0ec7"
+   ],
+   "5": [
+    "passed",
+    "06d602f906f54dd9420a28d40c909522"
+   ],
+   "6": [
+    "passed",
+    "42a8ba92d9b4beb10b160125cb60be48"
+   ],
+   "7": [
+    "passed",
+    "6f01aea37f8564fee77073a8bb2de41c"
+   ],
+   "8": [
+    "passed",
+    "75cf8d0da2574c23ca23c7e06a92a666"
+   ],
+   "9": [
+    "passed",
+    "4bac02709eada9d42bdb1109e1958f0f"
+   ],
+   "10": [
+    "passed",
+    "2a911a5e826bfb40f10332d296a4c29d"
+   ],
+   "11": [
+    "passed",
+    "9103b82446338f8ef33413951dd3d846"
+   ],
+   "12": [
+    "passed",
+    "9029d40a29681c0a87b396514f35becf"
+   ],
+   "13": [
+    "passed",
+    "ba62828f2dc3608f95bfc86a6451f323"
+   ],
+   "14": [
+    "passed",
+    "f7cfae3759a78fcb50f389728d90e729"
+   ],
+   "15": [
+    "passed",
+    "93de58ecb0bb7a021abddf9782acbad3"
+   ],
+   "16": [
+    "passed",
+    "654a64efbd8ec0b57baf99f893c88820"
+   ],
+   "17": [
+    "passed",
+    "926ea330b5db5dbdd9b67357cf767e07"
+   ],
+   "18": [
+    "passed",
+    "24cc3537d854b8b0c9b2bab0e2dd3771"
+   ],
+   "19": [
+    "passed",
+    "29b128992619be5a076556d8363fdfbb"
+   ],
+   "20": [
+    "passed",
+    "eef483582ccce4613548d9f705a81e57"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_RejectsMixedSchemas": {
+   "1": [
+    "passed",
+    "7f5d5bc27c2b7b5995afde6c670be547"
+   ],
+   "2": [
+    "passed",
+    "6a28f498ba29ef99dc3f81d2b75f4f8a"
+   ],
+   "3": [
+    "passed",
+    "d52f682d21ed2cb8f3151c6cfcf28c70"
+   ],
+   "4": [
+    "passed",
+    "c74be3d526fd2eddda32d55c8aa5a6a0"
+   ],
+   "5": [
+    "passed",
+    "c3cb309dd9b172d272280c5d7c425cd3"
+   ],
+   "6": [
+    "passed",
+    "37c7054ffd0e2d6e6214669a6b040194"
+   ],
+   "7": [
+    "passed",
+    "404efd2af4feffcfde4cab4317766978"
+   ],
+   "8": [
+    "passed",
+    "8c2d4ce01ff313032e8dad4ce51c5e34"
+   ],
+   "9": [
+    "passed",
+    "517707fda6401babb3e2493061fe75f5"
+   ],
+   "10": [
+    "passed",
+    "4d052fab7e79c6773a59a3b1ae3a305c"
+   ],
+   "11": [
+    "passed",
+    "8d0afa0b9997602a2dc02321ba019351"
+   ],
+   "12": [
+    "passed",
+    "6e1260b2bb87ec1f6d83ad86350210e3"
+   ],
+   "13": [
+    "passed",
+    "5db0b606f50f10e28682eee8f869c428"
+   ],
+   "14": [
+    "passed",
+    "6f264882e692b332e7636ef72b8d8d22"
+   ],
+   "15": [
+    "passed",
+    "934a54daae90885c8f369ed9e43f3ecf"
+   ],
+   "16": [
+    "passed",
+    "93d26c6747460b3107d1c0c492c64938"
+   ],
+   "17": [
+    "passed",
+    "e941e75c0e6f7667f2d6ac1305cc01b0"
+   ],
+   "18": [
+    "passed",
+    "b8bf030b9238baa0a4cde9b3e640de12"
+   ],
+   "19": [
+    "passed",
+    "b780f16c67ba64dea4d74ee67e5f5894"
+   ],
+   "20": [
+    "passed",
+    "bded85c8770f7914259d4355fdfbfd8f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildIndexMergePlan_SingleRoot": {
+   "1": [
+    "passed",
+    "bf3ad6f58bac82808b01ba78d0ad99f4"
+   ],
+   "2": [
+    "passed",
+    "43e07cfb8728670a05f7bad5b0f835a2"
+   ],
+   "3": [
+    "passed",
+    "ddff7c679d22daa23365c531d13123e1"
+   ],
+   "4": [
+    "passed",
+    "7b9b457899f03ce3f5233bf0ef12b217"
+   ],
+   "5": [
+    "passed",
+    "2f58f58f4a30d3abf79abaa8a1876438"
+   ],
+   "6": [
+    "passed",
+    "a0ea7ec86879450516497e0b817e3c34"
+   ],
+   "7": [
+    "passed",
+    "98ae3cdb7a1c7f167655d940ce472051"
+   ],
+   "8": [
+    "passed",
+    "6ed2b8262d790d41cd24fc6fb2d8cc47"
+   ],
+   "9": [
+    "passed",
+    "29022f308b6022d9b7588cfb67ff8ee2"
+   ],
+   "10": [
+    "passed",
+    "93ff5c4ec0df20acd7bd0db1056f40cf"
+   ],
+   "11": [
+    "passed",
+    "4ba7a34cc3fa106c1b9c7a75ebd39c58"
+   ],
+   "12": [
+    "passed",
+    "cb3672e6eec20bc9aef55127dbf3eace"
+   ],
+   "13": [
+    "passed",
+    "6d1ecdc649fe858ffad52d502954fd14"
+   ],
+   "14": [
+    "passed",
+    "6574db508d25b228043835395c86fe3c"
+   ],
+   "15": [
+    "passed",
+    "e5778a377971e0d9156d2a9fc4fc0503"
+   ],
+   "16": [
+    "passed",
+    "4ae75c19b13b59150c0c1e3f9cb8bf63"
+   ],
+   "17": [
+    "passed",
+    "5c75915b38f57ba12d6013a4194d0ccb"
+   ],
+   "18": [
+    "passed",
+    "ecffdb666ff81c1b39e0200285e094b5"
+   ],
+   "19": [
+    "passed",
+    "391cf5bb20748874b9fdfc7c1a91f792"
+   ],
+   "20": [
+    "passed",
+    "4bb0087c7b175c960efdce35bdc4efa1"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_CancelledMidIterationStops": {
+   "1": [
+    "passed",
+    "a579595d0a59111ef486fdd318e3c153"
+   ],
+   "2": [
+    "passed",
+    "c164890cb570ba961dd2774fc8dfa22c"
+   ],
+   "3": [
+    "passed",
+    "9f39f88d4102d76eadb54f3ef9207c56"
+   ],
+   "4": [
+    "passed",
+    "e1ebe77a2bae75780cb11de69d30565a"
+   ],
+   "5": [
+    "passed",
+    "f76ac8221efd6db1490ef7593fdf654b"
+   ],
+   "6": [
+    "passed",
+    "d775acb85842cec30d1e496ed0bffebb"
+   ],
+   "7": [
+    "passed",
+    "847dd8ec9c12508e2086328fa5441476"
+   ],
+   "8": [
+    "passed",
+    "666c6a88d373b40253feea467d34d3a3"
+   ],
+   "9": [
+    "passed",
+    "ae1a015491083862345ef332ae8c8362"
+   ],
+   "10": [
+    "passed",
+    "c47a1b5c29a503d9478fd3d6e3080c2c"
+   ],
+   "11": [
+    "passed",
+    "d0f4b69e4daeaf771b474f7108267836"
+   ],
+   "12": [
+    "passed",
+    "82f2b85151f4c680fcc365e73ea740a1"
+   ],
+   "13": [
+    "passed",
+    "3b9e6b7190c2047f257d31fe1dbef8aa"
+   ],
+   "14": [
+    "passed",
+    "ee89976ccdf54db8206dfb32bd7440c3"
+   ],
+   "15": [
+    "passed",
+    "ebf7734f60d9344960c858141eed5015"
+   ],
+   "16": [
+    "passed",
+    "ba29d11833951373b34ee3e857a743ac"
+   ],
+   "17": [
+    "passed",
+    "8b50f862b8188458f0aff89a6a316b37"
+   ],
+   "18": [
+    "passed",
+    "3cd2e89b098aea901426f22ba1af1a0c"
+   ],
+   "19": [
+    "passed",
+    "3c68e42946e9eb9ade4f6b7d2c33ed65"
+   ],
+   "20": [
+    "passed",
+    "e8830954e922d0b35c2a14ceeac409f3"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestMakeIndexTocEntries_UnknownInputSizePropagates": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenant_DoesNotMergeIndexesAcrossSortSchemas": {
+   "1": [
+    "passed",
+    "71dabab31a28c7fe3db5a5c3581a639e"
+   ],
+   "2": [
+    "passed",
+    "018024515c2a7b9fddf844a48943ac1c"
+   ],
+   "3": [
+    "passed",
+    "d90f7b9409fee88d9da5a13b95690d16"
+   ],
+   "4": [
+    "passed",
+    "c8b9c0dd94cd5927b36e3785345e869c"
+   ],
+   "5": [
+    "passed",
+    "e4dd1f9b6d2e2fbcb26073e60e7fe0ff"
+   ],
+   "6": [
+    "passed",
+    "1504f574a869ad7b9270509e341b5e4c"
+   ],
+   "7": [
+    "passed",
+    "29c337b48b67eac15693ddeb4058815d"
+   ],
+   "8": [
+    "passed",
+    "b255d0ae1e6ee904d709ae4ce64d3759"
+   ],
+   "9": [
+    "passed",
+    "c5716daa923a364e9b390f4292b7937f"
+   ],
+   "10": [
+    "passed",
+    "80efc8c7d061a40d4c4c69f2cf9b187e"
+   ],
+   "11": [
+    "passed",
+    "ecbb8e8217d99a372960d117876b5464"
+   ],
+   "12": [
+    "passed",
+    "fb3b42a04faedf283425eaba42231025"
+   ],
+   "13": [
+    "passed",
+    "335c96b294d7041556e2dffd6e20f524"
+   ],
+   "14": [
+    "passed",
+    "11d40d203418d17a1cb9fce9f198fd45"
+   ],
+   "15": [
+    "passed",
+    "273a39fd6df783211419f8bcfaa6167d"
+   ],
+   "16": [
+    "passed",
+    "3989307d40af0b4de117622b2b24a968"
+   ],
+   "17": [
+    "passed",
+    "8c3bd903991e500142e1fe3dc5a908c7"
+   ],
+   "18": [
+    "passed",
+    "8954f15945834c7ad76ee0f54e28a9fc"
+   ],
+   "19": [
+    "passed",
+    "e344aac5680b19a33f6a9ab05843f7fc"
+   ],
+   "20": [
+    "passed",
+    "2f4a44d6f326301b412e3b2e203f598d"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestConfig_LogMinCompactionSizeValidation": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestLogSectionRefsFor_MultiKeySchemaOrdersValuesAndReturnsFQN": {
+   "1": [
+    "passed",
+    "7f5d5bc27c2b7b5995afde6c670be547"
+   ],
+   "2": [
+    "passed",
+    "6a28f498ba29ef99dc3f81d2b75f4f8a"
+   ],
+   "3": [
+    "passed",
+    "d52f682d21ed2cb8f3151c6cfcf28c70"
+   ],
+   "4": [
+    "passed",
+    "c74be3d526fd2eddda32d55c8aa5a6a0"
+   ],
+   "5": [
+    "passed",
+    "c3cb309dd9b172d272280c5d7c425cd3"
+   ],
+   "6": [
+    "passed",
+    "37c7054ffd0e2d6e6214669a6b040194"
+   ],
+   "7": [
+    "passed",
+    "404efd2af4feffcfde4cab4317766978"
+   ],
+   "8": [
+    "passed",
+    "8c2d4ce01ff313032e8dad4ce51c5e34"
+   ],
+   "9": [
+    "passed",
+    "517707fda6401babb3e2493061fe75f5"
+   ],
+   "10": [
+    "passed",
+    "4d052fab7e79c6773a59a3b1ae3a305c"
+   ],
+   "11": [
+    "passed",
+    "8d0afa0b9997602a2dc02321ba019351"
+   ],
+   "12": [
+    "passed",
+    "6e1260b2bb87ec1f6d83ad86350210e3"
+   ],
+   "13": [
+    "passed",
+    "5db0b606f50f10e28682eee8f869c428"
+   ],
+   "14": [
+    "passed",
+    "6f264882e692b332e7636ef72b8d8d22"
+   ],
+   "15": [
+    "passed",
+    "934a54daae90885c8f369ed9e43f3ecf"
+   ],
+   "16": [
+    "passed",
+    "f73b3b26cd894a208a5b83bda5de6594"
+   ],
+   "17": [
+    "passed",
+    "e941e75c0e6f7667f2d6ac1305cc01b0"
+   ],
+   "18": [
+    "passed",
+    "b8bf030b9238baa0a4cde9b3e640de12"
+   ],
+   "19": [
+    "passed",
+    "b780f16c67ba64dea4d74ee67e5f5894"
+   ],
+   "20": [
+    "passed",
+    "bded85c8770f7914259d4355fdfbfd8f"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestCompactTenantLogs_NoStatsRowsForTenantIsConverged": {
+   "1": [
+    "passed",
+    "64b6b5151a167a78b35dee0b901b3b5c"
+   ],
+   "2": [
+    "passed",
+    "9cd6a7b85c1df4df53f5e3aee716e869"
+   ],
+   "3": [
+    "passed",
+    "4dae73879f21a1d202ada0a98fe9d752"
+   ],
+   "4": [
+    "passed",
+    "54859f9f29ddc69e13b20ece4e300c43"
+   ],
+   "5": [
+    "passed",
+    "69230e972590934508828c5ed9e3fc7d"
+   ],
+   "6": [
+    "passed",
+    "deda3ca667b3a0b0f282f41d31c0ac4e"
+   ],
+   "7": [
+    "passed",
+    "a6362e8c5cefa58709fabbd29ffe118b"
+   ],
+   "8": [
+    "passed",
+    "ac0d723d61b10f585461fd910c20ef5a"
+   ],
+   "9": [
+    "passed",
+    "0c4c34411edeb6df227a0912e8f305ba"
+   ],
+   "10": [
+    "passed",
+    "b622ae1ff9ae0b5f59d83ea0ffcfb73f"
+   ],
+   "11": [
+    "passed",
+    "90a7628c5329ec1acbfd7466c089cd81"
+   ],
+   "12": [
+    "passed",
+    "a3deaa8cc4da7c8e05adea9678c98238"
+   ],
+   "13": [
+    "passed",
+    "d8254876393018141a73af78b2eb4b99"
+   ],
+   "14": [
+    "passed",
+    "d2f3468caac449ff83bbf93514d30709"
+   ],
+   "15": [
+    "passed",
+    "b2c67a0710fe3d3a4cef869cefab0a96"
+   ],
+   "16": [
+    "passed",
+    "fff06e22a3724baa4bf5c59b11111a1f"
+   ],
+   "17": [
+    "passed",
+    "34b077210ab1f401dabb988b07765594"
+   ],
+   "18": [
+    "passed",
+    "9cd3da5f162fbe5e24696ba7317d6ce3"
+   ],
+   "19": [
+    "passed",
+    "82639f5cf13a4e969d26ee8325f5ba2f"
+   ],
+   "20": [
+    "passed",
+    "5291e9fe0097b5a919b9e8d624116d35"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_ErrorRetries": {
+   "1": [
+    "passed",
+    "8c16b24feb2234b2082595db30709ede"
+   ],
+   "2": [
+    "passed",
+    "94e4630d1459451eb571d89eb1127e2b"
+   ],
+   "3": [
+    "passed",
+    "017f61d356c2739784535088360636bc"
+   ],
+   "4": [
+    "passed",
+    "fab8d0c32aaa5ba6af9da6e44db1c7c1"
+   ],
+   "5": [
+    "passed",
+    "df548438b17d82edd886ac5197f901c0"
+   ],
+   "6": [
+    "passed",
+    "7c0c679d2308222b435ba024e0742023"
+   ],
+   "7": [
+    "passed",
+    "392282b1f9b52d0968d27938b112d9be"
+   ],
+   "8": [
+    "passed",
+    "c81ed3eee6209e864dc1f7508100353a"
+   ],
+   "9": [
+    "passed",
+    "f043ec84ec906ffd39163cf988e4a773"
+   ],
+   "10": [
+    "passed",
+    "8c1a70957683ac0c0177aecacc0e6eb9"
+   ],
+   "11": [
+    "passed",
+    "b067f59fc06fb431225be57908c87634"
+   ],
+   "12": [
+    "passed",
+    "d8010bbedf31a6391f3ddf0d8d9d7aa5"
+   ],
+   "13": [
+    "passed",
+    "f394e0aeba3563dd1f8a89348cd0c08c"
+   ],
+   "14": [
+    "passed",
+    "c68dc4cb99cfb87f86758419efc07e25"
+   ],
+   "15": [
+    "passed",
+    "a81bdcbb7326a3be8e1c55e3bccb78e4"
+   ],
+   "16": [
+    "passed",
+    "8831081288d2fb6c09e8e534a83e951f"
+   ],
+   "17": [
+    "passed",
+    "cfb46f57f18b1513e991472a43152de2"
+   ],
+   "18": [
+    "passed",
+    "9ca5ead5f3286f5dea7b184efab62dd9"
+   ],
+   "19": [
+    "passed",
+    "318b5207f2cf97bb14b06ae0bd8d4f2f"
+   ],
+   "20": [
+    "passed",
+    "c32ea95adcffdb338696d38b3a0287e4"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestNewWorker_InvalidAdvertiseAddr": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_IndexOnly": {
+   "1": [
+    "passed",
+    "59abb12c25f0d29e4dd0b4ba7b4f6025"
+   ],
+   "2": [
+    "passed",
+    "b732736e65205cd77886e4b92cb77bd7"
+   ],
+   "3": [
+    "passed",
+    "0c444d93228e8c719cb1248407d8016d"
+   ],
+   "4": [
+    "passed",
+    "f5b4b197fe843c5b7f3f3f66982ba8c6"
+   ],
+   "5": [
+    "passed",
+    "bfe926a3f6dac7c4fad6eeef0ba000eb"
+   ],
+   "6": [
+    "passed",
+    "94282a2717af4d7d0045113841ea78aa"
+   ],
+   "7": [
+    "passed",
+    "3c7c476dd3e75584508cf22e70851976"
+   ],
+   "8": [
+    "passed",
+    "83cf7130245c749c0194ba7703bb9444"
+   ],
+   "9": [
+    "passed",
+    "eb6fb1e3ae6f0797e8dfe5ec376ff557"
+   ],
+   "10": [
+    "passed",
+    "57bec9a5503b05a8efb0bd697c0bd32d"
+   ],
+   "11": [
+    "passed",
+    "1b9bd0bd3136c6e41a785d86ab0d711f"
+   ],
+   "12": [
+    "passed",
+    "333aa395d5107a29e8c381b85a98a653"
+   ],
+   "13": [
+    "passed",
+    "49a124213837b5d30c84fe193f9df047"
+   ],
+   "14": [
+    "passed",
+    "15c33797b6530fd26a199846cb6827ae"
+   ],
+   "15": [
+    "passed",
+    "d3b3fef5529974516518f7eb52802ec7"
+   ],
+   "16": [
+    "passed",
+    "caff47ee5a772114f74e758f9f749e66"
+   ],
+   "17": [
+    "passed",
+    "c8333af1eb1a99bf61152727bb47aecf"
+   ],
+   "18": [
+    "passed",
+    "c110d4595ed67eb9bdaf42b2eed428be"
+   ],
+   "19": [
+    "passed",
+    "3edf8f3a75d3195acaffebb2737d41f3"
+   ],
+   "20": [
+    "passed",
+    "0768082afb97247ccb40120b59c3cd9e"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestPhaseFlip": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestWorseOutcome": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_RunsMultipleIndexMergesPerLogMerge": {
+   "1": [
+    "passed",
+    "472009ba3fb601dd4e4d58b102888172"
+   ],
+   "2": [
+    "passed",
+    "40f598c2fa98928362ff79222a620d7e"
+   ],
+   "3": [
+    "passed",
+    "be57710a10409cacbaa6e9089ed23c06"
+   ],
+   "4": [
+    "passed",
+    "2ed4eb00166abcc1b821df5e458fdb6a"
+   ],
+   "5": [
+    "passed",
+    "04e3ca914c05d859d4b194a0bfdc2af5"
+   ],
+   "6": [
+    "passed",
+    "f93bc13c6087efe710686a2fb0100d1b"
+   ],
+   "7": [
+    "passed",
+    "afd04e39aa81499168e013e8427375bd"
+   ],
+   "8": [
+    "passed",
+    "3da56c0b5bac617c74e3ce95040d3246"
+   ],
+   "9": [
+    "passed",
+    "68f6ce9824729eca4d05f1866e6cf8d2"
+   ],
+   "10": [
+    "passed",
+    "63c71291196c757eb08876cbb20a5535"
+   ],
+   "11": [
+    "passed",
+    "a1a6d3cce75f5d6a67e94c5949cb8c78"
+   ],
+   "12": [
+    "passed",
+    "a81c6545f4c40cdb203361d79497764e"
+   ],
+   "13": [
+    "passed",
+    "0f9f37d916599b9ded304a77ae579e7e"
+   ],
+   "14": [
+    "passed",
+    "181c917ccd8273fb5893713e80d73bfd"
+   ],
+   "15": [
+    "passed",
+    "56bfb37aea44dc50f71758aca7bc9eee"
+   ],
+   "16": [
+    "passed",
+    "4525bd1d197fb1df1423c9d04936c0ec"
+   ],
+   "17": [
+    "passed",
+    "87509054be661009a1db78face15df0b"
+   ],
+   "18": [
+    "passed",
+    "31c8403b5605361eff28393e67e09f34"
+   ],
+   "19": [
+    "passed",
+    "48f1d67c2d8bee31cbb6facd00ef0f9c"
+   ],
+   "20": [
+    "passed",
+    "3fb7e48e2764fc60f850ebecbd657606"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestBuildSortObjectPlan": {
+   "1": [
+    "passed",
+    "5d411b2b980b624e4fd932d3a9bbbc3c"
+   ],
+   "2": [
+    "passed",
+    "7018bd504b8d4fd4d897fa0cbfa2b7f9"
+   ],
+   "3": [
+    "passed",
+    "a1a88c4f517831477e25f8cc7cf60e27"
+   ],
+   "4": [
+    "passed",
+    "0fb5a685f496e5e6574b353641303d08"
+   ],
+   "5": [
+    "passed",
+    "09d14f575c37ae4172b3697d9c80cfaf"
+   ],
+   "6": [
+    "passed",
+    "ca2af4c1d86de351d903c1cc406464b9"
+   ],
+   "7": [
+    "passed",
+    "2c6b7db305a95f19d98b22a0445d529f"
+   ],
+   "8": [
+    "passed",
+    "7e53faf9fca30d2a0c9d8f95d7ea4999"
+   ],
+   "9": [
+    "passed",
+    "42e103d068a340867f8d8c5e06f0da87"
+   ],
+   "10": [
+    "passed",
+    "463773eff651e9335ac9b906ac28d848"
+   ],
+   "11": [
+    "passed",
+    "a595fcde21526975b6a31e19680cb654"
+   ],
+   "12": [
+    "passed",
+    "783f36e18807d51c8d34a504cf1a3d27"
+   ],
+   "13": [
+    "passed",
+    "ef2e25041dfaea41c9935ca1b1427396"
+   ],
+   "14": [
+    "passed",
+    "62eec0a99fdd977589f2d3e32b2c037e"
+   ],
+   "15": [
+    "passed",
+    "017c0e1aaed35ff3b0d7816834e6f137"
+   ],
+   "16": [
+    "passed",
+    "1ace9b620d966dbe7a33f02e0d1b1768"
+   ],
+   "17": [
+    "passed",
+    "d58202b3a1d0ef37a8986ed7c6f53dd2"
+   ],
+   "18": [
+    "passed",
+    "2ad43d370c3b771d447d22d6af521756"
+   ],
+   "19": [
+    "passed",
+    "93179e16db3647b58dad1250e08d9196"
+   ],
+   "20": [
+    "passed",
+    "b245f1b063414b385b34734e458f0967"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestReconcile_RemovedFromToC_CancelsWorker": {
+   "1": [
+    "passed",
+    "1462cad6ca12707e009d99f8ed6176e1"
+   ],
+   "2": [
+    "passed",
+    "daa78ac9a8c4b920d96202a59f09b1dd"
+   ],
+   "3": [
+    "passed",
+    "36072b085330a907ea1484dc94372ad3"
+   ],
+   "4": [
+    "passed",
+    "226c2dc5641575abcf73c7e96f6ff770"
+   ],
+   "5": [
+    "passed",
+    "b6b681189bc8e971549db75d85c2ecdc"
+   ],
+   "6": [
+    "passed",
+    "3e7377c64f7e00710a81a2a653588b53"
+   ],
+   "7": [
+    "passed",
+    "83081ae51c5c09d183817e016c970847"
+   ],
+   "8": [
+    "passed",
+    "b1c66a9a06fcc641cef8dc77158c7b42"
+   ],
+   "9": [
+    "passed",
+    "105f462ca2f96637f3c5662d2912b0e8"
+   ],
+   "10": [
+    "passed",
+    "faf6a5616a504af8046fbcf2fa45b649"
+   ],
+   "11": [
+    "passed",
+    "38ca47f1489826cce4979f1d7bb94eb7"
+   ],
+   "12": [
+    "passed",
+    "e713f1c608eb148911d343eac0ab6ceb"
+   ],
+   "13": [
+    "passed",
+    "87746e1b535801e213db0a601153609d"
+   ],
+   "14": [
+    "passed",
+    "70fb87c449a30fd4847518d132536ff4"
+   ],
+   "15": [
+    "passed",
+    "e47f3de16e02908b3efdbcd4093ff271"
+   ],
+   "16": [
+    "passed",
+    "4bb772c2050422547e7ddd7f9bb8ea60"
+   ],
+   "17": [
+    "passed",
+    "477e78c13a358163858cdec039ac4ca1"
+   ],
+   "18": [
+    "passed",
+    "a01c2da165534004539c9c2df9976cc8"
+   ],
+   "19": [
+    "passed",
+    "9e5676d21ed52a53a0e065182b947fd1"
+   ],
+   "20": [
+    "passed",
+    "84c3f45ee33e7b919a14e95db37749ef"
+   ]
+  },
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunLogMergePhase_PartialIndexFailureRetries": {
+   "1": [
+    "passed",
+    "fac38c68128de768e5032b0670d7160a"
+   ],
+   "2": [
+    "passed",
+    "f2e77695a34e2dac8375fee2efffdd68"
+   ],
+   "3": [
+    "passed",
+    "6ff3742483b756f90ff8fbb6d8a46912"
+   ],
+   "4": [
+    "passed",
+    "774b4d632e95460b7ef6078b5039efde"
+   ],
+   "5": [
+    "passed",
+    "a833fcfff1f8e06a29a39fc37f1eec7a"
+   ],
+   "6": [
+    "passed",
+    "e48419d6e79035be6d29088b9b3a50c9"
+   ],
+   "7": [
+    "passed",
+    "f66e620dd664bb99f83c4d0a865476c9"
+   ],
+   "8": [
+    "passed",
+    "ac55bdc86c8fe628ac98f05b3c2ba6fb"
+   ],
+   "9": [
+    "passed",
+    "77332789fa2906c0db0ef00054613533"
+   ],
+   "10": [
+    "passed",
+    "b16e5f426657c28d9c72d35428b4fdea"
+   ],
+   "11": [
+    "passed",
+    "a7320e89ec8753cabad568b5ff669d68"
+   ],
+   "12": [
+    "passed",
+    "9eea452ee0d0323d4448a854847196d8"
+   ],
+   "13": [
+    "passed",
+    "5f3a7205fd48767ff1e299554e25e7cd"
+   ],
+   "14": [
+    "passed",
+    "bce719054649643324a613763fbf75ac"
+   ],
+   "15": [
+    "passed",
+    "1664fd9d58f7f2d280a3cdb3ff9610d1"
+   ],
+   "16": [
+    "passed",
+    "22d137f497d977134343fb9ce76b64d1"
+   ],
+   "17": [
+    "passed",
+    "88bb64ff81acbb0145b0d81ae8cca592"
+   ],
+   "18": [
+    "passed",
+    "ee537ff222b29e7640879614394818b7"
+   ],
+   "19": [
+    "passed",
+    "8a0847ed4bd478932a47a7f0659ae794"
+   ],
+   "20": [
+    "passed",
+    "055a9dbf59760a17b668d34d63ac8e8a"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/grafana/loki/v3/pkg/engine/compactor::TestRunTenantLoop_DisablingLogMidRunStopsLogMerge": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  74,
+  84
+ ],
+ "timing_keep_parallel": [
+  2.3810000000000002,
+  2.435,
+  2.419
+ ],
+ "timing": {
+  "plain": [
+   2.111,
+   2.073,
+   2.122
+  ],
+  "det": [
+   2.365,
+   2.391,
+   2.411
+  ]
+ },
+ "slowdown": 0.13263855992420642
+}
