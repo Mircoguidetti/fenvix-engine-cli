@@ -1,0 +1,866 @@
+{
+ "spec": {
+  "name": "etcd",
+  "repo": "etcd-io/etcd",
+  "sha": "5b75ac62cf042a185e902530c25fd3d59c095232",
+  "fix_commit": "e5a789dad1ca9a684dbafd2cfbc07ca508bd155f",
+  "fix_date": "2026-08-18T16:04:02.000-07:00",
+  "title": " mvcc: Reduces Flakiness From TestValidateLinearizableOperationsTimeoutIsRespected",
+  "tests": [
+   "TestValidateLinearizableOperationsTimeoutIsRespected"
+  ],
+  "source": "github commit search 'repo:etcd-io/etcd flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestValidateLinearizableOperationsTimeoutIsRespected": "function"
+ },
+ "module_dir": "tests",
+ "packages": [
+  "./robustness/validate"
+ ],
+ "imports": [
+  "go.etcd.io/etcd/tests/v3/robustness/validate"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 45.4,
+ "build_det_s": 64.8,
+ "baseline": {
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateLinearizableOperationsTimeoutIsRespected": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestLinearizationVisualizeSkipsTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestDataReports": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateSerializableOperations": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestPatchHistory": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateAndReturnVisualize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateWatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 208.5,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 357,
+  "outcome": 7,
+  "fs": 1
+ },
+ "det0_top_tests_by_events": [
+  [
+   269,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateWatch"
+  ],
+  [
+   42,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateSerializableOperations"
+  ],
+  [
+   38,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateAndReturnVisualize"
+  ],
+  [
+   11,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateLinearizableOperationsTimeoutIsRespected"
+  ],
+  [
+   2,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestLinearizationVisualizeSkipsTimeout"
+  ],
+  [
+   2,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestDataReports"
+  ],
+  [
+   1,
+   "go.etcd.io/etcd/tests/v3/robustness/validate::TestPatchHistory"
+  ]
+ ],
+ "det0_divergences": [],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 7,
+  "stable": 7,
+  "diverged": 0,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {}
+ },
+ "det0": {
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestDataReports": [
+   [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateWatch": [
+   [
+    "passed",
+    "c675f1e2cdf7a3d561616b57195fc928"
+   ],
+   [
+    "passed",
+    "c675f1e2cdf7a3d561616b57195fc928"
+   ],
+   [
+    "passed",
+    "c675f1e2cdf7a3d561616b57195fc928"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateLinearizableOperationsTimeoutIsRespected": [
+   [
+    "passed",
+    "cf1d6c3724c70fe1360c2d3cef96448e"
+   ],
+   [
+    "passed",
+    "cf1d6c3724c70fe1360c2d3cef96448e"
+   ],
+   [
+    "passed",
+    "cf1d6c3724c70fe1360c2d3cef96448e"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateAndReturnVisualize": [
+   [
+    "passed",
+    "17ec6479426b56509705f277bc707e27"
+   ],
+   [
+    "passed",
+    "17ec6479426b56509705f277bc707e27"
+   ],
+   [
+    "passed",
+    "17ec6479426b56509705f277bc707e27"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestPatchHistory": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestLinearizationVisualizeSkipsTimeout": [
+   [
+    "passed",
+    "efcea284c72aa021caffb888f2861280"
+   ],
+   [
+    "passed",
+    "efcea284c72aa021caffb888f2861280"
+   ],
+   [
+    "passed",
+    "efcea284c72aa021caffb888f2861280"
+   ]
+  ],
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateSerializableOperations": [
+   [
+    "passed",
+    "c47029812d9deb500cbdc20f37b81dba"
+   ],
+   [
+    "passed",
+    "c47029812d9deb500cbdc20f37b81dba"
+   ],
+   [
+    "passed",
+    "c47029812d9deb500cbdc20f37b81dba"
+   ]
+  ]
+ },
+ "explore": {
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateAndReturnVisualize": {
+   "1": [
+    "passed",
+    "c02be9dac8a7581974fbad5a6d7c3bdd"
+   ],
+   "2": [
+    "passed",
+    "8b6bf387483a514d0a81a6f77cc2190f"
+   ],
+   "3": [
+    "passed",
+    "bd03772151230df38e3afecce5ac3417"
+   ],
+   "4": [
+    "passed",
+    "a7aa255a1808c5b4eb142e32adf357f0"
+   ],
+   "5": [
+    "passed",
+    "4289ae2a870de46ac2947884bf0f9ded"
+   ],
+   "6": [
+    "passed",
+    "529a1124afe8552122a3688fe498c58e"
+   ],
+   "7": [
+    "passed",
+    "ee5e1a2b21a1de40b664c61bd6ae961c"
+   ],
+   "8": [
+    "passed",
+    "e9a65d8fd5c5959cc10f68c36f2fb242"
+   ],
+   "9": [
+    "passed",
+    "06b603ffd1b03370a0c5080c5470b5e5"
+   ],
+   "10": [
+    "passed",
+    "36b9e38f6cd4aaeaef758a816320546a"
+   ],
+   "11": [
+    "passed",
+    "cc6ef067e0f6c1fed4719ee38557d42e"
+   ],
+   "12": [
+    "passed",
+    "5566e1b2175ee75e56003428844c1384"
+   ],
+   "13": [
+    "passed",
+    "066172d07d1ab6b668288fc8704791e2"
+   ],
+   "14": [
+    "passed",
+    "bca07f8babe72deac327cb936a675c71"
+   ],
+   "15": [
+    "passed",
+    "5522c0cd39347f998ef258498c38f63a"
+   ],
+   "16": [
+    "passed",
+    "8fa1cb7b0932d5b3f37c1433a001495d"
+   ],
+   "17": [
+    "passed",
+    "bc62633fb0a30c32f5bae57c27363956"
+   ],
+   "18": [
+    "passed",
+    "9b5cf17a514a5aa7b4b9d4bc5c863296"
+   ],
+   "19": [
+    "passed",
+    "ef7881d848ca19a32fc91eb8bd496ecb"
+   ],
+   "20": [
+    "passed",
+    "e3410bbbb659b4303452b45ca2f626f8"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestLinearizationVisualizeSkipsTimeout": {
+   "1": [
+    "passed",
+    "95bd5040b0e8a9fd7989a5be592893cb"
+   ],
+   "2": [
+    "passed",
+    "381e0f0c17c35a0baf3e76c848679c41"
+   ],
+   "3": [
+    "passed",
+    "943f3996893850bb7afafdde35513d27"
+   ],
+   "4": [
+    "passed",
+    "366f4a30fd2566fc84f1e17721574beb"
+   ],
+   "5": [
+    "passed",
+    "29f2f723108f531e1057485d3cb093dc"
+   ],
+   "6": [
+    "passed",
+    "3f9c93516ef27f20ffec7c6ca7f5cdc4"
+   ],
+   "7": [
+    "passed",
+    "8033a80c269763e96b554bc1ddde3bee"
+   ],
+   "8": [
+    "passed",
+    "5f13d17ea31bbbb2e451e6c597f6977e"
+   ],
+   "9": [
+    "passed",
+    "48cb1451590ffe77b7ec6c686d208e26"
+   ],
+   "10": [
+    "passed",
+    "00f240451fcc649aeb83226b19de1a14"
+   ],
+   "11": [
+    "passed",
+    "ae97c7fa4bedb44a838d551168624c53"
+   ],
+   "12": [
+    "passed",
+    "bc8b6080133fcc69bdbc90ac5005d2a5"
+   ],
+   "13": [
+    "passed",
+    "dd489124c2508650f998cb865fa8c3bc"
+   ],
+   "14": [
+    "passed",
+    "eb591bf5b476dcbbdb1c71bdc1444f7d"
+   ],
+   "15": [
+    "passed",
+    "76d371a4f8f9aec922b4b5fce014fe45"
+   ],
+   "16": [
+    "passed",
+    "4d7aec2ec3a09e776f285350d718e853"
+   ],
+   "17": [
+    "passed",
+    "1a3ab82c7c62da5466e2ddf84155f1d0"
+   ],
+   "18": [
+    "passed",
+    "1211138a09528e63f2aad81204e1df4b"
+   ],
+   "19": [
+    "passed",
+    "e0ce8e0fad627ef65091fccac682ac17"
+   ],
+   "20": [
+    "passed",
+    "798c7de9fe778fbdb7d807ecce4dd710"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateWatch": {
+   "1": [
+    "passed",
+    "593124aa37e58b947e16ade5b246334c"
+   ],
+   "2": [
+    "passed",
+    "97f3de3448498509502896e4bc52ea40"
+   ],
+   "3": [
+    "passed",
+    "5531f1f7eb04f51824f9912a0459ee69"
+   ],
+   "4": [
+    "passed",
+    "c2eb1cd0f9f5d567793fc26964c60f74"
+   ],
+   "5": [
+    "passed",
+    "cd0cbe820a0c2ec50cd589b63000b317"
+   ],
+   "6": [
+    "passed",
+    "fb5462bc09c1b335aefc8b460bd17c01"
+   ],
+   "7": [
+    "passed",
+    "8bf45c33d9867f8c382f3f523ebeb6f3"
+   ],
+   "8": [
+    "passed",
+    "478390d0dc46b7096bccb631be640d40"
+   ],
+   "9": [
+    "passed",
+    "2d8d88cbf762e12cd35e2817d484e525"
+   ],
+   "10": [
+    "passed",
+    "c883471b5be11358d71060d821eeb182"
+   ],
+   "11": [
+    "passed",
+    "3eb6071f1b1bb0575a8cfc77aa4ad12f"
+   ],
+   "12": [
+    "passed",
+    "a68e167a6f03af4bf3a4b7724b645824"
+   ],
+   "13": [
+    "passed",
+    "93221a06e2cf3570f21d54f5f9a9987b"
+   ],
+   "14": [
+    "passed",
+    "ece0c7711eed433510fbd73d4d113a9b"
+   ],
+   "15": [
+    "passed",
+    "343977edecd6e4447b56a03d39f5bb39"
+   ],
+   "16": [
+    "passed",
+    "7b9e8e0aa53bc2bfaaf9f2f27439335e"
+   ],
+   "17": [
+    "passed",
+    "a8e84f3591cb7d734bda2eb505b79099"
+   ],
+   "18": [
+    "passed",
+    "5ce662af745305e31a9136b76b906f8e"
+   ],
+   "19": [
+    "passed",
+    "38b086fedfd485ca9e076cd2aa61a0e8"
+   ],
+   "20": [
+    "passed",
+    "6fa680967ba8f9c9369d06b644a3a262"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestPatchHistory": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateSerializableOperations": {
+   "1": [
+    "passed",
+    "40f8c6dd20ae4cb3edb2502af28bb371"
+   ],
+   "2": [
+    "passed",
+    "4e47b5174f84b48ec314c3b0ffd67490"
+   ],
+   "3": [
+    "passed",
+    "19d07b2517a40da33aa6d1520589cd9f"
+   ],
+   "4": [
+    "passed",
+    "fc00cd96898ab1ff5a178bed8fe92193"
+   ],
+   "5": [
+    "passed",
+    "39510d368f20f2b4da177f6db9d6c99a"
+   ],
+   "6": [
+    "passed",
+    "a136891f62a7c0c1cf04f5e2daf01642"
+   ],
+   "7": [
+    "passed",
+    "197d8b3302b2a2320311d3a77d70c4fe"
+   ],
+   "8": [
+    "passed",
+    "e8ec64a30a90fbae4fa8b72fae41b92d"
+   ],
+   "9": [
+    "passed",
+    "97a6a8f30005d9e663f71ff7830e7947"
+   ],
+   "10": [
+    "passed",
+    "a41e51f53da91a8289990125eb8bf93d"
+   ],
+   "11": [
+    "passed",
+    "771d0568baf779fdaaf804648b166580"
+   ],
+   "12": [
+    "passed",
+    "48bdbe1635744ea8351e3355cab3ad6d"
+   ],
+   "13": [
+    "passed",
+    "16f831f385fff7317291b6cbc5261b0d"
+   ],
+   "14": [
+    "passed",
+    "f468332007a6b9f32da8f7e718d075ea"
+   ],
+   "15": [
+    "passed",
+    "8d5e6b70ceb491808c5a3800d569ae2e"
+   ],
+   "16": [
+    "passed",
+    "681d9060163de2c32041482a10850b4d"
+   ],
+   "17": [
+    "passed",
+    "ba002c28607b8857e0701889173df54d"
+   ],
+   "18": [
+    "passed",
+    "9d68c32328f77a939e7b166ac42668b6"
+   ],
+   "19": [
+    "passed",
+    "113452d0480a53f1794874cde3a0cff3"
+   ],
+   "20": [
+    "passed",
+    "0887f1c1111871f29d17e68855e71744"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestDataReports": {
+   "1": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "2": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "3": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "4": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "5": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "6": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "7": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "8": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "9": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "10": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "11": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "12": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "13": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "14": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "15": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "16": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "17": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "18": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "19": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ],
+   "20": [
+    "passed",
+    "33eac8e70ed1e9af3faf5cfcd1f2c511"
+   ]
+  },
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateLinearizableOperationsTimeoutIsRespected": {
+   "1": [
+    "passed",
+    "daa9834e00d940f61ea82579136042b5"
+   ],
+   "2": [
+    "passed",
+    "e478c1607274265fa2d39c2240e63102"
+   ],
+   "3": [
+    "passed",
+    "65229c9d3416ee0b4b6ca1d0aa79476e"
+   ],
+   "4": [
+    "passed",
+    "e4eb0a0297c91d368cdfe7a1349c2013"
+   ],
+   "5": [
+    "passed",
+    "3e4fe133fe74a988db0a5ca935cb2d3b"
+   ],
+   "6": [
+    "passed",
+    "81754fd2623c3cc938fefbe8df371fe6"
+   ],
+   "7": [
+    "passed",
+    "b17fac723bb9d80c7b0d88bb45977f99"
+   ],
+   "8": [
+    "passed",
+    "67876d15e017a325bcce0c432bb98a74"
+   ],
+   "9": [
+    "passed",
+    "d490022d3f6ddd7dbe953d84180f9e47"
+   ],
+   "10": [
+    "passed",
+    "66e0365d8592e3c2a4ec4d8307f3f811"
+   ],
+   "11": [
+    "passed",
+    "13abb36ceff78102172e2fe248a7fb06"
+   ],
+   "12": [
+    "passed",
+    "5c388252a3d4d1881df0a791c3f9ca2e"
+   ],
+   "13": [
+    "passed",
+    "30d6a9df7a2f3a83ab08613840c7cfbc"
+   ],
+   "14": [
+    "passed",
+    "1143562931b002afe30935d6b3d5eb1e"
+   ],
+   "15": [
+    "passed",
+    "c67aa2a9352660cd8a3471e7c77fd7dd"
+   ],
+   "16": [
+    "passed",
+    "baa60bc5a1a72e97b6af4a2a1fe28895"
+   ],
+   "17": [
+    "passed",
+    "46bbd5dcbf5f3d1a9f252f30bb94d08a"
+   ],
+   "18": [
+    "passed",
+    "40599b47c88002f348789cd311148bda"
+   ],
+   "19": [
+    "passed",
+    "83f2c9f90ee0871d78a8da31c0d8e705"
+   ],
+   "20": [
+    "passed",
+    "6965ef53d6de44dac325f3ae5344aa8f"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "go.etcd.io/etcd/tests/v3/robustness/validate::TestValidateLinearizableOperationsTimeoutIsRespected": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  7,
+  7
+ ],
+ "timing": {
+  "plain": [
+   1.059,
+   1.059,
+   1.06
+  ],
+  "det": [
+   1.07,
+   1.075,
+   1.077
+  ]
+ },
+ "slowdown": 0.015108593012275746
+}
