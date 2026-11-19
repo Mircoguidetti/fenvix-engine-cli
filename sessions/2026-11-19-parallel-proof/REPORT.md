@@ -181,7 +181,29 @@ worker's `PYTEST_XDIST_*` are not set serially: a real difference, not a key def
 
 Walk (`walk_n.py`, esphome, 10 consecutive first-parent commits 34b24d0c .. 141789d2, oldest first, caches kept across
 commits; every reused result compared with a fresh serial `--det` run at the same commit, mismatches re-run serially):
-WALK_RESULTS
+
+| commit | `-n 4` wall | reused (of tests) | serial wall | reused | `--det` serial (truth) | mismatches / wrong |
+|---|---|---|---|---|---|---|
+| 0 34b24d0c (cold) | 107.2 s | 0 / 14,432 | 226.2 s | 0 | 163.6 s | 0 / 0 |
+| 1 5c061f9e | 46.8 s | 14,125 | 81.4 s | 14,136 | 160.7 s | 0 / 0 |
+| 2 cfa27cea | 79.1 s | 0 / 14,437 (code 14,126) | 218.2 s | 0 (code 14,137) | 165.4 s | 0 / 0 |
+| 3 bc6fb708 | 49.2 s | 13,917 / 14,439 | 84.9 s | 13,928 | 163.0 s | 0 / 0 |
+| 4 dbf6af2f | 47.0 s | 14,141 | 80.4 s | 14,151 | 166.4 s | 0 / 0 |
+| 5 84dea807 | 46.0 s | 14,140 | 75.0 s | 14,150 | 167.7 s | 0 / 0 |
+| 6 9bf2bbc2 | 84.5 s | 0 / 14,446 (code 13,472, data 669) | 226.2 s | 0 (same) | 190.0 s | 0 / 0 |
+| 7 773afa0b | 50.0 s | 14,140 | 81.4 s | 14,151 | 166.1 s | 0 / 0 |
+| 8 c4df1b16 | 47.5 s | 14,147 | 78.5 s | 14,158 | 168.3 s | 0 / 0 |
+| 9 141789d2 | 89.2 s | 0 / 14,446 (code 14,138) | 257.0 s | 0 (same) | 170.1 s | 0 / 0 |
+
+**0 wrong reuses** (MEASURED): 84,610 results reused under `-n 4` and 84,674 serially, every one compared with the
+serial `--det` truth at its commit: 0 mismatches in either mode (so no B' rerun was needed). **Reuse share**: 58.59 %
+under `-n 4` against 58.64 % serially over the same commits (0.05 point; design target: within 1 point; three of the
+ten commits change code every test depends on and reuse nothing in either mode, for the same reasons). The
+parallel/serial difference is 10-11 tests per warm commit, all of them `new` (no entry): about 9 per run are the
+entries the cross-worker write rule drops (a test reading a file another worker's test wrote), the rest are not
+recorded under `-n` for the same reason in the cold run. Warm `-n 4` walls 46.0-50.0 s against
+75.0-84.9 s serial warm and 63.6-74.0 s plain `-n 4` (batch `esphome4`). Commits 0-2 ran while the engine's full test
+suite ran on the same machine: their walls are inflated (not used above). Raw: `build/esphome/walk-n4-10commits.json.gz`.
 
 ### P4: shared cache from the controller
 
@@ -212,7 +234,7 @@ Not started.
   identical across two runs, tested), verification (deterministic draw, compared in the controller), cross-worker
   write rule; audit reruns in isolation: not built.
 * 0 wrong reuses in the walk; 0 new failures caused by the split (esphome, 14,446 tests, 0 outcome differences).
-* The serial path without `-n`: unchanged in behaviour and trace format (tests; full suite: FULLSUITE). Three changes
+* The serial path without `-n`: unchanged in behaviour and trace format (tests; full suite of the engine: 534 passed, 9 skipped, 1 failed under load: `test_capture_sessions_match_reference` session 5 counted 2 instead of 3 child entropy draws while the walk ran on the same 4 cores; it passed 2 of 2 times alone afterwards, and an earlier full run of this branch (parallel tests excluded) had 512 passed, 9 skipped, 0 failed; the 23 parallel tests and 2 harness tests pass). Three changes
   reach serial cache keys and invalidate existing stores once: xdist's options are volatile (they were in the
   configuration digest of every session where xdist is installed), `_` and `PYTEST_XDIST_*` left the
   whole-environment digest, duplicate distribution entries count once. The reference implementation used by the
