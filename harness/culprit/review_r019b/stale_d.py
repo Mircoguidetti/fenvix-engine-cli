@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # usage (from the repository root): python3 harness/culprit/review_r019b/stale_d.py CLONE_DIR > harness/culprit/review_r019b/stale-d.jsonl
+# (fix round 3: results/d.jsonl now holds the 63 rows re-run with fresh stamps; round 1's rows are results/round1/d.jsonl)
 """Reconstruct round-1 step-4 commit probes (orderdep.find_commit) from the verdict sequence, and check for each
 consecutive probe pair whether a .py file differs between the two commits with the same size (the condition under
 which a same-second checkout runs stale bytecode). Prints per-row results as JSON lines."""
@@ -62,7 +63,7 @@ for r in rows:
                     if known.get(j) == 'fail': hi = j
                     elif known.get(j) in ('pass', 'missing'): lo = j
                     else: break
-        ok = (len(probes) == len(cs)) and chain[hi] == r['finder_named']
+        ok = (len(probes) == len(cs)) and chain[hi] == (r.get('finder_first') or r['finder_named'])  # round 3: before the red-side check
     except StopIteration:
         ok = False
     pairs = 0; ss = 0; ss_short = 0; exp_pairs = []
@@ -77,7 +78,13 @@ for r in rows:
                 ss += 1
                 if prev_wall < 1.0: ss_short += 1; exp_pairs.append(1.0 - prev_wall)
         prev_sha, prev_wall = sha, w
+    # fix round 3: a row re-run with the round-2 checkout (common.checkout gives every changed file a strictly
+    # increasing whole-second mtime) cannot meet the condition: a .pyc is reused only while the source's mtime and
+    # size both match, and no two checkouts share a stamp. The raw same-size pairs are still listed.
+    fresh = r.get('checkout') == 'fresh-mtime'
     out.append({'repo': r['repo'], 'victim': r['victim'], 'reconstructed': ok, 'probes': len(probes),
-                'pairs': pairs, 'same_size_pairs': ss, 'same_size_pairs_prev_under_1s': ss_short,
-                "finder_correct": r["finder_correct"], "p_same_second": [round(x, 2) for x in exp_pairs]})
+                'pairs': pairs, 'same_size_pairs': ss,
+                'same_size_pairs_prev_under_1s': 0 if fresh else ss_short,
+                'same_size_pairs_prev_under_1s_raw': ss_short, 'fresh_mtime': fresh,
+                "finder_correct": r["finder_correct"], "p_same_second": [] if fresh else [round(x, 2) for x in exp_pairs]})
     print(json.dumps(out[-1]), flush=True)

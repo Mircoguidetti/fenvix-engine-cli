@@ -3,6 +3,23 @@
 Measurement only, not the product. Reports: round 1, fenvix-brain-cli `sessions/2026-11-18-exact-culprit/REPORT.md`;
 round 2 (after review R-019), `sessions/2026-11-18-exact-culprit/REPORT-2.md` on this branch.
 
+## Round 3 (review R-019b, last fix round)
+
+Report: `sessions/2026-11-18-exact-culprit/REPORT-3.md`.
+
+* `finder.py`:
+  * red-side check after every confirmed commit: every later footprint state must fail (N1);
+  * the same check after the fallback search over every commit (N2);
+  * a child process counts as an uncontrolled source (`spawn`, or a followed child seen in the key through its
+    loader reads): green and red are replayed 5 times, then every confirmation is too (N3);
+  * an input or set is named only if it breaks green alone and the red environment without it passes (N4).
+* `orderdep.py` (step 4): the same red-side check over the pair's import footprint (`-X importtime`, Python 3.9).
+* `review_r019b/`: the reviewer's tests, unchanged; `conftest.py` marks N5 (engine, fixed on
+  `claude/rust-hotpaths-2`) as a non-strict expected failure; `stale_d.py` recognises rows re-run with fresh stamps.
+* `round3/`: re-run drivers (`refind_a2.py`, `refind_b.py`, `run_a3.sh`, `run_b3.sh`, `run_c3.sh`, `assemble3.sh`).
+* `results/`: every population re-run with the round-3 finder; round-2 rows moved to `results/round2/`;
+  `results/round1/d-rerun-fresh-stamps.jsonl` is step 4 re-run with fresh stamps and the unchanged step-4 finder.
+
 ## Round 2 (review R-019)
 
 * `finder.py` confirms every answer and says "unknown" instead of guessing (R-019 H1-H4): see its docstring.

@@ -8,6 +8,11 @@ project reverted; b-*.jsonl), c-nocode (c-final.jsonl: head-to-head environment 
 mechanisms), c-edit (c-edit.jsonl: data-edit commits), d (order-dependent; d.jsonl, carried over from round 1).
 For every answer: correct, confident wrong (a culprit named and not the truth), or unknown (no culprit named).
 Trivial rules (review R-019 H5): the oldest / newest commit of (green, red], the oldest / newest candidate commit.
+
+Fix round 3 (review R-019b): rows re-run with the round-3 finder carry ``"round": 3`` (a2, b) or come from the
+round-3 drivers (c, d); a row whose history or environment could not be rebuilt (``"rebuilt": false``) is left out
+and counted. Kind b reports both distinct-culprit counts: replayed commits (every case replays its own history) and
+original commits (a fix case's ``truth_original``; a revert case's culprit is the project's own commit).
 """
 
 from __future__ import annotations
@@ -77,23 +82,32 @@ def commit_kind(cases):
 def main():
     d = sys.argv[1]
     out = {}
-    a2 = [r for r in rows(d, "a-*.jsonl") if r.get("green_run") == "pass" and r.get("red_run") == "fail"]
-    a2_all = rows(d, "a-*.jsonl")
+    a2_all = [r for r in rows(d, "a-*.jsonl") if r.get("rebuilt", True)]
+    a2 = [r for r in a2_all if r.get("green_run") == "pass" and r.get("red_run") == "fail"]
     for r in a2_all:
         r["truth"] = r["truth"]
     out["a2"] = commit_kind(a2)
     out["a2"]["excluded_key_runs"] = len(a2_all) - len(a2)
+    out["a2"]["not_rebuilt"] = len(rows(d, "a-*.jsonl")) - len(a2_all)
+    out["a2"]["finder_round"] = sorted({r.get("round", 2) for r in a2})
     for shape in ("placed", "reland"):
         out[f"a2-{shape}"] = commit_kind([r for r in a2 if r.get("shape") == shape])
     out["a2"]["by_repo"] = {}
     for repo in sorted({r["repo"] for r in a2}):
         sub = commit_kind([r for r in a2 if r["repo"] == repo])
         out["a2"]["by_repo"][repo] = {k: sub[k] for k in ("cases", "correct", "confident_wrong", "unknown")}
-    b = [r for r in rows(d, "b-*.jsonl") if r.get("green_run") == "pass" and r.get("red_run") == "fail"]
+    b_all = [r for r in rows(d, "b-*.jsonl") if r.get("rebuilt", True)]
+    b = [r for r in b_all if r.get("green_run") == "pass" and r.get("red_run") == "fail"]
     out["b"] = commit_kind(b)
-    out["b"]["excluded_key_runs"] = len(rows(d, "b-*.jsonl")) - len(b)
+    out["b"]["excluded_key_runs"] = len(b_all) - len(b)
+    out["b"]["not_rebuilt"] = len(rows(d, "b-*.jsonl")) - len(b_all)
+    out["b"]["finder_round"] = sorted({r.get("round", 2) for r in b})
     out["b"]["repos"] = sorted({r["repo"] for r in b})
-    out["b"]["distinct_culprits"] = len({r["truth"] for r in b})
+    orig = {c["id"]: c.get("truth_original") or c["planted"] for c in rows(d, "cases/fix-*.jsonl")}
+    orig.update({c["id"]: c["planted"] for c in rows(d, "cases/rh-*.jsonl")})
+    out["b"]["distinct_culprits"] = len({r["truth"] for r in b})  # replayed commits
+    out["b"]["distinct_original_culprits"] = len({orig.get(r["id"], r["truth"]) for r in b})
+    out["b"]["sources"] = len({(r["id"].rsplit("-", 1)[0]) for r in b})  # a revert or a fix: id minus the index
     out["b"]["truth_is_reverted_commit"] = sum(1 for r in b if r.get("truth_is_planted"))
     c = [r for r in rows(d, "c-final.jsonl") if "finder" in r]
     ce = [r for r in rows(d, "c-edit.jsonl") if "finder" in r]
@@ -114,7 +128,9 @@ def main():
         r.setdefault("id", f"{r['repo']}:{r['victim']}")
     out["d"] = score(dd, lambda r: r["truth"], lambda r: r.get("finder_named"), lambda r: r["executions"])
     out["d"]["distinct_culprits"] = len({r["truth"] for r in dd})
-    out["d"]["note"] = "carried over from round 1 (orderdep.py, not changed in round 2)"
+    out["d"]["note"] = ("re-run in fix round 3 with the round-2 checkout (fresh stamps)" if dd and
+                        all(r.get("checkout") == "fresh-mtime" for r in dd) else
+                        "carried over from round 1 (orderdep.py, not changed in round 2)")
     allex = out["a2"]["_ex"] + out["b"]["_ex"] + cs["_ex"] + out["c-edit"]["_ex"] + out["d"]["_ex"]
     tot = {k: out[x][k] for k in ("cases", "correct", "confident_wrong", "unknown") for x in ("a2",)}
     for k in ("cases", "correct", "confident_wrong", "unknown"):

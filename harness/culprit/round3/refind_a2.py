@@ -41,7 +41,7 @@ def main():
     cases = {c["id"]: c for c in map(json.loads, open(rd / "cases" / f"a-{a.name}.jsonl"))}
     old = [json.loads(l) for l in open(rd / f"a-{a.name}.jsonl") if l.strip()]
     done = {json.loads(l)["id"] for l in open(a.out)} if os.path.exists(a.out) else set()
-    kdir = Path(a.keys_dir)
+    kdir = Path(a.keys_dir).resolve()
     kdir.mkdir(parents=True, exist_ok=True)
     for r in old:
         if r["id"] in done:

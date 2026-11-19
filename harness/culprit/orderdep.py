@@ -183,6 +183,113 @@ def find_commit(s: Search, red, polluter, victim, max_back=512):
     return chain[hi], chain[lo], chain, known
 
 
+RED_SIDE_CAP = 8  # unprobed footprint states of (named, red] replayed before an answer is withheld (R-019b)
+_CONFIG_FILES = ("pytest.ini", "tox.ini", "setup.cfg", "pyproject.toml", "conftest.py")
+
+
+def footprint(s: Search, sha, polluter, victim) -> set:
+    """Repository files the pair depends on at ``sha``: the modules the session imports (``-X importtime``; works
+    on Python 3.9, where proof keys cannot be written), the two test files, every conftest and the pytest
+    configuration. One extra run, counted as a step."""
+    checkout(s.repo, sha)
+    cmd = [str(s.venv / "bin" / "python"), "-X", "importtime", "-m", "pytest", "-q", "-p", "no:cacheprovider",
+           "--tb=no", "--det", f"--det-disable={DISABLE}", "-p", "no:randomly", polluter, victim]
+    t0 = time.perf_counter()
+    _code, out = sh(cmd, cwd=s.repo, env=base_env(s.venv, {"PYTHONPROFILEIMPORTTIME": "1"}), timeout=1800)
+    s.steps.append({"why": "red-side footprint", "verdict": "-", "wall": round(time.perf_counter() - t0, 2)})
+    files = set(git(s.repo, "ls-tree", "-r", "--name-only", sha).split("\n"))
+    paths = {polluter.split("::")[0], victim.split("::")[0]}
+    paths |= {f for f in files if f.rsplit("/", 1)[-1] in _CONFIG_FILES}
+    for line in out.splitlines():
+        if not line.startswith("import time:") or "|" not in line:
+            continue
+        mod = line.rsplit("|", 1)[1].strip()
+        if not mod or " " in mod:  # the header line ("imported package")
+            continue
+        base = mod.replace(".", "/")
+        for pre in ("", "src/", "lib/"):
+            for cand in (f"{pre}{base}.py", f"{pre}{base}/__init__.py"):
+                if cand in files:
+                    paths.add(cand)
+    if not any(p.endswith(".py") and p not in (polluter.split("::")[0], victim.split("::")[0])
+               and not p.endswith("conftest.py") for p in paths):
+        # no module of the repository seen (the import report was lost): every Python file is in the footprint
+        paths |= {f for f in files if f.endswith(".py")}
+    return paths
+
+
+def red_side(s: Search, chain, known, hi, polluter, victim, paths) -> tuple[int | None, int | None, str]:
+    """Review R-019b (N1, N2) for step 4: the named commit chain[hi] is the newest transition only if every commit
+    of (chain[hi], red] fails. A commit's footprint state is the blob of every footprint path; a commit whose state
+    equals a replayed one has its outcome (no run). The others are replayed newest first, up to RED_SIDE_CAP; a pass
+    restarts the search above it; an unreplayed rest withholds the answer. Returns (hi, lo, why) or (None, None, why).
+    """
+    def vec(i):
+        out = git(s.repo, "ls-tree", chain[i], "--", *sorted(paths), check=False)
+        return tuple(sorted(line.split()[2] + line.split("\t", 1)[1] for line in out.splitlines() if "\t" in line))
+
+    vecs: dict = {}
+    state: dict = {}
+    for i, v in known.items():
+        if i <= hi and v in ("fail", "pass", "missing"):
+            vecs.setdefault(i, vec(i))
+            state.setdefault(vecs[i], "pass" if v in ("pass", "missing") else "fail")
+    notes, probed = [], 0
+    for _round in range(6):
+        unchecked = set()
+        restart = None
+        for j in range(1, hi + 1):
+            if j not in vecs:
+                vecs[j] = vec(j)
+        # order only (the cap decides soundness): states where the polluter's or the victim's test file changes
+        # first (a missing test passes), then the others, newest first
+        tfiles = (polluter.split("::")[0], victim.split("::")[0])
+        tvec = {j: tuple(x for x in vecs[j] if x.endswith(tfiles)) for j in range(1, hi + 1)}
+        prio = [j for j in range(1, hi) if tvec[j] != tvec[j + 1]]
+        for j in prio + [j for j in range(1, hi) if j not in prio]:
+            st = state.get(vecs[j])
+            if st is None and known.get(j) is None:
+                if probed >= RED_SIDE_CAP:
+                    unchecked.add(vecs[j])
+                    continue
+                probed += 1
+                v = pair_at(s, chain[j], polluter, victim, "red-side check")
+                known[j] = v
+                if v == "error":
+                    unchecked.add(vecs[j])
+                    continue
+                st = "pass" if v in ("pass", "missing") else "fail"
+                state[vecs[j]] = st
+            if st == "pass":
+                restart = j
+                break
+        if restart is not None:
+            notes.append(f"{chain[hi][:10]} fixed later: {chain[restart][:10]} passes")
+            lo = restart
+            hi = max(i for i, v in known.items() if i < lo and v == "fail")
+            while lo - hi > 1:
+                mid = (lo + hi) // 2
+                v = pair_at(s, chain[mid], polluter, victim, "red-side bisect")
+                known[mid] = v
+                if v == "fail":
+                    hi = mid
+                elif v in ("pass", "missing"):
+                    lo = mid
+                else:
+                    return None, None, "; ".join(notes + ["a commit of the restarted search cannot run"])
+            for i, v in known.items():
+                if v in ("fail", "pass", "missing"):
+                    vecs.setdefault(i, vec(i))
+                    state.setdefault(vecs[i], "pass" if v in ("pass", "missing") else "fail")
+            continue
+        if unchecked:
+            return None, None, "; ".join(notes + [
+                f"ambiguous: {chain[hi][:10]} is a transition, but {len(unchecked)} later footprint states were not "
+                f"replayed (one may pass, and a newer commit break again)", f"suspect {chain[hi]}"])
+        return hi, hi + 1, "; ".join(notes)
+    return None, None, "; ".join(notes + ["the history changes outcome too often"])
+
+
 def baseline_bisect(repo, venv, good, bad, victim, attempt):
     """git bisect run with plain pytest, full suite, random order (pytest-randomly reseeds every run)."""
     git(repo, "bisect", "reset", check=False)
@@ -268,6 +375,14 @@ def main():
             continue
         n_pol = len(sr.steps)
         named, good, chain, known = find_commit(sr, s["sha"], pol, victim)
+        res["finder_first"] = named
+        if named is not None:
+            hi = chain.index(named)
+            paths = footprint(sr, s["sha"], pol, victim) | footprint(sr, named, pol, victim)
+            res["footprint_paths"] = len(paths)
+            nh, nl, why = red_side(sr, chain, known, hi, pol, victim, paths)
+            res["red_side"] = why
+            named, good = (chain[nh], chain[nl]) if nh is not None else (None, None)
         res["finder_wall"] = round(time.perf_counter() - t0, 2)
         res["finder_named"] = named
         res["finder_good"] = good
@@ -275,7 +390,7 @@ def main():
         res["executions_commit"] = len(sr.steps) - n_pol
         res["executions"] = len(sr.steps)
         res["finder_steps"] = sr.steps
-        if named is None:
+        if named is None and res.get("finder_first") is None:
             res["skip"] = "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
             open(a.out, "a").write(json.dumps(res) + "\n")
             print(a.repo_name, victim, res["skip"], flush=True)
@@ -296,20 +411,21 @@ def main():
         res["truth"] = trans
         res["truth_scan_tail"] = [scan[i] for i in sorted(scan)][-5:]
         res["finder_correct"] = trans is not None and named == trans
-        touched = git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", "-m", "--first-parent", named,
-                      check=False).split()
+        touched = git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", "-m", "--first-parent",
+                      named or res["finder_first"], check=False).split()
         res["named_touches"] = touched[:20]
         res["named_touches_polluter_file"] = pol.split("::")[0] in touched
         res["named_touches_victim_file"] = victim.split("::")[0] in touched
         res["truth_runs"] = len(scan)
         # baseline: 10 git bisect attempts with plain pytest in random order, same bracket
-        bl = [baseline_bisect(repo, venv, good, s["sha"], victim, i) for i in range(a.attempts)]
+        bl = [baseline_bisect(repo, venv, good or res["finder_first"] + "^", s["sha"], victim, i)
+              for i in range(a.attempts)]
         res["bisect"] = bl
         res["bisect_wrong"] = sum(1 for b in bl if b["named"] != trans)
         checkout(repo, s["sha"])
         open(a.out, "a").write(json.dumps(res) + "\n")
-        print(f"{a.repo_name} {victim}: polluter {pol} named {named[:10]} truth {trans and trans[:10]} "
-              f"{'OK' if res['finder_correct'] else 'WRONG'} exec={res['executions']} "
+        print(f"{a.repo_name} {victim}: polluter {pol} named {named and named[:10]} truth {trans and trans[:10]} "
+              f"{'OK' if res['finder_correct'] else 'WRONG' if named else 'UNKNOWN'} exec={res['executions']} "
               f"(polluter {n_pol}, commit {res['executions_commit']}) | bisect wrong {res['bisect_wrong']}/{a.attempts}",
               flush=True)
 
