@@ -16,6 +16,11 @@ digests). What counts as an input (each one recorded while the test runs):
   makes the whole environment an input);
 * **runtime identity**: interpreter (version and binary), platform, installed
   distributions;
+* **everything an earlier context of the same process depended on** (review
+  R-020, prefix rule): a test, fixture or collection that ran before the test
+  can leave state it reads without any event (``functools.lru_cache``, a
+  module-level dict, a registry filled on first use), so their code, files,
+  environment variables, distributions and refusals are inputs too;
 * **configuration**: pytest version, options and ini, plugins, the Level 0
   controls. Under ``--det`` the clock, randomness, hash seed and network are
   controlled, so they are configuration, not hidden inputs; the clock's epoch
