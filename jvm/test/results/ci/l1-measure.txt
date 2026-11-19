@@ -1,7 +1,7 @@
-l1.CoroutineTest::defaultDispatcherRace()                    without --det failed 10/10   with --det failed 10/10   fingerprints under --det: 9
+l1.CoroutineTest::defaultDispatcherRace()                    without --det failed 10/10   with --det failed 10/10   fingerprints under --det: 10
 l1.CoroutineTest::delaysInRunBlocking()                      without --det failed 0/10   with --det failed 0/10   fingerprints under --det: 1
 l1.CoroutineTest::virtualTimeOfRunTest()                     without --det failed 0/10   with --det failed 0/10   fingerprints under --det: 1
-l1.CoroutineTest::withTimeoutHolds()                         without --det failed 0/10   with --det failed 0/10   fingerprints under --det: 3
+l1.CoroutineTest::withTimeoutHolds()                         without --det failed 0/10   with --det failed 0/10   fingerprints under --det: 2
 l1.ThreadRaceTest::completionOrder()                         without --det failed 10/10   with --det failed 10/10   fingerprints under --det: 1
-l1.ThreadRaceTest::unsynchronizedCounter()                   without --det failed 7/10   with --det failed 10/10   fingerprints under --det: 1
-build+test seconds (NOISY): without [34.52, 9.31, 8.8, 8.73, 8.66, 8.95, 8.93, 8.64, 8.95, 8.68] with [10.79, 9.38, 9.46, 9.58, 9.77, 9.68, 9.55, 9.71, 9.77, 9.77]
+l1.ThreadRaceTest::unsynchronizedCounter()                   without --det failed 8/10   with --det failed 8/10   fingerprints under --det: 2
+build+test seconds (NOISY): without [37.21, 9.88, 9.44, 9.37, 9.22, 9.44, 9.57, 9.28, 9.43, 9.5] with [11.87, 10.27, 10.67, 10.11, 9.84, 10.27, 10.24, 10.06, 10.25, 10.03]

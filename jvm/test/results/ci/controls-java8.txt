@@ -1,5 +1,7 @@
 == junit5 gradle: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
-== junit5 gradle: 37/38 checks hold; fingerprints identical across --det runs: True
+== junit5 gradle: 40/40 checks hold; fingerprints identical across --det runs: True
+  ok  unchanged fx.FileTimeTest::newFileIsRecent()  without=passed,passed  det=passed,passed
+  ok  unchanged fx.FileTimeTest::setLastModifiedRoundTrips()  without=passed,passed  det=passed,passed
   ok  control   fx.FsControlTest::directoryStream()  without=failed,failed  det=passed,passed
   ok  control   fx.FsControlTest::fileList()  without=failed,failed  det=passed,passed
   ok  control   fx.FsControlTest::fileListFiles()  without=failed,failed  det=passed,passed
@@ -32,14 +34,16 @@
   ok  control   fx.TimeControlTest::currentTimeMillis()  without=passed,failed  det=passed,passed
   ok  control   fx.TimeControlTest::instantNow()  without=passed,failed  det=passed,passed
   ok  control   fx.TimeControlTest::localDateTimeNow()  without=passed,failed  det=passed,passed
-  BAD control   fx.TimeControlTest::nanoTimeDelta()  without=passed,passed  det=passed,passed
+  ok  control   fx.TimeControlTest::nanoTimeDelta()  without=passed,failed  det=passed,passed
   ok  control   fx.TimeControlTest::newDate()  without=passed,failed  det=passed,passed
   ok  control   fx.TimeControlTest::zonedDateTimeNow()  without=passed,failed  det=passed,passed
   ok  unchanged fx.UnchangedTest::arithmetic()  without=passed,passed  det=passed,passed
   ok  unchanged fx.UnchangedTest::sortedCollections()  without=passed,passed  det=passed,passed
   ok  unchanged fx.UnchangedTest::stringFormat()  without=passed,passed  det=passed,passed
 == junit5 maven: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
-== junit5 maven: 38/38 checks hold; fingerprints identical across --det runs: True
+== junit5 maven: 40/40 checks hold; fingerprints identical across --det runs: True
+  ok  unchanged fx.FileTimeTest::newFileIsRecent()  without=passed,passed  det=passed,passed
+  ok  unchanged fx.FileTimeTest::setLastModifiedRoundTrips()  without=passed,passed  det=passed,passed
   ok  control   fx.FsControlTest::directoryStream()  without=failed,failed  det=passed,passed
   ok  control   fx.FsControlTest::fileList()  without=failed,failed  det=passed,passed
   ok  control   fx.FsControlTest::fileListFiles()  without=failed,failed  det=passed,passed

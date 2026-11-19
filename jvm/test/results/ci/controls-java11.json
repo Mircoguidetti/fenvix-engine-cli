@@ -2,6 +2,32 @@
  "junit5-gradle": {
   "rows": [
    {
+    "test": "fx.FileTimeTest::newFileIsRecent()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FileTimeTest::setLastModifiedRoundTrips()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
     "test": "fx.FsControlTest::directoryStream()",
     "kind": "control",
     "without_det": [
@@ -496,7 +522,7 @@
     "ok": true
    }
   ],
-  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: jvm/test/results/ci/logs/gradle-det-1.jsonl\n  run 1: jvm/test/results/ci/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 38  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "verify": "detpy verify: 2 runs, 40 tests\n  run 0: jvm/test/results/ci/logs/gradle-det-1.jsonl\n  run 1: jvm/test/results/ci/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0\n",
   "fingerprints_identical": true,
   "seed_exploration": {
    "same_order_same_seed": true,
@@ -508,6 +534,32 @@
  "junit5-maven": {
   "rows": [
    {
+    "test": "fx.FileTimeTest::newFileIsRecent()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
+    "test": "fx.FileTimeTest::setLastModifiedRoundTrips()",
+    "kind": "unchanged",
+    "without_det": [
+     "passed",
+     "passed"
+    ],
+    "with_det": [
+     "passed",
+     "passed"
+    ],
+    "ok": true
+   },
+   {
     "test": "fx.FsControlTest::directoryStream()",
     "kind": "control",
     "without_det": [
@@ -1002,7 +1054,7 @@
     "ok": true
    }
   ],
-  "verify": "detpy verify: 2 runs, 38 tests\n  run 0: jvm/test/results/ci/logs/maven-det-1.jsonl\n  run 1: jvm/test/results/ci/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 38  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "verify": "detpy verify: 2 runs, 40 tests\n  run 0: jvm/test/results/ci/logs/maven-det-1.jsonl\n  run 1: jvm/test/results/ci/logs/maven-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0\n",
   "fingerprints_identical": true,
   "seed_exploration": {
    "same_order_same_seed": true,

@@ -5,7 +5,7 @@
    "test": "l1.CoroutineTest::defaultDispatcherRace()",
    "failed_without_det": "10/10",
    "failed_with_det": "10/10",
-   "distinct_fingerprints_det": 9
+   "distinct_fingerprints_det": 10
   },
   {
    "test": "l1.CoroutineTest::delaysInRunBlocking()",
@@ -23,7 +23,7 @@
    "test": "l1.CoroutineTest::withTimeoutHolds()",
    "failed_without_det": "0/10",
    "failed_with_det": "0/10",
-   "distinct_fingerprints_det": 3
+   "distinct_fingerprints_det": 2
   },
   {
    "test": "l1.ThreadRaceTest::completionOrder()",
@@ -33,35 +33,35 @@
   },
   {
    "test": "l1.ThreadRaceTest::unsynchronizedCounter()",
-   "failed_without_det": "7/10",
-   "failed_with_det": "10/10",
-   "distinct_fingerprints_det": 1
+   "failed_without_det": "8/10",
+   "failed_with_det": "8/10",
+   "distinct_fingerprints_det": 2
   }
  ],
  "seconds": {
   "nodet": [
-   34.52,
-   9.31,
-   8.8,
-   8.73,
-   8.66,
-   8.95,
-   8.93,
-   8.64,
-   8.95,
-   8.68
+   37.21,
+   9.88,
+   9.44,
+   9.37,
+   9.22,
+   9.44,
+   9.57,
+   9.28,
+   9.43,
+   9.5
   ],
   "det": [
-   10.79,
-   9.38,
-   9.46,
-   9.58,
-   9.77,
-   9.68,
-   9.55,
-   9.71,
-   9.77,
-   9.77
+   11.87,
+   10.27,
+   10.67,
+   10.11,
+   9.84,
+   10.27,
+   10.24,
+   10.06,
+   10.25,
+   10.03
   ]
  }
 }
