@@ -341,6 +341,18 @@ func cmdTest(args []string) int {
 		epoch = t.UnixNano()
 	}
 
+	// sched: goroutines of a test binary share one P (Level 1 for goroutines),
+	// unless --det-gomaxprocs says otherwise
+	gomaxprocs := o.gomaxprocs
+	schedOn := false
+	for _, c := range controls {
+		if c == overlay.CtlSched {
+			schedOn = true
+		}
+	}
+	if schedOn && gomaxprocs == "" {
+		gomaxprocs = "1"
+	}
 	shim := ""
 	if want[overlay.CtlTime] && ov.Has(overlay.CtlTime) && !o.disable[overlay.CtlTime] && ov.Partial["os-time"] == "" {
 		var err error
@@ -452,9 +464,9 @@ func cmdTest(args []string) int {
 
 	sess := &session.Session{
 		Dir: dir, Self: self, Det: o.det, Seed: o.seed, Controls: controls, Ctl: ctl, Unavailable: ov.Unavailable,
-		Epoch: epoch, Shim: shim, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
+		Epoch: epoch, Shim: shim, Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
 		Goroot: env["GOROOT"], GoVersion: env["GOVERSION"], GOOS: env["GOOS"], GOARCH: env["GOARCH"],
-		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: o.gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
+		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
 		BuildFlags: keyFlags,
 	}
 	if o.skipCache != "" {

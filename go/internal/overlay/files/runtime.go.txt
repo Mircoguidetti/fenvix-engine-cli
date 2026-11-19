@@ -23,6 +23,7 @@ const (
 	FenvixSerial   = 1 << 6 // t.Parallel is a no-op
 	FenvixDeps     = 1 << 7 // record what each test reads (skip key)
 	FenvixFastWait = 1 << 8 // Sleep does not wait when the test started no goroutine
+	FenvixSched    = 1 << 9 // goroutine scheduling: one P (set by the shell), long time slices, seeded runnext
 )
 
 var (
@@ -89,6 +90,48 @@ func fenvixEarlyCfg() (ctl uint32, seed uint64, ok bool) {
 	return 0, 0, false
 }
 
+// fenvix:if sched
+var (
+	fenvixSchedExplore bool // sched on and an exploration seed
+	fenvixSchedSeed    uint64
+	fenvixSchedCtr     uint64
+	fenvixSchedSlice   int64 = forcePreemptNS
+)
+
+// fenvixSlice is sysmon's time slice: 500 ms with the sched control (a
+// running goroutine gives way at its own scheduling points; a spin loop still
+// makes progress after that long, rarely), else Go's 10 ms.
+//
+//go:nosplit
+func fenvixSlice() int64 {
+	return atomic.Loadint64(&fenvixSchedSlice)
+}
+
+// fenvixSchedNext: with an exploration seed, whether a goroutine made
+// runnable goes next (runnext) or to the tail of the run queue comes from the
+// seed; seed 0 keeps Go's choice.
+//
+//go:nosplit
+func fenvixSchedNext(next bool) bool {
+	c := atomic.Xadd64(&fenvixSchedCtr, 1)
+	return fenvixMix(fenvixSchedSeed^c*0x9E3779B97F4A7C15)&1 == 1
+}
+
+func fenvixSchedInit(cfg string, ctl uint32) {
+	if ctl&FenvixSched == 0 {
+		return
+	}
+	atomic.Storeint64(&fenvixSchedSlice, 500*1000*1000)
+	for i := 0; i+9 <= len(cfg); i++ {
+		if cfg[i:i+9] == "explore=1" && (i == 0 || cfg[i-1] == ';') {
+			_, seed := fenvixParseCfg(cfg)
+			fenvixSchedSeed = fenvixMix(seed ^ 0x7363686564) // "sched"
+			fenvixSchedExplore = true
+		}
+	}
+}
+// fenvix:end
+
 // fenvix:if maps-alg
 // alginit: Go's hash functions get a random key per process, which changes
 // the placement of keys in maps and so the iteration order. With the maps
@@ -125,7 +168,11 @@ func fenvixParse() {
 		}
 		return
 	}
-	ctl, seed := fenvixParseCfg(gogetenv("FENVIX_GO_DET"))
+	cfg := gogetenv("FENVIX_GO_DET")
+	ctl, seed := fenvixParseCfg(cfg)
+	// fenvix:if sched
+	fenvixSchedInit(cfg, ctl)
+	// fenvix:end
 	atomic.Store64(&fenvixMapsSeed, fenvixMix(seed^0x6d617073))
 	fenvixCtl = ctl
 	atomic.Store(&fenvixInitState, 2)

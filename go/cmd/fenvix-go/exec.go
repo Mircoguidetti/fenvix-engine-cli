@@ -146,6 +146,15 @@ func cmdExec(args []string) int {
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)
 	}
+	if sess.Sched {
+		// no signal-based preemption: a goroutine gives way at its own
+		// scheduling points (channel operations, locks, syscalls, Gosched)
+		gd := os.Getenv("GODEBUG")
+		if gd != "" {
+			gd += ","
+		}
+		childEnv = append(childEnv, "GODEBUG="+gd+"asyncpreemptoff=1,gcstoptheworld=1")
+	}
 
 	// skip cache: the core loads it and takes the pre-run values of every
 	// recorded input now, before the binary (its init, TestMain) can change them

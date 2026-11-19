@@ -39,17 +39,18 @@ const (
 	CtlSerial   = "serial"
 	CtlDeps     = "deps"
 	CtlFastWait = "fastwait"
+	CtlSched    = "sched"
 )
 
 // Bits maps a control name to its bit.
 var Bits = map[string]uint32{
 	CtlTime: 1 << 0, CtlRandom: 1 << 1, CtlCrypto: 1 << 2, CtlMaps: 1 << 3, CtlFs: 1 << 4,
-	CtlNet: 1 << 5, CtlSerial: 1 << 6, CtlDeps: 1 << 7, CtlFastWait: 1 << 8,
+	CtlNet: 1 << 5, CtlSerial: 1 << 6, CtlDeps: 1 << 7, CtlFastWait: 1 << 8, CtlSched: 1 << 9,
 }
 
 // DetControls are the controls `--det` turns on (deps is added by the skip
 // cache, fastwait follows time).
-var DetControls = []string{CtlTime, CtlRandom, CtlCrypto, CtlMaps, CtlFs, CtlNet, CtlSerial, CtlFastWait}
+var DetControls = []string{CtlTime, CtlRandom, CtlCrypto, CtlMaps, CtlFs, CtlNet, CtlSerial, CtlFastWait, CtlSched}
 
 type op struct {
 	kind   string // "insert": add text after the anchor line; "replace": replace the anchor line
@@ -132,6 +133,13 @@ var patches = []patch{
 	{group: "os-time", file: "os/exec.go", ops: []op{
 		{kind: "insert", anchor: "func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {", text: "\tattr = fenvixChildAttr(attr)"},
 	}},
+	{group: "sched", file: "runtime/proc.go", ops: []op{
+		// goroutine scheduling (Level 1): sysmon's time-slice preemption is
+		// stretched (a spin loop still makes progress, rarely), and with an
+		// exploration seed the runnext choice comes from the seed
+		{kind: "replace", anchor: "} else if pd.schedwhen+forcePreemptNS <= now {", text: "\t\t} else if pd.schedwhen+fenvixSlice() <= now {"},
+		{kind: "insert", anchor: "func runqput(pp *p, gp *g, next bool) {", text: "\tif fenvixSchedExplore {\n\t\tnext = fenvixSchedNext(next)\n\t}"},
+	}},
 	{group: "maps-alg", file: "runtime/alg.go", ops: []op{
 		{kind: "replace", anchor: "func alginit() {", text: "func fenvixOrigAlginit() {"},
 	}},
@@ -206,7 +214,7 @@ var additions = []addition{
 var controlGroups = map[string][]string{
 	CtlTime: {"time"}, CtlFastWait: {"time"}, CtlRandom: {"rand-v1", "rand-v2", "os-temp"},
 	CtlCrypto: {"crypto"}, CtlMaps: {"maps-alg", "maps-rand", "cheaprand"}, CtlFs: {"os-dir"},
-	CtlNet: {"net", "net-ports"}, CtlSerial: {"serial"}, CtlDeps: {"os-dir", "os-open", "os-stat", "os-exec", "env", "net", "time-deps"},
+	CtlNet: {"net", "net-ports"}, CtlSched: {"sched"}, CtlSerial: {"serial"}, CtlDeps: {"os-dir", "os-open", "os-stat", "os-exec", "env", "net", "time-deps"},
 }
 
 // Result describes a generated overlay.

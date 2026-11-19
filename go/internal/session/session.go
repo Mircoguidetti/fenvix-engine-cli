@@ -28,6 +28,7 @@ type Session struct {
 	Ctl         uint32            `json:"ctl"`
 	Unavailable map[string]string `json:"unavailable,omitempty"`
 	Epoch       int64             `json:"epoch"`
+	Sched       bool              `json:"sched,omitempty"` // one P, no async preemption (goroutine scheduling)
 	Shim        string            `json:"shim,omitempty"` // library preloaded into programs a --det test starts (their clock)
 	Tick        int64             `json:"tick"`
 	Adapt       int64             `json:"adapt"`
