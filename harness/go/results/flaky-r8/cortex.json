@@ -1,0 +1,1405 @@
+{
+ "spec": {
+  "name": "cortex",
+  "repo": "cortexproject/cortex",
+  "sha": "a3773c2dcce7de96b865c04d6405c5e2dee5da49",
+  "fix_commit": "1317cd038865003d083595135ff0d80cf896730b",
+  "fix_date": "2026-09-29T11:24:44.000-07:00",
+  "title": "Fix flaky TestGetRules: stop scheduled evaluations from racing pre-evaluation state assertions (#7857)",
+  "tests": [
+   "TestGetRules"
+  ],
+  "source": "github commit search 'repo:cortexproject/cortex flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestGetRules": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./pkg/ruler"
+ ],
+ "imports": [
+  "github.com/cortexproject/cortex/pkg/ruler"
+ ],
+ "go_version": "go1.27.0",
+ "build_plain_s": 132.9,
+ "build_det_s": 202.1,
+ "baseline": {
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRuleGroupNextToken": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestProtoDecode": [
+   "failed",
+   "failed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestBuildNotifierConfig": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules_HA": [
+   "failed",
+   "failed",
+   "failed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_RejectsEmptyGroupName": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::Test_extractHeader": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_limit": [
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestNotifierSendExternalLabels": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::Test_mapper_MapRulesMultipleFiles": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuleEvalMetricsDeletePerUserMetrics": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::Test_newRulerClientFactory": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackupRules": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestManagerMetricsWithoutRuleGroupLabel": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestGeneratePage_MaxRules": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::Test_stripEvaluationFields": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestNoOrgId": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_Rules": [
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRulerShutdown": [
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules": [
+   "failed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_LimitsPerGroup": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::Test_mapper_MapRulesSpecialCharNamespace": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestPaginatedGroupStatesSort": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherAppendable": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestJsonDecode": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestInstantQueryJsonCodec": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_QueryOffset": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestDeleteTenantRuleGroups": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_ProtoToRuleGroupYamlConvertion": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_alerts": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetReplicationSetForListRule": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_AcceptsStandardFunctions": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestSendAlerts": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestAPIResponseSerialization": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuleGroupMetrics": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackUpRuleGroups": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestSlowRuleGroupSyncDoesNotSlowdownListRules": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherAppender_Commit_WithDiscardOutOfOrder": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_TestShutdown": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRulerDisablesRuleGroups": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherErrors": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestMetricsArePerUser": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRecoverAlertsPostOutage": [
+   "passed",
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestDecodeLabelOrder": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestSyncRuleGroupsCleanUpPerUserMetrics": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackUpRuleGroupsMetrics": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_RingLifecyclerShouldAutoForgetUnhealthyInstances": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRulesFromBackup": [
+   "failed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_max_rules": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestExecuteGeneratorURLTemplate": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_RulerGroupLimits": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_special_characters": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_ListAllRules": [
+   "passed"
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_RejectsInvalidRules": [
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {
+  "github.com/cortexproject/cortex/pkg/ruler::TestProtoDecode": "=== RUN   TestProtoDecode\n=== RUN   TestProtoDecode/vector\n--- FAIL: TestProtoDecode/vector (0.00s)\n--- FAIL: TestProtoDecode (0.00s)\npanic: runtime error: makeslice: len out of range [recovered, repanicked]\n\ngoroutine 165 [running]:\ntesting.tRunner.func1.2({0x3a4c708, 0x1f70ff0})\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2123 +0x232\ntesting.tRunner.func1()\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2126 +0x329\npanic({0x3a4c708?, 0x1f70ff0?})\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/runtime/panic.go:859 +0x125\ngithub.com/cortexproject/cortex/pkg/querier/tripperware.(*PrometheusResponse).Marshal(0x816e392b0e0)\n\t/tmp/work/src/pkg/querier/tripperware/query.pb.go:1970 +0x33\ngithub.com/cortexproject/cortex/pkg/ruler.TestProtoDecode.func1(0x816e3a078c8)\n\t/tmp/work/src/pkg/ruler/frontend_decoder_test.go:193 +0x33\ntesting.tRunner(0x816e3a078c8, 0x816e3b86780)\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2193 +0xea\ncreated by testing.(*T).Run in goroutine 164\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2258 +0x4d4\n",
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules_HA": "heus/model/labels.Labels.Range({{0x199d8e8acc80?, 0x199d8edfeed0?}}, 0x199d8edfeee0)\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_stringlabels.go:406 +0x1be\ngithub.com/prometheus/prometheus/model/labels.Labels.Map({{0x199d8e8acc80?, 0x1e93f0e?}})\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_common.go:138 +0x4f\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.FromProto(0x199d8ee9c120)\n\t/tmp/work/src/pkg/ruler/rulespb/compat.go:73 +0x248\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.RuleGroupList.Formatted({0x199d8ee86380, 0x2, 0x199d8eea60a8?})\n\t/tmp/work/src/pkg/ruler/rulespb/custom.go:14 +0x229\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).syncRulesToManager(0x199d8ec48808, {0x3d88190, 0x3ef0300}, {0x1e31265, 0x5}, {0x199d8ee86380?, 0x199d8ee88060?, 0x199d8ee88060?})\n\t/tmp/work/src/pkg/ruler/manager.go:211 +0x5b\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).SyncRuleGroups(0x199d8ec48808, {0x3d88190, 0x3ef0300}, 0x199d8ee8a240)\n\t/tmp/work/src/pkg/ruler/manager.go:158 +0x125\ngithub.com/cortexproject/cortex/pkg/ruler.(*Ruler).syncRules(0x199d8ec49008, {0x3d88190, 0x3ef0300}, {0x1e34a71, 0x7})\n\t/tmp/work/src/pkg/ruler/ruler.go:919 +0x2ba\ngithub.com/cortexproject/cortex/pkg/ruler.getRulesHATest.func1.5({0x199d8edff638?, 0x493d4a?}, 0x199d8ec49008)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1858 +0x45\ngithub.com/cortexproject/cortex/pkg/ruler.getRulesHATest.func1.4(0x199d8edffd90)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1852 +0x66\ngithub.com/cortexproject/cortex/pkg/ruler.getRulesHATest.func1(0x199d8e9fb448)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1857 +0x10cc\ntesting.tRunner(0x199d8e9fb448, 0x199d8ec5ea40)\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2193 +0xea\ncreated by testing.(*T).Run in goroutine 83\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2258 +0x4d4\n",
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules": "/vendor/github.com/prometheus/prometheus/model/labels/labels_stringlabels.go:54\ngithub.com/prometheus/prometheus/model/labels.Labels.Range({{0xd494c67a40?, 0x427d1b?}}, 0xd494ff02e0)\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_stringlabels.go:406 +0x1be\ngithub.com/prometheus/prometheus/model/labels.Labels.Map({{0xd494c67a40?, 0x1e93f0e?}})\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_common.go:138 +0x4f\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.FromProto(0xd494ca8120)\n\t/tmp/work/src/pkg/ruler/rulespb/compat.go:73 +0x248\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.RuleGroupList.Formatted({0xd49443e940, 0x1, 0xd494cac1a0?})\n\t/tmp/work/src/pkg/ruler/rulespb/custom.go:14 +0x229\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).syncRulesToManager(0xd494721008, {0x3d88190, 0x3ef0300}, {0x1e3126a, 0x5}, {0xd49443e940?, 0xd494b9e7e0?, 0xd494b9e7e0?})\n\t/tmp/work/src/pkg/ruler/manager.go:211 +0x5b\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).SyncRuleGroups(0xd494721008, {0x3d88190, 0x3ef0300}, 0xd494c2cdb0)\n\t/tmp/work/src/pkg/ruler/manager.go:158 +0x125\ngithub.com/cortexproject/cortex/pkg/ruler.(*Ruler).syncRules(0xd494721808, {0x3d88190, 0x3ef0300}, {0x1e34a71, 0x7})\n\t/tmp/work/src/pkg/ruler/ruler.go:919 +0x2ba\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRules.func1.5(...)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1409\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRules.func1.4(...)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1403\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRules.func1(0xd494a91208)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1408 +0xc3b\ntesting.tRunner(0xd494a91208, 0xd494809590)\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2193 +0xea\ncreated by testing.(*T).Run in goroutine 337\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2258 +0x4d4\n",
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRulesFromBackup": "s/labels_stringlabels.go:54\ngithub.com/prometheus/prometheus/model/labels.Labels.Range({{0x12ebe862b240?, 0x12ebe86a2168?}}, 0x12ebe86a2178)\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_stringlabels.go:406 +0x1be\ngithub.com/prometheus/prometheus/model/labels.Labels.Map({{0x12ebe862b240?, 0x1e93f0e?}})\n\t/tmp/work/src/vendor/github.com/prometheus/prometheus/model/labels/labels_common.go:138 +0x4f\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.FromProto(0x12ebe8706000)\n\t/tmp/work/src/pkg/ruler/rulespb/compat.go:73 +0x248\ngithub.com/cortexproject/cortex/pkg/ruler/rulespb.RuleGroupList.Formatted({0x12ebe85be6f0, 0x2, 0x12ebe8098918?})\n\t/tmp/work/src/pkg/ruler/rulespb/custom.go:14 +0x229\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).syncRulesToManager(0x12ebe851f808, {0x3d88190, 0x3ef0300}, {0x1e31265, 0x5}, {0x12ebe85be6f0?, 0x12ebe8704060?, 0x12ebe8704060?})\n\t/tmp/work/src/pkg/ruler/manager.go:211 +0x5b\ngithub.com/cortexproject/cortex/pkg/ruler.(*DefaultMultiTenantManager).SyncRuleGroups(0x12ebe851f808, {0x3d88190, 0x3ef0300}, 0x12ebe85c2750)\n\t/tmp/work/src/pkg/ruler/manager.go:158 +0x125\ngithub.com/cortexproject/cortex/pkg/ruler.(*Ruler).syncRules(0x12ebe83e3008, {0x3d88190, 0x3ef0300}, {0x1e34a71, 0x7})\n\t/tmp/work/src/pkg/ruler/ruler.go:919 +0x2ba\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRulesFromBackup.func5(...)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1640\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRulesFromBackup.func4(...)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1634\ngithub.com/cortexproject/cortex/pkg/ruler.TestGetRulesFromBackup(0x12ebe8277688)\n\t/tmp/work/src/pkg/ruler/ruler_test.go:1639 +0x15ed\ntesting.tRunner(0x12ebe8277688, 0x3d98cb0)\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2193 +0xea\ncreated by testing.(*T).Run in goroutine 1\n\t/home/runner/go/pkg/mod/golang.org/toolchain@v0.0.1-go1.27.0.linux-amd64/src/testing/testing.go:2258 +0x4d4\n"
+ },
+ "seconds": 692.3,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 861,
+  "outcome": 8,
+  "fs": 53
+ },
+ "det0_top_tests_by_events": [
+  [
+   611,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_max_rules"
+  ],
+  [
+   95,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules"
+  ],
+  [
+   84,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_alerts"
+  ],
+  [
+   64,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_special_characters"
+  ],
+  [
+   64,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_limit"
+  ],
+  [
+   2,
+   "github.com/cortexproject/cortex/pkg/ruler::TestAPIResponseSerialization"
+  ],
+  [
+   1,
+   "github.com/cortexproject/cortex/pkg/ruler::Test_stripEvaluationFields"
+  ],
+  [
+   1,
+   "github.com/cortexproject/cortex/pkg/ruler::TestRuler_Create"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_limit",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 15,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:100",
+     "v": "16000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/summary.go:261",
+     "v": "16000"
+    },
+    "reason": "time",
+    "description": "event #15: [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:100 = 16000  <>  [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/summary.go:261 = 16000"
+   }
+  },
+  {
+   "nodeid": "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_max_rules",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 57,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "vendor/github.com/prometheus/prometheus/rules/group.go:214",
+     "v": "2410036991"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "vendor/github.com/prometheus/prometheus/rules/group.go:214",
+     "v": "2802017298"
+    },
+    "reason": "thread",
+    "description": "event #57: time.NewTimer @ vendor/github.com/prometheus/prometheus/rules/group.go:214 returned different values: \"2410036991\" vs \"2802017298\""
+   }
+  },
+  {
+   "nodeid": "github.com/cortexproject/cortex/pkg/ruler::TestRuler_alerts",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 18,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "vendor/github.com/prometheus/client_golang/prometheus/counter.go:100",
+     "v": "19000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "pkg/ring/kv/consul/mock.go:90",
+     "v": "1000000000"
+    },
+    "reason": "thread",
+    "description": "event #18: [time] time.Now @ vendor/github.com/prometheus/client_golang/prometheus/counter.go:100 = 19000  <>  [time] time.NewTimer @ pkg/ring/kv/consul/mock.go:90 = 1000000000 (thread 1)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 8,
+  "stable": 5,
+  "diverged": 3,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 2,
+   "time": 1
+  }
+ },
+ "det0": {
+  "github.com/cortexproject/cortex/pkg/ruler::Test_stripEvaluationFields": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_max_rules": [
+   [
+    "passed",
+    "5dbb082a7b17b5ab6a834686c76bf86c"
+   ],
+   [
+    "passed",
+    "93c14d604ad6b410cb0e618b7250a989"
+   ],
+   [
+    "passed",
+    "b7ca208fe7239ab18a2feceed7cb8da4"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_limit": [
+   [
+    "passed",
+    "6dd9a7f029bbc09354b4f38256f5ae6f"
+   ],
+   [
+    "passed",
+    "6dd9a7f029bbc09354b4f38256f5ae6f"
+   ],
+   [
+    "passed",
+    "479d92bc0752d786e2a5bcc106a72bd0"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_special_characters": [
+   [
+    "passed",
+    "381a45f199f51ae0f227b02c22dbfe01"
+   ],
+   [
+    "passed",
+    "381a45f199f51ae0f227b02c22dbfe01"
+   ],
+   [
+    "passed",
+    "381a45f199f51ae0f227b02c22dbfe01"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_alerts": [
+   [
+    "passed",
+    "d64d87a21fe9ddb7171e8eeb3044cd81"
+   ],
+   [
+    "passed",
+    "d64d87a21fe9ddb7171e8eeb3044cd81"
+   ],
+   [
+    "passed",
+    "993d9c140fb2ea171b1a9c7e80fef110"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestAPIResponseSerialization": [
+   [
+    "passed",
+    "4c2305b32a87c3170806d92c6965e45b"
+   ],
+   [
+    "passed",
+    "4c2305b32a87c3170806d92c6965e45b"
+   ],
+   [
+    "passed",
+    "4c2305b32a87c3170806d92c6965e45b"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_Create": [
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  ],
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules": [
+   [
+    "passed",
+    "74db0de3316f87fb6137d7342716f09d"
+   ],
+   [
+    "passed",
+    "74db0de3316f87fb6137d7342716f09d"
+   ],
+   [
+    "passed",
+    "74db0de3316f87fb6137d7342716f09d"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_ProtoToRuleGroupYamlConvertion": {
+   "1": [
+    "passed",
+    "931229137c90b370359004760f8bad6d"
+   ],
+   "11": [
+    "passed",
+    "cf620ec1eb1070fcc5534fe15a3850c5"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestSendAlerts": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestInstantQueryProtoCodec": {
+   "1": [
+    "failed",
+    "04f96fe0eb7ec434d7e017478fff1e8f"
+   ],
+   "11": [
+    "failed",
+    "27bd1f55f435a72eb00463ce407edb06"
+   ],
+   "12": [
+    "failed",
+    "efa530eddc4f4992ac9f99321b318904"
+   ],
+   "15": [
+    "failed",
+    "23984fcaa93da423381ce7b29c93d699"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules": {
+   "2": [
+    "passed",
+    "7537f6209556fed912d7e9e6b9f1dde8"
+   ],
+   "9": [
+    "passed",
+    "391654361d086492c94dea22a849d79e"
+   ],
+   "16": [
+    "passed",
+    "ce4cd0945fcb896a728bcc109475c1fd"
+   ],
+   "17": [
+    "passed",
+    "c7fc280ffddb9781116a235b962ef5d3"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules_HA": {
+   "2": [
+    "failed",
+    "8ab30d75529ad9eee12401279ca4ddf0"
+   ],
+   "3": [
+    "failed",
+    "d340055bc9e13367bbde13f33ec03a12"
+   ],
+   "4": [
+    "failed",
+    "be93b8693dd842b3b435ee89f8c157fe"
+   ],
+   "18": [
+    "failed",
+    "c317d1afee01fc1f6a5848af13b48f39"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_stripEvaluationFields": {
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestSharding": {
+   "4": [
+    "passed",
+    "5d8bc53468c7c5db816cfc822cc817d6"
+   ],
+   "12": [
+    "passed",
+    "1299aaa2436f0cd27d8d52392446910c"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestBuildNotifierConfig": {
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestDecodeLabelOrder": {
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_LimitsPerGroup": {
+   "5": [
+    "passed",
+    "0ee83c148018a5e7cd7093bf203eaf22"
+   ],
+   "8": [
+    "passed",
+    "5e894bcd3b430893e78b44b7a45e6f45"
+   ],
+   "9": [
+    "passed",
+    "3bc9490a7850f5e6dd9e40b6b7ab4e63"
+   ],
+   "16": [
+    "passed",
+    "89b52887656d2700d770fd3fcc3e4a4f"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestYamlFormatting": {
+   "5": [
+    "passed",
+    "338343df0c43b912ebddfd43b36dc177"
+   ],
+   "10": [
+    "passed",
+    "1cc115a3279945218ff22b2d6351b4f9"
+   ],
+   "13": [
+    "passed",
+    "288713e67a8afe1c4d51f87b21dc830e"
+   ],
+   "14": [
+    "passed",
+    "a6cc1ff59bdc9daaebffd5c23c69b258"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackUpRuleGroups": {
+   "5": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ],
+   "12": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ],
+   "13": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ],
+   "14": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestSlowRuleGroupSyncDoesNotSlowdownListRules": {
+   "5": [
+    "passed",
+    "2a118081e6c66b71717a24dad9e8f3ac"
+   ],
+   "8": [
+    "passed",
+    "02ee65c17daccfad2e3474c86bd67fe1"
+   ],
+   "19": [
+    "passed",
+    "caf5837957eec32e56b5003acef7775b"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestUserExternalURL": {
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_Create": {
+   "5": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "6": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "7": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "10": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "13": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "16": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "19": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_limit": {
+   "6": [
+    "passed",
+    "a5385e04a9b477141e7d19da023da2bf"
+   ],
+   "14": [
+    "passed",
+    "15ac75e44f9e122a3d90f49e11253b07"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestTimeout": {
+   "6": [
+    "passed",
+    "acdd8f916a84b399dfcd0a40bfb55eff"
+   ],
+   "10": [
+    "passed",
+    "ed0433b1502f5b3c59e86126395c80b0"
+   ],
+   "20": [
+    "passed",
+    "531fd80b2b9d10743ee7ee3904527f70"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRuleGroupNextToken": {
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRulerDisablesRuleGroups": {
+   "6": [
+    "passed",
+    "70f07dea7ca44f71bc38757eaea52ec6"
+   ],
+   "16": [
+    "passed",
+    "41aa074bb4541ee58fd6a3986210053f"
+   ],
+   "18": [
+    "passed",
+    "fb57916ee9ab399e2e40c5fdda09bb9b"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestDeleteTenantRuleGroups": {
+   "6": [
+    "passed",
+    "f210e63d21bdaa5678791d5ca0f3b598"
+   ],
+   "10": [
+    "passed",
+    "840c9d34749ea6c510c7b7d1bff2a6eb"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_Rules": {
+   "6": [
+    "passed",
+    "09fcefe0f95d379cf01393cc44ab1299"
+   ],
+   "7": [
+    "passed",
+    "d7fcf2ae61434fce7f36cc58b848a133"
+   ],
+   "11": [
+    "passed",
+    "b36bd7a11e01fc99ef472c86fffcc105"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestNotifierSendsUserIDHeader": {
+   "6": [
+    "passed",
+    "4fd37c32afb54423d8d77b80d59fede0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestUserExternalLabels": {
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestInstantQueryJsonCodec": {
+   "6": [
+    "passed",
+    "02d175bf3896d16dac2b3fd35d698029"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRulerShutdown": {
+   "6": [
+    "passed",
+    "808795a9d0c738c7bd1133d4c734593e"
+   ],
+   "10": [
+    "passed",
+    "9727a3d0bc5cef044543693a276a87d4"
+   ],
+   "13": [
+    "passed",
+    "3142dbfdf2d1f2b9ee58f883d9003bf8"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_max_rules": {
+   "6": [
+    "passed",
+    "ee170c28f2420bbc9b224da0c8e1fc1b"
+   ],
+   "7": [
+    "passed",
+    "242c4afaa5fc6c2e6c810206ad3e123e"
+   ],
+   "9": [
+    "passed",
+    "f3ca9677a7f575a8a4d1c8d2ad766bdb"
+   ],
+   "14": [
+    "passed",
+    "0b6f90e5de4c95dac3b49a659c4eda66"
+   ],
+   "17": [
+    "passed",
+    "60576ee6417f01f8a5d92de8d12beecf"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_mapper_MapRulesSpecialCharNamespace": {
+   "6": [
+    "passed",
+    "0f9f31b56d43df0c304f0f199bc091c2"
+   ],
+   "13": [
+    "passed",
+    "7ee3f2ef0333a1160089a95784e3f008"
+   ],
+   "16": [
+    "passed",
+    "a7d6e9bb913269c3e1b4d3325558f0ca"
+   ],
+   "19": [
+    "passed",
+    "07b4193769d3ab39c661c8c5d73025c4"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_RingLifecyclerShouldAutoForgetUnhealthyInstances": {
+   "6": [
+    "passed",
+    "aa199b49b0c97e6379319d763679d260"
+   ],
+   "9": [
+    "passed",
+    "baaed663e08a1e2575d0b8840c7b9c6e"
+   ],
+   "14": [
+    "passed",
+    "c91bad4b54647b1da3e9c570371e9283"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestAPIResponseSerialization": {
+   "6": [
+    "passed",
+    "d0a4d2d5d9c66cc571f2d25710e10457"
+   ],
+   "7": [
+    "passed",
+    "47e7a945a499f013b394d3d4464a931e"
+   ],
+   "9": [
+    "passed",
+    "7536161e8b8657d7b7cf6ff43d3654b7"
+   ],
+   "13": [
+    "passed",
+    "304f2cf8bf28b4c0e1ba0c5f2a69f479"
+   ],
+   "19": [
+    "passed",
+    "4d5cb98c480b86047e09edd5bb8c74a5"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackUpRuleGroupsMetrics": {
+   "6": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ],
+   "19": [
+    "passed",
+    "b443b99f39142db408f181f4d1cd41b0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestMetricsArePerUser": {
+   "7": [
+    "passed",
+    "5172d51da77d2bc94b1bab3523c7f17b"
+   ],
+   "10": [
+    "passed",
+    "e3dc5b37dd456018427827539c901631"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_AcceptsXFunctions": {
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherErrors": {
+   "7": [
+    "passed",
+    "267ace23c88967602cdd8f0dd28b4ca2"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRecoverAlertsPostOutage": {
+   "7": [
+    "passed",
+    "1f6fe5bf3c49b1fdf94f6df5de35b6dd"
+   ],
+   "10": [
+    "passed",
+    "de426dd14a434a3acf3515fe297583a6"
+   ],
+   "14": [
+    "passed",
+    "94ff6d20681d8061d1d4297bdc6daefe"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestManagerMetricsWithoutRuleGroupLabel": {
+   "7": [
+    "passed",
+    "3dc5c6373d844918a5b6a02016fb1f82"
+   ],
+   "10": [
+    "passed",
+    "c00dbf26cf85d9fd34f58521569d3540"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_ListAllRules": {
+   "7": [
+    "passed",
+    "263f5a5ef485398d3658f1a46b8dda17"
+   ],
+   "8": [
+    "passed",
+    "f51fda1f06bc92de3f01fea0a579af47"
+   ],
+   "13": [
+    "passed",
+    "9280f79e7976636b74933c1f6a67f695"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_RejectsEmptyGroupName": {
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_mapper_MapRulesMultipleFiles": {
+   "8": [
+    "passed",
+    "653fcd54d8c90f2cc16336055db8938f"
+   ],
+   "10": [
+    "passed",
+    "b2665bfd2d3303c8e524fc2aff9bd9b8"
+   ],
+   "16": [
+    "passed",
+    "eeb26c5fc635fcaab63a54c6e63b73b5"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestSyncRuleGroups": {
+   "8": [
+    "passed",
+    "62ea5ad68566b566e7c6a7bf14e17a5a"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestMergeGroupStateDesc": {
+   "8": [
+    "passed",
+    "d91f3aac6988cd331819908a49df88a9"
+   ],
+   "9": [
+    "passed",
+    "2fee8a67c8d83276bd839eba911ac049"
+   ],
+   "13": [
+    "passed",
+    "300a41539af08de3b70907f3e26b5bbb"
+   ],
+   "14": [
+    "passed",
+    "698aeb7a48800ee803675d789954a6e6"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_RulerGroupLimits": {
+   "8": [
+    "passed",
+    "99185ee41921287ab4b8421e1ff420bc"
+   ],
+   "10": [
+    "passed",
+    "d803cc7658865836cb3d014e3bcf43f6"
+   ],
+   "16": [
+    "passed",
+    "485b39a56101c6c0895307049ca8c5ea"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestNotifierSendExternalLabels": {
+   "8": [
+    "passed",
+    "aaac70caa292bc6e71b992662ea285cb"
+   ],
+   "11": [
+    "passed",
+    "7db53b139946cbf78a30385af8b21fb6"
+   ],
+   "19": [
+    "passed",
+    "a068960823c5766eaab3a74e7ebc638e"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGeneratorURLTemplateCaching": {
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetShardSizeForUser": {
+   "8": [
+    "passed",
+    "46e481f9e43cf6d4af052b530e388e9b"
+   ],
+   "9": [
+    "passed",
+    "91131bbd95378f36f6e8240ad66b5ed7"
+   ],
+   "12": [
+    "passed",
+    "e1dfe9710e4baa29b2cc88e03d962225"
+   ],
+   "16": [
+    "passed",
+    "8871726db2241b22a1d56b2dc7196443"
+   ],
+   "17": [
+    "passed",
+    "03168251a376b9ea406368e86b08b116"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules": {
+   "8": [
+    "failed",
+    "ee697baffdea401578d9024f74b13f44"
+   ],
+   "14": [
+    "failed",
+    "a6f9784cf9ac3513926dbb1eac3e83b6"
+   ],
+   "20": [
+    "failed",
+    "237698734e45be317f83bd8d1a47814c"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherAppendable": {
+   "9": [
+    "passed",
+    "78f9531e48f7056ab5a57fc30eef43a3"
+   ],
+   "10": [
+    "passed",
+    "f3d511d4ac19b6f0653a61f4217f2c37"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestSyncRuleGroupsCleanUpPerUserMetrics": {
+   "9": [
+    "passed",
+    "04eaa6e357bd6992a8bf6023101fca65"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_alerts": {
+   "9": [
+    "passed",
+    "41f8b71a7a57d111e73ead320d605fbb"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestManagerMetricsWithRuleGroupLabel": {
+   "9": [
+    "passed",
+    "641b152a46211c6ab488c898dd2283bc"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuleEvalMetricsDeletePerUserMetrics": {
+   "9": [
+    "passed",
+    "707ea9aa03c5094fa021c128a9a8079b"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_extractHeader": {
+   "9": [
+    "passed",
+    "19ae68aabf73ef94a9a3a2dcbd3178aa"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_TestShutdown": {
+   "9": [
+    "passed",
+    "280528a3db9a0c0283ff61769187e5a3"
+   ],
+   "11": [
+    "passed",
+    "dd2fcb7aa93cbf3064dd9f1dbf667de9"
+   ],
+   "13": [
+    "passed",
+    "732e41de5a6963fe8f42b8222ac26314"
+   ],
+   "17": [
+    "passed",
+    "878284e8c5ba7c40be7516388cbfda3a"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRulesFromBackup": {
+   "9": [
+    "passed",
+    "af74e00478f2d869505be0c3a36d1ad3"
+   ],
+   "17": [
+    "passed",
+    "c9f9158fc5e6c900b23f2469d601a648"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestValidateRuleGroup_RejectsInvalidRules": {
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_mapper_MapRules": {
+   "10": [
+    "passed",
+    "b76b2c7752a1521712ef70c153925af4"
+   ],
+   "16": [
+    "passed",
+    "9074e14d00cfa7065c37efefe815ca7f"
+   ],
+   "20": [
+    "passed",
+    "cf05c737ab432b01b9b61a2f6694c87a"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestNoOrgId": {
+   "10": [
+    "passed",
+    "27850ded7756a689ea285a94f8d410e3"
+   ],
+   "20": [
+    "passed",
+    "584bd30e2c949a8e297f1a4f76a1cb45"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestPusherAppender_Commit_WithDiscardOutOfOrder": {
+   "10": [
+    "passed",
+    "73370ed193c1605316bd7f31d07d6505"
+   ],
+   "12": [
+    "passed",
+    "da6a6738ef800d76d26e7a9108acde79"
+   ],
+   "16": [
+    "passed",
+    "e139be5c66ee59efabe980777b2788a2"
+   ],
+   "17": [
+    "passed",
+    "ae62ff517bc955cf1337740567d21daa"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_newRulerClientFactory": {
+   "10": [
+    "passed",
+    "2dc842aa2d5775d60d8d06b6a297825b"
+   ],
+   "11": [
+    "passed",
+    "83edfb129b91afa3cf5b53ff5597efb6"
+   ],
+   "17": [
+    "passed",
+    "8000c1d7785cba04b4e7beff4d8f3cb0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGeneratePage": {
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestBackupRules": {
+   "12": [
+    "passed",
+    "af350c878696f0a4f0b77904a64c17e2"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRecordAndReportRuleQueryMetrics": {
+   "12": [
+    "passed",
+    "f33700caf64db344bbb916237fe0bdd6"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::Test_LoadPartialGroups": {
+   "12": [
+    "passed",
+    "43de125070852f80a8680918cc676a68"
+   ],
+   "14": [
+    "passed",
+    "d9f57f917bc1e90b1c628016a05bef64"
+   ],
+   "17": [
+    "passed",
+    "587be7ec6a89fa650d65dcc24fcfa398"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuleGroupMetrics": {
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_QueryOffset": {
+   "13": [
+    "passed",
+    "b4edce6eb8130e3c84f5ad523cb816b5"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_DeleteNamespace": {
+   "13": [
+    "passed",
+    "61c284ddf314a4a6fad99ff0d14c5373"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGeneratePage_MaxRules": {
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestRuler_rules_special_characters": {
+   "14": [
+    "passed",
+    "8fbb2c8d79315d59db007823955ca792"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestJsonDecode": {
+   "14": [
+    "passed",
+    "91f132eebf12a141c2bcad356a059ef4"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestPaginatedGroupStatesSort": {
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetReplicationSetForListRule": {
+   "16": [
+    "passed",
+    "7fcacfc805207faf1da54ae786d37cb5"
+   ],
+   "17": [
+    "passed",
+    "5d64ef23711069c0b1cc57fc25a855ef"
+   ]
+  },
+  "github.com/cortexproject/cortex/pkg/ruler::TestMetricsQueryFuncErrors": {
+   "17": [
+    "passed",
+    "1646d8cc7fa072aca95f80abd6e0a3c7"
+   ],
+   "18": [
+    "passed",
+    "e79a142f5fb80429fbc88109266a2a83"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/cortexproject/cortex/pkg/ruler::TestGetRules": {
+   "fail_seeds": [
+    8,
+    14,
+    20
+   ],
+   "passes_in_some_seed": false,
+   "seed": 8,
+   "outcomes": [
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "fingerprints": 10,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  5,
+  8
+ ],
+ "timing_keep_parallel": [
+  0.167,
+  0.115,
+  0.114
+ ],
+ "timing": {
+  "plain": [
+   0.651,
+   0.657,
+   0.652
+  ],
+  "det": [
+   0.166,
+   0.166,
+   0.114
+  ]
+ },
+ "slowdown": -0.7453987730061349
+}
