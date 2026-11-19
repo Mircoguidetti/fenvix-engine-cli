@@ -1,0 +1,41 @@
+{
+ "name": "hutool-hutool-core",
+ "url": "https://github.com/dromara/hutool",
+ "sha": "12969f248329f81f76eb5bece8c718ac1c63f7b1",
+ "module": "hutool-core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 1077,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "OD": 2
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 1,
+ "unstable_reproduced": 1,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "cn.hutool.core.img.ImgUtilTest::getMainColor"
+ ],
+ "fingerprint_coverage": "1076/1077",
+ "fingerprint_covered": 1076,
+ "fingerprinted": 1077,
+ "timing_base_s": [
+  4.845999999999998,
+  4.737,
+  4.547000000000003
+ ],
+ "timing_det_s": [
+  2.065999999999998,
+  2.0509999999999984,
+  2.1569999999999983
+ ],
+ "slowdown": -0.5639,
+ "seconds": 463.2
+}
