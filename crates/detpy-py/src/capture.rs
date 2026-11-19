@@ -330,7 +330,41 @@ impl State {
         self.env.entry(ctx).or_default()
     }
 
-    /// `Capture.read` once the flag detail (if any) is known: returns Some(path) when the read is a "proc" flag
+    /// `/proc/<self|pid|thread-self>/{root,cwd}/...`, `/proc/<..>/fd/N` and `/dev/fd/N` resolved to the file they name,
+/// when that is a path outside /proc, /sys and /dev (review R-023b N1).
+fn proc_alias(p: &[u8]) -> Option<W> {
+    let alias = p.starts_with(b"/dev/fd/") || {
+        let rest = p.strip_prefix(b"/proc/")?;
+        let after = rest.iter().position(|&c| c == b'/').map(|i| &rest[i + 1..])?;
+        after.starts_with(b"root/") || after.starts_with(b"cwd/") || after == b"root" || after == b"cwd"
+            || after.starts_with(b"fd/")
+    };
+    if !alias {
+        return None;
+    }
+    let real = std::fs::canonicalize(os_path(p)).ok()?;
+    let r = real.as_os_str().as_bytes().to_vec();
+    if r.starts_with(b"/proc/") || r.starts_with(b"/sys/") || r.starts_with(b"/dev/") || !r.starts_with(b"/") {
+        return None;
+    }
+    Some(r)
+}
+
+/// This process's own state: `/proc/<self|thread-self|pid>/{fd, fdinfo, task, stat, statm, io}` (and below).
+fn process_state(p: &[u8]) -> bool {
+    let Some(rest) = p.strip_prefix(b"/proc/") else { return false };
+    let (who, after) = match rest.iter().position(|&c| c == b'/') {
+        Some(i) => (&rest[..i], &rest[i + 1..]),
+        None => return false,
+    };
+    if !(who == b"self" || who == b"thread-self" || (!who.is_empty() && who.iter().all(|c| c.is_ascii_digit()))) {
+        return false;
+    }
+    let first = after.split(|&c| c == b'/').next().unwrap_or(b"");
+    matches!(first, b"fd" | b"fdinfo" | b"task" | b"stat" | b"statm" | b"io")
+}
+
+/// `Capture.read` once the flag detail (if any) is known: returns Some(path) when the read is a "proc" flag
     /// whose detail is the path.
     fn read(&mut self, ctx: usize, p: &[u8], kind: u8) -> Option<W> {
         if std::str::from_utf8(p).is_err() {
@@ -389,9 +423,22 @@ impl State {
                 self.data.entry(ctx).or_default().set(k, b"missing".to_vec());
             }
             return None;
+        } else if let Some(real) = Self::proc_alias(p) {
+            // review R-023b N1: /proc/self/root/..., /proc/self/cwd/..., /dev/fd/N name an ordinary file
+            return self.read(ctx, &real, kind);
+        } else if Self::process_state(p) {
+            // this process's own state (descriptor and thread listings, stat counters): flag "pstate", which only a
+            // test's own contexts count (start-up code that lists /proc/self/fd is not an input of every test)
+            let mut d = b"pstate".to_vec();
+            if !self.flags.get(&ctx).is_some_and(|f| f.has(&d)) {
+                self.flag_set(ctx).add(d.clone());
+                d = b"pstate".to_vec();
+                self.why.insert((ctx, d), p.to_vec());
+            }
+            return None;
         } else if (p.starts_with(b"/proc/") || p.starts_with(b"/sys/") || p.starts_with(b"/dev/"))
             && !p.starts_with(b"/dev/shm/")
-            && kind != b'd'
+            && (kind != b'd' || p.starts_with(b"/proc/"))
             && exists(p)
         {
             return Some(p.to_vec()); // flag "proc" with the path as its detail

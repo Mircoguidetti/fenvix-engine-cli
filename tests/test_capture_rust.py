@@ -360,8 +360,10 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     nc = s1["not_cached"]
     # parallel-proof round 3: SQLite's 'now' is Level 0's virtual clock (detpy/sqlvirt.py), no longer a real clock read;
     # the real-clock refusal is tested with --det-disable=time (test_proofcache_follow.py, test_review_r009*.py)
-    assert {"host name lookup", "reads /proc, /sys or /dev",
-            "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
+    assert {"host name lookup", "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
+    # review R-023b N1: a test's own /proc reads are "proc" or, for this process's own state, "pstate"
+    assert {"reads /proc, /sys or /dev",
+            "reads this process's state under /proc (descriptors, status counters, threads)"} & set(nc), nc
     assert "real clock read outside the virtual clock" not in nc, nc
     assert new[2]["summary"]["reused"] and new[2]["summary"]["recorded"], new[2]["summary"]
     assert "test_stale.py::test_stale_reader" in new[2]["summary"]["stale_reuses"], new[2]["summary"]

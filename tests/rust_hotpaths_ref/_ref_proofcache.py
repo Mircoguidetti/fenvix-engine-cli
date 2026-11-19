@@ -668,8 +668,14 @@ class Capture:
             else:
                 self.data.setdefault(ctx, {})[self._key(p)] = "missing"
             return
+        elif _proc_alias(p) is not None:
+            self.read(ctx, _proc_alias(p), kind)  # review R-023b N1: /proc/self/root/..., /dev/fd/N: the file itself
+            return
+        elif _process_state(p):
+            self.flag(ctx, "pstate", p)  # this process's own state: counted in a test's own contexts only
+            return
         elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
-                and (kind != "d" and os.path.exists(p)):
+                and ((kind != "d" or p.startswith("/proc/")) and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
             # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
             self.flag(ctx, "proc", p)
@@ -1575,6 +1581,11 @@ class ProofCachePlugin:
                     self.hits[nid] = receipt
             else:
                 self.misses[nid] = info
+        # review R-023b N8: a reused writer whose output a running reader consumes is not reused
+        for w, r in store.edges():
+            if r in self.items and w in self.items and w in self.hits and r not in self.hits:
+                del self.hits[w]
+                self.misses[w] = f"reader: its output is read by {r}, which runs in this session"
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -2090,7 +2101,41 @@ def _numeric_host(host: str) -> bool:
         return False
 
 
-_FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+def _proc_alias(p):
+    if p.startswith("/dev/fd/"):
+        ok = True
+    elif p.startswith("/proc/"):
+        rest = p[len("/proc/"):]
+        if "/" not in rest:
+            return None
+        after = rest.split("/", 1)[1]
+        ok = after.startswith(("root/", "cwd/", "fd/")) or after in ("root", "cwd")
+    else:
+        return None
+    if not ok:
+        return None
+    try:
+        r = os.path.realpath(p, strict=True)
+    except OSError:
+        return None
+    if r.startswith(("/proc/", "/sys/", "/dev/")) or not r.startswith("/"):
+        return None
+    return r
+
+
+def _process_state(p):
+    if not p.startswith("/proc/"):
+        return False
+    rest = p[len("/proc/"):]
+    if "/" not in rest:
+        return False
+    who, after = rest.split("/", 1)
+    if not (who in ("self", "thread-self") or who.isdigit()):
+        return False
+    return after.split("/", 1)[0] in ("fd", "fdinfo", "task", "stat", "statm", "io")
+
+
+_FLAG_OF = {"reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
 
@@ -2283,6 +2328,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "os entropy (not controlled; use --det-urandom)"
     if "proc" in flags:
         return "reads /proc, /sys or /dev"
+    if "pstate" in flags:
+        return "reads this process's state under /proc (descriptors, status counters, threads)"
     return None
 
 

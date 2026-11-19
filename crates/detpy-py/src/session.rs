@@ -243,6 +243,7 @@ fn flag_of(why: &[u8]) -> Option<&'static str> {
         b"host name lookup" => "dns",
         b"network socket opened outside Python (C extension)" => "csock",
         b"reads /proc, /sys or /dev" => "proc",
+        b"reads this process's state under /proc (descriptors, status counters, threads)" => "pstate",
         _ => return None,
     })
 }
