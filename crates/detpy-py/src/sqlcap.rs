@@ -528,15 +528,19 @@ struct SqlConn {
 pub struct SqlTrace {
     cap: Py<CaptureCore>,
     conn: Mutex<SqlConn>,
+    /// The connection is virtualised by Level 0 (`sqlvirt`): its 'now' and its schema's defaults are the virtual
+    /// clock (a recorded clock read), not the real one.
+    virtual_clock: bool,
 }
 
 #[pymethods]
 impl SqlTrace {
     #[new]
-    fn new(py: Python<'_>, cap: Py<CaptureCore>, database: &Bound<'_, PyAny>, uri: &Bound<'_, PyAny>) -> PyResult<Self> {
+    #[pyo3(signature = (cap, database, uri, virtual_clock=false))]
+    fn new(py: Python<'_>, cap: Py<CaptureCore>, database: &Bound<'_, PyAny>, uri: &Bound<'_, PyAny>, virtual_clock: bool) -> PyResult<Self> {
         let uri = uri.is_truthy()?;
         let main = sqlite_file(py, database, uri)?;
-        Ok(SqlTrace { cap, conn: Mutex::new(SqlConn { dbs: main.into_iter().collect(), own: false }) })
+        Ok(SqlTrace { cap, conn: Mutex::new(SqlConn { dbs: main.into_iter().collect(), own: false }), virtual_clock })
     }
 
     /// The connection's database files.
@@ -554,7 +558,7 @@ impl SqlTrace {
         }
         let Ok(s) = statement.cast::<PyString>() else { return Ok(()) };
         let b = text(s)?;
-        if real_clock(py, &b)? {
+        if !self.virtual_clock && real_clock(py, &b)? {
             let ctx = core.cur(py)?;
             core.flag_with(py, ctx, b"rclock", || {
                 let mut d = b"sqlite: ".to_vec();
@@ -582,7 +586,7 @@ impl SqlTrace {
             }
             return Ok(());
         }
-        if no_schema(py, &b)? {
+        if self.virtual_clock || no_schema(py, &b)? {
             return Ok(());
         }
         let (own, dbs) = {

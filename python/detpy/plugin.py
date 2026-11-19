@@ -11,7 +11,7 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
+from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds, sqlvirt
 from . import xdist as _xdist
 from ._patch import Patcher
 
@@ -385,6 +385,7 @@ def _install(config, ns, controls) -> None:
     _PLUGIN_PACKAGES.discard("conftest")
     if "time" in controls:
         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
+        sqlvirt.install(_PATCHER)  # SQLite's 'now', CURRENT_TIMESTAMP, random(), randomblob() per connection
     if "fs" in controls:
         fsorder.install(_PATCHER)
     if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
@@ -803,6 +804,7 @@ def pytest_unconfigure(config):
     if _owner(config):
         _PATCHER.undo_all()
         clock.uninstall()
+        sqlvirt.uninstall()
         seeds.uninstall()
         network.uninstall()
         _state.STATE.recorder = None

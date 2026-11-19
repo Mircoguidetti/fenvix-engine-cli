@@ -274,6 +274,10 @@ struct State {
     children: i64,
     child_entropy: i64,
     timeline: Vec<(f64, usize)>,
+    /// `/proc/self/maps` at the last scan, the mapped files seen, and whether the next scan is the baseline
+    maps_text: Vec<u8>,
+    maps_seen: HashSet<W>,
+    maps_baseline: bool,
 }
 
 impl State {
@@ -334,6 +338,41 @@ impl State {
             return None;
         }
         let mut kind = kind;
+        if kind == b's' {
+            // an existence or kind check (os.stat / lstat / access, a module lookup): the path's kind is the input
+            // (absent inputs: a file, conftest.py, module or __init__.py that appears later). The project root and
+            // its ancestors are directories for the whole session.
+            let mut ps = p.to_vec();
+            ps.push(b'/');
+            if self.root_sep.starts_with(&ps) || p == b"/" {
+                return None;
+            }
+            if self.writers.contains_key(p) {
+                let mut f = b"rw:".to_vec();
+                f.extend_from_slice(p);
+                self.flag_set(ctx).add(f);
+                return None;
+            }
+            let mut hk = vec![b's'];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = format!("s:{}", proof::stat_kind(os_path(p))).into_bytes();
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let k = self.key(p).to_vec();
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
         if kind == b'm' {
             kind = b'f';
         } else if kind == b'a' {
@@ -887,6 +926,54 @@ impl CaptureCore {
         self.flag_impl(py, ctx, flag, Some(detail()?))
     }
 
+    /// review R-019c E-8 (ported from claude/dep-verdict-abjcfw 8d47dcd, e4660e8): a shared library loaded during a
+    /// context (`ctypes.CDLL`, an extension module of the repository, a library C code `dlopen()`s) raises no event
+    /// with its resolved path. The files newly mapped into the process since the last scan (`/proc/self/maps`, read
+    /// with std::fs: no audit event), outside site-packages, the standard library and the temporary directories, are
+    /// inputs of `ctx` by content; those mapped before the capture started (the baseline scan) or before the first
+    /// context are inputs of every test, through the import context.
+    fn scan_maps_impl(&self, py: Python<'_>, ctx: Option<usize>) -> PyResult<()> {
+        let Ok(text) = std::fs::read("/proc/self/maps") else { return Ok(()) };
+        let (new, ctx) = {
+            let mut st = lock(&self.st);
+            if st.maps_text == text {
+                return Ok(());
+            }
+            let mut new: Vec<W> = Vec::new();
+            for line in text.split(|&b| b == b'\n') {
+                let Some(i) = line.iter().position(|&b| b == b'/') else { continue };
+                let p = &line[i..];
+                if st.maps_seen.contains(p) {
+                    continue;
+                }
+                st.maps_seen.insert(p.to_vec());
+                new.push(p.to_vec());
+            }
+            st.maps_text = text;
+            let mut ctx = ctx;
+            if st.maps_baseline {
+                st.maps_baseline = false;
+                ctx = None;
+            }
+            let ctx = match ctx {
+                Some(c) => c,
+                None if st.import_ctx >= 0 => st.import_ctx as usize,
+                None => return Ok(()),
+            };
+            (new, ctx)
+        };
+        for p in new {
+            if p.ends_with(b" (deleted)") || self.ignored(&p) {
+                continue;
+            }
+            if !os_path(&p).is_file() {
+                continue;
+            }
+            self.read_impl(py, ctx, &p, b'f')?;
+        }
+        Ok(())
+    }
+
     fn read_impl(&self, py: Python<'_>, ctx: usize, p: &[u8], kind: u8) -> PyResult<()> {
         let proc = lock(&self.st).read(ctx, p, kind);
         if let Some(detail) = proc {
@@ -1011,6 +1098,17 @@ impl CaptureCore {
                     }
                 };
                 let kind = self.caller_kind(py)?;
+                if kind == Caller::Import
+                    && reads
+                    && ![&b".py"[..], b".pyc", b".pyw"].iter().any(|x| p.ends_with(x))
+                    && fs_bytes(&p).is_some_and(|b| os_path(&b).is_file())
+                {
+                    // review R-019c E-7 (ported from claude/dep-verdict-abjcfw 8d47dcd): the import system reading a
+                    // file that is not source or bytecode (a zip archive on sys.path, zipimport): its code is not
+                    // tracked, so the archive's content is the input
+                    let ctx = self.cur(py)?;
+                    return self.read_impl(py, ctx, &p, b'f');
+                }
                 if kind != Caller::User {
                     return Ok(());
                 }
@@ -1360,6 +1458,9 @@ impl CaptureCore {
             ctx_names: vec![Vec::new()],
             segs: vec![(0, 0)],
             import_ctx: -1,
+            maps_text: Vec::new(),
+            maps_seen: HashSet::new(),
+            maps_baseline: true,
             timeline: vec![(now(), 0)],
             ..Default::default()
         };
@@ -1628,6 +1729,7 @@ impl CaptureCore {
                         self.flag_impl(py, c, b"csock", Some(b"an internet socket left open".to_vec()))?;
                     }
                 }
+                self.scan_maps_impl(py, ctx)?;
                 Ok(())
             })();
             self.set_active(true);
@@ -1758,6 +1860,72 @@ impl CaptureCore {
     fn read(&self, py: Python<'_>, ctx: usize, p: Bound<'_, PyString>, kind: &str) -> PyResult<()> {
         let k = kind.as_bytes().first().copied().unwrap_or(b'f');
         self.read_impl(py, ctx, &w_of(&p)?, k)
+    }
+
+    /// The baseline scan of the mapped libraries (`scan_maps_impl`), with the capture inactive.
+    fn scan_maps(&self, py: Python<'_>) -> PyResult<()> {
+        let was = self.active();
+        self.set_active(false);
+        let r = self.scan_maps_impl(py, None);
+        self.set_active(was);
+        r
+    }
+
+    /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
+    /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
+    /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture).
+    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        if self.ignored(&p) || self.caller_kind(py)? != Caller::User {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, b's')
+    }
+
+    /// A module lookup (`importlib`'s path finder, called from a finder in front of `sys.meta_path`): for module
+    /// `tail` and each searched directory in `entries` outside site-packages and the standard library, the kinds of
+    /// the paths the import system probes there (`proof::import_candidates`) are inputs, up to the first directory
+    /// with a regular module or package. A module that was *not* found (an optional import, a namespace package
+    /// without `__init__.py`, a module a new file earlier on the path would shadow) is then an input too.
+    fn lookup(&self, py: Python<'_>, tail: &str, entries: &Bound<'_, PyAny>, suffixes: Vec<String>) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        let n = suffixes.len();
+        for e in entries.try_iter()? {
+            let e = e?;
+            if !e.is_instance_of::<PyString>() {
+                continue;
+            }
+            let e = if e.eq("")? { PyString::new(py, ".").into_any() } else { e };
+            let Some(d) = self.abs(py, &e)? else { continue };
+            let mut ds = d.clone();
+            ds.push(b'/');
+            if self.ignored(&ds) {
+                continue;
+            }
+            let Ok(dstr) = std::str::from_utf8(&d) else { continue };
+            let cands = proof::import_candidates(dstr, tail, &suffixes);
+            let pkg_missing = !std::path::Path::new(&cands[0]).exists();
+            self.read_impl(py, ctx, cands[0].as_bytes(), b's')?;
+            let rest: &[String] = if pkg_missing { &cands[1 + n..] } else { &cands[1..] };
+            let mut regular = false;
+            for c in rest {
+                self.read_impl(py, ctx, c.as_bytes(), b's')?;
+                if std::path::Path::new(c).is_file() {
+                    regular = true;
+                }
+            }
+            if regular {
+                break; // a module or a regular package: later entries are not searched
+            }
+        }
+        Ok(())
     }
 
     fn wrote(&self, ctx: usize, p: Bound<'_, PyString>) -> PyResult<()> {

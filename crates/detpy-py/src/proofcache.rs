@@ -801,3 +801,15 @@ pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, S
         Some((name.unwrap_or_else(|| "?".into()), version, detpy_core::fingerprint::digest_bytes(rec.as_bytes()).short()))
     })
 }
+
+/// "file", "dir", "other" or "missing" (`detpy_core::proof::stat_kind`, follows symlinks).
+#[pyfunction]
+pub fn stat_kind(path: PathBuf) -> &'static str {
+    proof::stat_kind(&path)
+}
+
+/// Paths the import system probes for module `name` in directory `dir` (`detpy_core::proof::import_candidates`).
+#[pyfunction]
+pub fn import_candidates(dir: &str, name: &str, suffixes: Vec<String>) -> Vec<String> {
+    proof::import_candidates(dir, name, &suffixes)
+}

@@ -208,6 +208,38 @@ pub fn stat_kind(path: &Path) -> &'static str {
     }
 }
 
+/// Paths the import system probes for module `name` in directory `dir` (`FileFinder`): the package directory, its
+/// `__init__` with every suffix, and the module with every suffix (`importlib.machinery.all_suffixes()`). Ported from
+/// `claude/dep-verdict-abjcfw` (d972a3e) onto the Rust store.
+pub fn import_candidates(dir: &str, name: &str, suffixes: &[String]) -> Vec<String> {
+    let d = dir.trim_end_matches('/');
+    let mut out = Vec::with_capacity(2 * suffixes.len() + 1);
+    out.push(format!("{d}/{name}"));
+    for s in suffixes {
+        out.push(format!("{d}/{name}/__init__{s}"));
+    }
+    for s in suffixes {
+        out.push(format!("{d}/{name}{s}"));
+    }
+    out
+}
+
+/// Paths pytest looks for between the project root and a test file's directory (`rel_dir`, relative, "" for the
+/// root): `conftest.py` (plugins, fixtures) and `__init__.py` (the test module's package and import name).
+pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
+    let mut out = vec!["conftest.py".to_string(), "__init__.py".to_string()];
+    let mut cur = String::new();
+    for part in rel_dir.split('/').filter(|p| !p.is_empty()) {
+        if !cur.is_empty() {
+            cur.push('/');
+        }
+        cur.push_str(part);
+        out.push(format!("{cur}/conftest.py"));
+        out.push(format!("{cur}/__init__.py"));
+    }
+    out
+}
+
 /// Current dependency string of a recorded data dependency of the same kind.
 pub fn data_now(path: &Path, recorded: &str) -> String {
     if recorded == "missing" || recorded.starts_with("f:") {

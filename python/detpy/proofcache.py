@@ -144,6 +144,9 @@ class Capture(_core.CaptureCore):
         self.active = True
         _core.set_audit_hook(self.audit, _AUDIT_EVENTS)
         self._patch_sqlite()
+        self._patch_stat()
+        self._patch_lookups()
+        self.scan_maps()  # the libraries mapped before the start: inputs of every test (Rust, review R-019c E-8)
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -170,12 +173,84 @@ class Capture(_core.CaptureCore):
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
             setattr(obj, name, v)
         self._sqlite_saved = []
+        for obj, name, v in reversed(getattr(self, "_stat_saved", ())):
+            setattr(obj, name, v)
+        self._stat_saved = []
+        f = getattr(self, "_lookup_finder", None)
+        if f is not None and f in sys.meta_path:
+            sys.meta_path.remove(f)
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
             _mon.set_events(self.tool, 0)
             _mon.free_tool_id(self.tool)
             self.tool = None
+
+    # -- absent inputs: existence checks and module lookups ------------------------------
+    def _patch_stat(self) -> None:
+        """``os.path.exists``, ``isfile``, ``isdir``, ``Path.exists``, ``shutil.which`` and ``glob`` on a literal path
+        ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The answer is an input: the
+        path's kind is recorded (``CaptureCore.stat_check``, Rust), so a file that appears later invalidates the
+        test. (Code that bound ``from os import stat`` before the session keeps the original: not seen.)"""
+        cap = self
+        self._stat_saved = []
+        self._in_stat = False
+
+        def wrap(name):
+            orig = getattr(os, name, None)
+            if orig is None:
+                return
+
+            def checked(path, *args, **kwargs):
+                if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
+                    cap._in_stat = True
+                    try:
+                        cap.stat_check(path)
+                    except Exception:
+                        pass
+                    finally:
+                        cap._in_stat = False
+                return orig(path, *args, **kwargs)
+
+            checked.__name__ = orig.__name__
+            checked.__doc__ = orig.__doc__
+            checked.__wrapped__ = orig
+            self._stat_saved.append((os, name, orig))
+            setattr(os, name, checked)
+
+        for name in ("stat", "lstat", "access"):
+            wrap(name)
+
+    def _patch_lookups(self) -> None:
+        """A module the import system did *not* find is an input too (``try: import optional``, a namespace package
+        without ``__init__.py``, a module a new file earlier on ``sys.path`` would shadow). A finder in front of
+        ``sys.meta_path`` hands every lookup to ``CaptureCore.lookup`` (Rust: the probed paths and their kinds). It
+        finds nothing itself."""
+        from importlib.machinery import all_suffixes
+
+        cap = self
+        suffixes = list(all_suffixes())
+
+        class _LookupFinder:
+            @staticmethod
+            def find_spec(fullname, path=None, target=None):
+                if cap._in_stat:
+                    return None
+                cap._in_stat = True
+                try:
+                    cap.lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
+                except Exception:
+                    pass
+                finally:
+                    cap._in_stat = False
+                return None
+
+            @staticmethod
+            def invalidate_caches():
+                pass
+
+        self._lookup_finder = _LookupFinder
+        sys.meta_path.insert(0, _LookupFinder)
 
     # -- sqlite ----------------------------------------------------------------------------
     def _patch_sqlite(self) -> None:
@@ -194,14 +269,19 @@ class Capture(_core.CaptureCore):
             # review R-017b F2: the audit event does not say whether ``database`` is a URI; the capture's audit arm
             # reads it here (crates/detpy-py/src/sqlcap.rs, connect modes)
             uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            from . import sqlvirt
+
             prev = _sql_connect_mode(3 if uri else 2)
+            sqlvirt.take_last()
             try:
                 conn = real(*args, **kwargs)
             finally:
                 _sql_connect_mode(prev)
-            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"), uri)
+            virt = sqlvirt.take_last()
+            # a connection Level 0 virtualised (detpy/sqlvirt.py): its 'now' is the virtual clock
+            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"), uri, virt is not None)
             try:
-                conn.set_trace_callback(tr)
+                sqlvirt.set_trace(conn, virt, tr)
             except Exception:
                 pass
             return conn
@@ -394,6 +474,10 @@ class ProofCachePlugin:
         os.makedirs(self.dir, exist_ok=True)
         self.runtime_digest, self.runtime_info, editable = runtime_identity(
             self.root, os.path.join(self.dir, "distributions.json"))
+        # sys.path and the .pth files of the site directories (Rust; review R-019c E-1/E-9)
+        self.runtime_digest, pth, spath = _core.runtime_with_paths(
+            self.runtime_digest, self.root, list(_sites._site_dirs), [e for e in sys.path if isinstance(e, str)])
+        self.runtime_info = {**self.runtime_info, "pth": pth, "sys_path": spath}
         cap = self.cap
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)

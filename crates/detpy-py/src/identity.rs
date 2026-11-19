@@ -922,9 +922,57 @@ fn safe_str<'py>(py: Python<'py>, s: &Bound<'py, PyAny>) -> PyResult<Bound<'py, 
     safe(py, s)
 }
 
+/// review R-019c E-1/E-9 (ported from claude/dep-verdict-abjcfw 8d47dcd): the module search path is part of the
+/// runtime. site.py runs the `.pth` files of the site directories at startup (before anything is recorded): they add
+/// `sys.path` entries and run code; `sys.path` itself (PYTHONPATH, `.pth` entries, the project's `pythonpath`)
+/// decides which directory a module comes from. Returns `(runtime digest, pth digest, sys.path with the project root
+/// written as "<root>")`: the runtime digest folds the base runtime digest, the `.pth` files (name and content, in
+/// name order per site directory) and the normalised `sys.path`, so the identity does not depend on where the
+/// checkout lives.
+#[pyfunction]
+fn runtime_with_paths(base: &str, root: PathBuf, site_dirs: Vec<PathBuf>, sys_path: Vec<String>) -> (String, String, Vec<String>) {
+    let mut pth = Vec::new();
+    for d in &site_dirs {
+        let Ok(rd) = std::fs::read_dir(d) else { continue };
+        let mut names: Vec<PathBuf> = rd
+            .filter_map(|e| e.ok().map(|e| e.path()))
+            .filter(|p| p.extension().is_some_and(|x| x == "pth"))
+            .collect();
+        names.sort();
+        for p in names {
+            pth.extend_from_slice(p.as_os_str().as_encoded_bytes());
+            pth.push(0);
+            pth.extend_from_slice(&std::fs::read(&p).unwrap_or_default());
+            pth.push(0);
+        }
+    }
+    let pth_digest = digest_bytes(&pth).short();
+    let rs = std::fs::canonicalize(&root).unwrap_or(root);
+    let rs = rs.to_string_lossy().to_string();
+    let norm: Vec<String> = sys_path
+        .iter()
+        .filter(|e| !e.is_empty())
+        .map(|e| {
+            let r = std::fs::canonicalize(e).map(|p| p.to_string_lossy().to_string()).unwrap_or_else(|_| e.clone());
+            if r == rs || r.starts_with(&format!("{rs}/")) {
+                format!("<root>{}", &r[rs.len()..])
+            } else {
+                r
+            }
+        })
+        .collect();
+    let mut all = format!("{base}\0pth:{pth_digest}\0");
+    for e in &norm {
+        all.push_str(e);
+        all.push('\0');
+    }
+    (digest_bytes(all.as_bytes()).short(), pth_digest, norm)
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(dist_infos, m)?)?;
     m.add_function(wrap_pyfunction!(runtime_identity, m)?)?;
+    m.add_function(wrap_pyfunction!(runtime_with_paths, m)?)?;
     m.add_function(wrap_pyfunction!(tz_locale_identity, m)?)?;
     m.add_function(wrap_pyfunction!(cache_epoch, m)?)?;
     m.add_function(wrap_pyfunction!(safe_env, m)?)?;

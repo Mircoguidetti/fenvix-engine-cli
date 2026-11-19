@@ -222,7 +222,9 @@ class Capture:
             # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
             self.active = False
             try:
-                self._scan_sockets(self.ctx_index(self.ctx) if self.ctx else None)
+                prev = self.ctx_index(self.ctx) if self.ctx else None
+                self._scan_sockets(prev)
+                self._scan_maps(prev)
             finally:
                 self.active = True
         self.ctx = name
@@ -360,6 +362,13 @@ class Capture:
         self.active = True
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         self._patch_sqlite()
+        self._patch_stat()
+        self._patch_lookups()
+        self.active = False
+        try:
+            self._scan_maps(None)
+        finally:
+            self.active = True
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -388,12 +397,158 @@ class Capture:
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
             setattr(obj, name, v)
         self._sqlite_saved = []
+        for obj, name, v in reversed(getattr(self, "_stat_saved", ())):
+            setattr(obj, name, v)
+        self._stat_saved = []
+        f = getattr(self, "_lookup_finder", None)
+        if f is not None and f in sys.meta_path:
+            sys.meta_path.remove(f)
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
             _mon.set_events(self.tool, 0)
             _mon.free_tool_id(self.tool)
             self.tool = None
+
+    # -- absent inputs (parallel-proof round 3, item 9) ---------------------------------
+    def _patch_stat(self) -> None:
+        cap = self
+        self._stat_saved = []
+        self._in_stat = False
+
+        def wrap(name):
+            orig = getattr(os, name, None)
+            if orig is None:
+                return
+
+            def checked(path, *args, **kwargs):
+                if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
+                    cap._in_stat = True
+                    try:
+                        cap.stat_check(path)
+                    except Exception:
+                        pass
+                    finally:
+                        cap._in_stat = False
+                return orig(path, *args, **kwargs)
+
+            checked.__name__ = orig.__name__
+            checked.__wrapped__ = orig
+            self._stat_saved.append((os, name, orig))
+            setattr(os, name, checked)
+
+        for name in ("stat", "lstat", "access"):
+            wrap(name)
+
+    def stat_check(self, path) -> None:
+        if not self.active:
+            return
+        p = self._abs(path)
+        if p is None or self._ignored(p):
+            return
+        try:
+            f = _getframe(1)
+        except ValueError:
+            f = None
+        if self._kind_from(f) != "user":
+            return
+        self.read(self._cur(), p, "s")
+
+    def _kind_from(self, f) -> str:
+        while f is not None:
+            fn = f.f_code.co_filename
+            if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
+                return "import"
+            if fn.startswith(_DETPY_DIR):
+                f = f.f_back
+                continue
+            kind, _ = _sites._classify(fn)
+            if kind == _sites._USER:
+                return "user"
+            if kind == _sites._INFRA:
+                return "infra"
+            f = f.f_back
+        return "user"
+
+    def _patch_lookups(self) -> None:
+        from importlib.machinery import all_suffixes
+
+        cap = self
+        suffixes = list(all_suffixes())
+
+        class _LookupFinder:
+            @staticmethod
+            def find_spec(fullname, path=None, target=None):
+                if cap._in_stat:
+                    return None
+                cap._in_stat = True
+                try:
+                    cap.lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
+                except Exception:
+                    pass
+                finally:
+                    cap._in_stat = False
+                return None
+
+            @staticmethod
+            def invalidate_caches():
+                pass
+
+        self._lookup_finder = _LookupFinder
+        sys.meta_path.insert(0, _LookupFinder)
+
+    def lookup(self, tail, entries, suffixes) -> None:
+        if not self.active:
+            return
+        ctx = self._cur()
+        n = len(suffixes)
+        for e in list(entries):
+            if not isinstance(e, str):
+                continue
+            d = self._abs(e or ".")
+            if d is None or self._ignored(d + os.sep):
+                continue
+            cands = _core.import_candidates(d, tail, suffixes)
+            missing = not os.path.exists(cands[0])
+            self.read(ctx, cands[0], "s")
+            regular = False
+            for c in (cands[1 + n:] if missing else cands[1:]):
+                self.read(ctx, c, "s")
+                if os.path.isfile(c):
+                    regular = True
+            if regular:
+                break
+
+    def _scan_maps(self, ctx) -> None:
+        try:
+            with open("/proc/self/maps", "rb") as fh:
+                text = fh.read()
+        except OSError:
+            return
+        if text == getattr(self, "_maps_text", None):
+            return
+        self._maps_text = text
+        seen = self.__dict__.setdefault("_maps_seen", set())
+        new = []
+        for line in text.split(b"\n"):
+            i = line.find(b"/")
+            if i < 0:
+                continue
+            p = line[i:]
+            if p in seen:
+                continue
+            seen.add(p)
+            new.append(p)
+        if self.__dict__.get("_maps_baseline", True):
+            self._maps_baseline = False
+            ctx = None
+        if ctx is None:
+            ctx = self.import_ctx
+        for b in new:
+            p = os.fsdecode(b)
+            if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
+                continue
+            self.read(ctx, p, "f")
 
     # -- sockets opened in C ----------------------------------------------------------
     def _scan_sockets(self, ctx: int | None) -> None:
@@ -478,6 +633,20 @@ class Capture:
         if not _encodable(p):
             self.flags.setdefault(ctx, set()).add("badpath")
             return
+        if kind == "s":
+            # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
+            # directories for the whole session; a kind never replaces a content or listing read of the same path
+            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
+                return
+            if p in self.writers:
+                self.flags.setdefault(ctx, set()).add("rw:" + p)
+                return
+            hk = "s" + p
+            dep = self._hashed.get(hk)
+            if dep is None:
+                dep = self._hashed[hk] = "s:" + _core.stat_kind(p)
+            self.data.setdefault(ctx, {}).setdefault(self._key(p), dep)
+            return
         if kind == "m":
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
         elif kind == "a":
@@ -557,6 +726,9 @@ class Capture:
                 excl = (flags or 0) & (os.O_CREAT | os.O_EXCL) == (os.O_CREAT | os.O_EXCL)
                 trunc = bool((flags or 0) & os.O_TRUNC) or excl
             kind = self._caller_kind()
+            if kind == "import" and reads and not p.endswith((".py", ".pyc", ".pyw")) and os.path.isfile(p):
+                self.read(self._cur(), p, "f")  # review R-019c E-7: a zip archive the import system reads
+                return
             if kind in ("import", "infra"):
                 return
             ctx = self._cur()
@@ -697,15 +869,20 @@ class Capture:
         def connect(*args, **kwargs):
             db = args[0] if args else kwargs.get("database")
             uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            from detpy import sqlvirt
+
             prev, _SQL_CONNECT.mode = getattr(_SQL_CONNECT, "mode", 0), (3 if uri else 2)
+            sqlvirt.take_last()
             try:
                 conn = real(*args, **kwargs)
             finally:
                 _SQL_CONNECT.mode = prev
+            virt = sqlvirt.take_last()
             # the state holds no reference to the connection (a cycle would delay closing it; no weak references)
             st = _SqlConn(_sqlite_file(db, bool(uri)))
+            st.virtual = virt is not None  # parallel-proof round 3: Level 0's virtual 'now'
             try:
-                conn.set_trace_callback(lambda statement: cap._sql_trace(statement, st))
+                sqlvirt.set_trace(conn, virt, lambda statement: cap._sql_trace(statement, st))
             except Exception:
                 pass
             return conn
@@ -726,7 +903,8 @@ class Capture:
     def _sql_trace(self, statement, st=None) -> None:
         if not self.active or not isinstance(statement, str):
             return
-        if _SQL_REAL_CLOCK.search(statement):
+        virtual = st is not None and getattr(st, "virtual", False)
+        if not virtual and _SQL_REAL_CLOCK.search(statement):
             self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
             if st is not None and _SQL_DDL.match(statement):
                 st.own = st.own or "this connection's schema"  # a temporary or uncommitted definition included
@@ -739,7 +917,7 @@ class Capture:
                 self._sql_database([f])  # review R-017b F2: an attached database is an input too
                 st.dbs.append(f)
             return
-        if _SQL_NO_SCHEMA.match(statement):
+        if virtual or _SQL_NO_SCHEMA.match(statement):
             return
         why = st.own
         if why is None:
@@ -1300,6 +1478,9 @@ class ProofCachePlugin:
         os.makedirs(self.dir, exist_ok=True)
         self.runtime_digest, self.runtime_info, editable = runtime_identity(
             self.root, os.path.join(self.dir, "distributions.json"))
+        self.runtime_digest, pth, spath = _core.runtime_with_paths(
+            self.runtime_digest, self.root, list(_sites._site_dirs), [e for e in sys.path if isinstance(e, str)])
+        self.runtime_info = {**self.runtime_info, "pth": pth, "sys_path": spath}
         cap = self.cap
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
@@ -1839,11 +2020,12 @@ class _SqlConn:
     """What detpy knows of one sqlite connection: its database files (main, attached) and whether a definition it
     ran reads the real clock."""
 
-    __slots__ = ("dbs", "own")
+    __slots__ = ("dbs", "own", "virtual")
 
     def __init__(self, main: str | None):
         self.dbs = [main] if main is not None else []
         self.own: str | None = None
+        self.virtual = False
 
 
 _SQL_CONNECT = __import__("threading").local()  # .mode: 0 unknown, 1 detpy's own, 2 plain, 3 URI (review R-017b F2)

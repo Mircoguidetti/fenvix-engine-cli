@@ -87,6 +87,7 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     _core.seeds_reset_counter()
     s = _core.derive_seed(base, nodeid)
     _real_seed(random._inst, s)
+    _core.sqlvirt_start_test(_core.derive_seed(base, nodeid + "\0sqlite"))  # SQLite's random() / randomblob()
     if _urandom_rng is not None:
         _real_seed(_urandom_rng, _core.derive_seed(base, nodeid + "\0urandom"))
     # Fresh temporary-name generator: names depend on the test, not on history.

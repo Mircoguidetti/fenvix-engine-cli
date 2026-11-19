@@ -38,6 +38,8 @@ mod sockcap;
 mod sqlcap;
 // rust-hotpaths-2: runtime identity of the cache with proof
 mod identity;
+// parallel-proof round 3: SQLite's clock and randomness under Level 0
+mod sqlvirt;
 // parallel --det: fixed plan and trace merge
 mod parallel;
 
@@ -288,6 +290,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::py_repr_float, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::json_dumps_str, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::stat_kind, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::import_candidates, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
@@ -311,6 +315,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     sockcap::register(m)?;
     // rust-hotpaths-2: runtime identity of the cache with proof
     identity::register(m)?;
+    sqlvirt::register(m)?;
     // parallel --det: fixed plan and trace merge
     parallel::register(m)?;
     Ok(())

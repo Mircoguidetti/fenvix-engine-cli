@@ -157,6 +157,13 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
 }
 
 /// An insertion-ordered map with Python `dict.update` semantics (an existing key keeps its position).
+/// A kind check ("s:<kind>") of a path whose content or listing is already a dependency adds nothing: the stronger
+/// dependency stays whatever context order the reads are merged in (an existence check in an import context must not
+/// replace a test's listing or content read of the same path).
+fn weaker(new: &str, old: &str) -> bool {
+    new.starts_with("s:") && !old.starts_with("s:")
+}
+
 #[derive(Clone, Default)]
 struct OrderedData {
     items: Vec<(Str, Str)>,
@@ -167,7 +174,11 @@ impl OrderedData {
     fn update(&mut self, kv: &[(String, String)]) {
         for (k, v) in kv {
             match self.pos.get(k.as_str()) {
-                Some(&i) => self.items[i].1 = Str::from(v.as_str()),
+                Some(&i) => {
+                    if !weaker(v, &self.items[i].1) {
+                        self.items[i].1 = Str::from(v.as_str())
+                    }
+                }
                 None => {
                     let k: Str = Str::from(k.as_str());
                     self.pos.insert(k.clone(), self.items.len());
@@ -199,10 +210,22 @@ impl<'a> TestData<'a> {
         }
     }
     fn set(&mut self, k: &'a str, v: &'a str) {
+        let prev = self.over.get(k).copied().or_else(|| self.g.pos.get(k).map(|&i| &*self.g.items[i].1));
+        if let Some(p) = prev {
+            if weaker(v, p) {
+                return;
+            }
+        }
         if !self.g.pos.contains_key(k) && !self.over.contains_key(k) {
             self.new_keys.push(k);
         }
         self.over.insert(k, v);
+    }
+    fn set_if_absent(&mut self, k: &'a str, v: &'a str) {
+        if !self.g.pos.contains_key(k) && !self.over.contains_key(k) {
+            self.new_keys.push(k);
+            self.over.insert(k, v);
+        }
     }
     /// Keys in insertion order (the order Python iterated the merged dict in).
     fn keys(&self) -> impl Iterator<Item = &str> + '_ {
@@ -505,6 +528,25 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         hit.map(|r| format!("source changed during the session: {r}"))
     };
 
+    // pytest's own lookups for a test: a conftest.py or __init__.py that appears (or goes) between the root and the
+    // test's file changes the plugins, fixtures or import name the test runs with (absent inputs; ported from
+    // claude/dep-verdict-abjcfw d972a3e). Their kinds are inputs of every test of the directory.
+    let root_dir = plan.root_sep.trim_end_matches('/');
+    let mut coll: HashMap<&str, Vec<(String, String)>> = HashMap::new();
+    for t in &plan.tests {
+        let own = ctx_file(&t.nodeid);
+        let dir = own.rsplit_once('/').map(|(d, _)| d).unwrap_or("");
+        coll.entry(dir).or_insert_with(|| {
+            crate::proof::collection_candidates(dir)
+                .into_iter()
+                .map(|rel| {
+                    let kind = crate::proof::stat_kind(&std::path::Path::new(root_dir).join(&rel));
+                    (rel, format!("s:{kind}"))
+                })
+                .collect()
+        });
+    }
+
     let mut new_edges: Vec<(String, String)> = Vec::new();
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
@@ -576,6 +618,14 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                             break;
                         }
                     }
+                }
+            }
+        }
+        {
+            let own_dir = own.rsplit_once('/').map(|(d, _)| d).unwrap_or("");
+            if let Some(c) = coll.get(own_dir) {
+                for (k, d) in c {
+                    data.set_if_absent(k, d);
                 }
             }
         }
