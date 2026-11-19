@@ -1,0 +1,1017 @@
+{
+ "spec": {
+  "name": "coredns",
+  "repo": "coredns/coredns",
+  "sha": "0e9a51410aa76e7c9a7276cd8065887a70a807d8",
+  "fix_commit": "0ba8e3c8504cce4ef05f85e20f9344435df7c098",
+  "fix_date": "2026-03-29T17:03:08.000-07:00",
+  "title": "test(dnstap): fix flaky TestReconnect (#7982)",
+  "tests": [
+   "TestReconnect"
+  ],
+  "source": "github commit search 'repo:coredns/coredns flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestReconnect": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./plugin/dnstap"
+ ],
+ "imports": [
+  "github.com/coredns/coredns/plugin/dnstap"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 26.2,
+ "build_det_s": 37.9,
+ "baseline": {
+  "github.com/coredns/coredns/plugin/dnstap::TestDnstap": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestFullQueueWriteFail": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestRace": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestTapMessage": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestMultiDnstap": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestTransport": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestReconnect": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestConfig": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 172.4,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 230,
+  "entropy": 2,
+  "outcome": 8
+ },
+ "det0_top_tests_by_events": [
+  [
+   141,
+   "github.com/coredns/coredns/plugin/dnstap::TestReconnect"
+  ],
+  [
+   37,
+   "github.com/coredns/coredns/plugin/dnstap::TestTransport"
+  ],
+  [
+   30,
+   "github.com/coredns/coredns/plugin/dnstap::TestFullQueueWriteFail"
+  ],
+  [
+   20,
+   "github.com/coredns/coredns/plugin/dnstap::TestRace"
+  ],
+  [
+   7,
+   "github.com/coredns/coredns/plugin/dnstap::TestDnstap"
+  ],
+  [
+   3,
+   "github.com/coredns/coredns/plugin/dnstap::TestConfig"
+  ],
+  [
+   1,
+   "github.com/coredns/coredns/plugin/dnstap::TestTapMessage"
+  ],
+  [
+   1,
+   "github.com/coredns/coredns/plugin/dnstap::TestMultiDnstap"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/coredns/coredns/plugin/dnstap::TestReconnect",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 35,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Sleep",
+     "at": "plugin/dnstap/io_test.go:167",
+     "v": "100000000"
+    },
+    "event_b": {
+     "t": 16,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "240014000"
+    },
+    "reason": "thread",
+    "description": "event #35: [time] time.Sleep @ plugin/dnstap/io_test.go:167 = 100000000 (thread 1)  <>  [time] time.tick @ timer = 240014000 (thread 16)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 8,
+  "stable": 7,
+  "diverged": 1,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 1
+  }
+ },
+ "det0": {
+  "github.com/coredns/coredns/plugin/dnstap::TestReconnect": [
+   [
+    "passed",
+    "ed27d515d6d90c85fb0c5bdcca50b88e"
+   ],
+   [
+    "passed",
+    "ed27d515d6d90c85fb0c5bdcca50b88e"
+   ],
+   [
+    "passed",
+    "946347c6dfa5c34156fa02c41877e1c1"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestConfig": [
+   [
+    "passed",
+    "d3f4c9cf42dbeb284a0703ab641be149"
+   ],
+   [
+    "passed",
+    "d3f4c9cf42dbeb284a0703ab641be149"
+   ],
+   [
+    "passed",
+    "d3f4c9cf42dbeb284a0703ab641be149"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestTapMessage": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestTransport": [
+   [
+    "passed",
+    "9db8e275aa6d2c1c215a5fba4bf511d7"
+   ],
+   [
+    "passed",
+    "9db8e275aa6d2c1c215a5fba4bf511d7"
+   ],
+   [
+    "passed",
+    "9db8e275aa6d2c1c215a5fba4bf511d7"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestDnstap": [
+   [
+    "passed",
+    "36e4f83df31feab122d7c7f9420d0e22"
+   ],
+   [
+    "passed",
+    "36e4f83df31feab122d7c7f9420d0e22"
+   ],
+   [
+    "passed",
+    "36e4f83df31feab122d7c7f9420d0e22"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestRace": [
+   [
+    "passed",
+    "257631aecccf302e50c1bbdfd5d67d25"
+   ],
+   [
+    "passed",
+    "257631aecccf302e50c1bbdfd5d67d25"
+   ],
+   [
+    "passed",
+    "257631aecccf302e50c1bbdfd5d67d25"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestFullQueueWriteFail": [
+   [
+    "passed",
+    "a5f0b6538d2d60333530ced0b567e844"
+   ],
+   [
+    "passed",
+    "a5f0b6538d2d60333530ced0b567e844"
+   ],
+   [
+    "passed",
+    "a5f0b6538d2d60333530ced0b567e844"
+   ]
+  ],
+  "github.com/coredns/coredns/plugin/dnstap::TestMultiDnstap": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/coredns/coredns/plugin/dnstap::TestRace": {
+   "1": [
+    "passed",
+    "2a283b764d31eafe8214c8f32e03d674"
+   ],
+   "2": [
+    "passed",
+    "8be392f5f13c3637484bef6225d48fd3"
+   ],
+   "3": [
+    "passed",
+    "5356ae33bad645ca3dd7491816d8613f"
+   ],
+   "4": [
+    "passed",
+    "48fc64cd5d723cc3480242132a3b2eca"
+   ],
+   "5": [
+    "passed",
+    "9e755445af534fbad5bc7d94a750c93e"
+   ],
+   "6": [
+    "passed",
+    "ce09f5759230bd15f7693ccd157f22bf"
+   ],
+   "7": [
+    "passed",
+    "a7af97b2af40a748467a6c9d963a66ab"
+   ],
+   "8": [
+    "passed",
+    "0c466b9f1d6a217a422d77b3f275ea3d"
+   ],
+   "9": [
+    "passed",
+    "5fab1c13f1facdfe6c61e7531f8bad73"
+   ],
+   "10": [
+    "passed",
+    "7057c14973b40a9fd7294e250caecbc0"
+   ],
+   "11": [
+    "passed",
+    "61377160ac0c07b25be7705d96989af5"
+   ],
+   "12": [
+    "passed",
+    "970c6f764884e6ca5b92a5a943542d89"
+   ],
+   "13": [
+    "passed",
+    "ce4f57aee5fbccd8cfef764714f4f19d"
+   ],
+   "14": [
+    "passed",
+    "03a6c9938ca43027b08f2c31c84ea2ad"
+   ],
+   "15": [
+    "passed",
+    "535989aefa2a60a099c317194eefb847"
+   ],
+   "16": [
+    "passed",
+    "3f1d0a57aa27295731490322969de806"
+   ],
+   "17": [
+    "passed",
+    "eb9b548adfd0046b6920595fd5fbad6b"
+   ],
+   "18": [
+    "passed",
+    "348bb89b554714bf0fb46447ac70e650"
+   ],
+   "19": [
+    "passed",
+    "6dc210b67d27ff98eb68bea003fe9e51"
+   ],
+   "20": [
+    "passed",
+    "f8b290cadb725eb65b80b23d33a561ac"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestTapMessage": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestDnstap": {
+   "1": [
+    "passed",
+    "9db8975084b6611ebcc18825caa79589"
+   ],
+   "2": [
+    "passed",
+    "e9c977c0550d8af80bdda0125c0127e3"
+   ],
+   "3": [
+    "passed",
+    "ef4a50653cd93b443b1d1386b6a4b958"
+   ],
+   "4": [
+    "passed",
+    "9b0f5fd237e406e046e15905fc732adf"
+   ],
+   "5": [
+    "passed",
+    "38282a879a6cf16ace2c6bb29563f7df"
+   ],
+   "6": [
+    "passed",
+    "9565f13d5c25ba502475480f50c865b0"
+   ],
+   "7": [
+    "passed",
+    "a9c5251d11ce14ae7e8cfbc22cb901b3"
+   ],
+   "8": [
+    "passed",
+    "a7cb9376c5f68d28c6e2cb65e7eb8c12"
+   ],
+   "9": [
+    "passed",
+    "3894710d3fae41f91b16e59fbdf9276e"
+   ],
+   "10": [
+    "passed",
+    "1dd6e31fc9d4c65bf9ef49c253dee6f4"
+   ],
+   "11": [
+    "passed",
+    "f4c534207f012cb6814cf19f08c7769e"
+   ],
+   "12": [
+    "passed",
+    "7223885112e2b0ad36483a9bcaa657cf"
+   ],
+   "13": [
+    "passed",
+    "f11e8e896f7009df3f0eb063734151a7"
+   ],
+   "14": [
+    "passed",
+    "273543fcca511f10a8f436293c00aad6"
+   ],
+   "15": [
+    "passed",
+    "05b94e540dda4634f4cd187ca498ecb7"
+   ],
+   "16": [
+    "passed",
+    "1ad9a938f6dea5242c26482b0dd833e2"
+   ],
+   "17": [
+    "passed",
+    "0de31a788045a35ffd5fea0ea9e7ac34"
+   ],
+   "18": [
+    "passed",
+    "41351a121c1a0d61999eb2c734b46f44"
+   ],
+   "19": [
+    "passed",
+    "5d955575910a478eda9ab871699fc0a7"
+   ],
+   "20": [
+    "passed",
+    "351b43203e7980c373bc8428644e0053"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestTransport": {
+   "1": [
+    "passed",
+    "1ac51bd510597ba15a9e3dc482c590f5"
+   ],
+   "2": [
+    "passed",
+    "c69ac47c4b9d01ca1b872fedc262d17a"
+   ],
+   "3": [
+    "passed",
+    "e4d3ceb24ec49528d7b4115ba14326ec"
+   ],
+   "4": [
+    "passed",
+    "8af775305f3e6d79005e78cbe37e24f2"
+   ],
+   "5": [
+    "passed",
+    "e35e7dbf51b9345bc29535d1a5feca18"
+   ],
+   "6": [
+    "passed",
+    "d4641eb02680d06a249f621ce4e7da17"
+   ],
+   "7": [
+    "passed",
+    "789856bd2884e91bb3eddbc1237eed91"
+   ],
+   "8": [
+    "passed",
+    "ce43c177c43515171e28bed6f019a612"
+   ],
+   "9": [
+    "passed",
+    "d020576a3890d2b279df3bb212195e88"
+   ],
+   "10": [
+    "passed",
+    "7a750e267289c174f533d2e077152383"
+   ],
+   "11": [
+    "passed",
+    "9ec98f294ff2d8e4f55dfa8fffde7e9a"
+   ],
+   "12": [
+    "passed",
+    "794f191c29507081d5472a1bd92ad2fe"
+   ],
+   "13": [
+    "passed",
+    "b4f100f2ceab694f9477cebdc312db2c"
+   ],
+   "14": [
+    "passed",
+    "06f313cf53465eb4ea953dbef09726b5"
+   ],
+   "15": [
+    "passed",
+    "6bb458fd935c36b18b7b32717b2d984a"
+   ],
+   "16": [
+    "passed",
+    "fdf63d449ee174423833dde1b6680240"
+   ],
+   "17": [
+    "passed",
+    "7632226d655ab1b76fdfadd9cc4cb08d"
+   ],
+   "18": [
+    "passed",
+    "13de67ac20a3e3d10ecbe6a766f756c8"
+   ],
+   "19": [
+    "passed",
+    "ade2eda713c3663f975fa0c16cebe33f"
+   ],
+   "20": [
+    "passed",
+    "ae91433fbd2d7b578f7b3df7f8aa9734"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestConfig": {
+   "1": [
+    "passed",
+    "3b1d2b64cf6df09bccefd88e1f178bf9"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "2209f2654c853146a72cc310363112ea"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "b6e964bdfefb33371c287739d024f5af"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestMultiDnstap": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestFullQueueWriteFail": {
+   "1": [
+    "passed",
+    "37c0a96436a395c3e317a01f9d0eff20"
+   ],
+   "2": [
+    "passed",
+    "fc3ac488b0fc42a9cc011f9997bb8cee"
+   ],
+   "3": [
+    "passed",
+    "580e3cd57c462475d9851da77a78650b"
+   ],
+   "4": [
+    "passed",
+    "0117f199adab7a5cada98bd188a8e6ee"
+   ],
+   "5": [
+    "passed",
+    "79cb9564d653a11cd4654930e952a8cc"
+   ],
+   "6": [
+    "passed",
+    "347594b63474a1727bff6e4b79952435"
+   ],
+   "7": [
+    "passed",
+    "dcf90321aebab1a79dbacb8c52bed1a6"
+   ],
+   "8": [
+    "passed",
+    "583306b121b855e1891675ac9684fe59"
+   ],
+   "9": [
+    "passed",
+    "cb3be62002a330f5b956765f8169336e"
+   ],
+   "10": [
+    "passed",
+    "6a6d0f9fbe57f161fd76f8f9f72ed72a"
+   ],
+   "11": [
+    "passed",
+    "f327f747810e8c887a42b7c9b1038d4b"
+   ],
+   "12": [
+    "passed",
+    "4519fefb070f1fd72eaa74d83b6a8d87"
+   ],
+   "13": [
+    "passed",
+    "b330a998368e3f776617497103738e41"
+   ],
+   "14": [
+    "passed",
+    "5093bce4f00e2096463e0d7afb09387d"
+   ],
+   "15": [
+    "passed",
+    "dc2f28e1f3775b796a9cc048481820e6"
+   ],
+   "16": [
+    "passed",
+    "3219c471adc4278103f4872dc6b4abba"
+   ],
+   "17": [
+    "passed",
+    "f99cb318dc42747f1718c809d25534ba"
+   ],
+   "18": [
+    "passed",
+    "b790b3716928173f3c336228ed4a5131"
+   ],
+   "19": [
+    "passed",
+    "79d9d32212f5e671296db44d9e4bc58a"
+   ],
+   "20": [
+    "passed",
+    "011eb02cb5c713d5b6b59a5b4a25e7aa"
+   ]
+  },
+  "github.com/coredns/coredns/plugin/dnstap::TestReconnect": {
+   "1": [
+    "passed",
+    "394b1df267a6abf87d8d73175cd38db3"
+   ],
+   "2": [
+    "passed",
+    "4157e94a1bac1c48f4ed9558c75357ba"
+   ],
+   "3": [
+    "passed",
+    "33e86abd7649349625425ad1d9569ec0"
+   ],
+   "4": [
+    "passed",
+    "487d51aa9c0388a67d5532be8883b32d"
+   ],
+   "5": [
+    "passed",
+    "645d91992d5b7429024f04710ca39de9"
+   ],
+   "6": [
+    "passed",
+    "c1d5c7390043a6ec3b557ef94a33de8a"
+   ],
+   "7": [
+    "passed",
+    "49f986b8e9a9d2aa7aa8beaeb623a109"
+   ],
+   "8": [
+    "passed",
+    "848096d8c9a7fe441b69151143856439"
+   ],
+   "9": [
+    "passed",
+    "ae0534661a2b90727b18575283975476"
+   ],
+   "10": [
+    "passed",
+    "28c4a509c337a7ff9412131f80df3cf5"
+   ],
+   "11": [
+    "passed",
+    "40b2b0f78429df93616fbdba3f962b57"
+   ],
+   "12": [
+    "passed",
+    "74469ff27616671edc4fdba860f443a0"
+   ],
+   "13": [
+    "passed",
+    "74a33bd81713dc79f2a817035b6975ff"
+   ],
+   "14": [
+    "passed",
+    "b22c27adb85a285d160f01642eb8f934"
+   ],
+   "15": [
+    "passed",
+    "c975aa949b808dea225b330ef64eef73"
+   ],
+   "16": [
+    "passed",
+    "bfa86f270aa67e7ad2e15298d4c6c91e"
+   ],
+   "17": [
+    "passed",
+    "b4361217d7cf0d94e4a7401bf751e3e9"
+   ],
+   "18": [
+    "passed",
+    "c5f4a9684fc8efdf219e445f988b455b"
+   ],
+   "19": [
+    "passed",
+    "4bf5c70cb0e7fed1dd515cb8e4abf382"
+   ],
+   "20": [
+    "passed",
+    "be771b85ba6aa6c9cfb293ee6844dc53"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/coredns/coredns/plugin/dnstap::TestReconnect": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  7,
+  8
+ ],
+ "timing_keep_parallel": [
+  1.7650000000000001,
+  1.681,
+  1.764
+ ],
+ "timing": {
+  "plain": [
+   1.759,
+   1.76,
+   1.762
+  ],
+  "det": [
+   1.681,
+   1.682,
+   1.683
+  ]
+ },
+ "slowdown": -0.04431818181818186
+}
