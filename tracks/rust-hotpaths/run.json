@@ -1,21 +1,13 @@
 {
- "run_id": "p8",
- "note": "round 2 final engine: everything that is not interface in Rust (capture, decisions, receipts, the cache session's bookkeeping / record plan / reporting, runtime identity, the sqlite trace and socket helpers, follow parsing, clock, seeds, fsorder, network, repro/reexec decisions; rewritten test modules cached; R-015, R-009b and R-015b fixes) vs base (24b6d15), round 1 (128dcc6) and the round-2 'clock and call sites' checkpoint (c28a531, the engine of p5/w3); interleaved. Replaces p7 (cancelled while queued: engine before the last proofcache moves)",
+ "run_id": "p9",
+ "note": "review R-017 fixes (H1 rewritten-test pycs keyed on the rewrite's configuration, H3 badenv) vs the engine before them (ac0110b, the round-2 final code of p8); interleaved; --clean-tmp (H2: p8's pygments --det runs exhausted the deterministic temporary names)",
  "engines": [
   {
-   "name": "base",
-   "ref": "24b6d15e043a2f42834809ea41b5cca0f60849d3"
+   "name": "pre",
+   "ref": "ac0110b20ea719795e3dbbf8989f89f2131ad0d9"
   },
   {
-   "name": "r1",
-   "ref": "128dcc6"
-  },
-  {
-   "name": "r2cp",
-   "ref": "c28a531"
-  },
-  {
-   "name": "r2",
+   "name": "r017",
    "ref": ""
   }
  ],
@@ -24,9 +16,7 @@
    "spec": "home-assistant",
    "shards": 16,
    "only": [
-    0,
-    5,
-    10
+    0
    ],
    "reps": 3
   },
