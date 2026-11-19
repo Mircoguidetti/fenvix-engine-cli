@@ -360,7 +360,11 @@ class ProofSession {
     let names = [];
     try { names = fs.readdirSync(dir).sort(); } catch { return out; }
     for (const n of names) {
-      try { out.push(JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8'))); } catch { /* truncated: not recorded */ }
+      let c;
+      try { c = JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8')); } catch { continue; /* truncated: not recorded */ }
+      // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
+      // processes) corrects `ok` from the runner's own results
+      out.push(this.captureFilter ? this.captureFilter(c) : c);
     }
     return out;
   }

@@ -29,7 +29,7 @@ const { STATE } = require('../state');
 const SHELL_DIR = path.resolve(__dirname, '..') + path.sep; // node/src/
 const ENGINE_DIR = path.resolve(__dirname, '..', '..') + path.sep; // node/
 // detjs' own driver code (runner shells, session, cache): infrastructure; its wrappers of patched APIs are not
-const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest)[\\/]|[\\/]src[\\/](?:session|controls|register)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
+const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest|nodetest|mocha)[\\/]|[\\/]src[\\/](?:session|controls|register|fileproc)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
 const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman)[\\/]/;
 const ENGINE_OWN = /^(?:src|bin|node_modules|scripts)(?:[\\/]|$)|^package(?:-lock)?\.json$|^detjs\.[^\\/]+\.node$/;
 // a Vite config bundled to a temporary module (it is user code: `vitest.config.ts.timestamp-<n>-<hash>.mjs`)

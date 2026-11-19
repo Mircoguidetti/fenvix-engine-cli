@@ -6,7 +6,8 @@
 const path = require('node:path');
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|mocha)[\\/]/;
+const RUNNER_INTERNAL = /^(?:node:)?internal\/test_runner\//;
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
 let root = process.cwd();
@@ -62,6 +63,7 @@ function resolveFormatted() {
     }
     const q = f.indexOf('?');
     if (q >= 0) f = f.slice(0, q);
+    if (RUNNER_INTERNAL.test(f)) return null; // node:test's own machinery (durations, timeouts)
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || f === 'native' || !f.includes('/')) continue;
     if (INFRA.test(f)) return null;
     return `${normPath(f)}:${m[2]}`;
@@ -117,6 +119,7 @@ function resolveDepth(depth) {
   if (!Array.isArray(frames)) return resolveFormatted();
   for (const cs of frames) {
     const f = rawFile(cs);
+    if (RUNNER_INTERNAL.test(f)) return null; // node:test's own machinery (durations, timeouts)
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
     if (INFRA.test(f)) return null;
     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
