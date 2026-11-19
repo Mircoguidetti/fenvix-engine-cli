@@ -1,0 +1,499 @@
+{
+ "name": "uptime-kuma",
+ "job": "gate",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44505073476",
+ "engine_commit": "35494b25f581d8e304f4534ab7b37d1d0776a0cc",
+ "setup_s": 349,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 240
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-19T10:36:00Z",
+ "measured_at": "2026-11-19T10:36:51Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "passed",
+    "failed"
+   ],
+   "errors": [
+    "",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    2 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    14 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/",
+    "",
+    "Error: expect(locator).toHaveValue(expected) failed\n\nLocator:  locator('#keepDataPeriodDays')\nExpected: \"30\"\nReceived: \"180\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveValue\" locator('#keepDataPeriodDays') with timeout 5000ms\n  - waiting for locator('#keepDataPeriodDays')\n    2 \u00d7 locator resolved to <input min=\"0\" step=\"1\" required=\"\" type=\"number\" class=\"form-control\" id=\"keepDataPeriodDays\"/>"
+   ],
+   "walls": [
+    44.1,
+    49.3,
+    49.5,
+    49.6,
+    50.0,
+    50.8,
+    50.7,
+    50.6,
+    44.1,
+    49.3
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g1-det-1.jsonl.gz",
+    "gate-uptime-kuma/g1-det-2.jsonl.gz",
+    "gate-uptime-kuma/g1-det-3.jsonl.gz",
+    "gate-uptime-kuma/g1-det-4.jsonl.gz",
+    "gate-uptime-kuma/g1-det-5.jsonl.gz",
+    "gate-uptime-kuma/g1-det-6.jsonl.gz",
+    "gate-uptime-kuma/g1-det-7.jsonl.gz",
+    "gate-uptime-kuma/g1-det-8.jsonl.gz",
+    "gate-uptime-kuma/g1-det-9.jsonl.gz",
+    "gate-uptime-kuma/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 7,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 0,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:browser GET http://localhost:3001/setup -"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "ls.deliver",
+       "at": "",
+       "v": "9 ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=j9-63Z2HFmSuH_5pAAAA b3372b584dc0df6ce757fa43f459ca1f"
+      },
+      "reason": "sched",
+      "description": "event #0: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/setup - @   <>  ls.deliver 9 ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=j9-63Z2HFmSuH_5pAAAA b3372b584dc0df6ce757fa43f459ca1f @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 5,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 2,
+      "index": 14,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 72dd7e9527dad875d5c924b5adc84df3"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 5b9571df6fd856b943e03992ceed1dba"
+      },
+      "reason": "net",
+      "description": "event #14: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 72dd7e9527dad875d5c924b5adc84df3\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 5b9571df6fd856b943e03992ceed1dba\""
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 7,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 21,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=8yq1AJoJsEmJHZfaAAAH 1d61537f16dc9b1eb3eea67d8000bbfc"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "ls.deliver",
+       "at": "",
+       "v": "6 ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=8yq1AJoJsEmJHZfaAAAH b3372b584dc0df6ce757fa43f459ca1f"
+      },
+      "reason": "sched",
+      "description": "event #21: first diverging scheduling choice: sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=8yq1AJoJsEmJHZfaAAAH 1d61537f16dc9b1eb3eea67d8000bbfc @   <>  ls.deliver 6 ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=8yq1AJoJsEmJHZfaAAAH b3372b584dc0df6ce757fa43f459ca1f @ "
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+     "status": "diverged",
+     "distinct_fingerprints": 9,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 24,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=wqpiCO9iJmHtb7mRAAAK b3372b584dc0df6ce757fa43f459ca1f"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "sched",
+       "o": "sched.io",
+       "at": "",
+       "v": "0/2:browser GET http://localhost:3001/settings/monitor-history -"
+      },
+      "reason": "sched",
+      "description": "event #24: first diverging scheduling choice: sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=wqpiCO9iJmHtb7mRAAAK b3372b584dc0df6ce757fa43f459ca1f @   <>  sched.io 0/2:browser GET http://localhost:3001/settings/monitor-history - @ "
+     }
+    }
+   ],
+   "verify": {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "status": "diverged",
+    "distinct_fingerprints": 9,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 24,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=wqpiCO9iJmHtb7mRAAAK b3372b584dc0df6ce757fa43f459ca1f"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "sched",
+      "o": "sched.io",
+      "at": "",
+      "v": "0/2:browser GET http://localhost:3001/settings/monitor-history -"
+     },
+     "reason": "sched",
+     "description": "event #24: first diverging scheduling choice: sched.io 0/1:ws SEND ws://localhost:3001/socket.io/?EIO=4&transport=websocket&sid=wqpiCO9iJmHtb7mRAAAK b3372b584dc0df6ce757fa43f459ca1f @   <>  sched.io 0/2:browser GET http://localhost:3001/settings/monitor-history - @ "
+    }
+   }
+  },
+  {
+   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "errors": [
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t",
+    "Error: expect(locator).toHaveAttribute(expected) failed\n\nLocator: getByTestId('edit-sidebar')\nExpected pattern: /^\\d+$/\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toHaveAttribute\" getByTestId('edit-sidebar') with timeout 5000ms\n  - waiting for getByTestId('edit-sidebar')\n    - waiting for \"http://localhost:3001/status/security-test\" navigation to finish...\n    - navigated t"
+   ],
+   "walls": [
+    60.8,
+    61.8,
+    61.6,
+    61.7,
+    62.1,
+    63.1,
+    61.9,
+    61.3,
+    61.9,
+    63.2
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-uptime-kuma/g2-det-1.jsonl.gz",
+    "gate-uptime-kuma/g2-det-2.jsonl.gz",
+    "gate-uptime-kuma/g2-det-3.jsonl.gz",
+    "gate-uptime-kuma/g2-det-4.jsonl.gz",
+    "gate-uptime-kuma/g2-det-5.jsonl.gz",
+    "gate-uptime-kuma/g2-det-6.jsonl.gz",
+    "gate-uptime-kuma/g2-det-7.jsonl.gz",
+    "gate-uptime-kuma/g2-det-8.jsonl.gz",
+    "gate-uptime-kuma/g2-det-9.jsonl.gz",
+    "gate-uptime-kuma/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 5,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 22,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 5101ba09a2084cd9f9ff02e1b8cb77f5"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 eace3cc1211b7c316bb2c4b046a2500d"
+      },
+      "reason": "net",
+      "description": "event #22: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 5101ba09a2084cd9f9ff02e1b8cb77f5\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 eace3cc1211b7c316bb2c4b046a2500d\""
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 5,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 14,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 5b9571df6fd856b943e03992ceed1dba"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 85ba78a00a58fd84192323bd0cf9ae9d"
+      },
+      "reason": "net",
+      "description": "event #14: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 5b9571df6fd856b943e03992ceed1dba\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 85ba78a00a58fd84192323bd0cf9ae9d\""
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "diverged",
+     "distinct_fingerprints": 9,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 14,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 237ff4c619c700e26fc17c988fbd6073"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 e4cfb482be16e5004c10e511f930096e"
+      },
+      "reason": "net",
+      "description": "event #14: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 237ff4c619c700e26fc17c988fbd6073\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 e4cfb482be16e5004c10e511f930096e\""
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+     "status": "diverged",
+     "distinct_fingerprints": 10,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 18,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 bf04fff4d08e6b5cdb92aea36f534228"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "net",
+       "o": "browser.done",
+       "at": "",
+       "v": "POST http://localhost:3001/api/auth/sign-in/username 200 212e243806508fc277f96d2218952a25"
+      },
+      "reason": "net",
+      "description": "event #18: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 bf04fff4d08e6b5cdb92aea36f534228\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 212e243806508fc277f96d2218952a25\""
+     }
+    }
+   ],
+   "verify": {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "status": "diverged",
+    "distinct_fingerprints": 10,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 18,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 bf04fff4d08e6b5cdb92aea36f534228"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "POST http://localhost:3001/api/auth/sign-in/username 200 212e243806508fc277f96d2218952a25"
+     },
+     "reason": "net",
+     "description": "event #18: browser.done @  returned different values: \"POST http://localhost:3001/api/auth/sign-in/username 200 bf04fff4d08e6b5cdb92aea36f534228\" vs \"POST http://localhost:3001/api/auth/sign-in/username 200 212e243806508fc277f96d2218952a25\""
+    }
+   }
+  }
+ ],
+ "elapsed_min": 19.5
+}
