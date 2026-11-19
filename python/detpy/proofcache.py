@@ -37,6 +37,7 @@ import json
 import os
 import platform
 import random
+import stat as _stat
 import sys
 import time
 from types import CodeType, FunctionType
@@ -72,6 +73,8 @@ _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep
 # them; objects are content-addressed, so a changed commit always comes with a changed ref file)
 _SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
+# a file's ctime comes from the kernel's coarse clock (one tick behind at most); strace -ttt from the fine one
+_CTIME_SLACK = 0.02
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -683,6 +686,7 @@ class Capture:
             # tree's inputs and refusals, as the context that started it does.
             t1 = float("inf") if res.bad and "still running" in res.bad else res.t1
             targets = [ctx] + sorted(self._contexts_during(res.t0, t1) - {ctx})
+            res.late = self._changed_after_start(res)
             for c in targets:
                 self._credit_child(c, sp, res)
         try:
@@ -703,10 +707,36 @@ class Capture:
                 out.add(ck)
         return out
 
+    def _changed_after_start(self, res) -> str | None:
+        """review R-015b G1: a file the tree read is digested now, at the end of the session. One whose ``ctime``
+        (which ``utime`` cannot set back) is not before the tree's first system call may have been changed after
+        the tree read it: the digest is then not that of the content the tree ran or read. Files the session wrote
+        are left to the writers' rules."""
+        if res.t0 is None:
+            return None
+        t0 = int((res.t0 - _CTIME_SLACK) * 1e9)
+        written = {p for op, p in res.ops if op == "w"}
+        seen = set()
+        for op, p in res.ops:
+            if op not in ("r", "x") or p in seen or p in written or p in self.writers:
+                continue
+            seen.add(p)
+            if follow.special(p, res.pids) is not None or self.child_ignored(p):
+                continue
+            try:
+                st = os.stat(p)
+            except (OSError, ValueError):
+                continue
+            if _stat.S_ISREG(st.st_mode) and st.st_ctime_ns >= t0:
+                return p
+        return None
+
     def _credit_child(self, ctx: int, sp, res) -> None:
         """The inputs, writes and refusals of one followed process tree, as inputs of context ``ctx``."""
         if res.bad:
             self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
+        if res.late:
+            self.flag(ctx, "spawn", f"{sp.detail} [{res.late} changed during the session]")
         if res.net:
             self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
         if res.clock and not sp.clock_exempt:
