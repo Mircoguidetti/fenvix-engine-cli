@@ -35,7 +35,7 @@ function destinationOf(d) {
 
 async function main() {
   const plan = JSON.parse(fs.readFileSync(process.env.DETJS_NT_PLAN, 'utf8'));
-  const { run } = require('node:test');
+  const { run } = typeof process.getBuiltinModule === 'function' ? process.getBuiltinModule('node:test') : require('node:test');
   const options = {
     files: plan.files,
     concurrency: 1,

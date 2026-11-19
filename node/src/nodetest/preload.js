@@ -36,6 +36,7 @@ if (role === 'file' || role === 'shared') {
   let attached = false;
   let allowAttach = role === 'file';
   let cur = null; // {ctx, name, done}
+  let onBegin = null;
   const skippedCtx = new WeakSet();
 
   const outcomeOf = (ctx) => {
@@ -51,6 +52,7 @@ if (role === 'file' || role === 'shared') {
     fp.end(o);
   };
   const begin = (ctx) => {
+    if (onBegin) onBegin(ctx);
     let name;
     try { name = String(ctx.fullName); } catch { name = String(ctx.name); }
     // a subtest (t.test) of the running test belongs to it
@@ -74,33 +76,94 @@ if (role === 'file' || role === 'shared') {
   const attach = () => {
     if (attached || !allowAttach || !fp.active) return;
     attached = true;
-    const nt = require('node:test');
+    const nt = typeof process.getBuiltinModule === 'function' ? process.getBuiltinModule('node:test') : require('node:test');
     // a fresh async scope: the hooks go to the root test, whatever test is running when node:test is resolved
     new AsyncResource('detjs').runInAsyncScope(() => {
       nt.beforeEach(function detjsBegin(t) { begin(t); });
       nt.afterEach(function detjsEnd(t) { if (cur && cur.ctx === t) cur.done = true; });
     });
   };
+  // --det-seed: top-level declarations of the file are held until its module finished evaluating (facade.js)
+  const c = fp.c;
+  const shuffle = Boolean(c.shuffle && c.controls.has('order'));
+  const held = [];
+  let rootOpen = shuffle && role === 'file';
+  const flushRoot = () => {
+    if (!rootOpen) return;
+    rootOpen = false;
+    const perm = require('../native').shuffleIndices(held.length, c.seed, fp.fileId || '');
+    const items = held.splice(0);
+    for (const i of perm) items[i]();
+  };
+  let facadeObj = null;
+  const { makeFacade, wrapContextTest } = require('./facade');
   globalThis[KEY] = {
     role,
     fp,
     attachShared() { allowAttach = true; attach(); },
+    facade(real) {
+      if (!facadeObj) {
+        facadeObj = makeFacade(real, {
+          shuffle,
+          seed: c.seed,
+          fileKey: () => fp.fileId || '',
+          rootOpen: () => rootOpen,
+          holdRoot: (call) => held.push(call),
+        });
+      }
+      return facadeObj;
+    },
+    flushRoot,
   };
+  onBegin = (ctx) => wrapContextTest(ctx);
   const m = require('node:module');
+  const { pathToFileURL } = require('node:url');
+  const FACADE_CJS = pathToFileURL(path.join(__dirname, 'facade.cjs')).href;
+  const FACADE_MJS = pathToFileURL(path.join(__dirname, 'facade.mjs')).href;
+  let entryURL = null;
+  let entryFile = null;
+  if (role === 'file' && process.argv[1]) {
+    entryFile = path.resolve(process.argv[1]);
+    try { entryFile = require('node:fs').realpathSync(entryFile); } catch { /* keep */ }
+    entryURL = pathToFileURL(entryFile).href;
+  }
   if (typeof m.registerHooks === 'function') {
     m.registerHooks({
       resolve(spec, context, next) {
-        if (spec === 'node:test' && allowAttach && !attached) attach();
+        if (spec === 'node:test' || spec === 'test') {
+          if (allowAttach && !attached) attach();
+          const parent = context && context.parentURL;
+          if (spec === 'node:test' && parent !== FACADE_CJS && parent !== FACADE_MJS && fp.active) {
+            const cjs = Array.isArray(context.conditions) && context.conditions.includes('require') && !context.conditions.includes('import');
+            return { url: cjs ? FACADE_CJS : FACADE_MJS, format: cjs ? 'commonjs' : 'module', shortCircuit: true };
+          }
+        }
         return next(spec, context);
+      },
+      load(url, context, next) {
+        const r = next(url, context);
+        // the end of the test file's ES module body: release the held top-level declarations
+        if (rootOpen && url === entryURL && r && r.source != null && /^module(-typescript)?$/.test(String(r.format))) {
+          return { ...r, source: `${String(r.source)}\n;globalThis[Symbol.for('detjs.nodetest')].flushRoot();\n` };
+        }
+        return r;
       },
     });
   } else if (role === 'file') {
     attach(); // Node < 22.15: attach now (the file's root test exists from here on)
+    if (rootOpen) { rootOpen = false; process.stderr.write('detjs: module.registerHooks unavailable (Node < 22.15): test order is not shuffled\n'); }
   }
-  if (role === 'file') {
-    const file = process.argv[1] ? path.resolve(process.argv[1]) : '<unknown>';
-    fp.open(fp.fileIdOf(file));
+  if (rootOpen) {
+    // a CommonJS entry has finished evaluating when runMain returns
+    const Module = m.Module || m;
+    const realRunMain = Module.runMain;
+    Module.runMain = function runMain(...a) {
+      const r = realRunMain.apply(this, a);
+      if (entryFile && require.cache[entryFile]) flushRoot();
+      return r;
+    };
   }
+  if (role === 'file') fp.open(fp.fileIdOf(entryFile || '<unknown>'));
   process.on('exit', (code) => {
     endCurrent();
     fp.close({ ok: code === 0 && !process.exitCode });
