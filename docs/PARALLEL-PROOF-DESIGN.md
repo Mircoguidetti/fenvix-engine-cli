@@ -22,21 +22,32 @@ same esphome selection took 160 s and 180 s: read single local walls as ±12 %.
   shards), moto (`-n 4 --dist loadscope` for a subset, the rest serial), airflow (non-DB tests `-n <cpus>`), and
   community.general through ansible-test (`-n auto`). Serial: haystack, integrations-core. transformers' public CI
   is defined outside the repository (`-n 8`, EXTERNAL), its in-repo CircleCI generator uses `-n 4`.
-* **What breaks today with `--det -n 4` (MEASURED, 1.4).** Nothing crashes and the verdict equals serial `--det`
-  on esphome and pydantic-ai, but: (1) the trace is lost (every worker and the controller write the same path;
+* **What breaks today with `--det -n 4` (MEASURED, 1.4).** (0) On pydantic-ai it **does not start**: its
+  `filterwarnings = error` turns detpy's own "xdist is not supported" warning into an INTERNALERROR (exit 3);
+  prefect declares the same filter. With that warning silenced, the verdict equals serial `--det` on esphome and
+  pydantic-ai, but: (1) the trace is lost (every worker and the controller write the same path;
   the controller's header-only `"collection": "failed"` file is what remains); (2) distribution is dynamic: 33 % of
   esphome's tests ran on another worker in two identical runs; (3) 50 of 14,446 esphome tests (0.35 %) have a
   different fingerprint in parallel than serially, for reasons that have nothing to do with noise (in-process state
-  from earlier tests, `tmp_path` counters), 0 outcome flips; (4) the cache under `-n`: the controller reports
+  from earlier tests, `tmp_path` counters), 0 outcome flips; on pydantic-ai 455 of the 2,631 serially stable
+  tests (17 %, mostly logfire/OpenTelemetry lazy state), 0 outcome flips, and two serial runs already disagree on
+  67 % of its tests through uncontrolled `os.urandom`; (4) the cache under `-n`: the controller reports
   "reused 0, ran 0, recorded 0" and the receipts file is empty; each worker decides for the whole suite; tests that
   read the whole environment (3,000 on esphome, 21 %) are never reused because xdist sets a fresh
   `PYTEST_XDIST_TESTRUNUID` in every run; entries recorded under `-n` are never reused serially (and vice versa)
-  because the workers' configuration digest contains xdist's `loadgroup` option; (5) **a wrong reuse**: a test that
+  because the workers' configuration digest contains xdist's `loadgroup` option; on pydantic-ai nothing at all was
+  recorded, under `-n 4` and serially alike (a capture problem, 1.4.6); (5) **a wrong reuse**: a test that
   reads a file another worker's test wrote (outside the repository) is cached and later reused with a result the
   serial run contradicts (synthetic reproduction, 1.4.5).
 * **Speed (MEASURED, local 4 vCPU).** esphome: `--det -n 4` 80-82 s vs plain `-n 4` 62-67 s (1.26x) and `--det`
   serial 175-177 s; serial `--det` is 2.7x slower than the customer's `-n 4` job here (the "about 4x" estimate
-  assumed a 4x xdist speedup; plain xdist reaches 2.6-2.8x on 4 vCPU on esphome). pydantic-ai: see 1.4.
+  assumed a 4x xdist speedup; plain xdist reaches 2.6-2.8x on 4 vCPU on esphome). pydantic-ai subset: `--det -n 4`
+  139-140 s vs plain `-n 4` 151 s and `--det` serial 410-464 s (2.9x slower than the customer's mode). Today's
+  `--det -n 4` is therefore already about as fast as plain xdist: what is missing is determinism of placement, the
+  cache and the proof, not speed.
+* **Found on the way (1.4.6):** with the capture on (`--det-cache`), 2,769 of 8,072 pydantic-ai tests fail
+  (blockbuster: `os.path.abspath` in the asyncio loop thread, from detpy's audit hook); two esphome UDP tests hang
+  under `--det` (raw `select` with a virtual timeout).
 * **Design A (2):** keep xdist as process manager, replace its scheduling by a fixed plan (atoms from the customer's
   `--dist`, LPT on recorded durations, sticky), per-worker traces merged by the controller, reuse decided once in
   the controller, workers record shards, merged with a cross-worker write rule. 11 session-days with the proof.
@@ -108,7 +119,7 @@ Selections: **esphome** = the CI selection (`tests --ignore=tests/integration`, 
 `--no-cov`) minus `-k udp` (102 tests; two UDP tests hang under `--det`, 1.4.6): 14,446 tests. **pydantic-ai** =
 `tests/models tests/harness/code_mode tests/harness/refine_output tests/harness/detect_loops
 tests/providers/test_openai_compatible_http_clients.py -m "not temporal"` (includes `xdist_group` tests):
-PAI_NTESTS tests; `-n 4 --dist=loadgroup` as in its CI (`logical` = 4 here). Both with `-p no:randomly
+8,072 tests; `-n 4 --dist=loadgroup` as in its CI (`logical` = 4 here). Both with `-p no:randomly
 --timeout=...` (pytest-timeout as a guard).
 
 | | esphome | pydantic-ai |
@@ -116,15 +127,25 @@ PAI_NTESTS tests; `-n 4 --dist=loadgroup` as in its CI (`logical` = 4 here). Bot
 | plain serial | 160 s / 180 s | 461 s |
 | plain `-n 4` (customer's mode) | 62 s / 67 s (80 s with the UDP tests) | 151 s |
 | xdist speedup, plain | 2.6-2.8x | 3.05x |
-| `--det` serial | 177 s / 175 s | PAI_DET_SER |
-| `--det -n 4` | 82 s / 80 s | PAI_DET_N4 |
-| `--det -n 4` / plain `-n 4` | 1.26x | PAI_RATIO_N4 |
-| **`--det` serial / plain `-n 4` (today's gap)** | **2.7x** | **PAI_GAP** |
-| cold `--det-cache` serial / warm | 232 s / 104 s (reused 14,151 = 98 %) | PAI_CACHE_SER |
-| cold `--det-cache -n 4` / warm / warm again | 104 s / 81 s / 75 s (reused 5,787, then 11,156 = 77 %) | PAI_CACHE_N4 |
+| `--det` serial | 177 s / 175 s | 464 s / 410 s |
+| `--det -n 4` | 82 s / 80 s | aborts at start (exit 3, 1.4.3); with `-W ignore:detpy:UserWarning`: 139 s / 140 s |
+| `--det -n 4` / plain `-n 4` | 1.26x | 0.92x (one plain run; within the noise) |
+| **`--det` serial / plain `-n 4` (today's gap)** | **2.7x** | **2.9x** |
+| cold `--det-cache` serial / warm | 232 s / 104 s (reused 14,151 = 98 %) | 1,447 s (3.1x plain), 2,748 failures, **0 entries recorded** (1.4.6); warm not run |
+| cold `--det-cache -n 4` / warm / warm again | 104 s / 81 s / 75 s (reused 5,787, then 11,156 = 77 %) | 475 s / 458 s, 2,769 failures, 0 entries recorded, 0 reused |
 
-The esphome `--det` serial run costs about what plain serial costs here (1.0-1.1x): the round-2 engine's `--det`
-overhead is small on this suite; the gap to the customer is the missing parallelism, not the controls.
+`--det` serial costs about what plain serial costs on both suites (esphome 1.0-1.1x, pydantic-ai 0.9-1.0x): the
+round-2 engine's `--det` overhead is small here; the gap to the customer is the missing parallelism, not the
+controls. The capture (`--det-cache`) is another matter on pydantic-ai (1.4.6).
+
+**Where a warm run goes** (MEASURED, esphome warm serial run, 99 s, 14,151 reused, 295 ran; py-spy at 100 Hz on
+the re-executed process, `tracks/parallel-proof/results/esphome/warm-profile.txt`): plain pytest collection 17.3 s,
+reuse decision (`_decide`, all 14,446 checks) 8.6 s, end-of-session recording 7.7 s, synthesised reports for the
+14,151 reused tests 4.9 s (0.35 ms per reused test), the 295 tests that ran 11.8 s, other 5.7 s, plus start-up and
+precompile before the profiler attached. For Design A this means: reporting every hit from the controller costs
+about 5 s per 14,000 hits, single-threaded; the check is 8.6 s whether one process or four do it (today all four
+do it); collection is the largest item, and xdist pays it in every worker, while Design B's lanes collect only the
+files of the tests that must run (3.2).
 
 ### 1.4 What breaks when `--det` and `-n` are combined (MEASURED)
 
@@ -148,21 +169,21 @@ counts 3,897 / 2,029 / 4,535 / 3,985 in one run and 4,077 / 2,029 / 3,286 / 5,05
 
 **1.4.3 Verdicts.** esphome: serial `--det` and `--det -n 4` (both runs) have the same 7 failures (4 tests that
 fail without `--det` too because the container runs as root, 3 LIMITS C7 failures: a test stamps an mtime from the
-virtual `time.time()`), 0 outcome differences on 14,446 tests. pydantic-ai: PAI_VERDICT.
+virtual `time.time()`), 0 outcome differences on 14,446 tests. pydantic-ai: `--det -n 4` **does not start**: pydantic-ai sets `filterwarnings = ["error", ...]`, which turns detpy's own `UserWarning: detpy: pytest-xdist is not supported under --det` (raised in `pytest_configure`) into an `INTERNALERROR`, exit 3 after 6 s. prefect declares the same bare `"error"` filter (DECLARED, `pyproject.toml:304-305`), so it is predicted to abort the same way; airflow and mlflow only turn selected warnings into errors. With `-W ignore:detpy:UserWarning` added, serial `--det` and both `--det -n 4` runs have the same 2 failures (below, 1.4.6) and 0 outcome differences on 8,072 tests.
 
 **1.4.4 Fingerprints: serial noise, parallel noise, placement.** For each test, the fingerprints of two serial
 `--det` runs (A, B) and two `--det -n 4` runs (A, B):
 
 | | esphome | pydantic-ai |
 |---|---|---|
-| tests | 14,446 | PAI_FP_TESTS |
-| serial A ≠ serial B (serial noise) | 67 (59 `os.urandom`, observed not controlled; 5 time; 3 fs) | PAI_SER_NOISE |
-| parallel A ≠ parallel B | 93 | PAI_PAR_NOISE |
-| differs from serial while the two serial runs agree (**placement**) | **50 (0.35 %)**, 41 of them in both parallel runs | PAI_PLACEMENT |
-| first diverging event of the placement tests | fs 19, time 18, random 13 | PAI_PLACEMENT_SRC |
-| of which only the `tmp_path` counter (`<basetemp>/test_x0` vs `test_x1`) | 5 | PAI_TMP |
-| of which in-process state left by earlier tests (hypothesis' internal state: 20 in `test_stacktrace.py`, 8 in `test_yaml_util.py`; module caches warmed by a predecessor, e.g. a `Path.glob` result cached by `script/helpers.py`) | 45 | PAI_INPROC |
-| placement tests whose outcome changed | **0** | PAI_FLIPS |
+| tests | 14,446 | 8,029 (in all four traces) |
+| serial A ≠ serial B (serial noise) | 67 (59 `os.urandom`, observed not controlled; 5 time; 3 fs) | **5,398 (67 %)**: 5,388 `os.urandom`, 6 time, 4 random |
+| parallel A ≠ parallel B | 93 | 5,703 |
+| differs from serial while the two serial runs agree (**placement**) | **50 (0.35 %)**, 41 of them in both parallel runs | **455** of the 2,631 tests whose serial runs agree (17 %), 164 of them in both parallel runs |
+| first diverging event of the placement tests | fs 19, time 18, random 13 | time 448, random 7 (433 of them a clock read inside logfire / OpenTelemetry) |
+| of which only the `tmp_path` counter (`<basetemp>/test_x0` vs `test_x1`) | 5 | 0 |
+| of which in-process state left by earlier tests (hypothesis' internal state: 20 in `test_stacktrace.py`, 8 in `test_yaml_util.py`; module caches warmed by a predecessor, e.g. a `Path.glob` result cached by `script/helpers.py`) | 45 | 455 |
+| placement tests whose outcome changed | **0** | **0** |
 
 So the fingerprint is already almost position-independent: under the per-test reset of clock and seeds, a test's
 event sequence changes with its placement only through process state earlier tests left behind (the O4 class) and
@@ -178,7 +199,7 @@ through the `tmp_path` counter (a normalisation gap). That is the property Desig
   `env: environment variable *` 3,000, `new` 289, `data` 1. A test that enumerates `os.environ` makes the whole
   environment an input, and xdist sets `PYTEST_XDIST_TESTRUNUID` to a fresh `uuid4().hex` in every worker of every
   run (`xdist/workermanage.py:58`, `xdist/remote.py:416`) and `PYTEST_XDIST_WORKER` to the worker: **these 3,000
-  tests (21 %) are never reused under xdist.** pydantic-ai: PAI_CACHE_MISSES.
+  tests (21 %) are never reused under xdist.** pydantic-ai: under `-n 4` **nothing was recorded at all**: after the cold run the store is empty (`"tests": {}`), the warm run reran all 8,072 tests (`new: no recorded result` for every test in every worker's receipts), and the cold wall was 475 s against 140 s for `--det -n 4`. The serial cold run recorded nothing either (1.4.6), so this is not caused by xdist; the cause is not visible: pydantic-ai replaces pytest's terminal reporter, which hides detpy's cache summary and warnings (UNKNOWN; P0 must capture them).
 * **Serial and parallel entries do not mix.** The workers' configuration digest differs from a serial session's in
   one option, xdist's `loadgroup` flag (`config_identity`, diff of the two identities), which is not in
   `_VOLATILE_OPTIONS` (`numprocesses`, `dist`, `tx` are). A store written by `-n 4` is not reused by a serial run
@@ -198,7 +219,15 @@ through the `tmp_path` counter (a normalisation gap). That is the property Desig
 (`test_espota2.py::test_udp_channel_delivers_in_order`, `test_start_udp_falls_back_when_blocked`) hang under serial
 `--det` (more than 180 s, 8.5 s without `--det`): `UdpChannel` waits with a raw `select` timeout computed from a
 virtual `time.monotonic()` (LIMITS C4 "raw select" not covered). Three `test_sdkconfig.py` tests fail under `--det`
-with or without `-n` (C7, virtual time written into a real mtime). pydantic-ai: PAI_OTHER.
+with or without `-n` (C7, virtual time written into a real mtime). Whole-environment readers also depend on the
+shell's `$_` (the path of the last command, exported by bash): two otherwise identical warm runs started from two
+different shell lines missed on `env` for all 14,151 entries; started through the same wrapper, both reused 98 %.
+A CI step that invokes pytest differently from the previous run (another wrapper, `uv run` vs `python -m`) would
+see the same miss: `_` (and xdist's variables, 1.4.5) belong outside the whole-environment digest. pydantic-ai: 2 tests fail under serial `--det` with or without `-n`: `test_a_streamed_run_can_end_pending_and_be_collected_later` (a streamed run ends pending instead of finished) and `test_bedrock_extra_headers_registration_is_serialized_across_threads` (blockbuster flags `lock.acquire` of detpy's wrapped `threading.Lock`, C4). Under `--det-cache` (capture on), **2,769 of 8,072 tests fail** with `blockbuster.BlockingError: Blocking call to os.path.abspath`: the capture's audit hook resolves paths inside the asyncio loop thread, where pydantic-ai's blockbuster fixture forbids blocking calls (same class as LIMITS F2, found then for globbing). Serial and parallel alike: the serial cold run has 2,748 failures with the same error (raised from
+`proofcache.py` `_audit` → `Capture.arm` → `_want` on `exec` events), and **neither the serial nor the parallel cold
+run recorded a single entry** (store `"tests": {}`; the reason is hidden by pydantic-ai's own terminal reporter,
+UNKNOWN). The cold serial run took 1,447 s, 3.1x plain. A capture fix, not an xdist one, but it blocks the cache
+on this repository today.
 
 **1.4.7 Repositories not run here.** prefect (its lockfile needs uv ≥ 0.13.4, this container has 0.11.32), litellm,
 moto, mlflow, airflow, community.general, transformers, integrations-core, haystack: not run in this session (time).
@@ -443,10 +472,31 @@ does not cover: what Level 0 does not see (C extensions, subprocess internals, i
 recorded event and no outcome). A test that is placement-sensitive only through such state and whose outcome does
 not change is equal by definition of the fingerprint: the run is still correct for that test.
 
-Cost of the proof (ESTIMATED from 1.4.4): the comparison is a string compare per test. The reruns cover only the
-`placement` tests: 41-50 of 14,446 per run on esphome (0.3 %), each rerun after its same-module predecessors, so a
-few seconds against a 60-80 s parallel run; after the first run the together edges remove most of them from later
-plans.
+What the two measured repositories say about the proof (MEASURED 1.4.4):
+
+* **Entropy is the first obstacle, not placement.** Two serial `--det` runs disagree on 67 of 14,446 esphome tests
+  but on **5,398 of 8,029 pydantic-ai tests (67 %)**, nearly all at an `os.urandom` event (message and run ids drawn
+  from OS entropy, observed and not controlled, LIMITS R5). A fingerprint that changes every run proves nothing.
+  Two ways: the customer runs with `--det-urandom` (deterministic entropy; never for crypto tests), or the proof
+  compares entropy events by (operation, call site, length) and not by value. The second keeps the event sequence
+  in the proof and is the default proposed here; values stay in the fingerprint for `verify`.
+* **Placement is mostly library state.** Among the tests whose serial runs agree, 50 of 14,379 (esphome) and 455 of
+  2,631 (pydantic-ai, 17 %) differ when placed elsewhere, with 0 outcome changes in both. On pydantic-ai the first
+  differing event is a clock read inside logfire or OpenTelemetry in 433 of the 455 (lazy initialisation done by
+  whichever test came first in the process). Because the virtual clock has one tick counter per process, one extra
+  library read shifts every later clock value of the test, so the whole fingerprint differs.
+* **Two-tier comparison.** Tier 1: the full fingerprint (entropy by shape). Tier 2: the projection on events whose
+  call site is in the project or its tests, clock values replaced by their order, plus the outcome. Tier-2 equality
+  explains 25 of esphome's 50 and 277 of pydantic-ai's 455 placement differences (ESTIMATED from the stored events:
+  `tracks/parallel-proof/bin/projection.py --timeless`). A tier-1 match is a proof; a tier-2 match with the same
+  outcome is accepted for the verdict and stored as `parallel-proven (library state)`; a tier-2 mismatch goes to the
+  serial-equivalent rerun.
+* **Cost of the proof** (ESTIMATED): the comparison is a string compare per test. Reruns cover the tier-2
+  mismatches: 25 of 14,446 per run on esphome, 178 of 8,029 on pydantic-ai (at its measured 0.057 s per test
+  serially, about 10 s plus same-module predecessors, against a 140 s parallel run); the together edges learnt from
+  them shrink that set in later plans. A per-call-site clock (values independent of other sites' reads) would
+  remove most library-state differences at the source, but changes every fingerprint and the semantics of a single
+  monotonic clock: an engine decision outside this design.
 
 Customer-facing guarantees (the measurements in 5 check them):
 
