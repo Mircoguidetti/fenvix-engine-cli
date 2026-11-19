@@ -1,0 +1,30 @@
+    self.event_loop = _FakeEventLoop()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/unit_tests/test_cpp_generator.py::TestProcessLambda::test_str__with_line_mark_in_body_marks_end_of_body
+  tests/unit_tests/test_cpp_generator.py:817: PytestWarning: The test <Function test_str__with_line_mark_in_body_marks_end_of_body> is marked with '@pytest.mark.asyncio' but it is not an async function. Please remove the asyncio mark. If the test is not marked explicitly, check for global marks applied via 'pytestmark'.
+    def test_str__with_line_mark_in_body_marks_end_of_body(self) -> None:
+
+tests/unit_tests/test_cpp_helpers.py::test_slot_counter_rejects_mixed_keyed_and_unkeyed_requests
+  /home/user/work/esphome/esphome/core/__init__.py:748: RuntimeWarning: coroutine 'slot_counter.<locals>.emit_job' was never awaited
+    self.event_loop = _FakeEventLoop()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== detpy (Level 0) ================================
+trace: /home/user/fenvix-engine-cli/tracks/parallel-proof/build/esphome/esphome5/det-serial-b.jsonl  order digest: 6d3331c5adf732f733fcbf239e5de141  seed: 0
+=========================== short test summary info ============================
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[esp-idf-False]
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[platformio-True]
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[None-True]
+FAILED tests/unit_tests/test_helpers.py::test_write_file_to_non_writable_directory_unix
+FAILED tests/unit_tests/test_writer.py::test_clean_build_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_all_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_build_reraises_for_other_errors
+7 failed, 14424 passed, 15 skipped, 102 deselected, 62 warnings in 152.21s (0:02:32)
+/home/user/work/venv-esphome/lib/python3.12/site-packages/pytest_asyncio/plugin.py:306: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to "function" scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session". Set it to "fixture-scope" to keep the current behavior.
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))

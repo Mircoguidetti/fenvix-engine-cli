@@ -2,7 +2,7 @@
 # the log tails, the gzipped plans and the comparisons (fpcompare / crosscheck)
 *
 !.gitignore
-# summary.jsonl: added when the batch is complete
+!summary.jsonl
 !*.tail.txt
 !*.plan.json.gz
 !fpcompare.json
