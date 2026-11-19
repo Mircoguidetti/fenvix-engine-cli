@@ -462,10 +462,15 @@ Diagnostics: a worker's "not cacheable" detail (where the reason was found) now 
   consecutive runs; also in the full suite). Before this session's changes: 10 failed, 7 passed.
 * `cargo test --release` (workspace): **94 passed**, 0 failed (81 before + 13 new `r023_*` tests).
 * Full Python suite (`pytest tests -p no:randomly`, Python 3.13.18, pytest 9.2.0, xdist 3.8.0, run without `-n`:
-  inner serial sessions must not inherit an outer worker's `PYTEST_XDIST_WORKER`): **586 passed, 8 skipped, 1
-  failed**. The failure is `test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does`,
-  the pre-existing one the review names (it reads `tracks/rust-hotpaths/results/p8/pygments-0of1.json`, which no
-  change here touches). New pytester file `tests/test_parallel_proof_r023_fixes.py`: 7 passed.
+  inner serial sessions must not inherit an outer worker's `PYTEST_XDIST_WORKER`), on the final engine (ddaffac):
+  **589 passed, 8 skipped, 1 failed**. The failure is `test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_
+  exhaustion_but_p8_does`, the pre-existing one the review names (it reads `tracks/rust-hotpaths/results/p8/pygments-
+  0of1.json`, which no change here touches). (Before the follow-up: 586 passed, same 1 failure.)
+* Tests changed for the follow-up's deliberate policy changes: `test_proofcache.py::test_name_lookup_and_c_level_
+  sockets_are_never_cached` and the equivalence suites' `test_dns` now look a non-loopback name up through `_socket`
+  (past Level 0's guard, which blocks such lookups before the audit event: a blocked lookup is configuration, and
+  cacheable), and a `localhost` lookup is expected to be cached; the Python reference (`tests/rust_hotpaths_ref`)
+  got the loopback-name rule and the global `/proc` rule, so the store-equivalence tests compare the same semantics.
 
 ## Not done, and why
 
