@@ -11,8 +11,8 @@
    "attrs": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 40,
-    "unknown": 0
+    "correct": 34,
+    "unknown": 6
    },
    "boltons": {
     "cases": 40,
@@ -23,8 +23,8 @@
    "cachetools": {
     "cases": 38,
     "confident_wrong": 0,
-    "correct": 38,
-    "unknown": 0
+    "correct": 35,
+    "unknown": 3
    },
    "click": {
     "cases": 38,
@@ -35,26 +35,26 @@
    "jinja": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 40,
-    "unknown": 0
+    "correct": 36,
+    "unknown": 4
    },
    "marshmallow": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 40,
-    "unknown": 0
+    "correct": 37,
+    "unknown": 3
    },
    "more-itertools": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 37,
-    "unknown": 3
+    "correct": 36,
+    "unknown": 4
    },
    "sqlparse": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 37,
-    "unknown": 3
+    "correct": 35,
+    "unknown": 5
    },
    "structlog": {
     "cases": 36,
@@ -69,26 +69,26 @@
     "unknown": 0
    }
   },
-  "candidate_replays": 1429,
-  "candidate_replays_pass": 769,
+  "candidate_replays": 1433,
+  "candidate_replays_pass": 773,
   "cases": 392,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 386,
+  "correct": 367,
   "excluded_key_runs": 0,
   "executions": {
-   "max": 72,
-   "mean": 15.9,
-   "median": 10.0,
-   "p90": 37
+   "max": 100,
+   "mean": 22,
+   "median": 15.0,
+   "p90": 57
   },
   "finder_round": [
-   4
+   5
   ],
   "not_rebuilt": 0,
   "status": {
-   "confirmed": 386,
-   "unknown": 6
+   "confirmed": 367,
+   "unknown": 25
   },
   "trivial_rules_correct": {
    "newest_candidate": 120,
@@ -98,9 +98,9 @@
   },
   "truth_is_planted": 392,
   "truth_position_first": 14,
-  "unknown": 6,
-  "unknown_suspect_is_truth": 6,
-  "unknown_with_suspect": 6
+  "unknown": 25,
+  "unknown_suspect_is_truth": 25,
+  "unknown_with_suspect": 25
  },
  "a2-placed": {
   "bisect_correct": 196,
@@ -115,16 +115,16 @@
   "cases": 196,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 190,
+  "correct": 179,
   "executions": {
-   "max": 72,
-   "mean": 17.36,
-   "median": 11.0,
-   "p90": 43
+   "max": 88,
+   "mean": 24.77,
+   "median": 18.5,
+   "p90": 66
   },
   "status": {
-   "confirmed": 190,
-   "unknown": 6
+   "confirmed": 179,
+   "unknown": 17
   },
   "trivial_rules_correct": {
    "newest_candidate": 44,
@@ -134,9 +134,9 @@
   },
   "truth_is_planted": 196,
   "truth_position_first": 14,
-  "unknown": 6,
-  "unknown_suspect_is_truth": 6,
-  "unknown_with_suspect": 6
+  "unknown": 17,
+  "unknown_suspect_is_truth": 17,
+  "unknown_with_suspect": 17
  },
  "a2-reland": {
   "bisect_correct": 100,
@@ -146,20 +146,21 @@
    "median": 5.0,
    "p90": 7
   },
-  "candidate_replays": 766,
-  "candidate_replays_pass": 409,
+  "candidate_replays": 770,
+  "candidate_replays_pass": 413,
   "cases": 196,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 196,
+  "correct": 188,
   "executions": {
-   "max": 67,
-   "mean": 14.44,
-   "median": 9.0,
-   "p90": 34
+   "max": 100,
+   "mean": 19.23,
+   "median": 12.0,
+   "p90": 45
   },
   "status": {
-   "confirmed": 196
+   "confirmed": 188,
+   "unknown": 8
   },
   "trivial_rules_correct": {
    "newest_candidate": 76,
@@ -169,9 +170,9 @@
   },
   "truth_is_planted": 196,
   "truth_position_first": 0,
-  "unknown": 0,
-  "unknown_suspect_is_truth": 0,
-  "unknown_with_suspect": 0
+  "unknown": 8,
+  "unknown_suspect_is_truth": 8,
+  "unknown_with_suspect": 8
  },
  "b": {
   "bisect_correct": 27,
@@ -186,18 +187,18 @@
   "cases": 27,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 27,
+  "correct": 20,
   "distinct_culprits": 25,
   "distinct_original_culprits": 12,
   "excluded_key_runs": 0,
   "executions": {
-   "max": 52,
-   "mean": 25.63,
-   "median": 30,
-   "p90": 45
+   "max": 72,
+   "mean": 40.11,
+   "median": 52,
+   "p90": 71
   },
   "finder_round": [
-   4
+   5
   ],
   "not_rebuilt": 0,
   "repos": [
@@ -212,7 +213,8 @@
   ],
   "sources": 12,
   "status": {
-   "confirmed": 27
+   "confirmed": 20,
+   "unknown": 7
   },
   "trivial_rules_correct": {
    "newest_candidate": 3,
@@ -223,9 +225,9 @@
   "truth_is_planted": 4,
   "truth_is_reverted_commit": 4,
   "truth_position_first": 2,
-  "unknown": 0,
-  "unknown_suspect_is_truth": 0,
-  "unknown_with_suspect": 0
+  "unknown": 7,
+  "unknown_suspect_is_truth": 7,
+  "unknown_with_suspect": 7
  },
  "c-edit": {
   "bisect_correct": 15,
@@ -243,9 +245,9 @@
   "correct": 15,
   "executions": {
    "max": 8,
-   "mean": 4.27,
-   "median": 4,
-   "p90": 6
+   "mean": 5.73,
+   "median": 6,
+   "p90": 8
   },
   "status": {
    "confirmed": 15
@@ -264,15 +266,15 @@
  },
  "c-nocode": {
   "bisect_correct": 0,
-  "cases": 35,
+  "cases": 36,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
   "correct": 31,
   "executions": {
    "max": 26,
-   "mean": 7.51,
-   "median": 4,
-   "p90": 25
+   "mean": 8.03,
+   "median": 4.0,
+   "p90": 26
   },
   "mechanisms": [
    "a dependency resolution change adds rich 13.0.0 to the test environment (it was absent; e.g. another dev tool pulls it in with an upper bound); structlog's dev console renderer uses rich when it can import it, and rich 13.0 lacks newer keywords (rich 15.0 passes)",
@@ -300,6 +302,7 @@
    true,
    false,
    false,
+   false,
    true,
    true,
    true,
@@ -321,7 +324,7 @@
   ],
   "singles": 15,
   "singles_correct": 13,
-  "unknown": 4
+  "unknown": 5
  },
  "d": {
   "cases": 63,
@@ -339,28 +342,28 @@
   "unknown": 5
  },
  "overall": {
-  "cases": 532,
+  "cases": 533,
   "confident_wrong": 0,
-  "correct": 517,
+  "correct": 491,
   "executions": {
-   "max": 96,
-   "mean": 17.55,
-   "median": 11.0,
-   "p90": 39
+   "max": 100,
+   "mean": 22.83,
+   "median": 15,
+   "p90": 60
   },
-  "rebuild_cases": 32,
-  "rebuild_failed": 2,
-  "share_correct": 0.9718,
-  "unknown": 15,
+  "rebuild_cases": 33,
+  "rebuild_failed": 3,
+  "share_correct": 0.9212,
+  "unknown": 42,
   "without_d": {
-   "cases": 469,
+   "cases": 470,
    "confident_wrong": 0,
-   "correct": 459,
+   "correct": 433,
    "executions": {
-    "max": 72,
-    "mean": 15.46,
-    "median": 9,
-    "p90": 37
+    "max": 100,
+    "mean": 21.45,
+    "median": 13.0,
+    "p90": 58
    }
   }
  }

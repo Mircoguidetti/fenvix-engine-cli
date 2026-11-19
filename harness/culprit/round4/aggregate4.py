@@ -77,7 +77,10 @@ def kind_rows(d):
     out = {
         "a2": [r for r in a2_all if r.get("green_run") == "pass" and r.get("red_run") == "fail"],
         "b": [r for r in b_all if r.get("green_run") == "pass" and r.get("red_run") == "fail"],
-        "c-nocode": [r for r in A.rows(d, "c-final.jsonl") if "finder" in r],
+        # a no-code row counts only when its green run passed and its red run failed (review R-019c, R-2: two
+        # round-3 rich-home rows were fail/fail and pass/pass); rows without the fields (older drivers) count
+        "c-nocode": [r for r in A.rows(d, "c-final.jsonl") if "finder" in r
+                     and (r.get("green_run", "pass"), r.get("red_run", "fail")) == ("pass", "fail")],
         "c-edit": [r for r in A.rows(d, "c-edit.jsonl") if "finder" in r],
         "d": [r for r in A.rows(d, "d.jsonl") if "finder_correct" in r],
     }
