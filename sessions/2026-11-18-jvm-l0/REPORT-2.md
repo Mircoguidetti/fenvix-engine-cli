@@ -8,6 +8,8 @@ Work session on `claude/jvm-l0`, 2026-11-19. Input: `sessions/2026-11-19-review-
 
 **The price of soundness is large and MEASURED:** the shared-state rule that closes S1/S2 (a test that reads mutable static state depends on every test before it in its JVM) keeps **0 wrong reuses** in both re-run walks, but on code-change commits it reuses almost nothing in jsoup and gson, because nearly every test there reads mutable static state (§4). Median test time skipped: jsoup **77% → 5%**, gson **84% → 12%**. Commits without a code change are as good as or better than before (gson 99.9%; jsoup's blocked-network and property reruns no longer cascade).
 
+**IDoFT recheck (28 container projects, MEASURED):** broken by `--det` **25 → 14**; tests that ran in the baseline but never under `--det` **13 → 0**; json-iterator 10 → 0 (D1), luwak `testBackgroundPurges` fixed (D3), tyrus traced again (D4).
+
 **Two of the reviewer's four scripts cannot exit 0 after the fixes, by construction** (details §5): `run_review_r022_walk.py` needs a wrong reuse to classify, and S2's fix removes it (VictimTest is now decided RUN, `after-new: rv.PolluterTest::pollute()`); `check_review_r022_numbers.py` embeds the P-022 claims (29 and 0) and checks them against the data, which say 25 and 26. I did not edit either (instruction). Their intent is covered by `jvm/test/run_w1_verifier.py` (W1, exit 0) and `jvm/test/check_report2_numbers.py` (exit 0). The other two, `run_review_r022.py` and `run_review_r022_det.py`, exit 0.
 
 ## 1. Test status (MEASURED, this container, agent d248b5b unless said)
@@ -70,7 +72,39 @@ Corrections to P-022 (`check_report2_numbers.py`, from the committed data):
 
 **Recheck after the R-022 fixes** (MEASURED, container, agent d248b5b, `python3 jvm/harness/recheck_all.py --agent-rev d248b5b` (+ a second stream with `--only`); per project: prepare at the recorded JDK, 10 `--det` seed-0 runs against the recorded baseline; output `<project>/recheck-r022.json`):
 
-IDOFT_TABLE
+| project | broken, P-022 round | broken, P-022 recheck | **broken now** | not run under --det, P-022 | **not run now** | broken now (failures / 10 --det runs) |
+|---|---|---|---|---|---|---|
+| Java-WebSocket | 5 | 1 | **2** | 0 | **0** | runReconnectBlockingScenario6 4F/10 (base 1F/9P), runReconnectScenario9 3F/10 (base 1F/9P) |
+| Mapper-base | 0 | 0 | **0** | 0 | **0** |  |
+| aismessages | 0 | 0 | **0** | 0 | **0** |  |
+| asyncload | 5 | 1 | **1** | 0 | **0** | testSingleton 1F/10 (base 0F/10P) |
+| avro-ipc-jetty | 0 | 0 | **0** | 0 | **0** |  |
+| biojava-biojava-structure | 1 | 1 | **1** | 0 | **0** | testStructureWithBranchedEntities 10F/10 (base 0F/10P) |
+| c2mon-c2mon-daq-core | 2 | 2 | **0** | 0 | **0** |  |
+| cat-cat-client | 1 | 1 | **2** | 0 | **0** | testMode0 3F/10 (base 1F/9P), testMode1 2F/10 (base 0F/10P) |
+| easyexcel | 0 | 0 | **0** | 0 | **0** |  |
+| excelastic | 1 | 1 | **1** | 0 | **0** | shouldWriteToElasticPort 10F/10 (base 1F/9P) |
+| fastjson | 1 | 1 | **1** | 0 | **0** | test_iso_format 10F/10 (base 0F/10P) |
+| http-request-lib | 0 | 0 | **0** | 0 | **0** |  |
+| hutool-hutool-core | 0 | 0 | **0** | 0 | **0** |  |
+| incubator-seata-common | 0 | 0 | **0** | 0 | **0** |  |
+| java-cas-client-cas-client-core | 2 | 0 | **0** | 0 | **0** |  |
+| java | 10 | 10 | **0** | 13 | **0** |  |
+| junit-quickcheck-core | 0 | 0 | **0** | 0 | **0** |  |
+| luwak-luwak | 2 | 2 | **1** | 0 | **0** | testConcurrentPurges 2F/10 (base 0F/10P) |
+| mTracker-core | 0 | 0 | **0** | 0 | **0** |  |
+| oci-java-sdk-bmc-objectstorage-extensions | 0 | 0 | **1** | 0 | **0** | abortAll 1F/10 (base 0F/10P) |
+| openhtmltopdf-openhtmltopdf-examples | 1 | 1 | **1** | 0 | **0** | testFreeMarkerGenerator 10F/10 (base 1F/9P) |
+| ormlite-core | 0 | 0 | **0** | 0 | **0** |  |
+| servicecomb-java-chassis-generator-core | 0 | 0 | **0** | 0 | **0** |  |
+| spring-ws-spring-ws-core | 0 | 0 | **0** | 0 | **0** |  |
+| tyrus-non-deployable | 1 | 1 | **0** | 0 | **0** |  |
+| vertx-completable-future | 0 | 0 | **0** | 0 | **0** |  |
+| wikidata-toolkit-wdtk-dumpfiles | 0 | 0 | **0** | 0 | **0** |  |
+| wro4j-wro4j-core | 3 | 3 | **3** | 0 | **0** | shouldCheckOnlyAfterTimeout 10F/10 (base 0F/10P), testFromFolder 10F/10 (base 0F/10P), testFromFolder 10F/10 (base 0F/10P) |
+| **total (28 rechecked)** | | 25 | **14** | 13 | **0** | |
+
+Reading: broken by `--det` **25 → 14**; tests that ran in the baseline and never under `--det` **13 → 0** (json-iterator: D1). Engine defects named by R-022 are gone: json-iterator 10 → 0 (D1), luwak `testBackgroundPurges` 10F/10 → 0 (D3; `testConcurrentPurges` 2F/10 remains, threads), tyrus 1 → 0 and its tests now in the trace (D4). Also c2mon 2 → 0. Left: by design / real dependencies: biojava (closed network), fastjson (time of day at the fixed epoch); already failing in the baseline: excelastic, openhtmltopdf (10F/10 under `--det` vs 1F/9P); wro4j 3 (10F/10, not classified, UNKNOWN cause); thread / timing, 1–4 failures in 10: Java-WebSocket 2, cat 2, asyncload 1, luwak 1, oci 1 (oci `abortAll` 1F/10 and cat `testMode1` are new in this recheck). The rechecks ran two to three projects at a time on 4 CPUs, so the thread/timing rows are NOISY; the 10F/10 rows are not. GitHub Actions run 44385794604's 22 and its 13 not-run tests were not re-run (UNKNOWN for the new agent; same json-iterator project as the container row).
 
 ## 4. Skip walks re-run (MEASURED, container, agent d248b5b, same commits as P-022)
 
@@ -85,7 +119,7 @@ IDOFT_TABLE
 
 By kind of transition (median test time skipped, P-022 → now): gson without code change (19) 99.9% → 99.9%, with a code change (21) 54% → 0.5%; jsoup without code change (18) 80% → 55% (new tests, `after-new`), with a code change (28) 64% → 1.5%; global changes (plugins, dependencies) 0% → 0% in both.
 
-Why: `mut` is set for 4,570 of 4,612 gson tests (one capture, `mut_classes`): Guava testlib `CollectionSize`, Truth, gson's `Excluder`, `TypeAdapters`, `GsonBuilder` singletons, switch-map arrays. Any rerun test that touched them in B invalidates every later reader in its JVM. That is what the rule must do to be sound against S1/S2 (a test can change a shared registry or cache that a later test reads); a lower reuse rate is the accepted cost. Tightening the immutability check (runtime class with only final immutable fields, final fields of immutable user types; in d248b5b+1) does not change this for gson (4,570/4,612 still `mut`).
+Why: `mut` is set for 4,570 of 4,612 gson tests (one capture, `mut_classes`): Guava testlib `CollectionSize`, Truth, gson's `Excluder`, `TypeAdapters`, `GsonBuilder` singletons, switch-map arrays. Any rerun test that touched them in B invalidates every later reader in its JVM. That is what the rule must do to be sound against S1/S2 (a test can change a shared registry or cache that a later test reads); a lower reuse rate is the accepted cost. Tightening the immutability check (runtime class with only final immutable fields, final fields of immutable user types; commit 7bab9bd, not used for the walks) does not change this for gson (4,570/4,612 still `mut`).
 
 P-022's GitHub Actions walks (5.7 M verified, 0 wrong) used the old rule and the old verifier; they were not re-run (container time; see §6). Their "0 wrong" stands as measured with the old verifier, which could not see polluter-caused wrong reuses (W1).
 
@@ -101,7 +135,7 @@ P-022's GitHub Actions walks (5.7 M verified, 0 wrong) used the old rule and the
 * **Not keyed, residual risks I know of** (not in R-022, not fixed): JDK global state other than system properties (`Locale.setDefault`, `TimeZone.setDefault`, `System.setOut`, security providers, URL handler factories); objects shared through JUnit extension stores; `Unsafe` and VarHandle writes to statics; type annotations (`TypeAnnotationParser`); JDK enum constants are assumed immutable.
 * The decider is measurement-mode (it reads B's capture). An online decider in the runner (decide at each test's position) is required for production use; the rule is written for it.
 * GitHub Actions: the IDoFT round and the six walks were not re-run on Actions after the fixes; the GHA-side "not run under `--det`" (13, json-iterator) is UNKNOWN for the new agent (the container recheck of json-iterator covers the same project, §3).
-* JDK 8/11/17: the `--deps` capture changes were exercised on JDK 17 (walks) and 21 (tests); JDK 8/11 only under `--det` (rechecks). JDK hooks on `java.lang.Class`, `ClassLoader`, `System`, `Field`, `MethodHandles.Lookup`, `AnnotationParser` with `--deps` on JDK 8/11: UNKNOWN.
+* JDK 8/11/17: the `--deps` capture changes were exercised on JDK 17 (walks) and 21 (tests); JDK 8/11 under `--det` by the rechecks and by GitHub Actions run 44489391620 (code f98a21f: control jobs on JDK 8, 11, 17, 21 all succeeded; its commit step did not refresh the committed result files, so the numbers are the job conclusions only). JDK hooks on `java.lang.Class`, `ClassLoader`, `System`, `Field`, `MethodHandles.Lookup`, `AnnotationParser` with `--deps` on JDK 8/11: UNKNOWN.
 * The full IDoFT round protocol (baselines, seeds, confirmation, timing) was not re-run; only the "broken by `--det`" recheck and the new "not run" column.
 
 ## 7. Where things are
