@@ -42,6 +42,18 @@ URLS = {"flask": "pallets/flask", "structlog": "hynek/structlog", "jinja": "pall
         "werkzeug": "pallets/werkzeug", "sqlparse": "andialbrecht/sqlparse", "pygments": "pygments/pygments",
         "boltons": "mahmoud/boltons", "toolz": "pytoolz/toolz", "click": "pallets/click",
         "home-assistant": "home-assistant/core"}
+# the repository's own packages installed editable next to the project (as the head-to-head installs them)
+EDITABLES = {"home-assistant": [".", "packages/pytest-homeassistant", "packages/hassfest"]}
+
+
+def editable_args(project, repo) -> list[str]:
+    out = []
+    for d in EDITABLES.get(project, ["."]):
+        if (Path(repo) / d).is_dir():
+            out += ["-e", d]
+    return out
+
+
 SCEN = {  # name: (project, arm, result run, shard)
     "flask-dep": ("flask", "ci-dep", "h4", "0o1"), "flask-data": ("flask", "ci-data", "h4", "0o1"),
     "structlog-dep": ("structlog", "ci-dep", "h4", "0o1"), "jinja-data": ("jinja", "ci-data", "h4", "0o1"),
@@ -83,8 +95,8 @@ def freeze_venv(repo: Path, name: str | None, freeze: list[str], python: str, at
     req.write_text("\n".join(pins) + "\n")
     sh(["uv", "pip", "install", "-q", "--python", str(venv / "bin" / "python"), "--no-deps", "-r", str(req), WHEEL],
        cwd=repo, check=True, timeout=3600)
-    sh(["uv", "pip", "install", "-q", "--python", str(venv / "bin" / "python"), "--no-deps", "-e", "."], cwd=repo,
-       check=True, timeout=1800)
+    sh(["uv", "pip", "install", "-q", "--python", str(venv / "bin" / "python"), "--no-deps",
+        *editable_args(Path(repo).name, repo)], cwd=repo, check=True, timeout=1800)
     (venv / ".ok").write_text("ok")
     return venv
 
@@ -97,11 +109,11 @@ def edit_tree_commits(repo, base, later, edits, cid) -> tuple[str, str]:
             subprocess.run(["git", "-C", str(repo), "read-tree", sha], env=env, check=True)
             for e in edits:
                 text = subprocess.run(["git", "-C", str(repo), "show", f"{sha}:{e['path']}"], capture_output=True,
-                                      check=True).stdout.decode()
-                a, b = e["replace"]
+                                      check=True).stdout
+                a, b = (x.encode() for x in e["replace"])
                 assert a in text, (sha, e["path"])
                 text = text.replace(a, b, 1)
-                blob = subprocess.run(["git", "-C", str(repo), "hash-object", "-w", "--stdin"], input=text.encode(),
+                blob = subprocess.run(["git", "-C", str(repo), "hash-object", "-w", "--stdin"], input=text,
                                       capture_output=True, check=True).stdout.decode().strip()
                 mode = git(repo, "ls-tree", sha, "--", e["path"]).split()[0]
                 subprocess.run(["git", "-C", str(repo), "update-index", "--cacheinfo", f"{mode},{blob},{e['path']}"],
@@ -159,10 +171,26 @@ def main():
         if not (tmpv / ".ok").exists():
             sys.path.insert(0, str(ENGINE / "harness"))
             from detpy_harness import detect_install
+            import shutil
+            shutil.rmtree(tmpv, ignore_errors=True)
             sh(["uv", "venv", "-q", "--python", py, str(tmpv)], check=True)
             args, groups, reqs = detect_install(repo)
-            sh(["uv", "pip", "install", "-q", "--python", str(tmpv / "bin" / "python"), *args, *groups, *reqs,
-                "pytest"], cwd=repo, check=True, timeout=1800)
+            test_reqs = [x for pair in zip(reqs[::2], reqs[1::2]) if "test" in pair[1] for x in pair]
+            tries = (groups + reqs, groups + test_reqs, groups, [])
+            if project == "home-assistant":
+                # the whole requirements_all.txt is ~1,000 packages: core, test requirements, and the libraries of
+                # the integration whose fixture the change edits (pinned as in requirements_all.txt)
+                pins = [l.strip() for l in (repo / "requirements_all.txt").read_text().splitlines()
+                        if l.lower().startswith(("bring-api==",))]
+                args = editable_args(project, repo)
+                tries = (["-r", "requirements.txt", "-r", "requirements_test.txt", *pins],)
+            for extra in tries:
+                code, out = sh(["uv", "pip", "install", "-q", "--python", str(tmpv / "bin" / "python"), *args,
+                                *extra, "pytest"], cwd=repo, timeout=1800)
+                if code == 0:
+                    break
+            else:
+                raise RuntimeError(f"resolve failed: {out[-800:]}")
             (tmpv / ".ok").write_text("ok")
         code, out = sh(["uv", "pip", "freeze", "--python", str(tmpv / "bin" / "python")])
         freeze = {"0": [l for l in out.splitlines() if "==" in l and not l.startswith("-e")]}
@@ -260,7 +288,7 @@ def main():
     checkout(repo, red_head)
     res["red_run"] = run_det(repo, v, pick, vars1, keys=rk)["outcome"]
     shutil.rmtree(ci, ignore_errors=True)  # the CI machine is gone
-    builder = EnvBuilder(["-e", "."], WHEEL, str(WORK / "rebuilt"), python=py)
+    builder = EnvBuilder(editable_args(project, repo), WHEEL, str(WORK / "rebuilt"), python=py)
     f = Finder(repo, pick, {"sha": green, "env": vars0, "venv": None, "key": gk, "prefix": str(ci)},
                {"sha": red_head, "env": vars1, "venv": e1d, "key": rk}, builder=builder)
     try:

@@ -107,7 +107,7 @@ class Search:
                                           *tests, victim])
         o = r["outcomes"].get(victim)
         verdict = "missing" if o is None and r["code"] in (4, 5) else \
-            ("fail" if o in ("failed", "error") else ("pass" if o else "error"))
+            ("fail" if o and ("fail" in o or "error" in o) else ("pass" if o else "error"))
         if o is None and r["code"] not in (4, 5):
             verdict = "error"
         self.steps.append({"why": why, "n": len(tests), "verdict": verdict, "wall": round(r["wall"], 2)})
@@ -195,7 +195,7 @@ echo x >> {counter}
 o=$(mktemp)
 {venv}/bin/python -m pytest -q -p no:cacheprovider --tb=no -p randomly --det-outcomes=$o >/dev/null 2>&1
 code=$?
-r=$({venv}/bin/python -c "import json,sys; d=json.load(open('$o')).get('outcomes',{{}}); v=d.get(sys.argv[1]); print('bad' if v in ('failed','error') else ('good' if v else 'skip'))" '{victim}' 2>/dev/null || echo skip)
+r=$({venv}/bin/python -c "import json,sys; d=json.load(open('$o')).get('outcomes',{{}}); v=d.get(sys.argv[1]); print('bad' if v and ('fail' in v or 'error' in v) else ('good' if v else 'skip'))" '{victim}' 2>/dev/null || echo skip)
 rm -f $o
 [ "$r" = bad ] && exit 1
 [ "$r" = good ] && exit 0
@@ -241,9 +241,10 @@ def main():
         checkout(repo, s["sha"])
         full = pytest(repo, venv, det_args(None, seed))
         res["full_red"] = full["outcomes"].get(victim)
+        red_o = res["full_red"] or ""
         order = full["order"]
         sr.steps.append({"why": "full suite, red order", "verdict": res["full_red"], "wall": round(full["wall"], 2)})
-        if res["full_red"] not in ("failed", "error") or victim not in order:
+        if not ("fail" in red_o or "error" in red_o) or victim not in order:
             res["skip"] = f"victim not red in the full run ({res['full_red']}, in order: {victim in order})"
             open(a.out, "a").write(json.dumps(res) + "\n")
             print(a.repo_name, victim, res["skip"], flush=True)
