@@ -13,7 +13,8 @@
   ],
   "exclude": [
    "tests/integration/*",
-   "tests/benchmarks/*"
+   "tests/benchmarks/*",
+   "tests/unit_tests/test_espota2.py"
   ],
   "sample": 0.5,
   "seed": "s2"
@@ -36,5 +37,6 @@
   "source": "ci.yml pytest job: -n auto on one runner"
  },
  "repo": "esphome",
- "max_units": 40
+ "max_units": 40,
+ "units_note": "tests/unit_tests/test_espota2.py hangs under --det on every run (killed at the 900 s unit timeout, D0, D1, T and B alike); excluded from dv3 local runs"
 }
