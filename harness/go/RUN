@@ -1,1 +1,1 @@
-{"mode": "flaky", "set": "flaky-r8"}
+{"mode": "skip", "set": "skip-r4-hugo", "only": ["hugo"], "items": ["hugo:1:4", "hugo:2:4", "hugo:3:4"]}
