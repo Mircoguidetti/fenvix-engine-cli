@@ -82,7 +82,8 @@ _VOLATILE_OPTIONS = {
 
 
 # detpy's own bookkeeping variables (re-exec, bytecode cache): set by detpy itself, never a test input
-_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS"})
+_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS",
+                            "DETPY_XDIST_ENV"})
 _DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 
@@ -454,8 +455,6 @@ class ProofCachePlugin:
             env["PYTEST_XDIST_WORKER_COUNT"] = str(len(self.config.getoption("tx") or ()))
             if ctl is not None and ctl.testrunuid:
                 env["PYTEST_XDIST_TESTRUNUID"] = ctl.testrunuid
-            if ctl is not None:
-                env.update(ctl.worker_env())
             self.store.begin(self.config_digest, self.runtime_digest, self.epoch, env)
             self.store.set_xdist_workers(_xdist_prev_workers(self.config))
             store = self.store

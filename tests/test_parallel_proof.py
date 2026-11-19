@@ -377,3 +377,19 @@ def test_whole_environment_readers_are_reused_under_n(pytester):
     assert "tests/test_env.py::test_enumerates" in w["reused_ids"]
     _, s, _ = cache_run(pytester, 0, "serial", "tests")
     assert s["reused_ids"] == ["tests/test_env.py::test_other"]
+
+
+def test_workers_see_the_controllers_terminal_geometry(pytester, monkeypatch):
+    """A popen worker inherits its controller's C-level environment, where readline put COLUMNS/LINES; plain xdist
+    workers then see COLUMNS=80 LINES=24 that the controller (and a serial run) do not have."""
+    monkeypatch.delenv("COLUMNS", raising=False)
+    monkeypatch.delenv("LINES", raising=False)
+    out = pytester.path / "geom.txt"
+    write(pytester, **{"tests/test_g.py": f"""
+        import os
+        def test_geometry():
+            open({str(out)!r}, "w").write(repr((os.environ.get("COLUMNS"), os.environ.get("LINES"),
+                                               "DETPY_XDIST_ENV" in os.environ)))
+        """})
+    run(pytester, "-n", "1", "tests").assert_outcomes(passed=1)
+    assert out.read_text() == "(None, None, False)"

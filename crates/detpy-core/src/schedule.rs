@@ -159,18 +159,19 @@ fn lpt(atoms: &[Atom], order: &[usize], loads: &mut [u64], place: &mut [usize], 
 }
 
 /// Locality for one-test atoms (`load`, `worksteal`): consecutive tests of the same file are merged into chunk atoms
-/// of at most `total cost / (workers * div)` (a test above that is a chunk of its own). A plan over single tests
+/// of at most `ceil(tests / (workers * div))` tests. The boundaries depend on the collection only, never on the
+/// recorded durations, so the chunks (and the sticky plan over them) stay put from run to run. A plan over single tests
 /// scatters every module over every worker: each worker then sets up every module-scoped fixture, and a test loses
 /// more of its serial in-process predecessors (placement). Merging atoms never splits one: atoms that are not
 /// one-test atoms (`t:` keys) are left as they are. Returns the new atom keys (`c:<first test id>`).
 pub fn chunk_test_atoms(ids: &[String], atoms: &[String], costs: &[Option<f64>], workers: usize, div: usize) -> Vec<String> {
+    // `costs` is accepted for the binding's signature; the boundaries deliberately ignore it
     if div == 0 || workers == 0 || ids.is_empty() {
         return atoms.to_vec();
     }
-    let known: Vec<u64> = costs.iter().flatten().map(|&c| micros(c)).collect();
-    let default = median(known).unwrap_or(1_000_000).max(1);
-    let cost: Vec<u64> = costs.iter().map(|c| c.map(micros).unwrap_or(default).max(1)).collect();
-    let cap = (cost.iter().sum::<u64>() / (workers as u64 * div as u64)).max(1);
+    let _ = costs;
+    let cap = ids.len().div_ceil(workers * div).max(1) as u64;
+    let cost = vec![1u64; ids.len()];
     let file = |id: &str| id.split("::").next().unwrap_or(id).to_string();
     let mut out = Vec::with_capacity(ids.len());
     let mut cur: Option<(String, String, u64)> = None; // (chunk key, file, cost so far)
@@ -549,5 +550,10 @@ mod tests {
         let p = plan(&input).unwrap();
         assert!(p.makespan <= p.lpt_makespan + 1e-9);
         assert_eq!(chunk_test_atoms(&input.ids, &input.atoms, &input.costs, 4, 0), input.atoms);
+        // durations never move a boundary
+        let other: Vec<Option<f64>> = input.costs.iter().map(|c| c.map(|x| x * 7.0 + 1.0)).collect();
+        let a = chunk_test_atoms(&input.ids, &input.atoms, &input.costs, 4, 8);
+        let b = chunk_test_atoms(&input.ids, &input.atoms, &other, 4, 8);
+        assert_eq!(a, b);
     }
 }

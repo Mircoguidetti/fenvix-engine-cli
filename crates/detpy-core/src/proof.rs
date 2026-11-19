@@ -216,11 +216,9 @@ pub fn env_value_digest(value: Option<&str>) -> String {
 }
 
 /// Variables left out of the whole-environment digest: `_` (the shell's last command path, which changes with the
-/// way pytest is started), the variables pytest-xdist sets per worker and per run, and the terminal geometry
-/// pytest-xdist's workers export (`COLUMNS=80`, `LINES=24`). A test that reads one of them by name still depends on
-/// its value (docs/PARALLEL-PROOF-DESIGN.md 2.5).
-pub const ENV_ALL_EXCLUDED: [&str; 6] =
-    ["_", "PYTEST_XDIST_TESTRUNUID", "PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "COLUMNS", "LINES"];
+/// way pytest is started) and the variables pytest-xdist sets per worker and per run. A test that reads one of them
+/// by name still depends on its value (docs/PARALLEL-PROOF-DESIGN.md 2.5).
+pub const ENV_ALL_EXCLUDED: [&str; 4] = ["_", "PYTEST_XDIST_TESTRUNUID", "PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT"];
 
 /// Digest of a whole environment (the `*` dependency).
 pub fn env_all_digest(env: &BTreeMap<String, String>) -> String {
@@ -1391,8 +1389,6 @@ mod tests {
         b.insert("PYTEST_XDIST_WORKER".to_string(), "gw1".to_string());
         b.insert("PYTEST_XDIST_TESTRUNUID".to_string(), "abc".to_string());
         b.insert("PYTEST_XDIST_WORKER_COUNT".to_string(), "4".to_string());
-        b.insert("COLUMNS".to_string(), "80".to_string());
-        b.insert("LINES".to_string(), "24".to_string());
         assert_eq!(env_all_digest(&a), env_all_digest(&b));
         b.insert("OTHER".to_string(), "1".to_string());
         assert_ne!(env_all_digest(&a), env_all_digest(&b));

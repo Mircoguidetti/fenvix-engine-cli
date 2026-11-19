@@ -280,6 +280,8 @@ def _hashseed_value() -> str:
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(early_config, parser, args):
     reexec.SESSION_DEPTH += 1
+    if os.environ.get(_xdist.CONTROLLER_ENV) is not None:
+        _xdist.restore_controller_env()  # an xdist worker of a --det controller
     ns = early_config.known_args_namespace
     if not getattr(ns, "det", False):
         return
@@ -455,6 +457,7 @@ def _configure_det(config) -> None:
         if getattr(config.option, "testrunuid", None) is None:
             config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)
         ctl.testrunuid = config.option.testrunuid
+        _xdist.export_controller_env()
         S.controller = ctl
         config.pluginmanager.register(ctl, "detpy-xdist-controller")
     root = str(config.rootpath)
@@ -493,6 +496,8 @@ def pytest_unconfigure(config):
         proofcache.uninstall()
         S.active = False
         S.config = None
+        if S.controller is not None:
+            os.environ.pop(_xdist.CONTROLLER_ENV, None)
         S.controller = None
         S.worker = None
 
