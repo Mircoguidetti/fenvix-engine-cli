@@ -348,6 +348,19 @@ plain `-n 4` 499.4 / 379.5 / 293.3 s (spread 70 %: the runner was not steady), `
 limit from a split effect (the crosschecks compare with an empty truth and say nothing). To redo: install the
 extras its CI installs, Python 3.12 for the cache rows.
 
+## P3 walks on Actions (50 consecutive first-parent commits each, `-n 4` cache walk, truth = a fresh serial `--det` run per commit)
+
+`harness/parallel_proof/walk_n.py --modes a_par --deadline-s 18000`; raw `results/r023-p0-2026-11-19/<repo>-walk50/walk.json`.
+
+| repository | commits walked | reused (sum) | wrong reuses | `-n 4` wall per commit | truth wall per commit |
+|---|---|---|---|---|---|
+| moto (`-n 4` group, 2,480-2,501 tests) | 50 of 50 (f1057262 .. 96f50b1a) | **0** | 0 (vacuous) | 64.5-70.9 s (cold 113.3 s) | 151.8-171.9 s |
+
+* moto: nothing is reused at any commit (every miss is `new`: no entry is ever recorded, above), so the walk proves
+  nothing about reuse there; it shows the parallel cache runs 50 commits without an error. The walk compares *reused*
+  results with the truth only, so the `-n 4` verdicts of the tests that ran are not checked per commit by it (the
+  variant runs' crosscheck does that, 0 mismatches).
+
 ## Gates
 
 * `tests/test_review_r023.py`: unchanged (`git diff 8ffbaaa -- tests/test_review_r023.py` empty); **17 passed** (three
