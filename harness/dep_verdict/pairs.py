@@ -359,6 +359,10 @@ class Pairs:
         self.build()
         self.args = self.extra_args()
         units = self.units()
+        if pc.get("plan_units") is not None:
+            # the same sampled test files as the earlier measurement (files missing at P are reported, not replaced)
+            st["plan_missing"] = sorted(set(pc["plan_units"]) - set(units))
+            units = sorted(pc["plan_units"])
         st["units"] = units
         u0 = {}
         t_p = time.time()
@@ -511,12 +515,19 @@ def main(argv=None):
     ap.add_argument("--only", default="", help="comma-separated pair indices (0 = newest)")
     ap.add_argument("--budget-min", type=float, default=330)
     ap.add_argument("--max-units", type=int, default=0)
+    ap.add_argument("--plan", default="", help="JSON {spec: [{sha, units}]}: re-measure exactly these pairs with "
+                                               "these test files (REPORT-2: the 130 pairs of the first report)")
     a = ap.parse_args(argv)
     spec = json.loads(Path(a.spec).read_text())
     pairs = json.loads(Path(a.commits).read_text())[spec.get("repo", spec["name"])]["dep_commits"]
     for i, p in enumerate(pairs):
         p["index"] = i
     s, n = (int(x) for x in a.shard.split("/"))
+    if a.plan:
+        plan = {x["sha"]: x for x in json.loads(Path(a.plan).read_text()).get(spec["name"], [])}
+        pairs = [p for p in pairs if p["sha"] in plan]
+        for p in pairs:
+            p["plan_units"] = plan[p["sha"]]["units"]
     pairs = [p for i, p in enumerate(pairs) if i % n == s]
     if a.only:
         keep = {int(x) for x in a.only.split(",")}

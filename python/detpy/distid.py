@@ -10,7 +10,14 @@ distributions out, and every test instead depends on the distributions it actual
 * the distributions whose files the test (or a process it started) read;
 * the answers of the metadata queries it made: ``importlib.metadata`` by name (one distribution), by entry-point
   group (that group across all distributions) or a full scan (every distribution);
-* the top-level module names it looked up (found or not): which distributions provide that name.
+* the top-level module names it looked up (found or not): which distributions provide that name;
+* the directories under a site directory that it listed, or that the import system searched for a submodule
+  it looked up (found or not): the listing itself (``l/`` keys, review R-020 H2: a namespace package or a
+  shared directory gains a submodule from a distribution the test never loaded);
+* the ``.pth`` files of the site directories, for every test (``@pth``, review R-020 H3: ``site.py`` runs them at
+  startup, before anything is recorded);
+* everything a test or fixture that ran before it in the same process depended on (``proofcache._record_all``,
+  review R-020 H1: an answer memoised by an earlier test is used without an event).
 
 Each of these is a small identity file under ``<cache>/dist-identity/``, rewritten from the current environment at
 the start of every session; a test records the content digest of the files it depends on as ordinary data
@@ -28,6 +35,7 @@ import sys
 import threading
 
 ALL = "@all"
+PTH = "@pth"
 PROJECT = ""  # owner of the files of the project's own (editable) install
 EP_ALL = "e/@all"
 _SAFE = re.compile(r"^[A-Za-z0-9._-]{1,100}$")
@@ -39,6 +47,56 @@ def norm(name: str) -> str:
 
 def _fname(s: str) -> str:
     return s if _SAFE.match(s) and s not in (".", "..") else "h-" + hashlib.sha1(s.encode()).hexdigest()[:20]
+
+
+def listing_key(path: str) -> str:
+    """Identity key of the listing of a directory under a site directory."""
+    return "l/" + _fname("dir:" + os.path.realpath(path))
+
+
+def listing_content(path: str) -> str:
+    """The path, then the sorted entry names (bytecode caches left out: the interpreter writes them, no installer
+    does); a missing or unreadable directory is its own state."""
+    try:
+        names = sorted(n for n in os.listdir(path) if n != "__pycache__")
+    except FileNotFoundError:
+        return f"{path}\n<missing>\n"
+    except NotADirectoryError:
+        return f"{path}\n<not a directory>\n"
+    except OSError as e:
+        return f"{path}\n<error {e.errno}>\n"
+    return path + "\n" + "".join(n + "\n" for n in names)
+
+
+def pth_content(site_dirs) -> str:
+    """Every .pth file of the site directories, in the order site.py runs them: name and content digest."""
+    out = []
+    for d in sorted({os.path.realpath(x) for x in site_dirs}):
+        try:
+            names = sorted(n for n in os.listdir(d) if n.endswith(".pth"))
+        except OSError:
+            continue
+        for n in names:
+            try:
+                with open(os.path.join(d, n), "rb") as fh:
+                    h = hashlib.sha256(fh.read()).hexdigest()
+            except OSError:
+                h = "unreadable"
+            out.append(f"{d}/{n} {h}\n")
+    return "".join(out)
+
+
+def _write_atomic(p: str, content: str) -> None:
+    try:
+        with open(p) as fh:
+            if fh.read() == content:
+                return
+    except (OSError, UnicodeDecodeError):
+        pass
+    tmp = f"{p}.{os.getpid()}.tmp"
+    with open(tmp, "w") as fh:
+        fh.write(content)
+    os.replace(tmp, p)
 
 
 def _top_of(rel: str) -> str | None:
@@ -160,8 +218,9 @@ class Index:
                 return self.dirs[p]
             p = parent
 
-    def write(self, out_dir: str) -> None:
-        """Rewrite the identity files under ``out_dir`` (atomically per file; stale files removed)."""
+    def write(self, out_dir: str, site_dirs=()) -> None:
+        """Rewrite the identity files under ``out_dir`` (atomically per file; stale files removed). Listing files
+        (``l/``) are written when a test first depends on them and rewritten here from the directory they name."""
         want: dict[str, str] = {}
         for n, s in self.ident.items():
             want[f"d/{_fname(n)}"] = s
@@ -172,32 +231,35 @@ class Index:
         for t, ns in self.tops.items():
             want[f"m/{_fname(t)}"] = "\n".join(sorted(ns)) + "\n"
         want[ALL] = hashlib.sha256("".join(v for _, v in sorted(self.ident.items())).encode()).hexdigest() + "\n"
-        for sub in ("d", "e", "m"):
+        want[PTH] = pth_content(site_dirs)
+        for sub in ("d", "e", "m", "l"):
             os.makedirs(os.path.join(out_dir, sub), exist_ok=True)
+        for f in os.listdir(os.path.join(out_dir, "l")):
+            if ".tmp" in f:
+                continue
+            p = os.path.join(out_dir, "l", f)
+            try:
+                with open(p) as fh:
+                    d = fh.readline().rstrip("\n")
+            except (OSError, UnicodeDecodeError):
+                d = ""
+            if d and listing_key(d) == "l/" + f:
+                want["l/" + f] = listing_content(d)
         have = set()
-        for sub in ("d", "e", "m"):
+        for sub in ("d", "e", "m", "l"):
             for f in os.listdir(os.path.join(out_dir, sub)):
                 if ".tmp" not in f:
                     have.add(f"{sub}/{f}")
-        if os.path.exists(os.path.join(out_dir, ALL)):
-            have.add(ALL)
+        for top in (ALL, PTH):
+            if os.path.exists(os.path.join(out_dir, top)):
+                have.add(top)
         for rel in have - set(want):
             try:
                 os.unlink(os.path.join(out_dir, rel))
             except OSError:
                 pass
         for rel, content in want.items():
-            p = os.path.join(out_dir, rel)
-            try:
-                with open(p) as fh:
-                    if fh.read() == content:
-                        continue
-            except OSError:
-                pass
-            tmp = f"{p}.{os.getpid()}.tmp"
-            with open(tmp, "w") as fh:
-                fh.write(content)
-            os.replace(tmp, p)
+            _write_atomic(os.path.join(out_dir, rel), content)
 
 
 _DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
@@ -244,6 +306,9 @@ class Tracker:
         self._saved: list = []
         self.site_dirs: tuple = ()
         self.index_seconds = 0.0
+        self._listings: set = set()
+        self.global_keys = {PTH}                  # inputs of every test (startup: .pth files)
+        self._maps_len = -1
 
     # -- recording -------------------------------------------------------------------
     def suppressed(self) -> bool:
@@ -262,6 +327,12 @@ class Tracker:
         n = self.index.dist_of(p)
         if n == PROJECT:
             return  # the project's own editable install: repository files and its metadata are recorded as data
+        if os.path.isdir(p) and not self.is_site_dir(p) and ".dist-info" not in p and ".egg-info" not in p:
+            # review R-020 H2: a directory under a site directory can gain or lose entries from any distribution
+            # (a namespace package, a plugin directory), not only from the one that owns its other files: the
+            # listing itself is the input
+            self.listing(ctx, p)
+            return
         if n is None:
             self.unmapped[p] = self.unmapped.get(p, 0) + 1
             if os.path.isdir(p):
@@ -273,6 +344,28 @@ class Tracker:
                 self.add(ctx, os.path.realpath(p))
             return
         self.add(ctx, "d/" + _fname(n))
+
+    def is_site_dir(self, p: str) -> bool:
+        p = p.rstrip(os.sep) + os.sep
+        return p in self.site_dirs or os.path.realpath(p) + os.sep in self.site_dirs
+
+    def listing(self, ctx: int, d: str) -> None:
+        """Depend on the listing of directory ``d`` (under a site directory); its identity file is written on first
+        use in the session and rewritten from the directory by ``Index.write`` at the start of every session."""
+        key = listing_key(d)
+        if key not in self._listings:
+            self._listings.add(key)
+            p = os.path.join(self.dir, key)
+            cap = self.cap
+            was, cap.active = cap.active, False  # detpy's own reads and writes are not inputs or outputs
+            try:
+                os.makedirs(os.path.dirname(p), exist_ok=True)
+                _write_atomic(p, listing_content(os.path.realpath(d)))
+            except OSError:
+                key = ALL
+            finally:
+                cap.active = was
+        self.add(ctx, key)
 
     def _loaded_key(self, key: str, index: int) -> None:
         if key not in self._loaded_seen:
@@ -301,14 +394,19 @@ class Tracker:
                     self._loaded_key(os.path.realpath(f), index)
                 else:
                     self._loaded_key("d/" + _fname(n), index)
-            self._dlopen = True  # an extension module may have loaded native libraries
-        if self._dlopen:
-            self._dlopen = False
-            try:
-                with open("/proc/self/maps") as fh:
-                    lines = fh.read().splitlines()
-            except OSError:
-                lines = []
+        # review R-020 H4: C code can dlopen() a library at any time (lazily loaded CUDA libraries, execution
+        # providers, drivers) without a Python event: the maps are read after every test, not only when
+        # sys.modules grew or ctypes.dlopen fired; parsed only when they changed
+        self._dlopen = False
+        try:
+            with open("/proc/self/maps") as fh:
+                text = fh.read()
+        except OSError:
+            text = ""
+        if len(text) != self._maps_len or text != getattr(self, "_maps_text", None):
+            self._maps_len = len(text)
+            self._maps_text = text
+            lines = text.splitlines()
             for line in lines:
                 i = line.find("/")
                 if i < 0:
@@ -391,9 +489,27 @@ class Tracker:
             @staticmethod
             def find_spec(fullname, path=None, target=None):
                 cap = tracker.cap
-                if path is None and "." not in fullname and cap.active and not tracker.suppressed() \
-                        and _by_user(1):
-                    tracker.add(cap._cur(), "m/" + _fname(fullname))
+                if not cap.active or tracker.suppressed():
+                    return None
+                if path is None:
+                    if "." not in fullname and _by_user(1):
+                        tracker.add(cap._cur(), "m/" + _fname(fullname))
+                    return None
+                # review R-020 H2: a submodule is searched in the directories of its parent's __path__; under a
+                # site directory, any distribution can add one there (namespace packages, shared directories):
+                # their listings are the input, whether the submodule is found or not
+                try:
+                    entries = [e for e in path if isinstance(e, str) and tracker.in_site(e.rstrip(os.sep) + os.sep)]
+                except Exception:
+                    entries = []
+                if entries and _by_user(1):
+                    ctx = cap._cur()
+                    was, cap.active = cap.active, False  # the listing's own reads are not inputs
+                    try:
+                        for e in entries:
+                            tracker.listing(ctx, e)
+                    finally:
+                        cap.active = was
                 return None
 
             @staticmethod

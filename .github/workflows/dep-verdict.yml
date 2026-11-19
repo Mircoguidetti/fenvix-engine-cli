@@ -51,7 +51,8 @@ jobs:
                       continue
                   rows.append({"spec": w["spec"], "shard": f"{s}/{n}", "tag": f"{s}of{n}",
                                "budget": w.get("budget_min", 330), "only": w.get("only", ""),
-                               "max_units": w.get("max_units", 0), "apt": " ".join(spec.get("apt", []))})
+                               "max_units": w.get("max_units", 0), "apt": " ".join(spec.get("apt", [])),
+                               "plan": w.get("plan", run.get("plan", ""))})
           print("run_id=" + run["run_id"])
           print("pairs=" + json.dumps(rows))
           print("ci=" + ("true" if run.get("ci") else "false"))
@@ -113,5 +114,5 @@ jobs:
           python3 harness/dep_verdict/pairs.py --spec "harness/dep_verdict/specs/${{ matrix.spec }}.json" \
             --commits harness/dep_verdict/commits.json --work "$RUNNER_TEMP/w" \
             --wheel "$(ls $RUNNER_TEMP/dist/*.whl)" --shard "${{ matrix.shard }}" --budget-min "${{ matrix.budget }}" \
-            --only "${{ matrix.only }}" --max-units "${{ matrix.max_units }}" \
+            --only "${{ matrix.only }}" --max-units "${{ matrix.max_units }}" --plan "${{ matrix.plan }}" \
             --out "harness/dep_verdict/results/${{ needs.build.outputs.run_id }}/${{ matrix.spec }}-${{ matrix.tag }}.json.gz"

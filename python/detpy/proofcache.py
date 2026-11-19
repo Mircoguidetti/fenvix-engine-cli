@@ -1424,6 +1424,7 @@ class ProofCachePlugin:
         g_dist: set = set()
         dist_sets = {} if (tr is not None and os.environ.get("DETPY_DIST_SETS")) else None
         if tr is not None:
+            g_dist |= tr.global_keys
             for c in g_ctx_all:
                 g_dist |= tr.deps.get(c, set())
         cfg = _state.STATE.config
@@ -1440,10 +1441,45 @@ class ProofCachePlugin:
                 return d == "" or own == d or own.startswith(d + "/")
             return True
 
+        # review R-020 H1/O1 (prefix rule): a test, fixture or collection that ran before a test in this process
+        # can leave state that test reads without any event (functools.lru_cache, a module-level dict, a registry
+        # filled on first use): everything it depended on (code executed, files, environment variables,
+        # distributions, refusals) is an input of every later test of the process. Contexts in order of first
+        # activation; import contexts of test modules at the collection of their file.
+        first: dict[int, int] = {}
+        for k, (_t, c) in enumerate(cap.timeline):
+            first.setdefault(c, k)
+        g_set = set(g_ctx_all)
+        for n, i in ctx_of.items():
+            if n.startswith("i|") and i in own_import_ix:
+                first.setdefault(i, first.get(ctx_of.get("c|" + n[2:]), 0))
+        carry_order = sorted((k, c) for c, k in first.items() if c not in g_set)
+        carry_pos = 0
+        c_data: dict = {}
+        c_env: set = set()
+        c_flags: set = set()
+        c_units: set = set()
+        c_content: set = set()
+        c_dist: set = set()
+        c_ctxs: list = []
+
         for nid in self.ran:
             item = self.items.get(nid)
             if item is None:
                 continue
+            tpos = first.get(ctx_of.get("t|" + nid), len(cap.timeline))
+            while carry_pos < len(carry_order) and carry_order[carry_pos][0] < tpos:
+                c = carry_order[carry_pos][1]
+                carry_pos += 1
+                c_ctxs.append(c)
+                c_data.update(cap.data.get(c, {}))
+                c_env |= cap.env.get(c, set())
+                c_flags |= cap.flags.get(c, set())
+                if c < len(per):
+                    c_units |= units_of(per[c][0])
+                    c_content |= unparsable(per[c][1])
+                if tr is not None:
+                    c_dist |= tr.deps.get(c, set())
             p = self.parts.get(nid, {})
             outcome = _final(p)
             if outcome not in ("passed", "skipped", "xfailed"):
@@ -1454,10 +1490,11 @@ class ProofCachePlugin:
             if own in own_import:
                 ctxs.append(own_import[own])
             flags = set(g_flags)
-            data = dict(g_data)
-            env = set(g_env)
-            units = set()
-            content = set(pre_ix) | g_unparsable
+            data = dict(c_data)
+            data.update(g_data)
+            env = set(g_env) | c_env
+            units = set(c_units)
+            content = set(pre_ix) | g_unparsable | c_content
             for c in ctxs:
                 flags |= cap.flags.get(c, set())
                 data.update(cap.data.get(c, {}))
@@ -1467,9 +1504,17 @@ class ProofCachePlugin:
             why = _uncacheable(flags, cfg)
             if why is not None:
                 self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
+            elif c_flags:
+                why = _uncacheable(c_flags, cfg)
+                if why is not None:
+                    self.not_cached_where[nid] = self._where(why, c_ctxs)
+                    why = f"after an earlier test or fixture of this process: {why}"
+                else:
+                    flags |= c_flags
             if why is None:
                 # writers credited to the test: its own contexts and the global ones (startup, between tests,
-                # import time), whose code is an input of every test
+                # import time), whose code is an input of every test. (Contexts that ran earlier are not credited:
+                # a file one of them wrote is not there when that context is reused instead of run.)
                 credited = set(ctxs) | set(g_ctx_all)
                 names = {names_of[c] for c in credited}
                 for f in sorted(flags):
@@ -1522,7 +1567,7 @@ class ProofCachePlugin:
                 else:
                     env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
             if tr is not None:
-                keys = set(g_dist)
+                keys = set(g_dist) | c_dist
                 for c in ctxs:
                     keys |= tr.deps.get(c, set())
                 for k, seen_at in tr.loaded:
@@ -2046,9 +2091,10 @@ def start(early_config, ns) -> None:
         t0 = _perf()
         index = distid.Index(root)
         ident_dir = os.path.join(os.path.abspath(ns.det_cache), "dist-identity")
-        index.write(ident_dir)
+        site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        index.write(ident_dir, site_dirs)
         tr = distid.Tracker(cap, index, ident_dir)
-        tr.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        tr.site_dirs = site_dirs
         tr.index_seconds = _perf() - t0
         tr.install()
         cap.dists = tr
