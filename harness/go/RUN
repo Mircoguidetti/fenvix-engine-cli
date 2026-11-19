@@ -1,1 +1,1 @@
-{"mode": "skip", "set": "skip-r6", "only": ["telegraf"]}
+{"mode": "flaky", "set": "flaky-r8", "only": ["teleport", "nats-server"]}
