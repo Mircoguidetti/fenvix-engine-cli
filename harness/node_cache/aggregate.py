@@ -80,6 +80,9 @@ def analyse(name, shards):
         v = c.get("verify") or {}
         s = v.get("summary") or {}
         files = s.get("ran_files") or {}
+        # the runner's durations come from the worker's clock: tests that move it backwards (Lexical's @lexical/y)
+        # report negative times; those count as 0 s (they make Nx's share approximate there)
+        files = {k: {**f, "duration": max(0.0, f["duration"])} for k, f in files.items()}
         total = sum(f["duration"] for f in files.values())
         reused = set(s.get("reused_files_list") or [])
         ok_now = {k: f["ok"] for k, f in files.items()}
