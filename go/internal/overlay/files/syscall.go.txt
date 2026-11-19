@@ -48,6 +48,7 @@ var fenvix struct {
 	explore   bool
 	realOff   int64 // virtual wall minus real wall at the start of the test
 	shim      string
+	vproc1    string // virtual copy of /proc/1/stat
 	portCtr   uint64
 	inTest    bool
 	testGoid  uint64
@@ -127,6 +128,8 @@ func fenvixInit() {
 				fenvix.explore = v == "1"
 			case "shim":
 				fenvix.shim = v
+			case "vproc1stat":
+				fenvix.vproc1 = v
 			case "maxev":
 				if ok && n > 0 {
 					fenvix.maxEv = int(n)
@@ -723,4 +726,10 @@ func fenvixRawGetrandom(p, n uintptr) uintptr {
 		}
 	}
 	return n
+}
+
+// Fenvix_VirtualProc1Stat is the path of the virtual /proc/1/stat ("" none).
+func Fenvix_VirtualProc1Stat() string {
+	fenvixInit()
+	return fenvix.vproc1
 }

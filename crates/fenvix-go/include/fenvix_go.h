@@ -50,6 +50,7 @@ FenvixSkip *fenvix_skip_open(const char *config_json);
 char *fenvix_skip_decide(FenvixSkip *h, const char *names_json);
 char *fenvix_skip_record(FenvixSkip *h, const char *run_json);
 void fenvix_skip_free(FenvixSkip *h);
+char *fenvix_virtual_proc_stat(const char *real);
 
 #ifdef __cplusplus
 }

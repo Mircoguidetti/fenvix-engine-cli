@@ -485,7 +485,7 @@ func cmdTest(args []string) int {
 
 	sess := &session.Session{
 		Dir: dir, Self: self, Det: o.det, Seed: o.seed, Controls: controls, Ctl: ctl, Unavailable: ov.Unavailable,
-		Epoch: epoch, Shim: shim, Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
+		Epoch: epoch, Shim: shim, VProc1Stat: virtualProc1Stat(ov, o.skipRealClock), Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
 		Goroot: env["GOROOT"], GoVersion: env["GOVERSION"], GOOS: env["GOOS"], GOARCH: env["GOARCH"],
 		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
 		BuildFlags: keyFlags,
@@ -774,4 +774,38 @@ func buildShim() (string, error) {
 		return "", fmt.Errorf("%s: %v: %s", cc, err, strings.TrimSpace(string(b)))
 	}
 	return out, os.Rename(tmp, out)
+}
+
+// virtualProc1Stat writes the core's virtual /proc/1/stat to a keyed path
+// (not under fenvix's dropped caches) and returns it; "" when unavailable.
+func virtualProc1Stat(ov *overlay.Result, realMachine bool) string {
+	if realMachine || ov.Partial["os-virtual"] != "" {
+		// the nightly real-clock check reads the real file too
+		return ""
+	}
+	real, err := os.ReadFile("/proc/1/stat")
+	if err != nil {
+		return ""
+	}
+	v, err := core.VirtualProcStat(string(real))
+	if err != nil {
+		return ""
+	}
+	base, err := os.UserCacheDir()
+	if err != nil {
+		return ""
+	}
+	dir := filepath.Join(base, "fenvix-go-virtual")
+	p := filepath.Join(dir, "proc-1-stat")
+	if old, err := os.ReadFile(p); err == nil && string(old) == v {
+		return p // unchanged: the file (and its mtime) stays as keyed
+	}
+	if os.MkdirAll(dir, 0o755) != nil {
+		return ""
+	}
+	tmp := fmt.Sprintf("%s.%d.tmp", p, os.Getpid())
+	if os.WriteFile(tmp, []byte(v), 0o644) != nil || os.Rename(tmp, p) != nil {
+		return ""
+	}
+	return p
 }

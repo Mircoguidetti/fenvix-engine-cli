@@ -255,3 +255,35 @@ func TestSkipRealClockReportsExpiry(t *testing.T) {
 		t.Errorf("the real-clock check changed the cache: %+v", d2)
 	}
 }
+
+// Virtual /proc/1/stat (coordinator request after R-025; telegraf reads it
+// through a dependency's init): two runs see the same content, the reader
+// still parses it, the tests are reused, and a test that depends on a
+// changing field (utime) sees the virtual constant in the recorded and in
+// every later run, so its reuse agrees with the fresh run.
+func TestSkipVirtualProcStat(t *testing.T) {
+	if _, err := os.ReadFile("/proc/1/stat"); err != nil {
+		t.Skip(err)
+	}
+	r := newR025(t, "procstat")
+	r.record([]string{"TestInitStat", "TestRealCPUTime"})
+	r.mustReuse("TestInitStat")
+	r.mustReuse("TestRealCPUTime")
+	var stats []string
+	for i := 0; i < 2; i++ {
+		out, _ := runFenvix(t, r.dir, r.env, "test", "--skip-cache="+t.TempDir(), "-v", "-run", "TestInitStat", "./procstat")
+		for _, l := range strings.Split(out, "\n") {
+			if i := strings.Index(l, "stat: "); i >= 0 {
+				stats = append(stats, l[i:])
+			}
+		}
+	}
+	if len(stats) != 2 || stats[0] != stats[1] {
+		t.Fatalf("virtual /proc/1/stat differs between runs: %q", stats)
+	}
+	// plain go test sees the real file (the virtual copy is fenvix's only)
+	cmd := exec.Command("go", "test", "-count=1", "-run", "TestRealCPUTime", "./procstat")
+	cmd.Dir = r.dir
+	out, _ := cmd.CombinedOutput()
+	t.Logf("plain go test (real /proc/1/stat):\n%s", out)
+}

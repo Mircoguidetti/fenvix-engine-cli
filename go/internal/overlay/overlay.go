@@ -173,6 +173,11 @@ var patches = []patch{
 	{group: "os-open", file: "os/file.go", ops: []op{
 		{kind: "insert", anchor: "func OpenFile(name string, flag int, perm FileMode) (*File, error) {", text: "\tfenvixDepOpen(name, flag)"},
 	}},
+	{group: "os-virtual", file: "os/file.go", ops: []op{
+		// process-state files a dependency reads (gopsutil: /proc/1/stat) are
+		// served from a virtual copy whose changing fields are constants
+		{kind: "insert", anchor: "func OpenFile(name string, flag int, perm FileMode) (*File, error) {", text: "\tname = fenvixVirtualPath(name)"},
+	}},
 	{group: "os-stat", file: "os/stat.go", ops: []op{
 		{kind: "insert", anchor: "func Stat(name string) (FileInfo, error) {", text: "\tfenvixDep('S', name)"},
 		{kind: "insert", anchor: "func Lstat(name string) (FileInfo, error) {", text: "\tfenvixDep('S', name)"},
@@ -238,6 +243,7 @@ var optionalGroups = map[string]string{
 	"getrandom":     "getrandom(2) through syscall.Syscall (x/sys/unix.Getrandom...) not controlled",
 	"getrandom-raw": "getrandom(2) through syscall.RawSyscall not controlled",
 	"os-time":       "file modification times and child processes' clocks keep real time",
+	"os-virtual":    "/proc/1/stat is read as is (a test that reads it is not reusable)",
 }
 
 // Has reports whether a control is available.
