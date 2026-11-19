@@ -1489,6 +1489,9 @@ class ProofCachePlugin:
             ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
             if own in own_import:
                 ctxs.append(own_import[own])
+            def own_reads(path, _ctxs=ctxs):
+                return path in g_data or any(path in cap.data.get(c, ()) for c in _ctxs)
+
             flags = set(g_flags)
             data = dict(c_data)
             data.update(g_data)
@@ -1522,7 +1525,11 @@ class ProofCachePlugin:
                         why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
                         break
                 if why is None:
+                    # reads carried from earlier contexts are not checked here: that context read the file itself,
+                    # and its recorded digest is compared with the file on disk before any reuse
                     for path in data:
+                        if path in c_data and c_data[path] == data[path] and not own_reads(path):
+                            continue
                         w = written.get(path)
                         if w and not w <= names:
                             why = f"reads a file another test or fixture wrote: {path}"
