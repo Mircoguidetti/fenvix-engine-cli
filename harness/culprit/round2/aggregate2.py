@@ -64,6 +64,9 @@ def commit_kind(cases):
                                       if x["why"] == "bisect candidates" and x["outcome"] == "pass")
     s["truth_position_first"] = sum(1 for r in cases if r.get("truth_position") == 1)
     s["truth_is_planted"] = sum(1 for r in cases if r.get("truth_is_planted"))
+    sus = [r for r in cases if named_of(r["finder"]) is None and "suspect " in (r["finder"].get("why") or "")]
+    s["unknown_with_suspect"] = len(sus)
+    s["unknown_suspect_is_truth"] = sum(1 for r in sus if r["finder"]["why"].rsplit("suspect ", 1)[1].strip() == r["truth"])
     s["status"] = {}
     for r in cases:
         k = r["finder"].get("status", "?")
