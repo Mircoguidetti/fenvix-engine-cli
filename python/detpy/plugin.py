@@ -76,6 +76,9 @@ def pytest_addoption(parser, pluginmanager):
     g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
                 help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
                      "most DAYS later (default 30), so tests that read the clock are reusable across commits")
+    g.addoption("--det-cache-dists", action="store_true", default=False,
+                help="with --det-cache (PROTOTYPE): installed distributions enter a test's key one by one (those it "
+                     "loaded, read or queried) instead of as one digest of the whole environment")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
 

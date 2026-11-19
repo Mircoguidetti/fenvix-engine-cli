@@ -1,0 +1,66 @@
+{
+ "run_id": "dv1",
+ "ci": true,
+ "pairs": [
+  {
+   "spec": "airflow",
+   "shards": 6,
+   "max_units": 15,
+   "budget_min": 330
+  },
+  {
+   "spec": "community-general",
+   "shards": 6,
+   "max_units": 30,
+   "budget_min": 330
+  },
+  {
+   "spec": "esphome",
+   "shards": 6,
+   "max_units": 30,
+   "budget_min": 330
+  },
+  {
+   "spec": "integrations-core",
+   "shards": 6,
+   "max_units": 30,
+   "budget_min": 330
+  },
+  {
+   "spec": "litellm",
+   "shards": 6,
+   "max_units": 20,
+   "budget_min": 330
+  },
+  {
+   "spec": "mlflow",
+   "shards": 6,
+   "max_units": 20,
+   "budget_min": 330
+  },
+  {
+   "spec": "moto",
+   "shards": 6,
+   "max_units": 25,
+   "budget_min": 330
+  },
+  {
+   "spec": "prefect",
+   "shards": 6,
+   "max_units": 12,
+   "budget_min": 330
+  },
+  {
+   "spec": "pydantic-ai",
+   "shards": 6,
+   "max_units": 25,
+   "budget_min": 330
+  },
+  {
+   "spec": "transformers",
+   "shards": 6,
+   "max_units": 15,
+   "budget_min": 330
+  }
+ ]
+}

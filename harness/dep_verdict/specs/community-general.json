@@ -1,0 +1,45 @@
+{
+ "name": "community-general",
+ "url": "https://github.com/ansible-collections/community.general",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} ansible-core pytest pytest-mock pytest-xdist",
+  "python3 {harness}/pyinstall.py --python {py} -r tests/unit/requirements.txt",
+  "mkdir -p {work}/ac/ansible_collections/community && (test -d {work}/ac/ansible_collections/community/internal_test_tools || git clone -q --depth 1 https://github.com/ansible-collections/community.internal_test_tools {work}/ac/ansible_collections/community/internal_test_tools)",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "src_dir": "ac/ansible_collections/community/general",
+ "env": {
+  "PYTHONPATH": "{work}/ac",
+  "ANSIBLE_COLLECTIONS_PATH": "{work}/ac",
+  "ANSIBLE_CONTROLLER_MIN_PYTHON_VERSION": "3.12"
+ },
+ "units": {
+  "include": [
+   "tests/unit/**/test_*.py"
+  ],
+  "sample": 1.0,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "-p",
+  "ansible_test._util.target.pytest.plugins.ansible_pytest_collections",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "ci": {
+  "workers": 4,
+  "source": "ansible-test units: one runner per Python version, 4 vCPU assumed"
+ },
+ "repo": "community.general",
+ "max_units": 40
+}

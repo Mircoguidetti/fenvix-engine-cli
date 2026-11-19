@@ -1,0 +1,38 @@
+{
+ "name": "pydantic-ai",
+ "url": "https://github.com/pydantic/pydantic-ai",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-extras --no-extra mcp-tasks --all-packages || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-extras --no-extra mcp-tasks --all-packages",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "env": {
+  "PYTEST_TEST_BUDGET_SECONDS": "100000"
+ },
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "sample": 0.3,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "ci": {
+  "workers": 4,
+  "source": "Makefile test: pytest -n auto --dist=loadgroup on one runner"
+ },
+ "repo": "pydantic-ai",
+ "max_units": 30
+}

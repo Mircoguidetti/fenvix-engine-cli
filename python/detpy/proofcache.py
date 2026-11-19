@@ -43,7 +43,7 @@ from types import CodeType, FunctionType
 
 import pytest
 
-from . import __version__, _codefacts, _core, _sites, _state, follow
+from . import __version__, _codefacts, _core, _sites, _state, distid, follow
 
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
@@ -57,7 +57,7 @@ AVAILABLE = _mon is not None
 # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
 _GLOBAL_CTX = ("", "s")
 
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
@@ -166,6 +166,7 @@ class Capture:
         self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
         self.children = 0  # followed children (spawn calls)
         self.timeline: list[tuple[float, int]] = [(_now(), 0)]  # (real time, context) at every switch
+        self.dists: distid.Tracker | None = None  # --det-cache-dists (prototype): per-distribution identity
 
     # -- contexts -------------------------------------------------------------
     def ctx_index(self, name: str) -> int:
@@ -452,7 +453,11 @@ class Capture:
             return
         if event == "open":
             p = self._abs(args[0] if args else None)
-            if p is None or self._ignored(p):
+            if p is None:
+                return
+            if self.dists is not None and self._dist_read(p):
+                return
+            if self._ignored(p):
                 return
             mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
             if _O_TMPFILE and isinstance(flags, int) and flags & _O_TMPFILE == _O_TMPFILE:
@@ -490,9 +495,16 @@ class Capture:
             if self._caller_kind() != "user":
                 return
             p = self._abs(args[0] if args and args[0] is not None else ".")
-            if p is None or self._ignored(p):
+            if p is None:
+                return
+            if self.dists is not None and self._dist_read(p, listing=True):
+                return
+            if self._ignored(p):
                 return
             self.read(self._cur(), p, "d")
+        elif event == "ctypes.dlopen":
+            if self.dists is not None:
+                self.dists._dlopen = True
         elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
             # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
@@ -556,6 +568,19 @@ class Capture:
                 p = self._abs(args[i] if len(args) > i else None)
                 if p is not None and not self._ignored(p):
                     self.wrote(ctx, p)
+
+    def _dist_read(self, p: str, listing: bool = False) -> bool:
+        """--det-cache-dists: a read under a site directory becomes a dependency on the distribution that owns
+        it (True = handled). Reads by the import system and by pytest/detpy are not inputs, as without the flag."""
+        tr = self.dists
+        if not tr.in_site(p) or any(p.startswith(x) for x in self.dist_info_ok):
+            return False
+        if not listing:
+            kind = self._caller_kind()
+            if kind in ("import", "infra"):
+                return True
+        tr.path(self._cur(), p)
+        return True
 
     def _own_listener(self, args) -> bool:
         self.active = False  # the check's own /proc reads are not inputs
@@ -626,6 +651,11 @@ class Capture:
         return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
 
     def child_read(self, ctx: int, p: str, kind: str = "f") -> None:
+        tr = self.dists
+        if tr is not None and tr.in_site(p) and not any(p.startswith(x) for x in self.dist_info_ok) \
+                and os.sep + "__pycache__" + os.sep not in p:
+            tr.path(ctx, p)
+            return
         if not self.child_ignored(p):
             self.read(ctx, p, kind)
 
@@ -743,6 +773,12 @@ class Capture:
     def scan_modules(self, index: int, plugins=()) -> None:
         """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps
         out of ``sys.modules``) as loaded after the test at ``index`` (-1 = collection)."""
+        if self.dists is not None:
+            was, self.active = self.active, False  # the scan's own reads (/proc/self/maps) are not inputs
+            try:
+                self.dists.scan(index)
+            finally:
+                self.active = was
         for m in plugins:
             f = getattr(m, "__file__", None)
             if isinstance(f, str) and self._want(f):
@@ -907,7 +943,7 @@ def _dist_infos(root: str, memo_path: str | None = None):
     return sorted(parts), editable
 
 
-def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
+def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = False) -> tuple[str, dict, list]:
     import sysconfig
 
     exe = os.path.realpath(sys.executable)
@@ -928,6 +964,10 @@ def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict
         "distributions": _core.digest("\n".join(dists).encode()),
         "n_distributions": len(dists),
     }
+    if per_dist:
+        # --det-cache-dists: each test depends on the distributions it used (distid), not on all of them
+        d["distributions"] = "per-test"
+        d["n_distributions"] = None
     return _core.digest(json.dumps(d, sort_keys=True).encode()), d, editable
 
 
@@ -1028,6 +1068,8 @@ class ProofCachePlugin:
         self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
         self.stale_hits: dict[str, str] = {}
         self.error: str | None = None
+        self.dist_keys_n: list[int] = []
+        self.dist_all_n = 0
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -1036,11 +1078,13 @@ class ProofCachePlugin:
         self.config_digest, self.config_info = config_identity(config)
         os.makedirs(self.dir, exist_ok=True)
         self.runtime_digest, self.runtime_info, editable = runtime_identity(
-            self.root, os.path.join(self.dir, "distributions.json"))
+            self.root, os.path.join(self.dir, "distributions.json"), per_dist=self.cap.dists is not None)
         cap = self.cap
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
         cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        if cap.dists is not None:
+            cap.dists.site_dirs = tuple(sorted(set(cap.site_dirs) | set(cap.dists.site_dirs)))
         factory = getattr(config, "_tmp_path_factory", None)
         if factory is not None:
             try:
@@ -1376,6 +1420,12 @@ class ProofCachePlugin:
                     store.remove(nid)
                     break
         loaded_idx = cap.loaded_order  # (rel, index)
+        tr = cap.dists
+        g_dist: set = set()
+        dist_sets = {} if (tr is not None and os.environ.get("DETPY_DIST_SETS")) else None
+        if tr is not None:
+            for c in g_ctx_all:
+                g_dist |= tr.deps.get(c, set())
         cfg = _state.STATE.config
         file_of_ix = {}
         for rel, ix in fcache.items():
@@ -1471,12 +1521,37 @@ class ProofCachePlugin:
                     env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
                 else:
                     env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
+            if tr is not None:
+                keys = set(g_dist)
+                for c in ctxs:
+                    keys |= tr.deps.get(c, set())
+                for k, seen_at in tr.loaded:
+                    if seen_at <= idx:
+                        keys.add(k)
+                data.update(tr.data_deps(sorted(keys)))
+                self.dist_keys_n.append(len(keys))
+                self.dist_all_n += distid.ALL in keys
+                if dist_sets is not None:
+                    own = set(g_dist)
+                    for c in ctxs:
+                        own |= tr.deps.get(c, set())
+                    own |= {k for k, seen_at in tr.loaded if seen_at in (-1, idx)}
+                    dist_sets[nid] = {"proof": sorted(keys), "own": sorted(own)}
             report = {w: p[w] for w in ("setup", "call") if w in p}
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                          sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
             self.recorded += 1
         store.save()
+        if dist_sets is not None:
+            try:
+                with open(os.path.join(self.dir, f"dist-sets-{self.run_id}.json"), "w") as fh:
+                    json.dump({"identity": {k: open(os.path.join(tr.dir, k)).read() if os.path.exists(
+                        os.path.join(tr.dir, k)) else None for k in sorted({k for v in dist_sets.values()
+                                                                           for k in v["proof"] + v["own"]})},
+                               "tests": dist_sets}, fh)
+            except OSError:
+                pass
 
     def _where(self, why: str, ctxs) -> str:
         """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
@@ -1541,6 +1616,29 @@ class ProofCachePlugin:
             "stale_reuses": self.stale_hits,
             "error": self.error,
             "receipts": self.receipts_path,
+            "dists": self._dist_summary(),
+        }
+
+    def _dist_summary(self) -> dict | None:
+        tr = self.cap.dists
+        if tr is None:
+            return None
+        by_key: dict[str, int] = {}
+        pre = tr.dir + os.sep
+        for why in self.misses.values():
+            if why.startswith("data:") and pre in why:
+                k = why.split(pre, 1)[1].split(" ", 1)[0]
+                by_key[k] = by_key.get(k, 0) + 1
+        n = self.dist_keys_n
+        return {
+            "identity_dir": tr.dir,
+            "installed": len(tr.index.ident),
+            "miss_by_identity": dict(sorted(by_key.items(), key=lambda kv: -kv[1])[:40]),
+            "recorded_keys_mean": round(sum(n) / len(n), 1) if n else None,
+            "recorded_with_all": self.dist_all_n,
+            "unmapped": dict(sorted(tr.unmapped.items(), key=lambda kv: -kv[1])[:20]),
+            "loaded": len(tr.loaded),
+            "index_seconds": round(tr.index_seconds, 3),
         }
 
     def _entry_duration(self, nid: str) -> float:
@@ -1943,6 +2041,17 @@ def start(early_config, ns) -> None:
     cap.follower = follow.Follower(cap, os.path.join(os.path.abspath(ns.det_cache), f"follow-{os.getpid()}"),
                                    not getattr(ns, "det_cache_no_follow", False))
     cap.follower.install()
+    if getattr(ns, "det_cache_dists", False) or os.environ.get("DETPY_CACHE_DISTS") == "1":
+        # prototype: per-distribution identity (distid); built before recording starts, so its reads are not inputs
+        t0 = _perf()
+        index = distid.Index(root)
+        ident_dir = os.path.join(os.path.abspath(ns.det_cache), "dist-identity")
+        index.write(ident_dir)
+        tr = distid.Tracker(cap, index, ident_dir)
+        tr.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        tr.index_seconds = _perf() - t0
+        tr.install()
+        cap.dists = tr
     cap.start()
 
 
@@ -1967,6 +2076,8 @@ def uninstall() -> None:
     global CAPTURE, PLUGIN, _ENV_CAPTURE
     if CAPTURE is not None:
         CAPTURE.stop()
+        if CAPTURE.dists is not None:
+            CAPTURE.dists.uninstall()
         if CAPTURE.follower is not None:
             CAPTURE.follower.uninstall()
     _state.set_event_listener(None)

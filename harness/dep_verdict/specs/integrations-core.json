@@ -1,0 +1,56 @@
+{
+ "name": "integrations-core",
+ "url": "https://github.com/DataDog/integrations-core",
+ "lang": "pytest",
+ "apt": [
+  "unixodbc-dev",
+  "libkrb5-dev",
+  "libsasl2-dev",
+  "libpq-dev",
+  "freetds-dev",
+  "libssl-dev"
+ ],
+ "install": [
+  "test -x {py} || uv venv -q --python 3.13 {venv}",
+  "python3 {harness}/pyinstall.py --python {py} -r agent_requirements.in",
+  "uv pip install -q --python {py} pytest pytest-asyncio pytest-mock mock freezegun requests-mock pytest-benchmark pytest-cov",
+  "uv pip install -q --python {py} --no-deps -e ./datadog_checks_base -e ./datadog_checks_dev $(for d in */; do test -f $d/pyproject.toml && test -d $d/datadog_checks && test $d != datadog_checks_base/ && test $d != datadog_checks_dev/ && echo -e ./$d; done)",
+  "uv pip install -q --python {py} -e ./datadog_checks_dev || true",
+  "uv pip install -q --python {py} -e ./datadog_checks_tests_helper || true",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "units": {
+  "include": [
+   "*/tests/**/test_*.py",
+   "*/tests/test_*.py"
+  ],
+  "exclude": [
+   "datadog_checks_dev/*",
+   "ddev/*",
+   ".builders/*",
+   "*/tests/e2e/*"
+  ],
+  "sample": 1.0,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "{harness}/ddenv.py",
+  "{py}",
+  "{unit}",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "-m",
+  "not e2e and not integration"
+ ],
+ "unit_timeout": 900,
+ "ci": {
+  "workers": 4,
+  "source": "one test job per changed integration in CI; 4 vCPU assumed"
+ },
+ "repo": "integrations-core",
+ "max_units": 40
+}
