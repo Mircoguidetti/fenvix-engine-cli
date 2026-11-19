@@ -57,8 +57,9 @@ MEASURED on GitHub Actions (ubuntu-latest, 4 vCPU).
 Python walks: run **44568533635** (ar-py-3, after harness fixes) and 44561203094 (ar-py-2, the second doctest
 repository); raw `tracks/all-runners-python/results/ar-py-3/`, tables `TABLES.md` there. The earlier run
 44560783983 (ar-py-1, also 0 wrong) found harness and capture problems fixed before ar-py-3 (below). Tests:
-`tests/test_runners_<runner>.py`, run locally: 204 passed, 1 skipped (MEASURED). Engine suite after integration:
-<PY-SUITE>.
+`tests/test_runners_<runner>.py`, run locally: 204 passed, 1 skipped (MEASURED). Engine suite after integration
+(`python -m pytest tests --ignore=tests/rust_hotpaths_ref -p no:randomly`, local, commit 640387f0): 781 passed, 1 failed
+(`test_h2_report…`, fails on `claude/rust-hotpaths-2` too), 46 skipped (MEASURED).
 
 | runner | support | control tests | adversarial tests | walk (repository: transitions, skipped median / mean, verified, wrong) | not covered, and why |
 |---|---|---|---|---|---|
@@ -127,8 +128,9 @@ under 1 s, where start-up dominates (ar-py-3 TABLES.md).
   `claude/rust-hotpaths-2`**, so it is not on this branch either: the node branch's Python tests for it are skipped
   with that reason (15 tests + 3 files). Node's shared cache (`remote.js`) works. The port onto the Rust proof cache
   is a task of its own.
-* Python engine suite: the 2 failures that remain also fail on `claude/rust-hotpaths-2` before this work
-  (`test_rust_clock_is_faster_than_the_reference`, timing; `test_h2_report…`, its recorded results file).
+* Python engine suite: the 1 failure that remains also fails on `claude/rust-hotpaths-2` before this work
+  (`test_h2_report…`, its recorded results file); `test_rust_clock_is_faster_than_the_reference` (timing) failed in
+  2 of 3 earlier runs here and on the base.
 * nose 1.x (0.4% of the sample) not built (not on the prompt's list).
 * Not run: an independent review.
 
