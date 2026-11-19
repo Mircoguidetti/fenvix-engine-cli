@@ -674,7 +674,11 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     let mut carry_order: Vec<(usize, u32)> = first.iter().filter(|(c, _)| !g_set.contains(c)).map(|(&c, &k)| (k, c)).collect();
     carry_order.sort_unstable();
     let mut c_data = OrderedData::default();
-    let mut c_vec: Vec<(String, String)> = Vec::new();
+    // the global reads with the carried ones folded in as contexts are carried (one sorted base for every test, built
+    // incrementally: rebuilding it per test made recording quadratic in allocations)
+    let mut gc = g_data.clone();
+    let mut gc_sorted = g_sorted.clone();
+    let mut gc_ver: u64 = 0;
     let mut c_env: BTreeSet<&str> = BTreeSet::new();
     let mut c_flags: BTreeSet<&str> = BTreeSet::new();
     let mut c_units: BTreeSet<(u32, u32)> = BTreeSet::new();
@@ -728,13 +732,15 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     // per test into directory-level dependencies, the directory digests computed once per session
     let root_path = std::path::PathBuf::from(root_dir);
     let mut memo = crate::proof::KindsMemo::new();
-    let mut compact = |d: Vec<(Str, Str)>| -> Vec<(Str, Str)> {
-        let n = d.iter().filter(|(_, v)| v.starts_with("s:")).count();
-        if n < STATS_PER_DIR {
-            return d;
+    // existence checks are compacted in two parts: those of the base (global and carried reads, shared by every later
+    // test: compacted once per change of the base) and the test's own (compacted per test, usually few)
+    let mut shared_cache: (u64, Vec<(Str, Str)>) = (u64::MAX, Vec::new());
+    let compact_own = |own: Vec<(Str, Str)>, memo: &mut crate::proof::KindsMemo| -> Vec<(Str, Str)> {
+        if own.len() < STATS_PER_DIR {
+            return own;
         }
-        let owned: Vec<(String, String)> = d.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
-        crate::proof::compact_stats_memo(owned, &root_path, STATS_PER_DIR, &mut memo)
+        let owned: Vec<(String, String)> = own.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
+        crate::proof::compact_stats_memo(owned, &root_path, STATS_PER_DIR, memo)
             .into_iter()
             .map(|(k, v)| (Str::from(k.as_str()), Str::from(v.as_str())))
             .collect()
@@ -857,12 +863,37 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 c_units.clear();
                 c_content.clear();
                 c_ctxs.clear();
+                gc = g_data.clone();
+                gc_sorted = g_sorted.clone();
+                gc_ver += 1;
                 sel.iter().copied().collect()
             };
             for &(_, c) in &fresh {
                 c_ctxs.push(c);
                 if let Some(d) = plan.data.get(&c) {
+                    // (claude/dep-verdict-abjcfw ee1d06c) a file outside the repository that this context itself
+                    // wrote (a temporary file it created, an output a child it started then read back): what it
+                    // recorded about that path describes its own output, a function of its other inputs, which are
+                    // carried. A later test that reads such a file has its own read, a session-written file: refused
+                    // unless its writers are its own contexts. Files in the repository stay carried.
+                    let own_out =
+                        |k: &str| k.starts_with('/') && plan.writers.get(k).is_some_and(|w| w.contains(&c));
+                    let kept: Vec<(String, String)>;
+                    let d: &[(String, String)] = if d.iter().any(|(k, _)| own_out(k)) {
+                        kept = d.iter().filter(|(k, _)| !own_out(k)).cloned().collect();
+                        &kept
+                    } else {
+                        d
+                    };
                     c_data.update(d);
+                    let before = gc.items.len();
+                    gc.update(d);
+                    gc_ver += 1;
+                    for i in before..gc.items.len() {
+                        let k = &gc.items[i].0;
+                        let at = gc_sorted.partition_point(|&j| gc.items[j].0 < *k);
+                        gc_sorted.insert(at, i);
+                    }
                 }
                 if let Some(e) = plan.env.get(&c) {
                     c_env.extend(e.iter().map(|s| s.as_str()));
@@ -873,15 +904,13 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 units_of(&per(c).0, &mut c_units);
                 unparsable(&per(c).1, &mut c_content);
             }
-            c_vec = c_data.items.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
             last_sel = sel;
         }
         if !c_ctxs.is_empty() {
             out.carried += 1;
         }
         let mut flags = g_flags.clone();
-        let mut data = TestData::new(&g_data, &g_sorted);
-        data.update(&c_vec);
+        let mut data = TestData::new(&gc, &gc_sorted);
         let mut env = g_env.clone();
         env.extend(c_env.iter().copied());
         let mut units: BTreeSet<(u32, u32)> = c_units.clone();
@@ -1038,7 +1067,59 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 runtime: plan.runtime.clone(),
                 epoch,
                 env: env_deps,
-                data: compact(data.sorted()),
+                data: {
+                    let all = data.sorted();
+                    let stats = all.iter().filter(|(_, v)| v.starts_with("s:")).count();
+                    if stats < STATS_PER_DIR {
+                        all
+                    } else {
+                        // the base's checks (same shared string as in the base) and the test's own
+                        if shared_cache.0 != gc_ver {
+                            let base: Vec<(String, String)> = gc_sorted
+                                .iter()
+                                .map(|&i| &gc.items[i])
+                                .filter(|(_, v)| v.starts_with("s:"))
+                                .map(|(k, v)| (k.to_string(), v.to_string()))
+                                .collect();
+                            let c = if base.len() < STATS_PER_DIR {
+                                base.into_iter().map(|(k, v)| (Str::from(k.as_str()), Str::from(v.as_str()))).collect()
+                            } else {
+                                crate::proof::compact_stats_memo(base, &root_path, STATS_PER_DIR, &mut memo)
+                                    .into_iter()
+                                    .map(|(k, v)| (Str::from(k.as_str()), Str::from(v.as_str())))
+                                    .collect()
+                            };
+                            shared_cache = (gc_ver, c);
+                        }
+                        let mut rest: Vec<(Str, Str)> = Vec::with_capacity(all.len());
+                        let mut own: Vec<(Str, Str)> = Vec::new();
+                        let mut overridden: HashSet<Str> = HashSet::new();
+                        for (k, v) in all {
+                            if !v.starts_with("s:") {
+                                if gc.pos.get(&k).is_some_and(|&i| gc.items[i].1.starts_with("s:")) {
+                                    overridden.insert(k.clone()); // a base check the test replaced by a stronger read
+                                }
+                                rest.push((k, v));
+                            } else if gc.pos.get(&k).is_some_and(|&i| std::sync::Arc::ptr_eq(&gc.items[i].1, &v)) {
+                                // the base's own check: covered by the shared compaction
+                            } else {
+                                overridden.insert(k.clone());
+                                own.push((k, v));
+                            }
+                        }
+                        let own_c = compact_own(own, &mut memo);
+                        let mut merged: BTreeMap<Str, Str> = BTreeMap::new();
+                        for (k, v) in shared_cache.1.iter() {
+                            if !overridden.contains(k) {
+                                merged.insert(k.clone(), v.clone());
+                            }
+                        }
+                        for (k, v) in own_c.into_iter().chain(rest) {
+                            merged.insert(k, v);
+                        }
+                        merged.into_iter().collect()
+                    }
+                },
                 content: content.into_iter().collect(),
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),

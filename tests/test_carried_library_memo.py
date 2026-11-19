@@ -190,3 +190,42 @@ def test_an_order_dependent_pass_is_not_reused_in_a_placement_that_fails_it(pyte
     wrong = {n: (o1.get(n), truth.get(n)) for n in reused if o1.get(n) != truth.get(n)}
     assert wrong == {}, r1.stdout.str()
     assert o1 == truth, r1.stdout.str()
+
+
+# -- a context's own output outside the repository (claude/dep-verdict-abjcfw ee1d06c: not carried) -------------------
+@pytest.mark.parametrize("mode", ["serial", "n2"])
+def test_a_file_outside_the_repository_an_earlier_test_wrote_from_a_repository_input(pytester, monkeypatch,
+                                                                                     tmp_path_factory, mode):
+    # A writes <tmp>/state from cfg.yml; B shares no repository file with A (neither imports anything) and reads
+    # <tmp>/state. cfg.yml changes: B's pass must not be reused (a fresh run fails it)
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+    state = tmp_path_factory.mktemp("out") / "state"
+    pytester.makeini("[pytest]\nmarkers =\n    xdist_group: group\n")
+    (pytester.path / "cfg.yml").write_text("old\n")
+    pytester.makepyfile(test_a=f"""
+        import pytest
+
+        @pytest.mark.xdist_group("g")
+        def test_a():
+            with open("cfg.yml") as src, open({str(state)!r}, "w") as dst:
+                dst.write(src.read())
+        """, test_b=f"""
+        import pytest
+
+        @pytest.mark.xdist_group("g")
+        def test_b():
+            with open({str(state)!r}) as fh:
+                assert fh.read().strip() == "old"
+        """)
+    cache = f"--det-cache={pytester.path / '.c'}"
+    par = () if mode == "serial" else ("-n", "2", "-p", "xdist", "--dist", "loadgroup")
+    r0, o0, _ = _run(pytester, 0, cache, *par)
+    assert o0 == {"test_a.py::test_a": "passed", "test_b.py::test_b": "passed"}, r0.stdout.str()
+    (pytester.path / "cfg.yml").write_text("new\n")
+    r1, o1, reused = _run(pytester, 1, cache, *par)
+    _, truth, _ = _run(pytester, 2)
+    assert truth["test_b.py::test_b"] == "failed"
+    wrong = {n: (o1.get(n), truth.get(n)) for n in reused if o1.get(n) != truth.get(n)}
+    assert wrong == {}, r1.stdout.str()
+    assert "test_b.py::test_b" not in reused, r1.stdout.str()

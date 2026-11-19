@@ -287,7 +287,9 @@ def record_reference(self, store) -> None:
             c_data, c_env, c_flags, c_units, c_content, c_ctxs = {}, set(), set(), set(), set(), []
             for _k, c in sorted(sel):
                 c_ctxs.append(c)
-                _merge_data(c_data, cap.data.get(c, {}))
+                # a file outside the repository that this context itself wrote: its own output, not carried
+                _merge_data(c_data, {k: v for k, v in cap.data.get(c, {}).items()
+                                     if not (k.startswith("/") and c in cap.writers.get(k, ()))})
                 c_env |= cap.env.get(c, set())
                 c_flags |= cap.flags.get(c, set())
                 if c < len(per):
@@ -306,6 +308,7 @@ def record_reference(self, store) -> None:
         flags = set(g_flags)
         data = dict(g_data)
         _merge_data(data, c_data)
+        base = dict(data)  # global and carried reads: the shared base (its checks are compacted as one set)
         env = set(g_env) | c_env
         units = set(c_units)
         content = set(pre_ix) | g_unparsable | c_content
@@ -392,7 +395,7 @@ def record_reference(self, store) -> None:
         report = {w: p[w] for w in ("setup", "call") if w in p}
         store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                      self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                     _core.compact_stats(sorted(data.items()), cap.root_sep.rstrip("/"), 8), sorted(content),
+                     _compact(data, base, cap.root_sep.rstrip("/")), sorted(content),
                      sorted(skeleton), sorted(hooks), sorted(units))
         self.recorded += 1
     store.save()
@@ -456,3 +459,30 @@ def _merge_data(into: dict, new: dict) -> None:
         if old is not None and kind(v) and not kind(old):
             continue
         into[k] = v
+
+
+def _compact(data: dict, base: dict, root: str) -> list:
+    """record_session's compaction of existence checks: the base's checks (global and carried) as one set, the test's
+    own as another; a base check the test replaced (a stronger read, another kind) is dropped from the base's."""
+    stats = [k for k, v in data.items() if v.startswith("s:")]
+    if len(stats) < 8:
+        return sorted(data.items())
+    base_s = sorted((k, v) for k, v in base.items() if v.startswith("s:"))
+    shared = base_s if len(base_s) < 8 else _core.compact_stats(base_s, root, 8)
+    rest, own, overridden = [], [], set()
+    for k, v in data.items():
+        if not v.startswith("s:"):
+            if base.get(k, "").startswith("s:"):
+                overridden.add(k)
+            rest.append((k, v))
+        elif base.get(k) == v:
+            pass
+        else:
+            overridden.add(k)
+            own.append((k, v))
+    own = sorted(own)
+    own_c = own if len(own) < 8 else _core.compact_stats(own, root, 8)
+    merged = {k: v for k, v in shared if k not in overridden}
+    merged.update(own_c)
+    merged.update(rest)
+    return sorted(merged.items())

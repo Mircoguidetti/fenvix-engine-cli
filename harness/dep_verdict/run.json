@@ -1,8 +1,8 @@
 {
- "run_id": "dv16",
+ "run_id": "dv17",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-3: the same 130 pairs and test files on the final REPORT-3 engine 905fb40; all 10 repositories on Actions, smaller shards (56 jobs). dv8-dv15 cancelled (engine changes before they produced rows; dv9-dv15 never left the queue).",
+ "note": "REPORT-3: the same 130 pairs and test files on the Rust engine (base claude/parallel-proof-3 bac3317, this branch 4a62a89: prefix rule, --det-cache-dists on the Rust capture, R-020b N1-N3, R-019c, LIMITS A1-A4); all 10 repositories on Actions, 56 jobs. dv8-dv16 cancelled.",
  "pairs": [
   {
    "spec": "airflow",

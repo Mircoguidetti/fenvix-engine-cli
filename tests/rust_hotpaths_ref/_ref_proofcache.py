@@ -67,7 +67,7 @@ _AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link", "ctypes.dlopen")
+                 "os.link")
 _SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
 _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
                  "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
@@ -888,6 +888,7 @@ class Capture:
                 p = self._abs(n)
                 if p is not None and not self._ignored(p):
                     self.read(ctx, p, "s")
+                    self._native(ctx, p)  # LIMITS A2
             else:
                 self.read(ctx, "/etc/ld.so.cache", "f")
                 for d in [x for x in os.environ.get("LD_LIBRARY_PATH", "").split(":") if x]:
