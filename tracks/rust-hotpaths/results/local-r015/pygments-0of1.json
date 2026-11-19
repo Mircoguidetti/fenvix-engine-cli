@@ -1,0 +1,470 @@
+{
+ "note": "local container run (4 CPUs), profile.py --reps 3, no py-spy; base = 3d20406, new = R-015 fixes (b757657 engine); trimmed: walls, per-run cache summaries, equivalence counts",
+ "spec": "pygments",
+ "sha": "156d85fdd18d34427fe893527e71da91dcfb0eb5",
+ "cpus": 4,
+ "walls": {
+  "P0": [
+   14.413698880000084,
+   13.256314807999843,
+   13.284157970000706
+  ],
+  "B:base": [
+   13.780878977000611,
+   14.793272957000227,
+   15.12071686299987
+  ],
+  "C:base": [
+   19.15600701100084,
+   17.118727658999887,
+   17.25652481799989
+  ],
+  "W:base": [
+   4.599320841999543,
+   4.518424430000778,
+   4.621025039000415
+  ],
+  "B:new": [
+   14.232383911999932,
+   15.142014320000271,
+   14.6971696290002
+  ],
+  "C:new": [
+   15.734749238999939,
+   17.248870102000183,
+   16.954604104999817
+  ],
+  "W:new": [
+   4.192300746000001,
+   4.388699139999517,
+   4.383156847999999
+  ]
+ },
+ "cache": {
+  "P0": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 14.413698880000084,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 13.256314807999843,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 13.284157970000706,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "B:base": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 13.780878977000611,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 14.793272957000227,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 15.12071686299987,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:base": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 19.15600701100084,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.288,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.338,
+      "plan": 0.223,
+      "assemble": 0.628,
+      "save": 0.097
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 17.118727658999887,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.231,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.35,
+      "plan": 0.182,
+      "assemble": 0.594,
+      "save": 0.103
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 17.25652481799989,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.195,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.346,
+      "plan": 0.187,
+      "assemble": 0.563,
+      "save": 0.098
+     }
+    }
+   }
+  ],
+  "W:base": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.599320841999543,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.41,
+     "record_seconds": 0.042,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.035,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.518424430000778,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.418,
+     "record_seconds": 0.042,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.034,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.621025039000415,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.438,
+     "record_seconds": 0.042,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.035,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "B:new": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 14.232383911999932,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 15.142014320000271,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 14.6971696290002,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:new": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 15.734749238999939,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.056,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.341,
+      "plan": 0.148,
+      "assemble": 0.478,
+      "save": 0.089
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 17.248870102000183,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.306,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.397,
+      "plan": 0.191,
+      "assemble": 0.621,
+      "save": 0.095
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 16.954604104999817,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.168,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.334,
+      "plan": 0.173,
+      "assemble": 0.563,
+      "save": 0.097
+     }
+    }
+   }
+  ],
+  "W:new": [
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.192300746000001,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.348,
+     "record_seconds": 0.044,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.003,
+      "plan": 0.036,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.388699139999517,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.431,
+     "record_seconds": 0.043,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.035,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "n": 5346,
+    "wall": 4.383156847999999,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.43,
+     "record_seconds": 0.044,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.036,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ]
+ },
+ "equivalence": {
+  "entries": [
+   5346,
+   5346
+  ],
+  "n_store_diffs": 0,
+  "n_receipt_diffs": 0,
+  "n_fingerprint_only": 0,
+  "n_receipts": [
+   5346,
+   5346
+  ],
+  "written_equal": true,
+  "noise": {
+   "store": 24,
+   "receipts": 24,
+   "examples": [
+    "tests/test_basic_api.py::test_random_input[BashSessionLexer]",
+    "tests/test_basic_api.py::test_random_input[CssGenshiLexer]",
+    "tests/test_basic_api.py::test_random_input[DartLexer]",
+    "tests/test_basic_api.py::test_random_input[Dasm16Lexer]",
+    "tests/test_basic_api.py::test_random_input[EvoqueHtmlLexer]",
+    "tests/test_basic_api.py::test_random_input[EvoqueLexer]",
+    "tests/test_basic_api.py::test_random_input[EvoqueXmlLexer]",
+    "tests/test_basic_api.py::test_random_input[GenshiLexer]",
+    "tests/test_basic_api.py::test_random_input[GenshiTextLexer]",
+    "tests/test_basic_api.py::test_random_input[HtmlGenshiLexer]"
+   ]
+  }
+ },
+ "probe": {
+  "facts": {
+   "files": 405,
+   "differ": 0,
+   "examples": [],
+   "old_s": 1.45,
+   "new_s": 0.84
+  },
+  "distributions": {
+   "n": 19,
+   "fast": 19,
+   "differ": 0,
+   "examples": []
+  }
+ }
+}
