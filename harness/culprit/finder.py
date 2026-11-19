@@ -18,6 +18,11 @@ installed distributions). Output: one commit, one input, a set of inputs needed 
    are found by ddmin; a test whose key flags an uncontrolled source (entropy, network, real clock) is replayed at
    green first and searched only under controlled entropy. A failed confirmation falls back to a search over
    every commit, or ends in "unknown". A confident wrong culprit is worse than none.
+   Red side (review R-019b; round 4): a commit is named only if every later commit up to the red head fails. A
+   later commit is decided without a replay when a replay of the same side (or the CI key of that side) recorded
+   inputs that all have the same value there (key validity, with guards for what the key does not record); the
+   rest is replayed RED_WORKERS at a time, each in its own copy of the repository mounted at the repository's path,
+   up to RED_BUDGET replays per case. An undecided rest withholds the answer (unknown, with the suspect).
 5. Every replay records the runtime identity; a replay meant to run in the green environment counts as an exact
    rebuild only when its runtime digest equals the green key's. An answer from an inexact rebuild is withheld.
 """
@@ -411,9 +416,7 @@ class EnvBuilder:
 NONDET_FLAGS = ("rclock", "connect", "csock", "dns", "entropy", "net", "spawn")
 REPEATABLE_FLAGS = ("entropy", "spawn")  # searched (with repeated confirmations) once green and red are stable
 GREEN_REPEATS = 5  # replays of the green (and red) side when the key flags an uncontrolled source
-RETOUCH_CAP = 6  # later footprint states (after the confirmed commit) probed for a newer transition, beyond the
-#               commits that undo the named one; beyond it the answer is withheld (unknown, ambiguous)
-FALLBACK_CAP = 6  # later commits probed after a fallback search over every commit (no footprint to infer from)
+# round 3's RETOUCH_CAP and FALLBACK_CAP (6 each) are replaced by RED_BUDGET (round 4, below)
 MAX_ROUNDS = 6
 _LOADER_READS = ("/etc/ld.so.cache", "/etc/ld.so.preload")  # read by the dynamic loader of every exec'd program
 
@@ -730,7 +733,7 @@ class Finder:
         * the answer C is confirmed by replaying C's parent (must pass) and C (must fail); a failed confirmation
           means the footprint missed an input (or the history is not monotonic), and the search falls back to all
           commits of the narrowed range;
-        * a later candidate that changes C's inputs again is probed (up to RETOUCH_CAP): if it passes, the red at
+        * a later candidate that changes C's inputs again is probed (round 4: every later commit, see _red_check): if it passes, the red at
           the head comes from a newer transition and the search restarts above it.
         """
         n = len(cands)
@@ -923,7 +926,7 @@ class Finder:
 
         Red side (review R-019b, N2): the answer must also be the newest transition, so every commit after it up
         to the red head must fail. With no footprint to infer from, each unreplayed later commit is probed, newest
-        first, up to FALLBACK_CAP; a pass restarts the search above it, and an unprobed rest withholds the answer.
+        first, up to RED_BUDGET (round 4); a pass restarts the search above it, and an unprobed rest withholds the answer.
         """
         notes = notes + ["footprint pruning missed an input: searched every commit"]
         last = len(commits) - 1
