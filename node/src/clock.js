@@ -175,6 +175,12 @@ hrtime.bigint = function bigint() {
 let nextId = 1;
 const BY_ID = new Map();
 
+// Lockstep (round 4, Level 2 app servers): every timer of the process is virtual, also outside test brackets;
+// before the engine attaches they fire at their real deadlines (server start-up); once attached they fire only
+// when the engine clock reaches them (Driver.fireDue), at T + delay.
+const LOCK = { on: false, attached: false, parked: false, now: () => 0, runIn: null };
+function setLockstep(o) { Object.assign(LOCK, o); }
+
 let TIMER_CTX_HOOK = null; // Level 2 servers: the message context a timer was created in (pw/server.js)
 function setTimerContextHook(f) { TIMER_CTX_HOOK = f; }
 
@@ -237,7 +243,7 @@ class Driver {
   }
 
   schedule(t) {
-    t._due = CLOCK.elapsed + t._delayMs * NS_PER_MS;
+    t._due = (LOCK.attached ? LOCK.now() : CLOCK.elapsed) + t._delayMs * NS_PER_MS;
     t._seq = this.seq++;
     t._realDeadline = realNowMs() + t._delayMs;
     t._active = true;
@@ -285,6 +291,7 @@ class Driver {
       if (a.kind === 'immediate') REAL.clearImmediate(a.handle); else REAL.clearTimeout(a.handle);
     }
     if (!this.queue.length) return;
+    if (LOCK.attached || LOCK.parked) return; // fired by fireDue only (parked: frozen until the engine attaches)
     const anyRef = this.queue.some((t) => t._ref);
     if (this.fast()) {
       const h = REAL.setImmediate(() => this.fire(true));
@@ -346,6 +353,51 @@ class Driver {
     }
   }
 
+  /** Lockstep: the engine attached at T = tNs; pending timers restart from there (their full delay). */
+  attachAt(tNs) {
+    LOCK.attached = true;
+    this.rearm(); // cancels the real arming
+    const q = this.queue.slice().sort((a, b) => a._seq - b._seq);
+    for (const t of q) t._due = tNs + t._delayMs * NS_PER_MS;
+    this.queue = q.sort((a, b) => (a._due - b._due) || (a._seq - b._seq));
+  }
+
+  /** Lockstep: earliest due instant, or null. */
+  nextDue() {
+    return this.queue.length ? this.queue[0]._due : null;
+  }
+
+  /** Lockstep: fire every timer due at or before tNs, in (due, creation) order, one per macrotask. */
+  async fireDue(tNs) {
+    let n = 0;
+    while (this.queue.length && this.queue[0]._due <= tNs) {
+      const t = this.queue.shift();
+      t._active = false;
+      n++;
+      CLOCK.advanceTo(t._due);
+      STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire+${t._delayMs * NS_PER_MS}`);
+      if (!t._repeat) BY_ID.delete(t.id);
+      const call = () => t._fn.apply(undefined, t._args);
+      try {
+        if (LOCK.runIn && t._ctx) LOCK.runIn(t._ctx, call); else call();
+      } catch (e) {
+        REAL.setImmediate(() => { throw e; });
+      } finally {
+        if (t._repeat && !t._destroyed && !t._active) {
+          t._seq = this.seq++;
+          t._due += t._delayMs * NS_PER_MS;
+          t._active = true;
+          const q = this.queue;
+          let i = 0;
+          while (i < q.length && (q[i]._due < t._due || (q[i]._due === t._due && q[i]._seq < t._seq))) i++;
+          q.splice(i, 0, t);
+        }
+      }
+      await new Promise((r) => REAL.setImmediate(r));
+    }
+    return n;
+  }
+
   /**
    * A test ended: its pending virtual timers become real timers of their realm
    * with the real delay that remains. Fast virtual time must not fire a timer
@@ -353,6 +405,7 @@ class Driver {
    * instead of later or never: jsdom clears its timers at teardown).
    */
   releaseTest(testId) {
+    if (LOCK.on) return 0; // lockstep: server timers stay on the engine clock across tests
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
     this.queue = this.queue.filter((t) => t._test !== testId);
@@ -424,7 +477,7 @@ function makeSetTimeout(repeat, R) {
   const real = repeat ? R.setInterval : R.setTimeout;
   return function (fn, ms, ...args) {
     // Outside tests (module level, beforeAll, teardown) timers stay the realm's own.
-    if (typeof fn !== 'function' || STATE.testId === null) return real(fn, ms, ...args);
+    if (typeof fn !== 'function' || (STATE.testId === null && !LOCK.on)) return real(fn, ms, ...args);
     let site = '';
     if (STATE.config.sites) {
       site = STATE.quiet(() => sites.resolve());
@@ -554,6 +607,6 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, setValueHook, setTimerContextHook,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, setValueHook, setTimerContextHook, setLockstep, LOCK,
   get CLOCK() { return CLOCK; },
 };

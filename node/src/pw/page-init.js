@@ -96,6 +96,25 @@ function pageInit(seedHi, seedLo) {
         Object.defineProperty(C_PROTO, 'randomUUID', { value: uuid, writable: true, configurable: true });
       }
     }
+    // Lockstep (round 4): requests the page started (fetch, XHR, beacons). The engine compares this count with the
+    // requests it intercepted before it takes a decision, so a request still on its way through the browser
+    // cannot be missed.
+    var reqs = 0;
+    var isNet = function () { return false; };
+    if (typeof G.fetch === 'function') {
+      var realFetch = G.fetch;
+      isNet = function (u) {
+        try { return /^https?:$/.test(new URL(String(u && u.url ? u.url : u), location.href).protocol); } catch (e) { return false; }
+      };
+      var wrappedFetch = function fetch(input) { if (isNet(input)) reqs++; return realFetch.apply(this, arguments); };
+      try { Object.defineProperty(G, 'fetch', { value: wrappedFetch, writable: true, configurable: true }); } catch (e) { /* frozen */ }
+    }
+    if (G.XMLHttpRequest && G.XMLHttpRequest.prototype && typeof G.XMLHttpRequest.prototype.send === 'function') {
+      var realSend = G.XMLHttpRequest.prototype.send;
+      var realOpen = G.XMLHttpRequest.prototype.open;
+      Object.defineProperty(G.XMLHttpRequest.prototype, 'open', { value: function open(m, u) { this.__detjsNet = isNet(u); return realOpen.apply(this, arguments); }, writable: true, configurable: true });
+      Object.defineProperty(G.XMLHttpRequest.prototype, 'send', { value: function send() { if (this.__detjsNet) reqs++; return realSend.apply(this, arguments); }, writable: true, configurable: true });
+    }
     // Workers created by the page: their main script URL is marked so that the worker process
     // (worker.js) prepends this seed script to it (request headers do not tell a worker script apart).
     ['Worker', 'SharedWorker'].forEach(function (name) {
@@ -113,7 +132,7 @@ function pageInit(seedHi, seedLo) {
       try { Object.defineProperty(G, name, { value: Wrapped, writable: true, configurable: true }); } catch (e) { /* frozen */ }
     });
     Object.defineProperty(G, '__detjs', {
-      value: { stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
+      value: { reqs: function () { return reqs; }, stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
       enumerable: false,
     });
   })();

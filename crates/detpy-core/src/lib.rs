@@ -15,6 +15,7 @@ pub mod cache;
 pub mod cassette;
 pub mod event;
 pub mod fingerprint;
+pub mod lockstep;
 pub mod order;
 pub mod recorder;
 pub mod trace;

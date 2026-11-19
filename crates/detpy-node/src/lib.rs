@@ -357,3 +357,139 @@ pub fn backends() -> String {
         .collect();
     serde_json::Value::Array(all).to_string()
 }
+
+// ------------------------------------------------------------------ lockstep (Level 2 browser, round 4)
+use detpy_core::lockstep::{self as ls, Action as LsAction, Scheduler};
+
+/// The lockstep scheduler (see `detpy_core::lockstep`). Times are virtual nanoseconds (f64: exact below 2^53).
+#[napi]
+pub struct Lockstep {
+    inner: Mutex<Scheduler>,
+}
+
+#[napi(object)]
+pub struct LockstepAction {
+    /// `release`, `advance` or `idle`.
+    pub kind: String,
+    pub id: Option<f64>,
+    pub idx: Option<u32>,
+    pub n: Option<u32>,
+    pub latency_ns: Option<f64>,
+    pub fault: Option<String>,
+    pub decision: Option<f64>,
+    pub to_ns: Option<f64>,
+    pub budget_ns: Option<f64>,
+}
+
+#[napi]
+impl Lockstep {
+    #[napi(constructor)]
+    pub fn new(seed: BigInt, seeded: bool, start_ns: f64, quantum_ns: f64, base_latency_ns: f64) -> Result<Self> {
+        Ok(Lockstep {
+            inner: Mutex::new(Scheduler::new(to_u64(&seed)?, seeded, start_ns as u64, quantum_ns as u64, base_latency_ns as u64)),
+        })
+    }
+
+    /// Seed space: latency choices (ns), fault list (`reset-request,reset-response,partial:MS,close-after`), the
+    /// message kinds faults apply to, the fault probability (per mille), and whether the order is perturbed.
+    #[napi]
+    pub fn set_space(&self, latencies_ns: Vec<f64>, faults: String, fault_kinds: Vec<String>, fault_per_mille: u32, reorder: bool) {
+        let mut s = lock(&self.inner);
+        s.space = ls::SeedSpace {
+            latencies_ns: latencies_ns.into_iter().map(|x| x as u64).collect(),
+            faults: ls::parse_faults(&faults),
+            fault_kinds,
+            fault_per_mille,
+            reorder,
+        };
+    }
+
+    /// Focus of the seed: test id substring, decision window (0 = open) and message key substrings.
+    #[napi]
+    pub fn set_focus(&self, test: String, from: f64, to: f64, keys: Vec<String>) {
+        lock(&self.inner).focus = ls::Focus { test, from: from as u64, to: to as u64, keys };
+    }
+
+    #[napi]
+    pub fn now(&self) -> f64 {
+        lock(&self.inner).now() as f64
+    }
+
+    #[napi]
+    pub fn advance_to(&self, t_ns: f64) {
+        lock(&self.inner).advance_to(t_ns as u64)
+    }
+
+    #[napi]
+    pub fn set_deadline(&self, participant: String, due_ns: Option<f64>) {
+        lock(&self.inner).set_deadline(&participant, due_ns.map(|d| d as u64))
+    }
+
+    #[napi]
+    pub fn set_waiting(&self, participant: String, waiting: bool) {
+        lock(&self.inner).set_waiting(&participant, waiting)
+    }
+
+    #[napi]
+    pub fn remove_participant(&self, participant: String) {
+        lock(&self.inner).remove_participant(&participant)
+    }
+
+    #[napi]
+    pub fn enqueue(&self, id: f64, key: String, test: String, conn: Option<f64>, owner: String, kind: String) {
+        lock(&self.inner).enqueue(id as u64, &key, &test, conn.map(|c| c as u64), &owner, &kind)
+    }
+
+    #[napi]
+    pub fn cancel(&self, id: f64) -> bool {
+        lock(&self.inner).cancel(id as u64)
+    }
+
+    #[napi]
+    pub fn pending(&self) -> u32 {
+        lock(&self.inner).pending_len() as u32
+    }
+
+    #[napi]
+    pub fn next_deadline(&self) -> Option<f64> {
+        lock(&self.inner).next_deadline().map(|d| d as f64)
+    }
+
+    /// Next action; call only when every participant is quiet.
+    #[napi]
+    pub fn next(&self) -> LockstepAction {
+        let none = LockstepAction {
+            kind: String::new(),
+            id: None,
+            idx: None,
+            n: None,
+            latency_ns: None,
+            fault: None,
+            decision: None,
+            to_ns: None,
+            budget_ns: None,
+        };
+        match lock(&self.inner).next() {
+            LsAction::Release { id, idx, n, latency_ns, fault, decision } => LockstepAction {
+                kind: "release".into(),
+                id: Some(id as f64),
+                idx: Some(idx),
+                n: Some(n),
+                latency_ns: Some(latency_ns as f64),
+                fault: Some(fault.name()),
+                decision: Some(decision as f64),
+                ..none
+            },
+            LsAction::Advance { to_ns, budget_ns } => {
+                LockstepAction { kind: "advance".into(), to_ns: Some(to_ns as f64), budget_ns: Some(budget_ns as f64), ..none }
+            }
+            LsAction::Idle => LockstepAction { kind: "idle".into(), ..none },
+        }
+    }
+
+    /// Decisions taken so far (tab-separated: test, decision, idx/n, latency ns, fault, key).
+    #[napi]
+    pub fn log(&self) -> Vec<String> {
+        lock(&self.inner).log.clone()
+    }
+}

@@ -40,9 +40,16 @@ const SERVER_HOSTS = new Set((ENV.DETJS_PW_SERVER_HOSTS || 'localhost,127.0.0.1,
 const COMPLETE_TIMEOUT_MS = Number(ENV.DETJS_PW_COMPLETE_TIMEOUT || 5000);
 const APP_TYPES = new Set(['document', 'fetch', 'xhr']);
 const DEBUG = ENV.DETJS_PW_DEBUG === '1';
+// Round 4: lockstep (runner, pages and app servers on one engine clock; see lockstep.js). Default on with --det.
+const LOCKSTEP = ENV.DETJS_PW_LOCKSTEP !== '0' && ENV.DETJS_PW_VTIME !== 'off';
+const lockstep = require('./lockstep');
 // The driver's own clock is the real one, captured before the test code's clock is made virtual (round 2: a
 // virtual Date.now() here stalled the paced virtual-time grants: found on uptime-kuma).
 const realNow = Date.now.bind(Date);
+// The engine's own timers are real ones (lockstep makes the globals virtual inside tests).
+const { REAL: REAL_TIMERS } = require('./runner-clock');
+const setTimeout = REAL_TIMERS.setTimeout;
+const clearTimeout = REAL_TIMERS.clearTimeout;
 const T_START = realNow();
 function dbg(...a) { if (DEBUG) process.stderr.write(`[detjs ${realNow() - T_START}ms] ${a.join(' ')}\n`); }
 
@@ -61,6 +68,11 @@ function currentKey() {
   return ti ? ti.testId : null;
 }
 function rec(key, source, op, value) {
+  if (!key) return;
+  if (LS) { LS.record(key, source, op, value); return; }
+  recNow(key, source, op, value);
+}
+function recNow(key, source, op, value) {
   if (!key) return;
   let list = PENDING.get(key);
   if (!list) PENDING.set(key, (list = []));
@@ -116,6 +128,7 @@ function schedule() {
 // vs browser read"). The queue waits until every navigation the test started has either reached
 // it as a document request or finished without one.
 const NAV = { pending: [], maxWait: Number(ENV.DETJS_PW_NAV_WAIT || 3000) };
+let LS = null; // the lockstep coordinator (created below, once the module's state exists)
 function navStarted() {
   const n = { open: true };
   NAV.pending.push(n);
@@ -153,6 +166,7 @@ function patchNavigation(obj, kind) {
 }
 
 function enqueue(item) {
+  if (LS) { if (item.nav) navClaim(); return LS.enqueue(item); }
   return new Promise((resolve) => {
     item.release = resolve;
     QUEUE.pending.push(item);
@@ -337,7 +351,37 @@ async function seedWorkerScript(route, request, key) {
   }
 }
 
+// Lockstep: subresources (not ordered) in flight keep the runner busy until they finished loading.
+const LOADS = new Set(['stylesheet', 'script', 'image', 'font', 'other', 'texttrack']);
+function trackLoad(request) {
+  let page = null;
+  try { page = request.frame().page(); } catch { return; }
+  lockstep.netStart();
+  let open = true;
+  const end = () => {
+    if (!open) return;
+    open = false;
+    page.off('requestfinished', onEnd); page.off('requestfailed', onEnd); page.off('close', end);
+    clearTimeout(timer);
+    lockstep.netEnd();
+  };
+  const onEnd = (r) => { if (r === request) end(); };
+  const timer = setTimeout(end, 20000);
+  page.on('requestfinished', onEnd); page.on('requestfailed', onEnd); page.on('close', end);
+}
+
 async function routeHandler(route, request) {
+  if (!LS) return routeHandlerInner(route, request);
+  lockstep.ACT.routes++;
+  lockstep.activity();
+  let counted = true;
+  const uncount = () => { if (counted) { counted = false; lockstep.ACT.routes--; lockstep.activity(); LS.poke(); } };
+  try {
+    return await routeHandlerInner(route, request, uncount);
+  } finally { uncount(); }
+}
+
+async function routeHandlerInner(route, request, uncount = () => {}) {
   const key = currentKey();
   const url = request.url();
   const type = request.resourceType();
@@ -345,7 +389,11 @@ async function routeHandler(route, request) {
     if (SEEDS && key && ENV.DETJS_PW_WORKER_SEEDS !== '0') return seedWorkerScript(route, request, key);
     return route.fallback({ url: url.replace(/([?&])__detjs_w=1&?/, '$1').replace(/[?&]$/, '') });
   }
+  if (LS && (type === 'fetch' || type === 'xhr') && /^https?:/.test(url)) {
+    try { LS.routed(request.frame().page()); } catch { /* detached frame */ }
+  }
   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
+    if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) trackLoad(request);
     return route.fallback();
   }
   if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
@@ -357,9 +405,14 @@ async function routeHandler(route, request) {
   }
   let nav = false;
   try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
-  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav };
-  const release = await enqueue(item);
   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
+  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, page };
+  if (LS && isServerHost(url)) LS.addOrigin(new URL(url).origin);
+  const pEnq = enqueue(item);
+  uncount(); // queued: the pending set is complete for this request
+  const release = await pEnq;
+  if (LS && item.fault && item.fault !== 'none' && require('./faults').applyBrowser(route, item, release)) return;
+  if (LS && type !== 'document' && page) return lsFetch(route, request, item, key, page, url, release);
   let finished = false;
   const finish = (how) => {
     if (finished) return;
@@ -388,14 +441,30 @@ async function routeHandler(route, request) {
   // A document's body is consumed by the page's loader, which waits for virtual time:
   // its response headers complete it (the final DOM digest covers its content).
   const onResponse = (resp) => { if (resp.request() === request) finish(`${resp.status()} document`); };
-  if (type === 'document' && page) { page.on('response', onResponse); page.on('requestfailed', onFail); }
+  if (LS && page) {
+    // Lockstep: the message is complete when its response headers reached the browser. The page reads the body
+    // in its own (virtual) time; Chromium does not finish loading it while the page's time is paused. The body
+    // digest is recorded when it arrives, at the message's place in the test's event list (recordLate).
+    const onResp = (resp) => { if (resp.request() === request) { page.off('response', onResp); finish(`${resp.status()}`); } };
+    page.on('response', onResp);
+    page.on('requestfailed', onFail);
+    const decision = item.decision;
+    const onBody = async (r) => {
+      if (r !== request) return;
+      page.off('requestfinished', onBody);
+      let body = 'nobody';
+      try { const resp = await r.response(); if (resp) { const buf = await resp.body(); body = digest(buf); diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, buf); } } catch { body = 'nobody'; }
+      LS.recordLate(key, decision, 'net', 'browser.body', `${item.method} ${item.target} ${body}`);
+    };
+    if (type !== 'document') page.on('requestfinished', onBody);
+  } else if (type === 'document' && page) { page.on('response', onResponse); page.on('requestfailed', onFail); }
   else if (page) { page.on('requestfinished', onDone); page.on('requestfailed', onFail); }
   rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
   try {
     if (isServerHost(url)) {
       ORIGINS.add(new URL(url).origin);
       released();
-      await route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
+      await route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}) } });
     } else {
       await route.fallback();
     }
@@ -403,6 +472,40 @@ async function routeHandler(route, request) {
     finish(`route-error ${e && e.message}`);
   }
   if (!page) finish('nopage');
+}
+
+// Lockstep: a page's fetch/XHR is performed by the engine (route.fetch, in this process) and its response is
+// handed to the page (route.fulfill) as a scheduled delivery: at most one response per page is waiting for the
+// page's time, so the order in which the page sees responses is the engine's, not the network's.
+const HOP = new Set(['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'keep-alive']);
+async function lsFetch(route, request, item, key, page, url, release) {
+  rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
+  const headers = { ...request.headers(), 'x-detjs-own': '1' };
+  if (isServerHost(url)) {
+    ORIGINS.add(new URL(url).origin);
+    Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) });
+  }
+  let resp = null;
+  let body = null;
+  try {
+    resp = await route.fetch({ headers, maxRedirects: 0, timeout: 0 });
+    body = await resp.body();
+  } catch (e) {
+    rec(key, 'net', 'browser.done', `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
+    release();
+    LS.respond(page, item, async () => { await route.abort('failed'); });
+    return;
+  }
+  const out = {};
+  for (const { name, value } of resp.headersArray()) {
+    const n = name.toLowerCase();
+    if (HOP.has(n) || n.startsWith('x-detjs')) continue;
+    out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
+  }
+  rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${resp.status()} ${digest(body)}`);
+  diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
+  release();
+  LS.respond(page, item, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
 }
 
 // Readable test ids for the server bracket (the server part uses them as node ids).
@@ -461,6 +564,13 @@ async function setupWebSockets(ctx) {
         try { ws.send(m); } catch { /* closed */ }
       };
       if (!wsKeep(m) || !GATE_PUSH || VTIME === 'off') return deliver();
+      if (LS) {
+        // Lockstep: a server push is a message like any other; the scheduler decides when it reaches the page.
+        const k = currentKey() || key;
+        if (!k) return deliver();
+        LS.enqueue({ kind: 'push', conn: -conn, test: k, method: 'RECV', target: targetOf(ws.url()), bodyDigest: digest(m) }).then((done) => { deliver(); done(); });
+        return undefined;
+      }
       PUSH.held.push(deliver);
       armPushFallback();
     });
@@ -528,6 +638,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function setupPage(ctx, page, key) {
   if (VTIME === 'off') return;
+  if (LS) { await LS.addPage(ctx, page); return; }
   let cdp;
   try { cdp = await ctx.newCDPSession(page); } catch { rec(key, 'other', 'vtime', 'unsupported'); return; }
   const started = realNow();
@@ -704,6 +815,22 @@ async function settle(page) {
 async function finishContext(ctx) {
   const key = currentKey();
   if (!key) return;
+  if (LS) {
+    // Lockstep: the final state is taken at a quiet point (no page inside a budget, nothing in flight).
+    await LS.atQuiet(async () => {
+      for (const page of ctx.pages()) {
+        if (OBSERVED.has(page)) continue;
+        OBSERVED.add(page);
+        await observe(page, key);
+      }
+    });
+    TEST_CONTEXTS.delete(ctx);
+    await serverFingerprints(key);
+    LS.flushWindow();
+    LS.flushLate(key);
+    flush(key);
+    return;
+  }
   for (const page of ctx.pages()) {
     if (OBSERVED.has(page)) continue;
     await settle(page);
@@ -742,13 +869,14 @@ function patchApiRequest(reqCtx) {
     const method = (options.method || (typeof urlOrRequest === 'object' && urlOrRequest.method && urlOrRequest.method()) || 'GET').toUpperCase();
     const body = options.data !== undefined ? (typeof options.data === 'string' || Buffer.isBuffer(options.data) ? options.data : JSON.stringify(options.data)) : options.form ? JSON.stringify(options.form) : undefined;
     const item = { kind: 'api', test: key, method, target: targetOf(abs), bodyDigest: digest(body) };
+    if (LS && isServerHost(abs)) LS.addOrigin(new URL(abs).origin);
     const release = await enqueue(item);
     rec(key, 'net', 'api.request', `${method} ${item.target} ${item.bodyDigest}`);
     let opts = options;
     if (isServerHost(abs)) {
       ORIGINS.add(new URL(abs).origin);
       released();
-      opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key) } };
+      opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}) } };
     }
     try {
       const resp = await origFetch.call(this, urlOrRequest, opts);
@@ -824,7 +952,7 @@ function installWorkerSeeds() {
   //   * Unique: strictly increasing over the whole run (>= 1 ms per read), also across worker restarts
   //     (state in <DETJS_DIR>/worker-clock.json), so names built from Date.now() never repeat.
   // DETJS_PW_WORKER_CLOCK_SPREAD=0 / =hash: the earlier round-2 behaviours (epoch per test / hash offset).
-  if (ENV.DETJS_PW_WORKER_CLOCK !== '0') {
+  if (ENV.DETJS_PW_WORKER_CLOCK !== '0' && !LOCKSTEP) {
     const clock = require('../clock');
     const cfgT = { ...STATE.config, controls: new Set(['time']) };
     clock.installProcess(patcher, cfgT);
@@ -863,6 +991,15 @@ function maybeReseed() {
     installWorkerSeeds.reseed(testIdOf(key));
   }
 }
+if (LOCKSTEP) {
+  LS = lockstep.create({
+    seed: SEED, seeded: SHUFFLE, epochMs: EPOCH_MS, dir: DIR,
+    currentTest: () => currentKey(),
+    readable: (k) => testIdOf(k),
+    record: (key, source, op, value) => recNow(key, source, op, value),
+  });
+  LS.navPending = NAV.pending;
+}
 installWorkerSeeds();
 
 // ------------------------------------------------- Playwright hooks
@@ -886,7 +1023,9 @@ function patchBrowserType(bt) {
   Object.defineProperty(proto, '__detjsPatched', { value: true });
   const origLaunch = proto.launch;
   proto.launch = async function launch(options = {}) {
-    const opts = EXECUTABLE && this.name() === 'chromium' ? { ...options, executablePath: EXECUTABLE } : options;
+    let opts = EXECUTABLE && this.name() === 'chromium' ? { ...options, executablePath: EXECUTABLE } : options;
+    // Lockstep: animation frames only when the engine issues them (headless shell; ignored by other builds).
+    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0') opts = { ...opts, args: [...(opts.args || []), '--deterministic-mode'] };
     const browser = await origLaunch.call(this, opts);
     patchBrowser(browser);
     return browser;
@@ -914,6 +1053,7 @@ let corePatched = false;
 const origLoad = Module._load;
 Module._load = function load(request, parent, isMain) {
   const exp = origLoad.apply(this, arguments);
+  if (LOCKSTEP) lockstep.onModuleLoaded(exp);
   try {
     if (!PW_TEST && exp && exp.test && typeof exp.test.info === 'function' && /playwright/.test(request)) PW_TEST = exp;
     if (!corePatched && exp && exp.chromium && typeof exp.chromium.launch === 'function' && /playwright/.test(request)) {
