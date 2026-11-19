@@ -27,7 +27,7 @@ NOISY), **UNKNOWN** (not yet run on GitHub Actions). Per-runner documents: `docs
 | pass counts | see the table at the end (MEASURED, local) |
 | would fail on a naive adapter | O_EXCL create and mkdir (wrong reuse before the capture's prior-state inputs); seeded order (tap's own order follows `stat` completion); every ESM test that uses `t.mockImport` (synchronous loader hooks dead-lock it: timeouts on isaacs/minimatch); control test (tap fails a run with no coverage: detjs adds `--disable-coverage` with `--det-cache` only) |
 | walk specs | `tap-minimatch` (isaacs/minimatch, 26 first-parent commits up to 2026-11-16), `tap-dotenv` (motdotla/dotenv, 26 up to 2026-11-08) |
-| local mini-walk | not run locally (minimatch: 38 files, ~60 s per plain run here, 3.5 min per capture run under load); UNKNOWN until the workflow runs |
+| local mini-walk | motdotla/dotenv, commits 22..25 (4 commits, 3 transitions), MEASURED local NOISY: test time skipped median 0% / mean 5% (5 of 10 files spawn processes: never cached; package.json changes), 78 reuses verified, **0 wrong**; warm rerun reused 5/10 files; plain 31.83 s, detjs --det 57.42 s, cold capture 53.98 s; commit 23 fails one test of tests/test-cli.js in verify and skip runs alike. Raw: `harness/node_cache/results/local-node-b/tap-dotenv-0.json.gz`. Found and fixed with it: the user's `--disable-coverage` was dropped, and `--save` kept stale coverage (exit 1 with all tests passing) |
 | not covered | tap 16 and older (refused); within-file shuffle (tap starts subtests on declaration); `before`/`after` scripts (uncacheable) |
 
 ### AVA (6+, built against 8.4)
@@ -38,7 +38,7 @@ NOISY), **UNKNOWN** (not yet run on GitHub Actions). Per-runner documents: `docs
 | adversarial tests | 33 shared cases (the 32 + F5 with a caught dynamic `import()`) + 7 AVA cases (`ava.config.mjs` environmentVariables, `require` setup file, snapshot file `snapshots/*.snap`, tsx via `nodeArguments` + tsconfig paths, `--match` filter, worker processes (`--no-worker-threads`), a worker thread started by a test never cached) |
 | would fail on a naive adapter | F5 caught require and F3c node:sqlite once the capture uses asynchronous loader hooks (wrong reuse before CommonJS resolution failures and node:sqlite were hooked in that mode); seeded/fixed order (AVA runs the files that failed last time first) |
 | walk specs | `ava-globby` (sindresorhus/globby, 26 up to 2026-08-19), `ava-shelljs` (shelljs/shelljs, 26 up to 2026-10-25) |
-| local mini-walk | see below |
+| local mini-walk | sindresorhus/globby, commits 22..25 (4 commits, 3 transitions), MEASURED local NOISY: 0% of test time skipped (every transition changes the root package.json, a configuration file of every test file; most files run `git init`: never cached; temp names shared between files: `rw`), **0 wrong**; warm rerun at the same commit reused 1/10 files; plain `ava` 11.86 s, detjs --det 17.03 s, cold capture 22.47 s. Raw: `harness/node_cache/results/local-node-b/ava-globby-0.json.gz` |
 | not covered | AVA 5 and older; shared workers (`ava/plugin`: never cached); watch mode |
 
 ### Jasmine (jasmine 5-7, built against 7.0)
@@ -49,6 +49,7 @@ NOISY), **UNKNOWN** (not yet run on GitHub Actions). Per-runner documents: `docs
 | adversarial tests | 32 shared cases + 6 Jasmine cases (`jasmine.json` env option, helper file content, a new helper file, `--filter`, `random: true` replaced by declaration order, cross-file state under per-file processes reported and never reused) |
 | would fail on a naive adapter | new test file (the configured spec glob listed in every process made every file rerun: lost reuse, not wrong); helpers that `clearReporters()` (cordova-android: 0 tests bracketed; now the reporter is added after the helpers and a run whose end detjs did not see is never a pass); cross-file state (a single-process cache would reuse A and run B in a context that never existed) |
 | walk specs | `jasmine-cordova-android` (apache/cordova-android unit specs, 26 up to 2026-11-03), `jasmine-xregexp` (slevithan/xregexp, 21 up to 2026-09-24: Jasmine 5+ only there) |
+| local mini-walk | slevithan/xregexp, commits 17..20 (4 commits, 3 transitions), MEASURED local NOISY: test time skipped median 0% / mean 33% (two transitions change package.json), 430 reuses verified, **0 wrong**; warm rerun 0.67 s (5/5 files reused) vs plain 1.24 s; cold capture 2.86 s (one process per spec file). Raw: `harness/node_cache/results/local-node-b/jasmine-xregexp-0.json.gz`. Also run by hand on apache/cordova-android (20 spec files): second run reused 16 files / 267 tests (MEASURED, local) |
 | not covered | `--parallel` (removed under --det); jasmine-browser-runner (browser, Level 2) |
 
 ### uvu (0.5)
@@ -86,4 +87,17 @@ NOISY), **UNKNOWN** (not yet run on GitHub Actions). Per-runner documents: `docs
 
 ## Test results (MEASURED, local, Node 22.23.5, runners installed from npm at the pinned versions)
 
-Filled in at the end of the session: see the final report.
+Command: `cd node && DETJS_RUNNERS_B_DEPS=<dir with the pinned runners, optional> node --test --test-concurrency=1
+test/runner-<name>.test.js` (without DETJS_RUNNERS_B_DEPS the tests `npm install` tap@21.8.1 ava@8.4.0
+jasmine@7.0.0 uvu@0.5.6 tsx@4.23.15 tinyglobby@0.2.15 into node/test/.tmp/runners-b-deps).
+
+| suite | tests | pass | fail | last full run |
+|---|---:|---:|---:|---|
+| `test/runner-tap.test.js` | 43 | 43 | 0 | after the last tap change |
+| `test/runner-ava.test.js` | 43 | 43 | 0 | 42/42 full run + the added unhandled-rejection test run alone |
+| `test/runner-jasmine.test.js` | 41 | 41 | 0 | after the last Jasmine change |
+| `test/runner-uvu.test.js` | 39 | 39 | 0 | full run |
+| shared: `test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js` (Vitest 5.1, Jest 30.5) | 102 | 101 | 0 | 1 skipped by design (F3b on Jest); after the capture changes |
+
+Flaky seen once (not reproduced on rerun): Jasmine `held: fs.globSync` missed reuse with "runtime changed" while
+other processes used the shared runner install (the runtime identity hashes it): a lost reuse, not a wrong one.
