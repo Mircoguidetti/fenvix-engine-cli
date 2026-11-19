@@ -81,6 +81,9 @@ jobs:
         run: |
           out="tracks/parallel-proof/results/${{ needs.build.outputs.run_id }}/${{ matrix.repo.name }}"
           mkdir -p "$out" "$RUNNER_TEMP/out"
+          # tests that start the project's own console scripts by name (prefect: uvicorn) find them as in an
+          # activated environment
+          export PATH="$RUNNER_TEMP/venv/bin:$PATH" VIRTUAL_ENV="$RUNNER_TEMP/venv"
           eval "$(python3 -c 'import json,os,shlex; e=json.loads(os.environ.get("REPO_ENV") or "null") or {}; print("\n".join(f"export {k}={shlex.quote(str(v))}" for k,v in e.items()))')"
           cd "$RUNNER_TEMP/repo" && eval "set -- $ARGS" && cd "$GITHUB_WORKSPACE"
           if [ -n "${{ matrix.repo.walk }}" ]; then

@@ -1,51 +1,7 @@
 {
- "run_id": "r023-p0-2026-11-19",
- "note": "review R-023 fix session: P0 variants over the xdist set and P3 walks (3 repos x 50 commits, -n 4, truth = fresh serial --det per commit)",
+ "run_id": "r023-p0b-2026-11-19",
+ "note": "re-run of prefect (venv bin on PATH: its server fixture starts uvicorn by name) and mlflow (CI extras, Python 3.12 for the cache rows) after r023-p0-2026-11-19",
  "repos": [
-  {
-   "name": "esphome",
-   "url": "https://github.com/esphome/esphome",
-   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
-   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
-   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
-   "workers": 4,
-   "dist": "",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x"
-  },
-  {
-   "name": "moto",
-   "url": "https://github.com/getmoto/moto",
-   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
-   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
-   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
-   "env": {
-    "MOTO_CALL_RESET_API": "false"
-   },
-   "workers": 4,
-   "dist": "loadscope",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-ser-cold,cache-x"
-  },
-  {
-   "name": "litellm-vertex",
-   "url": "https://github.com/BerriAI/litellm",
-   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
-   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
-   "workers": 4,
-   "dist": "loadscope",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x"
-  },
-  {
-   "name": "mlflow-g1",
-   "url": "https://github.com/mlflow/mlflow",
-   "sha": "c365f861ff68cd85d8be17103748d60c3d14c63e",
-   "python": "3.11",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --group test --group build || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --group test --group build",
-   "args": "tests --serial=exclude --splits=6 --group=1 --ignore-flavors -p no:randomly --timeout=600",
-   "workers": 4,
-   "dist": "loadscope",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-ser-cold,cache-x"
-  },
   {
    "name": "prefect-g1",
    "url": "https://github.com/PrefectHQ/prefect",
@@ -57,53 +13,15 @@
    "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-ser-cold,cache-x"
   },
   {
-   "name": "pydantic-ai",
-   "url": "https://github.com/pydantic/pydantic-ai",
-   "sha": "62e7b66c9f4da5c788eb360e49522a98e8fa0c86",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-extras --no-extra mcp-tasks --all-packages || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --no-extra mcp-tasks --all-packages",
-   "args": "tests/models tests/harness/code_mode tests/harness/refine_output tests/harness/detect_loops tests/providers/test_openai_compatible_http_clients.py -m 'not temporal' -p no:randomly --timeout=300",
-   "env": {
-    "PYTEST_TEST_BUDGET_SECONDS": "100000"
-   },
-   "workers": 4,
-   "dist": "loadgroup",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c"
-  },
-  {
-   "name": "esphome-walk50",
-   "url": "https://github.com/esphome/esphome",
-   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
-   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
-   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
-   "workers": 4,
-   "dist": "",
-   "walk": 50,
-   "modes": "a_par"
-  },
-  {
-   "name": "moto-walk50",
-   "url": "https://github.com/getmoto/moto",
-   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
-   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
-   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
-   "env": {
-    "MOTO_CALL_RESET_API": "false"
-   },
+   "name": "mlflow-g1",
+   "url": "https://github.com/mlflow/mlflow",
+   "sha": "c365f861ff68cd85d8be17103748d60c3d14c63e",
+   "python": "3.12",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --group test --group build --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --group test --group build --all-extras",
+   "args": "tests --serial=exclude --splits=6 --group=1 --ignore-flavors -p no:randomly --timeout=600",
    "workers": 4,
    "dist": "loadscope",
-   "walk": 50,
-   "modes": "a_par"
-  },
-  {
-   "name": "litellm-vertex-walk50",
-   "url": "https://github.com/BerriAI/litellm",
-   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
-   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
-   "workers": 4,
-   "dist": "loadscope",
-   "walk": 50,
-   "modes": "a_par"
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-ser-cold,cache-x"
   }
  ]
 }
