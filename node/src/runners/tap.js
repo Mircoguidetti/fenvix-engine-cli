@@ -38,6 +38,7 @@ function userArgs(rest) {
   const out = [];
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
+    if (i === 0 && a === 'run') continue; // `tap run ...` is `tap ...`
     if (isOpt(a, ['--jobs', '--save', '--changed', '--disable-coverage'])) {
       if (!a.includes('=') && ['--jobs', '--save'].includes(a)) i++;
       continue;

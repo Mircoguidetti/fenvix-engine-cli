@@ -70,6 +70,8 @@ function childEnv(role, extra = {}) {
   env.DETJS_NODE_OPTIONS0 = process.env.NODE_OPTIONS || '';
   env.NODE_OPTIONS = nodeOptions(process.env.NODE_OPTIONS);
   env.DETJS_RUNNER_ROLE = role;
+  // the capture sees Node's loader through asynchronous hooks: the runners' own loaders are asynchronous too
+  env.DETJS_CAPTURE_LOADER = 'register';
   return env;
 }
 
@@ -302,6 +304,8 @@ class ChildFile {
       if (this.c.controls.has('time')) require('../clock').DRIVER.takeBaseline();
     }
     this.current = { id, t0: realNow() };
+    // what the asynchronous loader hooks posted so far (node:sqlite imported by the test's module, ...)
+    if (this.cap && this.cap.flushLoader) this.cap.flushLoader();
     STATE.beginTest(id);
     if (this.cap) this.cap.setCtx('t');
   }

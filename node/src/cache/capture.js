@@ -757,6 +757,7 @@ class Capture {
 
   /** Modules loaded so far (Vitest worker state, CommonJS cache, native loader). */
   scanModules(extra) {
+    if (this.flushLoader) this.flushLoader();
     const st = globalThis.__vitest_worker__;
     if (st) {
       const em = st.evaluatedModules;
@@ -1293,8 +1294,76 @@ function wrapSqlite(cap) {
   try { require('node:module').syncBuiltinESMExports(); } catch { /* ignore */ }
 }
 
+/**
+ * Node's loader seen through asynchronous customization hooks (`module.register`, off-thread), for test processes
+ * that also use asynchronous loaders of their own (tap's mock and process-info loaders, tsx's ESM loader): in Node
+ * 22 a synchronous hook (`module.registerHooks`) in such a process breaks their imports (`loadSync is not a
+ * function`, or a dead lock between the hooks thread and the main thread). The hooks post every loaded file and
+ * every failed resolution to this thread; `flushLoader` takes what was posted, synchronously, before the modules
+ * of a test are listed. Chosen by DETJS_CAPTURE_LOADER=register (the runner shells set it).
+ */
+function installAsyncLoaderHooks(cap) {
+  const m = require('node:module');
+  const wt = require('node:worker_threads');
+  if (typeof m.register !== 'function') {
+    cap.notes.add('module.register unavailable: ES modules loaded natively are not listed');
+    return;
+  }
+  const { port1, port2 } = new wt.MessageChannel();
+  const take = (msg) => {
+    if (!msg || !cap.active) return;
+    try {
+      if (msg.loaded) cap.nativeLoads.add(url.fileURLToPath(msg.loaded));
+      else if (msg.failed !== undefined && !cap.busy) cap.resolveFailed(msg.failed, msg.parent);
+      else if (msg.sqlite) wrapSqlite(cap);
+    } catch { /* ignore */ }
+  };
+  port1.on('message', take);
+  port1.unref();
+  cap.flushLoader = () => {
+    for (let r = wt.receiveMessageOnPort(port1); r; r = wt.receiveMessageOnPort(port1)) take(r.message);
+  };
+  try {
+    m.register(url.pathToFileURL(path.join(__dirname, 'loader-hooks.mjs')).href, { data: { port: port2 }, transferList: [port2] });
+  } catch (e) {
+    cap.notes.add(`module.register failed: ${e && e.message}`);
+  }
+  // CommonJS `require` does not go through asynchronous hooks: its failed resolutions and node:sqlite are seen here
+  // (the modules it loads are listed from require.cache)
+  const realResolve = m._resolveFilename;
+  if (typeof realResolve === 'function' && !realResolve.__detjsCache) {
+    const r = function _resolveFilename(request, parent, ...rest) {
+      try {
+        return realResolve.call(this, request, parent, ...rest);
+      } catch (e) {
+        if (cap.active && !cap.busy && e && e.code === 'MODULE_NOT_FOUND') {
+          try { cap.resolveFailed(String(request), parent && parent.filename); } catch { /* ignore */ }
+        }
+        throw e;
+      }
+    };
+    Object.defineProperty(r, '__detjsCache', { value: true });
+    m._resolveFilename = r;
+  }
+  const realLoad = m._load;
+  if (typeof realLoad === 'function' && !realLoad.__detjsCache) {
+    const l = function _load(request, ...rest) {
+      if (cap.active && (request === 'node:sqlite' || request === 'sqlite')) {
+        try { wrapSqlite(cap); } catch { /* ignore */ }
+      }
+      return realLoad.call(this, request, ...rest);
+    };
+    Object.defineProperty(l, '__detjsCache', { value: true });
+    m._load = l;
+  }
+}
+
 function installLoaderHooks(cap) {
   const m = require('node:module');
+  if (process.env.DETJS_CAPTURE_LOADER === 'register') {
+    installAsyncLoaderHooks(cap);
+    return;
+  }
   if (typeof m.registerHooks !== 'function') {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;

@@ -162,6 +162,7 @@ function preloadSingle() {
   const orderFound = hookOrder();
   let file = null;
   let ok = true;
+  let sawDone = false;
   const open = (abs) => {
     const f = abs && byAbs.get(path.resolve(abs));
     if (!f) return file;
@@ -173,9 +174,9 @@ function preloadSingle() {
   };
   if (single) {
     open(single.abs);
-    common.onExit(file, () => ok);
+    common.onExit(file, () => ok && sawDone);
   } else {
-    process.on('exit', (code) => { if (file) { if (code) file.fail(); else file.close(ok); } });
+    process.on('exit', (code) => { if (file) { if (code || !sawDone) file.fail(); else file.close(ok); } });
   }
   const fileOfNode = (node) => {
     for (let n = node; n; n = n.parentSuite) if (n.filename) return n.filename;
@@ -208,13 +209,16 @@ function preloadSingle() {
     }
     return out;
   };
-  // the spec files of this process are detjs' list (execute(files) replaces the configured ones): the glob of the
-  // configured spec_files is the runner's discovery, not an input of the specs (helpers' globs stay inputs)
+  // the spec files of this process are detjs' list (execute(files) replaces the configured ones), and the helper
+  // files the configuration's globs match are part of the configuration digest (main side, from the listing): the
+  // globs Jasmine expands here are discovery, not inputs of the specs (glob's path-scurry copies every Stats field,
+  // times included, which would make every spec uncacheable). The helpers themselves are loaded modules: inputs.
   const RunnerBase = require(path.join(process.env.DETJS_JASMINE_DIR, 'lib', 'runner_base.js'));
-  const realAddSpecs = RunnerBase.prototype.addMatchingSpecFiles;
-  if (typeof realAddSpecs === 'function') {
-    RunnerBase.prototype.addMatchingSpecFiles = function addMatchingSpecFiles(...a) {
-      return common.quiet(() => realAddSpecs.apply(this, a));
+  for (const n of ['addMatchingSpecFiles', 'addMatchingHelperFiles']) {
+    const real = RunnerBase.prototype[n];
+    if (typeof real !== 'function') continue;
+    RunnerBase.prototype[n] = function addMatching(...a) {
+      return common.quiet(() => real.apply(this, a));
     };
   }
   const Jasmine = jasmineClass();
@@ -222,7 +226,7 @@ function preloadSingle() {
   Jasmine.prototype.execute = async function execute(...a) {
     if (c.controls.has('order')) this.env.configure({ random: false });
     let cur = null;
-    this.env.addReporter({
+    const reporter = {
       jasmineStarted() {
         if (c.controls.has('order') && c.shuffle && !orderFound()) {
           require('../state').STATE.notes.push('jasmine: orderChildren hook not found in jasmine-core: specs keep declaration order with --det-seed');
@@ -247,10 +251,24 @@ function preloadSingle() {
         if (r.status === 'failed' || (r.failedExpectations && r.failedExpectations.length)) ok = false;
       },
       jasmineDone(r) {
+        sawDone = true;
         if (!r || r.overallStatus !== 'passed' || (r.failedExpectations && r.failedExpectations.length)) ok = false;
         if (file && single) file.close(ok);
       },
-    });
+    };
+    // helpers often replace the reporters (`jasmine.getEnv().clearReporters()` + a spec reporter): detjs' reporter is
+    // added once the helpers are loaded (Jasmine loads the spec files right after); a file whose run detjs' reporter
+    // did not see end (removed by a spec file) is never recorded as a pass (see jasmineDone)
+    const env = this.env;
+    const realLoadSpecs = this.loadSpecs;
+    if (typeof realLoadSpecs === 'function') {
+      this.loadSpecs = async function loadSpecs(...x) {
+        env.addReporter(reporter);
+        return realLoadSpecs.apply(this, x);
+      };
+    } else {
+      env.addReporter(reporter);
+    }
     return realExecute.apply(this, a);
   };
 }

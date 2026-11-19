@@ -11,7 +11,9 @@ const ADAPTERS = {
   jasmine: './jasmine',
   uvu: './uvu',
 };
-if (role && name && ADAPTERS[name] && role !== 'nested') {
+// Node's internal threads (the thread of asynchronous loader hooks) are not test realms
+const internal = require('node:worker_threads').isInternalThread === true;
+if (role && name && ADAPTERS[name] && role !== 'nested' && !internal) {
   try {
     require(ADAPTERS[name]).preload(role);
   } catch (e) {
