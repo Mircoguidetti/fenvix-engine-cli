@@ -1,0 +1,126 @@
+{
+ "repos": {
+  "commons-io": {
+   "transitions": 50,
+   "median": 0.9995,
+   "mean": 0.8823300000000001,
+   "verified": 98563,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.44,
+   "reasons": {
+    "not-passed": 550,
+    "prop": 48,
+    "writes": 471,
+    "code": 2039,
+    "after": 6,
+    "file": 1,
+    "runtime": 2091,
+    "config": 2175
+   }
+  },
+  "commons-lang": {
+   "transitions": 50,
+   "median": 0.9781,
+   "mean": 0.912256,
+   "verified": 5133250,
+   "wrong": 0,
+   "flaky": 37,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.26,
+   "reasons": {
+    "prop": 17355,
+    "not-passed": 1790,
+    "after": 3657,
+    "code": 786675
+   }
+  },
+  "gson": {
+   "transitions": 50,
+   "median": 0.7605500000000001,
+   "mean": 0.626738,
+   "verified": 163138,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.38,
+   "reasons": {
+    "runtime": 32489,
+    "not-passed": 978,
+    "code": 26419,
+    "prop": 26,
+    "after": 67,
+    "config": 9325
+   }
+  },
+  "jackson-databind": {
+   "transitions": 48,
+   "median": 0.9284,
+   "mean": 0.6646166666666666,
+   "verified": 276259,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 0,
+   "module_cache_median": 1.0,
+   "module_cache_mean": 0.9375,
+   "reasons": {
+    "code": 74323,
+    "not-passed": 48,
+    "network": 45,
+    "after": 162,
+    "runtime": 23406
+   }
+  },
+  "mockito": {
+   "transitions": 50,
+   "median": 0.3425,
+   "mean": 0.27149,
+   "verified": 7863,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 21,
+   "module_cache_median": 0.9823,
+   "module_cache_mean": 0.756916,
+   "reasons": {
+    "config": 75439,
+    "not-passed": 7169,
+    "prop": 31,
+    "after": 2287,
+    "runtime": 5119,
+    "code": 35237,
+    "file": 14,
+    "resource": 132
+   }
+  },
+  "moshi": {
+   "transitions": 50,
+   "median": 0.1893,
+   "mean": 0.137328,
+   "verified": 52667,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 1,
+   "module_cache_median": 0.5626,
+   "module_cache_mean": 0.54214,
+   "reasons": {
+    "not-passed": 1501,
+    "prop": 24,
+    "after": 645,
+    "config": 8336,
+    "code": 3926,
+    "runtime": 8946,
+    "file": 6
+   }
+  }
+ },
+ "totals": {
+  "verified": 5731740,
+  "wrong": 0,
+  "flaky": 37,
+  "incomplete": 22
+ }
+}
