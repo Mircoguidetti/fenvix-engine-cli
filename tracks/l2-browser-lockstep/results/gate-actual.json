@@ -1,0 +1,208 @@
+{
+ "name": "actual",
+ "job": "gate",
+ "repo": "actualbudget/actual",
+ "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+ "status": "ok",
+ "run_id": "44505073476",
+ "engine_commit": "35494b25f581d8e304f4534ab7b37d1d0776a0cc",
+ "setup_s": 138,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 300
+ },
+ "pw_dir": "packages/desktop-client",
+ "pw_args": [
+  "--browser=chromium",
+  "--shard=1/3"
+ ],
+ "runs": [],
+ "epoch": "2026-11-19T10:33:00Z",
+ "measured_at": "2026-11-19T10:33:26Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+   "file": "automatic-budget-range.test.ts",
+   "grep": "(desktop) extends after budgeting the last month",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut"
+   ],
+   "errors": [
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+   ],
+   "walls": [
+    119.8,
+    119.4,
+    120.2,
+    119.8,
+    119.8,
+    120.5,
+    120.5,
+    119.8,
+    119.6,
+    119.6
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-actual/g1-det-1.jsonl.gz",
+    "gate-actual/g1-det-2.jsonl.gz",
+    "gate-actual/g1-det-3.jsonl.gz",
+    "gate-actual/g1-det-4.jsonl.gz",
+    "gate-actual/g1-det-5.jsonl.gz",
+    "gate-actual/g1-det-6.jsonl.gz",
+    "gate-actual/g1-det-7.jsonl.gz",
+    "gate-actual/g1-det-8.jsonl.gz",
+    "gate-actual/g1-det-9.jsonl.gz",
+    "gate-actual/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  },
+  {
+   "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+   "file": "budget.mobile.test.ts",
+   "grep": "[Tracking] applies budget template",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut",
+    "timedOut"
+   ],
+   "errors": [
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+   ],
+   "walls": [
+    120.4,
+    120.1,
+    120.4,
+    119.3,
+    119.6,
+    120.9,
+    120.6,
+    120.3,
+    121.3,
+    120.0
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-actual/g2-det-1.jsonl.gz",
+    "gate-actual/g2-det-2.jsonl.gz",
+    "gate-actual/g2-det-3.jsonl.gz",
+    "gate-actual/g2-det-4.jsonl.gz",
+    "gate-actual/g2-det-5.jsonl.gz",
+    "gate-actual/g2-det-6.jsonl.gz",
+    "gate-actual/g2-det-7.jsonl.gz",
+    "gate-actual/g2-det-8.jsonl.gz",
+    "gate-actual/g2-det-9.jsonl.gz",
+    "gate-actual/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
+  }
+ ],
+ "elapsed_min": 43.0
+}
