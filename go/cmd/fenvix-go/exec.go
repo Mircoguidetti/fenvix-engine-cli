@@ -118,10 +118,34 @@ func isLocal(ip string, port int, proxyPorts map[int]bool) bool {
 		return false
 	}
 	a := net.ParseIP(ip)
-	if a == nil || !(a.IsLoopback() || a.IsUnspecified()) {
+	if a == nil || !(a.IsLoopback() || a.IsUnspecified() || ownAddress(a)) {
 		return false
 	}
 	return !proxyPorts[port]
+}
+
+var (
+	ownOnce  sync.Once
+	ownAddrs []net.IP
+)
+
+// ownAddress: an address of one of this machine's interfaces (a connection
+// to it does not leave the machine); the same rule as the net hook.
+func ownAddress(ip net.IP) bool {
+	ownOnce.Do(func() {
+		addrs, _ := net.InterfaceAddrs()
+		for _, a := range addrs {
+			if n, ok := a.(*net.IPNet); ok {
+				ownAddrs = append(ownAddrs, n.IP)
+			}
+		}
+	})
+	for _, a := range ownAddrs {
+		if a.Equal(ip) {
+			return true
+		}
+	}
+	return false
 }
 
 var reProxy = regexp.MustCompile(`^(?:([a-z0-9]+)://)?(?:[^@/]*@)?(\[[^\]]+\]|[^:/]+)(?::(\d+))?`)
