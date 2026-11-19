@@ -1,0 +1,177 @@
+{
+ "name": "sveltekit",
+ "job": "gate",
+ "repo": "sveltejs/kit",
+ "ref": "7a1296872cde5e807832f7714c635df956d37643",
+ "status": "ok",
+ "run_id": "44612327770",
+ "engine_commit": "85a82cd7b6763524f10947136ccea0285513395a",
+ "setup_s": 32,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 300
+ },
+ "pw_dir": "packages/kit/test/apps/basics",
+ "pw_args": [
+  "test/playwright"
+ ],
+ "runs": [],
+ "epoch": "2026-11-19T22:25:00Z",
+ "measured_at": "2026-11-19T22:25:27Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-code",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    600.0,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    null,
+    "gate-sveltekit/g1-det-2.jsonl.gz",
+    "gate-sveltekit/g1-det-3.jsonl.gz",
+    "gate-sveltekit/g1-det-4.jsonl.gz",
+    "gate-sveltekit/g1-det-5.jsonl.gz",
+    "gate-sveltekit/g1-det-6.jsonl.gz",
+    "gate-sveltekit/g1-det-7.jsonl.gz",
+    "gate-sveltekit/g1-det-8.jsonl.gz",
+    "gate-sveltekit/g1-det-9.jsonl.gz",
+    "gate-sveltekit/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": []
+  },
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-data",
+   "project": null,
+   "plain": [
+    "missing",
+    "missing"
+   ],
+   "runs": [
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing",
+    "missing"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5,
+    0.5
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate-sveltekit/g2-det-1.jsonl.gz",
+    "gate-sveltekit/g2-det-2.jsonl.gz",
+    "gate-sveltekit/g2-det-3.jsonl.gz",
+    "gate-sveltekit/g2-det-4.jsonl.gz",
+    "gate-sveltekit/g2-det-5.jsonl.gz",
+    "gate-sveltekit/g2-det-6.jsonl.gz",
+    "gate-sveltekit/g2-det-7.jsonl.gz",
+    "gate-sveltekit/g2-det-8.jsonl.gz",
+    "gate-sveltekit/g2-det-9.jsonl.gz",
+    "gate-sveltekit/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": []
+  }
+ ],
+ "elapsed_min": 10.5
+}
