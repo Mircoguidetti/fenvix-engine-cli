@@ -111,8 +111,22 @@ def _searched(name: str) -> list:
 
 
 def _note_miss(name: str) -> None:
+    """Every path the import system's path finder would have found ``name`` at, in every searched directory: a
+    package or namespace directory, a source, bytecode or extension module (existence probes)."""
+    last = name.rpartition(".")[2]
     for d in _searched(name):
-        _note(d, "L")
+        base = os.path.join(d, last)
+        _note(base, "M")
+        for suffix in _SUFFIXES:
+            _note(base + suffix, "M")
+
+
+try:
+    import importlib.machinery as _im
+
+    _SUFFIXES = tuple(dict.fromkeys(_im.all_suffixes()))
+except ImportError:  # pragma: no cover
+    _SUFFIXES = (".py", ".pyc")
 
 
 _bootstrap = sys.modules.get("importlib._bootstrap")
@@ -120,9 +134,9 @@ _real_find_and_load = getattr(_bootstrap, "_find_and_load", None)
 
 
 def _find_and_load(name, import_):
-    """The import system's ``_find_and_load``: a module it does not find makes the listings of the directories it
-    searched inputs of the importing test (an optional module that appears later is then seen: the import system's
-    own cache of a directory's listing kept it out of the test's inputs)."""
+    """The import system's ``_find_and_load``: a module it does not find makes the paths it would have been found at
+    inputs of the importing test (an optional module that appears later is then seen: the import system's own cache
+    of a directory's listing kept it out of the test's inputs)."""
     try:
         return _real_find_and_load(name, import_)
     except ModuleNotFoundError as e:

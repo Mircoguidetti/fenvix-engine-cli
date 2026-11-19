@@ -984,9 +984,9 @@ impl CaptureCore {
         if !self.active() || INTERNAL.with(|c| c.get()) > 0 {
             return Ok(());
         }
-        // "L": a directory the import system searched for a module it did not find (its listing decides whether a
-        // later run finds it): the caller is the code that imported, past the import system's frames
-        if self.probe_caller(py, mode == "L")? != Caller::User {
+        // "M": a path the import system looked for and did not find (a module that a later run may find): the
+        // caller is the code that imported, past the import system's frames
+        if self.probe_caller(py, mode == "M")? != Caller::User {
             return Ok(());
         }
         let Some(p) = internal(|| self.abs(py, path))? else { return Ok(()) };
@@ -998,7 +998,7 @@ impl CaptureCore {
             "e" => b'e',
             "E" => b'E',
             "s" => b'q',
-            "L" => b'd',
+            "M" => b'e',
             _ => b'Q',
         };
         self.read_impl(py, ctx, &p, kind)

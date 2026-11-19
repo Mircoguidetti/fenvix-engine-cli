@@ -206,6 +206,20 @@ class DetRun:
     def collecting(self, rel: str):
         return self.context("c|" + rel)
 
+    @contextlib.contextmanager
+    def own_work(self):
+        """The runner's own machinery (not the project's code: ward building its test objects, which draws uuid4
+        entropy): nothing inside is an input."""
+        cap = self.cap
+        if cap is None or not cap.active:
+            yield
+            return
+        cap.active = False
+        try:
+            yield
+        finally:
+            cap.active = True
+
     # -- order and decisions ---------------------------------------------------------------------
     @property
     def ordered(self) -> bool:

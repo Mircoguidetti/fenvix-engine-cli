@@ -154,6 +154,7 @@ class UnittestShell:
         self.objs: dict[str, object] = {}
         self.cctx: dict[int, tuple[object, set]] = {}
         self.prepared = False
+        self.replaying = False  # a stand-in reports a reused result (no per-test set-up of the runner)
         self.ran_by_group: dict[str, list[str]] = {}
         self.opaque_types: set[str] = set()
 
@@ -305,10 +306,10 @@ class UnittestShell:
         if isinstance(test, unittest.FunctionTestCase):
             f = test._testFunc
             mod = getattr(f, "__module__", None) or ""
-            tid = test.id()
+            tid = test.id().split("\n", 1)[0]  # nose2's generated tests add their arguments on a second line
             rest = tid[len(mod) + 1:] if mod and tid.startswith(mod + ".") else tid
             return f"{self.module_rel(mod)}::{rest}"
-        tid = test.id() if callable(getattr(test, "id", None)) else repr(test)
+        tid = (test.id() if callable(getattr(test, "id", None)) else repr(test)).split("\n", 1)[0]
         prefix = f"{cls.__module__}.{cls.__qualname__}."
         method = tid[len(prefix):] if tid.startswith(prefix) else getattr(test, "_testMethodName", tid)
         return f"{self.module_rel(cls.__module__)}::{cls.__qualname__}::{method}"
@@ -429,14 +430,28 @@ class UnittestShell:
 
     def prepare(self, suite) -> None:
         """The top-level suite is about to run: flatten, order, identify, decide, replace reused tests."""
-        run = self.run
         flat: list = []
         opaque: list = []
         self.flatten(suite, flat, opaque)
         flat = self.order(flat)
-        entries = []  # (element, nid or None for an opaque suite)
+        reused = self.decide_flat(flat)
+        if self.run.det and self.run.ns.det_order:
+            keep = set(self.run.order)
+            flat = [t for t in flat if not _isnotsuite(t) or self.ids[id(t)] in keep]
+            by_id = {self.ids[id(t)]: t for t in flat if _isnotsuite(t)}
+            flat = [by_id[i] for i in self.run.order if i in by_id]
+        suite._tests = [_Reused(t, self.ids[id(t)], self) if self.is_reused(t, reused) else t for t in flat]
+
+    def is_reused(self, t, reused: set) -> bool:
+        return _isnotsuite(t) and self.ids.get(id(t)) in reused
+
+    def decide_flat(self, flat: list) -> set:
+        """Ids for the tests of ``flat`` (in run order; a custom suite's tests always run), the decision. Returns the
+        reused ids."""
+        run = self.run
         seen: dict[str, int] = {}
         opaque_ids: set[str] = set()
+        ids: list[str] = []
         for t in flat:
             members = [t] if _isnotsuite(t) else list(self.iter_tests(t))
             for m in members:
@@ -446,16 +461,13 @@ class UnittestShell:
                 nid = base if n == 0 else f"{base}[{n}]"
                 self.ids[id(m)] = nid
                 self.objs[nid] = m
+                ids.append(nid)
                 if not _isnotsuite(t):
                     opaque_ids.add(nid)
-            entries.append(t)
-        ids = [self.ids[id(m)] for t in entries for m in ([t] if _isnotsuite(t) else self.iter_tests(t))]
         explicit = run.explicit_order(ids) if run.det else None
         if explicit is not None:
-            by_id = {self.ids[id(t)]: t for t in entries if _isnotsuite(t)}
-            entries = [by_id[i] for i in explicit if i in by_id]
-            ids = [self.ids[id(t)] for t in entries]
-        if opaque:
+            ids = explicit
+        if opaque_ids:
             run.adjust("not reused (custom suites): " + ", ".join(sorted(self.opaque_types)))
         items = {nid: self.item_of(self.objs[nid], nid) for nid in ids}
         units: dict[str, list[str]] = {}
@@ -463,20 +475,14 @@ class UnittestShell:
             u = self.unit_of(self.objs[nid])
             if u is not None:
                 units.setdefault(u, []).append(nid)
-        reused = run.decide(ids, items, [u for u in units.values() if len(u) > 1], opaque_ids)
-        new = []
-        for t in entries:
-            if _isnotsuite(t) and self.ids[id(t)] in reused:
-                new.append(_Reused(t, self.ids[id(t)], self))
-            else:
-                new.append(t)
-        suite._tests = new
+        return run.decide(ids, items, [u for u in units.values() if len(u) > 1], opaque_ids)
 
     # -- reuse and fixture failures -------------------------------------------------------------------
     def replay(self, test, nid: str, result) -> None:
         rep, _fp = self.run.reused_info(nid)
         call = rep.get("call") or rep.get("setup") or {}
         outcome = call.get("outcome", "passed")
+        self.replaying = True
         result.startTest(test)
         try:
             if "wasxfail" in call and outcome == "skipped":
@@ -496,6 +502,7 @@ class UnittestShell:
                 add_duration(test, 0.0)
         finally:
             result.stopTest(test)
+            self.replaying = False
 
     def fixture_teardown_failed(self, method_name: str, parent: str, exc, info) -> None:
         """A class or module tear-down failed: every test of that class / module that ran gets a teardown error."""
