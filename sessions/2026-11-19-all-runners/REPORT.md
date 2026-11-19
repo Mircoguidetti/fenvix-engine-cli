@@ -16,9 +16,9 @@ in `docs/runners/`; builder summaries `docs/runners/BUILD-{python,node-a,node-b,
 * **0 wrong reuses in 134,426 verified reuses** on GitHub Actions walks: 31 real repositories, 3 to 30 transitions
   each (MEASURED, runs below). Every would-be reuse was compared with a fresh run of the same commit.
 * **Why PARTIAL:**
-  * ward has a walk on only one repository, ward itself, with 3 transitions and 0 reuses. Old commits do not run on
-    Python 3.12+, which the cache needs. The second candidate (`pointers`) does not build on 3.12, and no other
-    ward-run repository was found. ward is 0 of 1,000 popular Python repositories and 2.6 k downloads a month.
+  * ward: two walks (ward 3 transitions, thoughtspot_tml 20) with 0 wrong reuses but **0 reuses**: a start-up
+    metadata probe of `pyproject.toml` makes every test rerun after any checkout (row below). ward is 0 of 1,000
+    popular Python repositories and 2.6 k downloads a month (MEASURED / DECLARED, INTERMEDIATE-1).
   * TypeScript-loader walks: <TS-LOADER-STATUS>.
   * Karma was not built. It is still used (3.7% of popular JS/TS repositories, MEASURED), but it runs tests in a
     browser, which is Level 2 (P-030).
@@ -68,7 +68,7 @@ repository); raw `tracks/all-runners-python/results/ar-py-3/`, tables `TABLES.md
 | nose2 | det + skip | 3 pass | 27 shared + 3: configuration file, plugin module change, multiprocess plugin refused | nose2: 20, 21% / 13% (tests 76% / 46%), 3,031, **0**; howdoi: 19, 0% / 0%, 16, **0** (11 tests start processes; the rest are one class) | `layers` and `mp` plugins (refused, exit 4) |
 | `python -m doctest` | det + skip (one test per docstring) | 3 pass | 27 shared + 3: text file change, docstring change, option change (configuration) | autopep8: 20, 100% / 85%, 17, **0**; python-nameparser (`python -m doctest README.rst`): 20, 0% / 30%, 6, **0** | — |
 | zope.testrunner | det + skip; layers as fixture contexts; `-j` forced to 1 | 3 pass | 27 shared + 3: layer set-up read (and a reused layer is not set up), `test_suite` function reads, `-j` forced to 1 | DateTime: 20, 0% / 36%, 370, **0**; irclog2html: 20, 0% / 40%, 725, **0** | layers resumed in a subprocess (not wired: they run, never reused) |
-| ward | det + skip | 3 pass | 27 shared + 1: module-scoped fixture read | ward: 3, 0% / 0%, 0 verified (every transition changes `pyproject.toml`, data and the epoch), **0** wrong; **second repository: none** (see PARTIAL) | ward's run loop is a copy of ward 0.68's |
+| ward | det + skip | 3 pass | 27 shared + 1: module-scoped fixture read (fails on a naive adapter, MEASURED) | ward: 3, 0% / 0%, 0 verified, **0** wrong; thoughtspot_tml: 20, 0% / 0%, 0 verified, **0** wrong (run 44593226338, ar-py-4) | **no reuse across commits**: ward's CLI checks `pyproject.toml` with `click.Path` at start-up, so its modification time is an input of every test, and a checkout changes it at every commit (sound, coarse; within one commit 73 of 73 thoughtspot_tml tests are reused, MEASURED local). Proposal: a probe made by the runner's own argument checking keys existence and kind only (needs its own adversarial test). ward's window on its own repository is 4 commits (older ward does not run on Python 3.12+). ward's run loop is a copy of ward 0.68's |
 | Hypothesis (all runners + pytest) | seed from the test id; no example database, no storage, no local constants under `--det` | covered by each runner's control tests | — | — (no dedicated walk) | a project's own `@settings(database=...)` is replaced under `--det` |
 
 Python misses explained (ar-py-3, miss reasons per transition): jc and icecream change a module every test loads
@@ -122,7 +122,7 @@ under 1 s, where start-up dominates (ar-py-3 TABLES.md).
 
 ## What blocks or is missing
 
-* ward: a second repository and a longer window (above).
+* ward: reuse across commits (the start-up `pyproject.toml` probe, above).
 * <TS-LOADER-MISSING>
 * **The shared-cache Python client (`claude/shared-cache`: `remote_cache.py`, R-008c/d start-up rules) is not on
   `claude/rust-hotpaths-2`**, so it is not on this branch either: the node branch's Python tests for it are skipped
@@ -138,7 +138,7 @@ under 1 s, where start-up dominates (ar-py-3 TABLES.md).
 
 * Repository Mircoguidetti/fenvix-engine-cli, branch `claude/all-runners`, commit <COMMIT>.
 * Actions runs: 44536402831 (download statistics), 44553242420 (Bun, Deno), 44560783983 / 44561203094 /
-  44568533635 (Python), 44566685425 (`node --test`, Mocha), 44566685382 (tap, AVA, Jasmine, uvu)<TS-RUN>.
+  44568533635 / 44593226338 (Python), 44566685425 (`node --test`, Mocha), 44566685382 (tap, AVA, Jasmine, uvu)<TS-RUN>.
 * Main files: `python/detpy/runners/`, `python/detpy/_level0.py`, `python/detpy/_proof.py`, `python/detpy/_django.py`,
   `node/src/{nodetest,mocha}/`, `node/src/runners/`, `node/src/cache/capture.js`, `crates/detpy-core/src/proof.rs`,
   `harness/cache_proof/walk.py`, `harness/node_cache/walk.py`, `.github/workflows/all-runners-*.yml`.
