@@ -1,42 +1,12 @@
 {
- "run_id": "dv6",
+ "run_id": "dv7",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-2: the 130 pairs of the first report with the R-020 fixes (engine 9e0d005). Actions: 66 pairs; moto, community.general and esphome run in the session container (results/local5/). dv4 and dv5 cancelled while queued.",
+ "note": "REPORT-2: esphome part of the re-measurement (engine 9e0d005), moved back from the session container (too slow with 4 jobs on 4 CPUs). dv6 holds the other Actions pairs; results/local5/ moto and community.general.",
  "pairs": [
   {
-   "spec": "airflow",
-   "shards": 2,
-   "budget_min": 320
-  },
-  {
-   "spec": "integrations-core",
-   "shards": 2,
-   "budget_min": 320
-  },
-  {
-   "spec": "litellm",
-   "shards": 3,
-   "budget_min": 320
-  },
-  {
-   "spec": "mlflow",
-   "shards": 3,
-   "budget_min": 320
-  },
-  {
-   "spec": "prefect",
-   "shards": 2,
-   "budget_min": 320
-  },
-  {
-   "spec": "pydantic-ai",
-   "shards": 3,
-   "budget_min": 320
-  },
-  {
-   "spec": "transformers",
-   "shards": 3,
+   "spec": "esphome",
+   "shards": 6,
    "budget_min": 320
   }
  ]
