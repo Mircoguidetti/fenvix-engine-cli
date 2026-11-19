@@ -395,6 +395,9 @@ pub struct Config {
     /// dynamically linked ones are then reusable
     #[serde(default)]
     pub child_clock: bool,
+    /// read the cache, never write it (the nightly real-clock check)
+    #[serde(default)]
+    pub read_only: bool,
 }
 
 /// One test's result as the shell saw it.
@@ -853,7 +856,9 @@ impl Session {
             self.cache.own.insert(name.clone(), o);
         }
         self.cache.version = VERSION;
-        self.cache.save(&self.cfg.cache_dir).map_err(|e| format!("skip cache: {e}"))?;
+        if !self.cfg.read_only {
+            self.cache.save(&self.cfg.cache_dir).map_err(|e| format!("skip cache: {e}"))?;
+        }
         Ok(serde_json::json!({"ran": n_run, "reused": n_reused, "capture": capture,
             "strace_lines": parsed.as_ref().map(|p| p.lines).unwrap_or(0)}))
     }
@@ -900,6 +905,7 @@ mod tests {
             commit: String::new(),
             decisions: format!("{dir}/decisions.jsonl"),
             child_clock: false,
+            read_only: false,
         }
     }
 

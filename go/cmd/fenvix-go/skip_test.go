@@ -12,8 +12,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 type skipRun struct {
@@ -222,5 +224,34 @@ func TestGoTestCacheMissesWhatTheKeySees(t *testing.T) {
 		t.Logf("go test reran after TZ and a child-read file changed (Go version behaviour changed?):\n%s", out)
 	} else {
 		t.Logf("go test reused its cached result although TZ and a file read by a child process changed (as documented)")
+	}
+}
+
+// The F6 trade-off, labelled (REPORT-2): skip mode's clock is virtual and
+// starts at today 00:00 UTC, so a fixture that expires later today still
+// passes under fenvix (reused, and fresh) until the next UTC day. The nightly
+// real-clock check (--skip-real-clock) runs every test on the real clock,
+// leaves the cache alone and names the test.
+func TestSkipRealClockReportsExpiry(t *testing.T) {
+	r := newR025(t, "clock")
+	expiry := filepath.Join(r.dir, "clock", "testdata", "notafter.txt")
+	at := time.Now().Add(6 * time.Second)
+	if at.UTC().Day() != time.Now().UTC().Day() {
+		t.Skip("too close to midnight UTC")
+	}
+	os.WriteFile(expiry, []byte(strconv.FormatInt(at.Unix(), 10)+"\n"), 0o644)
+	r.record([]string{"TestFixtureNotExpired"})
+	time.Sleep(time.Until(at) + 1500*time.Millisecond)
+	d := r.run()["TestFixtureNotExpired"]
+	t.Logf("virtual day after the real expiry: reuse=%v fresh=%s (the trade-off: hidden until the next UTC day)", d.Reuse, d.Fresh)
+	if d.Reuse && d.Fresh != "passed" {
+		t.Fatalf("wrong reuse: %+v", d)
+	}
+	out, code := runFenvix(t, r.dir, r.env, "test", "--skip-cache="+r.cache, "--skip-real-clock", "./clock")
+	if code == 0 || !strings.Contains(out, "fail on the real clock") || !strings.Contains(out, "TestFixtureNotExpired") {
+		t.Fatalf("real-clock check did not report the expired fixture (exit %d):\n%s", code, out)
+	}
+	if d2 := r.run()["TestFixtureNotExpired"]; !d2.Reuse {
+		t.Errorf("the real-clock check changed the cache: %+v", d2)
 	}
 }

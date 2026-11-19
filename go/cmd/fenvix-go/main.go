@@ -67,6 +67,9 @@ fenvix flags:
   --det-gomaxprocs=N       set GOMAXPROCS for the test binaries (recorded either way)
   --skip-cache=DIR         reuse passing tests whose inputs did not change (skip with proof)
   --skip-verify            run every test anyway and check each reuse against the fresh outcome
+  --skip-real-clock        nightly check: run every test on the real clock (the cache is read, not
+                           written) and list the tests that pass on the virtual day (skip mode's
+                           clock: today 00:00 UTC) and fail on the real clock: expired fixtures
   --skip-capture=MODE      strace (default when available) or hooks
   --skip-report=PATH       JSON lines: one decision per test
   --skip-commit=SHA        informative, stored with the cache entries

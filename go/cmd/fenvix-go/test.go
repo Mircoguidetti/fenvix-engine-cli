@@ -37,6 +37,7 @@ var buildFlags = map[string]bool{"tags": true, "mod": true, "modfile": true, "gc
 
 type opts struct {
 	det, keepParallel, skipVerify      bool
+	skipRealClock                      bool
 	seed                               uint64
 	disable                            map[string]bool
 	trace, epoch, gomaxprocs           string
@@ -118,6 +119,12 @@ func parseOpts(args []string) (*opts, []string, error) {
 		case "skip-cache":
 			o.skipCache, err = need()
 		case "skip-verify":
+			o.skipVerify = true
+		case "skip-real-clock":
+			// nightly check: every test on the real clock, the cache read but
+			// not written; reports tests that pass on the virtual day and fail
+			// on the real clock (expired fixtures)
+			o.skipRealClock = true
 			o.skipVerify = true
 		case "skip-capture":
 			o.skipCapture, err = need()
@@ -300,7 +307,9 @@ func cmdTest(args []string) int {
 		want[overlay.CtlDeps] = true
 		// the clock is virtual in skip mode too: the date a test sees is the
 		// epoch, which is in the key (R-025 F6, coordinator follow-up)
-		want[overlay.CtlTime] = true
+		if !o.skipRealClock {
+			want[overlay.CtlTime] = true
+		}
 		if !o.keepParallel {
 			want[overlay.CtlSerial] = true
 		}
@@ -499,7 +508,7 @@ func cmdTest(args []string) int {
 		if capture != "strace" {
 			fmt.Fprintln(os.Stderr, "fenvix-go: skip: strace not found: the hooks alone cannot see every input (child processes, cgo, raw syscalls); decisions are reported, nothing is reused")
 		}
-		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, Capture: capture, Drop: drop,
+		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, RealClock: o.skipRealClock, Capture: capture, Drop: drop,
 			Commit: o.skipCommit}
 	}
 	if err := sess.Save(); err != nil {
@@ -562,7 +571,7 @@ func cmdTest(args []string) int {
 		}
 	}
 	if sess.Skip != nil {
-		summarizeSkip(dir, o.skipReport)
+		summarizeSkip(dir, o.skipReport, o.skipRealClock)
 	}
 	return code
 }
@@ -615,7 +624,7 @@ func exitCode(err error) int {
 	return 1
 }
 
-func summarizeSkip(dir, report string) {
+func summarizeSkip(dir, report string, realClock bool) {
 	f, err := os.Open(filepath.Join(dir, "decisions.jsonl"))
 	if err != nil {
 		return
@@ -631,6 +640,7 @@ func summarizeSkip(dir, report string) {
 	}
 	var n, reused, wrong int
 	var tAll, tReused float64
+	var expired []string
 	sc := bufio.NewScanner(f)
 	sc.Buffer(make([]byte, 1<<20), 1<<24)
 	for sc.Scan() {
@@ -647,6 +657,9 @@ func summarizeSkip(dir, report string) {
 			el = d.CachedElapsed
 		}
 		tAll += el
+		if realClock && d.Cached == "passed" && d.Fresh != "" && d.Fresh != "passed" {
+			expired = append(expired, d.Pkg+"::"+d.Test)
+		}
 		if d.Reuse {
 			reused++
 			tReused += el
@@ -658,6 +671,13 @@ func summarizeSkip(dir, report string) {
 	msg := fmt.Sprintf("fenvix-go: skip with proof: %d of %d tests reusable (%.1f of %.1f s of test time)", reused, n, tReused, tAll)
 	if wrong > 0 {
 		msg += fmt.Sprintf("; %d reuse(s) disagreed with the fresh run", wrong)
+	}
+	if realClock {
+		// the reuse counts above are those the virtual-day key would make
+		msg = fmt.Sprintf("fenvix-go: real clock: %d of %d tests ran; %d passed on the virtual day and fail on the real clock", n, n, len(expired))
+		for _, e := range expired {
+			msg += "\n  " + e
+		}
 	}
 	fmt.Fprintln(os.Stderr, msg)
 }

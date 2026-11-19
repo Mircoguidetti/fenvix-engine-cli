@@ -11,11 +11,13 @@ import (
 
 // Skip is the skip-with-proof configuration.
 type Skip struct {
-	Dir     string   `json:"dir"`     // cache directory (one file per package)
-	Verify  bool     `json:"verify"`  // run every test anyway and compare reused outcomes
-	Capture string   `json:"capture"` // "strace" (complete) or "hooks" (os-level hooks only: nothing is reused)
-	Drop    []string `json:"drop"`    // fenvix's and go's own working state: never inputs
-	Commit  string   `json:"commit"`  // informative
+	Dir    string `json:"dir"`    // cache directory (one file per package)
+	Verify bool   `json:"verify"` // run every test anyway and compare reused outcomes
+	// RealClock: nightly check on the real clock; the cache is read, never written
+	RealClock bool     `json:"real_clock,omitempty"`
+	Capture   string   `json:"capture"` // "strace" (complete) or "hooks" (os-level hooks only: nothing is reused)
+	Drop      []string `json:"drop"`    // fenvix's and go's own working state: never inputs
+	Commit    string   `json:"commit"`  // informative
 }
 
 // Session is written once by `fenvix-go test`.
@@ -29,7 +31,7 @@ type Session struct {
 	Unavailable map[string]string `json:"unavailable,omitempty"`
 	Epoch       int64             `json:"epoch"`
 	Sched       bool              `json:"sched,omitempty"` // one P, no async preemption (goroutine scheduling)
-	Shim        string            `json:"shim,omitempty"` // library preloaded into programs a --det test starts (their clock)
+	Shim        string            `json:"shim,omitempty"`  // library preloaded into programs a --det test starts (their clock)
 	Tick        int64             `json:"tick"`
 	Adapt       int64             `json:"adapt"`
 	MaxEvents   int               `json:"max_events"`
