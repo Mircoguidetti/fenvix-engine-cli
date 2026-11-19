@@ -76,6 +76,7 @@ _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep
 # data reads: the same, except .git/ (review R-009 F5: a test that reads HEAD and its ref in-process depends on
 # them; objects are content-addressed, so a changed commit always comes with a changed ref file)
 _SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
+_SOURCE_SUFFIXES = (".py", ".pyc", ".pyw")
 _STATS_PER_DIR = 8  # existence checks of one directory's entries kept one by one; more become its listing with kinds
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
@@ -158,6 +159,10 @@ class Capture:
         self.sdata: dict[int, dict[str, str]] = {}
         self._stat_saved: list = []
         self._in_stat = False
+        self._maps_seen: set = set()
+        self._maps_len = -1
+        self._maps_text = ""
+        self._maps_baseline = True
         self.env: dict[int, set] = {}
         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
         self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
@@ -194,7 +199,9 @@ class Capture:
             # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
             self.active = False
             try:
-                self._scan_sockets(self.ctx_index(self.ctx) if self.ctx else None)
+                prev = self.ctx_index(self.ctx) if self.ctx else None
+                self._scan_sockets(prev)
+                self._scan_maps(prev)
             finally:
                 self.active = True
         self.ctx = name
@@ -296,6 +303,11 @@ class Capture:
         self._patch_sqlite()
         self._patch_stat()
         self._patch_lookups()
+        self.active = False
+        try:
+            self._scan_maps(None)  # the libraries already mapped are the baseline
+        finally:
+            self.active = True
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -523,6 +535,39 @@ class Capture:
         self.sdata.setdefault(ctx, {}).setdefault(self._key(p), dep)
         return dep
 
+    # -- native libraries ---------------------------------------------------------------------
+    def _scan_maps(self, ctx: int | None) -> None:
+        """review R-019c E-8: a shared library loaded during a context (``ctypes.CDLL``, an extension module of the
+        repository, a library C code ``dlopen()``s) raises no event Python sees with its resolved path. The files
+        newly mapped into the process since the last scan, outside site-packages, the standard library and the
+        temporary directories, are inputs of the context by content. Mappings present at the start are the
+        baseline (the interpreter, pytest's own extensions)."""
+        try:
+            with open("/proc/self/maps") as fh:
+                text = fh.read()
+        except OSError:
+            return
+        if len(text) == self._maps_len and text == self._maps_text:
+            return
+        self._maps_len, self._maps_text = len(text), text
+        new = []
+        for line in text.splitlines():
+            i = line.find("/")
+            if i < 0:
+                continue
+            p = line[i:]
+            if p in self._maps_seen:
+                continue
+            self._maps_seen.add(p)
+            new.append(p)
+        if ctx is None or self._maps_baseline:
+            self._maps_baseline = False
+            return
+        for p in new:
+            if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
+                continue
+            self.read(ctx, p, "f")
+
     # -- module lookups ---------------------------------------------------------------------
     def _patch_lookups(self) -> None:
         """Exact-culprit REPORT-4 §2.1: a module the import system did *not* find is an input too (``try: import
@@ -608,6 +653,11 @@ class Capture:
                 trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
                     os.O_CREAT | os.O_EXCL)
             kind = self._caller_kind()
+            if kind == "import" and reads and not p.endswith(_SOURCE_SUFFIXES) and os.path.isfile(p):
+                # review R-019c E-7: the import system reading something that is not a source or bytecode file
+                # (a zip archive on sys.path: zipimport): its code is not tracked, the archive's content is the input
+                self.read(self._cur(), p, "f")
+                return
             if kind in ("import", "infra"):
                 return
             ctx = self._cur()
@@ -1098,6 +1148,15 @@ def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = F
         "distributions": _core.digest("\n".join(dists).encode()),
         "n_distributions": len(dists),
     }
+    # review R-019c E-1/E-9: the module search path. site.py runs the .pth files of the site directories at startup
+    # (before anything is recorded): they add sys.path entries and run code. sys.path itself (PYTHONPATH, .pth
+    # entries, the project's pythonpath option) decides which directory a module comes from; the project root is
+    # written as "<root>" so the identity does not depend on where the checkout lives.
+    d["pth"] = _core.digest(distid.pth_content(_sites._site_dirs).encode())
+    rs = os.path.realpath(root)
+    d["sys_path"] = [("<root>" + e[len(rs):]) if isinstance(e, str) and (e == rs or e.startswith(rs + os.sep))
+                     else e for e in (os.path.realpath(x) if isinstance(x, str) and x else x for x in sys.path)
+                     if isinstance(e, str)]
     if per_dist:
         # --det-cache-dists: each test depends on the distributions it used (distid), not on all of them
         d["distributions"] = "per-test"

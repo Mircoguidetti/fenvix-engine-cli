@@ -160,3 +160,93 @@ def test_module_shadowed_by_a_new_file_earlier_on_the_path(pytester, cycle):
     assert p.get("test_u.py::test_v") == "passed", rs[0].stdout.str()
     assert fresh.get("test_u.py::test_v") == "failed", rs[2].stdout.str()
     assert wrong == {}, rs[1].stdout.str()
+
+
+# -- variants (review R-019c asked for them): other ways to look a module up -------------------------------------
+def test_find_spec_of_a_module_that_appears(pytester, cycle):
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_fs="""
+        import importlib.util
+
+        def test_absent():
+            assert importlib.util.find_spec("optmod") is None
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "optmod.py", "\n"))
+    assert fresh.get("test_fs.py::test_absent") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
+
+
+def test_pkgutil_iter_modules_sees_a_new_module(pytester, cycle):
+    pytester.makeini("[pytest]\n")
+    _w(pytester.path / "plugins" / "__init__.py", "")
+    _w(pytester.path / "plugins" / "a.py", "")
+    pytester.makepyfile(test_pk="""
+        import pkgutil
+
+        import plugins
+
+        def test_names():
+            assert [m.name for m in pkgutil.iter_modules(plugins.__path__)] == ["a"]
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "plugins" / "b.py", "\n"))
+    assert fresh.get("test_pk.py::test_names") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
+
+
+def test_package_path_extended_at_import(pytester, cycle):
+    # pkg/__init__.py appends a directory to its __path__; a submodule that appears there is found
+    pytester.makeini("[pytest]\n")
+    _w(pytester.path / "pkg" / "__init__.py", """
+        import os
+        __path__.append(os.path.join(os.path.dirname(__file__), "..", "extra"))
+        """)
+    (pytester.path / "extra").mkdir()
+    pytester.makepyfile(test_pe="""
+        def test_no_plug():
+            try:
+                import pkg.plug  # noqa: F401
+            except ImportError:
+                return
+            raise AssertionError("plug found")
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "extra" / "plug.py", "\n"))
+    assert fresh.get("test_pe.py::test_no_plug") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
+
+
+def test_custom_meta_path_finder(pytester, cycle):
+    # a conftest installs a finder that serves modules from *.src files; it checks for the file with os.path.exists
+    pytester.makeini("[pytest]\n")
+    pytester.makeconftest("""
+        import importlib.abc, importlib.util, os, sys
+
+        ROOT = os.path.dirname(__file__)
+
+        class SrcFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
+            def find_spec(self, name, path=None, target=None):
+                f = os.path.join(ROOT, "virtual", name + ".src")
+                if "." in name or not os.path.exists(f):
+                    return None
+                return importlib.util.spec_from_loader(name, self)
+
+            def create_module(self, spec):
+                return None
+
+            def exec_module(self, module):
+                with open(os.path.join(ROOT, "virtual", module.__name__ + ".src")) as fh:
+                    exec(fh.read(), module.__dict__)
+
+        sys.meta_path.append(SrcFinder())
+        """)
+    (pytester.path / "virtual").mkdir()
+    pytester.makepyfile(test_mp="""
+        def test_no_virtual():
+            try:
+                import vmod  # noqa: F401
+            except ImportError:
+                return
+            raise AssertionError("vmod found")
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "virtual" / "vmod.src", "X = 1\n"))
+    assert fresh.get("test_mp.py::test_no_virtual") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
