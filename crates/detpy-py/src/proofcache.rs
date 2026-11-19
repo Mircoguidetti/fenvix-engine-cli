@@ -91,7 +91,7 @@ impl ProofCache {
 
     /// Compare recorded dependencies on `path` with `dep`, the state this session's code saw before it created the
     /// path (see `Checker::observed`).
-    fn observed(&self, path: &str, dep: &str) {
+    pub(crate) fn observed(&self, path: &str, dep: &str) {
         lock(&self.inner).checker.observed(path, dep);
     }
 
@@ -112,7 +112,7 @@ impl ProofCache {
     /// once per distinct run id) more than `max_age_s` before `now` is not reused (review R-009 F4):
     /// `"expired: recorded N.N days ago (--det-cache-max-age)"`.
     #[pyo3(signature = (nodeids, max_age_s, now, run_time))]
-    fn check_all<'py>(
+    pub(crate) fn check_all<'py>(
         &self,
         py: Python<'py>,
         nodeids: Vec<String>,
@@ -167,7 +167,7 @@ impl ProofCache {
     /// Write the receipts file as `ProofCachePlugin._write_receipts` did (`json.dumps` of
     /// `{"nodeid", "reused": true, **receipt}` per hit, then `{"nodeid", "reused": false, "why"}` per miss), the
     /// hits being results `check_all` found reusable. I/O errors are ignored, as they were.
-    fn write_receipts(&self, py: Python<'_>, path: PathBuf, hits: Vec<Bound<'_, PyString>>, misses: Vec<(Bound<'_, PyString>, Bound<'_, PyString>)>) -> PyResult<()> {
+    pub(crate) fn write_receipts(&self, py: Python<'_>, path: PathBuf, hits: Vec<Bound<'_, PyString>>, misses: Vec<(Bound<'_, PyString>, Bound<'_, PyString>)>) -> PyResult<()> {
         let mut text = String::new();
         {
             let g = lock(&self.inner);
@@ -362,6 +362,23 @@ impl ProofCache {
     }
 }
 
+impl ProofCache {
+    /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);
+    /// the store is not saved (`CacheSession.record`).
+    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>) -> PyResult<record::Outcome> {
+        cap.get().fill_plan(py, &mut plan)?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session(&mut g.store, &plan);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok(out)
+    }
+}
+
 /// `repr(float)` (Python's shortest round-trip form: fixed notation for decimal exponents -4..16, else `1e-05`).
 pub fn py_float_repr(x: f64) -> String {
     if x.is_nan() {
@@ -506,7 +523,7 @@ fn receipt_dict<'py>(py: Python<'py>, r: &Receipt) -> PyResult<Bound<'py, PyDict
 }
 
 /// A JSON value as `json.loads` gives it.
-fn value_to_py<'py>(py: Python<'py>, v: &serde_json::Value) -> PyResult<Bound<'py, PyAny>> {
+pub(crate) fn value_to_py<'py>(py: Python<'py>, v: &serde_json::Value) -> PyResult<Bound<'py, PyAny>> {
     use pyo3::IntoPyObjectExt;
     Ok(match v {
         serde_json::Value::Null => py.None().into_bound(py),

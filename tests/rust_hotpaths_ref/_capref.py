@@ -41,3 +41,21 @@ if _wanted() and "detpy.proofcache" not in sys.modules:
     exec(code, mod.__dict__)
     detpy.proofcache = mod
     mod.CAPTURE_REFERENCE = True
+
+    # plugin.py reaches the cache plugin through two entry points of the Rust session (CacheSession): the receipt
+    # of a reused result and the cache's part of the outcomes file. The reference plugin keeps its dicts; these
+    # adapters give it the same two entry points, with the expressions plugin.py used before the session moved.
+    class _RefSession:
+        def __init__(self, plugin):
+            self.plugin = plugin
+
+        def hit(self, nodeid):
+            return self.plugin.hits.get(nodeid)
+
+    def _outcomes_data(self):
+        return {**self.summary_data(), "reused_ids": sorted(self.hits), "verified_ids": sorted(self.verifying),
+                "not_cached_ids": self.not_cached, "not_cached_where": self.not_cached_where,
+                "miss_ids": self.misses}
+
+    mod.ProofCachePlugin.outcomes_data = _outcomes_data
+    mod.ProofCachePlugin.sess = property(lambda self: _RefSession(self))

@@ -479,7 +479,9 @@ def config_identity(config) -> tuple[str, dict]:
 
 # ---------------------------------------------------------------------------
 class ProofCachePlugin:
-    """pytest hooks of ``--det-cache``."""
+    """pytest hooks of ``--det-cache``. The session's bookkeeping (decisions, reports, the record plan, the reasons
+    and the summary) is Rust (``_core.CacheSession``, ``crates/detpy-py/src/session.rs``); this class hands it
+    pytest's objects."""
 
     def __init__(self, cap: Capture, cache_dir: str, verify: float, receipts: str | None):
         self.cap = cap
@@ -494,27 +496,9 @@ class ProofCachePlugin:
         self.runtime_digest = ""
         self.runtime_info: dict = {}
         self.epoch = 0
-        self.hits: dict[str, dict] = {}  # nodeid -> receipt
-        self.verifying: dict[str, dict] = {}  # nodeid -> receipt of a hit re-run for verification
-        self.misses: dict[str, str] = {}
         self.items: dict[str, object] = {}
-        self.test_index: dict[str, int] = {}
-        self.fixture_ctx: dict[str, list] = {}
-        self.ran: list[str] = []
-        self.parts: dict[str, dict] = {}
-        self.dur: dict[str, float] = {}
-        self.fingerprints: dict[str, str] = {}
-        self.verify_results: list[dict] = []
-        self.summary: dict = {}
         self.run_id = f"{time.strftime('%Y%m%dT%H%M%S', time.gmtime(_now()))}-{os.getpid()}"
-        self.t_check = 0.0
-        self.t_record = 0.0
-        self.recorded = 0
-        self.not_cached: dict[str, str] = {}
-        self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
-        self.stale_hits: dict[str, str] = {}
-        self.error: str | None = None
-        self.phases: dict[str, float] = {}  # seconds per phase of the end-of-session recording
+        self.sess = _core.CacheSession(self.run_id, self.receipts_path)
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -537,6 +521,7 @@ class ProofCachePlugin:
         self.epoch = _state.STATE.config.epoch_ns
         self.store = _core.ProofCache(self.dir, self.root)
         self.store.begin(self.config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+        self.sess.configure(self.config_digest, self.runtime_digest, self.epoch)
 
     # -- collection -------------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -559,49 +544,34 @@ class ProofCachePlugin:
         try:
             self._decide(session.items)
         finally:
-            self.t_check = _perf() - t0
+            self.sess.t_check = _perf() - t0
 
     def _decide(self, items) -> None:
-        store = self.store
+        store, cap = self.store, self.cap
         changed = list(store.changed_code_files())
-        jobs = []
-        for path, content in changed:
-            mod, is_pkg = _module_of(os.path.join(self.root, path))
-            jobs.append((os.path.join(self.root, path), content, mod, is_pkg))
+        for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
+                                                                 [c for _, c in changed])):
+            if f is not None:
+                store.set_fresh(path, content, *f)
+        self.sess.seed_exclusive(store, cap)  # review R-009b R2
+        nids = [item.nodeid for item in items]
+        self.items = dict(zip(nids, items))
+        # the checks, the expiry (review R-009 F4: an entry older than --det-cache-max-age is not reused), the
+        # receipts and the verification draw (Python's Mersenne Twister, seeded per run) are Rust
+        rng = random.Random(f"detpy-cache-verify:{self.run_id}")
+        self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
+
+    def _read_facts(self, paths, contents) -> list:
+        """Facts of code files (``_codefacts``: CPython's parser), detpy's own reads not being inputs."""
+        if not paths:
+            return []
         cap, was = self.cap, self.cap.active
-        cap.active = False  # detpy's own reads and workers are not inputs of any test
+        cap.active = False
         try:
-            facts = _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))
+            return _codefacts.read_many([(p, c, *_module_of(p)) for p, c in zip(paths, contents)],
+                                        os.path.join(self.dir, "tmp"))
         finally:
             cap.active = was
-        for (path, content), f in zip(changed, facts):
-            if f is not None:
-                store.set_fresh(path, content, f[0], f[1], f[2], f[3])
-        # review R-009b R2: a path this session's code (import time, collection) created with an exclusive create
-        # that found it missing: the recorded "missing" is compared with what that code saw, not with the file it
-        # then created (a NamedTemporaryFile held in a module global); see stale_skip in _plan
-        self.excl_seeded = {}
-        writers = cap.writers
-        for p, present in cap.excl_pre.items():
-            if not present and p in writers:
-                store.observed(cap._key(p), "missing")
-                self.excl_seeded[p] = set(writers[p])
-        rng = random.Random(f"detpy-cache-verify:{self.run_id}")
-        nids = [item.nodeid for item in items]
-        # the checks, the expiry (review R-009 F4: real-clock reads outside the virtual clock that detpy cannot see,
-        # such as OpenSSL's certificate validity, are bounded: an entry older than --det-cache-max-age is not
-        # reused) and the receipts are Rust (ProofCache.check_all)
-        decided = store.check_all(nids, self.max_age_s, _now(), _run_time)
-        for i, (item, nid, (ok, info)) in enumerate(zip(items, nids, decided)):
-            self.items[nid] = item
-            self.test_index[nid] = i
-            if ok:
-                if self.verify and rng.random() < self.verify:
-                    self.verifying[nid] = info
-                else:
-                    self.hits[nid] = info
-            else:
-                self.misses[nid] = info
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -618,7 +588,7 @@ class ProofCachePlugin:
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtest_protocol(self, item, nextitem):
-        receipt = self.hits.get(item.nodeid)
+        receipt = self.sess.hit(item.nodeid)
         if receipt is None:
             return None
         self._reuse(item, nextitem, receipt)
@@ -626,7 +596,7 @@ class ProofCachePlugin:
 
     def _wrap_protocol(self, item, nextitem):  # generator driven by _ProtocolWrapper
         nid = item.nodeid
-        if nid in self.hits:
+        if self.sess.is_hit(nid):
             yield
             return
         fx = []
@@ -637,30 +607,18 @@ class ProofCachePlugin:
                 if defs and defs[-1].scope != "function":
                     d = defs[-1]
                     fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
-        self.fixture_ctx[nid] = sorted(set(fx))
+        self.sess.start_test(nid, fx)
         self.cap.switch("t|" + nid)
         t = _perf()
         try:
             yield
         finally:
-            self.dur[nid] = _perf() - t
+            dur = _perf() - t
             self.cap.switch("s")
-            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
-            self.ran.append(nid)
+            self.cap.scan_modules(self.sess.end_test(nid, dur), self._conftests())
 
     def pytest_runtest_logreport(self, report):
-        if report.nodeid in self.hits:
-            return
-        p = self.parts.setdefault(report.nodeid, {})
-        info = {"outcome": report.outcome}
-        if hasattr(report, "wasxfail"):
-            info["wasxfail"] = report.wasxfail
-        if report.skipped and isinstance(report.longrepr, tuple) and len(report.longrepr) == 3:
-            info["longrepr"] = [str(report.longrepr[0]), report.longrepr[1], str(report.longrepr[2])]
-        p[report.when] = info
-        for k, v in report.user_properties:
-            if k == "detpy_fingerprint":
-                self.fingerprints[report.nodeid] = v
+        self.sess.report(report)
 
     def _conftests(self):
         pm = self.config.pluginmanager
@@ -707,10 +665,8 @@ class ProofCachePlugin:
     def finish(self, session) -> None:
         from . import plugin as _plugin  # the fingerprints of the tests that ran (Level 0 recorder)
 
-        for nid, fp in _plugin.S.fingerprints.items():
-            if nid not in self.hits:
-                self.fingerprints[nid] = fp
-        cap = self.cap
+        sess, cap = self.sess, self.cap
+        sess.add_fingerprints(_plugin.S.fingerprints)
         cap.switch("s")
         cap.stop()
         t0 = _perf()
@@ -720,263 +676,84 @@ class ProofCachePlugin:
             import traceback
             import warnings
 
-            self.error = f"{type(e).__name__}: {e}"
-            warnings.warn(f"detpy --det-cache: results not recorded: {self.error}\n{traceback.format_exc()}")
+            sess.error = f"{type(e).__name__}: {e}"
+            warnings.warn(f"detpy --det-cache: results not recorded: {type(e).__name__}: {e}\n{traceback.format_exc()}")
         finally:
-            self.t_record = _perf() - t0
-        self.compare_verified({n: _final(p) for n, p in self.parts.items()})
-        self._write_receipts()
+            sess.t_record = _perf() - t0
+        sess.compare_verified()
+        sess.write_receipts(self.store)
 
-    def _facts_index(self, rel: str, cache: dict) -> int | None:
-        """Store index of the facts of the current version of ``rel`` (computed once per file)."""
-        if rel in cache:
-            return cache[rel]
-        p = os.path.join(self.root, rel)
-        content = _core.file_digest(p)
-        ix = None
-        if content is not None:
-            ix = self.store.file_index(rel, content)
-            if ix is None:
-                mod, is_pkg = _module_of(p)
-                f = _codefacts.read_facts(p, content, mod, is_pkg)
-                if f is not None:
-                    ix = self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
-        cache[rel] = ix
-        return ix
-
-    def _prefetch_facts(self, rels, cache: dict) -> None:
-        """Facts of every file in ``rels`` whose current version the store does not have yet, computed together."""
-        jobs, meta = [], []
+    def _facts(self, rels, cache: dict) -> None:
+        """Store index of the facts of the current version of every file in ``rels`` not in ``cache`` (new versions
+        parsed together)."""
+        jobs = []
         for rel in rels:
             if rel in cache:
                 continue
-            p = os.path.join(self.root, rel)
-            content = _core.file_digest(p)
-            if content is None:
-                cache[rel] = None
-                continue
-            ix = self.store.file_index(rel, content)
-            if ix is not None:
-                cache[rel] = ix
-                continue
-            mod, is_pkg = _module_of(p)
-            jobs.append((p, content, mod, is_pkg))
-            meta.append((rel, content))
-        if not jobs:
-            return
-        for (rel, content), f in zip(meta, _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))):
-            cache[rel] = None if f is None else self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
+            content = _core.file_digest(os.path.join(self.root, rel))
+            ix = None if content is None else self.store.file_index(rel, content)
+            cache[rel] = ix
+            if content is not None and ix is None:
+                jobs.append((rel, content))
+        facts = _codefacts.read_many([(p, c, *_module_of(p)) for p, c in
+                                      ((os.path.join(self.root, r), c) for r, c in jobs)],
+                                     os.path.join(self.dir, "tmp")) if jobs else ()
+        for (rel, content), f in zip(jobs, facts):
+            cache[rel] = None if f is None else self.store.add_file(rel, content, *f)
 
     def _record_all(self) -> None:
         if self.cap.rec is None:
             return
         t = _perf()
         self.cap.collect_children()
-        self.phases["children"] = _perf() - t
+        self.sess.set_phase("children", _perf() - t)
         self._record_captured()
 
     def _record_captured(self) -> None:
-        """Record every test that ran from the capture: the per-test assembly of inputs and the reasons a test is
-        not cached are computed in Rust (``detpy_core::record``) from one plan of plain data."""
-        store, ph = self.store, self.phases
+        """Record every test that ran: the record plan is built and recorded in Rust (``CacheSession.record``,
+        ``detpy_core::record``) from the session, the capture and the facts of the files it needs (CPython's
+        parser, ``_codefacts``)."""
+        cap, store, sess = self.cap, self.store, self.sess
         t = _perf()
-        plan = json.dumps(self._plan())
-        ph["plan"] = _perf() - t - ph.get("facts", 0.0)
+        fcache: dict[str, int | None] = {}
+        needed, whole = sess.files_needed(cap, self.items)
+        self._facts(needed, fcache)
+        self._facts(whole, fcache)
+        sess.set_phase("facts", _perf() - t)
         t = _perf()
-        # the capture's part of the plan (contexts, data, env, flags, writers, loaded modules) comes from the
-        # Rust capture itself
-        recorded, not_cached, stale, g_ctx_all = store.record_captured(plan, self.cap)
-        ph["assemble"] = _perf() - t
-        for nid, path in stale:
-            self.stale_hits[nid] = path
-        for nid, why, ctxs in not_cached:
-            if ctxs:
-                self.not_cached_where[nid] = self._where(why, ctxs)
-            self.not_cached[nid] = why
-        self.recorded += recorded
+        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, store.unit_ranges([fcache.get(r) for r in cap.fnames]))
+        cfg = _state.STATE.config
+        assemble = sess.record(store, cap, self.items, fcache, needed, per, imp, _module_of,
+                               bool(cfg.control_urandom), "time" in cfg.controls, cfg.cassette_path)
+        sess.set_phase("plan", _perf() - t - assemble)
+        sess.set_phase("assemble", assemble)
         t = _perf()
         store.save()
-        ph["save"] = _perf() - t
+        sess.set_phase("save", _perf() - t)
 
-    def _plan(self) -> dict:
-        """The session's capture as plain data (``detpy_core::record::Plan``)."""
-        cap, store = self.cap, self.store
-        fcache: dict[str, int | None] = {}
-        rels = cap.fnames
-        # file facts for every executed or loaded repository file (new versions parsed in parallel)
-        needed = set(rels) | {r for r, _ in cap.loaded_order} | cap.preloaded
-        t = _perf()
-        self._prefetch_facts(sorted(needed), fcache)
-        for rel in needed:
-            self._facts_index(rel, fcache)
-        self.phases["facts"] = _perf() - t
-        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, store.unit_ranges([fcache.get(r) for r in rels]))
-        tests, test_modules = [], {}
-        for nid in self.items:
-            tf = _ctx_file(nid)
-            if tf not in test_modules:
-                test_modules[tf] = _module_of(os.path.join(self.root, tf))[0]
-        for nid in self.ran:
-            item = self.items.get(nid)
-            if item is None:
-                continue
-            p = self.parts.get(nid, {})
-            whole = type(item).__name__ == "DoctestItem" or not hasattr(item, "obj")
-            if whole:
-                own = _ctx_file(nid)
-                if fcache.get(own) is None:
-                    self._facts_index(own, fcache)
-            tests.append({"nodeid": nid, "outcome": _final(p), "report": {w: p[w] for w in ("setup", "call") if w in p},
-                          "fingerprint": self.fingerprints.get(nid, ""), "duration": self.dur.get(nid, 0.0),
-                          "index": self.test_index.get(nid, 0), "fixtures": self.fixture_ctx.get(nid, []),
-                          "whole": whole})
-        cfg = _state.STATE.config
-        cassette = None
-        if cfg.cassette_path:
-            d = _core.file_digest(cfg.cassette_path)
-            cassette = (cap._key(os.path.realpath(cfg.cassette_path)), f"f:{d}" if d else "missing")
-        return {
-            # filled by ProofCache.record_captured from the capture: ctx_names, import_ctx, fnames, data, env, flags,
-            # writers, session_written, loaded_order, preloaded, changed
-            "ctx_names": [], "import_ctx": 0, "fnames": [],
-            "file_ix": {r: ix for r, ix in fcache.items() if ix is not None},
-            "per": per, "imp": imp, "needed": sorted(needed),
-            # the stale check leaves out a path whose recorded absence was compared with what this session's code
-            # saw before it created it, when nothing wrote it after the decision (review R-009b R2)
-            "stale_skip": sorted(cap._key(p) for p, w in getattr(self, "excl_seeded", {}).items()
-                                 if cap.writers.get(p) == w),
-            "test_modules": test_modules, "tests": tests, "hits": list(self.hits),
-            "root_sep": cap.root_sep, "control_urandom": bool(cfg.control_urandom),
-            "time_controlled": "time" in cfg.controls, "epoch": self.epoch, "cassette": cassette,
-            "env0": dict(cap.env0), "config": self.config_digest, "runtime": self.runtime_digest, "run": self.run_id,
-        }
-
-    def _where(self, why: str, ctxs) -> str:
-        """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
-        flag = _FLAG_OF.get(why)
-        if flag is None:
-            return why
-        for c in ctxs:
-            d = self.cap.why.get((c, flag))
-            if d is not None:
-                return f"{d} ({_ctx_label(self.cap.ctx_names[c])})"
-        return ""
-
-    def _not_cached(self, nid: str, why: str) -> None:
-        self.not_cached[nid] = why
-        self.store.remove(nid)
-
-    def _write_receipts(self) -> None:
-        """One JSON line per decision (Rust: ``ProofCache.write_receipts``, the format ``json.dumps`` wrote)."""
-        self.store.write_receipts(os.path.abspath(self.receipts_path), list(self.hits), list(self.misses.items()))
-
-    # -- reporting --------------------------------------------------------------------
+    # -- reporting (Rust: CacheSession) --------------------------------------------------
     def summary_data(self) -> dict:
-        kinds: dict[str, int] = {}
-        for why in self.misses.values():
-            k = why.split(":", 1)[0]
-            kinds[k] = kinds.get(k, 0) + 1
-        nc: dict[str, int] = {}
-        detail: dict[str, int] = {}
-        for nid, why in self.not_cached.items():
-            k = why.split(" ", 1)[0] if why.startswith("outcome") else why.split(":", 1)[0]
-            nc[k] = nc.get(k, 0) + 1
-            if not why.startswith("outcome"):
-                w = self.not_cached_where.get(nid)
-                full = f"{why}: {w}" if w else why
-                detail[full] = detail.get(full, 0) + 1
-        top = dict(sorted(detail.items(), key=lambda kv: (-kv[1], kv[0]))[:40])
-        return {
-            "reused": len(self.hits),
-            "verified": len(self.verifying),
-            "ran": len(self.ran),
-            "recorded": self.recorded,
-            "miss_reasons": kinds,
-            "not_cached": nc,
-            "not_cached_detail": top,
-            "children": self.cap.children,
-            "children_not_followed": (self.cap.follower.why_not if self.cap.follower is not None else None),
-            "child_entropy_draws": self.cap.child_entropy,
-            "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
-            "check_seconds": round(self.t_check, 3),
-            "record_seconds": round(self.t_record, 3),
-            "phase_seconds": {k: round(v, 3) for k, v in self.phases.items()},
-            "config": self.config_digest,
-            "runtime": self.runtime_digest,
-            "epoch_ns": self.epoch,
-            "verify_mismatches": [v for v in self.verify_results if not v["same"]],
-            "stale_reuses": self.stale_hits,
-            "error": self.error,
-            "receipts": self.receipts_path,
-        }
+        return self.sess.summary_data(self.cap)
 
-    def _entry_duration(self, nid: str) -> float:
-        return float(self.hits[nid].get("duration", 0.0) or 0.0)
-
-    def compare_verified(self, outcomes: dict) -> None:
-        for nid, r in self.verifying.items():
-            o = outcomes.get(nid)
-            fp = self.fingerprints.get(nid)
-            self.verify_results.append({"nodeid": nid, "cached": r["outcome"], "fresh": o,
-                                        "same": o == r["outcome"], "same_fingerprint": fp == r["fingerprint"]})
+    def outcomes_data(self) -> dict:
+        return self.sess.outcomes_data(self.cap)
 
     def terminal_summary(self, tr) -> None:
-        s = self.summary_data()
         tr.section("detpy cache with proof")
-        tr.write_line(f"reused {s['reused']} result(s) with proof, ran {s['ran']}, recorded {s['recorded']} "
-                      f"(check {s['check_seconds']}s, record {s['record_seconds']}s); config {s['config']}, "
-                      f"runtime {s['runtime']}")
-        if s["miss_reasons"]:
-            tr.write_line("not reused: " + ", ".join(f"{k} {v}" for k, v in sorted(s["miss_reasons"].items())))
-        if s["not_cached"]:
-            tr.write_line("not cacheable: " + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items())))
-        for nid, path in self.stale_hits.items():
-            tr.write_line(f"WARNING reused {nid}, but this session then wrote its input {path}: entry dropped",
-                          yellow=True)
-        if self.verify_results:
-            bad = s["verify_mismatches"]
-            tr.write_line(f"verified {len(self.verify_results)} reusable result(s) by running them: "
-                          f"{len(bad)} mismatch(es)", red=bool(bad))
-            for b in bad:
-                tr.write_line(f"  MISMATCH {b['nodeid']}: cached {b['cached']}, fresh {b['fresh']}", red=True)
-        if tr.config.option.verbose > 0:
-            for nid, r in self.hits.items():
-                tr.write_line(f"REUSED {nid} key={r['key']} run={r['run']} outcome={r['outcome']}: checked "
-                              f"{r['n_units']} functions, {r['n_skeleton']} modules, {r['n_hooks']} conftest hook "
-                              f"sets, {r['n_content']} whole files, {r['n_data']} data paths, {r['n_env']} env "
-                              f"vars; runtime {r['runtime']}, config {r['config']}"
-                              f"{'' if r['epoch'] is None else ', epoch ' + str(r['epoch'])}")
-        tr.write_line(f"receipts: {s['receipts']}")
+        for text, markup in self.sess.summary_lines(self.cap, tr.config.option.verbose):
+            tr.write_line(text, **({markup: True} if markup else {}))
 
 
 def _run_time(run: str) -> float:
     """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired).
-    (``time.strptime``'s rules: called by ``ProofCache.check_all`` once per distinct run id.)"""
+    (``time.strptime``'s rules, which depend on the Python version: called by ``ProofCache.check_all`` once per
+    distinct run id.)"""
     import calendar
 
     try:
         return float(calendar.timegm(time.strptime(run.split("-", 1)[0], "%Y%m%dT%H%M%S")))
     except (ValueError, IndexError):
         return 0.0
-
-
-def _final(parts: dict) -> str:
-    setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
-    so = setup and setup["outcome"]
-    if so and so != "passed":
-        if so == "skipped":
-            return "xfailed" if "wasxfail" in setup else "skipped"
-        return "error"
-    if call is None:
-        return "unknown"
-    co = call["outcome"]
-    if teardown and teardown["outcome"] == "failed":
-        return "error"
-    if co == "skipped" and "wasxfail" in call:
-        return "xfailed"
-    if co == "passed" and "wasxfail" in call:
-        return "xpassed"
-    return co
 
 
 def _safe(s: str) -> str:
@@ -1056,27 +833,6 @@ def _numeric_host(host: str) -> bool:
         return True
     except ValueError:
         return False
-
-
-_FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
-            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
-
-
-def _ctx_label(name: str) -> str:
-    if name == "":
-        return "startup"
-    if name == "s":
-        return "between tests"
-    if name == "i":
-        return "import time"
-    kind, _, rest = name.partition("|")
-    if kind == "i":
-        return "import of " + rest
-    if kind == "c":
-        return "collection of " + rest
-    if kind == "f":
-        return "fixture " + rest.rsplit("|", 1)[-1]
-    return "test"
 
 
 def _first_user_site() -> str:

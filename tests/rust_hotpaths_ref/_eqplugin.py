@@ -26,22 +26,33 @@ def _configure(self, config):
         self.cap.active = was
 
 
+def _ref_view(self, store):
+    """The plugin as the round-1 reference loop reads it: the round-2 Python plugin (``_ref_proofcache.py``) without
+    its ``__init__``, holding the Rust session's bookkeeping (``CacheSession.state``) and ``store``."""
+    from _ref_pc_helpers import _m as ref
+
+    v = ref.ProofCachePlugin.__new__(ref.ProofCachePlugin)
+    for name in ("cap", "items", "root", "dir", "run_id", "epoch", "config_digest", "runtime_digest"):
+        setattr(v, name, getattr(self, name))
+    for name, value in self.sess.state().items():
+        setattr(v, name, value)
+    v.store, v.not_cached, v.not_cached_where, v.stale_hits, v.recorded = store, {}, {}, {}, 0
+    return v
+
+
 def _record_captured(self):
     from _ref_record import record_reference
 
     ref_dir = self.dir + "-ref"
-    saved = (self.store, self.not_cached, self.not_cached_where, self.stale_hits, self.recorded)
     ref_store = pc._core.ProofCache(ref_dir, self.root)
-    self.store, self.not_cached, self.not_cached_where, self.stale_hits, self.recorded = ref_store, {}, {}, {}, 0
-    try:
-        record_reference(self, ref_store)
-        ref = {"not_cached": self.not_cached, "where": self.not_cached_where, "stale": self.stale_hits,
-               "recorded": self.recorded}
-    finally:
-        self.store, self.not_cached, self.not_cached_where, self.stale_hits, self.recorded = saved
+    view = _ref_view(self, ref_store)
+    record_reference(view, ref_store)
+    ref = {"not_cached": view.not_cached, "where": view.not_cached_where, "stale": view.stale_hits,
+           "recorded": view.recorded}
     _orig_record(self)
-    new = {"not_cached": self.not_cached, "where": self.not_cached_where, "stale": self.stale_hits,
-           "recorded": self.recorded}
+    d = self.sess.outcomes_data(self.cap)
+    new = {"not_cached": d["not_cached_ids"], "where": d["not_cached_where"], "stale": d["stale_reuses"],
+           "recorded": d["recorded"]}
     with open(os.environ["DETPY_EQ_OUT"], "a") as fh:
         fh.write(json.dumps({"ref": ref, "new": new, "dir": self.dir, "ref_dir": ref_dir}) + "\n")
 

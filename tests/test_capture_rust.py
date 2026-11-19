@@ -101,6 +101,21 @@ EXTRA = {
             from pkg import lazy
             assert lazy.compute() == [0, 1, 4] and lazy.VAL
         """,
+    "test_stale.py": """
+        import os
+        from pathlib import Path
+
+        HERE = Path(__file__).parent
+
+        def test_stale_reader():
+            assert (HERE / "stale_in.txt").read_text()
+
+        def test_stale_writer():
+            # reruns when EQ_MODE changes (session 3) and then writes the input of the reused test_stale_reader
+            if os.environ.get("EQ_MODE") == "b":
+                (HERE / "stale_in.txt").write_text("b\\n")
+        """,
+    "stale_in.txt": "a\n",
 }
 
 
@@ -130,15 +145,34 @@ def _run(pytester, mode: str, *args):
 _VOLATILE = re.compile(rb'"(run|duration)": ?("[^"]*"|[0-9.e-]+)')
 
 
-def _session(pytester, mode: str, cache: Path, tag: str) -> dict:
+# the terminal summary's volatile parts: timings, run ids, digests (config holds the outcomes path), thread ids
+_TERM_VOLATILE = [(re.compile(r"\(check [0-9.]+s, record [0-9.]+s\)"), "(check Ts, record Ts)"),
+                  (re.compile(r"run=\S+"), "run=R"), (re.compile(r"(config|runtime) [0-9a-f]+"), r"\1 D"),
+                  (re.compile(r"/proc/self/task/\d+/"), "/proc/self/task/N/")]
+
+
+def _terminal_section(text: str) -> str:
+    """The "detpy cache with proof" section of a run's output, its volatile parts masked."""
+    m = re.search(r"=+ detpy cache with proof =+\n(.*?receipts: [^\n]*)", text, re.S)
+    out = m.group(1) if m else ""
+    for rx, rep in _TERM_VOLATILE:
+        out = rx.sub(rep, out)
+    return out
+
+
+def _session(pytester, mode: str, cache: Path, tag: str, *extra) -> dict:
     o = pytester.path.parent / f"{pytester.path.name}-o-{mode}-{tag}.json"
-    r = _run(pytester, mode, f"--det-cache={cache}", f"--det-outcomes={o}")
+    r = _run(pytester, mode, f"--det-cache={cache}", f"--det-outcomes={o}", *extra)
     assert "INTERNALERROR" not in r.stdout.str(), r.stdout.str()[-3000:]
     d = json.loads(o.read_text())
-    summary = {k: v for k, v in (d.get("cache") or {}).items() if not k.endswith("seconds") and k != "receipts"}
+    cache_part = d.get("cache") or {}
+    summary = {k: v for k, v in cache_part.items() if not k.endswith("seconds") and k != "receipts"}
     receipts = [_VOLATILE.sub(b"", x.encode()) for x in (cache / "receipts.jsonl").read_text().splitlines()]
     return {"store": _VOLATILE.sub(b"", (cache / "proof-cache.json").read_bytes()), "receipts": receipts,
-            "outcomes": d.get("outcomes"), "summary": summary}
+            "outcomes": d.get("outcomes"), "summary": summary,
+            # the order of the outcomes file's cache keys and of its phase timings (the values are timings)
+            "keys": list(cache_part), "phases": list(cache_part.get("phase_seconds") or {}),
+            "terminal": _terminal_section(r.stdout.str())}
 
 
 def test_capture_reference_plugin_is_active(pytester, ref_env):
@@ -181,9 +215,11 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
         monkeypatch.setenv("EQ_MODE", "b")
         out.append(_session(pytester, mode, cache, "3"))           # code + env change, stale reuse
         out.append(_session(pytester, mode, cache, "4"))           # after the writes
+        out.append(_session(pytester, mode, cache, "5", "--det-cache-verify=1"))  # every reusable result re-run
+        out.append(_session(pytester, mode, cache, "6", "-v"))     # verbose: one REUSED line per result
         steps.append(out)
     ref, new = steps
-    for i in range(4):
+    for i in range(6):
         assert ref[i]["store"] == new[i]["store"], f"session {i + 1}: stores differ"
         assert ref[i]["receipts"] == new[i]["receipts"], f"session {i + 1}: receipts differ"
         assert ref[i]["outcomes"] == new[i]["outcomes"], f"session {i + 1}"
@@ -191,12 +227,18 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
         cut = lambda s: re.sub(r"/proc/self/task/\d+/", "/proc/self/task/N/", json.dumps(  # noqa: E731
             {k: v for k, v in s.items() if k not in ("config", "runtime")}, sort_keys=True))
         assert cut(ref[i]["summary"]) == cut(new[i]["summary"]), f"session {i + 1}: summaries differ"
+        assert ref[i]["keys"] == new[i]["keys"] and ref[i]["phases"] == new[i]["phases"], f"session {i + 1}"
+        assert ref[i]["terminal"] == new[i]["terminal"], f"session {i + 1}: terminal summaries differ"
     s1 = new[0]["summary"]
     assert s1["recorded"] > 20 and new[1]["summary"]["reused"] > 20
     nc = s1["not_cached"]
     assert {"host name lookup", "reads /proc, /sys or /dev", "real clock read outside the virtual clock",
             "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
     assert new[2]["summary"]["reused"] and new[2]["summary"]["recorded"], new[2]["summary"]
+    assert "test_stale.py::test_stale_reader" in new[2]["summary"]["stale_reuses"], new[2]["summary"]
+    assert "WARNING reused test_stale.py::test_stale_reader" in new[2]["terminal"], new[2]["terminal"]
+    assert new[4]["summary"]["verified"] > 20 and not new[4]["summary"]["reused"], new[4]["summary"]
+    assert "verified " in new[4]["terminal"] and new[5]["terminal"].count("REUSED ") > 20, new[5]["terminal"]
 
 
 # ---------------------------------------------------------------------------

@@ -564,9 +564,7 @@ class _DetSession(_Outcomes):
                "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
         pc = proofcache.PLUGIN
         if pc is not None:
-            out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
-                            "not_cached_ids": pc.not_cached, "not_cached_where": pc.not_cached_where,
-                            "miss_ids": pc.misses}
+            out["cache"] = pc.outcomes_data()
         return out
 
     def pytest_report_header(self, config):
@@ -651,10 +649,11 @@ class _DetSession(_Outcomes):
             yield
             return
         pc = proofcache.PLUGIN
-        if pc is not None and item.nodeid in pc.hits:
+        receipt = pc.sess.hit(item.nodeid) if pc is not None else None
+        if receipt is not None:
             # reused with proof: nothing runs, the recorded fingerprint stands for the test
             yield
-            fp = pc.hits[item.nodeid].get("fingerprint")
+            fp = receipt.get("fingerprint")
             if fp:
                 S.fingerprints[item.nodeid] = fp
             return
