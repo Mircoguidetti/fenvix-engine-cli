@@ -237,6 +237,36 @@ CI-FACTS.md; one shard or group where the CI splits).
   construction, so its "placement 1,300 / parallel noise 430" mixes two plans and is not a stickiness or placement
   measure. The workflow now compares b with c (fixed after this run was triggered; it applies to the next run).
 
+### moto, the `-n 4 --dist loadscope` group of its Makefile (2,501 tests), MEASURED
+
+`./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m "not requires_clean_slate"`,
+`MOTO_CALL_RESET_API=false` (DECLARED, Makefile).
+
+| variant | runs (wall) | vs plain `-n 4` median (169.7 s) |
+|---|---|---|
+| plain serial | 398.0 s | — |
+| plain `-n 4` | 170.5 / 167.4 / 169.7 s | 1 |
+| `--det` serial | 245.0 / 221.4 s | — |
+| `--det -n 4` | 89.0 / 88.8 / 89.1 s | **0.52x** |
+| cold / warm x2 `--det-cache -n 4` | 101.8 / 97.0, 96.4 s (reuse 0 %) | 0.57-0.60x |
+| cold `--det-cache` serial; `-n 4` on that store | 231.9 s; 97.3 s (reuse 0 %) | — |
+
+* `--det` is faster than plain here, serially (221-245 s against 398 s) and under `-n 4` (89 s against 167-171 s,
+  three runs each, spread under 2 %): moto's tests wait in real time (batch jobs, retries) and Level 0's virtual
+  clock does not. This is the clock, not the plan.
+* **8 tests fail under every `--det` run and pass plain** (`test_batch_jobs.py` x5: timestamps equal under the
+  virtual clock, jobs that a background thread never advances; `test_dynamodb_resource_policy.py` x3: two revisions
+  created at the same virtual millisecond). Same 8 serially and under `-n`: a Level 0 limit (virtual time read
+  across threads / written into data, LIMITS C7 class), not caused by the split. Not fixed here.
+* **The cache records nothing**: "not cacheable: os entropy (not controlled; use --det-urandom)" for 1,934-2,458 tests
+  (uuid4 request ids), the rest network or a C-extension socket, plus the 8 failures. So 0 % reuse is moto's inputs, not
+  the parallel cache; with `--det-urandom` it would differ (not run). Serial noise between the two serial runs: 2,205
+  of 2,501 (the same entropy).
+* **Truth**: crosscheck 0 mismatches in every run; fpcompare 0 outcome differences, 0 new failures caused by the
+  split, 0 hidden failures (parallel runs a and b, see the litellm note on the pairing).
+* The moto walk (50 commits) will therefore measure only the `-n 4` verdict against the serial truth per commit,
+  with no reuse.
+
 ## Gates
 
 * `tests/test_review_r023.py`: unchanged (`git diff 8ffbaaa -- tests/test_review_r023.py` empty); **17 passed** (three
@@ -250,7 +280,7 @@ CI-FACTS.md; one shard or group where the CI splits).
 
 ## Not done, and why
 
-* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: moto, mlflow (group 1),
+* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: mlflow (group 1),
   prefect (group 1, newer uv on the runner), pydantic-ai (no cache variants: the capture prerequisite of design 5 is
   not fixed here) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
   `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
