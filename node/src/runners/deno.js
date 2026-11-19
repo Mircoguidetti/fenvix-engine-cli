@@ -72,10 +72,10 @@ function globToRe(g) {
  * name; a directory, or no argument, is walked for `{*_,*.,}test.{js,mjs,ts,mts,jsx,tsx}`; the configuration's
  * `test.include` / `test.exclude` and top-level `exclude` apply).
  */
-function discover(root, positional, conf) {
+function discover(root, positional, conf, ignore = []) {
   const t = (conf && conf.test) || {};
   const include = (t.include || (t.files && t.files.include) || []).map(globToRe);
-  const exclude = [...(t.exclude || (t.files && t.files.exclude) || []), ...((conf && conf.exclude) || [])].map(globToRe);
+  const exclude = [...(t.exclude || (t.files && t.files.exclude) || []), ...((conf && conf.exclude) || []), ...ignore].map(globToRe);
   const out = new Set();
   const rel = (p) => path.relative(root, p).split(path.sep).join('/');
   const excluded = (r) => exclude.some((re) => re.test(r));
@@ -285,7 +285,11 @@ async function main(argv) {
   const version = denoVersion(bin);
   const confPath = findConfig(root, options);
   const conf = confPath ? readJsonc(confPath) : null;
-  const fileIds = discover(root, positional, conf);
+  const ignore = [];
+  for (let i = 0; i < options.length; i++) {
+    if (options[i].startsWith('--ignore=')) ignore.push(...options[i].slice('--ignore='.length).split(',').filter(Boolean));
+  }
+  const fileIds = discover(root, positional, conf, ignore);
   const engineDir = path.resolve(__dirname, '..', '..');
   const needs = {
     read: [engineDir, run.dir, root, os.tmpdir()],

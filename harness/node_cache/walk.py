@@ -83,8 +83,51 @@ def summary_of(repo):
     return out
 
 
+# Runners that detjs runs on another runtime (src/runners): `detjs <cmd>`, report as JUnit XML (one <testsuite> per
+# test file at the top level). Added by the all-runners work (node-c: bun test, deno test); separate dispatch branches.
+RUNTIME_RUNNERS = {
+    "bun-test": {"cmd": "bun-test", "report": lambda p: ["--reporter=junit", f"--reporter-outfile={p}"], "version": ["bun", "--revision"]},
+    "deno-test": {"cmd": "deno-test", "report": lambda p: [f"--junit-path={p}"], "version": ["deno", "--version"]},
+}
+
+
+def junit_outcomes(report_path):
+    """{test file: {"ok", "tests", "failed"}} from a JUnit report whose top-level suites are test files."""
+    import xml.etree.ElementTree as ET
+
+    try:
+        root = ET.parse(report_path).getroot()
+    except (OSError, ET.ParseError):
+        return {}
+    suites = [root] if root.tag == "testsuite" else list(root)
+    out = {}
+    for s in suites:
+        if s.tag != "testsuite":
+            continue
+        name = (s.get("file") or s.get("name") or "").removeprefix("./")
+        cases = list(s.iter("testcase"))
+        failed = sum(1 for c in cases if c.find("failure") is not None or c.find("error") is not None)
+        prev = out.get(name, {"ok": True, "tests": 0, "failed": 0})
+        out[name] = {"ok": prev["ok"] and failed == 0, "tests": prev["tests"] + len(cases), "failed": prev["failed"] + failed}
+    return out
+
+
+def report_args(runner, report):
+    if runner in RUNTIME_RUNNERS:
+        return RUNTIME_RUNNERS[runner]["report"](report)
+    return ["--reporter=json", f"--outputFile={report}"] if runner == "vitest" else ["--json", f"--outputFile={report}"]
+
+
+def detjs_cmd(runner):
+    if runner in RUNTIME_RUNNERS:
+        return ["node", DETJS, RUNTIME_RUNNERS[runner]["cmd"]]
+    return ["node", DETJS, runner] + (["run"] if runner == "vitest" else [])
+
+
 def outcomes_of(report_path, runner):
     """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report."""
+    if runner in RUNTIME_RUNNERS:
+        return junit_outcomes(report_path)
     j = load_json(report_path) or {}
     out = {}
     for f in j.get("testResults") or []:
@@ -145,12 +188,9 @@ class Walk:
         return info
 
     def detjs(self, cache_dir, extra, report):
-        args = ["node", DETJS, self.spec["runner"]]
-        if self.spec["runner"] == "vitest":
-            args += ["run"]
+        args = detjs_cmd(self.spec["runner"])
         args += ["--det", f"--det-cache={cache_dir}"] + extra + list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += report_args(self.spec["runner"], report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, out, dt
 
@@ -160,10 +200,9 @@ class Walk:
         return rc, dt
 
     def det_nocache(self, report):
-        args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
+        args = detjs_cmd(self.spec["runner"]) + ["--det"]
         args += list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += report_args(self.spec["runner"], report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, dt
 
@@ -218,6 +257,9 @@ class Walk:
         prev = None
         rc, nv, _ = sh(["node", "--version"])
         self.res["node"] = nv.strip()
+        if self.spec["runner"] in RUNTIME_RUNNERS:
+            rc, rv, _ = sh(RUNTIME_RUNNERS[self.spec["runner"]]["version"])
+            self.res["runtime"] = rv.strip().splitlines()[0] if rv.strip() else None
         for i, sha in enumerate(shas):
             if sha in done:
                 prev = sha
@@ -282,9 +324,9 @@ class Walk:
             runs = []
             for k in range(3):
                 rp = os.path.join(self.work, f"recheck{k}.json")
-                args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
+                args = detjs_cmd(self.spec["runner"]) + ["--det"]
                 args += list(self.spec.get("args", [])) + [f]
-                args += (["--reporter=json", f"--outputFile={rp}"] if self.spec["runner"] == "vitest" else ["--json", f"--outputFile={rp}"])
+                args += report_args(self.spec["runner"], rp)
                 rc, _, _ = sh(args, cwd=self.repo, timeout=900, env=self.env)
                 runs.append({"rc": rc, "outcomes": outcomes_of(rp, self.spec["runner"])})
             out[f] = runs

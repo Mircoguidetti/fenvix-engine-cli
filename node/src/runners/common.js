@@ -125,31 +125,25 @@ function settleCapture(run, fileId, status, extra) {
   return files.length;
 }
 
-/** Merge JUnit XML reports (one per file process) into one file. */
+/** Merge JUnit XML reports (one per file process) into one file: the content of each part's <testsuites>. */
 function mergeJunit(parts, out, name) {
-  const suites = [];
-  let tests = 0;
-  let failures = 0;
-  let errors = 0;
-  let skipped = 0;
-  let time = 0;
+  const bodies = [];
+  const tot = { tests: 0, failures: 0, errors: 0, skipped: 0, time: 0 };
   for (const p of parts) {
     let x;
     try { x = fs.readFileSync(p, 'utf8'); } catch { continue; }
-    for (const m of x.matchAll(/<testsuite\b[\s\S]*?<\/testsuite>|<testsuite\b[^>]*\/>/g)) {
-      const s = m[0];
-      // only the outermost suites of each part (nested suites are kept inside them)
-      suites.push(s);
-    }
-    const head = /<testsuites\b([^>]*)>/.exec(x);
-    if (head) {
-      const attr = (k) => { const r = new RegExp(`\\b${k}="([^"]*)"`).exec(head[1]); return r ? Number(r[1]) || 0 : 0; };
-      tests += attr('tests'); failures += attr('failures'); errors += attr('errors'); skipped += attr('skipped'); time += attr('time');
+    const open = /<testsuites\b([^>]*)>/.exec(x);
+    const close = x.lastIndexOf('</testsuites>');
+    if (!open || close < 0) continue;
+    bodies.push(x.slice(open.index + open[0].length, close).trim());
+    for (const k of Object.keys(tot)) {
+      const r = new RegExp(`\\b${k}="([^"]*)"`).exec(open[1]);
+      if (r) tot[k] += Number(r[1]) || 0;
     }
   }
   fs.mkdirSync(path.dirname(path.resolve(out)), { recursive: true });
-  fs.writeFileSync(out, `<?xml version="1.0" encoding="UTF-8"?>\n<testsuites name="${name}" tests="${tests}" failures="${failures}" `
-    + `errors="${errors}" skipped="${skipped}" time="${time}">\n${suites.join('\n')}\n</testsuites>\n`);
+  fs.writeFileSync(out, `<?xml version="1.0" encoding="UTF-8"?>\n<testsuites name="${name}" tests="${tot.tests}" failures="${tot.failures}" `
+    + `errors="${tot.errors}" skipped="${tot.skipped}" time="${tot.time}">\n${bodies.join('\n')}\n</testsuites>\n`);
 }
 
 /**

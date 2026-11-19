@@ -45,8 +45,37 @@ if (c.active && fileId && !globalThis[Symbol.for('detjs.deno.setup')]) {
   globalThis.addEventListener('unload', () => bracket.finish());
 }
 
+const LOCATION = Symbol.for('Deno.test.location');
+
+/** `file:line:column` of the code that called Deno.test (the first frame outside detjs), for Deno's reports. */
+function callerLocation() {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  E.prepareStackTrace = (_e, cs) => cs;
+  E.stackTraceLimit = 30;
+  const h = {};
+  try { E.captureStackTrace(h, callerLocation); void h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    const f = cs.getFileName && cs.getFileName();
+    if (!f || f.startsWith('ext:') || f.startsWith('node:') || f.includes('/node/src/runners/')) continue;
+    const u = (cs.getScriptNameOrSourceURL && cs.getScriptNameOrSourceURL()) || f;
+    const url = /^[a-z]+:\/\//.test(u) ? u : require('node:url').pathToFileURL(u).href;
+    return `${url}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
+  }
+  return undefined;
+}
+
 function installRegistrar(bracket) {
+  // Deno takes a test's location from its caller unless the function carries one (Symbol.for('Deno.test.location'),
+  // the override @std/testing uses): the wrapped body carries the test file's own location
+  const located = (fn, w, loc) => {
+    const l = fn[LOCATION] || loc;
+    if (l) { try { Object.defineProperty(w, LOCATION, { value: l, configurable: true }); } catch { /* keep */ } }
+    return w;
+  };
   const wrapCall = (args) => {
+    const loc = callerLocation();
     const a = [...args];
     let name;
     let fi = a.findIndex((x) => typeof x === 'function');
@@ -56,13 +85,13 @@ function installRegistrar(bracket) {
     if (fi < 0 && oi >= 0 && typeof a[oi].fn === 'function') {
       const o = { ...a[oi] };
       if (name === undefined) name = o.fn.name;
-      o.fn = bracket.wrap(bracket.register([name || '<anonymous>']), o.fn);
+      o.fn = located(o.fn, bracket.wrap(bracket.register([name || '<anonymous>']), o.fn), loc);
       a[oi] = o;
       return a;
     }
     if (fi >= 0) {
       if (name === undefined) name = a[fi].name;
-      a[fi] = bracket.wrap(bracket.register([name || '<anonymous>']), a[fi]);
+      a[fi] = located(a[fi], bracket.wrap(bracket.register([name || '<anonymous>']), a[fi]), loc);
     }
     return a;
   };
