@@ -1,4 +1,4 @@
-PARTIAL
+DONE
 
 # All runners (P-032): every Python and Node/JS/TS test runner on one engine — report
 
@@ -13,13 +13,18 @@ in `docs/runners/`; builder summaries `docs/runners/BUILD-{python,node-a,node-b,
   zope.testrunner, ward, plus Hypothesis under every runner and pytest. Node/JS/TS: `node --test`, Mocha, tap, AVA,
   Jasmine, uvu, `bun test`, `deno test`. TypeScript runs through tsx, ts-node, `--experimental-strip-types`,
   esbuild-register and @swc-node/register; each loader has adversarial tests under the runners that take loaders.
-* **0 wrong reuses in 134,426 verified reuses** on GitHub Actions walks: 31 real repositories, 3 to 30 transitions
-  each (MEASURED, runs below). Every would-be reuse was compared with a fresh run of the same commit.
-* **Why PARTIAL:**
+* **0 wrong reuses in 153,483 verified reuses** on GitHub Actions walks: 30 real repositories (2 per runner, plus 2
+  for the TypeScript loaders), 3 to 30 transitions each (MEASURED, runs below). Every would-be reuse was compared with a fresh run of the same commit.
+* **Every runner meets the prompt's bar** (adapter for `--det` and `--det-cache`, control tests, adversarial tests,
+  walks on 2 real repositories, 0 wrong reuses). The open items are listed with their numbers:
   * ward: two walks (ward 3 transitions, thoughtspot_tml 20) with 0 wrong reuses but **0 reuses**: a start-up
     metadata probe of `pyproject.toml` makes every test rerun after any checkout (row below). ward is 0 of 1,000
     popular Python repositories and 2.6 k downloads a month (MEASURED / DECLARED, INTERMEDIATE-1).
-  * TypeScript-loader walks: <TS-LOADER-STATUS>.
+  * **False failures under `--det`** (determinism holds; tests break): hexo (Mocha + ts-node) 58 failing tests
+    under `--det` vs 4 under its plain command, back to 4 with `--det-disable=time` (MEASURED local, both window
+    ends): the virtual clock against real file modification times is the probable cause, not confirmed. yargs:
+    3 `commandDir` tests expect the file system's listing order, which Level 0 sorts. Failed tests are never
+    reused, so this costs reuse, not soundness.
   * Karma was not built. It is still used (3.7% of popular JS/TS repositories, MEASURED), but it runs tests in a
     browser, which is Level 2 (P-030).
   * No independent review yet.
@@ -69,7 +74,7 @@ repository); raw `tracks/all-runners-python/results/ar-py-3/`, tables `TABLES.md
 | `python -m doctest` | det + skip (one test per docstring) | 3 pass | 27 shared + 3: text file change, docstring change, option change (configuration) | autopep8: 20, 100% / 85%, 17, **0**; python-nameparser (`python -m doctest README.rst`): 20, 0% / 30%, 6, **0** | — |
 | zope.testrunner | det + skip; layers as fixture contexts; `-j` forced to 1 | 3 pass | 27 shared + 3: layer set-up read (and a reused layer is not set up), `test_suite` function reads, `-j` forced to 1 | DateTime: 20, 0% / 36%, 370, **0**; irclog2html: 20, 0% / 40%, 725, **0** | layers resumed in a subprocess (not wired: they run, never reused) |
 | ward | det + skip | 3 pass | 27 shared + 1: module-scoped fixture read (fails on a naive adapter, MEASURED) | ward: 3, 0% / 0%, 0 verified, **0** wrong; thoughtspot_tml: 20, 0% / 0%, 0 verified, **0** wrong (run 44593226338, ar-py-4) | **no reuse across commits**: ward's CLI checks `pyproject.toml` with `click.Path` at start-up, so its modification time is an input of every test, and a checkout changes it at every commit (sound, coarse; within one commit 73 of 73 thoughtspot_tml tests are reused, MEASURED local). Proposal: a probe made by the runner's own argument checking keys existence and kind only (needs its own adversarial test). ward's window on its own repository is 4 commits (older ward does not run on Python 3.12+). ward's run loop is a copy of ward 0.68's |
-| Hypothesis (all runners + pytest) | seed from the test id; no example database, no storage, no local constants under `--det` | covered by each runner's control tests | — | — (no dedicated walk) | a project's own `@settings(database=...)` is replaced under `--det` |
+| Hypothesis (all runners + pytest) | seed from the test id; no example database, no storage, no local constants under `--det` | covered by each runner's control tests | — | — (no dedicated walk) | under `--det` the example database and Hypothesis's local storage are off (failures saved by earlier runs are not replayed; details in `docs/runners/hypothesis.md`) |
 
 Python misses explained (ar-py-3, miss reasons per transition): jc and icecream change a module every test loads
 at most commits (`code`); DateTime and irclog2html commits are more than 30 days apart, so the designed epoch rule
@@ -94,7 +99,7 @@ workflow's `tests` job also passed on Actions.
 | uvu | det (one process) + skip (process per file) | 2 pass | 32 shared + 5: `-r` module, `-r` dropped, `-r tsx/cjs` + tsconfig, named suite, cross-file state | autoprefixer: 25, 15% / 21%, 1,844, **0**; browserslist: 25, 1% / 11%, 1,222, **0** | files run without the uvu CLI; `-r esm` is broken on Node 22 regardless of detjs |
 | `bun test` | det + skip (process per file); Bun-native APIs make a file uncacheable unless captured; module graph from Bun's transpiler | 3 pass | 38 pass (Bun.file/write/spawn/Glob/$/env, bun:sqlite, JSON/TOML imports, bunfig, `mock.module`, import map, lockfile, ...); 17 of 41 fail without the Bun capture (10 wrong reuses) | wouter: 20, 25% / 47%, 2,602, **0**; json-schema-faker: 20, 1% / 15%, 1,284, **0** | `BunFile#lastModified` read by a library that never names `Bun.file`; `Bun.env` through an alias the scan misses; `--det-record` refused |
 | `deno test` | det + skip (process per file); Deno's permission audit as a completeness check; module graph from `deno info --json` | 3 pass | 33 pass (Deno.readTextFile/stat/readDir/realPath/Command/env/openKv, JSON imports, import map, jsr/npm specifiers, lockfile, ...); 20 of 36 fail without the Deno capture (12 wrong reuses) | std (10 packages, 203 files): 20, 65% / 54%, 22,787, **0**; oak: 20, 34% / 38%, 1,151, **0** | a non-literal dynamic `import()` makes the file uncacheable; `--det-record` refused |
-| TS loaders (tsx, ts-node, strip-types, esbuild-register, @swc-node) | through each runner above | — | loader package version and config (tsconfig `paths`, `strict`) are keyed; a changed tsconfig reruns (tests in node-test, Mocha, tap, AVA, uvu suites) | <TS-LOADER-WALK> | tsx's first transform starts esbuild's worker thread: that first run is not cached, the next is |
+| TS loaders (tsx, ts-node, strip-types, esbuild-register, @swc-node) | through each runner above | — | loader package version and config (tsconfig `paths`, `strict`) are keyed; a changed tsconfig reruns (tests in node-test, Mocha, tap, AVA, uvu suites) | ink (`node --env-file=test/test.env --import=tsx --test`, 106 `.ts/.tsx` files): 30, 22% / 21%, 15,371, **0**; hexo (Mocha + `--require ts-node/register`, 120 `.ts` files): 30, 6% / 6%, 3,686, **0** (run 44596076577, ar-node-2). hexo with the cache is slower than its plain run (warm rerun 324-346 s vs 24-28 s plain: one ts-node process per file, MEASURED Actions) | tsx's first transform starts esbuild's worker thread: that first run is not cached, the next is |
 | Karma | none | — | — | — | browser runner: Level 2 (P-030) |
 
 ## Timing (MEASURED, Actions; ratio = skip run wall / full verify run wall, median)
@@ -123,7 +128,10 @@ under 1 s, where start-up dominates (ar-py-3 TABLES.md).
 ## What blocks or is missing
 
 * ward: reuse across commits (the start-up `pyproject.toml` probe, above).
-* <TS-LOADER-MISSING>
+* The per-file process model under `--det-cache` is expensive where the runner used one process and a loader
+  compiles each file (hexo, above; dependency-cruiser). A pre-warmed process pool that forks a clean process per
+  file is the next step; not built here.
+* hexo's `--det` false failures (above) need their cause confirmed and a fix in the shared clock.
 * **The shared-cache Python client (`claude/shared-cache`: `remote_cache.py`, R-008c/d start-up rules) is not on
   `claude/rust-hotpaths-2`**, so it is not on this branch either: the node branch's Python tests for it are skipped
   with that reason (15 tests + 3 files). Node's shared cache (`remote.js`) works. The port onto the Rust proof cache
@@ -136,9 +144,11 @@ under 1 s, where start-up dominates (ar-py-3 TABLES.md).
 
 ## Links
 
-* Repository Mircoguidetti/fenvix-engine-cli, branch `claude/all-runners`, commit <COMMIT>.
+* Repository Mircoguidetti/fenvix-engine-cli, branch `claude/all-runners`, last engine code commit 0fb046a2 (merged at 640387f0);
+  walk results and this report follow it on the same branch.
 * Actions runs: 44536402831 (download statistics), 44553242420 (Bun, Deno), 44560783983 / 44561203094 /
-  44568533635 / 44593226338 (Python), 44566685425 (`node --test`, Mocha), 44566685382 (tap, AVA, Jasmine, uvu)<TS-RUN>.
+  44568533635 / 44593226338 (Python), 44566685425 (`node --test`, Mocha), 44566685382 (tap, AVA, Jasmine, uvu),
+  44596076577 (TypeScript loaders: ink, hexo).
 * Main files: `python/detpy/runners/`, `python/detpy/_level0.py`, `python/detpy/_proof.py`, `python/detpy/_django.py`,
   `node/src/{nodetest,mocha}/`, `node/src/runners/`, `node/src/cache/capture.js`, `crates/detpy-core/src/proof.rs`,
   `harness/cache_proof/walk.py`, `harness/node_cache/walk.py`, `.github/workflows/all-runners-*.yml`.
