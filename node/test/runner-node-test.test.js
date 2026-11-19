@@ -229,6 +229,11 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     noWrongReuse(R, dir, F('e'), null, { env3: { FIXTURE_LEVEL: 'x' } });
   });
 
+  test('an environment name that is an Object.prototype property (process.env.constructor) is keyed, not a crash', T, () => {
+    const dir = proj('env-proto', tf('e', "test('e', () => { assert.equal(typeof process.env.constructor, 'function'); assert.equal(process.env.FIXTURE_P ?? 'unset', 'unset'); });"));
+    noWrongReuse(R, dir, F('e'), null, { env3: { FIXTURE_P: 'x' } });
+  });
+
   test('environment enumeration', T, () => {
     const dir = proj('env-enum', tf('e', "test('e', () => { assert.equal(Object.keys(process.env).filter((k) => k.startsWith('FIXTURE_')).length, 0); });"));
     noWrongReuse(R, dir, F('e'), null, { env3: { FIXTURE_NEW: '1' } });

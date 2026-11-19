@@ -37,7 +37,8 @@ if (role) {
   const testsHere = role === 'file' || !perFile;
   const { FileProcess } = testsHere ? require('../fileproc') : {};
   const fp = testsHere ? new FileProcess(root) : null;
-  const Mocha = require(plan.mochaDir);
+  const { load, mochaClass } = require('./mod');
+  const Mocha = mochaClass(plan.mochaDir);
   const c = fp ? fp.c : null;
   const shuffle = Boolean(c && c.shuffle && c.controls.has('order'));
   const results = { files: {}, globalFixtures: false };
@@ -67,8 +68,8 @@ if (role) {
 
   // -- per-file mode: the driver's pool runs each file in a fresh process ---------------------------------------
   if (perFile && role === 'driver') {
-    const { BufferedWorkerPool } = require(path.join(plan.mochaDir, 'lib', 'nodejs', 'buffered-worker-pool'));
-    const { deserialize } = require(path.join(plan.mochaDir, 'lib', 'nodejs', 'serializer'));
+    const { BufferedWorkerPool } = load(plan.mochaDir, 'lib/nodejs/buffered-worker-pool');
+    const { deserialize } = load(plan.mochaDir, 'lib/nodejs/serializer');
     const { spawnSync } = require('node:child_process');
     const childJs = path.join(__dirname, 'child.js');
     let n = 0;

@@ -74,9 +74,11 @@ async function main(argv) {
     const r = spawnSync(process.execPath, [bin, ...rest], { stdio: 'inherit' });
     return r.status ?? 1;
   }
-  const { loadOptions } = require(path.join(mocha.dir, 'lib', 'cli', 'options'));
-  const nodeFlags = require(path.join(mocha.dir, 'lib', 'cli', 'node-flags'));
-  const collectFiles = require(path.join(mocha.dir, 'lib', 'cli', 'collect-files'));
+  const { load } = require('./mod');
+  const { loadOptions } = load(mocha.dir, 'lib/cli/options');
+  const nodeFlags = load(mocha.dir, 'lib/cli/node-flags');
+  const cf = load(mocha.dir, 'lib/cli/collect-files');
+  const collectFiles = typeof cf === 'function' ? cf : cf.default;
   const opts = loadOptions(rest);
   if (opts.watch || opts.w) throw new Error('detjs mocha: --watch is not supported under --det');
   // what Mocha's bin does: node flags among the options start the process, the rest goes to Mocha's CLI

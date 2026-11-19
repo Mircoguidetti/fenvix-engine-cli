@@ -423,7 +423,8 @@ class ProofSession {
     const store = this.store;
     const curEnv = this.curEnv;
     const envAll = native.envAllDigest(curEnv);
-    const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(curEnv[name] ?? null));
+    // an own string value only: a read of `process.env.__proto__` or `.constructor` is the absence of a variable
+    const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(Object.prototype.hasOwnProperty.call(curEnv, name) && typeof curEnv[name] === 'string' ? curEnv[name] : null));
     // global (main process) inputs: start-up reads by anyone minus the test files themselves, plus user code's
     // reads during the run
     const global = CAPTURE.global.filter((it) => !(it[0] === 'data' && (it[3] === 'infra' || it[3] === 'plugin') && this.specKeys.has(it[1])));

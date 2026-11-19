@@ -4,13 +4,13 @@
 // `--require` modules and their root hooks, then the `--file` files and the spec, run with the buffering reporter;
 // the serialized events go to the driver, which replays them into the user's reporter.
 const fs = require('node:fs');
-const path = require('node:path');
 
 async function main() {
   const plan = JSON.parse(fs.readFileSync(process.env.DETJS_MO_PLAN, 'utf8'));
-  const Mocha = require(plan.mochaDir);
-  const { handleRequires, validateLegacyPlugin } = require(path.join(plan.mochaDir, 'lib', 'cli', 'run-helpers'));
-  const { serialize } = require(path.join(plan.mochaDir, 'lib', 'nodejs', 'serializer'));
+  const { load, mochaClass } = require('./mod');
+  const Mocha = mochaClass(plan.mochaDir);
+  const { handleRequires, validateLegacyPlugin } = load(plan.mochaDir, 'lib/cli/run-helpers');
+  const { serialize } = load(plan.mochaDir, 'lib/nodejs/serializer');
   // eslint-disable-next-line no-eval
   const argv = eval(`(${fs.readFileSync(process.env.DETJS_MO_OPTS, 'utf8')})`);
   const opts = { ui: 'bdd', ...argv, parallel: false, isWorker: true };
