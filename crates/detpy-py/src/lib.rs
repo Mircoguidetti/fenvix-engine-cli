@@ -30,6 +30,8 @@ mod reexec;
 mod repro;
 // Level 0 clock, round 2: sleep, wall-derived functions, datetime, wait timeouts
 mod clock;
+// Level 0 closed network
+mod network;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -292,5 +294,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     repro::register(m)?;
     // Level 0 clock, round 2
     clock::register(m)?;
+    // Level 0 closed network
+    network::register(m)?;
     Ok(())
 }

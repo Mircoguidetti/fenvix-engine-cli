@@ -29,7 +29,7 @@ const SEP: u8 = if cfg!(windows) { b'\\' } else { b'/' };
 // Strings as bytes
 
 /// The bytes of `s` (see the module docs).
-fn wtf8<'a>(s: &'a Bound<'_, PyString>) -> PyResult<Cow<'a, [u8]>> {
+pub(crate) fn wtf8<'a>(s: &'a Bound<'_, PyString>) -> PyResult<Cow<'a, [u8]>> {
     match s.to_cow() {
         Ok(Cow::Borrowed(b)) => Ok(Cow::Borrowed(b.as_bytes())),
         Ok(Cow::Owned(o)) => Ok(Cow::Owned(o.into_bytes())),
@@ -50,7 +50,7 @@ fn wtf8_of(o: &Bound<'_, PyAny>) -> PyResult<Vec<u8>> {
 }
 
 /// The string of bytes made by `wtf8`.
-fn from_wtf8<'py>(py: Python<'py>, b: &[u8]) -> PyResult<Bound<'py, PyString>> {
+pub(crate) fn from_wtf8<'py>(py: Python<'py>, b: &[u8]) -> PyResult<Bound<'py, PyString>> {
     match std::str::from_utf8(b) {
         Ok(s) => Ok(PyString::new(py, s)),
         Err(_) => unsafe {
