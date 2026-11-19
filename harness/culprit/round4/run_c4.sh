@@ -8,11 +8,11 @@ export CULPRIT_WORK=/home/user/work
 export CULPRIT_ROUND=4
 E=/home/user/fenvix-engine-cli/harness/culprit
 W=$(ls /home/user/work/wheels/detpy-*.whl)
-mkdir -p r4/locks-c r4/results r4/logs
-for lane in anyio flask httpx humanize markupsafe packaging pluggy pytest rich werkzeug \
+mkdir -p ${LOCKS:-r4/locks-c} r4/results r4/logs
+for lane in ${LANES:-anyio flask httpx humanize markupsafe packaging pluggy pytest rich werkzeug \
             flask-dep structlog-dep sqlparse-env boltons-env pygments-env toolz-env click-env \
-            flask-data jinja-data werkzeug-data sqlparse-data pygments-data; do
-  mkdir r4/locks-c/$lane 2>/dev/null || continue
+            flask-data jinja-data werkzeug-data sqlparse-data pygments-data}; do
+  mkdir ${LOCKS:-r4/locks-c}/$lane 2>/dev/null || continue
   case $lane in
     *-*)
       case $lane in *-data) out=r4/results/c-edit-$lane.jsonl;; *) out=r4/results/c-final-$lane.jsonl;; esac
