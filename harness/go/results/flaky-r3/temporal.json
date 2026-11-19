@@ -1,0 +1,2142 @@
+{
+ "spec": {
+  "name": "temporal",
+  "repo": "temporalio/temporal",
+  "sha": "e05a6a88a31a663c9fbc65de8ea5c28d2259c553",
+  "fix_commit": "e27983de5d795fb0df887bcd7515cf81f027f77b",
+  "fix_date": "2026-06-03T17:25:43.000-07:00",
+  "title": "Fix flaky TestNewServer (#10511)",
+  "tests": [
+   "TestNewServer"
+  ],
+  "source": "github commit search 'repo:temporalio/temporal flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestNewServer": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./temporal",
+  "./temporaltest"
+ ],
+ "imports": [
+  "go.temporal.io/server/temporal",
+  "go.temporal.io/server/temporaltest"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 213.0,
+ "build_det_s": 322.9,
+ "baseline": {
+  "go.temporal.io/server/temporal::TestInitCurrentClusterMetadataRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestOverwriteCurrentClusterMetadataWithDBRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewServer": [
+   "passed",
+   "passed",
+   "failed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestTaskCategoryRegistryProvider": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestUpdateIndexSearchAttributes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestUpdateCurrentClusterMetadataRecord": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestErrorLogDetector": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporal::TestNewClusterMetadataLoader": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestBaseServerOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestNewServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.temporal.io/server/temporaltest::ExampleNewServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {
+  "go.temporal.io/server/temporal::TestNewServer": "4, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2026-11-19T02:26:29.544Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10000\", \"totalDuration\": 0.000155105, \"error\": \"dial tcp 127.0.0.1:10000: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000137031, \"connectAddr\": \"127.0.0.1:10000\", \"connectErr\": \"dial tcp 127.0.0.1:10000: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2026-11-19T02:26:29.553Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10006\", \"totalDuration\": 0.000136963, \"error\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000127897, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2026-11-19T02:26:29.807Z\twarn\tFailed to poll for task.\t{\"service\": \"worker\", \"Namespace\": \"temporal-system\", \"TaskQueue\": \"temporal-sys-tq-scanner-taskqueue-0\", \"WorkerID\": \"temporal-system@127.0.0.1:10003\", \"WorkerType\": \"ActivityWorker\", \"Error\": \"connection error: desc = \\\"transport: Error while dialing: dial tcp 127.0.0.1:10006: connect: connection refused\\\"\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2026-11-19T02:26:29.814Z\twarn\tFailed to poll for task.\t{\"service\": \"worker\", \"Namespace\": \"temporal-system\", \"TaskQueue\": \"temporal-sys-tq-scanner-taskqueue-0\", \"WorkerID\": \"temporal-system@127.0.0.1:10003\", \"WorkerType\": \"WorkflowWorker\", \"Error\": \"connection error: desc = \\\"transport: Error while dialing: dial tcp 127.0.0.1:10006: connect: connection refused\\\"\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n--- PASS: TestNewServerWithOTEL/without_OTEL_Collector_running (8.44s)\n--- PASS: TestNewServerWithOTEL (11.86s)\n"
+ },
+ "seconds": 2212.5,
+ "det0_fail_output": {
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": "27.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000002, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2025-01-01T00:01:40.808Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10006\", \"totalDuration\": 0.000006, \"error\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000002, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2025-01-01T00:01:40.816Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10006\", \"totalDuration\": 0.000006, \"error\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000002, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2025-01-01T00:01:40.816Z\twarn\tFailed to poll for task.\t{\"service\": \"worker\", \"Namespace\": \"temporal-system\", \"TaskQueue\": \"temporal-sys-tq-scanner-taskqueue-0\", \"WorkerID\": \"temporal-system@127.0.0.1:10009\", \"WorkerType\": \"WorkflowWorker\", \"Error\": \"connection error: desc = \\\"transport: Error while dialing: dial tcp 127.0.0.1:10000: connect: connection refused\\\"\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2025-01-01T00:01:40.858Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10006\", \"totalDuration\": 0.000006, \"error\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000002, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n2025-01-01T00:01:40.998Z\twarn\tnetwork dial error\t{\"service\": \"client\", \"address\": \"127.0.0.1:10006\", \"totalDuration\": 0.000006, \"error\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"error-type\": \"net.OpError\", \"connectDuration\": 0.000002, \"connectAddr\": \"127.0.0.1:10006\", \"connectErr\": \"dial tcp 127.0.0.1:10006: connect: connection refused\", \"logging-call-at\": \"/tmp/work/src/temporal/server_test.go:260\"}\n--- FAIL: TestNewServerWithOTEL/without_OTEL_Collector_running (6.71s)\n--- FAIL: TestNewServerWithOTEL (11.29s)\n",
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": "=== RUN   TestSearchAttributeRegistration\n    server_test.go:278: context deadline exceeded\n--- FAIL: TestSearchAttributeRegistration (2.14s)\n"
+ },
+ "det0_events_by_source": {
+  "time": 230644,
+  "entropy": 1679,
+  "outcome": 16,
+  "random": 9269,
+  "net": 238
+ },
+ "det0_top_tests_by_events": [
+  [
+   50001,
+   "go.temporal.io/server/temporal::TestNewServerWithOTEL"
+  ],
+  [
+   30955,
+   "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor"
+  ],
+  [
+   30445,
+   "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions"
+  ],
+  [
+   30350,
+   "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions"
+  ],
+  [
+   30058,
+   "go.temporal.io/server/temporaltest::TestNewServer"
+  ],
+  [
+   26607,
+   "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration"
+  ],
+  [
+   19769,
+   "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding"
+  ],
+  [
+   19292,
+   "go.temporal.io/server/temporal::TestNewServer"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "go.temporal.io/server/temporal::TestNewServer",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 593,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "client/matching/partition_cache.go:50",
+     "v": "450000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Since",
+     "at": "/home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:43",
+     "v": "568000"
+    },
+    "reason": "thread",
+    "description": "event #593: [time] time.NewTicker @ client/matching/partition_cache.go:50 = 450000000000 (thread 6)  <>  [time] time.Since @ /home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:43 = 568000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporal::TestNewServerWithOTEL",
+   "status": "diverged",
+   "outcomes": [
+    "failed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 159,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:39",
+     "v": "140000"
+    },
+    "event_b": {
+     "t": 4,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "common/quotas/map_request_rate_limiter_impl.go:138",
+     "v": "3600000000000"
+    },
+    "reason": "thread",
+    "description": "event #159: [time] time.Now @ /home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:39 = 140000 (thread 2)  <>  [time] time.NewTicker @ common/quotas/map_request_rate_limiter_impl.go:138 = 3600000000000 (thread 4)"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 267,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Since",
+     "at": "/home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:43",
+     "v": "244000"
+    },
+    "event_b": {
+     "t": 5,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "client/matching/partition_cache.go:50",
+     "v": "450000000000"
+    },
+    "reason": "thread",
+    "description": "event #267: [time] time.Since @ /home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:43 = 244000  <>  [time] time.NewTicker @ client/matching/partition_cache.go:50 = 450000000000 (thread 5)"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestNewServer",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 118,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "/home/runner/go/pkg/mod/github.com/uber-go/tally/v4@v4.1.17/scope.go:252",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:39",
+     "v": "116000"
+    },
+    "reason": "thread",
+    "description": "event #118: [time] time.NewTicker @ /home/runner/go/pkg/mod/github.com/uber-go/tally/v4@v4.1.17/scope.go:252 = 1000000000 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/go.uber.org/dig@v1.19.0/internal/digclock/clock.go:39 = 116000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "failed",
+    "failed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 43,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "-41841696"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "common/persistence/sql/sqlplugin/sqlite/admin.go:66",
+     "v": "41000"
+    },
+    "reason": "thread",
+    "description": "event #43: [time] time.timer @ timer = -41841696 (thread 1)  <>  [time] time.Now @ common/persistence/sql/sqlplugin/sqlite/admin.go:66 = 41000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 66,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "-46993950573"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "common/persistence/sql/sqlplugin/sqlite/admin.go:66",
+     "v": "64000"
+    },
+    "reason": "thread",
+    "description": "event #66: [time] time.timer @ timer = -46993950573 (thread 1)  <>  [time] time.Now @ common/persistence/sql/sqlplugin/sqlite/admin.go:66 = 64000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestBaseServerOptions",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 105,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "-50097248081"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "common/persistence/sql/sqlplugin/sqlite/admin.go:66",
+     "v": "103000"
+    },
+    "reason": "thread",
+    "description": "event #105: [time] time.timer @ timer = -50097248081 (thread 1)  <>  [time] time.Now @ common/persistence/sql/sqlplugin/sqlite/admin.go:66 = 103000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 13,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "-150079501419"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "common/persistence/sql/sqlplugin/sqlite/admin.go:66",
+     "v": "11000"
+    },
+    "reason": "thread",
+    "description": "event #13: [time] time.timer @ timer = -150079501419 (thread 1)  <>  [time] time.Now @ common/persistence/sql/sqlplugin/sqlite/admin.go:66 = 11000"
+   }
+  },
+  {
+   "nodeid": "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration",
+   "status": "diverged",
+   "outcomes": [
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 17,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "-2233000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "common/persistence/sql/sqlplugin/sqlite/admin.go:66",
+     "v": "14000"
+    },
+    "reason": "thread",
+    "description": "event #17: [time] time.timer @ timer = -2233000 (thread 1)  <>  [time] time.Now @ common/persistence/sql/sqlplugin/sqlite/admin.go:66 = 14000"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 16,
+  "stable": 7,
+  "diverged": 9,
+  "missing": 0,
+  "outcome_unstable": 2,
+  "order_identical": true,
+  "reasons": {
+   "thread": 9
+  }
+ },
+ "det0": {
+  "go.temporal.io/server/temporal::TestInitCurrentClusterMetadataRecord": [
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ],
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ],
+   [
+    "passed",
+    "61b05ac3e3bf7168be5b1cf58c8abeaa"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestUpdateIndexSearchAttributes": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor": [
+   [
+    "passed",
+    "94eadca2ba02423915ba12a69732d33a"
+   ],
+   [
+    "passed",
+    "d2b99a11158fff500a331547d404333c"
+   ],
+   [
+    "passed",
+    "943e8c1270ac1592f72bad919c6481b8"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions": [
+   [
+    "passed",
+    "075118ad74d786c089f434376a2ef18c"
+   ],
+   [
+    "passed",
+    "e0cbf8e455ba4bdb44afaba2c5134bb4"
+   ],
+   [
+    "passed",
+    "a5d058b7f59f9b8c192a4ca80d02d741"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding": [
+   [
+    "passed",
+    "c5374e7674a9dac6b4acb760fe4a84ea"
+   ],
+   [
+    "passed",
+    "3ddeb9c8353fac6e690350e136de272a"
+   ],
+   [
+    "passed",
+    "f1f38acb3d1cfdb2eaab8c777af803b1"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestOverwriteCurrentClusterMetadataWithDBRecord": [
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestTaskCategoryRegistryProvider": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewClusterMetadataLoader": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServer": [
+   [
+    "passed",
+    "edb3b36f63fec92054c5c1f54fafe0f0"
+   ],
+   [
+    "passed",
+    "e74ff39671878723e47b9066ab0b8ad4"
+   ],
+   [
+    "passed",
+    "ad2b24e20eba4fca2e3fac6df25d4368"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": [
+   [
+    "failed",
+    "177dc716d780722aa87038a766f63c6c"
+   ],
+   [
+    "failed",
+    "fc6aca306f35cea1de2ff830b31b1650"
+   ],
+   [
+    "failed",
+    "7edeb8b0eaf05dae67a79adf0f1e4f44"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestBaseServerOptions": [
+   [
+    "passed",
+    "915704039dc4c5910446ecf31c94dcae"
+   ],
+   [
+    "passed",
+    "25d50f32ca6e0cbdfdc8b496e709b198"
+   ],
+   [
+    "passed",
+    "0de093805e60034097620bbfdc28916e"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": [
+   [
+    "failed",
+    "c2379f12da9a6d788d004da49b18b561"
+   ],
+   [
+    "passed",
+    "9a48a9a346c817a3198efa51ccf9b0ee"
+   ],
+   [
+    "passed",
+    "aa76a4801e8a6c85704185bb6d36f6d5"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions": [
+   [
+    "passed",
+    "1bdf7ec8c67e62d0b0c6270b5a3a34fb"
+   ],
+   [
+    "failed",
+    "214b01b5a553012787d7acd87d539a6e"
+   ],
+   [
+    "failed",
+    "42a47d9abedfa1e85dbe5e3f8b64ff2d"
+   ]
+  ],
+  "go.temporal.io/server/temporaltest::TestNewServer": [
+   [
+    "passed",
+    "9e4d7881c9ca2bac4fd77a47b5621153"
+   ],
+   [
+    "passed",
+    "82f67be62666df98369f804add114c9a"
+   ],
+   [
+    "passed",
+    "9fc9603462dc588bbc7c2aec8c1eca80"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestErrorLogDetector": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.temporal.io/server/temporal::TestUpdateCurrentClusterMetadataRecord": [
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ],
+   [
+    "passed",
+    "cd120e60469ec1538d08f5f3395955a4"
+   ]
+  ]
+ },
+ "explore": {
+  "go.temporal.io/server/temporal::TestNewServerWithJSONEncoding": {
+   "1": [
+    "passed",
+    "517d083e61398e14dc9ce06f288ac1c7"
+   ],
+   "2": [
+    "passed",
+    "67e16a3633c39b689dd36c2f0c532ed9"
+   ],
+   "3": [
+    "passed",
+    "948af420d7841fcf645793bf571ff6d6"
+   ],
+   "4": [
+    "failed",
+    "d35b2a2e6c0240fc62625af2115cdee3"
+   ],
+   "5": [
+    "passed",
+    "4760e2e9518f4139fbbd7985344e7093"
+   ],
+   "6": [
+    "passed",
+    "73223d52073318076c06ff6dea52159b"
+   ],
+   "7": [
+    "passed",
+    "644f7a73648ae77482815db93a385d9c"
+   ],
+   "8": [
+    "passed",
+    "63cf2b2731a3ee30f5a3c15d2a4d57c8"
+   ],
+   "9": [
+    "passed",
+    "572c1f06b92c54d5b18fb8437aee0d88"
+   ],
+   "10": [
+    "passed",
+    "637dacb84d1d3778d867af8a963f180f"
+   ],
+   "11": [
+    "passed",
+    "257a3ab249d9ff1581749fb836c45a32"
+   ],
+   "12": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "13": [
+    "passed",
+    "2f43f40c57614fef8382a74c8199a3d5"
+   ],
+   "14": [
+    "passed",
+    "cb7c3e5526211ba873794e7a01057922"
+   ],
+   "15": [
+    "passed",
+    "2c4ebfd52541506a95014f7a1fbeec01"
+   ],
+   "16": [
+    "passed",
+    "35d9273593a5e628a04d32672800302b"
+   ],
+   "17": [
+    "passed",
+    "cf2d0736bd4ad225a48e99ae21790bcc"
+   ],
+   "18": [
+    "passed",
+    "ea50feaf935f5599411801824383c1d1"
+   ],
+   "19": [
+    "passed",
+    "d4f303b73042dbe0c8f7dc4d98d522fd"
+   ],
+   "20": [
+    "passed",
+    "cadc12ec784c53a0c2955ffda64d367c"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestNewClusterMetadataLoader": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestUpdateCurrentClusterMetadataRecord": {
+   "1": [
+    "passed",
+    "3c64da968b068431a9d4865b7565a685"
+   ],
+   "2": [
+    "passed",
+    "84aa7a4a65901eca122f67acc800974e"
+   ],
+   "3": [
+    "passed",
+    "12c3ca1fd2051e337f45d57fa4b2917a"
+   ],
+   "4": [
+    "passed",
+    "387db5303a7518d74bbea9c6adb62750"
+   ],
+   "5": [
+    "passed",
+    "11e1c7378f114e839422ecb40d1bceb5"
+   ],
+   "6": [
+    "passed",
+    "768eee9610c99777fa29ec5ff4e5be53"
+   ],
+   "7": [
+    "passed",
+    "85d6f418456116f3b0246f13e13ecffa"
+   ],
+   "8": [
+    "passed",
+    "2ff47dc08cac1948cce61ee45ecf72d2"
+   ],
+   "9": [
+    "passed",
+    "b6fc77cf14e82ff5d1fcafcdbff2953a"
+   ],
+   "10": [
+    "passed",
+    "ba1a1299c6333cbb0d28b1f9221ea1b2"
+   ],
+   "11": [
+    "passed",
+    "d840646c29f1a4598f47775f52989e68"
+   ],
+   "12": [
+    "passed",
+    "5e2c470d6dea209286428c49116608aa"
+   ],
+   "13": [
+    "passed",
+    "f383bb06a6eb4199525ba64f5902ead2"
+   ],
+   "14": [
+    "passed",
+    "013dc6c9c436282f42599622c59026d0"
+   ],
+   "15": [
+    "passed",
+    "1f6ebc40f699f973cddd137fe2d7f4b9"
+   ],
+   "16": [
+    "passed",
+    "b75d43c57ede613b24b2fa7922c9cda0"
+   ],
+   "17": [
+    "passed",
+    "5d39abdc3128cfe722ebc36c7acd2edd"
+   ],
+   "18": [
+    "passed",
+    "17e3af8011639a6c7096f1b38391e882"
+   ],
+   "19": [
+    "passed",
+    "80b16f30804e5228732a498b8a47c84e"
+   ],
+   "20": [
+    "passed",
+    "7ce8ee698c2eb17e42699c1dd51453d2"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestInitCurrentClusterMetadataRecord": {
+   "1": [
+    "passed",
+    "ccc5ec571d309dabec20deba62500493"
+   ],
+   "2": [
+    "passed",
+    "3fcca1664a1f0c0300985baae03ace6c"
+   ],
+   "3": [
+    "passed",
+    "2c78a486544a18d45ddb5b6cbd2a1951"
+   ],
+   "4": [
+    "passed",
+    "feec728786103ed08d0d041f05d32f22"
+   ],
+   "5": [
+    "passed",
+    "244e6c90996c446b4b16b70ffc3cf5be"
+   ],
+   "6": [
+    "passed",
+    "f607085c0fe6aa30fa17ce3224b078be"
+   ],
+   "7": [
+    "passed",
+    "153e16bebab6740f9dc031ec6a2086b3"
+   ],
+   "8": [
+    "passed",
+    "ea8351ae0cc13bd1b874925b866ceeac"
+   ],
+   "9": [
+    "passed",
+    "f1404f273335bcef9af80e0d16be8604"
+   ],
+   "10": [
+    "passed",
+    "edc9565c109adef3e9dc51529e3ab799"
+   ],
+   "11": [
+    "passed",
+    "364481b583de8e904436e462b3f8e540"
+   ],
+   "13": [
+    "passed",
+    "8a1fe4be2111c058009a6bfab974405e"
+   ],
+   "14": [
+    "passed",
+    "4311f4a66bcec046fdd14dda168c2414"
+   ],
+   "15": [
+    "passed",
+    "1c022433283e8f71c38327bd36d93496"
+   ],
+   "16": [
+    "passed",
+    "fd8689f55a5f707d9d6375d1c4febffb"
+   ],
+   "17": [
+    "passed",
+    "32dc5eca2db7f9545681c814921829bd"
+   ],
+   "18": [
+    "passed",
+    "c97824f6c94fff984b22945147863b6e"
+   ],
+   "19": [
+    "passed",
+    "c87d765832af7513d6905675b32a59d6"
+   ],
+   "20": [
+    "passed",
+    "ce090437aee9be7d39bbf49ab3a1857d"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestErrorLogDetector": {
+   "1": [
+    "passed",
+    "31e6089dc87c32134af16d455404c965"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestOverwriteCurrentClusterMetadataWithDBRecord": {
+   "1": [
+    "passed",
+    "3c64da968b068431a9d4865b7565a685"
+   ],
+   "2": [
+    "passed",
+    "84aa7a4a65901eca122f67acc800974e"
+   ],
+   "3": [
+    "passed",
+    "12c3ca1fd2051e337f45d57fa4b2917a"
+   ],
+   "4": [
+    "passed",
+    "387db5303a7518d74bbea9c6adb62750"
+   ],
+   "5": [
+    "passed",
+    "11e1c7378f114e839422ecb40d1bceb5"
+   ],
+   "6": [
+    "passed",
+    "768eee9610c99777fa29ec5ff4e5be53"
+   ],
+   "7": [
+    "passed",
+    "85d6f418456116f3b0246f13e13ecffa"
+   ],
+   "8": [
+    "passed",
+    "2ff47dc08cac1948cce61ee45ecf72d2"
+   ],
+   "9": [
+    "passed",
+    "b6fc77cf14e82ff5d1fcafcdbff2953a"
+   ],
+   "10": [
+    "passed",
+    "ba1a1299c6333cbb0d28b1f9221ea1b2"
+   ],
+   "11": [
+    "passed",
+    "d840646c29f1a4598f47775f52989e68"
+   ],
+   "13": [
+    "passed",
+    "f383bb06a6eb4199525ba64f5902ead2"
+   ],
+   "14": [
+    "passed",
+    "013dc6c9c436282f42599622c59026d0"
+   ],
+   "15": [
+    "passed",
+    "1f6ebc40f699f973cddd137fe2d7f4b9"
+   ],
+   "16": [
+    "passed",
+    "b75d43c57ede613b24b2fa7922c9cda0"
+   ],
+   "17": [
+    "passed",
+    "5d39abdc3128cfe722ebc36c7acd2edd"
+   ],
+   "18": [
+    "passed",
+    "17e3af8011639a6c7096f1b38391e882"
+   ],
+   "19": [
+    "passed",
+    "80b16f30804e5228732a498b8a47c84e"
+   ],
+   "20": [
+    "passed",
+    "7ce8ee698c2eb17e42699c1dd51453d2"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestUpdateIndexSearchAttributes": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestNewServerWithOTEL": {
+   "1": [
+    "passed",
+    "7cfa80137dfdae1829decb7ece1c727d"
+   ],
+   "2": [
+    "passed",
+    "08b460bcbd7d9dc0cbb9a5d156100027"
+   ],
+   "3": [
+    "passed",
+    "b5aa1548dced50892b9490652fbfe49a"
+   ],
+   "4": [
+    "passed",
+    "64a2a91aa4a16ea0b3a5f522a19b7db7"
+   ],
+   "5": [
+    "passed",
+    "5ba88e68d2b27a94d2ce044cda6732a1"
+   ],
+   "6": [
+    "passed",
+    "1b81ae008668dcb12560332598eb439b"
+   ],
+   "7": [
+    "passed",
+    "4d4c5a8718993d1ce2143e42e62b4200"
+   ],
+   "8": [
+    "passed",
+    "a697514d91c6cea2af1e92b1ec11d298"
+   ],
+   "9": [
+    "passed",
+    "874350fcef25d5c803d7f21785813fd5"
+   ],
+   "10": [
+    "passed",
+    "7471d2b0db9d2ef95a1da458d96dcaab"
+   ],
+   "11": [
+    "passed",
+    "3b26953cb61147ce91efc1832223f5f2"
+   ],
+   "13": [
+    "passed",
+    "af9026cd2c8dac2527b289a4fd772db1"
+   ],
+   "14": [
+    "failed",
+    "aad6556e6e95865704c1d7ff041f0ff2"
+   ],
+   "15": [
+    "failed",
+    "efb3c97a3f969b371d1ae8f934f175dd"
+   ],
+   "16": [
+    "failed",
+    "a73b797817b0edfd74567e3dc84dd468"
+   ],
+   "17": [
+    "passed",
+    "58ac22c837581dec786b808618b43bc0"
+   ],
+   "18": [
+    "passed",
+    "ae6cedc014b6ed5ffd1e1bd79ed3bb28"
+   ],
+   "19": [
+    "passed",
+    "7ad6848e09eeb190e0e2b4e6cab76b23"
+   ],
+   "20": [
+    "failed",
+    "c415dab7bed54448d554477d634cf54c"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestNewServer": {
+   "1": [
+    "passed",
+    "c5965c7413c27e5cddcda13a9e62e288"
+   ],
+   "2": [
+    "passed",
+    "d8bca2587de208129d31c96f06d7bea9"
+   ],
+   "3": [
+    "passed",
+    "6daeb5dc4c62e2b8dc998c45111504ae"
+   ],
+   "4": [
+    "passed",
+    "164f13ab678567bd6937be669ec929af"
+   ],
+   "5": [
+    "passed",
+    "533a0ca9c8be01afbf8eaa427b342ed1"
+   ],
+   "6": [
+    "passed",
+    "0f6a23a258d3286b112aed427a729960"
+   ],
+   "7": [
+    "passed",
+    "0c4724e7d1fe4fc15737bab5c7422b16"
+   ],
+   "8": [
+    "passed",
+    "17ab96f38b4e2d6c5d9d4d8d5a000c9a"
+   ],
+   "9": [
+    "failed",
+    "c2a24a0fd66ac7c5eae9c67b7a885ce1"
+   ],
+   "10": [
+    "passed",
+    "e815306fdbe7de672d75de5006e8444b"
+   ],
+   "11": [
+    "passed",
+    "68bd6ac6279c9a4fd2e8e32933032868"
+   ],
+   "13": [
+    "passed",
+    "8754f1107a57a1ac3803205ea04b0325"
+   ],
+   "14": [
+    "passed",
+    "d5bdc2da61483f2ebc487d5a7bf38c6c"
+   ],
+   "15": [
+    "passed",
+    "5e5b725d4d3825d4aaec7f038324fa7c"
+   ],
+   "16": [
+    "passed",
+    "41763b6162c6f4c76ca6a8d2508a5636"
+   ],
+   "17": [
+    "passed",
+    "f1ad26a024bd87a9cbfd1a2796e6f90f"
+   ],
+   "18": [
+    "passed",
+    "86cb9434ce9078bbdde9ca710b663652"
+   ],
+   "19": [
+    "passed",
+    "34672d68bbd3ddb11a47253155948044"
+   ],
+   "20": [
+    "passed",
+    "8476504e0112dabe9f057c0612da249e"
+   ]
+  },
+  "go.temporal.io/server/temporal::TestTaskCategoryRegistryProvider": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "bda95cd36111849eb81db667aaea264c"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestBaseServerOptions": {
+   "1": [
+    "passed",
+    "87de59610cbc1659458419126ea461a2"
+   ],
+   "2": [
+    "passed",
+    "540ab12f081eeafd4f947792861ecaa1"
+   ],
+   "3": [
+    "passed",
+    "37d993b3d115e3dd2daeac4e73b49d35"
+   ],
+   "4": [
+    "passed",
+    "1d65b2a4d67167a05cc3bcfdd503bbd2"
+   ],
+   "5": [
+    "passed",
+    "54ac3f0a2f7d8aace552278604671225"
+   ],
+   "6": [
+    "passed",
+    "f5ade5a5bec82fe36bcb051e4d0e5b28"
+   ],
+   "7": [
+    "passed",
+    "c958ca1c4b3a62d42f8808d92a25c0cf"
+   ],
+   "8": [
+    "passed",
+    "91f7b00962789ed4d8b71a592d688211"
+   ],
+   "9": [
+    "passed",
+    "69c06f2bb5362afbdb6f1fe1f0827ebf"
+   ],
+   "10": [
+    "passed",
+    "fa0075c5cf6a4ac8dcfbb683c6547a4c"
+   ],
+   "11": [
+    "passed",
+    "5aaa729bf19bbf9be128307befe64ea6"
+   ],
+   "12": [
+    "passed",
+    "00ae42930ce34af47f2d3227acc1d51a"
+   ],
+   "13": [
+    "passed",
+    "f26a9055a8dad362dabe69c8a1b66e7e"
+   ],
+   "14": [
+    "passed",
+    "d6aa1facb50fab70155c244394f2538d"
+   ],
+   "15": [
+    "passed",
+    "11b5aec090ad6cefe795368dc3565d9d"
+   ],
+   "16": [
+    "passed",
+    "9dbf04f1256df15e894982d6a8ce0319"
+   ],
+   "17": [
+    "passed",
+    "633dbca824eeadab92bc0359fc0ddac2"
+   ],
+   "18": [
+    "passed",
+    "63ba46bdfa428bea87f9e2749e237033"
+   ],
+   "19": [
+    "passed",
+    "f743f2ac31ccc53e02dc767ecac88a26"
+   ],
+   "20": [
+    "passed",
+    "0527d365950b103ada377162a2cb6cac"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration": {
+   "1": [
+    "failed",
+    "632fa8e89794db12c4d4b51b220b72e7"
+   ],
+   "2": [
+    "failed",
+    "e1d3db8dd8b945d4e322a2bf2c34c7f0"
+   ],
+   "3": [
+    "failed",
+    "97cfa81431f13b09810f5c5e321e4e8f"
+   ],
+   "4": [
+    "failed",
+    "3568f7d6e968fae2469307ff96ea8c1c"
+   ],
+   "5": [
+    "failed",
+    "3cba4186c772d75b75ee4a19413b2633"
+   ],
+   "6": [
+    "failed",
+    "afe82db57ed5b52d0288c4bad5c3d1f9"
+   ],
+   "7": [
+    "failed",
+    "156da37cd6cdd2287ee0966d8fcf866a"
+   ],
+   "8": [
+    "failed",
+    "799ca91b963a91e791fdb78612f286bc"
+   ],
+   "9": [
+    "failed",
+    "32319061b775f9d2a760dffa239d1f53"
+   ],
+   "10": [
+    "failed",
+    "1f9a2a0ab93b3e7a5665a3ee5aa46cf5"
+   ],
+   "11": [
+    "failed",
+    "4107dba7a16f059371303628a366650e"
+   ],
+   "12": [
+    "failed",
+    "e5d388fd4ee51a8fa5e6725eb9f07dc3"
+   ],
+   "13": [
+    "failed",
+    "aab7a9db93f8ca4cfc93359dd50f24a5"
+   ],
+   "14": [
+    "failed",
+    "8d07a2d76c6e598d846809b6b95c896c"
+   ],
+   "15": [
+    "failed",
+    "9561573fa1eea058d89c7b831039e331"
+   ],
+   "16": [
+    "failed",
+    "f3d24b196d31dc07f58642a570d773a3"
+   ],
+   "17": [
+    "failed",
+    "fe1aecaf34a9edb043112cb268e0eaf0"
+   ],
+   "18": [
+    "failed",
+    "c21cd640b34f7ba51209adc5873f8399"
+   ],
+   "19": [
+    "failed",
+    "59fdfb375c79f93c936b64c0254c7b00"
+   ],
+   "20": [
+    "failed",
+    "9239f672b0e2f198499e71883f604b60"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestDefaultWorkerOptions": {
+   "1": [
+    "passed",
+    "bb3e3f612f999b0559a6f0d625149b00"
+   ],
+   "2": [
+    "passed",
+    "94487bc6803c3de7d29381d058ed30d2"
+   ],
+   "3": [
+    "failed",
+    "4be9348d92dfd22dadc032d75e6e4ac8"
+   ],
+   "4": [
+    "passed",
+    "cdb738f659e5fe9ac52f16e148da939f"
+   ],
+   "5": [
+    "passed",
+    "37e2e89b22203a3759eb64be31c3d421"
+   ],
+   "6": [
+    "passed",
+    "1e42ce58137d78470e67f54d072e2930"
+   ],
+   "7": [
+    "passed",
+    "372ee05e3bc4dc9d32640f83a2ab51b3"
+   ],
+   "8": [
+    "passed",
+    "e1e1b5c990e6c543f6981d5f28d8bffc"
+   ],
+   "9": [
+    "passed",
+    "16a8779116f80ec2319e8014126dd344"
+   ],
+   "10": [
+    "passed",
+    "2a5046c4c8450bece429392b835d7cfe"
+   ],
+   "11": [
+    "passed",
+    "9183911da02a381dace4c969775a19d2"
+   ],
+   "12": [
+    "passed",
+    "b5afdaf415f44effceaab3ee6889acdb"
+   ],
+   "13": [
+    "passed",
+    "ca3f038f614b83c332e08e14cf31b603"
+   ],
+   "14": [
+    "passed",
+    "bd8c4a207f05c5bc0f6f3152912a3d2f"
+   ],
+   "15": [
+    "passed",
+    "2f6b910f0e8c18941bcacbdfdd845721"
+   ],
+   "16": [
+    "passed",
+    "a3f1aa38d11878f94fbe6d5676a8921f"
+   ],
+   "17": [
+    "passed",
+    "623f44d56e3c72ffd26ff509e0cf8c08"
+   ],
+   "18": [
+    "passed",
+    "581ccdf98246330e0ee73a105d908cd4"
+   ],
+   "19": [
+    "passed",
+    "8184e8eb7831bd51d3d71cc07de432a0"
+   ],
+   "20": [
+    "passed",
+    "584fa8209fb5b846936ab5f83e5cfd27"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestNewWorkerWithOptions": {
+   "1": [
+    "passed",
+    "aca7ad002b2ba923c3d96269d55f4d50"
+   ],
+   "2": [
+    "passed",
+    "5e9adced1e67cdd37e1fabe250ef6451"
+   ],
+   "3": [
+    "passed",
+    "cc765b96867703f0807e073498f3df22"
+   ],
+   "4": [
+    "passed",
+    "4bd4ebef62342174caf3b97da126d018"
+   ],
+   "5": [
+    "passed",
+    "040c7cb171a7f36a7310b8ba3c618538"
+   ],
+   "6": [
+    "passed",
+    "55905f9d81076045991767abe9ed75a7"
+   ],
+   "7": [
+    "passed",
+    "292966f0b6f94994c913df0add91d47d"
+   ],
+   "8": [
+    "passed",
+    "fc3f9be207a2f3f9da3f810fc90289cc"
+   ],
+   "9": [
+    "passed",
+    "d7c8713b1fa5ee742b87ce2ebac8698c"
+   ],
+   "10": [
+    "passed",
+    "8d4a9f1381a3868ab33078d2120d5bc2"
+   ],
+   "11": [
+    "passed",
+    "bb55488c2bb1d98462532895453a8dc3"
+   ],
+   "12": [
+    "passed",
+    "33e74468ad2f46605499b4b7ea4b35de"
+   ],
+   "13": [
+    "passed",
+    "91b5528d1183d8f3fbb43a6ca2aca8a2"
+   ],
+   "14": [
+    "passed",
+    "c7248c678fb3b1b505eeb57191e929b1"
+   ],
+   "15": [
+    "passed",
+    "dee7f6752920b51df04becc06523e196"
+   ],
+   "16": [
+    "passed",
+    "5cea46aa6fa8ea5695b66ddf26aea33f"
+   ],
+   "17": [
+    "passed",
+    "f7edca08549ab62e5cdafa3322eee594"
+   ],
+   "18": [
+    "passed",
+    "3cee0788270b74e3dedba01d774bec96"
+   ],
+   "19": [
+    "passed",
+    "2b2c7067cf2a642e4feb6ec899b0206b"
+   ],
+   "20": [
+    "passed",
+    "3aafa2c52a8f2f8d3abfeb0a75fc0f7c"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestClientWithCustomInterceptor": {
+   "1": [
+    "failed",
+    "4ee42dbedcad7b93ebeb1a1665dd63ef"
+   ],
+   "2": [
+    "passed",
+    "2362415ce105d914fc8df0c084fa9b8f"
+   ],
+   "3": [
+    "passed",
+    "9af2b8e745cb01772e8a1f158c965c19"
+   ],
+   "4": [
+    "passed",
+    "e55c8231efa04aea3918bdfa06613587"
+   ],
+   "5": [
+    "passed",
+    "eb3a29e0093be5b2ccd886c2b99a7582"
+   ],
+   "6": [
+    "passed",
+    "5d46db225806b0b7d341b48c3823d88c"
+   ],
+   "7": [
+    "passed",
+    "9c5bbf4244ce6fab3010895d4f52140c"
+   ],
+   "8": [
+    "passed",
+    "9cdd754e42e558364b4f40366c27f261"
+   ],
+   "9": [
+    "passed",
+    "6e9bf1bd9a847bec544c9b6e96c26dac"
+   ],
+   "10": [
+    "passed",
+    "36edb9fde9c700b865f6cb20c88a3dd4"
+   ],
+   "11": [
+    "passed",
+    "f3be2a61eb345ac3f577bec1432e69c3"
+   ],
+   "12": [
+    "passed",
+    "47c7f188356732f32d69ebe7f9fefdf9"
+   ],
+   "13": [
+    "passed",
+    "e24f5e987eafbed1603d3aa2369345d6"
+   ],
+   "14": [
+    "passed",
+    "e0442eb7a704a045450c5e7d8b6f3e5a"
+   ],
+   "15": [
+    "passed",
+    "1c5bcd626982edecd6c234e5720bfa90"
+   ],
+   "16": [
+    "passed",
+    "1267148fe2a6994f1a552e33ff9b41be"
+   ],
+   "17": [
+    "passed",
+    "6987c15d2ba3ace305a98e0a7a9eb307"
+   ],
+   "18": [
+    "passed",
+    "1c8f17b54ad47602f2bf51c7bf7338b7"
+   ],
+   "19": [
+    "passed",
+    "abf800a2182372a2d5305ed3c9d2f51b"
+   ],
+   "20": [
+    "passed",
+    "d2318db7282a3eb8e3f41d6fe7076905"
+   ]
+  },
+  "go.temporal.io/server/temporaltest::TestNewServer": {
+   "1": [
+    "passed",
+    "feea001de47313999a8170562e8bcfe5"
+   ],
+   "2": [
+    "passed",
+    "95cdbbc159fcd1492e97f69466cd1873"
+   ],
+   "3": [
+    "passed",
+    "0bb285eeabbb03b42d87014f89ab1699"
+   ],
+   "4": [
+    "passed",
+    "0ed8532509acf879ee6886b5a21f2b30"
+   ],
+   "5": [
+    "passed",
+    "71191a9d89d9f9f37d05ae7384ba9f02"
+   ],
+   "6": [
+    "passed",
+    "80529d439b0c43499fc22785ce12ee41"
+   ],
+   "7": [
+    "passed",
+    "fd656ddbbe7a5c96d24eef5be5dc6848"
+   ],
+   "8": [
+    "passed",
+    "35fdc362de22845e35ee492f1e49850f"
+   ],
+   "9": [
+    "passed",
+    "3cbd54ddbb827d70d05b5f18bd66d8ad"
+   ],
+   "10": [
+    "passed",
+    "cdf06a5fbe1052d61a370dbc0cb11dea"
+   ],
+   "11": [
+    "passed",
+    "ac5b6b7de0bb9c2d9d55dc82517d9d27"
+   ],
+   "12": [
+    "passed",
+    "91ec1ce1aecf586957f649c341ab11b9"
+   ],
+   "13": [
+    "passed",
+    "6aac38bad37daf61f88a1c6eeb50d2b6"
+   ],
+   "14": [
+    "passed",
+    "35054a93a39d2f8521e37ed0f3e4aebd"
+   ],
+   "15": [
+    "passed",
+    "6be56f76f54de790508295e5add646de"
+   ],
+   "16": [
+    "passed",
+    "a7ac8f999db3c76bbe5431af95fbc7c2"
+   ],
+   "17": [
+    "passed",
+    "e76253a1cfc0278a8b1530987c3cb42b"
+   ],
+   "18": [
+    "passed",
+    "a8cd2b60a19ee836551482b3848cac53"
+   ],
+   "19": [
+    "passed",
+    "515333ee06a410a7afbb8bf9959f1022"
+   ],
+   "20": [
+    "passed",
+    "634bf212bcb297321981b4fdbd0c3dfb"
+   ]
+  }
+ },
+ "baseline_unstable": [
+  "go.temporal.io/server/temporal::TestNewServer"
+ ],
+ "confirm": {
+  "go.temporal.io/server/temporal::TestNewServer": {
+   "fail_seeds": [
+    9
+   ],
+   "passes_in_some_seed": true,
+   "seed": 9,
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "interrupted",
+    "interrupted",
+    "passed",
+    "failed"
+   ],
+   "fingerprints": 9,
+   "reproduced": false
+  },
+  "go.temporal.io/server/temporaltest::TestNewServer": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [
+  "go.temporal.io/server/temporaltest::TestSearchAttributeRegistration"
+ ],
+ "fingerprint_coverage": [
+  7,
+  16
+ ],
+ "timing": {
+  "plain": [
+   19.287,
+   18.523,
+   21.554
+  ],
+  "det": [
+   19.92,
+   49.179,
+   24.772
+  ]
+ },
+ "slowdown": 0.2843884481775289
+}
