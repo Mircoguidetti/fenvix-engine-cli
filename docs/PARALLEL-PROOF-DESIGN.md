@@ -24,7 +24,7 @@ same esphome selection took 160 s and 180 s: read single local walls as ±12 %.
   is defined outside the repository (`-n 8`, EXTERNAL), its in-repo CircleCI generator uses `-n 4`.
 * **What breaks today with `--det -n 4` (MEASURED, 1.4).** (0) On pydantic-ai it **does not start**: its
   `filterwarnings = error` turns detpy's own "xdist is not supported" warning into an INTERNALERROR (exit 3);
-  prefect declares the same filter. With that warning silenced, the verdict equals serial `--det` on esphome and
+  prefect declares the same filter (DECLARED; predicted to abort the same way). With that warning silenced, the verdict equals serial `--det` on esphome and
   pydantic-ai, but: (1) the trace is lost (every worker and the controller write the same path;
   the controller's header-only `"collection": "failed"` file is what remains); (2) distribution is dynamic: 33 % of
   esphome's tests ran on another worker in two identical runs; (3) 50 of 14,446 esphome tests (0.35 %) have a
@@ -55,8 +55,8 @@ same esphome selection took 160 s and 180 s: read single local walls as ±12 %.
   together-edges for data dependencies, polluters and the customer's groups), every parallel fingerprint checked
   against the test's serial fingerprint; a mismatch is resolved by a serial-equivalent rerun and becomes an edge.
 * **Recording off the critical path (4):** feasible for the end-of-session recording (deferred or pipelined:
-  saves 2.9-4.4 s per cold run on round 1, 0.8-2.9 s on round 2), not for the in-test capture except by a
-  shadow run.
+  saves 2.9-4.4 s per cold run on round 1, 0.8-2.9 s on round 2, 27.6 s of 232 s on esphome here), not for the
+  in-test capture except by a shadow run.
 * **Build plan (5):** 9 steps, 19-20 session-days, each with its tests and its acceptance measurement.
 
 ## 1. Measured facts
@@ -541,6 +541,7 @@ followed children, per-test assembly, store save).
 | home-assistant 0/16, p3 | 38.5 s | 48.2 s | 49.5 s | 2.9 s | −1.6 s (runner noise) |
 | home-assistant 5/16, p3 | 54.0 s | 58.1 s | 64.8 s | 1.6 s | 5.1 s |
 | home-assistant 10/16, p3 | 25.5 s | 31.8 s | 36.0 s | 1.7 s | 2.5 s |
+| esphome, this session (local 4 vCPU, round-2 engine, 14,446 tests, single runs) | 170 s (160/180) | 176 s | 232 s | 27.6 s | 28.4 s |
 
 ### 4.2 Three ways, and what each saves (ESTIMATED from 4.1)
 
@@ -553,7 +554,9 @@ followed children, per-test assembly, store save).
    directory lock); (c) under xdist (Design A) the controller defers the merge the same way.
    Saves the `record` column: cold/plain on round 1 goes from 1.81x → 1.31x (click), 1.46x → 1.30x (pygments),
    1.58x → 1.44x, 1.40x → 1.32x, 1.51x → 1.39x (home-assistant 0/5/10); on the round-2 engine 1.31x → 1.20x,
-   1.30x → 1.21x, 1.29x → 1.21x, 1.20x → 1.17x, 1.41x → 1.35x.
+   1.30x → 1.21x, 1.29x → 1.21x, 1.20x → 1.17x, 1.41x → 1.35x. On esphome (this session) the recording is half
+   of the capture overhead: cold/plain 1.37x → 1.20x (MEASURED parts, ESTIMATED sum); the warm run's 7.2-8.4 s of
+   recording (295 new or failed tests, plus the store save) would leave its critical path the same way.
    Caveat: in CI the *job* finishes only when the post step returns. The customer gets the verdict earlier (the
    test step's status, annotations, a failing step stops the job earlier), but the job's wall time only shrinks
    when other steps follow the test step (build, lint, upload) and overlap the recorder, or when the recorder runs
@@ -599,14 +602,19 @@ shard, moto's `-n 4` group, mlflow one parallel shard, all at the market-test HE
 | step | what | tests | the measurement that says it works | size |
 |---|---|---|---|---|
 | P0 | `harness/parallel_proof/`: the runner of this report (variants, per-worker trace shim, fingerprint comparison `cmp_traces.py`, outcome comparison) as an Actions workflow over the xdist set; results committed under `tracks/parallel-proof/` | harness unit tests on a 20-test synthetic project (one polluter/victim pair, one file writer/reader pair, one fixed-port pair) | reproduces 1.4 within the runner noise; prints for each repository the serial-noise rate (tests whose fingerprint differs between two serial `--det` runs) | 1 |
-| P1 | Per-worker traces, controller merge, worker detection; the controller stops opening its own empty trace; cassette per worker | pytester `-n 2`: one trace per worker, merged trace has every test once with `worker`; byte-identical merge from the same worker traces; a killed worker leaves `missing` lines | xdist set: merged trace covers 100 % of the tests that ran (today: the controller's header-only file, 0 tests, 1.4.1) | 1 |
+| P1 | Per-worker traces, controller merge, worker detection; the controller stops opening its own empty trace; cassette per worker; the "xdist is not supported" `UserWarning` removed (it aborts pydantic-ai and prefect under `filterwarnings = error`, 1.4.3) | pytester `-n 2`: one trace per worker, merged trace has every test once with `worker`; byte-identical merge from the same worker traces; a killed worker leaves `missing` lines | xdist set: merged trace covers 100 % of the tests that ran (today: the controller's header-only file, 0 tests, 1.4.1) | 1 |
 | P2 | `DetScheduling` (fixed plan, atoms from `--dist`, LPT on recorded durations, stickiness, `--det-plan` replay, `testrun_uid`) in `schedule.rs` + `xdist.py` | Rust property tests (same input → same plan; collection permutation invariance; atoms never split; makespan ≤ 4/3 OPT + max atom); pytester: `loadgroup` groups stay on one worker, two runs give the same per-worker lists, `--det-plan` replays a worker's list serially, worker crash → replacement runs the rest | xdist set, `--det -n 4` twice: identical per-worker lists; per-test fingerprints identical between the two runs except the serial-noise tests from P0; wall of `--det -n 4` ≤ (wall of plain `-n 4`) x (`--det`/plain serial ratio) x 1.05 (a fixed plan must not cost more than 5 % against xdist's dynamic balance) | 2 |
-| P3 | Cache across workers: decision in the controller, worker shards, cross-worker `rw` rule, single merge, deterministic verify sampling, receipts from the controller, isolated audit reruns; keys equal to serial keys (xdist options volatile, derived `testrun_uid`) | pytester: A writes a file in worker 0, B reads it in worker 1 → B not reused next session (fails on today's engine: write it first); serial and `-n 2` sessions take identical reuse decisions; two `-n 2` sessions write identical receipts; a placement mismatch is classified `placement`, not wrong | cache-proof walk (`harness/cache_proof/walk.py`) with `-n 4` on esphome, pydantic-ai, prefect, 50 commits each, every reuse checked by a fresh serial `--det` run: **0 wrong reuses**; reuse share within 1 point of the serial walk on the same commits (esphome today: 77 % under `-n 4` vs 98 % serial, 1.4.5); a store written by `-n 4` serves a serial run and vice versa; warm wall vs plain `-n 4` | 3 |
+| P3 | Cache across workers: decision in the controller, worker shards, cross-worker `rw` rule, single merge, deterministic verify sampling, receipts from the controller, isolated audit reruns; keys equal to serial keys (xdist options volatile, derived `testrun_uid`, `_` and xdist's variables outside the whole-environment digest) | pytester: A writes a file in worker 0, B reads it in worker 1 → B not reused next session (fails on today's engine: write it first); serial and `-n 2` sessions take identical reuse decisions; two `-n 2` sessions write identical receipts; a placement mismatch is classified `placement`, not wrong | cache-proof walk (`harness/cache_proof/walk.py`) with `-n 4` on esphome, pydantic-ai, prefect, 50 commits each, every reuse checked by a fresh serial `--det` run: **0 wrong reuses**; reuse share within 1 point of the serial walk on the same commits (esphome today: 77 % under `-n 4` vs 98 % serial, 1.4.5); a store written by `-n 4` serves a serial run and vice versa; warm wall vs plain `-n 4` | 3 |
 | P4 | Shared cache from the controller (pull before the decision, push after the merge; workers never hold the token) | `test_shared_cache.py` cases rerun with `-n 2`; a worker process has no token in memory or environment | two-machine run (`fenvix-shared-cache.yml`) with `-n 4`: machine 2 reuses 100 % of what machine 1's own warm run reuses, 0 wrong | 1 |
 | P5 | Proof: `tmp_path` counter normalised out of recorded paths (`_sites`), serial fingerprint kept per entry, parallel vs serial comparison per test, `placement` class in `verify`, serial-equivalent rerun of differing tests, entries tagged `serial` / `parallel-proven` / `parallel-unproven` | synthetic polluter/victim split across workers → `placement`, verdict = serial outcome, edge recorded; noise tests (thread divergence also between serial runs) not counted; an unproven entry is not reused by a serial session | xdist set: count of `placement` tests per repository; **0 new failures caused by the split** (every lane failure whose serial rerun passes is reported as placement-sensitive, none as a failure); **0 hidden failures** (every test that fails serially fails or is flagged in the parallel run) | 3 |
 | P6 | Design B lanes without xdist: per-test writers and ports in the footprint, atom/edge graph, exclusion by merge or barrier, lane processes with partial collection, merged trace and receipts | pytester: two tests writing one path never overlap; two tests binding one fixed port never overlap; per-worker-named resources (prefect pattern) give no edge; an opaque (subprocess) test runs in the serial lane; lane crash → its tests `missing`, rest of the run unaffected | xdist set, cold and warm: wall vs plain `-n 4` (targets: cold ≤ `--det` serial ratio x plain `-n 4`, i.e. the engine's serial overhead and no more; warm ≤ 0.6x plain `-n 4`); wall vs `--det` serial (target ≥ 2.5x faster on 4 cores); 0 wrong reuses (walk as in P3); 0 new failures caused by the split (as in P5) | 4 |
 | P7 | Lanes on several machines (plan shared, results joined through the shared cache, merged trace) | two local "machines" (containers) with one service | 2 x 4 vCPU vs 1 x 4 vCPU on prefect and litellm: wall ≤ 0.6x; identical verdicts and fingerprints | 2 |
 | P8 | Recording off the critical path: pipelined recording (serial), deferred recording after the verdict (parallel), shadow capture as an option | the deferred child records exactly the entries the inline recorder would (store equality on the `test_rust_hotpaths` reference project); the post step waits for the child; shadow entries stored only on fingerprint equality | `harness/rust_hotpaths/profile.py` on click, pygments, home-assistant 0/5/10: cold/plain at the verdict vs 4.2's estimates; 0 store differences against the inline recorder | 2-3 |
+
+**Prerequisites outside this plan** (found here, owned by the engine work): the capture's audit hook must not call
+blocking functions in an event-loop thread (2,769 pydantic-ai failures under `--det-cache`, 1.4.6) and pydantic-ai's
+empty store must be explained; until then pydantic-ai cannot be one of P3's walk repositories (use moto's parallel
+group instead). The esphome UDP hang (raw `select` with a virtual timeout) is a Level 0 limit to fix or document.
 
 **Total: 19-20 session-days** (P0-P5, the deterministic xdist path with the cache and the proof: 11; P6-P7, our
 own scheduler on one and several machines: 6; P8: 2-3). P8 is independent of P1-P7 and can run in parallel with
