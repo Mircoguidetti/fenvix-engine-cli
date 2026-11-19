@@ -97,7 +97,8 @@ function findFiles(root, patterns, flags) {
 
 function nodeTestConfigParts(root, flags, isolation, nodeOptions) {
   const keyed = [];
-  for (const f of flags) {
+  const early = nodeOptions ? parseNodeArgs(splitNodeOptions(nodeOptions).early).flags : [];
+  for (const f of [...early, ...flags]) {
     if (OUTPUT_ONLY.has(f.name)) continue;
     let v = f.value;
     if (FILE_FLAGS.has(f.name) && v) {
@@ -114,6 +115,25 @@ function nodeTestConfigParts(root, flags, isolation, nodeOptions) {
     node_options: nodeOptions || '',
     strip_types: String(stripTypes(flags)),
   };
+}
+
+/** NODE_OPTIONS split into the module-loading flags (-r, --require, --import, --loader) and the rest. */
+function splitNodeOptions(text) {
+  const toks = String(text).match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || [];
+  const unq = (t) => t.replace(/^(["'])(.*)\1$/, '$2');
+  const early = [];
+  const rest = [];
+  for (let i = 0; i < toks.length; i++) {
+    const t = toks[i];
+    const name = t.split('=')[0];
+    if (['-r', '--require', '--import', '--loader', '--experimental-loader'].includes(name)) {
+      if (t.includes('=')) early.push(name, unq(t.slice(t.indexOf('=') + 1)));
+      else if (i + 1 < toks.length) { early.push(name, unq(toks[i + 1])); i++; }
+    } else {
+      rest.push(t);
+    }
+  }
+  return { early, rest: rest.join(' ') };
 }
 
 async function main(argv) {
@@ -195,9 +215,17 @@ async function main(argv) {
   fs.writeFileSync(planPath, JSON.stringify(plan));
   const driverEnv = { ...process.env, DETJS_NT_DRIVER: '1', DETJS_NT_ISOLATION: isolation, DETJS_NT_PLAN: planPath };
   delete driverEnv.NODE_TEST_CONTEXT;
-  if (nodeOptions !== undefined) driverEnv.DETJS_NT_NODE_OPTIONS = nodeOptions;
+  // modules NODE_OPTIONS preloads would run before detjs' preload (their reads unseen): they move to the command
+  // line after it; test processes get NODE_OPTIONS back for the processes they start
+  const early = [];
+  if (nodeOptions !== undefined) {
+    driverEnv.DETJS_NT_NODE_OPTIONS = nodeOptions;
+    const { early: e, rest: keep } = splitNodeOptions(nodeOptions);
+    early.push(...e);
+    driverEnv.NODE_OPTIONS = keep;
+  }
   const preload = path.join(__dirname, 'preload.js');
-  const r = spawnSync(process.execPath, ['--require', preload, ...childFlags, path.join(__dirname, 'driver.js')],
+  const r = spawnSync(process.execPath, ['--require', preload, ...early, ...childFlags, path.join(__dirname, 'driver.js')],
     { stdio: 'inherit', env: driverEnv, cwd: root });
   let status = r.status ?? 1;
   if (r.error) process.stderr.write(`detjs node-test: driver failed: ${r.error.message}\n`);

@@ -51,6 +51,7 @@ const UNCACHEABLE = {
   sqlite: 'opens an SQLite database that cannot be keyed by its path',
   resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
   'import-glob': 'an import.meta.glob call that cannot be keyed',
+  binding: 'reaches native bindings directly (process.binding): reads not observable',
 };
 
 function digest(x) {

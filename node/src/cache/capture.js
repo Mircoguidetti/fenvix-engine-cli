@@ -132,7 +132,10 @@ class Capture {
     // content-addressed caches of tools (a cached result equals recomputing it): jiti's transpile cache; the
     // runners' own caches are added by the shells (Jest cacheDirectory, Vite cacheDir); more with DETJS_CACHE_SKIP_DIRS
     const tmp = os.tmpdir();
-    this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'),
+    // tsx's transform cache and v8-compile-cache (ts-node, older CLIs) are content-addressed too
+    const uid = typeof process.getuid === 'function' ? process.getuid() : '';
+    this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`),
+      path.join(tmp, `v8-compile-cache-${uid}`), path.join(tmp, 'v8-compile-cache'),
       ...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean)].map((d) => path.resolve(d) + path.sep);
   }
 
@@ -165,6 +168,7 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installBinding(this);
     installNodeReaders(this);
     installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
@@ -180,6 +184,7 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installBinding(this);
     installNodeReaders(this);
     require('node:module').syncBuiltinESMExports();
   }
@@ -931,10 +936,30 @@ function wrapTreeOp(cap, o, name, before, dstOf, style, inFlight = false) {
 function installFs(cap) {
   const P = fs.promises;
   const read = (k) => (a) => cap.read(a[0], k);
-  const write0 = (a) => cap.wrote(a[0]);
+  // a write whose success depends on what is at the path before it (exclusive creates, non-recursive mkdir,
+  // unlink/rmdir/rm without force, link/symlink destinations): the path's kind (or absence) is an input (R-009)
+  const excl = (fl) => (typeof fl === 'number' ? Boolean(fl & fs.constants.O_EXCL) : typeof fl === 'string' && fl.includes('x'));
+  const optsOf = (x) => (x && typeof x === 'object' && !Buffer.isBuffer(x) && !ArrayBuffer.isView(x) ? x : null);
+  const probe = (p) => {
+    if (!cap.active || cap.busy) return;
+    cap.busy++;
+    let infra;
+    try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+    if (!infra) cap.read(p, 's'); // Node's own cp/rm internals create and remove what the caller asked for
+  };
+  const write0 = (a, n) => {
+    try {
+      if (/^mkdir/.test(n) && !(optsOf(a[1]) && optsOf(a[1]).recursive)) probe(a[0]);
+      else if (/^(unlink|rmdir)/.test(n)) probe(a[0]);
+      else if (/^rm(Sync)?$/.test(n) && !(optsOf(a[1]) && optsOf(a[1]).force)) probe(a[0]);
+      else if (/^(writeFile|appendFile)/.test(n)) { const o = optsOf(a[2]); if (o && excl(o.flag)) probe(a[0]); }
+    } catch { /* never break the call */ }
+    cap.wrote(a[0]);
+  };
   const open = (dflt) => (a) => {
     const fl = flagsOf(a[1] && typeof a[1] === 'object' && !Buffer.isBuffer(a[1]) ? a[1].flags : a[1], dflt);
     if (fl.reads && !fl.trunc) cap.read(a[0], 'f');
+    if (fl.writes && excl(a[1] && typeof a[1] === 'object' && !Buffer.isBuffer(a[1]) ? a[1].flags : a[1])) probe(a[0]);
     if (fl.writes) cap.wrote(a[0]);
   };
   for (const [o, names, fn] of [
@@ -948,7 +973,7 @@ function installFs(cap) {
       'lchmodSync', 'lchmod', 'chownSync', 'chown', 'lchownSync', 'lchown', 'createWriteStream'], write0],
     [P, ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
   ]) {
-    for (const n of names) wrapFn(cap, o, n, fn);
+    for (const n of names) wrapFn(cap, o, n, fn === write0 ? (a) => write0(a, n) : fn);
   }
   // stat family (review r021 F1): the kind is keyed by the call (stat: following links; lstat: the path's own
   // kind or link target), the fields read from the result by statProxy; access with a mode: permission bits too;
@@ -984,14 +1009,20 @@ function installFs(cap) {
     wrapTreeOp(cap, o, n, (a) => cap.read(a[0], 'c'), (a) => a[1], style, style !== 'sync');
   }
   for (const [o, names] of [[fs, ['copyFileSync', 'copyFile']], [P, ['copyFile']]]) {
-    for (const n of names) wrapFn(cap, o, n, (a) => { cap.read(a[0], 'f'); cap.wrote(a[1]); });
+    for (const n of names) {
+      wrapFn(cap, o, n, (a) => {
+        cap.read(a[0], 'f');
+        if (typeof a[2] === 'number' && (a[2] & fs.constants.COPYFILE_EXCL)) probe(a[1]);
+        cap.wrote(a[1]);
+      });
+    }
   }
   // rename: what moves is read (unless the caller wrote it), the destination tree is an output
   for (const [o, n, style] of [[fs, 'renameSync', 'sync'], [fs, 'rename', 'cb'], [P, 'rename', 'promise']]) {
     wrapTreeOp(cap, o, n, (a) => { cap.read(a[0], 'c'); cap.wrote(a[0]); }, (a) => a[1], style);
   }
   for (const [o, names] of [[fs, ['symlinkSync', 'symlink', 'linkSync', 'link']], [P, ['symlink', 'link']]]) {
-    for (const n of names) wrapFn(cap, o, n, (a) => cap.wrote(a[1]));
+    for (const n of names) wrapFn(cap, o, n, (a) => { probe(a[1]); cap.wrote(a[1]); });
   }
   // descriptors: the path each was opened for, so that fstat results are recorded like stat results
   wrapFn(cap, fs, 'openSync', open('r'), (a, r) => { if (typeof r === 'number') cap.fdPaths.set(r, a[0]); });
@@ -1187,6 +1218,8 @@ function installNet(cap) {
     else target = { host: typeof a[1] === 'string' ? a[1] : 'localhost', port: o };
     if (target.path) {
       if (String(target.path).includes('detjs-replay')) return; // detjs' own replay server
+      // tsx's relay to a parent `tsx` CLI (watch mode): it only sends module paths and ignores a failed connect
+      if (/[\\/]tsx-\d+[\\/]\d+\.pipe$/.test(String(target.path)) && cap.directCaller() === 'infra') return;
       cap.flag('connect', `unix socket ${target.path}`);
     } else if (isLocalName(target.host) || allow.has(String(target.host).toLowerCase())) {
       cap.flag('connect', `${target.host}:${target.port}`);
@@ -1196,6 +1229,19 @@ function installNet(cap) {
   const dgram = require('node:dgram');
   wrapFn(cap, dgram.Socket.prototype, 'send', () => cap.flag('udp', 'dgram send'));
   wrapFn(cap, dgram.Socket.prototype, 'connect', () => cap.flag('udp', 'dgram connect'));
+}
+
+/** `process.binding('fs')` and friends reach the native readers without the wrapped functions: not cacheable. */
+function installBinding(cap) {
+  wrapFn(cap, process, 'binding', (a) => {
+    if (cap.busy) return;
+    const n = String(a[0]);
+    if (!/^(fs|fs_dir|fs_event_wrap|spawn_sync|process_wrap|tcp_wrap|pipe_wrap|udp_wrap|stream_wrap|os|cares_wrap)$/.test(n)) return;
+    cap.busy++;
+    let infra;
+    try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+    if (!infra) cap.flag('binding', `process.binding('${n}')`);
+  });
 }
 
 function installDlopen(cap) {
@@ -1252,9 +1298,9 @@ function wrapSqlite(cap) {
     if (!(options && options.readOnly)) cap.wrote(abs);
   };
   class DatabaseSync extends Real {
-    constructor(loc, options) {
-      try { opened(loc, options); } catch { /* never break the call */ }
-      super(loc, options);
+    constructor(...args) {
+      try { opened(args[0], args[1]); } catch { /* never break the call */ }
+      super(...args); // the arity matters: an explicit undefined `options` is refused
     }
   }
   Object.defineProperty(DatabaseSync, '__detjsCache', { value: true });

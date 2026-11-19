@@ -164,8 +164,18 @@ if (role === 'file' || role === 'shared') {
     };
   }
   if (role === 'file') fp.open(fp.fileIdOf(entryFile || '<unknown>'));
-  process.on('exit', (code) => {
-    endCurrent();
-    fp.close({ ok: code === 0 && !process.exitCode });
-  });
+  // the file ends after every other 'exit' listener ran (code reading files at shutdown is part of the file)
+  const realEmit = process.emit;
+  let closed = false;
+  process.emit = function emit(ev, ...a) {
+    if (ev !== 'exit' || closed) return realEmit.call(this, ev, ...a);
+    let r;
+    try { r = realEmit.call(this, ev, ...a); } finally {
+      closed = true;
+      const code = process.exitCode !== undefined && process.exitCode !== null ? Number(process.exitCode) : Number(a[0] || 0);
+      endCurrent();
+      fp.close({ ok: code === 0 });
+    }
+    return r;
+  };
 }
