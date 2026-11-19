@@ -1,4 +1,4 @@
-FIRSTLINE
+DONE
 
 # rust-hotpaths, round 2: everything that is not interface moves to Rust
 
@@ -14,7 +14,7 @@ harness's own venvs, all four engines interleaved in one job); "CI" = GitHub Act
 with each other; the columns of one row are. The final engine is a9981c5 (CI p8 / w6 ran e2696ec, the same code plus
 the run files).
 
-STATUSLINE
+Status: every module of `python/detpy` is moved or listed with the reason it stays Python; the full suite is green; the final CI profile p8 is complete. In every walk step that has finished, no reuse is wrong. The final CI walk w6 was still running when this was written: home-assistant 480 of 800 shard-steps, 271,804 reuses verified, 0 wrong; click and pygments complete, 0 wrong. Its remaining shards commit themselves to `tracks/rust-hotpaths/walk/w6/`.
 
 ## Result
 
@@ -28,12 +28,14 @@ Cold run (empty cache), fully reused run ("floor") and `--det` without cache, ea
 | click | cold / plain | 1.78x | 1.22x | 1.21x | **1.03x** | CI p8 (5 rounds) |
 | click | floor / plain | 1.13x | 0.68x | 0.66x | **0.52x** | CI p8 |
 | click | `--det` / plain | 1.01x | 0.99x | 0.95x | **0.78x** | CI p8 |
-| pygments | cold / plain | P8_PYG_COLD | CI p8 |
-| pygments | floor / plain | P8_PYG_WARM | CI p8 |
-| home-assistant 0/16 | cold / plain | P8_HA0_COLD | CI p8 (3 rounds) |
-| home-assistant 5/16 | cold / plain | P8_HA5_COLD | CI p8 |
-| home-assistant 10/16 | cold / plain | P8_HA10_COLD | CI p8 |
-| home-assistant 0 / 5 / 10 | floor / plain | P8_HA_WARM | CI p8 |
+| pygments | cold / plain | 1.44x | 1.31x | 1.29x | **1.27x** | CI p8 (5 rounds) |
+| pygments | floor / plain | 0.37x | 0.34x | 0.33x | **0.28x** | CI p8 |
+| pygments | `--det` / plain | 1.12x | 1.11x | 1.11x | **1.08x** | CI p8 |
+| home-assistant 0/16 | cold / plain | 1.57x | 1.34x | 1.29x | **1.26x** | CI p8 (3 rounds) |
+| home-assistant 5/16 | cold / plain | 1.45x | 1.31x | 1.32x | **1.22x** | CI p8 |
+| home-assistant 10/16 | cold / plain | 1.51x | 1.31x | 1.26x | **1.24x** | CI p8 |
+| home-assistant 0 / 5 / 10 | floor / plain | 0.55 / 1.43 (base reuses nothing on shard 5) / 0.47 | 0.42 / 0.34 / 0.36 | 0.38 / 0.32 / 0.33 | **0.33 / 0.25 / 0.28** | CI p8 |
+| home-assistant 0 / 5 / 10 | `--det` / plain | 1.40 / 1.27 / 1.36 | 1.26 / 1.19 / 1.26 | 1.22 / 1.20 / 1.22 | **1.09 / 1.09 / 1.09** | CI p8 |
 | click | cold / plain | 1.71x | 1.23x | 1.19x | **1.05x** | local profile (3 rounds) |
 | click | floor / plain | 1.07x | 0.65x | 0.60x | **0.49x** | local profile |
 | pygments | cold / plain | 1.49x | 1.35x | 1.30x | **1.33x** | local profile |
@@ -45,11 +47,11 @@ Sources: `tracks/rust-hotpaths/results/p8/` (CI), `results/local-final/profile-*
 checkpoint's own CI run p5 (base, round 1, checkpoint) measured cold / plain click 1.88 / 1.33 / 1.32, pygments 1.43 /
 1.32 / 1.31, home-assistant 0/16 1.57 / 1.35 / 1.28, 5/16 1.35 / 1.31 / 1.22, 10/16 1.52 / 1.29 / 1.24.
 
-pygments' cold run did not get faster in round 2 (1.30x -> 1.33x local, within the run-to-run spread of 3 rounds):
-its 5,346 tests spend the cold run's detpy time in recording (1.27 s of 17.6 s, the same in both engines: `facts`, the
-CPython parse of every new file version, and `assemble`, `detpy_core::record`, already Rust since round 1) and in the
-`--det` controls; the R-009b / R-015b fixes add work (one `stat` and `realpath` per file opened under the root, child
-stats) that the moves pay back.
+pygments' cold run gained least in round 2: 1.29x -> 1.27x on CI, 1.30x -> 1.33x locally (within the spread of
+3 local rounds). Its 5,346 tests spend the cold run's detpy time in two places. One is recording: 1.27 s of 17.6 s
+locally, the same in both engines. That is `facts`, the CPython parse of every new file version, and `assemble`,
+`detpy_core::record`, which has been Rust since round 1. The other is the `--det` controls. The R-009b / R-015b fixes
+add work that the moves pay back: one `stat` and `realpath` per file opened under the root, and child stats.
 
 ## Module table
 
@@ -123,7 +125,7 @@ py-spy of the exec'd warm process, seconds (samples / 250; buckets by the innerm
   0.30 = about 0.8 s of 3.72 s. The rest is pytest start-up, collection and reporting, which any pytest run pays.
 
 Round 1 measured the floor at 0.32-0.45 of plain pytest on its projects. Comparable numbers here are pygments 0.41
-(base) -> 0.28 (final), and home-assistant P8_HA_FLOOR_SHORT. click's floor (1.12 -> 0.52) includes its 37 subprocess
+(base) -> 0.28 (final), and home-assistant (shards 0 / 5 / 10, CI p8) 0.42 / 0.34 / 0.36 (round 1) -> 0.38 / 0.32 / 0.33 (checkpoint) -> 0.33 / 0.25 / 0.28 (final). click's floor (1.12 -> 0.52) includes its 37 subprocess
 tests, which run in every warm run.
 
 ## Behaviour changes (each a separate commit)
@@ -180,7 +182,7 @@ Each reuse is checked by a fresh `--det` run of the same commit:
 | w1 (round 1) | f7501bf | click / pygments / home-assistant | 43 / 51 / 800 shard-steps | 28,700 / 58,136 / 374,425 | **0 / 0 / 0** (1 flaky) | 1.08x / 1.31x / 1.30x |
 | w3 (checkpoint) | 48b0f08 | click / pygments / home-assistant | 43 / 51 / 760 shard-steps (13 of 16 shards finished) | 28,690 / 58,136 / 419,955 | **0 / 0 / 0** (1 flaky: `insteon/test_api_device.py::test_no_insteon_device` failed fresh, passed on the confirming rerun, as cached) | 1.07x / 1.27x / 1.25x |
 | local (final) | a9981c5 | click / pygments | 43 / 51 | 28,754 / 58,131 | **0 / 0** | 0.96x / 1.32x (n = 5 / 6) |
-| w6 (final, CI) | e2696ec | home-assistant, click, pygments | W6_STATUS | | | |
+| w6 (final, CI) | e2696ec | click / pygments / home-assistant | 43 / 51 / 480 of 800 shard-steps (home-assistant running when written) | 28,700 / 58,131 / 271,804 | **0 / 0 / 0** | 0.93x / 1.29x / 1.24x |
 
 MEASURED: `results/local-final/walk-*.json.gz`, `walk/w3/`, `walk/w6/`. click's 8 oldest commits fail under pytest 9.2
 in every walk (w1, w2, local), so 43 commits are compared.
