@@ -3,15 +3,17 @@ PARTIAL
 # Parallel with proof: review R-023 fixes (FIX 6), re-measurement
 
 Branch `claude/parallel-proof`. Merged first: `origin/claude/review-r023` (the reviewer's `tests/test_review_r023.py`
-and report) and `origin/claude/rust-hotpaths-2` at d470b59 (R-017b and N5 fixes, REPORT-R2c). Engine measured:
-b795295 (all engine changes of this session; later commits add tests, harness output and this report only).
+and report) and `origin/claude/rust-hotpaths-2` at d470b59 (R-017b and N5 fixes, REPORT-R2c). Engines measured:
+**b795295** (the R-023 fixes: local esphome batch `esphome5`, Actions run 44509602787 `r023-p0`, re-run `r023-p0b`)
+and **ddaffac** (plus the follow-up's speed and cacheability fixes: Actions `r023-p0c`, `r023-p0d`). Each table says
+which.
 
 Labels: **MEASURED** = a run named here with its raw file; **ESTIMATED** = derived, derivation given; **DECLARED** =
 read from a repository's configuration; **UNKNOWN** = not available, what was checked is said.
 
-**PARTIAL because**: the P0 Actions run and the three 50-commit P3 walks were triggered (run 44509602787) but had not
-finished when this report was written (state below); P4 (shared cache) is not built; P5 beyond the `placement`
-class is not built.
+**PARTIAL because**: P4 (shared cache) is not built; P5 beyond the `placement` class is not built; mlflow could not be
+measured validly; the moto and litellm walks ran before the cacheability fixes (0 reuse, vacuous); litellm-vertex and
+prefect are at 1.04x plain `-n 4`, just outside the noise; prefect's cache stays at 0 % (SQLite's clock).
 
 ## In short
 
@@ -20,14 +22,22 @@ class is not built.
   `--det` runs: **0 mismatches** on esphome (local and Actions, incl. both mixed-store directions), litellm-vertex,
   moto, prefect and pydantic-ai (no cache there); 0 new failures caused by the split, 0 hidden failures (prefect: 8
   tests flaky between the two serial runs themselves, counted apart).
-* **Speed (MEASURED, repeated)**: warm `--det-cache -n 4` is **0.66-0.72x plain `-n 4`** on esphome (local and Actions,
-  three runs each, clear of the noise). `--det -n 4` without a cache is **within the noise of plain `-n 4`** on esphome
-  (not "closed the gap" beyond noise, O1), **0.52x** on moto (the virtual clock skips its real sleeps), **1.25x** on
-  litellm-vertex, **1.2x** on pydantic-ai and prefect (P2's target missed on all three; cause not found).
-* **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex, moto and
-  prefect record 0 entries serially and in parallel (network, OS entropy, a loopback API server per test). mlflow's
-  jobs are not valid (collection errors in both, no serial truth); prefect's first run hit a harness defect (re-run
-  below). P3 walks (50 commits each): **esphome 446,878 reused, 0 wrong**; moto and litellm 0 reuse (nothing cacheable there in that run).
+* **Speed (MEASURED, repeated, final engine on Actions)**: `--det -n 4` against plain `-n 4`: esphome **1.00x**,
+  pydantic-ai **1.02x** (both inside the plain runs' range), litellm-vertex **1.04x** and prefect **1.04x** (just
+  outside the range; were 1.25x / 1.2x), moto **0.54x** (virtual clock). The 1.2x was ours: no assertion-rewrite
+  cache for pytest < 9.2, so every `--det` worker re-rewrote every test module (fixed). The remaining few seconds are
+  the re-exec's second plugin load (not fixed). Warm `--det-cache -n 4` against plain `-n 4`: esphome **0.72x**,
+  litellm-vertex **0.58x** (99.9 % reused, was 0 %), moto **0.17-0.22x** (96.6 % reused, was 0 %), all three runs each.
+  "Closed the gap" is not claimed beyond these ranges (O1).
+* **Cache blockers, per repository**: litellm's (pytest-socket's `localhost` lookup, pytest-rerunfailures' channel
+  to the controller, conftest-set variables, a `/proc/self/fd` listing at import) made cacheable soundly in this
+  round, plus `--det-urandom`; moto's after `--det-urandom` are a Docker daemon probe and `/proc` reads (85 tests);
+  prefect's is its SQLite schema (SQLite's own clock and `randomblob`, not virtualised: 0 % reuse); pydantic-ai is
+  blocked by the capture prerequisite of design 5. mlflow's jobs are not valid (collection errors, no serial truth).
+* P3 walks (50 commits each): **esphome 446,878 reused, 0 wrong**; moto and litellm 0 reuse in that run (before the
+  cacheability fixes and without `--det-urandom`: vacuous).
+* One flaky parallel verdict (pydantic-ai, a blockbuster lock check in a thread, same plan passed in run c): not the
+  split, not the cache; reported, not fixed.
 
 ## Per finding: change, test before / after
 
@@ -446,12 +456,16 @@ uses runs b and c (run a plans on unit costs, a checkout's first run).
 | litellm-vertex | 68.4 / 69.5 / 71.1 s | 72.3 / 72.7 s | **1.04x** (was 1.25x) | 40.3 / 40.7 / 40.7 s | 4,178 of 4,181 (99.9 %; was 0 %) | **0.58x** | 0 |
 | moto (`-n 4` group) | 163.1 / 162.7 / 162.3 s | 86.9 / 88.2 s | **0.54x** | 35.8 / 27.1 / 29.7 s | 1,794, then 2,416 of 2,501 (96.6 %; was 0 %) | **0.17-0.22x** | 0 |
 | pydantic-ai (no cache) | 101.1 / 89.3 / 92.4 s | 89.1 / 100.0 s | **1.02x** (was 1.2x) | — | — | — | 0 reused; 1 ran (below) |
-| prefect (group 1) | see below | | | | | | |
+| prefect (group 1) | 172.4 / 181.9 / 177.3 s | 185.8 / 183.4 s | **1.04x** (was 1.2x) | 230.4 / 225.8 / 226.9 s | 0 (sqlite schema, below) | 1.28x | 0 |
 
-* **Target "within the noise of plain `-n 4`"**: met on esphome (inside the plain range) and pydantic-ai (inside the
-  plain range); moto is faster (virtual clock). litellm-vertex is at 1.04x: 3 s above the plain median and 1.2-1.6 s
-  above the slowest plain run, i.e. **just outside** the plain range with three runs each; the measured remaining
-  cost is the re-exec's second plugin load (2.8 s locally, cause 2 above), not fixed.
+* **Target "within the noise of plain `-n 4`"**: met on esphome and pydantic-ai (inside the plain range); moto is
+  faster (virtual clock). litellm-vertex and prefect are at **1.04x**: 3 s (litellm) and 7 s (prefect) above the plain
+  median, 1.2-1.6 s and 1.5-3.9 s above the slowest plain run, i.e. **just outside** the plain range with three runs
+  each. The measured remaining cost on litellm is the re-exec's second plugin load (2.8 s locally, cause 2 above);
+  prefect was not profiled. Not fixed.
+* prefect's verdicts: 6 failures in plain runs, 20 in every `--det` run but the first serial one (28: the 8
+  `tests/_internal/concurrency` timeout tests that fail only there, serial noise as before; fpcompare now lists 7 of
+  them under `serial_failure_noise`, 0 hidden failures, 0 new failures caused by the split).
 * Truth: crosscheck 0 mismatches for every reused result in every repository, both mixed-store directions included.
   Plans and per-test workers identical between runs b and c in all four (fpcompare). Outcome differences: 0 on
   esphome, litellm, moto; **1 on pydantic-ai**: `tests/models/test_batch_runs.py::test_one_capability_serves_runs_on_
@@ -480,7 +494,7 @@ uses runs b and c (run a plans on unit costs, a checkout's first run).
 | litellm-vertex | data `/proc/self/fd` (4,180, `-n`) | `prometheus_client` lists the open descriptors at import time | **yes, fixed**: `/proc`, `/sys`, `/dev` reads of code that runs for every test (start-up, between tests, import) are not data inputs, as their `proc` flag already was not (Rust `record.rs` and the reference); a test's own `/proc` read still makes it uncacheable |
 | moto | os entropy (1,934-2,458) | uuid4 request ids | with `--det-urandom` |
 | moto | docker SDK connect to `/var/run/docker.sock` (between tests in one worker, then per test), `/proc/self/task/<tid>/children` reads, a C-extension socket left open by an xunit fixture | MEASURED detail lines of `r023-p0d` | no: a connection to the Docker daemon is a real outside input; left as is (85 tests stay uncached) |
-| prefect | real clock read outside the virtual clock (2,418) | per test (detail line not in the first run's tail: the re-run reports it) | UNKNOWN this round |
+| prefect | real clock read outside the virtual clock (2,418) | the SQLite schema prefect creates at import (`aiosqlite/core.py:63`, import time): `CREATE TABLE flow (id CHAR(36) DEFAULT (lower(hex(randomblob(4)) ...` and timestamp defaults evaluated by SQLite itself (`sqlcap`: a schema that may read the real clock) | no: SQLite's own clock and `randomblob` run outside Level 0; caching would need a virtual clock inside SQLite (overriding its date/time functions per connection): not done |
 | pydantic-ai | not measured | the capture prerequisite of design 5 (blockbuster, 2,769 failures under `--det-cache`) | no |
 
 After the fixes, litellm-vertex locally (MEASURED, `--det --det-urandom`): cold `--det-cache -n 4` 98.9 s (4,180 of
@@ -509,11 +523,17 @@ Diagnostics: a worker's "not cacheable" detail (where the reason was found) now 
 
 ## Not done, and why
 
-* **P0 / P3 on Actions**: run 44509602787 (walks) and the re-run of prefect and mlflow (`r023-p0b-2026-11-19`) were still running when this
-  was written: the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
-  `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
-  `tracks/parallel-proof/results/r023-p0-2026-11-19/` as the jobs finish. The litellm walk will show 0 reuse
-  (nothing is cacheable there, above).
+* **Walks after the cacheability fixes**: the moto and litellm walks (50 commits each) ran on b795295 without
+  `--det-urandom` and reused nothing; a walk on ddaffac with `--det-urandom` would measure their reuse and wrong
+  reuses (not run: about 5 hours per repository on a runner). esphome's walk is unaffected by the follow-up's
+  changes except that whole-environment and `/proc` handling now match the workers.
+* **mlflow**: no valid measurement (two attempts; collection errors abort the serial runs).
+* **litellm-vertex and prefect at 1.04x** plain `-n 4`: the re-exec loads every plugin twice in the controller
+  (about 2.8 s on litellm); re-executing before pytest loads plugins would need the options before pytest parses
+  them. prefect's extra 7 s not profiled.
+* **prefect's cache**: SQLite evaluates `randomblob` and its date/time defaults outside the virtual clock; making it
+  cacheable needs SQLite date/time functions under Level 0 (per connection). Not done.
+* **pydantic-ai's flaky verdict** (blockbuster lock check in a thread, one of three parallel runs): not done.
 * **P4 (shared cache)**: not built. `claude/shared-cache`'s client (`remote_cache.py`, 668 lines, with
   `cache_service.py` and `runtime_id.py`) reads and injects the Python store dict and uses Python runtime identities
   that the Rust move removed from this base; porting it is its own change. Nothing in it was brought over.
