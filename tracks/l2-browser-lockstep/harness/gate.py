@@ -147,12 +147,34 @@ def kill_group(p):
         try:
             os.killpg(p.pid, sig)
         except ProcessLookupError:
-            return
+            break
         try:
             p.wait(timeout=15)
-            return
+            break
         except subprocess.TimeoutExpired:
             pass
+    kill_stragglers()
+
+
+def kill_stragglers():
+    """Processes a timed-out run leaves behind (web servers, browsers re-parented out of its group) would hold the
+    project's port and fail every later run in 1 s (gate run 4, actual: runs 4-10 'missing' after run 3 timed out).
+    Kills every process whose working directory is inside the checkout, except this one and its parents."""
+    me = {os.getpid(), os.getppid()}
+    root = os.path.realpath(str(WORK))
+    for d in os.listdir("/proc"):
+        if not d.isdigit() or int(d) in me:
+            continue
+        try:
+            cwd = os.path.realpath(os.readlink(f"/proc/{d}/cwd"))
+        except OSError:
+            continue
+        if cwd == root or cwd.startswith(root + os.sep):
+            try:
+                os.kill(int(d), signal.SIGKILL)
+            except OSError:
+                pass
+    time.sleep(1)
 
 
 class Hogs:
@@ -204,6 +226,11 @@ def run_pw(label, mode, seed=None, args=None, det_flags=(), timeout_s=None, env_
             kill_group(p)
             rec["rc"] = "timeout"
     rec["wall_s"] = round(time.time() - t, 1)
+    if rec["rc"] not in (0,):
+        try:
+            rec["log_tail"] = logf.read_text(errors="replace")[-3000:]
+        except OSError:
+            pass
     if HAS_SERVER:
         fn("server_stop")
     oc = parse_json(jsonf)
@@ -370,6 +397,8 @@ if JOB == "gate":
             T["runs"].append(o)
             if r.get("error"):
                 T.setdefault("run_errors", {})[str(i + 1)] = r["error"][-800:]
+            if r.get("log_tail") and o not in ("passed",):
+                T.setdefault("run_logs", {})[str(i + 1)] = r["log_tail"][-2500:]
             T["errors"].append((r.get("errors") or {}).get(k, "")[:400])
             T["walls"].append(r.get("wall_s"))
             st = [x for x in ls_stats(label) if spec["grep"] in x.get("test", "")]
