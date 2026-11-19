@@ -14,6 +14,10 @@ import pytest
 from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
 from ._patch import Patcher
 
+# --det-outcomes: the outcome of a test from its phase outcomes (Rust; the Python original is
+# tests/rust_hotpaths_ref/_ref_plugin_helpers.py)
+_det_outcome = _core.det_outcome
+
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
 _PATCHER = Patcher()
 _INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
@@ -446,19 +450,6 @@ def pytest_unconfigure(config):
         S.config = None
 
 
-def _final_outcome(parts: dict) -> str:
-    setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
-    if setup is not None and setup != "passed":
-        main = setup if setup in ("skipped", "xfailed") else "error"
-    elif call is not None:
-        main = call
-    else:
-        main = "unknown"
-    if teardown not in (None, "passed", "skipped"):
-        main += "+teardown-error"
-    return main
-
-
 def _exception_of(report) -> list:
     """[exception type, phase, first line of the message, crash path:line] of a failed report."""
     crash = getattr(getattr(report, "longrepr", None), "reprcrash", None)
@@ -507,7 +498,7 @@ class _Outcomes:
             o = report.outcome
         parts = self.parts.setdefault(report.nodeid, {})
         parts[report.when] = o
-        self.outcomes[report.nodeid] = _final_outcome(parts)
+        self.outcomes[report.nodeid] = _det_outcome(parts.get("setup"), parts.get("call"), parts.get("teardown"))
         if report.failed and report.nodeid not in self.exceptions:
             self.exceptions[report.nodeid] = _exception_of(report)
 

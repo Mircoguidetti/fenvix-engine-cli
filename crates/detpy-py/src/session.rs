@@ -1004,3 +1004,20 @@ fn where_(cap: &Bound<'_, CaptureCore>, names: &Bound<'_, PyList>, why: &[u8], c
 }
 
 use pyo3::IntoPyObjectExt;
+
+/// The `--det-outcomes` outcome of a test from its phase outcomes (`plugin._final_outcome`): a setup that did not
+/// pass decides (skipped / xfailed, else "error"), else the call; a teardown that did not pass or skip appends
+/// "+teardown-error". `None`: the phase did not report.
+#[pyfunction]
+#[pyo3(signature = (setup, call, teardown))]
+pub fn det_outcome(setup: Option<&str>, call: Option<&str>, teardown: Option<&str>) -> String {
+    let mut main = match (setup, call) {
+        (Some(s), _) if s != "passed" => if s == "skipped" || s == "xfailed" { s } else { "error" }.to_string(),
+        (_, Some(c)) => c.to_string(),
+        _ => "unknown".to_string(),
+    };
+    if !matches!(teardown, None | Some("passed") | Some("skipped")) {
+        main.push_str("+teardown-error");
+    }
+    main
+}
