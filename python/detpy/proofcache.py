@@ -619,8 +619,6 @@ class ProofCachePlugin:
         """
         raw = self.sess.keys_json()
         tests = json.loads(raw) if raw else {}
-        for t in tests.values():
-            t["not_cached"] = None
         try:
             dists, _editable = _dist_infos(self.root, os.path.join(self.dir, "distributions.json"))
         except Exception:

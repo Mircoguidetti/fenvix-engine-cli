@@ -666,6 +666,19 @@ pub fn record_session_keys(
         );
         out.recorded += 1;
     }
+    if let Some(k) = keys {
+        // the engine's own verdict: why a test's inputs are not a proof of its outcome (None: they are)
+        for (nid, why, _) in &out.not_cached {
+            if let Some(serde_json::Value::Object(e)) = k.get_mut(nid) {
+                e.insert("not_cached".into(), serde_json::Value::String(why.clone()));
+            }
+        }
+        for v in k.values_mut() {
+            if let serde_json::Value::Object(e) = v {
+                e.entry("not_cached").or_insert(serde_json::Value::Null);
+            }
+        }
+    }
     out
 }
 
