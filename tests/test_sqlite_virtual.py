@@ -29,6 +29,14 @@ SCHEMA_TEST = """
         con.execute(SCHEMA)
         return con
 
+    # first: it reads no clock; under the prefix rule (review R-020) a later test carries the epoch of earlier readers
+    def test_explicit_dates_keep_sqlite_semantics():
+        con = sqlite3.connect(":memory:")
+        assert con.execute("select date('2020-02-28', '+1 day'), julianday('2000-01-01'), "
+                           "strftime('%Y', '1999-12-31'), datetime(0, 'unixepoch')").fetchone() == (
+            "2020-02-29", 2451544.5, "1999", "1970-01-01 00:00:00")
+        assert con.execute("select date('garbage')").fetchone() == (None,)
+
     def test_rows(tmp_path):
         con = _db(tmp_path)
         con.execute("insert into flow(name) values ('a')")
@@ -55,12 +63,6 @@ SCHEMA_TEST = """
         # the virtual clock: SQLite's now and Python's now come from the same clock
         assert abs(now - s) < 5, (now, s)
 
-    def test_explicit_dates_keep_sqlite_semantics():
-        con = sqlite3.connect(":memory:")
-        assert con.execute("select date('2020-02-28', '+1 day'), julianday('2000-01-01'), "
-                           "strftime('%Y', '1999-12-31'), datetime(0, 'unixepoch')").fetchone() == (
-            "2020-02-29", 2451544.5, "1999", "1970-01-01 00:00:00")
-        assert con.execute("select date('garbage')").fetchone() == (None,)
 """
 
 

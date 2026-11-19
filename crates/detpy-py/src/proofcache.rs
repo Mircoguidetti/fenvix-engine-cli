@@ -969,3 +969,29 @@ pub fn dist_top_of(rel: &str) -> Option<String> {
 pub fn stat_dep(path: PathBuf) -> String {
     detpy_core::distfiles::stat_dep(&path)
 }
+
+/// Existence checks of at least `min` entries of one directory replaced by the directory's listing with kinds, many
+/// under one directory tree by the tree with kinds (`proof::compact_stats`; what `record_session` does to each
+/// test's data, exposed for the equivalence tests' reference).
+#[pyfunction]
+pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize) -> Vec<(String, String)> {
+    proof::compact_stats(data, &root, min)
+}
+
+/// Kind of `path` without following a final symlink ("link", or `stat_kind`'s kinds).
+#[pyfunction]
+pub fn lstat_kind(path: PathBuf) -> &'static str {
+    proof::lstat_kind(&path)
+}
+
+/// Dependency on the importable entries of `dir` ("i:<digest>" or "i:missing").
+#[pyfunction]
+pub fn importable_dep(dir: PathBuf) -> String {
+    proof::importable_digest(&dir).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+}
+
+/// (a regular module or package found, the package directory exists) for module `name` in `dir`.
+#[pyfunction]
+pub fn import_probe(dir: &str, name: &str, suffixes: Vec<String>) -> (bool, bool) {
+    proof::import_probe(dir, name, &suffixes)
+}

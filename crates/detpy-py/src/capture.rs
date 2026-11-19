@@ -1746,6 +1746,11 @@ impl CaptureCore {
         }
         Ok(d)
     }
+    /// (real time, context) at every switch (the prefix rule's order of first activation).
+    #[getter]
+    fn timeline(&self) -> Vec<(f64, usize)> {
+        lock(&self.st).timeline.clone()
+    }
     #[getter]
     fn segs(&self) -> Vec<(usize, usize)> {
         lock(&self.st).segs.clone()

@@ -162,6 +162,11 @@ FILES = {
 
         HERE = Path(__file__).parent
 
+        # first in the file: step 3 changes code and an environment variable that later tests use; under the
+        # prefix rule (review R-020) a test carries what every earlier test of the process depended on
+        def test_reads_data():
+            assert (HERE / "data.txt").read_text().startswith("data")
+
         def test_f(config_text):
             assert mod.f(1) == 2 and config_text.startswith("cfg")
 
@@ -170,9 +175,6 @@ FILES = {
 
         def test_table():
             assert mod.TABLE.startswith("a")
-
-        def test_reads_data():
-            assert (HERE / "data.txt").read_text().startswith("data")
 
         def test_missing_and_listing():
             assert not (HERE / "nope.txt").exists()

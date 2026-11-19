@@ -130,10 +130,39 @@ def record_reference(self, store) -> None:
             return d == "" or own == d or own.startswith(d + "/")
         return True
 
+    # review R-020 H1/O1 (prefix rule; claude/dep-verdict-abjcfw): everything a context that ran before a test in
+    # this process depended on is an input of that test (contexts in order of first activation; a test module's own
+    # import context at the collection of its file)
+    first: dict = {}
+    for k, (_t, c) in enumerate(cap.timeline):
+        first.setdefault(c, k)
+    g_set = set(g_ctx_all)
+    for n, i in ctx_of.items():
+        if n.startswith("i|") and i in own_import_ix:
+            first.setdefault(i, first.get(ctx_of.get("c|" + n[2:]), 0))
+    carry_order = sorted((k, c) for c, k in first.items() if c not in g_set)
+    carry_pos = 0
+    c_data: dict = {}
+    c_env: set = set()
+    c_flags: set = set()
+    c_units: set = set()
+    c_content: set = set()
+    c_ctxs: list = []
     for nid in self.ran:
         item = self.items.get(nid)
         if item is None:
             continue
+        tpos = first.get(ctx_of.get("t|" + nid), len(cap.timeline) + 1)
+        while carry_pos < len(carry_order) and carry_order[carry_pos][0] < tpos:
+            c = carry_order[carry_pos][1]
+            carry_pos += 1
+            c_ctxs.append(c)
+            _merge_data(c_data, cap.data.get(c, {}))
+            c_env |= cap.env.get(c, set())
+            c_flags |= cap.flags.get(c, set())
+            if c < len(per):
+                c_units |= units_of(per[c][0])
+                c_content |= unparsable(per[c][1])
         p = self.parts.get(nid, {})
         outcome = _final(p)
         if outcome not in ("passed", "skipped", "xfailed"):
@@ -145,9 +174,10 @@ def record_reference(self, store) -> None:
             ctxs.append(own_import[own])
         flags = set(g_flags)
         data = dict(g_data)
-        env = set(g_env)
-        units = set()
-        content = set(pre_ix) | g_unparsable
+        _merge_data(data, c_data)
+        env = set(g_env) | c_env
+        units = set(c_units)
+        content = set(pre_ix) | g_unparsable | c_content
         for c in ctxs:
             flags |= cap.flags.get(c, set())
             _merge_data(data, cap.data.get(c, {}))
@@ -155,19 +185,32 @@ def record_reference(self, store) -> None:
             units |= units_of(per[c][0])
             content |= unparsable(per[c][1])
         why = _uncacheable(flags, cfg)
+        own_flags = set(flags)
         if why is not None:
             self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
+        elif c_flags:
+            why = _uncacheable(c_flags, cfg)
+            if why is not None:
+                self.not_cached_where[nid] = self._where(why, c_ctxs)
+                why = f"after an earlier test or fixture of this process: {why}"
+            else:
+                flags |= c_flags
         if why is None:
             # writers credited to the test: its own contexts and the global ones (startup, between tests,
             # import time), whose code is an input of every test
             credited = set(ctxs) | set(g_ctx_all)
             names = {names_of[c] for c in credited}
+            carried_credit = credited | set(c_ctxs)
             for f in sorted(flags):
-                if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
+                if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= (
+                        credited if f in own_flags else carried_credit):
                     why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
                     break
             if why is None:
+                own_reads = lambda path: path in g_data or any(path in cap.data.get(c, ()) for c in ctxs)  # noqa: E731
                 for path in data:
+                    if path in c_data and c_data[path] == data[path] and not own_reads(path):
+                        continue
                     w = written.get(path)
                     if w and not w <= names:
                         why = f"reads a file another test or fixture wrote: {path}"
@@ -218,7 +261,8 @@ def record_reference(self, store) -> None:
         report = {w: p[w] for w in ("setup", "call") if w in p}
         store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                      self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                     sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
+                     _core.compact_stats(sorted(data.items()), cap.root_sep.rstrip("/"), 8), sorted(content),
+                     sorted(skeleton), sorted(hooks), sorted(units))
         self.recorded += 1
     store.save()
 
@@ -277,6 +321,7 @@ def _merge_data(into: dict, new: dict) -> None:
     """dict.update, except that a kind check ("s:...") never replaces a content or listing dependency."""
     for k, v in new.items():
         old = into.get(k)
-        if old is not None and v.startswith("s:") and not old.startswith("s:"):
+        kind = lambda d: d.startswith(("s:", "l:"))  # noqa: E731
+        if old is not None and kind(v) and not kind(old):
             continue
         into[k] = v

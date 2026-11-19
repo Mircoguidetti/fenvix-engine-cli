@@ -67,7 +67,7 @@ _AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", 
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link")
+                 "os.link", "ctypes.dlopen")
 _SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
 _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
                  "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
@@ -364,6 +364,7 @@ class Capture:
         self._patch_sqlite()
         self._patch_stat()
         self._patch_lookups()
+        self._installed_cb = self._installed
         self.active = False
         try:
             self._scan_maps(None)
@@ -421,11 +422,13 @@ class Capture:
             if orig is None:
                 return
 
+            link = name == "lstat"
+
             def checked(path, *args, **kwargs):
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
-                        cap.stat_check(path)
+                        cap.stat_check(path, link or kwargs.get("follow_symlinks") is False)
                     except Exception:
                         pass
                     finally:
@@ -436,11 +439,24 @@ class Capture:
             checked.__wrapped__ = orig
             self._stat_saved.append((os, name, orig))
             setattr(os, name, checked)
+            # LIMITS A3: references bound before the session
+            for mod in list(sys.modules.values()):
+                d = getattr(mod, "__dict__", None)
+                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
+                    continue
+                for k, v in list(d.items()):
+                    if v is orig:
+                        self._stat_saved.append((mod, k, orig))
+                        try:
+                            setattr(mod, k, checked)
+                        except Exception:
+                            pass
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
 
-    def stat_check(self, path) -> None:
+    def stat_check(self, path, link=False) -> None:
         if not self.active:
             return
         p = self._abs(path)
@@ -452,7 +468,7 @@ class Capture:
             f = None
         if self._kind_from(f) != "user":
             return
-        self.read(self._cur(), p, "s")
+        self.read(self._cur(), p, "l" if link else "s")
 
     def _kind_from(self, f) -> str:
         while f is not None:
@@ -512,11 +528,24 @@ class Capture:
             return  # the immediate importer is the standard library, pytest, a plugin: not the test's input
         ctx = self._cur()
         n = len(suffixes)
+        whole = tail.isidentifier() and all(x.endswith((".py", ".pyc", ".pyw", ".so", ".pyd")) for x in suffixes)
         for e in list(entries):
             if not isinstance(e, str):
                 continue
             d = self._abs(e or ".")
             if d is None or not os.path.isdir(d) or self._ignored(d + os.sep):
+                continue
+            if whole:
+                # one dependency on the directory's importable entries (proof::importable_digest)
+                self.read(ctx, d, "i")
+                regular, pkg_dir = _core.import_probe(d, tail, suffixes)
+                if pkg_dir:
+                    for c in _core.import_candidates(d, tail, suffixes)[1:1 + n]:
+                        self.read(ctx, c, "s")
+                        if os.path.isfile(c):
+                            regular = True
+                if regular:
+                    break
                 continue
             cands = _core.import_candidates(d, tail, suffixes)
             missing = not os.path.exists(cands[0])
@@ -561,6 +590,32 @@ class Capture:
             if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
                 continue
             self.read(ctx, p, "f")
+            self._native(ctx, p)
+
+    def _installed(self, p: str) -> bool:
+        idx = getattr(self, "_dist_index", None)
+        if idx is None:
+            from detpy import distid
+
+            was = self.active
+            self.active = False
+            try:
+                idx = self._dist_index = distid.Index(self.root)
+            except Exception:
+                return False
+            finally:
+                self.active = was
+        r = idx.owners(p)
+        return r is not None and r[0] != [""]
+
+    def _native(self, ctx, p) -> None:
+        """LIMITS A1/A2: a library from the project root that no RECORD lists is the repository's native code."""
+        if not p.startswith(self.root_sep) or p.startswith(_DETPY_DIR) or os.path.basename(p).startswith("clockshim-"):
+            return
+        inst = getattr(self, "_installed_cb", None)
+        if inst is not None and inst(p):
+            return
+        self.flag(ctx, "native", p)
 
     # -- sockets opened in C ----------------------------------------------------------
     def _scan_sockets(self, ctx: int | None) -> None:
@@ -645,7 +700,14 @@ class Capture:
         if not _encodable(p):
             self.flags.setdefault(ctx, set()).add("badpath")
             return
-        if kind == "s":
+        if kind == "i":
+            hk = "i" + p
+            dep = self._hashed.get(hk)
+            if dep is None:
+                dep = self._hashed[hk] = _core.importable_dep(p)
+            self.data.setdefault(ctx, {}).setdefault(self._key(p) + "/\x01importable", dep)
+            return
+        if kind in ("s", "l"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
             if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
@@ -653,10 +715,10 @@ class Capture:
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)
                 return
-            hk = "s" + p
+            hk = kind + p
             dep = self._hashed.get(hk)
             if dep is None:
-                dep = self._hashed[hk] = "s:" + _core.stat_kind(p)
+                dep = self._hashed[hk] = ("l:" + _core.lstat_kind(p)) if kind == "l" else ("s:" + _core.stat_kind(p))
             self.data.setdefault(ctx, {}).setdefault(self._key(p), dep)
             return
         if kind == "m":
@@ -693,7 +755,7 @@ class Capture:
 
     def wrote(self, ctx: int, p: str) -> None:
         self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p)):
+        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "l" + p, "i" + os.path.dirname(p)):
             self._hashed.pop(k, None)
 
     def _audit(self, event, args):
@@ -769,6 +831,13 @@ class Capture:
                 if is_uri and mode != 2:
                     files.append(_sqlite_file(db, True))
                 self._sql_database([f for f in files if f is not None])
+        elif event == "ctypes.dlopen":
+            # LIMITS A2: a library opened through ctypes names its path
+            name = args[0] if args else None
+            if name is not None and "/" in str(name):
+                p = self._abs(name)
+                if p is not None and not self._ignored(p):
+                    self._native(self._cur(), p)
         elif event in ("os.listdir", "os.scandir"):
             if self._caller_kind() != "user":
                 return
@@ -1834,6 +1903,7 @@ class ProofCachePlugin:
 
     def _where(self, why: str, ctxs) -> str:
         """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
+        why = why.removeprefix("after an earlier test or fixture of this process: ")  # carried (prefix rule)
         flag = _FLAG_OF.get(why)
         if flag is None:
             return why
@@ -2092,7 +2162,7 @@ def _numeric_host(host: str) -> bool:
         return False
 
 
-_FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+_FLAG_OF = {"native code from the repository": "native", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
 
@@ -2285,6 +2355,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "os entropy (not controlled; use --det-urandom)"
     if "proc" in flags:
         return "reads /proc, /sys or /dev"
+    if "native" in flags:
+        return "native code from the repository"
     return None
 
 
