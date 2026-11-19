@@ -121,7 +121,7 @@ function installScope() {
   const origRecord = STATE.record.bind(STATE);
   STATE.record = function record(source, op, value) {
     const st = MSG.getStore();
-    if (!st) {
+    if (!st || st.done) {
       SCOPED.bg.events++;
       return DIAG_BG ? origRecord(source, op, value) : undefined; // raw background events only when diagnosing
     }
@@ -142,7 +142,7 @@ function installScope() {
   const origAt = STATE.recordAt.bind(STATE);
   STATE.recordAt = function recordAt(source, op, site, value) {
     const st = MSG.getStore();
-    if (st) st.events.push(source + FS_ + op + FS_ + site + FS_ + value);
+    if (st && !st.done) st.events.push(source + FS_ + op + FS_ + site + FS_ + value);
     else { SCOPED.bg.events++; if (!DIAG_BG) return undefined; }
     return origAt(source, op, site, value);
   };
@@ -370,6 +370,10 @@ function patchServer(proto) {
         if (LSS.attached && msgT !== undefined && Number(msgT) > LSS.t) LSS.t = Number(msgT);
         const st = newMessage(String(id), 'http');
         if (LSS.attached && msgT !== undefined) { st.t = Number(msgT); st.base = st.t; }
+        // Lockstep: what a message's handler does after its response was sent (a server.close() callback that
+        // waits for other connections to end, a log line of a background tail) happens at a moment set by real
+        // socket lifetimes: it is not part of the message's fingerprint.
+        if (LSS.attached && res && typeof res.once === 'function') { const end = () => { st.done = true; }; res.once('finish', end); res.once('close', end); }
         const mid = req.headers['x-detjs-msg'];
         if (LSS.attached && mid && res && typeof res.once === 'function') {
           // A message released by the engine: in progress until its response is sent.
