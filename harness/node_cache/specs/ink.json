@@ -1,0 +1,11 @@
+{
+ "name": "ink", "url": "https://github.com/vadimdemedes/ink", "node": "22", "runner": "node-test",
+ "install": ["npm install --no-audit --no-fund --silent"],
+ "install_files": ["package.json"],
+ "build": [],
+ "args": ["--env-file=test/test.env", "--import=tsx", "--test-concurrency=1", "--test-timeout=60000", "--test-force-exit", "--test-reporter=dot"],
+ "patterns": ["test/*.{ts,tsx}"],
+ "plain": "node --env-file=test/test.env --import=tsx --test --test-concurrency=1 --test-timeout=60000 --test-force-exit --test-reporter=dot 'test/*.{ts,tsx}'",
+ "run_timeout": 2400,
+ "shards": 2, "source": "the 31 latest first-parent commits of master (2026-11-19); `npm test` runs `node --env-file=test/test.env --import=tsx --test ... \"test/*.{ts,tsx}\"` after typecheck and lint (TypeScript/TSX test files through tsx); no lockfile in the repository"
+}

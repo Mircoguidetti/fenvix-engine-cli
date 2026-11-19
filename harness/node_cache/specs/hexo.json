@@ -1,0 +1,11 @@
+{
+ "name": "hexo", "url": "https://github.com/hexojs/hexo", "node": "22", "runner": "mocha",
+ "install": ["(npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent); git checkout -q -- package-lock.json 2>/dev/null || true"],
+ "install_files": ["package-lock.json", "package.json"],
+ "build": [],
+ "args": ["--require", "ts-node/register", "--reporter", "dot"],
+ "patterns": ["test/scripts/**/*.ts"],
+ "plain": "node_modules/.bin/mocha 'test/scripts/**/*.ts' --require ts-node/register --reporter dot",
+ "run_timeout": 2400,
+ "shards": 2, "source": "the 31 latest first-parent commits of master (2026-11-19); `npm test` runs `mocha test/scripts/**/*.ts --require ts-node/register` (Mocha 10, .mocharc.yml, TypeScript test files through ts-node)"
+}
