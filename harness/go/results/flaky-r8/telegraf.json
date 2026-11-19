@@ -1,0 +1,1665 @@
+{
+ "spec": {
+  "name": "telegraf",
+  "repo": "influxdata/telegraf",
+  "sha": "21a1201c06eed66c046ff909035637190c1a0e1f",
+  "fix_commit": "c94d897db758dd065ada3d1c7625f39dac67e4af",
+  "fix_date": "2026-03-12T10:54:18.000-06:00",
+  "title": "test(internal.clock): Fix flaky TestUnalignedTicker race condition (#18515)",
+  "tests": [
+   "TestUnalignedTicker"
+  ],
+  "source": "github commit search 'repo:influxdata/telegraf flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestUnalignedTicker": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./internal/clock"
+ ],
+ "imports": [
+  "github.com/influxdata/telegraf/internal/clock"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 19.8,
+ "build_det_s": 24.8,
+ "baseline": {
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerMissedTick": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistributionWithOffset": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerJitterBehavior": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitterBehavior": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerOffset": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitter": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimerDistribution": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistributionWithOffset": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTicker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTicker": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimerJitterDrift": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistribution": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistribution": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 1466.7,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 31220,
+  "outcome": 14,
+  "random": 1917
+ },
+ "det0_top_tests_by_events": [
+  [
+   4323,
+   "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistributionWithOffset"
+  ],
+  [
+   4323,
+   "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistribution"
+  ],
+  [
+   4321,
+   "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistributionWithOffset"
+  ],
+  [
+   4321,
+   "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistribution"
+  ],
+  [
+   4171,
+   "github.com/influxdata/telegraf/internal/clock::TestTimerDistribution"
+  ],
+  [
+   4034,
+   "github.com/influxdata/telegraf/internal/clock::TestTimerJitterDrift"
+  ],
+  [
+   3710,
+   "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitterBehavior"
+  ],
+  [
+   3671,
+   "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerJitterBehavior"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/influxdata/telegraf/internal/clock::TestTimerJitterDrift",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2677,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Sleep",
+     "at": "/home/runner/go/pkg/mod/github.com/benbjohnson/clock@v1.3.5/clock.go:417",
+     "v": "1000000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "random",
+     "o": "math/rand",
+     "at": "internal/internal.go:163",
+     "v": "2633387092953111466"
+    },
+    "reason": "thread",
+    "description": "event #2677: [time] time.Sleep @ /home/runner/go/pkg/mod/github.com/benbjohnson/clock@v1.3.5/clock.go:417 = 1000000  <>  [random] math/rand @ internal/internal.go:163 = 2633387092953111466 (thread 1)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 14,
+  "stable": 13,
+  "diverged": 1,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 1
+  }
+ },
+ "det0": {
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistributionWithOffset": [
+   [
+    "passed",
+    "70a5e45803e946be03053ba441cd1822"
+   ],
+   [
+    "passed",
+    "70a5e45803e946be03053ba441cd1822"
+   ],
+   [
+    "passed",
+    "70a5e45803e946be03053ba441cd1822"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimer": [
+   [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistributionWithOffset": [
+   [
+    "passed",
+    "b7170a6654f26321e484c522cbbd6989"
+   ],
+   [
+    "passed",
+    "b7170a6654f26321e484c522cbbd6989"
+   ],
+   [
+    "passed",
+    "b7170a6654f26321e484c522cbbd6989"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistribution": [
+   [
+    "passed",
+    "abb82307506e0d6a41e0f6fd4ef25a01"
+   ],
+   [
+    "passed",
+    "abb82307506e0d6a41e0f6fd4ef25a01"
+   ],
+   [
+    "passed",
+    "abb82307506e0d6a41e0f6fd4ef25a01"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimerJitterDrift": [
+   [
+    "passed",
+    "a3fd15ba96b0bd9b63485d9e6dfcc0e0"
+   ],
+   [
+    "passed",
+    "2e13e4b61c88d8bb5a06f5daaeeb54e7"
+   ],
+   [
+    "passed",
+    "a3fd15ba96b0bd9b63485d9e6dfcc0e0"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTicker": [
+   [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTicker": [
+   [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerMissedTick": [
+   [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitter": [
+   [
+    "passed",
+    "ce4a609a47c581a263d873a41e6a68ec"
+   ],
+   [
+    "passed",
+    "ce4a609a47c581a263d873a41e6a68ec"
+   ],
+   [
+    "passed",
+    "ce4a609a47c581a263d873a41e6a68ec"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerOffset": [
+   [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitterBehavior": [
+   [
+    "passed",
+    "0851c91184c4bbdff4e6f590a3961e56"
+   ],
+   [
+    "passed",
+    "0851c91184c4bbdff4e6f590a3961e56"
+   ],
+   [
+    "passed",
+    "0851c91184c4bbdff4e6f590a3961e56"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestTimerDistribution": [
+   [
+    "passed",
+    "f5048da00d5556cf1d9cd6bc9b5680a8"
+   ],
+   [
+    "passed",
+    "f5048da00d5556cf1d9cd6bc9b5680a8"
+   ],
+   [
+    "passed",
+    "f5048da00d5556cf1d9cd6bc9b5680a8"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistribution": [
+   [
+    "passed",
+    "b4c362508abed54659d56260a674f1bf"
+   ],
+   [
+    "passed",
+    "b4c362508abed54659d56260a674f1bf"
+   ],
+   [
+    "passed",
+    "b4c362508abed54659d56260a674f1bf"
+   ]
+  ],
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerJitterBehavior": [
+   [
+    "passed",
+    "51f63d3439cdcb462f746c2b7bdef8e0"
+   ],
+   [
+    "passed",
+    "51f63d3439cdcb462f746c2b7bdef8e0"
+   ],
+   [
+    "passed",
+    "51f63d3439cdcb462f746c2b7bdef8e0"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerJitterBehavior": {
+   "1": [
+    "passed",
+    "c9b8eb9763d025c1974f777281ec5207"
+   ],
+   "2": [
+    "passed",
+    "260f2b947f535f3476c58c1d580277e9"
+   ],
+   "3": [
+    "passed",
+    "82be719a0d2d1894fd44091e1ab5474d"
+   ],
+   "4": [
+    "passed",
+    "5d6e299d94a5a16e476dec0f2c380883"
+   ],
+   "5": [
+    "passed",
+    "e92d6579055a2b0ddc54ec5ebae281f2"
+   ],
+   "6": [
+    "passed",
+    "65ff51df7b0e8961092bdf249b3fb477"
+   ],
+   "7": [
+    "passed",
+    "49bb5c50985c600fea5f58dd4b5860ac"
+   ],
+   "8": [
+    "passed",
+    "ec2ab4f518eee6a7d9c0f9a2de7487f3"
+   ],
+   "9": [
+    "passed",
+    "189789db14aca299624578d2eeb81133"
+   ],
+   "10": [
+    "passed",
+    "a1951349ef6c42bcd7a5dd4d41f85a09"
+   ],
+   "11": [
+    "passed",
+    "a31a440b30f5d4f7466546badf9d45e2"
+   ],
+   "12": [
+    "passed",
+    "21f32e96b40aabec1e243b829ce0d22d"
+   ],
+   "13": [
+    "passed",
+    "7865dc63463d2991ce84112354e52319"
+   ],
+   "14": [
+    "passed",
+    "7d061266d5c6481602c9956a835ae1c7"
+   ],
+   "15": [
+    "passed",
+    "23886b39481f02a1ad95f62e00984ef4"
+   ],
+   "16": [
+    "passed",
+    "eeba6605430fced657be09a3d1dfaf82"
+   ],
+   "17": [
+    "passed",
+    "383e09a8e03215840b908abb3850dd8a"
+   ],
+   "18": [
+    "passed",
+    "423d06e68d7d8ef8d0fd1ba3beafc05d"
+   ],
+   "19": [
+    "passed",
+    "31b201c789179ba93396c8a426df8d40"
+   ],
+   "20": [
+    "passed",
+    "2c77fef9cf891876e351b7db1ff07970"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestTimerDistribution": {
+   "1": [
+    "passed",
+    "addf55dddfb414818ee75f5c2c7e9e06"
+   ],
+   "2": [
+    "passed",
+    "e2f27f6e39e76009ce396691cc3e6935"
+   ],
+   "3": [
+    "passed",
+    "a5036fc26850a4540400b77462560199"
+   ],
+   "4": [
+    "passed",
+    "e74ecf495083418e4e150162ee902c88"
+   ],
+   "5": [
+    "passed",
+    "deb66901dd42c46f3562ccbcafbc2f9f"
+   ],
+   "6": [
+    "passed",
+    "257c1863a5f6af9c6e505e7a31cab0d5"
+   ],
+   "7": [
+    "passed",
+    "4e4d58ebd03b87b29db2884f2b122477"
+   ],
+   "8": [
+    "passed",
+    "078e20ba7f8e4bc820aca4f9fc7b4527"
+   ],
+   "9": [
+    "passed",
+    "d3ac76ff6e8ceaebdc67f05e1b694b3c"
+   ],
+   "10": [
+    "passed",
+    "7a07b0c347f64eb4f47ceef7ec64a732"
+   ],
+   "11": [
+    "passed",
+    "a8ec8c15b57966e7e8ed9889f07b3595"
+   ],
+   "12": [
+    "passed",
+    "c53d9d798aae3add20c9f462e8519ebf"
+   ],
+   "13": [
+    "passed",
+    "694d42d2cabc13538ce5f55840e9d773"
+   ],
+   "14": [
+    "passed",
+    "da1175b10dd4cf3a843e26b8b9faf6b0"
+   ],
+   "15": [
+    "passed",
+    "2154138a4fd70e994bbe17af204acb34"
+   ],
+   "16": [
+    "passed",
+    "9e58821676c0563a86c2314dbb9e6667"
+   ],
+   "17": [
+    "passed",
+    "d0b29da2bd2493c617354bbc208464c1"
+   ],
+   "18": [
+    "passed",
+    "8aa54bda5bb19ee7f5d5ace0d7c0df3e"
+   ],
+   "19": [
+    "passed",
+    "17d10cb5123e2a2dc99dff0028fb2be7"
+   ],
+   "20": [
+    "passed",
+    "cfbe1807366990a5cac4e0e613762da5"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTicker": {
+   "1": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "2": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "3": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "4": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "5": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "6": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "7": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "8": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "9": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "10": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "11": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "12": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "13": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "14": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "15": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "16": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "17": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "18": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "19": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ],
+   "20": [
+    "passed",
+    "87b612d12adda4af612125c120ada910"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestTimerJitterDrift": {
+   "1": [
+    "passed",
+    "59d9f1e61ba62b8d9cec1fb6541db568"
+   ],
+   "2": [
+    "passed",
+    "f3394b713515d63d998dc931530fd129"
+   ],
+   "3": [
+    "passed",
+    "f9f33085fa31276c7796a419e8491d1b"
+   ],
+   "4": [
+    "passed",
+    "8580516545507bcdad8a422a215ed2ab"
+   ],
+   "5": [
+    "passed",
+    "14f1e13ae52959cabd769c2f56023932"
+   ],
+   "6": [
+    "passed",
+    "ae9488ea76eb7bdd75dd347cfb441d27"
+   ],
+   "7": [
+    "passed",
+    "cc67551ffe12927c3dd061107a596a69"
+   ],
+   "8": [
+    "passed",
+    "2836362a88037163746b4e85dfc63047"
+   ],
+   "9": [
+    "passed",
+    "f3639256c6ecc8ea646c59ae63f6bc7c"
+   ],
+   "10": [
+    "passed",
+    "e58ada2c38bb4d469c74908995e28992"
+   ],
+   "11": [
+    "passed",
+    "66ad516625e67bdb2900599acb46e35f"
+   ],
+   "12": [
+    "passed",
+    "5af686199364e4363cfd382ee3d0c935"
+   ],
+   "13": [
+    "passed",
+    "9059e16d24fcade0c89a641e91e9fad5"
+   ],
+   "14": [
+    "passed",
+    "6db002680a41c0eb5b325567740ad373"
+   ],
+   "15": [
+    "passed",
+    "44e8d651a5f28d4a706496d51c9a390d"
+   ],
+   "16": [
+    "passed",
+    "fefea94e9ae2551c30a1d833b49453ac"
+   ],
+   "17": [
+    "passed",
+    "2e7c021adc0e4d26fb5691c66d5a4901"
+   ],
+   "18": [
+    "passed",
+    "176ce7751e5aa5f0e9977c77a864419f"
+   ],
+   "19": [
+    "passed",
+    "ced4859e813d6363eb0ef286c364a653"
+   ],
+   "20": [
+    "passed",
+    "cf3636e3e7a17846dfd515d4a7495540"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitterBehavior": {
+   "1": [
+    "passed",
+    "c5adc4172f53d3f52722d8ea52dcbca8"
+   ],
+   "2": [
+    "passed",
+    "f45d3f392e3505794153b170cc59218b"
+   ],
+   "3": [
+    "passed",
+    "fcb42b52ea22381abc9695e8e03937e4"
+   ],
+   "4": [
+    "passed",
+    "da998e46fe536b59469e386885f02a42"
+   ],
+   "5": [
+    "passed",
+    "28bc44d05814fc797b72241c4a264a71"
+   ],
+   "6": [
+    "passed",
+    "fa5aa9c4434671790e92e94b5108f1bd"
+   ],
+   "7": [
+    "passed",
+    "d8956df4c6f3505efa935e3c99c3f07b"
+   ],
+   "8": [
+    "passed",
+    "93f939842f9c305cf7c72f60ac6edef4"
+   ],
+   "9": [
+    "passed",
+    "73092c9ac5be1ca852525797fd06b610"
+   ],
+   "10": [
+    "passed",
+    "5caa505e9b1937a6503b5b19e1f180f5"
+   ],
+   "11": [
+    "passed",
+    "8b26d229da6d758abba6ba80196a9ed1"
+   ],
+   "12": [
+    "passed",
+    "2fc4202feb70279e7120e97a10a731f0"
+   ],
+   "13": [
+    "passed",
+    "61337b4a011149453e17a62e3744f427"
+   ],
+   "14": [
+    "passed",
+    "d04ca095652794a25a967d5a2fbe4f49"
+   ],
+   "15": [
+    "passed",
+    "3c12719609075a394103f24007dd0777"
+   ],
+   "16": [
+    "passed",
+    "ba71b70d4c348c30a2d0d856356fc31e"
+   ],
+   "17": [
+    "passed",
+    "27c5387ede0ff7d3f13e2a354cd2aa02"
+   ],
+   "18": [
+    "passed",
+    "a330b3cdc47ec6e7df11ce4db2f1c823"
+   ],
+   "19": [
+    "passed",
+    "83ab4c2d9a225ab64937f66f4b8f4ceb"
+   ],
+   "20": [
+    "passed",
+    "9b30368fdebdbbb6893ee08bbcfa6a9d"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerOffset": {
+   "1": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "2": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "3": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "4": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "5": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "6": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "7": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "8": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "9": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "10": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "11": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "12": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "13": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "14": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "15": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "16": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "17": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "18": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "19": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ],
+   "20": [
+    "passed",
+    "fac7063a74f329a04b937b9bc893cf37"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistributionWithOffset": {
+   "1": [
+    "passed",
+    "27e03d0d2269d36879f349ccfe919ac2"
+   ],
+   "2": [
+    "passed",
+    "9b6113073fdc8bfe2abb2691b5994a3d"
+   ],
+   "3": [
+    "passed",
+    "d0d7f534000f2c1e2cb4f34ce302bb7d"
+   ],
+   "4": [
+    "passed",
+    "e0aabfd208a89a40768c98b2835d9b6c"
+   ],
+   "5": [
+    "passed",
+    "1d0c5b224c5f2cc1445c9cc560e4b7f5"
+   ],
+   "6": [
+    "passed",
+    "3437931ba238ab1184139bdc3d77c340"
+   ],
+   "7": [
+    "passed",
+    "0cbc4b360a85eaa5a71cfb1f4ab8e67d"
+   ],
+   "8": [
+    "passed",
+    "3328d199e921ac4fd7836bf925063d71"
+   ],
+   "9": [
+    "passed",
+    "2cd4d10c672a0fbf3e074f468b19f6b3"
+   ],
+   "10": [
+    "passed",
+    "94cc16a16244142820f276750250485c"
+   ],
+   "11": [
+    "passed",
+    "a198227b563fc463d1287c19f85b4b6a"
+   ],
+   "12": [
+    "passed",
+    "5b9d8c1c2017290fc3d5f64885ac7eb7"
+   ],
+   "13": [
+    "passed",
+    "33587c6c561fe2d916e4db2515bd7a21"
+   ],
+   "14": [
+    "passed",
+    "41acf07c2f88e82332bbaea95498f65e"
+   ],
+   "15": [
+    "passed",
+    "6d3ebb01ce0ffd804a83f6b8d37a6e41"
+   ],
+   "16": [
+    "passed",
+    "cdffe3ccce0fbd5ecaaff1efcf4c2d48"
+   ],
+   "17": [
+    "passed",
+    "d666118b65de9af2188a8d41c199511c"
+   ],
+   "18": [
+    "passed",
+    "54e4ea1ec84c9b608cce6b8e95a5a16c"
+   ],
+   "19": [
+    "passed",
+    "da922c1335253b7dc480c40d608eb717"
+   ],
+   "20": [
+    "passed",
+    "eafb3a6c195d972be48e984b33607f35"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTickerDistribution": {
+   "1": [
+    "passed",
+    "a76a14a0e2028c29ae2ccdf3fe945291"
+   ],
+   "2": [
+    "passed",
+    "db5917a946199039a4d0a996f6f78f1a"
+   ],
+   "3": [
+    "passed",
+    "0690bd52ab2b8935f38a17df31a4249f"
+   ],
+   "4": [
+    "passed",
+    "1823297332b71a0d46d839ce3a0fe403"
+   ],
+   "5": [
+    "passed",
+    "00aaa39dbbfb957720eaba6b764a8769"
+   ],
+   "6": [
+    "passed",
+    "fe8458af124e6ea079ef4a68290ae9e7"
+   ],
+   "7": [
+    "passed",
+    "d0e112113cbbcae4191ba5c75e0a31fb"
+   ],
+   "8": [
+    "passed",
+    "ebc1b05d5d2fd16fce6d42dee04f2ab5"
+   ],
+   "9": [
+    "passed",
+    "e10565643cf00858d151fc79bf5814d4"
+   ],
+   "10": [
+    "passed",
+    "dfa03de94258c099b7c5e3b770fee61d"
+   ],
+   "11": [
+    "passed",
+    "2a479124b8ec0ea27c56f1a8619b33bd"
+   ],
+   "12": [
+    "passed",
+    "cda6bc06b1eb7ac45d813aeb1c42222e"
+   ],
+   "13": [
+    "passed",
+    "a00062d7c4d8ddadc229494057ccfaa3"
+   ],
+   "14": [
+    "passed",
+    "671f3d941ddbb9a67ee3fef799da04a0"
+   ],
+   "15": [
+    "passed",
+    "991d835e2cca3b22a79cf4921f6fad82"
+   ],
+   "16": [
+    "passed",
+    "bd5e17787558ad85836d4aa5c1ea316a"
+   ],
+   "17": [
+    "passed",
+    "18a3ef589f340e52ea8a02ca8526a101"
+   ],
+   "18": [
+    "passed",
+    "47ff1af0533ee69c6f905421ee517581"
+   ],
+   "19": [
+    "passed",
+    "19ccdf9a12fe059a33828b31e3918ea1"
+   ],
+   "20": [
+    "passed",
+    "076fda8240d84e186cc9e8bd1c1b7ee5"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestTimer": {
+   "1": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "2": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "3": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "4": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "5": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "6": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "7": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "8": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "9": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "10": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "11": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "12": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "13": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "14": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "15": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "16": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "17": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "18": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "19": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ],
+   "20": [
+    "passed",
+    "6b13c37a8d0ce45bfcb0ad6c56a1f5ef"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistributionWithOffset": {
+   "1": [
+    "passed",
+    "4d712ee9241e0dc57393593efd90bcf2"
+   ],
+   "2": [
+    "passed",
+    "9cfb82c23f1ef54d0ee6d1e4f1d456a4"
+   ],
+   "3": [
+    "passed",
+    "6f4b50ccc17b620184087f00aeb81e5d"
+   ],
+   "4": [
+    "passed",
+    "e6cb060bdb00ab2e2bac3882ac1d5efe"
+   ],
+   "5": [
+    "passed",
+    "529e5ef6bbe98dcbe20b2c843dfe11c4"
+   ],
+   "6": [
+    "passed",
+    "e2c8acad6e5adbde520eb444e7be1146"
+   ],
+   "7": [
+    "passed",
+    "2da6344126330c0b47077e9cab41fad8"
+   ],
+   "8": [
+    "passed",
+    "05e9299717ab11b737d8b163471b0d3a"
+   ],
+   "9": [
+    "passed",
+    "0b35e3cddccec9993866e6d1f5945115"
+   ],
+   "10": [
+    "passed",
+    "f76d36b5c6bea6f16fb7e2814109e683"
+   ],
+   "11": [
+    "passed",
+    "51ca443d03c006259d7a44ae3f1f6c73"
+   ],
+   "12": [
+    "passed",
+    "25c7e95d2f3dfff69e9e7452590dcf93"
+   ],
+   "13": [
+    "passed",
+    "aebcb5d922dfa46eaae5f2f028e01e1c"
+   ],
+   "14": [
+    "passed",
+    "2474b7630538db4bd3e19f193af4d2ca"
+   ],
+   "15": [
+    "passed",
+    "d8a707ba4b078438a58e93012505c1f8"
+   ],
+   "16": [
+    "passed",
+    "0ec3234c02c8afe6b7a1064ac9f31b62"
+   ],
+   "17": [
+    "passed",
+    "568b4266e2653318d2abb474a88a667e"
+   ],
+   "18": [
+    "passed",
+    "25c2395b90716bf9ab7d14386e4aecb6"
+   ],
+   "19": [
+    "passed",
+    "db80cb94bbf4c81387b717316aaf50d1"
+   ],
+   "20": [
+    "passed",
+    "346139cc820661b45f6c4d5cae319c58"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerDistribution": {
+   "1": [
+    "passed",
+    "2792b6cfdab113d444332f54f9f84a73"
+   ],
+   "2": [
+    "passed",
+    "866b075f70896d323de33505c1146d71"
+   ],
+   "3": [
+    "passed",
+    "a95a91163147b706b9d67e6644289d6a"
+   ],
+   "4": [
+    "passed",
+    "7801a3765d501742206ede2e49bdf148"
+   ],
+   "5": [
+    "passed",
+    "cd1689617092be227ea7d944213675db"
+   ],
+   "6": [
+    "passed",
+    "41720abcb284c892c56176e8f1921842"
+   ],
+   "7": [
+    "passed",
+    "5a11f49a49024208553c20526a7d5ed5"
+   ],
+   "8": [
+    "passed",
+    "5e7bdda467c4ad2c8f84572d1044f012"
+   ],
+   "9": [
+    "passed",
+    "2f4ea2b12274cc133f3ed0266d042015"
+   ],
+   "10": [
+    "passed",
+    "7dce8958376f8f24dbe9b4eead92043a"
+   ],
+   "11": [
+    "passed",
+    "50558e69b1eb24bfa3233e62a435794c"
+   ],
+   "12": [
+    "passed",
+    "61ddafec6eb9992d13bd5ddedfe2b3ad"
+   ],
+   "13": [
+    "passed",
+    "e105afd7969613be0bcf953dc0abedfd"
+   ],
+   "14": [
+    "passed",
+    "b54cbd4e5ea0de9107fb1f0b666a8bf3"
+   ],
+   "15": [
+    "passed",
+    "55889639c3ac70df471172e08e987234"
+   ],
+   "16": [
+    "passed",
+    "0500c49f39d80b924eba0328b4c6c757"
+   ],
+   "17": [
+    "passed",
+    "358275a78e98bb14e254843c1a63b35a"
+   ],
+   "18": [
+    "passed",
+    "d2088d03705ebd08433fccafa38dda96"
+   ],
+   "19": [
+    "passed",
+    "a6eed2e1a6c424beb93eb17edc9fb218"
+   ],
+   "20": [
+    "passed",
+    "cd784575adf0311000d6b9e79ac3c9e9"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTicker": {
+   "1": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "2": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "3": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "4": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "5": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "6": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "7": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "8": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "9": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "10": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "11": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "12": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "13": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "14": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "15": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "16": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "17": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "18": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "19": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ],
+   "20": [
+    "passed",
+    "66006e6ac47932598c255abd0645f288"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerJitter": {
+   "1": [
+    "passed",
+    "847312e43e5cc3f14bdfdc3f97aa9f42"
+   ],
+   "2": [
+    "passed",
+    "40c393ff22900d19cd32813557c77a7f"
+   ],
+   "3": [
+    "passed",
+    "615e9050b07d7cff19a1153e486e2a56"
+   ],
+   "4": [
+    "passed",
+    "849b5dd97cf283882318e25348104b32"
+   ],
+   "5": [
+    "passed",
+    "5b094351cde9b144285d240ce02cfcec"
+   ],
+   "6": [
+    "passed",
+    "d032378ef45d25e2e9edfd8718f4a1a7"
+   ],
+   "7": [
+    "passed",
+    "725d00ea8582c9ea56d460ae6248baa5"
+   ],
+   "8": [
+    "passed",
+    "03b9bd9bbef346bd47f33bf65771387b"
+   ],
+   "9": [
+    "passed",
+    "ae902ac2021b60beb4bab09e1ae7a5d8"
+   ],
+   "10": [
+    "passed",
+    "4dce9457d3f401c27e252be386cf3c40"
+   ],
+   "11": [
+    "passed",
+    "c0c74a37223bd1f7d047544502ca1936"
+   ],
+   "12": [
+    "passed",
+    "c68f5908cf82a17fbf5d45cc95e60500"
+   ],
+   "13": [
+    "passed",
+    "7ee86f58a21822b80e5b872c5428f5b8"
+   ],
+   "14": [
+    "passed",
+    "c54ea79841cb4413f0cb482d0037d73f"
+   ],
+   "15": [
+    "passed",
+    "9bcb714f509a17844434dfe84c3a569e"
+   ],
+   "16": [
+    "passed",
+    "28c591667c88160dd43ffa7161cd2f16"
+   ],
+   "17": [
+    "passed",
+    "cdb17ffbb0439f536f1c06aedf552682"
+   ],
+   "18": [
+    "passed",
+    "a53f5014745bfbd09e77338ab55f71b5"
+   ],
+   "19": [
+    "passed",
+    "d78362e30b2f350400bd2466a1972ec4"
+   ],
+   "20": [
+    "passed",
+    "cb5d390448109fdd43ddc900d1324c8c"
+   ]
+  },
+  "github.com/influxdata/telegraf/internal/clock::TestAlignedTickerMissedTick": {
+   "1": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "2": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "3": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "4": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "5": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "6": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "7": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "8": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "9": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "10": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "11": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "12": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "13": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "14": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "15": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "16": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "17": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "18": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "19": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ],
+   "20": [
+    "passed",
+    "86492c8b326b921545a2d9eee5e06755"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/influxdata/telegraf/internal/clock::TestUnalignedTicker": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  13,
+  14
+ ],
+ "timing_keep_parallel": [
+  33.322,
+  33.318,
+  33.322
+ ],
+ "timing": {
+  "plain": [
+   33.262,
+   33.3,
+   33.295
+  ],
+  "det": [
+   33.312,
+   33.319,
+   33.315
+  ]
+ },
+ "slowdown": 0.0006006907944134561
+}
