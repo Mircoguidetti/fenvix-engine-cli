@@ -242,6 +242,10 @@ class Pairs:
     # -- runs -----------------------------------------------------------------------
     def run(self, unit, tag, cache=None, dists=False, epoch=()) -> dict:
         git(self.repo, "clean", "-qffd", check=False)
+        # detpy creates <root>/.detpy during a session (trace); a test that lists the repository root records the
+        # listing with it, and the next session checks before it exists: a miss on every commit, not a dependency
+        # effect. Present before every run, as in a workspace reused between runs (reported as an engine finding).
+        (self.repo / ".detpy").mkdir(exist_ok=True)
         outp, rec = (self.work / f"{x}-{tag}.json" for x in ("o", "r"))
         # one path for every run: CP_TIMES_OUT is an environment variable, and a test that reads the whole
         # environment (os.environ) records it; a per-run value made such tests miss on "env: *" (dv1)

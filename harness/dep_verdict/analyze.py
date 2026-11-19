@@ -38,7 +38,7 @@ def ident_key(why: str) -> str | None:
 
 def pair_stats(st):
     """Per pair: test time, reused time for D (prototype) and T (today), verification counts."""
-    tot = cache_t = 0.0
+    tot = cache_t = dep_t = 0.0  # dep_t: time of tests missed for a dependency reason (identity, config, runtime)
     res = {m: {"time": 0.0, "n": 0, "checked": 0, "wrong": 0, "flaky": 0, "unverified": 0} for m in ("D", "T")}
     tests = 0
     cacheable = 0
@@ -87,6 +87,8 @@ def pair_stats(st):
             ik = ident_key(why)
             if ik:
                 miss_ident[ik] += 1
+            if ik or k in ("config", "runtime"):
+                dep_t += times.get(n, 0.0)
         po = r.get("outcomes_P") or {}
         for n, o in fresh.items():
             if po.get(n) in ("passed",) and o not in OK:
@@ -94,7 +96,8 @@ def pair_stats(st):
                 broken.append({"nodeid": n, "P": po.get(n), "C": o, "inside_affected": inside,
                                "why": (r.get("D1_miss") or {}).get(n)})
                 broken_inside += inside
-    return {"tests": tests, "time": tot, "cacheable": cacheable, "cacheable_time": cache_t, "D": res["D"],
+    return {"tests": tests, "time": tot, "cacheable": cacheable, "cacheable_time": cache_t, "dep_miss_time": dep_t,
+            "D": res["D"],
             "T": res["T"], "miss": miss, "miss_ident": miss_ident, "broken": broken, "units_not_run": not_run_units}
 
 
@@ -172,8 +175,9 @@ def main(argv=None):
     tot = {"D_checked": 0, "D_wrong": 0, "D_flaky": 0, "T_checked": 0, "T_wrong": 0, "T_flaky": 0}
     all_broken = []
     print("| repository | pairs measured / listed | env changed | tests per pair | share reused D (prototype), mean / median "
-          "| share reused T (today), mean / median | D of cacheable time, mean | verified reuses D (wrong, flaky) |")
-    print("|---|---|---|---|---|---|---|---|")
+          "| share reused T (today), mean / median | D of cacheable time, mean | D of dependency-eligible time, mean "
+          "| verified reuses D (wrong, flaky) |")
+    print("|---|---|---|---|---|---|---|---|---|")
     for name in sorted(runs):
         by_sha = {}
         for r in runs[name]:
@@ -200,6 +204,10 @@ def main(argv=None):
                          "T_share": t_share, "T_measured": t_mode == "full",
                          "D_of_cacheable": pct(ps["D"]["time"], ps["cacheable_time"]) if ps["cacheable_time"] else None,
                          "cacheable_share": pct(ps["cacheable_time"], ps["time"]),
+                         # among tests the cache would otherwise serve (reused, or missed only because a dependency
+                         # identity, the pytest configuration/plugins or the runtime changed): share kept by D
+                         "D_of_dep_eligible": pct(ps["D"]["time"], ps["D"]["time"] + ps["dep_miss_time"])
+                         if ps["D"]["time"] + ps["dep_miss_time"] > 0 else None,
                          "D": ps["D"], "T": ps["T"], "miss": dict(ps["miss"]), "miss_ident": dict(ps["miss_ident"]),
                          "broken": ps["broken"], "units_not_run": ps["units_not_run"],
                          "footprint": footprint_diff(st)})
@@ -212,11 +220,13 @@ def main(argv=None):
         ds = [x["D_share"] for x in rows]
         ts = [x["T_share"] for x in rows]
         dc = [x["D_of_cacheable"] for x in rows if x["D_of_cacheable"] is not None]
+        de = [x["D_of_dep_eligible"] for x in rows if x["D_of_dep_eligible"] is not None]
         summary[name] = {"listed": len(listed), "measured": len(rows), "statuses": dict(statuses),
                          "env_changed_pairs": sum(1 for x in rows if x["env_changed"]),
                          "D_mean": statistics.mean(ds) if ds else None, "D_median": statistics.median(ds) if ds else None,
                          "T_mean": statistics.mean(ts) if ts else None, "T_median": statistics.median(ts) if ts else None,
                          "D_of_cacheable_mean": statistics.mean(dc) if dc else None,
+                         "D_of_dep_eligible_mean": statistics.mean(de) if de else None,
                          "cacheable_mean": statistics.mean([x["cacheable_share"] for x in rows]) if rows else None,
                          "D_checked": sum(x["D"]["checked"] for x in rows), "D_wrong": sum(x["D"]["wrong"] for x in rows),
                          "D_flaky": sum(x["D"]["flaky"] for x in rows), "reverts": reverts, "ci": ci.get(spec_repo, []),
@@ -225,7 +235,7 @@ def main(argv=None):
         f = lambda v: "-" if v is None else f"{v:.0f}%"  # noqa: E731
         print(f"| {name} | {len(rows)} / {len(listed)} | {s['env_changed_pairs']} | "
               f"{statistics.mean([x['tests'] for x in rows]) if rows else 0:.0f} | {f(s['D_mean'])} / {f(s['D_median'])} | "
-              f"{f(s['T_mean'])} / {f(s['T_median'])} | {f(s['D_of_cacheable_mean'])} | "
+              f"{f(s['T_mean'])} / {f(s['T_median'])} | {f(s['D_of_cacheable_mean'])} | {f(s['D_of_dep_eligible_mean'])} | "
               f"{s['D_checked']:,} ({s['D_wrong']}, {s['D_flaky']}) |")
     allD = [x["D_share"] for s in summary.values() for x in s["rows"]]
     allT = [x["T_share"] for s in summary.values() for x in s["rows"]]
