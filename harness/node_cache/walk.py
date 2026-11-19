@@ -92,8 +92,9 @@ RUNTIME_RUNNERS = {
     "bun-test": {"cmd": "bun-test", "report": lambda p: ["--reporter=junit", f"--reporter-outfile={p}"], "version": ["bun", "--revision"]},
     "deno-test": {"cmd": "deno-test", "report": lambda p: [f"--junit-path={p}"], "version": ["deno", "--version"]},
 }
-# runners whose detjs shell has no JSON report of its own: outcomes come from detjs' cache summary (ran_files)
-SUMMARY_RUNNERS = ("node-test", "mocha")
+# runners whose detjs shell has no JSON report of its own: outcomes come from detjs' cache summary (ran_files).
+# node-a: node-test, mocha; node-b: tap, ava, jasmine, uvu (src/runners/<name>.js)
+SUMMARY_RUNNERS = ("node-test", "mocha", "tap", "ava", "jasmine", "uvu")
 
 
 def junit_outcomes(report_path):
@@ -121,7 +122,7 @@ def report_args(runner, report):
     if runner in RUNTIME_RUNNERS:
         return RUNTIME_RUNNERS[runner]["report"](report)
     if runner in SUMMARY_RUNNERS:
-        return []  # node-test, mocha: the spec's own reporter args; outcomes from detjs' summary
+        return []  # the spec's own reporter args; outcomes from detjs' summary
     return ["--reporter=json", f"--outputFile={report}"] if runner == "vitest" else ["--json", f"--outputFile={report}"]
 
 
@@ -133,8 +134,8 @@ def detjs_cmd(runner):
 
 def outcomes_of(report_path, runner, repo=None):
     """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report (Vitest, Jest), its JUnit
-    report (bun test, deno test) or, for node-test and Mocha, from the files detjs ran (`.detjs/cache-summary.json`,
-    `ran_files`)."""
+    report (bun test, deno test) or, for the SUMMARY_RUNNERS (node-test, Mocha, tap, AVA, Jasmine, uvu), from the
+    files detjs ran (`.detjs/cache-summary.json`, `ran_files`)."""
     if runner in RUNTIME_RUNNERS:
         return junit_outcomes(report_path)
     if runner in SUMMARY_RUNNERS:
@@ -171,6 +172,7 @@ class Walk:
             for k in ("CI", "GITHUB_ACTIONS"):
                 self.env.pop(k, None)
         self.env["FENVIX_RUNTIME_MEMO"] = os.path.join(self.work, "runtime-memo.json")
+        # environment the project's test script sets (`NODE_ENV=test uvu ...`)
         self.env.update(self.spec.get("env") or {})
 
     def save(self):
@@ -355,7 +357,10 @@ class Walk:
                     fresh = os.path.join(self.work, f"recheck-cache{k}")
                     shutil.rmtree(fresh, ignore_errors=True)
                     args += [f"--det-cache={fresh}"]
-                    args += self.runner_args([f] if self.spec["runner"] == "node-test" else None)
+                    # tap, AVA, Jasmine, uvu: the file as a positional argument unless the spec says the runner
+                    # takes none (`no_file_args`: its configuration selects the files)
+                    one = self.spec["runner"] != "mocha" and not self.spec.get("no_file_args")
+                    args += self.runner_args([f] if one else None)
                 else:
                     args += list(self.spec.get("args", [])) + [f]
                 args += self.report_args(rp)

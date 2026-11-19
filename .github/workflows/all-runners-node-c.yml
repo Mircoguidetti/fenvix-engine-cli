@@ -13,7 +13,7 @@ on:
     inputs:
       config: {description: "JSON parameters (see harness/node_cache/RUN-node-c)", default: "{}"}
   push:
-    branches: [claude/all-runners, ar-node-c]
+    branches: [claude/all-runners]
     paths: [harness/node_cache/RUN-node-c]
 
 permissions:

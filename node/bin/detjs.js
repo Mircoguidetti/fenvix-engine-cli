@@ -7,8 +7,10 @@
 //   detjs deno-test [--det ...] [deno test args]  (src/runners/deno.js)
 //   detjs node-test [--det ...] [node flags] [file patterns]   (node --test)
 //   detjs mocha  [--det ...] [mocha args]
+//   detjs tap|ava|jasmine|uvu [--det ...] [runner args]  (src/runners/<name>.js)
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
-const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test [--det options] [runner args]
+const RUNNER_SHELLS = new Set(['tap', 'ava', 'jasmine', 'uvu']);
+const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs --det-help`;
 
@@ -20,6 +22,7 @@ async function main(argv) {
   if (cmd === 'deno-test') return require('../src/runners/deno').main(rest);
   if (cmd === 'node-test') return require('../src/nodetest/cli').main(rest);
   if (cmd === 'mocha') return require('../src/mocha/cli').main(rest);
+  if (RUNNER_SHELLS.has(cmd)) return require(`../src/runners/${cmd}`).main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
     const paths = rest.filter((a) => !a.startsWith('--'));
