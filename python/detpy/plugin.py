@@ -988,6 +988,20 @@ def _keep_django_groups(config, ordered):
 
 
 class _DetSession(_Outcomes):
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_fixture_setup(self, fixturedef, request):
+        """review R-023b N5: a session, package, module or class fixture draws its random values and (under
+        --det-urandom) its OS entropy from a stream of its own, so its value does not depend on the test that
+        happens to request it first."""
+        if fixturedef.scope == "function" or "seeds" not in _state.STATE.config.controls:
+            yield
+            return
+        saved = seeds.fixture_begin(f"{fixturedef.scope}|{fixturedef.baseid}|{fixturedef.argname}")
+        try:
+            yield
+        finally:
+            seeds.fixture_end(saved)
+
     """Hooks of the --det session, bound to the config that activated Level 0."""
 
     def __init__(self, config, outcomes_path):

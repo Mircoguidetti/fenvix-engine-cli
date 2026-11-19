@@ -91,6 +91,27 @@ pub(crate) fn loopback_name(b: &[u8]) -> bool {
         || n == b"ip6-loopback"
 }
 
+/// Review R-023b N2: whether glibc answers a lookup of `name` from /etc/hosts without asking any other source:
+/// /etc/nsswitch.conf names `files` first on its `hosts:` line and /etc/hosts lists the name (canonical name or
+/// alias, any case). Otherwise the answer may come from DNS (a network input): the lookup keeps its `dns` flag.
+pub(crate) fn hosts_file_answers(name: &[u8]) -> bool {
+    let n = name.strip_suffix(b".").unwrap_or(name).to_ascii_lowercase();
+    let Ok(ns) = std::fs::read("/etc/nsswitch.conf") else { return false };
+    let files_first = ns.split(|&c| c == b'\n').any(|line| {
+        let line = line.split(|&c| c == b'#').next().unwrap_or(b"");
+        let mut it = line.split(|c: &u8| c.is_ascii_whitespace()).filter(|w| !w.is_empty());
+        it.next() == Some(b"hosts:") && it.next() == Some(b"files")
+    });
+    if !files_first {
+        return false;
+    }
+    let Ok(hosts) = std::fs::read("/etc/hosts") else { return false };
+    hosts.split(|&c| c == b'\n').any(|line| {
+        let line = line.split(|&c| c == b'#').next().unwrap_or(b"");
+        line.split(|c: &u8| c.is_ascii_whitespace()).filter(|w| !w.is_empty()).skip(1).any(|w| w.to_ascii_lowercase() == n)
+    })
+}
+
 /// `f"{port:04X}"`.
 fn hex04(py: Python<'_>, port: &Bound<'_, PyAny>) -> PyResult<W> {
     match port.extract::<i64>() {

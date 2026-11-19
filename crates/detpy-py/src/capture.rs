@@ -1286,7 +1286,8 @@ impl CaptureCore {
                 {
                     return Ok(());
                 }
-                if sockcap::loopback_name(&w_of(hs)?) {
+                let hb = w_of(hs)?;
+                if sockcap::loopback_name(&hb) && sockcap::hosts_file_answers(&hb) {
                     // review R-023 (cacheability): a loopback name is answered from the host's own resolver
                     // configuration (RFC 6761: always the loopback address), not from the network: its inputs are
                     // these files, recorded as data reads (pytest-socket resolves "localhost" around every test)

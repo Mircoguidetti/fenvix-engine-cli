@@ -802,7 +802,7 @@ class Capture:
                 host = host.decode("ascii", "replace")
             if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
                 return
-            if _loopback_name(host):
+            if _loopback_name(host) and _hosts_file_answers(host):
                 # review R-023: a loopback name is answered by the host's resolver configuration, recorded as reads
                 for f in ("/etc/hosts", "/etc/nsswitch.conf", "/etc/host.conf", "/etc/gai.conf"):
                     self.read(self._cur(), f, "f")
@@ -2082,6 +2082,19 @@ def _sqlite_file(db, uri: bool) -> str | None:
         return os.path.abspath(s)
     except (OSError, ValueError):
         return None
+
+
+def _hosts_file_answers(name: str) -> bool:
+    """review R-023b N2: nsswitch names `files` first for hosts and /etc/hosts lists the name."""
+    n = name.rstrip(".").lower()
+    try:
+        ns = open("/etc/nsswitch.conf", "rb").read().decode("latin-1")
+        hosts = open("/etc/hosts", "rb").read().decode("latin-1")
+    except OSError:
+        return False
+    if not any(line.split("#")[0].split()[:2] == ["hosts:", "files"] for line in ns.splitlines()):
+        return False
+    return any(n in [w.lower() for w in line.split("#")[0].split()[1:]] for line in hosts.splitlines())
 
 
 def _loopback_name(host: str) -> bool:
