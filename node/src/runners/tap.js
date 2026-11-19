@@ -39,7 +39,7 @@ function userArgs(rest) {
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (i === 0 && a === 'run') continue; // `tap run ...` is `tap ...`
-    if (isOpt(a, ['--jobs', '--save', '--changed', '--disable-coverage'])) {
+    if (isOpt(a, ['--jobs', '--save', '--changed'])) {
       if (!a.includes('=') && ['--jobs', '--save'].includes(a)) i++;
       continue;
     }
@@ -81,11 +81,15 @@ async function discover(ctx) {
 
 function launch(ctx, files) {
   const { runner, rest } = ctx;
+  // what a normal `tap` run does first, and `--save` skips: start without the coverage and process info of earlier
+  // runs (stale coverage would be reported, and judged against the thresholds, as this run's)
+  for (const d of ['processinfo', 'coverage']) fs.rmSync(path.join(ctx.projectRoot || ctx.root, '.tap', d), { recursive: true, force: true });
   const save = path.join(ctx.run.dir, 'tap-save.txt');
   fs.writeFileSync(save, `${files.map((f) => common.fileIdOf(ctx.projectRoot || ctx.root, f)).join('\n')}\n`);
   // coverage of a run that skips files is meaningless (and tap fails a run whose coverage is incomplete)
-  const extra = ['--jobs=1', `--save=${save}`, ...(ctx.pc ? ['--disable-coverage'] : [])];
-  return common.runChild(ctx, [runner.binPath, ...userArgs(rest), ...extra], {
+  const user = userArgs(rest);
+  const extra = ['--jobs=1', `--save=${save}`, ...(ctx.pc && !user.includes('--disable-coverage') ? ['--disable-coverage'] : [])];
+  return common.runChild(ctx, [runner.binPath, ...user, ...extra], {
     env: { DETJS_TAP_RUN_DIR: runner.runDir, DETJS_TAP_CORE_DIR: runner.coreDir },
   });
 }
