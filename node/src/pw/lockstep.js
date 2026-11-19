@@ -241,6 +241,8 @@ class Coordinator {
     this.servers = new Map(); // origin -> { attached, next, waiting, label }
     this.blocked = new Set();
     this.routedWs = 0; // WebSocket frames pages sent that reached the engine
+    this.lpAwait = new Set(); // long polls the server answered whose response has not reached the engine yet
+    this.lpArrived = new Set(); // long-poll responses that reached the engine before the server reported them
     this.quietHooks = [];
     this.window = new Map(); // test key -> events recorded since the last decision (flushed sorted)
     this.late = new Map(); // test key -> [decision, source, op, value] written at the end of the test
@@ -498,6 +500,12 @@ class Coordinator {
     page.once('close', () => p.blockers.delete(request));
   }
 
+  /** The engine received the response of long poll `id` (worker.js lsFetch). */
+  longPollArrived(id) {
+    if (!this.lpAwait.delete(id)) this.lpArrived.add(id);
+    activity(); this.poke();
+  }
+
   /** A fetch/XHR of `page` reached the route handler. */
   routed(page) {
     const p = this.pageState(page);
@@ -671,6 +679,7 @@ class Coordinator {
       s.waiting = !!r.waiting;
       if (ENV.DETJS_LS_TRACE_SRV) this.trace(`srv ${JSON.stringify(r)} inprog=${[...this.inprogress.keys()]}`);
       for (const id of r.blocked || []) this.blocked.add(Number(id));
+      for (const id of r.lpDone || []) if (!this.lpArrived.delete(Number(id))) this.lpAwait.add(Number(id));
       if (r.busy) { this.stats.stalls++; this.diag('stall', `server ${origin} busy`); }
       if (r.fired) this.stats.fired += r.fired;
     }
@@ -712,7 +721,7 @@ class Coordinator {
       if (quiet && ACT.n === a0) {
         // A released message still in progress keeps the system busy, unless an app server reports a request
         // blocked on its own virtual timers (then only time can complete it).
-        if ([...this.inprogress.keys()].every((id) => this.blocked.has(id))) return true;
+        if ([...this.inprogress.keys()].every((id) => this.blocked.has(id)) && this.lpAwait.size === 0) return true;
         await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 20); });
         continue;
       }
@@ -791,7 +800,7 @@ class Coordinator {
         continue;
       }
       const T = this.sched.now();
-      // 0. Responses fetched for pages, one per page that has none pending.
+      // 0. Responses fetched for pages, handed over at a quiet point.
       if (this.responses.length && (await this.deliverResponses()) > 0) continue;
       // 0b. Runner calls admitted now.
       if (this.admits.length && this.admitReady() > 0) { this.flushWindow(); continue; }
@@ -857,6 +866,7 @@ class Coordinator {
         this.flushWindow();
         this.saveClock();
         const to = a.toNs;
+        if (this.responses.length) await this.deliverResponses();
         for (const p of this.pages) this.grant(p, to);
         continue;
       }
@@ -873,6 +883,7 @@ class Coordinator {
         this.decision(key, 'ls.stall', `${this.clock.queue.length}`);
         const to = T + this.quantumMs * NS;
         this.sched.advanceTo(to);
+        if (this.responses.length) await this.deliverResponses();
         for (const p of this.pages) this.grant(p, to);
       }
     }

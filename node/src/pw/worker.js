@@ -512,6 +512,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
     ORIGINS.add(new URL(url).origin);
     Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-t': String(item.lsT) });
     if (!opt.noMsg) headers['x-detjs-msg'] = String(item.lsId);
+    else headers['x-detjs-lp'] = String(item.lsId);
   }
   let resp = null;
   let body = null;
@@ -525,6 +526,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
     rec(key, 'net', 'browser.done', `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
     release();
     LS.respond(page, item, async () => { await route.abort('failed'); });
+    if (opt.noMsg) LS.longPollArrived(item.lsId);
     return;
   }
   const out = {};
@@ -537,6 +539,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
   diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
   release();
   LS.respond(page, item, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
+  if (opt.noMsg) LS.longPollArrived(item.lsId);
 }
 
 let LOAD_SEQ = 0;

@@ -49,7 +49,7 @@ const TICK_NS = Number(process.env.DETJS_TICK || 1000);
 const MSG = new AsyncLocalStorage();
 // Lockstep (round 4): the engine clock T (ns since the run's epoch) as last told by the coordinator.
 const LOCKSTEP = process.env.DETJS_PW_LOCKSTEP !== '0';
-const LSS = { t: 0, attached: false, msgs: new Map() }; // msgs: engine message id -> message scope
+const LSS = { t: 0, attached: false, msgs: new Map(), lpDone: [] }; // msgs: engine message id -> message scope
 const baseNs = () => (LSS.attached ? LSS.t : SCOPED.n * STEP_NS);
 /** Engine time of the current message (stamped by the engine at delivery), else T. */
 const nowNs = () => { const st = MSG.getStore(); return st && st.t !== undefined ? st.t : LSS.t; };
@@ -308,7 +308,8 @@ function handleLockstep(req, res) {
     const quiet = await new Promise((r) => lsQuiet(w, max, r));
     const next = clockMod.DRIVER.nextDue();
     const blockedIds = [...LSS.msgs].filter(([, st]) => clockMod.DRIVER.queue.some((x) => x._ctx === st)).map(([id]) => id);
-    reply({ lockstep: true, fired, busy: !quiet, next, waiting: LSS.msgs.size > 0, blocked: blockedIds, t: LSS.t });
+    const lpDone = LSS.lpDone; LSS.lpDone = [];
+    reply({ lockstep: true, fired, busy: !quiet, next, waiting: LSS.msgs.size > 0, blocked: blockedIds, t: LSS.t, lpDone });
   }).catch((e) => reply({ lockstep: true, error: String(e && e.message) }));
   return true;
 }
@@ -374,6 +375,13 @@ function patchServer(proto) {
         // waits for other connections to end, a log line of a background tail) happens at a moment set by real
         // socket lifetimes: it is not part of the message's fingerprint.
         if (LSS.attached && res && typeof res.once === 'function') { const end = () => { st.done = true; }; res.once('finish', end); res.once('close', end); }
+        const lp = req.headers['x-detjs-lp'];
+        if (LSS.attached && lp && res && typeof res.once === 'function') {
+          // A long poll the engine released: the engine waits for its response once the server sent it.
+          let sent = false;
+          const fin = () => { if (!sent) { sent = true; LSS.lpDone.push(String(lp)); } };
+          res.once('finish', fin); res.once('close', fin);
+        }
         const mid = req.headers['x-detjs-msg'];
         if (LSS.attached && mid && res && typeof res.once === 'function') {
           // A message released by the engine: in progress until its response is sent.
