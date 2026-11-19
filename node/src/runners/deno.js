@@ -151,7 +151,11 @@ function graphItems(bin, root, fileId, infoArgs, env) {
       }
       continue;
     }
-    if (m.kind === 'node' || spec.startsWith('node:')) continue;
+    if (m.kind === 'node' || spec.startsWith('node:')) {
+      // node:sqlite opens database files natively (Deno's audit sees the path; flagged here as well)
+      if (/^node:sqlite$/.test(spec)) items.push(['flag', 'sqlite', 'node:sqlite in the module graph']);
+      continue;
+    }
     if (m.kind === 'npm' || spec.startsWith('npm:')) continue; // npmPackages below
     const local = m.local;
     if (!local) { items.push(['flag', 'unobserved', `module without a local copy: ${spec}`]); continue; }
@@ -342,8 +346,8 @@ async function main(argv) {
   const skipDirs = () => {
     const { CAPTURE } = require('../cache/capture');
     const dd = (() => { try { if (DENO_DIR === null) DENO_DIR = denoDir(process.env); return DENO_DIR; } catch { return null; } })();
-    return [...CAPTURE.skipDirs, path.join(root, '.detjs') + path.sep, `${engineDir}${path.sep}`, ...(dd ? [path.resolve(dd) + path.sep] : []),
-      path.join(root, 'node_modules') + path.sep];
+    return [...CAPTURE.skipDirs, path.join(root, '.detjs') + path.sep, ...['src', 'bin', 'node_modules'].map((d) => path.join(engineDir, d) + path.sep),
+      require('../native').__path, ...(dd ? [path.resolve(dd) + path.sep] : []), path.join(root, 'node_modules') + path.sep];
   };
   const extra = (capture, fileId, r) => {
     const g = graphItems(bin, root, fileId, infoArgs, process.env);

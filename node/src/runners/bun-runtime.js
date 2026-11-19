@@ -44,6 +44,7 @@ const SCAN = [
   [/\bBun\s*\.\s*(?:WebView|ModuleGraph|secrets)\b/, 'runtime-api', 'Bun.WebView / ModuleGraph / secrets'],
 ];
 const BUILTIN = /^(?:bun:|node:)/;
+const REAL_RESOLVE = Bun.resolveSync.bind(Bun); // before installCapture wraps it
 
 function localHost(host) {
   return network.isLocalName(host) || String(process.env.DETJS_ALLOW_HOSTS || '').split(',').map((s) => s.trim().toLowerCase())
@@ -414,73 +415,103 @@ function callerFile() {
 }
 
 /**
- * The module loader: Bun's resolver and loader are native and do not go through node:fs or Node's Module._load.
- * A Bun.plugin onResolve hook sees every import, require and dynamic import (static ones included) before Bun
- * resolves it; it returns nothing (Bun resolves as usual) and records the module the specifier resolves to (by
- * content, with the stem listing and nearest package.json as for Node) or, when it does not resolve, what would make
- * it resolve. Resolved with both condition sets (import and require), so that a package whose `exports` differ by
- * condition is keyed on both targets. The source of every module loaded is scanned for Bun properties that cannot be
- * wrapped (SCAN).
+ * The module loader. Bun's resolver and loader are native: they do not go through node:fs or Node's Module._load,
+ * and a Bun.plugin onResolve hook is not called for every specifier (measured on Bun 1.4.4: not for extensionless
+ * relative specifiers, found or not). So the modules of a test file are taken as a graph, like Deno's: from the
+ * roots (the test file, the preloads, Bun's CommonJS registry and whatever onResolve did see), every import of every
+ * module (Bun's own scanner, `Bun.Transpiler#scanImports`: static and literal dynamic imports, require calls) is
+ * resolved with Bun's resolver, with the import and the require condition sets. A resolved project module is keyed by
+ * content, with the stem listing of its name and its nearest package.json (cap.module, as for Node); a specifier that
+ * does not resolve is keyed by what would make it resolve (cap.resolveFailed). A project module with an import() or
+ * require() whose specifier is not a literal is not cacheable (its target is not known before the run). The source
+ * of every module reached (installed packages included) is scanned for Bun properties that cannot be wrapped (SCAN).
  */
+const LOADERS = { '.ts': 'ts', '.mts': 'ts', '.cts': 'ts', '.tsx': 'tsx', '.js': 'js', '.mjs': 'js', '.cjs': 'js', '.jsx': 'jsx' };
+const NONLITERAL = /\bimport\s*\(\s*(?!(['"])[^'"\n]*\1\s*[,)])(?!`[^`$]*`\s*[,)])|\brequire\s*\(\s*(?!(['"])[^'"\n]*\2\s*\))(?!`[^`$]*`\s*\))/;
+
 function installResolver(cap, bracket) {
   const { createRequire } = require('node:module');
-  const scanned = new Set();
   const engine = path.resolve(__dirname, '..', '..') + path.sep;
-  const scan = (file) => {
-    if (scanned.has(file)) return;
-    scanned.add(file);
-    if (file.startsWith(engine) && /^(src|bin|node_modules)[\\/]/.test(file.slice(engine.length))) return; // detjs itself
+  const own = (file) => file.startsWith(engine) && /^(src|bin|node_modules)[\\/]/.test(file.slice(engine.length));
+  const transpilers = {};
+  const done = new Set(); // modules whose imports were followed
+  const roots = new Set();
+  const inProject = (f) => cap.where(f) === 'root';
+  const visit = (file) => {
+    if (done.has(file) || own(file) || !path.isAbsolute(file)) return;
+    done.add(file);
     let src;
-    try { src = fs.readFileSync(file, 'latin1'); } catch { return; }
+    cap.busy++;
+    try { src = fs.readFileSync(file, 'latin1'); } catch { return; } finally { cap.busy--; }
+    const where = cap.key(file);
     for (const [re, kind, detail] of SCAN) {
       if (!re.test(src)) continue;
-      const where = cap.key(file);
       if (kind === 'env*') cap.add(['env', '*'], false);
       else cap.flag(kind, `${detail} in ${where}`);
     }
-  };
-  const seen = new Set();
-  const observe = (spec, importer) => {
-    if (!cap.active || typeof spec !== 'string' || !spec || BUILTIN.test(spec) || require('node:module').isBuiltin(spec)) return;
-    const k = `${spec}\0${importer}`;
-    if (seen.has(k)) return;
-    seen.add(k);
-    cap.busy++;
-    let targets = [];
-    let failed = false;
+    const loader = LOADERS[path.extname(file)];
+    if (!loader) return;
+    const project = inProject(file);
+    let imports = [];
     try {
-      if (!importer) {
-        targets.push(path.resolve(spec));
-      } else {
-        const dir = path.dirname(importer);
-        try { targets.push(Bun.resolveSync(spec, dir)); } catch { failed = true; }
-        try { targets.push(createRequire(importer).resolve(spec)); } catch { /* import-only */ }
+      const t = transpilers[loader] || (transpilers[loader] = new Bun.Transpiler({ loader }));
+      imports = t.scanImports(src);
+    } catch {
+      if (project) cap.flag('dynamic-import', `${where}: imports not readable by Bun's scanner`);
+      return;
+    }
+    if (project && NONLITERAL.test(src)) cap.flag('dynamic-import', `${where}: import() or require() of a specifier that is not a literal`);
+    const dir = path.dirname(file);
+    let req = null;
+    for (const im of imports) {
+      const spec = im.path;
+      if (typeof spec !== 'string' || !spec) continue;
+      if (/^(node:)?sqlite$/.test(spec)) { cap.flag('sqlite', `node:sqlite imported by ${where}`); continue; }
+      if (BUILTIN.test(spec) || require('node:module').isBuiltin(spec)) continue;
+      const targets = [];
+      cap.busy++;
+      try {
+        try { targets.push(REAL_RESOLVE(spec, dir)); } catch { /* below */ }
+        try { req = req || createRequire(file); targets.push(req.resolve(spec)); } catch { /* import-only */ }
+      } finally {
+        cap.busy--;
       }
-    } finally {
-      cap.busy--;
+      const ok = [...new Set(targets.filter((x) => typeof x === 'string' && path.isAbsolute(x)))];
+      if (!ok.length) {
+        // installed packages: their own optional imports are covered by the runtime identity; the JSX runtime import
+        // is implied by the scanner's default JSX settings (the project's are in tsconfig, a configuration file)
+        if (project && !/\/jsx-(dev-)?runtime$/.test(spec)) cap.resolveFailed(spec, file);
+        continue;
+      }
+      for (const x of ok) {
+        cap.module(x);
+        visit(x);
+      }
     }
-    targets = [...new Set(targets.filter((t) => typeof t === 'string' && path.isAbsolute(t)))];
-    for (const t of targets) {
-      cap.module(t);
-      scan(t);
-    }
-    if (failed && !targets.length) cap.resolveFailed(spec, importer || undefined);
   };
+  const run = () => {
+    try { for (const k of Object.keys(require.cache)) if (path.isAbsolute(k)) roots.add(k); } catch { /* none */ }
+    for (const r of roots) visit(r);
+    return [...done];
+  };
+  roots.add(path.resolve(require('../controls').cfg().root, process.env.DETJS_FILE));
+  for (const p of String(process.env.DETJS_PRELOADS || '').split(path.delimiter).filter(Boolean)) roots.add(p);
   Bun.plugin({
     name: 'detjs-capture',
     setup(build) {
       build.onResolve({ filter: /.*/ }, (args) => {
-        try { observe(args.path, args.importer); } catch { /* never break resolution */ }
+        try {
+          if (args.importer) {
+            if (/^(node:)?sqlite$/.test(args.path)) cap.flag('sqlite', `node:sqlite imported by ${cap.key(args.importer)}`);
+            else if (!BUILTIN.test(args.path)) roots.add(args.importer);
+          } else if (path.isAbsolute(args.path)) roots.add(args.path);
+        } catch { /* never break resolution */ }
         return undefined;
       });
     },
   });
-  // modules listed by Bun's CommonJS registry at the end (and those Bun loaded before the hook)
-  bracket.modules = () => {
-    const out = [];
-    try { for (const k of Object.keys(require.cache)) { out.push(k); if (path.isAbsolute(k)) scan(k); } } catch { /* none */ }
-    return out;
-  };
+  // cap.module() records each file once; run() is called at the end of every test and of the file
+  bracket.modules = () => { const l = run(); for (const f of l) cap.module(f); return l; };
 }
 
 /** The snapshot file Bun reads natively for `toMatchSnapshot` of a test file (an input, or `missing`). */

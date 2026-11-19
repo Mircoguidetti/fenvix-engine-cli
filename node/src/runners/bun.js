@@ -189,7 +189,7 @@ async function main(argv) {
       args.push(`--reporter=${reporter}`);
     }
     args.push(...runOptions, path.resolve(root, fileId));
-    return common.runInherit(bin, args, { cwd: root, env: { ...process.env, ...extraEnv } });
+    return common.runInherit(bin, args, { cwd: root, env: { ...process.env, ...extraEnv, DETJS_PRELOADS: preloads.join(path.delimiter) } });
   };
   const code = await common.runFiles({
     runner: 'bun', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile,
