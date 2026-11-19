@@ -18,6 +18,10 @@ struct Inner {
     written0: BTreeMap<String, BTreeSet<String>>,
     /// Receipts of the reusable results found by `check_all` (written by `write_receipts`).
     receipts: HashMap<String, Receipt>,
+    /// The last recorded session's written paths (path key -> writer contexts) and the wider-scoped fixture
+    /// contexts of its tests: a parallel worker's shard (`save_shard`).
+    last_written: BTreeMap<String, Vec<String>>,
+    last_fixtures: BTreeMap<String, Vec<String>>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -66,7 +70,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -291,6 +295,8 @@ impl ProofCache {
         for t in &plan.tests {
             g.touched.insert(t.nodeid.clone());
         }
+        g.last_written = plan.session_written.clone();
+        g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
@@ -314,6 +320,8 @@ impl ProofCache {
         for t in &plan.tests {
             g.touched.insert(t.nodeid.clone());
         }
+        g.last_written = plan.session_written.clone();
+        g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
@@ -344,6 +352,70 @@ impl ProofCache {
         lock(&self.inner).store.tests.len()
     }
 
+    // -- parallel sessions (pytest-xdist under --det) ----------------------------------------------------------------
+    /// Parallel session (controller): the `PYTEST_XDIST_WORKER` each test will see (after `begin`).
+    fn set_xdist_workers(&self, workers: HashMap<String, String>) {
+        let mut g = lock(&self.inner);
+        g.checker.xdist_worker = workers;
+        g.checker.xdist_mode = true;
+    }
+
+    /// Recorded durations (seconds) of `nodeids` (None: no entry): the plan's costs.
+    fn durations(&self, nodeids: Vec<String>) -> Vec<Option<f64>> {
+        let g = lock(&self.inner);
+        nodeids.iter().map(|n| g.store.tests.get(n).map(|e| e.duration)).collect()
+    }
+
+    /// A worker's end of session: write what it recorded (and removed) as a shard at `path` instead of merging into
+    /// the store; the controller merges every worker's shard once (`merge_shards`).
+    fn save_shard(&self, py: Python<'_>, path: PathBuf, worker: String) -> PyResult<usize> {
+        let g = lock(&self.inner);
+        let mut sub = Store::new();
+        g.store.merge_into(&mut sub, &g.touched);
+        // persisted for the next sessions: repository paths only (as record_session keeps them)
+        sub.written = g
+            .last_written
+            .iter()
+            .filter(|(k, _)| !k.starts_with('/'))
+            .map(|(k, v)| (k.clone(), v.iter().cloned().collect()))
+            .collect();
+        let n = sub.tests.len();
+        let shard = proof::Shard {
+            format: proof::SHARD_FORMAT.into(),
+            version: proof::SHARD_VERSION,
+            worker,
+            store: sub,
+            touched: g.touched.iter().cloned().collect(),
+            fixtures: g.last_fixtures.clone(),
+            written: g.last_written.clone(),
+        };
+        drop(g);
+        py.detach(|| shard.save(&path))?;
+        Ok(n)
+    }
+
+    /// The controller's end of a parallel session: the cross-worker write rule over the shards at `paths`, then one
+    /// merge into the store (`detpy_core::proof::merge_shards`). Returns JSON: `merged`, `dropped` [[nodeid, why]],
+    /// `stale` [[nodeid, path]], `unreadable` [path].
+    fn merge_shards(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>) -> PyResult<String> {
+        let dir = self.dir.clone();
+        let (merge, unreadable) = py.detach(|| -> std::io::Result<_> {
+            let mut shards = Vec::new();
+            let mut unreadable = Vec::new();
+            for p in &paths {
+                match proof::Shard::load(p) {
+                    Ok(s) => shards.push(s),
+                    Err(_) => unreadable.push(p.display().to_string()),
+                }
+            }
+            Ok((proof::merge_shards(&dir, &mut shards, &hits)?, unreadable))
+        })?;
+        serde_json::to_string(&serde_json::json!({
+            "merged": merge.merged, "dropped": merge.dropped, "stale": merge.stale, "unreadable": unreadable,
+        }))
+        .map_err(|e| PyValueError::new_err(e.to_string()))
+    }
+
     #[getter]
     fn n_files(&self) -> usize {
         lock(&self.inner).store.files.len()
@@ -371,6 +443,8 @@ impl ProofCache {
         for t in &plan.tests {
             g.touched.insert(t.nodeid.clone());
         }
+        g.last_written = plan.session_written.clone();
+        g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());

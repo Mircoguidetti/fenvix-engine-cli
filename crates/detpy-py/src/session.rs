@@ -680,6 +680,48 @@ impl CacheSession {
         Ok(assemble)
     }
 
+    // -- parallel sessions (pytest-xdist under --det) -----------------------------------------------------------------
+    /// A worker's positions of the collected tests (the serial order; a worker runs a subsequence of it), as the
+    /// decision loop sets them in a serial session: the loaded-module bookkeeping depends on them.
+    fn set_test_index(&self, nodeids: Vec<String>) {
+        let mut st = lock(&self.st);
+        for (i, n) in nodeids.into_iter().enumerate() {
+            st.test_index.insert(n.into_bytes(), i as i64);
+        }
+    }
+
+    /// A worker's part of the summary for the controller: (tests that ran, entries recorded, {nodeid: why not
+    /// cached}).
+    fn worker_summary(&self) -> PyResult<(Vec<String>, i64, Vec<(String, String)>)> {
+        let st = lock(&self.st);
+        let ran = st.ran.iter().map(|k| utf8(k)).collect::<PyResult<Vec<_>>>()?;
+        let nc = st.not_cached.iter().map(|(k, v)| Ok((utf8(k)?, utf8(v)?))).collect::<PyResult<Vec<_>>>()?;
+        Ok((ran, st.recorded, nc))
+    }
+
+    /// The controller adds a worker's summary (`worker_summary`) to the session's.
+    fn merge_worker(&self, ran: Vec<String>, recorded: i64, not_cached: Vec<(String, String)>) {
+        let mut st = lock(&self.st);
+        st.ran.extend(ran.into_iter().map(String::into_bytes));
+        st.recorded += recorded;
+        for (k, v) in not_cached {
+            st.not_cached.insert(k.into_bytes(), v.into_bytes());
+        }
+    }
+
+    /// The controller's merge of the shards: entries the cross-worker rule dropped (not cached, with the reason) and
+    /// reused results whose inputs the session wrote.
+    fn apply_merge(&self, dropped: Vec<(String, String)>, stale: Vec<(String, String)>) {
+        let mut st = lock(&self.st);
+        for (k, v) in dropped {
+            st.recorded -= 1;
+            st.not_cached.insert(k.into_bytes(), v.into_bytes());
+        }
+        for (k, v) in stale {
+            st.stale_hits.insert(k.into_bytes(), v.into_bytes());
+        }
+    }
+
     // -- timings and errors ----------------------------------------------------------------------------------------
     fn set_phase(&self, name: Bound<'_, PyString>, seconds: f64) -> PyResult<()> {
         lock(&self.st).phases.insert(w_of(&name)?, seconds);

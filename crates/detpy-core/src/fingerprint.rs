@@ -81,6 +81,11 @@ pub struct TestRecord {
     /// `(n, chain head after n events)` every `checkpoint_every` events.
     pub checkpoints: Vec<(u64, String)>,
     pub events: Vec<Event>,
+    /// Under a parallel plan (merged trace): the worker that ran the test and its position in that worker.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub worker: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub worker_index: Option<u64>,
 }
 
 /// Incrementally fingerprints the event stream of one test.
@@ -163,6 +168,8 @@ impl Fingerprinter {
             counts: self.counts,
             checkpoints: self.checkpoints,
             events: self.events,
+            worker: None,
+            worker_index: None,
         }
     }
 }

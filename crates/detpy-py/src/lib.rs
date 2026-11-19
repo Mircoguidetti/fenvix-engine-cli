@@ -38,6 +38,8 @@ mod sockcap;
 mod sqlcap;
 // rust-hotpaths-2: runtime identity of the cache with proof
 mod identity;
+// parallel --det: fixed plan and trace merge
+mod parallel;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -309,5 +311,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     sockcap::register(m)?;
     // rust-hotpaths-2: runtime identity of the cache with proof
     identity::register(m)?;
+    // parallel --det: fixed plan and trace merge
+    parallel::register(m)?;
     Ok(())
 }

@@ -1,0 +1,7 @@
+FAILED tests/unit_tests/test_helpers.py::test_write_file_to_non_writable_directory_unix
+FAILED tests/unit_tests/test_writer.py::test_clean_build_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_all_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_build_reraises_for_other_errors
+FAILED tests/unit_tests/test_writer.py::test_clean_all_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_build_reraises_for_other_errors
+4 failed, 14527 passed, 15 skipped, 62 warnings in 60.74s (0:01:00)

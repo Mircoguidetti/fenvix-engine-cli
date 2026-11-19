@@ -215,10 +215,18 @@ pub fn env_value_digest(value: Option<&str>) -> String {
     }
 }
 
+/// Variables left out of the whole-environment digest: `_` (the shell's last command path, which changes with the
+/// way pytest is started) and the variables pytest-xdist sets per worker and per run. A test that reads one of them
+/// by name still depends on its value (docs/PARALLEL-PROOF-DESIGN.md 2.5).
+pub const ENV_ALL_EXCLUDED: [&str; 4] = ["_", "PYTEST_XDIST_TESTRUNUID", "PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT"];
+
 /// Digest of a whole environment (the `*` dependency).
 pub fn env_all_digest(env: &BTreeMap<String, String>) -> String {
     let mut buf = Vec::new();
     for (k, v) in env {
+        if ENV_ALL_EXCLUDED.contains(&k.as_str()) {
+            continue;
+        }
         push_part(&mut buf, k);
         push_part(&mut buf, v);
     }
@@ -520,6 +528,157 @@ impl Store {
     }
 }
 
+// -------------------------------------------------------------------------------------------------------------
+// Parallel sessions (pytest-xdist under --det): workers record shards, the controller merges them once.
+
+pub const SHARD_FORMAT: &str = "detpy-cache-shard";
+pub const SHARD_VERSION: u32 = 1;
+
+/// What one worker recorded: its entries (a store holding only the tests it touched), the touched ids (an id
+/// touched but absent is a removal), the wider-scoped fixture contexts of each test that ran, and every path key
+/// code of the worker wrote with its writer contexts.
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
+pub struct Shard {
+    pub format: String,
+    pub version: u32,
+    pub worker: String,
+    pub store: Store,
+    pub touched: Vec<String>,
+    #[serde(default)]
+    pub fixtures: BTreeMap<String, Vec<String>>,
+    #[serde(default)]
+    pub written: BTreeMap<String, Vec<String>>,
+}
+
+impl Shard {
+    pub fn load(path: &Path) -> io::Result<Shard> {
+        let s: Shard = serde_json::from_slice(&fs::read(path)?).map_err(io::Error::other)?;
+        if s.format != SHARD_FORMAT || s.version != SHARD_VERSION {
+            return Err(io::Error::other(format!("not a detpy cache shard: {}", path.display())));
+        }
+        Ok(s)
+    }
+
+    pub fn save(&self, path: &Path) -> io::Result<()> {
+        if let Some(d) = path.parent() {
+            fs::create_dir_all(d)?;
+        }
+        let tmp = path.with_extension(format!("tmp{}", std::process::id()));
+        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
+        fs::rename(tmp, path)
+    }
+}
+
+fn parent_key(key: &str) -> Option<&str> {
+    key.rfind('/').map(|i| if i == 0 { "/" } else { &key[..i] })
+}
+
+/// A writer context that is not the test's own code: another test, or a wider-scoped fixture the test does not use.
+/// Startup, between-tests, import-time and collection contexts run in every worker (every worker imports and
+/// collects the whole suite): the worker's own rule already covers them.
+fn foreign(w: &str, own: &str, fixtures: &[String]) -> bool {
+    (w.starts_with("t|") && w != own) || (w.starts_with("f|") && !fixtures.iter().any(|f| f == w))
+}
+
+/// The cross-worker write rule: the first input of a test (path key, writer) that a foreign context of the session
+/// wrote, in any worker. `written`: path key -> writer contexts of every worker; `dirs`: parent key -> writer
+/// contexts of the paths written in it (a listing whose directory another test wrote into). Same rule as a serial
+/// session's (`record::record_session`: "reads a file another test or fixture wrote"), extended across processes;
+/// it does not depend on which worker ran first.
+pub fn foreign_write(
+    nodeid: &str,
+    fixtures: &[String],
+    data: &[(Str, Str)],
+    written: &BTreeMap<String, BTreeSet<String>>,
+    dirs: &BTreeMap<String, BTreeSet<String>>,
+) -> Option<(String, String)> {
+    let own = format!("t|{nodeid}");
+    for (key, dep) in data {
+        if let Some(ws) = written.get(&**key) {
+            if let Some(w) = ws.iter().find(|w| foreign(w, &own, fixtures)) {
+                return Some((key.to_string(), w.clone()));
+            }
+        }
+        if dep.starts_with("d:") {
+            if let Some(ws) = dirs.get(&**key) {
+                if let Some(w) = ws.iter().find(|w| foreign(w, &own, fixtures)) {
+                    return Some((key.to_string(), w.clone()));
+                }
+            }
+        }
+    }
+    None
+}
+
+/// What [`merge_shards`] did.
+#[derive(Clone, Debug, Default, PartialEq, Serialize)]
+pub struct ShardMerge {
+    pub merged: usize,
+    /// (nodeid, reason) of entries the cross-worker rule dropped.
+    pub dropped: Vec<(String, String)>,
+    /// (nodeid, path key) of results reused in this session whose inputs the session wrote: dropped from the store.
+    pub stale: Vec<(String, String)>,
+}
+
+/// The writer union of a session's shards: path key -> contexts, and parent key -> contexts.
+pub fn writer_union(shards: &[Shard]) -> (BTreeMap<String, BTreeSet<String>>, BTreeMap<String, BTreeSet<String>>) {
+    let mut written: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    let mut dirs: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    for s in shards {
+        for (k, ws) in &s.written {
+            written.entry(k.clone()).or_default().extend(ws.iter().cloned());
+            if let Some(p) = parent_key(k) {
+                dirs.entry(p.to_string()).or_default().extend(ws.iter().cloned());
+            }
+        }
+    }
+    (written, dirs)
+}
+
+/// Apply the cross-worker rule to the shards (in place: a dropped entry stays touched, so it is removed from the
+/// store), then merge them into the store of `dir` under the directory lock, once. `hits`: results the controller
+/// reused in this session; one whose input any code of the session wrote is dropped from the store (as a serial
+/// session drops it).
+pub fn merge_shards(dir: &Path, shards: &mut [Shard], hits: &[String]) -> io::Result<ShardMerge> {
+    shards.sort_by(|a, b| a.worker.cmp(&b.worker));
+    let (written, dirs) = writer_union(shards);
+    let mut out = ShardMerge::default();
+    for s in shards.iter_mut() {
+        let mut drop = Vec::new();
+        for (nid, e) in &s.store.tests {
+            let fx = s.fixtures.get(nid).map(|v| v.as_slice()).unwrap_or(&[]);
+            if let Some((key, w)) = foreign_write(nid, fx, &e.data, &written, &dirs) {
+                drop.push((nid.clone(), format!("reads a file another test or fixture wrote in another worker: {key} ({w})")));
+            }
+        }
+        for (nid, why) in drop {
+            s.store.tests.remove(&nid);
+            out.dropped.push((nid, why));
+        }
+        out.merged += s.store.tests.len();
+    }
+    fs::create_dir_all(dir)?;
+    let _lock = DirLock::acquire(dir)?;
+    let mut disk = Store::load(dir);
+    for s in shards.iter() {
+        let touched: BTreeSet<String> = s.touched.iter().cloned().collect();
+        s.store.merge_into(&mut disk, &touched);
+    }
+    for nid in hits {
+        let Some(e) = disk.tests.get(nid) else { continue };
+        let own = format!("t|{nid}");
+        let stale = e.data.iter().find_map(|(k, _)| {
+            written.get(&**k).filter(|w| !w.iter().all(|x| *x == own)).map(|_| k.to_string())
+        });
+        if let Some(k) = stale {
+            disk.tests.remove(nid);
+            out.stale.push((nid.clone(), k));
+        }
+    }
+    disk.save(dir)?;
+    Ok(out)
+}
+
 struct DirLock(PathBuf);
 
 impl DirLock {
@@ -647,6 +806,10 @@ pub struct Checker {
     key_parts: FxMap<(u8, u32), Vec<u8>>,
     /// Facts of the current version of code files whose content changed.
     pub fresh: HashMap<String, CodeFile>,
+    /// Parallel session (controller): the value of `PYTEST_XDIST_WORKER` each test will see (its worker in the
+    /// previous, sticky plan); a test without one does not reuse a result that depends on the variable.
+    pub xdist_worker: HashMap<String, String>,
+    pub xdist_mode: bool,
 }
 
 /// Outcomes whose results may be reused: never a failure.
@@ -665,6 +828,8 @@ impl Checker {
             env_now: FxMap::default(),
             key_parts: FxMap::default(),
             fresh: HashMap::new(),
+            xdist_worker: HashMap::new(),
+            xdist_mode: false,
         }
     }
 
@@ -790,6 +955,13 @@ impl Checker {
             }
         }
         for (k, v) in &e.env {
+            if k == "PYTEST_XDIST_WORKER" && self.xdist_mode {
+                let now = self.xdist_worker.get(nodeid).map(|w| env_value_digest(Some(w)));
+                if now.as_deref() != Some(v.as_str()) {
+                    return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
+                }
+                continue;
+            }
             let now: &str = if k == "*" {
                 if self.env_all_now.is_none() {
                     self.env_all_now = Some(env_all_digest(&self.cur.env));
@@ -1099,5 +1271,126 @@ mod tests {
         assert_eq!(l.files.len(), 1);
         assert_eq!(l.key_of("t::a", &l.tests["t::a"]), key);
         assert_eq!(Checker::new(cur).check(&l, "t::a").unwrap().key, key);
+    }
+
+    // -- parallel sessions ------------------------------------------------------------------------------------------
+    fn entry_reading(store: &mut Store, nid: &str, data: &[(&str, &str)]) {
+        let o = Observed {
+            outcome: "passed".into(),
+            data: data.iter().map(|(k, d)| (Str::from(*k), Str::from(*d))).collect(),
+            ..Default::default()
+        };
+        store.record(nid, o);
+    }
+
+    fn shard(worker: &str, entries: &[(&str, &[(&str, &str)])], written: &[(&str, &[&str])]) -> Shard {
+        let mut st = Store::new();
+        for (nid, data) in entries {
+            entry_reading(&mut st, nid, data);
+        }
+        Shard {
+            format: SHARD_FORMAT.into(),
+            version: SHARD_VERSION,
+            worker: worker.into(),
+            touched: entries.iter().map(|(n, _)| n.to_string()).collect(),
+            store: st,
+            fixtures: BTreeMap::new(),
+            written: written.iter().map(|(k, w)| (k.to_string(), w.iter().map(|s| s.to_string()).collect())).collect(),
+        }
+    }
+
+    #[test]
+    fn cross_worker_write_drops_the_reader() {
+        let d = tempfile::tempdir().unwrap();
+        // test_a (worker 0) writes /tmp/x; test_b (worker 1) reads it: b is not cached; c reads only its own file
+        let mut shards = vec![
+            shard("gw1", &[("t.py::b", &[("/tmp/x", "f:1")]), ("t.py::c", &[("data/c.txt", "f:2")])], &[]),
+            shard("gw0", &[("t.py::a", &[("tests/value.txt", "f:3")])], &[("/tmp/x", &["t|t.py::a"])]),
+        ];
+        let m = merge_shards(d.path(), &mut shards, &[]).unwrap();
+        assert_eq!(m.merged, 2);
+        assert_eq!(m.dropped.len(), 1);
+        assert_eq!(m.dropped[0].0, "t.py::b");
+        let disk = Store::load(d.path());
+        assert!(disk.tests.contains_key("t.py::a") && disk.tests.contains_key("t.py::c"));
+        assert!(!disk.tests.contains_key("t.py::b"));
+    }
+
+    #[test]
+    fn own_writes_and_shared_fixtures_are_credited() {
+        let mut written = BTreeMap::new();
+        written.insert("/tmp/own".to_string(), BTreeSet::from(["t|t.py::a".to_string()]));
+        written.insert("/tmp/fx".to_string(), BTreeSet::from(["f|session||db".to_string()]));
+        written.insert("/tmp/imp".to_string(), BTreeSet::from(["i".to_string(), "c|t.py".to_string(), "s".to_string()]));
+        let dirs = BTreeMap::new();
+        let data = |k: &str| vec![(Str::from(k), Str::from("f:1"))];
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/own"), &written, &dirs), None);
+        assert_eq!(foreign_write("t.py::a", &["f|session||db".into()], &data("/tmp/fx"), &written, &dirs), None);
+        assert!(foreign_write("t.py::a", &[], &data("/tmp/fx"), &written, &dirs).is_some());
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/imp"), &written, &dirs), None);
+        assert!(foreign_write("t.py::b", &[], &data("/tmp/own"), &written, &dirs).is_some());
+    }
+
+    #[test]
+    fn listing_of_a_directory_another_test_wrote_into() {
+        let shards = vec![shard("gw0", &[], &[("/tmp/d/new", &["t|t.py::w"])])];
+        let (written, dirs) = writer_union(&shards);
+        let listing = vec![(Str::from("/tmp/d"), Str::from("d:abc"))];
+        assert!(foreign_write("t.py::r", &[], &listing, &written, &dirs).is_some());
+        let file = vec![(Str::from("/tmp/d"), Str::from("missing"))];
+        assert!(foreign_write("t.py::r", &[], &file, &written, &dirs).is_none());
+    }
+
+    #[test]
+    fn merge_is_independent_of_shard_order_and_removes_touched_absent() {
+        let a = tempfile::tempdir().unwrap();
+        let b = tempfile::tempdir().unwrap();
+        // an old entry for t.py::gone exists; this session touched it without recording (a failure)
+        for d in [a.path(), b.path()] {
+            let mut st = Store::new();
+            entry_reading(&mut st, "t.py::gone", &[]);
+            st.save(d).unwrap();
+        }
+        let mk = || {
+            let mut s0 = shard("gw0", &[("t.py::a", &[])], &[("/tmp/x", &["t|t.py::a"])]);
+            s0.touched.push("t.py::gone".into());
+            let s1 = shard("gw1", &[("t.py::b", &[("/tmp/x", "f:1")])], &[]);
+            (s0, s1)
+        };
+        let (s0, s1) = mk();
+        let m1 = merge_shards(a.path(), &mut [s0, s1], &[]).unwrap();
+        let (s0, s1) = mk();
+        let m2 = merge_shards(b.path(), &mut [s1, s0], &[]).unwrap();
+        assert_eq!(m1, m2);
+        assert_eq!(fs::read(Store::path_in(a.path())).unwrap(), fs::read(Store::path_in(b.path())).unwrap());
+        assert!(!Store::load(a.path()).tests.contains_key("t.py::gone"));
+    }
+
+    #[test]
+    fn reused_result_whose_input_the_session_wrote_is_dropped() {
+        let d = tempfile::tempdir().unwrap();
+        let mut st = Store::new();
+        entry_reading(&mut st, "t.py::hit", &[("/tmp/x", "f:1")]);
+        entry_reading(&mut st, "t.py::ok", &[("/tmp/y", "f:1")]);
+        st.save(d.path()).unwrap();
+        let mut shards = vec![shard("gw0", &[], &[("/tmp/x", &["t|t.py::w"])])];
+        let m = merge_shards(d.path(), &mut shards, &["t.py::hit".into(), "t.py::ok".into()]).unwrap();
+        assert_eq!(m.stale, vec![("t.py::hit".to_string(), "/tmp/x".to_string())]);
+        let disk = Store::load(d.path());
+        assert!(!disk.tests.contains_key("t.py::hit") && disk.tests.contains_key("t.py::ok"));
+    }
+
+    #[test]
+    fn whole_environment_digest_leaves_out_shell_and_xdist_variables() {
+        let mut a = BTreeMap::new();
+        a.insert("HOME".to_string(), "/root".to_string());
+        let mut b = a.clone();
+        b.insert("_".to_string(), "/usr/bin/python".to_string());
+        b.insert("PYTEST_XDIST_WORKER".to_string(), "gw1".to_string());
+        b.insert("PYTEST_XDIST_TESTRUNUID".to_string(), "abc".to_string());
+        b.insert("PYTEST_XDIST_WORKER_COUNT".to_string(), "4".to_string());
+        assert_eq!(env_all_digest(&a), env_all_digest(&b));
+        b.insert("OTHER".to_string(), "1".to_string());
+        assert_ne!(env_all_digest(&a), env_all_digest(&b));
     }
 }

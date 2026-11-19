@@ -12,6 +12,7 @@ import warnings
 import pytest
 
 from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
+from . import xdist as _xdist
 from ._patch import Patcher
 
 # --det-outcomes: the outcome of a test from its phase outcomes (Rust; the Python original is
@@ -34,6 +35,12 @@ def pytest_addoption(parser, pluginmanager):
                 help="run exactly the test ids listed in FILE (one per line), in that order; other tests are "
                      "deselected. With --det-seed the seed still drives every generator, not the order "
                      "(replay bundles written by `detpy repro`)")
+    g.addoption("--det-plan", default=None, metavar="FILE",
+                help="with -n: run the worker assignment of an earlier parallel run (.detpy/plan.json); with "
+                     "--det-plan-worker=gwK and no -n: run worker K's list of that plan serially, in one process, "
+                     "with that worker's xdist identity")
+    g.addoption("--det-plan-worker", default=None, metavar="GWK",
+                help="with --det-plan, without -n: the worker whose list to replay")
     g.addoption("--det-trace", default=None, metavar="PATH",
                 help="where to write the execution trace (default: <rootdir>/.detpy/trace.jsonl)")
     g.addoption("--det-compare", default=None, metavar="TRACE",
@@ -160,6 +167,11 @@ class _Session:
         self.saved_cassette = 0
         self.index = 0
         self.rewrite_cache = False
+        # pytest-xdist under --det (xdist.py): the controller's state, or this worker's id
+        self.controller = None
+        self.worker = None
+        self.cassette_out = None
+        self.plan_ids: list[str] | None = None
 
 
 S = _Session()
@@ -309,9 +321,28 @@ def pytest_load_initial_conftests(early_config, parser, args):
         if pm.hasplugin("benchmark") and not any(a.startswith("--benchmark-max-time") for a in args):
             args.append("--benchmark-max-time=0.000001")
             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
+    if getattr(ns, "det_plan_worker", None):
+        _replay_worker_identity(early_config, ns)
     _install(early_config, ns, controls)
     if getattr(ns, "det_cache", None):
         proofcache.start(early_config, ns)
+
+
+def _replay_worker_identity(config, ns) -> None:
+    """``--det-plan=FILE --det-plan-worker=gwK`` (no ``-n``): worker K's list, and the xdist identity its tests saw
+    (``PYTEST_XDIST_*`` variables set before conftests are imported; ``worker_id`` / ``testrun_uid`` fixtures)."""
+    if not ns.det_plan:
+        raise pytest.UsageError("--det-plan-worker needs --det-plan")
+    if getattr(ns, "numprocesses", None):
+        raise pytest.UsageError("--det-plan-worker replays one worker in one process: drop -n")
+    ids, count, uid = _xdist.replay_worker(ns.det_plan, ns.det_plan_worker)
+    S.plan_ids = ids
+    os.environ["PYTEST_XDIST_WORKER"] = ns.det_plan_worker
+    os.environ["PYTEST_XDIST_WORKER_COUNT"] = str(count)
+    if uid:
+        os.environ["PYTEST_XDIST_TESTRUNUID"] = uid
+    config.pluginmanager.register(_xdist.PlanWorkerReplay(ns.det_plan_worker, count, uid), "detpy-plan-worker")
+    S.adjustments.append(f"--det-plan-worker: replaying {ns.det_plan_worker}'s {len(ids)} tests of {ns.det_plan}")
 
 
 def _install(config, ns, controls) -> None:
@@ -414,8 +445,18 @@ def pytest_configure(config):
 
 
 def _configure_det(config) -> None:
-    if config.pluginmanager.get_plugin("dsession") is not None or getattr(config.option, "numprocesses", None):
-        warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
+    # pytest-xdist: the controller plans and merges, each worker writes its own trace (xdist.py)
+    wid = _xdist.worker_id(config)
+    if wid is not None:
+        S.worker = wid
+        config.pluginmanager.register(_xdist.Worker(config, wid), "detpy-xdist-worker")
+    elif _xdist.is_controller(config):
+        ctl = _xdist.Controller(config, S)
+        if getattr(config.option, "testrunuid", None) is None:
+            config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)
+        ctl.testrunuid = config.option.testrunuid
+        S.controller = ctl
+        config.pluginmanager.register(ctl, "detpy-xdist-controller")
     root = str(config.rootpath)
     _sites.refresh(root)
     opt = config.option
@@ -424,6 +465,10 @@ def _configure_det(config) -> None:
     if "net" in _state.STATE.config.controls:
         S.net_mode = network.install(_PATCHER, opt.det_record, cassette, opt.det_allow_host)
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
+    if S.worker is not None:
+        S.trace_path = _xdist.worker_path(S.trace_path, S.worker)
+        if opt.det_record:
+            S.cassette_out = _xdist.worker_path(cassette, S.worker)
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
         proofcache.install(config)
@@ -448,6 +493,8 @@ def pytest_unconfigure(config):
         proofcache.uninstall()
         S.active = False
         S.config = None
+        S.controller = None
+        S.worker = None
 
 
 def _exception_of(report) -> list:
@@ -461,10 +508,12 @@ def _exception_of(report) -> list:
     return [etype, report.when, first[:200], where]
 
 
-def _explicit_order(config, items: list, path: str) -> list:
+def _explicit_order(config, items: list, path: str, wanted: list | None = None) -> list:
     """``--det-order``: the listed ids in the listed order; the rest is deselected."""
-    with open(path) as f:
-        wanted = [line.rstrip("\n") for line in f if line.strip() and not line.startswith("#")]
+    source = "--det-order" if wanted is None else "--det-plan"
+    if wanted is None:
+        with open(path) as f:
+            wanted = [line.rstrip("\n") for line in f if line.strip() and not line.startswith("#")]
     by_id = {i.nodeid: i for i in items}
     chosen = [by_id[n] for n in wanted if n in by_id]
     missing = [n for n in wanted if n not in by_id]
@@ -474,7 +523,7 @@ def _explicit_order(config, items: list, path: str) -> list:
         config.hook.pytest_deselected(items=dropped)
     S.order_missing = missing
     if missing:
-        S.adjustments.append(f"--det-order: {len(missing)} listed test ids not collected")
+        S.adjustments.append(f"{source}: {len(missing)} listed test ids not collected")
     return chosen
 
 
@@ -556,6 +605,9 @@ class _DetSession(_Outcomes):
         pc = proofcache.PLUGIN
         if pc is not None:
             out["cache"] = pc.outcomes_data()
+        if S.controller is not None:
+            out["order"] = list(S.order)
+            out["plan"] = S.controller.plan
         return out
 
     def pytest_report_header(self, config):
@@ -570,6 +622,8 @@ class _DetSession(_Outcomes):
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
         if S.adjustments:
             lines.append(f"detpy: adjusted: {'; '.join(S.adjustments)}")
+        if S.controller is not None:
+            lines.extend(S.controller.header_lines())
         return lines
 
     # Ordering ---------------------------------------------------------------
@@ -596,6 +650,8 @@ class _DetSession(_Outcomes):
         order_file = config.getoption("det_order", None)
         if order_file:
             ordered = _explicit_order(config, ordered, order_file)
+        elif S.plan_ids is not None:
+            ordered = _explicit_order(config, ordered, config.getoption("det_plan"), S.plan_ids)
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
@@ -629,6 +685,8 @@ class _DetSession(_Outcomes):
             "rebound_references": len(S.rebound),
             "order_digest": S.order_digest,
         }
+        if S.worker is not None:
+            meta["worker"] = S.worker
         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
 
     # Per-test control ---------------------------------------------------------
@@ -673,16 +731,19 @@ class _DetSession(_Outcomes):
                 item.user_properties.append(("detpy_fingerprint", fp))
 
     def pytest_sessionfinish(self, session, exitstatus):
+        st = _state.STATE
+        if S.controller is not None:
+            # xdist controller: no test ran here; merge the workers' traces (and cache shards, cassettes)
+            S.controller.finish(session, S.trace_path, self._controller_meta())
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.finish(session)
         super().pytest_sessionfinish(session, exitstatus)
-        st = _state.STATE
-        if st.recorder is not None:
+        if st.recorder is not None and S.controller is None:
             if not S.order_digest:  # collection failed before the trace was opened
                 st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
             st.recorder.close()
-        if S.net_mode == "record":
-            S.saved_cassette = network.save_recordings(st.config.cassette_path)
+        if S.net_mode == "record" and S.controller is None:
+            S.saved_cassette = network.save_recordings(S.cassette_out or st.config.cassette_path)
         baseline = session.config.getoption("det_compare")
         if baseline:
             try:
@@ -690,12 +751,29 @@ class _DetSession(_Outcomes):
             except Exception as e:  # report, do not crash the session
                 S.compare_report = {"error": str(e)}
 
+    def _controller_meta(self) -> dict:
+        """Header metadata of the merged trace (the controller's view; the workers' headers stay in their traces)."""
+        cfg = _state.STATE.config
+        return {
+            "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
+            "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
+            "aslr_disabled": reexec.aslr_disabled(), "epoch_ns": cfg.epoch_ns,
+            "epoch_source": EPOCH_SOURCE.get("source"), "tick_ns": cfg.tick_ns, "tick_adapt": cfg.tick_adapt,
+            "sleep": cfg.sleep, "network": S.net_mode, "urandom_controlled": cfg.control_urandom,
+            "python": platform.python_version(), "implementation": platform.python_implementation(),
+            "platform": sys.platform, "pytest": pytest.__version__, "disabled_plugins": S.disabled_plugins,
+            "adjustments": S.adjustments, "order_digest": S.order_digest, "merged": True,
+        }
+
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
         tr = terminalreporter
         tr.section("detpy (Level 0)")
         cfg = _state.STATE.config
         tr.write_line(f"trace: {S.trace_path}  order digest: {S.order_digest}  seed: {cfg.seed}"
                       f"{' (shuffled)' if cfg.shuffle else ''}")
+        if S.controller is not None:
+            for line in S.controller.summary_lines():
+                tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
         if proofcache.PLUGIN is not None:

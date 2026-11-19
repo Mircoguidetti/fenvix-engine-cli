@@ -74,6 +74,10 @@ _VOLATILE_OPTIONS = {
     "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
     "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch", "det_cache_max_age",
     "det_cache_epoch_window",
+    # pytest-xdist's options (set differently in its controller, its workers and a serial session) and detpy's
+    # plan replay: under --det the plan is not an input of a test's result (docs/PARALLEL-PROOF-DESIGN.md 2.5)
+    "loadgroup", "looponfail", "distload", "maxprocesses", "maxworkerrestart", "loadscopereorder", "px",
+    "testrunuid", "rsyncdir", "rsyncignore", "maxschedchunk", "det_plan", "det_plan_worker",
 }
 
 
@@ -363,6 +367,12 @@ class ProofCachePlugin:
         self.items: dict[str, object] = {}
         self.run_id = f"{time.strftime('%Y%m%dT%H%M%S', time.gmtime(_now()))}-{os.getpid()}"
         self.sess = _core.CacheSession(self.run_id, self.receipts_path)
+        # pytest-xdist under --det: "controller" (decides, reports hits, merges the shards), "worker" (runs what the
+        # plan sends, records a shard), "serial"
+        self.role = "serial"
+        self.worker = None
+        self.shard_path = None
+        self.merge_result: dict | None = None
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -404,6 +414,11 @@ class ProofCachePlugin:
     def pytest_collection_finish(self, session):
         self.cap.switch("s")
         self.cap.scan_modules(-1, self._conftests())
+        if self.role == "worker":
+            # the controller decided; this worker runs (and records) every test the plan sends it
+            self.items = {item.nodeid: item for item in session.items}
+            self.sess.set_test_index(list(self.items))
+            return
         t0 = _perf()
         try:
             self._decide(session.items)
@@ -424,6 +439,111 @@ class ProofCachePlugin:
         # receipts and the verification draw (Python's Mersenne Twister, seeded per run) are Rust
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
+
+    # -- pytest-xdist under --det: the controller --------------------------------------------------------------
+    def decide_controller(self, nids: list) -> set:
+        """The reuse decision of every collected test, once, in the controller (before the plan). The verification
+        draw is seeded by the session's inputs (seed, order, configuration), not by time and pid: two runs on the
+        same inputs verify the same tests. Returns the reused ids."""
+        from . import plugin as _plugin
+
+        t0 = _perf()
+        try:
+            ctl = _plugin.S.controller
+            env = dict(self.cap.env0)
+            env["PYTEST_XDIST_WORKER_COUNT"] = str(len(self.config.getoption("tx") or ()))
+            if ctl is not None and ctl.testrunuid:
+                env["PYTEST_XDIST_TESTRUNUID"] = ctl.testrunuid
+            self.store.begin(self.config_digest, self.runtime_digest, self.epoch, env)
+            self.store.set_xdist_workers(_xdist_prev_workers(self.config))
+            store = self.store
+            changed = list(store.changed_code_files())
+            for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
+                                                                     [c for _, c in changed])):
+                if f is not None:
+                    store.set_fresh(path, content, *f)
+            self.sess.seed_exclusive(store, self.cap)
+            seed = _state.STATE.config.seed
+            rng = random.Random(f"detpy-cache-verify:{seed}:{_core.order_digest(list(nids))}:{self.config_digest}")
+            self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, rng.random)
+            return set(self.sess.hit_ids)
+        finally:
+            self.sess.t_check = _perf() - t0
+
+    def report_hits(self, nids: list, hits: set) -> None:
+        """Reports of the reused results, from the controller (they are never sent to a worker): logstart, the
+        recorded setup/call reports, a passed teardown, logfinish."""
+        from _pytest.reports import TestReport
+
+        hook = self.config.hook
+        now = _now()
+        for nid in nids:
+            if nid not in hits:
+                continue
+            receipt = self.sess.hit(nid)
+            rep, fingerprint = self.store.reuse_info(nid)
+            location = _location_of(nid)
+            hook.pytest_runtest_logstart(nodeid=nid, location=location)
+            props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]), ("detpy_fingerprint", fingerprint)]
+            for when in ("setup", "call"):
+                p = rep.get(when)
+                if p is None:
+                    continue
+                lr = p.get("longrepr")
+                r = TestReport(nid, location, {}, p["outcome"], tuple(lr) if lr else None, when, (), 0.0, now, now,
+                               list(props))
+                if "wasxfail" in p:
+                    r.wasxfail = p["wasxfail"]
+                hook.pytest_runtest_logreport(report=r)
+            hook.pytest_runtest_logreport(report=TestReport(nid, location, {}, "passed", None, "teardown", (), 0.0,
+                                                            now, now, list(props)))
+            hook.pytest_runtest_logfinish(nodeid=nid, location=location)
+            if fingerprint:
+                from . import plugin as _plugin
+
+                _plugin.S.fingerprints[nid] = fingerprint
+
+    def durations(self, nids: list) -> list:
+        return self.store.durations(list(nids))
+
+    def merge_workers(self, workeroutput: dict, sent: dict) -> None:
+        """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
+        their shards into the store (``ProofCache.merge_shards``)."""
+        t0 = _perf()
+        paths = []
+        for wid in sorted(workeroutput):
+            out = workeroutput[wid]
+            summ = out.get("detpy_cache_summary")
+            if summ:
+                ran, recorded, not_cached = summ
+                self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached])
+            if out.get("detpy_cache_error"):
+                self.sess.error = out["detpy_cache_error"]
+            if out.get("detpy_cache_shard"):
+                paths.append(out["detpy_cache_shard"])
+        try:
+            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids)))
+        except Exception as e:  # never break the session: nothing is recorded this time
+            self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
+            res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}
+        self.sess.apply_merge([tuple(x) for x in res["dropped"]], [tuple(x) for x in res["stale"]])
+        self.merge_result = res
+        for p in paths:
+            try:
+                os.remove(p)
+            except OSError:
+                pass
+        self.sess.set_phase("merge", _perf() - t0)
+
+    # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
+    def worker_output(self) -> dict:
+        out = {"detpy_cache_summary": list(self.sess.worker_summary())}
+        if self.shard_path:
+            out["detpy_cache_shard"] = self.shard_path
+        err = self.sess.summary_data(self.cap).get("error")
+        if err:
+            out["detpy_cache_error"] = err
+        return out
 
     def _read_facts(self, paths, contents) -> list:
         """Facts of code files (``_codefacts``: CPython's parser), detpy's own reads not being inputs."""
@@ -533,6 +653,12 @@ class ProofCachePlugin:
         sess.add_fingerprints(_plugin.S.fingerprints)
         cap.switch("s")
         cap.stop()
+        if self.role == "controller":
+            # no test ran here: the workers recorded, the merge happened in merge_workers
+            sess.t_record = self.sess.phase("merge")
+            sess.compare_verified()
+            sess.write_receipts(self.store)
+            return
         t0 = _perf()
         try:
             self._record_all()
@@ -544,6 +670,8 @@ class ProofCachePlugin:
             warnings.warn(f"detpy --det-cache: results not recorded: {type(e).__name__}: {e}\n{traceback.format_exc()}")
         finally:
             sess.t_record = _perf() - t0
+        if self.role == "worker":
+            return  # the controller compares verified results and writes the receipts
         sess.compare_verified()
         sess.write_receipts(self.store)
 
@@ -592,7 +720,11 @@ class ProofCachePlugin:
         sess.set_phase("plan", _perf() - t - assemble)
         sess.set_phase("assemble", assemble)
         t = _perf()
-        store.save()
+        if self.role == "worker":
+            self.shard_path = os.path.join(self.dir, "shards", f"{self.run_id}.{self.worker}.json")
+            store.save_shard(self.shard_path, self.worker)
+        else:
+            store.save()
         sess.set_phase("save", _perf() - t)
 
     # -- reporting (Rust: CacheSession) --------------------------------------------------
@@ -606,6 +738,30 @@ class ProofCachePlugin:
         tr.section("detpy cache with proof")
         for text, markup in self.sess.summary_lines(self.cap, tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))
+        m = self.merge_result
+        if m is not None:
+            tr.write_line(f"parallel: decided once in the controller; {m['merged']} entries merged from the workers' "
+                          f"shards, {len(m['dropped'])} dropped by the cross-worker write rule, {len(m['stale'])} "
+                          f"reused results dropped (inputs written by this session)"
+                          + (f"; UNREADABLE shards: {len(m['unreadable'])}" if m["unreadable"] else ""))
+
+
+def _location_of(nodeid: str) -> tuple:
+    """A report location for a test reported by the xdist controller (which has no items): the file, no line, the
+    rest of the node id as the domain."""
+    path, _, rest = nodeid.partition("::")
+    return (path, None, rest.replace("::", ".") or path)
+
+
+def _xdist_prev_workers(config) -> dict:
+    """``{nodeid: worker}`` of the previous plan (``.detpy/plan.json``) when it had this run's number of workers."""
+    from . import xdist as _xdist
+
+    prev = _xdist.load_json(os.path.join(_xdist.state_dir(config), "plan.json"))
+    n = len(config.getoption("tx") or ())
+    if not prev or prev.get("workers") != n:
+        return {}
+    return {str(k): str(v) for k, v in (prev.get("assign") or {}).items()}
 
 
 def _run_time(run: str) -> float:
@@ -692,6 +848,12 @@ def install(config) -> None:
     plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
     age = getattr(opt, "det_cache_max_age", 30.0)
     plugin.max_age_s = age * 86400 if age and age > 0 else None
+    from . import xdist as _xdist
+
+    if _xdist.worker_id(config) is not None:
+        plugin.role, plugin.worker = "worker", _xdist.worker_id(config)
+    elif _xdist.is_controller(config):
+        plugin.role = "controller"
     plugin.configure(config)
     PLUGIN = plugin
     config.pluginmanager.register(plugin, "detpy-cache")

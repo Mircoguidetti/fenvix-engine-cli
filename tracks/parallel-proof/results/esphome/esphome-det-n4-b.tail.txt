@@ -1,0 +1,14 @@
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[esp-idf-False]
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[platformio-True]
+FAILED tests/unit_tests/components/esp32/test_sdkconfig.py::test_write_sdkconfig_cleans_only_on_platformio[None-True]
+FAILED tests/unit_tests/test_helpers.py::test_write_file_to_non_writable_directory_unix
+FAILED tests/unit_tests/test_writer.py::test_clean_build_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_all_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_build_reraises_for_other_errors
+=============================== detpy (Level 0) ================================
+trace: /tmp/claude-0/-home-user-fenvix-engine-cli/32af3bec-41bb-5cba-9492-aa37cddbeea0/scratchpad/xd/out/esphome/n4-b.jsonl  order digest: None  seed: 0
+=========================== short test summary info ============================
+7 failed, 14424 passed, 15 skipped, 62 warnings in 77.65s (0:01:17)
+FAILED tests/unit_tests/test_writer.py::test_clean_all_handles_readonly_files
+FAILED tests/unit_tests/test_writer.py::test_clean_build_reraises_for_other_errors
+7 failed, 14424 passed, 15 skipped, 62 warnings in 77.65s (0:01:17)

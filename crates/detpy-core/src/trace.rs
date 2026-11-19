@@ -42,6 +42,12 @@ impl Header {
 pub struct Footer {
     pub n_tests: u64,
     pub order_digest: String,
+    /// Merged trace of a parallel run: tests the plan gave a worker that left no line (the worker died).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub missing: Vec<String>,
+    /// Merged trace of a parallel run: digest of the plan (`schedule::plan_digest`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub plan_digest: Option<String>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -99,8 +105,13 @@ impl TraceWriter {
         self.out.flush()
     }
 
-    pub fn finish(mut self) -> io::Result<Footer> {
-        let footer = Footer { n_tests: self.executed.len() as u64, order_digest: order_digest(&self.executed) };
+    pub fn finish(self) -> io::Result<Footer> {
+        self.finish_with(Vec::new(), None)
+    }
+
+    pub fn finish_with(mut self, missing: Vec<String>, plan_digest: Option<String>) -> io::Result<Footer> {
+        let footer =
+            Footer { n_tests: self.executed.len() as u64, order_digest: order_digest(&self.executed), missing, plan_digest };
         self.write_line(&Line::Footer(footer.clone()))?;
         Ok(footer)
     }
@@ -153,6 +164,120 @@ impl From<io::Error> for TraceError {
     fn from(e: io::Error) -> Self {
         TraceError::Io(e)
     }
+}
+
+/// One worker's trace in a parallel run.
+#[derive(Clone, Debug)]
+pub struct WorkerTrace {
+    /// Worker id (`gw0`, ...).
+    pub worker: String,
+    pub path: std::path::PathBuf,
+    /// The test ids the plan gave this worker, in its order.
+    pub planned: Vec<String>,
+}
+
+/// What [`merge_traces`] wrote.
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct MergeSummary {
+    pub n_tests: u64,
+    /// Planned tests no worker trace has a line for.
+    pub missing: Vec<String>,
+    /// Workers whose trace could not be read at all.
+    pub unreadable: Vec<String>,
+    /// Lines for a test already merged from another worker (dropped).
+    pub duplicates: u64,
+    /// (nodeid, fingerprint, outcome, worker) of every merged test, in merged order.
+    pub tests: Vec<(String, String, String, String)>,
+}
+
+/// A trace whose last line may be cut (a worker killed while writing): lines are read up to the first one that
+/// does not parse.
+pub fn read_trace_lenient(path: &Path) -> Result<Trace, TraceError> {
+    let reader = BufReader::new(File::open(path)?);
+    let mut header = None;
+    let mut tests = Vec::new();
+    let mut footer = None;
+    for line in reader.lines() {
+        let Ok(line) = line else { break };
+        if line.trim().is_empty() {
+            continue;
+        }
+        match serde_json::from_str::<Line>(&line) {
+            Ok(Line::Header(h)) => header = Some(h),
+            Ok(Line::Test(t)) => tests.push(t),
+            Ok(Line::Footer(f)) => footer = Some(f),
+            Err(_) => break,
+        }
+    }
+    let header = header.ok_or_else(|| TraceError::Format("missing header".into()))?;
+    Ok(Trace { header, tests, footer })
+}
+
+/// Merge the traces of a parallel run into one trace at `out`.
+///
+/// The header carries `meta` (the plan goes there) and `order`, the serial order of the session. Test lines are
+/// sorted by their position in `order` (tests absent from `order` follow, by node id), each one with `worker` and
+/// `worker_index` (its position in the worker's trace) and `index` = its position among the executed tests, as a
+/// serial run of the same tests would number them. The footer's order digest is the digest of the merged test
+/// order; planned tests without a line are listed in `missing`. The output is a pure function of the inputs:
+/// merging the same worker traces twice gives byte-identical files.
+pub fn merge_traces(
+    order: &[String],
+    workers: &[WorkerTrace],
+    meta: serde_json::Value,
+    plan_digest: Option<String>,
+    out: &Path,
+) -> Result<MergeSummary, TraceError> {
+    let pos: std::collections::HashMap<&str, usize> = order.iter().enumerate().map(|(i, s)| (s.as_str(), i)).collect();
+    let mut summary = MergeSummary::default();
+    let mut seen: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut recs: Vec<TestRecord> = Vec::new();
+    for w in workers {
+        let t = match read_trace_lenient(&w.path) {
+            Ok(t) => t,
+            Err(_) => {
+                summary.unreadable.push(w.worker.clone());
+                continue;
+            }
+        };
+        for (i, mut r) in t.tests.into_iter().enumerate() {
+            if !seen.insert(r.nodeid.clone()) {
+                summary.duplicates += 1;
+                continue;
+            }
+            r.worker = Some(w.worker.clone());
+            r.worker_index = Some(i as u64);
+            recs.push(r);
+        }
+    }
+    recs.sort_by(|a, b| {
+        let pa = pos.get(a.nodeid.as_str()).copied().unwrap_or(usize::MAX);
+        let pb = pos.get(b.nodeid.as_str()).copied().unwrap_or(usize::MAX);
+        pa.cmp(&pb).then_with(|| a.nodeid.cmp(&b.nodeid))
+    });
+    for w in workers {
+        for id in &w.planned {
+            if !seen.contains(id) {
+                summary.missing.push(id.clone());
+            }
+        }
+    }
+    summary.missing.sort_by_key(|id| pos.get(id.as_str()).copied().unwrap_or(usize::MAX));
+    summary.missing.dedup();
+    let mut writer = TraceWriter::create(out, &Header::new(meta, order.to_vec()))?;
+    for (i, r) in recs.iter_mut().enumerate() {
+        r.index = i as u64;
+        writer.write_test(r)?;
+        summary.tests.push((
+            r.nodeid.clone(),
+            r.fingerprint.clone(),
+            r.outcome.clone(),
+            r.worker.clone().unwrap_or_default(),
+        ));
+    }
+    let footer = writer.finish_with(summary.missing.clone(), plan_digest)?;
+    summary.n_tests = footer.n_tests;
+    Ok(summary)
 }
 
 pub fn read_trace(path: &Path) -> Result<Trace, TraceError> {
@@ -248,6 +373,98 @@ mod tests {
     fn order_digest_is_order_sensitive() {
         assert_ne!(order_digest(&["a", "b"]), order_digest(&["b", "a"]));
         assert_ne!(order_digest(&["ab"]), order_digest(&["a", "b"]));
+    }
+}
+
+#[cfg(test)]
+mod merge_tests {
+    use super::*;
+    use crate::event::{Event, Source};
+    use crate::fingerprint::Fingerprinter;
+
+    fn record(nodeid: &str, idx: u64, v: &str) -> TestRecord {
+        let mut f = Fingerprinter::default();
+        f.push(Event::new(Source::Random, "random.random", "t.py:2", v));
+        f.finish(nodeid, idx, "passed")
+    }
+
+    fn write(path: &Path, ids: &[&str], footer: bool) {
+        let mut w = TraceWriter::create(path, &Header::new(serde_json::json!({"worker": "x"}), vec![])).unwrap();
+        for (i, id) in ids.iter().enumerate() {
+            w.write_test(&record(id, i as u64, id)).unwrap();
+        }
+        if footer {
+            w.finish().unwrap();
+        }
+    }
+
+    #[test]
+    fn merge_sorts_by_serial_order_and_marks_workers() {
+        let d = tempfile::tempdir().unwrap();
+        let order: Vec<String> = ["a", "b", "c", "d", "e"].iter().map(|s| s.to_string()).collect();
+        write(&d.path().join("gw0.jsonl"), &["a", "d"], true);
+        write(&d.path().join("gw1.jsonl"), &["b", "c", "e"], true);
+        let ws = vec![
+            WorkerTrace { worker: "gw0".into(), path: d.path().join("gw0.jsonl"), planned: vec!["a".into(), "d".into()] },
+            WorkerTrace {
+                worker: "gw1".into(),
+                path: d.path().join("gw1.jsonl"),
+                planned: vec!["b".into(), "c".into(), "e".into()],
+            },
+        ];
+        let out = d.path().join("m.jsonl");
+        let s = merge_traces(&order, &ws, serde_json::json!({"plan": 1}), Some("pd".into()), &out).unwrap();
+        assert_eq!(s.n_tests, 5);
+        assert!(s.missing.is_empty());
+        let t = read_trace(&out).unwrap();
+        assert_eq!(t.executed_order(), vec!["a", "b", "c", "d", "e"]);
+        assert_eq!(t.header.order, order);
+        assert_eq!(t.tests[3].worker.as_deref(), Some("gw0"));
+        assert_eq!(t.tests[3].worker_index, Some(1));
+        assert_eq!(t.tests[3].index, 3);
+        let f = t.footer.unwrap();
+        assert_eq!(f.order_digest, order_digest(&order));
+        assert_eq!(f.plan_digest.as_deref(), Some("pd"));
+        // byte-identical when merged again from the same worker traces
+        let out2 = d.path().join("m2.jsonl");
+        merge_traces(&order, &ws, serde_json::json!({"plan": 1}), Some("pd".into()), &out2).unwrap();
+        assert_eq!(std::fs::read(&out).unwrap(), std::fs::read(&out2).unwrap());
+        // the fingerprints are the workers' own
+        let w0 = read_trace(&d.path().join("gw0.jsonl")).unwrap();
+        assert_eq!(t.tests[0].fingerprint, w0.tests[0].fingerprint);
+    }
+
+    #[test]
+    fn a_dead_worker_leaves_missing_tests() {
+        let d = tempfile::tempdir().unwrap();
+        let order: Vec<String> = ["a", "b", "c"].iter().map(|s| s.to_string()).collect();
+        write(&d.path().join("gw0.jsonl"), &["a"], false); // killed: no footer
+        // a cut last line
+        let mut raw = std::fs::read_to_string(d.path().join("gw0.jsonl")).unwrap();
+        raw.push_str("{\"type\":\"test\",\"nodeid\":\"b\"");
+        std::fs::write(d.path().join("gw0.jsonl"), raw).unwrap();
+        let ws = vec![
+            WorkerTrace {
+                worker: "gw0".into(),
+                path: d.path().join("gw0.jsonl"),
+                planned: vec!["a".into(), "b".into(), "c".into()],
+            },
+            WorkerTrace { worker: "gw1".into(), path: d.path().join("absent.jsonl"), planned: vec![] },
+        ];
+        let s = merge_traces(&order, &ws, serde_json::Value::Null, None, &d.path().join("m.jsonl")).unwrap();
+        assert_eq!(s.missing, vec!["b".to_string(), "c".to_string()]);
+        assert_eq!(s.unreadable, vec!["gw1".to_string()]);
+        let t = read_trace(&d.path().join("m.jsonl")).unwrap();
+        assert_eq!(t.footer.unwrap().missing, vec!["b".to_string(), "c".to_string()]);
+    }
+
+    #[test]
+    fn serial_trace_lines_have_no_worker_fields() {
+        let rec = record("a", 0, "1");
+        let line = serde_json::to_string(&TestLine::Test(&rec)).unwrap();
+        assert!(!line.contains("worker"));
+        let f = Footer { n_tests: 0, order_digest: "x".into(), missing: vec![], plan_digest: None };
+        assert_eq!(serde_json::to_string(&f).unwrap(), r#"{"n_tests":0,"order_digest":"x"}"#);
     }
 }
 

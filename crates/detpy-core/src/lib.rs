@@ -26,6 +26,7 @@ pub mod recorder;
 // rust-hotpaths-2: repro / reexec decisions
 pub mod reexec;
 pub mod repro;
+pub mod schedule;
 pub mod trace;
 pub mod verify;
 
