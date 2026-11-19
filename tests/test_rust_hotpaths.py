@@ -217,10 +217,19 @@ FILES = {
         def test_xfail():
             assert False
 
-        def test_dns():
+        def test_dns_loopback():
+            # review R-023: a loopback name is answered from /etc/hosts (recorded as reads), not a network input
             import socket
             try:
                 socket.getaddrinfo("localhost", 80)
+            except Exception:
+                pass
+
+        def test_dns():
+            import socket
+            import _socket  # past Level 0's guard (a lookup it lets through)
+            try:
+                _socket.getaddrinfo("detpy-lookup.example", 80)
             except Exception:
                 pass
 

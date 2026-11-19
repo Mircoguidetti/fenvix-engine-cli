@@ -94,7 +94,8 @@ jobs:
           else
             python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
               --out "$RUNNER_TEMP/out" --label "${{ matrix.repo.name }}" --workers "${{ matrix.repo.workers }}" \
-              --dist "${{ matrix.repo.dist }}" --variants "${{ matrix.repo.variants }}" -- "$@" || true
+              --dist "${{ matrix.repo.dist }}" --variants "${{ matrix.repo.variants }}" \
+              --det-args "${{ matrix.repo.det_args }}" -- "$@" || true
             python -m harness.parallel_proof.fpcompare --serial "$RUNNER_TEMP/out/det-serial-a.jsonl" \
               "$RUNNER_TEMP/out/det-serial-b.jsonl" --parallel "$RUNNER_TEMP/out/det-n-b.jsonl" \
               "$RUNNER_TEMP/out/det-n-c.jsonl" --json "$RUNNER_TEMP/out/fpcompare.json" || true

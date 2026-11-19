@@ -25,12 +25,15 @@ DEFAULT = ("plain-serial,plain-n,det-serial-a,det-n-a,det-serial-b,det-n-b,"
            "cache-ser-cold,cache-ser-warm,cache-n-cold,cache-n-warm,cache-n-warm2")
 
 
+DET_ARGS: list[str] = []  # extra arguments of every --det variant (--det-args, e.g. --det-urandom)
+
+
 def variant_args(name: str, out: str, workers: int, dist: str) -> list[str]:
     """Arguments of variant ``name``; ``name@K`` is repetition K of the same variant (its own trace and log)."""
     v = name.split("@", 1)[0]
     par = ["-n", str(workers)] + (["--dist", dist] if dist else [])
     det = ["--det", f"--det-trace={os.path.join(out, name + '.jsonl')}",
-           f"--det-outcomes={os.path.join(out, name + '.outcomes.json')}"]
+           f"--det-outcomes={os.path.join(out, name + '.outcomes.json')}", *DET_ARGS]
     if v == "plain-serial":
         return []
     if v == "plain-n":
@@ -72,8 +75,10 @@ def main(argv=None) -> int:
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--dist", default="")
     ap.add_argument("--timeout", type=int, default=3600)
+    ap.add_argument("--det-args", default="", help="extra arguments of every --det variant (one string)")
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
+    DET_ARGS[:] = a.det_args.split()
     os.makedirs(a.out, exist_ok=True)
     for v in a.variants.split(","):
         args = [a.python, "-m", "pytest", "-p", "no:cacheprovider", "-q", *a.pytest_args,
@@ -90,7 +95,16 @@ def main(argv=None) -> int:
         plan = os.path.join(a.repo, ".detpy", "plan.json")
         if "-n" in args and "--det" in args and os.path.exists(plan):
             shutil.copy(plan, os.path.join(a.out, f"{v}.plan.json"))
-        rec = {"label": a.label, "variant": v, "wall_s": wall, "rc": rc, "summary": last_line(text),
+        detail = {}
+        oc = os.path.join(a.out, v + ".outcomes.json")
+        if os.path.exists(oc):
+            try:
+                with open(oc) as f:
+                    c = json.load(f).get("cache") or {}
+                detail = {k: c.get(k) for k in ("miss_reasons", "not_cached", "not_cached_detail") if c.get(k)}
+            except (OSError, ValueError):
+                pass
+        rec = {"label": a.label, "variant": v, "wall_s": wall, "rc": rc, "summary": last_line(text), "cache_detail": detail,
                "cache": [ln for ln in text.splitlines() if ln.startswith(("reused ", "not reused", "parallel:"))],
                "plan": [ln for ln in text.splitlines() if ln.startswith(("plan ", "merged trace"))]}
         with open(os.path.join(a.out, "summary.jsonl"), "a") as f:

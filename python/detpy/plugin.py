@@ -453,7 +453,7 @@ def _hash_checked_imports(config) -> bool:
     return True
 
 
-def _cache_rewritten_tests(config) -> bool:
+def _cache_rewritten_tests(config, patcher=None) -> bool:
     """Keep pytest's assertion-rewritten test modules (and conftests) in the deterministic bytecode cache.
 
     Under ``--det`` the interpreter runs with ``PYTHONDONTWRITEBYTECODE=1`` and ``PYTHONPYCACHEPREFIX`` set to the
@@ -470,15 +470,21 @@ def _cache_rewritten_tests(config) -> bool:
     (``_rewrite_key``): a run only ever loads code that its own configuration would have produced. A rewriter
     replaced by a plugin is not keyed: nothing is read or written then. The pytest-named pycs (written by earlier
     versions of detpy without the key) are never read under ``--det``.
-    Older pytest versions (timestamp pycs, ``(mtime, size)``: stale same-size edits, review R-015) are left alone;
-    ``DETPY_REWRITE_CACHE=0`` turns the cache off (no read, no write)."""
+    Older pytest versions write timestamp pycs (``(mtime, size)``: stale same-size edits, review R-015): for them
+    detpy reads and writes its own format under the same keyed name, validated by a SHA-256 of the interpreter's
+    magic number and the source (review R-023: without it every ``--det`` session and every ``-n`` worker rewrote
+    every test module). ``DETPY_REWRITE_CACHE=0`` turns the cache off (no read, no write)."""
+    if _EARLY_REWRITE_CACHE[0]:
+        return True  # installed when detpy was imported (before the plugins' modules were rewritten)
+    patcher = patcher or _PATCHER
     try:
         import marshal
 
         from _pytest.assertion import rewrite as rw
 
-        if b"\x03\x00\x00\x00" not in rw._read_pyc.__code__.co_consts:
-            return False  # not a checked-hash reader
+        # pytest >= 9.2 reads checked-hash pycs; DETPY_REWRITE_OWN=1 uses detpy's own format anyway (tests)
+        hashed = (b"\x03\x00\x00\x00" in rw._read_pyc.__code__.co_consts
+                  and os.environ.get("DETPY_REWRITE_OWN") != "1")
         real, read_pyc, write_pyc, cache_dir_of, tail, ext, key = (
             rw._rewrite_test, rw._read_pyc, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL, rw.PYC_EXT,
             rw.assertstate_key)
@@ -488,7 +494,7 @@ def _cache_rewritten_tests(config) -> bool:
     enabled = os.environ.get("DETPY_REWRITE_CACHE", "1") != "0"
     memo: list = []
 
-    def keyed_tail():
+    def keyed_tail(config):
         """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written).
 
         Review R-017b F1: the key holds a digest of the rewriter as loaded (``_rewriter_digest``), so a plugin or
@@ -498,34 +504,99 @@ def _cache_rewritten_tests(config) -> bool:
         if not enabled or (rw.rewrite_asserts, rw.AssertionRewriter) != originals:
             return None
         snap = _rewriter_snapshot(rw)
-        if not memo or memo[0] != snap:
-            memo[:] = [snap, _rewrite_key(config, rw)]
+        if not memo or memo[0] != snap or memo[2] is not config:
+            memo[:] = [snap, _rewrite_key(config, rw), config]
         k = memo[1]
         return None if k is None else tail[:-len(ext)] + ".det-" + k + ext
 
+    import hashlib
+    from importlib.util import MAGIC_NUMBER
+
+    def _own_check(source_bytes: bytes) -> bytes:
+        return hashlib.sha256(MAGIC_NUMBER + source_bytes).digest()
+
     def _read_pyc(source, pyc, trace=lambda x: None):
-        t = keyed_tail()
+        config = _REWRITE_CONFIG[0]
+        if config is None:
+            return None
+        t = keyed_tail(config)
         name = pyc.name
         if t is None or not name.endswith(tail):
             return None
-        return read_pyc(source, pyc.with_name(name[:-len(tail)] + t), trace)
+        path = pyc.with_name(name[:-len(tail)] + t)
+        if hashed:
+            return read_pyc(source, path, trace)
+        # pytest < 9.2 writes timestamp pycs ((mtime, size): a same-size edit in the same second keeps the old code,
+        # review R-015). detpy's own format instead: a header, the SHA-256 of (interpreter magic, source), the code.
+        # Review R-023 (speed): without a cache every --det session, and every worker of --det -n, rewrote every
+        # test module again (litellm: about a third of its collection).
+        try:
+            with open(path, "rb") as fh:
+                data = fh.read()
+            if data[:8] != _OWN_MAGIC or data[8:40] != _own_check(source.read_bytes()):
+                return None
+            return marshal.loads(data[40:])
+        except (OSError, ValueError, EOFError, TypeError):
+            return None
 
     def _rewrite_test(fn, config):
-        source_hash, co = real(fn, config)
-        t = keyed_tail()
+        stamp, co = real(fn, config)
+        t = keyed_tail(config)
         if t is None:
-            return source_hash, co
+            return stamp, co
         cache_dir = cache_dir_of(fn)
+        target = cache_dir / (fn.name[:-3] + t)
         try:
             os.makedirs(cache_dir, exist_ok=True)
-            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + t))
+            if hashed:
+                write_pyc(config.stash[key], co, stamp, target)
+            else:
+                body = _OWN_MAGIC + _own_check(fn.read_bytes()) + marshal.dumps(co)
+                tmp = f"{target}.{os.getpid()}"
+                with open(tmp, "wb") as fh:
+                    fh.write(body)
+                os.replace(tmp, target)
         except (OSError, KeyError):
             pass
-        return source_hash, marshal.loads(marshal.dumps(co))
+        return stamp, marshal.loads(marshal.dumps(co))
 
-    _PATCHER.set(rw, "_read_pyc", _read_pyc)
-    _PATCHER.set(rw, "_rewrite_test", _rewrite_test)
+    real_exec = rw.AssertionRewritingHook.exec_module
+
+    def exec_module(self, module):
+        # the configuration this hook rewrites for: _read_pyc has no config argument
+        prev, _REWRITE_CONFIG[0] = _REWRITE_CONFIG[0], getattr(self, "config", None)
+        try:
+            return real_exec(self, module)
+        finally:
+            _REWRITE_CONFIG[0] = prev
+
+    patcher.set(rw, "_read_pyc", _read_pyc)
+    patcher.set(rw, "_rewrite_test", _rewrite_test)
+    patcher.set(rw.AssertionRewritingHook, "exec_module", exec_module)
     return enabled
+
+
+_REWRITE_CONFIG: list = [None]
+_EARLY_REWRITE_CACHE = [False]
+
+
+def _early_rewrite_cache() -> None:
+    """Review R-023 (speed): in a re-executed ``--det`` process (``DETPY_REEXEC=1``: the controller after its re-exec
+    and every xdist worker), install the rewritten-module cache when detpy is imported, before pytest imports the
+    other plugins' modules: those are rewritten too, and ``PYTHONDONTWRITEBYTECODE`` stops pytest from caching them.
+    The cache is keyed on the configuration of the hook that rewrites (``_rewrite_key``) and validated by hash, so
+    installing it before ``--det`` is parsed is safe; it stays installed for the process."""
+    if os.environ.get("DETPY_REEXEC") != "1" or os.environ.get("DETPY_REWRITE_CACHE", "1") == "0":
+        return
+    from ._patch import Patcher
+
+    try:
+        _EARLY_REWRITE_CACHE[0] = _cache_rewritten_tests(None, Patcher())
+    except Exception:
+        _EARLY_REWRITE_CACHE[0] = False
+
+
+_OWN_MAGIC = b"DETPYRW1"  # detpy's rewritten-module cache format (pytest < 9.2), see _cache_rewritten_tests
 
 
 def _rewrite_key(config, rw) -> str | None:
@@ -1042,3 +1113,6 @@ class _DetSession(_Outcomes):
             if d and t["status"] == "diverged":
                 tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
                 tr.write_line(f"    {d['description']}")
+
+
+_early_rewrite_cache()

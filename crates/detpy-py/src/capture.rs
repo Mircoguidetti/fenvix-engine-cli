@@ -1117,6 +1117,16 @@ impl CaptureCore {
                 {
                     return Ok(());
                 }
+                if sockcap::loopback_name(&w_of(hs)?) {
+                    // review R-023 (cacheability): a loopback name is answered from the host's own resolver
+                    // configuration (RFC 6761: always the loopback address), not from the network: its inputs are
+                    // these files, recorded as data reads (pytest-socket resolves "localhost" around every test)
+                    let ctx = self.cur(py)?;
+                    for f in [&b"/etc/hosts"[..], b"/etc/nsswitch.conf", b"/etc/host.conf", b"/etc/gai.conf"] {
+                        self.read_impl(py, ctx, f, b'f')?;
+                    }
+                    return Ok(());
+                }
                 let site = self.first_user_site(py)?;
                 let mut d = format!("{event} ").into_bytes();
                 d.extend_from_slice(&w_of(hs)?);

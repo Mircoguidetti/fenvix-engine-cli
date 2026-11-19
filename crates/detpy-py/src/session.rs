@@ -765,20 +765,32 @@ impl CacheSession {
 
     /// A worker's part of the summary for the controller: (tests that ran, entries recorded, {nodeid: why not
     /// cached}).
-    fn worker_summary(&self) -> PyResult<(Vec<String>, i64, Vec<(String, String)>)> {
+    #[allow(clippy::type_complexity)]
+    fn worker_summary(&self) -> PyResult<(Vec<String>, i64, Vec<(String, String)>, Vec<(String, String)>)> {
         let st = lock(&self.st);
         let ran = st.ran.iter().map(|k| utf8(k)).collect::<PyResult<Vec<_>>>()?;
         let nc = st.not_cached.iter().map(|(k, v)| Ok((utf8(k)?, utf8(v)?))).collect::<PyResult<Vec<_>>>()?;
-        Ok((ran, st.recorded, nc))
+        // where each reason was found (the summary's "not cacheable" detail), so a parallel run reports it too
+        let wh = st
+            .not_cached_where
+            .iter()
+            .map(|(k, v)| Ok((utf8(k)?, String::from_utf8_lossy(v).into_owned())))
+            .collect::<PyResult<Vec<_>>>()?;
+        Ok((ran, st.recorded, nc, wh))
     }
 
     /// The controller adds a worker's summary (`worker_summary`) to the session's.
-    fn merge_worker(&self, ran: Vec<String>, recorded: i64, not_cached: Vec<(String, String)>) {
+    #[pyo3(signature = (ran, recorded, not_cached, where_ = None))]
+    fn merge_worker(&self, ran: Vec<String>, recorded: i64, not_cached: Vec<(String, String)>,
+                    where_: Option<Vec<(String, String)>>) {
         let mut st = lock(&self.st);
         st.ran.extend(ran.into_iter().map(String::into_bytes));
         st.recorded += recorded;
         for (k, v) in not_cached {
             st.not_cached.insert(k.into_bytes(), v.into_bytes());
+        }
+        for (k, v) in where_.unwrap_or_default() {
+            st.not_cached_where.insert(k.into_bytes(), v.into_bytes());
         }
     }
 

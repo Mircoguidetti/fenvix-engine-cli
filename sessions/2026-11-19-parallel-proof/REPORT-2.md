@@ -26,8 +26,8 @@ class is not built.
   litellm-vertex, **1.2x** on pydantic-ai and prefect (P2's target missed on all three; cause not found).
 * **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex, moto and
   prefect record 0 entries serially and in parallel (network, OS entropy, a loopback API server per test). mlflow's
-  first job had an incomplete install (not valid; re-run pending); prefect's first run hit a harness defect (re-run
-  below). P3 walks: moto and litellm 50/50 commits each (0 reuse: nothing cacheable there); the esphome walk pending.
+  jobs are not valid (collection errors in both, no serial truth); prefect's first run hit a harness defect (re-run
+  below). P3 walks (50 commits each): **esphome 446,878 reused, 0 wrong**; moto and litellm 0 reuse (nothing cacheable there in that run).
 
 ## Per finding: change, test before / after
 
@@ -357,7 +357,15 @@ because prefect's `hosted_api_server` fixture starts `uvicorn` by command name a
   both serial runs (`serial_failure_noise` lists the others); with that rule the hidden failures here are 0
   (ESTIMATED from the per-run failure lists: the traces are not uploaded, so `fpcompare.json` was not recomputed).
 
-### mlflow, parallel group 1 of 6: **not a valid measurement**
+### mlflow, parallel group 1 of 6: **not a valid measurement** (twice)
+
+Re-run `r023-p0b-2026-11-19` (CI extras, Python 3.12): serial collection still aborts (57 collection errors: modules
+the group imports that its extras do not install), so there is again no serial truth; under `-n 4` 78-110 errors.
+plain `-n 4` 615-793 s, `--det -n 4` 757-773 s, 88-89 failed under `--det -n 4` against 55 in plain `-n 4`; the cache
+records nothing (the job reports no reason line). mlflow is left out of the conclusions; to make it valid, the job
+needs mlflow's full CI image (its `requirements/` sets per flavour), which this workflow does not reproduce.
+
+First run:
 
 The job ran, but its install was incomplete: `uv sync --group test --group build` without extras leaves out modules
 the selected test files import (optuna, boto3/botocore, kubernetes, azure, fastmcp, starlette's httpx2;
@@ -376,14 +384,77 @@ extras its CI installs, Python 3.12 for the cache rows.
 | repository | commits walked | reused (sum) | wrong reuses | `-n 4` wall per commit | truth wall per commit |
 |---|---|---|---|---|---|
 | moto (`-n 4` group, 2,480-2,501 tests) | 50 of 50 (f1057262 .. 96f50b1a) | **0** | 0 (vacuous) | 64.5-70.9 s (cold 113.3 s) | 151.8-171.9 s |
+| **esphome** (14,331-14,446 tests) | **50 of 50** (149b9280 .. 141789d2) | **446,878 of 719,448 = 62.1 %** | **0** (0 mismatches against the truth at any commit) | 58.4-64.4 s warm (32 commits, median 62.0 s); 113.8-165.0 s at the 18 commits that change code every test depends on | 148.4-152.1 s |
 | litellm vertex shard (4,165-4,181 tests) | 50 of 50 (a41f124b .. 17e6ea8c) | **0** | 0 (vacuous) | 101.5-111.8 s (cold 155.5 s) | 99.9-109.3 s |
 
+* esphome: every one of the 446,878 reused results equals the outcome of a fresh serial `--det` run at its commit.
+  18 of the 50 commits change code every test depends on (`code`, e.g. `esphome/core`), so nothing is reused there,
+  in parallel as serially (same reason). On the other 32 the `-n 4` cache run takes 58-64 s against 148-152 s for
+  the serial truth run on the same runner. Commit 4 misses 2,460 whole-environment readers (`env`): the runner's
+  environment changed between two commits of the job (cause UNKNOWN, one commit). The serial cache walk was left out
+  (`--modes a_par`) to fit the job's time; the local 10-commit walk of the first report and the Actions variants
+  give the serial reuse share (within 0.1 point).
 * litellm: the same (no entry is recorded: every test touches the network). There the `-n 4` cache run is as slow as
   the serial `--det` truth run (~106 s each): the capture's cost under `-n` on this shard.
 * moto: nothing is reused at any commit (every miss is `new`: no entry is ever recorded, above), so the walk proves
   nothing about reuse there; it shows the parallel cache runs 50 commits without an error. The walk compares *reused*
   results with the truth only, so the `-n 4` verdicts of the tests that ran are not checked per commit by it (the
   variant runs' crosscheck does that, 0 mismatches).
+
+## Follow-up in the same round: why `--det -n 4` was 1.2x on three repositories, and what blocks the cache
+
+### Where the extra time went (litellm-vertex, local, MEASURED)
+
+Per-process phase times from `/proc/uptime` (a `-p` plugin, `harness`-free: `phasetimes.py` in the session's work
+directory), `--det -n 4` against plain `-n 4`, same machine, alternating runs:
+
+| phase | plain `-n 4` | `--det -n 4` before | `--det -n 4` after the fix |
+|---|---|---|---|
+| controller to its session start | 5.5-5.8 s | 8.6-8.8 s | 8.2-8.7 s |
+| each worker's collection | 2.2-2.5 s | **7.5-8.0 s** | 2.7 s |
+| tests (first to last, per worker) | 32-39 s | 34-38 s | 33-41 s |
+| whole run (wall) | 65.2-66.9 s | 76.9-77.5 s | 67.6-72.4 s |
+
+* **Cause 1 (ours, fixed): no cache of pytest's assertion rewrite on pytest < 9.2.** litellm (pytest 9.0.3),
+  pydantic-ai and prefect (9.1.1) use pytest's timestamp pycs; detpy kept rewritten test modules only for pytest >= 9.2
+  (checked-hash pycs), and `--det` runs with `PYTHONDONTWRITEBYTECODE=1`, so pytest's own cache was never written
+  either: every `--det` session, and every `-n` worker, re-parsed and re-rewrote every test module and conftest
+  (py-spy: `_rewrite_test` 35 % of a warm `--det` collection). esphome (pytest 9.2) and moto were not affected, which
+  is why they were at parity. Fix (`plugin.py _cache_rewritten_tests`): for pytest < 9.2 detpy writes its own format
+  (header, SHA-256 of interpreter magic + source, marshalled code) under the same configuration-keyed name, read only
+  when the hash matches (a same-size, same-mtime edit is rewritten: review R-015's case); and in a re-executed `--det`
+  process (controller, workers) the cache is installed when detpy is imported, before pytest imports the other
+  plugins' modules (they are rewritten too). `--det` collection of the shard: 21 s -> 15.3 s (plain 12 s).
+  Tests: `tests/test_rewrite_cache_own_format.py` (3: written, loaded, a same-size same-mtime edit runs the new code,
+  keyed on the rewrite configuration, a corrupt file is rewritten); the existing rewrite-cache, R-015, R-017b tests.
+* **Cause 2 (ours, not fixed): the re-exec loads every plugin twice in the controller.** `--det` re-executes the
+  interpreter from `pytest_load_initial_conftests`, after pytest has imported every entry-point plugin; on litellm
+  (logfire, ddtrace, ...) that is about 2.8 s per run, once (workers do not re-exec). Re-executing earlier needs the
+  options before pytest parses them (ini `addopts`, `PYTEST_ADDOPTS`): left as a stated cost.
+* **Plan balance**: the planned makespan matches the measured test phase within a few seconds (litellm 37-39 s
+  planned, 33-41 s measured); the last worker finishes 4 s after the first. Not the cause of the 1.2x.
+
+### What blocks the cache, per repository (MEASURED: the detail lines of the runs)
+
+| repository | blocking input (count) | where | made cacheable soundly? |
+|---|---|---|---|
+| litellm-vertex | host name lookup of `localhost` (4,180, serial) | pytest-socket's `socket_allow_hosts(LOOPBACK_HOSTS)` in `tests/unit/conftest.py:248`, between tests (every test) | **yes, fixed**: a lookup of an RFC 6761 loopback name (`localhost`, `*.localhost`, `localhost.localdomain`, `ip6-localhost`, `ip6-loopback`) is answered by the host's resolver files, so it records reads of `/etc/hosts`, `/etc/nsswitch.conf`, `/etc/host.conf`, `/etc/gai.conf` instead of the `dns` flag (Rust `capture.rs`, `sockcap::loopback_name`; the Python reference got the same rule) |
+| litellm-vertex | network connection (4,180, `-n` only) | pytest-rerunfailures connects every worker to its status server in the xdist controller (`pytest_rerunfailures.py:466`, start-up) | **yes, fixed**: a listener held by the worker's own `--det` controller is session infrastructure (the controller runs no test code); a connect to it counts like one to a listener of the worker itself (`sockcap::set_xdist_controller_pid`). Connects to `localhost` by name now count as loopback too |
+| litellm-vertex | os entropy (4,180) | uuid4 in start-up code | **with `--det-urandom`** (the existing option; never for crypto tests) |
+| litellm-vertex | whole environment `*` (4,180, `-n` only) | the conftest sets two variables at import (`tests/unit/conftest.py:133-134`): the workers start with them, the controller decided with its own start environment | **yes, fixed**: the controller decides with the environment its workers start with (snapshot at `pytest_xdist_setupnodes`) |
+| litellm-vertex | data `/proc/self/fd` (4,180, `-n`) | `prometheus_client` lists the open descriptors at import time | **yes, fixed**: `/proc`, `/sys`, `/dev` reads of code that runs for every test (start-up, between tests, import) are not data inputs, as their `proc` flag already was not (Rust `record.rs` and the reference); a test's own `/proc` read still makes it uncacheable |
+| moto | os entropy (1,934-2,458) | uuid4 request ids | with `--det-urandom` |
+| moto | network connection (23-548), C-extension socket (10), host name lookup (1-2) | per test (boto3 endpoints; the counts move between runs) | not analysed further this round |
+| prefect | real clock read outside the virtual clock (2,418) | per test (detail line not in the first run's tail: the re-run reports it) | UNKNOWN this round |
+| pydantic-ai | not measured | the capture prerequisite of design 5 (blockbuster, 2,769 failures under `--det-cache`) | no |
+
+After the fixes, litellm-vertex locally (MEASURED, `--det --det-urandom`): cold `--det-cache -n 4` 98.9 s (4,180 of
+4,181 recorded, 1 failure), warm 39.2 / 39.0 / 39.5 s with **4,178 of 4,181 reused** (99.9 %), against plain `-n 4`
+65.9 / 66.6 s (0.59x); every reused result equals a fresh serial `--det --det-urandom` run (crosscheck: 0 mismatches,
+three warm runs).
+
+Diagnostics: a worker's "not cacheable" detail (where the reason was found) now reaches the controller's summary
+(`CacheSession.worker_summary` / `merge_worker`); before, `-n` runs reported the reason class only.
 
 ## Gates
 

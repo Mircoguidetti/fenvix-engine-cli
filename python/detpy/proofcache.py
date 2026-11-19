@@ -463,7 +463,8 @@ class ProofCachePlugin:
         t0 = _perf()
         try:
             ctl = _plugin.S.controller
-            self.store.begin_controller(self.config_digest, self.runtime_digest, self.epoch, dict(self.cap.env0),
+            env0 = ctl.spawn_env if ctl is not None and ctl.spawn_env is not None else self.cap.env0
+            self.store.begin_controller(self.config_digest, self.runtime_digest, self.epoch, dict(env0),
                                         len(self.config.getoption("tx") or ()),
                                         ctl.testrunuid if ctl is not None else None)
             store = self.store
@@ -561,8 +562,9 @@ class ProofCachePlugin:
             out = workeroutput[wid]
             summ = out.get("detpy_cache_summary")
             if summ:
-                ran, recorded, not_cached = summ
-                self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached])
+                ran, recorded, not_cached = summ[:3]
+                where = [tuple(x) for x in summ[3]] if len(summ) > 3 else None
+                self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached], where)
             if out.get("detpy_cache_error"):
                 self.sess.error = out["detpy_cache_error"]
             if out.get("detpy_cache_shard"):

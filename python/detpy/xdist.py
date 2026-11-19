@@ -43,6 +43,7 @@ def export_controller_env(barrier: str | None = None) -> None:
     d = {k: os.environ.get(k) for k in WORKER_ENV}
     if barrier:
         d["_barrier"] = barrier  # not a variable: the directory of this run's cross-worker waits (Barrier)
+    d["_controller_pid"] = os.getpid()  # not a variable: listeners of the controller are session infrastructure
     os.environ[CONTROLLER_ENV] = json.dumps(d)
 
 
@@ -50,6 +51,7 @@ _BARRIER_DIR: str | None = None
 # real clocks, bound before Level 0 virtualises the time module
 _sleep = _time.sleep
 _mono = _time.monotonic
+_time_ns = _time.time_ns
 
 
 def restore_controller_env() -> None:
@@ -63,6 +65,9 @@ def restore_controller_env() -> None:
         return
     global _BARRIER_DIR
     _BARRIER_DIR = want.pop("_barrier", None)
+    pid = want.pop("_controller_pid", None)
+    if isinstance(pid, int) and pid > 0:
+        _core.set_xdist_controller_pid(pid)
     for k, v in want.items():
         if v is None:
             os.environ.pop(k, None)
@@ -296,13 +301,22 @@ class Controller:
         self.workeroutput: dict[str, dict] = {}
         self.merge_summary: dict | None = None
         self.testrunuid = None
+        self.spawn_env: dict | None = None  # the environment the workers start with (pytest_xdist_setupnodes)
         self.pending_hits: list[str] = []  # reused results not reported yet (until every worker finished)
         self.settled = False
         self.rerun: list[str] = []  # withdrawn reuses run again by an extra worker
-        self.barrier = os.path.join(self.dir, "barrier", f"{os.getpid()}-{_time.time_ns()}")
+        self.barrier = os.path.join(self.dir, "barrier", f"{os.getpid()}-{_time_ns()}")
         self.waits: dict = {}
 
     # -- hooks -----------------------------------------------------------------------------------------
+    def pytest_xdist_setupnodes(self, config, specs):
+        """The environment the workers start with (review R-023, cacheability): the controller's ``os.environ`` now,
+        after its conftests ran at import time (litellm sets variables there). A worker records against this
+        environment, so the controller decides with it too, not with its own start environment."""
+        from . import proofcache
+
+        self.spawn_env = _core.safe_env(os.environ.items(), proofcache._DETPY_OWN_ENV)
+
     @pytest.hookimpl(tryfirst=True)
     def pytest_xdist_make_scheduler(self, config, log):
         if self.dist in _UNSUPPORTED:

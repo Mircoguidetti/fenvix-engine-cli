@@ -612,6 +612,11 @@ class Capture:
                 host = host.decode("ascii", "replace")
             if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
                 return
+            if _loopback_name(host):
+                # review R-023: a loopback name is answered by the host's resolver configuration, recorded as reads
+                for f in ("/etc/hosts", "/etc/nsswitch.conf", "/etc/host.conf", "/etc/gai.conf"):
+                    self.read(self._cur(), f, "f")
+                return
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
@@ -1874,6 +1879,13 @@ def _sqlite_file(db, uri: bool) -> str | None:
         return None
 
 
+def _loopback_name(host: str) -> bool:
+    """RFC 6761 loopback names (review R-023)."""
+    n = host.split("%", 1)[0]
+    n = (n[:-1] if n.endswith(".") else n).lower()
+    return n in ("localhost", "localhost.localdomain", "ip6-localhost", "ip6-loopback") or n.endswith(".localhost")
+
+
 def _numeric_host(host: str) -> bool:
     import ipaddress
 
@@ -1952,7 +1964,7 @@ def _own_listener(args) -> bool:
         if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
             return False
         host, port = addr[0], int(addr[1])
-        ip = ipaddress.ip_address(str(host).split("%", 1)[0])
+        ip = ipaddress.ip_address("127.0.0.1" if _loopback_name(str(host)) else str(host).split("%", 1)[0])
     except (AttributeError, IndexError, TypeError, ValueError, OSError):
         return False
     mapped = getattr(ip, "ipv4_mapped", None)

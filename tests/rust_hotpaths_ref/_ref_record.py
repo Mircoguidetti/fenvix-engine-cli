@@ -86,7 +86,9 @@ def record_reference(self, store) -> None:
                                             if n.startswith("i|") and i not in own_import_ix]
     g_data, g_env, g_flags = {}, set(), set()
     for c in g_ctx_all:
-        g_data.update(cap.data.get(c, {}))
+        # review R-023: /proc, /sys, /dev reads of code that runs for every test are not data inputs (as their flag)
+        g_data.update({k: v for k, v in cap.data.get(c, {}).items()
+                       if not k.startswith(("/proc/", "/sys/", "/dev/"))})
         g_env |= cap.env.get(c, set())
         g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
 

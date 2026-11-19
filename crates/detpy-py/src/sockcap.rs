@@ -71,7 +71,24 @@ fn host_flags(py: Python<'_>, host: &Bound<'_, PyAny>) -> PyResult<Flags> {
         Some(i) => &b[..i],
         None => &b[..],
     };
-    ip_flags(py, part)?.ok_or_else(|| PyValueError::new_err("not an IP address"))
+    if let Some(f) = ip_flags(py, part)? {
+        return Ok(f);
+    }
+    if loopback_name(part) {
+        return Ok(Flags { loopback: true, unspecified: false, mapped_loopback: false });
+    }
+    Err(PyValueError::new_err("not an IP address"))
+}
+
+/// A name that resolves to the loopback address on every host (RFC 6761 6.3: `localhost` and names under it), plus
+/// the loopback aliases of Debian-style `/etc/hosts`. Review R-023 (cacheability).
+pub(crate) fn loopback_name(b: &[u8]) -> bool {
+    let n = b.strip_suffix(b".").unwrap_or(b).to_ascii_lowercase();
+    n == b"localhost"
+        || n.ends_with(b".localhost")
+        || n == b"localhost.localdomain"
+        || n == b"ip6-localhost"
+        || n == b"ip6-loopback"
 }
 
 /// `f"{port:04X}"`.
@@ -87,9 +104,30 @@ fn hex04(py: Python<'_>, port: &Bound<'_, PyAny>) -> PyResult<W> {
 }
 
 /// `_own_socket_inodes()`: the inodes of the sockets this process holds.
+/// The pid of this worker's xdist controller under `--det -n` (0: not a worker). Set by the worker when it restores
+/// its controller's environment (`xdist.restore_controller_env`).
+static XDIST_CONTROLLER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+
+/// Review R-023 (cacheability): an xdist worker of a `--det` controller. A listener the controller holds is
+/// session infrastructure (the controller runs no test code: plugins such as pytest-rerunfailures serve their
+/// cross-worker state from it), so a connect to it is treated like a connect to a listener of this process.
+#[pyfunction]
+pub fn set_xdist_controller_pid(pid: u32) {
+    XDIST_CONTROLLER.store(pid, std::sync::atomic::Ordering::Relaxed);
+}
+
 fn own_socket_inodes() -> HashSet<W> {
+    let mut mine = socket_inodes("/proc/self/fd");
+    let ctl = XDIST_CONTROLLER.load(std::sync::atomic::Ordering::Relaxed);
+    if ctl != 0 {
+        mine.extend(socket_inodes(&format!("/proc/{ctl}/fd")));
+    }
+    mine
+}
+
+fn socket_inodes(dir: &str) -> HashSet<W> {
     let mut mine = HashSet::new();
-    let Ok(rd) = std::fs::read_dir("/proc/self/fd") else { return mine };
+    let Ok(rd) = std::fs::read_dir(dir) else { return mine };
     for e in rd.flatten() {
         let Ok(link) = std::fs::read_link(e.path()) else { continue };
         let l = link.as_os_str().as_bytes();
@@ -382,5 +420,6 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(cap_numeric_host, m)?)?;
     m.add_function(wrap_pyfunction!(cap_addr, m)?)?;
     m.add_function(wrap_pyfunction!(cap_spawn_detail, m)?)?;
+    m.add_function(wrap_pyfunction!(set_xdist_controller_pid, m)?)?;
     Ok(())
 }

@@ -337,9 +337,15 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     let mut g_data = OrderedData::default();
     let mut g_env: BTreeSet<&str> = BTreeSet::new();
     let mut g_flags: BTreeSet<&str> = BTreeSet::new();
+    // reads of /proc, /sys, /dev by code that runs for every test (start-up, between tests, import time): their
+    // "proc" flag is ignored below, and they are not data inputs either (review R-023, cacheability): they read
+    // process or kernel state (prometheus_client lists /proc/self/fd at import), which differs between any two
+    // processes, so as an input they could never match and only disable the cache for every test
+    let pseudo = |k: &str| k.starts_with("/proc/") || k.starts_with("/sys/") || k.starts_with("/dev/");
     for c in &g_ctx_all {
         if let Some(d) = plan.data.get(c) {
-            g_data.update(d);
+            let kept: Vec<(String, String)> = d.iter().filter(|(k, _)| !pseudo(k)).cloned().collect();
+            g_data.update(&kept);
         }
         if let Some(e) = plan.env.get(c) {
             g_env.extend(e.iter().map(|s| s.as_str()));

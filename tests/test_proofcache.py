@@ -363,7 +363,14 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
         KEEP = []
 
         def test_lookup():
-            assert socket.getaddrinfo("localhost", 80)
+            import _socket  # past Level 0's guard (a lookup it lets through): the audit event is the C module's
+            try:
+                _socket.getaddrinfo("detpy-lookup.example", 80)
+            except OSError:
+                pass
+
+        def test_loopback_name_is_read_from_the_hosts_file():
+            assert socket.getaddrinfo("localhost", 80)  # review R-023: /etc/hosts etc. are its inputs
 
         def test_numeric_address_is_not_a_lookup():
             assert socket.getaddrinfo("127.0.0.1", 80)
@@ -385,8 +392,8 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
         """})
     run_cache()
     r, reused, data = run_cache()
-    r.assert_outcomes(passed=4)
-    assert reused == ids("test_numeric_address_is_not_a_lookup")
+    r.assert_outcomes(passed=5)
+    assert reused == ids("test_numeric_address_is_not_a_lookup", "test_loopback_name_is_read_from_the_hosts_file")
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_lookup"] == "host name lookup"
     assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"
