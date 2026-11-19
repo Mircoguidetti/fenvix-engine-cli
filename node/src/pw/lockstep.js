@@ -511,7 +511,7 @@ class Coordinator {
   // budget). The engine attaches to every worker target (browser CDP session, non-flat) and gives it the same
   // slices as the pages, right after each page slice, so messages between page and worker cross at slice ends.
   async ensureWorkerControl(ctx) {
-    if (this.workerCtl !== undefined || ENV.DETJS_LS_WORKERS === '0') return;
+    if (this.workerCtl !== undefined || ENV.DETJS_LS_WORKERS !== '1') return; // opt-in: see INTERMEDIATE-2 (Atomics.wait between a worker and its page deadlocks fenced slices)
     this.workerCtl = null;
     let browser = null;
     try { browser = ctx.browser(); } catch { browser = null; }
@@ -526,7 +526,7 @@ class Coordinator {
       if (m.id && this.workerCtl.waiters.has(m.id)) { const r = this.workerCtl.waiters.get(m.id); this.workerCtl.waiters.delete(m.id); r(m); return; }
       if (w && m.method === 'Emulation.virtualTimeBudgetExpired') { w.inBudget = false; w.waitingEngine = false; if (w.expired) { const r = w.expired; w.expired = null; r(); } activity(); this.poke(); }
     });
-    bs.on('Target.targetCreated', (e) => { const t = e.targetInfo; if (t && /^(worker|shared_worker)$/.test(t.type)) this.attachWorker(t.targetId).catch(() => {}); });
+    bs.on('Target.targetCreated', (e) => { const t = e.targetInfo; this.trace(`target-created ${t && t.type} ${t && t.url && t.url.slice(-60)}`); if (t && /^(worker|shared_worker|service_worker)$/.test(t.type)) this.attachWorker(t.targetId).catch(() => {}); });
     bs.on('Target.targetDestroyed', (e) => {
       for (const [sid, w] of this.workerCtl.workers) if (w.targetId === e.targetId) { w.closed = true; if (w.expired) { const r = w.expired; w.expired = null; r(); } this.workerCtl.workers.delete(sid); }
     });
@@ -560,11 +560,15 @@ class Coordinator {
     wc.workers.set(w.sessionId, w);
     await this.workerSend(w, 'Emulation.setVirtualTimePolicy', { policy: 'pause', initialVirtualTime: (this.o.epochMs + this.sched.now() / NS) / 1000 });
     this.stats.workers = (this.stats.workers || 0) + 1;
+    // A worker created inside a slice (a nested worker its parent waits for with Atomics.wait: actual's database)
+    // joins that slice at once, or its parent and the page could never reach the end of it.
+    if (this.lastSliceTo > w.pageT) this.runWorker(w, this.lastSliceTo).catch(() => {});
     activity(); this.poke();
   }
 
   /** Bring every worker to toNs (after a page slice). */
   async runWorkers(toNs, opt = {}) {
+    if (!(this.lastSliceTo >= toNs)) this.lastSliceTo = toNs;
     const wc = this.workerCtl;
     if (!wc || !wc.workers.size) return;
     await Promise.all([...wc.workers.values()].map((w) => this.runWorker(w, toNs, opt)));
@@ -572,7 +576,7 @@ class Coordinator {
 
   async runWorker(w, toNs, opt = {}) {
     {
-      if (w.closed || w.inBudget) return;
+      if (w.closed || w.inBudget || w.free) return;
       const budget = (toNs - w.pageT) / NS;
       if (budget <= 0) return;
       w.pageT = toNs;
@@ -581,7 +585,13 @@ class Coordinator {
       const ok = await this.workerSend(w, 'Emulation.setVirtualTimePolicy', { policy: 'advance', budget });
       if (!ok || ok.error) { w.inBudget = false; w.expired = null; return; }
       await this.awaitSlice(expired, () => w.closed, (v) => { w.waitingEngine = v; }, () => {
-        this.trace('stall worker budget'); w.inBudget = false; w.expired = null;
+        // A worker whose slice never ends: it blocks in Atomics.wait on another thread (actual's SQLite backend
+        // waits synchronously for the page), which a fenced page cannot answer. That worker runs free from now on
+        // (Chromium's own virtual time, no budgets) and the switch is recorded.
+        this.trace('stall worker budget -> free'); w.inBudget = false; w.expired = null; w.free = true;
+        this.stats.freeWorkers = (this.stats.freeWorkers || 0) + 1;
+        this.workerSend(w, 'Emulation.setVirtualTimePolicy', { policy: 'advance' }).catch(() => {});
+        if (this.lastKey) this.decision(this.lastKey, 'ls.worker-free', w.targetId ? 'worker' : '');
       }, opt.deferAfterMs);
     }
   }
@@ -803,15 +813,21 @@ class Coordinator {
     setWaiting(false);
   }
 
+  /** A page still running its time slice, not waiting for anything the engine holds (its own requests, or a
+   * worker's slice that waits for the engine). */
+  pageBusy(p) {
+    if (!(p.inBudget || p.running) || p.closed || p.navs > 0 || p.blockers.size > 0 || p.waitingEngine) return false;
+    const wk = this.workerCtl ? [...this.workerCtl.workers.values()] : [];
+    return !wk.some((w) => w.waitingEngine);
+  }
+
   /** Wait until every page has finished its budget (a page with a pending navigation counts as paused). */
   async pagesPaused() {
     const t = realNow();
     for (;;) {
       // A page whose virtual time is paused on one of its requests (pauseIfNetworkFetchesPending) waits for the
       // engine: it is quiet.
-      const wk = this.workerCtl ? [...this.workerCtl.workers.values()] : [];
-      const workersWaiting = wk.some((w) => w.waitingEngine);
-      const busy = [...this.pages].filter((p) => (p.inBudget || p.running) && p.navs === 0 && !p.closed && p.blockers.size === 0 && !p.waitingEngine && !workersWaiting);
+      const busy = [...this.pages].filter((p) => this.pageBusy(p));
       if (!busy.length) return true;
       if (realNow() - t > this.serverMaxMs) { this.stats.stalls++; this.diag('stall', 'budget'); return false; }
       await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 50); });
@@ -920,7 +936,7 @@ class Coordinator {
       const window = (async () => {
         while (realNow() - t0 < this.quietMs) {
           await realSleep(2);
-          if (ACT.n !== a0 || ACT.routes > 0 || [...this.pages].some((p) => (p.inBudget || p.running) && p.navs === 0 && p.blockers.size === 0 && !p.waitingEngine)) return false;
+          if (ACT.n !== a0 || ACT.routes > 0 || [...this.pages].some((p) => this.pageBusy(p))) return false;
         }
         return true;
       })();
@@ -935,7 +951,7 @@ class Coordinator {
         await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 20); });
         continue;
       }
-      if (round > 0 && round % 10 === 0) this.trace(`settle-round ${round} quiet=${quiet} act=${ACT.n - a0} routes=${ACT.routes} budgets=${[...this.pages].filter((p) => p.inBudget).length} inprog=${[...this.inprogress.keys()]} blocked=${[...this.blocked]} navp=${this.navPending.length}`);
+      if (round > 0 && round % 10 === 0) this.trace(`settle-round ${round} quiet=${quiet} act=${ACT.n - a0} routes=${ACT.routes} budgets=${[...this.pages].filter((p) => p.inBudget).length} inprog=${[...this.inprogress.keys()]} blocked=${[...this.blocked]} navp=${this.navPending.length} pend=${this.sched.pending()} holds=${this.holds.length} resp=${this.responses.length} pages=${[...this.pages].map((p) => `[run=${p.running} inb=${p.inBudget} we=${p.waitingEngine} navs=${p.navs} blk=${p.blockers.size}]`)} workers=${this.workerCtl ? [...this.workerCtl.workers.values()].map((w) => `[inb=${w.inBudget} we=${w.waitingEngine}]`) : '-'}`);
     }
   }
 
