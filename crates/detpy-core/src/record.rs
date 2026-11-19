@@ -122,6 +122,8 @@ pub struct Outcome {
     pub stale: Vec<(String, String)>,
     /// The global contexts (inputs of every test).
     pub global_ctx: Vec<u32>,
+    /// Tests that carried a non-empty set of earlier contexts (the carried-set rule).
+    pub carried: usize,
     /// Per test that ran (any outcome, cacheable or not): the path keys its own contexts read (the test, its
     /// collection, its wider-scoped fixtures). A parallel controller compares them with the other workers' writes
     /// (parallel-proof round 3: the F2 first-discovery check).
@@ -586,15 +588,45 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     let g_set: HashSet<u32> = g_ctx_all.iter().copied().collect();
     let mut carry_order: Vec<(usize, u32)> = first.iter().filter(|(c, _)| !g_set.contains(c)).map(|(&c, &k)| (k, c)).collect();
     carry_order.sort_unstable();
-    let mut carry_pos = 0usize;
     let mut c_data = OrderedData::default();
     let mut c_vec: Vec<(String, String)> = Vec::new();
-    let mut c_vec_n = usize::MAX;
     let mut c_env: BTreeSet<&str> = BTreeSet::new();
     let mut c_flags: BTreeSet<&str> = BTreeSet::new();
     let mut c_units: BTreeSet<(u32, u32)> = BTreeSet::new();
     let mut c_content: BTreeSet<u32> = BTreeSet::new();
     let mut c_ctxs: Vec<u32> = Vec::new();
+    let mut last_sel: BTreeSet<(usize, u32)> = BTreeSet::new();
+    let files_of = |c: u32| -> Vec<u32> {
+        let (u, f) = per(c);
+        let mut v: Vec<u32> = u.iter().map(|&x| (x >> 32) as u32).chain(f.iter().map(|&x| x as u32)).collect();
+        v.sort_unstable();
+        v.dedup();
+        v
+    };
+    let fixtures_of: HashMap<u32, Vec<u32>> = plan
+        .tests
+        .iter()
+        .filter_map(|t| {
+            let c = *ctx_of.get(format!("t|{}", t.nodeid).as_str())?;
+            Some((c, t.fixtures.iter().filter_map(|f| ctx_of.get(f.as_str()).copied()).collect()))
+        })
+        .collect();
+    let mut by_file: HashMap<u32, Vec<(usize, u32)>> = HashMap::new();
+    let mut no_code: Vec<(usize, u32)> = Vec::new();
+    for &(p, c) in &carry_order {
+        let fs = files_of(c);
+        if fs.is_empty() {
+            let has_inputs = plan.data.get(&c).is_some_and(|d| !d.is_empty())
+                || plan.env.get(&c).is_some_and(|e| !e.is_empty())
+                || plan.flags.get(&c).is_some_and(|f| !f.is_empty());
+            if has_inputs {
+                no_code.push((p, c));
+            }
+        }
+        for f in fs {
+            by_file.entry(f).or_default().push((p, c));
+        }
+    }
 
     // existence checks are many (a collection hook checking every example file, carried into every test): compacted
     // per test into directory-level dependencies, the directory digests computed once per session
@@ -616,32 +648,6 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
         let tpos = ctx_of.get(format!("t|{nid}").as_str()).and_then(|c| first.get(c)).copied().unwrap_or(usize::MAX);
-        while carry_pos < carry_order.len() && carry_order[carry_pos].0 < tpos {
-            let c = carry_order[carry_pos].1;
-            carry_pos += 1;
-            c_ctxs.push(c);
-            if let Some(d) = plan.data.get(&c) {
-                c_data.update(d);
-            }
-            if let Some(e) = plan.env.get(&c) {
-                c_env.extend(e.iter().map(|s| s.as_str()));
-            }
-            if let Some(f) = plan.flags.get(&c) {
-                c_flags.extend(f.iter().map(|s| s.as_str()));
-            }
-            units_of(&per(c).0, &mut c_units);
-            unparsable(&per(c).1, &mut c_content);
-        }
-        if c_vec_n != c_data.items.len() || c_vec.len() != c_data.items.len() {
-            c_vec = c_data.items.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
-            c_vec_n = c_data.items.len();
-        } else {
-            for (i, (_, v)) in c_data.items.iter().enumerate() {
-                if *c_vec[i].1 != **v {
-                    c_vec[i].1 = v.to_string();
-                }
-            }
-        }
         {
             let own = ctx_file(nid);
             let mut keys: BTreeSet<&str> = BTreeSet::new();
@@ -676,6 +682,81 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
         if let Some(&i) = own_import.get(own) {
             ctxs.push(i);
+        }
+        // parallel-proof round 3, carried-set rule (coordinator decision on R-020 + parallel): an earlier context of
+        // this process is carried into the test only if it can have left state the test consumed: it is connected
+        // to the test through repository files both executed (directly, or through a chain of earlier contexts:
+        // the closure over shared files, order among the earlier contexts ignored, which only carries more). An
+        // earlier context that executed no repository code cannot be classified and is always carried (the
+        // placement-aware fallback, for this context only). A test that shares no code with what ran before it
+        // carries nothing, so its key is the same in any process (serial, any worker, another machine).
+        let mut sel: BTreeSet<(usize, u32)> = BTreeSet::new();
+        {
+            let mut reach: HashSet<u32> = HashSet::new();
+            let mut queue: Vec<u32> = Vec::new();
+            for &c in &ctxs {
+                for f in files_of(c) {
+                    if reach.insert(f) {
+                        queue.push(f);
+                    }
+                }
+            }
+            while let Some(f) = queue.pop() {
+                for &(p, c) in by_file.get(&f).into_iter().flatten() {
+                    if p >= tpos || ctxs.contains(&c) || !sel.insert((p, c)) {
+                        continue;
+                    }
+                    // an earlier test comes with the wider-scoped fixtures it used (it consumed their values
+                    // without running their code)
+                    let mut group = vec![c];
+                    for &fc in fixtures_of.get(&c).into_iter().flatten() {
+                        if let Some(&fp) = first.get(&fc) {
+                            if fp < tpos && !ctxs.contains(&fc) && !g_set.contains(&fc) && sel.insert((fp, fc)) {
+                                group.push(fc);
+                            }
+                        }
+                    }
+                    for g in group {
+                        for f2 in files_of(g) {
+                            if reach.insert(f2) {
+                                queue.push(f2);
+                            }
+                        }
+                    }
+                }
+            }
+            for &(p, c) in &no_code {
+                if p < tpos && !ctxs.contains(&c) {
+                    sel.insert((p, c));
+                }
+            }
+        }
+        if sel != last_sel {
+            c_data = OrderedData::default();
+            c_env.clear();
+            c_flags.clear();
+            c_units.clear();
+            c_content.clear();
+            c_ctxs.clear();
+            for &(_, c) in &sel {
+                c_ctxs.push(c);
+                if let Some(d) = plan.data.get(&c) {
+                    c_data.update(d);
+                }
+                if let Some(e) = plan.env.get(&c) {
+                    c_env.extend(e.iter().map(|s| s.as_str()));
+                }
+                if let Some(f) = plan.flags.get(&c) {
+                    c_flags.extend(f.iter().map(|s| s.as_str()));
+                }
+                units_of(&per(c).0, &mut c_units);
+                unparsable(&per(c).1, &mut c_content);
+            }
+            c_vec = c_data.items.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
+            last_sel = sel;
+        }
+        if !c_ctxs.is_empty() {
+            out.carried += 1;
         }
         let mut flags = g_flags.clone();
         let mut data = TestData::new(&g_data, &g_sorted);

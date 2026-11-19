@@ -657,6 +657,15 @@ impl ProofCache {
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }
+        // the carried-set rule's measurement (parallel-proof round 3): tests whose key carries earlier contexts
+        let line = serde_json::json!({"run": plan.run, "tests": plan.tests.len(), "recorded": out.recorded,
+                                      "carried": out.carried});
+        if std::fs::create_dir_all(&self.dir).is_ok() {
+            if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(self.dir.join("carried.jsonl")) {
+                use std::io::Write;
+                let _ = writeln!(f, "{line}");
+            }
+        }
         Ok(out)
     }
 }

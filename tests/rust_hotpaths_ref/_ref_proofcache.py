@@ -1695,8 +1695,37 @@ class ProofCachePlugin:
         self._reuse(item, nextitem, receipt)
         return True
 
+    def _recheck_hit(self, nid) -> None:
+        """review R-023 F2 (ported here in parallel-proof round 3): a reuse decided before a writer of this session
+        wrote the test's input (its own or carried) is withdrawn at the test's turn."""
+        cap = self.cap
+        if not cap.writers:
+            return
+        e = json.loads(self.store.entry(nid))
+        fixtures = set(e.get("fixtures") or ())
+
+        def foreign(w):
+            return (w.startswith("t|") and w[2:] != nid) or (w.startswith("f|") and w not in fixtures)
+
+        names = cap.ctx_names
+        for key, dep in e.get("data") or ():
+            ab = key if key.startswith("/") else cap.root_sep + key
+            hit = [names[c] for c in sorted(cap.writers.get(ab, ())) if c < len(names) and foreign(names[c])]
+            if not hit and dep.startswith("d:"):
+                for p, cs in cap.writers.items():
+                    if os.path.dirname(p) == ab:
+                        hit = [names[c] for c in sorted(cs) if c < len(names) and foreign(names[c])]
+                        if hit:
+                            break
+            if hit:
+                del self.hits[nid]
+                self.misses[nid] = f"written: {key} was written by {hit[0]} earlier in this session"
+                return
+
     def _wrap_protocol(self, item, nextitem):  # generator driven by _ProtocolWrapper
         nid = item.nodeid
+        if nid in self.hits:
+            self._recheck_hit(nid)
         if nid in self.hits:
             yield
             return

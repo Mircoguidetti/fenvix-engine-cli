@@ -112,9 +112,19 @@ def main(argv=None) -> int:
                     ("a_ser", ["--det", *det_args, f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
                     ("b", ["--det", *det_args, f"--det-trace={work}/b.jsonl"]))
         for name, extra in [v for v in variants if v[0] in modes or v[0] == "b"]:
+            cf = os.path.join(work, "cache-par" if name == "a_par" else "cache-ser", "carried.jsonl")
+            off = os.path.getsize(cf) if os.path.exists(cf) else 0
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
+            if name != "b" and os.path.exists(cf):
+                # the carried-set rule: tests whose key carries earlier contexts of their process (every worker's
+                # recording session appends one line)
+                with open(cf) as fh:
+                    fh.seek(off)
+                    lines = [json.loads(x) for x in fh if x.strip()]
+                meta["carried"] = sum(x.get("carried", 0) for x in lines)
+                meta["carried_of_recorded"] = sum(x.get("recorded", 0) for x in lines)
         truth = runs["b"].get("outcomes", {})
         tdur = runs["b"].get("durations", {})  # per-test time of the truth run (setup + call + teardown)
         row["b"]["test_time_s"] = round(sum(tdur.values()), 3)

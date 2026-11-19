@@ -267,7 +267,7 @@ def test_record_session_matches_reference_with_wider_scopes(pytester, monkeypatc
         return r, d
 
     r, d = run()
-    assert d["new"]["recorded"] >= 8
+    assert d["new"]["recorded"] >= 8, d["new"]
     run()
     (pytester.path / "sub" / "data_a.txt").write_text("b\n")
     monkeypatch.setenv("EQ_MODE", "b")

@@ -108,6 +108,7 @@ jobs:
             cp "$RUNNER_TEMP"/out/summary.jsonl "$RUNNER_TEMP"/out/*.plan.json "$RUNNER_TEMP"/out/*.crosscheck.json "$out"/ || true
             cp "$RUNNER_TEMP"/out/fpcompare.json "$out"/ || true
             cp "$RUNNER_TEMP"/out/*.phases.jsonl "$out"/ 2>/dev/null || true
+            for d in "$RUNNER_TEMP"/out/cache-*/; do [ -e "$d/carried.jsonl" ] && cp "$d/carried.jsonl" "$out/carried-$(basename "$d").jsonl"; done
             # per-test outcomes and cache decisions (reused ids, not-cached ids with their reasons) of every --det run
             for r in "$RUNNER_TEMP"/out/*.outcomes.json; do [ -e "$r" ] && gzip -c "$r" > "$out/$(basename "$r").gz"; done
             tail -c 20000 "$RUNNER_TEMP"/out/*.log > "$out/logs-tail.txt" 2>/dev/null || true

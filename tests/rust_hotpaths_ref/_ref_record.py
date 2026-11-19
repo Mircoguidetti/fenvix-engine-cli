@@ -140,28 +140,81 @@ def record_reference(self, store) -> None:
         if n.startswith("i|") and i in own_import_ix:
             first.setdefault(i, first.get(ctx_of.get("c|" + n[2:]), 0))
     carry_order = sorted((k, c) for c, k in first.items() if c not in g_set)
-    carry_pos = 0
+    def files_of(c):
+        if c >= len(per):
+            return set()
+        return {v >> 32 for v in per[c][0]} | {int(v) for v in per[c][1]}
+
+    fixtures_of: dict = {}
+    for n in self.ran:
+        tc = ctx_of.get("t|" + n)
+        if tc is not None:
+            fixtures_of[tc] = [ctx_of[f] for f in self.fixture_ctx.get(n, []) if f in ctx_of]
+    by_file: dict = {}
+    no_code: list = []
+    for k, c in carry_order:
+        fs = files_of(c)
+        if not fs and (cap.data.get(c) or cap.env.get(c) or cap.flags.get(c)):
+            no_code.append((k, c))
+        for f in fs:
+            by_file.setdefault(f, []).append((k, c))
     c_data: dict = {}
     c_env: set = set()
     c_flags: set = set()
     c_units: set = set()
     c_content: set = set()
     c_ctxs: list = []
+    last_sel = None
     for nid in self.ran:
         item = self.items.get(nid)
         if item is None:
             continue
         tpos = first.get(ctx_of.get("t|" + nid), len(cap.timeline) + 1)
-        while carry_pos < len(carry_order) and carry_order[carry_pos][0] < tpos:
-            c = carry_order[carry_pos][1]
-            carry_pos += 1
-            c_ctxs.append(c)
-            _merge_data(c_data, cap.data.get(c, {}))
-            c_env |= cap.env.get(c, set())
-            c_flags |= cap.flags.get(c, set())
-            if c < len(per):
-                c_units |= units_of(per[c][0])
-                c_content |= unparsable(per[c][1])
+        own = _ctx_file(nid)
+        own_ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
+        if own in own_import:
+            own_ctxs.append(own_import[own])
+        # parallel-proof round 3, carried-set rule: only earlier contexts connected to the test through shared
+        # executed repository files (closure), plus earlier contexts that ran no repository code
+        reach = set()
+        queue = []
+        for c in own_ctxs:
+            for f in files_of(c):
+                if f not in reach:
+                    reach.add(f)
+                    queue.append(f)
+        sel = set()
+        while queue:
+            f = queue.pop()
+            for k, c in by_file.get(f, ()):
+                if k >= tpos or c in own_ctxs or (k, c) in sel:
+                    continue
+                sel.add((k, c))
+                group = [c]
+                for fc in fixtures_of.get(c, ()):  # an earlier test comes with its wider-scoped fixtures
+                    fk = first.get(fc)
+                    if fk is not None and fk < tpos and fc not in own_ctxs and fc not in g_set and (fk, fc) not in sel:
+                        sel.add((fk, fc))
+                        group.append(fc)
+                for g in group:
+                    for f2 in files_of(g):
+                        if f2 not in reach:
+                            reach.add(f2)
+                            queue.append(f2)
+        for k, c in no_code:
+            if k < tpos and c not in own_ctxs:
+                sel.add((k, c))
+        if sel != last_sel:
+            c_data, c_env, c_flags, c_units, c_content, c_ctxs = {}, set(), set(), set(), set(), []
+            for _k, c in sorted(sel):
+                c_ctxs.append(c)
+                _merge_data(c_data, cap.data.get(c, {}))
+                c_env |= cap.env.get(c, set())
+                c_flags |= cap.flags.get(c, set())
+                if c < len(per):
+                    c_units |= units_of(per[c][0])
+                    c_content |= unparsable(per[c][1])
+            last_sel = sel
         p = self.parts.get(nid, {})
         outcome = _final(p)
         if outcome not in ("passed", "skipped", "xfailed"):
