@@ -569,6 +569,8 @@ def _rewriter_digest(rw, limit: int = 5000) -> str | None:
         if isinstance(v, (types.BuiltinFunctionType, types.MethodWrapperType, types.WrapperDescriptorType)):
             return f"builtin:{name(v)}"
         m = getattr(v, "__module__", None)
+        if m == __name__:  # detpy's own wrappers (_read_pyc, _rewrite_test): they do not change the code
+            return f"named:{name(v)}"
         if isinstance(v, type):
             follow = m == home or m == mod
         elif isinstance(v, types.FunctionType) or hasattr(v, "__wrapped__"):
@@ -616,7 +618,7 @@ def _rewriter_digest(rw, limit: int = 5000) -> str | None:
             continue
         cells = ",".join(ref(c.cell_contents, None) if _cell_full(c) else "empty" for c in (f.__closure__ or ()))
         g, fm = f.__globals__, f.__module__
-        glob = ",".join(f"{n}={ref(g[n], fm)}" for n in sorted(set(names(co))) if n in g)
+        glob = ",".join(f"{n}={ref(g[n], fm)}" for n in sorted(set(names(co)) - _MODULE_METADATA) if n in g)
         h.update(f"#{i}=function {code(co)} defaults={ref(f.__defaults__, None)} kw={ref(f.__kwdefaults__, None)} "
                  f"cells=({cells}) globals=({glob})\n".encode())
     return h.hexdigest()[:16]
