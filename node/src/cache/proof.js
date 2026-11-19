@@ -55,6 +55,8 @@ const UNCACHEABLE = {
   'runtime-api': 'uses a runtime API whose inputs are not keyed',
   'dynamic-import': 'a dynamic import whose target is not known before the run',
   unobserved: 'the runtime reported an access the capture did not see',
+  binding: 'reaches native bindings directly (process.binding): reads not observable',
+  'clock-real': 'reads a clock Level 0 does not virtualize',
 };
 
 function digest(x) {
@@ -364,7 +366,11 @@ class ProofSession {
     let names = [];
     try { names = fs.readdirSync(dir).sort(); } catch { return out; }
     for (const n of names) {
-      try { out.push(JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8'))); } catch { /* truncated: not recorded */ }
+      let c;
+      try { c = JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8')); } catch { continue; /* truncated: not recorded */ }
+      // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
+      // processes) corrects `ok` from the runner's own results
+      out.push(this.captureFilter ? this.captureFilter(c) : c);
     }
     return out;
   }
@@ -422,7 +428,8 @@ class ProofSession {
     const store = this.store;
     const curEnv = this.curEnv;
     const envAll = native.envAllDigest(curEnv);
-    const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(curEnv[name] ?? null));
+    // an own string value only: a read of `process.env.__proto__` or `.constructor` is the absence of a variable
+    const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(Object.prototype.hasOwnProperty.call(curEnv, name) && typeof curEnv[name] === 'string' ? curEnv[name] : null));
     // global (main process) inputs: start-up reads by anyone minus the test files themselves, plus user code's
     // reads during the run
     const global = CAPTURE.global.filter((it) => !(it[0] === 'data' && (it[3] === 'infra' || it[3] === 'plugin') && this.specKeys.has(it[1])));

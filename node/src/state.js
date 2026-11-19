@@ -21,6 +21,7 @@ class State {
     this.installed = [];
     this.notes = [];
     this.onEvent = null; // set by the cache capture (src/cache/capture.js)
+    this.onRealClock = null; // set by the cache capture: a read of a clock Level 0 does not virtualize
   }
 
   /** Record one event of the running test. */

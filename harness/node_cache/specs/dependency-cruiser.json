@@ -1,0 +1,11 @@
+{
+ "name": "dependency-cruiser", "url": "https://github.com/sverweij/dependency-cruiser", "node": "22", "runner": "mocha",
+ "install": ["(npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent); git checkout -q -- package-lock.json 2>/dev/null || true"],
+ "install_files": ["package-lock.json", "package.json"],
+ "build": [],
+ "env": {"LANG": "en_US.UTF-8", "NODE_OPTIONS": "--no-warnings", "NO_COLOR": "1"},
+ "args": ["--reporter", "dot"],
+ "patterns": [],
+ "plain": "node_modules/.bin/mocha --reporter dot",
+ "shards": 2, "source": "the 31 latest first-parent commits of main (2026-11-19); `npm test` runs mocha with .mocharc.cjs (ESM specs test/**/*.spec.{js,mjs,cjs}, Mocha 12)"
+}

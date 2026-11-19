@@ -5,8 +5,10 @@
 //   detjs jest   [--det [--det-seed=N] ...] [jest args]
 //   detjs bun-test  [--det ...] [bun test args]   (src/runners/bun.js)
 //   detjs deno-test [--det ...] [deno test args]  (src/runners/deno.js)
+//   detjs node-test [--det ...] [node flags] [file patterns]   (node --test)
+//   detjs mocha  [--det ...] [mocha args]
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
-const USAGE = `usage: detjs vitest|jest|bun-test|deno-test [--det options] [runner args]
+const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs --det-help`;
 
@@ -16,6 +18,8 @@ async function main(argv) {
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'bun-test') return require('../src/runners/bun').main(rest);
   if (cmd === 'deno-test') return require('../src/runners/deno').main(rest);
+  if (cmd === 'node-test') return require('../src/nodetest/cli').main(rest);
+  if (cmd === 'mocha') return require('../src/mocha/cli').main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
     const paths = rest.filter((a) => !a.startsWith('--'));
