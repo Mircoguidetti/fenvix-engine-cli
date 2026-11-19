@@ -52,9 +52,9 @@ class FileProcess {
     }
   }
 
-  /** A unique id for a test of the open file from its name path (declaration order numbers duplicates). */
-  idFor(names) {
-    const base = `${this.fileId}::${names.join('::')}`;
+  /** A unique id for a test of the open file (or of `fileId`) from its name path (run order numbers duplicates). */
+  idFor(names, fileId = this.fileId) {
+    const base = `${fileId}::${names.join('::')}`;
     const n = (this.counts.get(base) || 0) + 1;
     this.counts.set(base, n);
     return n === 1 ? base : `${base} #${n}`;

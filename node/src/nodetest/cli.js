@@ -250,4 +250,4 @@ async function main(argv) {
   return status;
 }
 
-module.exports = { main, parseNodeArgs, findFiles };
+module.exports = { main, parseNodeArgs, findFiles, splitNodeOptions };
