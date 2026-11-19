@@ -118,6 +118,10 @@ pub struct Outcome {
     pub stale: Vec<(String, String)>,
     /// The global contexts (inputs of every test).
     pub global_ctx: Vec<u32>,
+    /// Per test that ran (any outcome, cacheable or not): the path keys its own contexts read (the test, its
+    /// collection, its wider-scoped fixtures). A parallel controller compares them with the other workers' writes
+    /// (parallel-proof round 3: the F2 first-discovery check).
+    pub reads: BTreeMap<String, Vec<String>>,
 }
 
 /// The reason a set of flags makes a test not cacheable (`None`: cacheable as far as flags go).
@@ -550,6 +554,24 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     let mut new_edges: Vec<(String, String)> = Vec::new();
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
+        {
+            let own = ctx_file(nid);
+            let mut keys: BTreeSet<&str> = BTreeSet::new();
+            let tn = format!("t|{nid}");
+            let cn = format!("c|{own}");
+            for n in [tn.as_str(), cn.as_str()].into_iter().chain(t.fixtures.iter().map(|s| s.as_str())) {
+                if let Some(d) = ctx_of.get(n).and_then(|c| plan.data.get(c)) {
+                    keys.extend(d.iter().map(|(k, _)| k.as_str()));
+                }
+                // a read of a file this session wrote is a flag ("rw:<abs path>"), not a data dependency
+                if let Some(f) = ctx_of.get(n).and_then(|c| plan.flags.get(c)) {
+                    keys.extend(f.iter().filter_map(|x| x.strip_prefix("rw:")).map(|p| p.strip_prefix(plan.root_sep.as_str()).unwrap_or(p)));
+                }
+            }
+            if !keys.is_empty() {
+                out.reads.insert(nid.to_string(), keys.into_iter().map(|k| k.to_string()).collect());
+            }
+        }
         if !reusable_outcome(&t.outcome) {
             store.remove(nid);
             out.not_cached.push((nid.to_string(), format!("outcome {}", t.outcome), Vec::new()));

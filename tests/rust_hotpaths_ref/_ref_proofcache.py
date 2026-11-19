@@ -500,13 +500,23 @@ class Capture:
     def lookup(self, tail, entries, suffixes) -> None:
         if not self.active:
             return
+        try:
+            f = _getframe(1)
+        except ValueError:
+            f = None
+        while f is not None and (f.f_code.co_filename.startswith("<frozen ")
+                                 or f.f_code.co_filename.startswith(_DETPY_DIR)
+                                 or "/importlib/" in f.f_code.co_filename):
+            f = f.f_back
+        if f is not None and _sites._classify(f.f_code.co_filename)[0] != _sites._USER:
+            return  # the immediate importer is the standard library, pytest, a plugin: not the test's input
         ctx = self._cur()
         n = len(suffixes)
         for e in list(entries):
             if not isinstance(e, str):
                 continue
             d = self._abs(e or ".")
-            if d is None or self._ignored(d + os.sep):
+            if d is None or not os.path.isdir(d) or self._ignored(d + os.sep):
                 continue
             cands = _core.import_candidates(d, tail, suffixes)
             missing = not os.path.exists(cands[0])

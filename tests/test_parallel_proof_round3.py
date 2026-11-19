@@ -206,3 +206,99 @@ def test_a_plugin_loaded_after_detpy_is_imported_once(pytester, monkeypatch):
     pids = log.read_text().split()
     assert len(pids) == 1, pids  # before: imported by the first process too, then again after the re-exec
     assert "PYTHONHASHSEED=0 (ok)" in r.stdout.str()
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# item 2: P5 (parallel-vs-serial proof) and the F2 first-discovery gap
+
+from test_parallel_proof_r023_fixes import cache_run, fresh_run, plan_of, write  # noqa: E402
+
+
+@pytest.fixture
+def no_outer(monkeypatch):
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+
+
+def test_parallel_entries_proven_equal_to_the_serial_ones_serve_a_serial_session(pytester, no_outer):
+    write(pytester, **{f"tests/test_{i}.py": f"def test_{i}():\n    assert {i} == {i}\n" for i in range(6)})
+    cache_run(pytester, 0, "serial-1", "tests")[0].assert_outcomes(passed=6)
+    # -n 2 runs every reusable result again (verification): parallel entries under the serial entries' keys
+    r, c = cache_run(pytester, 2, "par-verify", "--det-cache-verify=1", "tests")
+    r.assert_outcomes(passed=6)
+    assert "6 entr(ies) proven equal to the serial result" in r.stdout.str(), r.stdout.str()
+    store = json.loads((pytester.path / ".c" / "proof-cache.json").read_text())
+    assert {e.get("placement") for e in store["tests"].values()} == {"parallel-proven"}
+    # F1's guard is relaxed where proven: a serial session reuses them
+    r, c = cache_run(pytester, 0, "serial-2", "tests")
+    assert len(c["reused_ids"]) == 6, r.stdout.str()
+
+
+def test_an_unproven_parallel_entry_is_still_not_offered_to_a_serial_session(pytester, no_outer):
+    write(pytester, **{f"tests/test_{i}.py": f"def test_{i}():\n    assert {i} == {i}\n" for i in range(4)})
+    cache_run(pytester, 2, "par", "tests")[0].assert_outcomes(passed=4)
+    r, c = cache_run(pytester, 0, "serial", "tests")
+    assert c["reused_ids"] == [], r.stdout.str()
+
+
+FIRST = {
+    "tests/test_a_writer.py": """
+        import os, pathlib, time
+        def test_a_writes():
+            time.sleep(0.5)  # real time (--det-sleep=real): the reader in the other worker reads first
+            pathlib.Path(os.environ["SHARED_FILE"]).write_text("y\\n")
+        """,
+    "tests/test_b_reader.py": """
+        import os, pathlib
+        def test_b_reads():
+            # serially A runs first: B reads A's y
+            assert pathlib.Path(os.environ["SHARED_FILE"]).read_text().strip() == "y"
+        """,
+}
+
+
+def test_first_session_reader_of_a_cross_worker_write_gets_the_serial_verdict(pytester, tmp_path_factory,
+                                                                               monkeypatch, no_outer):
+    shared = tmp_path_factory.mktemp("outside") / "shared.txt"
+    shared.write_text("x\n")
+    monkeypatch.setenv("SHARED_FILE", str(shared))
+    write(pytester, **FIRST)
+    fresh_run(pytester, 0, "--det-sleep=real", "tests").assert_outcomes(passed=2)  # truth
+    shared.write_text("x\n")
+    args = ["--dist", "loadfile", "--det-sleep=real", "tests"]
+    r, c = cache_run(pytester, 2, "s1", *args)
+    p = plan_of(pytester)
+    assert p["assign"]["tests/test_a_writer.py::test_a_writes"] != p["assign"]["tests/test_b_reader.py::test_b_reads"]
+    # without the check, B read x in its worker before A wrote y and failed (a verdict no serial run gives)
+    r.assert_outcomes(passed=2)
+    assert "run again after their earlier writers" in r.stdout.str(), r.stdout.str()
+
+
+def test_first_session_reader_of_a_later_writer_is_reported_unsettled_then_waited_for(pytester, tmp_path_factory,
+                                                                                     monkeypatch, no_outer):
+    shared = tmp_path_factory.mktemp("outside") / "shared.txt"
+    shared.write_text("x\n")
+    monkeypatch.setenv("SHARED_FILE", str(shared))
+    write(pytester, **{
+        "tests/test_a_reader.py": """
+            import os, pathlib, time
+            def test_a_reads():
+                time.sleep(0.5)  # the writer in the other worker writes first
+                assert pathlib.Path(os.environ["SHARED_FILE"]).read_text().strip() == "x"
+            """,
+        "tests/test_b_writer.py": """
+            import os, pathlib
+            def test_b_writes():
+                pathlib.Path(os.environ["SHARED_FILE"]).write_text("y\\n")
+            """,
+    })
+    args = ["--dist", "loadfile", "--det-sleep=real", "tests"]
+    r, _ = cache_run(pytester, 2, "s1", *args)
+    assert "UNSETTLED: 1 test(s)" in r.stdout.str(), r.stdout.str()
+    # the next session (the writer runs again: verification): it comes later in the serial order and waits for the
+    # reader on the other worker
+    shared.write_text("x\n")
+    r, _ = cache_run(pytester, 2, "s2", "--det-cache-verify=1", *args)
+    p = plan_of(pytester)
+    assert p["waits"] == {"tests/test_b_writer.py::test_b_writes": ["tests/test_a_reader.py::test_a_reads"]}, p["waits"]
+    r.assert_outcomes(passed=2)

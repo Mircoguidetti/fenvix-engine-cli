@@ -773,6 +773,30 @@ impl CaptureCore {
         Ok(Caller::User)
     }
 
+    /// The kind of the code that started an import: the first frame outside the import system and detpy.
+    fn importer_kind(&self, py: Python<'_>) -> PyResult<Caller> {
+        let hub = Classifier::get(py)?;
+        let mut f = current_frame(py);
+        while let Some(fr) = f {
+            let (_code, fname) = code_filename(&fr)?;
+            let fb = w_of(fname.cast::<PyString>()?)?;
+            if starts_with_str(&fname, b"<frozen ")
+                || starts_with_str(&fname, &self.env.detpy_dir)
+                || contains(&fb, b"/importlib/")
+            {
+                f = level0::back(&fr)?;
+                continue; // the import machinery (importlib.import_module, importlib.util.find_spec): the caller decides
+            }
+            // the immediate importer decides: a standard-library module importing lazily (encodings.idna importing
+            // stringprep at the first IDNA lookup) does it once per process, wherever that is: not the test's input
+            return Ok(match hub.classify(py, &fname)?.0 {
+                Kind::User => Caller::User,
+                Kind::Infra | Kind::Stdlib => Caller::Infra,
+            });
+        }
+        Ok(Caller::User)
+    }
+
     /// `Capture._cur()`.
     pub(crate) fn cur(&self, py: Python<'_>) -> PyResult<usize> {
         if self.import_depth(py) > 0 {
@@ -1892,8 +1916,8 @@ impl CaptureCore {
     /// with a regular module or package. A module that was *not* found (an optional import, a namespace package
     /// without `__init__.py`, a module a new file earlier on the path would shadow) is then an input too.
     fn lookup(&self, py: Python<'_>, tail: &str, entries: &Bound<'_, PyAny>, suffixes: Vec<String>) -> PyResult<()> {
-        if !self.active() {
-            return Ok(());
+        if !self.active() || self.importer_kind(py)? != Caller::User {
+            return Ok(()); // pytest, a plugin or detpy importing lazily: not the test's input
         }
         let ctx = self.cur(py)?;
         let n = suffixes.len();
@@ -1904,6 +1928,9 @@ impl CaptureCore {
             }
             let e = if e.eq("")? { PyString::new(py, ".").into_any() } else { e };
             let Some(d) = self.abs(py, &e)? else { continue };
+            if !os_path(&d).is_dir() {
+                continue; // a zip archive (the standard library's, a vendored one: its read is the input) or nothing
+            }
             let mut ds = d.clone();
             ds.push(b'/');
             if self.ignored(&ds) {

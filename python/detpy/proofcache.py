@@ -681,7 +681,7 @@ class ProofCachePlugin:
         """``{nodeid: recorded duration}`` of the tests that have an entry: the plan's cache costs."""
         return {n: d for n, d in zip(nids, self.store.durations(list(nids))) if d is not None}
 
-    def merge_workers(self, workeroutput: dict, sent: dict) -> None:
+    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = ()) -> None:
         """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
         their shards into the store (``ProofCache.merge_shards``)."""
         t0 = _perf()
@@ -698,7 +698,7 @@ class ProofCachePlugin:
             if out.get("detpy_cache_shard"):
                 paths.append(out["detpy_cache_shard"])
         try:
-            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids)))
+            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges]))
         except Exception as e:  # never break the session: nothing is recorded this time
             self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
             res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}
@@ -926,6 +926,10 @@ class ProofCachePlugin:
                           f"reused results dropped (inputs written by this session), {m.get('edges', 0)} together "
                           f"edge(s) noted for the next plans"
                           + (f"; UNREADABLE shards: {len(m['unreadable'])}" if m["unreadable"] else ""))
+            if "proven" in m:
+                tr.write_line(f"parallel vs serial (P5): {m['proven']} entr(ies) proven equal to the serial result "
+                              f"(reusable by serial sessions), {len(m['diverged'])} diverged (not stored: the serial "
+                              f"entry stays), {m['unproven']} unproven (no stable serial fingerprint under their key)")
         st = self.shared_stats
         if self.shared and st is not None:
             if "error" in st:

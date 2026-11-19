@@ -539,12 +539,16 @@ pub fn controller_plan(input: &ControllerInput) -> Result<ControllerPlan, String
     let mut waits: BTreeMap<String, Vec<String>> = BTreeMap::new();
     for (w, r) in &input.edges {
         let (Some(&pw), Some(&pr)) = (pos.get(w.as_str()), pos.get(r.as_str())) else { continue };
-        if pw >= pr || hits.contains(w.as_str()) || hits.contains(r.as_str()) || assign.get(w) == assign.get(r) {
+        if pw == pr || hits.contains(w.as_str()) || hits.contains(r.as_str()) || assign.get(w) == assign.get(r) {
             continue;
         }
-        let v = waits.entry(r.clone()).or_default();
-        if !v.contains(w) {
-            v.push(w.clone());
+        // the later of the two in the serial order waits for the earlier one: a reader after its writer reads what
+        // the writer wrote; a writer after its reader (parallel-proof round 3) does not overwrite the file before
+        // the reader read it. Every wait is for an earlier test: no deadlock.
+        let (later, earlier) = if pw < pr { (r, w) } else { (w, r) };
+        let v = waits.entry(later.clone()).or_default();
+        if !v.contains(earlier) {
+            v.push(earlier.clone());
             v.sort();
         }
     }
@@ -982,6 +986,19 @@ mod tests {
         assert_eq!(cost_precedence(Some(&[1.0, 5.0, 3.0]), Some(9.0)), Some(3.0));
         assert_eq!(cost_precedence(Some(&[]), Some(9.0)), Some(9.0));
         assert_eq!(cost_precedence(None, None), None);
+    }
+
+    #[test]
+    fn round3_a_writer_after_its_reader_waits_for_the_reader_across_workers() {
+        let ids: Vec<String> = vec!["tests/test_a.py::r".into(), "tests/test_b.py::w".into()];
+        let mut inp = cinput(&ids, &[]);
+        inp.dist = "loadfile".into();
+        inp.edges = vec![("tests/test_b.py::w".into(), "tests/test_a.py::r".into())];
+        let p = controller_plan(&inp).unwrap();
+        let cross = p.assign["tests/test_a.py::r"] != p.assign["tests/test_b.py::w"];
+        assert!(cross, "two files under loadfile with two workers");
+        assert_eq!(p.waits.get("tests/test_b.py::w"), Some(&vec!["tests/test_a.py::r".to_string()]));
+        assert!(!p.waits.contains_key("tests/test_a.py::r"));
     }
 
     #[test]

@@ -307,6 +307,16 @@ class Controller:
         self.rerun: list[str] = []  # withdrawn reuses run again by an extra worker
         self.barrier = os.path.join(self.dir, "barrier", f"{os.getpid()}-{_time_ns()}")
         self.waits: dict = {}
+        # F2 first discovery (parallel-proof round 3): under --det-cache the workers' reports are held until the end
+        # of the run loop; a test that read what a test on another worker wrote, with no wait between them in this
+        # plan, is run again after its earlier writers in a fresh worker, and that run's reports replace its own
+        self.held: list | None = None
+        self._forward = None
+        self.racy: dict = {}  # reader -> (path, writers before it)
+        self.racy_edges: list = []  # (writer, reader) pairs found here: data edges for the next plans
+        self.unsettled: dict = {}  # reader -> path (a cross-worker writer after it: no serial view to rerun into)
+        self.rerun_nodes: list = []
+        self.rerun_racy: list[str] = []
 
     # -- hooks -----------------------------------------------------------------------------------------
     def pytest_xdist_setupnodes(self, config, specs):
@@ -387,6 +397,8 @@ class Controller:
         lists = [[index[nid] for nid in p["lists"].get(w, []) if pc is None or not pc.sess.is_hit(nid)]
                  for w in wids]
         self.pending_hits = [n for n in self.ids if pc is not None and pc.sess.is_hit(n)]
+        if pc is not None and self.held is None:
+            self._hold_reports()
         self.waits = p["waits"]
         if self.waits:
             write_json(os.path.join(self.barrier, "waits.json"), {"waits": self.waits})
@@ -417,7 +429,9 @@ class Controller:
         withdrawn = pc.written_hits(shards, self.ids)
         pc.report_hits(self.pending_hits)
         self.pending_hits = []
-        if not withdrawn:
+        racy = pc.store.racy_readers(shards, self.ids, dict(self.plan["assign"]) if self.plan else {},
+                                     dict(self.waits)) if self.held is not None else []
+        if not withdrawn and not racy:
             return []
         dsession = self.config.pluginmanager.getplugin("dsession")
         if dsession is None or not hasattr(dsession, "_clone_node"):
@@ -425,11 +439,57 @@ class Controller:
             return []
         # xdist's own way to add a worker (as for a crashed one): it collects, then DetScheduling.schedule sends it
         # the orphans
-        dsession.shuttingdown = False
-        dsession._clone_node(last_node)
         self.rerun = [nid for nid, _ in withdrawn]
         index = {nid: i for i, nid in enumerate(self.ids)}
-        return [index[nid] for nid in self.rerun]
+        todo = set(self.rerun)
+        for reader, path, before, later in racy:
+            self.racy_edges.extend((w, reader) for w in (*before, *later))
+            if later:
+                # a writer on another worker comes after the reader: the file already holds its write, no rerun
+                # gives the serial view. Reported as unsettled; the pair is a data edge, and from the next plan on
+                # the writer waits for the reader.
+                self.unsettled[reader] = path
+                continue
+            self.racy[reader] = (path, before)
+            todo.add(reader)
+            todo.update(before)  # its earlier writers first, so it reads what the serial order gives it
+        self.rerun_racy = sorted(self.racy)
+        if not todo:
+            return []
+        dsession.shuttingdown = False
+        self.rerun_nodes.append(dsession._clone_node(last_node))
+        return sorted(index[nid] for nid in todo if nid in index)
+
+    # -- held reports (F2 first discovery) ----------------------------------------------------------------------
+    def _hold_reports(self) -> None:
+        dsession = self.config.pluginmanager.getplugin("dsession")
+        if dsession is None or not hasattr(dsession, "worker_testreport"):
+            return
+        self.held = []
+        self._forward = dsession.worker_testreport
+
+        def hold(node, rep):
+            self.held.append((node, rep))
+
+        dsession.worker_testreport = hold  # xdist dispatches worker events by attribute name
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtestloop(self, session):
+        yield
+        held, self.held = self.held, None
+        if held is None or self._forward is None:
+            return
+        racy = set(self.racy)
+        rerun_hits = set(self.rerun)
+        for node, rep in held:
+            nid = rep.nodeid
+            if node in self.rerun_nodes:
+                # the rerun worker: its reports of the racy readers and withdrawn hits are their verdicts; its runs of
+                # the earlier writers only set the files up (their own verdicts were reported from their workers)
+                if nid in racy or nid in rerun_hits:
+                    self._forward(node, rep)
+            elif nid not in racy:
+                self._forward(node, rep)
 
     def _groups(self, nodes) -> dict:
         for node in nodes:
@@ -456,7 +516,8 @@ class Controller:
         if self.plan is not None:
             meta["plan"] = {k: v for k, v in self.plan.items() if k not in ("atoms", "assign")}
         meta["parallel"] = {"workers": len(self.sent), "crashed": [list(c) for c in self.crashed],
-                            "reused_by_controller": len(self.reused), "rerun_written": list(self.rerun)}
+                            "reused_by_controller": len(self.reused), "rerun_written": list(self.rerun),
+                            "rerun_racy": sorted(self.racy), "unsettled": sorted(self.unsettled)}
         summary = json.loads(_core.merge_traces(self.ids, workers, json.dumps(meta, sort_keys=True),
                                                 self.plan["digest"] if self.plan else None, trace_path))
         self.merge_summary = summary
@@ -470,7 +531,7 @@ class Controller:
         self._save_durations()
         self._merge_cassettes()
         if proofcache.PLUGIN is not None:
-            proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent)
+            proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent, self.racy_edges)
 
     def _save_durations(self) -> None:
         if not self.durations:
@@ -523,6 +584,14 @@ class Controller:
         if self.rerun:
             lines.append(f"{len(self.rerun)} reuse(s) withdrawn after the run (an earlier test of this session wrote "
                          f"their input): run again in an extra worker")
+        if self.unsettled:
+            lines.append(f"UNSETTLED: {len(self.unsettled)} test(s) read a file that a later test (in the serial order) "
+                         f"on another worker wrote, with no data edge yet: their verdict may not be the serial one "
+                         f"({', '.join(sorted(self.unsettled)[:5])}); from the next run on the writer waits for them")
+        if self.racy:
+            lines.append(f"{len(self.racy)} test(s) read a file a test on another worker wrote, with no data edge yet: "
+                         f"run again after their earlier writers in an extra worker; that run is their verdict "
+                         f"(the pairs are data edges from now on)")
         s = self.merge_summary
         if s is not None:
             lines.append(f"merged trace: {s['n_tests']} tests from {len(self.sent)} worker traces"

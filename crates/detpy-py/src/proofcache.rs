@@ -28,6 +28,8 @@ struct Inner {
     fetched: Option<shared::Fetched>,
     origins: BTreeMap<String, String>,
     merged_ids: Vec<String>,
+    /// The last recorded session's per-test reads (`record::Outcome::reads`): a worker's shard.
+    last_reads: BTreeMap<String, Vec<String>>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -76,7 +78,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -313,6 +315,7 @@ impl ProofCache {
         g.last_written = plan.session_written.clone();
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
+        g.last_reads = out.reads.clone();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }
@@ -338,6 +341,7 @@ impl ProofCache {
         g.last_written = plan.session_written.clone();
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
+        g.last_reads = out.reads.clone();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }
@@ -416,6 +420,14 @@ impl ProofCache {
         proof::hits_with_written_inputs(&g.store, &hits, &order, &written, &dirs)
     }
 
+    /// After every worker of a parallel session finished: `detpy_core::proof::racy_readers` over the workers'
+    /// shards at `paths`, with this run's plan (`assign`: nodeid -> worker, `waits`). `[(reader, path, [writers
+    /// before it])]`.
+    fn racy_readers(&self, py: Python<'_>, paths: Vec<PathBuf>, order: Vec<String>, assign: HashMap<String, String>, waits: BTreeMap<String, Vec<String>>) -> Vec<(String, String, Vec<String>, Vec<String>)> {
+        let shards: Vec<proof::Shard> = py.detach(|| paths.iter().filter_map(|p| proof::Shard::load(p).ok()).collect());
+        proof::racy_readers(&shards, &order, &assign, &waits)
+    }
+
     /// Recorded durations (seconds) of `nodeids` (None: no entry): the plan's costs.
     fn durations(&self, nodeids: Vec<String>) -> Vec<Option<f64>> {
         let g = lock(&self.inner);
@@ -448,6 +460,7 @@ impl ProofCache {
             touched: g.touched.iter().cloned().collect(),
             fixtures: g.last_fixtures.clone(),
             written: g.last_written.clone(),
+            reads: g.last_reads.clone(),
         };
         drop(g);
         py.detach(|| shard.save(&path))?;
@@ -457,7 +470,8 @@ impl ProofCache {
     /// The controller's end of a parallel session: the cross-worker write rule over the shards at `paths`, then one
     /// merge into the store (`detpy_core::proof::merge_shards`). Returns JSON: `merged`, `dropped` [[nodeid, why]],
     /// `stale` [[nodeid, path]], `unreadable` [path].
-    fn merge_shards(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>) -> PyResult<String> {
+    #[pyo3(signature = (paths, hits, edges=Vec::new()))]
+    fn merge_shards(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>, edges: Vec<(String, String)>) -> PyResult<String> {
         let dir = self.dir.clone();
         let (merge, unreadable) = py.detach(|| -> std::io::Result<_> {
             let mut shards = Vec::new();
@@ -469,7 +483,7 @@ impl ProofCache {
                 }
             }
             let ids: Vec<String> = shards.iter().flat_map(|s| s.touched.iter().cloned()).collect();
-            Ok((proof::merge_shards(&dir, &mut shards, &hits)?, unreadable, ids))
+            Ok((proof::merge_shards_with(&dir, &mut shards, &hits, &edges)?, unreadable, ids))
         })
         .map(|(m, u, ids)| {
             lock(&self.inner).merged_ids = ids;
@@ -477,7 +491,7 @@ impl ProofCache {
         })?;
         serde_json::to_string(&serde_json::json!({
             "merged": merge.merged, "dropped": merge.dropped, "stale": merge.stale, "unreadable": unreadable,
-            "edges": merge.edges,
+            "edges": merge.edges, "proven": merge.proven, "diverged": merge.diverged, "unproven": merge.unproven,
         }))
         .map_err(|e| PyValueError::new_err(e.to_string()))
     }
@@ -595,6 +609,7 @@ impl ProofCache {
         g.last_written = plan.session_written.clone();
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
         let out = record::record_session(&mut g.store, &plan);
+        g.last_reads = out.reads.clone();
         for (n, _) in &out.stale {
             g.touched.insert(n.clone());
         }

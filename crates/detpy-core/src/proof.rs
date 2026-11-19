@@ -102,10 +102,58 @@ pub struct Entry {
     /// parallel result (2.5: its in-process predecessors were not its serial ones). Not part of the key.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub placement: String,
+    /// The serial fingerprint a parallel entry was proven equal to (P5): set with [`PLACEMENT_PROVEN`]. Not part of
+    /// the key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub serial_fp: Option<String>,
+    /// Two serial sessions recorded this key with different fingerprints (serial noise: entropy, thread
+    /// interleaving): no parallel result can be proven equal to it. Not part of the key.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub serial_noise: bool,
 }
 
 /// [`Entry::placement`] of a result recorded by a worker of a parallel (`-n`) session.
 pub const PLACEMENT_PARALLEL: &str = "parallel";
+/// [`Entry::placement`] of a parallel result proven equal to the serial one (P5, docs/PARALLEL-PROOF-DESIGN.md 3.3):
+/// recorded under the same key as a stable serial entry, with the same fingerprint (which includes the outcome). A
+/// serial session may reuse it: it is the serial result.
+pub const PLACEMENT_PROVEN: &str = "parallel-proven";
+
+impl Entry {
+    /// The serial fingerprint this entry stands for under its key: a serial entry's own (unless serial noise was
+    /// seen), a proven parallel entry's proven one; None for an unproven parallel entry.
+    pub fn serial_fingerprint(&self) -> Option<&str> {
+        if self.serial_noise {
+            return None;
+        }
+        match self.placement.as_str() {
+            "" => Some(self.fingerprint.as_str()),
+            PLACEMENT_PROVEN => self.serial_fp.as_deref(),
+            _ => None,
+        }
+    }
+}
+
+/// The P5 proof of one parallel entry against the store's entry of the same test: `Proven` (same key, fingerprint
+/// equal to the stable serial fingerprint), `Diverged` (same key, another fingerprint: the split changed something
+/// Level 0 observes), `Unproven` (no stable serial fingerprint under this key).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Proof {
+    Proven,
+    Diverged,
+    Unproven,
+}
+
+pub fn prove(parallel: &Entry, stored: Option<&Entry>) -> Proof {
+    match stored {
+        Some(d) if d.key == parallel.key => match d.serial_fingerprint() {
+            Some(sf) if sf == parallel.fingerprint => Proof::Proven,
+            Some(_) => Proof::Diverged,
+            None => Proof::Unproven,
+        },
+        _ => Proof::Unproven,
+    }
+}
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Store {
@@ -381,6 +429,8 @@ impl Store {
                 f
             },
             placement: String::new(),
+            serial_fp: None,
+            serial_noise: false,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -546,6 +596,17 @@ impl Store {
                 }
                 Some(e) => {
                     let mut e = e.clone();
+                    if e.placement.is_empty() {
+                        // a serial result: serial noise when the stored serial result of the same key has another
+                        // fingerprint (or had noise already)
+                        if let Some(d) = disk.tests.get(nid) {
+                            if d.key == e.key && (d.serial_noise || (d.placement.is_empty() && d.fingerprint != e.fingerprint)
+                                || (d.placement == PLACEMENT_PROVEN && d.serial_fp.as_deref() != Some(e.fingerprint.as_str())))
+                            {
+                                e.serial_noise = true;
+                            }
+                        }
+                    }
                     for id in [&mut e.content, &mut e.skeleton, &mut e.hooks] {
                         if let Some(&j) = smap.get(id) {
                             *id = j;
@@ -621,6 +682,9 @@ pub struct Shard {
     pub fixtures: BTreeMap<String, Vec<String>>,
     #[serde(default)]
     pub written: BTreeMap<String, Vec<String>>,
+    /// Per test that ran: the path keys it read (`record::Outcome::reads`).
+    #[serde(default)]
+    pub reads: BTreeMap<String, Vec<String>>,
 }
 
 impl Shard {
@@ -719,6 +783,63 @@ pub fn foreign_to_entry(w: &str, nodeid: &str, e: &Entry, rank: Option<&HashMap<
 /// serial order (or a fixture they did not use) wrote: `(nodeid, path key, writer)`, in `order`. The controller
 /// decided them before any worker ran; a serial session would have run the writer first, so their recorded result is
 /// not the serial result. The controller runs them again (review R-023 F2).
+/// The F2 first-discovery check (parallel-proof round 3): tests that ran this session and read a path that a test on
+/// another worker wrote, with no wait between the two in this run's plan (no data edge yet: the first session that
+/// sees the pair). Their verdict is the result of a race between two processes. Returns `[(reader, path key,
+/// [the writers of that path that come before the reader in the serial order], [the writers on another worker that
+/// come after it])]`. When no cross-worker writer comes after the reader, the controller runs it again in one fresh
+/// worker after those writers, in the serial order (it then reads what the serial order gives it, writers that
+/// overwrite the file); otherwise the file already holds a later write and no rerun reproduces the serial view: the
+/// verdict is reported as unsettled.
+pub fn racy_readers(
+    shards: &[Shard],
+    order: &[String],
+    assign: &HashMap<String, String>,
+    waits: &BTreeMap<String, Vec<String>>,
+) -> Vec<(String, String, Vec<String>, Vec<String>)> {
+    let (written, dirs) = writer_union(shards);
+    let rank: HashMap<&str, usize> = order.iter().enumerate().map(|(i, n)| (n.as_str(), i)).collect();
+    let waited = |a: &str, b: &str| {
+        waits.get(a).is_some_and(|v| v.iter().any(|x| x == b)) || waits.get(b).is_some_and(|v| v.iter().any(|x| x == a))
+    };
+    let mut out = Vec::new();
+    for s in shards {
+        for (r, keys) in &s.reads {
+            let Some(&pr) = rank.get(r.as_str()) else { continue };
+            let wr = assign.get(r);
+            for k in keys {
+                let ws = written.get(k.as_str()).into_iter().chain(dirs.get(k.as_str())).flatten();
+                let mut cross = false;
+                let mut later: BTreeSet<&str> = BTreeSet::new();
+                let mut before: BTreeSet<&str> = BTreeSet::new();
+                for w in ws {
+                    let Some(t) = w.strip_prefix("t|") else { continue };
+                    if t == r {
+                        continue;
+                    }
+                    if assign.get(t) == wr || waited(t, r) {
+                        continue;
+                    }
+                    cross = true;
+                    if rank.get(t).is_some_and(|&pw| pw < pr) {
+                        before.insert(t);
+                    } else {
+                        later.insert(t);
+                    }
+                }
+                if cross {
+                    let mut b: Vec<String> = before.into_iter().map(|x| x.to_string()).collect();
+                    b.sort_by_key(|x| rank.get(x.as_str()).copied().unwrap_or(usize::MAX));
+                    out.push((r.clone(), k.clone(), b, later.into_iter().map(|x| x.to_string()).collect()));
+                    break;
+                }
+            }
+        }
+    }
+    out.sort_by_key(|(r, _, _, _)| rank.get(r.as_str()).copied().unwrap_or(usize::MAX));
+    out
+}
+
 pub fn hits_with_written_inputs(
     store: &Store,
     hits: &[String],
@@ -755,6 +876,11 @@ pub struct ShardMerge {
     pub stale: Vec<(String, String)>,
     /// Together edges noted by this merge (writer test, reader test).
     pub edges: usize,
+    /// P5: parallel entries proven equal to the serial result, entries that diverged from it (not stored: the
+    /// serial entry stays), and entries with no stable serial fingerprint under their key.
+    pub proven: usize,
+    pub diverged: Vec<String>,
+    pub unproven: usize,
 }
 
 /// The writer union of a session's shards: path key -> contexts, and parent key -> contexts.
@@ -777,10 +903,16 @@ pub fn writer_union(shards: &[Shard]) -> (BTreeMap<String, BTreeSet<String>>, BT
 /// reused in this session; one whose input any code of the session wrote is dropped from the store (as a serial
 /// session drops it).
 pub fn merge_shards(dir: &Path, shards: &mut [Shard], hits: &[String]) -> io::Result<ShardMerge> {
+    merge_shards_with(dir, shards, hits, &[])
+}
+
+/// [`merge_shards`] plus data edges the controller found itself (the racy readers of the session, whatever their
+/// outcome: parallel-proof round 3).
+pub fn merge_shards_with(dir: &Path, shards: &mut [Shard], hits: &[String], extra_edges: &[(String, String)]) -> io::Result<ShardMerge> {
     shards.sort_by(|a, b| a.worker.cmp(&b.worker));
     let (written, dirs) = writer_union(shards);
     let mut out = ShardMerge::default();
-    let mut edges: BTreeSet<(String, String)> = BTreeSet::new();
+    let mut edges: BTreeSet<(String, String)> = extra_edges.iter().cloned().collect();
     for s in shards.iter_mut() {
         let mut drop = Vec::new();
         for (nid, e) in &s.store.tests {
@@ -801,6 +933,28 @@ pub fn merge_shards(dir: &Path, shards: &mut [Shard], hits: &[String]) -> io::Re
     fs::create_dir_all(dir)?;
     let _lock = DirLock::acquire(dir)?;
     let mut disk = Store::load(dir);
+    // P5: each parallel entry against the stored one of the same test (before anything of this session is merged)
+    for s in shards.iter_mut() {
+        let mut diverged = Vec::new();
+        for (nid, e) in s.store.tests.iter_mut() {
+            match prove(e, disk.tests.get(nid)) {
+                Proof::Proven => {
+                    let sf = disk.tests[nid].serial_fingerprint().map(|x| x.to_string());
+                    e.placement = PLACEMENT_PROVEN.to_string();
+                    e.serial_fp = sf;
+                    out.proven += 1;
+                }
+                Proof::Diverged => diverged.push(nid.clone()),
+                Proof::Unproven => out.unproven += 1,
+            }
+        }
+        for nid in diverged {
+            // not stored from the parallel run: the serial entry stays (and is not touched)
+            s.store.tests.remove(&nid);
+            s.touched.retain(|t| *t != nid);
+            out.diverged.push(nid);
+        }
+    }
     for s in shards.iter() {
         let touched: BTreeSet<String> = s.touched.iter().cloned().collect();
         s.store.merge_into(&mut disk, &touched);
@@ -1123,6 +1277,7 @@ impl Checker {
             return Err(Miss { kind: "failed-before", detail: format!("recorded outcome {}", e.outcome) });
         }
         if e.placement == PLACEMENT_PARALLEL && !self.parallel {
+            // an unproven parallel result (P5: a proven one, PLACEMENT_PROVEN, is the serial result and is reused)
             return Err(Miss {
                 kind: "placement",
                 detail: "recorded in a worker of a parallel (-n) session: not offered to a serial session until the \
