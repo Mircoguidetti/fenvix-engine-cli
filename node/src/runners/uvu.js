@@ -61,6 +61,27 @@ function main(argv) {
 
 // -- preload --------------------------------------------------------------------------------------------------------
 
+/**
+ * uvu's `parse` without its listing: the `-r` modules load exactly as uvu loads them, and the suites are detjs'
+ * files (in a test process the runner's listing of the test directory is not an input of the tests).
+ */
+function replaceParse(filesFor, onSuites) {
+  const parseFile = path.join(process.env.DETJS_UVU_DIR, 'parse', 'index.js');
+  const mod = require(parseFile);
+  const req = require('node:module').createRequire(parseFile);
+  mod.parse = async function parse(dir, pattern, opts = {}) {
+    const base = path.resolve(opts.cwd || '.', dir || '.');
+    const requires = [].concat(opts.require || []).filter(Boolean);
+    requires.forEach((name) => {
+      try { return req(name); } catch (e) { throw new Error(`Cannot find module "${name}"`); }
+    });
+    const list = filesFor();
+    const suites = list.map((f) => ({ name: path.relative(base, f.abs), file: f.abs }));
+    onSuites(suites.map((x, i) => [x.name, list[i]]));
+    return { dir: base, suites, requires: requires.length > 0 };
+  };
+}
+
 function wrapParse(fn) {
   const mod = require(path.join(process.env.DETJS_UVU_DIR, 'parse', 'index.js'));
   const real = mod.parse;
@@ -100,22 +121,37 @@ function hookSource() {
   const url = require('node:url');
   const dist = path.join(process.env.DETJS_UVU_DIR, 'dist') + path.sep;
   const state = { patched: 0, refused: [] };
+  const isRunner = (f) => f.startsWith(dist) && /^index\.m?js$/.test(path.basename(f));
+  const patch = (f, source) => {
+    let src = String(source);
+    if (src.includes('Symbol.for("detjs.uvu")')) return src;
+    for (const [from, to] of PATCHES) {
+      if (!src.includes(from)) { state.refused.push(`${path.basename(f)}: ${from}`); return null; }
+      src = src.replace(from, to);
+    }
+    state.patched++;
+    return src;
+  };
   m.registerHooks({
     load(u, context, next) {
       const r = next(u, context);
       if (typeof u !== 'string' || !u.startsWith('file:')) return r;
       let f;
       try { f = url.fileURLToPath(u); } catch { return r; }
-      if (!f.startsWith(dist) || !/^index\.m?js$/.test(path.basename(f)) || !r || r.source == null) return r;
-      let src = String(r.source);
-      for (const [from, to] of PATCHES) {
-        if (!src.includes(from)) { state.refused.push(`${path.basename(f)}: ${from}`); return r; }
-        src = src.replace(from, to);
-      }
-      state.patched++;
-      return { ...r, source: src };
+      if (!isRunner(f) || !r || r.source == null) return r;
+      const src = patch(f, r.source);
+      return src === null ? r : { ...r, source: src };
     },
   });
+  // CommonJS loaders that compile modules themselves (tsx/cjs, ts-node, esm) bypass the load hook
+  const realCompile = m.prototype._compile;
+  m.prototype._compile = function _compile(content, filename, ...a) {
+    if (typeof filename === 'string' && isRunner(filename) && typeof content === 'string') {
+      const src = patch(filename, content);
+      if (src !== null) return realCompile.call(this, src, filename, ...a);
+    }
+    return realCompile.call(this, content, filename, ...a);
+  };
   return state;
 }
 
@@ -128,18 +164,14 @@ function preloadSingle() {
   if (!c) return;
   const native = require('../native');
   const files = common.runFiles();
-  const rank = new Map(files.map((f, i) => [f.abs, i]));
   const byAbs = new Map(files.map((f) => [f.abs, f]));
   const single = process.env.DETJS_RUNNER_FILE || null;
   const hooked = hookSource();
   const nameToFile = new Map(); // suite name (relative to uvu's dir) -> file
-  wrapParse((ctx) => {
-    const suites = ctx.suites.map((s) => ({ ...s, abs: path.resolve(s.file) }))
-      .filter((s) => (single ? s.abs === single : rank.has(s.abs)))
-      .sort((a, b) => rank.get(a.abs) - rank.get(b.abs));
-    for (const s of suites) nameToFile.set(s.name, byAbs.get(s.abs));
-    return { ...ctx, suites: suites.map(({ abs, ...s }) => s) };
+  replaceParse(() => (single ? files.filter((f) => f.abs === single) : files), (pairs) => {
+    for (const [name, f] of pairs) nameToFile.set(name, f);
   });
+  const fileOfGroup = (name) => nameToFile.get(name) || null;
   let file = null;
   let ok = true;
   let cur = null;
@@ -160,7 +192,7 @@ function preloadSingle() {
     ? native.shuffleIndices(list.length, c.seed, key).map((i) => list[i]) : list);
   globalThis[Symbol.for('detjs.uvu')] = {
     group(name, runners) {
-      const f = nameToFile.get(name);
+      const f = fileOfGroup(name);
       open(f);
       if (f) {
         const out = shuffle(runners.slice(), f.fileId);

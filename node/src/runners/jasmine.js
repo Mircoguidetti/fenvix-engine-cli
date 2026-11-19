@@ -208,6 +208,15 @@ function preloadSingle() {
     }
     return out;
   };
+  // the spec files of this process are detjs' list (execute(files) replaces the configured ones): the glob of the
+  // configured spec_files is the runner's discovery, not an input of the specs (helpers' globs stay inputs)
+  const RunnerBase = require(path.join(process.env.DETJS_JASMINE_DIR, 'lib', 'runner_base.js'));
+  const realAddSpecs = RunnerBase.prototype.addMatchingSpecFiles;
+  if (typeof realAddSpecs === 'function') {
+    RunnerBase.prototype.addMatchingSpecFiles = function addMatchingSpecFiles(...a) {
+      return common.quiet(() => realAddSpecs.apply(this, a));
+    };
+  }
   const Jasmine = jasmineClass();
   const realExecute = Jasmine.prototype.execute;
   Jasmine.prototype.execute = async function execute(...a) {

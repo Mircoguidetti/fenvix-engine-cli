@@ -95,10 +95,10 @@ function flagsOf(flags, dflt) {
     const acc = flags & O_ACC;
     const reads = acc === fs.constants.O_RDONLY || acc === fs.constants.O_RDWR;
     const writes = acc === fs.constants.O_WRONLY || acc === fs.constants.O_RDWR || Boolean(flags & fs.constants.O_CREAT);
-    return { reads, writes, trunc: Boolean(flags & fs.constants.O_TRUNC) };
+    return { reads, writes, trunc: Boolean(flags & fs.constants.O_TRUNC), excl: Boolean(flags & fs.constants.O_EXCL) };
   }
   const m = String(flags);
-  return { reads: m.includes('r') || m.includes('+'), writes: /[wax+]/.test(m), trunc: m.includes('w') };
+  return { reads: m.includes('r') || m.includes('+'), writes: /[wax+]/.test(m), trunc: m.includes('w'), excl: m.includes('x') };
 }
 
 const structured = (_e, cs) => cs;
@@ -932,9 +932,24 @@ function installFs(cap) {
   const P = fs.promises;
   const read = (k) => (a) => cap.read(a[0], k);
   const write0 = (a) => cap.wrote(a[0]);
+  // writes whose success depends on what was there before (an exclusive create fails if the path exists, mkdir
+  // without `recursive` too, unlink / rmdir / rm without `force` fail if it is missing, rmdir if it is not empty):
+  // in test processes the prior state is an input (R-009, O_EXCL creates); own outputs are skipped by read()
+  const prior = (kind) => (a) => { if (!cap.isGlobal) cap.read(a[0], kind); };
+  const optsOf = (a, i) => (a[i] && typeof a[i] === 'object' && !Buffer.isBuffer(a[i]) ? a[i] : null);
+  const writeFlag = (a) => {
+    const o = optsOf(a, 2);
+    if (o && o.flag !== undefined && flagsOf(o.flag, 'w').excl) prior('s')(a);
+    cap.wrote(a[0]);
+  };
+  const mkdir0 = (a) => { const o = optsOf(a, 1); if (!(o && o.recursive)) prior('s')(a); cap.wrote(a[0]); };
+  const unlink0 = (a) => { prior('s')(a); cap.wrote(a[0]); };
+  const rm0 = (a) => { const o = optsOf(a, 1); if (!(o && o.force)) prior('s')(a); cap.wrote(a[0]); };
+  const rmdir0 = (a) => { const o = optsOf(a, 1); prior(o && o.recursive ? 's' : 'd')(a); cap.wrote(a[0]); };
   const open = (dflt) => (a) => {
     const fl = flagsOf(a[1] && typeof a[1] === 'object' && !Buffer.isBuffer(a[1]) ? a[1].flags : a[1], dflt);
     if (fl.reads && !fl.trunc) cap.read(a[0], 'f');
+    if (fl.excl) prior('s')(a);
     if (fl.writes) cap.wrote(a[0]);
   };
   for (const [o, names, fn] of [
@@ -943,10 +958,19 @@ function installFs(cap) {
     [fs, ['existsSync', 'exists'], read('s')],
     [fs, ['readlinkSync', 'readlink'], read('l')],
     [P, ['readlink'], read('l')],
-    [fs, ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile', 'unlinkSync', 'unlink', 'rmSync', 'rm', 'rmdirSync', 'rmdir',
-      'mkdirSync', 'mkdir', 'truncateSync', 'truncate', 'utimesSync', 'utimes', 'lutimesSync', 'lutimes', 'chmodSync', 'chmod',
+    [fs, ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile'], writeFlag],
+    [P, ['writeFile', 'appendFile'], writeFlag],
+    [fs, ['mkdirSync', 'mkdir'], mkdir0],
+    [P, ['mkdir'], mkdir0],
+    [fs, ['unlinkSync', 'unlink'], unlink0],
+    [P, ['unlink'], unlink0],
+    [fs, ['rmdirSync', 'rmdir'], rmdir0],
+    [P, ['rmdir'], rmdir0],
+    [fs, ['rmSync', 'rm'], rm0],
+    [P, ['rm'], rm0],
+    [fs, ['truncateSync', 'truncate', 'utimesSync', 'utimes', 'lutimesSync', 'lutimes', 'chmodSync', 'chmod',
       'lchmodSync', 'lchmod', 'chownSync', 'chown', 'lchownSync', 'lchown', 'createWriteStream'], write0],
-    [P, ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
+    [P, ['truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
   ]) {
     for (const n of names) wrapFn(cap, o, n, fn);
   }
@@ -1187,6 +1211,8 @@ function installNet(cap) {
     else target = { host: typeof a[1] === 'string' ? a[1] : 'localhost', port: o };
     if (target.path) {
       if (String(target.path).includes('detjs-replay')) return; // detjs' own replay server
+      // tsx's loader reports the files it loaded to a parent `tsx watch` over this pipe (one way, absent outside watch)
+      if (/[\\/]tsx-\d+[\\/]\d+\.pipe$/.test(String(target.path))) return;
       cap.flag('connect', `unix socket ${target.path}`);
     } else if (isLocalName(target.host) || allow.has(String(target.host).toLowerCase())) {
       cap.flag('connect', `${target.host}:${target.port}`);
