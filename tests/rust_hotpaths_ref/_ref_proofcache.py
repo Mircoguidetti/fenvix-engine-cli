@@ -1,6 +1,7 @@
 # Reference copy (verbatim) of python/detpy/proofcache.py before round 2 moved its capture to Rust
 # (crates/detpy-py/src/capture.rs), with the review R-009b R1/R2 fixes applied to it as on claude/cache-proof-step1
-# (c872a13, a7359b9; R2's stale-check exception goes through the plan's stale_skip, the record being Rust here). Installed as detpy.proofcache by tests/rust_hotpaths_ref/_capref.py when
+# (c872a13, a7359b9; R2's stale-check exception goes through the plan's stale_skip, the record being Rust here), and
+# the review R-015b G1-G3 fixes as on claude/rust-hotpaths (7198773, 0007d42, ab2a069). Installed as detpy.proofcache by tests/rust_hotpaths_ref/_capref.py when
 # DETPY_CAPTURE_REF=1, for the equivalence tests (tests/test_capture_rust.py).
 """Cache with proof (``pytest --det --det-cache=DIR``).
 
@@ -41,6 +42,7 @@ import json
 import os
 import platform
 import random
+import stat as _stat
 import sys
 import time
 from types import CodeType, FunctionType
@@ -76,6 +78,8 @@ _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep
 # them; objects are content-addressed, so a changed commit always comes with a changed ref file)
 _SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
+# a file's ctime comes from the kernel's coarse clock (one tick behind at most); strace -ttt from the fine one
+_CTIME_SLACK = 0.02
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -184,7 +188,7 @@ class Capture:
         # repository code file (abs path) -> stat key when its source was first read (open by the import system,
         # before the read) or its module body first ran: a file changed after that ran other code than the one
         # its digest at the end of the session says (review R-015 F1)
-        self.code_stat: dict[str, list | None] = {}
+        self.code_stat: dict[str, tuple] = {}  # (stat key, resolved path)
         self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
         self._seen_mods: set[str] = set()
         self._nmods = 0
@@ -269,8 +273,33 @@ class Capture:
                 if w:
                     self.fid[filename] = len(self.fnames)
                     self.fnames.append(p[len(self.root_sep):].replace(os.sep, "/"))
+                    link = self._code_link(filename)
+                    if link is not None and self.import_ctx >= 0:
+                        # review R-015b G2: the code is keyed on the link's target; the content read through the
+                        # link (where the link points now) is an input of every test
+                        self.read(self.import_ctx, link, "f")
             self._wanted[filename] = w
         return w
+
+    def _code_link(self, filename: str) -> str | None:
+        """The path of a code file through its first symlink inside the repository (a module that is a link, or
+        is in a linked directory), or None. Links outside it (the root reached through a linked path) are
+        resolved."""
+        try:
+            a = os.path.abspath(filename)
+        except (OSError, ValueError):
+            return None
+        parts = a.split(os.sep)[1:]
+        cur = os.sep
+        for i, comp in enumerate(parts):
+            q = os.path.join(cur, comp)
+            if os.path.islink(q):
+                if cur == self.root or cur.startswith(self.root_sep):
+                    return os.path.join(q, *parts[i + 1:])
+                cur = os.path.realpath(q)
+            else:
+                cur = q
+        return None
 
     def arm(self, code) -> None:
         stack = [code]
@@ -425,20 +454,16 @@ class Capture:
     def _note_code(self, filename: str) -> None:
         p = self._abs(filename)
         if p is not None and p not in self.code_stat:
-            self.code_stat[p] = _stat_key(p)
+            self.code_stat[p] = _code_key(p)
 
     def changed_code(self) -> list:
         """Repository code files (relative paths) changed since their source was first read or their module body
         first ran in this session."""
         out = set()
-        for p, k in self.code_stat.items():
+        for p, (k, r) in self.code_stat.items():
             if _stat_key(p) == k:
                 continue
-            try:
-                r = os.path.realpath(p)
-            except (OSError, ValueError):
-                continue
-            if r.startswith(self.root_sep):
+            if r is not None and r.startswith(self.root_sep):
                 out.add(r[len(self.root_sep):].replace(os.sep, "/"))
         return sorted(out)
 
@@ -505,11 +530,14 @@ class Capture:
             if p is None:
                 return
             mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
-            if p.endswith(".py") and p.startswith(self.root_sep) and p not in self.code_stat and (
+            if p.startswith(self.root_sep) and p not in self.code_stat and (
                     ("r" in mode and "+" not in mode) if isinstance(mode, str)
-                    else isinstance(flags, int) and flags & _O_ACC == os.O_RDONLY):
-                # before the read: the source the import system (or pytest's rewrite, runpy...) is about to read
-                self.code_stat[p] = _stat_key(p)
+                    else isinstance(flags, int) and flags & _O_ACC == os.O_RDONLY) \
+                    and not any(s in p for s in _SKIP_PARTS):
+                # before the read: the source the import system (or pytest's rewrite, runpy...) is about to read.
+                # Any file, not only .py: a doctest text file is read at collection and runs later (review R-015b
+                # G3); the plan refuses only on files that are code inputs
+                self.code_stat[p] = _code_key(p)
             if self._ignored(p):
                 return
             if _O_TMPFILE and isinstance(flags, int) and flags & _O_TMPFILE == _O_TMPFILE:
@@ -807,6 +835,7 @@ class Capture:
             # tree's inputs and refusals, as the context that started it does.
             t1 = float("inf") if res.bad and "still running" in res.bad else res.t1
             targets = [ctx] + sorted(self._contexts_during(res.t0, t1) - {ctx})
+            res.late = self._changed_after_start(res)
             for c in targets:
                 self._credit_child(c, sp, res)
         try:
@@ -827,10 +856,36 @@ class Capture:
                 out.add(ck)
         return out
 
+    def _changed_after_start(self, res) -> str | None:
+        """review R-015b G1: a file the tree read is digested now, at the end of the session. One whose ``ctime``
+        (which ``utime`` cannot set back) is not before the tree's first system call may have been changed after
+        the tree read it: the digest is then not that of the content the tree ran or read. Files the session wrote
+        are left to the writers' rules."""
+        if res.t0 is None:
+            return None
+        t0 = int((res.t0 - _CTIME_SLACK) * 1e9)
+        written = {p for op, p in res.ops if op == "w"}
+        seen = set()
+        for op, p in res.ops:
+            if op not in ("r", "x") or p in seen or p in written or p in self.writers:
+                continue
+            seen.add(p)
+            if follow.special(p, res.pids) is not None or self.child_ignored(p):
+                continue
+            try:
+                st = os.stat(p)
+            except (OSError, ValueError):
+                continue
+            if _stat.S_ISREG(st.st_mode) and st.st_ctime_ns >= t0:
+                return p
+        return None
+
     def _credit_child(self, ctx: int, sp, res) -> None:
         """The inputs, writes and refusals of one followed process tree, as inputs of context ``ctx``."""
         if res.bad:
             self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
+        if res.late:
+            self.flag(ctx, "spawn", f"{sp.detail} [{res.late} changed during the session]")
         if res.net:
             self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
         if res.clock and not sp.clock_exempt:
@@ -996,6 +1051,16 @@ def _patch_environ() -> None:
 
 # ---------------------------------------------------------------------------
 # identities
+def _code_key(path: str):
+    """(stat key, resolved path) at first sight: a link pointed elsewhere later changes the stat key, and the file
+    that ran is the one it pointed to then (review R-015b G2)."""
+    try:
+        r = os.path.realpath(path)
+    except (OSError, ValueError):
+        r = None
+    return _stat_key(path), r
+
+
 def _stat_key(path: str):
     try:
         st = os.stat(path)

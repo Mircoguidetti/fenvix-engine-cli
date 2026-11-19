@@ -255,7 +255,9 @@ struct State {
     /// abs path -> whether it existed at its first exclusive create in the session, if nothing had written it
     excl_pre: HashMap<W, bool>,
     excl_order: Vec<W>,
-    code_stat: HashMap<W, StatKey>,
+    /// repository file (abs path) -> (stat key, path resolved then) when first opened for reading or its module
+    /// body first ran (review R-015 F1; R-015b G2: the file that ran is the one a link pointed to then)
+    code_stat: HashMap<W, (StatKey, Option<W>)>,
     code_stat_order: Vec<W>,
     loaded_order: Vec<(W, i64)>,
     seen_mods: HashSet<W>,
@@ -414,13 +416,6 @@ impl State {
         self.hashed.remove(&hk);
     }
 
-    fn note_code(&mut self, p: W) {
-        if !self.code_stat.contains_key(&p) {
-            let k = stat_key(&p);
-            self.code_stat_order.push(p.clone());
-            self.code_stat.insert(p, k);
-        }
-    }
 }
 
 /// Python objects and constants of the capture.
@@ -587,13 +582,97 @@ impl CaptureCore {
         if let Some(&w0) = st.wanted.get(&k) {
             return Ok(w0); // decided meanwhile (a nested call)
         }
+        let registered = rel.is_some();
         if let Some(r) = rel {
             let n = st.fnames.len();
             st.fid.insert(k.clone(), n);
             st.fnames.push(r);
         }
         st.wanted.insert(k, w);
+        let import_ctx = st.import_ctx;
+        drop(st);
+        if registered {
+            if let Some(link) = self.code_link(py, fs)? {
+                if import_ctx >= 0 {
+                    // review R-015b G2: the code is keyed on the link's target; the content read through the link
+                    // (where the link points now) is an input of every test
+                    self.read_impl(py, import_ctx as usize, &link, b'f')?;
+                }
+            }
+        }
         Ok(w)
+    }
+
+    /// `code_stat[p] = _code_key(p)` unless known: the stat key and the path resolved now (review R-015b G2).
+    fn note_code(&self, py: Python<'_>, p: W) -> PyResult<()> {
+        if lock(&self.st).code_stat.contains_key(&p) {
+            return Ok(());
+        }
+        let k = stat_key(&p);
+        let realpath = os_mod(py)?.getattr("path")?.getattr("realpath")?;
+        let r = match realpath.call1((py_of(py, &p)?,)) {
+            Ok(r) => Some(w_of(r.cast::<PyString>()?)?),
+            Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
+                || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
+            {
+                None
+            }
+            Err(e) => return Err(e),
+        };
+        let mut st = lock(&self.st);
+        if !st.code_stat.contains_key(&p) {
+            st.code_stat_order.push(p.clone());
+            st.code_stat.insert(p, (k, r));
+        }
+        Ok(())
+    }
+
+    /// `_code_link(filename)`: the path of a code file through its first symlink inside the repository (a module that
+    /// is a link, or is in a linked directory), or None; links outside it (the root reached through a linked path)
+    /// are resolved (review R-015b G2).
+    fn code_link(&self, py: Python<'_>, filename: &Bound<'_, PyString>) -> PyResult<Option<W>> {
+        let os = os_mod(py)?;
+        let a = match os.getattr("path")?.getattr("abspath")?.call1((filename,)) {
+            Ok(a) => w_of(a.cast::<PyString>()?)?,
+            Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
+                || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
+            {
+                return Ok(None)
+            }
+            Err(e) => return Err(e),
+        };
+        let root_sep = lock(&self.st).root_sep.clone();
+        let root = &root_sep[..root_sep.len() - 1];
+        let parts: Vec<&[u8]> = a.split(|&c| c == b'/').skip(1).collect();
+        let mut cur: W = b"/".to_vec();
+        let join = |a: &[u8], b: &[u8]| -> W {
+            let mut o = a.to_vec();
+            if !(o.is_empty() || o.ends_with(b"/")) {
+                o.push(b'/');
+            }
+            o.extend_from_slice(b);
+            o
+        };
+        for (i, comp) in parts.iter().enumerate() {
+            let q = join(&cur, comp);
+            // os.path.islink: lstat succeeds and is a link
+            let is_link = fs_bytes(&q)
+                .map(|b| std::fs::symlink_metadata(os_path(&b)).map(|m| m.file_type().is_symlink()).unwrap_or(false))
+                .unwrap_or(false);
+            if is_link {
+                if cur == root || cur.starts_with(&root_sep) {
+                    let mut out = q;
+                    for rest in &parts[i + 1..] {
+                        out = join(&out, rest);
+                    }
+                    return Ok(Some(out));
+                }
+                cur = w_of(os.getattr("path")?.getattr("realpath")?.call1((py_of(py, &q)?,))?.cast::<PyString>()?)?;
+            } else {
+                cur = q;
+            }
+        }
+        Ok(None)
     }
 
     /// `Capture._caller_kind()` from the frame that raised the event.
@@ -839,7 +918,7 @@ impl CaptureCore {
                 let fname = code.getattr(intern!(py, "co_filename"))?;
                 if name.eq("<module>")? && self.want(py, &fname)? {
                     if let Some(p) = self.abs(py, &fname)? {
-                        lock(&self.st).note_code(p);
+                        self.note_code(py, p)?;
                     }
                 }
                 let armed = lock(&self.st).armed.contains(&(code.as_ptr() as usize));
@@ -855,18 +934,24 @@ impl CaptureCore {
                 let mode_s: Option<String> =
                     mode.as_ref().and_then(|m| m.cast::<PyString>().ok().map(|s| s.to_string_lossy().into_owned()));
                 let flags_int = flags_o.as_ref().filter(|f| f.is_instance_of::<pyo3::types::PyInt>()).map(int_of);
-                {
-                    let mut st = lock(&self.st);
-                    if p.ends_with(b".py") && p.starts_with(&st.root_sep) && !st.code_stat.contains_key(&p) {
-                        let ro = match &mode_s {
+                let first_ro = {
+                    let st = lock(&self.st);
+                    p.starts_with(&st.root_sep)
+                        && !st.code_stat.contains_key(&p)
+                        && match &mode_s {
                             Some(m) => m.contains('r') && !m.contains('+'),
                             None => flags_int.map(|f| f & self.env.o_acc == self.env.o_rdonly).unwrap_or(false),
-                        };
-                        if ro {
-                            // before the read: the source the import system (or pytest's rewrite, runpy...) reads
-                            st.note_code(p.clone());
                         }
-                    }
+                        && !SKIP_PARTS.iter().any(|s| contains(&p, s))
+                };
+                if first_ro {
+                    // before the read: the source the import system (or pytest's rewrite, runpy...) is about to
+                    // read. Any file, not only .py: a doctest text file is read at collection and runs later (review
+                    // R-015b G3); the plan refuses only on files that are code inputs
+                    self.note_code(py, p.clone())?;
+                }
+                {
+                    let st = lock(&self.st);
                     if st.ignored(&p) {
                         return Ok(());
                     }
@@ -1569,7 +1654,7 @@ impl CaptureCore {
 
     fn _note_code(&self, py: Python<'_>, filename: &Bound<'_, PyAny>) -> PyResult<()> {
         if let Some(p) = self.abs(py, filename)? {
-            lock(&self.st).note_code(p);
+            self.note_code(py, p)?;
         }
         Ok(())
     }
@@ -1592,28 +1677,20 @@ impl CaptureCore {
     /// Repository code files (relative paths) changed since their source was first read or their module body
     /// first ran in this session.
     pub(crate) fn changed_code<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyList>> {
-        let items: Vec<(W, StatKey)> = {
+        let items: Vec<(W, StatKey, Option<W>)> = {
             let st = lock(&self.st);
-            st.code_stat_order.iter().map(|p| (p.clone(), st.code_stat[p])).collect()
+            st.code_stat_order.iter().map(|p| (p.clone(), st.code_stat[p].0, st.code_stat[p].1.clone())).collect()
         };
         let root_sep = lock(&self.st).root_sep.clone();
-        let realpath = os_mod(py)?.getattr("path")?.getattr("realpath")?;
         let mut out = BTreeSet::new();
-        for (p, k) in items {
+        for (p, k, r) in items {
             if stat_key(&p) == k {
                 continue;
             }
-            let r = match realpath.call1((py_of(py, &p)?,)) {
-                Ok(r) => w_of(r.cast::<PyString>()?)?,
-                Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
-                    || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
-                {
-                    continue
+            if let Some(r) = r {
+                if r.starts_with(&root_sep) {
+                    out.insert(r[root_sep.len()..].to_vec());
                 }
-                Err(e) => return Err(e),
-            };
-            if r.starts_with(&root_sep) {
-                out.insert(r[root_sep.len()..].to_vec());
             }
         }
         let v: Vec<Bound<'py, PyAny>> = out.iter().map(|w| py_of(py, w)).collect::<PyResult<_>>()?;
@@ -1935,6 +2012,8 @@ impl CaptureCore {
             let t1r: Option<f64> = if still { Some(f64::INFINITY) } else { res.getattr("t1")?.extract()? };
             let mut others: Vec<usize> = me._contexts_during(t0r, t1r).into_iter().filter(|&c| c != ctx).collect();
             others.sort_unstable();
+            let late = me.changed_after_start(Some(&logdir), &res)?;
+            res.setattr("late", late.map(|l| py_of(py, &l)).transpose()?)?;
             for c in std::iter::once(ctx).chain(others) {
                 me.credit_child_impl(py, Some(&logdir), c, &sp, &res)?;
             }
@@ -2005,6 +2084,53 @@ impl CaptureCore {
         Ok(())
     }
 
+    /// `Capture._changed_after_start(res)` (review R-015b G1): a file the tree read is digested at the end of the
+    /// session. One whose `ctime` (which `utime` cannot set back) is not before the tree's first system call (less
+    /// 20 ms: ctime comes from the kernel's coarse clock) may have been changed after the tree read it. Files the tree
+    /// or the session wrote are left to the writers' rules.
+    fn changed_after_start(&self, logdir: Option<&[u8]>, res: &Bound<'_, PyAny>) -> PyResult<Option<W>> {
+        let t0: Option<f64> = res.getattr("t0")?.extract()?;
+        let Some(t0) = t0 else { return Ok(None) };
+        let t0ns = ((t0 - 0.02) * 1e9).trunc() as i128;
+        let pids = res.getattr("pids")?;
+        let ops: Vec<(W, Bound<'_, PyString>)> = res
+            .getattr("ops")?
+            .try_iter()?
+            .map(|it| {
+                let it = it?;
+                let t = it.cast::<PyTuple>()?;
+                Ok((w_any(&t.get_item(0)?)?, t.get_item(1)?.cast_into::<PyString>()?))
+            })
+            .collect::<PyResult<_>>()?;
+        let mut written: HashSet<W> = HashSet::new();
+        for (op, p) in &ops {
+            if op == b"w" {
+                written.insert(w_of(p)?);
+            }
+        }
+        let mut seen: HashSet<W> = HashSet::new();
+        for (op, ps) in &ops {
+            if op != b"r" && op != b"x" {
+                continue;
+            }
+            let p = w_of(ps)?;
+            if seen.contains(&p) || written.contains(&p) || lock(&self.st).writers.contains_key(&p) {
+                continue;
+            }
+            seen.insert(p.clone());
+            if crate::follow::follow_special(ps, &pids)?.is_some() || self.child_ignored_w(logdir, &p) {
+                continue;
+            }
+            let Some(fsb) = fs_bytes(&p) else { continue };
+            let Ok(m) = std::fs::metadata(os_path(&fsb)) else { continue };
+            let ctime_ns = m.ctime() as i128 * 1_000_000_000 + m.ctime_nsec() as i128;
+            if m.file_type().is_file() && ctime_ns >= t0ns {
+                return Ok(Some(p));
+            }
+        }
+        Ok(None)
+    }
+
     /// `Capture._credit_child(ctx, sp, res)`: the inputs, writes and refusals of one followed process tree, as
     /// inputs of context `ctx`.
     fn credit_child_impl(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
@@ -2015,6 +2141,9 @@ impl CaptureCore {
         };
         if let Some(bad) = opt("bad")? {
             self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [not followed: ", &bad, b"]"])))?;
+        }
+        if let Some(late) = opt("late")? {
+            self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [", &late, b" changed during the session]"])))?;
         }
         if let Some(net) = opt("net")? {
             self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [network: ", &net, b"]"])))?;

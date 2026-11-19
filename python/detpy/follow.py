@@ -150,6 +150,7 @@ class Result:
         self.unshimmed: str | None = None  # a program that ran without the clock shim
         self.t0: float | None = None  # first and last system call of the tree (strace -ttt, real clock)
         self.t1: float | None = None
+        self.late: str | None = None  # a file read by the tree and changed after it started (set by the capture)
 
 
 # ---------------------------------------------------------------------------

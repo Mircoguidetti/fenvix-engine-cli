@@ -91,6 +91,11 @@ EXTRA = {
         def compute():
             return [i * i for i in range(3)]
         """,
+    "test_alias.py": """
+        def test_alias_import():
+            from pkg import alias  # a symlink to pkg/lazy.py (review R-015b G2: the link is an input too)
+            assert alias.compute() == [0, 1, 4]
+        """,
     "test_lazy.py": """
         def test_lazy_import():
             from pkg import lazy
@@ -157,6 +162,7 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
                 shutil.rmtree(p) if p.is_dir() and not p.is_symlink() else p.unlink()
         _write(root, FILES)
         _write(root, EXTRA)
+        os.symlink("lazy.py", root / "pkg" / "alias.py")
         # one cache path for both (followed children load the clock shim from it: a path and a digest of every
         # spawning test); the second path starts from an empty cache holding the first one's shim
         cache = root.parent / f"{root.name}-cache"
