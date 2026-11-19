@@ -135,11 +135,6 @@ class Prof:
         # engine's precompile stamps must not decide what another compiles
         tag = lambda e: hashlib.sha1(os.path.abspath(self.engines[e]).encode()).hexdigest()[:10]  # noqa: E731
         fixed = self.w.work / "pyc"
-        if prev is None:
-            # the first engine of this process: caches another process left (an earlier profile.py or floor.py run,
-            # possibly of other wheels) are dropped; each engine compiles its own at its warm-up run
-            for d in [fixed, *self.w.work.glob("pyc-*")]:
-                shutil.rmtree(d, ignore_errors=True)
         if prev is not None and fixed.exists():
             fixed.rename(self.w.work / f"pyc-{tag(prev)}")
         mine = self.w.work / f"pyc-{tag(eng)}"
@@ -163,8 +158,27 @@ class Prof:
             c.append(f"--det-cache={cache}")
         return c + [*w.args, *units]
 
+    def clean_tmp(self) -> None:
+        """--clean-tmp: remove the ``tmp*`` files left in the temporary directory. A test that leaves its
+        ``mkstemp`` file behind (pygments: test_unicode_options, test_valid_output) takes, under --det, the same
+        names at every run (deterministic temporary names); with a TMP_MAX of 20 (some Python builds) the later runs
+        of a long job find every name taken and fail ("No usable temporary file name found")."""
+        if not getattr(self.a, "clean_tmp", False):
+            return
+        import tempfile
+
+        d = tempfile.gettempdir()
+        for n in os.listdir(d):
+            p = os.path.join(d, n)
+            if n.startswith("tmp") and os.path.isfile(p) and not os.path.islink(p):
+                try:
+                    os.unlink(p)
+                except OSError:
+                    pass
+
     def run(self, variant: str, units, cache: Path | None) -> dict:
         w = self.w
+        self.clean_tmp()
         W.git(w.src, "clean", "-qfd", check=False)
         o = w.work / "o-prof.json"
         o.unlink(missing_ok=True)
@@ -306,6 +320,10 @@ class Prof:
             self.res["error"] = how
             self.save()
             return
+        # bytecode caches another process left (an earlier profile.py or floor.py run, possibly of other wheels) are
+        # dropped: each engine compiles its own at its warm-up run
+        for d in [w.work / "pyc", *w.work.glob("pyc-*")]:
+            shutil.rmtree(d, ignore_errors=True)
         self.cur = next(iter(self.engines))
         w.args = w.pytest_args()
         units = w.units()
@@ -373,6 +391,8 @@ def main(argv=None):
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--pyspy", action="store_true")
     ap.add_argument("--no-probe", action="store_true", help="skip the equivalence probe (equiv_probe.py)")
+    ap.add_argument("--clean-tmp", action="store_true", help="remove leaked tmp* files of the temporary directory "
+                    "before each run (see Prof.clean_tmp)")
     ap.add_argument("--engine-env", action="append", help="NAME:VAR=VALUE, environment of one engine's runs")
     Prof(ap.parse_args(argv)).main()
     return 0

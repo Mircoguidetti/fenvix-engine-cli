@@ -85,6 +85,7 @@ class Floor(P.Prof):
         cap.unlink(missing_ok=True)
         env = self.env()
         env["DETPY_EXEC_CAPTURE"] = str(cap)
+        self.clean_tmp()
         W.git(w.src, "clean", "-qfd", check=False)
         _code, _out, wall = W.sh(self.cmd("C", cache, units), cwd=w.src, env=env, timeout=3000)
         return wall if cap.exists() else float("nan")
@@ -104,6 +105,7 @@ class Floor(P.Prof):
         env2.pop("DETPY_EXEC_CAPTURE", None)
         prefix = ["setarch", "-R"] if shutil.which("setarch") else []
         raw = w.work / f"floor-{tag}.txt"
+        self.clean_tmp()
         spy = [shutil.which("py-spy") or "py-spy", "record", "-r", "250", "-f", "raw", "-o", str(raw), "--"]
         W.git(w.src, "clean", "-qfd", check=False)
         code, out, wall = W.sh([*spy, *prefix, *ex["argv"]], cwd=w.src, env=env2, timeout=6000)
@@ -171,6 +173,7 @@ def main(argv=None):
     ap.add_argument("--pyspy", action="store_true")
     ap.add_argument("--engine-env", action="append")
     ap.add_argument("--no-probe", action="store_true")
+    ap.add_argument("--clean-tmp", action="store_true", help="see profile.py --clean-tmp")
     Floor(ap.parse_args(argv)).main()
 
 
