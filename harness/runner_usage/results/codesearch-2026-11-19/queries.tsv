@@ -1,0 +1,56 @@
+js_pkg_vitest	vitest filename:package.json
+js_pkg_jest	jest filename:package.json
+js_pkg_mocha	mocha filename:package.json
+js_pkg_node_test	"node --test" filename:package.json
+js_pkg_ava	ava filename:package.json
+js_pkg_jasmine	jasmine filename:package.json
+js_pkg_tap	"tap" filename:package.json
+js_pkg_uvu	uvu filename:package.json
+js_pkg_karma	karma filename:package.json
+js_pkg_bun_test	"bun test" filename:package.json
+js_pkg_deno_test	"deno test" filename:package.json
+js_pkg_tsx	tsx filename:package.json
+js_pkg_ts_node	ts-node filename:package.json
+js_ci_vitest	vitest path:.github/workflows
+js_ci_jest	jest path:.github/workflows
+js_ci_mocha	mocha path:.github/workflows
+js_ci_node_test	"node --test" path:.github/workflows
+js_ci_ava	ava path:.github/workflows
+js_ci_jasmine	jasmine path:.github/workflows
+js_ci_bun_test	"bun test" path:.github/workflows
+js_ci_deno_test	"deno test" path:.github/workflows
+js_ci_karma	karma path:.github/workflows
+js_ci_tap	"npx tap" path:.github/workflows
+js_ci_uvu	uvu path:.github/workflows
+js_cfg_mocharc	filename:.mocharc
+js_cfg_ava	filename:ava.config
+js_cfg_jasmine	filename:jasmine.json
+js_cfg_taprc	filename:.taprc
+js_cfg_karma	filename:karma.conf.js
+js_cfg_vitest	filename:vitest.config
+js_cfg_jest	filename:jest.config
+js_cfg_bunfig	"[test]" filename:bunfig.toml
+js_cfg_deno	"test" filename:deno.json
+py_ci_pytest	pytest path:.github/workflows
+py_ci_unittest	"python -m unittest" path:.github/workflows
+py_ci_unittest_discover	"unittest discover" path:.github/workflows
+py_ci_nose2	nose2 path:.github/workflows
+py_ci_doctest	"python -m doctest" path:.github/workflows
+py_ci_django	"manage.py test" path:.github/workflows
+py_ci_zope	zope.testrunner path:.github/workflows
+py_ci_ward	"ward test" path:.github/workflows
+py_ci_tox_unittest	"python -m unittest" filename:tox.ini
+py_ci_tox_pytest	pytest filename:tox.ini
+py_ci_tox_django	"manage.py test" filename:tox.ini
+py_ci_tox_nose2	nose2 filename:tox.ini
+py_ci_tox_zope	zope.testrunner filename:tox.ini
+py_cfg_nose2	filename:nose2.cfg
+py_cfg_unittestcfg	"[unittest]" filename:unittest.cfg
+py_cfg_pytestini	filename:pytest.ini
+py_cfg_conftest	filename:conftest.py
+py_cfg_ward	"tool.ward" filename:pyproject.toml
+py_cfg_hypothesis	"from hypothesis import" language:python
+py_cfg_django_testcase	"from django.test import TestCase" language:python
+py_cfg_unittest_import	"import unittest" language:python
+py_cfg_pytest_import	"import pytest" language:python
+py_cfg_doctest_testmod	"doctest.testmod" language:python

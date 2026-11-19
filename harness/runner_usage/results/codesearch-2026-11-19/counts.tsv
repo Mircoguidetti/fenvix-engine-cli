@@ -1,0 +1,56 @@
+js_pkg_vitest	1325056	2026-11-19T13:21:16Z	vitest filename:package.json
+js_pkg_jest	3174400	2026-11-19T13:21:25Z	jest filename:package.json
+js_pkg_mocha	578560	2026-11-19T13:21:34Z	mocha filename:package.json
+js_pkg_node_test	448512	2026-11-19T13:21:42Z	"node --test" filename:package.json
+js_pkg_ava	1116160	2026-11-19T13:21:52Z	ava filename:package.json
+js_pkg_jasmine	509952	2026-11-19T13:22:02Z	jasmine filename:package.json
+js_pkg_tap	357376	2026-11-19T13:22:12Z	"tap" filename:package.json
+js_pkg_uvu	7584	2026-11-19T13:22:20Z	uvu filename:package.json
+js_pkg_karma	534528	2026-11-19T13:22:31Z	karma filename:package.json
+js_pkg_bun_test	90112	2026-11-19T13:22:40Z	"bun test" filename:package.json
+js_pkg_deno_test	1918	2026-11-19T13:22:50Z	"deno test" filename:package.json
+js_pkg_tsx	1769472	2026-11-19T13:22:59Z	tsx filename:package.json
+js_pkg_ts_node	1253376	2026-11-19T13:23:08Z	ts-node filename:package.json
+js_ci_vitest	83840	2026-11-19T13:23:17Z	vitest path:.github/workflows
+js_ci_jest	35520	2026-11-19T13:23:25Z	jest path:.github/workflows
+js_ci_mocha	5056	2026-11-19T13:23:33Z	mocha path:.github/workflows
+js_ci_node_test	68736	2026-11-19T13:23:43Z	"node --test" path:.github/workflows
+js_ci_ava	1179648	2026-11-19T13:23:51Z	ava path:.github/workflows
+js_ci_jasmine	587	2026-11-19T13:24:02Z	jasmine path:.github/workflows
+js_ci_bun_test	20992	2026-11-19T13:24:10Z	"bun test" path:.github/workflows
+js_ci_deno_test	6072	2026-11-19T13:24:18Z	"deno test" path:.github/workflows
+js_ci_karma	2172	2026-11-19T13:24:28Z	karma path:.github/workflows
+js_ci_tap	93	2026-11-19T13:24:36Z	"npx tap" path:.github/workflows
+js_ci_uvu	956	2026-11-19T13:24:44Z	uvu path:.github/workflows
+js_cfg_mocharc	17920	2026-11-19T13:24:51Z	filename:.mocharc
+js_cfg_ava	2176	2026-11-19T13:24:59Z	filename:ava.config
+js_cfg_jasmine	7024	2026-11-19T13:25:07Z	filename:jasmine.json
+js_cfg_taprc	408	2026-11-19T13:25:15Z	filename:.taprc
+js_cfg_karma	189952	2026-11-19T13:25:23Z	filename:karma.conf.js
+js_cfg_vitest	666624	2026-11-19T13:25:31Z	filename:vitest.config
+js_cfg_jest	497664	2026-11-19T13:25:40Z	filename:jest.config
+js_cfg_bunfig	14608	2026-11-19T13:25:48Z	"[test]" filename:bunfig.toml
+js_cfg_deno	15216	2026-11-19T13:25:56Z	"test" filename:deno.json
+py_ci_pytest	620544	2026-11-19T13:26:04Z	pytest path:.github/workflows
+py_ci_unittest	93056	2026-11-19T13:26:13Z	"python -m unittest" path:.github/workflows
+py_ci_unittest_discover	131328	2026-11-19T13:26:23Z	"unittest discover" path:.github/workflows
+py_ci_nose2	367	2026-11-19T13:26:31Z	nose2 path:.github/workflows
+py_ci_doctest	241	2026-11-19T13:26:39Z	"python -m doctest" path:.github/workflows
+py_ci_django	18144	2026-11-19T13:26:47Z	"manage.py test" path:.github/workflows
+py_ci_zope	60	2026-11-19T13:26:56Z	zope.testrunner path:.github/workflows
+py_ci_ward	313	2026-11-19T13:27:05Z	"ward test" path:.github/workflows
+py_ci_tox_unittest	1200	2026-11-19T13:27:13Z	"python -m unittest" filename:tox.ini
+py_ci_tox_pytest	42496	2026-11-19T13:27:22Z	pytest filename:tox.ini
+py_ci_tox_django	1246	2026-11-19T13:27:29Z	"manage.py test" filename:tox.ini
+py_ci_tox_nose2	172	2026-11-19T13:27:38Z	nose2 filename:tox.ini
+py_ci_tox_zope	390	2026-11-19T13:27:46Z	zope.testrunner filename:tox.ini
+py_cfg_nose2	450	2026-11-19T13:27:54Z	filename:nose2.cfg
+py_cfg_unittestcfg	273	2026-11-19T13:28:02Z	"[unittest]" filename:unittest.cfg
+py_cfg_pytestini	198912	2026-11-19T13:28:10Z	filename:pytest.ini
+py_cfg_conftest	1062912	2026-11-19T13:28:19Z	filename:conftest.py
+py_cfg_ward	24	2026-11-19T13:28:27Z	"tool.ward" filename:pyproject.toml
+py_cfg_hypothesis	327680	2026-11-19T13:28:37Z	"from hypothesis import" language:python
+py_cfg_django_testcase	927744	2026-11-19T13:28:51Z	"from django.test import TestCase" language:python
+py_cfg_unittest_import	8343401	2026-11-19T13:29:08Z	"import unittest" language:python
+py_cfg_pytest_import	33488896	2026-11-19T13:29:21Z	"import pytest" language:python
+py_cfg_doctest_testmod	371200	2026-11-19T13:29:31Z	"doctest.testmod" language:python
