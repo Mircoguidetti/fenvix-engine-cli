@@ -3,13 +3,14 @@
 
 jvm/harness/skip_walk.py checks every reuse against the fresh outcome; a reused test that does not pass is
 rerun alone (its class, twice) and labelled FLAKY as soon as one rerun passes. A wrong reuse caused by state
-left by another test (here: a new test, StateBTest, assigns the static field StateCTest reads) fails in the
+left by another test (here: a new test, PolluterTest, sets the static flag VictimTest reads) fails in the
 full suite and passes alone, deterministically: it is a wrong reuse, but the rule labels it flaky, so the
-walk's "0 wrong" cannot see this class of error (36 of the 37 commons-lang "flaky" have the same shape:
-failed fresh, passed twice alone).
+walk's "0 wrong" cannot see this class of error (the classic order-dependent victim; 36 of the 37
+commons-lang "flaky" have the same shape: failed fresh, passed twice alone).
 
-The test builds a two-commit git repository from jvm/fixtures/review-r022 (commit 2 adds StateBTest),
-runs skip_walk.main() on it and expects the reuse of rv.StateCTest::read() in "wrong".
+The test builds a two-commit git repository from jvm/fixtures/review-r022 (commit 2 adds PolluterTest,
+which sets the static flag that VictimTest expects off), runs skip_walk.main() on it and expects the
+reuse of rv.VictimTest::flagIsOff() in "wrong".
 
   python3 jvm/test/run_review_r022_walk.py [--work DIR]
 """
@@ -20,14 +21,15 @@ JVM = os.path.dirname(HERE)
 FIX = os.path.join(JVM, "fixtures", "review-r022")
 sys.path.insert(0, os.path.join(JVM, "harness"))
 
-STATE_B = """package rv;
+POLLUTER = """package rv;
 
 import org.junit.jupiter.api.Test;
 
-class StateBTest {
+/** New test, runs before VictimTest (name order) and leaves Flag.on set. */
+class PolluterTest {
     @Test
-    void write() {
-        Shared.value = 2;
+    void pollute() {
+        Flag.on = true;
     }
 }
 """
@@ -51,10 +53,10 @@ def main():
     git(src, "-c", "user.name=r", "-c", "user.email=r@invalid", "add", "-A")
     git(src, "-c", "user.name=r", "-c", "user.email=r@invalid", "commit", "-qm", "base")
     c1 = git(src, "rev-parse", "HEAD")
-    with open(os.path.join(src, "src/test/java/rv/StateBTest.java"), "w") as f:
-        f.write(STATE_B)
+    with open(os.path.join(src, "src/test/java/rv/PolluterTest.java"), "w") as f:
+        f.write(POLLUTER)
     git(src, "-c", "user.name=r", "-c", "user.email=r@invalid", "add", "-A")
-    git(src, "-c", "user.name=r", "-c", "user.email=r@invalid", "commit", "-qm", "add StateBTest")
+    git(src, "-c", "user.name=r", "-c", "user.email=r@invalid", "commit", "-qm", "add PolluterTest")
     c2 = git(src, "rev-parse", "HEAD")
 
     import skip_walk  # noqa: E402
@@ -64,7 +66,7 @@ def main():
     skip_walk.main()
     res = json.load(open(os.path.join(out, "review-r022-walk", "shard0.json")))
     row = res["rows"][1]
-    tid = "rv.StateCTest::read()"
+    tid = "rv.VictimTest::flagIsOff()"
     wrong = [w for w in row.get("wrong", []) if w["test"] == tid]
     flaky = [w for w in row.get("flaky", []) if w["test"] == tid]
     ok = bool(wrong) and not flaky

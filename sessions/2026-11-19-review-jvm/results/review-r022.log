@@ -1,0 +1,14 @@
+ok  none                     wrong reuses=0 
+BAD heap-state               wrong reuses=2 [HeapBTest::count()=failed, PerClassTest::b_count()=failed] expected RUN but reused: ['rv.HeapBTest::count()', 'rv.PerClassTest::b_count()']
+BAD new-writer-test          wrong reuses=1 [StateCTest::read()=failed] expected RUN but reused: ['rv.StateCTest::read()']
+BAD inherited-static         wrong reuses=1 [LimitsTest::b_second()=failed] expected RUN but reused: ['rv.LimitsTest::b_second()']
+BAD annotation-default       wrong reuses=1 [AnnoTest::retries()=failed] expected RUN but reused: ['rv.AnnoTest::retries()']
+BAD resource-appears         wrong reuses=1 [LookupTest::resourceAbsent()=failed] expected RUN but reused: ['rv.LookupTest::resourceAbsent()']
+BAD class-appears            wrong reuses=1 [LookupTest::classAbsent()=failed] expected RUN but reused: ['rv.LookupTest::classAbsent()']
+BAD provider-appears         wrong reuses=1 [LookupTest::noProvider()=failed] expected RUN but reused: ['rv.LookupTest::noProvider()']
+BAD csv-source-data          wrong reuses=1 [CsvTest::sum(int, int, int)[1]=failed] expected RUN but reused: ['rv.CsvTest::sum(']
+BAD child-process-input      wrong reuses=1 [ProcTest::childReadsFile()=failed] expected RUN but reused: ['rv.ProcTest::childReadsFile()']
+BAD native-code-input        wrong reuses=1 [NativeTest::nativeReadsFile()=failed] expected RUN but reused: ['rv.NativeTest::nativeReadsFile()']
+BAD infra-package-code       wrong reuses=1 [WordsTest::join()=failed] expected RUN but reused: ['org.codehaus.plexus.rvutil.WordsTest::join()']
+BAD junit-config-parameter   wrong reuses=18 [WordsTest::join()=failed, AnnoTest::retries()=failed, CsvTest::sum(int, int, int)[1]=failed, HeapATest::fill()=failed]
+rc=1

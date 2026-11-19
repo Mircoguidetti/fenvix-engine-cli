@@ -1,0 +1,4 @@
+{"sha": "d5837148151b31fbe8713a536c0d11306d1240c4", "status": "ok", "rc": 1, "seconds": 7.3, "tests": 18, "test_ms": 97, "failed": 1}
+{"sha": "f68ae0b87cdd5ff563d3d69c05d4cddb0e0c3528", "status": "ok", "rc": 1, "seconds": 7.5, "tests": 19, "test_ms": 83, "failed": 2, "prev": "d5837148151b31fbe8713a536c0d11306d1240c4", "reused": 17, "verified": 17, "unverifiable": 0, "share_time_skipped": 0.9124, "share_tests_skipped": 0.8947, "rerun_reasons": {"not-passed": 1}, "rerun_details": {"not-passed: failed": 1}, "module_cache_hits": 0, "modules": 1, "module_cache_share_time": 0.0}
+BAD walk-verifier  reused=17 wrong=[] flaky=[{'test': 'rv.VictimTest::flagIsOff()', 'module': '', 'fresh': 'failed', 'reruns': ['passed', 'passed']}]
+rc=1

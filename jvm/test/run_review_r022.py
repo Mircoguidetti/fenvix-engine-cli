@@ -115,6 +115,9 @@ SCENARIOS = [
     ("child-process-input", lambda: write("data/proc.txt", "two\n"), [], ["rv.ProcTest::childReadsFile()"], False),
     # F7b: native code (JNI) reads a repository file
     ("native-code-input", lambda: write("data/native.txt", "two\n"), [], ["rv.NativeTest::nativeReadsFile()"], False),
+    # F9: project code in a package the agent classes as infrastructure (never instrumented, never in the key)
+    ("infra-package-code", lambda: edit("src/main/java/org/codehaus/plexus/rvutil/Words.java", 'a + "-" + b', 'a + "+" + b'), [],
+     ["org.codehaus.plexus.rvutil.WordsTest::join()"], False),
     # F8: a JUnit configuration parameter set by the build (system property read by JUnit itself)
     ("junit-config-parameter", lambda: (lambda: None), ["-Drv.junit.timeout=1ns"], [], True),
 ]

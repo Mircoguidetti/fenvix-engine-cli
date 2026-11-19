@@ -1,0 +1,7 @@
+BAD iso-maven                {"without_det": {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, "det": [{"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "failed"}, {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "failed"}]}
+ok  iso-gradle               {"without_det": {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, "det": [{"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}]}
+BAD method-ref-clock         {"det_outcomes": ["failed", "failed"]}
+BAD method-ref-random        {"values_in_two_det_runs": ["4804933043389977091", "8229280818536933116"]}
+BAD sleep-past-timer         {"det_outcomes": ["failed", "failed"]}
+BAD junit4-surefire-2.17     {"not_passed": {"Test mechanism::Test mechanism()": "failed"}, "tests_in_trace": 0, "expected_in_trace": 2}
+rc=1

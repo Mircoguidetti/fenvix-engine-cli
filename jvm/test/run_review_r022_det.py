@@ -7,6 +7,11 @@
   method-ref-clock         System::currentTimeMillis and Instant::now (method references, invokedynamic) must read
                            the virtual clock under --det.
   method-ref-random        Random::new must be seeded under --det (same value in two --det runs).
+  sleep-past-timer         a virtual Thread.sleep/TimeUnit.sleep that passes the due time of a virtual scheduled task
+                           must let the task run first (found on luwak TestCachePurging: broken 10/10 under --det).
+  fingerprints-under-load  the existing control fixture (jvm/fixtures/controls, Gradle) run twice with --det while the
+                           machine is busy (2 x CPUs busy loops, as on a shared CI runner): every test must have the same
+                           fingerprint in both runs (the P-022 claim; found while running the control suite next to two builds).
   junit4-surefire-2.17     Surefire 2.17's JUnit 4 provider fires testRunStarted(null): the fenvix listener must not
                            throw (found on tyrus: "Test mechanism" error, listener removed, no trace).
 
@@ -27,6 +32,8 @@ def results(fix, tool):
     for f in glob.glob(os.path.join(fix, pat)):
         for tc in ET.parse(f).getroot().iter("testcase"):
             name = tc.get("name") or ""
+            if not name.endswith(")"):
+                name += "()"
             tid = f"{tc.get('classname')}::{name}"
             if tc.find("skipped") is not None:
                 out[tid] = "skipped"
@@ -69,7 +76,7 @@ def main():
     det_maven = []
     for tool in ("maven", "gradle"):
         name = f"iso-{tool}"
-        if not (want(name) or (tool == "maven" and (want("method-ref-clock") or want("method-ref-random")))):
+        if not (want(name) or (tool == "maven" and (want("method-ref-clock") or want("method-ref-random") or want("sleep-past-timer")))):
             continue
         plain = run(FIX, tool, False, os.path.join(a.work, f"{tool}-plain.log"))
         dets = [run(FIX, tool, True, os.path.join(a.work, f"{tool}-det-{i}.log")) for i in (1, 2)]
@@ -88,11 +95,40 @@ def main():
         if want("method-ref-random"):
             vals = [d["random"] for d in det_maven]
             check("method-ref-random", vals[0] is not None and vals[0] == vals[1], {"values_in_two_det_runs": vals})
+    if det_maven and want("sleep-past-timer"):
+        tid = "rd.TimerSleepTest::sleepPastFixedRateTimer()"
+        st = [d["tests"].get(tid) for d in det_maven]
+        check("sleep-past-timer", all(s == "passed" for s in st), {"det_outcomes": st})
     if want("junit4-surefire-2.17"):
         r = run(FIX4, "maven", True, os.path.join(a.work, "junit4-det.log"))
         mech = {t: v for t, v in r["tests"].items() if "mechanism" in t.lower() or v != "passed"}
         check("junit4-surefire-2.17", not mech and r["trace_tests"] == 2,
               {"not_passed": mech, "tests_in_trace": r["trace_tests"], "expected_in_trace": 2})
+    if want("fingerprints-under-load"):
+        # up to 3 pairs of --det runs of the control fixture while 4 x CPUs busy loops run; any pair that does not
+        # verify with identical fingerprints fails the check
+        ctl = os.path.join(JVM, "fixtures", "controls")
+        burners = [subprocess.Popen([sys.executable, "-c", "while True: pass"]) for _ in range(4 * (os.cpu_count() or 2))]
+        pairs = []
+        try:
+            for p in range(3):
+                traces = []
+                for i in (1, 2):
+                    run(ctl, "gradle", True, os.path.join(a.work, f"controls-load-{p}-{i}.log"))
+                    t = os.path.join(a.work, f"controls-load-{p}-{i}.jsonl")
+                    shutil.copy(os.path.join(ctl, ".fenvix", "trace.jsonl"), t)
+                    traces.append(t)
+                v = subprocess.run(["java", "-jar", AGENT, "verify", *traces], capture_output=True, text=True).stdout
+                same = "not covered: 0" in v and "missing: 0" in v
+                pairs.append([l.strip()[:200] for l in v.splitlines() if l.startswith("NOT-COVERED") or "missing:" in l])
+                if not same:
+                    break
+        finally:
+            for b in burners:
+                b.kill()
+        summaries = [next((l for l in x if "missing:" in l), "") for x in pairs]
+        check("fingerprints-under-load", len(pairs) == 3 and all("not covered: 0" in l and "missing: 0" in l for l in summaries),
+              {"pairs": pairs})
     json.dump(checks, open(a.out, "w"), indent=1)
     sys.exit(0 if checks and all(c["ok"] for c in checks) else 1)
 
