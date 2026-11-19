@@ -134,7 +134,7 @@ def analyse(name, shards):
                          "capture_s": v.get("seconds"), "cold": v.get("cold"), "warm_s": (c.get("warm") or {}).get("seconds"),
                          "warm_reused": ((c.get("warm") or {}).get("summary") or {}).get("reused_files"),
                          "files": len(files), "identity_s": s.get("identity_seconds"), "record_s": s.get("record_seconds"),
-                         "packages": s.get("packages")})
+                         "packages": s.get("packages"), "ab": c.get("capture_ab")})
         prev_ok = ok_now
     return rows, over, len(order)
 
@@ -162,6 +162,39 @@ def main():
     for name in sorted(out):
         for o in out[name]["overhead"]:
             lines.append(f"| {name} | {o['i']}{' (cold)' if o['cold'] else ''} | {o['plain_s']} | {o['det_s']} | {o['capture_s']} | {o['warm_s']} ({o['warm_reused']}/{o['files']}) | {o['identity_s']} |")
+    ab_rows = [(name, o) for name in sorted(out) for o in out[name]["overhead"] if o.get("ab")]
+    if ab_rows:
+        # capture A/B (--engine-before): cold captures of both engines and serial Level 0, same machine and commit
+        lines.append("")
+        lines.append("| project | commit | detjs --det s (runs) | cold capture, before s (runs) | cold capture, after s (runs) | overhead before | overhead after |")
+        lines.append("|---|---|---:|---:|---:|---:|---:|")
+        for name, o in ab_rows:
+            ab = o["ab"]
+            secs = {k: [r["seconds"] for r in ab.get(k, [])] for k in ("det", "before", "after")}
+            if not all(secs.values()):
+                continue
+            d, b, a = med(secs["det"]), med(secs["before"]), med(secs["after"])
+            fmt = lambda xs: "/".join(f"{x:.1f}" for x in xs)
+            lines.append(f"| {name} | {o['i']} | {d:.1f} ({fmt(secs['det'])}) | {b:.1f} ({fmt(secs['before'])}) | {a:.1f} ({fmt(secs['after'])}) | "
+                         f"{(b / d - 1) * 100:+.1f}% | {(a / d - 1) * 100:+.1f}% |")
+        lines.append("")
+        lines.append("| project | commits | overhead before: range (median) | overhead after: range (median) |")
+        lines.append("|---|---:|---:|---:|")
+        for name in sorted({n for n, _ in ab_rows}):
+            ob, oa = [], []
+            for n, o in ab_rows:
+                if n != name:
+                    continue
+                ab = o["ab"]
+                d = med([r["seconds"] for r in ab.get("det", [])])
+                bs = [r["seconds"] for r in ab.get("before", [])]
+                as_ = [r["seconds"] for r in ab.get("after", [])]
+                if d and bs and as_:
+                    ob.append(med(bs) / d - 1)
+                    oa.append(med(as_) / d - 1)
+            if ob:
+                lines.append(f"| {name} | {len(ob)} | {min(ob) * 100:+.1f}% to {max(ob) * 100:+.1f}% ({med(ob) * 100:+.1f}%) | "
+                             f"{min(oa) * 100:+.1f}% to {max(oa) * 100:+.1f}% ({med(oa) * 100:+.1f}%) |")
     lines.append("")
     lines.append("| project | wall: verify (full) run, median s | wall: skip run, median s | ratio |")
     lines.append("|---|---:|---:|---:|")

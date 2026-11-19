@@ -6,6 +6,8 @@ name: node-cache-proof
 #   walk   -> one job per (repository, shard): per commit a skip run, a verify run (every would-be reuse checked by
 #             a fresh run at the same commit), overhead runs, Nx affected; results committed to the branch
 # Started by a push that changes harness/node_cache/RUN (JSON: {"label": "...", "repos": [...], "tests": true}).
+# With "before": "<commit>" and "ab_repos": [...], the walks of those repositories also time cold captures of the
+# engine at that commit against this one at their overhead commits (same machine, alternating; walk.py capture_ab).
 
 on:
   workflow_dispatch:
@@ -32,6 +34,7 @@ jobs:
       matrix: ${{ steps.c.outputs.matrix }}
       label: ${{ steps.c.outputs.label }}
       tests: ${{ steps.c.outputs.tests }}
+      before: ${{ steps.c.outputs.before }}
     steps:
       - uses: actions/checkout@v4
       - id: c
@@ -52,18 +55,22 @@ jobs:
               n = int(d["shards"].get(r, spec.get("shards", 1)))
               for k in range(n):
                   w = d["windows"].get(r)
-                  inc.append({"repo": r, "shard": k, "nshards": n, "node": spec["node"], "window": f"{w[0]}:{w[1]}" if w else ""})
+                  inc.append({"repo": r, "shard": k, "nshards": n, "node": spec["node"], "window": f"{w[0]}:{w[1]}" if w else "",
+                              "ab": bool(d.get("before")) and r in d.get("ab_repos", [])})
           with open(os.environ["GITHUB_OUTPUT"], "a") as f:
               f.write(f"matrix={json.dumps({'include': inc})}\n")
               f.write(f"label={d['label']}\n")
               f.write(f"tests={'true' if d['tests'] else 'false'}\n")
+              f.write(f"before={d.get('before', '')}\n")
           print(d, inc)
           PY
 
   build:
+    needs: [config]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
       - uses: actions/setup-node@v4
         with: {node-version: "22"}
       - run: cargo build -p detpy-node --release
@@ -72,6 +79,18 @@ jobs:
         with:
           name: detjs
           path: node/detjs.linux-x64.node
+      # an earlier engine for the capture A/B (RUN "before": a commit of this repository)
+      - name: earlier engine
+        if: needs.config.outputs.before != ''
+        run: |
+          git worktree add -q /tmp/before ${{ needs.config.outputs.before }}
+          (cd /tmp/before && cargo build -p detpy-node --release && cp target/release/libdetpy_node.so node/detjs.linux-x64.node)
+          tar -C /tmp/before -czf /tmp/detjs-before.tgz node/src node/bin node/package.json node/detjs.linux-x64.node
+      - uses: actions/upload-artifact@v4
+        if: needs.config.outputs.before != ''
+        with:
+          name: detjs-before
+          path: /tmp/detjs-before.tgz
 
   tests:
     needs: [config, build]
@@ -88,7 +107,7 @@ jobs:
         run: |
           cd node && npm ci
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../cache-tests.xml test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js 2>&1 | tee ../cache-tests.log
+            --test-reporter=junit --test-reporter-destination=../cache-tests.xml test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js test/review-r021b.test.js test/r021b-fixes.test.js 2>&1 | tee ../cache-tests.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -111,6 +130,12 @@ jobs:
         with: {node-version: "${{ matrix.node }}"}
       - uses: actions/download-artifact@v4
         with: {name: detjs, path: node}
+      - uses: actions/download-artifact@v4
+        if: matrix.ab
+        with: {name: detjs-before, path: /tmp}
+      - name: earlier engine
+        if: matrix.ab
+        run: mkdir -p /tmp/before && tar -C /tmp/before -xzf /tmp/detjs-before.tgz && ls /tmp/before/node
       - name: clone
         run: |
           URL=$(python3 -c "import json;print(json.load(open('harness/node_cache/specs/${{ matrix.repo }}.json'))['url'])")
@@ -123,7 +148,8 @@ jobs:
             --repo /tmp/repo --work /tmp/work --out /tmp/out/${{ matrix.repo }}-${{ matrix.shard }}.json \
             --commits harness/node_cache/commits/${{ matrix.repo }}-commits.json \
             --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --budget 18600 --run-timeout 3000 \
-            ${{ matrix.window && format('--window={0}', matrix.window) || '' }}
+            ${{ matrix.window && format('--window={0}', matrix.window) || '' }} \
+            ${{ matrix.ab && '--engine-before=/tmp/before' || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:

@@ -12,6 +12,8 @@ Per commit i (after install and build):
 * **overhead** (first commit of a shard and every `--overhead-every` commits): plain runner (the project's own
   parallel command), `detjs --det` without cache (serial Level 0) and the cold capture run (empty cache), then a warm
   run (skip mode right after the verify run at the same commit).
+* **capture A/B** (overhead commits, with `--engine-before`): cold capture runs (empty cache) of this engine and of
+  an earlier one, alternating, on the same machine and commit, with serial Level 0 runs in between as reference.
 * **Nx** (when `--nx`): projects affected between commit i-1 and i (`nx show projects --affected`, package-based
   inference from the workspace), mapped to test files by project root: the test time Nx's affected selection would
   skip at the same transition.
@@ -144,15 +146,37 @@ class Walk:
         info["build_seconds"] = round(time.time() - t0, 1)
         return info
 
-    def detjs(self, cache_dir, extra, report):
-        args = ["node", DETJS, self.spec["runner"]]
+    def detjs(self, cache_dir, extra, report, bin_=DETJS, env=None):
+        args = ["node", bin_, self.spec["runner"]]
         if self.spec["runner"] == "vitest":
             args += ["run"]
         args += ["--det", f"--det-cache={cache_dir}"] + extra + list(self.spec.get("args", []))
         args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
                  else ["--json", f"--outputFile={report}"])
-        rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
+        rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=env or self.env)
         return rc, out, dt
+
+    def capture_ab(self, i):
+        """Cold capture (empty cache) with this engine and with --engine-before, on the same machine and commit, in
+        alternating order, `--ab-repeats` times each; plus serial Level 0 without cache in between (the reference)."""
+        out = {"before": [], "after": [], "det": []}
+        engines = [("after", DETJS), ("before", os.path.join(os.path.abspath(self.a.engine_before), "node", "bin", "detjs.js"))]
+        for k in range(self.a.ab_repeats):
+            order = engines if (i + k) % 2 == 0 else engines[::-1]
+            for name, bin_ in order:
+                cdir = os.path.join(self.work, f"cache-ab-{name}")
+                shutil.rmtree(cdir, ignore_errors=True)
+                rp = os.path.join(self.work, f"ab-{name}.json")
+                env = dict(self.env, FENVIX_RUNTIME_MEMO=os.path.join(self.work, f"runtime-memo-{name}.json"))
+                rc, _, dt = self.detjs(cdir, [], rp, bin_=bin_, env=env)
+                sm = summary_of(self.repo)
+                out[name].append({"rc": rc, "seconds": round(dt, 2), "recorded": sm.get("recorded"), "ran_files": sm.get("ran_files"),
+                                  "not_cached": sm.get("not_cached"), "record_seconds": sm.get("record_seconds"),
+                                  "identity_seconds": sm.get("identity_seconds")})
+            rp = os.path.join(self.work, "ab-det.json")
+            rc, dt = self.det_nocache(rp)
+            out["det"].append({"rc": rc, "seconds": round(dt, 2)})
+        return out
 
     def plain(self, report):
         cmd = self.spec["plain"].replace("{report}", report)
@@ -237,6 +261,8 @@ class Walk:
                 rp = os.path.join(self.work, "det.json")
                 rc, dt = self.det_nocache(rp)
                 rec["det_nocache"] = {"rc": rc, "seconds": round(dt, 2)}
+                if self.a.engine_before:
+                    rec["capture_ab"] = self.capture_ab(i)
             if first:
                 shutil.rmtree(self.cache, ignore_errors=True)
             else:
@@ -307,6 +333,9 @@ def main():
     ap.add_argument("--budget", type=int, default=19800, help="stop starting commits after this many seconds")
     ap.add_argument("--nx-only", action="store_true", help="only Nx affected per transition (no install, no test runs)")
     ap.add_argument("--no-first-overhead", action="store_true")
+    ap.add_argument("--engine-before", default=None,
+                    help="another detjs checkout: at overhead commits, cold captures with it and with this engine (A/B)")
+    ap.add_argument("--ab-repeats", type=int, default=2)
     ap.add_argument("--window", default="", help="LO:HI slice of the commit list (overrides the spec's window)")
     a = ap.parse_args()
     shas = load_json(a.commits)

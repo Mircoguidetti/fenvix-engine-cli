@@ -76,7 +76,8 @@ impl Recorder {
     /// Start streaming the trace to `path`. `metaJson` is free-form JSON.
     #[napi]
     pub fn open(&self, path: String, meta_json: String, order: Vec<String>) -> Result<()> {
-        let meta: serde_json::Value = serde_json::from_str(&meta_json).map_err(|e| bad(format!("bad meta json: {e}")))?;
+        let meta: serde_json::Value =
+            serde_json::from_str(&meta_json).map_err(|e| bad(format!("bad meta json: {e}")))?;
         lock(&self.inner).open(&PathBuf::from(path), &Header::new(meta, order)).map_err(io_err)
     }
 
@@ -88,7 +89,13 @@ impl Recorder {
     /// Record one event for the current test (ignored outside tests).
     #[napi]
     pub fn record(&self, source: String, op: String, site: String, value: String, thread: Option<u32>) {
-        lock(&self.inner).record(Event { thread: thread.unwrap_or(0), source: Source::parse(&source), op, site, value });
+        lock(&self.inner).record(Event {
+            thread: thread.unwrap_or(0),
+            source: Source::parse(&source),
+            op,
+            site,
+            value,
+        });
     }
 
     /// Record many events in one call: events separated by U+001E, fields
@@ -106,7 +113,13 @@ impl Recorder {
             let (Some(s), Some(o), Some(at), Some(val)) = (f.next(), f.next(), f.next(), f.next()) else {
                 return Err(bad(format!("malformed packed event {ev:?}")));
             };
-            r.record(Event { thread: 0, source: Source::parse(s), op: o.to_owned(), site: at.to_owned(), value: val.to_owned() });
+            r.record(Event {
+                thread: 0,
+                source: Source::parse(s),
+                op: o.to_owned(),
+                site: at.to_owned(),
+                value: val.to_owned(),
+            });
             n += 1;
         }
         Ok(n)
@@ -353,7 +366,9 @@ pub fn merge_traces(parts: Vec<String>, out: String, meta_json: String, order: V
 pub fn backends() -> String {
     let all: Vec<serde_json::Value> = [Backend::PythonHooks, Backend::Syscall]
         .iter()
-        .map(|b| serde_json::json!({"name": b.name(), "implemented": b.implemented(), "capabilities": b.capabilities()}))
+        .map(
+            |b| serde_json::json!({"name": b.name(), "implemented": b.implemented(), "capabilities": b.capabilities()}),
+        )
         .collect();
     serde_json::Value::Array(all).to_string()
 }
@@ -468,7 +483,14 @@ impl ProofCache {
     /// Add (or find) a code file version keyed by its whole content; returns its index.
     #[napi]
     pub fn add_file(&self, path: String, content: String) -> u32 {
-        let f = CodeFile { path, skeleton: content.clone(), hooks: content.clone(), content, units: vec![], imports: vec![] };
+        let f = CodeFile {
+            path,
+            skeleton: content.clone(),
+            hooks: content.clone(),
+            content,
+            units: vec![],
+            imports: vec![],
+        };
         lock(&self.inner).store.add_file(f)
     }
 
@@ -604,11 +626,8 @@ pub fn tree_digest(
     max_files: u32,
     threads: u32,
 ) -> Result<String> {
-    let roots: Vec<(String, PathBuf)> = roots
-        .into_iter()
-        .filter(|r| r.len() == 2)
-        .map(|r| (r[0].clone(), PathBuf::from(&r[1])))
-        .collect();
+    let roots: Vec<(String, PathBuf)> =
+        roots.into_iter().filter(|r| r.len() == 2).map(|r| (r[0].clone(), PathBuf::from(&r[1]))).collect();
     let memo = memo.map(PathBuf::from);
     let d = detpy_core::treehash::tree_digest(
         &roots,
@@ -621,11 +640,68 @@ pub fn tree_digest(
     serde_json::to_string(&d).map_err(|e| bad(e.to_string()))
 }
 
+/// The work of [`tree_digest`] on a thread of libuv's pool (the identity is computed while the runner starts).
+pub struct TreeDigestTask {
+    roots: Vec<(String, PathBuf)>,
+    inside: String,
+    exclude: Vec<String>,
+    memo: Option<PathBuf>,
+    max_files: usize,
+    threads: usize,
+}
+
+impl Task for TreeDigestTask {
+    type Output = String;
+    type JsValue = String;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        let d = detpy_core::treehash::tree_digest(
+            &self.roots,
+            std::path::Path::new(&self.inside),
+            &self.exclude,
+            self.memo.as_deref(),
+            self.max_files,
+            self.threads,
+        );
+        serde_json::to_string(&d).map_err(|e| bad(e.to_string()))
+    }
+
+    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(output)
+    }
+}
+
+/// [`tree_digest`] without blocking the event loop: a Promise of the same JSON.
+#[napi]
+pub fn tree_digest_async(
+    roots: Vec<Vec<String>>,
+    inside: String,
+    exclude: Vec<String>,
+    memo: Option<String>,
+    max_files: u32,
+    threads: u32,
+) -> AsyncTask<TreeDigestTask> {
+    let roots = roots.into_iter().filter(|r| r.len() == 2).map(|r| (r[0].clone(), PathBuf::from(&r[1]))).collect();
+    AsyncTask::new(TreeDigestTask {
+        roots,
+        inside,
+        exclude,
+        memo: memo.map(PathBuf::from),
+        max_files: max_files as usize,
+        threads: threads as usize,
+    })
+}
+
 // Dependency kinds of review r021 (detpy_core::deps): stat metadata, realpath, typed / recursive listings, copies.
 
 #[napi]
 pub fn stat_meta_digest(path: String) -> Option<String> {
     detpy_core::deps::stat_meta_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn stat_field_digest(path: String, field: String, follow: bool) -> Option<String> {
+    detpy_core::deps::stat_field_digest(std::path::Path::new(&path), &field, follow)
 }
 
 #[napi]
@@ -641,6 +717,11 @@ pub fn typed_listing_digest(path: String) -> Option<String> {
 #[napi]
 pub fn tree_listing_digest(path: String) -> Option<String> {
     detpy_core::deps::tree_listing_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn tree_listing_nofollow_digest(path: String) -> Option<String> {
+    detpy_core::deps::tree_listing_nofollow_digest(std::path::Path::new(&path))
 }
 
 #[napi]

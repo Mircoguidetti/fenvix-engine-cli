@@ -4,10 +4,13 @@
 //! dependency can be recomputed before a test runs ([`crate::proof::data_now`]):
 //!
 //! * `m:` metadata a `stat` result shows besides the kind: kind (following links), size and permission bits;
+//! * `V:` one other field of a `stat` / `lstat` result (a time, the inode, the owner, ...), by its exact value;
 //! * `r:` the path `realpath` resolves to (every link along the way);
 //! * `e:` a listing with the type of each entry (`readdir(..., { withFileTypes })`, `opendir`), links not followed;
-//! * `t:` a recursive listing (`readdir(..., { recursive })`, globs below a base directory): every path below the
-//!   directory with its type, links not followed;
+//! * `t:` a recursive listing as Node's recursive `readdir` makes it (globs below a base directory too): every path
+//!   below the directory with its type, descending into links to directories (cycles cut by device and inode);
+//! * `u:` a recursive listing that does not follow links (`fs.promises.readdir` with `withFileTypes`, recursive
+//!   `opendir`);
 //! * `c:` a copied tree (`cp`): every path below the source with its type, the content of every file and the
 //!   target text of every link; links to files or directories are followed (a copy may dereference them).
 //!
@@ -78,6 +81,86 @@ pub fn stat_meta_digest(path: &Path) -> Option<String> {
     Some(digest_bytes(&buf).short())
 }
 
+fn time_part(t: std::io::Result<std::time::SystemTime>) -> String {
+    match t {
+        Ok(t) => match t.duration_since(std::time::UNIX_EPOCH) {
+            Ok(d) => format!("{}.{:09}", d.as_secs(), d.subsec_nanos()),
+            Err(e) => format!("-{}.{:09}", e.duration().as_secs(), e.duration().subsec_nanos()),
+        },
+        Err(_) => "none".into(),
+    }
+}
+
+/// The value of one field of a `stat` result (Node's `Stats` field names; the `Ms`, `Ns` and `Date` forms of a
+/// time are the same field), following links or not. Unknown names give every field.
+#[cfg(unix)]
+fn stat_field_value(m: &fs::Metadata, field: &str) -> String {
+    use std::os::unix::fs::MetadataExt;
+    let ts = |s: i64, n: i64| format!("{s}.{n:09}");
+    let base = field.trim_end_matches("Ms").trim_end_matches("Ns");
+    match base {
+        "dev" => m.dev().to_string(),
+        "ino" => m.ino().to_string(),
+        "mode" => m.mode().to_string(),
+        "nlink" => m.nlink().to_string(),
+        "uid" => m.uid().to_string(),
+        "gid" => m.gid().to_string(),
+        "rdev" => m.rdev().to_string(),
+        "size" => m.size().to_string(),
+        "blksize" => m.blksize().to_string(),
+        "blocks" => m.blocks().to_string(),
+        "atime" => ts(m.atime(), m.atime_nsec()),
+        "mtime" => ts(m.mtime(), m.mtime_nsec()),
+        "ctime" => ts(m.ctime(), m.ctime_nsec()),
+        "birthtime" => time_part(m.created()),
+        _ => [
+            "dev",
+            "ino",
+            "mode",
+            "nlink",
+            "uid",
+            "gid",
+            "rdev",
+            "size",
+            "blksize",
+            "blocks",
+            "atime",
+            "mtime",
+            "ctime",
+            "birthtime",
+        ]
+        .iter()
+        .map(|f| stat_field_value(m, f))
+        .collect::<Vec<_>>()
+        .join("|"),
+    }
+}
+
+#[cfg(not(unix))]
+fn stat_field_value(m: &fs::Metadata, field: &str) -> String {
+    let base = field.trim_end_matches("Ms").trim_end_matches("Ns");
+    match base {
+        "size" => m.len().to_string(),
+        "mode" => mode_bits(m).to_string(),
+        "atime" => time_part(m.accessed()),
+        "mtime" => time_part(m.modified()),
+        "birthtime" => time_part(m.created()),
+        _ => format!("{}|{}|{}|{}", m.len(), time_part(m.accessed()), time_part(m.modified()), time_part(m.created())),
+    }
+}
+
+/// `V:` digest of one field of a `stat` (`follow`) or `lstat` result that is not covered by `m:` (times, inode,
+/// device, owner, link count, block counts): the field's exact value, so that a test that reads it is rerun when
+/// it changes (a fresh checkout or another machine changes most of them: then nothing is reused). `None` when the
+/// path does not exist.
+pub fn stat_field_digest(path: &Path, field: &str, follow: bool) -> Option<String> {
+    let m = if follow { fs::metadata(path) } else { fs::symlink_metadata(path) }.ok()?;
+    let mut buf = Vec::new();
+    push_part(&mut buf, field.as_bytes());
+    push_part(&mut buf, stat_field_value(&m, field).as_bytes());
+    Some(digest_bytes(&buf).short())
+}
+
 /// `r:` digest of the canonical path (`realpath`). `None` when it cannot be resolved.
 pub fn realpath_digest(path: &Path) -> Option<String> {
     let p = fs::canonicalize(path).ok()?;
@@ -101,51 +184,167 @@ pub fn typed_listing_digest(path: &Path) -> Option<String> {
     Some(digest_bytes(&buf).short())
 }
 
-/// `t:` digest of a recursive listing: every path below `path` with its type, links not followed. `None` when
-/// `path` cannot be listed. A subdirectory that cannot be listed is part of the digest as such.
+/// Identity of a directory for cycle cutting: device and inode (the canonical path where they are not available).
+#[cfg(unix)]
+fn dir_id(m: &fs::Metadata, _p: &Path) -> (u64, u64, PathBuf) {
+    use std::os::unix::fs::MetadataExt;
+    (m.dev(), m.ino(), PathBuf::new())
+}
+
+#[cfg(not(unix))]
+fn dir_id(_m: &fs::Metadata, p: &Path) -> (u64, u64, PathBuf) {
+    (0, 0, fs::canonicalize(p).unwrap_or_else(|_| p.to_path_buf()))
+}
+
+fn finish_listing(mut items: Vec<(Vec<u8>, Vec<u8>)>, version: &[u8], extra: Option<&[u8]>) -> String {
+    items.sort();
+    let mut buf = Vec::new();
+    push_part(&mut buf, version);
+    for (n, t) in items {
+        push_part(&mut buf, &n);
+        push_part(&mut buf, &t);
+    }
+    if let Some(x) = extra {
+        push_part(&mut buf, b"base");
+        push_part(&mut buf, x);
+    }
+    digest_bytes(&buf).short()
+}
+
+fn join_rel(rel: &[u8], name: &std::ffi::OsStr) -> Vec<u8> {
+    let mut r = rel.to_vec();
+    if !r.is_empty() {
+        r.push(b'/');
+    }
+    r.extend_from_slice(&os_bytes(name));
+    r
+}
+
+/// `t:` digest of a recursive listing as Node's recursive `readdir` produces it (`readdirSync`, callback `readdir`
+/// and `fs.promises.readdir` without `withFileTypes`; `readdirSync` and callback `readdir` with it): every path
+/// below `path` with its type, descending into symbolic links to directories exactly as Node does (Node decides
+/// with a `stat` that follows links). Node does not cut cycles (it stops when the kernel refuses the path with
+/// `ELOOP` or `ENAMETOOLONG`, which depends on the absolute path); here a link that leads back to a directory on its
+/// own ancestor chain (same device and inode) is recorded as a cycle to that ancestor's relative path (the subtree
+/// there is the ancestor's, already listed), and when there is a cycle the absolute base path (as given and
+/// canonical) is part of the digest, so the result Node computes from the same tree is fully determined by it.
+/// `None` when `path` cannot be listed. A subdirectory that cannot be listed is part of the digest as such.
 pub fn tree_listing_digest(path: &Path) -> Option<String> {
     fs::read_dir(path).ok()?;
-    let mut items: Vec<(Vec<u8>, &'static [u8])> = Vec::new();
-    let mut stack: Vec<(PathBuf, Vec<u8>)> = vec![(path.to_path_buf(), Vec::new())];
-    while let Some((dir, rel)) = stack.pop() {
+    let root_meta = fs::metadata(path).ok()?;
+    let mut items: Vec<(Vec<u8>, Vec<u8>)> = Vec::new();
+    let mut cycle = false;
+    // stack of (directory, relative path, ancestor chain: identities and relative paths, root first)
+    type Chain = Vec<((u64, u64, PathBuf), Vec<u8>)>;
+    let mut stack: Vec<(PathBuf, Vec<u8>, Chain)> =
+        vec![(path.to_path_buf(), Vec::new(), vec![(dir_id(&root_meta, path), Vec::new())])];
+    while let Some((dir, rel, chain)) = stack.pop() {
         let rd = match fs::read_dir(&dir) {
             Ok(r) => r,
             Err(_) => {
-                items.push((rel, b"unlistable"));
+                items.push((rel, b"unlistable".to_vec()));
                 continue;
             }
         };
         for e in rd {
             let Ok(e) = e else {
-                items.push((rel.clone(), b"error"));
+                items.push((rel.clone(), b"error".to_vec()));
                 continue;
             };
-            let mut r = rel.clone();
-            if !r.is_empty() {
-                r.push(b'/');
-            }
-            r.extend_from_slice(&os_bytes(&e.file_name()));
+            let r = join_rel(&rel, &e.file_name());
             let t = match e.file_type() {
                 Ok(t) => t,
                 Err(_) => {
-                    items.push((r, b"error"));
+                    items.push((r, b"error".to_vec()));
                     continue;
                 }
             };
-            let tag = type_tag(&t);
+            let p = e.path();
+            if t.is_dir() {
+                // a real directory cannot close a cycle (hard links to directories do not exist)
+                let id = match fs::symlink_metadata(&p) {
+                    Ok(m) => dir_id(&m, &p),
+                    Err(_) => {
+                        items.push((r, b"error".to_vec()));
+                        continue;
+                    }
+                };
+                let mut c = chain.clone();
+                c.push((id, r.clone()));
+                stack.push((p, r.clone(), c));
+                items.push((r, b"d".to_vec()));
+            } else if t.is_symlink() {
+                // Node: `stat` (following the link) decides whether to descend
+                match fs::metadata(&p) {
+                    Ok(m) if m.is_dir() => {
+                        let id = dir_id(&m, &p);
+                        if let Some((_, anc)) = chain.iter().find(|(x, _)| *x == id) {
+                            cycle = true;
+                            let mut tag = b"l>cycle:".to_vec();
+                            tag.extend_from_slice(anc);
+                            items.push((r, tag));
+                        } else {
+                            let mut c = chain.clone();
+                            c.push((id, r.clone()));
+                            stack.push((p, r.clone(), c));
+                            items.push((r, b"l>d".to_vec()));
+                        }
+                    }
+                    Ok(m) if m.is_file() => items.push((r, b"l>f".to_vec())),
+                    Ok(_) => items.push((r, b"l>o".to_vec())),
+                    Err(_) => items.push((r, b"l>dangling".to_vec())),
+                }
+            } else {
+                items.push((r, type_tag(&t).to_vec()));
+            }
+        }
+    }
+    let base = if cycle {
+        let mut b = os_bytes(path.as_os_str());
+        b.push(0);
+        b.extend_from_slice(&os_bytes(fs::canonicalize(path).unwrap_or_default().as_os_str()));
+        Some(b)
+    } else {
+        None
+    };
+    Some(finish_listing(items, b"t2", base.as_deref()))
+}
+
+/// `u:` digest of a recursive listing that does not follow links (`fs.promises.readdir` with `withFileTypes` and
+/// `opendir` with `recursive`: Node decides from the entry's own type): every path below `path` with its type.
+/// `None` when `path` cannot be listed. A subdirectory that cannot be listed is part of the digest as such.
+pub fn tree_listing_nofollow_digest(path: &Path) -> Option<String> {
+    fs::read_dir(path).ok()?;
+    let mut items: Vec<(Vec<u8>, Vec<u8>)> = Vec::new();
+    let mut stack: Vec<(PathBuf, Vec<u8>)> = vec![(path.to_path_buf(), Vec::new())];
+    while let Some((dir, rel)) = stack.pop() {
+        let rd = match fs::read_dir(&dir) {
+            Ok(r) => r,
+            Err(_) => {
+                items.push((rel, b"unlistable".to_vec()));
+                continue;
+            }
+        };
+        for e in rd {
+            let Ok(e) = e else {
+                items.push((rel.clone(), b"error".to_vec()));
+                continue;
+            };
+            let r = join_rel(&rel, &e.file_name());
+            let t = match e.file_type() {
+                Ok(t) => t,
+                Err(_) => {
+                    items.push((r, b"error".to_vec()));
+                    continue;
+                }
+            };
             if t.is_dir() {
                 stack.push((e.path(), r.clone()));
             }
-            items.push((r, tag));
+            items.push((r, type_tag(&t).to_vec()));
         }
     }
-    items.sort();
-    let mut buf = Vec::new();
-    for (n, t) in items {
-        push_part(&mut buf, &n);
-        push_part(&mut buf, t);
-    }
-    Some(digest_bytes(&buf).short())
+    Some(finish_listing(items, b"u1", None))
 }
 
 /// `c:` digest of what a copy of `path` can produce: for a file its content; for a directory every path below it
@@ -438,6 +637,34 @@ mod tests {
         assert_eq!(stat_meta_digest(&d.path().join("none")), None);
     }
 
+    #[test]
+    fn stat_field_sees_its_field() {
+        let d = tempfile::tempdir().unwrap();
+        let p = d.path().join("a");
+        fs::write(&p, "abc").unwrap();
+        let m = stat_field_digest(&p, "mtimeMs", true).unwrap();
+        assert_eq!(stat_field_digest(&p, "mtime", true).unwrap(), stat_field_digest(&p, "mtime", true).unwrap());
+        assert_ne!(stat_field_digest(&p, "mtime", true).unwrap(), m, "the field name is part of the digest");
+        let f = fs::File::options().write(true).open(&p).unwrap();
+        f.set_modified(std::time::UNIX_EPOCH + std::time::Duration::from_secs(1_000_000)).unwrap();
+        assert_ne!(stat_field_digest(&p, "mtimeMs", true).unwrap(), m);
+        #[cfg(unix)]
+        {
+            let i = stat_field_digest(&p, "ino", true).unwrap();
+            fs::remove_file(&p).unwrap();
+            fs::write(d.path().join("b"), "x").unwrap();
+            fs::write(&p, "abc").unwrap();
+            let _ = i; // a new file may reuse the inode number: only existence is asserted here
+            std::os::unix::fs::symlink("a", d.path().join("l")).unwrap();
+            assert_ne!(
+                stat_field_digest(&d.path().join("l"), "ino", true),
+                stat_field_digest(&d.path().join("l"), "ino", false),
+                "stat and lstat of a link see different inodes"
+            );
+        }
+        assert_eq!(stat_field_digest(&d.path().join("none"), "ino", true), None);
+    }
+
     #[cfg(unix)]
     #[test]
     fn realpath_follows_retargeted_link() {
@@ -477,6 +704,44 @@ mod tests {
         assert_eq!(tree_listing_digest(&d.path().join("none")), None);
     }
 
+    #[cfg(unix)]
+    #[test]
+    fn tree_listing_follows_directory_links_like_node() {
+        let d = tempfile::tempdir().unwrap();
+        fs::create_dir_all(d.path().join("tree/a")).unwrap();
+        fs::create_dir_all(d.path().join("other")).unwrap();
+        fs::write(d.path().join("other/x.json"), "{}").unwrap();
+        std::os::unix::fs::symlink("../other", d.path().join("tree/link")).unwrap();
+        let t = d.path().join("tree");
+        let a = tree_listing_digest(&t).unwrap();
+        let u = tree_listing_nofollow_digest(&t).unwrap();
+        fs::write(d.path().join("other/y.json"), "{}").unwrap();
+        assert_ne!(tree_listing_digest(&t).unwrap(), a, "a new file below a linked directory");
+        assert_eq!(tree_listing_nofollow_digest(&t).unwrap(), u, "not followed by the no-follow kind");
+        // a cycle: cut, and the digest is still stable and sensitive
+        std::os::unix::fs::symlink("..", d.path().join("tree/a/up")).unwrap();
+        let b = tree_listing_digest(&t).unwrap();
+        assert_eq!(tree_listing_digest(&t).unwrap(), b);
+        fs::write(d.path().join("tree/a/new.txt"), "").unwrap();
+        assert_ne!(tree_listing_digest(&t).unwrap(), b);
+        // which ancestor a cycle leads to is part of the digest
+        let c = tree_listing_digest(&t).unwrap();
+        fs::remove_file(d.path().join("tree/a/up")).unwrap();
+        std::os::unix::fs::symlink(".", d.path().join("tree/a/up")).unwrap();
+        assert_ne!(tree_listing_digest(&t).unwrap(), c);
+        // retargeting a link to a directory with the same names elsewhere is seen through the linked entries
+        let e = tree_listing_digest(&t).unwrap();
+        fs::create_dir_all(d.path().join("other2")).unwrap();
+        fs::remove_file(d.path().join("tree/link")).unwrap();
+        std::os::unix::fs::symlink("../other2", d.path().join("tree/link")).unwrap();
+        assert_ne!(tree_listing_digest(&t).unwrap(), e);
+        // a link to a file and a dangling link differ
+        std::os::unix::fs::symlink("../other/x.json", d.path().join("tree/fl")).unwrap();
+        let f = tree_listing_digest(&t).unwrap();
+        fs::remove_file(d.path().join("other/x.json")).unwrap();
+        assert_ne!(tree_listing_digest(&t).unwrap(), f);
+    }
+
     #[test]
     fn copy_tree_sees_contents() {
         let d = tempfile::tempdir().unwrap();
@@ -514,7 +779,10 @@ mod tests {
                 GlobBase { dir: "/src".into(), recursive: true }
             ])
         );
-        assert_eq!(g("import.meta.glob<Record<string, string>>('./x/*.md', { query: '?raw' })").map(|v| v.len()), Some(1));
+        assert_eq!(
+            g("import.meta.glob<Record<string, string>>('./x/*.md', { query: '?raw' })").map(|v| v.len()),
+            Some(1)
+        );
         assert_eq!(g("import.meta.globEager('./*.js')").map(|v| v.len()), Some(1));
         assert_eq!(g("import.meta.glob('@/pages/*.vue')"), None, "alias");
         assert_eq!(g("import.meta.glob(pattern)"), None, "not a literal");

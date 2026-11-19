@@ -150,12 +150,21 @@ async function main(argv) {
     pools.add(`${c.name || 'root'}:${c.browser && c.browser.enabled ? 'browser' : c.pool}`);
     if (pc) {
       const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config);
-      if (vite && vite.cacheDir) require('../cache/capture').CAPTURE.addSkipDir(vite.cacheDir);
+      const cap = require('../cache/capture').CAPTURE;
+      if (vite && vite.cacheDir) cap.addSkipDir(vite.cacheDir);
+      // Vitest's per-project temporary directory of transformed modules (their content is derived from the code,
+      // which is keyed): read by the workers' module runner since the capture starts before it (early.js)
+      if (typeof pr.tmpDir === 'string') cap.addSkipDir(pr.tmpDir);
     }
   }
   info.projects = [...pools];
+  if (pc && typeof ctx._tmpDir === 'string') require('../cache/capture').CAPTURE.addSkipDir(ctx._tmpDir);
   // nested Vite configuration files leave the global digest only when the root configuration's imports are known
   if (pc) pc.setConfig(configParts(projects, ctx, args, pc), { nestedViteConfigs: !(ctx.vite && ctx.vite.config) });
+  // the cache capture starts in each worker before the project's own preloads and the test environment's set-up
+  // (src/cache/early.js; review r021b G4); added after the configuration digest, which covers the project's own
+  // execArgv (the preload modules and what they read are recorded as inputs of the tests)
+  if (pc) for (const pr of projects) addEarlyCapture(pr.config || pr.getConfig?.());
   try {
     await ctx.start(filters);
   } catch (e) {
@@ -174,6 +183,21 @@ async function main(argv) {
   }
   finalize();
   return process.exitCode ?? 0;
+}
+
+const EARLY = path.join(__dirname, '..', 'cache', 'early.js');
+
+/** Put the early capture first among a project's worker preloads (Vitest >= 4: `execArgv`; older: `poolOptions`). */
+function addEarlyCapture(c) {
+  if (!c) return;
+  const add = (list) => (Array.isArray(list) && !list.includes(EARLY) ? ['--require', EARLY, ...list] : list);
+  if (Array.isArray(c.execArgv) || !c.poolOptions) c.execArgv = add(c.execArgv || []);
+  if (c.poolOptions && typeof c.poolOptions === 'object') {
+    for (const k of Object.keys(c.poolOptions)) {
+      const po = c.poolOptions[k];
+      if (po && typeof po === 'object') po.execArgv = add(po.execArgv || []);
+    }
+  }
 }
 
 // Options and configuration keys that never change a test's result (selection, output, detjs' own settings).

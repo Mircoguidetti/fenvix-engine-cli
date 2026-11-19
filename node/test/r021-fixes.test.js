@@ -119,12 +119,14 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('asize'), { 'data/blob.bin': 'abcd' });
     });
 
-    test('stat() mtime read by the test: not cacheable', T, () => {
+    // review r021b G1b: times and the other volatile fields are keyed by their exact value (they were not cacheable)
+    test('stat() mtime read by the test: keyed by its value, a touch reruns', T, () => {
       const dir = fixture(runner, 'stat-mtime', {
         'data/a.txt': 'a',
-        ...tfile(runner, 'mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs > 0).toBe(true); });"),
+        ...tfile(runner, 'mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs).toBe(5000000); });"),
       });
-      notCached(runner, dir, F('mtime'), 'mtimeMs');
+      fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 5000);
+      noWrongReuse(runner, dir, F('mtime'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 6000));
     });
 
     test('readdir recursive with file types: an entry type changes deep below', T, () => {

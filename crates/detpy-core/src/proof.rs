@@ -82,7 +82,7 @@ pub struct Entry {
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
-    /// [`crate::deps`] ("m:", "r:", "e:", "t:", "c:"), "l:", "p:", "g:".
+    /// [`crate::deps`] ("m:", "V:", "r:", "e:", "t:", "u:", "c:"), "l:", "p:", "g:".
     pub data: Vec<(String, String)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -219,6 +219,16 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         deps::typed_listing_digest(path).map(|d| format!("e:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("t:") {
         deps::tree_listing_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "missing".into())
+    } else if let Some(rest) = recorded.strip_prefix("V:") {
+        // V:<follow 0|1>:<field>:<digest>
+        let mut it = rest.splitn(3, ':');
+        let follow = it.next() == Some("1");
+        let field = it.next().unwrap_or("");
+        deps::stat_field_digest(path, field, follow)
+            .map(|d| format!("V:{}:{field}:{d}", if follow { 1 } else { 0 }))
+            .unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("u:") {
+        deps::tree_listing_nofollow_digest(path).map(|d| format!("u:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("c:") {
         deps::copy_tree_digest(path).map(|d| format!("c:{d}")).unwrap_or_else(|| "missing".into())
     } else {
@@ -228,8 +238,19 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
 
 /// Fields of a package.json that module resolution reads (Node, Vite, bundlers): a package.json is a *resolution*
 /// input through these only; code that reads or imports the file depends on its whole content (recorded apart).
-pub const RESOLUTION_FIELDS: [&str; 11] =
-    ["name", "type", "main", "module", "browser", "exports", "imports", "types", "typings", "jsnext:main", "react-native"];
+pub const RESOLUTION_FIELDS: [&str; 11] = [
+    "name",
+    "type",
+    "main",
+    "module",
+    "browser",
+    "exports",
+    "imports",
+    "types",
+    "typings",
+    "jsnext:main",
+    "react-native",
+];
 
 /// Digest of the resolution fields of a package.json (`None` when missing or not a JSON object: then "missing" or a
 /// whole-content digest is what the caller records).
@@ -721,7 +742,7 @@ pub struct Receipt {
 pub struct Checker {
     pub cur: Current,
     content_now: HashMap<String, Option<String>>,
-    data_now: HashMap<(String, char), String>,
+    data_now: HashMap<(String, String), String>,
     /// Facts of the current version of code files whose content changed.
     pub fresh: HashMap<String, CodeFile>,
 }
@@ -779,8 +800,14 @@ impl Checker {
     }
 
     fn data(&mut self, path: &str, recorded: &str) -> String {
-        let kind = recorded.chars().next().unwrap_or('?');
-        let kind = if recorded == "missing" { 'f' } else { kind };
+        // the kind: its first letter; `V:` (one Stats field) with its follow flag and field name
+        let kind: String = if recorded == "missing" {
+            "f".into()
+        } else if recorded.starts_with("V:") {
+            recorded.rsplit_once(':').map(|(a, _)| a.to_string()).unwrap_or_else(|| recorded.to_string())
+        } else {
+            recorded.chars().next().unwrap_or('?').to_string()
+        };
         let k = (path.to_string(), kind);
         if let Some(v) = self.data_now.get(&k) {
             return v.clone();
@@ -833,14 +860,18 @@ impl Checker {
         let mut proven = std::collections::BTreeSet::new();
         // whole-content dependencies
         for &i in store.set(e.content) {
-            let Some(f) = store.files.get(i as usize) else { continue };
+            let Some(f) = store.files.get(i as usize) else {
+                continue;
+            };
             if self.content(&f.path).as_deref() != Some(f.content.as_str()) {
                 return Err(Miss { kind: "code", detail: format!("{} (content)", f.path) });
             }
         }
         for (tag, id) in [("skeleton", e.skeleton), ("hooks", e.hooks)] {
             for &i in store.set(id) {
-                let Some(f) = store.files.get(i as usize) else { continue };
+                let Some(f) = store.files.get(i as usize) else {
+                    continue;
+                };
                 let now = self.content(&f.path);
                 if now.as_deref() == Some(f.content.as_str()) {
                     continue;
@@ -864,16 +895,18 @@ impl Checker {
             }
         }
         for c in e.units.chunks(2) {
-            let Some(f) = store.files.get(c[0] as usize) else { continue };
-            let Some(u) = f.units.get(c[1] as usize) else { continue };
+            let Some(f) = store.files.get(c[0] as usize) else {
+                continue;
+            };
+            let Some(u) = f.units.get(c[1] as usize) else {
+                continue;
+            };
             if self.content(&f.path).as_deref() == Some(f.content.as_str()) {
                 continue;
             }
             let path = f.path.clone();
-            let ok = self
-                .now_facts(store, &path)
-                .map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d))
-                .unwrap_or(false);
+            let ok =
+                self.now_facts(store, &path).map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d)).unwrap_or(false);
             if !ok {
                 return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
             }
@@ -924,7 +957,14 @@ mod tests {
         });
         let mut env = BTreeMap::new();
         env.insert("HOME".to_string(), "/root".to_string());
-        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env, startup: String::new() };
+        let cur = Current {
+            root: root.clone(),
+            config: "C".into(),
+            runtime: "R".into(),
+            epoch: 5,
+            env,
+            startup: String::new(),
+        };
         s.record(
             "t::a",
             Observed {
@@ -1008,7 +1048,13 @@ mod tests {
         let mut s2 = s.clone();
         s2.record(
             "t::a",
-            Observed { outcome: "passed".into(), config: "C".into(), runtime: "R".into(), startup: "S1".into(), ..Default::default() },
+            Observed {
+                outcome: "passed".into(),
+                config: "C".into(),
+                runtime: "R".into(),
+                startup: "S1".into(),
+                ..Default::default()
+            },
         );
         assert_ne!(s2.tests["t::a"].key, key0);
         assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
@@ -1050,7 +1096,10 @@ mod tests {
     #[test]
     fn failure_is_never_reused() {
         let (_d, mut s, cur) = setup();
-        s.record("t::f", Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() });
+        s.record(
+            "t::f",
+            Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() },
+        );
         assert_eq!(Checker::new(cur).check(&s, "t::f").unwrap_err().kind, "failed-before");
     }
 
@@ -1104,7 +1153,10 @@ mod tests {
             units: vec![unit("u", "U")],
             imports: vec![],
         });
-        s2.record("t::x", Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() });
+        s2.record(
+            "t::x",
+            Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() },
+        );
         s2.written.entry("out.txt".into()).or_default().insert("t|t::x".into());
         let mut s3 = Store::load(&dir);
         s3.remove("t::a");

@@ -179,7 +179,7 @@ function jestConfigParts(shown, version, rest, pc, customRunners) {
  * capture (before setupFiles run) and makes the file's own copy of process.env observable.
  */
 function wrapEnvironments(shown, root) {
-  const { CAPTURE, installEnv } = require('../cache/capture');
+  const { CAPTURE, installEnv, installReflection } = require('../cache/capture');
   const done = new Set();
   for (const c of (shown && shown.configs) || []) {
     const file = c.testEnvironment;
@@ -201,6 +201,8 @@ function wrapEnvironments(shown, root) {
           }
           super(config, context);
           if (this.global && this.global.process) installEnv(CAPTURE, this.global.process);
+          // the test file's realm has its own Object / Reflect: descriptor reads of recording Stats objects (G1)
+          if (this.global && this.global !== globalThis) installReflection(CAPTURE, this.global);
         }
       }
       Object.defineProperty(Wrapped, '__detjsCache', { value: true });

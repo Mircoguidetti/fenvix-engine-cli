@@ -29,7 +29,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const native = require('../native');
 const { CAPTURE, machineFacts } = require('./capture');
-const { runtimeIdentity } = require('./runtime-id');
+const { runtimeIdentity, startPackages } = require('./runtime-id');
 
 const VERSION = require('../../package.json').version;
 const CONFIG_FILES = /^(tsconfig.*\.json|jsconfig.*\.json|babel\.config\.[cm]?[jt]s(on)?|\.babelrc(\.[cm]?[jt]s(on)?)?|\.swcrc|postcss\.config\.[cm]?[jt]s|\.postcssrc(\.[a-z]+)?|\.browserslistrc|browserslist|vite\.config\.[cm]?[jt]s|vitest\.config\.[cm]?[jt]s|vitest\.(workspace|projects)\.[cm]?[jt]s(on)?|jest\.config\.[cm]?[jt]s(on)?|jest\.preset\.[cm]?js|\.env(\..+)?|\.swcrc|\.nvmrc|\.node-version)$/;
@@ -51,6 +51,8 @@ const UNCACHEABLE = {
   sqlite: 'opens an SQLite database that cannot be keyed by its path',
   resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
   'import-glob': 'an import.meta.glob call that cannot be keyed',
+  preload: 'a preload module read the clock or OS entropy before Level 0 was installed',
+  loader: 'an off-thread module loader (--loader, module.register): what it reads is not observable',
 };
 
 function digest(x) {
@@ -192,6 +194,13 @@ class ProofSession {
     CAPTURE.install({ role: 'main', root: this.root, mainAnyReads });
     CAPTURE.phase = 'startup';
     CAPTURE.setCtx('', '');
+    // the installed packages' digest runs on a background thread while the runner starts (decide() awaits it)
+    if (process.env.DETJS_CACHE_IDENTITY !== 'sync') {
+      try {
+        this.quiet(() => { this.pkgPending = startPackages(this.root, this.env0); });
+        CAPTURE.watchInstalled(this.pkgPending.roots);
+      } catch { this.pkgPending = null; }
+    }
   }
 
   quiet(fn) {
@@ -259,11 +268,25 @@ class ProofSession {
     return (this.projectConfig && this.projectConfig.get(project || '')) || this.configDigest;
   }
 
-  identity() {
+  /** The identity with the package digest started at session start, unless the package trees may have changed since. */
+  async identityAsync() {
+    if (this.runtimeDigest || !this.pkgPending) return this.identity();
+    const t0 = process.hrtime.bigint();
+    let pre = null;
+    try { pre = await this.pkgPending.promise; } catch { pre = null; }
+    this.pkgPending.waited = Number(process.hrtime.bigint() - t0) / 1e9;
+    // something wrote into an installed package tree, or a start-up process ran (it may have installed): again
+    const stale = CAPTURE.installedTouched || CAPTURE.startup.length > 0;
+    this.pkgPending.used = Boolean(pre && !stale);
+    this.t.identity += Number(process.hrtime.bigint() - t0) / 1e9;
+    return this.identity(pre && !stale ? pre.json : null);
+  }
+
+  identity(packages = null) {
     if (this.runtimeDigest) return;
     const t0 = process.hrtime.bigint();
     this.quiet(() => {
-      this.rid = runtimeIdentity(this.root, this.env0);
+      this.rid = runtimeIdentity(this.root, this.env0, packages);
       this.runtimeDigest = this.rid.digest;
       this.machine = machineFacts();
       this.curEnv = { ...this.env0, ...this.machine };
@@ -304,7 +327,7 @@ class ProofSession {
     for (const f of files) this.specKeys.add(f.fileId);
     CAPTURE.scanModules();
     CAPTURE.phase = 'run';
-    this.identity();
+    await this.identityAsync();
     if (this.disabled) return skip;
     const t0 = process.hrtime.bigint();
     this.quiet(() => {
@@ -440,31 +463,50 @@ class ProofSession {
       if (i === undefined) { i = store.addFile(rel, d); fileIx.set(k, i); }
       return i;
     };
-    const observe = (items, label, base) => {
+    // Observation of a file's log, advanced item by item: the inputs of a test are the global items and the file's
+    // items up to the test's end (a prefix), so one pass serves every test of the file (they were re-read per test)
+    const globalItems = global;
+    const urandom = Boolean(this.run.cfg.urandom);
+    const newObservation = (label, base) => {
       const flags = new Map();
       const env = new Map();
       const data = new Map();
       const content = new Set();
       let clock = false;
+      let rwFirst = null; // first data key another writer wrote (in data insertion order)
       const take = (it) => {
         switch (it[0]) {
-          case 'data': data.set(`${it[1]}\u0000${it[2]}`, [it[1], it[2]]); break;
+          case 'data': {
+            const dk = `${it[1]}\u0000${it[2]}`;
+            if (!data.has(dk)) {
+              data.set(dk, [it[1], it[2]]);
+              if (rwFirst === null) {
+                const ws = writers.get(it[1]);
+                if (ws && [...ws].some((w) => w !== label)) rwFirst = `${it[1]} written by ${[...ws].filter((w) => w !== label).join(',') || 'start-up'}`;
+              }
+            }
+            break;
+          }
           case 'code': content.add(codeIndex(it[1], it[2])); break;
-          case 'env': env.set(it[1], envDep(it[1])); break;
+          case 'env': if (!env.has(it[1])) env.set(it[1], envDep(it[1])); break;
           case 'clock': clock = true; break;
           case 'flag': if (!flags.has(it[1])) flags.set(it[1], it[2]); break;
           default:
         }
       };
-      for (const it of global) take(it);
-      for (const it of items) take(it);
-      if (base) for (const it of base) take(it);
-      for (const [, [k]] of data) {
-        const ws = writers.get(k);
-        if (ws && [...ws].some((w) => w !== label) && !flags.has('rw')) flags.set('rw', `${k} written by ${[...ws].filter((w) => w !== label).join(',') || 'start-up'}`);
-      }
-      if (flags.has('entropy') && this.run.cfg.urandom) flags.delete('entropy');
-      return { flags, env: [...env.entries()], data: [...data.values()], content: [...content], clock };
+      for (const it of globalItems) take(it);
+      let pos = 0;
+      return {
+        /** Advance to `upto` items of `items`; the observation at that point. */
+        at(items, upto) {
+          for (; pos < upto && pos < items.length; pos++) take(items[pos]);
+          const f = new Map(flags);
+          if (base) for (const it of base) if (it[0] === 'flag' && !f.has(it[1])) f.set(it[1], it[2]);
+          if (rwFirst !== null && !f.has('rw')) f.set('rw', rwFirst);
+          if (f.has('entropy') && urandom) f.delete('entropy');
+          return { flags: f, env: [...env.entries()], data: [...data.values()], content: [...content], clock };
+        },
+      };
     };
     this.ranFiles = {};
     for (const c of captures) {
@@ -475,10 +517,15 @@ class ProofSession {
       const notes = c.notes || [];
       const extraFlags = notes.some((n) => n.startsWith('process.env not replaceable')) ? [['flag', 'env-unobserved', 'process.env']] : [];
       const ids = [];
+      const obs = newObservation(c.label, extraFlags);
+      // tests in log order (each one's inputs are a prefix of the next one's)
+      const order = c.tests.map((t, i) => [t, i]).sort((x, y) => (x[0].upto - y[0].upto) || (x[1] - y[1]));
+      const byTest = new Map();
+      for (const [t] of order) byTest.set(t, obs.at(c.items, t.upto));
       for (const t of c.tests) {
         const nid = this.testKey(t.id, proj);
         ids.push(t.id);
-        const o = observe(c.items.slice(0, t.upto), c.label, extraFlags);
+        const o = byTest.get(t);
         const why = this.uncacheable(o, t.outcome);
         this.verifyOne(nid, t.outcome);
         if (why) {
@@ -493,7 +540,7 @@ class ProofSession {
         }));
         this.recorded++;
       }
-      const o = observe(c.items, c.label, extraFlags);
+      const o = obs.at(c.items, c.items.length);
       const outcome = c.ok ? 'passed' : 'failed';
       this.verifyOne(mid, outcome);
       const why = this.uncacheable(o, outcome);
