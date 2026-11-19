@@ -9,11 +9,13 @@
 //! * [`cassette`]: recorded network conversations for record/replay.
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
+//! * [`distfiles`]: installed files of the Python distributions (per-distribution identity, prototype).
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
 
 pub mod backend;
 pub mod cache;
 pub mod cassette;
+pub mod distfiles;
 pub mod event;
 pub mod fingerprint;
 pub mod order;

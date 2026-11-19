@@ -203,3 +203,50 @@ pub fn env_value_digest(value: Option<&str>) -> String {
 pub fn env_all_digest(env: BTreeMap<String, String>) -> String {
     proof::env_all_digest(&env)
 }
+
+/// Installed files of the Python distributions (`--det-cache-dists`): see `detpy_core::distfiles`.
+#[pyclass(module = "detpy._core")]
+pub struct DistFiles {
+    inner: detpy_core::distfiles::DistFiles,
+}
+
+#[pymethods]
+impl DistFiles {
+    #[new]
+    fn new() -> Self {
+        DistFiles { inner: detpy_core::distfiles::DistFiles::new() }
+    }
+
+    fn add(&mut self, owner: &str, base: &str, record: &str, project: bool) {
+        self.inner.add(owner, base, record, project)
+    }
+
+    fn add_project_path(&mut self, path: &str) {
+        self.inner.add_project_path(path)
+    }
+
+    /// (owners, claim group or None) of `path`, None when no RECORD explains it.
+    fn lookup(&self, path: &str) -> Option<(Vec<String>, Option<String>)> {
+        self.inner.lookup(path)
+    }
+
+    fn tops(&self) -> Vec<(String, Vec<String>)> {
+        self.inner.tops()
+    }
+
+    fn claims(&self) -> Vec<(String, String)> {
+        self.inner.claims()
+    }
+}
+
+/// Dependency string of an existence check of `path`: "s:<kind>" (kind "missing" included).
+#[pyfunction]
+pub fn stat_dep(path: PathBuf) -> String {
+    detpy_core::distfiles::stat_dep(&path)
+}
+
+/// Top-level module name a RECORD path provides (None for metadata, scripts, data).
+#[pyfunction]
+pub fn dist_top_of(rel: &str) -> Option<String> {
+    detpy_core::distfiles::top_of(rel)
+}

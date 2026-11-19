@@ -152,6 +152,11 @@ class Capture:
         self.preloaded: set[str] = set()
         # per context: data deps {path: dep}, flags
         self.data: dict[int, dict[str, str]] = {}
+        # per context: existence checks {path: "s:<kind>"} (review R-020b N3, O2); kept apart from
+        # ``data`` so that a check never replaces the content digest of a file another context read
+        self.sdata: dict[int, dict[str, str]] = {}
+        self._stat_saved: list = []
+        self._in_stat = False
         self.env: dict[int, set] = {}
         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
         self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
@@ -288,6 +293,7 @@ class Capture:
         self.active = True
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         self._patch_sqlite()
+        self._patch_stat()
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
@@ -314,6 +320,9 @@ class Capture:
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
             setattr(obj, name, v)
         self._sqlite_saved = []
+        for obj, name, v in reversed(self._stat_saved):
+            setattr(obj, name, v)
+        self._stat_saved = []
         if self.tool is not None:
             for ev in (_mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN):
                 _mon.register_callback(self.tool, ev, None)
@@ -443,8 +452,61 @@ class Capture:
 
     def wrote(self, ctx: int, p: str) -> None:
         self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p)):
+        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p):
             self._hashed.pop(k, None)
+
+    # -- existence checks ---------------------------------------------------------------
+    def _patch_stat(self) -> None:
+        """review R-020b N3 / O2: ``os.path.exists``, ``isfile``, ``isdir``, ``Path.exists``, ``shutil.which`` and
+        ``glob`` on a literal path ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The
+        answer is an input: the path's kind ("s:missing", "s:file", "s:dir", "s:other") is recorded, so a file that
+        appears (a console script a bump adds, an optional config file) or disappears invalidates the test.
+        (Code that bound ``from os import stat`` before the session keeps the original: not seen.)"""
+        cap = self
+
+        def wrap(name):
+            orig = getattr(os, name, None)
+            if orig is None:
+                return
+
+            def checked(path, *args, **kwargs):
+                if cap.active and not cap._in_stat and not kwargs.get("dir_fd") \
+                        and not isinstance(path, int):
+                    cap._in_stat = True
+                    try:
+                        cap.exists_check(path)
+                    except Exception:
+                        pass
+                    finally:
+                        cap._in_stat = False
+                return orig(path, *args, **kwargs)
+
+            checked.__name__ = orig.__name__
+            checked.__doc__ = orig.__doc__
+            checked.__wrapped__ = orig
+            self._stat_saved.append((os, name, orig))
+            setattr(os, name, checked)
+
+        for name in ("stat", "lstat", "access"):
+            wrap(name)
+
+    def exists_check(self, path) -> None:
+        """An existence or kind check of ``path`` by user code (not the import system, pytest or detpy)."""
+        p = self._abs(path)
+        if p is None or self._caller_kind() != "user":
+            return
+        tr = self.dists
+        if tr is not None and tr.in_site(p) and not any(p.startswith(x) for x in self.dist_info_ok):
+            pass  # --det-cache-dists: a file a bump adds or removes under a site directory is an input
+        elif self._ignored(p):
+            return
+        if not _encodable(p):
+            return
+        hk = "s" + p
+        dep = self._hashed.get(hk)
+        if dep is None:
+            dep = self._hashed[hk] = _core.stat_dep(p)
+        self.sdata.setdefault(self._cur(), {}).setdefault(self._key(p), dep)
 
     def _audit(self, event, args):
         if not self.active:
@@ -1395,9 +1457,11 @@ class ProofCachePlugin:
         own_import_ix = set(own_import.values())
         g_ctx_all = g_ctx + [cap.import_ctx] + [i for n, i in ctx_of.items()
                                                 if n.startswith("i|") and i not in own_import_ix]
-        g_data, g_env, g_flags = {}, set(), set()
+        g_data, g_env, g_flags, g_sdata = {}, set(), set(), {}
         for c in g_ctx_all:
             g_data.update(cap.data.get(c, {}))
+            for k, v in cap.sdata.get(c, {}).items():
+                g_sdata.setdefault(k, v)
             g_env |= cap.env.get(c, set())
             g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
 
@@ -1420,6 +1484,8 @@ class ProofCachePlugin:
                 continue
             own = {"t|" + nid}
             for path, _dep in deps:
+                if _dep.startswith("s:"):
+                    continue  # an existence check: its kind is compared with the disk before any reuse
                 if path in session_written and not set(session_written[path]) <= own:
                     self.stale_hits[nid] = path
                     store.remove(nid)
@@ -1461,6 +1527,7 @@ class ProofCachePlugin:
         carry_order = sorted((k, c) for c, k in first.items() if c not in g_set)
         carry_pos = 0
         c_data: dict = {}
+        c_sdata: dict = {}
         c_env: set = set()
         c_flags: set = set()
         c_units: set = set()
@@ -1478,6 +1545,8 @@ class ProofCachePlugin:
                 carry_pos += 1
                 c_ctxs.append(c)
                 c_data.update(cap.data.get(c, {}))
+                for k, v in cap.sdata.get(c, {}).items():
+                    c_sdata.setdefault(k, v)
                 c_env |= cap.env.get(c, set())
                 c_flags |= cap.flags.get(c, set())
                 if c < len(per):
@@ -1550,6 +1619,10 @@ class ProofCachePlugin:
             if why:
                 self._not_cached(nid, why)
                 continue
+            # existence checks: an input unless the same path's content (or listing) already is one
+            for src in (g_sdata, c_sdata, *(cap.sdata.get(c, {}) for c in ctxs)):
+                for k, v in src.items():
+                    data.setdefault(k, v)
             idx = self.test_index.get(nid, 0)
             skeleton, hooks = set(), set()
             for rel, seen_at in loaded_idx:

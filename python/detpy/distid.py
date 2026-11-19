@@ -7,7 +7,13 @@ distributions out, and every test instead depends on the distributions it actual
 * the distributions whose modules (Python or native) were loaded before or during the test, in the process
   (``sys.modules`` and ``/proc/self/maps``; a module loaded by an earlier test stays loaded, so it counts for
   every later test, the same rule the cache applies to repository modules);
-* the distributions whose files the test (or a process it started) read;
+* the distributions whose files the test (or a process it started) read: *every* distribution whose RECORD lists
+  the file (review R-020b N1: a file two distributions install changes when either is upgraded), plus the file's
+  claim group (``c/`` keys: which distributions install files in its top-level directory, and which paths there
+  several of them install), so a distribution that starts claiming the file invalidates too. Ownership comes from
+  every RECORD path, inside or outside the site directory, and covers the libraries in ``/proc/self/maps`` wherever
+  they are (review R-020b N2: a wheel's data scheme installs shared libraries into ``<prefix>/lib``). The file
+  index is built in Rust (``detpy-core/src/distfiles.rs``);
 * the answers of the metadata queries it made: ``importlib.metadata`` by name (one distribution), by entry-point
   group (that group across all distributions) or a full scan (every distribution);
 * the top-level module names it looked up (found or not): which distributions provide that name;
@@ -18,6 +24,9 @@ distributions out, and every test instead depends on the distributions it actual
   startup, before anything is recorded);
 * everything a test or fixture that ran before it in the same process depended on (``proofcache._record_all``,
   review R-020 H1: an answer memoised by an earlier test is used without an event).
+
+Existence checks (``os.stat``, ``os.path.exists``, ``shutil.which``) of paths under a site directory are recorded
+as the path's kind by ``proofcache`` (review R-020b N3), as for any other path.
 
 Each of these is a small identity file under ``<cache>/dist-identity/``, rewritten from the current environment at
 the start of every session; a test records the content digest of the files it depends on as ordinary data
@@ -52,6 +61,12 @@ def _fname(s: str) -> str:
 def listing_key(path: str) -> str:
     """Identity key of the listing of a directory under a site directory."""
     return "l/" + _fname("dir:" + os.path.realpath(path))
+
+
+def claim_key(group: str) -> str:
+    """Identity key of a claim group (``distfiles.rs``): which distributions install files in it, and which of
+    its paths several of them install."""
+    return "c/" + _fname("claim:" + group)
 
 
 def listing_content(path: str) -> str:
@@ -100,21 +115,10 @@ def _write_atomic(p: str, content: str) -> None:
 
 
 def _top_of(rel: str) -> str | None:
-    """Top-level module name a RECORD path provides (None for metadata, scripts, data)."""
-    if rel.startswith("..") or rel.startswith("/"):
-        return None
-    first = rel.split("/", 1)[0]
-    if first.endswith((".dist-info", ".egg-info", ".data")) or first == "__pycache__":
-        return None
-    if "/" in rel:
-        return first if first.isidentifier() else None
-    if first.endswith(".py"):
-        n = first[:-3]
-        return n if n.isidentifier() else None
-    if first.endswith((".so", ".pyd")):
-        n = first.split(".", 1)[0]
-        return n if n.isidentifier() else None
-    return None
+    """Top-level module name a RECORD path provides (None for metadata, scripts, data). Rust: distfiles.rs."""
+    from . import _core
+
+    return _core.dist_top_of(rel)
 
 
 class Index:
@@ -124,8 +128,6 @@ class Index:
     def __init__(self, project_root: str):
         self.root_sep = os.path.realpath(project_root) + os.sep
         self.ident: dict[str, str] = {}       # normalised name -> "name==version\nRECORD digest"
-        self.files: dict[str, str] = {}       # absolute real path -> normalised name
-        self.dirs: dict[str, str | None] = {}  # top directory under a site dir -> name (None when shared)
         self.tops: dict[str, set] = {}        # top-level module name -> names
         self.groups: dict[str, list] = {}     # entry-point group -> sorted lines
         self.unmapped = 0
@@ -134,6 +136,11 @@ class Index:
     def build(self) -> None:
         from importlib import metadata
 
+        from . import _core
+
+        # file -> distributions, claim groups, top-level names: the RECORD of every distribution, every path it
+        # installs (inside or outside the site directory), every claimant of a shared path (Rust: distfiles.rs)
+        self.dist_files = df = _core.DistFiles()
         seen = set()
         for d in metadata.distributions():
             path = getattr(d, "_path", None)
@@ -163,26 +170,10 @@ class Index:
             h = hashlib.sha256(rec.encode()).hexdigest()[:24]
             if not project:
                 self.ident[n] = f"{name}=={d.version}\n{h}\n"
-            owner = PROJECT if project else n
-            base = os.path.realpath(str(d.locate_file(""))) if path is not None else None
-            if project and path is not None:
-                self.files[os.path.realpath(str(path))] = PROJECT
-                self.dirs[os.path.realpath(str(path))] = PROJECT
-            for line in rec.splitlines():
-                rel = line.rsplit(",", 2)[0] if line.count(",") >= 2 else line.split(",", 1)[0]
-                if not rel or base is None:
-                    continue
-                ap = os.path.realpath(os.path.join(base, rel)) if ".." in rel else os.path.join(base, rel)
-                self.files[ap] = owner
+            if path is not None:
                 if project:
-                    continue
-                if "/" in rel and not rel.startswith(".."):
-                    top_dir = os.path.join(base, rel.split("/", 1)[0])
-                    prev = self.dirs.get(top_dir, n)
-                    self.dirs[top_dir] = n if prev == n else None
-                t = _top_of(rel)
-                if t:
-                    self.tops.setdefault(t, set()).add(n)
+                    df.add_project_path(str(path))
+                df.add(n, os.path.realpath(str(d.locate_file(""))), rec, project)
             try:
                 eps = d.entry_points
             except Exception:
@@ -191,32 +182,19 @@ class Index:
                 self.groups.setdefault(ep.group, []).append(f"{n}:{ep.name}={ep.value}")
         for g in self.groups.values():
             g.sort()
+        self.tops = {t: set(ns) for t, ns in df.tops()}
+
+    def owners(self, path: str):
+        """(owners, claim group) of ``path`` (absolute): every distribution whose RECORD lists it (review R-020b
+        N1: a path several distributions install changes when any of them is upgraded) and the claim group whose
+        identity file changes when a distribution starts claiming the path. None when no RECORD explains it;
+        ``([PROJECT], None)`` for the project's own install."""
+        return self.dist_files.lookup(path)
 
     def dist_of(self, path: str) -> str | None:
-        """Distribution owning ``path`` (absolute) or None."""
-        n = self.files.get(path)
-        if n is not None:
-            return n
-        rp = os.path.realpath(path)
-        n = self.files.get(rp)
-        if n is not None:
-            return n
-        # bytecode caches of a recorded source file
-        d, f = os.path.split(rp)
-        if os.path.basename(d) == "__pycache__":
-            src = os.path.join(os.path.dirname(d), f.split(".", 1)[0] + ".py")
-            n = self.files.get(src)
-            if n is not None:
-                return n
-        # a file under a top-level directory that only one distribution installs
-        p = rp
-        while True:
-            parent = os.path.dirname(p)
-            if parent == p:
-                return None
-            if p in self.dirs:
-                return self.dirs[p]
-            p = parent
+        """One distribution owning ``path`` (absolute) or None (``owners`` gives all of them)."""
+        r = self.dist_files.lookup(path)
+        return r[0][0] if r and r[0] else None
 
     def write(self, out_dir: str, site_dirs=()) -> None:
         """Rewrite the identity files under ``out_dir`` (atomically per file; stale files removed). Listing files
@@ -232,7 +210,9 @@ class Index:
             want[f"m/{_fname(t)}"] = "\n".join(sorted(ns)) + "\n"
         want[ALL] = hashlib.sha256("".join(v for _, v in sorted(self.ident.items())).encode()).hexdigest() + "\n"
         want[PTH] = pth_content(site_dirs)
-        for sub in ("d", "e", "m", "l"):
+        for g, content in self.dist_files.claims():
+            want[claim_key(g)] = content
+        for sub in ("d", "e", "m", "l", "c"):
             os.makedirs(os.path.join(out_dir, sub), exist_ok=True)
         for f in os.listdir(os.path.join(out_dir, "l")):
             if ".tmp" in f:
@@ -246,7 +226,7 @@ class Index:
             if d and listing_key(d) == "l/" + f:
                 want["l/" + f] = listing_content(d)
         have = set()
-        for sub in ("d", "e", "m", "l"):
+        for sub in ("d", "e", "m", "l", "c"):
             for f in os.listdir(os.path.join(out_dir, sub)):
                 if ".tmp" not in f:
                     have.add(f"{sub}/{f}")
@@ -324,8 +304,8 @@ class Tracker:
         """A read (file or listing) of ``p`` under a site directory, by the test process or a child."""
         if self.suppressed():
             return
-        n = self.index.dist_of(p)
-        if n == PROJECT:
+        r = self.index.owners(p)
+        if r is not None and r[0] == [PROJECT]:
             return  # the project's own editable install: repository files and its metadata are recorded as data
         if os.path.isdir(p) and not self.is_site_dir(p) and ".dist-info" not in p and ".egg-info" not in p:
             # review R-020 H2: a directory under a site directory can gain or lose entries from any distribution
@@ -333,7 +313,7 @@ class Tracker:
             # listing itself is the input
             self.listing(ctx, p)
             return
-        if n is None:
+        if r is None:
             self.unmapped[p] = self.unmapped.get(p, 0) + 1
             if os.path.isdir(p):
                 # a listing no RECORD explains (site-packages itself: pkg_resources' scan): every distribution's
@@ -343,7 +323,33 @@ class Tracker:
                 # a file no RECORD lists (_virtualenv.py, a .pth file, a file written after install): its content
                 self.add(ctx, os.path.realpath(p))
             return
-        self.add(ctx, "d/" + _fname(n))
+        for k in self.keys_of(r):
+            self.add(ctx, k)
+
+    @staticmethod
+    def keys_of(r) -> list:
+        """Identity keys of a path with owners and claim group ``r`` (``Index.owners``)."""
+        owners, group = r
+        keys = ["d/" + _fname(n) for n in owners]
+        if group is not None:
+            keys.append(claim_key(group))
+        return keys
+
+    def _loaded_path(self, p: str, index: int) -> None:
+        """A module or native library loaded in the process (seen after the test at ``index``): its owners and
+        claim group, or its own content when no RECORD lists it and it sits under a site directory. A path outside
+        every site directory that no RECORD lists (the interpreter, system libraries) is not an input here."""
+        r = self.index.owners(p)
+        if r is None:
+            if any(p.startswith(d) for d in self.site_dirs) or any(
+                    os.path.realpath(p).startswith(d) for d in self.site_dirs):
+                self.unmapped[p] = self.unmapped.get(p, 0) + 1
+                self._loaded_key(os.path.realpath(p), index)
+            return
+        if r[0] == [PROJECT]:
+            return
+        for k in self.keys_of(r):
+            self._loaded_key(k, index)
 
     def is_site_dir(self, p: str) -> bool:
         p = p.rstrip(os.sep) + os.sep
@@ -382,18 +388,7 @@ class Tracker:
                 if not isinstance(f, str) or f in self._mod_files_seen:
                     continue
                 self._mod_files_seen.add(f)
-                if not any(f.startswith(d) for d in self.site_dirs):
-                    rf = os.path.realpath(f)
-                    if not any(rf.startswith(d) for d in self.site_dirs):
-                        continue
-                n = self.index.dist_of(os.path.abspath(f))
-                if n == PROJECT:
-                    continue
-                if n is None:
-                    self.unmapped[f] = self.unmapped.get(f, 0) + 1
-                    self._loaded_key(os.path.realpath(f), index)
-                else:
-                    self._loaded_key("d/" + _fname(n), index)
+                self._loaded_path(os.path.abspath(f), index)
         # review R-020 H4: C code can dlopen() a library at any time (lazily loaded CUDA libraries, execution
         # providers, drivers) without a Python event: the maps are read after every test, not only when
         # sys.modules grew or ctypes.dlopen fired; parsed only when they changed
@@ -415,16 +410,9 @@ class Tracker:
                 if p in self._maps_seen:
                     continue
                 self._maps_seen.add(p)
-                if not any(p.startswith(d) for d in self.site_dirs):
-                    continue
-                n = self.index.dist_of(p)
-                if n == PROJECT:
-                    continue
-                if n is None:
-                    self.unmapped[p] = self.unmapped.get(p, 0) + 1
-                    self._loaded_key(os.path.realpath(p), index)
-                else:
-                    self._loaded_key("d/" + _fname(n), index)
+                # review R-020b N2: every mapping goes through the RECORDs, not only those under a site directory
+                # (a wheel's data scheme installs shared libraries into <prefix>/lib: mkl, tbb, intel-openmp)
+                self._loaded_path(p, index)
 
     # -- metadata queries ----------------------------------------------------------------
     def install(self) -> None:
