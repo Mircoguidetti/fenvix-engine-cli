@@ -1,18 +1,7 @@
 {
- "run_id": "r023-p0c-2026-11-19",
- "note": "follow-up: rewrite cache for pytest < 9.2, loopback lookups, controller listeners, spawn environment, global /proc reads; --det-urandom where the repository draws entropy",
+ "run_id": "r023-p0d-2026-11-19",
+ "note": "re-run of litellm-vertex, moto, prefect-g1 of r023-p0c (the workflow passed --det-args in a form argparse refused)",
  "repos": [
-  {
-   "name": "esphome",
-   "url": "https://github.com/esphome/esphome",
-   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
-   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
-   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
-   "workers": 4,
-   "dist": "",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x",
-   "det_args": ""
-  },
   {
    "name": "litellm-vertex",
    "url": "https://github.com/BerriAI/litellm",
@@ -48,20 +37,6 @@
    "dist": "worksteal",
    "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x",
    "det_args": "--det-urandom"
-  },
-  {
-   "name": "pydantic-ai",
-   "url": "https://github.com/pydantic/pydantic-ai",
-   "sha": "62e7b66c9f4da5c788eb360e49522a98e8fa0c86",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-extras --no-extra mcp-tasks --all-packages || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --no-extra mcp-tasks --all-packages",
-   "args": "tests/models tests/harness/code_mode tests/harness/refine_output tests/harness/detect_loops tests/providers/test_openai_compatible_http_clients.py -m 'not temporal' -p no:randomly --timeout=300",
-   "env": {
-    "PYTEST_TEST_BUDGET_SECONDS": "100000"
-   },
-   "workers": 4,
-   "dist": "loadgroup",
-   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c",
-   "det_args": ""
   }
  ]
 }
