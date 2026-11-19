@@ -4,8 +4,9 @@
 //   * Now, Since and Until read the virtual clock (one tick per read; the
 //     wall clock restarts at the epoch for every test, the monotonic clock
 //     never goes backwards); calls from package testing keep real time;
-//   * Sleep advances the clock by d; it still waits for real unless the test
-//     started no goroutine (FastWait), so goroutines it waits for can run;
+//   * Sleep moves the clock to its due time (now + d) when it ends, so
+//     goroutines sleeping at the same time do not add up; it still waits for
+//     real unless the test started no goroutine (FastWait);
 //   * timers and tickers (NewTimer, After, AfterFunc, NewTicker, Tick, Reset,
 //     Stop) still fire after their real delay, and when they fire they move
 //     the clock to their virtual due time, so elapsed times seen by the code
@@ -73,9 +74,14 @@ func fenvixQuietNow() Time {
 // A negative or zero duration causes Sleep to return immediately.
 func Sleep(d Duration) {
 	if fenvixTimeOn() {
-		skip, runner := syscall.Fenvix_Sleep("time.Sleep", int64(d))
-		if skip && !runner {
-			runtime.Gosched()
+		due, skip, runner := syscall.Fenvix_Sleep("time.Sleep", int64(d))
+		if !runner {
+			if !skip {
+				fenvixRealSleep(d)
+			} else {
+				runtime.Gosched()
+			}
+			syscall.Fenvix_WakeAt(due)
 			return
 		}
 	}

@@ -42,3 +42,19 @@ func TestOwnAddress(t *testing.T) {
 		return
 	}
 }
+
+// quic-go, terraform: goroutines sleeping at the same time added up their
+// durations on the virtual clock (two 20 ms sleeps in parallel = 40 ms).
+func TestConcurrentSleepsDoNotAddUp(t *testing.T) {
+	start := time.Now()
+	done := make(chan struct{})
+	for i := 0; i < 4; i++ {
+		go func() { time.Sleep(20 * time.Millisecond); done <- struct{}{} }()
+	}
+	for i := 0; i < 4; i++ {
+		<-done
+	}
+	if el := time.Since(start); el > 30*time.Millisecond {
+		t.Fatalf("4 parallel 20 ms sleeps took %v on the virtual clock", el)
+	}
+}

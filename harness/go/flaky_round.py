@@ -116,6 +116,12 @@ def main():
         flush()
         return
     sh(["git", "checkout", "-q", "FETCH_HEAD"], cwd=src)
+    # docker/cli keeps its module file as vendor.mod (its Makefile links it to go.mod)
+    if not (src / "go.mod").exists() and (src / "vendor.mod").exists():
+        shutil.copy(src / "vendor.mod", src / "go.mod")
+        if (src / "vendor.sum").exists():
+            shutil.copy(src / "vendor.sum", src / "go.sum")
+        result["notes"].append("vendor.mod used as go.mod")
     env = dict(os.environ)
     for k, v in (spec.get("env") or {}).items():
         env[k] = v

@@ -266,27 +266,43 @@ func Fenvix_ClockQuiet() (wall, mono int64) {
 	return w, e
 }
 
-// Fenvix_Sleep records op with duration d and advances the clock by d. It
-// reports whether the real wait can be skipped (FastWait on and the test
-// started no goroutine) and whether the caller is the test runner.
-func Fenvix_Sleep(op string, d int64) (skipWait bool, runner bool) {
+// Fenvix_Sleep records op with duration d and returns its due time on the
+// virtual clock (now + d). The caller moves the clock to it when the sleep
+// ends (at once when the real wait is skipped), so goroutines sleeping at
+// the same time do not add up their durations. It reports whether the real
+// wait can be skipped (FastWait on and the test started no goroutine) and
+// whether the caller is the test runner.
+func Fenvix_Sleep(op string, d int64) (due int64, skipWait bool, runner bool) {
 	fenvixInit()
 	site, runner := fenvixSite(1)
 	if runner {
-		return false, true
+		return 0, false, true
 	}
 	n := runtime.NumGoroutine()
 	gid := runtime.Fenvix_Goid()
 	fenvix.mu.Lock()
+	due = fenvix.elapsed
 	if d > 0 {
-		fenvix.elapsed += d
+		due += d
 	}
 	var v [24]byte
 	fenvixRecordLocked("time", op, site, fenvixItoa(v[:0], d), gid)
 	fenvixOther()
 	skipWait = runtime.Fenvix_On(runtime.FenvixFastWait) && fenvix.inTest && n <= fenvix.baseG
 	fenvix.mu.Unlock()
-	return skipWait, false
+	return due, skipWait, false
+}
+
+// Fenvix_WakeAt moves the clock to mono (never backwards) without an event:
+// the end of a sleep.
+func Fenvix_WakeAt(mono int64) {
+	fenvixInit()
+	fenvix.mu.Lock()
+	if mono > fenvix.elapsed {
+		fenvix.elapsed = mono
+	}
+	fenvixOther()
+	fenvix.mu.Unlock()
 }
 
 // Fenvix_AdvanceTo moves the clock to mono (never backwards) and records op
