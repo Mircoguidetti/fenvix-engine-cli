@@ -31,6 +31,8 @@ from . import _core
 PLAN_FORMAT = "detpy-plan"
 PLAN_VERSION = 1
 STICKY_TOLERANCE = 0.10
+# variables a worker process has that its controller does not (besides PYTEST_XDIST_*): reported per worker
+WORKER_ENV = ("COLUMNS", "LINES")
 # one-test atoms are merged into same-file chunks of at most total / (workers * CHUNK_DIV) (0: off)
 CHUNK_DIV = int(os.environ.get("DETPY_PLAN_CHUNK_DIV", "8"))
 _UNSUPPORTED = {"each"}
@@ -345,6 +347,14 @@ class Controller:
             pc.report_hits(self.ids, hits)
         return lists
 
+    def worker_env(self) -> dict:
+        """The worker-launch variables (``WORKER_ENV``) as the workers of this session see them (gw0's file)."""
+        for wid in sorted(self.sent) or ["gw0"]:
+            d = load_json(os.path.join(self.dir, f"worker-env.{wid}.json"))
+            if d is not None:
+                return {k: v for k, v in d.items() if v is not None}
+        return {}
+
     def _groups(self, nodes) -> dict:
         for node in nodes:
             d = load_json(os.path.join(self.dir, f"xdist-groups.{node.gateway.id}.json"))
@@ -478,6 +488,13 @@ class Worker:
         self.config = config
         self.wid = wid
         self.loadgroup = bool(getattr(config.option, "loadgroup", False))
+        # the terminal geometry a worker process starts with (COLUMNS=80, LINES=24 under xdist, set before the test
+        # session starts): the controller's reuse check compares recorded reads with the worker's values
+        from . import proofcache
+
+        env0 = dict(proofcache.CAPTURE.env0) if proofcache.CAPTURE is not None else dict(os.environ)
+        write_json(os.path.join(state_dir(config), f"worker-env.{wid}.json"),
+                   {k: env0.get(k) for k in WORKER_ENV})
         if self.loadgroup:
             # xdist appends "@group" to node ids under --dist=loadgroup; under --det the ids stay the serial ids
             # (trace, cache keys) and the groups go to the controller's plan instead

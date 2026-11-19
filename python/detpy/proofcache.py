@@ -454,6 +454,8 @@ class ProofCachePlugin:
             env["PYTEST_XDIST_WORKER_COUNT"] = str(len(self.config.getoption("tx") or ()))
             if ctl is not None and ctl.testrunuid:
                 env["PYTEST_XDIST_TESTRUNUID"] = ctl.testrunuid
+            if ctl is not None:
+                env.update(ctl.worker_env())
             self.store.begin(self.config_digest, self.runtime_digest, self.epoch, env)
             self.store.set_xdist_workers(_xdist_prev_workers(self.config))
             store = self.store
