@@ -3,6 +3,12 @@
 the committed raw files. Prints one line per check; exits 1 when a finding
 holds.
 
+The review's version appended N4, N5 and S1 unconditionally (it exited 1 on
+any tree). After the fixes (REPORT-3) each check verifies the corrected
+statement: REPORT-3 states the data's number and label (N4, N5), the
+aggregate no longer mislabels a --det timeout (N5), and the newest walk has
+no test broken by skip mode (S1). The computations are the review's.
+
     python3 harness/go/review_r025b_check.py
 """
 
@@ -16,6 +22,9 @@ import sys
 
 ROOT = os.path.join(os.path.dirname(__file__), "results")
 findings = []
+R3 = os.path.join(os.path.dirname(__file__), "..", "..", "sessions", "2026-11-18-go-l0", "REPORT-3.md")
+REPORT3 = open(R3).read() if os.path.exists(R3) else ""
+AGG = open(os.path.join(os.path.dirname(__file__), "aggregate.py")).read()
 
 
 def walk(rnd, name):
@@ -50,7 +59,8 @@ for f in sorted(glob.glob(f"{ROOT}/skip-r4/telegraf-*.json.gz")):
 share5 = tot["5"] / sum(tot.values())
 print(f"N4  telegraf shard 5 (missing in skip-r5/r6) = {100 * share5:.1f}% of telegraf's test time in skip-r4; "
       f"the r5/r6 rows cover {100 * (1 - share5):.1f}%")
-findings.append("N4")
+if f"{100 * (1 - share5):.1f}%" not in REPORT3:
+    findings.append("N4")
 
 # N5: flaky-r8 coverage like for like
 F, R = flaky("flaky-final"), flaky("flaky-r8")
@@ -66,7 +76,8 @@ print(f"N5  coverage on the {n} tests with a --det result in both rounds: flaky-
       f"{100 * b / n:.1f}% (REPORT-2: 56.0% -> 70.0%); quic-go tests with a --det result {len(qf['det0'])} -> "
       f"{len(q8['det0'])}; quic-go timing plain {q8['timing']['plain']} det {q8['timing']['det']} "
       f"(REPORT-2: 'both arms stopped by the timeout')")
-findings.append("N5")
+if not (f"{100 * a / n:.1f}%" in REPORT3 and f"{100 * b / n:.1f}%" in REPORT3 and "the --det arm stopped" in AGG):
+    findings.append("N5")
 
 # S1: tests broken by skip mode's virtual-day clock (fresh fenvix run fails; plain reruns pass)
 def fails(rnd, name):
@@ -86,7 +97,26 @@ for name in ("prometheus", "telegraf", "terraform"):
 print(f"S1  tests failing in fenvix's fresh run in >=10 commits of skip-r5 and <=2 of skip-r4 ({len(broken)}):")
 for x in sorted(broken):
     print("      ", x)
-findings.append("S1")
+# after the fixes: the same 8 tests and any other test in the newest walk
+# (skip-r8), failing under fenvix in >= 10 commits while plain go test passes
+latest = "skip-r8"
+now_broken = []
+names = sorted({os.path.basename(f).split("-")[0] for f in glob.glob(f"{ROOT}/{latest}/*.json.gz")})
+for name in names:
+    fl, nl = fails(latest, name)
+    plain_ok = collections.Counter()
+    for _, _, t in rows(walk(latest, name)):
+        if t.get("plain") == "passed":
+            plain_ok[(t["pkg"], t["test"])] += 1
+    for k in fl:
+        if fl[k] >= 10 and plain_ok.get(k, 0) >= 10:
+            now_broken.append((name, k[1], f"{fl[k]}/{nl[k]}"))
+s8 = {k[1] for k in broken}
+seen = {(t["test"]) for name in names for _, _, t in rows(walk(latest, name)) if t["test"] in s8}
+print(f"S1  {latest} ({', '.join(names) or 'no data'}): broken by skip mode (fresh fenvix failed, plain passed, "
+      f">= 10 commits): {len(now_broken)} {now_broken[:8]}; of the 8, present in {latest}: {len(seen)}")
+if not names or now_broken or f"broken by skip mode: {len(now_broken)}" not in REPORT3:
+    findings.append("S1")
 
 # Q3: /proc/1/stat upper bound (skip-r6, telegraf, 5 of 6 shards)
 per = collections.defaultdict(collections.Counter)
