@@ -1,4 +1,4 @@
-IN PROGRESS (React Native r6 shards pending)
+DONE
 
 # Skip with proof for JS/TS (`detjs --det-cache`): fixes of review r021 — report 2
 
@@ -14,7 +14,7 @@ Labels: **MEASURED** (with the command or the GitHub Actions run id), **ESTIMATE
   fixes it was 24 failed, 8 passed and 1 skipped (MEASURED by the reviewer on 495f858). After, it was MEASURED here
   (Node 22.23.5) and in the `tests` job of Actions run 44485937741.
 * New measurement r6 on the same five repositories (Actions run 44485937741), with every would-be reuse checked by a
-  fresh run at the same commit: **0 wrong reuses in REUSES_TOTAL verified reuses** (MEASURED).
+  fresh run at the same commit: **0 wrong reuses in 396,780 verified reuses** (MEASURED).
 * Reuse goes down where the fixes found real unkeyed inputs. On docusaurus the median drops from 88% to 85% and the
   mean from 73% to 70%: blog tests read a fixture's **mtime**, which was never keyed before, and tests reach a
   stat of `npm`'s `uid`. These now run every time. vue-core is unchanged (26% / 32%). TanStack Query is 92% / 62%
@@ -59,7 +59,18 @@ Other suites (MEASURED, this container, Node 22.23.5):
 Every reuse was checked by a fresh run at the same commit (verify mode). Shares are priced with each file's duration
 in the fresh run. All MEASURED, from `python3 harness/node_cache/aggregate.py r6 --md`.
 
-MEASUREMENT_TABLE
+| project (runner) | transitions | skip with proof, median / mean: **r6** | before the fixes (r1; TanStack r5) | tests reused, median (r6) | verified reuses (r6) | **wrong (r6)** | flaky (r6) | Nx affected, median / mean (r6) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| docusaurus (Vitest) | 50 | **85% / 70%** | 88% / 73% | 92% | 129,295 | **0** | 0 | 27% / 56% |
+| vue-core (Vitest) | 50 | **26% / 32%** | 26% / 32% | 46% | 85,112 | **0** | 0 | 27% / 29% |
+| TanStack Query (Vitest, Nx) | 50 | **92% / 62%** | 91% / 61% | 94% | 158,515 | **0** | 0 | 92% / 69% |
+| React Native (Jest) | 9 | **0% / 1%** | 0% / 1% | 0% | 22,330 | **0** | 0 | 98% / 87% (unproven) |
+| Lexical (Vitest, `vmThreads`) | 10 | **0% / 0%** | 0% / 0% (19 transitions) | 0% | 1,528 | **0** | 0 | 75% / 62% (approximate) |
+| **total** | 169 | | | | **396,780** | **0** | 0 | |
+
+Raw results: `harness/node_cache/results/r6/` (`*.json.gz`, `TABLES.md`, `aggregate.json`). Warm rerun of an
+unchanged tree (r6): vue-core 184–185 of 184–185 files reused, docusaurus 188–189 of 205–207 (r3: 194–195 of
+206–207), TanStack Query 161–162 of 179–180, React Native 231 of 284 (r1: 232), Lexical 6 of 982.
 
 Notes:
 * Lexical r6 covers transitions 40–50 (the spec's window, 10 transitions); r1 covered 19. 97% of its files run
@@ -74,7 +85,7 @@ Notes:
   These inputs were unkeyed before. Whether one of them ever changed an outcome over the 50 transitions is UNKNOWN;
   no wrong reuse was observed in r1 either.
 * Capture overhead (cold capture over serial `detjs --det`, every r6 overhead row): docusaurus +12.5% to +23.2%,
-  TanStack Query +9.5% to +15.7%, vue-core +7.6% to +9.8%, Lexical +2.3%. OVERHEAD_RN.
+  TanStack Query +9.5% to +15.7%, vue-core +7.6% to +9.8%, Lexical +2.3%. React Native +0.6% to +0.8%.
 
   Serial Level 0 over the project's own command: docusaurus 2.10–2.13×, vue-core 2.05–2.10×, TanStack 1.76–1.86×,
   Lexical 1.89×.
@@ -89,9 +100,8 @@ Notes:
   at all. The `s:` kind used there is only the fallback for an `open` of a non-file. This is the Python counterpart
   of F1 and was not part of r021; the shared `m:`/`r:`/`L:` kinds are ready for it. UNKNOWN whether any Python
   suite depends on it.
-* **Node's async `cp` internals**: they are recognised by a stack check while an async `cp` is in flight. A
-  concurrent read by test code from a frame below `internal/fs/cp/` cannot happen, but the check costs a stack
-  capture per read during a copy.
+* **Node's async `cp` internals** are recognised by a stack check (`internal/fs/cp/`) while an async `cp` is in
+  flight: every read during a copy pays a stack capture.
 * **Plugin reads (F6 extension)**: a third-party plugin that reads project files is an input of every file (coarse
   but sound). A plugin that reads files *outside* the project is still not keyed in the main process.
 * **Stats field reads by infrastructure** are not counted when the reading frame is runner, bundler or Node-fs code
