@@ -81,7 +81,7 @@ Engine suite, whole (`python -m pytest tests -p no:cacheprovider --ignore=tests/
 4 failed, 9 skipped (1290 s, NOISY). The 4 failures are the ones of the base commit before any change of this
 branch (baseline run on 86ce112: 4 failed, 537 passed, 8 skipped): two speed comparisons with the Python references
 under a loaded machine (`test_rust_clock_is_faster_than_the_reference`, `test_precompile_stamps_and_todo_match_reference[4,9]`)
-and `test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does` (reads a report file not in this checkout).
+and `test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does` (a review test over a recorded results file: `AttributeError` on a missing entry of that file, unrelated to this branch).
 
 ## Local mini-walk (MEASURED, local, NOISY)
 
