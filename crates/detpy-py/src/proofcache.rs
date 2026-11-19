@@ -251,8 +251,16 @@ pub fn dist_top_of(rel: &str) -> Option<String> {
     detpy_core::distfiles::top_of(rel)
 }
 
-/// Existence checks of at least `min` entries of one directory replaced by the directory's listing with kinds.
+/// Existence checks of at least `min` entries of one directory replaced by the directory's listing with kinds, many
+/// under one directory tree by the tree with kinds (`proof::compact_stats`). Directory digests are computed once per
+/// `session` (the record step of one run).
 #[pyfunction]
-pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize) -> Vec<(String, String)> {
-    proof::compact_stats(data, &root, min)
+pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize, session: String) -> Vec<(String, String)> {
+    static MEMO: Mutex<Option<(String, proof::KindsMemo)>> = Mutex::new(None);
+    let mut g = MEMO.lock().unwrap_or_else(|e| e.into_inner());
+    if g.as_ref().map(|(s, _)| s != &session).unwrap_or(true) {
+        *g = Some((session, Default::default()));
+    }
+    let memo = &mut g.as_mut().expect("set above").1;
+    proof::compact_stats_memo(data, &root, min, memo)
 }

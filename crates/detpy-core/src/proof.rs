@@ -180,6 +180,45 @@ pub fn kinds_digest(path: &Path) -> Option<String> {
     Some(digest_bytes(&items.join(&b'\n')).short())
 }
 
+/// Digest of every path under `path` (recursively, sorted, directories not followed through symlinks) with its
+/// kind; None when `path` is not a directory or holds more than `limit` entries.
+pub fn tree_kinds_digest(path: &Path, limit: usize) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    let mut stack = vec![(path.to_path_buf(), Vec::<u8>::new())];
+    if !fs::metadata(path).ok()?.is_dir() {
+        return None;
+    }
+    while let Some((dir, rel)) = stack.pop() {
+        for e in fs::read_dir(&dir).ok()? {
+            let e = e.ok()?;
+            let mut r = rel.clone();
+            if !r.is_empty() {
+                r.push(b'/');
+            }
+            r.extend_from_slice(&os_bytes(&e.file_name()));
+            let p = e.path();
+            let kind = stat_kind(&p);
+            let mut b = r.clone();
+            b.push(0);
+            b.extend_from_slice(kind.as_bytes());
+            items.push(b);
+            if items.len() > limit {
+                return None;
+            }
+            if e.file_type().ok()?.is_dir() {
+                stack.push((p, r));
+            }
+        }
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// Entries a "T:" dependency may cover (record and check time).
+pub const TREE_LIMIT: usize = 50_000;
+/// Key suffix of a "T:" dependency (the directory is the key without it).
+pub const TREE_SUFFIX: &str = "/\u{1}tree";
+
 /// Key suffix of a "t:" dependency (the directory is the key without it).
 pub const KINDS_SUFFIX: &str = "/\u{1}kinds";
 
@@ -188,6 +227,14 @@ pub const KINDS_SUFFIX: &str = "/\u{1}kinds";
 /// entry added, removed or changing kind there invalidates), so every replaced check is still covered; a large
 /// suite's collection otherwise puts thousands of checks into every test's entry. `root` resolves relative keys.
 pub fn compact_stats(data: Vec<(String, String)>, root: &Path, min: usize) -> Vec<(String, String)> {
+    compact_stats_memo(data, root, min, &mut HashMap::new())
+}
+
+/// Digests computed by [`compact_stats_memo`] in one session ((directory, 't' or 'T') -> digest).
+pub type KindsMemo = HashMap<(PathBuf, char), Option<String>>;
+
+/// [`compact_stats`] with the directory digests kept across the tests of one session.
+pub fn compact_stats_memo(data: Vec<(String, String)>, root: &Path, min: usize, memo: &mut KindsMemo) -> Vec<(String, String)> {
     let mut by_dir: BTreeMap<String, usize> = BTreeMap::new();
     let parent = |k: &str| -> Option<String> {
         let k = k.trim_end_matches('/');
@@ -206,20 +253,63 @@ pub fn compact_stats(data: Vec<(String, String)>, root: &Path, min: usize) -> Ve
         }
     }
     let big: BTreeSet<&String> = by_dir.iter().filter(|(_, n)| **n >= min).map(|(d, _)| d).collect();
-    if big.is_empty() {
+    // second level: checks spread over many directories (one per language of an examples tree) under a common
+    // ancestor with at least `tree_min` of them become one dependency on the ancestor's whole tree with kinds;
+    // never the project root, an ancestor of it or the filesystem root
+    let tree_min = min * 8;
+    let mut under: BTreeMap<String, usize> = BTreeMap::new();
+    for (k, v) in &data {
+        if !v.starts_with("s:") {
+            continue;
+        }
+        let mut a = parent(k);
+        while let Some(d) = a {
+            if d == "." || d == "/" {
+                break;
+            }
+            *under.entry(d.clone()).or_default() += 1;
+            a = parent(&d);
+        }
+    }
+    let mut cands: Vec<(&String, &usize)> = under.iter().filter(|(d, n)| **n >= tree_min && {
+        let p = root.join(d.as_str());
+        !(root.starts_with(&p))
+    }).collect();
+    cands.sort_by_key(|(d, _)| std::cmp::Reverse(d.matches('/').count()));
+    let mut trees: BTreeMap<String, String> = BTreeMap::new();
+    for (d, _) in cands {
+        if trees.keys().any(|t| d.starts_with(&format!("{t}/")) || t.starts_with(&format!("{d}/"))) {
+            continue; // nested in (or around) a chosen tree: the deepest qualifying ancestor wins
+        }
+        let p = root.join(d.as_str());
+        let got = memo.entry((p.clone(), 'T')).or_insert_with(|| tree_kinds_digest(&p, TREE_LIMIT)).clone();
+        if let Some(x) = got {
+            trees.insert(d.clone(), format!("T:{x}"));
+        }
+    }
+    let in_tree = |k: &str| trees.keys().any(|t| k.starts_with(&format!("{t}/")));
+    if big.is_empty() && trees.is_empty() {
         return data;
     }
     let mut out: BTreeMap<String, String> = BTreeMap::new();
     for (k, v) in data {
-        if v.starts_with("s:") && parent(&k).is_some_and(|d| big.contains(&d)) {
+        if v.starts_with("s:") && (parent(&k).is_some_and(|d| big.contains(&d)) || in_tree(&k)) {
             continue;
         }
         out.insert(k, v);
     }
     for d in big.into_iter().cloned().collect::<Vec<_>>() {
-        let dep = kinds_digest(&root.join(&d)).map(|x| format!("t:{x}")).unwrap_or_else(|| "t:missing".into());
+        if in_tree(&format!("{d}/x")) {
+            continue; // its checks are covered by the enclosing tree
+        }
+        let p = root.join(&d);
+        let got = memo.entry((p.clone(), 't')).or_insert_with(|| kinds_digest(&p)).clone();
+        let dep = got.map(|x| format!("t:{x}")).unwrap_or_else(|| "t:missing".into());
         // a content or listing dependency of the directory itself stays; the kinds one has its own key
         out.insert(format!("{d}{KINDS_SUFFIX}"), dep);
+    }
+    for (d, dep) in trees {
+        out.insert(format!("{d}{TREE_SUFFIX}"), dep);
     }
     out.into_iter().collect()
 }
@@ -257,6 +347,8 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("T:") {
+        tree_kinds_digest(path, TREE_LIMIT).map(|d| format!("T:{d}")).unwrap_or_else(|| "T:missing".into())
     } else if recorded.starts_with("t:") {
         kinds_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "t:missing".into())
     } else {
@@ -706,7 +798,11 @@ impl Checker {
         if let Some(v) = self.data_now.get(&k) {
             return v.clone();
         }
-        let path = if kind == 't' { path.strip_suffix(KINDS_SUFFIX).unwrap_or(path) } else { path };
+        let path = match kind {
+            't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
+            'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
+            _ => path,
+        };
         let v = data_now(&self.cur.root.join(path), recorded);
         self.data_now.insert(k, v.clone());
         v
@@ -1006,6 +1102,33 @@ mod tests {
         let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
         assert_ne!(&ch.data(k, v), v);
         assert_eq!(data_now(&root.join("nodir"), "t:x"), "t:missing");
+    }
+
+    #[test]
+    fn existence_checks_spread_over_a_tree_become_the_tree() {
+        let t = tempfile::tempdir().unwrap();
+        let root = t.path();
+        let mut data = Vec::new();
+        for l in 0..20 {
+            fs::create_dir_all(root.join(format!("ex/l{l}"))).unwrap();
+            for i in 0..4 {
+                fs::write(root.join(format!("ex/l{l}/{i}")), b"x").unwrap();
+                data.push((format!("ex/l{l}/{i}"), "s:file".to_string()));
+            }
+        }
+        data.push(("other".to_string(), "s:missing".to_string()));
+        let c = compact_stats(data, root, 8);
+        assert_eq!(c.len(), 2, "{c:?}");
+        let (k, v) = c.iter().find(|(k, _)| k.ends_with(TREE_SUFFIX)).unwrap();
+        assert_eq!(k, &format!("ex{TREE_SUFFIX}"));
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_eq!(&ch.data(k, v), v);
+        fs::write(root.join("ex/l3/new"), b"x").unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(&ch.data(k, v), v);
+        // the project root is never a tree
+        let flat: Vec<(String, String)> = (0..100).map(|i| (format!("d{i}/x"), "s:missing".to_string())).collect();
+        assert_eq!(compact_stats(flat, root, 8).len(), 100);
     }
 
     #[test]

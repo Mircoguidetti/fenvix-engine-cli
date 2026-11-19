@@ -1490,7 +1490,7 @@ class ProofCachePlugin:
                 continue
             own = {"t|" + nid}
             for path, _dep in deps:
-                if _dep.startswith(("s:", "t:")):
+                if _dep.startswith(("s:", "t:", "T:")):
                     continue  # an existence check: its kind is compared with the disk before any reuse
                 if path in session_written and not set(session_written[path]) <= own:
                     self.stale_hits[nid] = path
@@ -1680,8 +1680,9 @@ class ProofCachePlugin:
                     dist_sets[nid] = {"proof": sorted(keys), "own": sorted(own)}
             report = {w: p[w] for w in ("setup", "call") if w in p}
             # many existence checks in one directory (a collection hook checking every example file) become one
-            # dependency on the directory's listing with kinds (Rust: proof::compact_stats)
-            data_items = _core.compact_stats(sorted(data.items()), self.root, _STATS_PER_DIR)
+            # dependency on the directory's listing with kinds, many under one directory tree one dependency on the
+            # tree with kinds (Rust: proof::compact_stats)
+            data_items = _core.compact_stats(sorted(data.items()), self.root, _STATS_PER_DIR, self.run_id)
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                          data_items, sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
