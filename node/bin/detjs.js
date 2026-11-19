@@ -3,8 +3,10 @@
 // detjs: deterministic execution of JavaScript/TypeScript tests (Level 0).
 //   detjs vitest [--det [--det-seed=N] ...] [vitest args]
 //   detjs jest   [--det [--det-seed=N] ...] [jest args]
+//   detjs bun-test  [--det ...] [bun test args]   (src/runners/bun.js)
+//   detjs deno-test [--det ...] [deno test args]  (src/runners/deno.js)
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
-const USAGE = `usage: detjs vitest|jest [--det options] [runner args]
+const USAGE = `usage: detjs vitest|jest|bun-test|deno-test [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs --det-help`;
 
@@ -12,6 +14,8 @@ async function main(argv) {
   const [cmd, ...rest] = argv;
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
+  if (cmd === 'bun-test') return require('../src/runners/bun').main(rest);
+  if (cmd === 'deno-test') return require('../src/runners/deno').main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
     const paths = rest.filter((a) => !a.startsWith('--'));

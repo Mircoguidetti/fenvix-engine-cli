@@ -1,0 +1,160 @@
+name: all-runners-node-c
+
+# detjs for Bun (`detjs bun-test`) and Deno (`detjs deno-test`): runner tests and skip-with-proof walks.
+#   build  -> detjs native core (napi-rs), loaded by Node, Bun and Deno alike
+#   tests  -> node/test/runner-bun.test.js and runner-deno.test.js (control + adversarial), with Bun and Deno installed
+#   walk   -> one job per (repository, shard): per commit a skip run, a verify run (every would-be reuse checked by a
+#             fresh run at the same commit), overhead runs (plain runner, --det without cache); results committed
+# Started by a push that changes harness/node_cache/RUN-node-c (JSON: {"label": "...", "repos": [...], "tests": true}),
+# or by hand (workflow_dispatch) with the same JSON.
+
+on:
+  workflow_dispatch:
+    inputs:
+      config: {description: "JSON parameters (see harness/node_cache/RUN-node-c)", default: "{}"}
+  push:
+    branches: [claude/all-runners, ar-node-c]
+    paths: [harness/node_cache/RUN-node-c]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: all-runners-node-c-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+  BUN_VERSION: "1.4.4"
+  DENO_VERSION: "2.9.8"
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.c.outputs.matrix }}
+      label: ${{ steps.c.outputs.label }}
+      tests: ${{ steps.c.outputs.tests }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        env:
+          DISPATCH: ${{ inputs.config }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          d = {"label": "node-c", "repos": ["wouter", "json-schema-faker", "oak", "std"], "tests": True, "shards": {}, "windows": {}}
+          try:
+              d.update(json.load(open("harness/node_cache/RUN-node-c")))
+          except Exception as e:
+              print("RUN-node-c:", e)
+          d.update(json.loads(os.environ.get("DISPATCH") or "{}"))
+          inc = []
+          for r in d["repos"]:
+              spec = json.load(open(f"harness/node_cache/specs/{r}.json"))
+              n = int(d["shards"].get(r, spec.get("shards", 1)))
+              for k in range(n):
+                  w = d["windows"].get(r)
+                  inc.append({"repo": r, "shard": k, "nshards": n, "node": spec["node"], "runner": spec["runner"],
+                              "bun": spec.get("bun", ""), "deno": spec.get("deno", ""), "window": f"{w[0]}:{w[1]}" if w else ""})
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"matrix={json.dumps({'include': inc})}\n")
+              f.write(f"label={d['label']}\n")
+              f.write(f"tests={'true' if d['tests'] else 'false'}\n")
+          print(d, inc)
+          PY
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: cargo build -p detpy-node --release
+      - run: cp target/release/libdetpy_node.so node/detjs.linux-x64.node
+      - uses: actions/upload-artifact@v4
+        with:
+          name: detjs
+          path: node/detjs.linux-x64.node
+
+  tests:
+    needs: [config, build]
+    if: needs.config.outputs.tests == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: oven-sh/setup-bun@v2
+        with: {bun-version: "${{ env.BUN_VERSION }}"}
+      - uses: denoland/setup-deno@v2
+        with: {deno-version: "${{ env.DENO_VERSION }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: node}
+      - name: runner tests (bun test, deno test)
+        run: |
+          cd node && npm ci
+          bun --revision; deno --version
+          node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
+            --test-reporter=junit --test-reporter-destination=../runner-tests.xml test/runner-bun.test.js test/runner-deno.test.js 2>&1 | tee ../runner-tests.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runner-tests-node-c
+          path: |
+            runner-tests.log
+            runner-tests.xml
+
+  walk:
+    needs: [config, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJSON(needs.config.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - uses: oven-sh/setup-bun@v2
+        if: matrix.runner == 'bun-test'
+        with: {bun-version: "${{ matrix.bun || env.BUN_VERSION }}"}
+      - uses: denoland/setup-deno@v2
+        if: matrix.runner == 'deno-test'
+        with: {deno-version: "${{ matrix.deno || env.DENO_VERSION }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: node}
+      - name: clone
+        run: |
+          URL=$(python3 -c "import json;print(json.load(open('harness/node_cache/specs/${{ matrix.repo }}.json'))['url'])")
+          git clone -q "$URL" /tmp/repo
+          echo "runner: $RUNNER_NAME $(nproc) cpus; $(grep -m1 'model name' /proc/cpuinfo)"
+      - name: walk
+        run: |
+          mkdir -p /tmp/out
+          python3 harness/node_cache/walk.py --spec harness/node_cache/specs/${{ matrix.repo }}.json \
+            --repo /tmp/repo --work /tmp/work --out /tmp/out/${{ matrix.repo }}-${{ matrix.shard }}.json \
+            --commits harness/node_cache/commits/${{ matrix.repo }}-commits.json \
+            --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --budget 18600 --run-timeout 3000 \
+            ${{ matrix.window && format('--window={0}', matrix.window) || '' }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: walk-${{ matrix.repo }}-${{ matrix.shard }}
+          path: /tmp/out/
+      - name: commit results
+        if: always()
+        run: |
+          D=harness/node_cache/results/${{ needs.config.outputs.label }}
+          mkdir -p $D
+          [ -f /tmp/out/${{ matrix.repo }}-${{ matrix.shard }}.json ] || exit 0
+          gzip -c /tmp/out/${{ matrix.repo }}-${{ matrix.shard }}.json > $D/${{ matrix.repo }}-${{ matrix.shard }}.json.gz
+          git config user.name "fenvix-harness"
+          git config user.email "harness@users.noreply.github.com"
+          git add $D
+          git commit -q -m "all runners (node-c): ${{ matrix.repo }} shard ${{ matrix.shard }} (${{ needs.config.outputs.label }}) from run ${{ github.run_id }}"
+          for i in 1 2 3 4 5 6; do
+            git pull -q --rebase origin "${GITHUB_REF_NAME}" && git push -q origin "HEAD:${GITHUB_REF_NAME}" && break
+            sleep $((i * 7))
+          done

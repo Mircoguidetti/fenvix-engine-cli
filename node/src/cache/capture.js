@@ -534,6 +534,19 @@ class Capture {
     const k = path.join(dir, base);
     const x = native.stemListingDigest(k);
     this.add(['data', this.key(k), x === null || x === undefined ? 'missing' : `g:${x}`], this.isGlobal);
+    // no directory to list: the stem entry stays `missing` when a file with that stem appears, so the directory's
+    // own absence is the input (and its parents', up to one that exists)
+    if (x === null || x === undefined) {
+      let d = dir;
+      for (let i = 0; i < 64; i++) {
+        const dd = this.dep('f', d);
+        this.add(['data', this.key(d), dd], this.isGlobal);
+        if (dd !== 'missing') break;
+        const up = path.dirname(d);
+        if (up === d || this.where(up) === 'skip') break;
+        d = up;
+      }
+    }
   }
 
   /**
@@ -1065,7 +1078,9 @@ function installFs(cap) {
 
 function installEnv(cap, proc) {
   const env = proc.env;
-  if (env && env.__detjsCache) return;
+  let wrapped = false;
+  try { wrapped = Boolean(env && env.__detjsCache); } catch { /* Deno without env permission for that name: not ours yet */ }
+  if (wrapped) return;
   const handler = {
     get(t, k) {
       if (typeof k === 'string' && k !== '__detjsCache') cap.env(k);
