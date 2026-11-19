@@ -413,8 +413,8 @@ class Capture:
             self.code_stat[p] = _code_key(p)
 
     def changed_code(self) -> list:
-        """Repository code files (relative paths) changed since their source was first read or their module body
-        first ran in this session."""
+        """Repository files (relative paths) changed since they were first opened for reading or their module body
+        first ran in this session (the plan refuses on those that are code inputs)."""
         out = set()
         for p, (k, r) in self.code_stat.items():
             if _stat_key(p) == k:
@@ -479,10 +479,13 @@ class Capture:
             if p is None:
                 return
             mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
-            if p.endswith(".py") and p.startswith(self.root_sep) and p not in self.code_stat and (
+            if p.startswith(self.root_sep) and p not in self.code_stat and (
                     ("r" in mode and "+" not in mode) if isinstance(mode, str)
-                    else isinstance(flags, int) and flags & _O_ACC == os.O_RDONLY):
-                # before the read: the source the import system (or pytest's rewrite, runpy...) is about to read
+                    else isinstance(flags, int) and flags & _O_ACC == os.O_RDONLY) \
+                    and not any(s in p for s in _SKIP_PARTS):
+                # before the read: the source the import system (or pytest's rewrite, runpy...) is about to read.
+                # Any file, not only .py: a doctest text file is read at collection and runs later (review R-015b
+                # G3); the plan refuses only on files that are code inputs
                 self.code_stat[p] = _code_key(p)
             if self._ignored(p):
                 return
