@@ -5,9 +5,9 @@ Round 1's 14 "no-code reds" were 7 environment changes from 4 mechanisms plus 7 
 M6), and none of time zone, locale, file permission or runner image was ever the culprit. This driver adds CI
 environment changes of those kinds where a real suite breaks under them:
 
-    scan: run the project's suite (plain pytest) at the red commit with every candidate change at once, then each
-          failing test once per change alone: a test that fails with exactly one change, passes without it, and
-          passes at the green commit, is a candidate red test for that change.
+    scan: run the project's suite (plain pytest) at the red commit once per candidate change, alone: a test that
+          fails with the change and passes without it is a candidate red test for that change (checked again at
+          green and under --det when the case is built).
     case: green = HEAD~8 (green environment), red = HEAD with the change (red environment), same virtualenv
           (nothing installed differs). Decoys: none, and a second variable that lands with the change and is
           checked not to break the test (TZ=Asia/Kolkata, or COLUMNS=100 when the change is the time zone).
@@ -55,30 +55,44 @@ def window(repo):
     return fp[-1], head
 
 
+def failing(repo, venv, env) -> tuple[int, set]:
+    """Failing test ids of one plain run; a module that fails to collect counts as all its tests."""
+    code, out, _ = run_plain(repo, venv, PLAIN, extra_env=env, timeout=1800)
+    ids = set()
+    for t in failed_ids(out):
+        if "::" in t:
+            ids.add(t)
+        else:
+            _c, o2, _ = run_plain(repo, venv, ["-q", "--collect-only", "-p", "no:randomly", t], timeout=600)
+            ids |= {x.strip() for x in o2.splitlines() if "::" in x and not x.startswith(("ERROR", "FAILED"))}
+    return code, ids
+
+
 def scan(a):
+    """Each change alone, the whole suite (plain pytest) at the red commit: the tests it breaks."""
     repo, venv = Path(a.repo).resolve(), Path(a.venv).resolve()
     green, red = window(repo)
     checkout(repo, red)
-    every = {}
-    for v in CHANGES.values():
-        every.update(v[0])
-    code0, out0, s0 = run_plain(repo, venv, PLAIN, timeout=1800)
-    code1, out1, s1 = run_plain(repo, venv, PLAIN, extra_env=every, timeout=1800)
-    base, allf = failed_ids(out0), failed_ids(out1)
-    sus = sorted(t for t in allf - base if "::" in t)[:60]
-    found = {}
-    for t in sus:
-        hits = []
+    code0, base = failing(repo, venv, {})
+    found, exits = {}, {"base": code0}
+    if code0 in (0, 1):
         for name, (env, _k, _w) in CHANGES.items():
-            c, _o, _ = run_plain(repo, venv, [*PLAIN, t], extra_env=env, timeout=600)
-            if c == 1:
-                hits.append(name)
-        if len(hits) == 1:
-            found.setdefault(hits[0], []).append(t)
-    res = {"project": a.project, "green": green, "red": red, "exit": [code0, code1], "seconds": [s0, s1],
-           "suspects": len(sus), "by_change": found}
+            code, ids = failing(repo, venv, env)
+            exits[name] = code
+            new = sorted(ids - base)
+            if new:
+                found[name] = new[:40]
+            elif code not in (0, code0) and code0 == 0:
+                # the whole session is red (e.g. a configuration warning turned error) and no test is: any test
+                # of the suite is a red test of this change
+                _c, out, _ = run_plain(repo, venv, ["-q", "--collect-only", "-p", "no:randomly"], timeout=600)
+                tests = [x.strip() for x in out.splitlines() if "::" in x][:5]
+                if tests:
+                    found[name] = tests
+                    found.setdefault("_session_red", []).append(name)
+    res = {"project": a.project, "green": green, "red": red, "exit": exits, "by_change": found}
     json.dump(res, open(a.out, "w"), indent=1)
-    print(a.project, {k: len(v) for k, v in found.items()}, "exit", code0, code1, flush=True)
+    print(a.project, {k: len(v) for k, v in found.items()}, "exit", exits, flush=True)
 
 
 def case(a):
@@ -89,6 +103,8 @@ def case(a):
     if os.path.exists(a.out):
         done = {json.loads(l)["id"] for l in open(a.out)}
     for name, tests in sorted(sc["by_change"].items()):
+        if name.startswith("_"):
+            continue
         env, kind, what = CHANGES[name]
         var = next(iter(env))
         pick = None
@@ -106,7 +122,7 @@ def case(a):
             if cid in done:
                 continue
             row = {"id": cid, "scenario": f"{a.project}-{name}", "kind": kind, "what": what, "truth": f"env:{var}",
-                   "decoy": None, "round": 2}
+                   "decoy": None, "round": 2, "session_red": name in sc["by_change"].get("_session_red", [])}
             if pick is None:
                 row["skip"] = "no test that --det and plain pytest agree the change alone breaks"
                 with open(a.out, "a") as fh:

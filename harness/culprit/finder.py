@@ -401,7 +401,8 @@ class EnvBuilder:
 # flags of a key that make one replay no proof: the test read a source --det does not control
 NONDET_FLAGS = ("rclock", "connect", "csock", "dns", "entropy", "net")
 GREEN_REPEATS = 5  # replays of the green side when the key flags an uncontrolled source
-RETOUCH_CAP = 4  # later commits that touch the named commit's inputs again, probed for a newer transition
+RETOUCH_CAP = 6  # later commits that touch the named commit's inputs again, probed for a newer transition;
+#               beyond it the answer is withheld (unknown, ambiguous) rather than stated
 MAX_ROUNDS = 6
 
 
@@ -524,8 +525,13 @@ class Finder:
             ix = [k for k, (a, b) in enumerate(zip(self._vector(self._parent(c)), vec[c])) if a != b]
             later = [j for j in range(hi + 1, n)
                      if any(vec[cands[j]][k] != vec[cands[j - 1]][k] for k in ix)]
+            # commits whose diff undoes part of C's diff (a revert, or a fix folded into other work) first,
+            # all of them; then the other re-touching commits, up to RETOUCH_CAP
+            undo = [j for j in range(hi + 1, n) if self._undoes(c, cands[j])]
+            order = undo + [j for j in later if j not in undo]
+            budget = len(undo) + RETOUCH_CAP
             restarted = False
-            for j in later[:RETOUCH_CAP]:
+            for j in order[:budget]:
                 if outcome(j, "re-touch check") == "pass":
                     notes.append(f"{c[:10]} re-broken later: candidate {cands[j][:10]} passes")
                     lo, hi = j, n - 1
@@ -533,10 +539,37 @@ class Finder:
                     break
             if restarted:
                 continue
-            if len(later) > RETOUCH_CAP:
-                notes.append(f"{len(later) - RETOUCH_CAP} later re-touching commits not probed")
+            if len(order) > budget:
+                unchecked = len(order) - budget
+                return None, "unknown", "; ".join(notes + [
+                    f"ambiguous: {c[:10]} is confirmed, but {unchecked} later commits change its inputs again and "
+                    f"were not replayed (one of them may fix it, and a newer commit break it again)",
+                    f"suspect {c}"])
             return {"commit": c}, "confirmed", "; ".join(notes)
         return None, "unknown", "the history changes outcome more than %d times" % MAX_ROUNDS
+
+    def _hunks(self, sha: str) -> tuple[set, set]:
+        """(added lines, removed lines) of a commit against its first parent, stripped, blank lines left out."""
+        key = ("hunks", str(self.repo), sha)
+        if key not in _FACTS_CACHE:
+            out = git(self.repo, "diff", "--no-color", "-U0", f"{sha}^", sha, check=False)
+            add, rem = set(), set()
+            for line in out.splitlines():
+                if line.startswith(("+++", "---")):
+                    continue
+                if line.startswith("+") and line[1:].strip():
+                    add.add(line[1:].strip())
+                elif line.startswith("-") and line[1:].strip():
+                    rem.add(line[1:].strip())
+            _FACTS_CACHE[key] = (add, rem)
+        return _FACTS_CACHE[key]
+
+    def _undoes(self, c: str, d: str) -> bool:
+        """Does commit d take back part of commit c's change (removes a line c added and, if c removed lines,
+        adds one of them back)?"""
+        ca, cr = self._hunks(c)
+        da, dr = self._hunks(d)
+        return bool(ca & dr) and (not cr or bool(cr & da))
 
     def _confirm_commit(self, c: str, side) -> tuple[bool, str]:
         p = self._parent(c)
@@ -657,15 +690,30 @@ class Finder:
     def run(self) -> dict:
         t0 = time.perf_counter()
         g = load_key(self.green["key"], self.nodeid)
-        r = load_key(self.red["key"], self.nodeid)
         res = {"nodeid": self.nodeid}
+        try:
+            r = load_key(self.red["key"], self.nodeid)
+        except (OSError, ValueError):
+            # the red run wrote no key (the session failed before the end, e.g. a configuration warning turned
+            # into an error): the red side is the green key minus the test, plus the two job definitions
+            r = {**g, "test": None}
+            res["red_key"] = "missing (the red run wrote no key)"
         if g["test"] is None:
             return {**res, "culprit": None, "status": "unknown", "why": "no green key for the test",
                     "executions": 0}
         commits = self.commits if self.commits is not None else \
             [x for x in git(self.repo, "rev-list", "--first-parent", "--reverse",
                             f"{self.green['sha']}..{self.red['sha']}").split() if x]
-        if r["test"] is None:
+        if res.get("red_key", "").startswith("missing (the red run wrote"):
+            gt = g["test"]
+            changes = [{"kind": "code", "id": k, "what": k.split(":", 1)[0], "path": k.split(":", 1)[1].split("::")[0],
+                        "unit": k.split("::", 1)[1] if "::" in k else None} for k in gt.get("code", {})]
+            changes += [{"kind": "data", "id": f"data:{p}", "path": p, "inrepo": True}
+                        for p in gt.get("data", {}) if not os.path.isabs(p)]
+            ge, re_ = self.green.get("env") or {}, self.red.get("env") or {}
+            changes += [{"kind": "env", "id": f"env:{n}", "name": n} for n in sorted(set(ge) | set(re_))
+                        if ge.get(n) != re_.get(n)]
+        elif r["test"] is None:
             # the test never ran in red (collection or import error): every input of the green key is suspect
             gt = g["test"]
             changes = [{"kind": "code", "id": k, "what": k.split(":", 1)[0], "path": k.split(":", 1)[1].split("::")[0],

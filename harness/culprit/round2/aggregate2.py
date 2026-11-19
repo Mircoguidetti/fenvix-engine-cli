@@ -107,8 +107,10 @@ def main():
         r["range_first"], r["range_last"] = (r.get("range") or [None])[0], (r.get("range") or [None])[-1]
     out["c-edit"] = commit_kind(ce)
     dd = [r for r in rows(d, "d.jsonl") if "finder_correct" in r]
-    out["d"] = score(dd, lambda r: True, lambda r: True if r["finder_correct"] else False,
-                     lambda r: r["executions"])
+    for r in dd:
+        r.setdefault("id", f"{r['repo']}:{r['victim']}")
+    out["d"] = score(dd, lambda r: r["truth"], lambda r: r.get("finder_named"), lambda r: r["executions"])
+    out["d"]["distinct_culprits"] = len({r["truth"] for r in dd})
     out["d"]["note"] = "carried over from round 1 (orderdep.py, not changed in round 2)"
     allex = out["a2"]["_ex"] + out["b"]["_ex"] + cs["_ex"] + out["c-edit"]["_ex"] + out["d"]["_ex"]
     tot = {k: out[x][k] for k in ("cases", "correct", "confident_wrong", "unknown") for x in ("a2",)}

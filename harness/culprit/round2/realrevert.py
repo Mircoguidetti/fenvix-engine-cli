@@ -33,6 +33,39 @@ from common import checkout, git, run_det, run_plain  # noqa: E402
 from mutants import failed_ids  # noqa: E402
 from placed import plain_outcome, walk_truth  # noqa: E402
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from detpy_harness import detect_install  # noqa: E402
+
+WHEEL = os.environ.get("CULPRIT_WHEEL", "/home/user/work/wheels/detpy-0.1.0-cp39-abi3-manylinux_2_34_x86_64.whl")
+EXTRA = {r["name"]: r.get("install", []) for r in json.load(open(Path(__file__).resolve().parents[2] / "repos.json"))["popular"]}
+
+
+def period_venv(repo, sha, project, root: Path, python="3.12") -> tuple[Path | None, str]:
+    """A virtualenv for an old commit: the project's test dependencies resolved as of the commit's date
+    (``uv --exclude-newer``), the oldest interpreter --det-cache supports (3.12), detpy, the project editable."""
+    from common import sh
+    date = git(repo, "log", "-1", "--format=%cs", sha)
+    venv = root / f"{project}-{sha[:10]}"
+    if (venv / ".ok").exists():
+        return venv, date
+    checkout(repo, sha)
+    sh(["uv", "venv", "-q", "--clear", "--python", python, str(venv)], check=True)
+    args, groups, reqs = detect_install(Path(repo))
+    py = str(venv / "bin" / "python")
+    cutoff = f"{date}T23:59:59Z"
+    for extra in (groups + reqs, groups, reqs, []):
+        code, out = sh(["uv", "pip", "install", "-q", "--python", py, "--exclude-newer", cutoff, *args, *extra,
+                        "pytest", *EXTRA.get(project, [])], cwd=repo, timeout=1800)
+        if code == 0:
+            break
+    else:
+        return None, f"no install as of {date}: {out[-300:]}"
+    code, out = sh(["uv", "pip", "install", "-q", "--python", py, "--no-deps", WHEEL], cwd=repo, timeout=600)
+    if code != 0:
+        return None, f"detpy: {out[-300:]}"
+    (venv / ".ok").write_text(date)
+    return venv, date
+
 TESTDIR = re.compile(r"(^|/)(tests?|testing)/|(^|/)test_[^/]*\.py$|_test\.py$")
 SKIPDIR = re.compile(r"(^|/)(docs?|\.github|benchmarks?|examples?|scripts|tasks)/")
 
@@ -65,8 +98,9 @@ def main():
     ap.add_argument("--per-revert", type=int, default=2)
     ap.add_argument("--timeout", type=int, default=900)
     ap.add_argument("--whole", action="store_true", help="always run the whole suite (second pass)")
+    ap.add_argument("--period", default=None, help="directory for period virtualenvs (old commits)")
     a = ap.parse_args()
-    repo, venv = Path(a.repo).resolve(), Path(a.venv).resolve()
+    repo, venv0 = Path(a.repo).resolve(), Path(a.venv).resolve()
     default = git(repo, "rev-parse", "origin/HEAD")
     fp = git(repo, "rev-list", "--first-parent", "--reverse", default).split()
     pos = {s: i for i, s in enumerate(fp)}
@@ -88,11 +122,23 @@ def main():
         row["targets"] = targets or ["(whole suite)"]
         base = ["-q", "--tb=no", "-rfE", "-p", "no:randomly", *targets]
         res = {}
+        venv = venv0
         for side, sha in (("before", fp[pos[fx] - 1]), ("after", fx)):
             checkout(repo, sha)
             code, out, secs = run_plain(repo, venv, base, timeout=a.timeout)
             res[side] = (code, failed_ids(out), round(secs, 1))
         row["exit"] = {k: v[0] for k, v in res.items()}
+        venv = venv0
+        if a.period and (res["before"][0] not in (0, 1) or res["after"][0] not in (0, 1)):
+            pv, info = period_venv(repo, fx, a.project, Path(a.period))
+            row["period_env"] = info if pv is None else f"resolved as of {info}, Python 3.12"
+            if pv is not None:
+                venv = pv
+                for side, sha in (("before", fp[pos[fx] - 1]), ("after", fx)):
+                    checkout(repo, sha)
+                    code, out, secs = run_plain(repo, venv, base, timeout=a.timeout)
+                    res[side] = (code, failed_ids(out), round(secs, 1))
+                row["exit"] = {k: v[0] for k, v in res.items()}
         if res["before"][0] not in (0, 1) or res["after"][0] not in (0, 1):
             row["dropped"] = f"today's environment cannot run the old commits (exit {row['exit']})"
             with open(a.out, "a") as fh:
@@ -123,7 +169,7 @@ def main():
             truth, runs, seen = walk_truth(repo, venv, green, rng_commits, t)
             case = {"id": f"{a.project}-rv-{r[:10]}-{len(cases)}", "repo": a.project, "kind": "b-revert",
                     "green": green, "red_head": rng_commits[-1], "head": default, "red_test": t, "k": len(rng_commits),
-                    "range": rng_commits, "revert": r, "reverted": x, "fx": fx, "truth_walk_runs": runs,
+                    "range": rng_commits, "revert": r, "reverted": x, "fx": fx, "venv": str(venv), "truth_walk_runs": runs,
                     "truth_walk": seen}
             if truth is None:
                 case["dropped"] = "walk found no pass->fail transition"

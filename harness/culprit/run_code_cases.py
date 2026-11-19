@@ -42,12 +42,14 @@ def main():
         if c["id"] in done or c.get("dropped"):
             continue
         nid = c["red_test"]
+        venv = Path(c["venv"]) if c.get("venv") else Path(a.venv).resolve()  # a case may carry its own environment
         gk, rk = str(kdir / f"{c['id']}-green.json"), str(kdir / f"{c['id']}-red.json")
         checkout(repo, c["green"])
         g = run_det(repo, venv, nid, keys=gk)
         checkout(repo, c["red_head"])
         r = run_det(repo, venv, nid, keys=rk)
         res = {"id": c["id"], "repo": c["repo"], "k": c["k"], "truth": c["planted"], "red_test": nid,
+               "green": c["green"], "red_head": c["red_head"],
                "green_run": g["outcome"], "red_run": r["outcome"]}
         for f in ("shape", "positions", "truth_position", "truth_is_planted", "round1"):
             if f in c:
