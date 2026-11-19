@@ -281,7 +281,9 @@ def test_record_session_matches_reference(pytester, monkeypatch):
     assert "test_m.py::test_spawn" in st["tests"] or nc["test_m.py::test_spawn"].startswith("subprocess")
     assert nc["test_m.py::test_fail"] == "outcome failed"
     assert nc["test_m.py::test_dns"] == "host name lookup" and "test_m.py::test_dns" in d["new"]["where"]
-    assert nc["test_m.py::test_proc"] == "reads /proc, /sys or /dev"
+    # review R-023b N1: this process's own state (/proc/self/stat, fd listings) has its own reason
+    assert nc["test_m.py::test_proc"] in ("reads /proc, /sys or /dev",
+                                          "reads this process's state under /proc (descriptors, status counters, threads)")
     assert "test_m.py::test_reads_data" in st["tests"] and "test_m.py::test_clock" in st["tests"]
     assert st["tests"]["test_m.py::test_clock"]["epoch"] is not None
     assert any(n.startswith("pkg/doc.py::") for n in st["tests"])

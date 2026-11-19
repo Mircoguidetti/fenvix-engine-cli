@@ -1,0 +1,25 @@
+........................................s.s............................. [  9%]
+..............sss....................................................... [ 19%]
+........................................................................ [ 29%]
+........................................................................ [ 39%]
+....................................................s................... [ 49%]
+........................................................................ [ 58%]
+.......................................................s................ [ 68%]
+...................................................................
+repro python: wall 5.453 s, pytest subprocesses 5.448 s (99.9 %), 10 runs
+
+repro rust: wall 5.896 s, pytest subprocesses 5.889 s (99.9 %), 10 runs
+..... [ 78%]
+........................................................................ [ 88%]
+...ss..........ss.............................................s......... [ 98%]
+.............                                                            [100%]
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/local/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+721 passed, 12 skipped, 1 deselected, 4 warnings in 924.86s (0:15:24)

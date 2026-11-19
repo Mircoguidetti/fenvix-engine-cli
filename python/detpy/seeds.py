@@ -61,6 +61,18 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
     patcher.set(os, "urandom", _urandom)
     patcher.set(random, "_urandom", _core.stand_in("urandom", globals(), "random", "_urandom", wrapped=_real_urandom,
                                                    fname="urandom"))
+    # review R-023b N5: the kernel pool through os.getrandom and OpenSSL's generator (seeded from it) are OS entropy
+    # like os.urandom: observed (the "entropy" flag of the cache), and drawn from the seeded stream under --det-urandom
+    if hasattr(os, "getrandom"):
+        patcher.set(os, "getrandom", _core.stand_in("urandom", globals(), "os", "getrandom", wrapped=os.getrandom,
+                                                     fname="urandom"))
+    try:
+        import ssl
+    except ImportError:  # pragma: no cover - Python without ssl
+        ssl = None
+    if ssl is not None and hasattr(ssl, "RAND_bytes"):
+        patcher.set(ssl, "RAND_bytes", _core.stand_in("urandom", globals(), "ssl", "RAND_bytes",
+                                                      wrapped=ssl.RAND_bytes, fname="urandom"))
     if control_urandom:
         _urandom_rng = random.Random()
         _real_seed(_urandom_rng, _core.derive_seed(_state.STATE.config.seed, "<urandom>"))
@@ -116,3 +128,20 @@ def end_test() -> None:
             _state.record_at("random", "numpy.random.state", "<end>", _core.digest(st[1].tobytes() + str(st[2]).encode()))
         except Exception:  # pragma: no cover
             pass
+
+
+def fixture_begin(key: str):
+    """review R-023b N5: a wider-scoped fixture's setup draws from its own stream (``derive_seed(seed, "<fixture>"
+    + key)``), not from the stream of whichever test requests it first; returns the states to restore."""
+    base = _state.STATE.config.seed
+    saved = (random._inst.getstate(), _urandom_rng.getstate() if _urandom_rng is not None else None)
+    _real_seed(random._inst, _core.derive_seed(base, "<fixture>" + key))
+    if _urandom_rng is not None:
+        _real_seed(_urandom_rng, _core.derive_seed(base, "<fixture>" + key + "\0urandom"))
+    return saved
+
+
+def fixture_end(saved) -> None:
+    random._inst.setstate(saved[0])
+    if saved[1] is not None and _urandom_rng is not None:
+        _urandom_rng.setstate(saved[1])

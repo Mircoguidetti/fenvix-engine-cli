@@ -63,11 +63,11 @@ AVAILABLE = _mon is not None
 # "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
 _GLOBAL_CTX = ("", "s")
 
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link", "ctypes.dlopen")
+                 "os.link")
 _SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
 _WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
                  "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
@@ -730,8 +730,14 @@ class Capture:
             else:
                 self.data.setdefault(ctx, {})[self._key(p)] = "missing"
             return
+        elif _proc_alias(p) is not None:
+            self.read(ctx, _proc_alias(p), kind)  # review R-023b N1: /proc/self/root/..., /dev/fd/N: the file itself
+            return
+        elif _process_state(p):
+            self.flag(ctx, "pstate", p)  # this process's own state: counted in a test's own contexts only
+            return
         elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
-                and (kind != "d" and os.path.exists(p)):
+                and ((kind != "d" or p.startswith("/proc/")) and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
             # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
             self.flag(ctx, "proc", p)
@@ -831,13 +837,6 @@ class Capture:
                 if is_uri and mode != 2:
                     files.append(_sqlite_file(db, True))
                 self._sql_database([f for f in files if f is not None])
-        elif event == "ctypes.dlopen":
-            # LIMITS A2: a library opened through ctypes names its path
-            name = args[0] if args else None
-            if name is not None and "/" in str(name):
-                p = self._abs(name)
-                if p is not None and not self._ignored(p):
-                    self._native(self._cur(), p)
         elif event in ("os.listdir", "os.scandir"):
             if self._caller_kind() != "user":
                 return
@@ -865,12 +864,31 @@ class Capture:
                 host = host.decode("ascii", "replace")
             if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
                 return
-            if _loopback_name(host):
+            if _loopback_name(host) and _hosts_file_answers(host):
                 # review R-023: a loopback name is answered by the host's resolver configuration, recorded as reads
                 for f in ("/etc/hosts", "/etc/nsswitch.conf", "/etc/host.conf", "/etc/gai.conf"):
                     self.read(self._cur(), f, "f")
                 return
             self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
+        elif event == "ctypes.dlopen":
+            name = args[0] if args else None
+            if name is None or self._caller_kind() != "user":
+                return
+            n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
+            if n is None:
+                return
+            ctx = self._cur()
+            if "/" in n:
+                p = self._abs(n)
+                if p is not None and not self._ignored(p):
+                    self.read(ctx, p, "s")
+                    self._native(ctx, p)  # LIMITS A2
+            else:
+                self.read(ctx, "/etc/ld.so.cache", "f")
+                for d in [x for x in os.environ.get("LD_LIBRARY_PATH", "").split(":") if x]:
+                    c = d + "/" + n
+                    if not self._ignored(c):
+                        self.read(ctx, c, "s")
         elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
             if self._caller_kind() == "infra":
                 return
@@ -1644,6 +1662,11 @@ class ProofCachePlugin:
                     self.hits[nid] = receipt
             else:
                 self.misses[nid] = info
+        # review R-023b N8: a reused writer whose output a running reader consumes is not reused
+        for w, r in store.edges():
+            if r in self.items and w in self.items and w in self.hits and r not in self.hits:
+                del self.hits[w]
+                self.misses[w] = f"reader: its output is read by {r}, which runs in this session"
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -2145,6 +2168,19 @@ def _sqlite_file(db, uri: bool) -> str | None:
         return None
 
 
+def _hosts_file_answers(name: str) -> bool:
+    """review R-023b N2: nsswitch names `files` first for hosts and /etc/hosts lists the name."""
+    n = name.rstrip(".").lower()
+    try:
+        ns = open("/etc/nsswitch.conf", "rb").read().decode("latin-1")
+        hosts = open("/etc/hosts", "rb").read().decode("latin-1")
+    except OSError:
+        return False
+    if not any(line.split("#")[0].split()[:2] == ["hosts:", "files"] for line in ns.splitlines()):
+        return False
+    return any(n in [w.lower() for w in line.split("#")[0].split()[1:]] for line in hosts.splitlines())
+
+
 def _loopback_name(host: str) -> bool:
     """RFC 6761 loopback names (review R-023)."""
     n = host.split("%", 1)[0]
@@ -2162,7 +2198,41 @@ def _numeric_host(host: str) -> bool:
         return False
 
 
-_FLAG_OF = {"native code from the repository": "native", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+def _proc_alias(p):
+    if p.startswith("/dev/fd/"):
+        ok = True
+    elif p.startswith("/proc/"):
+        rest = p[len("/proc/"):]
+        if "/" not in rest:
+            return None
+        after = rest.split("/", 1)[1]
+        ok = after.startswith(("root/", "cwd/", "fd/")) or after in ("root", "cwd")
+    else:
+        return None
+    if not ok:
+        return None
+    try:
+        r = os.path.realpath(p, strict=True)
+    except OSError:
+        return None
+    if r.startswith(("/proc/", "/sys/", "/dev/")) or not r.startswith("/"):
+        return None
+    return r
+
+
+def _process_state(p):
+    if not p.startswith("/proc/"):
+        return False
+    rest = p[len("/proc/"):]
+    if "/" not in rest:
+        return False
+    who, after = rest.split("/", 1)
+    if not (who in ("self", "thread-self") or who.isdigit()):
+        return False
+    return after.split("/", 1)[0] in ("fd", "fdinfo", "task", "stat", "statm", "io")
+
+
+_FLAG_OF = {"native code from the repository": "native", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
 
@@ -2249,11 +2319,20 @@ def _own_listener(args) -> bool:
                     laddr, _, lport = parts[1].decode().rpartition(":")
                     if lport != want or parts[9].decode() not in mine:
                         continue
-                    if set(laddr) <= {"0"} or _loopback_hex(laddr):
+                    # review R-023b N3: a non-wildcard listener must hold the very address connected to
+                    if set(laddr) <= {"0"} or (_loopback_hex(laddr) and laddr == _proc_net_hex(ip)):
                         return True
         except OSError:
             continue
     return False
+
+
+def _proc_net_hex(ip) -> str:
+    """The address as /proc/net/tcp{,6} writes it: each 32-bit word of the packed address in host order, hex."""
+    import struct
+
+    b = ip.packed
+    return "".join(f"{struct.unpack('=I', b[i:i + 4])[0]:08X}" for i in range(0, len(b), 4))
 
 
 def _both_ends_mine(sock) -> bool:
@@ -2355,6 +2434,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "os entropy (not controlled; use --det-urandom)"
     if "proc" in flags:
         return "reads /proc, /sys or /dev"
+    if "pstate" in flags:
+        return "reads this process's state under /proc (descriptors, status counters, threads)"
     if "native" in flags:
         return "native code from the repository"
     return None

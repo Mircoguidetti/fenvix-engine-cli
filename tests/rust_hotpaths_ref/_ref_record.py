@@ -87,10 +87,9 @@ def record_reference(self, store) -> None:
     g_data, g_env, g_flags = {}, set(), set()
     for c in g_ctx_all:
         # review R-023: /proc, /sys, /dev reads of code that runs for every test are not data inputs (as their flag)
-        _merge_data(g_data, {k: v for k, v in cap.data.get(c, {}).items()
-                             if not k.startswith(("/proc/", "/sys/", "/dev/"))})
+        _merge_data(g_data, cap.data.get(c, {}))  # review R-023b N1
         g_env |= cap.env.get(c, set())
-        g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
+        g_flags |= {f for f in cap.flags.get(c, set()) if f != "pstate"}
 
     pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
     names_of = cap.ctx_names

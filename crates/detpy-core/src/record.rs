@@ -161,6 +161,9 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("proc") {
         return Some("reads /proc, /sys or /dev");
     }
+    if has("pstate") {
+        return Some("reads this process's state under /proc (descriptors, status counters, threads)");
+    }
     if has("native") {
         return Some("native code from the repository");
     }
@@ -383,17 +386,18 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     // "proc" flag is ignored below, and they are not data inputs either (review R-023, cacheability): they read
     // process or kernel state (prometheus_client lists /proc/self/fd at import), which differs between any two
     // processes, so as an input they could never match and only disable the cache for every test
-    let pseudo = |k: &str| k.starts_with("/proc/") || k.starts_with("/sys/") || k.starts_with("/dev/");
+    // review R-023b N1: only reads of this process's own state (descriptor and thread listings, stat counters: the
+    // capture's "pstate" flag) by code that runs for every test are left out; every other /proc, /sys, /dev read
+    // there is an input (/dev/shm files, /proc/self/root/... resolved to the file) or makes every test uncacheable
     for c in &g_ctx_all {
         if let Some(d) = plan.data.get(c) {
-            let kept: Vec<(String, String)> = d.iter().filter(|(k, _)| !pseudo(k)).cloned().collect();
-            g_data.update(&kept);
+            g_data.update(d);
         }
         if let Some(e) = plan.env.get(c) {
             g_env.extend(e.iter().map(|s| s.as_str()));
         }
         if let Some(f) = plan.flags.get(c) {
-            g_flags.extend(f.iter().map(|s| s.as_str()).filter(|f| *f != "proc"));
+            g_flags.extend(f.iter().map(|s| s.as_str()).filter(|f| *f != "pstate"));
         }
     }
     out.global_ctx = g_ctx_all.clone();

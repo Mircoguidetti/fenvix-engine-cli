@@ -110,6 +110,20 @@ pub struct Entry {
     /// interleaving): no parallel result can be proven equal to it. Not part of the key.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub serial_noise: bool,
+    /// A parallel entry: digest of the tests that ran before it in its worker process, in order (review R-023b N7).
+    /// A parallel session reuses an unproven parallel entry only when its plan gives the test the same in-process
+    /// predecessors. Not part of the key.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub preds: String,
+}
+
+/// The digest of an in-process predecessor list ([`Entry::preds`]).
+pub fn preds_digest(preds: &[String]) -> String {
+    let mut b = Vec::new();
+    for p in preds {
+        push_part(&mut b, p);
+    }
+    digest_bytes(&b).short()
 }
 
 /// [`Entry::placement`] of a result recorded by a worker of a parallel (`-n`) session.
@@ -652,6 +666,7 @@ impl Store {
             placement: String::new(),
             serial_fp: None,
             serial_noise: false,
+            preds: String::new(),
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();

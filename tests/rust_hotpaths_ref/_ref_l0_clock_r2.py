@@ -357,7 +357,7 @@ class _TimedLock:
         self._lock.release()
 
     def __enter__(self):
-        return self.acquire()
+        return self._lock.__enter__()  # parallel-proof round 3, item 8: as a plain `with lock:`
 
     def __exit__(self, *exc):
         self._lock.release()

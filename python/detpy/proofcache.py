@@ -58,11 +58,11 @@ AVAILABLE = _mon is not None
 # context names: "" startup, "s" between tests, "c|<file>" collection of a file, "f|<scope>|<baseid>|<name>" setup
 # of a wider-scoped fixture, "t|<nodeid>" a test, "i" / "i|<file>" import time. The capture's rules (skipped
 # paths, write events, spawn events, ...) are in crates/detpy-py/src/capture.rs.
-_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link", "ctypes.dlopen")
+                 "os.link")
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -585,6 +585,7 @@ class ProofCachePlugin:
         # receipts and the verification draw (Python's Mersenne Twister, seeded per run) are Rust
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
+        self._demote_writers_of_running_readers(nids)
 
     # -- pytest-xdist under --det: the controller --------------------------------------------------------------
     def decide_controller(self, nids: list) -> set:
@@ -612,9 +613,19 @@ class ProofCachePlugin:
             self.sess.seed_exclusive(store, self.cap)
             seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
+            self._demote_writers_of_running_readers(list(nids))
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
+
+    def _demote_writers_of_running_readers(self, nids) -> None:
+        """review R-023b N8: a test whose output another test read (a data edge (writer, reader) of an earlier session:
+        a spool file the reader consumes, a lock file) is not reused while that reader runs in this session: reused,
+        the writer would not write, and the reader would not find what a serial session gives it."""
+        present = set(nids)
+        for w, r in self.store.edges():
+            if r in present and w in present and self.sess.is_hit(w) and not self.sess.is_hit(r):
+                self.sess.demote(w, f"reader: its output is read by {r}, which runs in this session")
 
     # -- shared store (P4): Rust (detpy_core::shared); here only the calls ------------------------------------
     def _shared_fetch(self, nids: list) -> None:
@@ -726,7 +737,7 @@ class ProofCachePlugin:
         """``{nodeid: recorded duration}`` of the tests that have an entry: the plan's cache costs."""
         return {n: d for n, d in zip(nids, self.store.durations(list(nids))) if d is not None}
 
-    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = ()) -> None:
+    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = (), lists: dict | None = None) -> None:
         """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
         their shards into the store (``ProofCache.merge_shards``)."""
         t0 = _perf()
@@ -743,7 +754,8 @@ class ProofCachePlugin:
             if out.get("detpy_cache_shard"):
                 paths.append(out["detpy_cache_shard"])
         try:
-            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges]))
+            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges],
+                                                     {w: list(v) for w, v in (lists or {}).items()}))
         except Exception as e:  # never break the session: nothing is recorded this time
             self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
             res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}
@@ -817,6 +829,14 @@ class ProofCachePlugin:
                     fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
         self.sess.start_test(nid, fx)
         self.cap.switch("t|" + nid)
+        # review R-023b N9: xdist's worker_id and testrun_uid fixtures read config.workerinput, not the environment;
+        # they carry the same values as PYTEST_XDIST_WORKER / _TESTRUNUID, which are inputs (the worker one is
+        # checked against this run's plan, Checker::worker_check)
+        names = getattr(item, "fixturenames", ())
+        if "worker_id" in names:
+            self.cap.env_read("PYTEST_XDIST_WORKER")
+        if "testrun_uid" in names:
+            self.cap.env_read("PYTEST_XDIST_TESTRUNUID")
         t = _perf()
         try:
             yield

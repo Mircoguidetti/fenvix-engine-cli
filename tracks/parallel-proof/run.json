@@ -1,6 +1,6 @@
 {
- "run_id": "r3-p0-2026-11-19",
- "note": "parallel-proof round 3: final engine (absent inputs, SQLite virtual clock, P4, P5, F2 first discovery, early re-exec, _TimedLock __enter__); variants of prefect, litellm-vertex, moto, pydantic-ai, mlflow (CI ignores); moto and litellm 50-commit walks with --det-urandom in 5 shards each",
+ "run_id": "r3-p1-2026-11-19",
+ "note": "parallel-proof round 3 on the final engine (after review R-023b N1-N10): variants of prefect, litellm-vertex, moto, pydantic-ai, mlflow (CI ignores); moto, litellm and esphome 50-commit walks in 5 shards each (--det-urandom for moto and litellm)",
  "repos": [
   {
    "name": "prefect-g1",
@@ -205,6 +205,71 @@
    "workers": 4,
    "dist": "loadscope",
    "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "4/5"
+  },
+  {
+   "name": "esphome-walk50-s0",
+   "url": "https://github.com/esphome/esphome",
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
+   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
+   "workers": 4,
+   "dist": "",
+   "det_args": "",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "0/5"
+  },
+  {
+   "name": "esphome-walk50-s1",
+   "url": "https://github.com/esphome/esphome",
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
+   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
+   "workers": 4,
+   "dist": "",
+   "det_args": "",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "1/5"
+  },
+  {
+   "name": "esphome-walk50-s2",
+   "url": "https://github.com/esphome/esphome",
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
+   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
+   "workers": 4,
+   "dist": "",
+   "det_args": "",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "2/5"
+  },
+  {
+   "name": "esphome-walk50-s3",
+   "url": "https://github.com/esphome/esphome",
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
+   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
+   "workers": 4,
+   "dist": "",
+   "det_args": "",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "3/5"
+  },
+  {
+   "name": "esphome-walk50-s4",
+   "url": "https://github.com/esphome/esphome",
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "install_cmd": "uv pip install -q --python \"$PY\" -r requirements.txt -r requirements_test.txt -e .",
+   "args": "--no-cov tests --ignore=tests/integration --ignore=tests/benchmarks -p no:randomly -k 'not udp' --timeout=120",
+   "workers": 4,
+   "dist": "",
+   "det_args": "",
    "walk": 50,
    "modes": "a_par",
    "shard": "4/5"
