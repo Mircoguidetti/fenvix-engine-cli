@@ -8,7 +8,8 @@
 //     loopback, t.Parallel serialised) and writes a trace with one execution
 //     fingerprint per test (Rust core, same format as Python and Node);
 //   - with --skip-cache DIR, reuses with proof the passing tests whose
-//     inputs did not change (see internal/skip);
+//     inputs did not change (the key and the decision are the Rust core's:
+//     crates/fenvix-go/src/skip.rs);
 //   - `fenvix-go verify A.jsonl B.jsonl` names the first diverging event.
 //
 // Usage:

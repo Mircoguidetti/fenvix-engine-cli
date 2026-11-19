@@ -98,10 +98,18 @@ var fixtureOrder = []string{"TestIndependent", "TestOwnCode", "TestDependency", 
 
 var allPassing = fixtureOrder[:len(fixtureOrder)-1]
 
+// reusable: every passing test except TestSubprocess, which started another
+// program (cat): its clock and entropy are invisible to the key, so it is
+// never reused (review R-025 F6, REPORT-2). TestNetwork comes after it.
+var reusable = fixtureOrder[:len(fixtureOrder)-2]
+
 func TestSkipUnchangedReusesAllButNetwork(t *testing.T) {
 	r := newSkipRun(t)
 	got := r.run()
-	expectReuse(t, "unchanged", got, allPassing, []string{"TestNetwork"})
+	expectReuse(t, "unchanged", got, reusable, []string{"TestSubprocess", "TestNetwork"})
+	if w := got["TestSubprocess"].Why; w != "exec:/usr/bin/cat" && w != "exec:/bin/cat" {
+		t.Errorf("TestSubprocess reason %q, want exec:<cat>", w)
+	}
 	if got["TestNetwork"].Why != "network" {
 		t.Errorf("TestNetwork reason %q, want network", got["TestNetwork"].Why)
 	}
@@ -139,13 +147,13 @@ func TestSkipKeyInputs(t *testing.T) {
 	step("external file changed", "TestExternalFile")
 	r.env[1] = "SKIPKEY_ENV=two" // environment variable read by the test
 	step("SKIPKEY_ENV changed", "TestEnv")
-	expectReuse(t, "unrelated variable", r.run("UNRELATED_VARIABLE=x"), before("TestSubprocess"), nil)
+	expectReuse(t, "unrelated variable", r.run("UNRELATED_VARIABLE=x"), before("TestSubprocess"), []string{"TestSubprocess"})
 	write("testdata/optional.txt", "now here") // a path probed missing appears
 	step("optional.txt created", "TestMissingPath")
 	write("testdata/dir/b.txt", "b") // a listed directory gets a new entry
 	step("dir listing changed", "TestListing")
-	write("testdata/sub.txt", "sub v2") // file read by a child process (cat): only strace sees it
-	step("sub.txt changed", "TestSubprocess")
+	write("testdata/sub.txt", "sub v2") // file read by a child process (cat): never reused (it started a program)
+	expectReuse(t, "sub.txt changed", r.run(), before("TestSubprocess"), []string{"TestSubprocess"})
 
 	// TZ is read by package time below package os: always in the key
 	r.env[2] = "TZ=Europe/Rome"
@@ -156,10 +164,10 @@ func TestSkipKeyInputs(t *testing.T) {
 	expectReuse(t, "package code changed", r.run(), nil, []string{"TestOwnCode", "TestIndependent"})
 	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 2 }\n")
 	expectReuse(t, "dependency code changed", r.run(), nil, []string{"TestDependency", "TestIndependent"})
-	expectReuse(t, "after code changes", r.run(), allPassing, nil)
+	expectReuse(t, "after code changes", r.run(), reusable, nil)
 	// a change that compiles to the same machine code is reused, as go's own cache does
 	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 1 + 1 }\n")
-	expectReuse(t, "same machine code", r.run(), allPassing, nil)
+	expectReuse(t, "same machine code", r.run(), reusable, nil)
 }
 
 func TestSkipFlagsFailuresAndDet(t *testing.T) {
@@ -168,7 +176,7 @@ func TestSkipFlagsFailuresAndDet(t *testing.T) {
 	// a test flag that changes behaviour
 	r.extra = []string{"-short"}
 	expectReuse(t, "-short", r.run(), nil, []string{"TestShortFlag", "TestIndependent"})
-	expectReuse(t, "-short again", r.run(), allPassing, nil)
+	expectReuse(t, "-short again", r.run(), reusable, nil)
 	// a failure is never reused
 	got := r.run("SKIPKEY_FAIL=1")
 	if got["TestFailsOnDemand"].Reuse {
@@ -189,7 +197,7 @@ func TestSkipFlagsFailuresAndDet(t *testing.T) {
 func TestSkipVerifyRunsEverything(t *testing.T) {
 	r := newSkipRun(t, "--skip-verify")
 	got := r.run()
-	for _, n := range allPassing {
+	for _, n := range reusable {
 		d := got[n]
 		if !d.Reuse || d.Fresh != "passed" || d.Cached != "passed" {
 			t.Errorf("verify mode: %s %+v: want a reusable test that also ran", n, d)

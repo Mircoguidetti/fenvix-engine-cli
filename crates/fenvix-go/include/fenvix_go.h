@@ -44,6 +44,13 @@ char *fenvix_digest_file(const char *path);
 char *fenvix_merge_traces(const char *parts_json, const char *out, const char *meta_json, const char *order_json);
 char *fenvix_backends(void);
 
+typedef struct FenvixSkip FenvixSkip;
+char *fenvix_skip_strace_args(const char *log);
+FenvixSkip *fenvix_skip_open(const char *config_json);
+char *fenvix_skip_decide(FenvixSkip *h, const char *names_json);
+char *fenvix_skip_record(FenvixSkip *h, const char *run_json);
+void fenvix_skip_free(FenvixSkip *h);
+
 #ifdef __cplusplus
 }
 #endif

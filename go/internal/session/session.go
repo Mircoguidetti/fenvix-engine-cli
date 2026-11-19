@@ -13,9 +13,8 @@ import (
 type Skip struct {
 	Dir     string   `json:"dir"`     // cache directory (one file per package)
 	Verify  bool     `json:"verify"`  // run every test anyway and compare reused outcomes
-	Capture string   `json:"capture"` // "strace" (complete) or "hooks" (os-level hooks only)
-	Roots   []string `json:"roots"`   // directories whose files can be dependencies
-	Ignore  []string `json:"ignore"`  // directories whose files never are (temp, caches)
+	Capture string   `json:"capture"` // "strace" (complete) or "hooks" (os-level hooks only: nothing is reused)
+	Drop    []string `json:"drop"`    // fenvix's and go's own working state: never inputs
 	Commit  string   `json:"commit"`  // informative
 }
 
@@ -29,6 +28,7 @@ type Session struct {
 	Ctl         uint32            `json:"ctl"`
 	Unavailable map[string]string `json:"unavailable,omitempty"`
 	Epoch       int64             `json:"epoch"`
+	EpochReal   bool              `json:"epoch_real,omitempty"` // each test starts the virtual clock at the real time (--det seed 0)
 	Tick        int64             `json:"tick"`
 	Adapt       int64             `json:"adapt"`
 	MaxEvents   int               `json:"max_events"`

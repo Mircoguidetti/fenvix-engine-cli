@@ -89,6 +89,36 @@ var patches = []patch{
 		{kind: "replace", anchor: "func NewTicker(d Duration) *Ticker {", text: "func fenvixOrigNewTicker(d Duration) *Ticker {"},
 		{kind: "replace", anchor: "func (t *Ticker) Reset(d Duration) {", text: "func (t *Ticker) fenvixOrigReset(d Duration) {"},
 	}},
+	{group: "time-deps", file: "time/time.go", ops: []op{
+		// skip key: an observation of the wall clock (review R-025 F6)
+		{kind: "insert", anchor: "func (t *Time) sec() int64 {", text: "\tif t.wall&hasMonotonic != 0 {\n\t\tfenvixWallSeen()\n\t}"},
+		{kind: "insert", anchor: "func (t Time) Nanosecond() int {", text: "\tif t.wall&hasMonotonic != 0 {\n\t\tfenvixWallSeen()\n\t}"},
+		{kind: "insert", anchor: "func (t Time) After(u Time) bool {", text: "\tif (t.wall^u.wall)&hasMonotonic != 0 && fenvixClockDeps() {\n\t\treturn fenvixCompare(t, u) > 0\n\t}"},
+		{kind: "insert", anchor: "func (t Time) Before(u Time) bool {", text: "\tif (t.wall^u.wall)&hasMonotonic != 0 && fenvixClockDeps() {\n\t\treturn fenvixCompare(t, u) < 0\n\t}"},
+		{kind: "insert", anchor: "func (t Time) Compare(u Time) int {", text: "\tif (t.wall^u.wall)&hasMonotonic != 0 && fenvixClockDeps() {\n\t\treturn fenvixCompare(t, u)\n\t}"},
+		{kind: "insert", anchor: "func (t Time) Equal(u Time) bool {", text: "\tif (t.wall^u.wall)&hasMonotonic != 0 && fenvixClockDeps() {\n\t\treturn fenvixCompare(t, u) == 0\n\t}"},
+	}},
+	{group: "cheaprand", file: "runtime/rand.go", ops: []op{
+		// select, semaphores and linkname users (review R-025 D3): the same
+		// deterministic source as map seeds on user goroutines
+		{kind: "insert", anchor: "func cheaprand() uint32 {", text: "\tif fenvixRandHook() {\n\t\treturn uint32(fenvixMapsRand() >> 32)\n\t}"},
+	}},
+	{group: "getrandom", file: "syscall/syscall_linux.go", ops: []op{
+		// getrandom(2) called directly (x/sys/unix.Getrandom...): the test's crypto stream (R-025 D3)
+		{kind: "insert", anchor: "func Syscall(trap, a1, a2, a3 uintptr) (r1, r2 uintptr, err Errno) {", text: "\tif fenvixRawRandOn && fenvixIsGetrandom(trap) {\n\t\treturn fenvixRawGetrandom(a1, a2), 0, 0\n\t}"},
+		{kind: "insert", anchor: "func Syscall6(trap, a1, a2, a3, a4, a5, a6 uintptr) (r1, r2 uintptr, err Errno) {", text: "\tif fenvixRawRandOn && fenvixIsGetrandom(trap) {\n\t\treturn fenvixRawGetrandom(a1, a2), 0, 0\n\t}"},
+	}},
+	{group: "getrandom-raw", file: "syscall/syscall_linux.go", ops: []op{
+		// Go 1.23 and later (RawSyscall6 is written in Go)
+		{kind: "insert", anchor: "func RawSyscall(trap, a1, a2, a3 uintptr) (r1, r2 uintptr, err Errno) {", text: "\tif fenvixRawRandOn && fenvixIsGetrandom(trap) {\n\t\treturn fenvixRawGetrandom(a1, a2), 0, 0\n\t}"},
+		{kind: "insert", anchor: "func RawSyscall6(trap, a1, a2, a3, a4, a5, a6 uintptr) (r1, r2 uintptr, err Errno) {", text: "\tif fenvixRawRandOn && fenvixIsGetrandom(trap) {\n\t\treturn fenvixRawGetrandom(a1, a2), 0, 0\n\t}"},
+	}},
+	{group: "net-ports", file: "net/tcpsock_posix.go", ops: []op{
+		{kind: "replace", anchor: "func (sl *sysListener) listenTCP(ctx context.Context, laddr *TCPAddr) (*TCPListener, error) {", text: "func (sl *sysListener) fenvixOrigListenTCP(ctx context.Context, laddr *TCPAddr) (*TCPListener, error) {"},
+	}},
+	{group: "net-ports", file: "net/udpsock_posix.go", ops: []op{
+		{kind: "replace", anchor: "func (sl *sysListener) listenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {", text: "func (sl *sysListener) fenvixOrigListenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {"},
+	}},
 	{group: "maps-alg", file: "runtime/alg.go", ops: []op{
 		{kind: "replace", anchor: "func alginit() {", text: "func fenvixOrigAlginit() {"},
 	}},
@@ -148,19 +178,21 @@ var additions = []addition{
 	{file: "syscall/zz_fenvix.go", tmpl: "syscall.go.txt"},
 	{file: "testing/zz_fenvix.go", tmpl: "testing.go.txt"},
 	{file: "time/zz_fenvix.go", tmpl: "time.go.txt", needs: "time"},
+	{file: "time/zz_fenvix_deps.go", tmpl: "timedeps.go.txt", needs: "time-deps"},
 	{file: "math/rand/zz_fenvix.go", tmpl: "mathrand.go.txt", needs: "rand-v1"},
 	{file: "math/rand/v2/zz_fenvix.go", tmpl: "mathrandv2.go.txt", needs: "rand-v2"},
 	{file: "crypto/internal/sysrand/zz_fenvix.go", tmpl: "sysrand.go.txt", needs: "crypto"},
 	{file: "crypto/rand/zz_fenvix.go", tmpl: "cryptorand123.go.txt", needs: "crypto-123"},
 	{file: "os/zz_fenvix.go", tmpl: "os.go.txt"},
 	{file: "net/zz_fenvix.go", tmpl: "net.go.txt", needs: "net"},
+	{file: "net/zz_fenvix_ports.go", tmpl: "netports.go.txt", needs: "net-ports"},
 }
 
 // controlGroups: a control is available when all its groups applied.
 var controlGroups = map[string][]string{
 	CtlTime: {"time"}, CtlFastWait: {"time"}, CtlRandom: {"rand-v1", "rand-v2", "os-temp"},
-	CtlCrypto: {"crypto"}, CtlMaps: {"maps-alg", "maps-rand"}, CtlFs: {"os-dir"},
-	CtlNet: {"net"}, CtlSerial: {"serial"}, CtlDeps: {"os-dir", "os-open", "os-stat", "os-exec", "env", "net"},
+	CtlCrypto: {"crypto"}, CtlMaps: {"maps-alg", "maps-rand", "cheaprand"}, CtlFs: {"os-dir"},
+	CtlNet: {"net", "net-ports"}, CtlSerial: {"serial"}, CtlDeps: {"os-dir", "os-open", "os-stat", "os-exec", "env", "net", "time-deps"},
 }
 
 // Result describes a generated overlay.
@@ -171,6 +203,14 @@ type Result struct {
 	Available   []string          `json:"available"`   // controls whose patches all applied
 	Unavailable map[string]string `json:"unavailable"` // control -> why not
 	Digest      string            `json:"digest"`      // digest of the overlay content
+	Partial     map[string]string `json:"partial"`     // optional hook -> why it is missing (its control works without it)
+}
+
+// optionalGroups: hooks a control uses when they apply, without depending on
+// them; a missing one is reported at start.
+var optionalGroups = map[string]string{
+	"getrandom":     "getrandom(2) through syscall.Syscall (x/sys/unix.Getrandom...) not controlled",
+	"getrandom-raw": "getrandom(2) through syscall.RawSyscall not controlled",
 }
 
 // Has reports whether a control is available.
@@ -349,7 +389,13 @@ func Generate(goroot, goversion, cacheDir string) (*Result, error) {
 	if err := os.WriteFile(path, j, 0o644); err != nil {
 		return nil, err
 	}
-	res := &Result{Path: path, Dir: dir, GoVersion: goversion, Unavailable: unavailable, Digest: digest}
+	res := &Result{Path: path, Dir: dir, GoVersion: goversion, Unavailable: unavailable, Digest: digest,
+		Partial: map[string]string{}}
+	for g, what := range optionalGroups {
+		if why, bad := failed[g]; bad {
+			res.Partial[g] = what + " (" + why + ")"
+		}
+	}
 	for _, c := range append(append([]string{}, DetControls...), CtlDeps) {
 		if _, bad := unavailable[c]; !bad {
 			res.Available = append(res.Available, c)

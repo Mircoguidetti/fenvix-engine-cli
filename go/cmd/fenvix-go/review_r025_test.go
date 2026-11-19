@@ -211,7 +211,15 @@ func TestR025_F4_LoopbackService(t *testing.T) {
 	t.Cleanup(func() { srv.Close() })
 	r := newR025(t, "loopback", "R025_ADDR="+ln.Addr().String())
 	r.record([]string{"TestLocalService"})
-	r.mustReuse("TestLocalService")
+	// Fix (REPORT-2, F4): a service the run did not start cannot be keyed
+	// (its image, data and state are outside every key), so the test is
+	// never reused, not even when nothing changed. The review's original
+	// step here (r.mustReuse) required a reuse that only a declared service
+	// digest could justify; the coordinator's rule for this fix is "where an
+	// input cannot be keyed soundly, the test must rerun".
+	if d := r.run()["TestLocalService"]; d.Reuse || d.Why != "local-service" {
+		t.Fatalf("unchanged service: %+v, want a rerun with reason local-service", d)
+	}
 	body.Store("schema-v2") // the service container's image or data changed
 	r.noWrongReuse("service answer changed", "TestLocalService")
 }

@@ -341,6 +341,18 @@ func cmdTest(args []string) int {
 		epoch = t.UnixNano()
 	}
 
+	if o.det {
+		for _, g := range sortedKeys(ov.Partial) {
+			fmt.Fprintf(os.Stderr, "fenvix-go: on %s: %s\n", ov.GoVersion, ov.Partial[g])
+		}
+		// what --det does not control, said at start (review R-025 D2, D4)
+		fmt.Fprintln(os.Stderr, "fenvix-go: --det does not control (Level 1 and outside the process): goroutine interleaving, "+
+			"real timer delays, select among channels made ready by other goroutines, testing/synctest bubbles, "+
+			"deadlines inside the network poller, clock reads through the vdso or raw syscalls, the clock and "+
+			"entropy of child processes and cgo code, file timestamps (real time; seed 0 starts each test's virtual "+
+			"clock at the real time so they stay comparable)")
+	}
+
 	// build flags that matter for go list and for the key
 	var listFlags, keyFlags []string
 	userOverlay := ""
@@ -447,19 +459,16 @@ func cmdTest(args []string) int {
 			}
 		}
 		abs, _ := filepath.Abs(o.skipCache)
-		roots := []string{sess.Root, env["GOMODCACHE"], env["GOROOT"], "/etc", "/usr", "/lib", "/lib64", "/opt"}
-		if home, err := os.UserHomeDir(); err == nil && home != "/" {
-			roots = append(roots, home) // user configuration (~/.gitconfig, ~/.config/...)
-		}
-		ignore := []string{os.TempDir(), "/tmp", "/proc", "/sys", "/dev", "/run", dir, abs, env["GOCACHE"],
-			filepath.Join(sess.Root, ".fenvix")}
-		if cd, err := os.UserCacheDir(); err == nil {
-			ignore = append(ignore, cd) // build and tool caches (fenvix's own included)
-		}
+		// every path the run reads is an input (review R-025 F3) except
+		// fenvix's and go's own working state
+		drop := []string{dir, abs, env["GOCACHE"], filepath.Join(sess.Root, ".fenvix"), cacheDir()}
 		if cfg, err := os.UserConfigDir(); err == nil {
-			ignore = append(ignore, filepath.Join(cfg, "go", "telemetry")) // counters the go command rewrites on every run
+			drop = append(drop, filepath.Join(cfg, "go", "telemetry")) // counters the go command rewrites on every run
 		}
-		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, Capture: capture, Roots: roots, Ignore: ignore,
+		if capture != "strace" {
+			fmt.Fprintln(os.Stderr, "fenvix-go: skip: strace not found: the hooks alone cannot see every input (child processes, cgo, raw syscalls); decisions are reported, nothing is reused")
+		}
+		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, Capture: capture, Drop: drop,
 			Commit: o.skipCommit}
 	}
 	if err := sess.Save(); err != nil {
@@ -670,4 +679,13 @@ func cmdOverlay(args []string) int {
 	b, _ := json.MarshalIndent(ov, "", "  ")
 	fmt.Println(string(b))
 	return 0
+}
+
+func sortedKeys(m map[string]string) []string {
+	out := make([]string, 0, len(m))
+	for k := range m {
+		out = append(out, k)
+	}
+	sort.Strings(out)
+	return out
 }

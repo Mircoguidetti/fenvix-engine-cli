@@ -1,0 +1,70 @@
+// Code added by fenvix-go (build-time overlay, skip key). Not part of Go.
+//
+// The wall clock as an input of a test (review R-025 F6). A Time read from
+// the clock carries a monotonic reading; arithmetic between two such times
+// (durations, deadlines, timeouts) uses only that reading and does not depend
+// on the date. When a test uses the wall part of one (formats it, converts it
+// to Unix time, compares it with a time that has no monotonic reading...),
+// the date is an input:
+//   * a comparison (After, Before, Compare, Equal) with a fixed time, such as
+//     a certificate's NotAfter, is recorded as a condition that the skip key
+//     re-evaluates against the current clock;
+//   * any other use makes the test not reusable.
+// With the time control on (--det) the clock is virtual and its epoch is in
+// the key: nothing is recorded.
+
+package time
+
+import (
+	"runtime"
+	"syscall"
+)
+
+func fenvixClockDeps() bool {
+	return runtime.Fenvix_On(runtime.FenvixDeps) && !runtime.Fenvix_On(runtime.FenvixTime) && runtime.Fenvix_UserG()
+}
+
+func fenvixWallSeen() {
+	if fenvixClockDeps() {
+		syscall.Fenvix_ClockSeen()
+	}
+}
+
+// fenvixUnixNano: the wall time of t in Unix ns without recording anything
+// (clamped to about ±285 years so that it fits).
+func fenvixUnixNano(t *Time) int64 {
+	var sec int64
+	if t.wall&hasMonotonic != 0 {
+		sec = wallToInternal + int64(t.wall<<1>>(nsecShift+1))
+	} else {
+		sec = t.ext
+	}
+	sec += internalToUnix
+	const lim = 9_000_000_000
+	if sec > lim {
+		sec = lim
+	} else if sec < -lim {
+		sec = -lim
+	}
+	return sec*1_000_000_000 + int64(t.nsec())
+}
+
+// fenvixCompare compares t and u (exactly one has a monotonic reading) and
+// records the condition: the sign of (clock time - fixed time), with the
+// clock time's offset from the real clock now.
+func fenvixCompare(t, u Time) int {
+	tw, uw := fenvixUnixNano(&t), fenvixUnixNano(&u)
+	c := 0
+	if tw < uw {
+		c = -1
+	} else if tw > uw {
+		c = 1
+	}
+	clock, other, sign := tw, uw, c
+	if t.wall&hasMonotonic == 0 {
+		clock, other, sign = uw, tw, -c
+	}
+	sec, nsec, _ := now()
+	syscall.Fenvix_ClockCond(other, clock-(sec*1_000_000_000+int64(nsec)), sign)
+	return c
+}

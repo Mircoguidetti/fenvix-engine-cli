@@ -243,3 +243,79 @@ func MergeTraces(parts []string, out string, meta any, order []string) (*MergeRe
 	}
 	return &r, nil
 }
+
+// StraceArgs is the core's strace command prefix that writes its log to log.
+func StraceArgs(log string) []string {
+	c := cstr(log)
+	defer C.free(unsafe.Pointer(c))
+	var out []string
+	json.Unmarshal([]byte(take(C.fenvix_skip_strace_args(c))), &out)
+	return out
+}
+
+// Skip is a skip-with-proof session of the core (one package run): the key,
+// the decision and the cache are the core's; the shell hands over what the
+// run observed.
+type Skip struct{ p *C.FenvixSkip }
+
+// OpenSkip loads the package's cache and takes the pre-run values of its
+// recorded inputs (call before the test binary starts). cfg is serialised as
+// the core's skip::Config.
+func OpenSkip(cfg any) (*Skip, error) {
+	j, err := json.Marshal(cfg)
+	if err != nil {
+		return nil, err
+	}
+	c := cstr(string(j))
+	defer C.free(unsafe.Pointer(c))
+	p := C.fenvix_skip_open(c)
+	if p == nil {
+		return nil, lastError("skip open")
+	}
+	return &Skip{p: p}, nil
+}
+
+// Decide returns the tests (from names, in execution order) to reuse.
+func (s *Skip) Decide(names []string) ([]string, error) {
+	if names == nil {
+		names = []string{}
+	}
+	j, _ := json.Marshal(names)
+	c := cstr(string(j))
+	defer C.free(unsafe.Pointer(c))
+	p := C.fenvix_skip_decide(s.p, c)
+	if p == nil {
+		return nil, lastError("skip decide")
+	}
+	var r struct {
+		Reuse []string `json:"reuse"`
+	}
+	if err := json.Unmarshal([]byte(take(p)), &r); err != nil {
+		return nil, err
+	}
+	return r.Reuse, nil
+}
+
+// Record hands the run to the core (serialised as skip::Run): decisions are
+// appended and new entries saved.
+func (s *Skip) Record(run any) (string, error) {
+	j, err := json.Marshal(run)
+	if err != nil {
+		return "", err
+	}
+	c := cstr(string(j))
+	defer C.free(unsafe.Pointer(c))
+	p := C.fenvix_skip_record(s.p, c)
+	if p == nil {
+		return "", lastError("skip record")
+	}
+	return take(p), nil
+}
+
+// Free releases the session.
+func (s *Skip) Free() {
+	if s.p != nil {
+		C.fenvix_skip_free(s.p)
+		s.p = nil
+	}
+}

@@ -6,7 +6,9 @@
 //     never goes backwards); calls from package testing keep real time;
 //   * Sleep moves the clock to its due time (now + d) when it ends, so
 //     goroutines sleeping at the same time do not add up; it still waits for
-//     real unless the test started no goroutine (FastWait);
+//     real unless the test started no goroutine and no timer of the test is
+//     due before the sleep ends (FastWait: review R-025 D1, an AfterFunc
+//     callback runs in its own goroutine when the timer fires);
 //   * timers and tickers (NewTimer, After, AfterFunc, NewTicker, Tick, Reset,
 //     Stop) still fire after their real delay, and when they fire they move
 //     the clock to their virtual due time, so elapsed times seen by the code
@@ -76,6 +78,9 @@ func fenvixQuietNow() Time {
 func Sleep(d Duration) {
 	if fenvixTimeOn() {
 		due, skip, runner := syscall.Fenvix_Sleep("time.Sleep", int64(d))
+		if skip && fenvixTimerDue(due) {
+			skip = false
+		}
 		if !runner {
 			if !skip {
 				fenvixRealSleep(d)
@@ -93,6 +98,7 @@ func Sleep(d Duration) {
 type fenvixTimer struct {
 	deadline atomic.Int64 // virtual monotonic due time
 	period   atomic.Int64
+	armed    atomic.Bool // will fire (not stopped, not fired yet for a one-shot timer)
 	c        chan Time
 	f        func()
 	op       string
@@ -115,6 +121,24 @@ func fenvixRegister(p unsafe.Pointer, st *fenvixTimer) {
 	fenvixTimersMu.Unlock()
 }
 
+// fenvixTimerDue reports whether a timer of the current test will fire at or
+// before the virtual time due: a sleep until then must really wait, or the
+// timer's callback would run after the sleep instead of during it.
+func fenvixTimerDue(due int64) bool {
+	gen := syscall.Fenvix_Gen()
+	fenvixTimersMu.Lock()
+	defer fenvixTimersMu.Unlock()
+	if gen != fenvixTimersGen {
+		return false
+	}
+	for _, st := range fenvixTimers {
+		if st.armed.Load() && st.deadline.Load() <= due {
+			return true
+		}
+	}
+	return false
+}
+
 func fenvixLookup(p unsafe.Pointer) *fenvixTimer {
 	fenvixTimersMu.Lock()
 	st := fenvixTimers[p]
@@ -130,6 +154,8 @@ func fenvixFire(arg any, seq uintptr, delta int64) {
 	due := st.deadline.Load()
 	if p := st.period.Load(); p > 0 {
 		st.deadline.Add(p)
+	} else {
+		st.armed.Store(false)
 	}
 	go fenvixRun(st, due)
 }
@@ -177,6 +203,7 @@ func NewTimer(d Duration) *Timer {
 	c := make(chan Time, 1)
 	st := &fenvixTimer{c: c, op: "time.timer"}
 	st.deadline.Store(fenvixWhen(d))
+	st.armed.Store(true)
 	t := newTimer(when(d), 0, fenvixFire, st, nil)
 	t.C = c
 	fenvixRegister(unsafe.Pointer(t), st)
@@ -192,6 +219,7 @@ func AfterFunc(d Duration, f func()) *Timer {
 	syscall.Fenvix_Event("time", "time.AfterFunc", fenvixDur(d))
 	st := &fenvixTimer{f: f, op: "time.afterfunc"}
 	st.deadline.Store(fenvixWhen(d))
+	st.armed.Store(true)
 	t := newTimer(when(d), 0, fenvixFire, st, nil)
 	fenvixRegister(unsafe.Pointer(t), st)
 	return t
@@ -202,6 +230,7 @@ func (t *Timer) Reset(d Duration) bool {
 	if fenvixTimeOn() {
 		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
 			st.deadline.Store(fenvixWhen(d))
+			st.armed.Store(true)
 			drained := fenvixDrain(st.c)
 			return t.fenvixOrigReset(d) || drained
 		}
@@ -213,6 +242,7 @@ func (t *Timer) Reset(d Duration) bool {
 func (t *Timer) Stop() bool {
 	if fenvixTimeOn() {
 		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
+			st.armed.Store(false)
 			stopped := t.fenvixOrigStop()
 			drained := fenvixDrain(st.c)
 			return stopped || drained
@@ -232,6 +262,7 @@ func NewTicker(d Duration) *Ticker {
 	st := &fenvixTimer{c: c, op: "time.tick"}
 	st.deadline.Store(fenvixWhen(d))
 	st.period.Store(int64(d))
+	st.armed.Store(true)
 	t := (*Ticker)(unsafe.Pointer(newTimer(when(d), int64(d), fenvixFire, st, nil)))
 	t.C = c
 	fenvixRegister(unsafe.Pointer(t), st)
@@ -244,6 +275,7 @@ func (t *Ticker) Reset(d Duration) {
 		if st := fenvixLookup(unsafe.Pointer(t)); st != nil {
 			st.deadline.Store(fenvixWhen(d))
 			st.period.Store(int64(d))
+			st.armed.Store(true)
 		}
 	}
 	t.fenvixOrigReset(d)

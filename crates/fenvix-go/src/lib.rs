@@ -26,6 +26,9 @@ use std::ffi::{c_char, c_int, CStr, CString};
 use std::path::PathBuf;
 use std::ptr;
 
+pub mod skip;
+pub mod strace;
+
 /// Separator between the fields of a packed event.
 pub const FIELD_SEP: u8 = 0x1f;
 /// Separator between packed events.
@@ -434,6 +437,75 @@ pub unsafe extern "C" fn fenvix_merge_traces(
                 .to_string(),
         ))
     })
+}
+
+// ---------------------------------------------------------------- skip with proof
+
+/// Opaque skip session (one package run).
+pub struct FenvixSkip {
+    s: skip::Session,
+}
+
+/// The strace command prefix (JSON array) that writes its log to `log`.
+///
+/// # Safety
+/// Valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_strace_args(log: *const c_char) -> *mut c_char {
+    guard(ptr::null_mut(), || Ok(out_string(serde_json::to_string(&strace::args(arg(log, "log")?)).unwrap())))
+}
+
+/// Open a skip session: load the package's cache and take the pre-run values
+/// of its recorded inputs. Call before the test binary starts. NULL on error.
+///
+/// # Safety
+/// Valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_open(config_json: *const c_char) -> *mut FenvixSkip {
+    guard(ptr::null_mut(), || {
+        let cfg: skip::Config = serde_json::from_str(arg(config_json, "config_json")?)
+            .map_err(|e| format!("config_json: {e}"))?;
+        Ok(Box::into_raw(Box::new(FenvixSkip { s: skip::Session::open(cfg) })))
+    })
+}
+
+/// Decide for the tests (JSON array of names, execution order). Returns
+/// `{"reuse":[names],"why":{name:reason}}`.
+///
+/// # Safety
+/// Handle from `fenvix_skip_open`, valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_decide(h: *mut FenvixSkip, names_json: *const c_char) -> *mut c_char {
+    guard(ptr::null_mut(), || {
+        let h = h.as_mut().ok_or("skip handle is NULL")?;
+        let names = parse_strings(arg(names_json, "names_json")?, "names_json")?;
+        let reuse = h.s.decide(&names);
+        Ok(out_string(serde_json::json!({"reuse": reuse, "static": h.s.static_}).to_string()))
+    })
+}
+
+/// Record the run (see `skip::Run`): append the decisions, save new entries.
+///
+/// # Safety
+/// Handle from `fenvix_skip_open`, valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_record(h: *mut FenvixSkip, run_json: *const c_char) -> *mut c_char {
+    guard(ptr::null_mut(), || {
+        let h = h.as_mut().ok_or("skip handle is NULL")?;
+        let run: skip::Run = serde_json::from_str(arg(run_json, "run_json")?).map_err(|e| format!("run_json: {e}"))?;
+        Ok(out_string(h.s.record(run)?.to_string()))
+    })
+}
+
+/// Release a skip session.
+///
+/// # Safety
+/// Handle from `fenvix_skip_open` (or NULL), not used afterwards.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_free(h: *mut FenvixSkip) {
+    if !h.is_null() {
+        drop(Box::from_raw(h));
+    }
 }
 
 /// JSON description of the interception backends known to the core.

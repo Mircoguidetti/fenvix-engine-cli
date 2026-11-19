@@ -27,7 +27,12 @@ jobs:
         run: |
           go build -o /tmp/fenvix-go ./cmd/fenvix-go
           cp -r testdata/fixtures/controls /tmp/old && sed -i 's/^go 1.24/go 1.22/' /tmp/old/go.mod
-          for v in go1.23.12 go1.24.7 go1.25.4 go1.26.0; do
-            for r in 1 2; do (cd /tmp/old && GOTOOLCHAIN=$v /tmp/fenvix-go test --det --det-trace=/tmp/$v-$r.jsonl . > /tmp/$v-$r.log 2>&1 || true); grep fenvix-go /tmp/$v-$r.log; done
+          # the fixture's tests may fail (it holds flaky tests); a build failure must not (review R-025 D4)
+          for v in go1.22.12 go1.23.12 go1.24.7 go1.25.4 go1.26.0; do
+            for r in 1 2; do
+              (cd /tmp/old && GOTOOLCHAIN=$v /tmp/fenvix-go test --det --det-trace=/tmp/$v-$r.jsonl . > /tmp/$v-$r.log 2>&1 || true)
+              grep fenvix-go /tmp/$v-$r.log
+              if grep -qE "build failed|setup failed" /tmp/$v-$r.log || [ ! -s /tmp/$v-$r.jsonl ]; then cat /tmp/$v-$r.log; exit 1; fi
+            done
             /tmp/fenvix-go verify /tmp/$v-1.jsonl /tmp/$v-2.jsonl | sed -n 5,6p
           done

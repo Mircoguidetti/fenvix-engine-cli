@@ -134,6 +134,7 @@ name = "fenvix-go"
 version = "0.1.0"
 dependencies = [
  "detpy-core",
+ "serde",
  "serde_json",
  "tempfile",
 ]
