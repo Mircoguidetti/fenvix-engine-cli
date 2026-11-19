@@ -1,6 +1,6 @@
 {
- "run_id": "p5",
- "note": "round 2 final engine: base (24b6d15), round 1 (128dcc6), round 2 (this commit), round 2 with code-object level line capture (DETPY_CACHE_LINES=code, last-line representative); interleaved; equivalence of each engine against base. Replaces p4 (cancelled after click and pygments)",
+ "run_id": "p6",
+ "note": "round 2 final engine (everything that is not interface in Rust: capture, decisions, receipts, follow parsing, clock rest, seeds, fsorder, network, repro/reexec decisions; rewritten test modules cached; R-015 and R-009b fixes) vs base (24b6d15), round 1 (128dcc6) and the round-2 'clock and call sites' checkpoint (c28a531, the engine of p5/w3); interleaved",
  "engines": [
   {
    "name": "base",
@@ -11,15 +11,12 @@
    "ref": "128dcc6"
   },
   {
-   "name": "r2",
-   "ref": ""
+   "name": "r2cp",
+   "ref": "c28a531"
   },
   {
-   "name": "r2c",
-   "ref": "",
-   "env": {
-    "DETPY_CACHE_LINES": "code"
-   }
+   "name": "r2",
+   "ref": ""
   }
  ],
  "profile": [
