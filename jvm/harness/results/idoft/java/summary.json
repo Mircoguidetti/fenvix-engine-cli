@@ -1,0 +1,50 @@
+{
+ "name": "java",
+ "url": "https://github.com/json-iterator/java",
+ "sha": "6925cf4c19d313504b416f58a349a36bf563e0e1",
+ "module": ".",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 347,
+ "documented": 20,
+ "documented_present": 19,
+ "documented_categories": {
+  "OD": 19
+ },
+ "documented_reproduced": 4,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 10,
+ "broken_tests": [
+  "com.jsoniter.TestAnnotationJsonIgnore::test_json_ignore_with_creator",
+  "com.jsoniter.TestAnnotationJsonProperty::test_creator_with_json_property",
+  "com.jsoniter.TestAnnotationJsonWrapper::test_key_value",
+  "com.jsoniter.TestObject::test_inheritance",
+  "com.jsoniter.TestObject::test_private_ref",
+  "com.jsoniter.output.TestFloat::test_infinity",
+  "com.jsoniter.output.TestObject::test_omit_default",
+  "com.jsoniter.output.TestObject::test_omit_selft_defined",
+  "com.jsoniter.output.TestObject::test_transient_field_getter",
+  "com.jsoniter.suite.StreamingTests::com.jsoniter.suite.StreamingTests"
+ ],
+ "fingerprint_coverage": "333/333",
+ "fingerprint_covered": 333,
+ "fingerprinted": 333,
+ "timing_base_s": [
+  2.0839999999999987,
+  2.853999999999999,
+  2.0089999999999986
+ ],
+ "timing_det_s": [
+  1.7369999999999999,
+  1.6550000000000002,
+  1.669
+ ],
+ "slowdown": -0.1991,
+ "seconds": 1167.6
+}
