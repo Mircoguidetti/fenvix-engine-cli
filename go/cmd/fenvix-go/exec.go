@@ -81,8 +81,10 @@ func readRecords(path string) ([]record, error) {
 	}
 }
 
-// parseDeps turns packed hook dependencies into a Raw.
-func parseDeps(p []byte, raw *skip.Raw) {
+// parseDeps turns packed hook dependencies into a Raw. Paths go through the
+// same filter as strace's (roots and ignored directories: /proc, /sys, /tmp,
+// caches), so both captures follow one rule.
+func parseDeps(p []byte, raw *skip.Raw, keep func(string) bool) {
 	for _, item := range strings.Split(string(p), "\x1e") {
 		if len(item) < 2 || item[1] != 0x1f {
 			continue
@@ -92,11 +94,17 @@ func parseDeps(p []byte, raw *skip.Raw) {
 		case 'E':
 			raw.Env[name] = true
 		case 'O':
-			raw.Reads[filepath.Clean(name)] = true
+			if p := filepath.Clean(name); keep(p) {
+				raw.Reads[p] = true
+			}
 		case 'S':
-			raw.Exists[filepath.Clean(name)] = true
+			if p := filepath.Clean(name); keep(p) {
+				raw.Exists[p] = true
+			}
 		case 'L':
-			raw.Lists[filepath.Clean(name)] = true
+			if p := filepath.Clean(name); keep(p) {
+				raw.Lists[p] = true
+			}
 		case 'X':
 			raw.Execs = append(raw.Execs, name)
 		case 'N':
@@ -347,13 +355,18 @@ func cmdExec(args []string) int {
 		pos     int
 	}
 	results := map[string]*result{}
+	keepPath := func(string) bool { return true }
+	if sess.Skip != nil {
+		f := &strace.Filter{Roots: sess.Skip.Roots, Ignore: sess.Skip.Ignore}
+		keepPath = f.Keep
+	}
 	pkgRaw := skip.NewRaw()
 	var cur string
 	idx := 0
 	for _, r := range recs {
 		switch r.kind {
 		case 'I':
-			parseDeps(r.payload, pkgRaw)
+			parseDeps(r.payload, pkgRaw, keepPath)
 		case 'B':
 			cur = string(r.payload)
 			rec.BeginTest(pkg+"::"+cur, uint64(idx))
@@ -365,7 +378,7 @@ func cmdExec(args []string) int {
 			}
 		case 'D':
 			if res := results[cur]; res != nil {
-				parseDeps(r.payload, res.deps)
+				parseDeps(r.payload, res.deps, keepPath)
 			}
 		case 'X':
 			parts := strings.Split(string(r.payload), "\x1f")

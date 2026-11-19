@@ -70,7 +70,15 @@ func newSkipRun(t *testing.T, extra ...string) *skipRun {
 		t.Log("strace not found: capture falls back to the hooks")
 	}
 	dir := copyFixture(t, "skipkey")
-	ext := filepath.Join(t.TempDir(), "external.txt")
+	// a file outside the module, in the user's home (temp directories are
+	// outputs, never inputs)
+	home, _ := os.UserHomeDir()
+	extDir, err := os.MkdirTemp(home, ".fenvix-skipkey-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.RemoveAll(extDir) })
+	ext := filepath.Join(extDir, "external.txt")
 	os.WriteFile(ext, []byte("ext v1"), 0o644)
 	r := &skipRun{t: t, dir: dir, cache: filepath.Join(t.TempDir(), "cache"),
 		env: []string{"SKIPKEY_EXTERNAL=" + ext, "SKIPKEY_ENV=one", "TZ=UTC"}, extra: extra}

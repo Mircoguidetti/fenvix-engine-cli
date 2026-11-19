@@ -448,8 +448,14 @@ func cmdTest(args []string) int {
 		}
 		abs, _ := filepath.Abs(o.skipCache)
 		roots := []string{sess.Root, env["GOMODCACHE"], env["GOROOT"], "/etc", "/usr", "/lib", "/lib64", "/opt"}
+		if home, err := os.UserHomeDir(); err == nil && home != "/" {
+			roots = append(roots, home) // user configuration (~/.gitconfig, ~/.config/...)
+		}
 		ignore := []string{os.TempDir(), "/tmp", "/proc", "/sys", "/dev", "/run", dir, abs, env["GOCACHE"],
 			filepath.Join(sess.Root, ".fenvix")}
+		if cd, err := os.UserCacheDir(); err == nil {
+			ignore = append(ignore, cd) // build and tool caches (fenvix's own included)
+		}
 		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, Capture: capture, Roots: roots, Ignore: ignore,
 			Commit: o.skipCommit}
 	}
