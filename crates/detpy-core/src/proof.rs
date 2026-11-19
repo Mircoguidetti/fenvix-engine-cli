@@ -338,6 +338,11 @@ impl Store {
         i
     }
 
+    /// Intern a set of file indices (sorted, deduplicated); returns its set id.
+    pub fn intern_set(&mut self, set: Vec<u32>) -> u32 {
+        self.intern(set)
+    }
+
     pub fn set(&self, id: u32) -> &[u32] {
         self.sets.get(id as usize).map(|v| v.as_slice()).unwrap_or(&[])
     }

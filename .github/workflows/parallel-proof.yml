@@ -11,7 +11,7 @@ name: parallel-proof
 
 on:
   push:
-    branches: [claude/parallel-proof]
+    branches: [claude/parallel-proof, claude/parallel-proof-3]
     paths: [tracks/parallel-proof/run.json]
 
 permissions:
@@ -90,6 +90,7 @@ jobs:
             python -m harness.parallel_proof.walk_n --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
               --commits "${{ matrix.repo.walk }}" --workers "${{ matrix.repo.workers }}" --dist "${{ matrix.repo.dist }}" \
               --modes "${{ matrix.repo.modes || 'a_par' }}" --deadline-s 18000 --out "$out/walk.json" \
+              --det-args="${{ matrix.repo.det_args }}" --shard "${{ matrix.repo.shard }}" \
               --work "$RUNNER_TEMP/walk" -- "$@" || true
           else
             python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
@@ -106,6 +107,8 @@ jobs:
             done
             cp "$RUNNER_TEMP"/out/summary.jsonl "$RUNNER_TEMP"/out/*.plan.json "$RUNNER_TEMP"/out/*.crosscheck.json "$out"/ || true
             cp "$RUNNER_TEMP"/out/fpcompare.json "$out"/ || true
+            # per-test outcomes and cache decisions (reused ids, not-cached ids with their reasons) of every --det run
+            for r in "$RUNNER_TEMP"/out/*.outcomes.json; do [ -e "$r" ] && gzip -c "$r" > "$out/$(basename "$r").gz"; done
             tail -c 20000 "$RUNNER_TEMP"/out/*.log > "$out/logs-tail.txt" 2>/dev/null || true
           fi
       - name: commit results
@@ -113,4 +116,4 @@ jobs:
           git config user.name "parallel-proof bot" && git config user.email "noreply@anthropic.com"
           git add tracks/parallel-proof/results
           git commit -qm "parallel-proof: ${{ matrix.repo.name }} (${{ needs.build.outputs.run_id }})" || exit 0
-          for i in 1 2 3 4 5; do git pull -q --rebase origin claude/parallel-proof && git push -q && break; sleep $((i*5)); done
+          for i in 1 2 3 4 5; do git pull -q --rebase origin "${{ github.ref_name }}" && git push -q origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*5)); done

@@ -358,8 +358,11 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     s1 = new[0]["summary"]
     assert s1["recorded"] > 20 and new[1]["summary"]["reused"] > 20
     nc = s1["not_cached"]
-    assert {"host name lookup", "reads /proc, /sys or /dev", "real clock read outside the virtual clock",
+    # parallel-proof round 3: SQLite's 'now' is Level 0's virtual clock (detpy/sqlvirt.py), no longer a real clock read;
+    # the real-clock refusal is tested with --det-disable=time (test_proofcache_follow.py, test_review_r009*.py)
+    assert {"host name lookup", "reads /proc, /sys or /dev",
             "outcome", "reads a file another test or fixture wrote"} <= set(nc), nc
+    assert "real clock read outside the virtual clock" not in nc, nc
     assert new[2]["summary"]["reused"] and new[2]["summary"]["recorded"], new[2]["summary"]
     assert "test_stale.py::test_stale_reader" in new[2]["summary"]["stale_reuses"], new[2]["summary"]
     assert "WARNING reused test_stale.py::test_stale_reader" in new[2]["terminal"], new[2]["terminal"]
@@ -368,11 +371,10 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     # the sqlite trace, the loopback checks and the spawn detail ran (same results on both paths, above)
     where, ids = s1["not_cached_where"], s1["not_cached_ids"]
     t = "test_sqlnet.py::test_"
-    assert "the schema of dflt.sqlite (o)" in where[t + "sql_attach_default"], where
-    assert "the schema of trig.sqlite (tr)" in where[t + "sql_trigger"], where
-    assert "this connection's schema" in where[t + "sql_own_schema"], where
-    assert "the schema of sp ace%.sqlite (s)" in where[t + "sql_uri_escapes"], where
-    assert "the schema of sp ace%.sqlite (s)" in where[t + "sql_uri_memory_and_attach"], where
+    # parallel-proof round 3: schemas whose defaults and triggers read 'now' are evaluated on the virtual clock now,
+    # so these tests are no longer refused (the schema scan for a real-clock connection: test_proofcache_follow.py)
+    for name in ("sql_attach_default", "sql_trigger", "sql_own_schema", "sql_uri_escapes", "sql_uri_memory_and_attach"):
+        assert "real clock" not in ids.get(t + name, ""), ids
     assert where[t + "socket_not_listening"].startswith("socket.connect 127.0.0.1:9 at test_sqlnet.py:"), where
     assert where[t + "spawn_os_system_and_posix_spawn"].startswith("true (os.system) at test_sqlnet.py:"), where
     for name in ("sql_plain", "sql_new_file", "socket_own_listener_and_pair", "spawn_list_str_shell"):

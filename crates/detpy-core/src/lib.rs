@@ -27,6 +27,7 @@ pub mod recorder;
 pub mod reexec;
 pub mod repro;
 pub mod schedule;
+pub mod shared;
 pub mod trace;
 pub mod verify;
 

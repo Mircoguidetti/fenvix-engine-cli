@@ -562,6 +562,8 @@ def test_test_without_sys_getframe_is_not_broken_by_the_capture(pytester, run_ca
 
 
 def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
     project(pytester, **{"test_m.py": """
         import sqlite3
 
@@ -574,8 +576,8 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
         def test_date_without_value():
             assert sqlite3.connect(":memory:").execute("select date()").fetchone()[0]
         """})
-    run_cache()
-    _, reused, data = run_cache()
+    run_cache("--det-disable=time")
+    _, reused, data = run_cache("--det-disable=time")
     assert reused == ids("test_plain_sql")
     for t in ("test_current_timestamp", "test_date_without_value"):
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
@@ -583,6 +585,8 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
 
 
 def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
     # review R-009b R1: an attached database's trigger, and a definition made on the same connection by a fixture
     # (another context); a database whose schema does not read the clock is still reused
     import sqlite3
@@ -620,8 +624,8 @@ def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pyte
             con.execute("insert into t (x) values (1)")
             assert con.execute("select at from t").fetchone() == ("2020-01-01",)
         """})
-    run_cache()
-    _, reused, data = run_cache()
+    run_cache("--det-disable=time")
+    _, reused, data = run_cache("--det-disable=time")
     assert reused == ids("test_plain")
     for t in ("test_attached", "test_fixture_schema"):
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"

@@ -68,7 +68,7 @@ _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_receipts", "det_cache_shared", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -449,6 +449,9 @@ class ProofCachePlugin:
         self.verify = verify
         self.max_age_s: float | None = None
         self.receipts_path = receipts or os.path.join(self.dir, "receipts.jsonl")
+        # shared store (P4, --det-cache-shared): pull before the decision, push after the record (or the merge)
+        self.shared: str | None = None
+        self.shared_stats: dict | None = None
         self.store = None
         self.config = None
         self.root = cap.root
@@ -523,13 +526,15 @@ class ProofCachePlugin:
 
     def _decide(self, items) -> None:
         store, cap = self.store, self.cap
+        nids = [item.nodeid for item in items]
+        self._shared_fetch(nids)
         changed = list(store.changed_code_files())
         for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
                                                                  [c for _, c in changed])):
             if f is not None:
                 store.set_fresh(path, content, *f)
+        self._shared_adopt()
         self.sess.seed_exclusive(store, cap)  # review R-009b R2
-        nids = [item.nodeid for item in items]
         self.items = dict(zip(nids, items))
         # the checks, the expiry (review R-009 F4: an entry older than --det-cache-max-age is not reused), the
         # receipts and the verification draw (Python's Mersenne Twister, seeded per run) are Rust
@@ -552,17 +557,56 @@ class ProofCachePlugin:
                                         len(self.config.getoption("tx") or ()),
                                         ctl.testrunuid if ctl is not None else None)
             store = self.store
+            self._shared_fetch(list(nids))
             changed = list(store.changed_code_files())
             for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
                                                                      [c for _, c in changed])):
                 if f is not None:
                     store.set_fresh(path, content, *f)
+            self._shared_adopt()
             self.sess.seed_exclusive(store, self.cap)
             seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
+
+    # -- shared store (P4): Rust (detpy_core::shared); here only the calls ------------------------------------
+    def _shared_fetch(self, nids: list) -> None:
+        if not self.shared or self.role == "worker":
+            return  # a worker never talks to the shared store: its controller pulls and pushes
+        t0 = _perf()
+        cap, was = self.cap, self.cap.active
+        cap.active = False  # detpy's own reads of the shared store are not inputs
+        try:
+            tests, cands, rejected, torn = self.store.shared_fetch(self.shared, list(nids), 3)
+        except Exception as e:  # never break the session: the local store decides alone
+            self.shared_stats = {"error": f"{type(e).__name__}: {e}"}
+            return
+        finally:
+            cap.active = was
+        kinds: dict = {}
+        for _nid, _doc, kind, _detail in rejected:
+            kinds[kind] = kinds.get(kind, 0) + 1
+        self.shared_stats = {"tests": tests, "candidates": cands, "rejected": kinds, "rejected_detail": rejected[:20],
+                             "torn": torn, "adopted": 0, "pushed": 0, "fetch_s": round(_perf() - t0, 3)}
+
+    def _shared_adopt(self) -> None:
+        if self.shared_stats is None or "error" in self.shared_stats:
+            return
+        adopted = self.store.shared_adopt()
+        self.shared_stats["adopted"] = len(adopted)
+
+    def _shared_push(self) -> None:
+        if not self.shared or self.role == "worker":
+            return
+        st = self.shared_stats if self.shared_stats is not None else {}
+        try:
+            n, docs = self.store.shared_push(self.shared, self.receipts_path, self.run_id)
+            st.update(pushed=n, documents=docs)
+        except Exception as e:
+            st["push_error"] = f"{type(e).__name__}: {e}"
+        self.shared_stats = st
 
     def check_workers(self, nids: list, assign: dict) -> list:
         """After the plan: reused results that read ``PYTEST_XDIST_WORKER`` and that this run's plan places on
@@ -793,6 +837,7 @@ class ProofCachePlugin:
             sess.t_record = self.sess.phase("merge")
             sess.compare_verified()
             sess.write_receipts(self.store)
+            self._shared_push()
             return
         t0 = _perf()
         try:
@@ -809,6 +854,7 @@ class ProofCachePlugin:
             return  # the controller compares verified results and writes the receipts
         sess.compare_verified()
         sess.write_receipts(self.store)
+        self._shared_push()
 
     def _facts(self, rels, cache: dict) -> None:
         """Store index of the facts of the current version of every file in ``rels`` not in ``cache`` (new versions
@@ -880,6 +926,17 @@ class ProofCachePlugin:
                           f"reused results dropped (inputs written by this session), {m.get('edges', 0)} together "
                           f"edge(s) noted for the next plans"
                           + (f"; UNREADABLE shards: {len(m['unreadable'])}" if m["unreadable"] else ""))
+        st = self.shared_stats
+        if self.shared and st is not None:
+            if "error" in st:
+                tr.write_line(f"shared store {self.shared}: not used ({st['error']})", yellow=True)
+            else:
+                rej = ", ".join(f"{k} {v}" for k, v in sorted(st.get("rejected", {}).items())) or "none"
+                tr.write_line(f"shared store {self.shared}: {st.get('candidates', 0)} candidate(s) for "
+                              f"{st.get('tests', 0)} test(s), {st.get('adopted', 0)} adopted after the check, "
+                              f"rejected: {rej}" + (f", {st['torn']} torn log line(s)" if st.get("torn") else "")
+                              + f"; pushed {st.get('pushed', 0)} entr(ies)"
+                              + (f"; PUSH FAILED: {st['push_error']}" if st.get("push_error") else ""))
 
 
 def _location_of(nodeid: str) -> tuple:
@@ -971,6 +1028,7 @@ def install(config) -> None:
         return
     opt = config.option
     plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
+    plugin.shared = getattr(opt, "det_cache_shared", None) or os.environ.get("DETPY_CACHE_SHARED") or None
     age = getattr(opt, "det_cache_max_age", 30.0)
     plugin.max_age_s = age * 86400 if age and age > 0 else None
     from . import xdist as _xdist

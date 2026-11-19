@@ -73,12 +73,24 @@ def main(argv=None) -> int:
                     help="start no further commit after this many seconds (a CI job's limit; 0: none)")
     ap.add_argument("--modes", default="a_par,a_ser",
                     help="cache modes to walk besides the truth run b (a_ser can be left out to fit a CI job)")
+    ap.add_argument("--det-args", default="",
+                    help="extra detpy options for every --det run (cache runs and truth), e.g. --det-urandom")
+    ap.add_argument("--shard", default="",
+                    help="K/M: walk only the K-th of M contiguous slices of the commits (0-based); each slice starts "
+                         "with an empty cache at its first commit")
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
+    det_args = a.det_args.split()
     work = os.path.abspath(a.work or os.path.join(os.path.dirname(os.path.abspath(a.out)), "walk-work"))
     os.makedirs(work, exist_ok=True)
     head = git(a.repo, "rev-parse", "HEAD").strip()
     shas = git(a.repo, "rev-list", "--first-parent", f"--max-count={a.commits}", head).split()[::-1]
+    offset = 0
+    if a.shard:
+        k, m = (int(x) for x in a.shard.split("/"))
+        size = -(-len(shas) // m)
+        offset = k * size
+        shas = shas[offset:offset + size]
     par = ["-n", str(a.workers)] + (["--dist", a.dist] if a.dist else [])
     rows = []
     deps = None
@@ -92,17 +104,20 @@ def main(argv=None) -> int:
         if deps is not None and d != deps and a.reinstall:
             subprocess.run(a.reinstall, shell=True, cwd=a.repo, capture_output=True)
         deps = d
-        row = {"i": i, "sha": sha}
+        row = {"i": i + offset, "sha": sha, "shard_first": i == 0}
         runs = {}
         modes = [m for m in a.modes.split(",") if m]
-        variants = (("a_par", ["--det", f"--det-cache={work}/cache-par", f"--det-trace={work}/a_par.jsonl", *par]),
-                    ("a_ser", ["--det", f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
-                    ("b", ["--det", f"--det-trace={work}/b.jsonl"]))
+        variants = (("a_par", ["--det", *det_args, f"--det-cache={work}/cache-par", f"--det-trace={work}/a_par.jsonl",
+                               *par]),
+                    ("a_ser", ["--det", *det_args, f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
+                    ("b", ["--det", *det_args, f"--det-trace={work}/b.jsonl"]))
         for name, extra in [v for v in variants if v[0] in modes or v[0] == "b"]:
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
         truth = runs["b"].get("outcomes", {})
+        tdur = runs["b"].get("durations", {})  # per-test time of the truth run (setup + call + teardown)
+        row["b"]["test_time_s"] = round(sum(tdur.values()), 3)
         for mode in [m for m in ("a_par", "a_ser") if m in runs]:
             c = runs[mode].get("cache", {})
             reused = c.get("reused_ids", [])
@@ -110,13 +125,14 @@ def main(argv=None) -> int:
             bad = [n for n in reused if n in truth and outcomes.get(n) != truth[n]]
             row[mode].update(reused=len(reused), ran=c.get("ran"), recorded=c.get("recorded"),
                              tests=len(outcomes), miss_reasons=c.get("miss_reasons"),
-                             reused_not_in_truth=len([n for n in reused if n not in truth]))
+                             reused_not_in_truth=len([n for n in reused if n not in truth]),
+                             reused_time_s=round(sum(tdur.get(n, 0.0) for n in reused), 3))
             wrong, flaky = [], []
             if bad:
                 ids = os.path.join(work, f"recheck-{mode}-{i}.txt")
                 with open(ids, "w") as f:
                     f.write("\n".join(bad) + "\n")
-                _, again = pytest(a.repo, a.python, [*a.pytest_args, "--det", f"--det-order={ids}"],
+                _, again = pytest(a.repo, a.python, [*a.pytest_args, "--det", *det_args, f"--det-order={ids}"],
                                   f"{work}/recheck-{mode}-{i}.json", a.timeout)
                 o2 = again.get("outcomes", {})
                 for n in bad:
@@ -125,9 +141,10 @@ def main(argv=None) -> int:
         rows.append(row)
         with open(a.out, "w") as f:
             json.dump({"repo": os.path.basename(os.path.abspath(a.repo)), "workers": a.workers, "args": a.pytest_args,
-                       "commits": rows}, f, indent=1)
+                       "det_args": det_args, "shard": a.shard, "commits": rows}, f, indent=1)
         print(json.dumps({k: (v if not isinstance(v, dict) else {x: v[x] for x in ("wall_s", "reused", "ran",
-                                                                                   "mismatches", "wrong_reuses")
+                                                                                   "mismatches", "wrong_reuses",
+                                                                                   "reused_time_s", "test_time_s")
                                                                  if x in v}) for k, v in row.items()}), flush=True)
     git(a.repo, "checkout", "-q", "--force", head)
     return 0

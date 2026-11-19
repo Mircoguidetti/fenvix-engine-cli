@@ -87,12 +87,16 @@ def pytest_addoption(parser, pluginmanager):
     g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
                 help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
                      "most DAYS later (default 30), so tests that read the clock are reusable across commits")
+    g.addoption("--det-cache-shared", default=None, metavar="DIR",
+                help="with --det-cache: a store shared with other sessions and machines (a directory every job "
+                     "sees; also DETPY_CACHE_SHARED). Candidates are fetched before the reuse decision and checked "
+                     "like local entries; this session's entries are pushed at the end (by the controller under -n)")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
+    _early_reexec(parser, pluginmanager)
 
 
 _BLOCKED_BY_REEXEC: list[str] | None = None
-
 
 def _blocked_from_env() -> list[str]:
     """Plugins the re-exec blocked, read once and removed from os.environ.
@@ -106,6 +110,69 @@ def _blocked_from_env() -> list[str]:
         raw = os.environ.pop(reexec.BLOCKED_ENV, "")
         _BLOCKED_BY_REEXEC = [n for n in raw.split(",") if n]
     return _BLOCKED_BY_REEXEC
+
+
+def _early_reexec(parser, pluginmanager) -> None:
+    """parallel-proof round 3, item 4: the re-exec as early as detpy is registered.
+
+    The re-exec (fixed hash seed, ASLR off, bytecode cache) used to happen in ``pytest_load_initial_conftests``,
+    after pytest had imported every entry-point plugin: on litellm (logfire, ddtrace, ...) the controller imported
+    them twice (MEASURED 2.8 s per run, REPORT-2). pytest calls detpy's ``pytest_addoption`` while it loads the
+    entry points, right after detpy's own; the remaining plugins are not imported yet. Here the command line is
+    known (``invocation_params.args``, ``PYTEST_ADDOPTS`` and the ini ``addopts``, which pytest has read by then,
+    in pytest's order), and the same decision as before is made from it. Anything unusual (a nested in-process
+    session, an xdist worker, options that do not parse) leaves the decision to ``pytest_load_initial_conftests``,
+    as before."""
+    if reexec.SESSION_DEPTH > 0 or S.active or os.environ.get(_xdist.CONTROLLER_ENV) is not None:
+        return
+    if os.environ.get(reexec.MARKER) == "1":
+        return
+    config = pluginmanager.get_plugin("pytestconfig")
+    if config is None:
+        return
+    try:
+        import shlex
+
+        args = list(config.invocation_params.args)
+        env = os.environ.get("PYTEST_ADDOPTS")
+        if env:
+            args = [*shlex.split(env), *args]
+        try:
+            ini = config.getini("addopts")
+        except (ValueError, KeyError):
+            ini = []
+        args = [*ini, *args]
+        if any(a in ("-h", "--help", "--version", "-V") for a in args):
+            return
+        ns = parser.parse_known_args(args)
+    except Exception:
+        return
+    if not getattr(ns, "det", False) or getattr(ns, "det_no_reexec", False):
+        return
+    try:
+        controls = _controls(ns)
+    except pytest.UsageError:
+        return  # reported later, where the session can show it
+    if "hashseed" not in controls:
+        return
+    want_bytecode = "bytecode" in controls
+    need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
+    if not any(need.values()):
+        return
+    ok, _why = reexec.can_reexec()
+    if not ok:
+        return
+    try:
+        from importlib.metadata import entry_points
+
+        eps = entry_points()
+        eps = eps.select(group="pytest11") if hasattr(eps, "select") else eps.get("pytest11", ())
+        installed = {ep.name for ep in eps}
+    except Exception:  # pragma: no cover - broken metadata
+        installed = set()
+    block = [n for n in _CONFLICTING_PLUGINS if n in installed or pluginmanager.get_plugin(n) is not None]
+    rootdir = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
 
 
 def _accept_blocked_plugin_options(parser, pluginmanager) -> None:

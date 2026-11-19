@@ -106,6 +106,8 @@ def test_timezone_read_by_c_is_an_input(pytester, run_cache, monkeypatch):
 
 
 def test_real_clock_read_in_c_is_not_reused_after_it_moves(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
     # sqlite's date('now') reads the real clock in C (LIMITS S1): no "time" flag, so neither the epoch nor anything
     # else about time is in the key. The result is reused after the real clock passed the test's threshold.
     import time
@@ -118,10 +120,10 @@ def test_real_clock_read_in_c_is_not_reused_after_it_moves(pytester, run_cache):
             now = sqlite3.connect(":memory:").execute("select strftime('%s', 'now')").fetchone()[0]
             assert int(now) < {t}
         """})
-    run_cache()
+    run_cache("--det-disable=time")
     while time.time() < t + 1:
         time.sleep(0.2)
-    r, reused, data = run_cache()
+    r, reused, data = run_cache("--det-disable=time")
     assert reused == set()
     r.assert_outcomes(failed=1)
 

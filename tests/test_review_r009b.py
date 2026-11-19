@@ -30,6 +30,8 @@ def _wait_past(t):
 
 
 def test_sqlite_clock_read_by_the_schema_is_refused(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
     # The sqlite statement trace only sees the statement text. A column default (CURRENT_TIMESTAMP, the usual
     # created_at), a trigger body or a view defined in a database the test opens reads the real clock in C while the
     # statement the test runs says nothing about time. REPORT-2 claims sqlite's real-clock reads are refused.
@@ -50,9 +52,9 @@ def test_sqlite_clock_read_by_the_schema_is_refused(pytester, run_cache):
             at = con.execute("select strftime('%s', at) from ev").fetchone()[0]
             assert int(at) < {t}
         """})
-    run_cache()
+    run_cache("--det-disable=time")
     _wait_past(t)
-    r, reused, data = run_cache()
+    r, reused, data = run_cache("--det-disable=time")
     assert reused == set()
     r.assert_outcomes(failed=1)
 

@@ -87,8 +87,8 @@ def record_reference(self, store) -> None:
     g_data, g_env, g_flags = {}, set(), set()
     for c in g_ctx_all:
         # review R-023: /proc, /sys, /dev reads of code that runs for every test are not data inputs (as their flag)
-        g_data.update({k: v for k, v in cap.data.get(c, {}).items()
-                       if not k.startswith(("/proc/", "/sys/", "/dev/"))})
+        _merge_data(g_data, {k: v for k, v in cap.data.get(c, {}).items()
+                             if not k.startswith(("/proc/", "/sys/", "/dev/"))})
         g_env |= cap.env.get(c, set())
         g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
 
@@ -150,7 +150,7 @@ def record_reference(self, store) -> None:
         content = set(pre_ix) | g_unparsable
         for c in ctxs:
             flags |= cap.flags.get(c, set())
-            data.update(cap.data.get(c, {}))
+            _merge_data(data, cap.data.get(c, {}))
             env |= cap.env.get(c, set())
             units |= units_of(per[c][0])
             content |= unparsable(per[c][1])
@@ -172,6 +172,10 @@ def record_reference(self, store) -> None:
                     if w and not w <= names:
                         why = f"reads a file another test or fixture wrote: {path}"
                         break
+        # parallel-proof round 3, item 9: pytest's conftest.py / __init__.py lookups from the root to the test's file
+        for rel in _core.collection_candidates(os.path.dirname(own)):
+            if rel not in data:
+                data[rel] = "s:" + _core.stat_kind(os.path.join(cap.root_sep, rel))
         if why is None and "net-replay" in flags and cfg.cassette_path:
             d = _core.file_digest(cfg.cassette_path)
             data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
@@ -268,3 +272,11 @@ class ScanSocketsRef:
         if ctx is not None and new & inet:
             self.flag(ctx, "csock", "an internet socket left open")
 
+
+def _merge_data(into: dict, new: dict) -> None:
+    """dict.update, except that a kind check ("s:...") never replaces a content or listing dependency."""
+    for k, v in new.items():
+        old = into.get(k)
+        if old is not None and v.startswith("s:") and not old.startswith("s:"):
+            continue
+        into[k] = v

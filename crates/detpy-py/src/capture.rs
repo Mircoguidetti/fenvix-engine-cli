@@ -1915,9 +1915,15 @@ impl CaptureCore {
             self.read_impl(py, ctx, cands[0].as_bytes(), b's')?;
             let rest: &[String] = if pkg_missing { &cands[1 + n..] } else { &cands[1..] };
             let mut regular = false;
+            let root_sep = lock(&self.st).root_sep.clone();
             for c in rest {
-                self.read_impl(py, ctx, c.as_bytes(), b's')?;
-                if std::path::Path::new(c).is_file() {
+                let is_file = std::path::Path::new(c).is_file();
+                // a repository source file the import system finds is imported: its content is a code input
+                // (skeleton, units) of every test that loaded it, a stronger dependency than its kind
+                if !(is_file && c.ends_with(".py") && c.as_bytes().starts_with(&root_sep)) {
+                    self.read_impl(py, ctx, c.as_bytes(), b's')?;
+                }
+                if is_file {
                     regular = true;
                 }
             }

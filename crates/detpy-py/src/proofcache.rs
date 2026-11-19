@@ -4,6 +4,7 @@ use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Receipt, Sto
 use pyo3::types::{PyDict, PyList, PyString};
 use std::collections::HashMap;
 use detpy_core::record;
+use detpy_core::shared;
 use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -22,6 +23,11 @@ struct Inner {
     /// contexts of its tests: a parallel worker's shard (`save_shard`).
     last_written: BTreeMap<String, Vec<String>>,
     last_fixtures: BTreeMap<String, Vec<String>>,
+    /// Shared store (P4): candidates fetched for this session, the documents adopted (nodeid -> address, named in
+    /// the receipts), and the tests a parallel controller merged from its workers' shards (pushed after the merge).
+    fetched: Option<shared::Fetched>,
+    origins: BTreeMap<String, String>,
+    merged_ids: Vec<String>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -70,7 +76,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -150,7 +156,11 @@ impl ProofCache {
                             continue;
                         }
                     }
-                    out.append((true, receipt_dict(py, &r)?))?;
+                    let d = receipt_dict(py, &r)?;
+                    if let Some(o) = g.origins.get(&nid) {
+                        d.set_item("origin", format!("shared:{o}"))?;
+                    }
+                    out.append((true, d))?;
                     g.receipts.insert(nid, r);
                 }
                 Err(m) => out.append((false, format!("{}: {}", m.kind, m.detail)))?,
@@ -182,6 +192,10 @@ impl ProofCache {
                 json_str(py, nid, &mut text)?;
                 text.push_str(", \"reused\": true, ");
                 receipt_json(r, &mut text);
+                if let Some(o) = g.origins.get(&id) {
+                    text.push_str(", \"origin\": ");
+                    json_escape(&format!("shared:{o}"), &mut text);
+                }
                 text.push_str("}\n");
             }
         }
@@ -454,13 +468,86 @@ impl ProofCache {
                     Err(_) => unreadable.push(p.display().to_string()),
                 }
             }
-            Ok((proof::merge_shards(&dir, &mut shards, &hits)?, unreadable))
+            let ids: Vec<String> = shards.iter().flat_map(|s| s.touched.iter().cloned()).collect();
+            Ok((proof::merge_shards(&dir, &mut shards, &hits)?, unreadable, ids))
+        })
+        .map(|(m, u, ids)| {
+            lock(&self.inner).merged_ids = ids;
+            (m, u)
         })?;
         serde_json::to_string(&serde_json::json!({
             "merged": merge.merged, "dropped": merge.dropped, "stale": merge.stale, "unreadable": unreadable,
             "edges": merge.edges,
         }))
         .map_err(|e| PyValueError::new_err(e.to_string()))
+    }
+
+    // -- shared store (P4) -----------------------------------------------------------------------------------------
+    /// Fetch up to `limit` candidates per test from the shared store `shared` (`detpy_core::shared::fetch`) and add
+    /// their file facts to the store, before the changed code files are listed (so their facts are compared too).
+    /// Returns `(tests with candidates, candidates, [(nodeid, document, kind, detail)] rejected, torn log lines)`.
+    #[allow(clippy::type_complexity)]
+    fn shared_fetch(&self, py: Python<'_>, shared: PathBuf, nodeids: Vec<String>, limit: usize) -> (usize, usize, Vec<(String, String, String, String)>, usize) {
+        let mut g = lock(&self.inner);
+        let (config, runtime) = (g.checker.cur.config.clone(), g.checker.cur.runtime.clone());
+        let dir = shared::SharedDir::new(shared);
+        let store = &mut g.store;
+        let f = py.detach(|| shared::fetch(&dir, store, &nodeids, &config, &runtime, limit.max(1)));
+        let rejected = f.rejected.iter().map(|(n, d, r)| (n.clone(), d.clone(), r.kind().to_string(), r.detail().to_string())).collect();
+        let out = (f.candidates.len(), f.candidates.values().map(|v| v.len()).sum(), rejected, f.log.torn);
+        g.fetched = Some(f);
+        out
+    }
+
+    /// Adopt the fetched candidates the checker accepts where the local entry is not accepted
+    /// (`detpy_core::shared::adopt`). Returns `{nodeid: document}`. An adopted entry is kept in the local store (the
+    /// local mirror), and is not pushed back.
+    fn shared_adopt(&self) -> BTreeMap<String, String> {
+        let mut g = lock(&self.inner);
+        let Some(f) = g.fetched.take() else { return BTreeMap::new() };
+        let Inner { store, checker, .. } = &mut *g;
+        let adopted = shared::adopt(store, &f, &mut |s, nid| checker.check(s, nid).is_ok());
+        // the checker's memo tables hold per set, file and variable results, valid for the decision that follows;
+        // the deferred worker reads of the candidates tried are not (check_all records them again for its hits)
+        checker.worker_reads.clear();
+        for (nid, doc) in &adopted {
+            g.touched.insert(nid.clone());
+            g.origins.insert(nid.clone(), doc.clone());
+        }
+        adopted
+    }
+
+    /// Push this session's recorded entries to the shared store (`SharedDir::push`): the tests recorded here, or,
+    /// in a parallel controller, the tests its workers recorded (after `merge_shards`); adopted results are not
+    /// pushed back. Then the receipts file as a document and a run line. Returns `(entries, documents)`.
+    #[pyo3(signature = (shared, receipts=None, run="".to_string()))]
+    fn shared_push(&self, py: Python<'_>, shared: PathBuf, receipts: Option<PathBuf>, run: String) -> PyResult<(usize, usize)> {
+        let (store, ids) = {
+            let g = lock(&self.inner);
+            if g.merged_ids.is_empty() {
+                let ids: Vec<String> =
+                    g.touched.iter().filter(|n| !g.origins.contains_key(*n) && g.store.tests.contains_key(*n)).cloned().collect();
+                (None, ids)
+            } else {
+                (Some(()), g.merged_ids.iter().filter(|n| !g.origins.contains_key(*n)).cloned().collect())
+            }
+        };
+        let dir = shared::SharedDir::new(shared);
+        let r = if store.is_some() {
+            let disk = Store::load(&self.dir);
+            py.detach(|| dir.push(&disk, &ids))
+        } else {
+            let g = lock(&self.inner);
+            let store = &g.store;
+            py.detach(|| dir.push(store, &ids))
+        }?;
+        if let Some(p) = receipts {
+            if let Ok(b) = std::fs::read(&p) {
+                let id = dir.put(&b)?;
+                dir.append_run(&run, &id, &serde_json::json!({"entries": r.0}))?;
+            }
+        }
+        Ok(r)
     }
 
     #[getter]
@@ -812,4 +899,11 @@ pub fn stat_kind(path: PathBuf) -> &'static str {
 #[pyfunction]
 pub fn import_candidates(dir: &str, name: &str, suffixes: Vec<String>) -> Vec<String> {
     proof::import_candidates(dir, name, &suffixes)
+}
+
+/// `conftest.py` and `__init__.py` paths pytest looks for from the root down to `rel_dir`
+/// (`detpy_core::proof::collection_candidates`).
+#[pyfunction]
+pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
+    proof::collection_candidates(rel_dir)
 }

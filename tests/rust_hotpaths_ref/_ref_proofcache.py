@@ -85,7 +85,7 @@ _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_receipts", "det_cache_shared", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -513,8 +513,10 @@ class Capture:
             self.read(ctx, cands[0], "s")
             regular = False
             for c in (cands[1 + n:] if missing else cands[1:]):
-                self.read(ctx, c, "s")
-                if os.path.isfile(c):
+                is_file = os.path.isfile(c)
+                if not (is_file and c.endswith(".py") and c.startswith(self.root_sep)):
+                    self.read(ctx, c, "s")
+                if is_file:
                     regular = True
             if regular:
                 break
