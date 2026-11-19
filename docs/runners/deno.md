@@ -80,7 +80,9 @@ Shared controls (MEASURED working in Deno: `Date`, `performance.now`, timers, `M
   file from a library is not keyed.
 * `--det-record` / cassette replay of Deno's native connections.
 * Per-test outcome as with Bun: a failure only Deno sees (sanitizers) fails the file through the exit status.
-* Cost: one Deno process per file (type check, start-up) and one `deno info` per file: std subset cold run 412 s vs
-  23 s for `deno test --parallel` (MEASURED, local, NOISY), warm run 20 s with 160 of 203 files reused.
+* Cost: one Deno process per file (type check, start-up) and one `deno info` per file. std subset (203 files,
+  MEASURED, local, NOISY): `deno test -A --parallel` 23 s; `detjs deno-test --det` 75 s; cold `--det-cache` 83 s;
+  warm `--det-cache` 20 s with 164 of 203 files reused. The very first run on a machine also type-checks every file in
+  its own process (412 s here).
 
 Evidence: `node/test/runner-deno.test.js` (36 tests); walk specs `harness/node_cache/specs/{oak,std}.json`.
