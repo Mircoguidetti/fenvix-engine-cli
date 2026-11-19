@@ -111,6 +111,15 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
     patcher.set(random, "seed", _module_seed(inst.seed))
     patcher.set(os, "urandom", disguise(_urandom, "os", "urandom"))
     patcher.set(random, "_urandom", _urandom)  # SystemRandom / secrets
+    # parallel-proof round 3 (review R-023b N5): os.getrandom and ssl.RAND_bytes are OS entropy too
+    if hasattr(os, "getrandom"):
+        patcher.set(os, "getrandom", disguise(lambda size, flags=0: _urandom(size), "os", "getrandom"))
+    try:
+        import ssl
+    except ImportError:  # pragma: no cover
+        ssl = None
+    if ssl is not None and hasattr(ssl, "RAND_bytes"):
+        patcher.set(ssl, "RAND_bytes", disguise(lambda n: _urandom(n), "ssl", "RAND_bytes"))
     if control_urandom:
         _urandom_rng = random.Random()
         _real_seed(_urandom_rng, _core.derive_seed(_state.STATE.config.seed, "<urandom>"))
@@ -149,6 +158,7 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     _counter["n"] = 0
     s = _core.derive_seed(base, nodeid)
     _real_seed(random._inst, s)
+    _core.sqlvirt_start_test(_core.derive_seed(base, nodeid + "\0sqlite"))  # SQLite's random() / randomblob()
     if _urandom_rng is not None:
         _real_seed(_urandom_rng, _core.derive_seed(base, nodeid + "\0urandom"))
     # Fresh temporary-name generator: names depend on the test, not on history.
@@ -176,3 +186,19 @@ def end_test() -> None:
             _state.record_at("random", "numpy.random.state", "<end>", _core.digest(st[1].tobytes() + str(st[2]).encode()))
         except Exception:  # pragma: no cover
             pass
+
+
+def fixture_begin(key: str):
+    """parallel-proof round 3 (review R-023b N5): a wider-scoped fixture's own stream."""
+    base = _state.STATE.config.seed
+    saved = (random._inst.getstate(), _urandom_rng.getstate() if _urandom_rng is not None else None)
+    _real_seed(random._inst, _core.derive_seed(base, "<fixture>" + key))
+    if _urandom_rng is not None:
+        _real_seed(_urandom_rng, _core.derive_seed(base, "<fixture>" + key + "\0urandom"))
+    return saved
+
+
+def fixture_end(saved) -> None:
+    random._inst.setstate(saved[0])
+    if saved[1] is not None and _urandom_rng is not None:
+        _urandom_rng.setstate(saved[1])

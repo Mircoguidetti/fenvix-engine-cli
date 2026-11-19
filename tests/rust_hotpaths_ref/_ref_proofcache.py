@@ -2253,11 +2253,20 @@ def _own_listener(args) -> bool:
                     laddr, _, lport = parts[1].decode().rpartition(":")
                     if lport != want or parts[9].decode() not in mine:
                         continue
-                    if set(laddr) <= {"0"} or _loopback_hex(laddr):
+                    # review R-023b N3: a non-wildcard listener must hold the very address connected to
+                    if set(laddr) <= {"0"} or (_loopback_hex(laddr) and laddr == _proc_net_hex(ip)):
                         return True
         except OSError:
             continue
     return False
+
+
+def _proc_net_hex(ip) -> str:
+    """The address as /proc/net/tcp{,6} writes it: each 32-bit word of the packed address in host order, hex."""
+    import struct
+
+    b = ip.packed
+    return "".join(f"{struct.unpack('=I', b[i:i + 4])[0]:08X}" for i in range(0, len(b), 4))
 
 
 def _both_ends_mine(sock) -> bool:

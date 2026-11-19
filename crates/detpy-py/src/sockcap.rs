@@ -146,7 +146,9 @@ fn own_socket_inodes() -> HashSet<W> {
 
 /// The local address of `host` as /proc/net/tcp{,6} writes it (hex of the address's 32-bit words in host order).
 fn proc_net_hex(host: &str) -> Option<W> {
-    let ip: std::net::IpAddr = host.trim_start_matches('[').trim_end_matches(']').parse().ok()?;
+    let h = host.split('%').next().unwrap_or(host);
+    let h = if loopback_name(h.as_bytes()) { "127.0.0.1" } else { h };
+    let ip: std::net::IpAddr = h.trim_start_matches('[').trim_end_matches(']').parse().ok()?;
     let bytes: Vec<u8> = match ip {
         std::net::IpAddr::V4(a) => a.octets().to_vec(),
         std::net::IpAddr::V6(a) => a.octets().to_vec(),
