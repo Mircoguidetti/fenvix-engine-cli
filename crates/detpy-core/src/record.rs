@@ -842,13 +842,24 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             }
         }
         if sel != last_sel {
-            c_data = OrderedData::default();
-            c_env.clear();
-            c_flags.clear();
-            c_units.clear();
-            c_content.clear();
-            c_ctxs.clear();
-            for &(_, c) in &sel {
+            // the selection of the next test usually extends the previous one with contexts that ran after all of
+            // it (the test just before): those are folded in, in order, which is what a rebuild in order gives
+            let extends = last_sel.last().is_some_and(|&lmax| {
+                sel.range(..=lmax).eq(last_sel.iter()) && sel.len() > last_sel.len()
+            });
+            let fresh: Vec<(usize, u32)> = if extends {
+                let lmax = *last_sel.last().unwrap();
+                sel.range((std::ops::Bound::Excluded(lmax), std::ops::Bound::Unbounded)).copied().collect()
+            } else {
+                c_data = OrderedData::default();
+                c_env.clear();
+                c_flags.clear();
+                c_units.clear();
+                c_content.clear();
+                c_ctxs.clear();
+                sel.iter().copied().collect()
+            };
+            for &(_, c) in &fresh {
                 c_ctxs.push(c);
                 if let Some(d) = plan.data.get(&c) {
                     c_data.update(d);
