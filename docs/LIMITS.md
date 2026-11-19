@@ -89,3 +89,17 @@ repositories (**H**) or by design analysis (**D**), and what mitigates it.
 |---|---|---|---|
 | G1 | **Nested in-process pytest sessions** (pytester inline runs, `pytest.main()` from a test) ran detpy's module-level hooks: the inner session's `pytest_unconfigure` uninstalled the outer controls and the outer session died with INTERNALERROR (anyio: 2,820 tests never ran; faker: 385). | H | **Fixed**: the `--det` hooks and the outcome collection are objects registered on the owning config's plugin manager; a nested session never touches them. Test `test_nested_inprocess_session_does_not_break_the_outer_one`. |
 | G2 | References to detpy's fake clock functions kept by libraries are still called after the session uninstalled the controls (anyio at interpreter shutdown: `AttributeError`). | H | **Fixed**: after uninstall every fake delegates to the real function. Test `test_references_kept_after_the_session_fall_back_to_real_time`. |
+
+## 8. Cache with proof (`--det-cache`): inputs the recorder cannot see
+
+The cache reuses a result only when every input it recorded is unchanged. An input it cannot see must not leave a
+reusable result behind: such a test is **refused** (rerun every time) or keyed more coarsely, never reused on a
+partial key. Each row has a test that changes only that input and requires the test to rerun
+(`tests/test_proofcache_import_lookups.py`).
+
+| # | input not seen | found | handling | test |
+|---|---|---|---|---|
+| K1 | A file the **repository's native code** stats, opens or reads from C (an extension built in place, a `ctypes` library): S1, no Python event. | D (coordinator, R-023b) | A context in which a shared library from the project root is mapped (`/proc/self/maps` at every context switch) or opened with `ctypes` is **not cached** ("native code from the repository"). Installed and system libraries are inputs by content; what *their* C code reads stays S1. | `test_stat_from_c_code_of_the_repository` |
+| K2 | A library `dlopen()`ed and `dlclose()`d within one context leaves no mapping to scan. | D (REPORT-2) | Through `ctypes` (an audit event names the path): refused as K1 when it is in the project root. A load by C code without an event is K1 or S1 (that C code is itself mapped). | `test_library_loaded_and_unloaded_within_one_test` |
+| K3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start, every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose lookups the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
+| K4 | `os.lstat` / `os.path.lexists` of a dangling symlink: the recorded kind follows links, so a dangling link and a missing path both read `s:missing`. | D | Not handled; rare. | — |

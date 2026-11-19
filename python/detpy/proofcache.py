@@ -77,6 +77,13 @@ _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep
 # them; objects are content-addressed, so a changed commit always comes with a changed ref file)
 _SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
 _SOURCE_SUFFIXES = (".py", ".pyc", ".pyw")
+_IMPORTABLE_ENDINGS = (".py", ".pyc", ".pyw", ".so", ".pyd")  # proof::IMPORTABLE_ENDINGS
+_IMPORTABLE_KEY = "/\x01importable"  # proof::IMPORTABLE_SUFFIX
+
+
+def _detpy_native(p: str) -> bool:
+    """detpy's own native files (its extension, the clock shim it builds in the cache directory)."""
+    return p.startswith(_DETPY_DIR) or os.path.basename(p).startswith("clockshim-")
 _STATS_PER_DIR = 8  # existence checks of one directory's entries kept one by one; more become its listing with kinds
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
@@ -469,7 +476,7 @@ class Capture:
 
     def wrote(self, ctx: int, p: str) -> None:
         self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p):
+        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "i" + os.path.dirname(p)):
             self._hashed.pop(k, None)
 
     # -- existence checks ---------------------------------------------------------------
@@ -478,7 +485,9 @@ class Capture:
         ``glob`` on a literal path ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The
         answer is an input: the path's kind ("s:missing", "s:file", "s:dir", "s:other") is recorded, so a file that
         appears (a console script a bump adds, an optional config file) or disappears invalidates the test.
-        (Code that bound ``from os import stat`` before the session keeps the original: not seen.)"""
+        References bound before the session (``from os import stat`` in a module imported earlier) are rebound to
+        the wrapper too; the import system's own ``posix`` module is left alone (its lookups are recorded by the
+        module-lookup finder)."""
         cap = self
 
         def wrap(name):
@@ -503,6 +512,18 @@ class Capture:
             checked.__wrapped__ = orig
             self._stat_saved.append((os, name, orig))
             setattr(os, name, checked)
+            for mod in list(sys.modules.values()):
+                d = getattr(mod, "__dict__", None)
+                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
+                    continue
+                for k, v in list(d.items()):
+                    if v is orig:
+                        self._stat_saved.append((mod, k, orig))
+                        try:
+                            setattr(mod, k, checked)
+                        except Exception:
+                            pass
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
@@ -571,6 +592,26 @@ class Capture:
             if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
                 continue
             self.read(ctx, p, "f")
+            if p.startswith(self.root_sep) and not _detpy_native(p) and not self._installed(p):
+                # native code from the repository (an extension built in place, a ctypes library): its own file
+                # system, clock and network access is not seen (LIMITS S1), so its context is not cached
+                self.flag(ctx, "native", p)
+
+    def _installed(self, p: str) -> bool:
+        """Whether a distribution's RECORD lists ``p`` (a wheel's library in an environment that happens to live
+        under the project root): a dependency (keyed by the distributions), not the repository's own native
+        code. The file index is built on first use (Rust: distfiles.rs)."""
+        idx = self.dists.index if self.dists is not None else getattr(self, "_dist_index", None)
+        if idx is None:
+            was, self.active = self.active, False
+            try:
+                idx = self._dist_index = distid.Index(self.root)
+            except Exception:
+                return False
+            finally:
+                self.active = was
+        r = idx.owners(p)
+        return r is not None and r[0] != [distid.PROJECT]
 
     # -- module lookups ---------------------------------------------------------------------
     def _patch_lookups(self) -> None:
@@ -608,11 +649,30 @@ class Capture:
 
     def _lookup(self, tail: str, entries, suffixes) -> None:
         ctx = self._cur()
+        # one dependency per searched directory, on its importable entries (Rust: proof::importable_digest), when
+        # the name is an identifier and every suffix of this interpreter has an importable ending; per-path kinds
+        # otherwise
+        whole = tail.isidentifier() and all(x.endswith(_IMPORTABLE_ENDINGS) for x in suffixes)
         for e in list(entries):
             if not isinstance(e, str):
                 continue
             d = self._abs(e or ".")
             if d is None or self._ignored(d.rstrip(os.sep) + os.sep):
+                continue
+            if whole and _encodable(d):
+                hk = "i" + d
+                dep = self._hashed.get(hk)
+                if dep is None:
+                    dep = self._hashed[hk] = _core.importable_dep(d)
+                self.sdata.setdefault(ctx, {}).setdefault(self._key(d) + _IMPORTABLE_KEY, dep)
+                regular, pkg_dir = _core.import_probe(d, tail, suffixes)
+                if pkg_dir:
+                    # the package directory exists: its __init__ files are inside it, not among d's entries
+                    for s_ in suffixes:
+                        if self._kind(ctx, os.path.join(d, tail, "__init__" + s_)) == "s:file":
+                            regular = True
+                if regular:
+                    break
                 continue
             regular = False
             cands = _core.import_candidates(d, tail, suffixes)  # [package dir, its __init__ files, module files]
@@ -693,6 +753,14 @@ class Capture:
         elif event == "ctypes.dlopen":
             if self.dists is not None:
                 self.dists._dlopen = True
+            # native code from the repository: what it reads, stats or asks the clock is not seen (LIMITS S1);
+            # refused even when it is unloaded again before the next scan of the mappings
+            name = args[0] if args else None
+            if isinstance(name, (str, bytes, os.PathLike)) and os.sep in os.fsdecode(name):
+                p = self._abs(name)
+                if p is not None and p.startswith(self.root_sep) and not self._ignored(p) \
+                        and not _detpy_native(p) and not self._installed(p):
+                    self.flag(self._cur(), "native", p)
         elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
             # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
             # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
@@ -1614,7 +1682,7 @@ class ProofCachePlugin:
                 continue
             own = {"t|" + nid}
             for path, _dep in deps:
-                if _dep.startswith(("s:", "t:", "T:")):
+                if _dep.startswith(("s:", "t:", "T:", "i:")):
                     continue  # an existence check: its kind is compared with the disk before any reuse
                 if path in session_written and not set(session_written[path]) <= own:
                     self.stale_hits[nid] = path
@@ -2070,7 +2138,8 @@ def _numeric_host(host: str) -> bool:
 
 
 _FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
-            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
+            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc",
+            "native code from the repository": "native"}
 
 
 def _ctx_label(name: str) -> str:
@@ -2260,6 +2329,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "os entropy (not controlled; use --det-urandom)"
     if "proc" in flags:
         return "reads /proc, /sys or /dev"
+    if "native" in flags:
+        return "native code from the repository"
     return None
 
 

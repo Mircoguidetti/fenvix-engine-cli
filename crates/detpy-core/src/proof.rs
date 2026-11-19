@@ -234,6 +234,54 @@ pub fn import_candidates(dir: &str, name: &str, suffixes: &[String]) -> Vec<Stri
     out
 }
 
+/// File name endings the import system can load a module from (`importlib.machinery.all_suffixes()` on every
+/// platform ends with one of these); the caller checks that its interpreter's suffixes do.
+pub const IMPORTABLE_ENDINGS: [&str; 5] = [".py", ".pyc", ".pyw", ".so", ".pyd"];
+/// Key suffix of an "i:" dependency (the directory is the key without it).
+pub const IMPORTABLE_SUFFIX: &str = "/\u{1}importable";
+
+fn ident(s: &str) -> bool {
+    let mut cs = s.chars();
+    matches!(cs.next(), Some(c) if c == '_' || c.is_alphabetic()) && cs.all(|c| c == '_' || c.is_alphanumeric())
+}
+
+/// Digest of the entries of `dir` a module lookup can find: directories with an identifier name (packages,
+/// namespace portions) and files `<identifier>.<anything>` ending with an importable ending, each with its kind.
+/// One such dependency covers every lookup of an identifier name in `dir` (its package directory and module
+/// files); files that no import can find (a run's outputs, `.json`, `.txt`) do not change it. None when `dir` is
+/// not a directory.
+pub fn importable_digest(dir: &Path) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let name = e.file_name().to_string_lossy().into_owned();
+        let p = e.path();
+        let kind = stat_kind(&p);
+        let keep = if kind == "dir" {
+            ident(&name)
+        } else {
+            IMPORTABLE_ENDINGS.iter().any(|x| name.ends_with(x)) && ident(name.split('.').next().unwrap_or(""))
+        };
+        if keep {
+            let mut b = name.into_bytes();
+            b.push(0);
+            b.extend_from_slice(kind.as_bytes());
+            items.push(b);
+        }
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// What a lookup of module `name` finds in `dir`: (a regular module or package, the package directory exists).
+pub fn import_probe(dir: &str, name: &str, suffixes: &[String]) -> (bool, bool) {
+    let c = import_candidates(dir, name, suffixes);
+    let pkg_dir = stat_kind(Path::new(&c[0])) == "dir";
+    let start = if pkg_dir { 1 } else { 1 + suffixes.len() };
+    let regular = c[start..].iter().any(|p| stat_kind(Path::new(p)) == "file");
+    (regular, pkg_dir)
+}
+
 /// Paths pytest looks for between the project root and a test file's directory (`rel_dir`, relative, "" for the
 /// root): `conftest.py` (plugins) and `__init__.py` (the test module's package and import name), in every directory.
 pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
@@ -383,6 +431,8 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("i:") {
+        importable_digest(path).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
     } else if recorded.starts_with("T:") {
         tree_kinds_digest(path, TREE_LIMIT).map(|d| format!("T:{d}")).unwrap_or_else(|| "T:missing".into())
     } else if recorded.starts_with("t:") {
@@ -837,6 +887,7 @@ impl Checker {
         let path = match kind {
             't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
             'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
+            'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
             _ => path,
         };
         let v = data_now(&self.cur.root.join(path), recorded);
@@ -1165,6 +1216,38 @@ mod tests {
         // the project root is never a tree
         let flat: Vec<(String, String)> = (0..100).map(|i| (format!("d{i}/x"), "s:missing".to_string())).collect();
         assert_eq!(compact_stats(flat, root, 8).len(), 100);
+    }
+
+    #[test]
+    fn importable_entries_of_a_directory() {
+        let t = tempfile::tempdir().unwrap();
+        let r = t.path();
+        fs::write(r.join("mod.py"), b"").unwrap();
+        let d0 = importable_digest(r).unwrap();
+        // a run's output files and non-identifier directories are not importable
+        fs::write(r.join("out1.json"), b"{}").unwrap();
+        fs::create_dir(r.join(".cache")).unwrap();
+        fs::write(r.join("not-a-module.py"), b"").unwrap();
+        assert_eq!(importable_digest(r).unwrap(), d0);
+        // a module, an extension, a package directory, a kind change: all change it
+        for (i, f) in ["new.py", "ext.cpython-313-x86_64-linux-gnu.so"].iter().enumerate() {
+            fs::write(r.join(f), b"").unwrap();
+            assert_ne!(importable_digest(r).unwrap(), d0, "{i}");
+            fs::remove_file(r.join(f)).unwrap();
+        }
+        fs::create_dir(r.join("ns")).unwrap();
+        assert_ne!(importable_digest(r).unwrap(), d0);
+        fs::remove_dir(r.join("ns")).unwrap();
+        fs::remove_file(r.join("mod.py")).unwrap();
+        fs::create_dir(r.join("mod.py")).unwrap();
+        assert_ne!(importable_digest(r).unwrap(), d0);
+        assert_eq!(data_now(&r.join("nodir"), "i:x"), "i:missing");
+        let sx = vec![".py".to_string()];
+        fs::create_dir(r.join("pkg")).unwrap();
+        assert_eq!(import_probe(r.to_str().unwrap(), "pkg", &sx), (false, true));
+        fs::write(r.join("pkg/__init__.py"), b"").unwrap();
+        assert_eq!(import_probe(r.to_str().unwrap(), "pkg", &sx), (true, true));
+        assert_eq!(import_probe(r.to_str().unwrap(), "zz", &sx), (false, false));
     }
 
     #[test]

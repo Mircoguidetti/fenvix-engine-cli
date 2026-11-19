@@ -278,3 +278,76 @@ def test_library_a_root_conftest_loads_at_startup(pytester, cycle):
     p, fresh, wrong, rs = cycle(lambda: build(1))
     assert fresh.get("test_lib.py::test_adj") == "failed", rs[2].stdout.str()
     assert wrong == {}, rs[1].stdout.str()
+
+
+# -- LIMITS S1 cases: native code and early-bound references must rerun, not be reused ----------------------------
+def _build(pytester, name, src):
+    import subprocess
+
+    c = pytester.path / "src.c"
+    c.write_text(src)
+    subprocess.run(["gcc", "-shared", "-fPIC", "-o", str(pytester.path / name), str(c)], check=True)
+    c.unlink()
+
+
+@pytest.mark.skipif(__import__("shutil").which("gcc") is None, reason="needs gcc")
+def test_stat_from_c_code_of_the_repository(pytester, cycle):
+    # a repository library stats a path in C: no Python event at all. Its context is not cached.
+    pytester.makeini("[pytest]\n")
+    _build(pytester, "libprobe.so", "#include <sys/stat.h>\nint has(const char *p) { struct stat s; "
+                                    "return stat(p, &s) == 0; }\n")
+    pytester.makepyfile(test_c="""
+        import ctypes, os
+
+        def test_no_flag():
+            lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "libprobe.so"))
+            assert not lib.has(b"FLAG")
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "FLAG", ""))
+    assert fresh.get("test_c.py::test_no_flag") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
+
+
+@pytest.mark.skipif(__import__("shutil").which("gcc") is None, reason="needs gcc")
+def test_library_loaded_and_unloaded_within_one_test(pytester, cycle):
+    # dlopen + dlclose before the end of the test: no mapping is left for the scan to see
+    pytester.makeini("[pytest]\n")
+    _build(pytester, "libv.so", "int v(void) { return 1; }\n")
+    pytester.makepyfile(test_d="""
+        import _ctypes, ctypes, os
+
+        def test_v():
+            lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "libv.so"))
+            value = lib.v()
+            _ctypes.dlclose(lib._handle)
+            assert value == 1
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _build(pytester, "libv.so", "int v(void) { return 2; }\n"))
+    assert fresh.get("test_d.py::test_v") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()
+
+
+def test_stat_bound_before_the_session(pytester, cycle):
+    # a plugin loaded with -p at startup (before the capture starts) binds os.stat and checks for a file with it
+    pytester.makeini("[pytest]\naddopts = -p earlyplug\n")
+    _w(pytester.path / "earlyplug.py", """
+        from os import stat as _stat
+
+        def exists(p):
+            try:
+                _stat(p)
+            except OSError:
+                return False
+            return True
+        """)
+    pytester.makepyfile(test_b="""
+        import os
+        from earlyplug import exists
+
+        def test_no_legacy():
+            assert not exists(os.path.join(os.path.dirname(__file__), "LEGACY"))
+        """)
+    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "LEGACY", ""))
+    assert p.get("test_b.py::test_no_legacy") == "passed", rs[0].stdout.str()
+    assert fresh.get("test_b.py::test_no_legacy") == "failed", rs[2].stdout.str()
+    assert wrong == {}, rs[1].stdout.str()

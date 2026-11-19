@@ -276,3 +276,15 @@ pub fn import_candidates(dir: &str, name: &str, suffixes: Vec<String>) -> Vec<St
 pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
     proof::collection_candidates(rel_dir)
 }
+
+/// Dependency on the importable entries of `dir` ("i:<digest>" or "i:missing").
+#[pyfunction]
+pub fn importable_dep(dir: PathBuf) -> String {
+    proof::importable_digest(&dir).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+}
+
+/// (a regular module or package found, the package directory exists) for module `name` in `dir`.
+#[pyfunction]
+pub fn import_probe(dir: &str, name: &str, suffixes: Vec<String>) -> (bool, bool) {
+    proof::import_probe(dir, name, &suffixes)
+}
