@@ -1034,3 +1034,63 @@ mod tests {
         assert!(outside(&Addr::Unix("/var/run/docker.sock".into()), Some(&p), &own, &none).is_some());
     }
 }
+
+/// A virtual `/proc/<pid>/stat` (coordinator request after R-025): the fields
+/// fixed for a process's lifetime are kept from the real file (pid, comm,
+/// ppid, pgrp, session, tty, tpgid, flags, priority, nice, starttime, rsslim,
+/// code and stack addresses, exit signal, scheduling policy, the address
+/// layout); every field that changes by itself (state, fault counts, CPU
+/// times, thread count, vsize, rss, kernel stack pointers, current CPU,
+/// delays) is a constant. Tests that read it see the same value in the
+/// recorded and the reused run; the kept fields are keyed through the file
+/// that holds it (a reboot changes starttime: the tests rerun). None when the
+/// content does not parse.
+pub fn virtual_proc_stat(real: &str) -> Option<String> {
+    let real = real.trim_end();
+    let open = real.find('(')?;
+    let close = real.rfind(')')?;
+    if close < open {
+        return None;
+    }
+    let pid = real[..open].trim();
+    let comm = &real[open..=close];
+    let rest: Vec<&str> = real[close + 1..].split_whitespace().collect();
+    if pid.is_empty() || rest.len() < 20 {
+        return None;
+    }
+    // field numbers as in proc(5); rest[0] is field 3
+    const KEEP: &[usize] = &[4, 5, 6, 7, 8, 9, 18, 19, 22, 25, 26, 27, 28, 38, 40, 41, 45, 46, 47, 48, 49, 50, 51, 52];
+    let mut out = vec![pid.to_owned(), comm.to_owned()];
+    for (i, v) in rest.iter().enumerate() {
+        let field = i + 3;
+        out.push(if field == 3 {
+            "S".to_owned()
+        } else if field == 20 {
+            "1".to_owned()
+        } else if KEEP.contains(&field) {
+            (*v).to_owned()
+        } else {
+            "0".to_owned()
+        });
+    }
+    Some(out.join(" ") + "\n")
+}
+
+#[cfg(test)]
+mod proc_tests {
+    use super::virtual_proc_stat;
+
+    #[test]
+    fn virtual_stat_keeps_fixed_fields_and_freezes_the_rest() {
+        let a = "1 (my init) R 0 1 1 0 -1 4194560 3857 64316 0 292 269 580 44019 220 20 0 14 0 28 37748736 1397 18446744073709551615 1 1 0 0 0 0 0 4096 1256 0 0 0 17 2 0 0 0 0 0";
+        let b = "1 (my init) S 0 1 1 0 -1 4194560 9999 70000 0 300 900 999 50000 300 20 0 15 0 28 40000000 2000 18446744073709551615 1 1 0 0 0 0 0 4096 1256 0 0 0 17 3 0 0 0 0 0";
+        let va = virtual_proc_stat(a).unwrap();
+        assert_eq!(va, virtual_proc_stat(b).unwrap(), "only changing fields differ");
+        let f: Vec<&str> = va.split_whitespace().collect();
+        assert_eq!(f[1], "(my");
+        assert_eq!(f[21 + 1], "28", "starttime kept (comm has a space)");
+        let c = a.replace(" 28 37748736", " 29 37748736");
+        assert_ne!(va, virtual_proc_stat(&c).unwrap(), "another boot: starttime differs");
+        assert!(virtual_proc_stat("garbage").is_none());
+    }
+}

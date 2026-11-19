@@ -323,3 +323,17 @@ var (
 	_ = sort.Strings
 	_ = sync.Mutex{}
 )
+
+// fenvix:if os-virtual
+// fenvixVirtualPath: /proc/1/stat is served from its virtual copy (fixed
+// fields from the real file, changing fields constant; built by the Rust
+// core) when fenvix runs with a copy configured.
+func fenvixVirtualPath(name string) string {
+	if name == "/proc/1/stat" && runtime.Fenvix_Ctl() != 0 {
+		if p := syscall.Fenvix_VirtualProc1Stat(); p != "" {
+			return p
+		}
+	}
+	return name
+}
+// fenvix:end

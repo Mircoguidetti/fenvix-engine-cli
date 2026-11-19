@@ -508,6 +508,18 @@ pub unsafe extern "C" fn fenvix_skip_free(h: *mut FenvixSkip) {
     }
 }
 
+/// Virtual content for a process-state file (`/proc/<pid>/stat`), or NULL
+/// with an error when it does not parse.
+///
+/// # Safety
+/// Valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_virtual_proc_stat(real: *const c_char) -> *mut c_char {
+    guard(ptr::null_mut(), || {
+        skip::virtual_proc_stat(arg(real, "real")?).map(out_string).ok_or_else(|| "not a /proc stat line".to_owned())
+    })
+}
+
 /// JSON description of the interception backends known to the core.
 #[no_mangle]
 pub extern "C" fn fenvix_backends() -> *mut c_char {

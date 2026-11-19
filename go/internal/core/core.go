@@ -319,3 +319,14 @@ func (s *Skip) Free() {
 		s.p = nil
 	}
 }
+
+// VirtualProcStat is the core's virtual content for a /proc/<pid>/stat line.
+func VirtualProcStat(real string) (string, error) {
+	c := cstr(real)
+	defer C.free(unsafe.Pointer(c))
+	p := C.fenvix_virtual_proc_stat(c)
+	if p == nil {
+		return "", lastError("virtual proc stat")
+	}
+	return take(p), nil
+}
