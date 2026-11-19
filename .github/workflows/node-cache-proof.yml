@@ -2,7 +2,7 @@ name: node-cache-proof
 
 # detjs --det-cache (skip with proof for Vitest / Jest), measured over windows of 51 commits.
 #   build  -> detjs native core (napi-rs)
-#   tests  -> Rust core tests + the cache tests (node/test/cache.test.js) on Vitest and Jest
+#   tests  -> Rust core tests + the cache tests (node/test/cache.test.js, review r021 tests) on Vitest and Jest
 #   walk   -> one job per (repository, shard): per commit a skip run, a verify run (every would-be reuse checked by
 #             a fresh run at the same commit), overhead runs, Nx affected; results committed to the branch
 # Started by a push that changes harness/node_cache/RUN (JSON: {"label": "...", "repos": [...], "tests": true}).
@@ -88,7 +88,7 @@ jobs:
         run: |
           cd node && npm ci
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../cache-tests.xml test/cache.test.js 2>&1 | tee ../cache-tests.log
+            --test-reporter=junit --test-reporter-destination=../cache-tests.xml test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js 2>&1 | tee ../cache-tests.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
