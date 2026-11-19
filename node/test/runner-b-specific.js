@@ -26,7 +26,7 @@ const TAPHEAD = "const t = require('tap'); const fs = require('node:fs');";
 const tap = [
   ['.taprc: test-env changes', () => {
     const dir = fixture('tap', 'taprc', { 'test/env.test.js': `${TAPHEAD}\nt.equal(process.env.RB_TAPENV, 'a');\n` }, { config: 'test-env:\n  - RB_TAPENV=a\n' });
-    noWrongReuse('tap', dir, 'test/env.test.js', { '.taprc': 'allow-incomplete-coverage: true\ntest-env:\n  - RB_TAPENV=b\n' });
+    noWrongReuse('tap', dir, 'test/env.test.js', { '.taprc': 'allow-incomplete-coverage: true\nallow-empty-coverage: true\ntest-env:\n  - RB_TAPENV=b\n' });
   }],
   ['setup module preloaded with node-arg: its content changes', () => {
     const dir = fixture('tap', 'node-arg', {
@@ -54,7 +54,7 @@ const tap = [
       'data/v.txt': 'one',
       'test/fx.test.js': `${TAPHEAD}\nconst path = require('node:path');\nt.test('fx', async (t) => { const d = t.testdir({ 'a.txt': fs.readFileSync('data/v.txt', 'utf8') }); t.equal(fs.readFileSync(path.join(d, 'a.txt'), 'utf8'), 'one'); t.equal(fs.readdirSync(d).length, 1); });\n`,
     });
-    noWrongReuse('tap', dir, 'test/fx.test.js', { 'data/v.txt': 'two' });
+    noWrongReuse('tap', dir, 'test/fx.test.js', { 'data/v.txt': 'two' }, { warm: 1 });
   }],
   ['t.mockRequire: the module loaded through tap\'s mock loader changes', () => {
     const dir = fixture('tap', 'mock', {
@@ -69,7 +69,7 @@ const tap = [
       ...LIB, 'tsconfig.json': TSCONFIG('one'),
       'test/ts.test.js': `${TAPHEAD}\nt.equal(require('@lib/v').v, 1);\n`,
     }, { config: 'node-arg:\n  - --import=tsx\n' });
-    noWrongReuse('tap', dir, 'test/ts.test.js', { 'tsconfig.json': TSCONFIG('two') });
+    noWrongReuse('tap', dir, 'test/ts.test.js', { 'tsconfig.json': TSCONFIG('two') }, { warm: 1 });
   }],
   ['test-name filter (--grep) changes', () => {
     const dir = fixture('tap', 'grep', { 'test/g.test.js': `${TAPHEAD}\nt.test('first', async (t) => t.pass());\nt.test('second', async (t) => t.fail('second fails'));\n` });
@@ -87,10 +87,10 @@ const tap = [
   ['plugin set (.taprc plugin) changes', () => {
     const dir = fixture('tap', 'plugin', { 'test/p.test.js': `${TAPHEAD}\nt.test('p', async (t) => { t.equal(typeof t.testdir, 'function'); });\n` });
     try {
-      noWrongReuse('tap', dir, 'test/p.test.js', { '.taprc': 'allow-incomplete-coverage: true\nplugin:\n  - "!@tapjs/fixture"\n' });
+      noWrongReuse('tap', dir, 'test/p.test.js', { '.taprc': 'allow-incomplete-coverage: true\nallow-empty-coverage: true\nplugin:\n  - "!@tapjs/fixture"\n' });
     } finally {
       // the plugin build is shared by every fixture (node_modules link): rebuild the default set
-      write(dir, { '.taprc': 'allow-incomplete-coverage: true\n' });
+      write(dir, { '.taprc': 'allow-incomplete-coverage: true\nallow-empty-coverage: true\n' });
       plain(dir, [bin(dir, 'tap/dist/esm/run.mjs'), 'build']);
     }
   }],
@@ -128,7 +128,7 @@ const ava = [
       ...LIB, 'tsconfig.json': TSCONFIG('one'),
       'test/ts.test.mjs': `${AVAHEAD}\nimport { v } from '@lib/v';\ntest('ts', (t) => { t.is(v, 1); });\n`,
     }, { config: " nodeArguments: ['--import=tsx'] " });
-    noWrongReuse('ava', dir, 'test/ts.test.mjs', { 'tsconfig.json': TSCONFIG('two') });
+    noWrongReuse('ava', dir, 'test/ts.test.mjs', { 'tsconfig.json': TSCONFIG('two') }, { warm: 1 });
   }],
   ['test-name filter (--match) changes', () => {
     const dir = fixture('ava', 'match', { 'test/m.test.mjs': `${AVAHEAD}\ntest('first', (t) => t.pass());\ntest('second', (t) => t.fail());\n` });
@@ -208,7 +208,7 @@ const uvu = [
       ...LIB, 'tsconfig.json': TSCONFIG('one'),
       'tests/ts.js': `${UVUHEAD}\ntest('ts', () => { assert.is(require('@lib/v').v, 1); });\ntest.run();\n`,
     });
-    noWrongReuse('uvu', dir, 'tests/ts.js', { 'tsconfig.json': TSCONFIG('two') }, { args: ['-r', 'tsx/cjs'] });
+    noWrongReuse('uvu', dir, 'tests/ts.js', { 'tsconfig.json': TSCONFIG('two') }, { args: ['-r', 'tsx/cjs'], warm: 1 });
   }],
   ['suites: a named suite\'s data input changes', () => {
     const dir = fixture('uvu', 'suite', {

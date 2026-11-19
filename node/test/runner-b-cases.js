@@ -55,7 +55,7 @@ const RUNNERS = {
     file: (n) => `test/${n}.test.js`,
     head: `${CJS_HEAD}\n${EXPECT}\nconst t = require('tap');\nconst test = (n, f) => t.test(n, async () => { await f(); });\nconst afterAll = (f) => t.teardown(f);`,
     tail: '',
-    config: (extra = '') => ({ '.taprc': `allow-incomplete-coverage: true\n${extra}` }),
+    config: (extra = '') => ({ '.taprc': `allow-incomplete-coverage: true\nallow-empty-coverage: true\n${extra}` }),
     pkg: {},
     args: [],
   },
@@ -137,11 +137,14 @@ const reused = (r) => ((r.summary && r.summary.reused_files_list) || []);
 
 /** Record, reuse, change one input, then the cached run must agree with a fresh (failing) run. */
 function noWrongReuse(runner, dir, file, change, o = {}) {
+  // warm-up runs (o.warm): state the first run of a tool leaves behind (tsx's transform cache: a cold transform
+  // starts esbuild's worker thread, never cached; tap's .tap/fixtures directory, created by the first t.testdir)
+  for (let i = 0; i < (o.warm || 0); i++) crun(runner, dir, { env: o.env, args: o.args });
   const r1 = crun(runner, dir, { env: o.env, args: o.args });
   assert.equal(r1.status, 0, `run 1 (record) must pass\n${show(r1)}`);
   const r2 = crun(runner, dir, { env: o.env, args: o.args });
   assert.equal(r2.status, 0, `run 2 must pass\n${show(r2)}`);
-  assert.ok(reused(r2).includes(file), `run 2 must reuse ${file} (otherwise this test proves nothing)\n${show(r2)}`);
+  assert.ok(reused(r2).includes(file), `run 2 must reuse ${file} (otherwise this test proves nothing)\n${show(r2)}\nrun 1:\n${show(r1)}`);
   if (typeof change === 'function') change(); else write(dir, change);
   const o3 = { env: o.env3 || o.env, args: o.args3 || o.args };
   const fresh = crun(runner, dir, { cache: false, ...o3 });

@@ -83,8 +83,23 @@ def summary_of(repo):
     return out
 
 
-def outcomes_of(report_path, runner):
+def report_args(runner, report):
+    """The runner's JSON report options (Vitest, Jest); the runner shells (tap, AVA, Jasmine, uvu) report per file in
+    detjs' own cache summary (`ran_files`) instead."""
+    if runner == "vitest":
+        return ["--reporter=json", f"--outputFile={report}"]
+    if runner == "jest":
+        return ["--json", f"--outputFile={report}"]
+    return []
+
+
+def outcomes_of(report_path, runner, repo=None):
     """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report."""
+    if runner not in ("vitest", "jest"):
+        # runner shells: detjs' summary of the run that just ended (files that ran, with their verdict)
+        s = load_json(os.path.join(repo, ".detjs", "cache-summary.json")) if repo else None
+        return {f: {"ok": bool(v.get("ok")), "tests": v.get("tests"), "failed": None if v.get("ok") else 1}
+                for f, v in ((s or {}).get("ran_files") or {}).items()}
     j = load_json(report_path) or {}
     out = {}
     for f in j.get("testResults") or []:
@@ -149,8 +164,7 @@ class Walk:
         if self.spec["runner"] == "vitest":
             args += ["run"]
         args += ["--det", f"--det-cache={cache_dir}"] + extra + list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += report_args(self.spec["runner"], report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, out, dt
 
@@ -162,8 +176,7 @@ class Walk:
     def det_nocache(self, report):
         args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
         args += list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += report_args(self.spec["runner"], report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, dt
 
@@ -246,11 +259,11 @@ class Walk:
                 rp = os.path.join(self.work, "skip.json")
                 rc, out, dt = self.detjs(skip_cache, [], rp)
                 rec["skip"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo),
-                               "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-1500:] if rc else ""}
+                               "outcomes": outcomes_of(rp, self.spec["runner"], self.repo), "tail": out[-1500:] if rc else ""}
             rp = os.path.join(self.work, "verify.json")
             rc, out, dt = self.detjs(self.cache, ["--det-cache-verify"], rp)
             rec["verify"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo), "cold": first,
-                             "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-3000:] if rc else ""}
+                             "outcomes": outcomes_of(rp, self.spec["runner"], self.repo), "tail": out[-3000:] if rc else ""}
             mism = rec["verify"]["summary"].get("verify_mismatches") or []
             if mism:
                 rec["recheck"] = self.recheck(mism)
@@ -283,10 +296,10 @@ class Walk:
             for k in range(3):
                 rp = os.path.join(self.work, f"recheck{k}.json")
                 args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
-                args += list(self.spec.get("args", [])) + [f]
-                args += (["--reporter=json", f"--outputFile={rp}"] if self.spec["runner"] == "vitest" else ["--json", f"--outputFile={rp}"])
+                args += list(self.spec.get("args", [])) + ([] if self.spec.get("no_file_args") else [f])
+                args += report_args(self.spec["runner"], rp)
                 rc, _, _ = sh(args, cwd=self.repo, timeout=900, env=self.env)
-                runs.append({"rc": rc, "outcomes": outcomes_of(rp, self.spec["runner"])})
+                runs.append({"rc": rc, "outcomes": outcomes_of(rp, self.spec["runner"], self.repo)})
             out[f] = runs
         return out
 
