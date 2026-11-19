@@ -543,3 +543,27 @@ def test_refusal_names_the_program_and_the_context(pytester, run_cache):
     where = c["not_cached_where"]["test_m.py::test_a"]
     assert where.startswith("python") and "pkg/spawner.py:4" in where and where.endswith("(import of pkg/spawner.py)")
     assert c["not_cached_detail"] == {f"subprocess: {where}": 1}
+
+
+def test_env_name_not_valid_utf8_refuses_the_test(pytester):
+    """Review R-017 H3: an environment variable whose name is not valid UTF-8 cannot be keyed; the test is
+    refused ("badenv", as a path is with "badpath") instead of being recorded without that input. Read here as a
+    surrogate-escaped ``str`` (the bytes spelling is in tests/test_review_r017.py)."""
+    import os
+    import subprocess
+
+    pytester.makepyfile(test_m='import os\n\ndef test_e():\n    assert os.environ.get("R17\\udcfe") == "1"\n\n'
+                               'def test_plain():\n    assert True\n')
+    out = pytester.path / "o.json"
+    res = []
+    for v in (b"1", b"2"):
+        env = {os.fsencode(k): os.fsencode(x) for k, x in os.environ.items()}
+        env[b"R17\xfe"] = v
+        subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+                        f"--det-cache={pytester.path / '.cachedir'}", f"--det-outcomes={out}"], cwd=pytester.path,
+                       env=env, capture_output=True)
+        res.append(json.loads(out.read_text()))
+    assert [d["outcomes"]["test_m.py::test_e"] for d in res] == ["passed", "failed"]
+    assert res[0]["cache"]["not_cached_ids"]["test_m.py::test_e"] == (
+        "reads an environment variable whose name is not valid UTF-8")
+    assert res[1]["cache"]["reused_ids"] == ["test_m.py::test_plain"]

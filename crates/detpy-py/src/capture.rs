@@ -2262,10 +2262,19 @@ impl CaptureCore {
             .iter()
             .map(|(c, d)| Ok((*c as u32, d.items.iter().map(|(k, v)| Ok((utf8(k)?, utf8(v)?))).collect::<PyResult<Vec<_>>>()?)))
             .collect::<PyResult<_>>()?;
+        // A name that is not valid UTF-8 (a surrogate-escaped `str`, `os.environb`) cannot be keyed in the store
+        // (its JSON is UTF-8): the context is flagged "badenv" and its tests are refused, as for a path ("badpath";
+        // review R-017 H3: dropping the name reused a result after its value changed).
+        let mut badenv: Vec<u32> = Vec::new();
         plan.env = st
             .env
             .iter()
-            .map(|(c, e)| (*c as u32, e.items.iter().filter_map(|n| String::from_utf8(n.clone()).ok()).collect()))
+            .map(|(c, e)| {
+                if e.items.iter().any(|n| std::str::from_utf8(n).is_err()) {
+                    badenv.push(*c as u32);
+                }
+                (*c as u32, e.items.iter().filter_map(|n| String::from_utf8(n.clone()).ok()).collect())
+            })
             .collect();
         plan.flags = st
             .flags
@@ -2276,6 +2285,13 @@ impl CaptureCore {
                 Ok((*c as u32, v))
             })
             .collect::<PyResult<_>>()?;
+        for c in badenv {
+            let v = plan.flags.entry(c).or_default();
+            if !v.iter().any(|f| f == "badenv") {
+                v.push("badenv".to_string());
+                v.sort();
+            }
+        }
         plan.writers = st
             .writers
             .iter()

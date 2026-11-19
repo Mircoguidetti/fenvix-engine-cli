@@ -1594,7 +1594,9 @@ class ProofCachePlugin:
             "per": per, "imp": imp,
             "data": {c: list(d.items()) for c, d in cap.data.items()},
             "env": {c: [n for n in e if _encodable(n)] for c, e in cap.env.items()},
-            "flags": {c: sorted(f) for c, f in cap.flags.items()},
+            "flags": {c: sorted(f) for c, f in cap.flags.items()} | {  # R-017 H3 (ported fix): refuse, not drop
+                c: sorted(cap.flags.get(c, set()) | {"badenv"}) for c, e in cap.env.items()
+                if not all(_encodable(n) for n in e)},
             "writers": {p: sorted(w) for p, w in cap.writers.items() if _encodable(p)},
             "session_written": {cap._key(p): sorted(names[c] for c in w) for p, w in cap.writers.items()
                                 if _encodable(p)},
@@ -2027,6 +2029,8 @@ def _addr(args) -> str:
 def _uncacheable(flags: set, cfg) -> str | None:
     if "badpath" in flags:
         return "reads a path that is not valid UTF-8"
+    if "badenv" in flags:
+        return "reads an environment variable whose name is not valid UTF-8"
     if "rclock" in flags:
         return "real clock read outside the virtual clock"
     if "spawn" in flags:
