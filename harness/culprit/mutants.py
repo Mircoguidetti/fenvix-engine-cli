@@ -185,6 +185,8 @@ def main():
     ap.add_argument("--seed", default="exact-culprit")
     ap.add_argument("--head", default=None)
     ap.add_argument("--tries", type=int, default=12)
+    ap.add_argument("--max-cases", type=int, default=0, help="stop once the output file holds this many cases")
+    ap.add_argument("--tag", default="", help="case-id suffix of this pass (keeps ids unique across passes)")
     a = ap.parse_args()
     repo, venv = Path(a.repo).resolve(), Path(a.venv).resolve()
     head = a.head or git(repo, "rev-parse", "HEAD")
@@ -198,6 +200,8 @@ def main():
     for n, k in enumerate(int(x) for x in a.ks.split(",")):
         if k in done:
             continue
+        if a.max_cases and os.path.exists(a.out) and sum(1 for _ in open(a.out)) >= a.max_cases:
+            break
         case = None
         for shift in range(0, 6):
             kk = k + shift
@@ -239,7 +243,7 @@ def main():
                 if not killed:
                     continue
                 red = rng.choice(killed)
-                cid = f"{a.name}-k{kk}-{n}"
+                cid = f"{a.name}{a.tag}-k{kk}-{n}"
                 m, head2 = build_chain(repo, g, later, f, old, new, cid)
                 # checks: plain and --det agree (green passes at g, red fails at M and at HEAD')
                 ok = True

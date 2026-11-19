@@ -274,13 +274,27 @@ class EnvBuilder:
         self.python = python
         self.root.mkdir(parents=True, exist_ok=True)
 
+    def own_names(self, repo) -> set:
+        import tomllib
+        out = set()
+        args = self.project_install
+        for i, x in enumerate(args):
+            if x == "-e" and i + 1 < len(args):
+                pp = Path(repo) / args[i + 1].split("[")[0] / "pyproject.toml"
+                try:
+                    out.add(norm_dist(tomllib.loads(pp.read_text())["project"]["name"]))
+                except Exception:
+                    pass
+        return out
+
     def venv_for(self, repo, dists: dict, at: Path | None = None) -> tuple[Path, float, bool]:
         """A virtualenv with exactly ``dists`` (name -> version) plus detpy and the project (editable).
 
         ``at``: build it at that path (the green job's own virtualenv path, free because its machine is gone):
         console scripts embed the virtualenv path, so a rebuild elsewhere never has the same runtime identity.
         """
-        spec = sorted(f"{n}=={v}" for n, v in dists.items() if n not in ("detpy",) and v)
+        own = self.own_names(repo)  # the repository's own packages come from the checkout (editable)
+        spec = sorted(f"{n}=={v}" for n, v in dists.items() if n not in ("detpy",) and n not in own and v)
         h = hashlib.sha256("\n".join(spec).encode()).hexdigest()[:16]
         venv = Path(at) if at else self.root / h
         if at and (venv / ".ok").exists() and (venv / ".spec").read_text() != h:
