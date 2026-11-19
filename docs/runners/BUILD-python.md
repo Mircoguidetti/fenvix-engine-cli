@@ -172,7 +172,8 @@ To run them on GitHub Actions: copy `tracks/all-runners-python/run.json.example`
 local, NOISY; raw `/tmp/claude-0/scratch-python/walk3/out/tml.json`): 21/21 ok, the tests failing under `--det`
 are those failing under plain `ward` (24, 7, 0 at commits 0, 10, 20), 0 wrong. Reuse across commits is 0: every
 test has ward's `click.Path` stat of `pyproject.toml` as an input, and that file's mtime changes at every checkout
-in this repository; the other misses are the epoch rule (commits months apart). Within a commit, 73/73 reused. The
-other listed repositories pin ward < 0.67 (`FileFinder.find_module`, removed in 3.12) or are older than ward's 3.12
-support. `runner-ward-ward`: its pinned head is already the repository's latest commit (2024-07-05): the window
+in this repository; the other misses are the epoch rule (commits months apart). Within a commit, 73/73 reused. Chosen
+as the most recently active of the listed repositories with a recent ward; BradenM/timeweaver and
+tiagocoutinho/v4l2py (ward >= 0.67) were not walked; the others had their last commits in 2020-2023 (UNKNOWN whether
+their ward runs on 3.12: ward before 0.67 calls `FileFinder.find_module`, removed in 3.12). `runner-ward-ward`: its pinned head is already the repository's latest commit (2024-07-05): the window
 stays 4 commits.
