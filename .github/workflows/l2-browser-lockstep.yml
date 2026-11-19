@@ -56,7 +56,7 @@ jobs:
         run: |
           cd engine/node && npm ci --no-audit --no-fund
           npx playwright install chromium
-          node --test --test-concurrency=1 test/playwright.test.js test/l2r2.test.js test/l2r3.test.js test/review-r011.test.js
+          node --test --test-concurrency=1 test/playwright.test.js test/l2r2.test.js test/l2r3.test.js test/review-r011.test.js test/lockstep.test.js
       - run: tar -C engine -czf detjs.tgz node/bin node/src node/package.json node/detjs.linux-x64.node
       - uses: actions/upload-artifact@v4
         with: {name: detjs, path: detjs.tgz}
