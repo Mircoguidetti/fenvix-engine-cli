@@ -1,0 +1,14 @@
+{
+ "uptime-kuma": {"r4": {"gate": {"runs": 10, "plain_runs": 2, "per_run_s": 240, "budget_min": 330, "target_timeout_min": 10},
+   "targets": [
+     {"key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]", "file": "monitor-history-settings.spec.js", "grep": "saves the data retention period", "project": "specs"},
+     {"key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]", "file": "status-page.spec.js", "grep": "RSS feed escapes malicious monitor names", "project": "specs"}]}},
+ "documenso": {"r4": {"gate": {"runs": 10, "plain_runs": 2, "per_run_s": 240, "budget_min": 330, "target_timeout_min": 10},
+   "targets": [
+     {"key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]", "file": "delete-recipient.spec.ts", "grep": "[DELETE_RECIPIENT]: a missing reason is rejected with 400", "project": "api"},
+     {"key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]", "file": "admin-find-documents.spec.ts", "grep": "recipient prefix matches by recipient name case-insensitively", "project": "api"}]}},
+ "actual": {"r4": {"gate": {"runs": 10, "plain_runs": 2, "per_run_s": 300, "budget_min": 330, "target_timeout_min": 10},
+   "targets": [
+     {"key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]", "file": "automatic-budget-range.test.ts", "grep": "(desktop) extends after budgeting the last month", "project": null},
+     {"key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]", "file": "budget.mobile.test.ts", "grep": "[Tracking] applies budget template", "project": null}]}}
+}

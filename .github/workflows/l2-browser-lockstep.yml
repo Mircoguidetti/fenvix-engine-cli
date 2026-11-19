@@ -1,0 +1,115 @@
+name: l2-browser-lockstep
+
+# Level 2 browser, round 4: lockstep gate and measurements (tracks/l2-browser-lockstep/).
+# Triggered by a push to claude/l2-browser-lockstep-ytoqnv that changes tracks/l2-browser-lockstep/RUN:
+#   {"nonce": N, "jobs": [{"job": "gate", "name": "actual"}, ...], "params": {"gate": {...}, "gate:actual": {...}}}
+# build: the engine of this commit (detjs native core) and the Level 2 fixture tests.
+# exp: one job per (experiment, repository) (tracks/l2-browser-lockstep/harness/run_gate.sh); each commits
+# tracks/l2-browser-lockstep/results/<job>-<name>.json back to this branch.
+
+on:
+  push:
+    branches: [claude/l2-browser-lockstep-ytoqnv]
+    paths: [tracks/l2-browser-lockstep/RUN]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: l2-browser-lockstep-${{ github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: |
+          cd tracks/l2-browser-lockstep
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          run = json.load(open("RUN"))
+          repos = json.load(open("../l2-browser-r2/harness/repos.json"))
+          for f in ("../l2-browser-r3/harness/repos.json", "harness/repos.json"):
+              for n, c in json.load(open(f)).items():
+                  repos[n] = {**repos.get(n, {}), **c}
+          inc = [{"job": j["job"], "name": j["name"], "node": repos[j["name"]].get("node", "22"),
+                  "os": repos[j["name"]].get("os", "ubuntu-latest"), "free_disk": bool(repos[j["name"]].get("free_disk"))}
+                 for j in run["jobs"]]
+          print("matrix=" + json.dumps({"include": inc}))
+          PY
+
+  build:
+    needs: plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: cd engine && cargo build -p detpy-node --release && cp target/release/libdetpy_node.so node/detjs.linux-x64.node
+      - name: Level 2 browser tests (fixture app)
+        continue-on-error: true
+        run: |
+          cd engine/node && npm ci --no-audit --no-fund
+          npx playwright install chromium
+          node --test --test-concurrency=1 test/playwright.test.js test/l2r2.test.js test/l2r3.test.js test/review-r011.test.js
+      - run: tar -C engine -czf detjs.tgz node/bin node/src node/package.json node/detjs.linux-x64.node
+      - uses: actions/upload-artifact@v4
+        with: {name: detjs, path: detjs.tgz}
+
+  exp:
+    needs: [plan, build]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      max-parallel: 10
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      PYTHONUNBUFFERED: "1"
+      COREPACK_ENABLE_DOWNLOAD_PROMPT: "0"
+      COREPACK_ENABLE_STRICT: "0"
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: brain}
+      - name: free disk space
+        if: matrix.free_disk
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/share/boost /usr/local/.ghcup || true
+          df -h /
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: detjs, path: "${{ runner.temp }}"}
+      - name: experiment
+        run: |
+          mkdir -p "$RUNNER_TEMP/detjs" && tar -C "$RUNNER_TEMP/detjs" -xzf "$RUNNER_TEMP/detjs.tgz"
+          export DETJS_BIN="$RUNNER_TEMP/detjs/node/bin/detjs.js" ENGINE_SHA="${{ github.sha }}"
+          bash brain/tracks/l2-browser-lockstep/harness/run_gate.sh "${{ matrix.job }}" "${{ matrix.name }}"
+      - name: commit result
+        if: always()
+        run: |
+          set -u
+          N="${{ matrix.job }}-${{ matrix.name }}"
+          R=brain/tracks/l2-browser-lockstep/results
+          [ -f "$R/$N.json" ] || jq -n --arg n "$N" '{name:$n, status:"job_failed", run_id: env.GITHUB_RUN_ID}' > "$R/$N.json"
+          rm -rf /tmp/pub && mkdir -p /tmp/pub && cp -r "$R/$N.json" /tmp/pub/ && { [ -d "$R/$N" ] && cp -r "$R/$N" /tmp/pub/ || true; }
+          cd brain
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in $(seq 1 40); do
+            git fetch -q --depth=1 origin "$GITHUB_REF_NAME" && git checkout -q -f -B pub FETCH_HEAD || { sleep 5; continue; }
+            mkdir -p tracks/l2-browser-lockstep/results
+            rm -rf "tracks/l2-browser-lockstep/results/$N"
+            cp -r /tmp/pub/. tracks/l2-browser-lockstep/results/
+            git add "tracks/l2-browser-lockstep/results"
+            git commit -q -m "l2-browser-lockstep: result for $N (run ${GITHUB_RUN_ID})" || exit 0
+            git push -q origin "pub:$GITHUB_REF_NAME" && exit 0
+            sleep $(( (RANDOM % 20) + 5 ))
+          done
+          exit 1
