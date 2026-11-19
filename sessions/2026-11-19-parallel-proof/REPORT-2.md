@@ -17,15 +17,17 @@ class is not built.
 
 * **F1-F6 fixed, R1-R4 moved to Rust.** `tests/test_review_r023.py` (unchanged): 10 failed before, 17 passed after.
 * **Soundness (MEASURED)**: every reused and every ran result of every cache row was compared with fresh serial
-  `--det` runs: **0 mismatches** on esphome (local and Actions, incl. both mixed-store directions), litellm-vertex and
-  moto; 0 outcome differences, 0 new failures caused by the split, 0 hidden failures.
+  `--det` runs: **0 mismatches** on esphome (local and Actions, incl. both mixed-store directions), litellm-vertex,
+  moto, prefect and pydantic-ai (no cache there); 0 new failures caused by the split, 0 hidden failures (prefect: 8
+  tests flaky between the two serial runs themselves, counted apart).
 * **Speed (MEASURED, repeated)**: warm `--det-cache -n 4` is **0.66-0.72x plain `-n 4`** on esphome (local and Actions,
   three runs each, clear of the noise). `--det -n 4` without a cache is **within the noise of plain `-n 4`** on esphome
   (not "closed the gap" beyond noise, O1), **0.52x** on moto (the virtual clock skips its real sleeps), **1.25x** on
   litellm-vertex, **1.2x** on pydantic-ai and prefect (P2's target missed on all three; cause not found).
-* **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex and moto
-  record 0 entries serially and in parallel (network / OS entropy per test). mlflow's job had an incomplete install
-  (not valid; re-run pending); prefect's first run hit a harness defect, its re-run is above.
+* **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex, moto and
+  prefect record 0 entries serially and in parallel (network, OS entropy, a loopback API server per test). mlflow's
+  first job had an incomplete install (not valid; re-run pending); prefect's first run hit a harness defect (re-run
+  below). P3 walk: moto 50/50 commits (0 reuse, nothing cacheable); esphome and litellm walks pending.
 
 ## Per finding: change, test before / after
 
