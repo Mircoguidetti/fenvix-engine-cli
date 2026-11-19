@@ -52,6 +52,7 @@ const UNCACHEABLE = {
   resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
   'import-glob': 'an import.meta.glob call that cannot be keyed',
   binding: 'reaches native bindings directly (process.binding): reads not observable',
+  'clock-real': 'reads a clock Level 0 does not virtualize',
 };
 
 function digest(x) {

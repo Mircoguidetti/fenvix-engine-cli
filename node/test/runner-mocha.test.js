@@ -287,6 +287,25 @@ describe('mocha: adversarial (environment, processes, R-009 / R-017)', () => {
     noWrongReuse(R, dir, F('u'), { 'data/a.txt': 'two' }, { env: { NODE_OPTIONS: '--require ./early.cjs' } });
   });
 
+  test('R-009 real clocks Level 0 does not virtualize (uptime, performance.timeOrigin, Intl format of now): not cacheable', T, () => {
+    const dir = proj('real-clock', {
+      ...tf('u', "test('u', () => { assert.ok(process.uptime() >= 0); });"),
+      ...tf('o', "test('o', () => { assert.ok(performance.timeOrigin > 0); });"),
+      ...tf('i', "test('i', () => { assert.ok(new Intl.DateTimeFormat('en', { year: 'numeric' }).format().length >= 4); });"),
+    });
+    notCached(R, dir, F('u'), 'process.uptime');
+    const r = crun(R, dir);
+    for (const [f, why] of [[F('o'), 'performance.timeOrigin'], [F('i'), 'Intl.DateTimeFormat']]) {
+      assert.ok(!reused(r).includes(f), `${f} must not be reused\n${show(r)}`);
+      assert.match(JSON.stringify(r.summary.not_cached_detail), new RegExp(why.replace('.', '\\.')));
+    }
+  });
+
+  test('R-009 /dev/shm listed by the test: not cacheable', T, () => {
+    const dir = proj('dev-shm', tf('d', "test('d', () => { assert.ok(Array.isArray(fs.readdirSync('/dev/shm'))); });"));
+    notCached(R, dir, F('d'), '/dev/shm');
+  });
+
   test('native binding reached directly: not cacheable', T, () => {
     const dir = proj('binding', tf('b', "test('b', () => { process.binding('fs'); });"));
     notCached(R, dir, F('b'), 'process.binding');

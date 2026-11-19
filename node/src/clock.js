@@ -496,7 +496,10 @@ function wrapPerformance(hostPerf) {
       Object.defineProperty(out, k, { value: hostPerf[k].bind(hostPerf), writable: true, configurable: true });
     }
   }
-  Object.defineProperty(out, 'timeOrigin', { get: () => hostPerf.timeOrigin, enumerable: true });
+  Object.defineProperty(out, 'timeOrigin', {
+    get: () => { if (STATE.onRealClock) STATE.onRealClock('performance.timeOrigin'); return hostPerf.timeOrigin; },
+    enumerable: true,
+  });
   Object.defineProperty(out, 'nodeTiming', { get: () => hostPerf.nodeTiming });
   Object.defineProperty(out, 'now', { value: performanceNow, writable: true, configurable: true, enumerable: true });
   return out;

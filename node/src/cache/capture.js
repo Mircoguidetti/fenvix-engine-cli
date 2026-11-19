@@ -30,7 +30,7 @@ const SHELL_DIR = path.resolve(__dirname, '..') + path.sep; // node/src/
 const ENGINE_DIR = path.resolve(__dirname, '..', '..') + path.sep; // node/
 // detjs' own driver code (runner shells, session, cache): infrastructure; its wrappers of patched APIs are not
 const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest|nodetest|mocha)[\\/]|[\\/]src[\\/](?:session|controls|register|fileproc)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman)[\\/]/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman|mocha|workerpool)[\\/]/;
 const ENGINE_OWN = /^(?:src|bin|node_modules|scripts)(?:[\\/]|$)|^package(?:-lock)?\.json$|^detjs\.[^\\/]+\.node$/;
 // a Vite config bundled to a temporary module (it is user code: `vitest.config.ts.timestamp-<n>-<hash>.mjs`)
 const BUNDLED_CONFIG = /\.timestamp-\d+(?:-[0-9a-f]+)?\.m?[jt]s$/;
@@ -169,6 +169,7 @@ class Capture {
     installNet(this);
     installDlopen(this);
     installBinding(this);
+    installRealClock(this);
     installNodeReaders(this);
     installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
@@ -293,6 +294,7 @@ class Capture {
       if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { continue; } }
       // Node's own fs internals (cp, glob, ...) read Stats fields for their own checks
       if (f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/')) return 'infra';
+      if (f.startsWith('node:internal/test_runner/') || f.startsWith('internal/test_runner/')) return 'infra'; // node:test itself
       if (f.startsWith('node:') || f.startsWith('internal/') || !f.includes('/')) continue;
       if (f.startsWith(SHELL_DIR) && !DETJS_DRIVER.test(f)) continue;
       if (f.startsWith(ENGINE_DIR) && DETJS_DRIVER.test(f)) return 'infra';
@@ -1235,6 +1237,60 @@ function installNet(cap) {
   const dgram = require('node:dgram');
   wrapFn(cap, dgram.Socket.prototype, 'send', () => cap.flag('udp', 'dgram send'));
   wrapFn(cap, dgram.Socket.prototype, 'connect', () => cap.flag('udp', 'dgram connect'));
+}
+
+/**
+ * Clocks Level 0 does not virtualize (R-009 "real clock outside the virtual clock"): the process' own uptime and
+ * CPU / resource counters, `performance.timeOrigin` (reported by the clock control through STATE.onRealClock), and
+ * Intl date formatting of "now" (`Intl.DateTimeFormat#format()` / `formatToParts()` without a date reads V8's own
+ * clock). A test that reads them is not cached.
+ */
+function installRealClock(cap) {
+  const real = (what) => {
+    if (!cap.active || cap.busy || cap.isGlobal) return;
+    cap.busy++;
+    let infra;
+    try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+    if (!infra) cap.flag('clock-real', what);
+  };
+  for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
+  STATE.onRealClock = real;
+  // the process' own performance object (other realms get the clock control's wrapper, which reports it)
+  const perf = globalThis.performance;
+  if (perf && !Object.prototype.hasOwnProperty.call(perf, 'timeOrigin')) {
+    let d = null;
+    for (let o = perf; o && !d; o = Object.getPrototypeOf(o)) d = Object.getOwnPropertyDescriptor(o, 'timeOrigin');
+    if (d && typeof d.get === 'function') {
+      try {
+        Object.defineProperty(perf, 'timeOrigin', { configurable: true, enumerable: true, get() { real('performance.timeOrigin'); return d.get.call(perf); } });
+      } catch { /* not extensible */ }
+    }
+  }
+  const P = Intl.DateTimeFormat.prototype;
+  if (!P.__detjsCache) {
+    try {
+      const d = Object.getOwnPropertyDescriptor(P, 'format');
+      if (d && typeof d.get === 'function') {
+        Object.defineProperty(P, 'format', {
+          configurable: true,
+          enumerable: d.enumerable,
+          get() {
+            const f = d.get.call(this);
+            return function format(date) { if (date === undefined) real('Intl.DateTimeFormat#format() of now'); return f(date); };
+          },
+        });
+      }
+      const fp = P.formatToParts;
+      if (typeof fp === 'function') {
+        Object.defineProperty(P, 'formatToParts', {
+          configurable: true,
+          writable: true,
+          value: function formatToParts(date) { if (date === undefined) real('Intl.DateTimeFormat#formatToParts() of now'); return fp.call(this, date); },
+        });
+      }
+      Object.defineProperty(P, '__detjsCache', { value: true });
+    } catch { /* frozen intrinsics */ }
+  }
 }
 
 /** `process.binding('fs')` and friends reach the native readers without the wrapped functions: not cacheable. */
