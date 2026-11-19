@@ -21,7 +21,7 @@ Without `--det` (and without `DETJS=1`) the project's mocha runs unchanged.
 | spec files: positional specs / `spec`, `--extension`, `--recursive`, `--ignore` | collected with Mocha's own `collect-files`; order: sorted (fixed) or `native.shuffleIndices` with the seed; `--sort` superseded |
 | `--file` | loaded first, in every process; part of the digest by content |
 | `--require` (setup modules, root hook plugins `mochaHooks`), ESM and CJS | as Mocha does (`handleRequires`); project files in the digest by content and captured as code |
-| global fixtures (`mochaGlobalSetup`/`mochaGlobalTeardown`) | `--det`: as Mocha. `--det-cache`: they run in the runner process, outside the capture: the run is not cached (control test) |
+| global fixtures (`mochaGlobalSetup`/`mochaGlobalTeardown`) | `--det`: as Mocha (once, in the single process). `--det-cache`: the `--require` modules (and so the global fixtures) run in each file process, where they are captured (adversarial test: what the global setup reads is an input); they run once per spec file |
 | `--parallel`, `--jobs` | off under `--det` (header note): files run one at a time |
 | `--grep`, `--fgrep`, `--invert`, `--bail`, `--retries`, `--forbid-only`, `--forbid-pending`, `--check-leaks`, `--timeout`, `--ui`, `--delay`, `--dry-run`, ... | passed to Mocha; in the digest (a different selection never reuses a file) |
 | `--exit` | honoured in single mode by Mocha; per-file processes exit after their results when set |
@@ -57,7 +57,7 @@ Without `--det` (and without `DETJS=1`) the project's mocha runs unchanged.
 ## What is refused or not cached, and why
 
 * Every rule of the shared capture (docs/NODE-CACHE.md and docs/runners/node-test.md).
-* Global fixtures under `--det-cache` (above).
+* Under `--det-cache`, `--require` modules, root hooks and global fixtures run once per spec file (each file has its own process): a setup that binds a fixed port works (one file at a time), one that expects to run once per run sees N runs.
 * Order of tests differs between `--det` (single process: top-level tests of all files first) and `--det-cache`
   (per file): the same tests and fingerprints (control test), another order digest.
 * Reporters that need the live runner (Mocha refuses them with `--parallel`) under `--det-cache`.

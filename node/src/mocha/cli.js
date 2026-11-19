@@ -123,14 +123,18 @@ async function main(argv) {
   if (reusedAny && !keyed.length) { mochaArgs['fail-zero'] = false; mochaArgs.failZero = false; } // every file reused: a pass
   const notes = [];
   if (opts.parallel || opts.p) notes.push('--parallel is off under --det (files run one at a time)');
-  if (mode === 'perfile') notes.push('--det-cache: every spec file runs in its own process (skipping a file must not change the context of another); root hooks and `--file` files run in each');
+  if (mode === 'perfile') notes.push('--det-cache: every spec file runs in its own process (skipping a file must not change the context of another); `--require` modules, root hooks, global fixtures and `--file` files run in each');
   const iso = mode === 'perfile'
     ? 'mocha: each spec file in its own process, one at a time, results replayed into the reporter'
     : 'mocha: one process, files and tests one at a time';
   for (const l of session.header(run, det, { runner: 'mocha', runnerVersion: mocha.pkg.version, isolation: iso })) process.stdout.write(`${l}\n`);
   for (const n of notes) process.stdout.write(`detjs: ${n}\n`);
 
-  const plan = { mode, mochaDir: mocha.dir, mochaArgs, specs: keyed.map((k) => k.f), fileArgs, dir: run.dir };
+  // per-file mode: the `--require` modules (setup, root hooks, global fixtures) run in each file's process, where
+  // they are captured, and not in the driver, which only reports
+  const requires = list(opts.require);
+  if (mode === 'perfile') { delete mochaArgs.require; delete mochaArgs.r; }
+  const plan = { mode, mochaDir: mocha.dir, mochaArgs, specs: keyed.map((k) => k.f), fileArgs, requires, dir: run.dir };
   const planPath = path.join(run.dir, 'mocha-plan.json');
   fs.writeFileSync(planPath, JSON.stringify(plan));
   const driverEnv = { ...process.env, DETJS_MO_DRIVER: '1', DETJS_MO_PLAN: planPath };

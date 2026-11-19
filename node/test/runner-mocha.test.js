@@ -105,13 +105,15 @@ describe('mocha: control', () => {
     assert.deepEqual(reused(r4), [F('ok')]);
   });
 
-  test('mochaGlobalSetup runs in the runner process: not cacheable', T, () => {
-    const dir = proj('global-setup', { 'fixtures.cjs': 'exports.mochaGlobalSetup = () => {};\n', ...tf('g', "test('g', () => {});") });
-    const r1 = crun(R, dir, ['--require', './fixtures.cjs']);
-    assert.equal(r1.status, 0, show(r1));
-    const r2 = crun(R, dir, ['--require', './fixtures.cjs']);
-    assert.deepEqual(reused(r2), []);
-    assert.match(JSON.stringify(r1.summary.uncacheable_projects), /mochaGlobalSetup/);
+  test('mochaGlobalSetup runs in each file process under --det-cache: what it reads is an input', T, () => {
+    const dir = proj('global-setup', {
+      'fixtures.cjs': "const fs = require('node:fs'); exports.mochaGlobalSetup = () => { process.env.FIXTURE_FROM_SETUP = fs.readFileSync('data/s.txt', 'utf8'); };\n",
+      'data/s.txt': 'a',
+      ...tf('g', "test('g', () => { assert.equal(process.env.FIXTURE_FROM_SETUP, 'a'); });"),
+    });
+    const single = crun(R, dir, ['--require', './fixtures.cjs'], { cache: false });
+    assert.equal(single.status, 0, show(single));
+    noWrongReuse(R, dir, F('g'), { 'data/s.txt': 'b' }, { args: ['--require', './fixtures.cjs'] });
   });
 });
 
