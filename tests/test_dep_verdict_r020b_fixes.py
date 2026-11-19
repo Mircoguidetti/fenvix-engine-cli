@@ -8,6 +8,7 @@
 * an existence check never replaces the content digest of a file the same test reads (default cache).
 """
 
+import json
 import os
 import sys
 
@@ -114,3 +115,35 @@ def test_existence_check_of_a_path_the_session_created_is_not_an_input(pytester,
     run_cache_plain()
     r, reused, _ = run_cache_plain()
     assert reused == {"test_tmp.py::test_probe"}, r.stdout.str()
+
+
+def test_many_existence_checks_in_one_directory_are_one_dependency(pytester, run_cache_plain):
+    # pygments' conftest checks every example file at collection: thousands of checks carried into every test's
+    # entry. Past 8 per directory they become the directory's listing with kinds: still invalidated by an entry that
+    # appears or changes kind, not by a content change no check could see.
+    pytester.makeini("[pytest]\n")
+    ex = pytester.path / "ex"
+    ex.mkdir()
+    for i in range(20):
+        (ex / f"{i}.txt").write_text("x")
+    pytester.makeconftest("""
+        import os
+
+        FOUND = [n for n in (f"ex/{i}.txt" for i in range(25)) if os.path.isfile(n)]
+        """)
+    pytester.makepyfile(test_ex="""
+        from conftest import FOUND
+
+        def test_count():
+            assert len(FOUND) == 20
+        """)
+    run_cache_plain()
+    (ex / "3.txt").write_text("changed")
+    r, reused, _ = run_cache_plain()
+    assert reused == {"test_ex.py::test_count"}, r.stdout.str()
+    entry = json.load(open(pytester.path / ".plaincache" / "proof-cache.json"))["tests"]["test_ex.py::test_count"]
+    assert sum(1 for _, d in entry["data"] if d.startswith("s:")) < 8, entry["data"]
+    (ex / "22.txt").write_text("x")
+    r, reused, _ = run_cache_plain()
+    assert reused == set(), r.stdout.str()
+    r.assert_outcomes(failed=1)

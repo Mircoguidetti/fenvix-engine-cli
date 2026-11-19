@@ -165,6 +165,65 @@ pub fn listing_digest(path: &Path) -> Option<String> {
     Some(digest_bytes(&names.join(&b'\0')).short())
 }
 
+/// Digest of a directory listing with the kind of every entry ("file", "dir", "other", following symlinks):
+/// the dependency that replaces many existence checks of one directory's entries (see [`compact_stats`]).
+pub fn kinds_digest(path: &Path) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(path).ok()? {
+        let e = e.ok()?;
+        let mut b = os_bytes(&e.file_name());
+        b.push(0);
+        b.extend_from_slice(stat_kind(&e.path()).as_bytes());
+        items.push(b);
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// Key suffix of a "t:" dependency (the directory is the key without it).
+pub const KINDS_SUFFIX: &str = "/\u{1}kinds";
+
+/// Existence checks ("s:<kind>") of at least `min` entries of one directory are replaced by one dependency on
+/// that directory's listing with kinds ("t:<digest>", "missing" when it is not a directory). It is coarser (any
+/// entry added, removed or changing kind there invalidates), so every replaced check is still covered; a large
+/// suite's collection otherwise puts thousands of checks into every test's entry. `root` resolves relative keys.
+pub fn compact_stats(data: Vec<(String, String)>, root: &Path, min: usize) -> Vec<(String, String)> {
+    let mut by_dir: BTreeMap<String, usize> = BTreeMap::new();
+    let parent = |k: &str| -> Option<String> {
+        let k = k.trim_end_matches('/');
+        match k.rfind('/') {
+            Some(0) => Some("/".to_string()),
+            Some(i) => Some(k[..i].to_string()),
+            None if !k.is_empty() && k != "." => Some(".".to_string()),
+            None => None,
+        }
+    };
+    for (k, v) in &data {
+        if v.starts_with("s:") {
+            if let Some(d) = parent(k) {
+                *by_dir.entry(d).or_default() += 1;
+            }
+        }
+    }
+    let big: BTreeSet<&String> = by_dir.iter().filter(|(_, n)| **n >= min).map(|(d, _)| d).collect();
+    if big.is_empty() {
+        return data;
+    }
+    let mut out: BTreeMap<String, String> = BTreeMap::new();
+    for (k, v) in data {
+        if v.starts_with("s:") && parent(&k).is_some_and(|d| big.contains(&d)) {
+            continue;
+        }
+        out.insert(k, v);
+    }
+    for d in big.into_iter().cloned().collect::<Vec<_>>() {
+        let dep = kinds_digest(&root.join(&d)).map(|x| format!("t:{x}")).unwrap_or_else(|| "t:missing".into());
+        // a content or listing dependency of the directory itself stays; the kinds one has its own key
+        out.insert(format!("{d}{KINDS_SUFFIX}"), dep);
+    }
+    out.into_iter().collect()
+}
+
 #[cfg(unix)]
 fn os_bytes(s: &std::ffi::OsStr) -> Vec<u8> {
     use std::os::unix::ffi::OsStrExt;
@@ -198,6 +257,8 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("t:") {
+        kinds_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "t:missing".into())
     } else {
         "unknown".into()
     }
@@ -645,6 +706,7 @@ impl Checker {
         if let Some(v) = self.data_now.get(&k) {
             return v.clone();
         }
+        let path = if kind == 't' { path.strip_suffix(KINDS_SUFFIX).unwrap_or(path) } else { path };
         let v = data_now(&self.cur.root.join(path), recorded);
         self.data_now.insert(k, v.clone());
         v
@@ -912,6 +974,38 @@ mod tests {
         fs::remove_file(root.join("dir/b")).unwrap();
         fs::write(root.join("nope.txt"), "").unwrap();
         assert_eq!(Checker::new(cur).check(&s, "t::b").unwrap_err().kind, "data");
+    }
+
+    #[test]
+    fn many_existence_checks_of_one_directory_become_its_kinds() {
+        let t = tempfile::tempdir().unwrap();
+        let root = t.path();
+        fs::create_dir(root.join("ex")).unwrap();
+        for i in 0..3 {
+            fs::write(root.join(format!("ex/{i}")), b"x").unwrap();
+        }
+        let data: Vec<(String, String)> = (0..3)
+            .map(|i| (format!("ex/{i}"), "s:file".to_string()))
+            .chain([("ex/9".to_string(), "s:missing".to_string()), ("ex/0x".to_string(), "f:1".to_string())])
+            .collect();
+        let c = compact_stats(data.clone(), root, 4);
+        assert_eq!(c.len(), 2, "{c:?}");
+        let (k, v) = c.iter().find(|(k, _)| k.ends_with(KINDS_SUFFIX)).unwrap();
+        assert_eq!(k, &format!("ex{KINDS_SUFFIX}"));
+        assert!(v.starts_with("t:"));
+        assert_eq!(compact_stats(data, root, 5).len(), 5);
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_eq!(&ch.data(k, v), v);
+        // the missing entry appears, or an entry changes kind: the kinds change
+        fs::write(root.join("ex/9"), b"x").unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(&ch.data(k, v), v);
+        fs::remove_file(root.join("ex/9")).unwrap();
+        fs::remove_file(root.join("ex/1")).unwrap();
+        fs::create_dir(root.join("ex/1")).unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(&ch.data(k, v), v);
+        assert_eq!(data_now(&root.join("nodir"), "t:x"), "t:missing");
     }
 
     #[test]

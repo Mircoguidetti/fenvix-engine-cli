@@ -76,6 +76,7 @@ _SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep
 # data reads: the same, except .git/ (review R-009 F5: a test that reads HEAD and its ref in-process depends on
 # them; objects are content-addressed, so a changed commit always comes with a changed ref file)
 _SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
+_STATS_PER_DIR = 8  # existence checks of one directory's entries kept one by one; more become its listing with kinds
 _O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
@@ -500,8 +501,8 @@ class Capture:
             pass  # --det-cache-dists: a file a bump adds or removes under a site directory is an input
         elif self._ignored(p):
             return
-        if not _encodable(p):
-            return
+        if not _encodable(p) or self.root_sep.startswith(p.rstrip(os.sep) + os.sep):
+            return  # the project root and its ancestors are directories for the whole session
         if p in self.writers:
             # a path code of this session created or wrote (a TemporaryDirectory, an output file): its kind is
             # that code's doing. As for a read of it, the test is cached only if every writer is credited to it.
@@ -1489,7 +1490,7 @@ class ProofCachePlugin:
                 continue
             own = {"t|" + nid}
             for path, _dep in deps:
-                if _dep.startswith("s:"):
+                if _dep.startswith(("s:", "t:")):
                     continue  # an existence check: its kind is compared with the disk before any reuse
                 if path in session_written and not set(session_written[path]) <= own:
                     self.stale_hits[nid] = path
@@ -1678,9 +1679,12 @@ class ProofCachePlugin:
                     own |= {k for k, seen_at in tr.loaded if seen_at in (-1, idx)}
                     dist_sets[nid] = {"proof": sorted(keys), "own": sorted(own)}
             report = {w: p[w] for w in ("setup", "call") if w in p}
+            # many existence checks in one directory (a collection hook checking every example file) become one
+            # dependency on the directory's listing with kinds (Rust: proof::compact_stats)
+            data_items = _core.compact_stats(sorted(data.items()), self.root, _STATS_PER_DIR)
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                         sorted(data.items()), sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
+                         data_items, sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
             self.recorded += 1
         store.save()
         if dist_sets is not None:

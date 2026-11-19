@@ -255,5 +255,6 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<proofcache::DistFiles>()?;
     m.add_function(wrap_pyfunction!(proofcache::stat_dep, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::dist_top_of, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::compact_stats, m)?)?;
     Ok(())
 }

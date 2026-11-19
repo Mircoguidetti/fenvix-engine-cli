@@ -250,3 +250,9 @@ pub fn stat_dep(path: PathBuf) -> String {
 pub fn dist_top_of(rel: &str) -> Option<String> {
     detpy_core::distfiles::top_of(rel)
 }
+
+/// Existence checks of at least `min` entries of one directory replaced by the directory's listing with kinds.
+#[pyfunction]
+pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize) -> Vec<(String, String)> {
+    proof::compact_stats(data, &root, min)
+}
