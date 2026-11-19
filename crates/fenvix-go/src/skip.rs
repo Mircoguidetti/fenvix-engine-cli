@@ -276,6 +276,12 @@ pub fn classify(p: &str, drop: &[String], self_binary: &str) -> Class {
     if under("/proc/sys") {
         return Class::Key;
     }
+    // fixed for the machine's uptime: the init process's environment, command
+    // line, name and executable (container detection reads them), and the
+    // kernel's file system list; keyed by their content like any file
+    if matches!(p, "/proc/1/environ" | "/proc/1/cmdline" | "/proc/1/comm" | "/proc/1/exe" | "/proc/filesystems") {
+        return Class::Key;
+    }
     // the directory of a process itself (stat'ed to see whether it runs, e.g.
     // /proc/1): its metadata (type, mode, start time as mtime) is keyed;
     // files under it change by themselves and stay volatile
@@ -1008,6 +1014,11 @@ mod tests {
         assert_eq!(classify("/proc/1", &[], ""), Class::Key);
         assert_eq!(classify("/proc/1/status", &[], ""), Class::Volatile);
         assert_eq!(classify("/proc/12a", &[], ""), Class::Volatile);
+        assert_eq!(classify("/proc/1/environ", &[], ""), Class::Key);
+        assert_eq!(classify("/proc/2/environ", &[], ""), Class::Volatile);
+        assert_eq!(classify("/proc/1/stat", &[], ""), Class::Volatile);
+        assert_eq!(classify("/proc/stat", &[], ""), Class::Volatile);
+        assert_eq!(classify("/proc/filesystems", &[], ""), Class::Key);
         assert_eq!(meta_value("/proc/1", true), meta_value("/proc/1", true));
         assert!(dynamically_linked("/usr/bin/cat"), "cat");
         assert_eq!(classify("/var/lib/x", &[], ""), Class::Key);
