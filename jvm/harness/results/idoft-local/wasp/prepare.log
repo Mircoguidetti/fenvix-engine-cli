@@ -16,3 +16,7 @@ main:
     [mkdir] Created dir: /tmp/jvm-work2/wasp/target/wasp-webapps/fserver/WEB-INF
 
 [rc=0 23.1s]
+$ git clone -q --filter=blob:none https://github.com/alibaba/wasp /tmp/jvm-work2/wasp
+fatal: destination path '/tmp/jvm-work2/wasp' already exists and is not an empty directory.
+
+[rc=128 0.0s]

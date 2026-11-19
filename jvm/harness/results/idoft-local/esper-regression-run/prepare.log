@@ -12,3 +12,7 @@ Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cace
 Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
 
 [rc=0 56.6s]
+$ git clone -q --filter=blob:none https://github.com/espertechinc/esper /tmp/jvm-work/esper-regression-run
+fatal: destination path '/tmp/jvm-work/esper-regression-run' already exists and is not an empty directory.
+
+[rc=128 0.0s]

@@ -119,13 +119,22 @@ public final class Deps {
     public static void endContainer() {
         if (!Det.DEPS) return;
         Scope s = CUR;
+        // a test scope still open here lost its end event: it is not a test record (no outcome)
+        while (s.kind.equals("test") && s.parent != null) s = s.parent;
         if (s.parent == null) return;
         write(s, null);
         setScope(s.parent);
     }
 
+    /** The innermost scope that is not a test (tests never nest). */
+    static Scope container() {
+        Scope s = CUR;
+        while (s.kind.equals("test") && s.parent != null) s = s.parent;
+        return s;
+    }
+
     static void beginTest(String id) {
-        setScope(new Scope(id, "test", CUR));
+        setScope(new Scope(id, "test", container()));
     }
 
     static void endTest(String outcome) {

@@ -1,0 +1,19 @@
+{
+ "name": "asyncload",
+ "url": "https://github.com/alibaba/asyncload",
+ "sha": "9891e7086bff81ebdd4991435d21b549e48e874d",
+ "module": ".",
+ "status": "ok",
+ "build_jdk8_test-compile": {
+  "rc": 0,
+  "seconds": 9.1
+ },
+ "jdk": "8",
+ "first_run": {
+  "wall": 52.4,
+  "test_seconds": 46.6,
+  "tests": 59,
+  "failed": 5
+ },
+ "documented_present": 1
+}

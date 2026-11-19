@@ -187,6 +187,8 @@ def main():
                     dk = f"{r[0]}: {r[1]}"
                     details[dk] = details.get(dk, 0) + 1
             wrong, flaky = [], []
+            unverifiable = [k for k in reused if tests_b[k].get("outcome") is None]
+            reused = [k for k in reused if tests_b[k].get("outcome") is not None]
             for k in reused:
                 if tests_b[k].get("outcome") != "passed":
                     re_o = rerun_class(repo, spec, k[1], log)
@@ -196,6 +198,7 @@ def main():
             mod_hit = [mn for mn in keys_b if keys_a.get(mn) == keys_b[mn]]
             mod_ms = sum(r.get("ms") or 0 for (mn, _), r in tests_b.items() if mn in mod_hit)
             row.update({"prev": mine[i - 1], "reused": len(reused), "verified": len(reused), "wrong": wrong, "flaky": flaky,
+                        "unverifiable": len(unverifiable),
                         "share_time_skipped": round(skipped_ms / total_ms, 4) if total_ms else None,
                         "share_tests_skipped": round(len(reused) / len(tests_b), 4) if tests_b else None,
                         "rerun_reasons": reasons,

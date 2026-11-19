@@ -331,3 +331,336 @@ Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_ba
 [ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
 
 [rc=1 8.7s]
+$ git clone -q --filter=blob:none https://github.com/OpenHFT/Chronicle-Wire /tmp/jvm-work/Chronicle-Wire
+
+[rc=0 2.7s]
+$ git fetch -q origin 27a9efc3ced000f46e0f46263614e08896058290
+
+[rc=0 0.5s]
+$ git checkout -q -f 27a9efc3ced000f46e0f46263614e08896058290
+
+[rc=0 0.7s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.8s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.1s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 3.8s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 5.6s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.5s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.6s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 5.3s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.7s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 5.6s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= test-compile
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 5.3s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.6s]
+$ mvn -B -q -DskipTests -Dmaven.javadoc.skip=true -Drat.skip=true -Dcheckstyle.skip=true -Denforcer.skip=true -Dspotbugs.skip=true -Dfindbugs.skip=true -Dlicense.skip=true -Dgpg.skip=true -Djacoco.skip=true -Danimal.sniffer.skip=true -Dmaven.source.skip=true -Dpmd.skip=true -Dcpd.skip=true -Dspotless.check.skip=true -Dspotless.apply.skip=true -Dformatter.skip=true -Dmdep.analyze.skip=true -Dbasepom.check.skip-all=true -Dmaven.site.skip=true -Dsortpom.skip=true -Dimpsort.skip=true -Djapicmp.skip=true -Drevapi.skip=true -Dmaven.gitcommitid.skip=true -Dbuildnumber.skip=true -Dlombok.delombok.skip=true -Dinvoker.skip=true -Dcobertura.skip=true -Dfmt.skip=true -Dmaven.antrun.skip=true -Dxml-format.skip=true -Dspring-javaformat.skip=true -Dmodernizer.skip=true -Dmaven.compiler.source=1.8 -Dmaven.compiler.target=1.8 -Dmaven.compiler.release= install
+Picked up JAVA_TOOL_OPTIONS: -Djavax.net.ssl.trustStore=/etc/ssl/certs/java/cacerts -Djavax.net.ssl.trustStoreType=JKS -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=38209 -Dhttp.nonProxyHosts=localhost|127.0.0.1|::1|127.*|0.*|::|169.254.*|api.anthropic.com|api-staging.anthropic.com|api-pr-preview.anthropic.com|mcp-proxy.anthropic.com|mcp-proxy-staging.anthropic.com|registry.npmjs.org|jsr.io|npm.jsr.io|pypi.org|files.pythonhosted.org|index.crates.io|proxy.golang.org|host.docker.internal|10.*|172.16.*|172.17.*|172.18.*|172.19.*|172.20.*|172.21.*|172.22.*|172.23.*|172.24.*|172.25.*|172.26.*|172.27.*|172.28.*|172.29.*|172.30.*|172.31.*|192.168.*|100.64.0.0/10|*.svc.cluster.local|*.svc.cluster.local -Djdk.http.auth.tunneling.disabledSchemes= -Djdk.http.auth.proxying.disabledSchemes=
+Picked up _JAVA_OPTIONS: -XX:+UnlockDiagnosticVMOptions -XX:DisableIntrinsic=_base64_encodeBlock,_base64_decodeBlock
+[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR] 'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+ @ 
+[ERROR] The build could not read 1 project -> [Help 1]
+[ERROR]   
+[ERROR]   The project net.openhft:chronicle-wire:2.20.104-SNAPSHOT (/tmp/jvm-work/Chronicle-Wire/pom.xml) has 5 errors
+[ERROR]     Non-resolvable import POM: The following artifacts could not be resolved: net.openhft:chronicle-bom:pom:2.20-SNAPSHOT (absent): Could not transfer artifact net.openhft:chronicle-bom:pom:2.20-SNAPSHOT from/to chronicle-enterprise-snapshots (https://nexus.chronicle.software/content/repositories/snapshots): nexus.chronicle.software @ line 50, column 25: Unknown host nexus.chronicle.software -> [Help 2]
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-core:jar is missing. @ line 69, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-bytes:jar is missing. @ line 74, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:chronicle-threads:jar is missing. @ line 79, column 21
+[ERROR]     'dependencies.dependency.version' for net.openhft:compiler:jar is missing. @ line 84, column 21
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildingException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/UnresolvableModelException
+
+[rc=1 4.6s]

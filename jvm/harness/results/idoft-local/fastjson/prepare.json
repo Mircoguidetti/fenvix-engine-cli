@@ -1,0 +1,19 @@
+{
+ "name": "fastjson",
+ "url": "https://github.com/alibaba/fastjson",
+ "sha": "e05e9c5e4be580691cc55a59f3256595393203a1",
+ "module": ".",
+ "status": "ok",
+ "build_jdk8_test-compile": {
+  "rc": 0,
+  "seconds": 28.6
+ },
+ "jdk": "8",
+ "first_run": {
+  "wall": 48.6,
+  "test_seconds": 38.9,
+  "tests": 4464,
+  "failed": 3
+ },
+ "documented_present": 19
+}

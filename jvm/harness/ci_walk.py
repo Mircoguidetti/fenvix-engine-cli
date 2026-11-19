@@ -22,9 +22,9 @@ def aggregate(d):
          "The per-module column is an ESTIMATED model of Gradle's build cache for test tasks (a module's tests are reused "
          "only when every output file of the module and its jar list are unchanged; per task, not per test).\n",
          "| repository | tool | transitions | tests (median) | time skipped with proof, median / mean | tests skipped, median | "
-         "verified reuses | wrong | flaky | per-module cache model: time skipped, median / mean | top rerun reasons |",
-         "|---|---|---|---|---|---|---|---|---|---|---|"]
-    tot = {"verified": 0, "wrong": 0, "flaky": 0}
+         "verified reuses | wrong | flaky | not verifiable | per-module cache model: time skipped, median / mean | top rerun reasons |",
+         "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    tot = {"verified": 0, "wrong": 0, "flaky": 0, "incomplete": 0}
     out = {}
     for repo_dir in sorted(glob.glob(os.path.join(d, "*"))):
         shards = [json.load(open(p)) for p in sorted(glob.glob(os.path.join(repo_dir, "shard*.json")))]
@@ -43,7 +43,11 @@ def aggregate(d):
         st = [r["share_tests_skipped"] for r in rows if r.get("share_tests_skipped") is not None]
         mc = [r["module_cache_share_time"] for r in rows if r.get("module_cache_share_time") is not None]
         ver = sum(r["verified"] for r in rows)
-        wrong = sum(len(r["wrong"]) for r in rows)
+        # a reuse whose fresh record has no outcome (capture lost the test's end event) is not
+        # verifiable: counted apart, never as right
+        wrong = sum(1 for r in rows for w in r["wrong"] if w.get("fresh") is not None)
+        incomplete = sum(1 for r in rows for w in r["wrong"] if w.get("fresh") is None) + sum(r.get("unverifiable", 0) for r in rows)
+        ver -= sum(1 for r in rows for w in r["wrong"] if w.get("fresh") is None)
         flaky = sum(len(r["flaky"]) for r in rows)
         reasons = {}
         for r in rows:
@@ -53,16 +57,17 @@ def aggregate(d):
         tot["verified"] += ver
         tot["wrong"] += wrong
         tot["flaky"] += flaky
+        tot["incomplete"] += incomplete
         name = os.path.basename(repo_dir)
         tool = shards[0]["spec"]["tool"]
         tests = statistics.median([r["tests"] for r in rows])
         L.append(f"| {name} | {tool} | {len(rows)} | {tests:.0f} | **{pct(statistics.median(sh) if sh else None)} / "
-                 f"{pct(statistics.mean(sh) if sh else None)}** | {pct(statistics.median(st) if st else None)} | {ver} | {wrong} | {flaky} | "
+                 f"{pct(statistics.mean(sh) if sh else None)}** | {pct(statistics.median(st) if st else None)} | {ver} | {wrong} | {flaky} | {incomplete} | "
                  f"{pct(statistics.median(mc) if mc else None)} / {pct(statistics.mean(mc) if mc else None)} | {top} |")
         out[name] = {"transitions": len(rows), "median": statistics.median(sh) if sh else None, "mean": statistics.mean(sh) if sh else None,
-                     "verified": ver, "wrong": wrong, "flaky": flaky, "module_cache_median": statistics.median(mc) if mc else None,
+                     "verified": ver, "wrong": wrong, "flaky": flaky, "not_verifiable": incomplete, "module_cache_median": statistics.median(mc) if mc else None,
                      "module_cache_mean": statistics.mean(mc) if mc else None, "reasons": reasons}
-    L.append(f"\nVerified reuses: {tot['verified']}; wrong: **{tot['wrong']}**; flaky (failed fresh, passed and failed on reruns): {tot['flaky']}.\n")
+    L.append(f"\nVerified reuses: {tot['verified']}; wrong: **{tot['wrong']}**; flaky (failed fresh, passed and failed on reruns): {tot['flaky']}; not verifiable (the fresh run's capture lost the test's end event: no outcome): {tot['incomplete']}.\n")
     open(os.path.join(d, "REPORT.md"), "w").write("\n".join(L) + "\n")
     json.dump({"repos": out, "totals": tot}, open(os.path.join(d, "summary.json"), "w"), indent=1)
     print("\n".join(L))
