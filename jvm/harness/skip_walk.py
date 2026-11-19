@@ -22,7 +22,7 @@ import argparse, glob, hashlib, json, os, shutil, subprocess, sys, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 JVM = os.path.dirname(HERE)
-AGENT = os.path.join(JVM, "dist", "fenvix-agent.jar")
+AGENT = os.environ.get("FENVIX_AGENT") or os.path.join(JVM, "dist", "fenvix-agent.jar")
 sys.path.insert(0, os.path.join(JVM, "skip"))
 import fenvix_skip  # noqa: E402
 

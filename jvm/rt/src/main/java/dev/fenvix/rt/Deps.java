@@ -109,15 +109,18 @@ public final class Deps {
         final boolean isFinal;
         /** declared field name -> access flags */
         final Map<String, Integer> fields;
-        /** every instance field is final and of an immutable type */
+        /** every instance field is final and of an immutable JDK type or primitive */
         final boolean immutableInstance;
+        /** descriptors of the final instance fields of a user type (immutable when that type is) */
+        final String[] refFields;
 
-        Info(String superName, String[] interfaces, boolean isFinal, Map<String, Integer> fields, boolean immutableInstance) {
+        Info(String superName, String[] interfaces, boolean isFinal, Map<String, Integer> fields, boolean immutableInstance, String[] refFields) {
             this.superName = superName;
             this.interfaces = interfaces == null ? new String[0] : interfaces;
             this.isFinal = isFinal;
             this.fields = fields;
             this.immutableInstance = immutableInstance;
+            this.refFields = refFields;
         }
     }
 
@@ -127,13 +130,14 @@ public final class Deps {
      * Registered by the agent when it transforms a class. {@code fields}: name + "\t" + access flags;
      * {@code immutableInstance}: every instance field final and of a primitive or immutable JDK type.
      */
-    public static void classInfo(String name, String superName, String[] interfaces, int access, String[] fields, boolean immutableInstance) {
+    public static void classInfo(String name, String superName, String[] interfaces, int access, String[] fields, boolean immutableInstance,
+            String[] refFields) {
         Map<String, Integer> f = new HashMap<>();
         for (String s : fields) {
             int t = s.indexOf('\t');
             f.put(s.substring(0, t), Integer.parseInt(s.substring(t + 1)));
         }
-        INFO.put(name, new Info(superName, interfaces, (access & Modifier.FINAL) != 0, f, immutableInstance));
+        INFO.put(name, new Info(superName, interfaces, (access & Modifier.FINAL) != 0, f, immutableInstance, refFields));
     }
 
     /** Immutable JDK types (field descriptors): a final static field of one of them is a constant. */
@@ -161,22 +165,27 @@ public final class Deps {
         return desc.length() == 1 || IMMUTABLE_DESC.contains(desc);
     }
 
-    /** A final class (or an enum without constant bodies) whose instances cannot change. */
+    /** A final class (or an enum without constant bodies) whose instances cannot change: a field of this type holds an immutable value. */
     static boolean immutableUserClass(String internalName, int depth) {
         Info i = INFO.get(internalName);
-        if (i == null || !i.isFinal || !i.immutableInstance || depth > 8) return false;
-        String s = i.superName;
-        if (s == null || s.equals("java/lang/Object") || s.equals("java/lang/Enum") || s.equals("java/lang/Record")) return true;
-        Info si = INFO.get(s);
-        return si != null && si.immutableInstance && immutableSuper(s, depth + 1);
+        return i != null && i.isFinal && instancesImmutable(internalName, depth);
     }
 
-    static boolean immutableSuper(String internalName, int depth) {
+    /**
+     * Objects whose runtime class is exactly this class cannot change: every instance field (its own
+     * and its superclasses') is final and holds a primitive, an immutable JDK type, or a final user
+     * type whose instances cannot change.
+     */
+    static boolean instancesImmutable(String internalName, int depth) {
+        if (depth > 8) return false;
         Info i = INFO.get(internalName);
-        if (i == null || !i.immutableInstance || depth > 8) return false;
+        if (i == null || !i.immutableInstance) return false;
+        for (String d : i.refFields) {
+            if (!d.startsWith("L") || !immutableUserClass(d.substring(1, d.length() - 1), depth + 1)) return false;
+        }
         String s = i.superName;
         if (s == null || s.equals("java/lang/Object") || s.equals("java/lang/Enum") || s.equals("java/lang/Record")) return true;
-        return immutableSuper(s, depth + 1);
+        return instancesImmutable(s, depth + 1);
     }
 
     static boolean immutableValue(Object v) {
@@ -188,7 +197,8 @@ public final class Deps {
             // a JDK enum constant
             return c.isEnum() || (c.getSuperclass() != null && c.getSuperclass().isEnum());
         }
-        return immutableUserClass(c.getName().replace('.', '/'), 0);
+        // the runtime class is known: its finality does not matter, its fields do
+        return instancesImmutable(c.getName().replace('.', '/'), 0);
     }
 
     // --------------------------------------------------------- static sites
@@ -330,7 +340,10 @@ public final class Deps {
         String w = s.declaring >= 0 && s.declaring < LAST_WRITER.length ? LAST_WRITER[s.declaring] : null;
         for (Scope t : targets()) {
             for (int id : s.ids) addClass(t, id);
-            if (mutable) t.mut = true;
+            if (mutable) {
+                t.mut = true;
+                t.mutClasses.add(s.declaring);
+            }
         }
         if (w != null && me != null && !w.equals(me)) cur.after.add(w);
     }
@@ -417,6 +430,7 @@ public final class Deps {
         t.nat.addAll(s.nat);
         t.written |= s.written;
         t.mut |= s.mut;
+        t.mutClasses.addAll(s.mutClasses);
         t.swrite |= s.swrite;
     }
 
@@ -435,6 +449,8 @@ public final class Deps {
         final TreeSet<String> lookups = new TreeSet<>();
         final TreeSet<String> proc = new TreeSet<>();
         final TreeSet<String> nat = new TreeSet<>();
+        /** classes whose mutable static state was read (why mut is set) */
+        final TreeSet<Integer> mutClasses = new TreeSet<>();
         boolean written;
         boolean mut;
         boolean swrite;
@@ -997,6 +1013,12 @@ public final class Deps {
         sb.append(",\"written\":").append(s.written);
         sb.append(",\"mut\":").append(s.mut);
         sb.append(",\"swrite\":").append(s.swrite);
+        List<String> mc = new ArrayList<>();
+        synchronized (Deps.class) {
+            for (int id : s.mutClasses) if (id >= 0 && id < NAMES.size()) mc.add(NAMES.get(id));
+        }
+        sb.append(",\"mut_classes\":");
+        Json.strs(sb, mc);
         if (s.kind.equals("container")) sb.append(",\"shared\":").append(s.shared);
         sb.append("}\n");
         emit(sb.toString());

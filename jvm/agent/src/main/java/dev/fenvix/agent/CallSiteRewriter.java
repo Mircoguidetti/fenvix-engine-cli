@@ -207,6 +207,7 @@ final class CallSiteRewriter implements ClassFileTransformer {
         String[] interfaces;
         final List<String> fields = new ArrayList<>();
         boolean immutableInstance = true;
+        final List<String> refFields = new ArrayList<>();
         final List<Bridge> bridges = new ArrayList<>();
         final List<String[]> natives = new ArrayList<>();
 
@@ -234,13 +235,19 @@ final class CallSiteRewriter implements ClassFileTransformer {
         @Override
         public FieldVisitor visitField(int acc, String name, String desc, String sig, Object value) {
             fields.add(name + "\t" + acc);
-            if ((acc & Opcodes.ACC_STATIC) == 0 && ((acc & Opcodes.ACC_FINAL) == 0 || !Deps.immutableDesc(desc))) immutableInstance = false;
+            if ((acc & Opcodes.ACC_STATIC) == 0) {
+                if ((acc & Opcodes.ACC_FINAL) == 0) immutableInstance = false;
+                else if (!Deps.immutableDesc(desc)) {
+                    if (desc.startsWith("L") && !jdkOwner(desc.substring(1, desc.length() - 1))) refFields.add(desc);
+                    else immutableInstance = false;
+                }
+            }
             return super.visitField(acc, name, desc, sig, value);
         }
 
         /** Structure of the class for static field resolution and immutability (skip-with-proof capture). */
         void register() {
-            Deps.classInfo(cls, superName, interfaces, access, fields.toArray(new String[0]), immutableInstance);
+            Deps.classInfo(cls, superName, interfaces, access, fields.toArray(new String[0]), immutableInstance, refFields.toArray(new String[0]));
         }
 
         @Override

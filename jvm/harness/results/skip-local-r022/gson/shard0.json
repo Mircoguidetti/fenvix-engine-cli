@@ -1,0 +1,1485 @@
+{
+ "repo": "gson",
+ "spec": {
+  "url": "https://github.com/google/gson",
+  "tool": "maven",
+  "jdk": "17",
+  "before": "2026-11-15",
+  "args": [
+   "-pl",
+   "gson",
+   "-am"
+  ],
+  "shas": [
+   "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "aebc51a56ca0793c13b841c29f73433b82446695",
+   "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "169bb7a34b30611996d893b7c6a779180109cf78",
+   "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "804f21918e093b28615e72d043b160c05ab40803",
+   "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "15ca7360379cf3c1502b59981569050489f2d73e",
+   "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "630771b770ea7dc938f3e5e456f913895bddee27",
+   "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "7c6a3152b293b2ba1175dfff659fb08c33721f30"
+  ]
+ },
+ "shard": 0,
+ "shards": 1,
+ "rows": [
+  {
+   "sha": "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 31.8,
+   "tests": 4612,
+   "test_ms": 3548,
+   "failed": 0
+  },
+  {
+   "sha": "aebc51a56ca0793c13b841c29f73433b82446695",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.9,
+   "tests": 4612,
+   "test_ms": 3206,
+   "failed": 0,
+   "prev": "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4612
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4612
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.0,
+   "tests": 4615,
+   "test_ms": 3538,
+   "failed": 0,
+   "prev": "aebc51a56ca0793c13b841c29f73433b82446695",
+   "reused": 77,
+   "verified": 77,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.1218,
+   "share_tests_skipped": 0.0167,
+   "rerun_reasons": {
+    "after": 4434,
+    "not-passed": 19,
+    "code": 82
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.GsonTypeAdapterTest::testTypeAdapterThrowsException": 4434,
+    "code: com/google/gson/internal/bind/JsonTreeReader": 82,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.9,
+   "tests": 4616,
+   "test_ms": 3911,
+   "failed": 0,
+   "prev": "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "reused": 78,
+   "verified": 78,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.1202,
+   "share_tests_skipped": 0.0169,
+   "rerun_reasons": {
+    "after": 4357,
+    "not-passed": 19,
+    "code": 161
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.GsonTypeAdapterTest::testTypeAdapterThrowsException": 4357,
+    "code: com/google/gson/functional/PrimitiveTest": 106,
+    "code: com/google/gson/internal/LazilyParsedNumber": 55,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "169bb7a34b30611996d893b7c6a779180109cf78",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.6,
+   "tests": 4619,
+   "test_ms": 3195,
+   "failed": 0,
+   "prev": "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "reused": 20,
+   "verified": 20,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0023,
+   "share_tests_skipped": 0.0043,
+   "rerun_reasons": {
+    "after": 3693,
+    "code": 884,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3693,
+    "code: com/google/gson/internal/bind/TypeAdapters": 883,
+    "not-passed: skipped": 19,
+    "code: com/google/gson/DefaultInetAddressTypeAdapterTest": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.9,
+   "tests": 4619,
+   "test_ms": 3138,
+   "failed": 0,
+   "prev": "169bb7a34b30611996d893b7c6a779180109cf78",
+   "reused": 2380,
+   "verified": 2380,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.7125,
+   "share_tests_skipped": 0.5153,
+   "rerun_reasons": {
+    "after": 2216,
+    "not-passed": 19,
+    "code": 4
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.internal.LazilyParsedNumberTest::testJavaSerialization": 2216,
+    "not-passed: skipped": 19,
+    "code: com/google/gson/internal/LazilyParsedNumberTest": 4
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.8,
+   "tests": 4619,
+   "test_ms": 4548,
+   "failed": 0,
+   "prev": "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "reused": 16,
+   "verified": 16,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0026,
+   "share_tests_skipped": 0.0035,
+   "rerun_reasons": {
+    "after": 3115,
+    "code": 1469,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3115,
+    "code: com/google/gson/Gson": 878,
+    "code: com/google/gson/FormattingStyle": 468,
+    "code: com/google/gson/internal/TroubleshootingGuide": 75,
+    "not-passed: skipped": 19,
+    "code: com/google/gson/internal/Excluder": 13
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.7,
+   "tests": 4619,
+   "test_ms": 3376,
+   "failed": 0,
+   "prev": "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9994,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4619,
+   "test_ms": 3958,
+   "failed": 0,
+   "prev": "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9996,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 27.8,
+   "tests": 4619,
+   "test_ms": 4001,
+   "failed": 0,
+   "prev": "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9997,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.2,
+   "tests": 4619,
+   "test_ms": 4266,
+   "failed": 0,
+   "prev": "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "reused": 22,
+   "verified": 22,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0019,
+   "share_tests_skipped": 0.0048,
+   "rerun_reasons": {
+    "code": 1308,
+    "after": 3270,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3270,
+    "code: com/google/gson/internal/bind/TypeAdapters": 887,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 421,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 29.8,
+   "tests": 4619,
+   "test_ms": 5120,
+   "failed": 0,
+   "prev": "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9997,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.8,
+   "tests": 4619,
+   "test_ms": 3661,
+   "failed": 0,
+   "prev": "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9996,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.3,
+   "tests": 4619,
+   "test_ms": 4157,
+   "failed": 0,
+   "prev": "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "reused": 1612,
+   "verified": 1612,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.4486,
+   "share_tests_skipped": 0.349,
+   "rerun_reasons": {
+    "after": 2791,
+    "not-passed": 19,
+    "code": 197
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.functional.CollectionTest::testWildcardCollectionField": 2791,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 82,
+    "code: com/google/gson/stream/JsonWriterTest": 55,
+    "code: com/google/gson/functional/CollectionTest": 30,
+    "code: com/google/gson/functional/NamingPolicyTest": 22,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 27.6,
+   "tests": 4619,
+   "test_ms": 4350,
+   "failed": 0,
+   "prev": "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4619
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4619
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4619,
+   "test_ms": 4038,
+   "failed": 0,
+   "prev": "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9993,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 27.8,
+   "tests": 4619,
+   "test_ms": 4490,
+   "failed": 0,
+   "prev": "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "reused": 4600,
+   "verified": 4600,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9996,
+   "share_tests_skipped": 0.9959,
+   "rerun_reasons": {
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.1,
+   "tests": 4622,
+   "test_ms": 3825,
+   "failed": 0,
+   "prev": "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "reused": 22,
+   "verified": 22,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0026,
+   "share_tests_skipped": 0.0048,
+   "rerun_reasons": {
+    "after": 3691,
+    "code": 887,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3691,
+    "code: com/google/gson/internal/bind/TypeAdapters": 732,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 82,
+    "code: com/google/gson/functional/MapTest": 53,
+    "not-passed: skipped": 19,
+    "code: com/google/gson/functional/MapAsArrayTypeAdapterTest": 10
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.9,
+   "tests": 4622,
+   "test_ms": 4094,
+   "failed": 0,
+   "prev": "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "reused": 14,
+   "verified": 14,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0007,
+   "share_tests_skipped": 0.003,
+   "rerun_reasons": {
+    "after": 3826,
+    "code": 763,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3826,
+    "code: com/google/gson/stream/JsonReader": 763,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 29.5,
+   "tests": 4630,
+   "test_ms": 4539,
+   "failed": 0,
+   "prev": "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "reused": 14,
+   "verified": 14,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0007,
+   "share_tests_skipped": 0.003,
+   "rerun_reasons": {
+    "after": 3826,
+    "code": 763,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3826,
+    "code: com/google/gson/stream/JsonReader": 763,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.9,
+   "tests": 4633,
+   "test_ms": 3754,
+   "failed": 0,
+   "prev": "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4630
+   },
+   "rerun_details": {
+    "code: com/google/gson/stream/JsonReaderPathTest": 3837,
+    "code: com/google/gson/stream/JsonReader": 771,
+    "code: com/google/gson/functional/MapTest": 22
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 27.9,
+   "tests": 4635,
+   "test_ms": 4932,
+   "failed": 0,
+   "prev": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "reused": 14,
+   "verified": 14,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0007,
+   "share_tests_skipped": 0.003,
+   "rerun_reasons": {
+    "after": 3826,
+    "code": 774,
+    "not-passed": 19
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3826,
+    "code: com/google/gson/stream/JsonReader": 774,
+    "not-passed: skipped": 19
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.3,
+   "tests": 4641,
+   "test_ms": 3096,
+   "failed": 0,
+   "prev": "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4635
+   },
+   "rerun_details": {
+    "code: com/google/gson/stream/JsonReaderPathTest": 3859,
+    "code: com/google/gson/stream/JsonReader": 776
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.8,
+   "tests": 4641,
+   "test_ms": 3989,
+   "failed": 0,
+   "prev": "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "reused": 4621,
+   "verified": 4621,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9983,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.5,
+   "tests": 4641,
+   "test_ms": 4623,
+   "failed": 0,
+   "prev": "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "reused": 4621,
+   "verified": 4621,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9997,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "804f21918e093b28615e72d043b160c05ab40803",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.2,
+   "tests": 4641,
+   "test_ms": 3302,
+   "failed": 0,
+   "prev": "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4641
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4641
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4641,
+   "test_ms": 3290,
+   "failed": 0,
+   "prev": "804f21918e093b28615e72d043b160c05ab40803",
+   "reused": 4621,
+   "verified": 4621,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9989,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.7,
+   "tests": 4641,
+   "test_ms": 2996,
+   "failed": 0,
+   "prev": "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "reused": 22,
+   "verified": 22,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0035,
+   "share_tests_skipped": 0.0047,
+   "rerun_reasons": {
+    "after": 3708,
+    "code": 891,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3708,
+    "code: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory": 891,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "15ca7360379cf3c1502b59981569050489f2d73e",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.2,
+   "tests": 4641,
+   "test_ms": 3003,
+   "failed": 0,
+   "prev": "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4641
+   },
+   "rerun_details": {
+    "code: com/google/gson/JsonPrimitive": 4641
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 20.0,
+   "tests": 4667,
+   "test_ms": 2556,
+   "failed": 0,
+   "prev": "15ca7360379cf3c1502b59981569050489f2d73e",
+   "reused": 512,
+   "verified": 512,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.3031,
+   "share_tests_skipped": 0.1097,
+   "rerun_reasons": {
+    "after-new": 4091,
+    "not-passed": 20,
+    "code": 18
+   },
+   "rerun_details": {
+    "after-new: gson::com.google.gson.JsonArrayTest::testGetSingleElementAsCharacter": 4091,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/JsonArrayTest": 18
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.5,
+   "tests": 4669,
+   "test_ms": 3890,
+   "failed": 0,
+   "prev": "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "reused": 105,
+   "verified": 105,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.1678,
+   "share_tests_skipped": 0.0225,
+   "rerun_reasons": {
+    "code": 421,
+    "after": 4121,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.common.collect.testing.testers.CollectionAddAllTester::testAddAll_supportedNothing[JsonArray#asList [collection size: zero]]": 4121,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 405,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/JsonArrayAsListTest": 16
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 20.1,
+   "tests": 4673,
+   "test_ms": 3395,
+   "failed": 0,
+   "prev": "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "reused": 34,
+   "verified": 34,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0064,
+   "share_tests_skipped": 0.0073,
+   "rerun_reasons": {
+    "after": 4107,
+    "code": 508,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 4107,
+    "code: com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper": 502,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/functional/MoreSpecificTypeSerializationTest": 6
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 20.7,
+   "tests": 4673,
+   "test_ms": 3380,
+   "failed": 0,
+   "prev": "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "reused": 4653,
+   "verified": 4653,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9995,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 15.6,
+   "tests": 4673,
+   "test_ms": 2484,
+   "failed": 0,
+   "prev": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "reused": 4653,
+   "verified": 4653,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9992,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.2,
+   "tests": 4674,
+   "test_ms": 2601,
+   "failed": 0,
+   "prev": "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "reused": 26,
+   "verified": 26,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.006,
+   "share_tests_skipped": 0.0056,
+   "rerun_reasons": {
+    "after": 3846,
+    "code": 781,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3846,
+    "code: com/google/gson/stream/JsonReader": 781,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.7,
+   "tests": 4674,
+   "test_ms": 2387,
+   "failed": 0,
+   "prev": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "reused": 4654,
+   "verified": 4654,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9991,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 17.9,
+   "tests": 4677,
+   "test_ms": 2572,
+   "failed": 0,
+   "prev": "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 4674
+   },
+   "rerun_details": {
+    "config: classpath": 4674
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 17.2,
+   "tests": 4677,
+   "test_ms": 2848,
+   "failed": 0,
+   "prev": "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "reused": 28,
+   "verified": 28,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0051,
+   "share_tests_skipped": 0.006,
+   "rerun_reasons": {
+    "after": 3743,
+    "code": 886,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3743,
+    "code: com/google/gson/Gson": 886,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.4,
+   "tests": 4677,
+   "test_ms": 3882,
+   "failed": 0,
+   "prev": "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "reused": 4657,
+   "verified": 4657,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9996,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.0,
+   "tests": 4677,
+   "test_ms": 3018,
+   "failed": 0,
+   "prev": "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "reused": 4657,
+   "verified": 4657,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9968,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.4,
+   "tests": 4677,
+   "test_ms": 2445,
+   "failed": 0,
+   "prev": "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "reused": 4657,
+   "verified": 4657,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9989,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.4,
+   "tests": 4677,
+   "test_ms": 2641,
+   "failed": 0,
+   "prev": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "reused": 28,
+   "verified": 28,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0052,
+   "share_tests_skipped": 0.006,
+   "rerun_reasons": {
+    "after": 3729,
+    "code": 900,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3729,
+    "code: com/google/gson/Gson": 886,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/internal/reflect/ReflectionHelper": 13,
+    "code: com/google/gson/internal/GsonBuildConfigTest": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.8,
+   "tests": 4691,
+   "test_ms": 2714,
+   "failed": 0,
+   "prev": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "reused": 28,
+   "verified": 28,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0061,
+   "share_tests_skipped": 0.006,
+   "rerun_reasons": {
+    "after": 3734,
+    "code": 895,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3734,
+    "code: com/google/gson/GsonBuilder": 895,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 17.9,
+   "tests": 4691,
+   "test_ms": 2793,
+   "failed": 0,
+   "prev": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 4691
+   },
+   "rerun_details": {
+    "config: classpath": 4691
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 17.3,
+   "tests": 4693,
+   "test_ms": 2661,
+   "failed": 0,
+   "prev": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "reused": 99,
+   "verified": 99,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.1217,
+   "share_tests_skipped": 0.0211,
+   "rerun_reasons": {
+    "code": 423,
+    "after": 4149,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.common.collect.testing.testers.CollectionAddAllTester::testAddAll_supportedNothing[JsonArray#asList [collection size: zero]]": 4149,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 405,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/JsonArrayAsListTest": 18
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.0,
+   "tests": 4693,
+   "test_ms": 3486,
+   "failed": 0,
+   "prev": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4693
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4693
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.0,
+   "tests": 4693,
+   "test_ms": 3844,
+   "failed": 0,
+   "prev": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "reused": 4673,
+   "verified": 4673,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9983,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 20.8,
+   "tests": 4693,
+   "test_ms": 4383,
+   "failed": 0,
+   "prev": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4693
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4693
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.2,
+   "tests": 4693,
+   "test_ms": 3833,
+   "failed": 0,
+   "prev": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "reused": 4673,
+   "verified": 4673,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9982,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.3,
+   "tests": 4722,
+   "test_ms": 3839,
+   "failed": 0,
+   "prev": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "reused": 28,
+   "verified": 28,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0053,
+   "share_tests_skipped": 0.0059,
+   "rerun_reasons": {
+    "code": 909,
+    "after": 3736,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3736,
+    "code: com/google/gson/GsonBuilder": 825,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 84,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7c6a3152b293b2ba1175dfff659fb08c33721f30",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.0,
+   "tests": 4722,
+   "test_ms": 3732,
+   "failed": 0,
+   "prev": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "reused": 4700,
+   "verified": 4700,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9978,
+   "share_tests_skipped": 0.9953,
+   "rerun_reasons": {
+    "not-passed": 22
+   },
+   "rerun_details": {
+    "not-passed: skipped": 22
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  }
+ ]
+}
