@@ -179,7 +179,10 @@ def main(ns, argv: list[str]) -> int:
 
     shell = UnittestShell(run).install()
     ZopeHooks(shell, run).install()
-    run.configure(version("zope.testrunner"), config_of(argv), unittest_infra_files())
+    import zope.testrunner.find
+
+    # zope.testrunner's discovery (its walk over the test paths) is infrastructure, as unittest's loader is
+    run.configure(version("zope.testrunner"), config_of(argv), unittest_infra_files() + [zope.testrunner.find.__file__])
     code = 0
     try:
         zope.testrunner.run(args=["zope-testrunner", *argv])
