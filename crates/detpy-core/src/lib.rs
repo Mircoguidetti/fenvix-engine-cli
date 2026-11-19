@@ -10,6 +10,7 @@
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
 //! * [`record`]: end-of-session assembly of every test's inputs from the capture's contexts.
+//! * [`repro`]: `detpy repro` / `explore` decisions (search, ddmin, bundles, explore bookkeeping).
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
 
 pub mod backend;
@@ -21,6 +22,8 @@ pub mod order;
 pub mod proof;
 pub mod record;
 pub mod recorder;
+// rust-hotpaths-2: repro / reexec decisions
+pub mod repro;
 pub mod trace;
 pub mod verify;
 
