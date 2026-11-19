@@ -80,13 +80,16 @@ function classify() {
   const stack = String(o.stack || '');
   if (/_updateTimeout|timeoutManager/i.test(stack)) return 'watchdog';
   // Deadlines of one Playwright operation (action/expect/event timeouts): the operation waits for something.
-  const head = stack.split('\n').slice(1, 6).join('\n');
+  const head = stack.split('\n').slice(1, 9).join('\n');
   if (/ProgressController\.run|raceAgainstDeadline|rejectOnTimeout|pollAgainstDeadline.*deadline/.test(head)) return 'deadline';
+  // Playwright's own bookkeeping (network-idle lifecycle, worker shutdown): not a wait of the runner.
+  if (/_startNetworkIdleTimer|gracefullyCloseAndExit|gracefullyClose|_scheduleGC|heartbeat/i.test(head)) return 'lib';
   const frames = stack.split('\n').slice(1).map((l) => l.trim()).filter((l) => !/runner-clock\.js|node:internal|\(node:|^at new Promise|<anonymous>/.test(l));
   // First frame outside Node: a library unless it is Playwright or the project's own code.
   const first = frames.find((l) => /\//.test(l));
   if (!first) return 'wait';
   if (/[\\/]node_modules[\\/]/.test(first) && !/[\\/]node_modules[\\/](@playwright[\\/]test|playwright|playwright-core)[\\/]/.test(first)) return 'lib';
+  if (process.env.DETJS_LS_STACKS) require('node:fs').appendFileSync(process.env.DETJS_LS_STACKS, `wait ${head.replace(/\n/g, ' | ')}\n`);
   return 'wait';
 }
 
@@ -158,7 +161,7 @@ class RunnerClock {
 
   // ------------------------------------------------------------ timers
   _schedule(t) {
-    t._due = this.engineNow() + t._delay * NS_PER_MS;
+    t._due = Math.ceil(this.engineNow() + t._delay * NS_PER_MS); // whole ns: the scheduler's clock is an integer
     t._seq = this.seq++;
     t._active = true;
     this.byId.set(t.id, t);
@@ -235,7 +238,7 @@ class RunnerClock {
       } finally {
         if (t._repeat && !t._destroyed && !t._active) {
           t._seq = this.seq++;
-          t._due += t._delay * NS_PER_MS;
+          t._due = Math.ceil(t._due + t._delay * NS_PER_MS);
           t._active = true;
           const q = this.queue;
           let i = 0;

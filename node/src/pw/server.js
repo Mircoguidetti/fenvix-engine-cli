@@ -257,6 +257,7 @@ function lsQuiet(w, max, done) {
     const blocked = [...LSS.msgs.values()].every((st) => clockMod.DRIVER.queue.some((t) => t._ctx === st));
     const due = clockMod.DRIVER.queue.length > 0 && clockMod.DRIVER.queue[0]._due <= LSS.t;
     const idle = d.utilization < 0.1 && blocked && !due;
+    if (process.env.DETJS_LS_QDEBUG) process.stderr.write(`q u=${d.utilization.toFixed(3)} b=${blocked} due=${due} dt=${(now - start).toFixed(1)}\n`);
     if (!idle) idleSince = null; else if (idleSince === null) idleSince = now;
     if (idleSince !== null && now - idleSince >= w) return done(true);
     if (now - start >= max) return done(false);
@@ -283,13 +284,17 @@ function handleLockstep(req, res) {
   const u = new URL(req.url, 'http://x');
   const reply = (obj) => {
     const body = JSON.stringify(obj);
-    res.writeHead(200, { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body) });
+    // A server that is closing (server.close() waits for busy connections) must not be kept open by the engine's
+    // control connection (found on uptime-kuma: its setup server closes, then the main server starts).
+    const closing = req.socket && req.socket.server && req.socket.server.listening === false;
+    res.writeHead(200, { 'content-type': 'application/json', 'content-length': Buffer.byteLength(body), ...(closing ? { connection: 'close' } : {}) });
     res.end(body);
   };
   if (!LOCKSTEP || !SCOPE) return reply({ lockstep: false });
   const t = Number(u.searchParams.get('t') || 0);
   const w = Number(u.searchParams.get('w') || 15);
   const max = Number(u.searchParams.get('max') || 5000);
+  if (process.env.DETJS_LS_QDEBUG) process.stderr.write(`ls call ${req.url}\n`);
   lsBusy = lsBusy.then(async () => {
     if (!LSS.attached) {
       LSS.t = t;

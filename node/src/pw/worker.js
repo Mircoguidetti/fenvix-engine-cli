@@ -72,8 +72,11 @@ function rec(key, source, op, value) {
   if (LS) { LS.record(key, source, op, value); return; }
   recNow(key, source, op, value);
 }
+// Lockstep: a test's event list is closed when its context was observed; traffic of its pages that is still in
+// flight afterwards (a WebSocket frame sent while the page closes) is not part of the test's fingerprint.
+const CLOSED_KEYS = new Set();
 function recNow(key, source, op, value) {
-  if (!key) return;
+  if (!key || CLOSED_KEYS.has(key)) return;
   let list = PENDING.get(key);
   if (!list) PENDING.set(key, (list = []));
   list.push([source, op, '', String(value)]);
@@ -155,7 +158,7 @@ function patchNavigation(obj, kind) {
     const orig = proto[m];
     if (typeof orig !== 'function') continue;
     proto[m] = function (...args) {
-      if (!NET || !currentKey()) return orig.apply(this, args);
+      if (!NET || !currentKey() || LS) return orig.apply(this, args); // lockstep: marked at admission (lockstep.js)
       const done = navStarted();
       let p;
       try { p = orig.apply(this, args); } catch (e) { done(); throw e; }
@@ -393,12 +396,18 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
     try { LS.routed(request.frame().page()); } catch { /* detached frame */ }
   }
   if (!key || !APP_TYPES.has(type) || !/^https?:/.test(url)) {
-    if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) trackLoad(request);
+    if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) {
+      // Lockstep: a subresource is fetched by the engine and handed to the page between two time slices (in URL
+      // order), so how long it takes on the network never becomes page time.
+      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg)); } catch { /* detached */ }
+      trackLoad(request);
+    }
     return route.fallback();
   }
   if (PASSTHROUGH.test(url) || /text\/event-stream/.test(request.headers().accept || '')) {
     // Long-lived requests (long polling, event streams, dev-server pings) would hold the
     // queue: not ordered, not recorded; they still carry the test bracket.
+    if (LS) { request.__detjsLongPoll = true; try { LS.blockOn(request.frame().page(), request); } catch { /* detached */ } }
     if (!isServerHost(url)) return route.fallback();
     released();
     return route.fallback({ headers: { ...request.headers(), 'x-detjs-test': testIdOf(key) } });
@@ -408,11 +417,12 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
   const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, page };
   if (LS && isServerHost(url)) LS.addOrigin(new URL(url).origin);
+  if (LS && page && !nav) LS.blockOn(page, request);
   const pEnq = enqueue(item);
   uncount(); // queued: the pending set is complete for this request
   const release = await pEnq;
   if (LS && item.fault && item.fault !== 'none' && require('./faults').applyBrowser(route, item, release)) return;
-  if (LS && type !== 'document' && page) return lsFetch(route, request, item, key, page, url, release);
+  if (LS && type !== 'document' && page && ENV.DETJS_LS_FULFILL !== '0') return lockstep.OWN.run(true, () => lsFetch(route, request, item, key, page, url, release));
   let finished = false;
   const finish = (how) => {
     if (finished) return;
@@ -488,8 +498,11 @@ async function lsFetch(route, request, item, key, page, url, release) {
   let resp = null;
   let body = null;
   try {
+    const tf = realNow();
     resp = await route.fetch({ headers, maxRedirects: 0, timeout: 0 });
+    const tb = realNow();
     body = await resp.body();
+    if (LS) LS.trace(`lsfetch ${item.target} fetch=${tb - tf} body=${realNow() - tb}`);
   } catch (e) {
     rec(key, 'net', 'browser.done', `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
     release();
@@ -506,6 +519,30 @@ async function lsFetch(route, request, item, key, page, url, release) {
   diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
   release();
   LS.respond(page, item, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
+}
+
+let LOAD_SEQ = 0;
+async function lsLoad(route, request, url, page) {
+  lockstep.netStart();
+  let resp = null;
+  let body = null;
+  try {
+    resp = await route.fetch({ maxRedirects: 0, timeout: 0 });
+    body = await resp.body();
+  } catch {
+    lockstep.netEnd();
+    LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ }, async () => { await route.abort('failed'); });
+    return;
+  }
+  const out = {};
+  for (const { name, value } of resp.headersArray()) {
+    const n = name.toLowerCase();
+    if (HOP.has(n)) continue;
+    out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
+  }
+  // Queued before the load counts as finished, so the quiet point that sees the load done also sees its response.
+  LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ }, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); });
+  lockstep.netEnd();
 }
 
 // Readable test ids for the server bracket (the server part uses them as node ids).
@@ -548,6 +585,7 @@ async function setupWebSockets(ctx) {
       const k = currentKey() || key;
       if (!wsKeep(m) || !k) { server.send(m); return; }
       // Page -> server frames are messages to the app like requests: same queue, same barrier.
+      if (LS) LS.trace(`ws-send-in ${String(m).slice(0, 80)}`);
       enqueue({ kind: 'ws', conn, test: k, method: 'SEND', target: targetOf(ws.url()), bodyDigest: digest(m) }).then(async (release) => {
         rec(k, 'net', 'ws.send', digest(m));
         // The app server handles the frame in its own message context (server.js, round 2).
@@ -559,6 +597,7 @@ async function setupWebSockets(ctx) {
     server.onMessage((m) => {
       // Server pushes reach the page only between two virtual-time chunks, after the server is
       // quiet (round 2, source S5): a push no longer lands before or after a response by chance.
+      if (LS) LS.trace(`ws-recv-in ${String(m).slice(0, 80)}`);
       const deliver = () => {
         if (wsKeep(m)) { rec(currentKey() || key, 'net', 'ws.recv', digest(m)); diag(currentKey() || key, 'ws.recv', targetOf(ws.url()), m, 1500); }
         try { ws.send(m); } catch { /* closed */ }
@@ -829,6 +868,7 @@ async function finishContext(ctx) {
     LS.flushWindow();
     LS.flushLate(key);
     flush(key);
+    CLOSED_KEYS.add(key);
     return;
   }
   for (const page of ctx.pages()) {
@@ -891,6 +931,50 @@ function patchApiRequest(reqCtx) {
       release();
     }
   };
+}
+
+// ------------------------------------------- test code's own HTTP (Node fetch) to the app servers
+// Lockstep: a request the test code makes with Node's fetch (uptime-kuma restores its database snapshot that way)
+// is a message like the runner's API requests: ordered, stamped with T, and the runner waits on the engine
+// while it is pending.
+const NODE_FETCH = { inflight: 0 };
+function patchNodeFetch() {
+  if (typeof globalThis.fetch !== 'function' || globalThis.fetch.__detjs) return;
+  const realFetch = globalThis.fetch;
+  const f = async function fetch(input, init = {}) {
+    const key = currentKey();
+    let url;
+    try { url = new URL(typeof input === 'string' ? input : input instanceof URL ? input.href : input.url); } catch { url = null; }
+    if (!LS || !key || !url || !isServerHost(url.href)) return realFetch(input, init);
+    const method = String(init.method || (typeof input === 'object' && input.method) || 'GET').toUpperCase();
+    const body = typeof init.body === 'string' || Buffer.isBuffer(init.body) ? init.body : undefined;
+    const item = { kind: 'api', test: key, method, target: targetOf(url.href), bodyDigest: digest(body) };
+    LS.addOrigin(url.origin);
+    NODE_FETCH.inflight++;
+    let done;
+    try {
+      done = await enqueue(item);
+    } catch (e) { NODE_FETCH.inflight--; throw e; }
+    rec(key, 'net', 'node.request', `${method} ${item.target} ${item.bodyDigest}`);
+    const headers = new Headers(init.headers || (typeof input === 'object' && input.headers) || {});
+    headers.set('x-detjs-test', testIdOf(key));
+    headers.set('x-detjs-msg', String(item.lsId));
+    headers.set('x-detjs-t', String(item.lsT));
+    try {
+      const resp = await realFetch(input, { ...init, headers });
+      const buf = Buffer.from(await resp.arrayBuffer());
+      rec(key, 'net', 'node.done', `${method} ${item.target} ${resp.status} ${digest(buf)}`);
+      return new Response(resp.status === 204 || resp.status === 304 ? null : buf, { status: resp.status, statusText: resp.statusText, headers: resp.headers });
+    } catch (e) {
+      rec(key, 'net', 'node.done', `${method} ${item.target} error`);
+      throw e;
+    } finally {
+      NODE_FETCH.inflight--;
+      done();
+    }
+  };
+  Object.defineProperty(f, '__detjs', { value: true });
+  globalThis.fetch = f;
 }
 
 // ------------------------------------------- seeds of the test code itself
@@ -999,6 +1083,8 @@ if (LOCKSTEP) {
     record: (key, source, op, value) => recNow(key, source, op, value),
   });
   LS.navPending = NAV.pending;
+  LS.extraWaiting = () => NODE_FETCH.inflight;
+  patchNodeFetch();
 }
 installWorkerSeeds();
 

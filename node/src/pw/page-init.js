@@ -132,7 +132,7 @@ function pageInit(seedHi, seedLo) {
       try { Object.defineProperty(G, name, { value: Wrapped, writable: true, configurable: true }); } catch (e) { /* frozen */ }
     });
     Object.defineProperty(G, '__detjs', {
-      value: { reqs: function () { return reqs; }, stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
+      value: { reqs: function () { return reqs; }, vnow: (function (D) { return function () { return D.now(); }; })(Date), stats: function () { return { random: stats.random, crypto: stats.crypto, uuid: stats.uuid, digest: stats.dr.toString(16) + '.' + stats.dc.toString(16) }; } },
       enumerable: false,
     });
   })();
