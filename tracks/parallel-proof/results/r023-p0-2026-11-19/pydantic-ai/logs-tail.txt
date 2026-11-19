@@ -1,0 +1,1732 @@
+==> /home/runner/work/_temp/out/det-n-a.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+.............................................F                           [ 15%]tests/models/test_batch.py:578 test_a_streamed_run_can_end_pending_and_be_collected_later. [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+...................................................................F     [ 18%]tests/models/test_bedrock.py:629 test_bedrock_extra_headers_registration_is_serialized_across_threads. [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+.................................x...................................... [ 33%]
+........................................................................ [ 34%]
+..............x......................................................... [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+......s..........................s.................................s.... [ 38%]
+......s...........s..............................s.s.......s.s..s..s..s. [ 39%]
+............s............................s............s................. [ 40%]
+......s........s......s.....s.....s...........s.ss..............s..s.... [ 41%]
+........................................s....................s...s...... [ 42%]
+..s...............s..s..s............................................... [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+................s...........s...........................s............... [ 49%]
+...........................................s......s...s.s........s..s... [ 50%]
+..........s............................................................. [ 51%]
+...............................................................s........ [ 52%]
+s.................................s..............s.......s..s.s........s [ 53%]
+.....s.................................................................. [ 54%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+...................s.................................................... [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+..s..................................................................... [ 82%]
+........................................................................ [ 83%]
+..........s............................................................. [ 84%]
+........................................................................ [ 85%]
+.........................s...............s...........................s.. [ 86%]
+....................ss...ss..ss...............s..s..............s...ss.. [ 87%]
+s....................................................................... [ 87%]
+............s........................................................... [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+............................................s........................... [ 95%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+....................................                                     [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+=================================== FAILURES ===================================
+__________ test_a_streamed_run_can_end_pending_and_be_collected_later __________
+[gw0] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+
+    async def test_a_streamed_run_can_end_pending_and_be_collected_later() -> None:
+        wrapped = SlowBatchTestModel(pending_checks=1)
+        agent = Agent(
+            wrapped, output_type=[str, PendingModelResponse], capabilities=[BatchModelRequests(**FAST_BATCH_SETTINGS)]
+        )
+        async with agent.run_stream('Hello') as result:
+            pending = await result.get_output()
+        assert isinstance(pending, PendingModelResponse)
+        history = result.all_messages()
+    
+        async with agent.run_stream(message_history=history) as result:
+            assert isinstance(await result.get_output(), PendingModelResponse)
+            history = result.all_messages()
+        async with agent.run_stream(message_history=history) as result:
+>           assert await result.get_output() == 'success (no tool calls)'
+E           AssertionError: assert PendingModelResponse(response=ModelResponse(parts=[], usage=RequestUsage(), model_id='test:test', timestamp=datetime.d..._id='01a1eac5-829e-7434-8c21-5650cdd0050f', conversation_id='01a1eac5-829f-7434-8c21-5651924c7c93', state='suspended')) == 'success (no tool calls)'
+
+tests/models/test_batch.py:593: AssertionError
+_____ test_bedrock_extra_headers_registration_is_serialized_across_threads _____
+[gw3] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 666, in test_bedrock_extra_headers_registration_is_serialized_across_threads
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 664, in run_request
+    |     anyio.run(make_request, name)
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+    |     return async_backend.run(func, args, {}, backend_options)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+    |     return runner.run(wrapper())
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/runners.py", line 118, in run
+    |     return self._loop.run_until_complete(task)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    |     return future.result()
+    |            ^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+    |     return await func(*args)
+    |            ^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 660, in make_request
+    |     await _count_tokens_with_headers(model, name, {'Tenant': name})
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 554, in _count_tokens_with_headers
+    |     await model.count_tokens([ModelRequest.user_text_prompt(prompt)], settings, ModelRequestParameters())
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/__init__.py", line 266, in budgeted
+    |     return await method(*args, **kwargs)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 1324, in count_tokens
+    |     response = await _call_bedrock(client, client.count_tokens, params, settings.get('extra_headers'))
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 357, in _call_bedrock
+    |     _register_extra_headers(client)
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 337, in _register_extra_headers
+    |     with _EXTRA_HEADERS_REGISTRATION_LOCK:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 259, in __enter__
+    |     return self.acquire()
+    |            ^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 253, in acquire
+    |     return _lock_acquire(self._lock, blocking, timeout)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/blockbuster/blockbuster.py", line 110, in wrapper
+    |     raise BlockingError(func_name)
+    | blockbuster.blockbuster.BlockingError: Blocking call to lock.acquire
+    +------------------------------------
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+=============================== detpy (Level 0) ================================
+trace: /home/runner/work/_temp/out/det-n-a.jsonl  order digest: 923fe60fd970fd613c8df0cab3458075  seed: 0
+plan abafc429cc0833d55e80cbba1e529f59: 4 workers (ran/planned gw0=2018/2018, gw1=2018/2018, gw2=2018/2018, gw3=2018/2018), planned makespan 2018.0s (LPT 2018.0s); reused by the controller: 0
+merged trace: 8072 tests from 4 worker traces
+worker startup and collection of 8072 tests took 38.0s (slowest worker collected in 0.0s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (0.01s), tests/models/anthropic/test_unpaired_native_tool_calls.py (0.00s), tests/models/test_download_item.py (0.00s), tests/models/test_openai_responses.py (0.00s), tests/models/test_model.py (0.00s), tests/models/anthropic/test_web_tools.py (0.00s), tests/models/test_openai_prompt_cache.py (0.00s), tests/models/test_model_settings_delta.py (0.00s), tests/models/test_system_voice_fallback.py (0.00s), tests/models/test_deepseek.py (0.00s)
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/mode…  │  test_a_str…  │  579          │  593         │  AssertionE…  │
+│  tests/mode…  │  test_bedro…  │  630          │              │               │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (171.21s):
+         2 failed
+      7997 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/det-n-b.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+...........................F                                             [ 19%]tests/models/test_batch.py:578 test_a_streamed_run_can_end_pending_and_be_collected_later. [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+......................................F                                  [ 24%]tests/models/test_bedrock.py:629 test_bedrock_extra_headers_registration_is_serialized_across_threads. [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+....................................................x................... [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................x............... [ 40%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+.................................................s...................... [ 42%]
+........................................................................ [ 43%]
+.....................s.........s.s.s............................s.....s. [ 44%]
+.....s.........s........................................................ [ 45%]
+.................................s...................................... [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+........................................................................ [ 49%]
+.......................................s....s......s.................... [ 50%]
+.................s.......................s................s......s..s.s. [ 51%]
+...s...........s.........s.............................................. [ 52%]
+..........s........s.............s......s........s....s.s.s.s..s...s.... [ 53%]
+....s...s.ss....................ss.ss..s........s..s..s............s.s.. [ 54%]
+.......................................ss............................... [ 55%]
+......s..........................s..s..s.......s.s..s.s.........s....... [ 56%]
+..................................s..................................... [ 57%]
+....s..............................s...................s.s.s...s........ [ 57%]
+..................................s..................................... [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+............................s........................................... [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+......s................................................................. [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+.......................s................................................ [ 95%]
+........................................................................ [ 96%]
+............................s...............................s........... [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+...........                                                              [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+=================================== FAILURES ===================================
+__________ test_a_streamed_run_can_end_pending_and_be_collected_later __________
+[gw2] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+
+    async def test_a_streamed_run_can_end_pending_and_be_collected_later() -> None:
+        wrapped = SlowBatchTestModel(pending_checks=1)
+        agent = Agent(
+            wrapped, output_type=[str, PendingModelResponse], capabilities=[BatchModelRequests(**FAST_BATCH_SETTINGS)]
+        )
+        async with agent.run_stream('Hello') as result:
+            pending = await result.get_output()
+        assert isinstance(pending, PendingModelResponse)
+        history = result.all_messages()
+    
+        async with agent.run_stream(message_history=history) as result:
+            assert isinstance(await result.get_output(), PendingModelResponse)
+            history = result.all_messages()
+        async with agent.run_stream(message_history=history) as result:
+>           assert await result.get_output() == 'success (no tool calls)'
+E           AssertionError: assert PendingModelResponse(response=ModelResponse(parts=[], usage=RequestUsage(), model_id='test:test', timestamp=datetime.d..._id='01a1eac5-829e-70db-9d31-97049e70b18a', conversation_id='01a1eac5-829f-70db-9d31-970575bc4cd0', state='suspended')) == 'success (no tool calls)'
+
+tests/models/test_batch.py:593: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+_____ test_bedrock_extra_headers_registration_is_serialized_across_threads _____
+[gw2] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 666, in test_bedrock_extra_headers_registration_is_serialized_across_threads
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 664, in run_request
+    |     anyio.run(make_request, name)
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+    |     return async_backend.run(func, args, {}, backend_options)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+    |     return runner.run(wrapper())
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/runners.py", line 118, in run
+    |     return self._loop.run_until_complete(task)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    |     return future.result()
+    |            ^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+    |     return await func(*args)
+    |            ^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 660, in make_request
+    |     await _count_tokens_with_headers(model, name, {'Tenant': name})
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 554, in _count_tokens_with_headers
+    |     await model.count_tokens([ModelRequest.user_text_prompt(prompt)], settings, ModelRequestParameters())
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/__init__.py", line 266, in budgeted
+    |     return await method(*args, **kwargs)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 1324, in count_tokens
+    |     response = await _call_bedrock(client, client.count_tokens, params, settings.get('extra_headers'))
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 357, in _call_bedrock
+    |     _register_extra_headers(client)
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 337, in _register_extra_headers
+    |     with _EXTRA_HEADERS_REGISTRATION_LOCK:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 259, in __enter__
+    |     return self.acquire()
+    |            ^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 253, in acquire
+    |     return _lock_acquire(self._lock, blocking, timeout)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/blockbuster/blockbuster.py", line 110, in wrapper
+    |     raise BlockingError(func_name)
+    | blockbuster.blockbuster.BlockingError: Blocking call to lock.acquire
+    +------------------------------------
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+=============================== detpy (Level 0) ================================
+trace: /home/runner/work/_temp/out/det-n-b.jsonl  order digest: 923fe60fd970fd613c8df0cab3458075  seed: 0
+plan 8d9fda7b7f634d6c450b19a1d6f8e1a4: 4 workers (ran/planned gw0=2012/2012, gw1=2008/2008, gw2=2022/2022, gw3=2030/2030), planned makespan 91.3s (LPT 91.3s); reused by the controller: 0
+merged trace: 8072 tests from 4 worker traces
+worker startup and collection of 8072 tests took 40.0s (slowest worker collected in 0.0s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (0.01s), tests/models/anthropic/test_unpaired_native_tool_calls.py (0.00s), tests/models/test_download_item.py (0.00s), tests/models/test_openai_responses.py (0.00s), tests/models/test_model.py (0.00s), tests/models/anthropic/test_web_tools.py (0.00s), tests/models/test_openai_prompt_cache.py (0.00s), tests/models/test_model_settings_delta.py (0.00s), tests/models/test_system_voice_fallback.py (0.00s), tests/models/test_deepseek.py (0.00s)
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/mode…  │  test_a_str…  │  579          │  593         │  AssertionE…  │
+│  tests/mode…  │  test_bedro…  │  630          │              │               │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (161.16s):
+         2 failed
+      7997 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/det-n-c.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................F                [ 20%]tests/models/test_batch.py:578 test_a_streamed_run_can_end_pending_and_be_collected_later. [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 23%]
+..........................................................F              [ 24%]tests/models/test_bedrock.py:629 test_bedrock_extra_headers_registration_is_serialized_across_threads. [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+.......................x................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+....................x................................................... [ 40%]
+........................................................................ [ 41%]
+...................................s.................................... [ 42%]
+........................................................................ [ 43%]
+......s...........ss.s........................s......s...........s....s. [ 44%]
+........................................................................ [ 45%]
+........s............................................................... [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+...............................................................s....s..s [ 50%]
+.......................................................s................ [ 51%]
+................s................................s..ss..s..............s [ 52%]
+.s..........s..............s..................s..........s.......s...... [ 53%]
+.s..ss..ss....s......s...............s......ss...s.....................s [ 54%]
+..ss.s.s........s...s.s............s.s.................................. [ 54%]
+........s.s..................................s...................s.s...s [ 55%]
+......s.s..s..s..........s.............................................. [ 56%]
+....s....................................s.............................s [ 57%]
+.....................s...ss..s.......................................... [ 58%]
+....s................................................................... [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 79%]
+..s..................................................................... [ 80%]
+........................................................................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+...........................................s............................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+.................................s...................................... [ 95%]
+........................................................................ [ 96%]
+..........................................................s............. [ 96%]
+........................................................................ [ 97%]
+.........................s.............................................. [ 98%]
+........................................................................ [ 99%]
+..................................                                       [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+=================================== FAILURES ===================================
+__________ test_a_streamed_run_can_end_pending_and_be_collected_later __________
+[gw2] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+
+    async def test_a_streamed_run_can_end_pending_and_be_collected_later() -> None:
+        wrapped = SlowBatchTestModel(pending_checks=1)
+        agent = Agent(
+            wrapped, output_type=[str, PendingModelResponse], capabilities=[BatchModelRequests(**FAST_BATCH_SETTINGS)]
+        )
+        async with agent.run_stream('Hello') as result:
+            pending = await result.get_output()
+        assert isinstance(pending, PendingModelResponse)
+        history = result.all_messages()
+    
+        async with agent.run_stream(message_history=history) as result:
+            assert isinstance(await result.get_output(), PendingModelResponse)
+            history = result.all_messages()
+        async with agent.run_stream(message_history=history) as result:
+>           assert await result.get_output() == 'success (no tool calls)'
+E           AssertionError: assert PendingModelResponse(response=ModelResponse(parts=[], usage=RequestUsage(), model_id='test:test', timestamp=datetime.d..._id='01a1eac5-829e-74da-947f-c58c832960af', conversation_id='01a1eac5-829f-74da-947f-c58d884bb0de', state='suspended')) == 'success (no tool calls)'
+
+tests/models/test_batch.py:593: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+_____ test_bedrock_extra_headers_registration_is_serialized_across_threads _____
+[gw2] linux -- Python 3.12.16 /home/runner/work/_temp/venv/bin/python
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 666, in test_bedrock_extra_headers_registration_is_serialized_across_threads
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 664, in run_request
+    |     anyio.run(make_request, name)
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+    |     return async_backend.run(func, args, {}, backend_options)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+    |     return runner.run(wrapper())
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/runners.py", line 118, in run
+    |     return self._loop.run_until_complete(task)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    |     return future.result()
+    |            ^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+    |     return await func(*args)
+    |            ^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 660, in make_request
+    |     await _count_tokens_with_headers(model, name, {'Tenant': name})
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 554, in _count_tokens_with_headers
+    |     await model.count_tokens([ModelRequest.user_text_prompt(prompt)], settings, ModelRequestParameters())
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/__init__.py", line 266, in budgeted
+    |     return await method(*args, **kwargs)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 1324, in count_tokens
+    |     response = await _call_bedrock(client, client.count_tokens, params, settings.get('extra_headers'))
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 357, in _call_bedrock
+    |     _register_extra_headers(client)
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 337, in _register_extra_headers
+    |     with _EXTRA_HEADERS_REGISTRATION_LOCK:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 259, in __enter__
+    |     return self.acquire()
+    |            ^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 253, in acquire
+    |     return _lock_acquire(self._lock, blocking, timeout)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/blockbuster/blockbuster.py", line 110, in wrapper
+    |     raise BlockingError(func_name)
+    | blockbuster.blockbuster.BlockingError: Blocking call to lock.acquire
+    +------------------------------------
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+=============================== detpy (Level 0) ================================
+trace: /home/runner/work/_temp/out/det-n-c.jsonl  order digest: 923fe60fd970fd613c8df0cab3458075  seed: 0
+plan 8d9fda7b7f634d6c450b19a1d6f8e1a4: 4 workers (ran/planned gw0=2012/2012, gw1=2008/2008, gw2=2022/2022, gw3=2030/2030), planned makespan 96.3s (LPT 94.9s), sticky; reused by the controller: 0
+merged trace: 8072 tests from 4 worker traces
+worker startup and collection of 8072 tests took 38.0s (slowest worker collected in 0.0s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (0.01s), tests/models/anthropic/test_unpaired_native_tool_calls.py (0.00s), tests/models/test_download_item.py (0.00s), tests/models/test_openai_responses.py (0.00s), tests/models/test_model.py (0.00s), tests/models/anthropic/test_web_tools.py (0.00s), tests/models/test_openai_prompt_cache.py (0.00s), tests/models/test_model_settings_delta.py (0.00s), tests/models/test_system_voice_fallback.py (0.00s), tests/models/test_deepseek.py (0.00s)
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/mode…  │  test_a_str…  │  579          │  593         │  AssertionE…  │
+│  tests/mode…  │  test_bedro…  │  630          │              │               │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (156.97s):
+         2 failed
+      7997 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/det-serial-a.log <==
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+.................................................................F       [ 17%]tests/models/test_batch.py:578 test_a_streamed_run_can_end_pending_and_be_collected_later. [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+.................................................F                       [ 20%]tests/models/test_bedrock.py:629 test_bedrock_extra_headers_registration_is_serialized_across_threads. [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+.........................xx............................................. [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+.........................s..........s..........s..........s..........s.. [ 49%]
+........s..........s..........s..........s..........s..........s........ [ 50%]
+..s..........s..ss......s..ss.s....sssssss....ssssss.....s..........s... [ 51%]
+.......s..........s..........s..........s..........s..........s......... [ 52%]
+.s..........s..........s..........s..........s..ss......s..ss.s....sssss [ 53%]
+ss....ssssss.....s..........s........................................... [ 54%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+.......................................................s................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+......................s................................................. [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+......s.......................s...............................s......... [ 96%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+..................................                                       [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+=================================== FAILURES ===================================
+__________ test_a_streamed_run_can_end_pending_and_be_collected_later __________
+
+    async def test_a_streamed_run_can_end_pending_and_be_collected_later() -> None:
+        wrapped = SlowBatchTestModel(pending_checks=1)
+        agent = Agent(
+            wrapped, output_type=[str, PendingModelResponse], capabilities=[BatchModelRequests(**FAST_BATCH_SETTINGS)]
+        )
+        async with agent.run_stream('Hello') as result:
+            pending = await result.get_output()
+        assert isinstance(pending, PendingModelResponse)
+        history = result.all_messages()
+    
+        async with agent.run_stream(message_history=history) as result:
+            assert isinstance(await result.get_output(), PendingModelResponse)
+            history = result.all_messages()
+        async with agent.run_stream(message_history=history) as result:
+>           assert await result.get_output() == 'success (no tool calls)'
+E           AssertionError: assert PendingModelResponse(response=ModelResponse(parts=[], usage=RequestUsage(), model_id='test:test', timestamp=datetime.d..._id='01a1eac5-82cd-72db-8521-bc723ff24d39', conversation_id='01a1eac5-82ce-72db-8521-bc7311296cd0', state='suspended')) == 'success (no tool calls)'
+
+tests/models/test_batch.py:593: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+_____ test_bedrock_extra_headers_registration_is_serialized_across_threads _____
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 666, in test_bedrock_extra_headers_registration_is_serialized_across_threads
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 664, in run_request
+    |     anyio.run(make_request, name)
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+    |     return async_backend.run(func, args, {}, backend_options)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+    |     return runner.run(wrapper())
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/runners.py", line 118, in run
+    |     return self._loop.run_until_complete(task)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    |     return future.result()
+    |            ^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+    |     return await func(*args)
+    |            ^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 660, in make_request
+    |     await _count_tokens_with_headers(model, name, {'Tenant': name})
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 554, in _count_tokens_with_headers
+    |     await model.count_tokens([ModelRequest.user_text_prompt(prompt)], settings, ModelRequestParameters())
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/__init__.py", line 266, in budgeted
+    |     return await method(*args, **kwargs)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 1324, in count_tokens
+    |     response = await _call_bedrock(client, client.count_tokens, params, settings.get('extra_headers'))
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 357, in _call_bedrock
+    |     _register_extra_headers(client)
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 337, in _register_extra_headers
+    |     with _EXTRA_HEADERS_REGISTRATION_LOCK:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 259, in __enter__
+    |     return self.acquire()
+    |            ^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 253, in acquire
+    |     return _lock_acquire(self._lock, blocking, timeout)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/blockbuster/blockbuster.py", line 110, in wrapper
+    |     raise BlockingError(func_name)
+    | blockbuster.blockbuster.BlockingError: Blocking call to lock.acquire
+    +------------------------------------
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+=============================== detpy (Level 0) ================================
+trace: /home/runner/work/_temp/out/det-serial-a.jsonl  order digest: 923fe60fd970fd613c8df0cab3458075  seed: 0
+collection of 8072 tests took 0.0s
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (0.01s), tests/models/anthropic/test_unpaired_native_tool_calls.py (0.00s), tests/models/test_download_item.py (0.00s), tests/models/test_openai_responses.py (0.00s), tests/models/test_model.py (0.00s), tests/models/anthropic/test_web_tools.py (0.00s), tests/models/test_openai_prompt_cache.py (0.00s), tests/models/test_model_settings_delta.py (0.00s), tests/models/test_system_voice_fallback.py (0.00s), tests/models/xai/test_native_tool_results.py (0.00s)
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/mode…  │  test_a_str…  │  579          │  593         │  AssertionE…  │
+│  tests/mode…  │  test_bedro…  │  630          │              │               │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (270.80s):
+         2 failed
+      7997 passed
+        71 skipped
+         8 deselected
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/det-serial-b.log <==
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+.................................................................F       [ 17%]tests/models/test_batch.py:578 test_a_streamed_run_can_end_pending_and_be_collected_later. [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+.................................................F                       [ 20%]tests/models/test_bedrock.py:629 test_bedrock_extra_headers_registration_is_serialized_across_threads. [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+.........................xx............................................. [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+.........................s..........s..........s..........s..........s.. [ 49%]
+........s..........s..........s..........s..........s..........s........ [ 50%]
+..s..........s..ss......s..ss.s....sssssss....ssssss.....s..........s... [ 51%]
+.......s..........s..........s..........s..........s..........s......... [ 52%]
+.s..........s..........s..........s..........s..ss......s..ss.s....sssss [ 53%]
+ss....ssssss.....s..........s........................................... [ 54%]
+........................................................................ [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+.......................................................s................ [ 81%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+......................s................................................. [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+......s.......................s...............................s......... [ 96%]
+........................................................................ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+..................................                                       [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+=================================== FAILURES ===================================
+__________ test_a_streamed_run_can_end_pending_and_be_collected_later __________
+
+    async def test_a_streamed_run_can_end_pending_and_be_collected_later() -> None:
+        wrapped = SlowBatchTestModel(pending_checks=1)
+        agent = Agent(
+            wrapped, output_type=[str, PendingModelResponse], capabilities=[BatchModelRequests(**FAST_BATCH_SETTINGS)]
+        )
+        async with agent.run_stream('Hello') as result:
+            pending = await result.get_output()
+        assert isinstance(pending, PendingModelResponse)
+        history = result.all_messages()
+    
+        async with agent.run_stream(message_history=history) as result:
+            assert isinstance(await result.get_output(), PendingModelResponse)
+            history = result.all_messages()
+        async with agent.run_stream(message_history=history) as result:
+>           assert await result.get_output() == 'success (no tool calls)'
+E           AssertionError: assert PendingModelResponse(response=ModelResponse(parts=[], usage=RequestUsage(), model_id='test:test', timestamp=datetime.d..._id='01a1eac5-82cd-718e-99e4-d38fafcb4a99', conversation_id='01a1eac5-82ce-718e-99e4-d390661e199f', state='suspended')) == 'success (no tool calls)'
+
+tests/models/test_batch.py:593: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+_____ test_bedrock_extra_headers_registration_is_serialized_across_threads _____
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 666, in test_bedrock_extra_headers_registration_is_serialized_across_threads
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 847, in __aexit__
+  |     raise BaseExceptionGroup(
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_tasks.py", line 327, in _run_coro
+    |     retval = await self._coro
+    |              ^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/to_thread.py", line 65, in run_sync
+    |     return await get_async_backend().run_sync_in_worker_thread(
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    |     return await future
+    |            ^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    |     result = context.run(func, *args)
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 664, in run_request
+    |     anyio.run(make_request, name)
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_core/_eventloop.py", line 83, in run
+    |     return async_backend.run(func, args, {}, backend_options)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2548, in run
+    |     return runner.run(wrapper())
+    |            ^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/runners.py", line 118, in run
+    |     return self._loop.run_until_complete(task)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    |     return future.result()
+    |            ^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 2531, in wrapper
+    |     return await func(*args)
+    |            ^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 660, in make_request
+    |     await _count_tokens_with_headers(model, name, {'Tenant': name})
+    |   File "/home/runner/work/_temp/repo/tests/models/test_bedrock.py", line 554, in _count_tokens_with_headers
+    |     await model.count_tokens([ModelRequest.user_text_prompt(prompt)], settings, ModelRequestParameters())
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/__init__.py", line 266, in budgeted
+    |     return await method(*args, **kwargs)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 1324, in count_tokens
+    |     response = await _call_bedrock(client, client.count_tokens, params, settings.get('extra_headers'))
+    |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 357, in _call_bedrock
+    |     _register_extra_headers(client)
+    |   File "/home/runner/work/_temp/repo/pydantic_ai_slim/pydantic_ai/models/bedrock.py", line 337, in _register_extra_headers
+    |     with _EXTRA_HEADERS_REGISTRATION_LOCK:
+    |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 259, in __enter__
+    |     return self.acquire()
+    |            ^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/detpy/clock.py", line 253, in acquire
+    |     return _lock_acquire(self._lock, blocking, timeout)
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |   File "/home/runner/work/_temp/venv/lib/python3.12/site-packages/blockbuster/blockbuster.py", line 110, in wrapper
+    |     raise BlockingError(func_name)
+    | blockbuster.blockbuster.BlockingError: Blocking call to lock.acquire
+    +------------------------------------
+---------------------------- Captured stderr setup -----------------------------
+18:29:35.000 | WARNING | opentelemetry.sdk.metrics._internal - shutdown can only be called once
+------------------------------ Captured log setup ------------------------------
+WARNING  opentelemetry.sdk.metrics._internal:__init__.py:568 shutdown can only be called once
+=============================== detpy (Level 0) ================================
+trace: /home/runner/work/_temp/out/det-serial-b.jsonl  order digest: 923fe60fd970fd613c8df0cab3458075  seed: 0
+collection of 8072 tests took 0.0s
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (0.01s), tests/models/anthropic/test_unpaired_native_tool_calls.py (0.00s), tests/models/test_download_item.py (0.00s), tests/models/test_openai_responses.py (0.00s), tests/models/test_model.py (0.00s), tests/models/anthropic/test_web_tools.py (0.00s), tests/models/test_openai_prompt_cache.py (0.00s), tests/models/test_model_settings_delta.py (0.00s), tests/models/test_system_voice_fallback.py (0.00s), tests/models/xai/test_native_tool_results.py (0.00s)
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/mode…  │  test_a_str…  │  579          │  593         │  AssertionE…  │
+│  tests/mode…  │  test_bedro…  │  630          │              │               │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (266.57s):
+         2 failed
+      7997 passed
+        71 skipped
+         8 deselected
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/plain-n.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+..................x..x.................................................. [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+.............................s...........s.........s...........s........ [ 49%]
+s..........s.............s.......s...........s............s........s.... [ 50%]
+.....s............s.s...s....s.ss...s...sss.ssss..sss..s.ss.s........... [ 51%]
+.s.........s...........s........s............s.........s..........s..... [ 52%]
+......s...........s.........s.........s..........s...s...s....s.s.ss...s [ 53%]
+.s.sssss..s.s.ssss....s.........s....................................... [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+.................................................................s...... [ 82%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+.............................s.......................................... [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+......s........................s...............................s........ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+........................................................................ [ 99%]
+........                                                                 [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+worker startup and collection of 8072 tests took 21.0s (slowest worker collected in 15.5s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (1.45s), tests/models/test_unsupported_setting_warning.py (1.38s), tests/harness/code_mode/test_temporal.py (1.11s), tests/models/test_cohere.py (0.65s), tests/harness/code_mode/test_dbos.py (0.61s), tests/models/test_mcp_sampling.py (0.45s), tests/models/test_model.py (0.42s), tests/models/test_error_categories.py (0.36s), tests/models/test_unattributed_compaction.py (0.33s), tests/models/test_typesafe.py (0.28s)
+Results (134.79s):
+      7999 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/plain-n@2.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+........................x.x............................................. [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+...............................s........s..........s..........s......... [ 49%]
+..s.........s..........s.........s............s.........s..........s.... [ 50%]
+.....s............ss..s.....ss.s...s....sss.sss.s.sss.s.s.s...s......... [ 51%]
+s...........s.........s........s............s...........s.........s..... [ 52%]
+.......s........s..........s..........s..........ss......s..s....sss...s [ 53%]
+sss..ss.ss.s.sss..s...s.........s....................................... [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+................................................................s....... [ 82%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+............................s........................................... [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+........s............................s..........................s....... [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+........................................................................ [ 99%]
+........                                                                 [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+worker startup and collection of 8072 tests took 21.1s (slowest worker collected in 15.5s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (1.45s), tests/models/test_unsupported_setting_warning.py (1.39s), tests/harness/code_mode/test_temporal.py (1.10s), tests/models/test_cohere.py (0.61s), tests/harness/code_mode/test_dbos.py (0.60s), tests/models/test_mcp_sampling.py (0.45s), tests/models/test_model.py (0.41s), tests/models/test_error_categories.py (0.36s), tests/models/test_unattributed_compaction.py (0.32s), tests/models/anthropic/test_code_execution_files.py (0.29s)
+Results (131.71s):
+      7999 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/plain-n@3.log <==
+bringing up nodes...
+bringing up nodes...
+
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+........................................................................ [ 35%]
+........................................................................ [ 36%]
+...............xx....................................................... [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+........................................................................ [ 49%]
+.............................s...........s.........s..........s......... [ 49%]
+s...........s...........s........s...........s...........s.........s.... [ 50%]
+......s...........ss..s.....ss..s...s..ss.ss.s.ss.ss.ss..ss..s.......... [ 51%]
+s..........s..........s.........s............s.........s.........s...... [ 52%]
+.....s...........s...........s........s...........s.s....s..sss......s.. [ 53%]
+ssss.ss.s.ss.ss.s.s...s.........s....................................... [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+..............................................................s......... [ 82%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+........................................................................ [ 85%]
+..............................s......................................... [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+........................................................................ [ 95%]
+....s...............................s..........................s........ [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+........................................................................ [ 99%]
+........                                                                 [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+worker startup and collection of 8072 tests took 21.3s (slowest worker collected in 15.5s)
+slowest test modules to collect: tests/harness/code_mode/test_prefect.py (1.44s), tests/models/test_unsupported_setting_warning.py (1.38s), tests/harness/code_mode/test_temporal.py (1.11s), tests/harness/code_mode/test_dbos.py (0.63s), tests/models/test_cohere.py (0.62s), tests/models/test_mcp_sampling.py (0.45s), tests/models/test_model.py (0.41s), tests/models/test_error_categories.py (0.36s), tests/models/test_unattributed_compaction.py (0.32s), tests/models/anthropic/test_code_execution_files.py (0.29s)
+Results (135.19s):
+      7999 passed
+        71 skipped
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+==> /home/runner/work/_temp/out/plain-serial.log <==
+........................................................................ [  0%]
+........................................................................ [  1%]
+........................................................................ [  2%]
+........................................................................ [  3%]
+........................................................................ [  4%]
+........................................................................ [  5%]
+........................................................................ [  6%]
+........................................................................ [  7%]
+........................................................................ [  8%]
+........................................................................ [  8%]
+........................................................................ [  9%]
+........................................................................ [ 10%]
+........................................................................ [ 11%]
+........................................................................ [ 12%]
+........................................................................ [ 13%]
+........................................................................ [ 14%]
+........................................................................ [ 15%]
+........................................................................ [ 16%]
+........................................................................ [ 16%]
+........................................................................ [ 17%]
+........................................................................ [ 18%]
+........................................................................ [ 19%]
+........................................................................ [ 20%]
+........................................................................ [ 21%]
+........................................................................ [ 22%]
+........................................................................ [ 23%]
+........................................................................ [ 24%]
+........................................................................ [ 24%]
+........................................................................ [ 25%]
+........................................................................ [ 26%]
+........................................................................ [ 27%]
+........................................................................ [ 28%]
+........................................................................ [ 29%]
+........................................................................ [ 30%]
+........................................................................ [ 31%]
+........................................................................ [ 32%]
+........................................................................ [ 33%]
+........................................................................ [ 33%]
+........................................................................ [ 34%]
+.......................................................................x [ 35%]
+x....................................................................... [ 36%]
+........................................................................ [ 37%]
+........................................................................ [ 38%]
+........................................................................ [ 39%]
+........................................................................ [ 40%]
+........................................................................ [ 41%]
+........................................................................ [ 41%]
+........................................................................ [ 42%]
+........................................................................ [ 43%]
+........................................................................ [ 44%]
+........................................................................ [ 45%]
+........................................................................ [ 46%]
+........................................................................ [ 47%]
+........................................................................ [ 48%]
+.......................................................................s [ 49%]
+..........s..........s..........s..........s..........s..........s...... [ 49%]
+....s..........s..........s..........s..........s..........s..ss......s. [ 50%]
+.ss.s....sssssss....ssssss.....s..........s..........s..........s....... [ 51%]
+...s..........s..........s..........s..........s..........s..........s.. [ 52%]
+........s..........s..ss......s..ss.s....sssssss....ssssss.....s........ [ 53%]
+..s..................................................................... [ 54%]
+........................................................................ [ 55%]
+........................................................................ [ 56%]
+........................................................................ [ 57%]
+........................................................................ [ 57%]
+........................................................................ [ 58%]
+........................................................................ [ 59%]
+........................................................................ [ 60%]
+........................................................................ [ 61%]
+........................................................................ [ 62%]
+........................................................................ [ 63%]
+........................................................................ [ 64%]
+........................................................................ [ 65%]
+........................................................................ [ 66%]
+........................................................................ [ 66%]
+........................................................................ [ 67%]
+........................................................................ [ 68%]
+........................................................................ [ 69%]
+........................................................................ [ 70%]
+........................................................................ [ 71%]
+........................................................................ [ 72%]
+........................................................................ [ 73%]
+........................................................................ [ 74%]
+........................................................................ [ 74%]
+........................................................................ [ 75%]
+........................................................................ [ 76%]
+........................................................................ [ 77%]
+........................................................................ [ 78%]
+........................................................................ [ 79%]
+........................................................................ [ 80%]
+........................................................................ [ 81%]
+.............................s.......................................... [ 82%]
+........................................................................ [ 82%]
+........................................................................ [ 83%]
+........................................................................ [ 84%]
+....................................................................s... [ 85%]
+........................................................................ [ 86%]
+........................................................................ [ 87%]
+........................................................................ [ 88%]
+........................................................................ [ 89%]
+........................................................................ [ 90%]
+........................................................................ [ 90%]
+........................................................................ [ 91%]
+........................................................................ [ 92%]
+........................................................................ [ 93%]
+........................................................................ [ 94%]
+....................................................s................... [ 95%]
+....s...............................s................................... [ 96%]
+........................................................................ [ 97%]
+........................................................................ [ 98%]
+........................................................................ [ 99%]
+........................................................................ [ 99%]
+........                                                                 [100%]
+
+═══════════════════════════════ inline-snapshot ════════════════════════════════
+INFO: CI run was detected because environment variable "CI" was defined. 
+inline-snapshot runs with --inline-snapshot=disable by default in CI. This means
+that tests with snapshots will continue to run, but snapshot(x) will only return
+x and inline-snapshot will not be able to fix snapshots or generate reports. You
+can change this by using --inline-snapshot=report for example.
+
+
+collection of 8072 tests took 30.9s
+slowest test modules to collect: tests/harness/code_mode/test_dbos.py (2.06s), tests/models/test_unsupported_setting_warning.py (1.61s), tests/harness/code_mode/test_prefect.py (1.45s), tests/models/test_openai_responses.py (1.21s), tests/models/test_openai_responses_ws.py (0.98s), tests/models/test_mcp_sampling.py (0.90s), tests/harness/code_mode/test_temporal.py (0.85s), tests/models/test_bedrock.py (0.83s), tests/models/test_unattributed_compaction.py (0.81s), tests/models/test_download_item.py (0.81s)
+Results (309.96s):
+      7999 passed
+        71 skipped
+         8 deselected
+         2 xfailed
+Leaked by a test, and dropped after it ended: unclosed event loop <_UnixSelectorEventLoop running=False closed=False debug=False>
