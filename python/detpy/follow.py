@@ -304,9 +304,9 @@ class Follower:
                 break
             cap.child_read(ctx, c)  # PATH search: the candidates before the program are inputs (missing)
         if detail is None:
-            from .proofcache import _spawn_detail
+            from .proofcache import _DETPY_DIR
 
-            detail = _spawn_detail("subprocess.Popen", (exe, argv))
+            detail = _core.cap_spawn_detail(_DETPY_DIR, "subprocess.Popen", (exe, argv))
         if args[5] is None:
             # the child inherits this process's environment and its getenv calls are not observable: the whole
             # environment is an input. An explicit env= was built by recorded code from recorded reads.

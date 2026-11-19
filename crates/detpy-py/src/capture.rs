@@ -5,7 +5,8 @@
 //! process), environment reads, Level 0 events and context switches used to run Python frames of `Capture`
 //! (`_audit`, `_caller_kind`'s frame walk, `_abs`, `read`, `_cur`, ...); here they are one Rust call each. The
 //! Python class `proofcache.Capture` subclasses `CaptureCore` and keeps what is interface: registering the
-//! `sys.monitoring` callbacks and the audit hook, patching `sqlite3.connect`, the child follower.
+//! `sys.monitoring` callbacks and the audit hook, patching `sqlite3.connect` (and the schema query through the real
+//! one), the child follower.
 //!
 //! Port of round 1/2's Python `Capture` (kept verbatim in `tests/rust_hotpaths_ref/_ref_proofcache.py`); stores,
 //! receipts and decisions are tested identical against it (`tests/test_capture_rust.py`). Same rules, same order
@@ -17,11 +18,13 @@
 //!   above themselves, which is the same frame once their own frames (gone here) are counted; detpy's own frames
 //!   are skipped as before.
 //!
-//! Python helpers still called from here, for rare events only (a socket connect, a name lookup, a spawn): the
-//! loopback-listener checks and the numeric-host test (they use `ipaddress`' parsing rules), the spawn detail and
-//! the follower's `announce`.
+//! The rare events' helpers (loopback checks of a socket connect, numeric host of a name lookup, the spawn detail) are
+//! in `sockcap.rs`, the sqlite trace in `sqlcap.rs`; the only Python still called from here is the follower's
+//! `announce`.
 
+use crate::fsorder::from_wtf8;
 use crate::level0::{self, Kind};
+use crate::sockcap;
 use crate::sysmon::{LineRecorder, SocketScan};
 use detpy_core::proof;
 use pyo3::ffi;
@@ -91,7 +94,7 @@ fn py_of<'py>(py: Python<'py>, w: &[u8]) -> PyResult<Bound<'py, PyAny>> {
 
 /// `os.fsencode` of the `str` `w`: valid UTF-8 as is, the escape surrogates U+DC80..U+DCFF back to their byte;
 /// None for another surrogate (not encodable).
-fn fs_bytes(w: &[u8]) -> Option<std::borrow::Cow<'_, [u8]>> {
+pub(crate) fn fs_bytes(w: &[u8]) -> Option<std::borrow::Cow<'_, [u8]>> {
     if std::str::from_utf8(w).is_ok() {
         return Some(std::borrow::Cow::Borrowed(w));
     }
@@ -441,6 +444,8 @@ pub struct CaptureCore {
     rec: Mutex<Option<Py<LineRecorder>>>,
     tool: Mutex<Option<i64>>,
     socks: Py<SocketScan>,
+    /// sqlite: database file -> (its signature, what in its schema reads the clock or None) (`sqlcap`)
+    pub(crate) sql_schema: Mutex<HashMap<W, (crate::sqlcap::SqlSig, Option<W>)>>,
     env0: Py<PyDict>,
     root: Py<PyString>,
 }
@@ -531,6 +536,37 @@ fn int_of(o: &Bound<'_, PyAny>) -> i64 {
         return 0;
     }
     o.extract::<i64>().unwrap_or(0)
+}
+
+/// `_first_user_site()`: `file:line` of the innermost frame outside detpy (`detpy_dir`) and the standard library.
+pub(crate) fn first_user_site(py: Python<'_>, detpy_dir: &[u8]) -> PyResult<W> {
+    let hub = Classifier::get(py)?;
+    let mut f = current_frame(py);
+    let mut first: Option<W> = None;
+    while let Some(fr) = f {
+        let (_code, fname) = code_filename(&fr)?;
+        if !starts_with_str(&fname, detpy_dir) {
+            let (kind, norm) = hub.classify(py, &fname)?;
+            let site = match norm {
+                Ok(n) => level0::site_of(&fr, &n)?.into_bytes(),
+                Err(()) => {
+                    // a path with surrogates: as Python formats it
+                    let norm = py.import("detpy._sites")?.getattr("_classify")?.call1((&fname,))?.get_item(1)?;
+                    let line = fr.getattr(intern!(py, "f_lineno"))?;
+                    let s = PyString::new(py, "{}:{}").call_method1("format", (norm, line))?;
+                    w_of(s.cast::<PyString>()?)?
+                }
+            };
+            if first.is_none() {
+                first = Some(site.clone());
+            }
+            if kind == Kind::User {
+                return Ok(site);
+            }
+        }
+        f = level0::back(&fr)?;
+    }
+    Ok(first.unwrap_or_else(|| b"?".to_vec()))
 }
 
 fn now() -> f64 {
@@ -699,7 +735,7 @@ impl CaptureCore {
     }
 
     /// `Capture._cur()`.
-    fn cur(&self, py: Python<'_>) -> PyResult<usize> {
+    pub(crate) fn cur(&self, py: Python<'_>) -> PyResult<usize> {
         if self.import_depth(py) > 0 {
             return self.import_ctx_of_frames(py);
         }
@@ -729,34 +765,8 @@ impl CaptureCore {
     }
 
     /// `_first_user_site()`: `file:line` of the innermost frame outside detpy and the standard library.
-    fn first_user_site(&self, py: Python<'_>) -> PyResult<W> {
-        let hub = Classifier::get(py)?;
-        let mut f = current_frame(py);
-        let mut first: Option<W> = None;
-        while let Some(fr) = f {
-            let (_code, fname) = code_filename(&fr)?;
-            if !starts_with_str(&fname, &self.env.detpy_dir) {
-                let (kind, norm) = hub.classify(py, &fname)?;
-                let site = match norm {
-                    Ok(n) => level0::site_of(&fr, &n)?.into_bytes(),
-                    Err(()) => {
-                        // a path with surrogates: as Python formats it
-                        let norm = py.import("detpy._sites")?.getattr("_classify")?.call1((&fname,))?.get_item(1)?;
-                        let line = fr.getattr(intern!(py, "f_lineno"))?;
-                        let s = PyString::new(py, "{}:{}").call_method1("format", (norm, line))?;
-                        w_of(s.cast::<PyString>()?)?
-                    }
-                };
-                if first.is_none() {
-                    first = Some(site.clone());
-                }
-                if kind == Kind::User {
-                    return Ok(site);
-                }
-            }
-            f = level0::back(&fr)?;
-        }
-        Ok(first.unwrap_or_else(|| b"?".to_vec()))
+    pub(crate) fn first_user_site(&self, py: Python<'_>) -> PyResult<W> {
+        first_user_site(py, &self.env.detpy_dir)
     }
 
     /// `_called_from(suffix)` from the frame that raised the event.
@@ -869,6 +879,14 @@ impl CaptureCore {
         Ok(())
     }
 
+    /// `flag_impl` with a detail made only when the flag is new in `ctx`.
+    pub(crate) fn flag_with(&self, py: Python<'_>, ctx: usize, flag: &[u8], detail: impl FnOnce() -> PyResult<W>) -> PyResult<()> {
+        if lock(&self.st).flags.get(&ctx).is_some_and(|f| f.has(flag)) {
+            return Ok(());
+        }
+        self.flag_impl(py, ctx, flag, Some(detail()?))
+    }
+
     fn read_impl(&self, py: Python<'_>, ctx: usize, p: &[u8], kind: u8) -> PyResult<()> {
         let proc = lock(&self.st).read(ctx, p, kind);
         if let Some(detail) = proc {
@@ -885,7 +903,7 @@ impl CaptureCore {
         lock(&self.st).ignored(p)
     }
 
-    fn active(&self) -> bool {
+    pub(crate) fn active(&self) -> bool {
         lock(&self.st).active
     }
 
@@ -893,14 +911,13 @@ impl CaptureCore {
         lock(&self.st).active = v;
     }
 
-    /// Call a Python helper of `detpy.proofcache` with the capture inactive (its own reads are not inputs).
-    fn helper_inactive(&self, py: Python<'_>, name: &str, arg: &Bound<'_, PyAny>) -> PyResult<bool> {
-        let f = py.import("detpy.proofcache")?.getattr(name)?;
+    /// Run a loopback check (`sockcap`) with the capture inactive (what it imports or reads is not an input).
+    fn helper_inactive(&self, py: Python<'_>, f: fn(Python<'_>, &Bound<'_, PyAny>) -> PyResult<bool>, arg: &Bound<'_, PyAny>) -> PyResult<bool> {
         let was = self.active();
         self.set_active(false);
-        let r = f.call1((arg,));
+        let r = f(py, arg);
         self.set_active(was);
-        r?.is_truthy()
+        r
     }
 
     fn audit_impl(&self, py: Python<'_>, slf: &Bound<'_, PyAny>, event: &str, args: &Bound<'_, PyTuple>) -> PyResult<()> {
@@ -1048,17 +1065,17 @@ impl CaptureCore {
                 if event == "socket.sendmsg"
                     && args.len() > 1
                     && args.get_item(1)?.is_none()
-                    && self.helper_inactive(py, "_both_ends_mine", &args.get_item(0)?)?
+                    && self.helper_inactive(py, sockcap::both_ends_mine, &args.get_item(0)?)?
                 {
                     return Ok(());
                 }
-                if event == "socket.connect" && self.helper_inactive(py, "_own_listener", args.as_any())? {
+                if event == "socket.connect" && self.helper_inactive(py, sockcap::own_listener, args.as_any())? {
                     return Ok(());
                 }
-                let addr = py.import("detpy.proofcache")?.getattr("_addr")?.call1((args,))?;
+                let addr = sockcap::addr(py, args.as_any())?;
                 let site = self.first_user_site(py)?;
                 let mut d = format!("{event} ").into_bytes();
-                d.extend_from_slice(&w_of(addr.str()?.as_any().cast::<PyString>()?)?);
+                d.extend_from_slice(&addr);
                 d.extend_from_slice(b" at ");
                 d.extend_from_slice(&site);
                 let ctx = self.cur(py)?;
@@ -1071,7 +1088,7 @@ impl CaptureCore {
                 }
                 let Ok(hs) = host.cast::<PyString>() else { return Ok(()) };
                 if hs.len()? == 0
-                    || py.import("detpy.proofcache")?.getattr("_numeric_host")?.call1((hs,))?.is_truthy()?
+                    || sockcap::numeric_host(py, hs)?
                     || self.caller_kind(py)? == Caller::Infra
                 {
                     return Ok(());
@@ -1090,7 +1107,6 @@ impl CaptureCore {
                 }
                 let fo = slf.getattr(intern!(py, "follower"))?;
                 let fo = if fo.is_none() { None } else { Some(fo) };
-                let pc = py.import("detpy.proofcache")?;
                 if event == "subprocess.Popen" && self.is_find_library_ldconfig(py, args)? {
                     let ctx = self.cur(py)?;
                     self.read_impl(py, ctx, b"/etc/ld.so.cache", b'f')?;
@@ -1121,15 +1137,15 @@ impl CaptureCore {
                 if event == "subprocess.Popen" {
                     if let Some(fo) = &fo {
                         let ctx = self.cur(py)?;
-                        let detail = pc.getattr("_spawn_detail")?.call1((event, args))?;
+                        let detail = from_wtf8(py, &sockcap::spawn_detail(py, &self.env.detpy_dir, event, args.as_any())?)?;
                         let exempt = self.called_from(py, b"/ctypes/util.py")?;
                         fo.call_method1("announce", (ctx, detail, true, exempt))?;
                         return Ok(());
                     }
                 }
                 let ctx = self.cur(py)?;
-                let detail = pc.getattr("_spawn_detail")?.call1((event, args))?;
-                self.flag_impl(py, ctx, b"spawn", Some(w_of(detail.cast::<PyString>()?)?))
+                let detail = sockcap::spawn_detail(py, &self.env.detpy_dir, event, args.as_any())?;
+                self.flag_impl(py, ctx, b"spawn", Some(detail))
             }
             _ => {
                 let Some((_, idx)) = WRITE_EVENTS.iter().find(|(e, _)| *e == event) else { return Ok(()) };
@@ -1333,6 +1349,7 @@ impl CaptureCore {
             rec: Mutex::new(None),
             tool: Mutex::new(None),
             socks: Py::new(py, SocketScan::create())?,
+            sql_schema: Mutex::new(HashMap::new()),
             env0,
             root: root.unbind(),
         })

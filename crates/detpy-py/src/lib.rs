@@ -33,6 +33,9 @@ mod repro;
 mod clock;
 // Level 0 closed network
 mod network;
+// rust-hotpaths-2: the capture's sqlite trace and rare-event helpers
+mod sockcap;
+mod sqlcap;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -299,5 +302,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     clock::register(m)?;
     // Level 0 closed network
     network::register(m)?;
+    // rust-hotpaths-2: the capture's sqlite trace and rare-event helpers
+    sqlcap::register(m)?;
+    sockcap::register(m)?;
     Ok(())
 }

@@ -172,32 +172,23 @@ class Capture(_core.CaptureCore):
 
     # -- sqlite ----------------------------------------------------------------------------
     def _patch_sqlite(self) -> None:
-        """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
-        the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
-        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)
-
-        review R-009b R1: the schema evaluates such expressions too (a column default, a trigger, a view), while the
-        statement says nothing about time. A statement that may evaluate the schema (anything but transaction
-        control, PRAGMA, ATTACH/DETACH, DROP...) on a connection whose databases' schema may read the clock is
-        refused in the same way."""
+        """review R-009 F4 / R-009b R1: every connection made through sqlite3.connect traces its statements with a
+        ``_core.SqlTrace`` (crates/detpy-py/src/sqlcap.rs): a statement, or a schema it evaluates, that may read the
+        real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
         try:
             import sqlite3
             import sqlite3.dbapi2 as dbapi2
         except ImportError:
             return
-        real = sqlite3.connect
+        real = self._sql_real_connect = sqlite3.connect
         cap = self
-        self._sql_real_connect = real
-        self._sql_schema: dict[str, tuple] = {}  # database file -> (signature, what reads the clock or None)
 
         def connect(*args, **kwargs):
             conn = real(*args, **kwargs)
-            db = args[0] if args else kwargs.get("database")
-            uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
-            # the state holds no reference to the connection (a cycle would delay closing it; no weak references)
-            st = _SqlConn(_sqlite_file(db, bool(uri)))
+            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"),
+                                kwargs.get("uri", args[7] if len(args) > 7 else False))
             try:
-                conn.set_trace_callback(lambda statement: cap._sql_trace(statement, st))
+                conn.set_trace_callback(tr)
             except Exception:
                 pass
             return conn
@@ -207,65 +198,22 @@ class Capture(_core.CaptureCore):
         sqlite3.connect = connect
         dbapi2.connect = connect
 
-    def _sql_trace(self, statement, st=None) -> None:
-        if not self.active or not isinstance(statement, str):
-            return
-        if _SQL_REAL_CLOCK.search(statement):
-            self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
-            if st is not None and _SQL_DDL.match(statement):
-                st.own = st.own or "this connection's schema"  # a temporary or uncommitted definition included
-        if st is None:
-            return
-        m = _SQL_ATTACH.match(statement)
-        if m:
-            f = _sqlite_file(m.group(1)[1:-1].replace("''", "'"), True)
-            if f is not None:
-                st.dbs.append(f)
-            return
-        if _SQL_NO_SCHEMA.match(statement):
-            return
-        why = st.own
-        if why is None:
-            for f in st.dbs:
-                why = self._sql_schema_clock(f)
-                if why is not None:
-                    break
-        if why is not None:
-            self.flag(self._cur(), "rclock",
-                      f"sqlite: {why} may read the real clock ({statement.strip()[:60]}) at {_first_user_site()}")
-
-    def _sql_schema_clock(self, path: str) -> str | None:
-        """What in the schema of database file ``path`` may read the real clock (None: nothing), memoised on the
-        file's and its write-ahead log's identity."""
-        sig = []
-        for f in (path, path + "-wal"):
-            try:
-                st = os.stat(f)
-                sig.append((st.st_ino, st.st_size, st.st_mtime_ns))
-            except OSError:
-                sig.append(None)
-        if sig[0] is None:
-            return None  # not created yet: no schema
-        sig = tuple(sig)
-        memo = self._sql_schema.get(path)
-        if memo is not None and memo[0] == sig:
-            return memo[1]
+    def _sql_schema_read(self, path: str) -> str | None:
+        """What in the schema of database file ``path`` may read the real clock (None: nothing): the read-only query
+        through the real connect, on a miss of the trace's memo."""
         from urllib.parse import quote
-        why = None
         try:
             # a "file:" URI: the audit hook does not take this connection as the test's read of the file
             con = self._sql_real_connect(f"file:{quote(path)}?mode=ro", uri=True, timeout=0)
             try:
                 for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
-                    if isinstance(sql, str) and _SQL_REAL_CLOCK.search(sql):
-                        why = f"the schema of {self._key(path)} ({name})"
-                        break
+                    if isinstance(sql, str) and _core.sql_real_clock(sql):
+                        return f"the schema of {self._key(path)} ({name})"
             finally:
                 con.close()
         except Exception as e:
-            why = f"the schema of {self._key(path)} (unreadable: {e})"
-        self._sql_schema[path] = (sig, why)
-        return why
+            return f"the schema of {self._key(path)} (unreadable: {e})"
+        return None
 
     # child_ignored, child_read, collect_children, _credit_child: Rust (CaptureCore)
 
@@ -769,221 +717,6 @@ def _encodable(s: str) -> bool:
         return False
 
 
-
-
-
-
-import re as _re  # noqa: E402
-
-# sqlite reads the real clock for 'now', CURRENT_TIMESTAMP/DATE/TIME and the date functions called without a time
-# value (date(), datetime(), time(), julianday(), unixepoch(), strftime(format))
-_SQL_REAL_CLOCK = _re.compile(
-    r"""'now'|"now"|\bcurrent_(timestamp|date|time)\b|\b(date|time|datetime|julianday|unixepoch)\s*\(\s*\)"""
-    r"""|\bstrftime\s*\(\s*('[^']*'|"[^"]*")\s*\)""", _re.I)
-
-
-# statements that evaluate no column default, trigger or view
-_SQL_NO_SCHEMA = _re.compile(
-    r"\s*(begin|commit|end|rollback|savepoint|release|pragma|attach|detach|drop|vacuum|analyze|reindex)\b", _re.I)
-_SQL_DDL = _re.compile(r"\s*(create|alter)\b", _re.I)
-_SQL_ATTACH = _re.compile(r"\s*attach\s+(?:database\s+)?('(?:[^']|'')*')", _re.I)
-
-
-class _SqlConn:
-    """What detpy knows of one sqlite connection: its database files (main, attached) and whether a definition it
-    ran reads the real clock."""
-
-    __slots__ = ("dbs", "own")
-
-    def __init__(self, main: str | None):
-        self.dbs = [main] if main is not None else []
-        self.own: str | None = None
-
-
-def _sqlite_file(db, uri: bool) -> str | None:
-    """The absolute path of the database file sqlite opens for ``db`` (None: in memory or not a file name)."""
-    if not isinstance(db, (str, bytes, os.PathLike)):
-        return None
-    try:
-        s = os.fsdecode(db)
-    except (TypeError, ValueError):
-        return None
-    if uri and s.startswith("file:"):
-        from urllib.parse import unquote
-        s, _, query = s[5:].partition("?")
-        if "mode=memory" in query.split("#")[0].split("&"):
-            return None
-        if s.startswith("//"):
-            host, _, rest = s[2:].partition("/")
-            s = "/" + rest if host in ("", "localhost") else ""
-        s = unquote(s.split("#")[0])
-    if s in ("", ":memory:"):
-        return None
-    try:
-        return os.path.abspath(s)
-    except (OSError, ValueError):
-        return None
-
-
-def _numeric_host(host: str) -> bool:
-    import ipaddress
-
-    try:
-        ipaddress.ip_address(host.split("%", 1)[0])
-        return True
-    except ValueError:
-        return False
-
-
-def _first_user_site() -> str:
-    """``file:line`` of the innermost frame outside detpy and the standard library (else the innermost one)."""
-    try:
-        f = _getframe(1)
-    except ValueError:
-        return "?"
-    first = None
-    while f is not None:
-        fn = f.f_code.co_filename
-        if not fn.startswith(_DETPY_DIR):
-            kind, norm = _sites._classify(fn)
-            if first is None:
-                first = f"{norm}:{f.f_lineno}"
-            if kind == _sites._USER:
-                return f"{norm}:{f.f_lineno}"
-        f = f.f_back
-    return first or "?"
-
-
-def _spawn_detail(event: str, args) -> str:
-    """The program a spawn event starts and where it was called from."""
-    prog = None
-    try:
-        if event == "subprocess.Popen":
-            prog = args[0] if args[0] is not None else (args[1] if isinstance(args[1], (str, bytes)) else list(args[1])[0])
-        elif event == "os.system":
-            prog = os.fsdecode(args[0]).split()[0]
-        elif event.startswith("os.spawn"):
-            prog = args[1]
-        elif event in ("os.posix_spawn", "os.exec") or event.startswith("os.exec"):
-            prog = args[0]
-    except (IndexError, TypeError, ValueError):
-        prog = None
-    name = os.path.basename(os.fsdecode(prog)) if isinstance(prog, (str, bytes, os.PathLike)) else event
-    return f"{name} ({event}) at {_first_user_site()}"
-
-
-def _own_listener(args) -> bool:
-    """A TCP connect to a numeric loopback address whose port a listening socket of this very process holds."""
-    import ipaddress
-    import socket as _socket
-
-    try:
-        sock, addr = args[0], args[1]
-        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
-            return False
-        host, port = addr[0], int(addr[1])
-        ip = ipaddress.ip_address(str(host).split("%", 1)[0])
-    except (AttributeError, IndexError, TypeError, ValueError, OSError):
-        return False
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
-        return False
-    mine = _own_socket_inodes()
-    want = f"{port:04X}"
-    for t in ("tcp", "tcp6"):
-        try:
-            with open("/proc/self/net/" + t, "rb") as fh:
-                next(fh, None)
-                for line in fh:
-                    parts = line.split()
-                    if len(parts) < 10 or parts[3] != b"0A":  # LISTEN
-                        continue
-                    laddr, _, lport = parts[1].decode().rpartition(":")
-                    if lport != want or parts[9].decode() not in mine:
-                        continue
-                    if set(laddr) <= {"0"} or _loopback_hex(laddr):
-                        return True
-        except OSError:
-            continue
-    return False
-
-
-def _both_ends_mine(sock) -> bool:
-    """A connected TCP socket whose peer address is the local address of a socket this process holds."""
-    import socket as _socket
-
-    try:
-        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
-            return False
-        peer = sock.getpeername()
-    except (AttributeError, OSError):
-        return False
-    try:
-        import ipaddress
-
-        ip = ipaddress.ip_address(str(peer[0]).split("%", 1)[0])
-    except ValueError:
-        return False
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
-        return False
-    mine = _own_socket_inodes()
-    want = f"{int(peer[1]):04X}"
-    for t in ("tcp", "tcp6"):
-        try:
-            with open("/proc/self/net/" + t, "rb") as fh:
-                next(fh, None)
-                for line in fh:
-                    parts = line.split()
-                    if len(parts) < 10:
-                        continue
-                    laddr, _, lport = parts[1].decode().rpartition(":")
-                    if lport == want and parts[9].decode() in mine and _loopback_hex(laddr):
-                        return True
-        except OSError:
-            continue
-    return False
-
-
-def _own_socket_inodes() -> set:
-    mine = set()
-    try:
-        fds = os.listdir("/proc/self/fd")
-    except OSError:
-        return mine
-    for fd in fds:
-        try:
-            link = os.readlink("/proc/self/fd/" + fd)
-        except OSError:
-            continue
-        if link.startswith("socket:["):
-            mine.add(link[8:-1])
-    return mine
-
-
-def _loopback_hex(laddr: str) -> bool:
-    """A /proc/net/tcp{,6} local address (hex, host byte order per 32-bit word) that is loopback."""
-    try:
-        b = bytes.fromhex(laddr)
-    except ValueError:
-        return False
-    if len(b) == 4:
-        return b[3] == 127  # little-endian 127.x.y.z
-    if len(b) == 16:
-        words = [b[i:i + 4][::-1] for i in range(0, 16, 4)]
-        raw = b"".join(words)
-        if raw == b"\0" * 15 + b"\1":
-            return True
-        return raw[:12] == b"\0" * 10 + b"\xff\xff" and raw[12] == 127
-    return False
-
-
-def _addr(args) -> str:
-    try:
-        a = args[1]
-        return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
-    except (IndexError, TypeError):
-        return "?"
 
 
 _MODMAP: dict = {}
