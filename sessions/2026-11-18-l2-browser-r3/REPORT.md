@@ -5,11 +5,22 @@ PARTIAL
 Session 2026-11-18, branch `claude/l2-browser-r3` of fenvix-engine-cli (= round 2 delivery `claude/l2-browser-r2` @
 786181b + `review-input/` + the reviewer's six failing tests). Measurements on GitHub-hosted runners (4 vCPU) unless
 marked "local" (this container, 4 vCPU). Raw data: `tracks/l2-browser-r3/results/`. Tables:
-`python3 tracks/l2-browser-r3/harness/analyze.py`. Runs: PENDING.
+`python3 tracks/l2-browser-r3/harness/analyze.py`. Runs (workflow `l2-browser-r3.yml`, all MEASURED data comes from these): 44326636551 (E1 sveltekit), 44327291710 (E1 + first step 3 + E2 + H3 + E5 attempt 1), 44326292154 (crashed, harness KeyError, no data), 44370101839 (E5 attempt 2), 44382873510 (E5 attempt 3), 44383743101 (E6 real targets), 44383846261 (A/B on actual), 44389754462 (e5diag), 44407937328 (E5 after the clock fix), 44407978258 (step 3 on the fixed clock).
 
 ## In one paragraph
 
-PENDING
+The six review tests fail on 786181b and pass now; the round-2 report's three wrong claims are corrected (section 2).
+E1 re-established a fair target set: **55 tests that both passed and failed** in 30 plain/stressed runs on 6 projects
+(MEASURED); 7 of the 15 round-1/2 targets never failed. On this set the engine reaches **0 of 55** (MEASURED): no seed
+reproduced a real failure (E6, 0 of 2), and replays are not identical on the three projects that flake without load.
+Freezing the observation (E2) and pinning the database and app clocks (E5) do not give identical replays; after fixing a
+worker-clock defect found by E5, the first divergence on documenso, actual and uptime-kuma is the same: **the runner acts
+in real time** (class A). Step 3 on the fixed engine gives the same broken lists as round 2 (32 of 36 again, 0 new;
+69 of 75 broken tests are timeouts). Decision (ESTIMATED): >= 60% of the 55 by test count needs lockstep + a seed space
+aimed at the flaking step + multi-worker scheduling + a socket-fault layer, **18-29 engineer-days**; >= 60% by
+mechanism needs the first three, **15-24 days**; a database clock shim adds nothing measured; a VM costs months. Next:
+the E3 lockstep spike (1-2 days) with two cheap deciders, and an exit metric that counts a seed only when its failure is
+the real one. First line PARTIAL: the round-3 items are done, the >= 60% exit is not reached and lockstep is unproven.
 
 ## 1. The six review tests (all fail on 786181b, MEASURED)
 
@@ -109,6 +120,8 @@ without freeze (round 2: 3 fp). The fixture test (`l2r3.test.js` E2) shows the s
 while the runner polls in real time gives 2 fingerprints in 3 runs, frozen. The cheapest next check of lockstep's core
 hypothesis is the reviewer's E3 (grants only while a runner call is in flight), not run this round.
 
+Engine note: E2 (run 44327291710) and the E6 real-target run (44383743101) ran on the defective worker clock (section 1: test-code dates at epoch + real time after a clock read outside a test). E5 after the fix shows the same kind of first divergence (scheduling, class A), so the decisions below stand; the fingerprint counts of E2 and E6 on the fixed engine are UNKNOWN (not re-run).
+
 ### E5 database clock under libfaketime (documenso, MEASURED)
 
 Postgres (container, same data volume) and the app server's Node process (Prisma's Rust engine lives in it) under
@@ -166,23 +179,32 @@ aggregate.py should count a seed as reproducing only then (today: any failure co
 
 ## 5. Step 3: the 4 non-documenso suites on this engine
 
-Two full `--det` runs per suite on this branch's engine (697c9729 + the R1/R2 clock), compared with the plain runs of
-the same job (20 for etherpad, solid-start and uptime-kuma; 2 runs of shard 1/3 for actual) and with round 2 run 4
-(engine without 697c9729). Run 44327291710, MEASURED. The new project is in the last row.
+Two full `--det` runs per suite on the delivered engine **with the worker-clock fix** (0c47efdb = 697c9729 + the R1/R2
+clock + c6ac321c), run 44407978258, compared with the plain runs of the E1 job (20 for etherpad, solid-start,
+uptime-kuma and sveltekit; 2 runs of shard 1/3 for actual) and with round 2 run 4 (engine without 697c9729). MEASURED.
+The first step-3 run (44327291710) ran on the defective worker clock (section 1); its numbers are in brackets where they
+differ.
 
-| Project | Broken by the controls (round 2 run 4) | Same tests? | Hidden by the controls | Identical fingerprints in 2 runs (round 2) | First-divergence reasons | Slowdown vs plain |
-|---|---|---|---|---|---|---|
-| actual (shard 1/3, 74) | **2 = 2.7%** (2) | same 2 (`moves a category`, Envelope + Tracking) | 1 ("applies budget template" Envelope: failed both plain shard runs, passed both `--det`) | **26** (49) | random 42, other 6 (round 2: other 17, random 8) | x3.0 (vs 2 plain runs of 433-448 s that had 60 s timeouts; NOISY) |
-| etherpad (289) | **20 = 6.9%** (21) | 20 in both; `timeslider follow` no longer broken | 0 | 31 (29) | net 194, sched 31, other 24, random 9 | x12.8 |
-| solid-start (47) | **3 = 6.4%** (3) | same 3 | 0 | 42 (43) | sched 4, other 1 | x2.4 |
-| uptime-kuma (71) | **10 = 14.1%** (10) | 9 in both; "filters monitors by tag" new; "data retention" no longer counted (it failed once plain this time) | 0 | 9 (6) | sched 49, net 11 | x3.8 |
-| sveltekit (254, new) | **43 = 16.9%** | - | 0 | 144 | other 60, sched 33, net 15 | **x13.5** |
+| Project | Broken by the controls (round 2 run 4) | Same tests? | Broken in both `--det` runs | Hidden by the controls | Identical fingerprints in 2 runs (round 2) | First-divergence reasons | Slowdown vs plain |
+|---|---|---|---|---|---|---|---|
+| actual (shard 1/3, 74) | **2 = 2.7%** (2) | same 2 (`moves a category`, Envelope + Tracking) | 1 | 1 ("applies budget template" Envelope: failed both plain shard runs, passed both `--det`) | **17** [26] (49) | random 55, other 2 | x2.9 (vs 2 plain runs with 60 s timeouts; NOISY) |
+| etherpad (289) | **18 = 6.2%** [20] (21) | 18 in both; `anchor scrolling` x2 and one `userlist click` no longer broken; `timeslider follow` broken again | 15 | 0 | 31 (29) | net 211, sched 20, other 15, random 12 | x13.7 |
+| solid-start (47) | **3 = 6.4%** (3) | same 3 | 3 | 0 | 44 (43) | sched 3 | x2.5 |
+| uptime-kuma (71) | **9 = 12.7%** [10] (10) | 9 in both; "data retention" not counted (it failed once plain in E1) | 8 | 0 | 4 [9] (6) | net 65, random 2 | x3.7 |
+| sveltekit (254, new) | **43 = 16.9%** | 35 also broken in the defective-clock run, 8 swapped | 27 | 0 | 141 [144] | other 73, sched 25, net 13 | **x13.7** |
 
-So fix 697c9729 and the R1/R2 clock did not change the broken lists of the 4 projects (MEASURED: 34 of the 36 round-2
-broken tests are broken again; etherpad `timeslider follow` passes now; uptime-kuma "data retention" failed once plain so
-it no longer counts as ours; 1 new). Identical fingerprints moved within 3 on etherpad, solid-start and uptime-kuma, but
-**fell on actual from 49 to 26** with first divergences now at `random` events (page draw counts). Cause: PENDING (A/B
-job below).
+Of the 75 broken tests, **69 fail with a timeout** (Playwright action/expect/test timeout), 6 on an assertion. So fix
+697c9729, the R1/R2 clock and the clock fix did not change the broken lists (MEASURED: 32 of the 36 round-2 broken tests
+on the 4 projects are broken again, 0 new; 4 no longer broken: 3 etherpad, 1 uptime-kuma that now counts as a real
+flake). The broken share is still dominated by timeouts at x2.5-x13.7 slowdown, the class the unread-body defect
+(section 6) and lockstep's virtual deadlines both address (UNKNOWN by how much).
+
+Identical fingerprints moved within 3 on etherpad, solid-start and sveltekit, but **fell on actual from 49 (round 2) to
+17** and on uptime-kuma from 6 to 4, with first divergences at `random` (actual: page draw counts) and `net` (uptime-kuma).
+A/B on actual (run 44383846261, `DETJS_PW_WORKER_CLOCK_WAIT_MS=0`, i.e. without the real-time wait part of R1, which
+also avoids the clock defect): **20/74**. So the R1 wait part is not the cause (17 vs 20 is within what two pairs of runs
+vary). Remaining candidates: 697c9729 (round-2 fix) or run-to-run variation of a 2-run measure; **cause UNKNOWN**.
+Two runs are too few to tell: "identical" here means 2 of 2 runs (review correction, section 2), not 10 of 10.
 
 ## 6. Found this round
 

@@ -97,6 +97,12 @@ page, and the runner's own waits are virtual) would close it; see the round 2 re
   values are strictly increasing over the run, also across worker restarts (`<DETJS_DIR>/worker-clock.json`).
   Residual (DECLARED): a budget missed by less than 1 s can pass under `--det`; values read more than 1 s after the
   test's first read depend on real time (not deterministic); the server's clock still does not advance with waits.
+  Switch: `DETJS_PW_WORKER_CLOCK_WAIT_MS=0` drops the real-time part (fully deterministic values, but a budget missed
+  by a real wait passes again: the R1 trade-off); `DETJS_PW_WORKER_CLOCK_SPREAD=0|hash` restores round 2's per-test
+  1 ms clocks. Fix c6ac321c (found by E5): a clock read outside any test (Playwright's own, before the first test)
+  started the wait timer at 0, so later test-code dates were epoch + real time since 1970 (documenso: an
+  `emailVerified` in 2083); the timer now starts at install time and only counts inside a test. Regression test:
+  `l2r3.test.js` "worker clock: a clock read outside any test ...".
 - **Replay command** (`cli.js`, `reporter.js`): carries `--browser`, `--timeout`, `--ignore-snapshots` (a config
   without projects run with `--browser=chromium` has a project only through that flag).
 - **`--det-freeze=on`** (experiment E2): at the end of the test function (Playwright's didFinishTestFunction
