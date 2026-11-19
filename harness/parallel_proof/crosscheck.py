@@ -31,6 +31,8 @@ def compare(truths: list[dict], run: dict) -> dict:
         res[f"{name}_mismatches"] = bad
         res[f"{name}_not_in_truth"] = len([n for n in ids if n not in t_out[0]])
         res[f"{name}_flaky_in_truth"] = len([n for n in ids if n in flaky])
+    # tests of the truth that the run lost (never reported: a dead worker, a plan that dropped them) (review R-023b N10)
+    res["lost"] = sorted(n for n in t_out[0] if n not in outcomes)
     return res
 
 

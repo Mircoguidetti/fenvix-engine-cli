@@ -325,7 +325,16 @@ class Controller:
         environment, so the controller decides with it too, not with its own start environment."""
         from . import proofcache
 
-        self.spawn_env = _core.safe_env(os.environ.items(), proofcache._DETPY_OWN_ENV)
+        env = dict(os.environ)
+        # review R-023b N4: --tx popen//env:NAME=VALUE starts the workers with more variables than the controller
+        # has. The same items on every spec are the workers' values; a variable the specs set differently gets a
+        # value no recorded digest equals (a test that read it runs)
+        per_spec = [dict(getattr(s, "env", None) or {}) for s in (specs or ())]
+        names = {k for d in per_spec for k in d}
+        for k in names:
+            vals = {d.get(k) for d in per_spec}
+            env[k] = vals.pop() if len(vals) == 1 and None not in vals else "\x00detpy:differs-per-worker"
+        self.spawn_env = _core.safe_env(env.items(), proofcache._DETPY_OWN_ENV)
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_xdist_make_scheduler(self, config, log):

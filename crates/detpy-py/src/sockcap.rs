@@ -117,12 +117,25 @@ pub fn set_xdist_controller_pid(pid: u32) {
 }
 
 fn own_socket_inodes() -> HashSet<W> {
-    let mut mine = socket_inodes("/proc/self/fd");
-    let ctl = XDIST_CONTROLLER.load(std::sync::atomic::Ordering::Relaxed);
-    if ctl != 0 {
-        mine.extend(socket_inodes(&format!("/proc/{ctl}/fd")));
+    // review R-023b N3: the controller's listeners are not this process's: conftests run in the controller
+    // (pytest_configure, pytest_sessionstart) and can serve or relay test data from there. A connect to them is a
+    // connection (XDIST_CONTROLLER is kept for diagnostics only).
+    socket_inodes("/proc/self/fd")
+}
+
+/// The local address of `host` as /proc/net/tcp{,6} writes it (hex of the address's 32-bit words in host order).
+fn proc_net_hex(host: &str) -> Option<W> {
+    let ip: std::net::IpAddr = host.trim_start_matches('[').trim_end_matches(']').parse().ok()?;
+    let bytes: Vec<u8> = match ip {
+        std::net::IpAddr::V4(a) => a.octets().to_vec(),
+        std::net::IpAddr::V6(a) => a.octets().to_vec(),
+    };
+    let mut out = W::new();
+    for w in bytes.chunks(4) {
+        let v = u32::from_ne_bytes([w[0], w[1], w[2], w[3]]);
+        out.extend_from_slice(format!("{v:08X}").as_bytes());
     }
-    mine
+    Some(out)
 }
 
 fn socket_inodes(dir: &str) -> HashSet<W> {
@@ -206,7 +219,7 @@ fn tcp_sockets(mut f: impl FnMut(&[u8], &[u8], &[u8], &[u8]) -> PyResult<bool>) 
 /// `_own_listener(args)`: a TCP connect to a numeric loopback address whose port a listening socket of this very
 /// process holds.
 pub(crate) fn own_listener(py: Python<'_>, args: &Bound<'_, PyAny>) -> PyResult<bool> {
-    let r = (|| -> PyResult<Option<(Flags, Bound<'_, PyAny>)>> {
+    let r = (|| -> PyResult<Option<(Flags, (Bound<'_, PyAny>, Option<W>))>> {
         let sock = args.get_item(0)?;
         let addr = args.get_item(1)?;
         if !inet_stream(py, &sock)? {
@@ -214,9 +227,10 @@ pub(crate) fn own_listener(py: Python<'_>, args: &Bound<'_, PyAny>) -> PyResult<
         }
         let host = addr.get_item(0)?;
         let port = py.get_type::<PyInt>().call1((addr.get_item(1)?,))?;
-        Ok(Some((host_flags(py, &host)?, port)))
+        let hex = host.extract::<String>().ok().and_then(|h| proc_net_hex(&h));
+        Ok(Some((host_flags(py, &host)?, (port, hex))))
     })();
-    let (flags, port) = match r {
+    let (flags, (port, target)) = match r {
         Ok(Some(x)) => x,
         Ok(None) => return Ok(false),
         Err(e) if is_any(py, &e, &[attr_err, index_err, type_err, value_err, os_err]) => return Ok(false),
@@ -231,7 +245,9 @@ pub(crate) fn own_listener(py: Python<'_>, args: &Bound<'_, PyAny>) -> PyResult<
         if state != b"0A" || lport != want.as_slice() || !mine.contains(inode) {
             return Ok(false); // not LISTEN, another port, another process's
         }
-        Ok(laddr.iter().all(|&c| c == b'0') || loopback_hex(laddr))
+        // a wildcard listener accepts the connect; otherwise the listener's own address must be the one connected to
+        // (review R-023b N3: 127.0.0.1:P of this process is not 127.0.0.2:P of another one)
+        Ok(laddr.iter().all(|&c| c == b'0') || (loopback_hex(laddr) && target.as_deref() == Some(laddr)))
     })
 }
 

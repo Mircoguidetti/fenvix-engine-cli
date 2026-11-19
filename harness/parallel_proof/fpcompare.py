@@ -57,14 +57,19 @@ def compare(sa: dict, sb: dict, pa: dict, pb: dict) -> dict:
     placement = [n for n in stable if fp(pa, n) != fp(sa, n) or fp(pb, n) != fp(sa, n)]
     placement_both = [n for n in placement if fp(pa, n) != fp(sa, n) and fp(pb, n) != fp(sa, n)]
     outcome_diff = [n for n in both if {sa[n]["outcome"], sb[n]["outcome"]} != {pa[n]["outcome"], pb[n]["outcome"]}]
-    new_failures = [n for n in outcome_diff if "failed" in (pa[n]["outcome"], pb[n]["outcome"])
-                    and sa[n]["outcome"] == sb[n]["outcome"] != "failed"]
+    # a failure is any outcome that is not a pass: failed, error, failed+teardown-error, passed+teardown-error, ...
+    # (review R-023b N10)
+    def bad(o):
+        return o not in ("passed", "skipped", "xfailed", "xpassed")
+
+    new_failures = [n for n in outcome_diff if (bad(pa[n]["outcome"]) or bad(pb[n]["outcome"]))
+                    and sa[n]["outcome"] == sb[n]["outcome"] and not bad(sa[n]["outcome"])]
     # review R-023 F5: a failure is hidden when either parallel run does not fail it (not only the first). It must be
     # a serial failure: both serial runs fail it (a test that fails in one serial run only is serial noise, counted
     # in serial_failure_noise, not hidden by the split)
-    hidden_failures = [n for n in outcome_diff if sa[n]["outcome"] == sb[n]["outcome"] == "failed"
-                       and "failed" not in {pa[n]["outcome"]} & {pb[n]["outcome"]}]
-    serial_failure_noise = [n for n in both if (sa[n]["outcome"] == "failed") != (sb[n]["outcome"] == "failed")]
+    hidden_failures = [n for n in outcome_diff if bad(sa[n]["outcome"]) and bad(sb[n]["outcome"])
+                       and not (bad(pa[n]["outcome"]) and bad(pb[n]["outcome"]))]
+    serial_failure_noise = [n for n in both if bad(sa[n]["outcome"]) != bad(sb[n]["outcome"])]
     src = collections.Counter(first_source(sa[n], pa[n] if fp(pa, n) != fp(sa, n) else pb[n]) for n in placement)
     noise_src = collections.Counter(first_source(sa[n], sb[n]) for n in serial_noise)
     return {
