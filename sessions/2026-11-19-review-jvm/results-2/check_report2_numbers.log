@@ -1,0 +1,5 @@
+ok  container: broken by --det after the P-022 fixes (rechecks)      claimed 25  committed 25
+ok  ran in the baseline, never under --det (GHA, container), P-022   claimed (13, 13)  committed (13, 13)
+ok  container rechecks after R-022: projects                         claimed 28  committed 28
+ok  container rechecks after R-022: broken by --det                  claimed 14  committed 14
+ok  container rechecks after R-022: not run under --det              claimed 0  committed 0

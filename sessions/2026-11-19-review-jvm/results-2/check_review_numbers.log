@@ -1,0 +1,16 @@
+ok  GHA run 44385794604: projects                              claimed 10  committed 10
+ok  GHA: documented reproduced / present                       claimed (94, 469)  committed (94, 469)
+ok  GHA: baseline-unstable reproduced / unstable               claimed (59, 94)  committed (59, 94)
+ok  GHA: broken by --det                                       claimed 22  committed 22
+ok  GHA: fingerprint coverage                                  claimed (7777, 7914)  committed (7777, 7914)
+ok  container: projects                                        claimed 28  committed 28
+ok  container: tests                                           claimed 12226  committed 12226
+ok  container: documented reproduced / present                 claimed (171, 542)  committed (171, 542)
+ok  container: baseline-unstable reproduced / unstable         claimed (63, 105)  committed (63, 105)
+ok  container: broken by --det before the last fixes           claimed 35  committed 35
+BAD container: broken by --det after the last fixes (rechecks) claimed 29  committed 25
+ok  container: slowdown median (projects with timing)          claimed (23, -0.032)  committed (23, -0.032)
+BAD tests silently not run under --det (reported: none)        claimed 0  committed 26
+ok  skip walk GHA: verified reuses (6 repositories)            claimed 5731740  committed 5731740
+ok  skip walk GHA: wrong                                       claimed 0  committed 0
+ok  skip walk GHA: flaky / not verifiable                      claimed (37, 22)  committed (37, 22)
