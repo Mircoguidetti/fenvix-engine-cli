@@ -240,6 +240,16 @@ Not started.
   whole-environment digest, duplicate distribution entries count once. The reference implementation used by the
   equivalence tests (`tests/rust_hotpaths_ref`) got the same three changes.
 
+## Merge of claude/rust-hotpaths-2 (review R-017 / R-017b fixes)
+
+Merged after the measurements above (no conflict; the measurements were taken on the engine before the merge).
+On the merged engine: Rust 81 passed; `tests/test_review_r017.py`, `tests/test_review_r017b.py`, the parallel,
+harness, capture and identity tests: 232 passed, 1 failed: `test_review_r017.py::test_h2_report_says_ci_never_sees_
+tmp_name_exhaustion_but_p8_does` raises `AttributeError: 'NoneType' object has no attribute 'get'` while reading
+`tracks/rust-hotpaths/results/p8/pygments-0of1.json`. It reads only committed result files and REPORT-R2, none of
+which this branch changes (`git diff origin/claude/rust-hotpaths-2` is empty for them): it fails the same way on
+`claude/rust-hotpaths-2` itself, for its fix session.
+
 ## Not done, and what blocks it
 
 * pydantic-ai: the design's prerequisite (2,769 failures under `--det-cache` from the capture's audit hook in the
