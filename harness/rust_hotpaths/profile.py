@@ -135,6 +135,11 @@ class Prof:
         # engine's precompile stamps must not decide what another compiles
         tag = lambda e: hashlib.sha1(os.path.abspath(self.engines[e]).encode()).hexdigest()[:10]  # noqa: E731
         fixed = self.w.work / "pyc"
+        if prev is None:
+            # the first engine of this process: caches another process left (an earlier profile.py or floor.py run,
+            # possibly of other wheels) are dropped; each engine compiles its own at its warm-up run
+            for d in [fixed, *self.w.work.glob("pyc-*")]:
+                shutil.rmtree(d, ignore_errors=True)
         if prev is not None and fixed.exists():
             fixed.rename(self.w.work / f"pyc-{tag(prev)}")
         mine = self.w.work / f"pyc-{tag(eng)}"
