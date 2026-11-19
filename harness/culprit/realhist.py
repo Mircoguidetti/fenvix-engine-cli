@@ -42,14 +42,21 @@ def walk(name):
     return json.loads(gzip.decompress(raw))
 
 
+INSTALL_ARGS: dict = {}  # sha -> the install arguments the walk recorded (latest install at or before the step)
+
+
 def install_at(repo, sha, at: Path, py="3.13"):
     from detpy_harness import detect_install
 
     shutil.rmtree(at, ignore_errors=True)
     checkout(repo, sha)
     sh(["uv", "venv", "-q", "--python", py, str(at)], check=True)
-    args, groups, reqs = detect_install(repo)
-    code, out = sh(["uv", "pip", "install", "-q", "--python", str(at / "bin" / "python"), *args, *groups, *reqs,
+    if INSTALL_ARGS.get(sha):
+        allargs = INSTALL_ARGS[sha].split()
+    else:
+        args, groups, reqs = detect_install(repo)
+        allargs = [*args, *groups, *reqs]
+    code, out = sh(["uv", "pip", "install", "-q", "--python", str(at / "bin" / "python"), *allargs,
                     "pytest", WHEEL], cwd=repo, timeout=3600)
     if code != 0:
         raise RuntimeError(out[-1000:])
@@ -96,6 +103,11 @@ def main():
     d = walk(a.walk)
     spec = d["spec"]
     steps = {s["i"]: s for s in d["steps"]}
+    last = None
+    for k in sorted(steps):
+        if steps[k].get("install") and steps[k]["install"] not in ("spec",):
+            last = steps[k]["install"]
+        INSTALL_ARGS[steps[k]["sha"]] = last
     name = spec["name"]
     repo = WORK / "repos-b" / name
     if not repo.exists():

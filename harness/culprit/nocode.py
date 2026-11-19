@@ -132,8 +132,18 @@ def edit_tree_commits(repo, base, later, edits, cid) -> tuple[str, str]:
 
 def failing_tests(repo, venv, unit, env) -> set[str]:
     code, out, _ = run_plain(repo, venv, ["-q", "--tb=no", "-rfE", "-p", "no:randomly", unit], env)
-    return {l.split(" ", 1)[1].split(" - ", 1)[0].strip() for l in out.splitlines()
-            if l.startswith(("FAILED ", "ERROR ")) and "::" in l}
+    ids = set()
+    for l in out.splitlines():
+        if not l.startswith(("FAILED ", "ERROR ")):
+            continue
+        tid = l.split(" ", 1)[1].split(" - ", 1)[0].strip()
+        if "::" in tid:
+            ids.add(tid)
+        else:
+            # the module itself failed to collect: every test it holds (collected without the change) is red
+            _c, out2, _ = run_plain(repo, venv, ["-q", "--collect-only", "-p", "no:randomly", tid], {})
+            ids |= {x.strip() for x in out2.splitlines() if "::" in x and not x.startswith(("ERROR", "FAILED"))}
+    return ids
 
 
 def main():

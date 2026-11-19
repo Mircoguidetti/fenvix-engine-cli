@@ -96,7 +96,7 @@ def main():
                           "bisect": r["bisect"]["named"], "bisect_ok": r["bisect_correct"],
                           "fix_or_revert": r.get("fix_or_revert")} for r in Bc]}
     # (c) no-code reds
-    C = [r for r in load(os.path.join(a.dir, "c.jsonl")) + load(os.path.join(a.dir, "c-node.jsonl"))]
+    C = [r for r in load(os.path.join(a.dir, "c-final.jsonl")) + load(os.path.join(a.dir, "c-node.jsonl"))]
     Cc = [r for r in C if "finder" in r]
     singles = [r for r in Cc if not r.get("decoy")]
     out["c"] = {"cases": len(Cc), "finder_correct": sum(r["finder_correct"] for r in Cc),

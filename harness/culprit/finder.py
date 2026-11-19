@@ -205,6 +205,23 @@ def commit_candidates(repo, commits: list[str], changes: list[dict]) -> list[str
     return out
 
 
+def dep_holds(path: str, dep: str) -> bool:
+    """Does the recorded data dependency still hold on this machine?"""
+    from detpy import _core
+    try:
+        if dep == "missing":
+            return not os.path.lexists(path)
+        if dep.startswith("f:"):
+            return _core.file_digest(path) == dep[2:]
+        if dep.startswith("d:"):
+            return _core.listing_digest(path) == dep[2:]
+        if dep.startswith("s:"):
+            return os.path.lexists(path)
+    except Exception:
+        return False
+    return False
+
+
 # ---------------------------------------------------------------------------- input groups
 _TZ_FILES = ("/usr/share/zoneinfo/", "/etc/localtime", "/etc/timezone")
 _LOCALE_FILES = ("/usr/lib/locale/", "/usr/share/locale/", "/usr/share/i18n/")
@@ -280,11 +297,20 @@ class EnvBuilder:
         args = self.project_install
         for i, x in enumerate(args):
             if x == "-e" and i + 1 < len(args):
-                pp = Path(repo) / args[i + 1].split("[")[0] / "pyproject.toml"
+                d = Path(repo) / args[i + 1].split("[")[0]
                 try:
-                    out.add(norm_dist(tomllib.loads(pp.read_text())["project"]["name"]))
+                    out.add(norm_dist(tomllib.loads((d / "pyproject.toml").read_text())["project"]["name"]))
+                    continue
                 except Exception:
                     pass
+                for f, pat in (("setup.cfg", r"^name\s*=\s*(\S+)"), ("setup.py", r"name\s*=\s*['\"]([^'\"]+)['\"]")):
+                    try:
+                        m = re.search(pat, (d / f).read_text(), re.M)
+                    except OSError:
+                        m = None
+                    if m:
+                        out.add(norm_dist(m.group(1)))
+                        break
         return out
 
     def venv_for(self, repo, dists: dict, at: Path | None = None) -> tuple[Path, float, bool]:
@@ -392,7 +418,20 @@ class Finder:
                 pruned.append(c["id"])
                 continue
             inputs.append(c)
+        # a file outside the repository that only one run read, with the value that run recorded still on disk:
+        # the read differs (something else changed what the test does), not the file
+        one_side = []
+        for c in list(inputs):
+            if c["kind"] == "data" and not c.get("inrepo"):
+                gd, rd = (g["test"] or {}).get("data", {}), (r["test"] or {}).get("data", {})
+                if (c["path"] in gd) != (c["path"] in rd):
+                    dep = gd.get(c["path"]) or rd.get(c["path"])
+                    if dep_holds(c["path"], dep):
+                        one_side.append(c["id"])
+                        inputs.remove(c)
         inputs, grouped = group_inputs(inputs, self.green.get("env") or {}, self.red.get("env") or {})
+        if one_side:
+            grouped["(file read by one run only, content unchanged)"] = one_side
         res["grouped_inputs"] = grouped
         cands = commit_candidates(self.repo, commits, changes)
         res.update({"commits_in_range": len(commits), "commit_candidates": len(cands),
