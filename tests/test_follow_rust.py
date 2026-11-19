@@ -489,7 +489,8 @@ def test_parse_real_logs(real_logs):
     assert r.net and r.entropy and len(r.pids) >= 3 and f"{work}/py/srv.sock" in r.bound
     rs = same_parse(real_logs["py-files-1"][0], real_logs["py-files-1"][1])
     if follow._PROBE.get("shim"):
-        assert rs.clock and r.clock is None
+        # unshimmed, the only real-clock read seen is review R-009b R4's: the script stats a directory it created
+        assert rs.clock and (r.clock is None or r.clock.startswith("reads the real clock (the time of a file it wrote"))
 
 
 def test_real_log_lines(real_logs):
@@ -597,3 +598,40 @@ def test_logs_and_complete(tmp_path):
         assert _call(ref._complete, p) == _call(follow._complete, p), p
     assert follow._complete(str(d / "s1-1.12")) and not follow._complete(str(d / "s1-1.13"))
     assert _call(ref._complete, "a\0b") == _call(follow._complete, "a\0b")
+
+
+def test_parse_review_r009b_cases(tmp_path):
+    """R-009b R2 (a successful exclusive create is op "a") and R4 (a stat of a path the tree wrote, or of
+    /proc/<pid>, reads the real clock; rm/mkdir/ln/chmod/chown are exempt; the order is the trace clock across
+    logs): the Rust parse against the reference with the fixes applied."""
+    cases = {
+        "excl": [_log('openat(AT_FDCWD</w>, "app.lock", O_WRONLY|O_CREAT|O_EXCL, 0644) = 3</w/app.lock>',
+                      'openat(AT_FDCWD</w>, "held.lock", O_RDWR|O_CREAT|O_EXCL, 0644) = -1 EEXIST (File exists)',
+                      'openat(AT_FDCWD</w>, "rw.txt", O_RDWR|O_CREAT, 0644) = 4</w/rw.txt>')],
+        "stat-own": [_log('openat(AT_FDCWD</w>, "stamp", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/stamp>',
+                          'newfstatat(AT_FDCWD</w>, "stamp", {st_mode=S_IFREG|0644, st_size=1}, 0) = 0')],
+        "stat-before-write": [_log('statx(AT_FDCWD</w>, "later", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = -1 ENOENT (x)',
+                                   'stat("later", 0x1) = 0',
+                                   'mkdir("later", 0755) = 0')],
+        "proc-pid": [_log('stat("/proc/1234", {st_mode=S_IFDIR|0555}) = 0')],
+        "proc-self-task": [_log('lstat("/proc/self/task/77", {st_mode=S_IFDIR|0555}) = 0')],
+        "rm-exempt": [_log('execve("/bin/rm", ["rm", "-r", "d"], 0x1) = 0',
+                           'unlinkat(AT_FDCWD</w>, "d/x", 0) = 0', 'newfstatat(AT_FDCWD</w>, "d/x", 0x1, 0) = 0',
+                           'execve("/bin/cat", ["cat"], 0x1) = 0',
+                           'mkdir("y", 0755) = 0', 'stat("y", 0x1) = 0')],
+        "two-logs": [_log('stat("/w/out", 0x1) = 0'), _log('openat(AT_FDCWD</w>, "out", O_WRONLY|O_CREAT, 0644) = 3</w/out>')],
+        "no-ts": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT, 0644) = 3</w/f>', 'stat("f", 0x1) = 0', ts=False)],
+    }
+    out = {}
+    for name, logs in cases.items():
+        paths = []
+        for i, data in enumerate(logs):
+            p = tmp_path / f"{name}.{100 + i}"
+            p.write_bytes(data)
+            paths.append(str(p))
+        out[name] = same_parse(paths, "/w")
+    assert ("a", "/w/app.lock") in out["excl"].ops and ("a", "/w/held.lock") not in out["excl"].ops
+    assert "the time of a file it wrote: newfstatat /w/stamp" in out["stat-own"].clock
+    assert out["proc-pid"].clock and "process start time" in out["proc-pid"].clock
+    assert out["proc-self-task"].clock
+    assert out["rm-exempt"].clock and "/w/y" in out["rm-exempt"].clock

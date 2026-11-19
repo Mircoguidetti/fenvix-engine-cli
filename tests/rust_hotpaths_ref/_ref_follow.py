@@ -1,5 +1,7 @@
 """Reference: the strace log parsing of ``detpy.follow`` before it moved to Rust (``crates/detpy-py/src/follow.rs``),
-kept verbatim (the pre-port original) for the equivalence tests (``tests/test_follow_rust.py``).
+kept verbatim (the pre-port original) for the equivalence tests (``tests/test_follow_rust.py``), with the review
+R-009b fixes applied to it as they were applied to ``follow.py`` on claude/cache-proof-step1 (12f0af4: R4, a
+tree's stats of files it wrote and of /proc/<pid>; a7359b9: R2, op "a" for a successful exclusive create).
 
 Only the parsing half is here: ``Result``, the timestamp and log-file helpers (``_strip_ts``, ``_logs``,
 ``_complete``), the line parser (``_unquote``, ``_split_args``, ``_split_line``, ``parse``, ``_base``, ``_join``,
@@ -18,7 +20,8 @@ _TS = re.compile(r"^(\d+\.\d+) ")
 
 
 class Result:
-    """What one spawn's process tree did: ordered (op, path) with op r = probe/read, d = listing, w = write."""
+    """What one spawn's process tree did: ordered (op, path) with op r = probe/read, d = listing, w = write,
+    a = an exclusive create that succeeded (the path did not exist)."""
 
     def __init__(self):
         self.ops: list[tuple[str, str]] = []
@@ -32,6 +35,8 @@ class Result:
         self.unshimmed: str | None = None  # a program that ran without the clock shim
         self.t0: float | None = None  # first and last system call of the tree (strace -ttt, real clock)
         self.t1: float | None = None
+        self.wrote_at: dict[str, float] = {}  # path -> first time the tree wrote it
+        self.stats: list[tuple[float, str, str]] = []  # (time, path, call): a path's times read by name
 
 
 def _strip_ts(line: str) -> tuple[float | None, str]:
@@ -91,6 +96,17 @@ _PATH_CALLS = {
     "inotify_add_watch": (None, 1, "r"), "name_to_handle_at": (0, 1, "r"), "getcwd": None,
 }
 _IGNORED_CALLS = {"clone", "clone3", "fork", "vfork", "fchdir", "getcwd", "umask"}
+# calls that return a path's times (st_mtime, st_atime, st_ctime, stx_btime)
+_STAT_CALLS = {"stat", "lstat", "stat64", "lstat64", "newfstatat", "fstatat64", "statx"}
+# programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes)
+_NO_TIME_PROGRAMS = {"rm", "rmdir", "mkdir", "ln", "chmod", "chown"}
+# a process directory: its times are the process's start
+_PROC_PID_DIR = re.compile(r"^/proc/(\d+|self|thread-self)(/task/(\d+))?$")
+
+
+def _wrote_at(res: "Result", p: str, t: float | None) -> None:
+    if p not in res.wrote_at:
+        res.wrote_at[p] = t if t is not None else float("-inf")
 
 
 def _unquote(tok: str) -> str | None:
@@ -173,7 +189,20 @@ def parse(paths: list[str], cwd: str) -> Result:
         if not lines or not (lines[-1].startswith("+++ exited with") or lines[-1].startswith("+++ killed by")):
             res.bad = res.bad or "a process was still running at the end of the session"
             continue
-        _parse_one(lines, cwd, res)
+        _parse_one(lines, cwd, res, [t for t, _ in stamped])
+    # review R-009b R4: the times of a file the tree itself wrote are the real clock at the write (stat -c %Y,
+    # date -r, find -newer, make, os.path.getmtime), and the times of a process directory under /proc are the
+    # real clock at its start; neither passes through the clock library. Any process of the tree may write and
+    # another stat, so the order is the trace's clock (-ttt), across logs.
+    if res.clock is None:
+        for t, p, call in res.stats:
+            if _PROC_PID_DIR.match(p):
+                res.clock = f"reads the real clock (a process start time: {call} {p})"
+                break
+            w = res.wrote_at.get(p)
+            if w is not None and w <= t:
+                res.clock = f"reads the real clock (the time of a file it wrote: {call} {p})"
+                break
     return res
 
 
@@ -202,10 +231,14 @@ def _sockaddr(tok: str) -> tuple[str | None, str | None]:
     return fam, p
 
 
-def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
+def _parse_one(lines: list[str], cwd: str, res: Result, times: list | None = None) -> None:
     ops = res.ops
     unmarked = None  # a program this process exec'd that has not (yet) made the clock shim's marker call
-    for line in lines:
+    prog = None  # the program this process runs (after its last successful exec)
+    t = None
+    for k, line in enumerate(lines):
+        if times is not None and times[k] is not None:
+            t = times[k]
         if not line or line.startswith("+++") or line.startswith("---"):
             continue
         sp = _split_line(line)
@@ -231,6 +264,7 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
         if name in ("execve", "execveat") and ok:
             args0 = _split_args(argtext)
             unmarked = _unquote(args0[0 if name == "execve" else 1]) if args0 else "?"
+            prog = os.path.basename(unmarked or "")
         if name in _IGNORED_CALLS:
             if name == "fchdir" and ok:
                 b = _base(_split_args(argtext)[0], cwd)
@@ -253,9 +287,12 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
             if not ok or not wr:
                 ops.append(("r", p))
             else:
-                if "O_RDWR" in flags and "O_TRUNC" not in flags and not ("O_CREAT" in flags and "O_EXCL" in flags):
+                if "O_CREAT" in flags and "O_EXCL" in flags:
+                    ops.append(("a", p))  # review R-009b R2: it succeeded, so the path did not exist: an input
+                elif "O_RDWR" in flags and "O_TRUNC" not in flags:
                     ops.append(("r", p))
                 ops.append(("w", p))
+                _wrote_at(res, p, t)
             continue
         if name in ("getdents", "getdents64"):
             if ok:
@@ -335,8 +372,11 @@ def _parse_one(lines: list[str], cwd: str, res: Result) -> None:
             ops.append(("x", p))
         elif kind == "w" and ok:
             ops.append(("w", p))
+            _wrote_at(res, p, t)
         else:
             ops.append(("r", p))
+            if ok and name in _STAT_CALLS and prog not in _NO_TIME_PROGRAMS:
+                res.stats.append((t if t is not None else float("inf"), p, name))
     if unmarked is not None:
         res.unshimmed = res.unshimmed or unmarked
 

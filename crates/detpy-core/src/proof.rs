@@ -710,6 +710,14 @@ impl Checker {
         self.fresh.get(rel).filter(|f| f.content == d)
     }
 
+    /// The state of a data dependency as this session's code saw it before creating the path itself (an exclusive
+    /// create that found it missing, before the reuse decision): recorded dependencies on `path` are compared with
+    /// `dep` instead of the file the session then created (review R-009b R2).
+    pub fn observed(&mut self, path: &str, dep: &str) {
+        let kind = if dep == "missing" { 'f' } else { dep.chars().next().unwrap_or('?') };
+        self.data_now.entry(kind).or_default().insert(path.to_string(), dep.to_string());
+    }
+
     fn data(&mut self, path: &str, recorded: &str) -> &str {
         let kind = recorded.chars().next().unwrap_or('?');
         let kind = if recorded == "missing" { 'f' } else { kind };

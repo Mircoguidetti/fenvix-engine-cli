@@ -252,6 +252,9 @@ struct State {
     writers: HashMap<W, BTreeSet<usize>>,
     writers_order: Vec<W>,
     hashed: HashMap<W, W>,
+    /// abs path -> whether it existed at its first exclusive create in the session, if nothing had written it
+    excl_pre: HashMap<W, bool>,
+    excl_order: Vec<W>,
     code_stat: HashMap<W, StatKey>,
     code_stat_order: Vec<W>,
     loaded_order: Vec<(W, i64)>,
@@ -328,6 +331,20 @@ impl State {
         let mut kind = kind;
         if kind == b'm' {
             kind = b'f';
+        } else if kind == b'a' {
+            // a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
+            if self.writers.contains_key(p) {
+                let mut f = b"rw:".to_vec();
+                f.extend_from_slice(p);
+                self.flag_set(ctx).add(f);
+            } else {
+                let k = self.key(p).to_vec();
+                if !self.data.contains_key(&ctx) {
+                    self.data_order.push(ctx);
+                }
+                self.data.entry(ctx).or_default().set(k, b"missing".to_vec());
+            }
+            return None;
         } else if (p.starts_with(b"/proc/") || p.starts_with(b"/sys/") || p.starts_with(b"/dev/"))
             && !p.starts_with(b"/dev/shm/")
             && kind != b'd'
@@ -858,20 +875,21 @@ impl CaptureCore {
                 if self.env.o_tmpfile != 0 && flags_int.is_some() && fl & self.env.o_tmpfile == self.env.o_tmpfile {
                     return Ok(());
                 }
-                let (reads, writes, trunc) = match &mode_s {
-                    Some(m) => (
-                        m.contains('r') || m.contains('+'),
-                        m.chars().any(|c| "wax+".contains(c)),
-                        m.contains('w') || m.contains('x'),
-                    ),
+                let (reads, writes, trunc, excl) = match &mode_s {
+                    Some(m) => {
+                        let excl = m.contains('x');
+                        (m.contains('r') || m.contains('+'), m.chars().any(|c| "wax+".contains(c)), m.contains('w') || excl, excl)
+                    }
                     None => {
                         let f = flags_o.as_ref().map(int_of).unwrap_or(0);
                         let e = &self.env;
                         let acc = f & e.o_acc;
+                        let excl = f & (e.o_creat | e.o_excl) == (e.o_creat | e.o_excl);
                         (
                             acc == e.o_rdonly || acc == e.o_rdwr,
                             acc == e.o_wronly || acc == e.o_rdwr || f & e.o_creat != 0,
-                            f & e.o_trunc != 0 || f & (e.o_creat | e.o_excl) == (e.o_creat | e.o_excl),
+                            f & e.o_trunc != 0 || excl,
+                            excl,
                         )
                     }
                 };
@@ -880,7 +898,22 @@ impl CaptureCore {
                     return Ok(());
                 }
                 let ctx = self.cur(py)?;
-                if reads && !trunc {
+                if excl {
+                    // review R-009b R2: an exclusive create (a lock or pid file, mkstemp, mode "x") succeeds or fails
+                    // on whether the path exists, so that is an input: "missing", or the content it fails on. (The
+                    // open has not happened yet.) The first one in the session is remembered for the reuse decision.
+                    {
+                        let mut st = lock(&self.st);
+                        if !st.writers.contains_key(&p) && !st.excl_pre.contains_key(&p) {
+                            let present = fs_bytes(&p)
+                                .map(|b| std::fs::symlink_metadata(os_path(&b)).is_ok())
+                                .unwrap_or(false);
+                            st.excl_order.push(p.clone());
+                            st.excl_pre.insert(p.clone(), present);
+                        }
+                    }
+                    self.read_impl(py, ctx, &p, b'f')?;
+                } else if reads && !trunc {
                     self.read_impl(py, ctx, &p, b'f')?;
                 }
                 if writes {
@@ -1407,6 +1440,17 @@ impl CaptureCore {
         }
         Ok(out)
     }
+    /// `{abs path: existed}` at the first exclusive create of each path nothing had written (review R-009b R2).
+    #[getter]
+    fn excl_pre<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
+        let st = lock(&self.st);
+        let out = PyDict::new(py);
+        for p in &st.excl_order {
+            out.set_item(py_of(py, p)?, st.excl_pre[p])?;
+        }
+        Ok(out)
+    }
+
     /// `{abs path: {writer contexts}}` (UTF-8 paths: the only ones the record uses).
     #[getter]
     fn writers<'py>(&self, py: Python<'py>) -> PyResult<Bound<'py, PyDict>> {
@@ -2026,6 +2070,12 @@ impl CaptureCore {
             }
             if own.contains(&p) {
                 continue; // the tree wrote it first: internal
+            }
+            if op == b"a" {
+                if !self.child_ignored_w(logdir, &p) {
+                    self.read_impl(py, ctx, &p, b'a')?;
+                }
+                continue;
             }
             if op == b"x" {
                 if let Some(fsb) = fs_bytes(&p) {

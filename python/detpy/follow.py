@@ -52,7 +52,8 @@ STRACE_TRACE = ("%file,getdents,getdents64,chdir,fchdir,connect,sendto,sendmsg,b
 # (``faccessat`` of ``/__detpy_clock_shim__``), so a program that ran without it (static binaries, Go, setuid, an
 # environment without LD_PRELOAD) is seen too.
 # A Python interpreter reads the real clock once while it initialises (the time module's timezone offsets):
-# reads before Py_IsInitialized() is true are not marked.
+# reads before Py_IsInitialized() is first true are not marked; interpreter shutdown (Py_IsFinalizing()) is not
+# start-up.
 SHIM_SOURCE = r"""
 #define _GNU_SOURCE
 #include <dlfcn.h>
@@ -66,9 +67,23 @@ __attribute__((constructor)) static void detpy_clock_shim_mark(void) {
     syscall(SYS_faccessat, AT_FDCWD, "/__detpy_clock_shim__", F_OK, 0);
 }
 
+/* Python start-up only: Py_FinalizeEx clears Py_IsInitialized() too, before it tears the modules down (review
+   R-009b R3), so a read while the flag is false is exempt only if the interpreter has never been seen initialised
+   and is not finalising. Without a way to tell (Python older than 3.7), nothing is exempt. */
+static int py_seen_initialized;
+
 static int in_python_init(void) {
-    int (*f)(void) = (int (*)(void))dlsym(RTLD_DEFAULT, "Py_IsInitialized");
-    return f != 0 && !f();
+    if (py_seen_initialized) return 0;
+    int (*init)(void) = (int (*)(void))dlsym(RTLD_DEFAULT, "Py_IsInitialized");
+    if (init == 0) return 0;
+    if (init()) {
+        py_seen_initialized = 1;
+        return 0;
+    }
+    int (*fin)(void) = (int (*)(void))dlsym(RTLD_DEFAULT, "Py_IsFinalizing");
+    if (fin == 0) fin = (int (*)(void))dlsym(RTLD_DEFAULT, "_Py_IsFinalizing");
+    if (fin == 0 || fin()) return 0;
+    return 1;
 }
 
 static int realtime(clockid_t c) {

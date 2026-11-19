@@ -243,6 +243,21 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
     assert reused == ids("test_tmp")
 
 
+
+def test_child_process_start_time_is_a_real_clock_read(pytester, run_cache):
+    # review R-009b R4: the times of /proc/<pid> are the process's start (real clock); /proc/<own pid> is otherwise
+    # skipped as the tree's own state
+    project(pytester, **{"test_m.py": """
+        import subprocess
+
+        def test_start():
+            subprocess.run(["sh", "-c", 'stat -c %Y /proc/$$'], capture_output=True, check=True)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert "a process start time" in data["cache"]["not_cached_where"]["test_m.py::test_start"]
+
 @pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc")
 def test_find_library_compiler_fallback_at_import_time_is_followed(pytester, run_cache):
     # r5's cause on pylint (pyenchant) and home-assistant (turbojpeg): a library missing from the linker cache makes
@@ -566,6 +581,52 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
 
 
+
+def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pytester, run_cache):
+    # review R-009b R1: an attached database's trigger, and a definition made on the same connection by a fixture
+    # (another context); a database whose schema does not read the clock is still reused
+    import sqlite3
+
+    con = sqlite3.connect(pytester.path / "aux.db")
+    con.executescript("create table log (at text); create table t (x);"
+                      "create trigger t_log after insert on t begin insert into log values (datetime('now')); end;")
+    con.close()
+    con = sqlite3.connect(pytester.path / "plain.db")
+    con.executescript("create table t (x integer, at text default '2020-01-01');")
+    con.close()
+    project(pytester, **{"test_m.py": """
+        import shutil, sqlite3
+
+        import pytest
+
+        @pytest.fixture(scope="module")
+        def mem():
+            con = sqlite3.connect(":memory:")
+            con.execute("create table ev (id integer, at text default current_timestamp)")
+            return con
+
+        def test_attached(tmp_path):
+            shutil.copy("aux.db", tmp_path / "aux.db")
+            con = sqlite3.connect(":memory:")
+            con.execute(f"attach database '{tmp_path / 'aux.db'}' as aux")
+            con.execute("insert into aux.t values (1)")
+
+        def test_fixture_schema(mem):
+            mem.execute("insert into ev (id) values (1)")
+
+        def test_plain(tmp_path):
+            shutil.copy("plain.db", tmp_path / "plain.db")
+            con = sqlite3.connect(tmp_path / "plain.db")
+            con.execute("insert into t (x) values (1)")
+            assert con.execute("select at from t").fetchone() == ("2020-01-01",)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == ids("test_plain")
+    for t in ("test_attached", "test_fixture_schema"):
+        assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
+    assert "aux.db (t_log)" in data["cache"]["not_cached_where"]["test_m.py::test_attached"]
+
 def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, run_cache):
     # a Python interpreter reads the real clock while it initialises (time module's timezone offsets): exempt;
     # time.time() in the child afterwards is a real-clock read
@@ -658,6 +719,25 @@ def test_exclusive_create_at_import_does_not_drop_every_reuse(pytester, run_cach
         assert reused == ids("test_a")
         assert not data["cache"]["stale_reuses"]
 
+
+
+def test_child_exclusive_create_is_an_input(pytester, run_cache):
+    # review R-009b R2, in a child: a successful O_CREAT|O_EXCL open means the path did not exist
+    project(pytester, **{"test_m.py": """
+        import subprocess, sys
+
+        CODE = "import os; os.close(os.open('app.lock', os.O_CREAT | os.O_EXCL | os.O_WRONLY)); os.remove('app.lock')"
+
+        def test_lock():
+            subprocess.run([sys.executable, "-c", CODE], check=True)
+        """})
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_lock")
+    (pytester.path / "app.lock").write_text("")
+    r, reused, _ = run_cache()
+    assert reused == set()
+    r.assert_outcomes(failed=1)
 
 def test_child_netlink_is_network(pytester, run_cache):
     # `ip link` (uuid.getnode's fallback) asks the kernel over netlink: bind, then send() without an address

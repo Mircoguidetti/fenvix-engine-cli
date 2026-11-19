@@ -1,5 +1,6 @@
 # Reference copy (verbatim) of python/detpy/proofcache.py before round 2 moved its capture to Rust
-# (crates/detpy-py/src/capture.rs). Installed as detpy.proofcache by tests/rust_hotpaths_ref/_capref.py when
+# (crates/detpy-py/src/capture.rs), with the review R-009b R1/R2 fixes applied to it as on claude/cache-proof-step1
+# (c872a13, a7359b9; R2's stale-check exception goes through the plan's stale_skip, the record being Rust here). Installed as detpy.proofcache by tests/rust_hotpaths_ref/_capref.py when
 # DETPY_CAPTURE_REF=1, for the equivalence tests (tests/test_capture_rust.py).
 """Cache with proof (``pytest --det --det-cache=DIR``).
 
@@ -177,6 +178,8 @@ class Capture:
         self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
         self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
         self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
+        # abs path -> whether it existed at its first exclusive create in the session, if nothing had written it
+        self.excl_pre: dict[str, bool] = {}
         self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
         # repository code file (abs path) -> stat key when its source was first read (open by the import system,
         # before the read) or its module body first ran: a file changed after that ran other code than the one
@@ -449,6 +452,13 @@ class Capture:
             return
         if kind == "m":
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
+        elif kind == "a":
+            # a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
+            if p in self.writers:
+                self.flags.setdefault(ctx, set()).add("rw:" + p)
+            else:
+                self.data.setdefault(ctx, {})[self._key(p)] = "missing"
+            return
         elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
                 and (kind != "d" and os.path.exists(p)):
             # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
@@ -507,19 +517,26 @@ class Capture:
             if isinstance(mode, str):
                 reads = "r" in mode or "+" in mode
                 writes = any(ch in mode for ch in "wax+")
-                trunc = "w" in mode or "x" in mode  # "x": created here, nothing to read
+                excl = "x" in mode
+                trunc = "w" in mode or excl
             else:
                 acc = (flags or 0) & _O_ACC
                 reads = acc in (os.O_RDONLY, os.O_RDWR)
                 writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
-                # O_CREAT|O_EXCL (NamedTemporaryFile, mkstemp): the file did not exist, so it is an output only
-                trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
-                    os.O_CREAT | os.O_EXCL)
+                excl = (flags or 0) & (os.O_CREAT | os.O_EXCL) == (os.O_CREAT | os.O_EXCL)
+                trunc = bool((flags or 0) & os.O_TRUNC) or excl
             kind = self._caller_kind()
             if kind in ("import", "infra"):
                 return
             ctx = self._cur()
-            if reads and not trunc:
+            if excl:
+                # review R-009b R2: an exclusive create (a lock or pid file, mkstemp, mode "x") succeeds or fails on
+                # whether the path exists, so that is an input: "missing", or the content it fails on. (The open has
+                # not happened yet.) The first one in the session is remembered for the reuse decision (_decide).
+                if p not in self.writers and p not in self.excl_pre:
+                    self.excl_pre[p] = os.path.lexists(p)
+                self.read(ctx, p, "f")
+            elif reads and not trunc:
                 self.read(ctx, p, "f")
             if writes:
                 self.wrote(ctx, p)
@@ -621,7 +638,12 @@ class Capture:
     def _patch_sqlite(self) -> None:
         """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
         the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
-        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
+        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)
+
+        review R-009b R1: the schema evaluates such expressions too (a column default, a trigger, a view), while the
+        statement says nothing about time. A statement that may evaluate the schema (anything but transaction
+        control, PRAGMA, ATTACH/DETACH, DROP...) on a connection whose databases' schema may read the clock is
+        refused in the same way."""
         try:
             import sqlite3
             import sqlite3.dbapi2 as dbapi2
@@ -629,11 +651,17 @@ class Capture:
             return
         real = sqlite3.connect
         cap = self
+        self._sql_real_connect = real
+        self._sql_schema: dict[str, tuple] = {}  # database file -> (signature, what reads the clock or None)
 
         def connect(*args, **kwargs):
             conn = real(*args, **kwargs)
+            db = args[0] if args else kwargs.get("database")
+            uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            # the state holds no reference to the connection (a cycle would delay closing it; no weak references)
+            st = _SqlConn(_sqlite_file(db, bool(uri)))
             try:
-                conn.set_trace_callback(cap._sql_trace)
+                conn.set_trace_callback(lambda statement: cap._sql_trace(statement, st))
             except Exception:
                 pass
             return conn
@@ -643,9 +671,65 @@ class Capture:
         sqlite3.connect = connect
         dbapi2.connect = connect
 
-    def _sql_trace(self, statement) -> None:
-        if self.active and isinstance(statement, str) and _SQL_REAL_CLOCK.search(statement):
+    def _sql_trace(self, statement, st=None) -> None:
+        if not self.active or not isinstance(statement, str):
+            return
+        if _SQL_REAL_CLOCK.search(statement):
             self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
+            if st is not None and _SQL_DDL.match(statement):
+                st.own = st.own or "this connection's schema"  # a temporary or uncommitted definition included
+        if st is None:
+            return
+        m = _SQL_ATTACH.match(statement)
+        if m:
+            f = _sqlite_file(m.group(1)[1:-1].replace("''", "'"), True)
+            if f is not None:
+                st.dbs.append(f)
+            return
+        if _SQL_NO_SCHEMA.match(statement):
+            return
+        why = st.own
+        if why is None:
+            for f in st.dbs:
+                why = self._sql_schema_clock(f)
+                if why is not None:
+                    break
+        if why is not None:
+            self.flag(self._cur(), "rclock",
+                      f"sqlite: {why} may read the real clock ({statement.strip()[:60]}) at {_first_user_site()}")
+
+    def _sql_schema_clock(self, path: str) -> str | None:
+        """What in the schema of database file ``path`` may read the real clock (None: nothing), memoised on the
+        file's and its write-ahead log's identity."""
+        sig = []
+        for f in (path, path + "-wal"):
+            try:
+                st = os.stat(f)
+                sig.append((st.st_ino, st.st_size, st.st_mtime_ns))
+            except OSError:
+                sig.append(None)
+        if sig[0] is None:
+            return None  # not created yet: no schema
+        sig = tuple(sig)
+        memo = self._sql_schema.get(path)
+        if memo is not None and memo[0] == sig:
+            return memo[1]
+        from urllib.parse import quote
+        why = None
+        try:
+            # a "file:" URI: the audit hook does not take this connection as the test's read of the file
+            con = self._sql_real_connect(f"file:{quote(path)}?mode=ro", uri=True, timeout=0)
+            try:
+                for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
+                    if isinstance(sql, str) and _SQL_REAL_CLOCK.search(sql):
+                        why = f"the schema of {self._key(path)} ({name})"
+                        break
+            finally:
+                con.close()
+        except Exception as e:
+            why = f"the schema of {self._key(path)} (unreadable: {e})"
+        self._sql_schema[path] = (sig, why)
+        return why
 
     def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
         fl = self.flags.setdefault(ctx, set())
@@ -777,6 +861,10 @@ class Capture:
                 continue
             if p in own:
                 continue  # the tree wrote it first: internal
+            if op == "a":
+                if not self.child_ignored(p):
+                    self.read(ctx, p, "a")
+                continue
             if op == "x":
                 interp = follow.shebang(p)
                 if interp:
@@ -1173,6 +1261,14 @@ class ProofCachePlugin:
         for (path, content), f in zip(changed, facts):
             if f is not None:
                 store.set_fresh(path, content, f[0], f[1], f[2], f[3])
+        # review R-009b R2: a path this session's code (import time, collection) created with an exclusive create
+        # that found it missing: the recorded "missing" is compared with what that code saw, not with the file it
+        # then created (a NamedTemporaryFile held in a module global); see the stale check in _record_all
+        self.excl_seeded = {}
+        for p, present in cap.excl_pre.items():
+            if not present and p in cap.writers:
+                store.observed(cap._key(p), "missing")
+                self.excl_seeded[p] = set(cap.writers[p])
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         for i, item in enumerate(items):
             nid = item.nodeid
@@ -1438,6 +1534,8 @@ class ProofCachePlugin:
             "session_written": {cap._key(p): sorted(names[c] for c in w) for p, w in cap.writers.items()
                                 if _encodable(p)},
             "loaded_order": cap.loaded_order, "preloaded": sorted(cap.preloaded), "needed": sorted(needed),
+            "stale_skip": sorted(cap._key(p) for p, w in getattr(self, "excl_seeded", {}).items()
+                                 if cap.writers.get(p) == w),
             "changed": cap.changed_code(),
             "test_modules": test_modules, "tests": tests, "hits": list(self.hits),
             "root_sep": cap.root_sep, "control_urandom": bool(cfg.control_urandom),
@@ -1634,6 +1732,49 @@ import re as _re  # noqa: E402
 _SQL_REAL_CLOCK = _re.compile(
     r"""'now'|"now"|\bcurrent_(timestamp|date|time)\b|\b(date|time|datetime|julianday|unixepoch)\s*\(\s*\)"""
     r"""|\bstrftime\s*\(\s*('[^']*'|"[^"]*")\s*\)""", _re.I)
+
+
+# statements that evaluate no column default, trigger or view
+_SQL_NO_SCHEMA = _re.compile(
+    r"\s*(begin|commit|end|rollback|savepoint|release|pragma|attach|detach|drop|vacuum|analyze|reindex)\b", _re.I)
+_SQL_DDL = _re.compile(r"\s*(create|alter)\b", _re.I)
+_SQL_ATTACH = _re.compile(r"\s*attach\s+(?:database\s+)?('(?:[^']|'')*')", _re.I)
+
+
+class _SqlConn:
+    """What detpy knows of one sqlite connection: its database files (main, attached) and whether a definition it
+    ran reads the real clock."""
+
+    __slots__ = ("dbs", "own")
+
+    def __init__(self, main: str | None):
+        self.dbs = [main] if main is not None else []
+        self.own: str | None = None
+
+
+def _sqlite_file(db, uri: bool) -> str | None:
+    """The absolute path of the database file sqlite opens for ``db`` (None: in memory or not a file name)."""
+    if not isinstance(db, (str, bytes, os.PathLike)):
+        return None
+    try:
+        s = os.fsdecode(db)
+    except (TypeError, ValueError):
+        return None
+    if uri and s.startswith("file:"):
+        from urllib.parse import unquote
+        s, _, query = s[5:].partition("?")
+        if "mode=memory" in query.split("#")[0].split("&"):
+            return None
+        if s.startswith("//"):
+            host, _, rest = s[2:].partition("/")
+            s = "/" + rest if host in ("", "localhost") else ""
+        s = unquote(s.split("#")[0])
+    if s in ("", ":memory:"):
+        return None
+    try:
+        return os.path.abspath(s)
+    except (OSError, ValueError):
+        return None
 
 
 def _numeric_host(host: str) -> bool:

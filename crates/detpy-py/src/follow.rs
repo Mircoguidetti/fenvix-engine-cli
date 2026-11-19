@@ -22,7 +22,7 @@
 use pyo3::exceptions::{PyIndexError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyBytes, PyString};
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::ffi::{OsStr, OsString};
 use std::fs;
 use std::io::{Read, Seek, SeekFrom};
@@ -578,9 +578,39 @@ struct Parsed {
     unshimmed: Option<Vec<u8>>,
     t0: Option<f64>,
     t1: Option<f64>,
+    /// path -> first time the tree wrote it (review R-009b R4)
+    wrote_at: HashMap<Vec<u8>, f64>,
+    /// (time, path, call): a path's times read by name, in log order
+    stats: Vec<(f64, Vec<u8>, Vec<u8>)>,
+}
+
+/// Calls that return a path's times (st_mtime, st_atime, st_ctime, stx_btime).
+const STAT_CALLS: [&[u8]; 7] = [b"stat", b"lstat", b"stat64", b"lstat64", b"newfstatat", b"fstatat64", b"statx"];
+/// Programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes).
+const NO_TIME_PROGRAMS: [&[u8]; 6] = [b"rm", b"rmdir", b"mkdir", b"ln", b"chmod", b"chown"];
+
+/// `^/proc/(\d+|self|thread-self)(/task/(\d+))?$` (Python's `$` also matches before a final newline).
+fn proc_pid_dir(p: &[u8]) -> bool {
+    let p = p.strip_suffix(b"\n").unwrap_or(p);
+    let Some(rest) = p.strip_prefix(b"/proc/") else { return false };
+    let digits = |b: &[u8]| !b.is_empty() && b.iter().all(|c| c.is_ascii_digit());
+    let (first, tail) = match rest.iter().position(|&c| c == b'/') {
+        Some(i) => (&rest[..i], &rest[i..]),
+        None => (rest, &rest[..0]),
+    };
+    if !(digits(first) || first == b"self" || first == b"thread-self") {
+        return false;
+    }
+    tail.is_empty() || tail.strip_prefix(b"/task/").is_some_and(digits)
 }
 
 impl Parsed {
+    fn wrote_at(&mut self, p: &[u8], t: Option<f64>) {
+        if !self.wrote_at.contains_key(p) {
+            self.wrote_at.insert(p.to_vec(), t.unwrap_or(f64::NEG_INFINITY));
+        }
+    }
+
     fn bad(&mut self, msg: Vec<u8>) {
         if self.bad.is_none() {
             self.bad = Some(Bad::Text(msg));
@@ -620,6 +650,7 @@ fn parse_paths(paths: &[Vec<u8>], cwd: &[u8]) -> Result<Parsed, Fail> {
             }
         };
         let mut lines = Vec::new();
+        let mut times = Vec::new();
         let (mut first, mut last) = (None, None);
         for l in splitlines(&text) {
             let (t, rest) = strip_ts(l);
@@ -628,6 +659,7 @@ fn parse_paths(paths: &[Vec<u8>], cwd: &[u8]) -> Result<Parsed, Fail> {
                 last = Some(t);
             }
             lines.push(rest);
+            times.push(t);
         }
         if let (Some(a), Some(b)) = (first, last) {
             // min(times[0], t0) / max(times[-1], t1)
@@ -645,15 +677,38 @@ fn parse_paths(paths: &[Vec<u8>], cwd: &[u8]) -> Result<Parsed, Fail> {
             res.bad(b"a process was still running at the end of the session".to_vec());
             continue;
         }
-        parse_one(&lines, cwd, &mut res)?;
+        parse_one(&lines, &times, cwd, &mut res)?;
+    }
+    // review R-009b R4: the times of a file the tree itself wrote are the real clock at the write (stat -c %Y,
+    // date -r, find -newer, make, os.path.getmtime), and the times of a process directory under /proc are the real
+    // clock at its start; neither passes through the clock library. Any process of the tree may write and another
+    // stat, so the order is the trace's clock (-ttt), across logs.
+    if res.clock.is_none() {
+        for (t, p, call) in &res.stats {
+            if proc_pid_dir(p) {
+                res.clock = Some(cat(&[b"reads the real clock (a process start time: ", call, b" ", p, b")"]));
+                break;
+            }
+            if let Some(&w) = res.wrote_at.get(p) {
+                if w <= *t {
+                    res.clock = Some(cat(&[b"reads the real clock (the time of a file it wrote: ", call, b" ", p, b")"]));
+                    break;
+                }
+            }
+        }
     }
     Ok(res)
 }
 
-fn parse_one(lines: &[&[u8]], cwd0: &[u8], res: &mut Parsed) -> Result<(), Fail> {
+fn parse_one(lines: &[&[u8]], times: &[Option<f64>], cwd0: &[u8], res: &mut Parsed) -> Result<(), Fail> {
     let mut cwd = cwd0.to_vec();
     let mut unmarked: Option<Vec<u8>> = None; // a program this process exec'd that has not made the marker call
-    for &line in lines {
+    let mut prog: Option<Vec<u8>> = None; // the program this process runs (after its last successful exec)
+    let mut t: Option<f64> = None;
+    for (k, &line) in lines.iter().enumerate() {
+        if let Some(Some(tk)) = times.get(k) {
+            t = Some(*tk);
+        }
         if line.is_empty() || line.starts_with(b"+++") || line.starts_with(b"---") {
             continue;
         }
@@ -692,6 +747,9 @@ fn parse_one(lines: &[&[u8]], cwd0: &[u8], res: &mut Parsed) -> Result<(), Fail>
             } else {
                 unquote(arg(&args0, if name == b"execve" { 0 } else { 1 })?)?
             };
+            // os.path.basename(unmarked or "")
+            let u: &[u8] = unmarked.as_deref().unwrap_or(b"");
+            prog = Some(u[u.iter().rposition(|&c| c == b'/').map_or(0, |i| i + 1)..].to_vec());
         }
         if IGNORED_CALLS.contains(&name) {
             if name == b"fchdir" && ok {
@@ -724,9 +782,12 @@ fn parse_one(lines: &[&[u8]], cwd0: &[u8], res: &mut Parsed) -> Result<(), Fail>
                 if !ok || !wr {
                     res.ops.push(("r", p));
                 } else {
-                    if has(b"O_RDWR") && !has(b"O_TRUNC") && !(has(b"O_CREAT") && has(b"O_EXCL")) {
+                    if has(b"O_CREAT") && has(b"O_EXCL") {
+                        res.ops.push(("a", p.clone())); // review R-009b R2: it succeeded, so the path did not exist
+                    } else if has(b"O_RDWR") && !has(b"O_TRUNC") {
                         res.ops.push(("r", p.clone()));
                     }
+                    res.wrote_at(&p, t);
                     res.ops.push(("w", p));
                 }
                 continue;
@@ -832,8 +893,16 @@ fn parse_one(lines: &[&[u8]], cwd0: &[u8], res: &mut Parsed) -> Result<(), Fail>
                 res.ops.push(("r", p));
             }
             b'x' => res.ops.push(("x", p)),
-            b'w' if ok => res.ops.push(("w", p)),
-            _ => res.ops.push(("r", p)),
+            b'w' if ok => {
+                res.wrote_at(&p, t);
+                res.ops.push(("w", p));
+            }
+            _ => {
+                if ok && STAT_CALLS.contains(&name) && !prog.as_deref().is_some_and(|g| NO_TIME_PROGRAMS.contains(&g)) {
+                    res.stats.push((t.unwrap_or(f64::INFINITY), p.clone(), name.to_vec()));
+                }
+                res.ops.push(("r", p));
+            }
         }
     }
     if let Some(u) = unmarked {

@@ -86,6 +86,11 @@ pub struct Plan {
     /// Results reused in this session (in reuse order): dropped when this session wrote one of their inputs.
     #[serde(default)]
     pub hits: Vec<String>,
+    /// Path keys left out of that stale check: created by this session's code with an exclusive create that found
+    /// them missing before the reuse decision (the decision compared the recorded absence with what that code saw,
+    /// `Checker::observed`), and written by nothing after it (review R-009b R2).
+    #[serde(default)]
+    pub stale_skip: Vec<String>,
     /// `root + os.sep`: absolute paths under it are keyed relative to the root.
     pub root_sep: String,
     pub control_urandom: bool,
@@ -358,13 +363,17 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
     }
     // results reused in this session whose input files code of this session then wrote: drop them
-    if !plan.session_written.is_empty() {
+    let mut stale_written: BTreeMap<String, Vec<String>> = plan.session_written.clone();
+    for p in &plan.stale_skip {
+        stale_written.remove(p);
+    }
+    if !stale_written.is_empty() {
         for nid in &plan.hits {
             let Some(e) = store.tests.get(nid) else { continue };
             let own = format!("t|{nid}");
             let mut stale = None;
             for (path, _) in &e.data {
-                if let Some(w) = plan.session_written.get(&**path) {
+                if let Some(w) = stale_written.get(&**path) {
                     if !w.iter().all(|x| *x == own) {
                         stale = Some(path.to_string());
                         break;

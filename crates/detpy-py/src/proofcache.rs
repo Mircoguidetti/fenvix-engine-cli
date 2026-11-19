@@ -89,6 +89,12 @@ impl ProofCache {
         lock(&self.inner).checker.set_fresh(code_file(path, content, skeleton, hooks, units, imports));
     }
 
+    /// Compare recorded dependencies on `path` with `dep`, the state this session's code saw before it created the
+    /// path (see `Checker::observed`).
+    fn observed(&self, path: &str, dep: &str) {
+        lock(&self.inner).checker.observed(path, dep);
+    }
+
     /// `(True, receipt_json)` when the recorded result of `nodeid` may be
     /// reused, else `(False, "kind: detail")`.
     fn check(&self, nodeid: &str) -> PyResult<(bool, String)> {
