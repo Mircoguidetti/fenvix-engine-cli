@@ -62,7 +62,7 @@ Unit: a top-level test. A test is reused (not run; reported as `--- PASS` with `
 - **prefix rule** (shared process state): a test also depends on everything that package initialisation, `TestMain` and the tests before it in the same process read. This includes tests reused in that run, through their recorded inputs. This covers a configuration loaded once by an earlier test, and anything else in memory;
 - **never reused**: a test that failed or was skipped, a test that connected to an address outside the machine (or to a loopback proxy), or a test recorded without a dependency capture.
 
-Paths that can be inputs: the repository, the module cache, GOROOT, `/etc`, `/usr`, `/lib*`, `/opt` and the user's home; never temp directories, `/proc`, `/sys`, `/dev`, `/run` or the build caches. The most specific match wins (a repository checked out under `/tmp` is a root). Both captures (strace and hooks) use this one filter.
+Paths that can be inputs: the repository, the module cache, GOROOT, `/etc`, `/usr`, `/lib*`, `/opt` and the user's home; never temp directories, `/proc`, `/sys`, `/dev`, `/run`, the build caches or the Go toolchain's telemetry counters (`~/.config/go/telemetry`). The most specific match wins (a repository checked out under `/tmp` is a root). Both captures (strace and hooks) use this one filter.
 
 Capture: `strace` when installed (complete: child processes, cgo, files read below package `os`), otherwise `hooks` (package-level hooks only; gaps listed above). `--skip-capture` chooses. In skip mode `t.Parallel` is serialised by default, so per-test attribution is exact (`--det-keep-parallel` restores parallelism).
 

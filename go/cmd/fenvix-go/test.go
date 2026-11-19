@@ -456,6 +456,9 @@ func cmdTest(args []string) int {
 		if cd, err := os.UserCacheDir(); err == nil {
 			ignore = append(ignore, cd) // build and tool caches (fenvix's own included)
 		}
+		if cfg, err := os.UserConfigDir(); err == nil {
+			ignore = append(ignore, filepath.Join(cfg, "go", "telemetry")) // counters the go command rewrites on every run
+		}
 		sess.Skip = &session.Skip{Dir: abs, Verify: o.skipVerify, Capture: capture, Roots: roots, Ignore: ignore,
 			Commit: o.skipCommit}
 	}
