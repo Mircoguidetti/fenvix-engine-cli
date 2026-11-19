@@ -1,0 +1,10 @@
+{
+ "name": "yargs", "url": "https://github.com/yargs/yargs", "node": "22", "runner": "mocha",
+ "install": ["npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent"],
+ "install_files": ["package-lock.json", "package.json"],
+ "build": ["npm run compile -- -p tsconfig.test.json > /dev/null 2>&1"],
+ "args": ["--enable-source-maps", "--require", "./test/before.mjs", "--timeout=24000", "--check-leaks", "--reporter", "dot"],
+ "patterns": ["./test/*.mjs"],
+ "plain": "node_modules/.bin/mocha --enable-source-maps ./test/*.mjs --require ./test/before.mjs --timeout=24000 --check-leaks --reporter dot",
+ "shards": 1, "source": "the 31 latest first-parent commits of main (2026-11-19); `npm test` runs `c8 mocha --enable-source-maps ./test/*.mjs --require ./test/before.mjs` after `tsc -p tsconfig.test.json` (Mocha 11, ESM specs)"
+}

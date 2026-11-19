@@ -5,6 +5,9 @@ Per commit i (after install and build):
 
 * **skip run** (i > first of the shard): a copy of the cache as it was after commit i-1; detjs decides with proof
   and runs only the files it cannot reuse. Wall time and the reused files are recorded.
+Runners: Vitest and Jest (their JSON reports), `node --test` and Mocha (`"runner": "node-test" | "mocha"`; runner
+args in `args`, file patterns in `patterns`, per-file outcomes from detjs' cache summary).
+
 * **verify run**: the same cache state (before the skip run), `--det-cache-verify`: detjs takes the same decisions
   (same inputs, same cache) but runs every file and compares every result it would have reused with the fresh
   result at the same commit (0 wrong = no mismatch). Its records become the cache for commit i+1. Its per-file
@@ -83,8 +86,19 @@ def summary_of(repo):
     return out
 
 
-def outcomes_of(report_path, runner):
-    """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report."""
+# runners whose detjs shell has no JSON report of its own: outcomes come from detjs' cache summary (ran_files)
+SUMMARY_RUNNERS = ("node-test", "mocha")
+
+
+def outcomes_of(report_path, runner, repo=None):
+    """{test file: {"ok": bool, "tests": n, "failed": n}} from the runner's JSON report (Vitest, Jest) or, for
+    node-test and Mocha, from the files detjs ran (`.detjs/cache-summary.json`, `ran_files`)."""
+    if runner in SUMMARY_RUNNERS:
+        if repo is None:
+            return {}
+        s = load_json(os.path.join(repo, ".detjs", "cache-summary.json")) or {}
+        return {k: {"ok": bool(v.get("ok")), "tests": v.get("tests", 0), "failed": 0 if v.get("ok") else None}
+                for k, v in (s.get("ran_files") or {}).items()}
     j = load_json(report_path) or {}
     out = {}
     for f in j.get("testResults") or []:
@@ -113,6 +127,7 @@ class Walk:
             for k in ("CI", "GITHUB_ACTIONS"):
                 self.env.pop(k, None)
         self.env["FENVIX_RUNTIME_MEMO"] = os.path.join(self.work, "runtime-memo.json")
+        self.env.update(self.spec.get("env") or {})
 
     def save(self):
         tmp = self.out + ".tmp"
@@ -144,13 +159,24 @@ class Walk:
         info["build_seconds"] = round(time.time() - t0, 1)
         return info
 
+    def report_args(self, report):
+        r = self.spec["runner"]
+        if r == "vitest":
+            return ["--reporter=json", f"--outputFile={report}"]
+        if r == "jest":
+            return ["--json", f"--outputFile={report}"]
+        return []  # node-test, mocha: the spec's own reporter args; outcomes from detjs' summary
+
+    def runner_args(self, files=None):
+        """The spec's runner args, then its file patterns (node-test, mocha) or the given files instead."""
+        return list(self.spec.get("args", [])) + list(files if files is not None else self.spec.get("patterns", []))
+
     def detjs(self, cache_dir, extra, report):
         args = ["node", DETJS, self.spec["runner"]]
         if self.spec["runner"] == "vitest":
             args += ["run"]
-        args += ["--det", f"--det-cache={cache_dir}"] + extra + list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += ["--det", f"--det-cache={cache_dir}"] + extra + self.runner_args()
+        args += self.report_args(report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, out, dt
 
@@ -161,9 +187,8 @@ class Walk:
 
     def det_nocache(self, report):
         args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
-        args += list(self.spec.get("args", []))
-        args += (["--reporter=json", f"--outputFile={report}"] if self.spec["runner"] == "vitest"
-                 else ["--json", f"--outputFile={report}"])
+        args += self.runner_args()
+        args += self.report_args(report)
         rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
         return rc, dt
 
@@ -233,7 +258,8 @@ class Walk:
             if overhead:
                 rp = os.path.join(self.work, "plain.json")
                 rc, dt = self.plain(rp)
-                rec["plain"] = {"rc": rc, "seconds": round(dt, 2), "outcomes": outcomes_of(rp, self.spec["runner"])}
+                rec["plain"] = {"rc": rc, "seconds": round(dt, 2), "outcomes": outcomes_of(rp, self.spec["runner"])
+                                if self.spec["runner"] not in SUMMARY_RUNNERS else {}}
                 rp = os.path.join(self.work, "det.json")
                 rc, dt = self.det_nocache(rp)
                 rec["det_nocache"] = {"rc": rc, "seconds": round(dt, 2)}
@@ -246,11 +272,11 @@ class Walk:
                 rp = os.path.join(self.work, "skip.json")
                 rc, out, dt = self.detjs(skip_cache, [], rp)
                 rec["skip"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo),
-                               "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-1500:] if rc else ""}
+                               "outcomes": outcomes_of(rp, self.spec["runner"], self.repo), "tail": out[-1500:] if rc else ""}
             rp = os.path.join(self.work, "verify.json")
             rc, out, dt = self.detjs(self.cache, ["--det-cache-verify"], rp)
             rec["verify"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo), "cold": first,
-                             "outcomes": outcomes_of(rp, self.spec["runner"]), "tail": out[-3000:] if rc else ""}
+                             "outcomes": outcomes_of(rp, self.spec["runner"], self.repo), "tail": out[-3000:] if rc else ""}
             mism = rec["verify"]["summary"].get("verify_mismatches") or []
             if mism:
                 rec["recheck"] = self.recheck(mism)
@@ -283,10 +309,22 @@ class Walk:
             for k in range(3):
                 rp = os.path.join(self.work, f"recheck{k}.json")
                 args = ["node", DETJS, self.spec["runner"]] + (["run"] if self.spec["runner"] == "vitest" else []) + ["--det"]
-                args += list(self.spec.get("args", [])) + [f]
-                args += (["--reporter=json", f"--outputFile={rp}"] if self.spec["runner"] == "vitest" else ["--json", f"--outputFile={rp}"])
+                if self.spec["runner"] in SUMMARY_RUNNERS:
+                    # an empty cache: every file runs (fresh), and the summary says how each one ended; node-test
+                    # runs the one file, Mocha its configured specs (a positional file adds to them)
+                    fresh = os.path.join(self.work, f"recheck-cache{k}")
+                    shutil.rmtree(fresh, ignore_errors=True)
+                    args += [f"--det-cache={fresh}"]
+                    args += self.runner_args([f] if self.spec["runner"] == "node-test" else None)
+                else:
+                    args += list(self.spec.get("args", [])) + [f]
+                args += self.report_args(rp)
                 rc, _, _ = sh(args, cwd=self.repo, timeout=900, env=self.env)
-                runs.append({"rc": rc, "outcomes": outcomes_of(rp, self.spec["runner"])})
+                outs = outcomes_of(rp, self.spec["runner"], self.repo)
+                if self.spec["runner"] in SUMMARY_RUNNERS:
+                    outs = {k2: v for k2, v in outs.items() if k2 == f}
+                runs.append({"rc": rc if self.spec["runner"] not in SUMMARY_RUNNERS else (0 if all(v["ok"] for v in outs.values()) and outs else 1),
+                             "outcomes": outs})
             out[f] = runs
         return out
 
