@@ -32,6 +32,8 @@ mod repro;
 mod clock;
 // Level 0 closed network
 mod network;
+// rust-hotpaths-2: runtime identity of the cache with proof
+mod identity;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -296,5 +298,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     clock::register(m)?;
     // Level 0 closed network
     network::register(m)?;
+    // rust-hotpaths-2: runtime identity of the cache with proof
+    identity::register(m)?;
     Ok(())
 }
