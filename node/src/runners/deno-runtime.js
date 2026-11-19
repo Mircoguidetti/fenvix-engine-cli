@@ -223,7 +223,8 @@ function installCapture(cap, notes, { wrappers = true } = {}) {
   for (const k of both('copyFile')) wrap(Deno, k, (a) => { cap.read(a[0], 'f'); cap.wrote(a[1]); });
   for (const k of both('rename')) wrap(Deno, k, (a) => { cap.read(a[0], 'c'); cap.wrote(a[0]); cap.wrote(a[1]); });
   for (const k of both('makeTempDir').concat(both('makeTempFile'))) {
-    wrap(Deno, k, () => {}, (_a, r) => {
+    // Deno checks the parent directory (the temporary directory, or options.dir) when it creates the entry
+    wrap(Deno, k, (a) => { const d = a[0] && a[0].dir; const t = abs(d || require('node:os').tmpdir()); if (t) explained.paths.add(t); }, (_a, r) => {
       if (r && typeof r.then === 'function') return r.then((p) => { cap.wrote(p); return p; });
       cap.wrote(r);
       return r;

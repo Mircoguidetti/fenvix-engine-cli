@@ -1,0 +1,15 @@
+{
+ "name": "json-schema-faker",
+ "url": "https://github.com/json-schema-faker/json-schema-faker",
+ "node": "22",
+ "runner": "bun-test",
+ "bun": "1.4.4",
+ "install": ["bun install --frozen-lockfile || bun install"],
+ "install_files": ["bun.lock", "package.json"],
+ "build": [],
+ "unset_ci": true,
+ "args": [],
+ "plain": "bun test --reporter=junit --reporter-outfile={report}",
+ "shards": 1,
+ "source": "21 consecutive first-parent commits of main, 2026-04-07 (800c4ae1) to 2026-11-08 (92cc30b). Root `test` script `bun test` in every commit of the window; 22 test files, about 657 tests, no services (checked locally: 656 pass, 1 fail in the plain run; one more test reads a remote $ref and fails under Level 0's closed network)."
+}
