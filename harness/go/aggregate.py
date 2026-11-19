@@ -24,8 +24,15 @@ def slowdown_invalid(r):
     """Why a slowdown comparison is not valid (review R-025 N3), or ""."""
     tm = r.get("timing", {})
     timeout = float(str(r["spec"].get("timeout", "10m")).rstrip("m")) * 60
-    if min(tm.get("plain", [0]) or [0]) >= timeout - 1 or min(tm.get("det", [0]) or [0]) >= timeout - 1:
+    plain_out = min(tm.get("plain", [0]) or [0]) >= timeout - 1
+    det_out = min(tm.get("det", [0]) or [0]) >= timeout - 1
+    if plain_out and det_out:
         return "both arms stopped by the go test timeout"
+    if det_out:
+        # R-025b N5: only the --det arm stopped; this is a break by --det
+        return "the --det arm stopped by the go test timeout (broken by --det)"
+    if plain_out:
+        return "the plain arm stopped by the go test timeout"
     if len(r.get("det0", {})) < 0.5 * len(r.get("baseline", {})):
         return f"--det ran {len(r.get('det0', {}))} of {len(r.get('baseline', {}))} tests"
     return ""
@@ -168,6 +175,22 @@ def skip(d):
                     if not t["reuse"]:
                         reasons[(t["why"] or "").split(":")[0]] += 1
     print("rerun reasons (all repositories, test-transitions):", dict(reasons.most_common()))
+    # broken by skip mode (R-025b S1): the fresh fenvix run fails where the
+    # plain go test run of the same commit passes; tests with 10 or more
+    print()
+    for name, shards in sorted(by.items()):
+        bad = collections.Counter()
+        for s in shards:
+            for c in s["commits"]:
+                if c.get("status") != "ok" or c["i"] == 0:
+                    continue
+                for t in c["tests"]:
+                    if t["fresh"] in ("failed", "interrupted") and t.get("plain") == "passed":
+                        bad[(t["pkg"], t["test"])] += 1
+        many = {k: v for k, v in bad.items() if v >= 10}
+        verdicts = collections.Counter(ch["verdict"] for s in shards for c in s["commits"] for ch in c.get("checks", []))
+        print(f"{name}: broken by skip mode (fresh fenvix failed, plain go test passed, in >= 10 commits): "
+              f"{len(many)} tests {sorted(many.items())[:8]}; rerun verdicts {dict(verdicts)}")
     # gap to go's cache by test time (review R-025 N1): the time of tests go's
     # cache reused and fenvix ran, by fenvix's first own reason
     print()

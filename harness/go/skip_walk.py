@@ -187,7 +187,9 @@ def main():
             tests.append({"pkg": d["pkg"], "test": d["test"], "reuse": d["reuse"], "why": d.get("why", ""),
                           "reuse_own": d.get("reuse_own", False), "why_own": d.get("why_own", ""),
                           "cached": d.get("cached", ""), "fresh": d.get("fresh", ""), "elapsed": d.get("elapsed", 0),
-                          "go_cached": d["pkg"] in go_cached})
+                          "go_cached": d["pkg"] in go_cached,
+                          # the plain go test outcome of the same commit (R-025b S1: broken by skip mode)
+                          "plain": gores.get(d["pkg"], {}).get("tests", {}).get(d["test"], "")})
         # wrong-looking reuses: re-run alone 3 times (plain go test) to separate flaky tests
         checks = []
         for tr in tests:
@@ -200,14 +202,23 @@ def main():
                 pkgdir = None
                 code3, out3, _ = sh(["go", "list", "-f", "{{.Dir}}", tr["pkg"]], cwd=moddir, env=env, timeout=600)
                 pkgdir = out3.strip() or str(moddir)
-                outs = []
+                outs, fouts = [], []
                 for _ in range(3):
                     c4, o4, _ = sh(["go", "test", "-count=1", "-json", "-run", f"^{tr['test']}$", f"-timeout={timeout}",
                                     *go_args, "."], cwd=pkgdir, env=env, timeout=3600)
                     outs.append(parse_go_json(o4).get(tr["pkg"], {}).get("tests", {}).get(tr["test"], "missing"))
+                    # the same, under fenvix's skip mode (its clock and process): R-025b S1, R-022's blind spot
+                    fc = work / f"rerun-cache-{i}"
+                    shutil.rmtree(fc, ignore_errors=True)
+                    c5, o5, _ = sh([a.fenvix, "test", f"--skip-cache={fc}", "--skip-verify", "-json", "-run",
+                                    f"^{tr['test']}$", f"-timeout={timeout}", *go_args, "."], cwd=pkgdir, env=env,
+                                   timeout=3600)
+                    fouts.append(parse_go_json(o5).get(tr["pkg"], {}).get("tests", {}).get(tr["test"], "missing"))
+                plain_ok = cached_outcome in outs
+                fenvix_ok = cached_outcome in fouts
+                verdict = "flaky" if plain_ok and fenvix_ok else ("broken-by-skip" if plain_ok else "wrong")
                 checks.append({"rule": rule, "pkg": tr["pkg"], "test": tr["test"], "cached": cached_outcome,
-                               "fresh": tr["fresh"], "reruns": outs,
-                               "verdict": "flaky" if cached_outcome in outs else "wrong"})
+                               "fresh": tr["fresh"], "reruns": outs, "fenvix_reruns": fouts, "verdict": verdict})
         row.update({"status": "ok", "tests": tests, "go_cached_packages": go_cached, "checks": checks,
                     "seconds": round(time.time() - t_commit, 1)})
         n = len(tests)
