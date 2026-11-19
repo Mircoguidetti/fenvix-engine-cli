@@ -49,7 +49,7 @@ const TICK_NS = Number(process.env.DETJS_TICK || 1000);
 const MSG = new AsyncLocalStorage();
 // Lockstep (round 4): the engine clock T (ns since the run's epoch) as last told by the coordinator.
 const LOCKSTEP = process.env.DETJS_PW_LOCKSTEP !== '0';
-const LSS = { t: 0, attached: false, msgs: new Map(), lpDone: [] }; // msgs: engine message id -> message scope
+const LSS = { t: 0, attached: false, msgs: new Map(), lpDone: [], loads: new Set() }; // msgs: engine message id -> message scope
 const baseNs = () => (LSS.attached ? LSS.t : SCOPED.n * STEP_NS);
 /** Engine time of the current message (stamped by the engine at delivery), else T. */
 const nowNs = () => { const st = MSG.getStore(); return st && st.t !== undefined ? st.t : LSS.t; };
@@ -357,7 +357,7 @@ function handleLockstep(req, res) {
     const next = clockMod.DRIVER.nextDue();
     const blockedIds = [...LSS.msgs].filter(([, st]) => clockMod.DRIVER.queue.some((x) => x._ctx === st)).map(([id]) => id);
     const lpDone = LSS.lpDone; LSS.lpDone = [];
-    reply({ lockstep: true, fired, busy: !quiet, next, waiting: LSS.msgs.size > 0, blocked: blockedIds, t: LSS.t, lpDone });
+    reply({ lockstep: true, fired, busy: !quiet, next, waiting: LSS.msgs.size > 0, blocked: blockedIds, t: LSS.t, lpDone, loads: [...LSS.loads] });
   }).catch((e) => reply({ lockstep: true, error: String(e && e.message) }));
   return true;
 }
@@ -409,6 +409,15 @@ function patchServer(proto) {
       let counted = true;
       const dec = () => { if (counted) { counted = false; inflight--; } };
       if (res && typeof res.once === 'function') { res.once('finish', dec); res.once('close', dec); }
+      const load = req.headers['x-detjs-load'];
+      if (load && res && typeof res.once === 'function') {
+        // An engine load (a page subresource the engine fetches): reported while open, so the engine knows the
+        // request reached this server and waits on what the server does next (a dev server holding module requests
+        // until its dependency optimizer's timer fires: sveltekit's Vite).
+        LSS.loads.add(String(load));
+        const fin = () => LSS.loads.delete(String(load));
+        res.once('finish', fin); res.once('close', fin);
+      }
       const id = req.headers['x-detjs-test'];
       if (id && id !== STATE.testId) {
         endCurrent();

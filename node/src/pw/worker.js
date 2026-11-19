@@ -385,7 +385,12 @@ async function routeHandler(route, request) {
 }
 
 async function routeHandlerInner(route, request, uncount = () => {}) {
-  if (LS) { try { LS.routedAny(request.frame().page()); } catch { /* detached frame / worker */ } }
+  if (LS) {
+    let pg = null;
+    try { pg = request.frame().page(); } catch { pg = null; }
+    if (pg) LS.routedAny(pg);
+    else if (typeof request.serviceWorker === 'function' && request.serviceWorker()) LS.routedServiceWorker();
+  }
   const key = currentKey();
   const reqT = LS ? LS.now() : 0; // engine time at which the page asked (responses are held until reqT + FETCH_MS)
   const url = request.url();
@@ -401,7 +406,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
     if (LS && LOADS.has(type) && /^https?:/.test(url) && !PASSTHROUGH.test(url)) {
       // Lockstep: a subresource is fetched by the engine and handed to the page between two time slices (in URL
       // order), so how long it takes on the network never becomes page time.
-      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg, reqT)); } catch { /* detached */ }
+      try { const pg = request.frame().page(); if (pg) return lockstep.OWN.run(true, () => lsLoad(route, request, url, pg, reqT, uncount)); } catch { /* detached */ }
       trackLoad(request);
     }
     return route.fallback();
@@ -432,7 +437,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   let nav = false;
   try { nav = type === 'document' && request.isNavigationRequest() && request.frame().parentFrame() === null; } catch { nav = false; }
   const page = request.frame && (() => { try { return request.frame().page(); } catch { return null; } })();
-  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, page, reqT };
+  const item = { kind: 'browser', test: key, method: request.method(), target: targetOf(url), bodyDigest: digest(request.postDataBuffer()), nav, doc: type === 'document', rtype: type, page, reqT };
   if (LS && isServerHost(url)) LS.addOrigin(new URL(url).origin);
   if (LS && page && !nav) LS.blockOn(page, request);
   const pEnq = enqueue(item);
@@ -507,6 +512,14 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
 // handed to the page (route.fulfill) as a scheduled delivery: at most one response per page is waiting for the
 // page's time, so the order in which the page sees responses is the engine's, not the network's.
 const HOP = new Set(['content-encoding', 'content-length', 'transfer-encoding', 'connection', 'keep-alive']);
+// The engine's fetch ends at a real-time moment, possibly after the engine took further decisions (a server request
+// blocked on a server timer lets time advance): its result is recorded at the message's decision index (found on
+// sveltekit: 'browser.done' of the first document fell before or after the next decision).
+function recDone(key, item, value) {
+  if (LS && item.decision !== undefined) LS.recordLate(key, item.decision, 'net', 'browser.done', value);
+  else rec(key, 'net', 'browser.done', value);
+}
+
 async function lsFetch(route, request, item, key, page, url, release, opt = {}) {
   rec(key, 'net', 'browser.request', `${item.method} ${item.target} ${item.bodyDigest}`);
   const headers = { ...request.headers(), 'x-detjs-own': '1' };
@@ -525,7 +538,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
     body = await resp.body();
     if (LS) LS.trace(`lsfetch ${item.target} fetch=${tb - tf} body=${realNow() - tb}`);
   } catch (e) {
-    rec(key, 'net', 'browser.done', `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
+    recDone(key, item, `${item.method} ${item.target} failed ${String(e && e.message).split('\n')[0].slice(0, 80)}`);
     release();
     LS.respond(page, item, async () => { await route.abort('failed'); });
     if (opt.noMsg) LS.longPollArrived(item.lsId);
@@ -537,7 +550,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
     if (HOP.has(n) || n.startsWith('x-detjs')) continue;
     out[n] = out[n] === undefined ? value : `${out[n]}${n === 'set-cookie' ? '\n' : ', '}${value}`;
   }
-  rec(key, 'net', 'browser.done', `${item.method} ${item.target} ${resp.status()} ${digest(body)}`);
+  recDone(key, item, `${item.method} ${item.target} ${resp.status()} ${digest(body)}`);
   diag(key, 'browser.body', `${item.method} ${item.target} ${resp.status()}`, body);
   // A main-frame document keeps its page "navigating" until the page has it (Chromium suspends the page meanwhile).
   const nav = item.nav ? LS.navHold(page) : null;
@@ -547,16 +560,22 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
 }
 
 let LOAD_SEQ = 0;
-async function lsLoad(route, request, url, page, reqT) {
+let SRV_LOAD_SEQ = 0;
+async function lsLoad(route, request, url, page, reqT, uncount = () => {}) {
   LS.blockOn(page, request); // pause policy: the page waits for its subresources like for its fetches
-  lockstep.netStart();
+  // To an app server: the load is in flight on the server's side of the clock (the server reports it as held once
+  // it arrived; settle then lets time advance, which is what a dev server holding it on a timer needs). Elsewhere:
+  // network in flight, the engine waits for it.
+  const srvId = isServerHost(url) ? `L${++SRV_LOAD_SEQ}` : null;
+  if (srvId) { LS.srvLoads.set(srvId, new URL(url).origin); uncount(); } else lockstep.netStart();
+  const netEnd = () => { if (srvId) { LS.srvLoads.delete(srvId); lockstep.activity(); LS.poke(); } else lockstep.netEnd(); };
   let resp = null;
   let body = null;
   try {
-    resp = await route.fetch({ maxRedirects: 0, timeout: 0 });
+    resp = await route.fetch({ maxRedirects: 0, timeout: 0, ...(srvId ? { headers: { ...request.headers(), 'x-detjs-own': '1', 'x-detjs-load': srvId } } : {}) });
     body = await resp.body();
   } catch {
-    lockstep.netEnd();
+    netEnd();
     LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.abort('failed'); });
     return;
   }
@@ -568,7 +587,7 @@ async function lsLoad(route, request, url, page, reqT) {
   }
   // Queued before the load counts as finished, so the quiet point that sees the load done also sees its response.
   LS.respond(page, { key: `~load ${url}`, lsId: ++LOAD_SEQ, reqT }, async () => { await route.fulfill({ status: resp.status(), headers: out, body }); }, request);
-  lockstep.netEnd();
+  netEnd();
 }
 
 // Readable test ids for the server bracket (the server part uses them as node ids).
@@ -1196,6 +1215,7 @@ installWorkerSeeds();
 
 // ------------------------------------------------- Playwright hooks
 const EXECUTABLE = ENV.DETJS_PW_EXECUTABLE || '';
+let SW_NOTED = false;
 
 function patchBrowser(browser) {
   const proto = Object.getPrototypeOf(browser);
@@ -1203,6 +1223,13 @@ function patchBrowser(browser) {
   Object.defineProperty(proto, '__detjsPatched', { value: true });
   const origNewContext = proto.newContext;
   proto.newContext = async function newContext(...args) {
+    // Lockstep: service workers are blocked (DETJS_LS_SW=allow keeps them). A worker answering the page's requests
+    // (from its cache or with fetches of its own) hides them from the engine's request barrier, and its time is not
+    // the engine's (found on sveltekit's basics app: every settle waited out the 3 s barrier timeout).
+    if (LS && ENV.DETJS_LS_SW !== 'allow' && !(args[0] && args[0].serviceWorkers === 'block')) {
+      if (!SW_NOTED) { SW_NOTED = true; process.stderr.write('detjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n'); }
+      args[0] = { ...(args[0] || {}), serviceWorkers: 'block' };
+    }
     const ctx = await origNewContext.apply(this, args);
     await setupContext(ctx);
     return ctx;
@@ -1216,6 +1243,16 @@ function patchBrowserType(bt) {
   const origLaunch = proto.launch;
   proto.launch = async function launch(options = {}) {
     let opts = EXECUTABLE && this.name() === 'chromium' ? { ...options, executablePath: EXECUTABLE } : options;
+    // Lockstep frames need the headless shell (HeadlessExperimental.beginFrame). A project that launches a full browser
+    // (channel 'chrome' / 'chromium', or headed) would get --deterministic-mode without any way to issue frames: no
+    // rAF and no input ever (found on sveltekit: channel 'chrome', every hover hung). Such launches run on the headless
+    // shell of the same Playwright instead (a recorded deviation from the project's browser).
+    // (The test runner passes its options as the client's default launch options, merged under these.)
+    const eff = { ...((this._playwright && this._playwright._defaultLaunchOptions) || {}), ...opts };
+    if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0' && !eff.executablePath && (eff.channel || eff.headless === false)) {
+      process.stderr.write(`detjs: lockstep runs ${eff.channel ? `channel '${eff.channel}'` : 'a headed browser'} on Playwright's chromium headless shell (engine-issued frames)\n`);
+      opts = { ...opts, channel: undefined, headless: true };
+    }
     // Lockstep: animation frames only when the engine issues them (headless shell; ignored by other builds).
     if (LS && this.name() === 'chromium' && ENV.DETJS_LS_FRAMES !== '0') opts = { ...opts, args: [...(opts.args || []), '--deterministic-mode',
       // Documents the engine fulfils have no network address: without this Chromium treats them as public and blocks

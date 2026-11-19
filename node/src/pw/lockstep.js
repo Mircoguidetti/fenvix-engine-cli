@@ -51,7 +51,12 @@ function cdpWrite(sock, chunk) {
   if (!m) return;
   sock.__detjsCdp = true;
   const id = Number(m[1]);
-  CDP.out.set(id, { method: m[2], wait: chunk.includes('"awaitPromise":true'), own: ACT.ownDepth > 0, t: realNow() });
+  // Pointer moves are rAF-aligned input: Chromium answers them after the next frame when the page listens to
+  // them, and frames come only from the engine (found on sveltekit: a hover's mouseMoved waited forever on a
+  // paused page while the engine waited for it). They wait on page time like the in-page waits.
+  const frameInput = (m[2] === 'Input.dispatchMouseEvent' && chunk.includes('"type":"mouseMoved"'))
+    || (m[2] === 'Input.dispatchTouchEvent' && chunk.includes('"type":"touchMove"'));
+  CDP.out.set(id, { method: m[2], wait: frameInput || chunk.includes('"awaitPromise":true'), own: ACT.ownDepth > 0, t: realNow() });
   CDP.lastChange = realNow();
 }
 function cdpRead(sock, buf) {
@@ -251,6 +256,8 @@ class Coordinator {
     this.pages = new Set();
     this.servers = new Map(); // origin -> { attached, next, waiting, label }
     this.blocked = new Set();
+    this.srvLoads = new Map(); // engine loads to app servers in flight: id -> origin
+    this.loadsSeen = new Set();
     this.routedWs = 0; // WebSocket frames pages sent that reached the engine
     this.lpAwait = new Set(); // long polls the server answered whose response has not reached the engine yet
     this.lpArrived = new Set(); // long-poll responses that reached the engine before the server reported them
@@ -689,6 +696,24 @@ class Coordinator {
     if (p) { p.routedAll++; activity(); this.poke(); }
   }
 
+  /** A request with no page reached the route handler: a service worker's fetch. A page request the worker answers
+   * reaches the engine only as that fetch, so it is credited to the pages' barrier (sveltekit's basics app). */
+  routedServiceWorker() {
+    this.swCredit = (this.swCredit || 0) + 1;
+    activity(); this.poke();
+  }
+
+  /** Request barrier: every request a page announced reached the engine, directly or through a service worker. */
+  barrierMet() {
+    let deficit = 0;
+    for (const p of this.pages) if (!p.closed && p.routedAll < p.issued) deficit += p.issued - p.routedAll;
+    if (deficit === 0) return true;
+    if (!(this.swCredit >= deficit)) return false;
+    this.swCredit -= deficit;
+    for (const p of this.pages) if (!p.closed && p.routedAll < p.issued) p.routedAll = p.issued;
+    return true;
+  }
+
   /** A fetch/XHR of `page` reached the route handler. */
   routed(page) {
     const p = this.pageState(page);
@@ -827,8 +852,21 @@ class Coordinator {
 
   /** A page still running its time slice, not waiting for anything the engine holds (its own requests, or a
    * worker's slice that waits for the engine). */
+  /** A document request of page p is in the engine (pending, held for its latency, or in progress): Chromium does not
+   * end a budget while a navigation of the page waits for its response (found on sveltekit: page.goto() issued while
+   * the page was inside a slice; the slice never expired and the engine waited for it). */
+  docInEngine(p) {
+    // A browser request with no page is a service worker's (request.frame() is unavailable): a navigation the
+    // worker answers with its own fetch waits on it, so it counts for every page (found on sveltekit's basics app).
+    const waits = (it) => it.kind === 'browser' && ((it.page === p.page && (it.nav || it.doc)) || !it.page);
+    for (const m of this.msgs.values()) if (waits(m.item)) return true;
+    for (const it of this.inprogress.values()) if (waits(it)) return true;
+    return false;
+  }
+
   pageBusy(p) {
     if (!(p.inBudget || p.running) || p.closed || p.navs > 0 || p.blockers.size > 0 || p.waitingEngine) return false;
+    if (this.docInEngine(p)) return false;
     const wk = this.workerCtl ? [...this.workerCtl.workers.values()] : [];
     return !wk.some((w) => w.waitingEngine);
   }
@@ -841,7 +879,11 @@ class Coordinator {
       // engine: it is quiet.
       const busy = [...this.pages].filter((p) => this.pageBusy(p));
       if (!busy.length) return true;
-      if (realNow() - t > this.serverMaxMs) { this.stats.stalls++; this.diag('stall', 'budget'); return false; }
+      if (realNow() - t > this.serverMaxMs) {
+        this.stats.stalls++; this.diag('stall', 'budget');
+        if (ENV.DETJS_LS_TRACE_ALL) this.trace(`paused-timeout ${busy.map((p) => `[doc=${this.docInEngine(p)} msgs=${[...this.msgs.values()].map((m) => `${m.item.doc}/${m.item.nav}/${m.item.page === p.page}/${m.item.rtype}/${!!m.item.page}/${m.item.kind}`)}]`)}`);
+        return false;
+      }
       await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 50); });
     }
   }
@@ -876,7 +918,7 @@ class Coordinator {
     if (!probed) return;
     const routed = () => [...this.pages].reduce((a, p) => a + p.routed, 0) + this.routedWs;
     const t = realNow();
-    while ((routed() < started || [...this.pages].some((p) => !p.closed && p.routedAll < p.issued)) && realNow() - t < this.probeMaxMs) {
+    while ((routed() < started || !this.barrierMet()) && realNow() - t < this.probeMaxMs) {
       this.stats.probeWaits++;
       await realSleep(2);
     }
@@ -909,6 +951,7 @@ class Coordinator {
   async settleServers() {
     const t = this.sched.now();
     this.blocked = new Set(); // released messages a server holds, blocked on its own virtual timers
+    this.loadsSeen = new Set(); // engine loads the servers report as received and not answered yet
     for (const [origin, s] of [...this.servers].sort()) {
       const r = await this.serverCall(origin, 'settle', { t, w: this.serverQuietMs, max: this.serverMaxMs });
       if (!r || r.lockstep === false) { s.next = null; s.waiting = false; s.dead = !r; continue; }
@@ -917,6 +960,7 @@ class Coordinator {
       s.waiting = !!r.waiting;
       if (ENV.DETJS_LS_TRACE_SRV) this.trace(`srv ${JSON.stringify(r)} inprog=${[...this.inprogress.keys()]}`);
       for (const id of r.blocked || []) this.blocked.add(Number(id));
+      for (const id of r.loads || []) this.loadsSeen.add(String(id));
       for (const id of r.lpDone || []) if (!this.lpArrived.delete(Number(id))) this.lpAwait.add(Number(id));
       if (r.busy) { this.stats.stalls++; this.diag('stall', `server ${origin} busy`); }
       if (r.fired) this.stats.fired += r.fired;
@@ -959,7 +1003,10 @@ class Coordinator {
       if (quiet && ACT.n === a0) {
         // A released message still in progress keeps the system busy, unless an app server reports a request
         // blocked on its own virtual timers (then only time can complete it).
-        if ([...this.inprogress.keys()].every((id) => this.blocked.has(id)) && this.lpAwait.size === 0) return true;
+        // Engine loads in flight to an app server count as waiting on that server (only its time can answer them)
+        // once the settled server reports it holds them; until then they may still be on their way.
+        if ([...this.inprogress.keys()].every((id) => this.blocked.has(id)) && this.lpAwait.size === 0
+          && [...this.srvLoads.keys()].every((id) => this.loadsSeen.has(id))) return true;
         await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 20); });
         continue;
       }
