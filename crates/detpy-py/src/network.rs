@@ -202,16 +202,16 @@ pub(crate) fn parse_ip(s: &[u8]) -> Option<Ip> {
 
 /// What the policy asks of an address: `is_loopback`, `is_unspecified`, `ipv4_mapped.is_loopback`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-struct Flags {
-    loopback: bool,
-    unspecified: bool,
-    mapped_loopback: bool,
+pub(crate) struct Flags {
+    pub(crate) loopback: bool,
+    pub(crate) unspecified: bool,
+    pub(crate) mapped_loopback: bool,
 }
 
 static IP_ADDRESS: PyOnceLock<Py<PyAny>> = PyOnceLock::new();
 
 /// The flags of `ipaddress.ip_address(s)`, None if `s` is not an address.
-fn ip_flags(py: Python<'_>, s: &[u8]) -> PyResult<Option<Flags>> {
+pub(crate) fn ip_flags(py: Python<'_>, s: &[u8]) -> PyResult<Option<Flags>> {
     Ok(match parse_ip(s) {
         None => None,
         Some(Ip::V4(v)) => Some(Flags { loopback: v >> 24 == 127, unspecified: v == 0, mapped_loopback: false }),
@@ -326,7 +326,7 @@ fn is_local_any(py: Python<'_>, host: &Bound<'_, PyAny>) -> PyResult<bool> {
 }
 
 /// `_is_ip(host)` for any object.
-fn is_ip_any(py: Python<'_>, host: &Bound<'_, PyAny>) -> PyResult<bool> {
+pub(crate) fn is_ip_any(py: Python<'_>, host: &Bound<'_, PyAny>) -> PyResult<bool> {
     if let Ok(s) = host.cast::<PyString>() {
         return Ok(parse_ip(before_percent(&wtf8(s)?)).is_some());
     }
