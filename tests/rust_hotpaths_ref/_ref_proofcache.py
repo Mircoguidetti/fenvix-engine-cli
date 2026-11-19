@@ -93,6 +93,9 @@ _VOLATILE_OPTIONS = {
     "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
     "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch", "det_cache_max_age",
     "det_cache_epoch_window",
+    # parallel-proof: pytest-xdist's options and detpy's plan replay (same set as python/detpy/proofcache.py)
+    "loadgroup", "looponfail", "distload", "maxprocesses", "maxworkerrestart", "loadscopereorder", "px",
+    "testrunuid", "rsyncdir", "rsyncignore", "maxschedchunk", "det_plan", "det_plan_worker",
 }
 
 

@@ -37,6 +37,10 @@ pub enum Reason {
     BeyondTrace,
     /// The test did not run in every trace.
     Missing,
+    /// One run is a parallel run under a plan (merged trace), the other serial, and the test ran in its worker
+    /// without some of its serial in-process predecessors (`lost_predecessors`): it observed process state that
+    /// depends on where it ran (docs/PARALLEL-PROOF-DESIGN.md 2.4). Entropy and thread divergences keep their class.
+    Placement,
 }
 
 impl Reason {
@@ -53,6 +57,7 @@ impl Reason {
             Reason::OutcomeOnly => "outcome-only",
             Reason::BeyondTrace => "beyond-trace",
             Reason::Missing => "missing",
+            Reason::Placement => "placement",
         }
     }
 
@@ -83,6 +88,9 @@ pub struct Divergence {
     pub event_b: Option<Event>,
     pub reason: Reason,
     pub description: String,
+    /// `placement`: serial in-process predecessors the test did not have in its worker (serial order, at most 20).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub lost_predecessors: Vec<String>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -136,6 +144,63 @@ pub struct Report {
     pub tests: Vec<TestVerdict>,
 }
 
+/// In-process predecessors of every test of one trace: the tests before it in the trace (serial run), or before it
+/// in its worker (merged trace of a parallel run: records carry `worker` / `worker_index`).
+struct Predecessors<'a> {
+    parallel: bool,
+    /// Serial: the executed order. Parallel: per worker, its tests by worker index.
+    lists: BTreeMap<&'a str, Vec<&'a str>>,
+    at: BTreeMap<&'a str, (&'a str, usize)>,
+}
+
+impl<'a> Predecessors<'a> {
+    fn of(t: &'a Trace) -> Self {
+        let parallel = t.tests.iter().any(|r| r.worker.is_some());
+        let mut lists: BTreeMap<&str, Vec<(u64, &str)>> = BTreeMap::new();
+        for r in &t.tests {
+            let w = r.worker.as_deref().unwrap_or("");
+            lists.entry(w).or_default().push((r.worker_index.unwrap_or(r.index), r.nodeid.as_str()));
+        }
+        let mut out = Predecessors { parallel, lists: BTreeMap::new(), at: BTreeMap::new() };
+        for (w, mut l) in lists {
+            l.sort();
+            for (i, (_, n)) in l.iter().enumerate() {
+                out.at.insert(n, (w, i));
+            }
+            out.lists.insert(w, l.into_iter().map(|(_, n)| n).collect());
+        }
+        out
+    }
+
+    fn before(&self, id: &str) -> &[&'a str] {
+        match self.at.get(id) {
+            Some((w, i)) => &self.lists[w][..*i],
+            None => &[],
+        }
+    }
+}
+
+/// Reclassify a divergence as `placement` when exactly one side ran under a plan and lost serial predecessors.
+fn placement(d: &mut Divergence, id: &str, a: &Predecessors, b: &Predecessors) {
+    if a.parallel == b.parallel || matches!(d.reason, Reason::Entropy | Reason::Thread | Reason::Missing) {
+        return;
+    }
+    let (serial, plan) = if a.parallel { (b, a) } else { (a, b) };
+    let kept: BTreeSet<&str> = plan.before(id).iter().copied().collect();
+    let lost: Vec<String> = serial.before(id).iter().filter(|n| !kept.contains(**n)).map(|n| n.to_string()).collect();
+    if lost.is_empty() {
+        return;
+    }
+    let worker = plan.at.get(id).map(|(w, _)| *w).unwrap_or("?");
+    d.description = format!(
+        "placement: ran in worker {worker} without {} of its serial predecessors (first difference: {})",
+        lost.len(),
+        d.description
+    );
+    d.reason = Reason::Placement;
+    d.lost_predecessors = lost.into_iter().take(20).collect();
+}
+
 /// Locate the first divergence between two records of the same test.
 pub fn diff_records(a: &TestRecord, b: &TestRecord, run_a: usize, run_b: usize) -> Option<Divergence> {
     if a.fingerprint == b.fingerprint {
@@ -155,6 +220,7 @@ pub fn diff_records(a: &TestRecord, b: &TestRecord, run_a: usize, run_b: usize) 
                 event_b: Some(eb.clone()),
                 reason,
                 description: describe(i as u64, Some(ea), Some(eb)),
+                lost_predecessors: Vec::new(),
             });
         }
     }
@@ -175,6 +241,7 @@ pub fn diff_records(a: &TestRecord, b: &TestRecord, run_a: usize, run_b: usize) 
             event_b: eb.cloned(),
             reason,
             description: describe(i as u64, ea, eb),
+            lost_predecessors: Vec::new(),
         });
     }
     // Both truncated (or not decidable from stored events): bracket with checkpoints.
@@ -207,6 +274,7 @@ pub fn diff_records(a: &TestRecord, b: &TestRecord, run_a: usize, run_b: usize) 
             "stored events are identical; first difference in events [{lo}, {hi}) \
              (raise --det-max-events to capture it exactly)"
         ),
+        lost_predecessors: Vec::new(),
     })
 }
 
@@ -272,6 +340,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         })
         .collect();
 
+    let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
     // Report tests in the executed order of the first run, then the rest.
     let mut ordered: Vec<&str> = Vec::new();
     let mut seen = BTreeSet::new();
@@ -308,6 +377,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                     event_b: None,
                     reason: Reason::Missing,
                     description: format!("not executed in run(s) {}", missing_in.join(", ")),
+                    lost_predecessors: Vec::new(),
                 }),
             )
         } else if distinct.len() <= 1 {
@@ -315,7 +385,11 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         } else {
             let a = recs[0].unwrap();
             let j = recs.iter().position(|r| r.unwrap().fingerprint != a.fingerprint).unwrap();
-            (Status::Diverged, diff_records(a, recs[j].unwrap(), 0, j))
+            let mut d = diff_records(a, recs[j].unwrap(), 0, j);
+            if let Some(d) = d.as_mut() {
+                placement(d, id, &preds[0], &preds[j]);
+            }
+            (Status::Diverged, d)
         };
 
         match status {
@@ -533,5 +607,34 @@ mod tests {
         let d = v.divergence.as_ref().unwrap();
         assert_eq!((d.run_a, d.run_b), (0, 2));
         assert_eq!(d.reason, Reason::Time);
+    }
+
+    #[test]
+    fn placement_divergence_names_the_lost_predecessors() {
+        // serial: polluter, victim; parallel: victim alone in gw1, with a different event
+        let pol = rec("p", &[r("1")], "passed", 10);
+        let vic_serial = rec("v", &[r("2")], "passed", 10);
+        let mut pol2 = pol.clone();
+        pol2.worker = Some("gw0".into());
+        pol2.worker_index = Some(0);
+        let mut vic_par = rec("v", &[t("3")], "passed", 10);
+        vic_par.worker = Some("gw1".into());
+        vic_par.worker_index = Some(0);
+        let serial = trace(vec![pol, vic_serial]);
+        let par = trace(vec![pol2, vic_par]);
+        let rep = verify(&[serial, par], &["s".into(), "p".into()]);
+        let v = rep.tests.iter().find(|x| x.nodeid == "v").unwrap();
+        let d = v.divergence.as_ref().unwrap();
+        assert_eq!(d.reason, Reason::Placement);
+        assert_eq!(d.lost_predecessors, vec!["p".to_string()]);
+        assert_eq!(rep.summary.reasons["placement"], 1);
+        // two serial runs: never placement
+        let rep2 = verify(&[trace(vec![rec("v", &[r("2")], "passed", 10)]), trace(vec![rec("v", &[t("3")], "passed", 10)])],
+                          &["a".into(), "b".into()]);
+        assert_ne!(rep2.tests[0].divergence.as_ref().unwrap().reason, Reason::Placement);
+    }
+
+    fn r(v: &str) -> Event {
+        Event::new(Source::Random, "random.random", "t.py:1", v)
     }
 }
