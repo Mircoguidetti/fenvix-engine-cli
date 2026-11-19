@@ -25,6 +25,9 @@ mod fsorder;
 mod seeds;
 mod standin;
 
+// Level 0 closed network
+mod network;
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
     m.lock().unwrap_or_else(|e| e.into_inner())
@@ -281,5 +284,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     standin::register(m)?;
     seeds::register(m)?;
     fsorder::register(m)?;
+    // Level 0 closed network
+    network::register(m)?;
     Ok(())
 }
