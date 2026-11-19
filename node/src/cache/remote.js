@@ -62,6 +62,13 @@ function docId(doc) {
   return crypto.createHash('sha256').update(canonical(doc)).digest('hex');
 }
 
+/** Project of a node id (`file@@project` or `file@@project::test`; '' without a project). */
+function projectOf(nodeid) {
+  const head = nodeid.split('::', 1)[0];
+  const i = head.indexOf('@@');
+  return i < 0 ? '' : head.slice(i + 2);
+}
+
 function lookupKey(nodeid, config, runtime, epoch) {
   const parts = ['fenvix-lookup-1', nodeid, config, runtime, epoch === null || epoch === undefined ? '' : String(epoch)];
   const bufs = [];
@@ -298,8 +305,9 @@ class RemoteCache {
     const s = this.session;
     const keys = new Map();
     for (const nid of nodeids) {
-      keys.set(lookupKey(nid, s.configDigest, s.runtimeDigest, null), nid);
-      keys.set(lookupKey(nid, s.configDigest, s.runtimeDigest, s.epochMs), nid);
+      const config = s.configFor ? s.configFor(projectOf(nid)) : s.configDigest;
+      keys.set(lookupKey(nid, config, s.runtimeDigest, null), nid);
+      keys.set(lookupKey(nid, config, s.runtimeDigest, s.epochMs), nid);
     }
     const klist = [...keys.keys()].sort();
     const found = {};
@@ -357,6 +365,13 @@ class RemoteCache {
   }
 
   /** Bring in candidates for `nodeids` whose local entry does not prove reuse; returns the proven ids. */
+  /** The proof check of `nid` against the configuration of its own project. */
+  checkOwn(nid) {
+    const s = this.session;
+    if (s.configFor) s.store.setConfig(s.configFor(projectOf(nid)));
+    return s.store.check(nid);
+  }
+
   async pullIds(nodeids) {
     const st = this.stats;
     const { perTest, docs } = await this.lookup(nodeids);
@@ -364,7 +379,7 @@ class RemoteCache {
     let pending = new Map();
     const proven = new Set();
     for (const [nid, ids] of perTest) {
-      if (this.session.store.check(nid).ok) { st.pull_local_already = (st.pull_local_already || 0) + 1; proven.add(nid); continue; }
+      if (this.checkOwn(nid).ok) { st.pull_local_already = (st.pull_local_already || 0) + 1; proven.add(nid); continue; }
       const cands = [];
       for (const d of ids) {
         const doc = docs[d];
@@ -384,7 +399,7 @@ class RemoteCache {
       }
       const next = new Map();
       for (const [nid, cands] of pending) {
-        if (this.session.store.check(nid).ok) { st.pull_proven = (st.pull_proven || 0) + 1; proven.add(nid); } else if (cands.length > 1) next.set(nid, cands.slice(1));
+        if (this.checkOwn(nid).ok) { st.pull_proven = (st.pull_proven || 0) + 1; proven.add(nid); } else if (cands.length > 1) next.set(nid, cands.slice(1));
       }
       pending = next;
     }

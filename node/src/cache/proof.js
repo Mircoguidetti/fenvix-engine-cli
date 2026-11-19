@@ -90,7 +90,11 @@ function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {
 }
 
 /** Configuration files of the repository (outside node_modules): [[relative path, digest]]. */
-function configFiles(root, limit = 200000) {
+// Vite / Vitest configuration files below the root: with Vitest, keyed through the project that loads them (its
+// configuration file, the files it imports and its resolved configuration), not as a configuration of every file.
+const NESTED_VITE_CONFIG = /^(vite|vitest)\.config\.[cm]?[jt]s$/;
+
+function configFiles(root, { nestedViteConfigs = true } = {}, limit = 200000) {
   const out = [];
   let n = 0;
   const walk = (dir, rel) => {
@@ -102,6 +106,8 @@ function configFiles(root, limit = 200000) {
       if (e.isDirectory()) {
         if (SKIP_DIRS.has(e.name) || (e.name.startsWith('.') && e.name !== '.config' && e.name !== '.storybook')) continue;
         walk(path.join(dir, e.name), r);
+      } else if (!nestedViteConfigs && rel && NESTED_VITE_CONFIG.test(e.name)) {
+        continue;
       } else if (CONFIG_FILES.test(e.name) || (r === 'package.json')) {
         out.push([r, native.fileDigest(path.join(dir, e.name)) || 'unreadable']);
       }
@@ -109,6 +115,16 @@ function configFiles(root, limit = 200000) {
   };
   walk(root, '');
   return out.sort();
+}
+
+/**
+ * Adds a project's configuration part as `project:<name>`. Two projects with the same name (Jest projects without a
+ * displayName) both stay in the digest, as `project:<name>#2`, ...; such a name is not split per project (below).
+ */
+function projectPart(out, name, value) {
+  let key = `project:${name}`;
+  for (let n = 2; Object.prototype.hasOwnProperty.call(out, key); n++) key = `project:${name}#${n}`;
+  out[key] = value;
 }
 
 /** The core's miss texts name the Python shell's terms. */
@@ -178,7 +194,7 @@ class ProofSession {
   }
 
   /** Configuration digest from the runner's resolved configuration (parts: name -> digestable value). */
-  setConfig(parts) {
+  setConfig(parts, scan = {}) {
     this.quiet(() => {
       const c = this.run.cfg;
       const level0 = {
@@ -195,15 +211,32 @@ class ProofSession {
         level0: digest(level0),
         cassette: this.run.netMode === 'replay' ? (native.fileDigest(this.run.cassette) || 'missing') : '',
         cwd: path.relative(this.root, process.cwd()),
-        files: digest(configFiles(this.root)),
+        files: digest(configFiles(this.root, scan)),
       });
       for (const [k, v] of Object.entries(parts)) this.configParts[k] = typeof v === 'string' ? v : digest(v);
       if (process.env.DETJS_CACHE_DEBUG) {
         fs.mkdirSync(path.join(this.root, '.detjs'), { recursive: true });
         fs.writeFileSync(path.join(this.root, '.detjs', `cache-config-${process.env.DETJS_CACHE_DEBUG}.json`), JSON.stringify(parts, null, 1));
       }
-      this.configDigest = digest(Object.keys(this.configParts).sort().map((k) => [k, this.configParts[k]]));
+      const keys = Object.keys(this.configParts).sort();
+      this.configDigest = digest(keys.map((k) => [k, this.configParts[k]]));
+      // Per project: a test file runs with its own project's resolved configuration and the global parts (detjs,
+      // Level 0, runner version and options, configuration files by content), not with another project's. A file
+      // of a project whose name is not unique, or that has no part, is keyed by the whole digest.
+      const global = digest(keys.filter((k) => !k.startsWith('project:')).map((k) => [k, this.configParts[k]]));
+      this.projectConfig = new Map();
+      for (const k of keys) {
+        if (!k.startsWith('project:') || k.includes('#')) continue;
+        const name = k.slice('project:'.length);
+        if (keys.some((x) => x.startsWith(`${k}#`))) continue;
+        this.projectConfig.set(name, digest(['project', global, this.configParts[k]]));
+      }
     });
+  }
+
+  /** The configuration digest a file of `project` is keyed by. */
+  configFor(project) {
+    return (this.projectConfig && this.projectConfig.get(project || '')) || this.configDigest;
   }
 
   identity() {
@@ -268,6 +301,7 @@ class ProofSession {
           this.misses.set(this.idOf(f.fileId, proj), `uncacheable-project: ${this.uncacheableProjects.get(proj)}`);
           continue;
         }
+        this.store.setConfig(this.configFor(proj));
         const r = this.checkFile(f.fileId, proj);
         if (r.ok) {
           this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration });
@@ -434,7 +468,7 @@ class ProofSession {
         }
         store.record(nid, JSON.stringify({
           outcome: t.outcome, report: { outcome: t.outcome }, fingerprint: t.fingerprint || '', duration: t.duration || 0,
-          run: this.runId, config: this.configDigest, runtime: this.runtimeDigest, epoch: o.clock ? this.epochMs : null,
+          run: this.runId, config: this.configFor(proj), runtime: this.runtimeDigest, epoch: o.clock ? this.epochMs : null,
           env: o.env, data: o.data, content: o.content, startup,
         }));
         this.recorded++;
@@ -450,7 +484,7 @@ class ProofSession {
       }
       store.record(mid, JSON.stringify({
         outcome, report: { kind: 'file', file: c.fileId, project: proj || null, tests: ids }, fingerprint: '',
-        duration: c.duration || 0, run: this.runId, config: this.configDigest, runtime: this.runtimeDigest,
+        duration: c.duration || 0, run: this.runId, config: this.configFor(proj), runtime: this.runtimeDigest,
         epoch: o.clock ? this.epochMs : null, env: o.env, data: o.data, content: o.content, startup,
       }));
     }
@@ -555,4 +589,4 @@ class ProofSession {
   }
 }
 
-module.exports = { ProofSession, stable, configFiles, ownFile, UNCACHEABLE };
+module.exports = { ProofSession, stable, configFiles, ownFile, projectPart, UNCACHEABLE };

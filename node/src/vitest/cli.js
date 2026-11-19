@@ -154,7 +154,8 @@ async function main(argv) {
     }
   }
   info.projects = [...pools];
-  if (pc) pc.setConfig(configParts(projects, ctx, args, pc));
+  // nested Vite configuration files leave the global digest only when the root configuration's imports are known
+  if (pc) pc.setConfig(configParts(projects, ctx, args, pc), { nestedViteConfigs: !(ctx.vite && ctx.vite.config) });
   try {
     await ctx.start(filters);
   } catch (e) {
@@ -185,9 +186,13 @@ const VOLATILE_CONFIG = new Set(['reporters', 'outputFile', 'watch', 'ui', 'api'
   'coverage', 'benchmark', 'sequence', 'watchTriggerPatterns', 'forceRerunTriggers', 'related', 'mergeReports', 'project',
   'inspector', 'inspect', 'inspectBrk', 'slowTestThreshold', 'onTestFinished', 'tags', 'experimental']);
 
+function root0(ctx) {
+  return (ctx.config && ctx.config.root) || process.cwd();
+}
+
 /** What the configuration digest covers, per project: resolved test configuration, Vite settings, config files. */
 function configParts(projects, ctx, args, pc) {
-  const { stable } = require('../cache/proof');
+  const { stable, projectPart } = require('../cache/proof');
   const nativeMod = require('../native');
   const cliArgs = args.filter((a, i) => a.startsWith('-') || (i > 0 && args[i - 1].startsWith('-') && !args[i - 1].includes('=')));
   const parsedOpts = {};
@@ -196,6 +201,12 @@ function configParts(projects, ctx, args, pc) {
     if (!VOLATILE_ARGS.has(name)) parsedOpts[a] = true;
   }
   const out = { runner: `vitest ${process.env.DETJS_VITEST_DIR ? JSON.parse(fs.readFileSync(path.join(process.env.DETJS_VITEST_DIR, 'package.json'), 'utf8')).version : '?'}`, args: Object.keys(parsedOpts).sort() };
+  // the root configuration file and every file it imports (it may import a package's Vite configuration directly)
+  const rootVite = (ctx.vite && ctx.vite.config) || null;
+  out.rootConfig = rootVite ? {
+    file: rootVite.configFile ? [path.relative(root0(ctx), rootVite.configFile), nativeMod.fileDigest(rootVite.configFile)] : null,
+    deps: (rootVite.configFileDependencies || []).map((f) => [path.relative(root0(ctx), f), nativeMod.fileDigest(f)]).sort(),
+  } : 'unknown';
   for (const pr of projects) {
     const c = pr.config || (pr.getConfig && pr.getConfig());
     if (!c) continue;
@@ -216,7 +227,7 @@ function configParts(projects, ctx, args, pc) {
         configFileDependencies: (vite.configFileDependencies || []).map((f) => [path.relative(pc.root, f), nativeMod.fileDigest(f)]).sort(),
       };
     }
-    out[`project:${name}`] = { test: stable({ ...c, sequence: seq }, VOLATILE_CONFIG), coverage: cov, vite: stable(viteParts) };
+    projectPart(out, name, { test: stable({ ...c, sequence: seq }, VOLATILE_CONFIG), coverage: cov, vite: stable(viteParts) });
     let reason = null;
     if (c.browser && c.browser.enabled) reason = 'browser mode (tests run outside the captured process)';
     else if (c.pool === 'vmThreads' || c.pool === 'vmForks') reason = `pool ${c.pool} (tests run in another realm)`;

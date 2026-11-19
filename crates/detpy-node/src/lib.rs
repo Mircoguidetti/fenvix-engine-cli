@@ -429,6 +429,12 @@ impl ProofCache {
         g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup });
     }
 
+    /// Configuration digest the next checks compare with (per project), keeping what the checker has hashed.
+    #[napi]
+    pub fn set_config(&self, config: String) {
+        lock(&self.inner).checker.cur.config = config;
+    }
+
     #[napi]
     pub fn set_startup(&self, startup: String) {
         lock(&self.inner).checker.cur.startup = startup;

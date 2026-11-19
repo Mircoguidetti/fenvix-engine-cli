@@ -158,13 +158,13 @@ const VOLATILE_PROJECT = new Set(['testRunner', 'cacheDirectory', 'id', 'testPat
 
 /** What the configuration digest covers: Jest's resolved configuration (--showConfig) and its version. */
 function jestConfigParts(shown, version, rest, pc, customRunners) {
-  const { stable } = require('../cache/proof');
+  const { stable, projectPart } = require('../cache/proof');
   const out = { runner: `jest ${version}` };
   if (shown) {
     out.global = stable(shown.globalConfig || {}, VOLATILE_GLOBAL);
     for (const c of shown.configs || []) {
       const name = c.displayName ? c.displayName.name : '';
-      out[`project:${name}`] = stable(c, VOLATILE_PROJECT);
+      projectPart(out, name, stable(c, VOLATILE_PROJECT));
       if (c.runner && customRunners.has(c.runner)) pc.noteProject(name, `custom Jest runner ${c.runner} (tests run outside the captured process)`);
     }
   } else {

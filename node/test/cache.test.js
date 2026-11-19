@@ -101,7 +101,8 @@ function show(r) {
 }
 
 function reused(r) {
-  return new Set(((r.summary && r.summary.reused_files_list) || []));
+  // `file@@project` with projects
+  return new Set(((r.summary && r.summary.reused_files_list) || []).map((f) => f.split('@@')[0]));
 }
 
 function ran(r, files) {
@@ -457,6 +458,66 @@ describe('cache with proof: Jest start-up', () => {
     const files = [F(runner, 'a')];
     cycle(runner, dir, files, { 'setup/seed.txt': '2' }, files);
   });
+});
+
+// ---------------------------------------------------------------------------------------------------------------
+// Projects (monorepos): a test file runs with its own project's configuration, so a change to another project's
+// configuration does not rerun it; what every project shares (the root configuration and what it imports, detjs
+// options, configuration files of other tools) still reruns everything.
+describe('cache with proof: projects', () => {
+  // the test bodies read nothing: a rerun can only come from the configuration
+  const VTEST = "import { test, expect } from 'vitest';\ntest('t', () => { expect(1).toBe(1); });\n";
+  const vproject = (name) => ({
+    [`${name}/settings.json`]: '{"v": "1"}\n',
+    [`${name}/vitest.config.mjs`]: `import s from './settings.json' with { type: 'json' };\nexport default { test: { name: '${name}', include: ['tests/**/*.test.mjs'], env: { V: s.v } } };\n`,
+    [`${name}/tests/a.test.mjs`]: VTEST,
+  });
+  const vfixture = (name) => {
+    const dir = fixture('vitest', name, { ...vproject('pa'), ...vproject('pb'), 'shared.mjs': 'export const projects = ["pa", "pb"];\n' });
+    write(dir, { 'vitest.config.mjs': "import { projects } from './shared.mjs';\nexport default { test: { projects } };\n" });
+    return dir;
+  };
+  const VF = ['pa/tests/a.test.mjs', 'pb/tests/a.test.mjs'];
+
+  if (RUNNERS.includes('vitest')) {
+    test('Vitest: a file the project configuration imports reruns only that project', T, () => {
+      const dir = vfixture('proj-import');
+      cycle('vitest', dir, VF, { 'pa/settings.json': '{"v": "2"}\n' }, ['pa/tests/a.test.mjs']);
+    });
+
+    test("Vitest: a change to a project's configuration file reruns only that project", T, () => {
+      const dir = vfixture('proj-file');
+      cycle('vitest', dir, VF, () => {
+        const p = path.join(dir, 'pb', 'vitest.config.mjs');
+        fs.writeFileSync(p, `${fs.readFileSync(p, 'utf8')}// edited\n`);
+      }, ['pb/tests/a.test.mjs']);
+    });
+
+    test('Vitest: the root configuration and what it imports rerun every project', T, () => {
+      const dir = vfixture('proj-root');
+      cycle('vitest', dir, VF, { 'shared.mjs': 'export const projects = ["pa", "pb"]; // edited\n' }, VF);
+      const r = crun('vitest', dir);
+      assert.deepEqual(ran(r, VF), [], show(r));
+      write(dir, { 'vitest.config.mjs': "import { projects } from './shared.mjs';\nexport default { test: { projects, testTimeout: 7000 } };\n" });
+      const r2 = crun('vitest', dir);
+      assert.deepEqual(ran(r2, VF), VF, show(r2));
+    });
+  }
+
+  if (RUNNERS.includes('jest')) {
+    test('Jest: two projects without a displayName both stay in the configuration (a change to the first reruns it)', T, () => {
+      const jproject = (name) => ({
+        [`${name}/settings.json`]: '{"timeout": 5000}\n',
+        [`${name}/jest.config.js`]: "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node', globals: { S: require('./settings.json') } };\n",
+        [`${name}/tests/a.test.js`]: "test('t', () => { expect(typeof globalThis.S).toBe('object'); });\n",
+      });
+      const dir = fixture('jest', 'proj-noname', { ...jproject('pa'), ...jproject('pb') },
+        { jest: { projects: ['<rootDir>/pa', '<rootDir>/pb'] } });
+      const files = ['pa/tests/a.test.js', 'pb/tests/a.test.js'];
+      // the projects share a name (''), so neither is keyed by its own part alone: both run again
+      cycle('jest', dir, files, { 'pa/settings.json': '{"timeout": 6000}\n' }, files);
+    });
+  }
 });
 
 // ---------------------------------------------------------------------------------------------------------------
