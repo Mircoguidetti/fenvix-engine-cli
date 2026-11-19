@@ -187,3 +187,23 @@ def test_identity_files_follow_the_environment(tmp_path):
     shutil.rmtree(site / "ns")
     ix.write(str(out), (str(site) + os.sep,))
     assert (out / key).read_text().splitlines()[1:] == ["<missing>"]
+
+
+@needs_monitoring
+def test_a_file_an_earlier_test_wrote_and_read_back_does_not_refuse_later_tests(pytester, run_cache):
+    # the prefix rule carries test_a's read of out.txt; test_a wrote it itself (its own code is carried), so test_b
+    # stays cacheable (community.general: 90 tests after a test that writes and reads back a repository file)
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_a="""
+        def test_a():
+            with open("out.txt", "w") as fh:
+                fh.write("x")
+            with open("out.txt") as fh:
+                assert fh.read() == "x"
+        """, test_b="""
+        def test_b():
+            pass
+        """)
+    run_cache()
+    r, reused, data = run_cache()
+    assert "test_b.py::test_b" in reused, r.stdout.str()

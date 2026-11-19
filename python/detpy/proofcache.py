@@ -1510,6 +1510,7 @@ class ProofCachePlugin:
                 units |= units_of(per[c][0])
                 content |= unparsable(per[c][1])
             why = _uncacheable(flags, cfg)
+            own_flags = set(flags)
             if why is not None:
                 self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
             elif c_flags:
@@ -1525,8 +1526,12 @@ class ProofCachePlugin:
                 # a file one of them wrote is not there when that context is reused instead of run.)
                 credited = set(ctxs) | set(g_ctx_all)
                 names = {names_of[c] for c in credited}
+                # a carried read of a file written in this session: its writers ran before that read, so before
+                # this test; their inputs are carried too, which credits them as for the test's own contexts
+                carried_credit = credited | set(c_ctxs)
                 for f in sorted(flags):
-                    if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= credited:
+                    if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= (
+                            credited if f in own_flags else carried_credit):
                         why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
                         break
                 if why is None:
