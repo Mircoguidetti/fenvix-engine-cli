@@ -1,17 +1,12 @@
 {
- "run_id": "dv5",
+ "run_id": "dv6",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-2: the 130 pairs of the first report with the R-020 fixes (dv4 cancelled while queued: engine fix 9e0d005); moto and community.general run in the session container (results/local5/)",
+ "note": "REPORT-2: the 130 pairs of the first report with the R-020 fixes (engine 9e0d005). Actions: 66 pairs; moto, community.general and esphome run in the session container (results/local5/). dv4 and dv5 cancelled while queued.",
  "pairs": [
   {
    "spec": "airflow",
    "shards": 2,
-   "budget_min": 320
-  },
-  {
-   "spec": "esphome",
-   "shards": 6,
    "budget_min": 320
   },
   {
