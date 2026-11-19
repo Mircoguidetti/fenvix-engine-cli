@@ -79,6 +79,19 @@ def in_shard(pkg, shard, shards):
     return int(hashlib.sha1(pkg.encode()).hexdigest(), 16) % shards == shard
 
 
+def commit_partial(path, msg):
+    """Commit and push the partial result, so a runner that dies keeps what it measured."""
+    repo = Path(__file__).resolve().parents[2]
+    sh(["git", "add", path], cwd=repo)
+    if sh(["git", "commit", "-qm", f"Go harness: {msg}"], cwd=repo)[0] != 0:
+        return
+    for k in range(6):
+        if sh(["git", "pull", "--rebase", "-q"], cwd=repo, timeout=300)[0] == 0 and \
+                sh(["git", "push", "-q"], cwd=repo, timeout=300)[0] == 0:
+            return
+        time.sleep(5 * (k + 1))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--spec", required=True)
@@ -89,6 +102,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--commits", type=int, default=50)
     ap.add_argument("--budget", type=float, default=320 * 60)
+    ap.add_argument("--commit-every", type=int, default=0, help="commit and push the partial result every N commits")
     a = ap.parse_args()
     spec = json.load(open(a.spec))
     work = Path(a.work)
@@ -202,6 +216,8 @@ def main():
             f"checks {len(checks)} {row['seconds']}s")
         result["commits"].append(row)
         flush()
+        if a.commit_every and i % a.commit_every == a.commit_every - 1:
+            commit_partial(a.out, f"{spec['name']} shard {a.shard}/{a.shards}: {i + 1} commits (partial)")
     flush()
 
 

@@ -34,7 +34,7 @@ const Syscalls = "%file,getdents64,connect,fchdir,clone,clone3,fork,vfork"
 // Args returns the strace command prefix that writes its log to logPath.
 func Args(logPath string) []string {
 	return []string{"strace", "-f", "-qq", "-y", "--seccomp-bpf", "-e", "trace=" + Syscalls, "-e", "signal=none",
-		"-s", "4096", "-o", logPath, "--"}
+		"-s", "512", "-o", logPath, "--"}
 }
 
 // Deps is what one segment (a test, or the package) depended on.
