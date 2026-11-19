@@ -27,6 +27,9 @@ sys.path.insert(0, str(HERE.parent))
 sys.path.insert(0, str(HERE.parent / "round2"))
 from common import checkout, git, git_out, run_det  # noqa: E402
 from finder import Finder  # noqa: E402
+
+ROUND = int(os.environ.get("CULPRIT_ROUND", "3"))  # the fix round re-running the finder (round 4: 4)
+PREV = f"finder_round{ROUND - 1}"  # the committed row's finder result, kept
 from mutants import commit  # noqa: E402
 
 
@@ -79,9 +82,9 @@ def main():
             continue
         c = cases[r["id"]]
         row = dict(r)
-        row["finder_round2"] = {x: (r.get("finder") or {}).get(x) for x in ("culprit", "status", "why", "executions")}
-        row["finder_correct_round2"] = r.get("finder_correct")
-        row["round"] = 3
+        row[PREV] = {x: (r.get("finder") or {}).get(x) for x in ("culprit", "status", "why", "executions")}
+        row[PREV + "_correct"] = r.get("finder_correct")
+        row["round"] = ROUND
         venv = venv0
         if c.get("kind") == "b-fix":
             ok = rebuild_fix(repo, c)
@@ -104,7 +107,7 @@ def main():
             g = run_det(repo, venv, nid, keys=gk)
             checkout(repo, c["red_head"])
             rr = run_det(repo, venv, nid, keys=rk)
-            row["green_run_round2"], row["red_run_round2"] = r.get("green_run"), r.get("red_run")
+            row[f"green_run_round{ROUND - 1}"], row[f"red_run_round{ROUND - 1}"] = r.get("green_run"), r.get("red_run")
             row["green_run"], row["red_run"] = g["outcome"], rr["outcome"]
             f = Finder(repo, nid, {"sha": c["green"], "env": {}, "venv": venv, "key": gk},
                        {"sha": c["red_head"], "env": {}, "venv": venv, "key": rk})
@@ -119,7 +122,7 @@ def main():
             fh.write(json.dumps(row) + "\n")
         named = (row["finder"].get("culprit") or {}).get("commit")
         print(f"{r['id']}: {'OK' if row['finder_correct'] else 'UNKNOWN' if named is None else 'WRONG'} "
-              f"exec={row['finder'].get('executions')} (round 2: {row['finder_round2'].get('executions')}) "
+              f"exec={row['finder'].get('executions')} (round {ROUND - 1}: {row[PREV].get('executions')}) "
               f"rebuilt={ok} runs={row.get('green_run')}/{row.get('red_run')}", flush=True)
     checkout(repo, next(iter(cases.values()))["head"])
 

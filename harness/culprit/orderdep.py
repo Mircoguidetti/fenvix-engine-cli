@@ -33,7 +33,7 @@ import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import ENGINE, base_env, checkout, git, sh  # noqa: E402
+from common import ENGINE, base_env, checkout, git, sh, worktrees  # noqa: E402
 
 WORK = Path(os.environ.get("CULPRIT_WORK", "/home/user/work"))
 WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("detpy-*.whl"), "")))
@@ -67,15 +67,21 @@ def setup(name) -> tuple[Path, Path, dict]:
     return repo, venv, {**s, "sha": sha}
 
 
-def pytest(repo, venv, args, timeout=1800):
+def pytest(repo, venv, args, timeout=1800, worktree=None):
     td = tempfile.mkdtemp(prefix="od-")
     outp, trace = os.path.join(td, "o.json"), os.path.join(td, "t.jsonl")
     cmd = [str(venv / "bin" / "python"), "-m", "pytest", "-q", "-p", "no:cacheprovider", "--tb=no",
            f"--det-outcomes={outp}", *args]
     if "--det" in args:
         cmd.append(f"--det-trace={trace}")
+    cwd = repo
+    if worktree is not None:  # a copy of the repository mounted at its path (round 4: parallel red-side probes)
+        cmd = ["unshare", "-m", "--propagation", "private", "sh", "-c",
+               'mount --bind "$1" "$2" && cd "$2" && shift 2 && exec "$@"', "ns",
+               os.path.realpath(str(worktree)), os.path.realpath(str(repo)), *cmd]
+        cwd = "/"
     t0 = time.perf_counter()
-    code, out = sh(cmd, cwd=repo, env=base_env(venv), timeout=timeout)
+    code, out = sh(cmd, cwd=cwd, env=base_env(venv), timeout=timeout)
     wall = time.perf_counter() - t0
     try:
         outcomes = json.load(open(outp)).get("outcomes", {})
@@ -101,17 +107,38 @@ class Search:
     def __init__(self, repo, venv):
         self.repo, self.venv, self.steps = repo, venv, []
 
-    def run_list(self, tests, victim, why):
+    def run_list(self, tests, victim, why, worktree=None, extra=None):
         """Run ``tests`` then the victim, in that order, under --det (fixed order = argument order)."""
         r = pytest(self.repo, self.venv, ["--det", f"--det-disable={DISABLE}", "-p", "no:randomly",
-                                          *tests, victim])
+                                          *tests, victim], worktree=worktree)
+        return self._verdict(r, tests, victim, why, extra)
+
+    def _verdict(self, r, tests, victim, why, extra=None):
         o = r["outcomes"].get(victim)
         verdict = "missing" if o is None and r["code"] in (4, 5) else \
             ("fail" if o and ("fail" in o or "error" in o) else ("pass" if o else "error"))
         if o is None and r["code"] not in (4, 5):
             verdict = "error"
-        self.steps.append({"why": why, "n": len(tests), "verdict": verdict, "wall": round(r["wall"], 2)})
+        step = {"why": why, "n": len(tests), "verdict": verdict, "wall": round(r["wall"], 2)}
+        step.update(extra or {})
+        self.steps.append(step)
         return verdict
+
+    def pairs_many(self, shas, polluter, victim, why):
+        """The pair at several commits at the same time, each in its own copy of the repository mounted at the
+        repository's path; the outcomes in the order of ``shas``."""
+        if len(shas) <= 1 or RED_WORKERS <= 1:
+            return [pair_at(self, x, polluter, victim, why) for x in shas]
+        from concurrent.futures import ThreadPoolExecutor
+        wts = worktrees(self.repo, len(shas))
+        for w, x in zip(wts, shas):
+            checkout(w, x)
+        self.batches = getattr(self, "batches", 0) + 1
+        args = ["--det", f"--det-disable={DISABLE}", "-p", "no:randomly", polluter, victim]
+        with ThreadPoolExecutor(len(shas)) as ex:
+            rs = list(ex.map(lambda w: pytest(self.repo, self.venv, args, worktree=w), wts))
+        return [self._verdict(r, [polluter], victim, why, {"batch": self.batches, "worker": i})
+                for i, r in enumerate(rs)]
 
 
 def first_parent_back(repo, sha, n):
@@ -183,7 +210,9 @@ def find_commit(s: Search, red, polluter, victim, max_back=512):
     return chain[hi], chain[lo], chain, known
 
 
-RED_SIDE_CAP = 8  # unprobed footprint states of (named, red] replayed before an answer is withheld (R-019b)
+RED_SIDE_CAP = int(os.environ.get("CULPRIT_D_BUDGET", "32"))  # red-side replays per case before an answer is
+#   withheld (R-019b; round 3: 8, round 4: 32, replayed RED_WORKERS at a time)
+RED_WORKERS = int(os.environ.get("CULPRIT_WORKERS", "4"))
 _CONFIG_FILES = ("pytest.ini", "tox.ini", "setup.cfg", "pyproject.toml", "conftest.py")
 
 
@@ -246,22 +275,35 @@ def red_side(s: Search, chain, known, hi, polluter, victim, paths) -> tuple[int 
         tfiles = (polluter.split("::")[0], victim.split("::")[0])
         tvec = {j: tuple(x for x in vecs[j] if x.endswith(tfiles)) for j in range(1, hi + 1)}
         prio = [j for j in range(1, hi) if tvec[j] != tvec[j + 1]]
-        for j in prio + [j for j in range(1, hi) if j not in prio]:
-            st = state.get(vecs[j])
-            if st is None and known.get(j) is None:
-                if probed >= RED_SIDE_CAP:
-                    unchecked.add(vecs[j])
-                    continue
-                probed += 1
-                v = pair_at(s, chain[j], polluter, victim, "red-side check")
+        order = prio + [j for j in range(1, hi) if j not in prio]
+        while True:
+            # a state already known to pass: restart above it
+            restart = next((j for j in order if state.get(vecs[j]) == "pass"), None)
+            if restart is not None:
+                break
+            pend, seen_v = [], set()
+            for j in order:
+                if state.get(vecs[j]) is None and known.get(j) is None and vecs[j] not in seen_v \
+                        and vecs[j] not in unchecked:
+                    seen_v.add(vecs[j])
+                    pend.append(j)
+            if not pend:
+                break
+            room = RED_SIDE_CAP - probed
+            if room <= 0:
+                unchecked.update(vecs[j] for j in pend)
+                break
+            batch = pend[: min(RED_WORKERS, room)]
+            probed += len(batch)
+            for j, v in zip(batch, s.pairs_many([chain[j] for j in batch], polluter, victim, "red-side check")):
                 known[j] = v
                 if v == "error":
                     unchecked.add(vecs[j])
                     continue
-                st = "pass" if v in ("pass", "missing") else "fail"
-                state[vecs[j]] = st
-            if st == "pass":
-                restart = j
+                state[vecs[j]] = "pass" if v in ("pass", "missing") else "fail"
+            passed = [j for j in batch if state.get(vecs[j]) == "pass"]
+            if passed:
+                restart = min(passed)  # the newest passing commit (chain index 0 = red)
                 break
         if restart is not None:
             notes.append(f"{chain[hi][:10]} fixed later: {chain[restart][:10]} passes")
@@ -389,6 +431,8 @@ def main():
         res["executions_polluter"] = n_pol
         res["executions_commit"] = len(sr.steps) - n_pol
         res["executions"] = len(sr.steps)
+        res["red_side_budget"], res["workers"] = RED_SIDE_CAP, RED_WORKERS
+        res["red_side_probes"] = sum(1 for x in sr.steps if x.get("why") == "red-side check")
         res["finder_steps"] = sr.steps
         if named is None and res.get("finder_first") is None:
             res["skip"] = "the pair fails at every reachable commit (no green found within 512 first-parent commits)"

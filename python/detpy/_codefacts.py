@@ -37,7 +37,8 @@ def _is_doc(node) -> bool:
         and isinstance(node.value.value, str)
 
 
-_BLOCKS = (ast.stmt, ast.excepthandler, ast.match_case)
+# ast.match_case exists from Python 3.10; on 3.9 (step-4 environments: Level 0 only) there is no match statement
+_BLOCKS = tuple(x for x in (ast.stmt, ast.excepthandler, getattr(ast, "match_case", None)) if x is not None)
 
 
 def _blocks(node):

@@ -227,5 +227,10 @@ def test_run_from_key_refuses_runs_that_are_no_proof():
     assert F.run_from_key("/r", "s", "fail", kd, entry, NID, "x") is not None
     assert F.run_from_key("/r", "s", "fail", kd, {**entry, "not_cached": "subprocess"}, NID, "x") is None
     assert F.run_from_key("/r", "s", "fail", kd, {**entry, "flags": ["rclock"]}, NID, "x") is None
+    # entropy: a proof only when the engine says so (controlled with --det-urandom)
+    assert F.run_from_key("/r", "s", "fail", kd, {**entry, "flags": ["entropy"]}, NID, "x") is not None
+    assert F.run_from_key("/r", "s", "fail", kd, {**entry, "flags": ["entropy"],
+                                                  "not_cached": "os entropy (not controlled; use --det-urandom)"},
+                          NID, "x") is None
     assert F.run_from_key("/r", "s", "missing", kd, entry, NID, "x") is None
     assert F.run_from_key("/r", "s", "fail", {**kd, "root": "/elsewhere"}, entry, NID, "x") is None

@@ -489,7 +489,9 @@ def run_from_key(repo, sha: str, outcome: str, kd: dict, entry: dict | None, nod
     nc = entry.get("not_cached")
     if nc is not None and not str(nc).startswith("outcome "):
         return None
-    if set(entry.get("flags") or ()) & set(NONDET_FLAGS):
+    # entropy under --det-urandom is controlled: the engine's own verdict (not_cached above) decides; every other
+    # uncontrolled source makes the key no proof
+    if set(entry.get("flags") or ()) & (set(NONDET_FLAGS) - {"entropy"}):
         return None
     try:
         rel = os.path.relpath(os.path.realpath(kd.get("root") or str(repo)), os.path.realpath(str(repo)))
@@ -594,6 +596,7 @@ class Finder:
         self.workers = RED_WORKERS
         self.budget = RED_BUDGET
         self.red_probes = 0
+        self.red_inferred: set = set()
         self.batches = 0
         self.infer_keys = True  # key-validity inference in the red-side check (off: footprint vectors only)
 
@@ -818,6 +821,8 @@ class Finder:
                     return "pass", j
                 if o is None:
                     pending.append(j)
+                elif _src not in ("replayed", ""):
+                    self.red_inferred.add(commits[j])  # decided by key validity, no replay
             if not pending:
                 return "ok", None
             groups: dict = {}
@@ -1226,6 +1231,7 @@ class Finder:
         res["executions"] = len(self.steps)
         res["inferred"] = self.inferred
         res["red_probes"] = self.red_probes
+        res["red_inferred"] = len(self.red_inferred)
         res["workers"], res["budget"], res["batches"] = self.workers, self.budget, self.batches
         res["infer_keys"] = self.infer_keys
         res["wall_critical"] = critical_wall(self.steps)
