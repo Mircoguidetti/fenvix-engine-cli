@@ -29,7 +29,9 @@ function findRunner(root) {
 function userOptions(rest, notes) {
   const out = [];
   for (const a of rest) {
-    if (!a.startsWith('-')) continue;
+    // positionals are spec files (detjs passes its own list); `NAME=value` arguments are Jasmine's environment-style
+    // options (`JASMINE_CONFIG_PATH=tests/jasmine.json`) and stay
+    if (!a.startsWith('-') && !/^[A-Z_][A-Z0-9_]*=/.test(a)) continue;
     if (/^--parallel=/.test(a)) { if (notes) notes.push(`${a} ignored: one process per file under --det-cache, serial under --det`); continue; }
     if (/^--(random|seed)=/.test(a)) continue;
     out.push(a);

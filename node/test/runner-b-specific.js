@@ -138,6 +138,14 @@ const ava = [
     const dir = fixture('ava', 'processes', { 'data/msg.txt': 'hello', ...tfile('ava', 'proc', "test('proc', () => { expect(fs.readFileSync('data/msg.txt', 'utf8')).toBe('hello'); });") });
     noWrongReuse('ava', dir, 'test/proc.test.mjs', { 'data/msg.txt': 'bye' }, { args: ['--no-worker-threads'] });
   }],
+  ['an unhandled rejection AVA reports after the tests ended is never a reused pass', () => {
+    const dir = fixture('ava', 'unhandled', { 'test/late.test.mjs': `${AVAHEAD}\ntest('late', (t) => { Promise.reject(new Error('late rejection')); t.pass(); });\n` });
+    const r1 = crun('ava', dir);
+    assert.notEqual(r1.status, 0, `AVA fails the run\n${show(r1)}`);
+    const r2 = crun('ava', dir);
+    assert.notEqual(r2.status, 0, show(r2));
+    assert.ok(!reused(r2).includes('test/late.test.mjs'), `never reused\n${show(r2)}`);
+  }],
   ['worker threads: a worker thread started by the test is never cached', () => {
     const dir = fixture('ava', 'thread', { ...tfile('ava', 'wt', "const { Worker } = require('node:worker_threads');\ntest('wt', async () => { const w = new Worker('require(\"node:worker_threads\").parentPort.postMessage(1)', { eval: true }); expect(await new Promise((r) => w.once('message', r))).toBe(1); await w.terminate(); });") });
     neverCached('ava', dir, 'test/wt.test.mjs', /worker thread/);
@@ -160,6 +168,15 @@ const jasmine = [
   ['a new helper file matching the helpers glob', () => {
     const dir = fixture('jasmine', 'new-helper', { 'spec/helpers/a.js': "globalThis.RB_H = 'a';\n", 'spec/nhSpec.js': "it('nh', () => { expect(globalThis.RB_H).toBe('a'); });\n" });
     noWrongReuse('jasmine', dir, 'spec/nhSpec.js', { 'spec/helpers/b.js': "globalThis.RB_H = 'b';\n" });
+  }],
+  ['JASMINE_CONFIG_PATH=<file> on the command line: that configuration is used and keyed', () => {
+    const dir = fixture('jasmine', 'config-path', {
+      'data/v.txt': 'one',
+      'custom/jasmine.json': JSON.stringify({ spec_dir: 'custom', spec_files: ['**/*Spec.js'], helpers: ['helpers/**/*.js'], random: true }),
+      'custom/helpers/h.js': 'globalThis.RB_CUSTOM = true;\n',
+      'custom/cSpec.js': "it('custom', () => { expect(globalThis.RB_CUSTOM).toBe(true); expect(require('node:fs').readFileSync('data/v.txt', 'utf8')).toBe('one'); });\n",
+    });
+    noWrongReuse('jasmine', dir, 'custom/cSpec.js', { 'data/v.txt': 'two' }, { args: ['JASMINE_CONFIG_PATH=custom/jasmine.json'] });
   }],
   ['test-name filter (--filter) changes', () => {
     const dir = fixture('jasmine', 'filter', { 'spec/fSpec.js': "it('first', () => { expect(1).toBe(1); });\nit('second', () => { expect(1).toBe(2); });\n" });
