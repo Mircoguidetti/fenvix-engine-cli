@@ -356,6 +356,68 @@ def _install(config, ns, controls) -> None:
         fsorder.install(_PATCHER)
     if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
         S.rewrite_cache = _cache_rewritten_tests(config)
+    else:
+        _hash_checked_imports(config)
+
+
+def _hash_checked_imports(config) -> bool:
+    """Review R-019b N5: under ``--det`` without the bytecode control (``--det-no-reexec``, ``--det-disable``, or no
+    re-exec possible), validate the bytecode of every imported project module by its source's hash.
+
+    With the control, the import system reads only the precompile's checked-hash pycs (``reexec``), which it
+    validates by hash itself. Without it, it uses the project's ``__pycache__``, whose timestamp pycs are valid for
+    ``(int(mtime), size)``: after a same-size edit checked out within the same second, the previous version's
+    bytecode runs, and the proof key (from the source) pairs the new source with the old outcome (a cached false
+    pass). ``SourceFileLoader.get_code`` is patched for project sources (under the rootdir, without the precompile's
+    excluded names): a pyc is used only when it is a hash-based pyc of exactly the current source; otherwise the
+    source is compiled and, when bytecode may be written, cached as a checked-hash pyc (which plain Python also
+    validates by hash). The decision and the hash are in Rust (``_core.HashCheckedPycs``); this is the importlib
+    interface. Other modules (libraries) keep the import system's own check."""
+    try:
+        import importlib.util
+        from importlib import _bootstrap_external as be
+        from importlib.machinery import SourceFileLoader
+
+        variant = reexec._hash_variant()
+        compile_bytecode, code_to_hash_pyc = be._compile_bytecode, be._code_to_hash_pyc
+        cache_from_source, magic = importlib.util.cache_from_source, importlib.util.MAGIC_NUMBER
+    except (ImportError, AttributeError):
+        return False
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    check = _core.HashCheckedPycs(os.path.abspath(root), list(reexec._EXCLUDE_NAMES), magic,
+                                  int.from_bytes(magic, "little"), *(variant or (1, 3)))
+    real = SourceFileLoader.get_code
+
+    def get_code(self, fullname):
+        path = self.get_filename(fullname)
+        if variant is None:  # the Rust hash is not the interpreter's: never read a project pyc
+            if not check.applies(path):
+                return real(self, fullname)
+            with open(path, "rb") as fh:
+                return self.source_to_code(fh.read(), path)
+        try:
+            cfile = cache_from_source(path)
+        except NotImplementedError:
+            cfile = None
+        got = check(path, cfile)
+        if got is None:
+            return real(self, fullname)
+        source, source_hash, data = got
+        if data is not None:
+            try:
+                return compile_bytecode(memoryview(data)[16:], name=fullname, bytecode_path=cfile, source_path=path)
+            except (ImportError, EOFError):
+                pass
+        code = self.source_to_code(source, path)
+        if cfile is not None and not sys.dont_write_bytecode:
+            try:
+                self._cache_bytecode(path, cfile, code_to_hash_pyc(code, source_hash, True))
+            except NotImplementedError:
+                pass
+        return code
+
+    _PATCHER.set(SourceFileLoader, "get_code", get_code)
+    return True
 
 
 def _cache_rewritten_tests(config) -> bool:

@@ -369,7 +369,125 @@ pub fn pyc_cache_path(path: OsString, cwd: OsString, prefix: OsString, cache_tag
     OsString::from_vec(cache_path(&path.into_vec(), &cwd.into_vec(), &prefix.into_vec(), cache_tag.as_bytes()))
 }
 
+/// Review R-019b N5: the source-hash check of a project module's bytecode when `--det` runs without its bytecode
+/// control (`--det-no-reexec`, `--det-disable=bytecode|hashseed`, or no re-exec possible). The import system then
+/// uses the project's own `__pycache__`, whose timestamp pycs are valid for `(int(mtime), size)`: a same-size
+/// version checked out within the same second runs the previous version's bytecode, and the proof key (computed
+/// from the source) pairs the new source with the old outcome.
+///
+/// `HashCheckedPycs(root, exclude_names, magic, key, c_rounds, d_rounds)(path, cfile)` is called by the patched
+/// `SourceFileLoader.get_code` (`plugin._hash_checked_imports`, the import-system interface). It returns None
+/// when `path` is not a project source (not under `root`, or under one of the precompile's excluded names, as
+/// `reexec._EXCLUDE` relative to `root`), or when the source cannot be read (the import system's own path then
+/// raises its own error). Otherwise `(source, source_hash, pyc)`: the source's bytes, its
+/// `importlib.util.source_hash`, and the cached pyc's bytes when it is a hash-based pyc (PEP 552) of exactly this
+/// source and interpreter (`magic`), else None (the caller compiles the source and writes a checked-hash pyc).
+#[pyclass(module = "detpy._core", frozen)]
+pub struct HashCheckedPycs {
+    root: Vec<u8>,
+    exclude: Vec<Vec<u8>>,
+    magic: Vec<u8>,
+    key: u64,
+    c: u32,
+    d: u32,
+}
+
+impl HashCheckedPycs {
+    fn project(&self, path: &[u8]) -> bool {
+        path.len() > self.root.len()
+            && path.starts_with(&self.root)
+            && path.ends_with(b".py")
+            && !excluded(&path[self.root.len() - 1..], &self.exclude)
+    }
+}
+
+/// The hash-based pyc in `data` holds exactly `hash` (and `magic`).
+fn hash_pyc_matches(data: &[u8], magic: &[u8], hash: u64) -> bool {
+    if data.len() < 16 || &data[..4] != magic {
+        return false;
+    }
+    let flags = u32::from_le_bytes(data[4..8].try_into().unwrap());
+    flags & 1 == 1 && flags & !3 == 0 && data[8..16] == hash.to_le_bytes()
+}
+
+#[pymethods]
+impl HashCheckedPycs {
+    #[new]
+    #[pyo3(signature = (root, exclude_names, magic, key, c_rounds = 1, d_rounds = 3))]
+    fn new(root: OsString, exclude_names: Vec<String>, magic: &[u8], key: u64, c_rounds: u32, d_rounds: u32) -> Self {
+        let mut root = normpath_bytes(&root.into_vec());
+        if !root.ends_with(b"/") {
+            root.push(b'/');
+        }
+        HashCheckedPycs {
+            root,
+            exclude: exclude_names.into_iter().map(|n| n.into_bytes()).collect(),
+            magic: magic.to_vec(),
+            key,
+            c: c_rounds,
+            d: d_rounds,
+        }
+    }
+
+    /// Whether `path` is a project source this check applies to.
+    fn applies(&self, path: OsString) -> bool {
+        self.project(&path.into_vec())
+    }
+
+    #[allow(clippy::type_complexity)]
+    #[pyo3(signature = (path, cfile = None))]
+    fn __call__<'py>(
+        &self,
+        py: Python<'py>,
+        path: OsString,
+        cfile: Option<OsString>,
+    ) -> Option<(Bound<'py, pyo3::types::PyBytes>, Bound<'py, pyo3::types::PyBytes>, Option<Bound<'py, pyo3::types::PyBytes>>)>
+    {
+        let path = path.into_vec();
+        if !self.project(&path) {
+            return None;
+        }
+        let (src, hash, pyc) = py.detach(|| {
+            let src = fs::read(os(&path)).ok()?;
+            let hash = siphash(self.key, 0, &src, self.c, self.d);
+            let pyc = cfile
+                .and_then(|c| fs::read(os(&c.into_vec())).ok())
+                .filter(|data| hash_pyc_matches(data, &self.magic, hash));
+            Some((src, hash, pyc))
+        })?;
+        Some((
+            pyo3::types::PyBytes::new(py, &src),
+            pyo3::types::PyBytes::new(py, &hash.to_le_bytes()),
+            pyc.map(|p| pyo3::types::PyBytes::new(py, &p)),
+        ))
+    }
+}
+
+/// `os.path.normpath` of an absolute path (no `..` resolution beyond the root).
+fn normpath_bytes(p: &[u8]) -> Vec<u8> {
+    let mut parts: Vec<&[u8]> = Vec::new();
+    for c in p.split(|&c| c == b'/') {
+        match c {
+            b"" | b"." => {}
+            b".." => {
+                parts.pop();
+            }
+            c => parts.push(c),
+        }
+    }
+    let mut out = Vec::with_capacity(p.len() + 1);
+    for c in parts {
+        out.push(b'/');
+        out.extend_from_slice(c);
+    }
+    if out.is_empty() {
+        out.push(b'/');
+    }
+    out
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    m.add_class::<HashCheckedPycs>()?;
     m.add_function(wrap_pyfunction!(pyc_stale_hashed, m)?)?;
     m.add_function(wrap_pyfunction!(source_hash, m)?)?;
     m.add_function(wrap_pyfunction!(dir_stamp, m)?)?;
