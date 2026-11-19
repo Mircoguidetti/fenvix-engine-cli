@@ -144,7 +144,7 @@ class ProofCachePlugin(ProofSession):
     @pytest.hookimpl(trylast=True)
     def pytest_collection_finish(self, session):
         nids = [item.nodeid for item in session.items]
-        self.check(nids, dict(zip(nids, session.items)))
+        self.check(nids, dict(zip(nids, session.items)), _unittest_units(nids, session.items))
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -241,6 +241,21 @@ class ProofCachePlugin(ProofSession):
         tr.section("detpy cache with proof")
         for text, markup in self.sess.summary_lines(self.cap, tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))
+
+
+def _unittest_units(nids, items) -> list:
+    """The tests of each ``unittest.TestCase`` class, reused together or not at all (as under ``python -m detpy
+    unittest``, ``runners/unittest_shell.py``): the methods run in order and share the class's attributes and what
+    ``setUpClass`` built, which the capture does not see; a method reused after another one of its class ran
+    fresh would carry a result made with the other's old version of that state."""
+    import unittest
+
+    units: dict = {}
+    for nid, item in zip(nids, items):
+        cls = getattr(item, "cls", None)
+        if isinstance(cls, type) and issubclass(cls, unittest.TestCase):
+            units.setdefault(id(cls), []).append(nid)
+    return [u for u in units.values() if len(u) > 1]
 
 
 CAPTURE: Capture | None = None

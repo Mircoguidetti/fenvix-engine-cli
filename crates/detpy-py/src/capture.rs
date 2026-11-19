@@ -1189,7 +1189,9 @@ impl CaptureCore {
                 } else if reads && !trunc {
                     self.read_impl(py, ctx, &p, b'f')?;
                 }
-                if writes {
+                // an open of a directory for writing writes no file of that name (tempfile's O_TMPFILE attempt on the
+                // temporary directory): taken as a write of the directory, it made every probe of it stale
+                if writes && !is_dir(&p) {
                     self.wrote_impl(ctx, &p);
                 }
                 Ok(())
