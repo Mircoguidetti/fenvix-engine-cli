@@ -134,3 +134,18 @@ func TestAfterFuncThenSleep(t *testing.T) {
 		t.Fatal("AfterFunc(1ms) had not fired after Sleep(50ms)")
 	}
 }
+
+// A time the test sets on a file reads back unchanged under --det (rclone
+// bisync compares modification times it set itself).
+func TestChtimesRoundTrip(t *testing.T) {
+	p := filepath.Join(t.TempDir(), "f")
+	os.WriteFile(p, []byte("x"), 0o644)
+	want := time.Date(2024, 3, 1, 12, 0, 0, 0, time.UTC)
+	if err := os.Chtimes(p, want, want); err != nil {
+		t.Fatal(err)
+	}
+	st, _ := os.Stat(p)
+	if !st.ModTime().Equal(want) {
+		t.Fatalf("mtime %v, want %v", st.ModTime().UTC(), want)
+	}
+}

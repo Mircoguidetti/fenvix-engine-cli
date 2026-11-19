@@ -130,6 +130,10 @@ var patches = []patch{
 	{group: "os-time", file: "os/stat_linux.go", ops: []op{
 		{kind: "replace", anchor: "fs.modTime = time.Unix(fs.sys.Mtim.Unix())", text: "\tfs.modTime = fenvixModTime(time.Unix(fs.sys.Mtim.Unix()))"},
 	}},
+	{group: "os-time", file: "os/file_posix.go", ops: []op{
+		// the inverse move: a time the program sets reads back unchanged
+		{kind: "insert", anchor: "func Chtimes(name string, atime time.Time, mtime time.Time) error {", text: "\tatime, mtime = fenvixChtimes(atime), fenvixChtimes(mtime)"},
+	}},
 	{group: "os-time", file: "os/exec.go", ops: []op{
 		{kind: "insert", anchor: "func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {", text: "\tattr = fenvixChildAttr(attr)"},
 	}},
