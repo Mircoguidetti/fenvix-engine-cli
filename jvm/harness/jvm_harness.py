@@ -368,8 +368,13 @@ def recheck(c, out, a):
         df = sum(x["outcomes"].get(t) == "failed" for x in det)
         if df >= 1 and bf <= 1 and df > bf:
             broken.append({"test": t, "baseline": row["baseline"], "det_now": f"{df}F/{len(det)}"})
-    s = {"name": name_of(c), "before": sum(1 for x in rows if x["broken_by_det"]), "after": len(broken), "broken_now": broken}
-    json.dump(s, open(os.path.join(out, "recheck.json"), "w"), indent=1)
+    # tests that ran in the baseline and never under --det now (a column of their own: R-022 N1)
+    not_run = [row["test"] for row in rows if row["baseline"] != "0F/0P" and all(x["outcomes"].get(row["test"]) is None for x in det)]
+    s = {"name": name_of(c), "before": sum(1 for x in rows if x["broken_by_det"]), "after": len(broken), "broken_now": broken,
+         "not_run_under_det": len(not_run), "not_run_tests": not_run, "agent": a.agent_rev, "runs": len(det),
+         "det_outcomes": {t: f"{sum(x['outcomes'].get(t) == 'failed' for x in det)}F/{sum(x['outcomes'].get(t) == 'passed' for x in det)}P"
+                          for t in sorted({t for x in det for t in x["outcomes"]})}}
+    json.dump(s, open(os.path.join(out, a.recheck_name), "w"), indent=1)
     return s
 
 
@@ -388,6 +393,8 @@ def main():
     ap.add_argument("--confirm", type=int, default=10)
     ap.add_argument("--timing", type=int, default=3)
     ap.add_argument("--budget", type=float, default=4 * 3600)
+    ap.add_argument("--recheck-name", default="recheck.json", help="output file of --mode recheck (in the project's result folder)")
+    ap.add_argument("--agent-rev", default="", help="agent commit, recorded in the recheck output")
     a = ap.parse_args()
     cands = json.load(open(a.candidates))
     c = next(x for x in cands if name_of(x) == a.name)

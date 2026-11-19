@@ -490,7 +490,26 @@ public final class Det {
             left -= slice;
         }
         if (Thread.interrupted()) throw new InterruptedException("sleep interrupted");
+        if (SCHED) runTimersUntil(MONO_BASE_NS + vstart + ms * 1_000_000L, ms * 1_000_000L);
         advanceFrom(vstart, ms * 1_000_000L);
+    }
+
+    /**
+     * A virtual sleep that passes the due time of virtual scheduled tasks lets them run first, in
+     * due order, each at its own virtual time, as a real sleep would (R-022 D3: luwak
+     * TestCachePurging.testBackgroundPurges). Bounded by the fast-firing budget and, in real
+     * time, by the length of the sleep itself.
+     */
+    static void runTimersUntil(long target, long realBudgetNs) throws InterruptedException {
+        long t0 = System.nanoTime();
+        while (true) {
+            long due = VirtualScheduler.nextDue(target);
+            if (due == Long.MAX_VALUE || !takeFastFiring()) return;
+            advanceTo(due);
+            long left = realBudgetNs - (System.nanoTime() - t0);
+            if (left <= 0) return;
+            VirtualScheduler.runDue(due, left);
+        }
     }
 
     public static void sleep2(long ms, int nanos, String site) throws InterruptedException {
@@ -797,12 +816,41 @@ public final class Det {
             Thread.State s = t.getState();
             if (DEBUG) System.err.println("fenvix-quiet " + self.getName() + " sees " + t.getName() + " " + s + " " + java.util.Arrays.toString(t.getStackTrace()));
             if (s == Thread.State.WAITING || s == Thread.State.TERMINATED || s == Thread.State.NEW) continue;
+            if ((s == Thread.State.RUNNABLE || s == Thread.State.BLOCKED) && notWorkingForTest(t)) continue;
             if (REAL_SLEEPING.containsKey(t)) return false; // emulating real time: another thread may depend on it
             if (WAITERS.containsKey(t) && released(t)) return false; // released, not yet running
             if (s == Thread.State.TIMED_WAITING && (WAITERS.containsKey(t) || waitingInInfra(t))) continue;
             return false;
         }
         return true;
+    }
+
+    /**
+     * A runnable thread that runs no code under test and is inside the runner (JUnit submitting a
+     * timeout task, about to park) or inside pool machinery between tasks (a ForkJoinPool worker
+     * scanning before it parks, a pool worker exiting): a transient state, not work the test can
+     * wait for. Without this rule the answer depends on when the state is sampled, i.e. on the
+     * machine's load (R-022 D5: fingerprints of busy clock loops differed under load).
+     */
+    static boolean notWorkingForTest(Thread t) {
+        StackTraceElement[] st = t.getStackTrace();
+        if (st.length == 0) return false;
+        boolean infra = false, machinery = false;
+        for (StackTraceElement e : st) {
+            String c = e.getClassName();
+            String m = e.getMethodName();
+            if (c.startsWith("java.") || c.startsWith("jdk.") || c.startsWith("sun.") || c.startsWith("dev.fenvix.")) {
+                if ((c.equals("java.util.concurrent.ForkJoinPool") && (m.equals("awaitWork") || m.equals("scan") || m.equals("runWorker")))
+                        || (c.equals("java.util.concurrent.ThreadPoolExecutor") && (m.equals("getTask") || m.equals("processWorkerExit")))
+                        || (c.equals("java.lang.Thread") && m.equals("exit"))) {
+                    machinery = true;
+                }
+                continue;
+            }
+            if (!Infra.isInfraDotted(c)) return false; // code under test on the stack: it may be working
+            infra = true;
+        }
+        return infra || machinery;
     }
 
     static int fastFirings;
@@ -1066,10 +1114,8 @@ public final class Det {
             }
             if (TEST != null || DEPS) {
                 String caller = Caller.user();
-                if (caller != null) {
-                    if (FS) record("fs", "File.list", caller, names.length + ":" + digestNames(Arrays.asList(names)));
-                    if (DEPS) Deps.listed(dir.getPath(), names);
-                }
+                if (caller != null && FS) record("fs", "File.list", caller, names.length + ":" + digestNames(Arrays.asList(names)));
+                if (DEPS && (caller != null || Deps.records(Caller.kind(), false))) Deps.listed(dir.getPath(), names);
             }
             return names;
         } finally {
@@ -1090,12 +1136,13 @@ public final class Det {
         try {
             if (!FS && !DEPS) return ds;
             String caller = (TEST != null || DEPS) ? Caller.user() : null;
-            if (!FS && caller == null) return ds;
+            boolean rec = DEPS && (caller != null || Deps.records(Caller.kind(), false));
+            if (!FS && !rec) return ds;
             SortedDirectoryStream s = new SortedDirectoryStream(ds, FS);
-            if (caller != null) {
+            if (caller != null || rec) {
                 List<String> names = s.names();
-                if (FS) record("fs", "Files.newDirectoryStream", caller, names.size() + ":" + digestNames(names));
-                if (DEPS) Deps.listed(dir.toString(), names.toArray(new String[0]));
+                if (FS && caller != null) record("fs", "Files.newDirectoryStream", caller, names.size() + ":" + digestNames(names));
+                if (rec) Deps.listed(dir.toString(), names.toArray(new String[0]));
             }
             return s;
         } catch (IOException e) {
@@ -1110,7 +1157,7 @@ public final class Det {
         if (!DEPS || f == null) return;
         if (!enter()) return;
         try {
-            if (Caller.user() != null) Deps.opened(f.getPath(), mode);
+            if (Deps.records(Caller.kind(), !mode.equals("r"))) Deps.opened(f.getPath(), mode);
         } finally {
             exit();
         }
@@ -1133,7 +1180,8 @@ public final class Det {
         if (!DEPS || p == null) return;
         if (!enter()) return;
         try {
-            if (Caller.user() == null) return;
+            int kind = Caller.kind();
+            if (kind != Caller.USER && kind != Caller.INFRA) return;
             String mode = "r";
             if (opts != null) {
                 for (OpenOption o : opts) {
@@ -1145,7 +1193,7 @@ public final class Det {
                 }
                 if (mode.equals("w") && opts.toString().contains("READ")) mode = "rw";
             }
-            Deps.opened(p.toString(), mode);
+            if (Deps.records(kind, !mode.equals("r"))) Deps.opened(p.toString(), mode);
         } finally {
             exit();
         }
@@ -1156,7 +1204,7 @@ public final class Det {
         if (!DEPS || f == null) return;
         if (!enter()) return;
         try {
-            if (Caller.user() != null) Deps.probed(f.getPath());
+            if (Deps.records(Caller.kind(), false)) Deps.probed(f.getPath());
         } finally {
             exit();
         }
@@ -1166,7 +1214,7 @@ public final class Det {
         if (!DEPS || p == null) return;
         if (!enter()) return;
         try {
-            if (Caller.user() != null) Deps.probed(p.toString());
+            if (Deps.records(Caller.kind(), false)) Deps.probed(p.toString());
         } finally {
             exit();
         }
@@ -1358,12 +1406,50 @@ public final class Det {
         Deps.touch(classId);
     }
 
-    public static void touchStatic(int classId) {
-        Deps.touchStaticRead(classId);
+    /** After a GETSTATIC of a primitive static field (site registered by the agent). */
+    public static void staticRead(int site) {
+        Deps.staticRead(site);
     }
 
-    public static void writeStatic(int classId) {
-        Deps.wroteStatic(classId);
+    /** After a GETSTATIC of a reference static field: the value is still on the caller's stack (duplicated). */
+    public static void staticRefRead(Object value, int site) {
+        Deps.staticRefRead(value, site);
+    }
+
+    /** After a PUTSTATIC. */
+    public static void staticWrite(int site) {
+        Deps.staticWrite(site);
+    }
+
+    /** Start / end of a static initialiser of code under test. */
+    public static void clinitEnter(int classId) {
+        Deps.clinitEnter(classId);
+    }
+
+    public static void clinitExit(int classId) {
+        Deps.clinitExit(classId);
+    }
+
+    /** Wrapper of a native method of code under test (the agent renames the native method). */
+    public static void nativeCall(int classId) {
+        if (!DEPS) return;
+        Deps.touch(classId);
+        String n = Deps.nameOf(classId);
+        Deps.nativeCode("method:" + n);
+    }
+
+    /** Hook at the start of Runtime.load0 / loadLibrary0 (System.load, System.loadLibrary). */
+    public static void nativeLoad(Class<?> from, String lib) {
+        if (!DEPS || from == null || Infra.isJdk(from)) return;
+        if (Infra.isInfraDotted(from.getName())) return;
+        Deps.nativeCode("lib:" + lib);
+    }
+
+    /** Hook at the start of ProcessBuilder.start(). */
+    public static void procStart(ProcessBuilder pb) {
+        if (!DEPS || pb == null) return;
+        List<String> c = pb.command();
+        Deps.proc(c == null || c.isEmpty() ? "?" : c.get(0));
     }
 
     static Field field(Class<?> c, String name) {

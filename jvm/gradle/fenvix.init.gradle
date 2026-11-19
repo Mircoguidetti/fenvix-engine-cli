@@ -4,7 +4,7 @@
 //
 // (the `fenvix-jvm run` CLI adds these arguments). For every Test task of every
 // project it adds -javaagent, and under --det it makes the run serial
-// (maxParallelForks = 1, forkEvery = 0) and never up to date or taken from the
+// (maxParallelForks = 1; forkEvery is the project's: per-class JVM isolation stays) and never up to date or taken from the
 // build cache, so that the tests really run. Options are read from system
 // properties (-D) or project properties (-P).
 
@@ -44,7 +44,6 @@ class FenvixJvmPlugin implements Plugin<Gradle> {
                 t.systemProperty('fenvix.tool', "gradle ${gradle.gradleVersion}")
                 if (det) {
                     t.maxParallelForks = 1
-                    t.forkEvery = 0
                 }
                 t.outputs.upToDateWhen { false }
                 t.outputs.cacheIf { false }
@@ -53,7 +52,7 @@ class FenvixJvmPlugin implements Plugin<Gradle> {
                     def cfg = []
                     try {
                         cfg << "jvmArgs=${(t.allJvmArgs.findAll { !it.contains('fenvix') && !it.startsWith('-D') }).join(' ')}"
-                        cfg << "minHeap=${t.minHeapSize}" << "maxHeap=${t.maxHeapSize}"
+                        cfg << "minHeap=${t.minHeapSize}" << "maxHeap=${t.maxHeapSize}" << "forkEvery=${t.forkEvery}"
                     } catch (Throwable ignored) { }
                     try {
                         cfg << "framework=${t.testFramework.getClass().simpleName}"

@@ -20,8 +20,10 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
  * <ul>
  *   <li>argLine: {@code -javaagent:<jar>=<options>} first, the project's own argLine kept
  *       (and {@code @{argLine}} when JaCoCo prepares one);
- *   <li>under --det: forkCount=1, reuseForks=true, no parallel execution, runOrder
- *       alphabetical (seed 0) or random with the seed (Surefire >= 3.0.0-M6);
+ *   <li>under --det: forkCount=1 (one JVM at a time: serial), no parallel execution, runOrder
+ *       alphabetical (seed 0) or random with the seed (Surefire >= 3.0.0-M6); the project's
+ *       reuseForks is kept: a project that isolates test classes in fresh JVMs
+ *       (reuseForks=false, forkMode=always/pertest) keeps that isolation, serially (R-022 D1);
  *   <li>the JUnit 4 provider's run listener is attached by the agent itself (RunNotifier hook);
  *   <li>system properties fenvix.module, fenvix.tool, fenvix.plugins, fenvix.config.
  * </ul>
@@ -82,14 +84,14 @@ public class FenvixMavenExtension extends AbstractMavenLifecycleParticipant {
                     c = new Xpp3Dom("configuration");
                     pl.setConfiguration(c);
                 }
-                configure(c, javaagent, jacoco, det, seed, module, mvnVersion, plugins.toString());
+                configure(c, null, javaagent, jacoco, det, seed, module, mvnVersion, plugins.toString());
                 for (PluginExecution e : pl.getExecutions()) {
                     Xpp3Dom ec = (Xpp3Dom) e.getConfiguration();
                     if (ec == null) {
                         ec = new Xpp3Dom("configuration");
                         e.setConfiguration(ec);
                     }
-                    configure(ec, javaagent, jacoco, det, seed, module, mvnVersion, plugins.toString());
+                    configure(ec, c, javaagent, jacoco, det, seed, module, mvnVersion, plugins.toString());
                 }
             }
         }
@@ -110,13 +112,24 @@ public class FenvixMavenExtension extends AbstractMavenLifecycleParticipant {
         }
     }
 
-    static void configure(Xpp3Dom c, String javaagent, boolean jacoco, boolean det, String seed, String module, String mvn, String plugins) {
+    /** The value of a configuration element, the execution's own first, then the plugin's. */
+    static String value(Xpp3Dom c, Xpp3Dom parent, String name) {
+        Xpp3Dom d = c.getChild(name);
+        if (d == null && parent != null) d = parent.getChild(name);
+        return d == null ? null : d.getValue();
+    }
+
+    static void configure(Xpp3Dom c, Xpp3Dom parent, String javaagent, boolean jacoco, boolean det, String seed, String module, String mvn,
+            String plugins) {
         Xpp3Dom arg = c.getChild("argLine");
         String existing = arg != null && arg.getValue() != null ? arg.getValue().trim() : (jacoco ? "@{argLine}" : "");
         if (!existing.contains("fenvix-agent")) set(c, "argLine", (javaagent + " " + existing).trim());
         if (det) {
+            // serial is enough for Level 0: one fork at a time. JVM reuse is the project's choice
+            // (default true); per-class isolation (reuseForks=false) stays (json-iterator, R-022 D1)
+            String forkMode = value(c, parent, "forkMode");
             set(c, "forkCount", "1");
-            set(c, "reuseForks", "true");
+            if (forkMode != null && (forkMode.trim().equals("always") || forkMode.trim().equals("pertest"))) set(c, "reuseForks", "false");
             remove(c, "parallel");
             remove(c, "threadCount");
             remove(c, "perCoreThreadCount");
@@ -143,8 +156,10 @@ public class FenvixMavenExtension extends AbstractMavenLifecycleParticipant {
         set(spv, "fenvix.tool", "maven " + mvn);
         set(spv, "fenvix.plugins", plugins);
         StringBuilder cfg = new StringBuilder();
-        for (String k : new String[] {"includes", "excludes", "groups", "excludedGroups", "environmentVariables", "systemPropertyVariables"}) {
+        for (String k : new String[] {"includes", "excludes", "groups", "excludedGroups", "environmentVariables", "systemPropertyVariables",
+            "configurationParameters", "properties", "reuseForks", "forkMode", "skipAfterFailureCount", "rerunFailingTestsCount"}) {
             Xpp3Dom d = c.getChild(k);
+            if (d == null && parent != null) d = parent.getChild(k);
             if (d != null && !k.equals("systemPropertyVariables")) cfg.append(k).append('=').append(d.toString().replaceAll("\\s+", " ")).append('|');
         }
         set(spv, "fenvix.config", cfg.toString());

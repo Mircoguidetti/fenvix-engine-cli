@@ -33,7 +33,13 @@ final class Installer {
             System.setProperty("junit.jupiter.execution.order.random.seed", String.valueOf(Det.SEED));
             System.setProperty("junit.jupiter.execution.parallel.enabled", "false");
         }
-        inst.addTransformer(new CallSiteRewriter(), false);
+        CallSiteRewriter rewriter = new CallSiteRewriter();
+        inst.addTransformer(rewriter, false);
+        if (Det.DEPS && inst.isNativeMethodPrefixSupported()) {
+            // native methods of code under test are renamed and wrapped (the wrapper marks the test not reusable)
+            inst.setNativeMethodPrefix(rewriter, "fenvix$native$");
+            CallSiteRewriter.NATIVE_PREFIX = "fenvix$native$";
+        }
         inst.addTransformer(new RunnerHooks(), false);
         JdkHooks hooks = new JdkHooks();
         inst.addTransformer(hooks, true);

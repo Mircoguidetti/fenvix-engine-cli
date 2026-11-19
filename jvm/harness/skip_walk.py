@@ -7,7 +7,9 @@ For each transition (previous commit -> this commit) the proof rule
 (jvm/skip/fenvix_skip.py) decides, from the previous capture and the state of
 this commit, which tests could have been reused; each reuse is then checked
 against the fresh outcome of this commit: a reused test that does not pass now
-is WRONG (a rerun of its class twice tells a flaky test from a wrong skip).
+is WRONG unless the reruns show the test is flaky: its class is rerun alone twice; a test
+that fails in the suite and passes alone is order-dependent under --det (another test's
+state), so it counts as WRONG unless a rerun of the whole suite passes it (R-022 W1).
 
 Also computed per transition, as a comparison: a per-module cache in the style
 of Gradle's build cache for test tasks (ESTIMATED model: a module's tests are
@@ -130,6 +132,35 @@ def rerun_class(repo, spec, tid, log):
     return outs
 
 
+def rerun_suite(repo, spec, work, log):
+    """The whole suite once more at the same commit (--det --deps): {(module, id): outcome}."""
+    out = os.path.join(work, "suite-rerun")
+    shutil.rmtree(out, ignore_errors=True)
+    sh(test_cmd(spec, out), cwd=repo, env=env_for(spec), timeout=3 * 3600, log=log)
+    deps = os.path.join(out, "deps")
+    if not glob.glob(os.path.join(deps, "*.jsonl")):
+        return {}
+    return {(mn, t): r.get("outcome") for mn, m in fenvix_skip.load(deps).items() for t, r in m["tests"].items()}
+
+
+def classify(fresh, alone, suite):
+    """Verdict on a reused test that did not pass in the fresh run.
+
+    alone: outcomes of two reruns of its class alone; suite: a callable giving its outcome in a
+    rerun of the whole suite (only asked when needed). Under --det the order is fixed, so
+      * passes and fails alone           -> flaky (non-deterministic even alone);
+      * never passes alone               -> wrong;
+      * passes alone, fails in the suite -> order-dependent: another test's state decides; wrong,
+                                            unless the whole suite, rerun, passes it (flaky).
+    """
+    if "passed" in alone and any(o != "passed" for o in alone):
+        return "flaky", None
+    if "passed" not in alone:
+        return "wrong", None
+    s = suite()
+    return ("flaky" if s == "passed" else "wrong"), s
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--repo", required=True)
@@ -189,11 +220,19 @@ def main():
             wrong, flaky = [], []
             unverifiable = [k for k in reused if tests_b[k].get("outcome") is None]
             reused = [k for k in reused if tests_b[k].get("outcome") is not None]
+            suite_cache = []
+
+            def suite_outcome(k):
+                if not suite_cache:
+                    suite_cache.append(rerun_suite(repo, spec, a.work, log))
+                return suite_cache[0].get(k)
+
             for k in reused:
                 if tests_b[k].get("outcome") != "passed":
                     re_o = rerun_class(repo, spec, k[1], log)
-                    (flaky if "passed" in re_o and "failed" in re_o + [tests_b[k].get("outcome")] else wrong).append(
-                        {"test": k[1], "module": k[0], "fresh": tests_b[k].get("outcome"), "reruns": re_o})
+                    verdict, s_o = classify(tests_b[k].get("outcome"), re_o, lambda k=k: suite_outcome(k))
+                    (flaky if verdict == "flaky" else wrong).append(
+                        {"test": k[1], "module": k[0], "fresh": tests_b[k].get("outcome"), "reruns": re_o, "suite_rerun": s_o})
             skipped_ms = sum(tests_b[k].get("ms") or 0 for k in reused)
             mod_hit = [mn for mn in keys_b if keys_a.get(mn) == keys_b[mn]]
             mod_ms = sum(r.get("ms") or 0 for (mn, _), r in tests_b.items() if mn in mod_hit)

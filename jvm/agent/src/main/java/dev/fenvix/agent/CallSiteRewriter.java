@@ -7,12 +7,17 @@ import dev.fenvix.rt.Native;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -146,36 +151,40 @@ final class CallSiteRewriter implements ClassFileTransformer {
                 || owner.startsWith("com/sun/") || owner.startsWith("[");
     }
 
+    /** Prefix of renamed native methods (Instrumentation.setNativeMethodPrefix); null when not supported. */
+    static volatile String NATIVE_PREFIX;
+
     @Override
     public byte[] transform(ClassLoader loader, String name, Class<?> redefined, ProtectionDomain pd, byte[] bytes) {
         if (name == null || loader == null || redefined != null) return null;
         if (loader == dev.fenvix.rt.Compat.platformLoader()) return null;
-        if (Infra.isInfra(name) || name.equals("module-info") || name.startsWith("dev/fenvix/")) return null;
+        if (name.equals("module-info") || name.startsWith("dev/fenvix/")) return null;
         // JDK code loaded by the application loader (JDK 8 tools.jar: the attach API's retry loop
         // must keep real sleeps; found on incubator-seata with Mockito's inline mock maker)
         if (jdkOwner(name)) return null;
         try {
             String src = "";
             if (pd != null && pd.getCodeSource() != null && pd.getCodeSource().getLocation() != null) {
-                String loc = pd.getCodeSource().getLocation().getPath();
-                if (Infra.isToolDistribution(loc)) return null; // the build tool's own libraries (Gradle worker)
-            }
-            if (Det.DEPS) {
-                if (pd != null && pd.getCodeSource() != null && pd.getCodeSource().getLocation() != null) {
-                    try {
-                        src = new java.io.File(pd.getCodeSource().getLocation().toURI()).getPath();
-                    } catch (Exception e) {
-                        src = pd.getCodeSource().getLocation().toString();
-                    }
+                try {
+                    src = new java.io.File(pd.getCodeSource().getLocation().toURI()).getPath();
+                } catch (Exception e) {
+                    src = pd.getCodeSource().getLocation().getPath();
                 }
-                // classes without a code source are generated at run time (proxies, mocks): their
-                // definition derives from other classes, they are not part of the key
-                if (!src.isEmpty()) Deps.classDefined(name, Native.digest(bytes), src);
             }
+            // infrastructure is decided by code source (the runner's and the build tool's jars), not by
+            // package name: a repository's own classes under org/junit/, org/apache/maven/, ... are code
+            // under test (R-022 S11). Classes without a code source (generated) keep the package rule.
+            boolean infra = src.isEmpty() ? Infra.isInfra(name) : Infra.decide(name, src);
+            Infra.known(name, infra);
+            if (infra) return null;
+            // classes without a code source are generated at run time (proxies, mocks): their
+            // definition derives from other classes, they are not part of the key
+            if (Det.DEPS && !src.isEmpty()) Deps.classDefined(name, Native.digest(bytes), src);
             ClassReader cr = new ClassReader(bytes);
             ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
             Rewriter rw = new Rewriter(cw, name);
             cr.accept(rw, 0);
+            if (Det.DEPS) rw.register();
             if (!rw.changed) return null;
             return cw.toByteArray();
         } catch (Throwable t) {
@@ -191,6 +200,15 @@ final class CallSiteRewriter implements ClassFileTransformer {
         String sourceBase;
         boolean changed;
         final int classId;
+        int version;
+        int access;
+        boolean itf;
+        String superName;
+        String[] interfaces;
+        final List<String> fields = new ArrayList<>();
+        boolean immutableInstance = true;
+        final List<Bridge> bridges = new ArrayList<>();
+        final List<String[]> natives = new ArrayList<>();
 
         Rewriter(ClassVisitor cv, String cls) {
             super(Opcodes.ASM9, cv);
@@ -204,6 +222,28 @@ final class CallSiteRewriter implements ClassFileTransformer {
         }
 
         @Override
+        public void visit(int version, int access, String name, String sig, String superName, String[] interfaces) {
+            this.version = version & 0xFFFF;
+            this.access = access;
+            this.itf = (access & Opcodes.ACC_INTERFACE) != 0;
+            this.superName = superName;
+            this.interfaces = interfaces;
+            super.visit(version, access, name, sig, superName, interfaces);
+        }
+
+        @Override
+        public FieldVisitor visitField(int acc, String name, String desc, String sig, Object value) {
+            fields.add(name + "\t" + acc);
+            if ((acc & Opcodes.ACC_STATIC) == 0 && ((acc & Opcodes.ACC_FINAL) == 0 || !Deps.immutableDesc(desc))) immutableInstance = false;
+            return super.visitField(acc, name, desc, sig, value);
+        }
+
+        /** Structure of the class for static field resolution and immutability (skip-with-proof capture). */
+        void register() {
+            Deps.classInfo(cls, superName, interfaces, access, fields.toArray(new String[0]), immutableInstance);
+        }
+
+        @Override
         public void visitSource(String source, String debug) {
             if (source != null) {
                 int slash = cls.lastIndexOf('/');
@@ -214,9 +254,112 @@ final class CallSiteRewriter implements ClassFileTransformer {
 
         @Override
         public MethodVisitor visitMethod(int access, String name, String desc, String sig, String[] exc) {
+            if ((access & Opcodes.ACC_NATIVE) != 0 && Det.DEPS && NATIVE_PREFIX != null && classId >= 0 && !itf) {
+                // native code of the project: rename the native method and call it through a Java
+                // wrapper that marks the test as not reusable (its inputs are invisible to the capture)
+                natives.add(new String[] {String.valueOf(access), name, desc, sig});
+                changed = true;
+                int nacc = (access & ~(Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED)) | Opcodes.ACC_PRIVATE | Opcodes.ACC_FINAL;
+                return super.visitMethod(nacc & ~Opcodes.ACC_SYNCHRONIZED, NATIVE_PREFIX + name, desc, sig, exc);
+            }
             MethodVisitor mv = super.visitMethod(access, name, desc, sig, exc);
             if ((access & (Opcodes.ACC_ABSTRACT | Opcodes.ACC_NATIVE)) != 0) return mv;
             return new MethodRewriter(mv, this, name);
+        }
+
+        @Override
+        public void visitEnd() {
+            for (Bridge b : bridges) b.emit(this);
+            for (String[] n : natives) emitNativeWrapper(Integer.parseInt(n[0]), n[1], n[2], n[3]);
+            super.visitEnd();
+        }
+
+        void emitNativeWrapper(int acc, String name, String desc, String sig) {
+            boolean stat = (acc & Opcodes.ACC_STATIC) != 0;
+            MethodVisitor mv = super.visitMethod(acc & ~Opcodes.ACC_NATIVE, name, desc, sig, null);
+            mv.visitCode();
+            pushInt(mv, classId);
+            mv.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "nativeCall", "(I)V", false);
+            int slot = 0;
+            if (!stat) mv.visitVarInsn(Opcodes.ALOAD, slot++);
+            for (Type t : Type.getArgumentTypes(desc)) {
+                mv.visitVarInsn(t.getOpcode(Opcodes.ILOAD), slot);
+                slot += t.getSize();
+            }
+            mv.visitMethodInsn(stat ? Opcodes.INVOKESTATIC : Opcodes.INVOKESPECIAL, cls, NATIVE_PREFIX + name, desc, false);
+            mv.visitInsn(Type.getReturnType(desc).getOpcode(Opcodes.IRETURN));
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
+        }
+
+        MethodVisitor rawMethod(int acc, String name, String desc) {
+            return super.visitMethod(acc, name, desc, null, null);
+        }
+
+        /** Access flags of a synthetic static bridge (interfaces: private statics need class version 53). */
+        int bridgeAccess() {
+            int a = Opcodes.ACC_STATIC | Opcodes.ACC_SYNTHETIC;
+            return (itf && version < 53) ? a | Opcodes.ACC_PUBLIC : a | Opcodes.ACC_PRIVATE;
+        }
+    }
+
+    static void pushInt(MethodVisitor mv, int v) {
+        if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE) mv.visitIntInsn(Opcodes.SIPUSH, v);
+        else mv.visitLdcInsn(v);
+    }
+
+    /**
+     * A synthetic static method standing in for a method reference to a clock, a sleep or a
+     * random source ({@code System::currentTimeMillis}, {@code Instant::now}, {@code Random::new}):
+     * the reference's invokedynamic gets this method as its implementation, and the method
+     * calls the fenvix runtime with the call site, as a rewritten call site does (R-022 D2).
+     */
+    static final class Bridge {
+        final String name, desc, site;
+        final int kind; // 0 static rule, 1 now(), 2 now(ZoneId), 3 constructor, 4 virtual rule
+        final String owner, target, targetDesc, helper;
+
+        Bridge(String name, String desc, String site, int kind, String owner, String target, String targetDesc, String helper) {
+            this.name = name;
+            this.desc = desc;
+            this.site = site;
+            this.kind = kind;
+            this.owner = owner;
+            this.target = target;
+            this.targetDesc = targetDesc;
+            this.helper = helper;
+        }
+
+        void emit(Rewriter rw) {
+            MethodVisitor mv = rw.rawMethod(rw.bridgeAccess(), name, desc);
+            mv.visitCode();
+            Type ret = Type.getReturnType(desc);
+            if (kind == 3) {
+                mv.visitTypeInsn(Opcodes.NEW, owner);
+                mv.visitInsn(Opcodes.DUP);
+                mv.visitLdcInsn(site);
+                mv.visitMethodInsn(Opcodes.INVOKESTATIC, DET, helper, "(" + S + ")J", false);
+                mv.visitMethodInsn(Opcodes.INVOKESPECIAL, owner, "<init>", "(J)V", false);
+            } else {
+                int slot = 0;
+                for (Type t : Type.getArgumentTypes(desc)) {
+                    mv.visitVarInsn(t.getOpcode(Opcodes.ILOAD), slot);
+                    slot += t.getSize();
+                }
+                mv.visitLdcInsn(site);
+                if (kind == 1 || kind == 2) {
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, DET, kind == 1 ? "clockDefaultZone" : "clockSystem",
+                            kind == 1 ? "(" + S + ")Ljava/time/Clock;" : "(Ljava/time/ZoneId;" + S + ")Ljava/time/Clock;", false);
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, owner, "now", "(Ljava/time/Clock;)L" + owner + ";", false);
+                } else {
+                    mv.visitMethodInsn(Opcodes.INVOKESTATIC, DET, target, targetDesc, false);
+                    String newRet = targetDesc.substring(targetDesc.indexOf(')') + 1);
+                    if (ret.getSort() == Type.OBJECT && !newRet.equals(ret.getDescriptor())) mv.visitTypeInsn(Opcodes.CHECKCAST, ret.getInternalName());
+                }
+            }
+            mv.visitInsn(ret.getOpcode(Opcodes.IRETURN));
+            mv.visitMaxs(0, 0);
+            mv.visitEnd();
         }
     }
 
@@ -242,14 +385,84 @@ final class CallSiteRewriter implements ClassFileTransformer {
             if (Det.DEPS && owner.classId >= 0) {
                 push(owner.classId);
                 super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "touch", "(I)V", false);
+                if (method.equals("<clinit>")) {
+                    // what the static initialiser depends on is added to every later scope that touches the class
+                    push(owner.classId);
+                    super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "clinitEnter", "(I)V", false);
+                }
                 owner.changed = true;
             }
+        }
+
+        @Override
+        public void visitInsn(int op) {
+            if (op == Opcodes.RETURN && Det.DEPS && owner.classId >= 0 && method.equals("<clinit>")) {
+                push(owner.classId);
+                super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "clinitExit", "(I)V", false);
+            }
+            super.visitInsn(op);
+        }
+
+        @Override
+        public void visitInvokeDynamicInsn(String name, String desc, Handle bsm, Object... args) {
+            if (bsm.getOwner().equals("java/lang/invoke/LambdaMetafactory") && args.length >= 3 && args[1] instanceof Handle) {
+                Handle h = (Handle) args[1];
+                Handle r = bridgeFor(h);
+                if (r != null) {
+                    Object[] a = args.clone();
+                    a[1] = r;
+                    owner.changed = true;
+                    super.visitInvokeDynamicInsn(name, desc, bsm, a);
+                    return;
+                }
+            }
+            super.visitInvokeDynamicInsn(name, desc, bsm, args);
+        }
+
+        /** A bridge for a method reference to a rewritten JDK method, or null. */
+        Handle bridgeFor(Handle h) {
+            if (owner.version < 52) return null;
+            String ho = h.getOwner(), hn = h.getName(), hd = h.getDesc();
+            Bridge b = null;
+            String bn = "fenvix$mref$" + owner.bridges.size();
+            switch (h.getTag()) {
+                case Opcodes.H_INVOKESTATIC: {
+                    String[] r = STATIC.get(ho + "." + hn + hd);
+                    if (r != null) {
+                        b = new Bridge(bn, hd, site(), 0, ho, r[0], r[1], null);
+                    } else if (hn.equals("now") && in(NOW_CLASSES, ho)) {
+                        if (hd.equals("()L" + ho + ";")) b = new Bridge(bn, hd, site(), 1, ho, null, null, null);
+                        else if (hd.equals("(Ljava/time/ZoneId;)L" + ho + ";")) b = new Bridge(bn, hd, site(), 2, ho, null, null, null);
+                    }
+                    break;
+                }
+                case Opcodes.H_NEWINVOKESPECIAL: {
+                    if (hd.equals("()V")) {
+                        String helper = ho.equals("java/util/Date") ? "currentTimeMillis"
+                                : (ho.equals("java/util/Random") || ho.equals("java/util/SplittableRandom")) ? "newRandomSeed" : null;
+                        if (helper != null) b = new Bridge(bn, "()L" + ho + ";", site(), 3, ho, null, null, helper);
+                    }
+                    break;
+                }
+                case Opcodes.H_INVOKEVIRTUAL:
+                case Opcodes.H_INVOKEINTERFACE: {
+                    String[] r = virtualRule(ho, hn, hd);
+                    if (r != null) b = new Bridge(bn, "(L" + ho + ";" + hd.substring(1), site(), 4, ho, r[0], r[1], null);
+                    break;
+                }
+                default:
+                    break;
+            }
+            if (b == null) return null;
+            owner.bridges.add(b);
+            return new Handle(Opcodes.H_INVOKESTATIC, owner.cls, b.name, b.desc, owner.itf);
         }
 
         void push(int v) {
             if (v <= Short.MAX_VALUE) super.visitIntInsn(Opcodes.SIPUSH, v);
             else super.visitLdcInsn(v);
         }
+
 
         @Override
         public void visitLineNumber(int l, Label start) {
@@ -259,15 +472,28 @@ final class CallSiteRewriter implements ClassFileTransformer {
 
         @Override
         public void visitFieldInsn(int op, String fowner, String name, String desc) {
-            if (Det.DEPS && (op == Opcodes.GETSTATIC || op == Opcodes.PUTSTATIC) && !jdkOwner(fowner) && !Infra.isInfra(fowner)) {
+            super.visitFieldInsn(op, fowner, name, desc);
+            if (Det.DEPS && (op == Opcodes.GETSTATIC || op == Opcodes.PUTSTATIC) && !jdkOwner(fowner) && !fowner.startsWith("dev/fenvix/")
+                    && !Boolean.TRUE.equals(Infra.knownInfra(fowner))) {
                 boolean clinitSelf = method.equals("<clinit>") && fowner.equals(owner.cls);
                 if (!clinitSelf) {
-                    push(Deps.classId(fowner));
-                    super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, op == Opcodes.GETSTATIC ? "touchStatic" : "writeStatic", "(I)V", false);
+                    // after the access: the owner (and the declaring class) are loaded and initialised, so
+                    // the site resolves the field like the JVM does (inherited statics, R-022 S3)
+                    int sid = Deps.staticSite(fowner, name, desc, op == Opcodes.PUTSTATIC);
+                    if (op == Opcodes.PUTSTATIC) {
+                        push(sid);
+                        super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "staticWrite", "(I)V", false);
+                    } else if (desc.charAt(0) == 'L' || desc.charAt(0) == '[') {
+                        super.visitInsn(Opcodes.DUP);
+                        push(sid);
+                        super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "staticRefRead", "(Ljava/lang/Object;I)V", false);
+                    } else {
+                        push(sid);
+                        super.visitMethodInsn(Opcodes.INVOKESTATIC, DET, "staticRead", "(I)V", false);
+                    }
                     owner.changed = true;
                 }
             }
-            super.visitFieldInsn(op, fowner, name, desc);
         }
 
         @Override

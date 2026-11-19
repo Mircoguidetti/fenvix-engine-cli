@@ -5,7 +5,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 root="$(cd "$here/.." && pwd)"
 profile="${FENVIX_PROFILE:-release}"
-(cd "$root" && cargo build -p fenvix-jvm --release -q)
+(cd "$root" && cargo build -p fenvix-jvm -p fenvix-skip --release -q)
 (cd "$here" && mvn -q -B -DskipTests package)
 stage="$here/target/stage"
 rm -rf "$stage" && mkdir -p "$stage/fenvix" "$here/dist"

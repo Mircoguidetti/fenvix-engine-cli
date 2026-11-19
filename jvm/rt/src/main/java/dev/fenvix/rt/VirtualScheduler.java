@@ -35,7 +35,68 @@ import java.util.concurrent.TimeUnit;
  */
 final class VirtualScheduler extends AbstractExecutorService implements ScheduledExecutorService {
     private static final Set<Thread> DISPATCHERS = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+    /** Every live scheduler (a virtual sleep runs their due tasks first). */
+    private static final Set<VirtualScheduler> ALL = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+    /** The scheduler whose task the current thread runs. */
+    private static final ThreadLocal<VirtualScheduler> RUNNING_IN = new ThreadLocal<>();
     private static int count;
+
+    /**
+     * Earliest due time (virtual monotonic ns) of a pending task of any live scheduler, at most
+     * {@code limit}; Long.MAX_VALUE when none. A task of the scheduler the caller itself runs in
+     * is left out (its pool may be busy with the caller).
+     */
+    static long nextDue(long limit) {
+        VirtualScheduler[] all;
+        synchronized (ALL) {
+            all = ALL.toArray(new VirtualScheduler[0]);
+        }
+        VirtualScheduler mine = RUNNING_IN.get();
+        long best = Long.MAX_VALUE;
+        for (VirtualScheduler v : all) {
+            if (v == mine) continue;
+            synchronized (v.lock) {
+                Task<?> t = v.queue.peek();
+                if (t != null && t.due <= limit && t.due < best) best = t.due;
+            }
+        }
+        return best;
+    }
+
+    /**
+     * The virtual clock has reached {@code due}: wake every dispatcher and wait until every task due
+     * at or before it has been dispatched and has finished (at most {@code maxWaitNs} of real time).
+     */
+    static void runDue(long due, long maxWaitNs) throws InterruptedException {
+        long deadline = System.nanoTime() + maxWaitNs;
+        VirtualScheduler[] all;
+        synchronized (ALL) {
+            all = ALL.toArray(new VirtualScheduler[0]);
+        }
+        VirtualScheduler mine = RUNNING_IN.get();
+        for (VirtualScheduler v : all) {
+            synchronized (v.lock) {
+                v.lock.notifyAll();
+            }
+        }
+        for (VirtualScheduler v : all) {
+            if (v == mine) continue;
+            synchronized (v.lock) {
+                while (true) {
+                    Task<?> head = v.queue.peek();
+                    boolean pending = (head != null && head.due <= due && !v.dispatcherGone()) || v.running > 0;
+                    if (!pending) break;
+                    long left = deadline - System.nanoTime();
+                    if (left <= 0) return;
+                    v.lock.wait(Math.max(1, Math.min(10, left / 1_000_000L)));
+                }
+            }
+        }
+    }
+
+    private boolean dispatcherGone() {
+        return !dispatcher.isAlive();
+    }
 
     static boolean isDispatcher(Thread t) {
         return DISPATCHERS.contains(t);
@@ -61,6 +122,7 @@ final class VirtualScheduler extends AbstractExecutorService implements Schedule
         dispatcher = new Thread(this::loop, "fenvix-scheduler-" + id);
         dispatcher.setDaemon(true);
         DISPATCHERS.add(dispatcher);
+        ALL.add(this);
         dispatcher.start();
     }
 
@@ -106,6 +168,8 @@ final class VirtualScheduler extends AbstractExecutorService implements Schedule
 
         @Override
         public void run() {
+            VirtualScheduler prev = RUNNING_IN.get();
+            RUNNING_IN.set(VirtualScheduler.this);
             try {
                 if (!isPeriodic()) {
                     super.run();
@@ -114,6 +178,7 @@ final class VirtualScheduler extends AbstractExecutorService implements Schedule
                     enqueue(this);
                 }
             } finally {
+                RUNNING_IN.set(prev);
                 synchronized (lock) {
                     running--;
                     lock.notifyAll();

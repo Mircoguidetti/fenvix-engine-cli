@@ -127,6 +127,8 @@ public final class Junit4Hook {
         }
 
         void collect(Description d, List<String> out) {
+            // Surefire 2.17's JUnit 4 provider fires testRunStarted(null) (R-022 D4)
+            if (d == null) return;
             if (d.isTest()) out.add(id(d));
             for (Description c : d.getChildren()) collect(c, out);
         }
@@ -137,19 +139,19 @@ public final class Junit4Hook {
 
         @Override
         public synchronized void testSuiteStarted(Description d) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || d == null) return;
             if (d.getClassName() != null) Deps.beginContainer(d.getClassName());
         }
 
         @Override
         public synchronized void testSuiteFinished(Description d) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || d == null) return;
             if (d.getClassName() != null) Deps.endContainer();
         }
 
         @Override
         public synchronized void testStarted(Description d) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || d == null) return;
             ensureOpen();
             String id = id(d);
             if (id.equals(current)) return;
@@ -161,19 +163,19 @@ public final class Junit4Hook {
 
         @Override
         public synchronized void testFailure(Failure f) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || f == null || f.getDescription() == null) return;
             if (current != null && id(f.getDescription()).equals(current)) outcome = "failed";
         }
 
         @Override
         public synchronized void testAssumptionFailure(Failure f) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || f == null || f.getDescription() == null) return;
             if (current != null && id(f.getDescription()).equals(current) && !"failed".equals(outcome)) outcome = "skipped";
         }
 
         @Override
         public synchronized void testFinished(Description d) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || d == null) return;
             if (current != null && id(d).equals(current)) {
                 Det.endTest(outcome);
                 current = null;
@@ -182,7 +184,7 @@ public final class Junit4Hook {
 
         @Override
         public synchronized void testIgnored(Description d) {
-            if (Flags.platformActive) return;
+            if (Flags.platformActive || d == null) return;
             ensureOpen();
             Det.beginTest(id(d), index++);
             Det.endTest("skipped");

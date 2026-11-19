@@ -50,6 +50,10 @@ public class FenvixListener implements TestExecutionListener {
         module = Ids.module(System.getProperty("fenvix.module", ""));
         List<String> order = new ArrayList<>();
         for (TestIdentifier root : testPlan.getRoots()) collect(testPlan, root, order);
+        if (Det.DEPS) {
+            configurationParameters(testPlan);
+            lifecycleDefault = lifecycleDefault(testPlan);
+        }
         if (Det.ON) {
             String out = System.getProperty("fenvix.out", ".fenvix");
             String pid = dev.fenvix.rt.Compat.pid();
@@ -60,6 +64,38 @@ public class FenvixListener implements TestExecutionListener {
             String engines = engines(testPlan);
             Det.openTrace(part.getPath(), Lifecycle.metaJson(engines, runnerVersion(),
                     "one JVM per build module, serial (no parallel forks, no parallel JUnit execution)"), order.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * The plan's JUnit configuration parameters (Platform 1.8+: getConfigurationParameters,
+     * 1.9+: keySet), part of the configuration key: Surefire configurationParameters,
+     * junit-platform.properties, system properties. Reflection: older Platforms lack them.
+     */
+    static void configurationParameters(TestPlan p) {
+        try {
+            Object cp = TestPlan.class.getMethod("getConfigurationParameters").invoke(p);
+            Object keys = cp.getClass().getMethod("keySet").invoke(cp);
+            java.lang.reflect.Method get = cp.getClass().getMethod("get", String.class);
+            get.setAccessible(true);
+            for (Object k : (java.util.Set<?>) keys) {
+                Object v = get.invoke(cp, k);
+                Object val = v instanceof java.util.Optional ? ((java.util.Optional<?>) v).orElse(null) : v;
+                Deps.junitConfig(String.valueOf(k), val == null ? null : String.valueOf(val));
+            }
+        } catch (Throwable ignored) {
+            // Platform < 1.9: the system properties and junit-platform.properties are in the key already
+        }
+    }
+
+    static String lifecycleDefault(TestPlan p) {
+        try {
+            Object cp = TestPlan.class.getMethod("getConfigurationParameters").invoke(p);
+            Object v = cp.getClass().getMethod("get", String.class).invoke(cp, "junit.jupiter.testinstance.lifecycle.default");
+            Object val = v instanceof java.util.Optional ? ((java.util.Optional<?>) v).orElse(null) : v;
+            return val == null ? null : String.valueOf(val);
+        } catch (Throwable t) {
+            return System.getProperty("junit.jupiter.testinstance.lifecycle.default");
         }
     }
 
@@ -92,8 +128,54 @@ public class FenvixListener implements TestExecutionListener {
         if (id.isTest()) {
             Det.beginTest(Ids.fromUniqueId(id.getUniqueId(), module), index++);
         } else if (id.getParentId().isPresent()) {
-            Deps.beginContainer(Ids.fromUniqueId(id.getUniqueId(), module));
+            Deps.beginContainer(Ids.fromUniqueId(id.getUniqueId(), module), Det.DEPS && sharedInstance(id));
         }
+    }
+
+    /** Default test instance lifecycle (configuration parameter), read once per plan. */
+    static volatile String lifecycleDefault;
+
+    /**
+     * Whether the tests of a container run on one shared test instance: a Jupiter class with
+     * {@code @TestInstance(PER_CLASS)} (on it, a superclass, an interface or an enclosing class) or
+     * the PER_CLASS default; any class of an engine other than Jupiter and Vintage (TestNG: one
+     * instance per class), or whose class cannot be inspected. Method-level containers
+     * (parameterized templates) share their class's instance: the class container covers them.
+     */
+    static boolean sharedInstance(TestIdentifier id) {
+        Object src = id.getSource().orElse(null);
+        if (!(src instanceof org.junit.platform.engine.support.descriptor.ClassSource)) return false;
+        String u = id.getUniqueId();
+        boolean jupiter = u.startsWith("[engine:junit-jupiter]");
+        boolean vintage = u.startsWith("[engine:junit-vintage]");
+        if (vintage) return false; // JUnit 4: a new instance per test method
+        if (!jupiter) return true;
+        if ("per_class".equalsIgnoreCase(lifecycleDefault)) return true;
+        try {
+            Class<?> c = ((org.junit.platform.engine.support.descriptor.ClassSource) src).getJavaClass();
+            for (Class<?> k = c; k != null; k = k.getEnclosingClass()) {
+                if (perClass(k, new java.util.HashSet<>())) return true;
+            }
+            return false;
+        } catch (Throwable t) {
+            return true; // cannot tell: assume shared
+        }
+    }
+
+    static boolean perClass(Class<?> c, java.util.Set<Class<?>> seen) {
+        if (c == null || c == Object.class || !seen.add(c)) return false;
+        for (java.lang.annotation.Annotation a : c.getDeclaredAnnotations()) {
+            if (a.annotationType().getName().equals("org.junit.jupiter.api.TestInstance")) {
+                try {
+                    Object v = a.annotationType().getMethod("value").invoke(a);
+                    if (String.valueOf(v).equals("PER_CLASS")) return true;
+                } catch (Exception e) {
+                    return true;
+                }
+            }
+        }
+        for (Class<?> i : c.getInterfaces()) if (perClass(i, seen)) return true;
+        return perClass(c.getSuperclass(), seen);
     }
 
     @Override

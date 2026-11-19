@@ -39,7 +39,11 @@ final class JdkHooks implements ClassFileTransformer {
         /** before every LRETURN / ARETURN: value -> Det.m(value). */
         EXIT_VALUE,
         /** at entry: long argument in slot -> Det.m(long) -> back into the slot. */
-        ENTRY_LONG_ARG
+        ENTRY_LONG_ARG,
+        /** before every ARETURN: dup value, Det.m(value, args) (returns void). */
+        EXIT_PEEK_FIRST,
+        /** before every ARETURN: value -> Det.m(value, args) (returns the replacement). */
+        EXIT_FILTER_FIRST
     }
 
     static final class Hook {
@@ -102,9 +106,99 @@ final class JdkHooks implements ClassFileTransformer {
                 Kind.ENTRY, DET, "nioProbe", "(Ljava/nio/file/Path;)V", 1));
         add(new Hook("java/io/UnixFileSystem", "getBooleanAttributes", "(Ljava/io/File;)I", Kind.ENTRY, DET, "fsProbe",
                 "(Ljava/io/File;)V", 1));
-        // classpath resources (capture)
-        add(new Hook("java/lang/ClassLoader", "getResource", "(Ljava/lang/String;)Ljava/net/URL;", Kind.EXIT_PEEK, DEPS, "resource",
-                "(Ljava/lang/String;Ljava/net/URL;)V", 1));
+        // classpath resources (capture): found or not, and every location of getResources (ServiceLoader)
+        add(new Hook("java/lang/ClassLoader", "getResource", "(Ljava/lang/String;)Ljava/net/URL;", Kind.EXIT_PEEK_FIRST, DEPS, "resource",
+                "(Ljava/net/URL;Ljava/lang/ClassLoader;Ljava/lang/String;)V", 0, 1));
+        add(new Hook("java/lang/ClassLoader", "getResources", "(Ljava/lang/String;)Ljava/util/Enumeration;", Kind.EXIT_FILTER_FIRST, DEPS,
+                "resources", "(Ljava/util/Enumeration;Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/util/Enumeration;", 0, 1));
+        // class lookups by name, found or not (capture)
+        add(new Hook("java/lang/Class", "forName", "(Ljava/lang/String;)Ljava/lang/Class;", Kind.ENTRY, DEPS, "classLookup",
+                "(Ljava/lang/String;)V", 0));
+        add(new Hook("java/lang/Class", "forName", "(Ljava/lang/String;ZLjava/lang/ClassLoader;)Ljava/lang/Class;", Kind.ENTRY, DEPS,
+                "classLookup", "(Ljava/lang/String;)V", 0));
+        add(new Hook("java/lang/ClassLoader", "loadClass", "(Ljava/lang/String;)Ljava/lang/Class;", Kind.ENTRY, DEPS, "classLookup",
+                "(Ljava/lang/String;)V", 1));
+        // reflective metadata (capture): the class whose annotations, members or signature are read
+        for (String[] m : new String[][] {
+            {"getAnnotations", "()[Ljava/lang/annotation/Annotation;"},
+            {"getDeclaredAnnotations", "()[Ljava/lang/annotation/Annotation;"},
+            {"getDeclaredFields", "()[Ljava/lang/reflect/Field;"},
+            {"getFields", "()[Ljava/lang/reflect/Field;"},
+            {"getDeclaredField", "(Ljava/lang/String;)Ljava/lang/reflect/Field;"},
+            {"getField", "(Ljava/lang/String;)Ljava/lang/reflect/Field;"},
+            {"getDeclaredMethods", "()[Ljava/lang/reflect/Method;"},
+            {"getMethods", "()[Ljava/lang/reflect/Method;"},
+            {"getDeclaredMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;"},
+            {"getMethod", "(Ljava/lang/String;[Ljava/lang/Class;)Ljava/lang/reflect/Method;"},
+            {"getDeclaredConstructors", "()[Ljava/lang/reflect/Constructor;"},
+            {"getConstructors", "()[Ljava/lang/reflect/Constructor;"},
+            {"getDeclaredConstructor", "([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;"},
+            {"getConstructor", "([Ljava/lang/Class;)Ljava/lang/reflect/Constructor;"},
+            {"getGenericSuperclass", "()Ljava/lang/reflect/Type;"},
+            {"getGenericInterfaces", "()[Ljava/lang/reflect/Type;"},
+            {"getTypeParameters", "()[Ljava/lang/reflect/TypeVariable;"},
+            {"getRecordComponents", "()[Ljava/lang/reflect/RecordComponent;"},
+            {"getDeclaredClasses", "()[Ljava/lang/Class;"},
+            {"getClasses", "()[Ljava/lang/Class;"},
+            {"getInterfaces", "()[Ljava/lang/Class;"},
+            {"getEnclosingMethod", "()Ljava/lang/reflect/Method;"},
+        }) {
+            add(new Hook("java/lang/Class", m[0], m[1], Kind.ENTRY, DEPS, "reflected", "(Ljava/lang/Class;)V", 0));
+        }
+        for (String[] m : new String[][] {
+            {"getAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;"},
+            {"isAnnotationPresent", "(Ljava/lang/Class;)Z"},
+            {"getAnnotationsByType", "(Ljava/lang/Class;)[Ljava/lang/annotation/Annotation;"},
+            {"getDeclaredAnnotation", "(Ljava/lang/Class;)Ljava/lang/annotation/Annotation;"},
+            {"getDeclaredAnnotationsByType", "(Ljava/lang/Class;)[Ljava/lang/annotation/Annotation;"},
+        }) {
+            add(new Hook("java/lang/Class", m[0], m[1], Kind.ENTRY, DEPS, "reflected2", "(Ljava/lang/Class;Ljava/lang/Class;)V", 0, 1));
+        }
+        // annotation types parsed for a class or for the members of a class (their default values)
+        add(new Hook("sun/reflect/annotation/AnnotationParser", "parseAnnotations",
+                "([BLjdk/internal/reflect/ConstantPool;Ljava/lang/Class;)Ljava/util/Map;", Kind.EXIT_PEEK_FIRST, DEPS,
+                "annotationsParsed", "(Ljava/util/Map;Ljava/lang/Class;)V", 2));
+        add(new Hook("sun/reflect/annotation/AnnotationParser", "parseAnnotations",
+                "([BLsun/reflect/ConstantPool;Ljava/lang/Class;)Ljava/util/Map;", Kind.EXIT_PEEK_FIRST, DEPS,
+                "annotationsParsed", "(Ljava/util/Map;Ljava/lang/Class;)V", 2));
+        // reflective static field access (shared state)
+        for (String[] m : new String[][] {{"get", "Ljava/lang/Object;"}, {"getBoolean", "Z"}, {"getByte", "B"}, {"getChar", "C"},
+            {"getShort", "S"}, {"getInt", "I"}, {"getLong", "J"}, {"getFloat", "F"}, {"getDouble", "D"}}) {
+            add(new Hook("java/lang/reflect/Field", m[0], "(Ljava/lang/Object;)" + m[1], Kind.ENTRY, DEPS, "fieldGet",
+                    "(Ljava/lang/reflect/Field;)V", 0));
+        }
+        for (String[] m : new String[][] {{"set", "Ljava/lang/Object;"}, {"setBoolean", "Z"}, {"setByte", "B"}, {"setChar", "C"},
+            {"setShort", "S"}, {"setInt", "I"}, {"setLong", "J"}, {"setFloat", "F"}, {"setDouble", "D"}}) {
+            add(new Hook("java/lang/reflect/Field", m[0], "(Ljava/lang/Object;" + m[1] + ")V", Kind.ENTRY, DEPS, "fieldSet",
+                    "(Ljava/lang/reflect/Field;)V", 0));
+        }
+        String lk = "java/lang/invoke/MethodHandles$Lookup";
+        String mt = "Ljava/lang/invoke/MethodType;";
+        String mh = "Ljava/lang/invoke/MethodHandle;";
+        add(new Hook(lk, "findStatic", "(Ljava/lang/Class;Ljava/lang/String;" + mt + ")" + mh, Kind.ENTRY, DEPS, "lookupFind", "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findVirtual", "(Ljava/lang/Class;Ljava/lang/String;" + mt + ")" + mh, Kind.ENTRY, DEPS, "lookupFind", "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findConstructor", "(Ljava/lang/Class;" + mt + ")" + mh, Kind.ENTRY, DEPS, "lookupFind", "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findSpecial", "(Ljava/lang/Class;Ljava/lang/String;" + mt + "Ljava/lang/Class;)" + mh, Kind.ENTRY, DEPS, "lookupFind",
+                "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findGetter", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)" + mh, Kind.ENTRY, DEPS, "lookupFind",
+                "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findSetter", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)" + mh, Kind.ENTRY, DEPS, "lookupFind",
+                "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findStaticGetter", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)" + mh, Kind.ENTRY, DEPS, "lookupStatic",
+                "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findStaticSetter", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)" + mh, Kind.ENTRY, DEPS, "lookupStatic",
+                "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findStaticVarHandle", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/VarHandle;", Kind.ENTRY,
+                DEPS, "lookupStatic", "(Ljava/lang/Class;)V", 1));
+        add(new Hook(lk, "findVarHandle", "(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/invoke/VarHandle;", Kind.ENTRY,
+                DEPS, "lookupFind", "(Ljava/lang/Class;)V", 1));
+        // inputs the capture cannot see: child processes, native libraries of the project
+        add(new Hook("java/lang/ProcessBuilder", "start", "()Ljava/lang/Process;", Kind.ENTRY, DET, "procStart",
+                "(Ljava/lang/ProcessBuilder;)V", 0));
+        add(new Hook("java/lang/Runtime", "load0", "(Ljava/lang/Class;Ljava/lang/String;)V", Kind.ENTRY, DET, "nativeLoad",
+                "(Ljava/lang/Class;Ljava/lang/String;)V", 1, 2));
+        add(new Hook("java/lang/Runtime", "loadLibrary0", "(Ljava/lang/Class;Ljava/lang/String;)V", Kind.ENTRY, DET, "nativeLoad",
+                "(Ljava/lang/Class;Ljava/lang/String;)V", 1, 2));
         // file timestamps on the virtual clock (code under test only)
         add(new Hook("java/io/File", "lastModified", "()J", Kind.EXIT_VALUE, DET, "mtimeFromReal", "(J)J"));
         add(new Hook("java/io/File", "setLastModified", "(J)Z", Kind.ENTRY_LONG_ARG, DET, "mtimeToReal", "(J)J", 1));
@@ -232,7 +326,14 @@ final class JdkHooks implements ClassFileTransformer {
                 super.visitInsn(op);
                 return;
             }
-            if (op == Opcodes.ARETURN) {
+            if (op == Opcodes.ARETURN && h.kind == Kind.EXIT_PEEK_FIRST) {
+                super.visitInsn(Opcodes.DUP);
+                for (int s : h.slots) super.visitVarInsn(Opcodes.ALOAD, s);
+                super.visitMethodInsn(Opcodes.INVOKESTATIC, h.targetOwner, h.target, h.targetDesc, false);
+            } else if (op == Opcodes.ARETURN && h.kind == Kind.EXIT_FILTER_FIRST) {
+                for (int s : h.slots) super.visitVarInsn(Opcodes.ALOAD, s);
+                super.visitMethodInsn(Opcodes.INVOKESTATIC, h.targetOwner, h.target, h.targetDesc, false);
+            } else if (op == Opcodes.ARETURN) {
                 if (h.kind == Kind.EXIT_FILTER) {
                     if (h.targetDesc.startsWith("(Ljava/io/File;")) {
                         // (this, value): value is on the stack

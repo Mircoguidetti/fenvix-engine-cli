@@ -161,12 +161,22 @@ public final class Lifecycle {
             // none
         }
         StringBuilder cp = new StringBuilder();
-        for (String p : System.getProperty("java.class.path", "").split(File.pathSeparator)) {
-            if (p.contains("fenvix")) continue;
+        for (String p : Deps.classPath()) {
             String k = Deps.norm(p);
             cp.append(k == null ? "tmp" : k).append('\n');
         }
         m.put("classpath", Native.digest(cp.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        // JUnit configuration parameters given as system properties (Gradle systemProperty, Surefire
+        // systemPropertyVariables / argLine -D): read by the runner, so no test records them (R-022 S10)
+        StringBuilder jp = new StringBuilder();
+        for (String k : new TreeSet<>(System.getProperties().stringPropertyNames())) {
+            if (k.startsWith("junit.") || k.startsWith("testng.")) jp.append(k).append('=').append(System.getProperty(k)).append('\n');
+        }
+        m.put("junit.properties", Native.digest(jp.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        // the configuration parameters the JUnit Platform saw (Surefire configurationParameters included)
+        synchronized (Deps.JUNIT_CONFIG) {
+            for (Map.Entry<String, String> e : Deps.JUNIT_CONFIG.entrySet()) m.put("junit.config:" + e.getKey(), e.getValue());
+        }
         m.put("build", System.getProperty("fenvix.config", ""));
         return m;
     }

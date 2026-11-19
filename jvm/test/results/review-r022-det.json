@@ -1,0 +1,81 @@
+[
+ {
+  "check": "iso-maven",
+  "ok": true,
+  "detail": {
+   "without_det": {
+    "rd.IsoATest::strict()": "passed",
+    "rd.IsoBTest::lenient()": "passed"
+   },
+   "det": [
+    {
+     "rd.IsoATest::strict()": "passed",
+     "rd.IsoBTest::lenient()": "passed"
+    },
+    {
+     "rd.IsoATest::strict()": "passed",
+     "rd.IsoBTest::lenient()": "passed"
+    }
+   ]
+  }
+ },
+ {
+  "check": "iso-gradle",
+  "ok": true,
+  "detail": {
+   "without_det": {
+    "rd.IsoATest::strict()": "passed",
+    "rd.IsoBTest::lenient()": "passed"
+   },
+   "det": [
+    {
+     "rd.IsoATest::strict()": "passed",
+     "rd.IsoBTest::lenient()": "passed"
+    },
+    {
+     "rd.IsoATest::strict()": "passed",
+     "rd.IsoBTest::lenient()": "passed"
+    }
+   ]
+  }
+ },
+ {
+  "check": "method-ref-clock",
+  "ok": true,
+  "detail": {
+   "det_outcomes": [
+    "passed",
+    "passed"
+   ]
+  }
+ },
+ {
+  "check": "method-ref-random",
+  "ok": true,
+  "detail": {
+   "values_in_two_det_runs": [
+    "8218845724713499133",
+    "8218845724713499133"
+   ]
+  }
+ },
+ {
+  "check": "sleep-past-timer",
+  "ok": true,
+  "detail": {
+   "det_outcomes": [
+    "passed",
+    "passed"
+   ]
+  }
+ },
+ {
+  "check": "junit4-surefire-2.17",
+  "ok": true,
+  "detail": {
+   "not_passed": {},
+   "tests_in_trace": 2,
+   "expected_in_trace": 2
+  }
+ }
+]
