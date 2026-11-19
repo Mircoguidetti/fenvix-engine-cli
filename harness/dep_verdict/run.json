@@ -1,8 +1,8 @@
 {
- "run_id": "dv9",
+ "run_id": "dv10",
  "ci": false,
  "plan": "harness/dep_verdict/plan-report2.json",
- "note": "REPORT-3: the same 130 pairs and test files with the R-020b fixes (N1 shared files, N2 RECORD paths outside site-packages, N3/O2 existence checks), engine 3e19642; all 10 repositories on Actions. dv8 (engine 8b5a1d8) cancelled: existence checks of paths the session itself created were keyed.",
+ "note": "REPORT-3: the same 130 pairs and test files with the R-020b fixes (N1 shared files, N2 RECORD paths outside site-packages, N3/O2 existence checks), engine 5bfbfeb; all 10 repositories on Actions. dv8 and dv9 cancelled (engine changes before they ran: session-created paths, existence-check compaction).",
  "pairs": [
   {
    "spec": "airflow",
