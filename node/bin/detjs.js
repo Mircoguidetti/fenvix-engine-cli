@@ -4,7 +4,8 @@
 //   detjs vitest [--det [--det-seed=N] ...] [vitest args]
 //   detjs jest   [--det [--det-seed=N] ...] [jest args]
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
-const USAGE = `usage: detjs vitest|jest [--det options] [runner args]
+const RUNNER_SHELLS = new Set(['tap', 'ava', 'jasmine', 'uvu']);
+const USAGE = `usage: detjs vitest|jest|tap|ava|jasmine|uvu [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs --det-help`;
 
@@ -12,6 +13,7 @@ async function main(argv) {
   const [cmd, ...rest] = argv;
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
+  if (RUNNER_SHELLS.has(cmd)) return require(`../src/runners/${cmd}`).main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
     const paths = rest.filter((a) => !a.startsWith('--'));

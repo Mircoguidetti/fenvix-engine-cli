@@ -6,7 +6,7 @@
 const path = require('node:path');
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format)[\\/]/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|tap|@tapjs|tap-parser|tap-yaml|tcompare|async-hook-domain|ava|@ava|emittery|p-map|currently-unhandled|jasmine|jasmine-core|@jasminejs|uvu|sade|kleur)[\\/]/;
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
 let root = process.cwd();
