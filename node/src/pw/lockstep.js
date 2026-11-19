@@ -483,7 +483,7 @@ class Coordinator {
           // A micro-slice can start a navigation (the page sets location): its document waits in the queue and
           // Chromium suspends the page until it arrives, so the slice ends after the engine released it.
           const mto = p.pageT + this.microMs * NS;
-          const b = Promise.all([this.runWorkers(mto), this.budget(p, mto)]);
+          const b = Promise.all([this.runWorkers(mto, { deferAfterMs: 50 }), this.budget(p, mto, { deferAfterMs: 50 })]);
           while (await Promise.race([b.then(() => true), realSleep(2).then(() => false)]) === false) {
             if (p.navs > 0 || this.navPending.length) break;
           }
@@ -524,7 +524,7 @@ class Coordinator {
       try { m = JSON.parse(e.message); } catch { return; }
       const w = this.workerCtl.workers.get(e.sessionId);
       if (m.id && this.workerCtl.waiters.has(m.id)) { const r = this.workerCtl.waiters.get(m.id); this.workerCtl.waiters.delete(m.id); r(m); return; }
-      if (w && m.method === 'Emulation.virtualTimeBudgetExpired' && w.expired) { const r = w.expired; w.expired = null; w.inBudget = false; r(); activity(); this.poke(); }
+      if (w && m.method === 'Emulation.virtualTimeBudgetExpired') { w.inBudget = false; w.waitingEngine = false; if (w.expired) { const r = w.expired; w.expired = null; r(); } activity(); this.poke(); }
     });
     bs.on('Target.targetCreated', (e) => { const t = e.targetInfo; if (t && /^(worker|shared_worker)$/.test(t.type)) this.attachWorker(t.targetId).catch(() => {}); });
     bs.on('Target.targetDestroyed', (e) => {
@@ -564,13 +564,13 @@ class Coordinator {
   }
 
   /** Bring every worker to toNs (after a page slice). */
-  async runWorkers(toNs) {
+  async runWorkers(toNs, opt = {}) {
     const wc = this.workerCtl;
     if (!wc || !wc.workers.size) return;
-    await Promise.all([...wc.workers.values()].map((w) => this.runWorker(w, toNs)));
+    await Promise.all([...wc.workers.values()].map((w) => this.runWorker(w, toNs, opt)));
   }
 
-  async runWorker(w, toNs) {
+  async runWorker(w, toNs, opt = {}) {
     {
       if (w.closed || w.inBudget) return;
       const budget = (toNs - w.pageT) / NS;
@@ -582,7 +582,7 @@ class Coordinator {
       if (!ok || ok.error) { w.inBudget = false; w.expired = null; return; }
       await this.awaitSlice(expired, () => w.closed, (v) => { w.waitingEngine = v; }, () => {
         this.trace('stall worker budget'); w.inBudget = false; w.expired = null;
-      });
+      }, opt.deferAfterMs);
     }
   }
 
@@ -599,6 +599,7 @@ class Coordinator {
     cdp.on('Emulation.virtualTimeBudgetExpired', () => {
       if (!p.inBudget) return;
       p.inBudget = false;
+      p.waitingEngine = false;
       const r = p.expired; p.expired = null;
       if (r) r();
       activity();
@@ -755,7 +756,7 @@ class Coordinator {
     } finally { ACT.ownDepth--; }
   }
 
-  async budget(p, toNs) {
+  async budget(p, toNs, opt = {}) {
     const budget = (toNs - p.pageT) / NS;
     if (budget <= 0) return;
     p.pageT = toNs;
@@ -769,9 +770,9 @@ class Coordinator {
       p.inBudget = false; p.closed = true; this.pages.delete(p); return;
     }
     ACT.ownDepth--;
-    await this.awaitSlice(expired, () => p.closed || p.blockers.size > 0, (v) => { p.waitingEngine = v; }, () => {
+    return this.awaitSlice(expired, () => p.closed || p.blockers.size > 0, (v) => { p.waitingEngine = v; }, () => {
       this.trace(`stall budget ${budget}ms`); p.inBudget = false; p.expired = null;
-    });
+    }, opt.deferAfterMs);
   }
 
   /** Something the engine holds can keep a slice from ending (a request of the page or of its workers, which
@@ -780,17 +781,21 @@ class Coordinator {
     return this.sched.pending() > 0 || this.holds.length > 0 || this.responses.length > 0 || this.inprogress.size > 0 || ACT.routes > 0;
   }
 
-  async awaitSlice(expired, legit, setWaiting, onStall) {
+  async awaitSlice(expired, legit, setWaiting, onStall, deferAfterMs) {
     let since = realNow();
+    const t0 = since;
     let done = false;
+    let waiting = false;
     expired.then(() => { done = true; });
     while (!done) {
       await Promise.race([expired, realSleep(10)]);
       if (done) break;
       if (legit() || this.engineWork()) {
-        setWaiting(true);
+        // Called from inside a delivery (micro-slices): the engine cannot act until we return, so the slice is
+        // left open (the page counts as waiting for the engine) instead of waited for.
+        if (deferAfterMs !== undefined && realNow() - t0 > deferAfterMs) { setWaiting(true); return 'deferred'; }
+        if (!waiting) { waiting = true; setWaiting(true); this.poke(); }
         since = realNow();
-        activity(); this.poke();
         continue;
       }
       if (realNow() - since > this.serverMaxMs) { this.stats.stalls++; onStall(); break; }
