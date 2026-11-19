@@ -12,7 +12,9 @@ tables: `harness/node_cache/results/r*/` (`python3 harness/node_cache/aggregate.
 * **Skip with proof now exists in the product for JS/TS**: `detjs vitest|jest --det --det-cache=DIR|https://…`
   reuses test-file results with proof (same Rust proof core, receipts and shared cache service as
   `pytest --det --det-cache`). On GitHub Actions it was checked against a fresh run at the same commit for every
-  reuse: **0 wrong in 449,270 verified reuses** across five repositories (MEASURED, below).
+  reuse: **0 wrong in 449,270 verified reuses** across five repositories (MEASURED, below; 431,029 test results and
+  18,241 file-level entries, each compared by outcome only, so a reused `skipped` result always verifies; corrected
+  by review r021).
 * **Share of test time skipped with proof** (MEASURED, GitHub Actions, per transition = one commit after another,
   priced with each file's duration in the fresh run; median / mean):
 
@@ -31,10 +33,12 @@ tables: `harness/node_cache/results/r*/` (`python3 harness/node_cache/aggregate.
   0.20), vue-core **25 s vs 64 s** (0.38). Warm rerun of an unchanged tree: vue-core 1.2 s (185/185 files reused),
   docusaurus 11–12 s (194–195 of 206–207), TanStack Query 40–60 s (161–162 of 179–180; 78 type-test files and 27
   `vmThreads` files always run).
-* **Overhead** (MEASURED, Actions, 4 vCPU): the cold capture run costs **+6% (vue-core) to +13% (docusaurus)** over a
-  serial `detjs --det` run without cache (TanStack +8–11%, React Native and Lexical ≤ +2%); serial Level 0 itself is
-  1.7–2.1× the project's own parallel command (React Native: 30×, from `dev-middleware`, below). Runtime identity:
-  0.2–3 s per session (memoised; up to 108,610 installed files / 1.6 GB).
+* **Overhead** (MEASURED, Actions, 4 vCPU, every measured row of r1/r3/r4/r5; corrected by review r021): the cold
+  capture run costs **+6% (vue-core) to +14% (docusaurus)** over a serial `detjs --det` run without cache (vue-core
+  +5.7% to +9.6%, docusaurus +9.0% to +13.9%; TanStack +7–16%, i.e. +6.7% to +16.4%; React Native ≤ +0.6%, Lexical
+  ≤ +2.4%); serial Level 0 itself is 1.65–2.15× the project's own parallel command (React Native: 30×, from
+  `dev-middleware`, below). Runtime identity: 0.2–3 s per session (memoised; up to 220,327 installed files / 3.47 GB,
+  TanStack Query r4/r5 commit 44; 171,316 / 2.72 GB at its commit 0).
 * **Nx** skips about as much as detjs on TanStack Query at the median (92% vs 91%) and more on average (69% vs 61%:
   release commits and repository-wide configuration edits rerun everything in detjs). It skips more where detjs
   cannot cache (React Native, Lexical), and much less on single-package repositories (docusaurus: 26% vs 88%),
@@ -119,7 +123,8 @@ Transitions that rerun everything, by reason (MEASURED, from each run's miss rea
   rule (a start-up read made for one project's configuration only) is the next step; it needs to tell apart why a
   file was read at start-up (one project's configuration vs `globalSetup` or a plugin acting on every project), so it
   was not rushed into this run.
-* React Native 5 of 9: one dependency bump (36), and four times (the first transition of each shard, and 37 after
+* React Native 5 of 9: one transition whose recorded miss reason is `config`, not `runtime` (36; most likely a root
+  `package.json` change; named as measured after review r021), and four times (the first transition of each shard, and 37 after
   the install at 36) the harness's fallback
   `yarn install` (used when `--frozen-lockfile` fails) had rewritten `yarn.lock`, and the next checkout restored it.
   The engine correctly keyed the changed lockfile (only the `lockfiles` part differed, installed packages were

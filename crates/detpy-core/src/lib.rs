@@ -14,6 +14,7 @@
 pub mod backend;
 pub mod cache;
 pub mod cassette;
+pub mod deps;
 pub mod event;
 pub mod fingerprint;
 pub mod order;

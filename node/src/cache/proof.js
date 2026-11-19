@@ -45,6 +45,12 @@ const UNCACHEABLE = {
   entropy: 'os entropy (not controlled; use --det-urandom)',
   'env-unobserved': 'environment reads not observable in this process',
   machine: 'reads a machine fact that changes between calls',
+  stat: 'reads file metadata that is not keyed (times, inode, owner)',
+  statfs: 'reads file system statistics',
+  watch: 'watches the file system',
+  sqlite: 'opens an SQLite database that cannot be keyed by its path',
+  resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
+  'import-glob': 'an import.meta.glob call that cannot be keyed',
 };
 
 function digest(x) {
@@ -218,6 +224,20 @@ class ProofSession {
         fs.mkdirSync(path.join(this.root, '.detjs'), { recursive: true });
         fs.writeFileSync(path.join(this.root, '.detjs', `cache-config-${process.env.DETJS_CACHE_DEBUG}.json`), JSON.stringify(parts, null, 1));
       }
+      this.digests();
+    });
+  }
+
+  /** A configuration part every file is keyed by, known only once the runner found its files (Jest's mocks). */
+  addGlobalPart(name, value) {
+    this.quiet(() => {
+      this.configParts[name] = typeof value === 'string' ? value : digest(value);
+      if (this.configDigest !== undefined) this.digests();
+    });
+  }
+
+  digests() {
+    {
       const keys = Object.keys(this.configParts).sort();
       this.configDigest = digest(keys.map((k) => [k, this.configParts[k]]));
       // Per project: a test file runs with its own project's resolved configuration and the global parts (detjs,
@@ -231,7 +251,7 @@ class ProofSession {
         if (keys.some((x) => x.startsWith(`${k}#`))) continue;
         this.projectConfig.set(name, digest(['project', global, this.configParts[k]]));
       }
-    });
+    }
   }
 
   /** The configuration digest a file of `project` is keyed by. */
@@ -401,7 +421,7 @@ class ProofSession {
     const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(curEnv[name] ?? null));
     // global (main process) inputs: start-up reads by anyone minus the test files themselves, plus user code's
     // reads during the run
-    const global = CAPTURE.global.filter((it) => !(it[0] === 'data' && it[3] === 'infra' && this.specKeys.has(it[1])));
+    const global = CAPTURE.global.filter((it) => !(it[0] === 'data' && (it[3] === 'infra' || it[3] === 'plugin') && this.specKeys.has(it[1])));
     // writers of this session and of earlier sessions
     const writers = new Map();
     const addW = (k, l) => { let s = writers.get(k); if (!s) writers.set(k, (s = new Set())); s.add(l); };

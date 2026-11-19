@@ -93,7 +93,17 @@ function makeRunner(Base) {
       if (CAP) CAP.setCtx('f', project ? `${project}|${fileId}` : fileId);
     }
 
+    /** Failed module fetches and the mocker's `__mocks__` lookups of this file's module runner (cache capture). */
+    __hookModules() {
+      if (!CAP) return;
+      const mr = this.moduleRunner;
+      const root = (this.config && this.config.root) || this.__det.root;
+      CAP.hookModuleRunner(mr, [root]);
+      CAP.hookVitestMocker((mr && mr.mocker) || globalThis.__vitest_mocker__);
+    }
+
     async onBeforeCollect(paths) {
+      if (this.__det.active) this.__hookModules();
       if (this.__det.active && paths && paths.length) {
         const p = typeof paths[0] === 'string' ? paths[0] : paths[0].filepath;
         this.__open(p, this.config.name);
@@ -129,6 +139,7 @@ function makeRunner(Base) {
     }
 
     async onBeforeRunSuite(suite) {
+      if (this.__det.active) this.__hookModules();
       if (this.__det.active && suite.type !== 'test' && suite.file === suite) this.__open(suite.filepath, this.config.name);
       if (super.onBeforeRunSuite) await super.onBeforeRunSuite(suite);
     }

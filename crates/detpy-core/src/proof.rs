@@ -25,6 +25,7 @@
 //! file is compared at the level of its units and skeleton (facts supplied by
 //! the producer for changed files only).
 
+use crate::deps;
 use crate::fingerprint::digest_bytes;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -80,7 +81,8 @@ pub struct Entry {
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
-    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
+    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
+    /// [`crate::deps`] ("m:", "r:", "e:", "t:", "c:"), "l:", "p:", "g:".
     pub data: Vec<(String, String)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -203,12 +205,22 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
-    } else if recorded.starts_with("l:") {
+    } else if recorded.starts_with("l:") || recorded.starts_with("L:") {
         link_dep(path)
     } else if recorded.starts_with("p:") {
         package_resolution_digest(path).map(|d| format!("p:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("g:") {
         stem_listing_digest(path).map(|d| format!("g:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("m:") {
+        deps::stat_meta_digest(path).map(|d| format!("m:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("r:") {
+        deps::realpath_digest(path).map(|d| format!("r:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("e:") {
+        deps::typed_listing_digest(path).map(|d| format!("e:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("t:") {
+        deps::tree_listing_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("c:") {
+        deps::copy_tree_digest(path).map(|d| format!("c:{d}")).unwrap_or_else(|| "missing".into())
     } else {
         "unknown".into()
     }
@@ -278,15 +290,48 @@ pub fn stem_listing_digest(path: &Path) -> Option<String> {
     Some(digest_bytes(&names.join(&b'\0')).short())
 }
 
-/// Dependency string of a symbolic link's target text (`readlink`): "l:<digest>", "s:<kind>" when the path is not
-/// a link (follows nothing), "missing" when it does not exist.
+/// Dependency string of a symbolic link's target text (`readlink`, `lstat`): "l:<digest>", "L:<kind>" when the
+/// path is not a link (its own kind, no link followed), "missing" when it does not exist. A non-link is not
+/// recorded as "s:<kind>": that kind follows links, so a regular file replaced by a link to a file would not
+/// change it (review r021 F1c).
 pub fn link_dep(path: &Path) -> String {
     match fs::read_link(path) {
         Ok(t) => format!("l:{}", digest_bytes(&os_bytes(t.as_os_str())).short()),
         Err(_) => match fs::symlink_metadata(path) {
-            Ok(_) => format!("s:{}", stat_kind(path)),
+            Ok(m) => format!(
+                "L:{}",
+                if m.file_type().is_symlink() {
+                    "link"
+                } else if m.is_file() {
+                    "file"
+                } else if m.is_dir() {
+                    "dir"
+                } else {
+                    "other"
+                }
+            ),
             Err(_) => "missing".into(),
         },
+    }
+}
+
+#[cfg(all(test, unix))]
+mod link_tests {
+    use super::*;
+
+    #[test]
+    fn file_replaced_by_link_changes_link_dep() {
+        let d = tempfile::tempdir().unwrap();
+        fs::write(d.path().join("t"), "x").unwrap();
+        let p = d.path().join("e");
+        fs::write(&p, "x").unwrap();
+        let a = link_dep(&p);
+        assert_eq!(a, "L:file");
+        assert_eq!(data_now(&p, &a), a);
+        fs::remove_file(&p).unwrap();
+        std::os::unix::fs::symlink("t", &p).unwrap();
+        assert_ne!(data_now(&p, &a), a);
+        assert!(data_now(&p, &a).starts_with("l:"));
     }
 }
 

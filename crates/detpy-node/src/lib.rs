@@ -620,3 +620,43 @@ pub fn tree_digest(
     );
     serde_json::to_string(&d).map_err(|e| bad(e.to_string()))
 }
+
+// Dependency kinds of review r021 (detpy_core::deps): stat metadata, realpath, typed / recursive listings, copies.
+
+#[napi]
+pub fn stat_meta_digest(path: String) -> Option<String> {
+    detpy_core::deps::stat_meta_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn realpath_digest(path: String) -> Option<String> {
+    detpy_core::deps::realpath_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn typed_listing_digest(path: String) -> Option<String> {
+    detpy_core::deps::typed_listing_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn tree_listing_digest(path: String) -> Option<String> {
+    detpy_core::deps::tree_listing_digest(std::path::Path::new(&path))
+}
+
+#[napi]
+pub fn copy_tree_digest(path: String) -> Option<String> {
+    detpy_core::deps::copy_tree_digest(std::path::Path::new(&path))
+}
+
+#[napi(object)]
+pub struct GlobBaseJs {
+    pub dir: String,
+    pub recursive: bool,
+}
+
+/// Base directories of the `import.meta.glob` calls of a module source; null when one cannot be read soundly.
+#[napi]
+pub fn import_glob_bases(source: Buffer) -> Option<Vec<GlobBaseJs>> {
+    detpy_core::deps::import_glob_bases(&source)
+        .map(|v| v.into_iter().map(|g| GlobBaseJs { dir: g.dir, recursive: g.recursive }).collect())
+}

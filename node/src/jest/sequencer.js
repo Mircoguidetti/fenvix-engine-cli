@@ -29,6 +29,21 @@ class DetSequencer extends Base {
     const pc = globalThis[Symbol.for('detjs.cache.session')];
     if (pc) {
       if (!tests.length) pc.noTestsFound = true;
+      // Jest applies a `__mocks__` file found anywhere under the roots (a root `__mocks__/<package>.js` replaces an
+      // installed package without any jest.mock call): the mocks Jest's crawl found are an input of every file
+      // (review r021 F7)
+      const mocks = new Map();
+      for (const t of tests) {
+        const ctx = t.context;
+        if (!ctx || !ctx.config || mocks.has(ctx.config)) continue;
+        let list = null;
+        try {
+          const raw = ctx.moduleMap && typeof ctx.moduleMap.getRawModuleMap === 'function' ? ctx.moduleMap.getRawModuleMap() : null;
+          if (raw && raw.mocks) list = [...raw.mocks.entries()].map(([k, v]) => [k, path.relative(root, v).split(path.sep).join('/')]).sort();
+        } catch { /* below */ }
+        mocks.set(ctx.config, list === null ? `unknown ${Date.now()}` : list);
+      }
+      pc.addGlobalPart('jest-mocks', [...mocks.values()].map((x) => JSON.stringify(x)).sort());
       const skip = await pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: k.project, key: k.key })));
       ordered = ordered.filter((k) => !skip.has(k.key));
     }

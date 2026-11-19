@@ -31,10 +31,22 @@ const ENGINE_DIR = path.resolve(__dirname, '..', '..') + path.sep; // node/
 // detjs' own driver code (runner shells, session, cache): infrastructure; its wrappers of patched APIs are not
 const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest)[\\/]|[\\/]src[\\/](?:session|controls|register)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
 const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman)[\\/]/;
+const ENGINE_OWN = /^(?:src|bin|node_modules|scripts)(?:[\\/]|$)|^package(?:-lock)?\.json$|^detjs\.[^\\/]+\.node$/;
 // a Vite config bundled to a temporary module (it is user code: `vitest.config.ts.timestamp-<n>-<hash>.mjs`)
 const BUNDLED_CONFIG = /\.timestamp-\d+(?:-[0-9a-f]+)?\.m?[jt]s$/;
 const OWN_ENV = /^(DETJS($|_)|FENVIX_CACHE_)/;
 const O_ACC = fs.constants.O_RDONLY | fs.constants.O_WRONLY | fs.constants.O_RDWR;
+
+// dependency kinds computed by the core (crates/detpy-core/src/deps.rs): stat metadata (size, permission bits),
+// realpath target, listing with entry types, recursive listing, copied tree
+const KINDS = { m: 'statMetaDigest', r: 'realpathDigest', e: 'typedListingDigest', t: 'treeListingDigest', c: 'copyTreeDigest' };
+// fields of a Stats object: `size` and `mode` are keyed (`m:`); the others change with every checkout or machine
+// (times, inode, device, owner, block counts) and cannot be keyed: a test that reads them is not cached
+const STAT_KEYED = new Set(['size', 'mode']);
+const STAT_VOLATILE = new Set(['dev', 'ino', 'nlink', 'uid', 'gid', 'rdev', 'blksize', 'blocks', 'atimeMs', 'mtimeMs', 'ctimeMs',
+  'birthtimeMs', 'atimeNs', 'mtimeNs', 'ctimeNs', 'birthtimeNs', 'atime', 'mtime', 'ctime', 'birthtime']);
+const RUNNER_FN = /^findSiblingsWithFileExtension$/;
+const RELATIVE_SPEC = /^\.{1,2}(\/|$)/;
 
 const MACHINE = {
   hostname: () => os.hostname(),
@@ -108,6 +120,8 @@ class Capture {
     this.modsSeen = new Set();
     this.pkgMemo = new Map();
     this.nativeLoads = new Set();
+    this.fdPaths = new Map(); // descriptor -> path it was opened for
+    this.cpInFlight = 0; // asynchronous cp calls running (their internal fs calls are not the caller's reads)
     this.busy = 0;
     this.tests = [];
     this.fileStart = 0;
@@ -151,6 +165,7 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installNodeReaders(this);
     installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
     require('node:module').syncBuiltinESMExports();
@@ -165,6 +180,7 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installNodeReaders(this);
     require('node:module').syncBuiltinESMExports();
   }
 
@@ -205,7 +221,9 @@ class Capture {
     if (this.nmReal && abs.startsWith(this.nmReal)) return 'skip';
     if (abs.includes(`${path.sep}node_modules${path.sep}.detjs${path.sep}`)) return 'skip';
     if (abs.startsWith('/proc/') || abs.startsWith('/sys/') || abs.startsWith('/dev/') || abs === '/proc' || abs === '/sys') return 'proc';
-    if (abs.startsWith(ENGINE_DIR)) return 'skip'; // detjs itself: in the configuration digest
+    // detjs itself (its sources, native core and the packages it runs with): in the configuration digest; other
+    // paths below its directory (scratch directories of its own tests) are files like any other
+    if (abs.startsWith(ENGINE_DIR) && ENGINE_OWN.test(abs.slice(ENGINE_DIR.length))) return 'skip';
     return 'outside';
   }
 
@@ -243,6 +261,66 @@ class Capture {
     // calls fs has its own frame on the stack, so such chains are the runner's (Vitest's async cleanup); in a test
     // process they may be a library working for the test, so they count
     return infra || this.role === 'main' ? 'infra' : 'user';
+  }
+
+  /** 'user' | 'infra' from the first frame outside Node and detjs' capture: the code doing the access itself. */
+  directCaller() {
+    const E = Error;
+    const pp = E.prepareStackTrace;
+    const lim = E.stackTraceLimit;
+    E.prepareStackTrace = structured;
+    E.stackTraceLimit = 30;
+    const h = {};
+    try {
+      E.captureStackTrace(h, this.directCaller);
+      // eslint-disable-next-line no-unused-expressions
+      h.stack;
+    } finally {
+      E.prepareStackTrace = pp;
+      E.stackTraceLimit = lim;
+    }
+    const frames = Array.isArray(h.stack) ? h.stack : [];
+    // runner code that reads metadata only to word an error (Jest lists a missing module's siblings with `glob`)
+    if (frames.some((cs) => RUNNER_FN.test((cs.getFunctionName && cs.getFunctionName()) || '') && INFRA.test(cs.getFileName() || ''))) return 'infra';
+    for (const cs of frames) {
+      let f = cs.getFileName && cs.getFileName();
+      if (!f) continue;
+      if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { continue; } }
+      // Node's own fs internals (cp, glob, ...) read Stats fields for their own checks
+      if (f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/')) return 'infra';
+      if (f.startsWith('node:') || f.startsWith('internal/') || !f.includes('/')) continue;
+      if (f.startsWith(SHELL_DIR) && !DETJS_DRIVER.test(f)) continue;
+      if (f.startsWith(ENGINE_DIR) && DETJS_DRIVER.test(f)) return 'infra';
+      return INFRA.test(f) ? 'infra' : 'user';
+    }
+    return 'user';
+  }
+
+  /** A frame of installed code that is neither runner nor bundler infrastructure nor Node: a third-party plugin. */
+  pluginFrame() {
+    const E = Error;
+    const pp = E.prepareStackTrace;
+    const lim = E.stackTraceLimit;
+    E.prepareStackTrace = structured;
+    E.stackTraceLimit = 60;
+    const h = {};
+    try {
+      E.captureStackTrace(h, this.pluginFrame);
+      // eslint-disable-next-line no-unused-expressions
+      h.stack;
+    } finally {
+      E.prepareStackTrace = pp;
+      E.stackTraceLimit = lim;
+    }
+    for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+      let f = cs.getFileName && cs.getFileName();
+      if (!f) continue;
+      if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { continue; } }
+      if (f.startsWith('node:') || f.startsWith('internal/') || !f.includes('/')) continue;
+      if (f.startsWith(ENGINE_DIR) && ENGINE_OWN.test(f.slice(ENGINE_DIR.length))) continue;
+      if (f.includes(`${path.sep}node_modules${path.sep}`) && !INFRA.test(f)) return true;
+    }
+    return false;
   }
 
   // -- logging -------------------------------------------------------------------------------------------------
@@ -287,10 +365,23 @@ class Capture {
         d = `s:${native.statKind(abs)}`;
       } else if (kind === 'l') {
         d = native.linkDep(abs);
+      } else if (KINDS[kind]) {
+        const x = native[KINDS[kind]](abs);
+        d = x !== null && x !== undefined ? `${kind}:${x}` : 'missing';
       }
       this.memo.set(k, d);
     }
     return d;
+  }
+
+  /** Whether Node's own asynchronous `cp` is the caller (it is keyed as a whole: source tree, copied outputs). */
+  inNodeCp() {
+    const E = Error;
+    const lim = E.stackTraceLimit;
+    E.stackTraceLimit = 40;
+    let st;
+    try { st = new E().stack || ''; } finally { E.stackTraceLimit = lim; }
+    return st.includes('internal/fs/cp/');
   }
 
   /** A read of `p` (kind f content, d listing, s existence, l link target). */
@@ -300,6 +391,7 @@ class Capture {
     if (abs === null) return;
     this.busy++;
     try {
+      if (this.cpInFlight > 0 && this.inNodeCp()) return;
       const w = this.where(abs);
       if (w === 'skip') return;
       const global = this.isGlobal;
@@ -318,6 +410,13 @@ class Capture {
         // tests see are inputs (Vitest: file contents and missing paths in the project, whoever reads them,
         // except the test modules themselves, removed at the end)
         const user = this.caller() === 'user';
+        if (!user && this.mainAnyReads && w === 'root' && this.pluginFrame()) {
+          // a third-party Vite plugin (not runner infrastructure) reading project files or listing project
+          // directories, at start-up or while it transforms modules for the tests: its output can depend on what it
+          // read, so that is an input of every file (review r021, F6: transforms other than import.meta.glob)
+          this.add(['data', this.key(abs), this.dep(kind, abs), 'plugin'], true);
+          return;
+        }
         if (!user) {
           // start-up (configuration, globalSetup): the contents of project files and the paths probed and found
           // missing; during the run, only missing probes (a file created later could shadow a resolved module)
@@ -329,9 +428,9 @@ class Capture {
           this.add(['data', this.key(abs), d, 'infra'], true);
           return;
         }
-      } else if (w === 'outside' && this.caller() !== 'user') {
-        return;
       }
+      // test processes: every read outside the project counts, whoever calls (a library on the INFRA list may be
+      // working for the test, and after an await its frames are the only ones on the stack: review r021 F8)
       const writers = this.written.get(abs);
       if (writers) {
         // a file this process wrote: an output of the writer, not an input; another file's output is a hidden
@@ -361,11 +460,193 @@ class Capture {
       s.add(global ? '' : this.label);
       if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
       this.add(['write', this.key(abs)], global);
-      for (const k of ['f', 'd', 's', 'l']) this.memo.delete(k + abs);
+      for (const k of ['f', 'd', 's', 'l', 'm', 'e']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
+      this.memo.delete(`e${path.dirname(abs)}`);
+      // realpaths, trees and copies depend on paths below or through `abs`
+      for (const k of this.memo.keys()) if (k[0] === 'r' || k[0] === 't' || k[0] === 'c') this.memo.delete(k);
     } finally {
       this.busy--;
     }
+  }
+
+  /** Every path of the tree at `p` (after a copy or a rename) is an output of the caller. */
+  wroteTree(p) {
+    if (!this.active || this.busy) return;
+    const abs = toPath(p);
+    if (abs === null) return;
+    const all = [abs];
+    this.busy++;
+    try {
+      const walk = (d, depth) => {
+        if (depth > 64) return;
+        let ents;
+        try { ents = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
+        for (const e of ents) {
+          const x = path.join(d, e.name);
+          all.push(x);
+          if (e.isDirectory()) walk(x, depth + 1);
+        }
+      };
+      walk(abs, 0);
+    } finally {
+      this.busy--;
+    }
+    for (const x of all) this.wrote(x);
+  }
+
+  /**
+   * The path whose metadata a Stats object returned to the code describes, when it is an input (null otherwise):
+   * the fields read from that object are then keyed (`size`, `mode`) or make the test not cacheable (times, ...).
+   */
+  statTarget(p) {
+    if (!this.active || this.busy || this.isGlobal) return null;
+    const abs = toPath(p);
+    if (abs === null) return null;
+    const w = this.where(abs);
+    return w === 'root' || w === 'outside' ? abs : null;
+  }
+
+  /** A field of a Stats object of `abs` was read. */
+  statField(abs, field) {
+    if (!this.active || this.busy) return;
+    if (STAT_KEYED.has(field)) {
+      this.read(abs, 'm');
+    } else if (STAT_VOLATILE.has(field)) {
+      this.busy++;
+      let infra;
+      try { infra = this.directCaller() === 'infra'; } finally { this.busy--; }
+      // runner and transpiler internals read them for their own caches and fix-ups (Babel's configuration cache,
+      // Jest's transform cache key, graceful-fs' uid/gid polyfill), whoever called them: the code reading the field
+      // decides
+      if (infra) return;
+      if (process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: stat field ${field} of ${abs}\n${new Error().stack}\n`);
+      this.flag('stat', `${this.key(abs)} .${field}`);
+    }
+  }
+
+  /** A dependency of kind `kind` on `abs`, whoever reads (resolution facts: the stem listing `g:`). */
+  addDep(abs, dep) {
+    this.add(['data', this.key(abs), dep], this.isGlobal);
+  }
+
+  stemDep(dir, base) {
+    const k = path.join(dir, base);
+    const x = native.stemListingDigest(k);
+    this.add(['data', this.key(k), x === null || x === undefined ? 'missing' : `g:${x}`], this.isGlobal);
+  }
+
+  /**
+   * A module specifier that could not be resolved (a caught `import()` / `require()` of an optional module): what
+   * would make it resolve is an input (review r021 F5). Relative and absolute specifiers: the target's stem listing
+   * (any extension, a directory of that name), its content and its listing if it is a directory. Bare specifiers
+   * from installed packages: the runtime identity. Bare specifiers from project code (aliases, tsconfig paths, module
+   * directories, self-references): not keyed here, the test is not cached.
+   * `opts.roots`: directories an absolute URL may be relative to (the Vite root); `opts.mapped`: a module name
+   * mapper matched the specifier (its target is not known here).
+   */
+  resolveFailed(spec, parent, opts = {}) {
+    if (!this.active || this.busy || typeof spec !== 'string' || !spec) return;
+    let s = spec.split(/[?#]/)[0];
+    if (s.startsWith('node:') || require('node:module').isBuiltin(s)) return; // the runtime identity
+    if (s.startsWith('file:')) { try { s = url.fileURLToPath(s); } catch { return; } }
+    let parentAbs = null;
+    if (typeof parent === 'string' && parent) {
+      let pf = parent;
+      if (pf.startsWith('file:')) { try { pf = url.fileURLToPath(pf.split('?')[0]); } catch { pf = null; } }
+      if (pf && path.isAbsolute(pf)) parentAbs = pf.split(/[?#]/)[0];
+    }
+    const parentSkip = parentAbs !== null && this.where(parentAbs) === 'skip';
+    const cands = [];
+    if (s.startsWith('/@fs/')) cands.push(s.slice(4));
+    else if (RELATIVE_SPEC.test(s)) cands.push(path.resolve(parentAbs ? path.dirname(parentAbs) : process.cwd(), s));
+    else if (path.isAbsolute(s)) {
+      cands.push(s);
+      for (const r of opts.roots || []) if (r) cands.push(path.join(r, s));
+    }
+    if (!cands.length || opts.mapped) {
+      if (parentSkip && !opts.mapped) return;
+      this.flag('resolve', `${spec} not resolved from ${parentAbs ? this.key(parentAbs) : '?'}`);
+      return;
+    }
+    for (const c of cands) {
+      const w = this.where(c);
+      if (w === 'skip') continue;
+      this.read(c, 'f');
+      this.read(c, 'd');
+      this.busy++;
+      try {
+        this.stemDep(path.dirname(c), path.basename(c).replace(/\.[^.]*$/, ''));
+        this.stemDep(path.dirname(c), path.basename(c));
+      } finally {
+        this.busy--;
+      }
+    }
+  }
+
+  /** Vitest's mocker: the `__mocks__` files it looks for (findMockRedirect reads fs before the capture: F7). */
+  hookVitestMocker(mocker) {
+    if (!mocker || typeof mocker.findMockRedirect !== 'function' || mocker.findMockRedirect.__detjsCache) return;
+    const real = mocker.findMockRedirect;
+    const cap = this;
+    const w = function findMockRedirect(mockPath, external, rawId) {
+      if (cap.active && !cap.busy) {
+        try {
+          const root = this.root || (globalThis.__vitest_worker__ && globalThis.__vitest_worker__.config && globalThis.__vitest_worker__.config.root) || cap.root;
+          const p = external || mockPath;
+          if (typeof mockPath === 'string' && path.isAbsolute(mockPath)) {
+            cap.read(mockPath, 's');
+            cap.read(path.resolve(path.dirname(mockPath), '__mocks__', path.basename(mockPath)), 's');
+          }
+          if (typeof p === 'string' && p) {
+            cap.read(path.join(root, '__mocks__', path.isAbsolute(p) ? '.' : path.dirname(p)), 't');
+            if (path.isAbsolute(p)) cap.read(path.resolve(path.dirname(p), '__mocks__', path.basename(p)), 's');
+          }
+          if (typeof rawId === 'string' && rawId && !rawId.startsWith('.') && !path.isAbsolute(rawId)) {
+            cap.read(path.join(root, '__mocks__', path.dirname(rawId)), 't');
+          }
+        } catch { /* never break the call */ }
+      }
+      return real.call(this, mockPath, external, rawId);
+    };
+    Object.defineProperty(w, '__detjsCache', { value: true });
+    mocker.findMockRedirect = w;
+  }
+
+  /** Vite's module runner: a module the test imports that cannot be fetched (resolution or transform failed). */
+  hookModuleRunner(runner, roots) {
+    if (!runner || typeof runner.cachedModule !== 'function' || runner.cachedModule.__detjsCache) return;
+    const real = runner.cachedModule;
+    const cap = this;
+    const w = function cachedModule(u, importer, ...rest) {
+      const r = real.call(this, u, importer, ...rest);
+      if (r && typeof r.then === 'function') {
+        r.then(null, () => { try { cap.resolveFailed(String(u), importer, { roots }); } catch { /* ignore */ } });
+      }
+      return r;
+    };
+    Object.defineProperty(w, '__detjsCache', { value: true });
+    runner.cachedModule = w;
+  }
+
+  /** Jest's resolver: a module a test file requires that cannot be resolved. */
+  hookJestResolver(resolver, config) {
+    if (!resolver || resolver.__detjsCache) return;
+    const cap = this;
+    const mapper = (config && config.moduleNameMapper) || [];
+    const mapped = (name) => mapper.some((m) => { try { return new RegExp(Array.isArray(m) ? m[0] : m).test(name); } catch { return true; } });
+    for (const n of ['resolveModule', 'resolveModuleAsync']) {
+      const real = resolver[n];
+      if (typeof real !== 'function') continue;
+      resolver[n] = function (from, name, ...rest) {
+        const fail = () => { try { cap.resolveFailed(String(name), from, { mapped: mapped(String(name)) }); } catch { /* ignore */ } };
+        let r;
+        try { r = real.call(this, from, name, ...rest); } catch (e) { fail(); throw e; }
+        if (r && typeof r.then === 'function') r.then(null, fail);
+        return r;
+      };
+    }
+    try { Object.defineProperty(resolver, '__detjsCache', { value: true }); } catch { /* frozen */ }
   }
 
   key(abs) {
@@ -421,14 +702,11 @@ class Capture {
       this.add(['code', this.rel(f), d], this.isGlobal);
       // resolution: a new file with the same name stem could shadow this module (extension probing: m.mjs before
       // m.ts; m.ts before m/index.ts); the entries sharing the stem are an input
-      const stem = (dir, base) => {
-        const k = path.join(dir, base);
-        const x = native.stemListingDigest(k);
-        this.add(['data', this.rel(k), x === null || x === undefined ? 'missing' : `g:${x}`], this.isGlobal);
-      };
+      const stem = (dir, base) => this.stemDep(dir, base);
       const base = path.basename(f).replace(/\.[^.]*$/, '');
       stem(path.dirname(f), base);
       if (base === 'index' && this.inRoot(path.dirname(f))) stem(path.dirname(path.dirname(f)), path.basename(path.dirname(f)));
+      this.importGlobs(f);
       const pkg = this.nearestPackageJson(path.dirname(f));
       if (pkg) {
         // resolution reads only some fields (exports, main, type, ...): those are the input; a test that reads or
@@ -438,6 +716,32 @@ class Capture {
       }
     } finally {
       this.busy--;
+    }
+  }
+
+  /**
+   * `import.meta.glob` in a project module: Vite expands it when it transforms the module, so the directories its
+   * patterns can match in are inputs (review r021 F6): an `e:` listing for a pattern that matches direct entries,
+   * a `t:` listing for one that matches deeper. A call whose patterns cannot be read soundly makes the test not
+   * cacheable.
+   */
+  importGlobs(f) {
+    if (!/\.(?:[cm]?[jt]sx?|vue|svelte|astro|mdx?)$/.test(f)) return;
+    let src;
+    try { src = fs.readFileSync(f); } catch { return; }
+    if (!src.includes('import.meta.glob')) return;
+    const bases = native.importGlobBases(src);
+    const global = this.isGlobal;
+    if (!bases) {
+      this.add(['flag', 'import-glob', `${this.key(f)}: an import.meta.glob call that cannot be keyed`], global);
+      return;
+    }
+    const ws = globalThis.__vitest_worker__;
+    const viteRoot = (ws && ws.config && ws.config.root) || this.root;
+    for (const b of bases) {
+      const dir = b.dir.startsWith('/') ? path.join(viteRoot, b.dir) : path.resolve(path.dirname(f), b.dir);
+      if (this.where(dir) === 'skip') continue;
+      this.add(['data', this.key(dir), this.dep(b.recursive ? 't' : 'e', dir)], global);
     }
   }
 
@@ -514,43 +818,223 @@ function wrapFn(cap, obj, name, before, after) {
   }
 }
 
+/** A Stats object whose field reads are recorded (`size`, `mode`: keyed; times, inode, ...: not cacheable). */
+function statProxy(cap, st, abs) {
+  if (!st || typeof st !== 'object' || abs === null) return st;
+  return new Proxy(st, {
+    get(t, k) {
+      const v = Reflect.get(t, k, t);
+      if (typeof k === 'string' && cap.active && !cap.busy) {
+        try { cap.statField(abs, k); } catch { /* never break the call */ }
+      }
+      // methods (isFile(), ...) run on the object itself: the kind is keyed by the call that returned it
+      return typeof v === 'function' && k !== 'constructor' ? v.bind(t) : v;
+    },
+  });
+}
+
+/** Wrap a stat-like function: `kind` recorded for the path, the result handed back as a recording proxy. */
+function wrapStat(cap, o, name, kind, style, pathOf = (a) => a[0]) {
+  const real = o && o[name];
+  if (typeof real !== 'function' || real.__detjsCache) return;
+  const k = typeof kind === 'function' ? kind : () => kind;
+  let w;
+  if (style === 'sync') {
+    w = function (...a) {
+      const on = cap.active && !cap.busy;
+      let abs = null;
+      if (on) { try { cap.read(pathOf(a), k(a)); abs = cap.statTarget(pathOf(a)); } catch { /* ignore */ } }
+      const r = real.apply(this, a);
+      return abs !== null ? statProxy(cap, r, abs) : r;
+    };
+  } else if (style === 'cb') {
+    w = function (...a) {
+      const on = cap.active && !cap.busy;
+      let abs = null;
+      if (on) { try { cap.read(pathOf(a), k(a)); abs = cap.statTarget(pathOf(a)); } catch { /* ignore */ } }
+      const i = a.length - 1;
+      if (abs !== null && typeof a[i] === 'function') {
+        const cb = a[i];
+        a[i] = function (err, st) { return cb.call(this, err, err ? st : statProxy(cap, st, abs)); };
+      }
+      return real.apply(this, a);
+    };
+  } else {
+    w = function (...a) {
+      const on = cap.active && !cap.busy;
+      let abs = null;
+      if (on) { try { cap.read(pathOf(a), k(a)); abs = cap.statTarget(pathOf(a)); } catch { /* ignore */ } }
+      const r = real.apply(this, a);
+      return abs !== null && r && typeof r.then === 'function' ? r.then((st) => statProxy(cap, st, abs)) : r;
+    };
+  }
+  for (const key of Reflect.ownKeys(real)) {
+    if (key === 'length' || key === 'name' || key === 'prototype' || key === 'arguments' || key === 'caller') continue;
+    try { Object.defineProperty(w, key, Object.getOwnPropertyDescriptor(real, key)); } catch { /* ignore */ }
+  }
+  Object.defineProperty(w, '__detjsCache', { value: true });
+  Object.defineProperty(w, 'name', { value: real.name, configurable: true });
+  try { o[name] = w; } catch { /* read-only */ }
+}
+
+/** Kind of a listing call from its options: recursive (`t:`), with entry types (`e:`), names (`d:`). */
+function listKind(dflt) {
+  return (a) => {
+    const o = a[1];
+    if (o && typeof o === 'object') {
+      if (o.recursive) return 't';
+      if (o.withFileTypes) return 'e';
+    }
+    return dflt;
+  };
+}
+
+/** An access check: existence (`s:`), or permission bits too when a mode other than F_OK is asked. */
+function accessKind(a) {
+  return typeof a[1] === 'number' && a[1] !== fs.constants.F_OK ? 'm' : 's';
+}
+
+/** Wrap a function whose completion (callback, promise or return) produced a tree at `dst`. */
+function wrapTreeOp(cap, o, name, before, dstOf, style, inFlight = false) {
+  const real = o && o[name];
+  if (typeof real !== 'function' || real.__detjsCache) return;
+  const w = function (...a) {
+    const on = cap.active && !cap.busy;
+    if (on) { try { before(a); } catch { /* ignore */ } }
+    if (inFlight) cap.cpInFlight++;
+    let ended = false;
+    const end = () => { if (inFlight && !ended) { ended = true; cap.cpInFlight--; } };
+    const done = () => { end(); if (on) { try { cap.wroteTree(dstOf(a)); } catch { /* ignore */ } } };
+    if (style === 'cb') {
+      const i = a.length - 1;
+      if (typeof a[i] === 'function') {
+        const cb = a[i];
+        a[i] = function (err, ...rest) { if (!err) done(); else end(); return cb.call(this, err, ...rest); };
+      }
+      try { return real.apply(this, a); } catch (e) { end(); throw e; }
+    }
+    let r;
+    try { r = real.apply(this, a); } catch (e) { end(); throw e; }
+    if (style === 'promise' && r && typeof r.then === 'function') return r.then((x) => { done(); return x; }, (e) => { end(); throw e; });
+    done();
+    return r;
+  };
+  for (const key of Reflect.ownKeys(real)) {
+    if (key === 'length' || key === 'name' || key === 'prototype' || key === 'arguments' || key === 'caller') continue;
+    try { Object.defineProperty(w, key, Object.getOwnPropertyDescriptor(real, key)); } catch { /* ignore */ }
+  }
+  Object.defineProperty(w, '__detjsCache', { value: true });
+  Object.defineProperty(w, 'name', { value: real.name, configurable: true });
+  try { o[name] = w; } catch { /* read-only */ }
+}
+
 function installFs(cap) {
   const P = fs.promises;
   const read = (k) => (a) => cap.read(a[0], k);
   const write0 = (a) => cap.wrote(a[0]);
-  const write01 = (a) => { cap.wrote(a[0]); cap.wrote(a[1]); };
   const open = (dflt) => (a) => {
     const fl = flagsOf(a[1] && typeof a[1] === 'object' && !Buffer.isBuffer(a[1]) ? a[1].flags : a[1], dflt);
     if (fl.reads && !fl.trunc) cap.read(a[0], 'f');
     if (fl.writes) cap.wrote(a[0]);
   };
   for (const [o, names, fn] of [
-    [fs, ['readFileSync', 'readFile'], read('f')],
+    [fs, ['readFileSync', 'readFile', 'openAsBlob'], read('f')],
     [P, ['readFile'], read('f')],
-    [fs, ['existsSync', 'exists', 'accessSync', 'access', 'statSync', 'stat', 'lstatSync', 'lstat', 'realpathSync', 'realpath'], read('s')],
-    [P, ['access', 'stat', 'lstat', 'realpath'], read('s')],
-    [fs, ['readdirSync', 'readdir', 'opendirSync', 'opendir'], read('d')],
-    [P, ['readdir', 'opendir'], read('d')],
+    [fs, ['existsSync', 'exists'], read('s')],
     [fs, ['readlinkSync', 'readlink'], read('l')],
     [P, ['readlink'], read('l')],
     [fs, ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile', 'unlinkSync', 'unlink', 'rmSync', 'rm', 'rmdirSync', 'rmdir',
-      'mkdirSync', 'mkdir', 'truncateSync', 'truncate', 'utimesSync', 'utimes', 'chmodSync', 'chmod', 'createWriteStream'], write0],
-    [P, ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate', 'utimes', 'chmod'], write0],
-    [fs, ['renameSync', 'rename'], write01],
-    [P, ['rename'], write01],
+      'mkdirSync', 'mkdir', 'truncateSync', 'truncate', 'utimesSync', 'utimes', 'lutimesSync', 'lutimes', 'chmodSync', 'chmod',
+      'lchmodSync', 'lchmod', 'chownSync', 'chown', 'lchownSync', 'lchown', 'createWriteStream'], write0],
+    [P, ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
   ]) {
     for (const n of names) wrapFn(cap, o, n, fn);
   }
-  // copy / link / symlink: the source is read, the destination written
-  for (const [o, names] of [[fs, ['copyFileSync', 'copyFile', 'cpSync', 'cp']], [P, ['copyFile', 'cp']]]) {
-    for (const n of names) wrapFn(cap, o, n, (a) => { cap.read(a[0], n.startsWith('cp') ? 's' : 'f'); cap.wrote(a[1]); });
+  // stat family (review r021 F1): the kind is keyed by the call (stat: following links; lstat: the path's own
+  // kind or link target), the fields read from the result by statProxy; access with a mode: permission bits too;
+  // realpath: the resolved path (every link on the way)
+  wrapStat(cap, fs, 'statSync', 's', 'sync');
+  wrapStat(cap, fs, 'stat', 's', 'cb');
+  wrapStat(cap, P, 'stat', 's', 'promise');
+  wrapStat(cap, fs, 'lstatSync', 'l', 'sync');
+  wrapStat(cap, fs, 'lstat', 'l', 'cb');
+  wrapStat(cap, P, 'lstat', 'l', 'promise');
+  wrapFn(cap, fs, 'accessSync', (a) => cap.read(a[0], accessKind(a)));
+  wrapFn(cap, fs, 'access', (a) => cap.read(a[0], accessKind(a)));
+  wrapFn(cap, P, 'access', (a) => cap.read(a[0], accessKind(a)));
+  for (const n of ['realpathSync', 'realpath']) {
+    wrapFn(cap, fs, n, read('r'));
+    if (fs[n] && typeof fs[n].native === 'function') wrapFn(cap, fs[n], 'native', read('r'));
+  }
+  wrapFn(cap, P, 'realpath', read('r'));
+  // listings (F2): names (`d:`), with entry types (`e:`), recursive (`t:`); a Dir yields typed entries
+  wrapFn(cap, fs, 'readdirSync', (a) => cap.read(a[0], listKind('d')(a)));
+  wrapFn(cap, fs, 'readdir', (a) => cap.read(a[0], listKind('d')(a)));
+  wrapFn(cap, P, 'readdir', (a) => cap.read(a[0], listKind('d')(a)));
+  for (const [o, n] of [[fs, 'opendirSync'], [fs, 'opendir'], [P, 'opendir']]) wrapFn(cap, o, n, (a) => cap.read(a[0], listKind('e')(a)));
+  // file system state that is not a function of the files (free space, change events): not cacheable (F3)
+  for (const [o, names] of [[fs, ['statfsSync', 'statfs']], [P, ['statfs']]]) {
+    for (const n of names) wrapFn(cap, o, n, (a) => cap.flag('statfs', String(a[0])));
+  }
+  for (const [o, names] of [[fs, ['watch', 'watchFile']], [P, ['watch']]]) {
+    for (const n of names) wrapFn(cap, o, n, (a) => cap.flag('watch', String(a[0])));
+  }
+  // copies (F4): the source is read as a whole tree (contents included); every path of the copy is an output
+  for (const [o, n, style] of [[fs, 'cpSync', 'sync'], [fs, 'cp', 'cb'], [P, 'cp', 'promise']]) {
+    wrapTreeOp(cap, o, n, (a) => cap.read(a[0], 'c'), (a) => a[1], style, style !== 'sync');
+  }
+  for (const [o, names] of [[fs, ['copyFileSync', 'copyFile']], [P, ['copyFile']]]) {
+    for (const n of names) wrapFn(cap, o, n, (a) => { cap.read(a[0], 'f'); cap.wrote(a[1]); });
+  }
+  // rename: what moves is read (unless the caller wrote it), the destination tree is an output
+  for (const [o, n, style] of [[fs, 'renameSync', 'sync'], [fs, 'rename', 'cb'], [P, 'rename', 'promise']]) {
+    wrapTreeOp(cap, o, n, (a) => { cap.read(a[0], 'c'); cap.wrote(a[0]); }, (a) => a[1], style);
   }
   for (const [o, names] of [[fs, ['symlinkSync', 'symlink', 'linkSync', 'link']], [P, ['symlink', 'link']]]) {
     for (const n of names) wrapFn(cap, o, n, (a) => cap.wrote(a[1]));
   }
-  wrapFn(cap, fs, 'openSync', open('r'));
-  wrapFn(cap, fs, 'open', open('r'));
-  wrapFn(cap, P, 'open', open('r'));
+  // descriptors: the path each was opened for, so that fstat results are recorded like stat results
+  wrapFn(cap, fs, 'openSync', open('r'), (a, r) => { if (typeof r === 'number') cap.fdPaths.set(r, a[0]); });
+  const realOpen = fs.open;
+  if (typeof realOpen === 'function' && !realOpen.__detjsCache) {
+    const o = function open_(...a) {
+      const on = cap.active && !cap.busy;
+      if (on) { try { open('r')(a.slice(0, typeof a[1] === 'function' ? 1 : 2)); } catch { /* ignore */ } }
+      const i = a.length - 1;
+      if (typeof a[i] === 'function') {
+        const cb = a[i];
+        const p0 = a[0];
+        a[i] = function (err, fd) { if (!err && typeof fd === 'number') cap.fdPaths.set(fd, p0); return cb.call(this, err, fd); };
+      }
+      return realOpen.apply(this, a);
+    };
+    for (const key of Reflect.ownKeys(realOpen)) {
+      if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(key)) continue;
+      try { Object.defineProperty(o, key, Object.getOwnPropertyDescriptor(realOpen, key)); } catch { /* ignore */ }
+    }
+    Object.defineProperty(o, '__detjsCache', { value: true });
+    Object.defineProperty(o, 'name', { value: 'open', configurable: true });
+    fs.open = o;
+  }
+  const realPOpen = P.open;
+  if (typeof realPOpen === 'function' && !realPOpen.__detjsCache) {
+    const po = async function open_(...a) {
+      if (cap.active && !cap.busy) { try { open('r')(a); } catch { /* ignore */ } }
+      const h = await realPOpen.apply(P, a);
+      if (h && typeof h.stat === 'function' && !h.stat.__detjsCache) {
+        const p0 = a[0];
+        wrapStat(cap, h, 'stat', 's', 'promise', () => p0);
+      }
+      return h;
+    };
+    Object.defineProperty(po, '__detjsCache', { value: true });
+    Object.defineProperty(po, 'name', { value: 'open', configurable: true });
+    P.open = po;
+  }
+  const fdPath = (a) => (cap.fdPaths.has(a[0]) ? cap.fdPaths.get(a[0]) : null);
+  wrapStat(cap, fs, 'fstatSync', 's', 'sync', fdPath);
+  wrapStat(cap, fs, 'fstat', 's', 'cb', fdPath);
+  for (const n of ['closeSync', 'close']) wrapFn(cap, fs, n, (a) => cap.fdPaths.delete(a[0]));
   wrapFn(cap, fs, 'createReadStream', (a) => cap.read(a[0], 'f'));
   // mkdtemp: the directory created is an output of the caller
   wrapFn(cap, fs, 'mkdtempSync', () => {}, (_a, r) => cap.wrote(r));
@@ -721,6 +1205,68 @@ function installDlopen(cap) {
   });
 }
 
+/**
+ * Node APIs that read files in native code, outside the wrapped `fs` functions (review r021 F3):
+ * `process.loadEnvFile` (the env file's content decides the variables it sets) and `node:sqlite` (wrapped when it
+ * is first loaded: loading it here would print its experimental warning to every run).
+ */
+function installNodeReaders(cap) {
+  wrapFn(cap, process, 'loadEnvFile', (a) => cap.read(a[0] === undefined ? '.env' : a[0], 'f'));
+  const realGet = process.getBuiltinModule;
+  if (typeof realGet === 'function' && !realGet.__detjsCache) {
+    const g = function getBuiltinModule(id) {
+      if (cap.active && (id === 'node:sqlite' || id === 'sqlite')) wrapSqlite(cap);
+      return realGet.call(this, id);
+    };
+    Object.defineProperty(g, '__detjsCache', { value: true });
+    try { process.getBuiltinModule = g; } catch { /* read-only */ }
+  }
+  // already loaded (a runner or an earlier file): wrap now
+  try {
+    if (!cap.sqliteWrapped && Array.isArray(process.moduleLoadList) && process.moduleLoadList.includes('NativeModule sqlite')) wrapSqlite(cap);
+  } catch { /* ignore */ }
+}
+
+const SQLITE_UNKEYED = /\b(attach|vacuum\s+into|load_extension)\b/i;
+
+/**
+ * node:sqlite opens database files natively. A database opened from a path is read (its content, and the
+ * journal and write-ahead log files next to it) and, unless opened read-only, written; a database that cannot
+ * be keyed by its path (a URI, ATTACH, VACUUM INTO, extensions) makes the test not cacheable.
+ */
+function wrapSqlite(cap) {
+  if (cap.sqliteWrapped) return;
+  cap.sqliteWrapped = true;
+  let m;
+  try { m = require('node:sqlite'); } catch { return; }
+  const Real = m.DatabaseSync;
+  if (typeof Real !== 'function' || Real.__detjsCache) return;
+  const opened = (loc, options) => {
+    if (!cap.active || cap.busy) return;
+    if (loc === undefined || loc === null) return;
+    const str = typeof loc === 'string' ? loc : null;
+    if (str === ':memory:' || str === '') return;
+    const abs = str !== null && str.startsWith('file:') ? null : toPath(loc);
+    if (abs === null) { cap.flag('sqlite', `database ${String(loc).slice(0, 200)}`); return; }
+    for (const x of [abs, `${abs}-wal`, `${abs}-journal`, `${abs}-shm`]) cap.read(x, 'f');
+    if (!(options && options.readOnly)) cap.wrote(abs);
+  };
+  class DatabaseSync extends Real {
+    constructor(loc, options) {
+      try { opened(loc, options); } catch { /* never break the call */ }
+      super(loc, options);
+    }
+  }
+  Object.defineProperty(DatabaseSync, '__detjsCache', { value: true });
+  Object.defineProperty(DatabaseSync, 'name', { value: 'DatabaseSync' });
+  const sqlCheck = (a) => { if (typeof a[0] === 'string' && SQLITE_UNKEYED.test(a[0])) cap.flag('sqlite', `SQL ${a[0].slice(0, 200)}`); };
+  for (const n of ['exec', 'prepare']) wrapFn(cap, Real.prototype, n, sqlCheck);
+  wrapFn(cap, Real.prototype, 'loadExtension', (a) => cap.flag('sqlite', `extension ${String(a[0])}`));
+  try { m.DatabaseSync = DatabaseSync; } catch { /* read-only */ }
+  if (typeof m.backup === 'function') wrapFn(cap, m, 'backup', (a) => cap.wrote(a[1]));
+  try { require('node:module').syncBuiltinESMExports(); } catch { /* ignore */ }
+}
+
 function installLoaderHooks(cap) {
   const m = require('node:module');
   if (typeof m.registerHooks !== 'function') {
@@ -729,6 +1275,20 @@ function installLoaderHooks(cap) {
   }
   try {
     m.registerHooks({
+      resolve(spec, context, next) {
+        if (cap.active && (spec === 'node:sqlite' || spec === 'sqlite')) {
+          try { wrapSqlite(cap); } catch { /* ignore */ }
+        }
+        try {
+          return next(spec, context);
+        } catch (e) {
+          // a module that cannot be resolved (review r021 F5): what would make it resolve is an input
+          if (cap.active && !cap.busy) {
+            try { cap.resolveFailed(spec, context && context.parentURL); } catch { /* ignore */ }
+          }
+          throw e;
+        }
+      },
       load(u, context, next) {
         if (cap.active && typeof u === 'string' && u.startsWith('file:')) {
           try { cap.nativeLoads.add(url.fileURLToPath(u)); } catch { /* ignore */ }
