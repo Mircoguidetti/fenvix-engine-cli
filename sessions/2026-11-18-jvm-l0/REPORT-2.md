@@ -23,7 +23,7 @@ Work session on `claude/jvm-l0`, 2026-11-19. Input: `sessions/2026-11-19-review-
 | `jvm/test/run_w1_verifier.py` (new) | — | **ok**: 5/5 classifier cases; walk with an adversarial "reuse everything" decider labels VictimTest **wrong** (`reruns=[passed, passed]`, `suite_rerun=failed`); walk with the real decider: no wrong reuse |
 | `jvm/test/check_report2_numbers.py` (new) | — | **ok** (25; 13 + 13 not run; R-022 rechecks, §3) |
 | `jvm/test/run_controls.py` (JDK 21) | 40/40, 40/40, 10/10, 10/10 | **40/40, 40/40, 10/10, 10/10, fingerprints identical** (`sessions/2026-11-18-jvm-l0/r022-logs/controls.log`) |
-| `jvm/test/run_skipkeys.py` | 12/12 | **12/12** |
+| `jvm/test/run_skipkeys.py` | 12/12 | **12/12** (also on the final agent 7bab9bd, with `run_review_r022.py` 13/13: `r022-logs/*-final.log`) |
 | `cargo test -p fenvix-jvm -p detpy-core -p fenvix-skip` | 44 + 2 | **44 + 2 + 10** |
 | `jvm/test/run_d5_load.py` (new, 5 pairs under 2×CPU burners + a neighbour Gradle build) | P-022 agent: 5/5 pairs identical | 4/5 (one `fixedRateTicksWithoutWaiting` extra timer), §2 D5 |
 
@@ -136,6 +136,7 @@ P-022's GitHub Actions walks (5.7 M verified, 0 wrong) used the old rule and the
 * The decider is measurement-mode (it reads B's capture). An online decider in the runner (decide at each test's position) is required for production use; the rule is written for it.
 * GitHub Actions: the IDoFT round and the six walks were not re-run on Actions after the fixes; the GHA-side "not run under `--det`" (13, json-iterator) is UNKNOWN for the new agent (the container recheck of json-iterator covers the same project, §3).
 * JDK 8/11/17: the `--deps` capture changes were exercised on JDK 17 (walks) and 21 (tests); JDK 8/11 under `--det` by the rechecks and by GitHub Actions run 44489391620 (code f98a21f: control jobs on JDK 8, 11, 17, 21 all succeeded; its commit step did not refresh the committed result files, so the numbers are the job conclusions only). JDK hooks on `java.lang.Class`, `ClassLoader`, `System`, `Field`, `MethodHandles.Lookup`, `AnnotationParser` with `--deps` on JDK 8/11: UNKNOWN.
+* CI (`.github/workflows/jvm-tests.yml`): the skip-key job did not receive the new `fenvix-skip` binary, so runs 44489391620 and 44506447645 committed an empty `skipkeys.txt`. Fixed (the build job uploads the binary, the job also runs `run_review_r022.py`, the crate's tests run in the build job); the first run with the fix had not finished when this was written: UNKNOWN.
 * The full IDoFT round protocol (baselines, seeds, confirmation, timing) was not re-run; only the "broken by `--det`" recheck and the new "not run" column.
 
 ## 7. Where things are
