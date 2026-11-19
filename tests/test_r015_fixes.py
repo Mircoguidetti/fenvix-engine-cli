@@ -39,10 +39,11 @@ def test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it(pyte
                                       "no:cacheprovider")
     r.assert_outcomes(passed=3)
     c = json.loads(out.read_text())["cache"]
-    # test_b ran the old code; test_edit, which ran after it in the same process, carries test_b's code (review R-020
-    # prefix rule): both are refused, test_a (before the edit) is recorded
-    assert c["not_cached_detail"] == {"source changed during the session: test_2b.py": 2}, c
-    assert c["recorded"] == 1
+    # test_b ran the old code and is refused. test_edit ran after it in the same process but cannot reach test_2b's
+    # module (it imports only pathlib; the carried-set rule, parallel-proof round 3), so it carries nothing of test_b
+    # and is recorded with test_a (under R-020's prefix rule it was refused too)
+    assert c["not_cached_detail"] == {"source changed during the session: test_2b.py": 1}, c
+    assert c["recorded"] == 2
     # next run: test_a reused, test_b runs the new code (fails)
     (pytester.path / "EDIT").unlink()
     r = pytester.runpytest_subprocess("--det", f"--det-cache={cache}", f"--det-outcomes={out}", "-p",

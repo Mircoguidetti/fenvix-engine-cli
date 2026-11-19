@@ -1,0 +1,137 @@
+   Compiling pyo3-ffi v0.30.1
+   Compiling detpy-core v0.1.0 (/home/user/fenvix-engine-cli/crates/detpy-core)
+   Compiling pyo3 v0.30.1
+   Compiling detpy-py v0.1.0 (/home/user/fenvix-engine-cli/crates/detpy-py)
+    Finished `release` profile [optimized] target(s) in 38.86s
+     Running unittests src/lib.rs (target/release/deps/detpy_core-31a4e58f84be1b31)
+
+running 112 tests
+test backend::tests::only_python_hooks_is_implemented ... ok
+test cache::tests::key_depends_on_all_parts ... ok
+test cache::tests::policy ... ok
+test cassette::tests::append_merges_same_direction ... ok
+test cassette::tests::clear_and_merge ... ok
+test distfiles::tests::bytecode_and_sole_owner_directory ... ok
+test distfiles::tests::new_claimant_changes_the_group ... ok
+test distfiles::tests::paths_outside_the_site_directory ... ok
+test cache::tests::caches_roundtrip ... ok
+test distfiles::tests::project_files ... ok
+test cassette::tests::save_load_roundtrip_and_find ... ok
+test distfiles::tests::shared_file_has_every_owner ... ok
+test event::tests::encoding_is_unambiguous ... ok
+test event::tests::encoding_depends_on_thread_and_source ... ok
+test event::tests::source_roundtrip ... ok
+test fingerprint::tests::empty_test_has_stable_fingerprint ... ok
+test event::tests::json_is_compact ... ok
+test distfiles::tests::stat_dependency ... ok
+test fingerprint::tests::fingerprint_of_matches_incremental ... ok
+test fingerprint::tests::hex_encoding ... ok
+test fingerprint::tests::truncation_and_checkpoints ... ok
+test fingerprint::tests::order_value_and_outcome_matter ... ok
+test order::tests::below_is_in_range ... ok
+test fingerprint::tests::same_events_same_fingerprint ... ok
+test order::tests::derive_seed_is_stable_and_key_sensitive ... ok
+test order::tests::groups_parsing ... ok
+test order::tests::group_order_independent_of_other_groups ... ok
+test order::tests::splitmix_reference_values ... ok
+test order::tests::shuffle_is_a_permutation_and_reproducible ... ok
+test order::tests::shuffle_keeps_groups_contiguous ... ok
+test proof::tests::cross_worker_write_drops_the_reader ... ok
+test proof::tests::changed_unit_used_by_the_test_misses_other_unit_hits ... ok
+test proof::tests::data_env_runtime_config_clock ... ok
+test proof::tests::concurrent_sessions_merge ... ok
+test proof::tests::failure_is_never_reused ... ok
+test proof::tests::hit_when_nothing_changed_and_key_is_stable ... ok
+test proof::tests::listing_of_a_directory_another_test_wrote_into ... ok
+test proof::tests::listing_digest_matches_python_convention ... ok
+test proof::tests::lstat_kind_tells_a_dangling_link_from_a_missing_path ... ok
+test proof::tests::importable_entries_of_a_directory ... ok
+test proof::tests::memoised_checks_and_keys_match_the_unmemoised_ones ... ok
+test proof::tests::many_existence_checks_of_one_directory_become_its_kinds ... ok
+test proof::tests::own_writes_and_shared_fixtures_are_credited ... ok
+test proof::tests::missing_file_and_listing_dependencies ... ok
+test proof::tests::r023_f2_hits_whose_input_an_earlier_test_wrote ... ok
+test proof::tests::merge_is_independent_of_shard_order_and_removes_touched_absent ... ok
+test proof::tests::r023_f1_a_serial_session_does_not_reuse_a_parallel_entry ... ok
+test proof::tests::r023_f3_worker_reads_are_checked_against_this_runs_plan ... ok
+test proof::tests::r023_f2_written_paths_outside_the_repository_persist_while_they_exist ... ok
+test proof::tests::r023_merge_notes_data_edges ... ok
+test proof::tests::whole_environment_digest_leaves_out_shell_and_xdist_variables ... ok
+test record::tests::reference_closure_reaches_imported_repository_modules_and_the_library_node ... ok
+test proof::tests::reused_result_whose_input_the_session_wrote_is_dropped ... ok
+test proof::tests::save_load_compact_roundtrip ... ok
+test record::tests::test_badenv_is_uncacheable ... ok
+test recorder::tests::end_without_begin_is_noop ... ok
+test reexec::tests::hex_like_python_int ... ok
+test recorder::tests::records_and_streams ... ok
+test reexec::tests::join_like_posixpath ... ok
+test reexec::tests::json_round_trip_like_python ... ok
+test repro::tests::ddmin_is_minimal_and_keeps_order ... ok
+test reexec::tests::realpath_resolves_links ... ok
+test repro::tests::prefix_and_configs ... ok
+test repro::tests::quoting_and_rounding ... ok
+test proof::tests::existence_checks_spread_over_a_tree_become_the_tree ... ok
+test repro::tests::reproduce_names_the_polluter ... ok
+test repro::tests::sha1_known_vectors ... ok
+test repro::tests::slug_shape ... ok
+test schedule::tests::atom_keys ... ok
+test schedule::tests::lists_are_subsequences_of_the_serial_order_and_cover_every_test_once ... ok
+test schedule::tests::atoms_are_never_split ... ok
+test schedule::tests::chunks_are_consecutive_same_file_and_bounded ... ok
+test schedule::tests::previous_plan_for_more_workers_is_ignored_for_unknown_slots ... ok
+test schedule::tests::r023_controller_plan_places_every_test_and_sends_only_misses ... ok
+test schedule::tests::r023_cost_precedence_history_then_cache_then_unknown ... ok
+test schedule::tests::r023_crash_split ... ok
+test schedule::tests::makespan_within_lpt_bound ... ok
+test schedule::tests::r023_f4_adding_one_test_keeps_every_other_test_on_its_worker ... ok
+test schedule::tests::r023_previous_plan_counts_only_for_the_same_workers_and_dist ... ok
+test schedule::tests::r023_replay_maps_workers_and_refuses_a_bigger_plan ... ok
+test schedule::tests::r023_waits_only_across_workers_for_an_earlier_writer ... ok
+test schedule::tests::round3_a_writer_after_its_reader_waits_for_the_reader_across_workers ... ok
+test record::tests::test_data_overlay_matches_ordered_dict ... ok
+test schedule::tests::stickiness_keeps_previous_workers_within_tolerance ... ok
+test schedule::tests::unknown_costs_use_the_median_and_empty_inputs_work ... ok
+test shared::tests::a_tampered_entry_whose_key_does_not_match_its_inputs_is_rejected ... ok
+test shared::tests::another_runtime_is_foreign_and_never_offered ... ok
+test schedule::tests::permutation_of_the_input_never_changes_the_assignment ... ok
+test shared::tests::order_is_the_log_order_not_the_recorded_clock ... ok
+test schedule::tests::r023_f4_chunks_do_not_move_when_tests_are_added_or_removed ... ok
+test shared::tests::partial_uploads_and_corrupt_documents_are_rejected ... ok
+test trace::borrowed_line_tests::borrowed_test_line_is_byte_identical ... ok
+test shared::tests::roundtrip_through_a_directory ... ok
+test trace::merge_tests::merge_sorts_by_serial_order_and_marks_workers ... ok
+test trace::merge_tests::serial_trace_lines_have_no_worker_fields ... ok
+test trace::tests::order_digest_is_order_sensitive ... ok
+test trace::tests::partial_trace_is_readable ... ok
+test trace::tests::rejects_garbage ... ok
+test trace::merge_tests::a_dead_worker_leaves_missing_tests ... ok
+test verify::tests::beyond_trace_uses_checkpoints ... ok
+test trace::tests::roundtrip ... ok
+test verify::tests::extra_event_divergence ... ok
+test verify::tests::extra_event_blamed_over_end_summary ... ok
+test verify::tests::missing_and_order ... ok
+test verify::tests::identical_runs_are_stable ... ok
+test verify::tests::outcome_only_divergence ... ok
+test verify::tests::placement_divergence_names_the_lost_predecessors ... ok
+test verify::tests::thread_divergence ... ok
+test verify::tests::three_runs_compare_against_first_differing ... ok
+test verify::tests::value_divergence_is_located_exactly ... ok
+test schedule::tests::same_input_same_plan ... ok
+test shared::tests::concurrent_writers_lose_nothing ... ok
+
+test result: ok. 112 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+
+     Running unittests src/lib.rs (target/release/deps/_core-91cfd55b29869533)
+
+running 1 test
+test sqlvirt::tests::now_text_matches_sqlite_format ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests detpy_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+done

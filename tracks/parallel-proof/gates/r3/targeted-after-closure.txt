@@ -1,0 +1,12 @@
+......................................................................ss [ 58%]
+..........ss........................................                     [100%]
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/local/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+120 passed, 4 skipped, 4 warnings in 314.82s (0:05:14)

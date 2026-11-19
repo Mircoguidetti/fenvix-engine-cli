@@ -1,0 +1,40 @@
+E         {'source changed during the session: test_2b.py': 1} != {'source changed during the session: test_2b.py': 2}
+E         Use -v to get more diff
+
+/home/user/fenvix-engine-cli/tests/test_r015_fixes.py:44: AssertionError
+----------------------------- Captured stdout call -----------------------------
+running: /home/user/venv313/bin/python -mpytest --basetemp=/tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0/runpytest-0 --det --det-cache=/tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0/.cachedir --det-outcomes=/tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0/o.json -p no:cacheprovider
+     in: /tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0
+============================= test session starts ==============================
+platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+rootdir: /tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0
+configfile: pytest.ini
+plugins: xdist-3.8.0, detpy-0.1.0
+detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+collected 3 items
+
+test_1a.py .                                                             [ 33%]
+test_2b.py .                                                             [ 66%]
+test_3edit.py .                                                          [100%]
+=============================== detpy (Level 0) ================================
+
+trace: /tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0/.detpy/trace.jsonl  order digest: 2eff2c3158c13edc5d16e392c20589fa  seed: 0
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 3, recorded 2 (check 0.0s, record 0.005s); config 61c1c49a669db7e06a1e8b9bda9a9d0c, runtime 8a596ec1a3cf0bed07c2855c35fca21e
+not reused: new 3
+not cacheable: source changed during the session 1
+receipts: /tmp/pytest-of-root/pytest-313/test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it0/.cachedir/receipts.jsonl
+============================== 3 passed in 0.02s ===============================
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/local/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_r015_fixes.py::test_code_changed_during_the_session_refuses_only_the_tests_that_ran_it
+1 failed, 766 passed, 12 skipped, 1 deselected, 4 warnings in 965.70s (0:16:05)
