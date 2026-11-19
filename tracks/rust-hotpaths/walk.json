@@ -1,6 +1,6 @@
 {
- "run_id": "w5",
- "note": "round 2 final engine (with the R-009b and R-015b fixes) (see run.json p7): same specs and commits as w3 / w1 / s1f / w0; every reuse checked by a fresh --det run. Replaces w4 (cancelled while queued: engine without the R-015b fixes)",
+ "run_id": "w6",
+ "note": "round 2 final engine (see run.json p8): same specs and commits as w3 / w1 / s1f / w0; every reuse checked by a fresh --det run. Replaces w5 (cancelled while queued: engine before the last proofcache moves)",
  "walk": [
   {
    "spec": "home-assistant",

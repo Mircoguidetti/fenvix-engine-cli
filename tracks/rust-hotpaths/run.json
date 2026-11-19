@@ -1,6 +1,6 @@
 {
- "run_id": "p7",
- "note": "round 2 final engine (with the R-009b and R-015b fixes) (everything that is not interface in Rust: capture, decisions, receipts, follow parsing, clock rest, seeds, fsorder, network, repro/reexec decisions; rewritten test modules cached; R-015 and R-009b fixes) vs base (24b6d15), round 1 (128dcc6) and the round-2 'clock and call sites' checkpoint (c28a531, the engine of p5/w3); interleaved. Replaces p6 (cancelled while queued: engine without the R-015b fixes)",
+ "run_id": "p8",
+ "note": "round 2 final engine: everything that is not interface in Rust (capture, decisions, receipts, the cache session's bookkeeping / record plan / reporting, runtime identity, the sqlite trace and socket helpers, follow parsing, clock, seeds, fsorder, network, repro/reexec decisions; rewritten test modules cached; R-015, R-009b and R-015b fixes) vs base (24b6d15), round 1 (128dcc6) and the round-2 'clock and call sites' checkpoint (c28a531, the engine of p5/w3); interleaved. Replaces p7 (cancelled while queued: engine before the last proofcache moves)",
  "engines": [
   {
    "name": "base",
