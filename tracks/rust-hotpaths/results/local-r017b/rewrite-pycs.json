@@ -1,0 +1,35 @@
+{
+ "source": "counted after the runs of profile-{click,pygments}.json (engines pre = 35ba3a8, r017b = a3bdcf1), in their work directories (not committed): each engine's bytecode cache (pyc = the engine installed last; pyc-<sha1(wheel path)[:10]> = the other)",
+ "click": {
+  "pre": {
+   "cache_dir": "pyc-3cf7d27ca4",
+   "keyed_rewritten_pycs_by_key": {
+    "1d46153c2e978e19": 44
+   },
+   "pytest_named_rewritten_pycs": 0
+  },
+  "r017b": {
+   "cache_dir": "pyc",
+   "keyed_rewritten_pycs_by_key": {
+    "2e163c7d8db35fa0": 44
+   },
+   "pytest_named_rewritten_pycs": 0
+  }
+ },
+ "pygments": {
+  "pre": {
+   "cache_dir": "pyc-3cf7d27ca4",
+   "keyed_rewritten_pycs_by_key": {
+    "1d46153c2e978e19": 37
+   },
+   "pytest_named_rewritten_pycs": 0
+  },
+  "r017b": {
+   "cache_dir": "pyc",
+   "keyed_rewritten_pycs_by_key": {
+    "2e163c7d8db35fa0": 37
+   },
+   "pytest_named_rewritten_pycs": 0
+  }
+ }
+}
