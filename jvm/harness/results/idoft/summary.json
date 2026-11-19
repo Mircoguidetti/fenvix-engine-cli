@@ -1,15 +1,26 @@
 {
  "totals": {
-  "tests": 0,
-  "documented_present": 0,
-  "documented_reproduced": 0,
-  "documented_unstable_in_baseline": 0,
-  "unstable_baseline": 0,
-  "unstable_reproduced": 0,
-  "broken_by_det": 0,
-  "fingerprint_covered": 0,
-  "fingerprinted": 0
+  "tests": 7678,
+  "documented_present": 469,
+  "documented_reproduced": 94,
+  "documented_unstable_in_baseline": 94,
+  "unstable_baseline": 94,
+  "unstable_reproduced": 59,
+  "broken_by_det": 22,
+  "fingerprint_covered": 7777,
+  "fingerprinted": 7914
  },
- "projects": 0,
- "slowdowns": []
+ "projects": 10,
+ "slowdowns": [
+  0.2791,
+  0.1595,
+  -0.2104,
+  -0.8592,
+  0.0468,
+  0.2331,
+  -0.1991,
+  -0.5883,
+  0.0361,
+  0.1909
+ ]
 }
