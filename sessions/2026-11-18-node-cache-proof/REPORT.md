@@ -94,7 +94,7 @@ has no Nx configuration). Runs: r1 = 44349361887 (docusaurus, vue-core, React Na
 | docusaurus (r1) | 50 | **88% / 73%** | 94% | 132,108 | **0** | 0 | 26% / 56% |
 | vue-core (r1) | 50 | **26% / 32%** | 46% | 85,112 | **0** | 0 | 28% / 29% |
 | TanStack Query (r5) | R5_TQ_N | **R5_TQ_SHARE** | R5_TQ_TESTS | R5_TQ_VER | **R5_TQ_WRONG** | R5_TQ_FLAKY | R5_TQ_NX |
-| TanStack Query (r4, configuration not yet per project) | R4_TQ_N | R4_TQ_SHARE | R4_TQ_TESTS | R4_TQ_VER | **R4_TQ_WRONG** | 0 | R4_TQ_NX |
+| TanStack Query (r4, configuration not yet per project) | 50 | 90% / 58% | 91% | 148,985 | **0** | 0 | 92% / 69% |
 | React Native (r1) | 9 | **0% / 1%** | 0% | 22,574 | **0** | 0 | 98% / 87% |
 | Lexical (r1) | 19 | **0% / 0%** | 8% | 50,961 | **0** | 0 | 40% / 51% |
 
@@ -104,11 +104,11 @@ Transitions that rerun everything, by reason (MEASURED, from each run's miss rea
   (`packages/docusaurus/package.json`, which docusaurus' own code imports). Median on the other 43: 89%.
 * vue-core 15 of 50: 5 dependency bumps, 5 configuration (root `package.json` changes, which also bump
   dependencies), 5 changes to modules nearly every test loads (2 of 184 files reused). Median on the rest: 27%.
-* TanStack Query (r4): 2 dependency bumps, 7 configuration. Of the 7, release commits bump every package's
+* TanStack Query (r4) 16 of 50: 2 dependency bumps, 14 configuration. Of the 14, release commits bump every package's
   `package.json` and the lockfile (rerun anyway); the others change one or two packages' Vite configuration, or a
   `package.json` that their Vite configuration imports (`import packageJson from './package.json'` for `test.name`),
   and reran every package because the configuration was one digest. Fixed in 48d2068c (per-project configuration,
-  below) and measured again in r5. Median on the other 25: 93%.
+  below) and measured again in r5. Median on the other 34: 93%.
 * React Native 5 of 9: one dependency bump (36), and four times (the first transition of each shard, and 37 after
   the install at 36) the harness's fallback
   `yarn install` (used when `--frozen-lockfile` fails) had rewritten `yarn.lock`, and the next checkout restored it.
@@ -146,7 +146,7 @@ approximate.
 | docusaurus (r3, last 10 transitions) | **18 s vs 88 s** (0.20) | 394 s vs 880 s |
 | vue-core (r3, last 10) | **25 s vs 64 s** (0.38) | — |
 | vue-core (r1, 50) | 40 s vs 76 s (0.52) | 2,479 s vs 3,678 s |
-| TanStack Query (r4) | R4_TQ_WALL | — |
+| TanStack Query (r4, 50) | 58 s vs 178 s (0.33) | 4,926 s vs 8,793 s |
 | TanStack Query (r5) | R5_TQ_WALL | — |
 
 The docusaurus skip and warm runs in r1 are not valid wall times: Vitest 5 repeats the JSON reporter's `outputFile`
