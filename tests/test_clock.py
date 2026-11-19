@@ -464,7 +464,10 @@ def test_lock_acquire_timeouts_advance_the_clock(pytester, run_det):
 def test_clock_read_is_reentrant_from_the_same_thread():
     # hypothesis registers a gc callback that calls perf_counter(); a collection triggered by an allocation
     # inside VirtualClock.read() re-entered read() on the same thread and deadlocked on a plain Lock
-    # (attrs and isort hung until the 3,000 s run timeout in the cache-proof walk, run s1d)
+    # (attrs and isort hung until the 3,000 s run timeout in the cache-proof walk, run s1d). The clock is in Rust
+    # now: its lock is held around integer arithmetic only (no allocation, no gc callback inside); reads from gc
+    # callbacks while the thread reads the clock must still not deadlock.
+    import gc
     import threading
 
     from detpy.clock import VirtualClock
@@ -472,11 +475,22 @@ def test_clock_read_is_reentrant_from_the_same_thread():
     c = VirtualClock(0, 1000)
     done = []
 
-    def nested():
-        with c._lock:  # as if inside read() when the gc callback fires
-            done.append(c.read())
+    def cb(phase, info):
+        done.append(c.read())
 
-    t = threading.Thread(target=nested, daemon=True)
-    t.start()
-    t.join(5)
-    assert not t.is_alive() and done == [1000]
+    def work():
+        for i in range(20_000):
+            c.read()
+            [[] for _ in range(4)]
+            if i % 1000 == 0:
+                gc.collect(0)
+        done.append("end")
+
+    gc.callbacks.append(cb)
+    try:
+        t = threading.Thread(target=work, daemon=True)
+        t.start()
+        t.join(10)
+    finally:
+        gc.callbacks.remove(cb)
+    assert not t.is_alive() and done[-1] == "end" and len(done) > 20

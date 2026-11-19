@@ -1,0 +1,9 @@
+# raw per-run files (traces, logs, receipts, outcomes, stores, plans): kept locally; committed are the summary,
+# the log tails, the gzipped plans and the comparisons (fpcompare / crosscheck)
+*
+!.gitignore
+!summary.jsonl
+!*.tail.txt
+!*.plan.json.gz
+!fpcompare.json
+!*.crosscheck.json

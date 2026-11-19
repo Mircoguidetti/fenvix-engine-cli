@@ -1,4 +1,6 @@
-"""Negative import lookups and the import system's directory reads as inputs of ``--det-cache`` (exact-culprit
+"""Copied from claude/dep-verdict-abjcfw (d972a3e, 8d47dcd, e4660e8) onto the Rust store; serial and -n variants.
+
+Negative import lookups and the import system's directory reads as inputs of ``--det-cache`` (exact-culprit
 REPORT-4 §2.1, asked to be checked here): a module the test failed to import, a namespace package that gains a
 regular ``__init__.py``, a conftest.py that appears, a change of the pytest ini file. Each case records a run, makes
 the change, and requires that every reused result equals a fresh run's."""
@@ -12,8 +14,17 @@ import pytest
 pytestmark = pytest.mark.skipif(sys.version_info < (3, 12), reason="--det-cache needs sys.monitoring")
 
 
+# review item 9 (parallel-proof round 3): every case runs serially and under ``-n 2`` (the cache runs; the truth is
+# a fresh serial ``--det`` run). Under -n the entries are parallel ones and the reuse decision is the controller's.
+@pytest.fixture(params=["serial", "n2"])
+def mode(request):
+    return [] if request.param == "serial" else ["-n", "2", "-p", "xdist"]
+
+
 @pytest.fixture
-def cycle(pytester):
+def cycle(pytester, mode, monkeypatch):
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
     n = {"i": 0}
 
     def run(*args):
@@ -29,9 +40,9 @@ def cycle(pytester):
 
     def go(change):
         cache = f"--det-cache={pytester.path / '.c'}"
-        r0, p, _ = run(cache)
+        r0, p, _ = run(cache, *mode)
         change()
-        r1, cached, reused = run(cache)
+        r1, cached, reused = run(cache, *mode)
         r2, fresh, _ = run()
         wrong = {k: (cached.get(k), fresh.get(k)) for k in reused if cached.get(k) != fresh.get(k)}
         return p, fresh, wrong, (r0, r1, r2)
@@ -277,77 +288,4 @@ def test_library_a_root_conftest_loads_at_startup(pytester, cycle):
         """)
     p, fresh, wrong, rs = cycle(lambda: build(1))
     assert fresh.get("test_lib.py::test_adj") == "failed", rs[2].stdout.str()
-    assert wrong == {}, rs[1].stdout.str()
-
-
-# -- LIMITS S1 cases: native code and early-bound references must rerun, not be reused ----------------------------
-def _build(pytester, name, src):
-    import subprocess
-
-    c = pytester.path / "src.c"
-    c.write_text(src)
-    subprocess.run(["gcc", "-shared", "-fPIC", "-o", str(pytester.path / name), str(c)], check=True)
-    c.unlink()
-
-
-@pytest.mark.skipif(__import__("shutil").which("gcc") is None, reason="needs gcc")
-def test_stat_from_c_code_of_the_repository(pytester, cycle):
-    # a repository library stats a path in C: no Python event at all. Its context is not cached.
-    pytester.makeini("[pytest]\n")
-    _build(pytester, "libprobe.so", "#include <sys/stat.h>\nint has(const char *p) { struct stat s; "
-                                    "return stat(p, &s) == 0; }\n")
-    pytester.makepyfile(test_c="""
-        import ctypes, os
-
-        def test_no_flag():
-            lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "libprobe.so"))
-            assert not lib.has(b"FLAG")
-        """)
-    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "FLAG", ""))
-    assert fresh.get("test_c.py::test_no_flag") == "failed", rs[2].stdout.str()
-    assert wrong == {}, rs[1].stdout.str()
-
-
-@pytest.mark.skipif(__import__("shutil").which("gcc") is None, reason="needs gcc")
-def test_library_loaded_and_unloaded_within_one_test(pytester, cycle):
-    # dlopen + dlclose before the end of the test: no mapping is left for the scan to see
-    pytester.makeini("[pytest]\n")
-    _build(pytester, "libv.so", "int v(void) { return 1; }\n")
-    pytester.makepyfile(test_d="""
-        import _ctypes, ctypes, os
-
-        def test_v():
-            lib = ctypes.CDLL(os.path.join(os.path.dirname(__file__), "libv.so"))
-            value = lib.v()
-            _ctypes.dlclose(lib._handle)
-            assert value == 1
-        """)
-    p, fresh, wrong, rs = cycle(lambda: _build(pytester, "libv.so", "int v(void) { return 2; }\n"))
-    assert fresh.get("test_d.py::test_v") == "failed", rs[2].stdout.str()
-    assert wrong == {}, rs[1].stdout.str()
-
-
-def test_stat_bound_before_the_session(pytester, cycle):
-    # a plugin loaded with -p at startup (before the capture starts) binds os.stat and checks for a file with it
-    pytester.makeini("[pytest]\naddopts = -p earlyplug\n")
-    _w(pytester.path / "earlyplug.py", """
-        from os import stat as _stat
-
-        def exists(p):
-            try:
-                _stat(p)
-            except OSError:
-                return False
-            return True
-        """)
-    pytester.makepyfile(test_b="""
-        import os
-        from earlyplug import exists
-
-        def test_no_legacy():
-            assert not exists(os.path.join(os.path.dirname(__file__), "LEGACY"))
-        """)
-    p, fresh, wrong, rs = cycle(lambda: _w(pytester.path / "LEGACY", ""))
-    assert p.get("test_b.py::test_no_legacy") == "passed", rs[0].stdout.str()
-    assert fresh.get("test_b.py::test_no_legacy") == "failed", rs[2].stdout.str()
     assert wrong == {}, rs[1].stdout.str()

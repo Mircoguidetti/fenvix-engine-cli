@@ -1,0 +1,70 @@
+{
+ "hidden_failures": [],
+ "new_failures_caused_by_split": [
+  "tests/models/test_batch_runs.py::test_one_capability_serves_runs_on_several_event_loops_and_threads"
+ ],
+ "only_parallel": 0,
+ "only_serial": 0,
+ "outcome_differences": 1,
+ "parallel_noise": 5446,
+ "parallel_plans_identical": true,
+ "parallel_workers_identical": true,
+ "placement": 300,
+ "placement_examples": [
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_caps_nested_tool_calls",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_description_explains_final_expression_return",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_executes_string_returning_tool_with_default_arg",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_function_examples_are_expressions",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_sandbox_panic_is_retryable",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_unknown_function_call_surfaces_as_model_retry",
+  "tests/harness/code_mode/test_eager.py::TestEagerCodeMode::test_failure_preserves_state_and_reports_prior_output",
+  "tests/harness/code_mode/test_os_policy.py::test_without_policy_the_zone_stays_utc",
+  "tests/harness/code_mode/test_os_policy.py::test_zone_alone_keeps_the_clock_on_os_access",
+  "tests/harness/code_mode/test_sleep.py::test_gathered_sleeps_overlap",
+  "tests/harness/code_mode/test_sleep.py::test_gathered_sleeps_take_turns_when_calls_are_sequential",
+  "tests/harness/code_mode/test_sleep.py::test_sleep_past_the_allowance_raises_without_waiting[time.sleep-call_host]",
+  "tests/harness/code_mode/test_speculation_regressions.py::TestPartialArgsDecoding::test_undecodable_prefixes_return_none[{\"code\": \\ud800]",
+  "tests/models/anthropic/test_native_tool_filtering.py::test_anthropic_filters_unconfigured_native_tool_calls[configured-False]",
+  "tests/models/anthropic/test_native_tool_filtering.py::test_anthropic_filters_unconfigured_native_tool_calls[configured-True]",
+  "tests/models/anthropic/test_native_tool_filtering.py::test_anthropic_filters_unconfigured_native_tool_calls[unconfigured-True]",
+  "tests/models/anthropic/test_thinking_block_binding.py::test_anthropic_count_tokens_retries_a_stale_thinking_block",
+  "tests/models/anthropic/test_unpaired_native_tool_calls.py::test_drop_unpaired_native_tool_calls[in-flight-mcp-call-is-kept]",
+  "tests/models/anthropic/test_unpaired_native_tool_calls.py::test_drop_unpaired_native_tool_calls[in-flight-tool-search-call-is-kept]",
+  "tests/models/anthropic/test_unpaired_native_tool_calls.py::test_drop_unpaired_native_tool_calls[result-in-a-later-response-is-kept]"
+ ],
+ "placement_first_source": {
+  "random": 1,
+  "time": 299
+ },
+ "placement_in_both_parallel_runs": 298,
+ "serial_failure_noise": [],
+ "serial_noise": 5445,
+ "serial_noise_examples": [
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_agent_run_preserves_repl_between_code_calls",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_agent_run_survives_type_result_under_tool_output_limits",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_code_mode_via_agent_run_executes_run_code_and_returns_result",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_deferred_capability_loader_stays_native_with_tools_all",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_deferred_gather_parallel_reversed_pending_ids_completes_all_calls[parallel]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_deferred_gather_parallel_reversed_pending_ids_completes_all_calls[parallel_ordered_events]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_deferred_gather_sequential_reversed_pending_ids_runs_in_dispatch_order",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_functional_typed_dicts_reference_types_defined_later",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_gathered_calls_overlap_in_parallel_modes[parallel]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_gathered_calls_overlap_in_parallel_modes[parallel_ordered_events]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_loaded_capability_tool_folds_into_run_code",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_parameter_names_that_are_not_identifiers_dispatch_under_their_schema_names",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_sandboxed_tool_calls_produce_otel_spans",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_admits_nested_calls_within_it[gather]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_admits_nested_calls_within_it[sequential]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_checks_run_code_calls_before_they_run",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_stops_nested_calls[caught-in-snippet]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_stops_nested_calls[gather]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_stops_nested_calls[sequential]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_tool_calls_limit_survives_execution_failure[host-error]"
+ ],
+ "serial_noise_first_source": {
+  "entropy": 5438,
+  "fs": 1,
+  "time": 6
+ },
+ "tests_in_all": 8072
+}

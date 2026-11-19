@@ -1,0 +1,125 @@
+"""Run the variants of the parallel-proof measurement in one repository (P0; design 1.3, 5).
+
+usage: python -m harness.parallel_proof.variants --repo DIR --python PY --out OUTDIR --label L -- PYTEST ARGS...
+       [--variants plain-serial,plain-n,plain-n@2,det-serial-a,det-n-a,det-serial-b,det-n-b,cache-ser-cold,...]
+       [--workers 4] [--dist load] [--timeout 3600]
+
+Each variant runs ``PY -m pytest -p no:cacheprovider -q <PYTEST ARGS> <variant args>`` in DIR, one after another,
+and appends one JSON line to OUTDIR/summary.jsonl: label, variant, wall seconds (MEASURED, wall clock around the
+process), return code, the pytest summary line. ``--det`` variants write their trace to OUTDIR/<variant>.jsonl and
+``-n`` variants copy ``.detpy/plan.json`` to OUTDIR/<variant>.plan.json. Cache variants share OUTDIR/cache-<mode>/.
+``<variant>@K`` repeats a variant (repeated runs for the spread); ``--det`` variants also write
+OUTDIR/<variant>.outcomes.json (per-test outcomes and the cache's reused ids, for truth comparisons: crosscheck.py).
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import shutil
+import subprocess
+import time
+
+DEFAULT = ("plain-serial,plain-n,det-serial-a,det-n-a,det-serial-b,det-n-b,"
+           "cache-ser-cold,cache-ser-warm,cache-n-cold,cache-n-warm,cache-n-warm2")
+
+
+DET_ARGS: list[str] = []  # extra arguments of every --det variant (--det-args, e.g. --det-urandom)
+
+
+def variant_args(name: str, out: str, workers: int, dist: str) -> list[str]:
+    """Arguments of variant ``name``; ``name@K`` is repetition K of the same variant (its own trace and log)."""
+    v = name.split("@", 1)[0]
+    par = ["-n", str(workers)] + (["--dist", dist] if dist else [])
+    det = ["--det", f"--det-trace={os.path.join(out, name + '.jsonl')}",
+           f"--det-outcomes={os.path.join(out, name + '.outcomes.json')}", *DET_ARGS]
+    if v == "plain-serial":
+        return []
+    if v == "plain-n":
+        return par
+    if v.startswith("det-serial"):
+        return det
+    if v.startswith("det-n"):
+        return det + par
+    if v.startswith("cache-ser"):
+        return det + [f"--det-cache={os.path.join(out, 'cache-ser')}",
+                      f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
+    if v.startswith("cache-n"):
+        return det + par + [f"--det-cache={os.path.join(out, 'cache-n')}",
+                            f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
+    if v.startswith("cache-x"):  # a parallel run on the serial store (cross-mode reuse)
+        return det + par + [f"--det-cache={os.path.join(out, 'cache-ser')}",
+                            f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
+    if v.startswith("cache-y"):  # a serial run on the store written under -n (cross-mode reuse)
+        return det + [f"--det-cache={os.path.join(out, 'cache-n')}",
+                      f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
+    raise SystemExit(f"unknown variant {v}")
+
+
+def last_line(text: str) -> str:
+    lines = [ln for ln in text.splitlines() if ln.strip()]
+    for ln in reversed(lines):
+        if " in " in ln and ("passed" in ln or "failed" in ln or "error" in ln):
+            return ln.strip("= ")
+    return lines[-1] if lines else ""
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--repo", required=True)
+    ap.add_argument("--python", required=True)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--label", required=True)
+    ap.add_argument("--variants", default=DEFAULT)
+    ap.add_argument("--workers", type=int, default=4)
+    ap.add_argument("--dist", default="")
+    ap.add_argument("--timeout", type=int, default=3600)
+    ap.add_argument("--det-args", default="", help="extra arguments of every --det variant (one string)")
+    ap.add_argument("pytest_args", nargs="*")
+    a = ap.parse_args(argv)
+    DET_ARGS[:] = a.det_args.split()
+    os.makedirs(a.out, exist_ok=True)
+    for v in a.variants.split(","):
+        env = None
+        base = v.split("@", 1)[0]
+        pt = base.endswith("-pt")  # the same variant with per-process phase times (harness/parallel_proof/phasetimes.py)
+        args = [a.python, "-m", "pytest", "-p", "no:cacheprovider", "-q", *a.pytest_args,
+                *variant_args(v.replace("-pt", "", 1) if pt else v, os.path.abspath(a.out), a.workers, a.dist)]
+        if pt:
+            here = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            env = dict(os.environ, PHASETIMES_OUT=os.path.join(os.path.abspath(a.out), f"{v}.phases.jsonl"),
+                       PYTHONPATH=os.pathsep.join(x for x in (here, os.environ.get("PYTHONPATH", "")) if x))
+            args[3:3] = ["-p", "harness.parallel_proof.phasetimes"]
+        t0 = time.perf_counter()
+        try:
+            p = subprocess.run(args, cwd=a.repo, capture_output=True, text=True, timeout=a.timeout, env=env)
+            rc, text = p.returncode, p.stdout + p.stderr
+        except subprocess.TimeoutExpired as e:
+            rc, text = "timeout", (e.stdout or b"").decode(errors="replace") if isinstance(e.stdout, bytes) else ""
+        wall = round(time.perf_counter() - t0, 1)
+        with open(os.path.join(a.out, f"{v}.log"), "w") as f:
+            f.write(text)
+        plan = os.path.join(a.repo, ".detpy", "plan.json")
+        if "-n" in args and "--det" in args and os.path.exists(plan):
+            shutil.copy(plan, os.path.join(a.out, f"{v}.plan.json"))
+        detail = {}
+        oc = os.path.join(a.out, v + ".outcomes.json")
+        if os.path.exists(oc):
+            try:
+                with open(oc) as f:
+                    c = json.load(f).get("cache") or {}
+                detail = {k: c.get(k) for k in ("miss_reasons", "not_cached", "not_cached_detail") if c.get(k)}
+            except (OSError, ValueError):
+                pass
+        rec = {"label": a.label, "variant": v, "wall_s": wall, "rc": rc, "summary": last_line(text), "cache_detail": detail,
+               "cache": [ln for ln in text.splitlines() if ln.startswith(("reused ", "not reused", "parallel:"))],
+               "plan": [ln for ln in text.splitlines() if ln.startswith(("plan ", "merged trace"))]}
+        with open(os.path.join(a.out, "summary.jsonl"), "a") as f:
+            f.write(json.dumps(rec) + "\n")
+        print(json.dumps(rec), flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

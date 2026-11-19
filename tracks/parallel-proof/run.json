@@ -1,0 +1,213 @@
+{
+ "run_id": "r3-p0-2026-11-19",
+ "note": "parallel-proof round 3: final engine (absent inputs, SQLite virtual clock, P4, P5, F2 first discovery, early re-exec, _TimedLock __enter__); variants of prefect, litellm-vertex, moto, pydantic-ai, mlflow (CI ignores); moto and litellm 50-commit walks with --det-urandom in 5 shards each",
+ "repos": [
+  {
+   "name": "prefect-g1",
+   "url": "https://github.com/PrefectHQ/prefect",
+   "sha": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\"",
+   "args": "tests -m 'not windows' --exclude-service kubernetes --exclude-service docker --disable-docker-image-builds --splits 8 --group 1 -p no:randomly --timeout=600",
+   "workers": 4,
+   "dist": "worksteal",
+   "det_args": "--det-urandom",
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x,plain-n-pt,det-n-pt,plain-n-pt@2,det-n-pt@2"
+  },
+  {
+   "name": "litellm-vertex",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x,plain-n-pt,det-n-pt,plain-n-pt@2,det-n-pt@2"
+  },
+  {
+   "name": "moto",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x"
+  },
+  {
+   "name": "pydantic-ai",
+   "url": "https://github.com/pydantic/pydantic-ai",
+   "sha": "62e7b66c9f4da5c788eb360e49522a98e8fa0c86",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-extras --no-extra mcp-tasks --all-packages || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --no-extra mcp-tasks --all-packages",
+   "args": "tests/models tests/harness/code_mode tests/harness/refine_output tests/harness/detect_loops tests/providers/test_openai_compatible_http_clients.py -m 'not temporal' -p no:randomly --timeout=300",
+   "env": {
+    "PYTEST_TEST_BUDGET_SECONDS": "100000"
+   },
+   "workers": 4,
+   "dist": "loadgroup",
+   "det_args": "",
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x"
+  },
+  {
+   "name": "mlflow-g1",
+   "url": "https://github.com/mlflow/mlflow",
+   "sha": "c365f861ff68cd85d8be17103748d60c3d14c63e",
+   "python": "3.12",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --group test --group build --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --group test --group build --all-extras",
+   "args": "--serial=exclude --splits=6 --group=1 --ignore-flavors --ignore=tests/examples --ignore=tests/evaluate --ignore=tests/genai --ignore=tests/docker tests -p no:randomly --timeout=600",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "",
+   "variants": "plain-serial,plain-n,det-serial-a,det-n-a,plain-serial@2,plain-n@2,det-serial-b,det-n-b,plain-n@3,det-n-c,cache-n-cold,cache-n-warm,cache-n-warm@2,cache-n-warm@3,cache-ser-cold,cache-x"
+  },
+  {
+   "name": "moto-walk50-s0",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "0/5"
+  },
+  {
+   "name": "moto-walk50-s1",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "1/5"
+  },
+  {
+   "name": "moto-walk50-s2",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "2/5"
+  },
+  {
+   "name": "moto-walk50-s3",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "3/5"
+  },
+  {
+   "name": "moto-walk50-s4",
+   "url": "https://github.com/getmoto/moto",
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+   "args": "./tests/test_batch ./tests/test_dynamodb ./tests/test_ec2 tests/test_s3/ ./tests/test_sqs -m 'not requires_clean_slate' -p no:randomly --timeout=600",
+   "env": {
+    "MOTO_CALL_RESET_API": "false"
+   },
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "4/5"
+  },
+  {
+   "name": "litellm-vertex-walk50-s0",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "0/5"
+  },
+  {
+   "name": "litellm-vertex-walk50-s1",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "1/5"
+  },
+  {
+   "name": "litellm-vertex-walk50-s2",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "2/5"
+  },
+  {
+   "name": "litellm-vertex-walk50-s3",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "3/5"
+  },
+  {
+   "name": "litellm-vertex-walk50-s4",
+   "url": "https://github.com/BerriAI/litellm",
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen --all-groups --all-extras || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --all-extras --group dev",
+   "args": "tests/unit/llms/vertex_ai -p no:randomly --timeout=120",
+   "workers": 4,
+   "dist": "loadscope",
+   "det_args": "--det-urandom",
+   "walk": 50,
+   "modes": "a_par",
+   "shard": "4/5"
+  }
+ ]
+}

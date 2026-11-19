@@ -1,0 +1,280 @@
+{
+ "spec": "home-assistant",
+ "shard": "5/16",
+ "engines": [
+  "new"
+ ],
+ "cpus": 4,
+ "runner": "GitHub Actions 1000009998",
+ "engine_sha": "9be5dc14f64fb81cc2cd03ec7fb90ae1262b4817",
+ "walls": {
+  "P0": [
+   49.631489009000006,
+   49.17090268900006,
+   49.370926005
+  ],
+  "B": [
+   60.939781392999976,
+   59.068571077000115,
+   58.97599872600017
+  ],
+  "C:new": [
+   69.69141052700002,
+   69.26229314300008,
+   69.26250373200037
+  ],
+  "W:new": [
+   68.32378308300008,
+   68.24179165700002,
+   68.15376004500013
+  ]
+ },
+ "cache": {
+  "P0": [
+   {
+    "exit": 1,
+    "wall": 49.631489009000006,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 49.17090268900006,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 49.370926005,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "B": [
+   {
+    "exit": 1,
+    "wall": 60.939781392999976,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 59.068571077000115,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 58.97599872600017,
+    "n": 1428,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:new": [
+   {
+    "exit": 1,
+    "wall": 69.69141052700002,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 4.113,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 69.26229314300008,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 3.87,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 69.26250373200037,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 3.825,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:new": [
+   {
+    "exit": 1,
+    "wall": 68.32378308300008,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 3.844,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 68.24179165700002,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 3.796,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 68.15376004500013,
+    "n": 1428,
+    "cache": {
+     "reused": 0,
+     "ran": 1428,
+     "recorded": 0,
+     "check_seconds": 0.001,
+     "record_seconds": 3.815,
+     "not_cached": {
+      "subprocess": 1428
+     },
+     "phase_seconds": null
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "P0": {
+   "wall": 72.04914771699987,
+   "exit": 0,
+   "samples": 20094,
+   "buckets": {
+    "test+pytest": 18860,
+    "switch": 1226,
+    "det.plugin": 8
+   }
+  },
+  "B": {
+   "wall": 84.96609180899986,
+   "exit": 0,
+   "samples": 23848,
+   "buckets": {
+    "test+pytest": 19535,
+    "compile": 1847,
+    "switch": 1242,
+    "det.clock": 554,
+    "det.plugin": 510,
+    "det.fsorder": 97,
+    "det.seeds": 61,
+    "det.network": 1,
+    "follow": 1
+   }
+  },
+  "C:new": {
+   "wall": 101.17580849600017,
+   "exit": 0,
+   "samples": 28313,
+   "buckets": {
+    "test+pytest": 21165,
+    "compile": 2014,
+    "switch": 1339,
+    "record.loop": 715,
+    "det.plugin": 696,
+    "det.clock": 614,
+    "lines": 594,
+    "record.facts": 582,
+    "startup.identity": 221,
+    "det.fsorder": 124,
+    "audit": 91,
+    "det.seeds": 73,
+    "switch.sockets": 36,
+    "env": 25,
+    "startup.capture": 9,
+    "record.children": 8,
+    "record.other": 3,
+    "follow": 2,
+    "check": 2
+   }
+  }
+ },
+ "sha": "7c78cc7c2ed07fcd84b1cee6f4e593227f27b562",
+ "units": 49,
+ "dropped": [],
+ "finished": "2026-11-18T15:06:47Z"
+}

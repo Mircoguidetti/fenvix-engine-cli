@@ -9,7 +9,6 @@ from typing import Any
 from . import _core, _sites
 
 _get_ident = threading.get_ident
-_tls = threading.local()
 
 
 @dataclass
@@ -56,31 +55,12 @@ def set_event_listener(fn) -> None:
     _event_listener = fn
 
 
-def record(source: str, op: str, value: str, depth: int = 1) -> None:
-    """Record one event for the running test.
-
-    ``depth`` is the number of frames between the caller of this function and
-    the frame that called the patched API (1 = our wrapper called us directly).
-    """
-    if source != "time" and _on_other_event is not None:
-        _on_other_event()  # breaks the clock's run of consecutive reads
-    rec = STATE.recorder
-    listener = _event_listener
-    if ((rec is None or STATE.nodeid is None) and listener is None) or getattr(_tls, "busy", False):
-        return
-    site = _sites.resolve(depth + 1)
-    if site is None:  # infrastructure (pytest, detpy) touched the source
-        return
-    if listener is not None:
-        listener(source, value)
-        if rec is None or STATE.nodeid is None:
-            return
-    tid = _get_ident()
-    threads = STATE.threads
-    t = threads.get(tid)
-    if t is None:
-        t = threads[tid] = len(threads)
-    rec.record(source, op, site, value, t)
+# _state.record(source, op, value, depth=1): record one event for the running test. ``depth`` is the number of
+# frames between the caller of this function and the frame that called the patched API (1 = our wrapper called us
+# directly). In Rust (``_core.l0_record``, wired to STATE, this module's ``_event_listener`` / ``_on_other_event``
+# and ``_sites``' classification cache by ``l0_configure`` below); the Python original is
+# ``tests/rust_hotpaths_ref/_ref_l0_state.py``.
+record = _core.l0_record
 
 
 def record_at(source: str, op: str, site: str, value: str) -> None:
@@ -91,26 +71,28 @@ def record_at(source: str, op: str, site: str, value: str) -> None:
 
 
 class quiet:
-    """Context manager: patched APIs called inside do not record events."""
+    """Context manager: patched APIs called inside do not record events (a per-thread flag kept in Rust, which
+    ``record`` reads)."""
 
     __slots__ = ("prev",)
 
     def __enter__(self) -> None:
-        self.prev = getattr(_tls, "busy", False)
-        _tls.busy = True
+        self.prev = _core.l0_set_busy(True)
 
     def __exit__(self, *exc: object) -> None:
-        _tls.busy = self.prev
+        _core.l0_set_busy(self.prev)
 
 
-def is_quiet() -> bool:
-    return getattr(_tls, "busy", False)
+is_quiet = _core.l0_is_busy
 
 
 def digest(data: bytes) -> str:
     return _core.digest(data)
 
 
-def digest_names(names: list) -> str:
-    parts = [n if isinstance(n, bytes) else str(n).encode("utf-8", "surrogateescape") for n in names]
-    return _core.digest(b"\0".join(parts))
+# digest_names(names): digest of the names (bytes as they are, others str(n) encoded "utf-8" / "surrogateescape")
+# joined by NUL. In Rust; the Python original is ``tests/rust_hotpaths_ref/_ref_l0_state.py``.
+digest_names = _core.l0_digest_names
+
+
+_core.l0_configure(STATE, globals(), vars(_sites))

@@ -1,0 +1,19 @@
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2029 Finished in state Failed('Flow run encountered an exception: BlockingError: Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2029 Finished in state Failed('Flow run encountered an exception: BlockingError: Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2029 Finished in state Failed('Flow run encountered an exception: BlockingError: Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2029 Finished in state Failed('Flow run encountered an exception: BlockingError: Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2077 Encountered exception during execution: BlockingError('Blocking call to os.path.abspath')
+ERROR    prefect.flow_runs:flow_engine.py:2029 Finished in state Failed('Flow run encountered an exception: BlockingError: Blocking call to os.path.abspath')
+      2748 failed
+      5218 passed
+       104 skipped
+         2 xfailed
+E           pydantic_ai._warnings.CostCalculationFailedWarning: Failed to get cost: BlockingError: Blocking call to os.path.abspath
+E           pydantic_ai._warnings.CostCalculationFailedWarning: Failed to get cost: BlockingError: Blocking call to os.path.abspath
+E           pydantic_ai._warnings.CostCalculationFailedWarning: Failed to get cost: BlockingError: Blocking call to os.path.abspath

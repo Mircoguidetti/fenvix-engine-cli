@@ -9,18 +9,25 @@
 //! * [`cassette`]: recorded network conversations for record/replay.
 //! * [`cache`]: result-cache vocabulary (key, policy, storage).
 //! * [`proof`]: cache with proof: per-test recorded inputs, reuse check, receipt.
-//! * [`distfiles`]: installed files of the Python distributions (per-distribution identity, prototype).
+//! * [`record`]: end-of-session assembly of every test's inputs from the capture's contexts.
+//! * [`repro`]: `detpy repro` / `explore` decisions (search, ddmin, bundles, explore bookkeeping).
+//! * [`reexec`]: `--det`'s re-exec decisions (personality, realpath, precompile stamps).
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
 
 pub mod backend;
 pub mod cache;
 pub mod cassette;
-pub mod distfiles;
 pub mod event;
 pub mod fingerprint;
 pub mod order;
 pub mod proof;
+pub mod record;
 pub mod recorder;
+// rust-hotpaths-2: repro / reexec decisions
+pub mod reexec;
+pub mod repro;
+pub mod schedule;
+pub mod shared;
 pub mod trace;
 pub mod verify;
 

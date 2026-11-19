@@ -28,20 +28,50 @@ pub const SHIFT: u32 = 24;
 pub const IMPORT_FLAG: u64 = 1 << 63;
 const LINE_MASK: u64 = (1 << SHIFT) - 1;
 
+/// Multiplicative hasher for the recorder's integer keys (code object addresses, packed locations): the
+/// callbacks run for every new line of every context, and SipHash dominated their cost (MEASURED on
+/// home-assistant). Keys are not attacker-controlled.
+#[derive(Default, Clone, Copy)]
+struct IntHasher(u64);
+
+impl std::hash::Hasher for IntHasher {
+    fn finish(&self) -> u64 {
+        // the product's entropy is in its high bits; hashbrown indexes buckets with the low ones (aligned
+        // addresses would otherwise all collide)
+        self.0.rotate_left(26)
+    }
+    fn write(&mut self, bytes: &[u8]) {
+        for &b in bytes {
+            self.write_u64(b as u64);
+        }
+    }
+    fn write_u64(&mut self, n: u64) {
+        self.0 = (self.0.rotate_left(5) ^ n).wrapping_mul(0x517c_c1b7_2722_0a95);
+    }
+    fn write_usize(&mut self, n: usize) {
+        self.write_u64(n as u64);
+    }
+}
+
+type IntMap<K, V> = HashMap<K, V, std::hash::BuildHasherDefault<IntHasher>>;
+
 struct Slot {
     fid: u64,
     entry: i64,
     module: bool,
+    /// code-object level (`add_code(rep=...)`): the code is armed with `PY_START` only and its first start in a
+    /// context stands for every line it runs (`rep`, a line of its body); -1 = line level
+    rep: i64,
     _code: Py<PyAny>,
 }
 
 #[derive(Default)]
 struct Inner {
-    codes: HashMap<usize, Slot>,
-    seen: HashMap<u64, u32>,
+    codes: IntMap<usize, Slot>,
+    seen: IntMap<u64, u32>,
     buf: Vec<u64>,
     hot_codes: Vec<Py<PyAny>>,
-    hot_ids: HashMap<usize, ()>,
+    hot_ids: IntMap<usize, ()>,
     import_depth: u32,
 }
 
@@ -57,6 +87,11 @@ fn lock(m: &Mutex<Inner>) -> MutexGuard<'_, Inner> {
 }
 
 impl LineRecorder {
+    /// Module bodies running (the capture's import time).
+    pub(crate) fn depth(&self) -> u32 {
+        lock(&self.inner).import_depth
+    }
+
     fn hit(&self, py: Python<'_>, g: &mut Inner, k: u64, code: &Bound<'_, PyAny>) -> Py<PyAny> {
         match g.seen.get_mut(&k) {
             None => {
@@ -88,13 +123,14 @@ impl LineRecorder {
     }
 
     /// Register a code object: `fid` is the file id (not shifted), `entry` the
-    /// entry line `LINE` never reports (-1 if none), `module` for module bodies.
-    #[pyo3(signature = (code, fid, entry, module = false))]
-    fn add_code(&self, code: &Bound<'_, PyAny>, fid: u64, entry: i64, module: bool) {
+    /// entry line `LINE` never reports (-1 if none), `module` for module bodies; `rep` >= 0 records the code at
+    /// code-object level (its starts, as line `rep`) instead of line by line.
+    #[pyo3(signature = (code, fid, entry, module = false, rep = -1))]
+    fn add_code(&self, code: &Bound<'_, PyAny>, fid: u64, entry: i64, module: bool, rep: i64) {
         let mut g = lock(&self.inner);
         g.codes.insert(
             code.as_ptr() as usize,
-            Slot { fid: fid << SHIFT, entry, module, _code: code.clone().unbind() },
+            Slot { fid: fid << SHIFT, entry, module, rep, _code: code.clone().unbind() },
         );
     }
 
@@ -114,7 +150,11 @@ impl LineRecorder {
     fn start(&self, py: Python<'_>, code: &Bound<'_, PyAny>, _offset: i64) -> Py<PyAny> {
         let mut g = lock(&self.inner);
         let Some(s) = g.codes.get(&(code.as_ptr() as usize)) else { return py.None() };
-        let (fid, entry, module) = (s.fid, s.entry, s.module);
+        let (fid, entry, module, rep) = (s.fid, s.entry, s.module, s.rep);
+        if rep >= 0 {
+            let flag = if g.import_depth > 0 { IMPORT_FLAG } else { 0 };
+            return self.hit(py, &mut g, flag | fid | (rep as u64 & LINE_MASK), code);
+        }
         if module {
             g.import_depth += 1;
         }
@@ -296,4 +336,115 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
         }
     }
     Ok(())
+}
+
+// ---------------------------------------------------------------------------
+// Internet sockets opened in C (libpq, grpc, libcurl, ...) raise no audit event. At every context switch the
+// capture compares this process's socket descriptors with the previous scan; a new one that is an internet
+// socket (listed in /proc/self/net/{tcp,tcp6,udp,udp6}) makes the context that is ending uncacheable.
+
+fn socket_fds() -> Option<HashMap<String, String>> {
+    use std::os::unix::fs::{FileTypeExt, MetadataExt};
+    use std::os::unix::io::FromRawFd;
+    let rd = std::fs::read_dir("/proc/self/fd").ok()?;
+    let mut cur = HashMap::new();
+    for e in rd.flatten() {
+        let name = e.file_name();
+        let Some(fd) = name.to_str() else { continue };
+        let Ok(n) = fd.parse::<i32>() else { continue };
+        // fstat of the descriptor itself: a socket's inode is the one /proc shows as "socket:[inode]" (one cheap
+        // system call instead of a readlink through procfs); the File is never dropped, so nothing is closed
+        let f = std::mem::ManuallyDrop::new(unsafe { std::fs::File::from_raw_fd(n) });
+        let Ok(m) = f.metadata() else { continue };
+        if m.file_type().is_socket() {
+            cur.insert(fd.to_string(), m.ino().to_string());
+        }
+    }
+    Some(cur)
+}
+
+/// Inodes of this process's internet sockets (column 10 of /proc/self/net/{tcp,tcp6,udp,udp6}).
+fn inet_inodes() -> std::collections::HashSet<String> {
+    let mut out = std::collections::HashSet::new();
+    for t in ["tcp", "tcp6", "udp", "udp6"] {
+        let Ok(b) = std::fs::read(format!("/proc/self/net/{t}")) else { continue };
+        for line in b.split(|&c| c == b'\n').skip(1) {
+            let parts: Vec<&[u8]> = line.split(|c| c.is_ascii_whitespace()).filter(|p| !p.is_empty()).collect();
+            if parts.len() > 9 {
+                out.insert(String::from_utf8_lossy(parts[9]).into_owned());
+            }
+        }
+    }
+    out
+}
+
+/// Socket descriptors of this process between context switches.
+#[pyclass(module = "detpy._core", frozen)]
+pub struct SocketScan {
+    prev: Mutex<Option<HashMap<String, String>>>,
+}
+
+impl SocketScan {
+    pub(crate) fn create() -> Self {
+        SocketScan { prev: Mutex::new(None) }
+    }
+
+    pub(crate) fn scan_now(&self, py: Python<'_>) -> bool {
+        self.scan(py)
+    }
+}
+
+#[pymethods]
+impl SocketScan {
+    #[new]
+    fn new() -> Self {
+        SocketScan::create()
+    }
+
+    /// Scan the descriptors; True when an internet socket appeared since the last scan (False at the first scan,
+    /// which is the baseline, and when /proc is unavailable).
+    fn scan(&self, py: Python<'_>) -> bool {
+        py.detach(|| {
+            let Some(cur) = socket_fds() else { return false };
+            let mut g = self.prev.lock().unwrap_or_else(|e| e.into_inner());
+            let prev = g.replace(cur);
+            let Some(prev) = prev else { return false };
+            let cur = g.as_ref().expect("just set");
+            let new: Vec<&String> = cur.iter().filter(|(fd, ino)| prev.get(*fd) != Some(*ino)).map(|(_, i)| i).collect();
+            if new.is_empty() {
+                return false;
+            }
+            let inet = inet_inodes();
+            new.iter().any(|i| inet.contains(*i))
+        })
+    }
+}
+
+/// `-o` arguments under `logdir` of every live process (strace tracers of followed children, or strace itself
+/// before it forks its tracer). A child's trace log is written only by its tracer: when no live process holds
+/// the log's prefix, nothing more will be written to it. `None` when that cannot be known (no /proc, an
+/// undecodable argument).
+#[pyfunction]
+pub fn tracer_prefixes(py: Python<'_>, logdir: &str) -> Option<Vec<String>> {
+    py.detach(|| {
+        let mut out = Vec::new();
+        let rd = std::fs::read_dir("/proc").ok()?;
+        for e in rd.flatten() {
+            let name = e.file_name();
+            let Some(n) = name.to_str() else { continue };
+            if n.is_empty() || !n.bytes().all(|b| b.is_ascii_digit()) {
+                continue;
+            }
+            let Ok(cmd) = std::fs::read(e.path().join("cmdline")) else { continue };
+            let args: Vec<&[u8]> = cmd.split(|&b| b == 0).collect();
+            for w in args.windows(2) {
+                if w[0] == b"-o" && w[1].starts_with(logdir.as_bytes()) {
+                    out.push(std::str::from_utf8(w[1]).ok()?.to_string());
+                }
+            }
+        }
+        out.sort();
+        out.dedup();
+        Some(out)
+    })
 }

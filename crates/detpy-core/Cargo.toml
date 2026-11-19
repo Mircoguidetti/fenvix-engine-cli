@@ -7,9 +7,10 @@ description = "Deterministic test execution core: execution fingerprints, run ve
 
 [dependencies]
 blake3 = "1.8"
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1", features = ["derive", "rc"] }
 serde_json = "1"
 base64 = "0.23"
+sha2 = "0.10"
 
 [dev-dependencies]
 tempfile = "3"

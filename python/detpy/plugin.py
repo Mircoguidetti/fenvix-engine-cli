@@ -11,8 +11,13 @@ import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
+from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds, sqlvirt
+from . import xdist as _xdist
 from ._patch import Patcher
+
+# --det-outcomes: the outcome of a test from its phase outcomes (Rust; the Python original is
+# tests/rust_hotpaths_ref/_ref_plugin_helpers.py)
+_det_outcome = _core.det_outcome
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
 _PATCHER = Patcher()
@@ -30,6 +35,12 @@ def pytest_addoption(parser, pluginmanager):
                 help="run exactly the test ids listed in FILE (one per line), in that order; other tests are "
                      "deselected. With --det-seed the seed still drives every generator, not the order "
                      "(replay bundles written by `detpy repro`)")
+    g.addoption("--det-plan", default=None, metavar="FILE",
+                help="with -n: run the worker assignment of an earlier parallel run (.detpy/plan.json); with "
+                     "--det-plan-worker=gwK and no -n: run worker K's list of that plan serially, in one process, "
+                     "with that worker's xdist identity")
+    g.addoption("--det-plan-worker", default=None, metavar="GWK",
+                help="with --det-plan, without -n: the worker whose list to replay")
     g.addoption("--det-trace", default=None, metavar="PATH",
                 help="where to write the execution trace (default: <rootdir>/.detpy/trace.jsonl)")
     g.addoption("--det-compare", default=None, metavar="TRACE",
@@ -76,15 +87,16 @@ def pytest_addoption(parser, pluginmanager):
     g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
                 help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
                      "most DAYS later (default 30), so tests that read the clock are reusable across commits")
-    g.addoption("--det-cache-dists", action="store_true", default=False,
-                help="with --det-cache (PROTOTYPE): installed distributions enter a test's key one by one (those it "
-                     "loaded, read or queried) instead of as one digest of the whole environment")
+    g.addoption("--det-cache-shared", default=None, metavar="DIR",
+                help="with --det-cache: a store shared with other sessions and machines (a directory every job "
+                     "sees; also DETPY_CACHE_SHARED). Candidates are fetched before the reuse decision and checked "
+                     "like local entries; this session's entries are pushed at the end (by the controller under -n)")
     g.addoption("--det-cache-receipts", default=None, metavar="PATH",
                 help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
+    _early_reexec(parser, pluginmanager)
 
 
 _BLOCKED_BY_REEXEC: list[str] | None = None
-
 
 def _blocked_from_env() -> list[str]:
     """Plugins the re-exec blocked, read once and removed from os.environ.
@@ -98,6 +110,72 @@ def _blocked_from_env() -> list[str]:
         raw = os.environ.pop(reexec.BLOCKED_ENV, "")
         _BLOCKED_BY_REEXEC = [n for n in raw.split(",") if n]
     return _BLOCKED_BY_REEXEC
+
+
+def _early_reexec(parser, pluginmanager) -> None:
+    """parallel-proof round 3, item 4: the re-exec as early as detpy is registered.
+
+    The re-exec (fixed hash seed, ASLR off, bytecode cache) used to happen in ``pytest_load_initial_conftests``,
+    after pytest had imported every entry-point plugin: on litellm (logfire, ddtrace, ...) the controller imported
+    them twice (MEASURED 2.8 s per run, REPORT-2). pytest calls detpy's ``pytest_addoption`` while it loads the
+    entry points, right after detpy's own; the remaining plugins are not imported yet. Here the command line is
+    known (``invocation_params.args``, ``PYTEST_ADDOPTS`` and the ini ``addopts``, which pytest has read by then,
+    in pytest's order), and the same decision as before is made from it. Anything unusual (a nested in-process
+    session, an xdist worker, options that do not parse) leaves the decision to ``pytest_load_initial_conftests``,
+    as before."""
+    if reexec.SESSION_DEPTH > 0 or S.active or os.environ.get(_xdist.CONTROLLER_ENV) is not None:
+        return
+    if os.environ.get(reexec.MARKER) == "1":
+        return
+    config = pluginmanager.get_plugin("pytestconfig")
+    if config is None:
+        return
+    try:
+        import shlex
+
+        args = list(config.invocation_params.args)
+        env = os.environ.get("PYTEST_ADDOPTS")
+        if env:
+            args = [*shlex.split(env), *args]
+        try:
+            ini = config.getini("addopts")
+        except (ValueError, KeyError):
+            ini = []
+        args = [*ini, *args]
+        if any(a in ("-h", "--help", "--version", "-V") for a in args):
+            return
+        ns = parser.parse_known_args(args)
+    except Exception:
+        return
+    if not getattr(ns, "det", False) or getattr(ns, "det_no_reexec", False):
+        return
+    try:
+        controls = _controls(ns)
+    except pytest.UsageError:
+        return  # reported later, where the session can show it
+    if "hashseed" not in controls:
+        return
+    want_bytecode = "bytecode" in controls
+    need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
+    if not any(need.values()):
+        return
+    ok, _why = reexec.can_reexec()
+    if not ok:
+        return
+    try:
+        from importlib.metadata import entry_points
+
+        eps = entry_points()
+        eps = eps.select(group="pytest11") if hasattr(eps, "select") else eps.get("pytest11", ())
+        installed = {ep.name for ep in eps}
+    except Exception:  # pragma: no cover - broken metadata
+        installed = set()
+    # what the late re-exec blocked: the conflicting plugins that would load, never one the user blocked already
+    # (-p no:randomly: its options must stay as invalid as without --det)
+    block = [n for n in _CONFLICTING_PLUGINS
+             if not pluginmanager.is_blocked(n) and (n in installed or pluginmanager.get_plugin(n) is not None)]
+    rootdir = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
 
 
 def _accept_blocked_plugin_options(parser, pluginmanager) -> None:
@@ -158,6 +236,12 @@ class _Session:
         self.rebound: list[str] = []
         self.saved_cassette = 0
         self.index = 0
+        self.rewrite_cache = False
+        # pytest-xdist under --det (xdist.py): the controller's state, or this worker's id
+        self.controller = None
+        self.worker = None
+        self.cassette_out = None
+        self.plan_ids: list[str] | None = None
 
 
 S = _Session()
@@ -266,6 +350,8 @@ def _hashseed_value() -> str:
 @pytest.hookimpl(tryfirst=True)
 def pytest_load_initial_conftests(early_config, parser, args):
     reexec.SESSION_DEPTH += 1
+    if os.environ.get(_xdist.CONTROLLER_ENV) is not None:
+        _xdist.restore_controller_env()  # an xdist worker of a --det controller
     ns = early_config.known_args_namespace
     if not getattr(ns, "det", False):
         return
@@ -307,9 +393,28 @@ def pytest_load_initial_conftests(early_config, parser, args):
         if pm.hasplugin("benchmark") and not any(a.startswith("--benchmark-max-time") for a in args):
             args.append("--benchmark-max-time=0.000001")
             S.adjustments.append("pytest-benchmark: --benchmark-max-time=0.000001 (min rounds)")
+    if getattr(ns, "det_plan_worker", None):
+        _replay_worker_identity(early_config, ns)
     _install(early_config, ns, controls)
     if getattr(ns, "det_cache", None):
         proofcache.start(early_config, ns)
+
+
+def _replay_worker_identity(config, ns) -> None:
+    """``--det-plan=FILE --det-plan-worker=gwK`` (no ``-n``): worker K's list, and the xdist identity its tests saw
+    (``PYTEST_XDIST_*`` variables set before conftests are imported; ``worker_id`` / ``testrun_uid`` fixtures)."""
+    if not ns.det_plan:
+        raise pytest.UsageError("--det-plan-worker needs --det-plan")
+    if getattr(ns, "numprocesses", None):
+        raise pytest.UsageError("--det-plan-worker replays one worker in one process: drop -n")
+    ids, count, uid = _xdist.replay_worker(ns.det_plan, ns.det_plan_worker)
+    S.plan_ids = ids
+    os.environ["PYTEST_XDIST_WORKER"] = ns.det_plan_worker
+    os.environ["PYTEST_XDIST_WORKER_COUNT"] = str(count)
+    if uid:
+        os.environ["PYTEST_XDIST_TESTRUNUID"] = uid
+    config.pluginmanager.register(_xdist.PlanWorkerReplay(ns.det_plan_worker, count, uid), "detpy-plan-worker")
+    S.adjustments.append(f"--det-plan-worker: replaying {ns.det_plan_worker}'s {len(ids)} tests of {ns.det_plan}")
 
 
 def _install(config, ns, controls) -> None:
@@ -350,8 +455,365 @@ def _install(config, ns, controls) -> None:
     _PLUGIN_PACKAGES.discard("conftest")
     if "time" in controls:
         S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
+        sqlvirt.install(_PATCHER)  # SQLite's 'now', CURRENT_TIMESTAMP, random(), randomblob() per connection
     if "fs" in controls:
         fsorder.install(_PATCHER)
+    if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
+        S.rewrite_cache = _cache_rewritten_tests(config)
+    else:
+        _hash_checked_imports(config)
+
+
+def _hash_checked_imports(config) -> bool:
+    """Review R-019b N5: under ``--det`` without the bytecode control (``--det-no-reexec``, ``--det-disable``, or no
+    re-exec possible), validate the bytecode of every imported project module by its source's hash.
+
+    With the control, the import system reads only the precompile's checked-hash pycs (``reexec``), which it
+    validates by hash itself. Without it, it uses the project's ``__pycache__``, whose timestamp pycs are valid for
+    ``(int(mtime), size)``: after a same-size edit checked out within the same second, the previous version's
+    bytecode runs, and the proof key (from the source) pairs the new source with the old outcome (a cached false
+    pass). ``SourceFileLoader.get_code`` is patched for project sources (under the rootdir, without the precompile's
+    excluded names): a pyc is used only when it is a hash-based pyc of exactly the current source; otherwise the
+    source is compiled and, when bytecode may be written, cached as a checked-hash pyc (which plain Python also
+    validates by hash). The decision and the hash are in Rust (``_core.HashCheckedPycs``); this is the importlib
+    interface. Other modules (libraries) keep the import system's own check."""
+    try:
+        import importlib.util
+        from importlib import _bootstrap_external as be
+        from importlib.machinery import SourceFileLoader
+
+        variant = reexec._hash_variant()
+        compile_bytecode, code_to_hash_pyc = be._compile_bytecode, be._code_to_hash_pyc
+        cache_from_source, magic = importlib.util.cache_from_source, importlib.util.MAGIC_NUMBER
+    except (ImportError, AttributeError):
+        return False
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    check = _core.HashCheckedPycs(os.path.abspath(root), list(reexec._EXCLUDE_NAMES), magic,
+                                  int.from_bytes(magic, "little"), *(variant or (1, 3)))
+    real = SourceFileLoader.get_code
+
+    def get_code(self, fullname):
+        path = self.get_filename(fullname)
+        if variant is None:  # the Rust hash is not the interpreter's: never read a project pyc
+            if not check.applies(path):
+                return real(self, fullname)
+            with open(path, "rb") as fh:
+                return self.source_to_code(fh.read(), path)
+        try:
+            cfile = cache_from_source(path)
+        except NotImplementedError:
+            cfile = None
+        got = check(path, cfile)
+        if got is None:
+            return real(self, fullname)
+        source, source_hash, data = got
+        if data is not None:
+            try:
+                return compile_bytecode(memoryview(data)[16:], name=fullname, bytecode_path=cfile, source_path=path)
+            except (ImportError, EOFError):
+                pass
+        code = self.source_to_code(source, path)
+        if cfile is not None and not sys.dont_write_bytecode:
+            try:
+                self._cache_bytecode(path, cfile, code_to_hash_pyc(code, source_hash, True))
+            except NotImplementedError:
+                pass
+        return code
+
+    _PATCHER.set(SourceFileLoader, "get_code", get_code)
+    return True
+
+
+def _cache_rewritten_tests(config, patcher=None) -> bool:
+    """Keep pytest's assertion-rewritten test modules (and conftests) in the deterministic bytecode cache.
+
+    Under ``--det`` the interpreter runs with ``PYTHONDONTWRITEBYTECODE=1`` and ``PYTHONPYCACHEPREFIX`` set to the
+    precompile's cache: pytest looks for its rewritten pycs there but never writes them, so every test module was
+    parsed, rewritten and compiled again at every run (click: ~12 % of a fully reused run, MEASURED). pytest >= 9
+    keeps them as checked-hash pycs (``_read_pyc`` compares the source's hash before use), so a stale one never
+    runs; detpy writes them with pytest's own writer. The module then runs from the marshalled code in the first
+    run too (``marshal.loads``), as it does in every later run: a set constant has one layout in every run.
+
+    pytest's own check covers the source, the interpreter (magic number, cache tag) and pytest's version only, but
+    the rewritten code also depends on the configuration (``enable_assertion_pass_hook``), the optimisation level
+    and the rewriter itself (review R-017 H1: a run with the option loaded the code an earlier run wrote without
+    it). So under ``--det`` pytest reads, and detpy writes, these pycs under a name keyed on all of that
+    (``_rewrite_key``): a run only ever loads code that its own configuration would have produced. A rewriter
+    replaced by a plugin is not keyed: nothing is read or written then. The pytest-named pycs (written by earlier
+    versions of detpy without the key) are never read under ``--det``.
+    Older pytest versions write timestamp pycs (``(mtime, size)``: stale same-size edits, review R-015): for them
+    detpy reads and writes its own format under the same keyed name, validated by a SHA-256 of the interpreter's
+    magic number and the source (review R-023: without it every ``--det`` session and every ``-n`` worker rewrote
+    every test module). ``DETPY_REWRITE_CACHE=0`` turns the cache off (no read, no write)."""
+    if _EARLY_REWRITE_CACHE[0]:
+        return True  # installed when detpy was imported (before the plugins' modules were rewritten)
+    patcher = patcher or _PATCHER
+    try:
+        import marshal
+
+        from _pytest.assertion import rewrite as rw
+
+        # pytest >= 9.2 reads checked-hash pycs; DETPY_REWRITE_OWN=1 uses detpy's own format anyway (tests)
+        hashed = (b"\x03\x00\x00\x00" in rw._read_pyc.__code__.co_consts
+                  and os.environ.get("DETPY_REWRITE_OWN") != "1")
+        real, read_pyc, write_pyc, cache_dir_of, tail, ext, key = (
+            rw._rewrite_test, rw._read_pyc, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL, rw.PYC_EXT,
+            rw.assertstate_key)
+        originals = (rw.rewrite_asserts, rw.AssertionRewriter)
+    except (ImportError, AttributeError):
+        return False
+    enabled = os.environ.get("DETPY_REWRITE_CACHE", "1") != "0"
+    memo: list = []
+
+    def keyed_tail(config):
+        """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written).
+
+        Review R-017b F1: the key holds a digest of the rewriter as loaded (``_rewriter_digest``), so a plugin or
+        conftest that patches a method of ``AssertionRewriter`` (or a helper of ``rewrite.py``) gets its own pycs.
+        It is re-checked at each read and write by the identity of the namespaces' values (cheap): a conftest
+        loaded later that patches the rewriter changes the key from then on."""
+        if not enabled or (rw.rewrite_asserts, rw.AssertionRewriter) != originals:
+            return None
+        snap = _rewriter_snapshot(rw)
+        if not memo or memo[0] != snap or memo[2] is not config:
+            memo[:] = [snap, _rewrite_key(config, rw), config]
+        k = memo[1]
+        return None if k is None else tail[:-len(ext)] + ".det-" + k + ext
+
+    import hashlib
+    from importlib.util import MAGIC_NUMBER
+
+    def _own_check(source_bytes: bytes) -> bytes:
+        return hashlib.sha256(MAGIC_NUMBER + source_bytes).digest()
+
+    def _read_pyc(source, pyc, trace=lambda x: None):
+        config = _REWRITE_CONFIG[0]
+        if config is None:
+            return None
+        t = keyed_tail(config)
+        name = pyc.name
+        if t is None or not name.endswith(tail):
+            return None
+        path = pyc.with_name(name[:-len(tail)] + t)
+        if hashed:
+            return read_pyc(source, path, trace)
+        # pytest < 9.2 writes timestamp pycs ((mtime, size): a same-size edit in the same second keeps the old code,
+        # review R-015). detpy's own format instead: a header, the SHA-256 of (interpreter magic, source), the code.
+        # Review R-023 (speed): without a cache every --det session, and every worker of --det -n, rewrote every
+        # test module again (litellm: about a third of its collection).
+        try:
+            with open(path, "rb") as fh:
+                data = fh.read()
+            if data[:8] != _OWN_MAGIC or data[8:40] != _own_check(source.read_bytes()):
+                return None
+            return marshal.loads(data[40:])
+        except (OSError, ValueError, EOFError, TypeError):
+            return None
+
+    def _rewrite_test(fn, config):
+        stamp, co = real(fn, config)
+        t = keyed_tail(config)
+        if t is None:
+            return stamp, co
+        cache_dir = cache_dir_of(fn)
+        target = cache_dir / (fn.name[:-3] + t)
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+            if hashed:
+                write_pyc(config.stash[key], co, stamp, target)
+            else:
+                body = _OWN_MAGIC + _own_check(fn.read_bytes()) + marshal.dumps(co)
+                tmp = f"{target}.{os.getpid()}"
+                with open(tmp, "wb") as fh:
+                    fh.write(body)
+                os.replace(tmp, target)
+        except (OSError, KeyError):
+            pass
+        return stamp, marshal.loads(marshal.dumps(co))
+
+    real_exec = rw.AssertionRewritingHook.exec_module
+
+    def exec_module(self, module):
+        # the configuration this hook rewrites for: _read_pyc has no config argument
+        prev, _REWRITE_CONFIG[0] = _REWRITE_CONFIG[0], getattr(self, "config", None)
+        try:
+            return real_exec(self, module)
+        finally:
+            _REWRITE_CONFIG[0] = prev
+
+    patcher.set(rw, "_read_pyc", _read_pyc)
+    patcher.set(rw, "_rewrite_test", _rewrite_test)
+    patcher.set(rw.AssertionRewritingHook, "exec_module", exec_module)
+    return enabled
+
+
+_REWRITE_CONFIG: list = [None]
+_EARLY_REWRITE_CACHE = [False]
+
+
+def _early_rewrite_cache() -> None:
+    """Review R-023 (speed): in a re-executed ``--det`` process (``DETPY_REEXEC=1``: the controller after its re-exec
+    and every xdist worker), install the rewritten-module cache when detpy is imported, before pytest imports the
+    other plugins' modules: those are rewritten too, and ``PYTHONDONTWRITEBYTECODE`` stops pytest from caching them.
+    The cache is keyed on the configuration of the hook that rewrites (``_rewrite_key``) and validated by hash, so
+    installing it before ``--det`` is parsed is safe; it stays installed for the process."""
+    if os.environ.get("DETPY_REEXEC") != "1" or os.environ.get("DETPY_REWRITE_CACHE", "1") == "0":
+        return
+    from ._patch import Patcher
+
+    try:
+        _EARLY_REWRITE_CACHE[0] = _cache_rewritten_tests(None, Patcher())
+    except Exception:
+        _EARLY_REWRITE_CACHE[0] = False
+
+
+_OWN_MAGIC = b"DETPYRW1"  # detpy's rewritten-module cache format (pytest < 9.2), see _cache_rewritten_tests
+
+
+def _rewrite_key(config, rw) -> str | None:
+    """A digest of everything pytest's assertion rewrite depends on besides the source and the interpreter/pytest
+    version (which pytest's pyc check and name already cover): the ``enable_assertion_pass_hook`` ini option (the
+    one configuration value ``AssertionRewriter`` reads), the optimisation level ``compile`` uses, and the
+    rewriter's own source. None (no cache) when one of them cannot be read."""
+    import hashlib
+
+    try:
+        hook = bool(config.getini("enable_assertion_pass_hook"))
+        with open(rw.__file__, "rb") as fh:
+            code = hashlib.sha256(fh.read()).hexdigest()
+    except (OSError, ValueError, TypeError, AttributeError):
+        return None
+    loaded = _rewriter_digest(rw)
+    if loaded is None:
+        return None
+    parts = f"pass_hook={hook}\noptimize={sys.flags.optimize}\nrewriter={code}\nloaded={loaded}\n"
+    return hashlib.sha256(parts.encode()).hexdigest()[:16]
+
+
+def _rewriter_snapshot(rw) -> tuple:
+    """The identity of what the rewrite runs (compared at each read and write): ``rewrite_asserts``,
+    ``AssertionRewriter``, and the values of their module's and the class's namespaces."""
+    cls = rw.AssertionRewriter
+    return (rw.rewrite_asserts, cls, tuple(vars(cls).values()), tuple(vars(rw).values()))
+
+
+_MODULE_METADATA = frozenset({"__builtins__", "__file__", "__cached__", "__loader__", "__spec__"})
+_SIMPLE = (str, bytes, int, float, complex, bool, type(None), type(Ellipsis))
+
+
+def _rewriter_digest(rw, limit: int = 5000) -> str | None:
+    """Review R-017b F1: a digest of pytest's assertion rewriter *as loaded*, stable across runs.
+
+    It covers ``rewrite_asserts`` and every value of ``rewrite.py``'s namespace and of ``AssertionRewriter``'s (by
+    name). A function is its code (bytecode, constants, names, recursively; not its file name or line numbers, so
+    two installs of the same pytest share pycs), its defaults, its closure cells and the globals its code names.
+    Functions are followed wherever they are defined (a plugin's replacement method, and the original it wraps
+    from its closure); a function's globals are followed within its own module (a plugin's helpers), other
+    modules' objects are named. A class of ``rewrite.py`` (or of the referring function's module) is its name,
+    bases and namespace; other classes are named. A constant is its ``repr``, a module its name, anything else its
+    type. None (no cache) past ``limit`` objects."""
+    import hashlib
+    import types
+
+    h = hashlib.sha256()
+    seen: dict = {}
+    todo: list = []
+    home = rw.__name__
+
+    def name(v) -> str:
+        return f"{getattr(v, '__module__', None)}.{getattr(v, '__qualname__', '?')}"
+
+    def ref(v, mod: str | None) -> str:
+        """A token for ``v``; objects to follow are queued and named by their order. ``mod``: the module whose
+        classes and functions are followed (None: functions always)."""
+        if isinstance(v, _SIMPLE):
+            return f"{type(v).__name__}:{v!r}"
+        if isinstance(v, (tuple, list, frozenset, set)):
+            items = [ref(x, mod) for x in v]
+            if isinstance(v, (frozenset, set)):
+                items.sort()
+            return f"{type(v).__name__}({','.join(items)})"
+        if isinstance(v, dict):
+            return "dict(" + ",".join(sorted(f"{ref(k, mod)}={ref(x, mod)}" for k, x in v.items())) + ")"
+        if isinstance(v, (staticmethod, classmethod)):
+            return f"{type(v).__name__}({ref(v.__func__, None)})"
+        if isinstance(v, property):
+            return f"property({ref(v.fget, None)},{ref(v.fset, None)},{ref(v.fdel, None)})"
+        if isinstance(v, types.ModuleType):
+            return f"module:{v.__name__}"
+        if isinstance(v, (types.BuiltinFunctionType, types.MethodWrapperType, types.WrapperDescriptorType)):
+            return f"builtin:{name(v)}"
+        m = getattr(v, "__module__", None)
+        if m == __name__:  # detpy's own wrappers (_read_pyc, _rewrite_test): they do not change the code
+            return f"named:{name(v)}"
+        if isinstance(v, type):
+            follow = m == home or m == mod
+        elif isinstance(v, types.FunctionType) or hasattr(v, "__wrapped__"):
+            follow = mod is None or m == mod or m == home
+        else:
+            return f"other:{type(v).__module__}.{type(v).__qualname__}"
+        if not follow:
+            return f"named:{name(v)}"
+        if id(v) not in seen:
+            seen[id(v)] = (len(seen), v)
+            todo.append(v)
+        return f"obj#{seen[id(v)][0]}"
+
+    def code(co) -> str:
+        consts = ",".join(code(c) if isinstance(c, types.CodeType) else ref(c, None) for c in co.co_consts)
+        return (f"code({co.co_qualname}|{co.co_argcount},{co.co_posonlyargcount},{co.co_kwonlyargcount},"
+                f"{co.co_flags}|{co.co_code.hex()}|{','.join(co.co_names)}|{','.join(co.co_varnames)}|"
+                f"{','.join(co.co_freevars)}|{','.join(co.co_cellvars)}|{consts})")
+
+    def names(co):
+        yield from co.co_names
+        for c in co.co_consts:
+            if isinstance(c, types.CodeType):
+                yield from names(c)
+
+    h.update(f"rewrite_asserts={ref(rw.rewrite_asserts, None)}\nclass={ref(rw.AssertionRewriter, None)}\n".encode())
+    for n in sorted(vars(rw)):
+        if n not in _MODULE_METADATA:  # where it was loaded from: not what it does
+            h.update(f"rw.{n}={ref(vars(rw)[n], None)}\n".encode())
+    while todo:
+        if len(seen) > limit:
+            return None
+        v = todo.pop(0)
+        i = seen[id(v)][0]
+        if isinstance(v, type):
+            body = ";".join(f"{n}={ref(x, None)}" for n, x in sorted(vars(v).items(), key=lambda kv: kv[0])
+                            if n not in ("__dict__", "__weakref__"))
+            bases = ",".join(ref(b, v.__module__) for b in v.__bases__)
+            h.update(f"#{i}=class {name(v)}({bases}){{{body}}}\n".encode())
+            continue
+        f = inspect_unwrap(v)
+        co = getattr(f, "__code__", None)
+        if co is None:
+            h.update(f"#{i}=callable {type(v).__module__}.{type(v).__qualname__}\n".encode())
+            continue
+        cells = ",".join(ref(c.cell_contents, None) if _cell_full(c) else "empty" for c in (f.__closure__ or ()))
+        g, fm = f.__globals__, f.__module__
+        glob = ",".join(f"{n}={ref(g[n], fm)}" for n in sorted(set(names(co)) - _MODULE_METADATA) if n in g)
+        h.update(f"#{i}=function {code(co)} defaults={ref(f.__defaults__, None)} kw={ref(f.__kwdefaults__, None)} "
+                 f"cells=({cells}) globals=({glob})\n".encode())
+    return h.hexdigest()[:16]
+
+
+def inspect_unwrap(v):
+    """``v`` itself when it has code; else what it wraps (``functools.lru_cache`` and the like)."""
+    for _ in range(10):
+        if hasattr(v, "__code__") or not hasattr(v, "__wrapped__"):
+            return v
+        v = v.__wrapped__
+    return v
+
+
+def _cell_full(cell) -> bool:
+    try:
+        cell.cell_contents
+    except ValueError:
+        return False
+    return True
 
 
 def _owner(config) -> bool:
@@ -371,8 +833,19 @@ def pytest_configure(config):
 
 
 def _configure_det(config) -> None:
-    if config.pluginmanager.get_plugin("dsession") is not None or getattr(config.option, "numprocesses", None):
-        warnings.warn("detpy: pytest-xdist is not supported under --det (order is only fixed per worker)")
+    # pytest-xdist: the controller plans and merges, each worker writes its own trace (xdist.py)
+    wid = _xdist.worker_id(config)
+    if wid is not None:
+        S.worker = wid
+        config.pluginmanager.register(_xdist.Worker(config, wid), "detpy-xdist-worker")
+    elif _xdist.is_controller(config):
+        ctl = _xdist.Controller(config, S)
+        if getattr(config.option, "testrunuid", None) is None:
+            config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)
+        ctl.testrunuid = config.option.testrunuid
+        _xdist.export_controller_env(ctl.barrier)
+        S.controller = ctl
+        config.pluginmanager.register(ctl, "detpy-xdist-controller")
     root = str(config.rootpath)
     _sites.refresh(root)
     opt = config.option
@@ -381,6 +854,10 @@ def _configure_det(config) -> None:
     if "net" in _state.STATE.config.controls:
         S.net_mode = network.install(_PATCHER, opt.det_record, cassette, opt.det_allow_host)
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
+    if S.worker is not None:
+        S.trace_path = _xdist.worker_path(S.trace_path, S.worker)
+        if opt.det_record:
+            S.cassette_out = _xdist.worker_path(cassette, S.worker)
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
         proofcache.install(config)
@@ -397,6 +874,7 @@ def pytest_unconfigure(config):
     if _owner(config):
         _PATCHER.undo_all()
         clock.uninstall()
+        sqlvirt.uninstall()
         seeds.uninstall()
         network.uninstall()
         _state.STATE.recorder = None
@@ -405,19 +883,10 @@ def pytest_unconfigure(config):
         proofcache.uninstall()
         S.active = False
         S.config = None
-
-
-def _final_outcome(parts: dict) -> str:
-    setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
-    if setup is not None and setup != "passed":
-        main = setup if setup in ("skipped", "xfailed") else "error"
-    elif call is not None:
-        main = call
-    else:
-        main = "unknown"
-    if teardown not in (None, "passed", "skipped"):
-        main += "+teardown-error"
-    return main
+        if S.controller is not None:
+            os.environ.pop(_xdist.CONTROLLER_ENV, None)
+        S.controller = None
+        S.worker = None
 
 
 def _exception_of(report) -> list:
@@ -431,10 +900,12 @@ def _exception_of(report) -> list:
     return [etype, report.when, first[:200], where]
 
 
-def _explicit_order(config, items: list, path: str) -> list:
+def _explicit_order(config, items: list, path: str, wanted: list | None = None) -> list:
     """``--det-order``: the listed ids in the listed order; the rest is deselected."""
-    with open(path) as f:
-        wanted = [line.rstrip("\n") for line in f if line.strip() and not line.startswith("#")]
+    source = "--det-order" if wanted is None else "--det-plan"
+    if wanted is None:
+        with open(path) as f:
+            wanted = [line.rstrip("\n") for line in f if line.strip() and not line.startswith("#")]
     by_id = {i.nodeid: i for i in items}
     chosen = [by_id[n] for n in wanted if n in by_id]
     missing = [n for n in wanted if n not in by_id]
@@ -444,7 +915,7 @@ def _explicit_order(config, items: list, path: str) -> list:
         config.hook.pytest_deselected(items=dropped)
     S.order_missing = missing
     if missing:
-        S.adjustments.append(f"--det-order: {len(missing)} listed test ids not collected")
+        S.adjustments.append(f"{source}: {len(missing)} listed test ids not collected")
     return chosen
 
 
@@ -458,6 +929,7 @@ class _Outcomes:
     def __init__(self, path):
         self.path = path
         self.outcomes: dict[str, str] = {}
+        self.durations: dict[str, float] = {}
         self.parts: dict[str, dict] = {}
         self.exceptions: dict[str, list] = {}
 
@@ -468,7 +940,9 @@ class _Outcomes:
             o = report.outcome
         parts = self.parts.setdefault(report.nodeid, {})
         parts[report.when] = o
-        self.outcomes[report.nodeid] = _final_outcome(parts)
+        # per-test time (setup + call + teardown, real seconds): the walks' reuse by test time (round 3, item 7)
+        self.durations[report.nodeid] = round(self.durations.get(report.nodeid, 0.0) + float(report.duration or 0.0), 6)
+        self.outcomes[report.nodeid] = _det_outcome(parts.get("setup"), parts.get("call"), parts.get("teardown"))
         if report.failed and report.nodeid not in self.exceptions:
             self.exceptions[report.nodeid] = _exception_of(report)
 
@@ -477,7 +951,8 @@ class _Outcomes:
             return  # xdist worker: the controller writes the file
         os.makedirs(os.path.dirname(os.path.abspath(self.path)), exist_ok=True)
         with open(self.path, "w") as f:
-            json.dump({"outcomes": self.outcomes, "exceptions": self.exceptions, "exitstatus": int(exitstatus),
+            json.dump({"outcomes": self.outcomes, "durations": self.durations, "exceptions": self.exceptions,
+                       "exitstatus": int(exitstatus),
                        "order": [i.nodeid for i in getattr(session, "items", [])], **self.extra()}, f)
 
     def extra(self) -> dict:
@@ -525,9 +1000,10 @@ class _DetSession(_Outcomes):
                "controls": sorted(cfg.controls), "trace": S.trace_path, "order_missing": S.order_missing}
         pc = proofcache.PLUGIN
         if pc is not None:
-            out["cache"] = {**pc.summary_data(), "reused_ids": sorted(pc.hits), "verified_ids": sorted(pc.verifying),
-                            "not_cached_ids": pc.not_cached, "not_cached_where": pc.not_cached_where,
-                            "miss_ids": pc.misses}
+            out["cache"] = pc.outcomes_data()
+        if S.controller is not None:
+            out["order"] = list(S.order)
+            out["plan"] = S.controller.plan
         return out
 
     def pytest_report_header(self, config):
@@ -542,6 +1018,8 @@ class _DetSession(_Outcomes):
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
         if S.adjustments:
             lines.append(f"detpy: adjusted: {'; '.join(S.adjustments)}")
+        if S.controller is not None:
+            lines.extend(S.controller.header_lines())
         return lines
 
     # Ordering ---------------------------------------------------------------
@@ -568,6 +1046,8 @@ class _DetSession(_Outcomes):
         order_file = config.getoption("det_order", None)
         if order_file:
             ordered = _explicit_order(config, ordered, order_file)
+        elif S.plan_ids is not None:
+            ordered = _explicit_order(config, ordered, config.getoption("det_plan"), S.plan_ids)
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
@@ -601,6 +1081,8 @@ class _DetSession(_Outcomes):
             "rebound_references": len(S.rebound),
             "order_digest": S.order_digest,
         }
+        if S.worker is not None:
+            meta["worker"] = S.worker
         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
 
     # Per-test control ---------------------------------------------------------
@@ -612,10 +1094,11 @@ class _DetSession(_Outcomes):
             yield
             return
         pc = proofcache.PLUGIN
-        if pc is not None and item.nodeid in pc.hits:
+        receipt = pc.sess.hit(item.nodeid) if pc is not None else None
+        if receipt is not None:
             # reused with proof: nothing runs, the recorded fingerprint stands for the test
             yield
-            fp = pc.hits[item.nodeid].get("fingerprint")
+            fp = receipt.get("fingerprint")
             if fp:
                 S.fingerprints[item.nodeid] = fp
             return
@@ -644,16 +1127,19 @@ class _DetSession(_Outcomes):
                 item.user_properties.append(("detpy_fingerprint", fp))
 
     def pytest_sessionfinish(self, session, exitstatus):
+        st = _state.STATE
+        if S.controller is not None:
+            # xdist controller: no test ran here; merge the workers' traces (and cache shards, cassettes)
+            S.controller.finish(session, S.trace_path, self._controller_meta())
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.finish(session)
         super().pytest_sessionfinish(session, exitstatus)
-        st = _state.STATE
-        if st.recorder is not None:
+        if st.recorder is not None and S.controller is None:
             if not S.order_digest:  # collection failed before the trace was opened
                 st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
             st.recorder.close()
-        if S.net_mode == "record":
-            S.saved_cassette = network.save_recordings(st.config.cassette_path)
+        if S.net_mode == "record" and S.controller is None:
+            S.saved_cassette = network.save_recordings(S.cassette_out or st.config.cassette_path)
         baseline = session.config.getoption("det_compare")
         if baseline:
             try:
@@ -661,12 +1147,29 @@ class _DetSession(_Outcomes):
             except Exception as e:  # report, do not crash the session
                 S.compare_report = {"error": str(e)}
 
+    def _controller_meta(self) -> dict:
+        """Header metadata of the merged trace (the controller's view; the workers' headers stay in their traces)."""
+        cfg = _state.STATE.config
+        return {
+            "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
+            "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
+            "aslr_disabled": reexec.aslr_disabled(), "epoch_ns": cfg.epoch_ns,
+            "epoch_source": EPOCH_SOURCE.get("source"), "tick_ns": cfg.tick_ns, "tick_adapt": cfg.tick_adapt,
+            "sleep": cfg.sleep, "network": S.net_mode, "urandom_controlled": cfg.control_urandom,
+            "python": platform.python_version(), "implementation": platform.python_implementation(),
+            "platform": sys.platform, "pytest": pytest.__version__, "disabled_plugins": S.disabled_plugins,
+            "adjustments": S.adjustments, "order_digest": S.order_digest, "merged": True,
+        }
+
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
         tr = terminalreporter
         tr.section("detpy (Level 0)")
         cfg = _state.STATE.config
         tr.write_line(f"trace: {S.trace_path}  order digest: {S.order_digest}  seed: {cfg.seed}"
                       f"{' (shuffled)' if cfg.shuffle else ''}")
+        if S.controller is not None:
+            for line in S.controller.summary_lines():
+                tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
         if proofcache.PLUGIN is not None:
@@ -686,3 +1189,6 @@ class _DetSession(_Outcomes):
             if d and t["status"] == "diverged":
                 tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
                 tr.write_line(f"    {d['description']}")
+
+
+_early_rewrite_cache()

@@ -12,20 +12,25 @@ All clocks derive from one virtual nanosecond counter that advances by a fixed
 Blocking primitives that really time out (``threading.Condition.wait`` and
 everything built on it: ``Event.wait``, ``queue.Queue.get``, ...) advance the
 virtual clock by their timeout, so "wait up to N seconds" loops terminate.
+
+The clock and the stand-ins are Rust (``crates/detpy-py/src/level0.rs``, ``clock.rs``). This module keeps the real
+functions (module globals, which the stand-ins read at call time as the Python functions did), the patching, and the
+thin shims that must bind as methods. The Python originals: ``tests/rust_hotpaths_ref/_ref_l0_clock.py`` (round 1:
+the clock and the six ``time.*`` reads) and ``_ref_l0_clock_r2.py`` (round 2: everything else).
 """
 
 from __future__ import annotations
 
 import datetime as _dt
 import os
-import sys
+import sys  # noqa: F401  (read by the Rust stand-ins)
 import threading
 import time as _time
 import types
-import warnings
+import warnings  # noqa: F401  (read by the Rust stand-ins)
 
-from . import _state
-from ._patch import Patcher, disguise, nonbinding, rebind_module_references
+from . import _core, _state
+from ._patch import Patcher, binds_as_method, nonbinding, rebind_module_references
 
 NS = 1_000_000_000
 
@@ -70,242 +75,101 @@ class VirtualClock:
     (time-calibrated loops such as pytest-benchmark's) therefore sees time
     move faster and terminates, while the sequence of values stays a pure
     function of the sequence of events.
+
+    The state lives in Rust (``_core.clock_*``), where the ``time.*`` stand-ins below read it without a Python
+    frame; this object is the Python view of it (one clock per process). The Python original is
+    ``tests/rust_hotpaths_ref/_ref_l0_clock.py``.
     """
 
     def __init__(self, epoch_ns: int, tick_ns: int, adapt_after: int = 0) -> None:
-        self._lock = threading.RLock()  # re-entrant: a gc callback (hypothesis) reads the clock inside read()
-        self.epoch_ns = epoch_ns
-        self.base_tick_ns = tick_ns
-        self.tick_ns = tick_ns
-        self.adapt_after = adapt_after
-        self.streak = 0
-        self.elapsed = 0  # ns since installation
-        self.wall_offset = epoch_ns
-        self.test_start = 0
+        _core.clock_install(epoch_ns, tick_ns, adapt_after)
 
-    def read(self) -> int:
-        """Advance by one tick and return the elapsed counter."""
-        with self._lock:
-            self.elapsed += self.tick_ns
-            if self.adapt_after:
-                self.streak += 1
-                if self.streak >= self.adapt_after:
-                    self.tick_ns = min(max(1, self.tick_ns) * 2, MAX_TICK_NS)
-            return self.elapsed
-
-    def other_event(self) -> None:
-        if self.streak or self.tick_ns != self.base_tick_ns:
-            self.streak = 0
-            self.tick_ns = self.base_tick_ns
-
-    def advance(self, ns: int) -> None:
-        if ns > 0:
-            with self._lock:
-                self.elapsed += ns
-
-    def start_test(self) -> None:
-        _EXTERNAL["started"] = False
-        with self._lock:
-            self.streak = 0
-            self.tick_ns = self.base_tick_ns
-            self.test_start = self.elapsed
-            self.wall_offset = self.epoch_ns - self.elapsed
-
-    # Derived values ---------------------------------------------------
-    def wall_ns(self, e: int) -> int:
-        travel = _time_machine_ns(e)
-        return self.wall_offset + e if travel is None else travel
+    read = staticmethod(_core.clock_read)  # advance by one tick and return the elapsed counter
+    other_event = staticmethod(_core.clock_other_event)
+    advance = staticmethod(_core.clock_advance)
+    wall_ns = staticmethod(_core.clock_wall_ns)
+    start_test = staticmethod(_core.clock_start_test)  # and: no process started by the test yet
 
     @staticmethod
     def mono_ns(e: int) -> int:
         return _MONO_BASE_NS + e
 
+    def __getattr__(self, name):  # epoch_ns, base_tick_ns, tick_ns, adapt_after, streak, elapsed, ...
+        st = _core.clock_state()
+        if name in st:
+            return st[name]
+        raise AttributeError(name)
+
 
 CLOCK: VirtualClock | None = None
 
+# _time_machine_ns(e): wall time of an active ``time_machine`` travel, or None. time-machine patches the C builtins
+# (``time.time``, ``datetime.now``...), which detpy has replaced, so under --det its travel would be ignored. While a
+# travel is active the virtual wall clock returns its destination; a ticking travel advances with the *virtual*
+# counter (not real time) so the values stay deterministic. In Rust; the clock calls it directly.
+_time_machine_ns = _core.clock_time_machine_ns
 
-def _time_machine_ns(e: int) -> int | None:
-    """Wall time of an active ``time_machine`` travel, or None.
-
-    time-machine patches the C builtins (``time.time``, ``datetime.now``...),
-    which detpy has replaced, so under --det its travel would be ignored. While
-    a travel is active the virtual wall clock returns its destination; a ticking
-    travel advances with the *virtual* counter (not real time) so the values
-    stay deterministic.
-    """
-    tm = sys.modules.get("time_machine")
-    stack = getattr(tm, "traveller_stack", None) if tm is not None else None
-    if not stack:
-        return None
-    t = stack[-1]
-    dest = getattr(t, "_destination_timestamp_ns", None)
-    if dest is None:
-        return None
-    if not getattr(t, "_tick", True):
-        return dest
-    start = t.__dict__.setdefault("_detpy_start_elapsed", e)
-    return getattr(tm, "SYSTEM_EPOCH_TIMESTAMP_NS", 0) + dest + (e - start)
-
-
-def _rel(e: int) -> str:
-    assert CLOCK is not None
-    return str(e - CLOCK.test_start)
+_rel = _core.clock_rel  # str(e - test start)
 
 
 # Fake time functions ---------------------------------------------------------
-def time() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_time()
-    e = CLOCK.read()
-    _state.record("time", "time.time", _rel(e))
-    return CLOCK.wall_ns(e) / NS
+# In Rust (no Python frame per call): read the counter and record the event ("time", "time.<name>", _rel(e)) at the
+# caller's site, return the wall or monotonic value; with the clock not installed (a reference kept after
+# uninstall), the real function.
+time = _core.time
+time_ns = _core.time_ns
+monotonic = _core.monotonic
+monotonic_ns = _core.monotonic_ns
+perf_counter = _core.perf_counter
+perf_counter_ns = _core.perf_counter_ns
+_core.clock_set_hooks([real_time, real_time_ns, real_monotonic, real_monotonic_ns, real_perf_counter,
+                       real_perf_counter_ns], None)  # None: the Rust _time_machine_ns
+
+# sleep(secs): the real function's argument validation; records ("time", "time.sleep", ns), advances the virtual clock
+# and also waits for real when someone observes real time: --det-sleep=real, another thread (_other_threads_alive) or
+# a child process (_EXTERNAL, _children_alive) may need this time to make progress ("wait until the server is up"), or
+# an asyncio loop (which keeps real time) is running here (_in_event_loop) and its deadlines must see the sleep;
+# otherwise sleep(0) (still yield the GIL / scheduler).
+sleep = _core.sleep
+_other_threads_alive = _core.clock_other_threads_alive
+_in_event_loop = _core.clock_in_event_loop
+_children_alive = _core.clock_children_alive  # live child processes (Linux: /proc/self/task/*/children)
+
+# _EXTERNAL: set when the running test starts another process (subprocess, fork, spawn): from then on, until the test
+# ends, sleeps also wait for real, because the external work advances in real time even after it detached (daemons).
+# A Rust flag (``_core.clock_external_started()``), cleared by ``start_test``.
 
 
-def time_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_time_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.time_ns", _rel(e))
-    return CLOCK.wall_ns(e)
+def _mark_external(real, module=None, name=None):
+    """Stand-in for ``real`` that sets the flag, then calls it (a Rust callable, no Python frame).
 
-
-def monotonic() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_monotonic()
-    e = CLOCK.read()
-    _state.record("time", "time.monotonic", _rel(e))
-    return CLOCK.mono_ns(e) / NS
-
-
-def monotonic_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_monotonic_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.monotonic_ns", _rel(e))
-    return CLOCK.mono_ns(e)
-
-
-def perf_counter() -> float:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_perf_counter()
-    e = CLOCK.read()
-    _state.record("time", "time.perf_counter", _rel(e))
-    return CLOCK.mono_ns(e) / NS
-
-
-def perf_counter_ns() -> int:
-    if CLOCK is None:  # called through a reference kept after uninstall
-        return real_perf_counter_ns()
-    e = CLOCK.read()
-    _state.record("time", "time.perf_counter_ns", _rel(e))
-    return CLOCK.mono_ns(e)
-
-
-def sleep(secs: float) -> None:
-    if CLOCK is None:
-        return real_sleep(secs)
-    # Same argument validation as the real function.
-    if not isinstance(secs, (int, float)):
-        try:
-            secs = float(secs)  # Decimal, Fraction, numpy scalars
-        except (TypeError, ValueError):
-            raise TypeError(f"'{type(secs).__name__}' object cannot be interpreted as an integer or float")
-    if secs != secs:
-        raise ValueError("Invalid value NaN (not a number)")
-    if secs < 0:
-        raise ValueError("sleep length must be non-negative")
-    ns = int(secs * NS)
-    CLOCK.other_event()  # a sleep is not a read: it ends a run of reads
-    _state.record("time", "time.sleep", str(ns))
-    CLOCK.advance(ns)
-    if (_state.STATE.config.sleep == "real" or _other_threads_alive() or _in_event_loop()
-            or _EXTERNAL["started"] or _children_alive()):
-        # Someone observes real time: another thread or a child process may need
-        # this time to make progress ("wait until the server is up"), or an
-        # asyncio loop (which keeps real time) is running here and its
-        # deadlines must see the sleep.
-        # Wait for real as well; the virtual clock still advances.
-        real_sleep(secs)
+    A function (``subprocess.Popen.__init__``) gets a stand-in that binds like it; a builtin patched on module
+    ``module`` as ``name`` (``os.fork``...) one that does not, disguised as ``module.name`` (pickled by reference).
+    """
+    binds = module is None or binds_as_method(real)
+    stand_in = _core.clock_external_stand_in(real, binds)
+    stand_in.__wrapped__ = real
+    if binds:
+        stand_in.__module__ = __name__
+        for attr in ("__name__", "__qualname__", "__doc__"):
+            try:
+                setattr(stand_in, attr, getattr(real, attr))
+            except (AttributeError, TypeError):
+                pass
     else:
-        real_sleep(0)  # still yield the GIL / scheduler
+        stand_in.__name__ = stand_in.__qualname__ = name
+        stand_in.__module__ = module
+        stand_in.__doc__ = getattr(real, "__doc__", None)
+    return stand_in
 
 
-# Set when the running test starts another process (subprocess, fork, spawn):
-# from then on, until the test ends, sleeps also wait for real, because the
-# external work advances in real time even after it detached (daemons).
-_EXTERNAL = {"started": False}
-
-
-def _mark_external(real):
-    def wrapper(*args, **kwargs):
-        _EXTERNAL["started"] = True
-        return real(*args, **kwargs)
-
-    wrapper.__wrapped__ = real
-    for attr in ("__name__", "__qualname__", "__doc__"):
-        try:
-            setattr(wrapper, attr, getattr(real, attr))
-        except (AttributeError, TypeError):
-            pass
-    return wrapper
-
-
-def _children_alive() -> bool:
-    """True if this process has live child processes (Linux: /proc children lists)."""
-    try:
-        for tid in _real_listdir("/proc/self/task"):
-            with open(f"/proc/self/task/{tid}/children") as f:
-                if f.read().strip():
-                    return True
-    except OSError:
-        return False
-    return False
-
-
-def _in_event_loop() -> bool:
-    aio = sys.modules.get("asyncio")
-    if aio is None:
-        return False
-    try:
-        return aio._get_running_loop() is not None
-    except Exception:  # pragma: no cover
-        return False
-
-
-def _other_threads_alive() -> bool:
-    for t in threading.enumerate():
-        if t is not threading.current_thread() and not t.name.startswith("detpy-"):
-            return True
-    return False
-
-
-def _wall_secs(op: str) -> float:
-    if CLOCK is None:
-        return real_time()
-    e = CLOCK.read()
-    _state.record("time", op, _rel(e), depth=2)
-    return CLOCK.wall_ns(e) / NS
-
-
-def localtime(secs=None):
-    return real_localtime(_wall_secs("time.localtime") if secs is None else secs)
-
-
-def gmtime(secs=None):
-    return real_gmtime(_wall_secs("time.gmtime") if secs is None else secs)
-
-
-def ctime(secs=None):
-    return real_ctime(_wall_secs("time.ctime") if secs is None else secs)
-
-
-def asctime(t=None):
-    return real_asctime(real_localtime(_wall_secs("time.asctime")) if t is None else t)
-
-
-def strftime(fmt, t=None):
-    return real_strftime(fmt, real_localtime(_wall_secs("time.strftime")) if t is None else t)
-
+# localtime(secs=None), gmtime(secs=None), ctime(secs=None), asctime(t=None), strftime(fmt, t=None): the real function,
+# of the virtual wall clock (read and recorded as "time.<name>") when no time is given. In Rust.
+localtime = _core.localtime
+gmtime = _core.gmtime
+ctime = _core.ctime
+asctime = _core.asctime
+strftime = _core.strftime
 
 _REALTIME = {getattr(_time, n) for n in ("CLOCK_REALTIME", "CLOCK_TAI") if hasattr(_time, n)}
 _MONOTONIC = {
@@ -314,29 +178,10 @@ _MONOTONIC = {
     if hasattr(_time, n)
 }
 
-
-def clock_gettime_ns(clk_id):
-    if CLOCK is None:
-        return real_clock_gettime_ns(clk_id)
-    if clk_id in _REALTIME:
-        e = CLOCK.read()
-        _state.record("time", "time.clock_gettime", _rel(e))
-        return CLOCK.wall_ns(e)
-    if clk_id in _MONOTONIC:
-        e = CLOCK.read()
-        _state.record("time", "time.clock_gettime", _rel(e))
-        return CLOCK.mono_ns(e)
-    return real_clock_gettime_ns(clk_id)
-
-
-def clock_gettime(clk_id):
-    if CLOCK is None:
-        return real_clock_gettime(clk_id)
-    if clk_id in _REALTIME or clk_id in _MONOTONIC:
-        e = CLOCK.read()
-        _state.record("time", "time.clock_gettime", _rel(e))
-        return (CLOCK.wall_ns(e) if clk_id in _REALTIME else CLOCK.mono_ns(e)) / NS
-    return real_clock_gettime(clk_id)
+# clock_gettime(_ns)(clk_id): the virtual wall clock for the _REALTIME ids, the virtual monotonic clock for the
+# _MONOTONIC ones (recorded as "time.clock_gettime"), the real function for the others. In Rust.
+clock_gettime_ns = _core.clock_gettime_ns
+clock_gettime = _core.clock_gettime
 
 
 # datetime ---------------------------------------------------------------------
@@ -345,20 +190,20 @@ def clock_gettime(clk_id):
 _real_dt_now = real_datetime.__dict__["now"]
 _real_dt_utcnow = real_datetime.__dict__["utcnow"]
 
+# _dt_now(cls, tz=None), _dt_utcnow(cls) (with its DeprecationWarning from 3.12, attributed to the caller): the
+# functions of the ``now`` / ``utcnow`` classmethods, in Rust: ``cls.fromtimestamp`` of the virtual wall clock
+# (recorded as "datetime.now" / "datetime.utcnow"). A subclass whose ``fromtimestamp`` is Python code gets the
+# functions below instead, so that this code runs under a detpy frame, as it did.
+_dt_now = _core._dt_now
+_dt_utcnow = _core._dt_utcnow
 
-def _dt_now(cls, tz=None):
-    return cls.fromtimestamp(_wall_secs("datetime.now"), tz)
+
+def _dt_now_py(cls, tz):
+    return cls.fromtimestamp(_core.clock_wall_secs("datetime.now", 1), tz)
 
 
-def _dt_utcnow(cls):
-    if sys.version_info >= (3, 12):
-        warnings.warn(
-            "datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. "
-            "Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-    return cls.fromtimestamp(_wall_secs("datetime.utcnow"), _dt.timezone.utc).replace(tzinfo=None)
+def _dt_utcnow_py(cls):  # the warning was given
+    return cls.fromtimestamp(_core.clock_wall_secs("datetime.utcnow", 1), _dt.timezone.utc).replace(tzinfo=None)
 
 
 # date.today() / datetime.today() are not replaced: CPython's implementation
@@ -367,27 +212,25 @@ def _dt_utcnow(cls):
 
 
 # Wait primitives -----------------------------------------------------------------
+# The timeout rules are Rust (``_core.clock_condition_wait``, ``clock_selector_select``, ``clock_lock_acquire``): a
+# wait that times out advances the virtual clock by its timeout. The methods below are one-line shims because they
+# must bind as methods; they keep a detpy frame above the real wait, which ends the call-site search of whatever
+# records under it, as before.
 _real_condition_wait = threading.Condition.wait
+_wait = _core.clock_condition_wait
+_select = _core.clock_selector_select
+_lock_acquire = _core.clock_lock_acquire
 
 
 def _condition_wait(self, timeout=None):
-    got = _real_condition_wait(self, timeout)
-    if not got and timeout is not None and timeout > 0 and CLOCK is not None:
-        CLOCK.advance(int(timeout * NS))
-    return got
+    return _wait(self, timeout)
 
 
 def _wrap_selector_select(real):
     def select(self, timeout=None):
-        ready = real(self, timeout)
-        if not ready and timeout is not None and timeout > 0 and CLOCK is not None:
-            # Same rule as Condition.wait: a wait that times out advances the
-            # virtual clock by its timeout (asyncio.sleep, loop deadlines).
-            # asyncio asks for "deadline - now" (a few microseconds less than the
-            # delay the code requested): round up to the millisecond so the
-            # virtual clock never shows less than the requested delay.
-            CLOCK.advance(-(-int(timeout * NS) // 1_000_000) * 1_000_000)
-        return ready
+        # asyncio.sleep, loop deadlines; rounded up to the millisecond (asyncio asks for "deadline - now", a few
+        # microseconds less than the delay the code requested)
+        return _select(real, self, timeout)
 
     select.__wrapped__ = real
     return select
@@ -407,16 +250,16 @@ class _TimedLock:
         self._lock = lock
 
     def acquire(self, blocking=True, timeout=-1):
-        got = self._lock.acquire(blocking, timeout)
-        if not got and blocking and timeout is not None and timeout > 0 and CLOCK is not None:
-            CLOCK.advance(int(timeout * NS))
-        return got
+        return _lock_acquire(self._lock, blocking, timeout)
 
     def release(self):
         self._lock.release()
 
     def __enter__(self):
-        return self.acquire()
+        # a with statement has no timeout: enter the real lock through its own __enter__, as a plain ``with lock:``
+        # does (round 3, item 8: tools that watch ``lock.acquire``, such as blockbuster, see what they see without
+        # --det; calling acquire here made pydantic-ai's uuid7 lock a "blocking call" under contention)
+        return self._lock.__enter__()
 
     def __exit__(self, *exc):
         self._lock.release()
@@ -477,6 +320,7 @@ def _timed_factory(real):
 
 
 # Installation ---------------------------------------------------------------------
+
 # Stdlib modules that bind clock functions at import time and use them for real
 # blocking waits: import them now so they keep the *real* functions.
 _PRELOAD = ("threading", "queue", "subprocess", "sched", "socketserver", "selectors", "asyncio",
@@ -493,6 +337,7 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         except Exception:  # pragma: no cover - optional modules
             pass
     CLOCK = VirtualClock(epoch_ns, tick_ns, adapt_after)
+    _core.clock_activate(True)
     if adapt_after:
         _state._on_other_event = CLOCK.other_event
     fakes = {
@@ -506,7 +351,8 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         fakes["clock_gettime_ns"] = clock_gettime_ns
     replacements = {}
     for name, fake in fakes.items():
-        stand_in = disguise(fake, "time", name)
+        # the stand-ins are Rust builtins (whose __module__ disguise would rewrite in place): wrap them directly
+        stand_in = nonbinding(fake, "time", name)
         real = patcher.set(_time, name, stand_in)
         replacements[id(real)] = (real, stand_in)
     patcher.set_type_attr(real_datetime, "now", classmethod(_dt_now))
@@ -519,7 +365,7 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
     patcher.set(subprocess.Popen, "__init__", _mark_external(subprocess.Popen.__init__))
     for name in ("fork", "forkpty", "posix_spawn", "posix_spawnp", "spawnv", "spawnve", "system"):
         if hasattr(os, name):
-            patcher.set(os, name, _mark_external(getattr(os, name)))
+            patcher.set(os, name, _mark_external(getattr(os, name), os.__name__, name))
     import selectors
 
     for name in ("SelectSelector", "PollSelector", "EpollSelector", "DevpollSelector", "KqueueSelector"):
@@ -536,9 +382,13 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
 def uninstall() -> None:
     global CLOCK
     CLOCK = None
+    _core.clock_activate(False)
     _state._on_other_event = None
 
 
 def start_test() -> None:
     if CLOCK is not None:
         CLOCK.start_test()
+
+
+_core.clock_configure(globals())

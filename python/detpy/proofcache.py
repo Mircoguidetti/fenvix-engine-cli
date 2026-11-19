@@ -16,11 +16,6 @@ digests). What counts as an input (each one recorded while the test runs):
   makes the whole environment an input);
 * **runtime identity**: interpreter (version and binary), platform, installed
   distributions;
-* **everything an earlier context of the same process depended on** (review
-  R-020, prefix rule): a test, fixture or collection that ran before the test
-  can leave state it reads without any event (``functools.lru_cache``, a
-  module-level dict, a registry filled on first use), so their code, files,
-  environment variables, distributions and refusals are inputs too;
 * **configuration**: pytest version, options and ini, plugins, the Level 0
   controls. Under ``--det`` the clock, randomness, hash seed and network are
   controlled, so they are configuration, not hidden inputs; the clock's epoch
@@ -44,11 +39,13 @@ import platform
 import random
 import sys
 import time
-from types import CodeType, FunctionType
+from types import FunctionType
 
 import pytest
 
-from . import __version__, _codefacts, _core, _sites, _state, distid, follow
+from . import __version__, _codefacts, _core, _sites, _state, follow
+
+_sql_connect_mode = _core.sql_connect_mode
 
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
@@ -58,40 +55,20 @@ _now = time.time
 _mon = getattr(sys, "monitoring", None)
 AVAILABLE = _mon is not None
 
-# context names: "" startup, "s" between tests, "c|<file>" collection of a file,
-# "f|<scope>|<baseid>|<name>" setup of a wider-scoped fixture, "t|<nodeid>" a test
-_GLOBAL_CTX = ("", "s")
-
-_AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
+# context names: "" startup, "s" between tests, "c|<file>" collection of a file, "f|<scope>|<baseid>|<name>" setup
+# of a wider-scoped fixture, "t|<nodeid>" a test, "i" / "i|<file>" import time. The capture's rules (skipped
+# paths, write events, spawn events, ...) are in crates/detpy-py/src/capture.rs.
+_AUDIT_EVENTS = ("exec", "open", "sqlite3.connect", "os.listdir", "os.scandir", "socket.connect", "socket.sendto", "socket.sendmsg",
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
                  "os.link")
-_SPAWN = {"subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"}
-_WRITE_EVENTS = {"os.remove": (0,), "os.rename": (0, 1), "os.mkdir": (0,), "os.rmdir": (0,),
-                 "shutil.rmtree": (0,), "shutil.copyfile": (1,), "shutil.move": (0, 1), "os.symlink": (1,),
-                 "os.link": (1,), "os.truncate": (0,)}
-_SKIP_PARTS = (os.sep + "__pycache__" + os.sep, os.sep + ".git" + os.sep, os.sep + ".pytest_cache",
-               os.sep + ".mypy_cache", os.sep + ".hypothesis" + os.sep, os.sep + ".detpy" + os.sep)
-# data reads: the same, except .git/ (review R-009 F5: a test that reads HEAD and its ref in-process depends on
-# them; objects are content-addressed, so a changed commit always comes with a changed ref file)
-_SKIP_DATA = tuple(x for x in _SKIP_PARTS if x != os.sep + ".git" + os.sep)
-_SOURCE_SUFFIXES = (".py", ".pyc", ".pyw")
-_IMPORTABLE_ENDINGS = (".py", ".pyc", ".pyw", ".so", ".pyd")  # proof::IMPORTABLE_ENDINGS
-_IMPORTABLE_KEY = "/\x01importable"  # proof::IMPORTABLE_SUFFIX
-
-
-def _detpy_native(p: str) -> bool:
-    """detpy's own native files (its extension, the clock shim it builds in the cache directory)."""
-    return p.startswith(_DETPY_DIR) or os.path.basename(p).startswith("clockshim-")
-_STATS_PER_DIR = 8  # existence checks of one directory's entries kept one by one; more become its listing with kinds
-_O_ACC = os.O_RDONLY | os.O_WRONLY | os.O_RDWR
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_receipts", "det_cache_shared", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -99,11 +76,16 @@ _VOLATILE_OPTIONS = {
     "inifilename", "rootdir", "confcutdir", "keyword", "markexpr", "deselect", "ignore", "ignore_glob",
     "continue_on_collection_errors", "numprocesses", "dist", "tx", "det_epoch", "det_cache_max_age",
     "det_cache_epoch_window",
+    # pytest-xdist's options (set differently in its controller, its workers and a serial session) and detpy's
+    # plan replay: under --det the plan is not an input of a test's result (docs/PARALLEL-PROOF-DESIGN.md 2.5)
+    "loadgroup", "looponfail", "distload", "maxprocesses", "maxworkerrestart", "loadscopereorder", "px",
+    "testrunuid", "rsyncdir", "rsyncignore", "maxschedchunk", "det_plan", "det_plan_worker",
 }
 
 
 # detpy's own bookkeeping variables (re-exec, bytecode cache): set by detpy itself, never a test input
-_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS"})
+_DETPY_OWN_ENV = frozenset({"DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS",
+                            "DETPY_XDIST_ENV"})
 _DETPY_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 
@@ -111,8 +93,11 @@ def _ctx_file(nodeid: str) -> str:
     return nodeid.split("::", 1)[0]
 
 
-# ---------------------------------------------------------------------------
-# entry line (as in the cache-skip study's tracer)
+# Line capture granularity (experiment, DETPY_CACHE_LINES): "line" (default) arms every code object with LINE;
+# "code" arms plain functions (not module or class bodies, not generators or coroutines) with PY_START only and
+# records one location per start (the function's last line), see REPORT-2. The entry line and that line are read
+# from the bytecode in Rust (CaptureCore.arm): the opcodes it needs are passed in.
+_CODE_LEVEL = os.environ.get("DETPY_CACHE_LINES", "line") == "code"
 import opcode as _opcode  # noqa: E402
 
 _RESUME = _opcode.opmap.get("RESUME", -1)
@@ -120,177 +105,27 @@ _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GE
             if n in _opcode.opmap}
 
 
-def entry_line(code) -> int | None:
-    """The line ``LINE`` alone never reports on entry (one-line functions, lambdas, docstring-only bodies)."""
-    co = code.co_code
-    r = 0
-    while r < len(co) and co[r] in _PRELUDE:
-        r += 2
-    if r + 2 >= len(co) or co[r] != _RESUME:
-        return None
-    lr = ln = None
-    for start, end, line in code.co_lines():
-        if start <= r < end:
-            lr = line
-        if start <= r + 2 < end:
-            ln = line
-            break
-    return ln if ln is not None and ln == lr else None
-
-
 # ---------------------------------------------------------------------------
-class Capture:
-    """Records, per context, executed code, data reads, environment reads and events."""
+class Capture(_core.CaptureCore):
+    """Records, per context, executed code, data reads, environment reads and events.
+
+    The capture itself is Rust (``_core.CaptureCore``, ``crates/detpy-py/src/capture.rs``): the audit hook, reads
+    and writes, contexts and switches, environment reads, Level 0 events, the arming of code objects. This class
+    keeps what is interface: ``sys.monitoring`` and audit-hook registration, the ``sqlite3.connect`` patch and the
+    child follower's crediting. The Python original is ``tests/rust_hotpaths_ref/_ref_proofcache.py``.
+    """
+
+    def __new__(cls, root: str, env0: dict, hot: int = 16):
+        return super().__new__(cls, os.path.realpath(root), env0, hot, _DETPY_DIR, _RESUME, sorted(_PRELUDE),
+                               _CODE_LEVEL, (os.O_RDONLY, os.O_WRONLY, os.O_RDWR, os.O_CREAT, os.O_EXCL, os.O_TRUNC,
+                                             _O_TMPFILE))
 
     def __init__(self, root: str, env0: dict, hot: int = 16):
-        self.root = os.path.realpath(root)
-        self.root_sep = self.root + os.sep
-        self.env0 = env0
-        self.ctx = ""
-        self.ctx_ix: dict[str, int] = {"": 0}
-        self.ctx_names: list[str] = [""]
-        self.segs: list[tuple[int, int]] = [(0, 0)]
-        self.tool = None
-        self.rec = None
         self.hot = hot
-        self._wanted: dict[str, bool] = {}
-        self.fid: dict[str, int] = {}
-        self.fnames: list[str] = []  # fid -> path relative to root
-        self._armed: set[int] = set()
-        self._events: dict[int, int] = {}
-        self.preloaded: set[str] = set()
-        # per context: data deps {path: dep}, flags
-        self.data: dict[int, dict[str, str]] = {}
-        # per context: existence checks {path: "s:<kind>"} (review R-020b N3, O2); kept apart from
-        # ``data`` so that a check never replaces the content digest of a file another context read
-        self.sdata: dict[int, dict[str, str]] = {}
-        self._stat_saved: list = []
-        self._in_stat = False
-        self._maps_seen: set = set()
-        self._maps_len = -1
-        self._maps_text = ""
-        self._maps_baseline = True
-        self.env: dict[int, set] = {}
-        self.flags: dict[int, set] = {}  # "net", "spawn", "proc", "time", "entropy", "netrec", "foreign:<path>"
-        self.why: dict[tuple, str] = {}  # (context, flag) -> first occurrence (what and where), for the reports
-        self.writers: dict[str, set] = {}  # abs path -> context indices that wrote it
-        self._hashed: dict[str, str] = {}  # abs path -> dep at first read in the session
-        self.loaded_order: list[tuple[str, int]] = []  # (rel module file, index of the test after which it was seen)
-        self._seen_mods: set[str] = set()
-        self._nmods = 0
-        self.basetemp: str | None = None
-        self.site_dirs: tuple = ()
-        self.stdlib_dirs: tuple = ()
-        self.dist_info_ok: tuple = ()
-        self.import_ctx = -1  # pseudo context for import-time data/env/flags
-        self.active = False
-        self._socks: dict | None = None  # fd -> socket inode at the last scan
         self.follower: follow.Follower | None = None
-        self.child_entropy = 0  # entropy draws of followed children (not controlled, not refused)
-        self.children = 0  # followed children (spawn calls)
-        self.timeline: list[tuple[float, int]] = [(_now(), 0)]  # (real time, context) at every switch
-        self.dists: distid.Tracker | None = None  # --det-cache-dists (prototype): per-distribution identity
+        self._sqlite_saved: list = []
 
-    # -- contexts -------------------------------------------------------------
-    def ctx_index(self, name: str) -> int:
-        i = self.ctx_ix.get(name)
-        if i is None:
-            i = self.ctx_ix[name] = len(self.ctx_names)
-            self.ctx_names.append(name)
-        return i
-
-    def switch(self, name: str) -> None:
-        if name == self.ctx:
-            return
-        if self.active:
-            # startup sockets (pytest, plugins, the runner) are the baseline; the scan's own reads are not inputs
-            self.active = False
-            try:
-                prev = self.ctx_index(self.ctx) if self.ctx else None
-                self._scan_sockets(prev)
-                self._scan_maps(prev)
-            finally:
-                self.active = True
-        self.ctx = name
-        i = self.ctx_index(name)
-        self.timeline.append((_now(), i))
-        if self.rec is None:
-            return
-        n = len(self.rec)
-        if self.segs[-1][1] == n:
-            self.segs[-1] = (i, n)
-        else:
-            self.segs.append((i, n))
-        hot = self.rec.switch()
-        if hot:
-            set_local, tool, ev = _mon.set_local_events, self.tool, self._events
-            for code in hot:
-                set_local(tool, code, 0)
-                set_local(tool, code, ev[id(code)])
-
-    def _cur(self) -> int:
-        if self.rec is not None and self.rec.import_depth:
-            return self._import_ctx()
-        return self.ctx_ix[self.ctx]
-
-    def _import_ctx(self) -> int:
-        """Import time: the context of the innermost repository module body running (``i|<path>``).
-
-        A test module's import-time reads serve only its own tests (unless another module imports it); any
-        other module's are inputs of every test (``_record_all`` decides).
-        """
-        f = _getframe(2)
-        while f is not None:
-            c = f.f_code
-            if c.co_name == "<module>" and self._want(c.co_filename):
-                return self.ctx_index("i|" + self.fnames[self.fid[c.co_filename]])
-            f = f.f_back
-        return self.import_ctx
-
-    # -- code ---------------------------------------------------------------------
-    def _want(self, filename: str) -> bool:
-        w = self._wanted.get(filename)
-        if w is None:
-            w = False
-            if filename and not filename.startswith("<"):
-                try:
-                    p = os.path.realpath(os.path.abspath(filename))
-                except (OSError, ValueError):
-                    p = ""
-                w = p.startswith(self.root_sep) and not any(s in p for s in _SKIP_PARTS)
-                if w:
-                    self.fid[filename] = len(self.fnames)
-                    self.fnames.append(p[len(self.root_sep):].replace(os.sep, "/"))
-            self._wanted[filename] = w
-        return w
-
-    def arm(self, code) -> None:
-        stack = [code]
-        set_local, tool = _mon.set_local_events, self.tool
-        LINE, START, RET = _mon.events.LINE, _mon.events.PY_START, _mon.events.PY_RETURN
-        while stack:
-            c = stack.pop()
-            if id(c) in self._armed:
-                continue
-            fn = c.co_filename
-            w = self._wanted.get(fn)
-            if w is None:
-                w = self._want(fn)
-            if not w:
-                continue
-            self._armed.add(id(c))
-            e = entry_line(c)
-            module = c.co_name == "<module>"
-            ev = LINE
-            if e is not None or module:
-                ev |= START
-            if module:
-                ev |= RET
-            self._events[id(c)] = ev
-            self.rec.add_code(c, self.fid[fn], -1 if e is None else e, module)
-            set_local(tool, c, ev)
-            stack.extend(k for k in c.co_consts if isinstance(k, CodeType))
-
+    # -- start and stop -----------------------------------------------------------------
     def start(self) -> None:
         for tid in (_mon.COVERAGE_ID, 4, 3, 2, 5):
             if _mon.get_tool(tid) is None:
@@ -301,26 +136,22 @@ class Capture:
         _mon.use_tool_id(self.tool, "detpy-cache")
         self.rec = _core.LineRecorder(_mon.DISABLE, self.hot)
         self.import_ctx = self.ctx_index("i")
-        self.ctx = ""
+        lst = _state._event_listener  # the object the Rust event path calls (a bound method is made per access)
+        _core.l0_listener_memo(lst if lst is not None and lst == self.event else None, self.rec)
         _mon.register_callback(self.tool, _mon.events.LINE, self.rec.line)
         _mon.register_callback(self.tool, _mon.events.PY_START, self.rec.start)
         _mon.register_callback(self.tool, _mon.events.PY_RETURN, self.rec.ret)
         self.active = True
-        _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
+        _core.set_audit_hook(self.audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         self._patch_stat()
         self._patch_lookups()
-        self.active = False
-        try:
-            self._scan_maps(None)  # the libraries already mapped are the baseline
-        finally:
-            self.active = True
+        self.scan_maps()  # the libraries mapped before the start: inputs of every test (Rust, review R-019c E-8)
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
         for m in list(sys.modules.values()):
             f = getattr(m, "__file__", None)
-            if f and self._want(f):
-                self.preloaded.add(self.fnames[self.fid[f]])
+            if f and self.note_preloaded(f):
                 pre = True
         if pre:
             import gc
@@ -337,11 +168,12 @@ class Capture:
         if not self.active:
             return
         self.active = False
+        _core.l0_listener_memo(None)
         _core.set_audit_hook(None, ())
         for obj, name, v in getattr(self, "_sqlite_saved", ()):
             setattr(obj, name, v)
         self._sqlite_saved = []
-        for obj, name, v in reversed(self._stat_saved):
+        for obj, name, v in reversed(getattr(self, "_stat_saved", ())):
             setattr(obj, name, v)
         self._stat_saved = []
         f = getattr(self, "_lookup_finder", None)
@@ -354,141 +186,15 @@ class Capture:
             _mon.free_tool_id(self.tool)
             self.tool = None
 
-    # -- sockets opened in C ----------------------------------------------------------
-    def _scan_sockets(self, ctx: int | None) -> None:
-        """Internet sockets that appeared among this process's descriptors since the last scan.
-
-        Sockets a C extension opens (libpq, grpc, libcurl, ...) raise no audit event; one still open when its
-        test or fixture ends is seen here and makes the context uncacheable.
-        """
-        try:
-            fds = os.listdir("/proc/self/fd")
-        except OSError:
-            return
-        cur = {}
-        for fd in fds:
-            try:
-                link = os.readlink("/proc/self/fd/" + fd)
-            except OSError:
-                continue
-            if link.startswith("socket:["):
-                cur[fd] = link[8:-1]
-        prev, self._socks = self._socks, cur
-        if prev is None:
-            return
-        new = {ino for fd, ino in cur.items() if prev.get(fd) != ino}
-        if not new:
-            return
-        inet = set()
-        for t in ("tcp", "tcp6", "udp", "udp6"):
-            try:
-                with open("/proc/self/net/" + t, "rb") as fh:
-                    next(fh, None)
-                    for line in fh:
-                        parts = line.split()
-                        if len(parts) > 9:
-                            inet.add(parts[9].decode())
-            except OSError:
-                continue
-        if ctx is not None and new & inet:
-            self.flag(ctx, "csock", "an internet socket left open")
-
-    # -- data, environment, events ------------------------------------------------------
-    def _caller_kind(self) -> str:
-        """'import' (the import system), 'infra' (pytest, detpy, ...) or 'user', from the calling frames."""
-        try:
-            f = _getframe(2)  # 0 this function, 1 the audit callback, 2 the code that raised the event
-        except ValueError:
-            return "user"
-        while f is not None:
-            fn = f.f_code.co_filename
-            if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
-                return "import"
-            if fn.startswith(_DETPY_DIR):  # detpy's own wrappers (network, fsorder, ...) are transparent
-                f = f.f_back
-                continue
-            kind, _ = _sites._classify(fn)
-            if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
-                return "infra"
-            f = f.f_back
-        return "user"
-
-    def _abs(self, p) -> str | None:
-        if isinstance(p, int) or p is None:
-            return None
-        try:
-            s = os.fsdecode(os.fspath(p))
-        except (TypeError, ValueError):
-            return None
-        if not s:
-            return None
-        if not os.path.isabs(s):
-            try:
-                s = os.path.join(os.getcwd(), s)
-            except OSError:
-                return None
-        return os.path.normpath(s)
-
-    def _ignored(self, p: str) -> bool:
-        if any(s in p for s in _SKIP_DATA):
-            return True
-        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
-            return True
-        for d in self.site_dirs:
-            if p.startswith(d):
-                return not any(p.startswith(x) for x in self.dist_info_ok)
-        return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
-
-    def _key(self, p: str) -> str:
-        return p[len(self.root_sep):] if p.startswith(self.root_sep) else p
-
-    def read(self, ctx: int, p: str, kind: str) -> None:
-        """A read of ``p`` (kind f = file content, d = listing) in context ``ctx``."""
-        if not _encodable(p):
-            self.flags.setdefault(ctx, set()).add("badpath")
-            return
-        if kind == "m":
-            kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
-        elif p.startswith(("/proc/", "/sys/", "/dev/")) and not p.startswith("/dev/shm/") \
-                and (kind != "d" and os.path.exists(p)):
-            # the content of a pseudo-file (process state, kernel tunables, a device) is not a file's content;
-            # a listing (device enumeration such as /dev/bus/usb) and a missing path are ordinary inputs
-            self.flag(ctx, "proc", p)
-            return
-        if p in self.writers:
-            # reads what code of this session wrote: allowed only if every writer is credited to the reader
-            self.flags.setdefault(ctx, set()).add("rw:" + p)
-            return
-        hk = kind + p
-        dep = self._hashed.get(hk)
-        if dep is None:
-            if kind == "d":
-                d = _core.listing_digest(p)
-                dep = f"d:{d}" if d is not None else "missing"
-            else:
-                d = _core.file_digest(p)
-                dep = f"f:{d}" if d is not None else ("missing" if not os.path.exists(p) else "s:" + (
-                    "dir" if os.path.isdir(p) else "other"))
-            self._hashed[hk] = dep
-        self.data.setdefault(ctx, {})[self._key(p)] = dep
-
-    def wrote(self, ctx: int, p: str) -> None:
-        self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "i" + os.path.dirname(p)):
-            self._hashed.pop(k, None)
-
-    # -- existence checks ---------------------------------------------------------------
+    # -- absent inputs: existence checks and module lookups ------------------------------
     def _patch_stat(self) -> None:
-        """review R-020b N3 / O2: ``os.path.exists``, ``isfile``, ``isdir``, ``Path.exists``, ``shutil.which`` and
-        ``glob`` on a literal path ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The
-        answer is an input: the path's kind ("s:missing", "s:file", "s:dir", "s:other") is recorded, so a file that
-        appears (a console script a bump adds, an optional config file) or disappears invalidates the test.
-        References bound before the session (``from os import stat`` in a module imported earlier) are rebound to
-        the wrapper too; the import system's own ``posix`` module is left alone (its lookups are recorded by the
-        module-lookup finder)."""
+        """``os.path.exists``, ``isfile``, ``isdir``, ``Path.exists``, ``shutil.which`` and ``glob`` on a literal path
+        ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The answer is an input: the
+        path's kind is recorded (``CaptureCore.stat_check``, Rust), so a file that appears later invalidates the
+        test. (Code that bound ``from os import stat`` before the session keeps the original: not seen.)"""
         cap = self
+        self._stat_saved = []
+        self._in_stat = False
 
         def wrap(name):
             orig = getattr(os, name, None)
@@ -496,11 +202,10 @@ class Capture:
                 return
 
             def checked(path, *args, **kwargs):
-                if cap.active and not cap._in_stat and not kwargs.get("dir_fd") \
-                        and not isinstance(path, int):
+                if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
-                        cap.exists_check(path)
+                        cap.stat_check(path)
                     except Exception:
                         pass
                     finally:
@@ -512,115 +217,15 @@ class Capture:
             checked.__wrapped__ = orig
             self._stat_saved.append((os, name, orig))
             setattr(os, name, checked)
-            for mod in list(sys.modules.values()):
-                d = getattr(mod, "__dict__", None)
-                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
-                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
-                    continue
-                for k, v in list(d.items()):
-                    if v is orig:
-                        self._stat_saved.append((mod, k, orig))
-                        try:
-                            setattr(mod, k, checked)
-                        except Exception:
-                            pass
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
 
-    def exists_check(self, path) -> None:
-        """An existence or kind check of ``path`` by user code (not the import system, pytest or detpy)."""
-        p = self._abs(path)
-        if p is None or self._caller_kind() != "user":
-            return
-        tr = self.dists
-        if tr is not None and tr.in_site(p) and not any(p.startswith(x) for x in self.dist_info_ok):
-            pass  # --det-cache-dists: a file a bump adds or removes under a site directory is an input
-        elif self._ignored(p):
-            return
-        self._kind(self._cur(), p)
-
-    def _kind(self, ctx: int, p: str) -> str | None:
-        """Record the kind of ``p`` ("s:<kind>") as an input of ``ctx``; returns it (None when not recorded)."""
-        if not _encodable(p) or self.root_sep.startswith(p.rstrip(os.sep) + os.sep):
-            return None  # the project root and its ancestors are directories for the whole session
-        if p in self.writers:
-            # a path code of this session created or wrote (a TemporaryDirectory, an output file): its kind is
-            # that code's doing. As for a read of it, the test is cached only if every writer is credited to it.
-            self.flags.setdefault(ctx, set()).add("rw:" + p)
-            return None
-        hk = "s" + p
-        dep = self._hashed.get(hk)
-        if dep is None:
-            dep = self._hashed[hk] = _core.stat_dep(p)
-        self.sdata.setdefault(ctx, {}).setdefault(self._key(p), dep)
-        return dep
-
-    # -- native libraries ---------------------------------------------------------------------
-    def _scan_maps(self, ctx: int | None) -> None:
-        """review R-019c E-8: a shared library loaded during a context (``ctypes.CDLL``, an extension module of the
-        repository, a library C code ``dlopen()``s) raises no event Python sees with its resolved path. The files
-        newly mapped into the process since the last scan, outside site-packages, the standard library and the
-        temporary directories, are inputs of the context by content; those mapped before the capture started are
-        inputs of every test."""
-        try:
-            with open("/proc/self/maps") as fh:
-                text = fh.read()
-        except OSError:
-            return
-        if len(text) == self._maps_len and text == self._maps_text:
-            return
-        self._maps_len, self._maps_text = len(text), text
-        new = []
-        for line in text.splitlines():
-            i = line.find("/")
-            if i < 0:
-                continue
-            p = line[i:]
-            if p in self._maps_seen:
-                continue
-            self._maps_seen.add(p)
-            new.append(p)
-        if self._maps_baseline:
-            # mapped before the capture started (the interpreter's libraries, an extension or a ctypes library a
-            # root conftest or plugin loaded at startup): inputs of every test, through the import context
-            self._maps_baseline = False
-            ctx = self.import_ctx
-        if ctx is None:
-            ctx = self.import_ctx  # before the first context (startup, conftest imports): every test's input
-        for p in new:
-            if p.endswith(" (deleted)") or self._ignored(p) or not os.path.isfile(p):
-                continue
-            self.read(ctx, p, "f")
-            if p.startswith(self.root_sep) and not _detpy_native(p) and not self._installed(p):
-                # native code from the repository (an extension built in place, a ctypes library): its own file
-                # system, clock and network access is not seen (LIMITS S1), so its context is not cached
-                self.flag(ctx, "native", p)
-
-    def _installed(self, p: str) -> bool:
-        """Whether a distribution's RECORD lists ``p`` (a wheel's library in an environment that happens to live
-        under the project root): a dependency (keyed by the distributions), not the repository's own native
-        code. The file index is built on first use (Rust: distfiles.rs)."""
-        idx = self.dists.index if self.dists is not None else getattr(self, "_dist_index", None)
-        if idx is None:
-            was, self.active = self.active, False
-            try:
-                idx = self._dist_index = distid.Index(self.root)
-            except Exception:
-                return False
-            finally:
-                self.active = was
-        r = idx.owners(p)
-        return r is not None and r[0] != [distid.PROJECT]
-
-    # -- module lookups ---------------------------------------------------------------------
     def _patch_lookups(self) -> None:
-        """Exact-culprit REPORT-4 §2.1: a module the import system did *not* find is an input too (``try: import
-        optional``, a namespace package without ``__init__.py``, a module a new file earlier on ``sys.path`` would
-        shadow). A finder in front of ``sys.meta_path`` records, for every lookup, the kind of every path the
-        import system probes in each searched directory outside site-packages and the standard library (Rust:
-        proof::import_candidates), up to the first directory with a regular module or package. It finds
-        nothing itself."""
+        """A module the import system did *not* find is an input too (``try: import optional``, a namespace package
+        without ``__init__.py``, a module a new file earlier on ``sys.path`` would shadow). A finder in front of
+        ``sys.meta_path`` hands every lookup to ``CaptureCore.lookup`` (Rust: the probed paths and their kinds). It
+        finds nothing itself."""
         from importlib.machinery import all_suffixes
 
         cap = self
@@ -629,11 +234,11 @@ class Capture:
         class _LookupFinder:
             @staticmethod
             def find_spec(fullname, path=None, target=None):
-                if not cap.active or cap._in_stat:
+                if cap._in_stat:
                     return None
                 cap._in_stat = True
                 try:
-                    cap._lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
+                    cap.lookup(fullname.rpartition(".")[2], sys.path if path is None else path, suffixes)
                 except Exception:
                     pass
                 finally:
@@ -647,227 +252,36 @@ class Capture:
         self._lookup_finder = _LookupFinder
         sys.meta_path.insert(0, _LookupFinder)
 
-    def _lookup(self, tail: str, entries, suffixes) -> None:
-        ctx = self._cur()
-        # one dependency per searched directory, on its importable entries (Rust: proof::importable_digest), when
-        # the name is an identifier and every suffix of this interpreter has an importable ending; per-path kinds
-        # otherwise
-        whole = tail.isidentifier() and all(x.endswith(_IMPORTABLE_ENDINGS) for x in suffixes)
-        for e in list(entries):
-            if not isinstance(e, str):
-                continue
-            d = self._abs(e or ".")
-            if d is None or self._ignored(d.rstrip(os.sep) + os.sep):
-                continue
-            if whole and _encodable(d):
-                hk = "i" + d
-                dep = self._hashed.get(hk)
-                if dep is None:
-                    dep = self._hashed[hk] = _core.importable_dep(d)
-                self.sdata.setdefault(ctx, {}).setdefault(self._key(d) + _IMPORTABLE_KEY, dep)
-                regular, pkg_dir = _core.import_probe(d, tail, suffixes)
-                if pkg_dir:
-                    # the package directory exists: its __init__ files are inside it, not among d's entries
-                    for s_ in suffixes:
-                        if self._kind(ctx, os.path.join(d, tail, "__init__" + s_)) == "s:file":
-                            regular = True
-                if regular:
-                    break
-                continue
-            regular = False
-            cands = _core.import_candidates(d, tail, suffixes)  # [package dir, its __init__ files, module files]
-            k = self._kind(ctx, cands[0])
-            # a missing package directory implies missing __init__ files: its own check covers them
-            for c in (cands[1 + len(suffixes):] if k == "s:missing" else cands[1:]):
-                if self._kind(ctx, c) == "s:file":
-                    regular = True
-            if regular:
-                break  # a module or a regular package: later entries are not searched
-
-    def _audit(self, event, args):
-        if not self.active:
-            return
-        if event == "exec":
-            # every module body (import, runpy, exec) passes here before it runs; the functions and classes
-            # it defines are nested code objects, armed with it
-            code = args[0] if args else None
-            if isinstance(code, CodeType) and id(code) not in self._armed and self.tool is not None:
-                self.arm(code)
-            return
-        if event == "open":
-            p = self._abs(args[0] if args else None)
-            if p is None:
-                return
-            if self.dists is not None and self._dist_read(p):
-                return
-            if self._ignored(p):
-                return
-            mode, flags = (args[1] if len(args) > 1 else None), (args[2] if len(args) > 2 else 0)
-            if _O_TMPFILE and isinstance(flags, int) and flags & _O_TMPFILE == _O_TMPFILE:
-                return  # an unnamed temporary file in that directory (NamedTemporaryFile): nothing visible changes
-            if isinstance(mode, str):
-                reads = "r" in mode or "+" in mode
-                writes = any(ch in mode for ch in "wax+")
-                trunc = "w" in mode or "x" in mode  # "x": created here, nothing to read
-            else:
-                acc = (flags or 0) & _O_ACC
-                reads = acc in (os.O_RDONLY, os.O_RDWR)
-                writes = acc in (os.O_WRONLY, os.O_RDWR) or bool((flags or 0) & os.O_CREAT)
-                # O_CREAT|O_EXCL (NamedTemporaryFile, mkstemp): the file did not exist, so it is an output only
-                trunc = bool((flags or 0) & os.O_TRUNC) or (flags or 0) & (os.O_CREAT | os.O_EXCL) == (
-                    os.O_CREAT | os.O_EXCL)
-            kind = self._caller_kind()
-            if kind == "import" and reads and not p.endswith(_SOURCE_SUFFIXES) and os.path.isfile(p):
-                # review R-019c E-7: the import system reading something that is not a source or bytecode file
-                # (a zip archive on sys.path: zipimport): its code is not tracked, the archive's content is the input
-                self.read(self._cur(), p, "f")
-                return
-            if kind in ("import", "infra"):
-                return
-            ctx = self._cur()
-            if reads and not trunc:
-                self.read(ctx, p, "f")
-            if writes:
-                self.wrote(ctx, p)
-        elif event == "sqlite3.connect":
-            # sqlite opens the database read-write in C (no "open" event): its committed content is an input
-            db = args[0] if args else None
-            if isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:") \
-                    and not os.fsdecode(db).startswith("file:"):
-                p = self._abs(db)
-                if p is not None and not self._ignored(p) and self._caller_kind() not in ("import", "infra"):
-                    ctx = self._cur()
-                    self.read(ctx, p, "f")
-                    self.wrote(ctx, p)
-        elif event in ("os.listdir", "os.scandir"):
-            if self._caller_kind() != "user":
-                return
-            p = self._abs(args[0] if args and args[0] is not None else ".")
-            if p is None:
-                return
-            if self.dists is not None and self._dist_read(p, listing=True):
-                return
-            if self._ignored(p):
-                return
-            self.read(self._cur(), p, "d")
-        elif event == "ctypes.dlopen":
-            if self.dists is not None:
-                self.dists._dlopen = True
-            # native code from the repository: what it reads, stats or asks the clock is not seen (LIMITS S1);
-            # refused even when it is unloaded again before the next scan of the mappings
-            name = args[0] if args else None
-            if isinstance(name, (str, bytes, os.PathLike)) and os.sep in os.fsdecode(name):
-                p = self._abs(name)
-                if p is not None and p.startswith(self.root_sep) and not self._ignored(p) \
-                        and not _detpy_native(p) and not self._installed(p):
-                    self.flag(self._cur(), "native", p)
-        elif event in ("socket.connect", "socket.sendto", "socket.sendmsg"):
-            # every connection counts, loopback included: a loopback port can be an HTTP(S) proxy to the outside
-            # (HTTPS_PROXY=http://127.0.0.1:...) or a service the test process tree did not start
-            if self._caller_kind() == "infra":
-                return
-            if event == "socket.sendmsg" and len(args) > 1 and args[1] is None and self._both_ends_mine(args[0]):
-                return  # a write on a connected socket whose peer is a socket of this process
-            if event == "socket.connect" and self._own_listener(args):
-                # a server this process runs (aiohttp's test server, an in-process HTTP stub): what it answers is
-                # computed by recorded code from recorded inputs. A loopback port of another process (a proxy, a
-                # database, a sidecar) stays a network input.
-                return
-            self.flag(self._cur(), "connect", f"{event} {_addr(args)} at {_first_user_site()}")
-        elif event in ("socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr"):
-            # a name lookup (DNS, /etc/hosts) is an input from outside; numeric addresses are not
-            host = args[0] if args else None
-            if isinstance(host, bytes):
-                host = host.decode("ascii", "replace")
-            if not isinstance(host, str) or not host or _numeric_host(host) or self._caller_kind() == "infra":
-                return
-            self.flag(self._cur(), "dns", f"{event} {host} at {_first_user_site()}")
-        elif event in _SPAWN or event.startswith("os.spawn") or event.startswith("os.exec"):
-            if self._caller_kind() == "infra":
-                return
-            fo = self.follower
-            if event == "subprocess.Popen" and _is_find_library_ldconfig(args):
-                # ctypes.util.find_library (uuid, ifaddr, ... at import time) asks `ldconfig -p`, which prints the
-                # dynamic linker's cache: that file is the input. (Not followed: ldconfig is a static binary, so the
-                # clock shim cannot load into it.)
-                self.read(self._cur(), _LD_SO_CACHE, "f")
-                if fo is not None:
-                    fo.announce(self._cur(), None, False)
-                return
-            if event == "subprocess.Popen" and _called_from(_UUID_PY):
-                # uuid.getnode() runs `ip link`, `ifconfig`, `arp`... to find this machine's MAC address: the
-                # machine's network identity is the input (each interface's name and address), not a process
-                ctx = self._cur()
-                self.read(ctx, "/sys/class/net", "d")
-                try:
-                    for name in sorted(os.listdir("/sys/class/net")):
-                        self.read(ctx, f"/sys/class/net/{name}/address", "m")
-                except OSError:
-                    pass
-                if fo is not None:
-                    fo.announce(ctx, None, False)
-                return
-            if event == "subprocess.Popen" and fo is not None:
-                # the fork_exec that follows runs it under strace and records its inputs (or refuses the context
-                # when following is off or unavailable). find_library's helpers (gcc, ld, objdump) are followed for
-                # their files, but a real-clock read there is not refused: find_library returns the path of a
-                # library file matched in their output (DECLARED by ctypes/util.py)
-                fo.announce(self._cur(), _spawn_detail(event, args), True, _called_from(_CTYPES_UTIL))
-                return
-            self.flag(self._cur(), "spawn", _spawn_detail(event, args))
-        else:
-            idx = _WRITE_EVENTS.get(event)
-            if idx is None or self._caller_kind() == "infra":
-                return
-            ctx = self._cur()
-            for i in idx:
-                p = self._abs(args[i] if len(args) > i else None)
-                if p is not None and not self._ignored(p):
-                    self.wrote(ctx, p)
-
-    def _dist_read(self, p: str, listing: bool = False) -> bool:
-        """--det-cache-dists: a read under a site directory becomes a dependency on the distribution that owns
-        it (True = handled). Reads by the import system and by pytest/detpy are not inputs, as without the flag."""
-        tr = self.dists
-        if not tr.in_site(p) or any(p.startswith(x) for x in self.dist_info_ok):
-            return False
-        if not listing:
-            kind = self._caller_kind()
-            if kind in ("import", "infra"):
-                return True
-        tr.path(self._cur(), p)
-        return True
-
-    def _own_listener(self, args) -> bool:
-        self.active = False  # the check's own /proc reads are not inputs
-        try:
-            return _own_listener(args)
-        finally:
-            self.active = True
-
-    def _both_ends_mine(self, sock) -> bool:
-        self.active = False
-        try:
-            return _both_ends_mine(sock)
-        finally:
-            self.active = True
-
+    # -- sqlite ----------------------------------------------------------------------------
     def _patch_sqlite(self) -> None:
-        """review R-009 F4: sqlite evaluates 'now' (date('now'), CURRENT_TIMESTAMP, date() without a time value) on
-        the real clock in C. Every connection made through sqlite3.connect traces its statements; one that may read
-        the real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
+        """review R-009 F4 / R-009b R1: every connection made through sqlite3.connect traces its statements with a
+        ``_core.SqlTrace`` (crates/detpy-py/src/sqlcap.rs): a statement, or a schema it evaluates, that may read the
+        real clock makes its context uncacheable. (A trace callback the test sets itself replaces this one.)"""
         try:
             import sqlite3
             import sqlite3.dbapi2 as dbapi2
         except ImportError:
             return
-        real = sqlite3.connect
+        real = self._sql_real_connect = sqlite3.connect
         cap = self
 
         def connect(*args, **kwargs):
-            conn = real(*args, **kwargs)
+            # review R-017b F2: the audit event does not say whether ``database`` is a URI; the capture's audit arm
+            # reads it here (crates/detpy-py/src/sqlcap.rs, connect modes)
+            uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            from . import sqlvirt
+
+            prev = _sql_connect_mode(3 if uri else 2)
+            sqlvirt.take_last()
             try:
-                conn.set_trace_callback(cap._sql_trace)
+                conn = real(*args, **kwargs)
+            finally:
+                _sql_connect_mode(prev)
+            virt = sqlvirt.take_last()
+            # a connection Level 0 virtualised (detpy/sqlvirt.py): its 'now' is the virtual clock
+            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"), uri, virt is not None)
+            try:
+                sqlvirt.set_trace(conn, virt, tr)
             except Exception:
                 pass
             return conn
@@ -877,218 +291,34 @@ class Capture:
         sqlite3.connect = connect
         dbapi2.connect = connect
 
-    def _sql_trace(self, statement) -> None:
-        if self.active and isinstance(statement, str) and _SQL_REAL_CLOCK.search(statement):
-            self.flag(self._cur(), "rclock", f"sqlite: {statement.strip()[:80]} at {_first_user_site()}")
-
-    def flag(self, ctx: int, flag: str, detail: str | None = None) -> None:
-        fl = self.flags.setdefault(ctx, set())
-        if flag not in fl:
-            fl.add(flag)
-            if detail is None:
-                detail = _first_user_site()
-            self.why[(ctx, flag)] = detail
-
-    def env_read_ctx(self, ctx: int, name: str) -> None:
-        self.env.setdefault(ctx, set()).add(name)
-
-    def child_ignored(self, p: str) -> bool:
-        """Paths a followed child touches that are not inputs: bytecode caches (their source is probed), pytest's
-        temporary directory, this interpreter's standard library and installed distributions (runtime identity)."""
-        if os.sep + "__pycache__" + os.sep in p:
-            return True
-        if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
-            return True
-        if self.follower is not None and p.startswith(self.follower.logdir):
-            return True
-        for d in self.site_dirs:
-            if p.startswith(d):
-                return not any(p.startswith(x) for x in self.dist_info_ok)
-        return any(p.startswith(d) for d in self.stdlib_dirs) or p == os.devnull
-
-    def child_read(self, ctx: int, p: str, kind: str = "f") -> None:
-        tr = self.dists
-        if tr is not None and tr.in_site(p) and not any(p.startswith(x) for x in self.dist_info_ok) \
-                and os.sep + "__pycache__" + os.sep not in p:
-            tr.path(ctx, p)
-            return
-        if not self.child_ignored(p):
-            self.read(ctx, p, kind)
-
-    def collect_children(self) -> None:
-        """Turn the strace logs of the followed children into inputs (or refusals) of the contexts that started them."""
-        fo = self.follower
-        if fo is None:
-            return
-        _mono = follow._mono
-
-        # a log is complete once the detached tracer wrote its process's exit, normally within milliseconds of the
-        # exit; a process still running (a daemon, multiprocessing's resource tracker) never completes: wait for it
-        # once, briefly, then not at all
-        budget_end = _mono() + 3.0
-        wait = 1.0
-        for sp in fo.spawns:
-            self.children += 1
-            logs = follow._wait_logs(sp.prefix, max(0.0, min(wait, budget_end - _mono())))
-            if logs and not all(follow._complete(f) for f in logs):
-                wait = 0.05
-            ctx = sp.ctx
-            if not logs:
-                self.flag(ctx, "spawn", f"{sp.detail} [not followed: no trace log]")
-                continue
-            res = follow.parse(logs, sp.cwd)
-            for f in logs:
-                try:
-                    os.unlink(f)
-                except OSError:
-                    pass
-            # review R-009 F1: a process kept alive across contexts (a persistent shell, a language server, a pool
-            # held in a module global) works for whichever test talks to it; that test raises no event. Every test,
-            # fixture or collection context that ran during the tree's lifetime (strace -ttt, real clock) gets the
-            # tree's inputs and refusals, as the context that started it does.
-            t1 = float("inf") if res.bad and "still running" in res.bad else res.t1
-            targets = [ctx] + sorted(self._contexts_during(res.t0, t1) - {ctx})
-            for c in targets:
-                self._credit_child(c, sp, res)
+    def _sql_schema_read(self, path: str) -> str | None:
+        """What in the schema of database file ``path`` may read the real clock (None: nothing): the read-only query
+        through the real connect, on a miss of the trace's memo."""
+        from urllib.parse import quote
+        prev = _sql_connect_mode(1)  # detpy's own connection: the audit hook does not take it as the test's read
         try:
-            os.rmdir(fo.logdir)
-        except OSError:
-            pass
-
-    def _contexts_during(self, t0: float | None, t1: float | None) -> set:
-        """Non-global contexts (tests, fixtures, collection of a file) active at some time in [t0, t1]."""
-        if t0 is None or t1 is None:
-            return set()
-        out = set()
-        tl = self.timeline
-        glob = {self.ctx_ix.get(n) for n in _GLOBAL_CTX}
-        for k, (tk, ck) in enumerate(tl):
-            nxt = tl[k + 1][0] if k + 1 < len(tl) else float("inf")
-            if tk <= t1 and nxt > t0 and ck not in glob:
-                out.add(ck)
-        return out
-
-    def _credit_child(self, ctx: int, sp, res) -> None:
-        """The inputs, writes and refusals of one followed process tree, as inputs of context ``ctx``."""
-        if res.bad:
-            self.flag(ctx, "spawn", f"{sp.detail} [not followed: {res.bad}]")
-        if res.net:
-            self.flag(ctx, "spawn", f"{sp.detail} [network: {res.net}]")
-        if res.clock and not sp.clock_exempt:
-            # review R-009 F4: the clock shim turned a real-time read into a system call
-            self.flag(ctx, "spawn", f"{sp.detail} [{res.clock}]")
-        if res.unshimmed:
-            self.flag(ctx, "spawn", f"{sp.detail} [clock not observable: {res.unshimmed} ran without the clock shim]")
-        self.child_entropy += res.entropy
-        self.child_read(ctx, sp.exe)
-        own = set()
-        for op, p in res.ops:
-            sk = follow.special(p, res.pids)
-            if sk == "skip":
-                continue
-            if sk == "entropy":
-                self.child_entropy += 1
-                continue
-            if sk == "proc":
-                if op == "d" or (op != "w" and not os.path.exists(p)):
-                    self.read(ctx, p, "d" if op == "d" else "f")  # a listing or a missing path: an input
-                else:
-                    self.flag(ctx, "spawn", f"{sp.detail} [reads {p}]")
-                continue
-            if op == "w":
-                own.add(p)
-                if not self.child_ignored(p):
-                    self.wrote(ctx, p)
-                continue
-            if p in own:
-                continue  # the tree wrote it first: internal
-            if op == "x":
-                interp = follow.shebang(p)
-                if interp:
-                    self.child_read(ctx, interp)
-            self.child_read(ctx, p, "d" if op == "d" else "f")
-
-
-    def env_read(self, name: str) -> None:
-        if self.active:
-            self.env.setdefault(self._cur(), set()).add(name)
-
-    def event(self, source: str, value: str) -> None:
-        """A Level 0 event (``detpy._state.record``) by user code."""
-        if not self.active:
-            return
-        fl = self.flags.setdefault(self._cur(), set())
-        if source == "net":
-            if "record#" in value:
-                fl.add("net-record")
-            elif "replay" in value:
-                fl.add("net-replay")
-        else:
-            fl.add(source)
-
-    def scan_modules(self, index: int, plugins=()) -> None:
-        """Note the repository modules loaded so far (``sys.modules`` and conftest plugins, which pytest keeps
-        out of ``sys.modules``) as loaded after the test at ``index`` (-1 = collection)."""
-        if self.dists is not None:
-            was, self.active = self.active, False  # the scan's own reads (/proc/self/maps) are not inputs
+            # a URI of the path's bytes (a name that is not valid UTF-8 included)
+            con = self._sql_real_connect(f"file:{quote(os.fsencode(path))}?mode=ro", uri=True, timeout=0)
             try:
-                self.dists.scan(index)
+                for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
+                    if isinstance(sql, str) and _core.sql_real_clock(sql):
+                        return f"the schema of {self._key(path)} ({name})"
             finally:
-                self.active = was
-        for m in plugins:
-            f = getattr(m, "__file__", None)
-            if isinstance(f, str) and self._want(f):
-                rel = self.fnames[self.fid[f]]
-                if rel not in self._seen_mods:
-                    self._seen_mods.add(rel)
-                    self.loaded_order.append((rel, index))
-        mods = sys.modules
-        if len(mods) == self._nmods:
-            return
-        self._nmods = len(mods)
-        for m in list(mods.values()):
-            f = getattr(m, "__file__", None)
-            if not f:
-                continue
-            if f in self._wanted and not self._wanted[f]:
-                continue
-            if self._want(f):
-                rel = self.fnames[self.fid[f]]
-                if rel not in self._seen_mods:
-                    self._seen_mods.add(rel)
-                    self.loaded_order.append((rel, index))
+                con.close()
+        except Exception as e:
+            return f"the schema of {self._key(path)} (unreadable: {e})"
+        finally:
+            _sql_connect_mode(prev)
+        return None
+
+    # child_ignored, child_read, collect_children, _credit_child: Rust (CaptureCore)
 
 
 # ---------------------------------------------------------------------------
-# environment reads
-_ENV_CAPTURE: Capture | None = None
+# environment reads: the recorded os.environ calls _note_env (Rust: CaptureCore.note_env of the capture set by
+# _core.cap_set_env_capture)
 _ENV_PATCHED = False
-
-
-def _env_caller_is_user() -> bool:
-    try:
-        f = _getframe(3)
-    except ValueError:
-        return True
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.startswith(_DETPY_DIR):
-            f = f.f_back
-            continue
-        kind, _ = _sites._classify(fn)
-        if kind == _sites._USER:
-            return True
-        if kind == _sites._INFRA:
-            return False
-        f = f.f_back
-    return True
-
-
-def _note_env(key) -> None:
-    cap = _ENV_CAPTURE
-    if cap is None or not cap.active or not _env_caller_is_user():
-        return
-    cap.env_read(os.fsdecode(key) if isinstance(key, (str, bytes)) else repr(key))
+_note_env = _core.cap_note_env
 
 
 def _patch_environ() -> None:
@@ -1125,136 +355,47 @@ def _patch_environ() -> None:
 
 
 # ---------------------------------------------------------------------------
-# identities
-def _stat_key(path: str):
+# identities: Rust (crates/detpy-py/src/identity.rs). Python keeps importlib.metadata's discovery (its finders are
+# Python's rules) and its reading of a distribution Rust cannot read. Original: tests/rust_hotpaths_ref/_ref_identity.py
+def _dist_name(d) -> str:
+    return (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
+
+
+def _dist_part(d, name: str) -> str:
     try:
-        st = os.stat(path)
-    except OSError:
-        return None
-    return [st.st_size, st.st_mtime_ns, st.st_ctime_ns, st.st_ino]
+        rec = d.read_text("RECORD") or ""
+    except Exception:
+        rec = ""
+    return f"{name.lower()}=={d.version}:{_core.digest(rec.encode())}"
+
+
+def _discovery() -> tuple:
+    from importlib import metadata
+
+    return metadata.distributions(), metadata.PathDistribution, _dist_name, _dist_part
 
 
 def _dist_infos(root: str, memo_path: str | None = None):
     """(runtime digest part for installed distributions, dist-info dirs of editable installs of the project).
 
-    Reading every distribution's metadata and RECORD takes seconds where thousands are installed: each one's
-    result is memoised in ``memo_path`` under the size, mtime, ctime and inode of its metadata files (an installer
-    rewrites them, which changes the ctime), so an unchanged environment is not read again.
+    Each distribution's result is memoised in ``memo_path`` under the size, mtime, ctime and inode of its metadata
+    files (an installer rewrites them, which changes the ctime), so an unchanged environment is not read again.
     """
-    from importlib import metadata
-
-    memo: dict = {}
-    if memo_path:
-        try:
-            with open(memo_path) as fh:
-                memo = json.load(fh)
-        except (OSError, ValueError):
-            memo = {}
-    fresh: dict = {}
-    parts, editable = [], []
-    root_sep = os.path.realpath(root) + os.sep
-    for d in metadata.distributions():
-        path = getattr(d, "_path", None)
-        key = None
-        if path is not None:
-            base = os.path.realpath(str(path))
-            key = json.dumps([base, root_sep] + [_stat_key(os.path.join(base, f)) for f in (
-                "METADATA", "PKG-INFO", "RECORD", "direct_url.json")])
-        hit = memo.get(key) if key is not None else None
-        if hit is None:
-            name = (d.metadata.get("Name") or "?") if d.metadata is not None else "?"
-            project = False
-            try:
-                du = d.read_text("direct_url.json")
-                if du:
-                    info = json.loads(du)
-                    url = info.get("url", "")
-                    if url.startswith("file://") and (os.path.realpath(url[7:]) + os.sep).startswith(root_sep):
-                        project = True
-            except Exception:
-                pass
-            if project:
-                hit = ["project", os.path.realpath(str(path)) + os.sep if path is not None else None]
-            else:
-                try:
-                    rec = d.read_text("RECORD") or ""
-                except Exception:
-                    rec = ""
-                hit = ["dist", f"{name.lower()}=={d.version}:{_core.digest(rec.encode())}"]
-        if key is not None:
-            fresh[key] = hit
-        if hit[0] == "project":
-            if hit[1] is not None:
-                editable.append(hit[1])
-        else:
-            parts.append(hit[1])
-    if memo_path and fresh != memo:
-        try:
-            tmp = f"{memo_path}.{os.getpid()}.tmp"
-            with open(tmp, "w") as fh:
-                json.dump(fresh, fh)
-            os.replace(tmp, memo_path)
-        except OSError:
-            pass
-    return sorted(parts), editable
+    return _core.dist_infos(root, memo_path, *_discovery())
 
 
-def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = False) -> tuple[str, dict, list]:
+def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
     import sysconfig
 
-    exe = os.path.realpath(sys.executable)
-    lib = None
-    libdir, ldlib = sysconfig.get_config_var("LIBDIR"), sysconfig.get_config_var("LDLIBRARY")
-    if libdir and ldlib and os.path.exists(os.path.join(libdir, ldlib)):
-        lib = os.path.join(libdir, ldlib)
-    dists, editable = _dist_infos(root, memo_path)
-    d = {
-        "python": sys.version,
-        "cache_tag": sys.implementation.cache_tag,
-        "executable": _core.file_digest(exe),
-        "libpython": _core.file_digest(lib) if lib else None,
-        "system": platform.system(),
-        "machine": platform.machine(),
-        "libc": "-".join(platform.libc_ver()),
-        "stdlib": _core.listing_digest(os.path.dirname(os.__file__)),
-        "distributions": _core.digest("\n".join(dists).encode()),
-        "n_distributions": len(dists),
-    }
-    # review R-019c E-1/E-9: the module search path. site.py runs the .pth files of the site directories at startup
-    # (before anything is recorded): they add sys.path entries and run code. sys.path itself (PYTHONPATH, .pth
-    # entries, the project's pythonpath option) decides which directory a module comes from; the project root is
-    # written as "<root>" so the identity does not depend on where the checkout lives.
-    d["pth"] = _core.digest(distid.pth_content(_sites._site_dirs).encode())
-    rs = os.path.realpath(root)
-    d["sys_path"] = [("<root>" + e[len(rs):]) if isinstance(e, str) and (e == rs or e.startswith(rs + os.sep))
-                     else e for e in (os.path.realpath(x) if isinstance(x, str) and x else x for x in sys.path)
-                     if isinstance(e, str)]
-    if per_dist:
-        # --det-cache-dists: each test depends on the distributions it used (distid), not on all of them
-        d["distributions"] = "per-test"
-        d["n_distributions"] = None
-    return _core.digest(json.dumps(d, sort_keys=True).encode()), d, editable
-
-
-_LOCALE_VARS = ("TZ", "TZDIR", "LANG", "LANGUAGE", "LC_ALL", "LC_CTYPE", "LC_NUMERIC", "LC_TIME", "LC_COLLATE",
-                "LC_MONETARY", "LC_MESSAGES", "LC_PAPER", "LC_NAME", "LC_ADDRESS", "LC_TELEPHONE",
-                "LC_MEASUREMENT", "LC_IDENTIFICATION")
+    state = (sys.version, sys.implementation.cache_tag, sys.executable, sysconfig.get_config_var("LIBDIR"),
+             sysconfig.get_config_var("LDLIBRARY"), platform.system(), platform.machine(), platform.libc_ver(),
+             os.__file__)
+    return _core.runtime_identity(root, memo_path, _discovery(), state)
 
 
 def tz_locale_identity() -> dict:
     """Time zone and locale as C sees them: the variables, /etc/localtime's content and the zone file TZ names."""
-    env = dict(os.environ._data) if hasattr(os.environ, "_data") else dict(os.environ)  # noqa: SLF001 (no event)
-    dec = {os.fsdecode(k) if isinstance(k, bytes) else k: os.fsdecode(v) if isinstance(v, bytes) else v
-           for k, v in env.items()}
-    d = {k: dec.get(k) for k in _LOCALE_VARS}
-    d["/etc/localtime"] = _core.file_digest("/etc/localtime")
-    tz = dec.get("TZ")
-    if tz:
-        name = tz[1:] if tz.startswith(":") else tz
-        zdir = dec.get("TZDIR") or "/usr/share/zoneinfo"
-        path = name if os.path.isabs(name) else os.path.join(zdir, name)
-        d["tzfile"] = _core.file_digest(path) if os.path.isfile(path) else None
-    return d
+    return _core.tz_locale_identity(os.environ)  # os.environ._data: no recorded-environ event
 
 
 def config_identity(config) -> tuple[str, dict]:
@@ -1298,7 +439,9 @@ def config_identity(config) -> tuple[str, dict]:
 
 # ---------------------------------------------------------------------------
 class ProofCachePlugin:
-    """pytest hooks of ``--det-cache``."""
+    """pytest hooks of ``--det-cache``. The session's bookkeeping (decisions, reports, the record plan, the reasons
+    and the summary) is Rust (``_core.CacheSession``, ``crates/detpy-py/src/session.rs``); this class hands it
+    pytest's objects."""
 
     def __init__(self, cap: Capture, cache_dir: str, verify: float, receipts: str | None):
         self.cap = cap
@@ -1306,6 +449,9 @@ class ProofCachePlugin:
         self.verify = verify
         self.max_age_s: float | None = None
         self.receipts_path = receipts or os.path.join(self.dir, "receipts.jsonl")
+        # shared store (P4, --det-cache-shared): pull before the decision, push after the record (or the merge)
+        self.shared: str | None = None
+        self.shared_stats: dict | None = None
         self.store = None
         self.config = None
         self.root = cap.root
@@ -1313,28 +459,15 @@ class ProofCachePlugin:
         self.runtime_digest = ""
         self.runtime_info: dict = {}
         self.epoch = 0
-        self.hits: dict[str, dict] = {}  # nodeid -> receipt
-        self.verifying: dict[str, dict] = {}  # nodeid -> receipt of a hit re-run for verification
-        self.misses: dict[str, str] = {}
         self.items: dict[str, object] = {}
-        self.test_index: dict[str, int] = {}
-        self.fixture_ctx: dict[str, list] = {}
-        self.ran: list[str] = []
-        self.parts: dict[str, dict] = {}
-        self.dur: dict[str, float] = {}
-        self.fingerprints: dict[str, str] = {}
-        self.verify_results: list[dict] = []
-        self.summary: dict = {}
         self.run_id = f"{time.strftime('%Y%m%dT%H%M%S', time.gmtime(_now()))}-{os.getpid()}"
-        self.t_check = 0.0
-        self.t_record = 0.0
-        self.recorded = 0
-        self.not_cached: dict[str, str] = {}
-        self.not_cached_where: dict[str, str] = {}  # nodeid -> first occurrence of the cause (what, where, context)
-        self.stale_hits: dict[str, str] = {}
-        self.error: str | None = None
-        self.dist_keys_n: list[int] = []
-        self.dist_all_n = 0
+        self.sess = _core.CacheSession(self.run_id, self.receipts_path)
+        # pytest-xdist under --det: "controller" (decides, reports hits, merges the shards), "worker" (runs what the
+        # plan sends, records a shard), "serial"
+        self.role = "serial"
+        self.worker = None
+        self.shard_path = None
+        self.merge_result: dict | None = None
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -1343,13 +476,15 @@ class ProofCachePlugin:
         self.config_digest, self.config_info = config_identity(config)
         os.makedirs(self.dir, exist_ok=True)
         self.runtime_digest, self.runtime_info, editable = runtime_identity(
-            self.root, os.path.join(self.dir, "distributions.json"), per_dist=self.cap.dists is not None)
+            self.root, os.path.join(self.dir, "distributions.json"))
+        # sys.path and the .pth files of the site directories (Rust; review R-019c E-1/E-9)
+        self.runtime_digest, pth, spath = _core.runtime_with_paths(
+            self.runtime_digest, self.root, list(_sites._site_dirs), [e for e in sys.path if isinstance(e, str)])
+        self.runtime_info = {**self.runtime_info, "pth": pth, "sys_path": spath}
         cap = self.cap
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
         cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
-        if cap.dists is not None:
-            cap.dists.site_dirs = tuple(sorted(set(cap.site_dirs) | set(cap.dists.site_dirs)))
         factory = getattr(config, "_tmp_path_factory", None)
         if factory is not None:
             try:
@@ -1359,6 +494,7 @@ class ProofCachePlugin:
         self.epoch = _state.STATE.config.epoch_ns
         self.store = _core.ProofCache(self.dir, self.root)
         self.store.begin(self.config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+        self.sess.configure(self.config_digest, self.runtime_digest, self.epoch)
 
     # -- collection -------------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -1377,49 +513,225 @@ class ProofCachePlugin:
     def pytest_collection_finish(self, session):
         self.cap.switch("s")
         self.cap.scan_modules(-1, self._conftests())
+        if self.role == "worker":
+            # the controller decided; this worker runs (and records) every test the plan sends it
+            self.items = {item.nodeid: item for item in session.items}
+            self.sess.set_test_index(list(self.items))
+            return
         t0 = _perf()
         try:
             self._decide(session.items)
         finally:
-            self.t_check = _perf() - t0
+            self.sess.t_check = _perf() - t0
 
     def _decide(self, items) -> None:
-        store = self.store
+        store, cap = self.store, self.cap
+        nids = [item.nodeid for item in items]
+        self._shared_fetch(nids)
         changed = list(store.changed_code_files())
-        jobs = []
-        for path, content in changed:
-            mod, is_pkg = _module_of(os.path.join(self.root, path))
-            jobs.append((os.path.join(self.root, path), content, mod, is_pkg))
-        cap, was = self.cap, self.cap.active
-        cap.active = False  # detpy's own reads and workers are not inputs of any test
+        for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
+                                                                 [c for _, c in changed])):
+            if f is not None:
+                store.set_fresh(path, content, *f)
+        self._shared_adopt()
+        self.sess.seed_exclusive(store, cap)  # review R-009b R2
+        self.items = dict(zip(nids, items))
+        # the checks, the expiry (review R-009 F4: an entry older than --det-cache-max-age is not reused), the
+        # receipts and the verification draw (Python's Mersenne Twister, seeded per run) are Rust
+        rng = random.Random(f"detpy-cache-verify:{self.run_id}")
+        self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
+
+    # -- pytest-xdist under --det: the controller --------------------------------------------------------------
+    def decide_controller(self, nids: list) -> set:
+        """The reuse decision of every collected test, once, in the controller (before the plan). The environment
+        a worker of this run sees, the deferred check of ``PYTEST_XDIST_WORKER`` (compared with this run's plan in
+        ``check_workers``) and the verification draw (seeded by ``derive_seed`` over the seed, the order and the
+        configuration: two runs on the same inputs verify the same tests) are Rust. Returns the reused ids."""
+        from . import plugin as _plugin
+
+        t0 = _perf()
         try:
-            facts = _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))
+            ctl = _plugin.S.controller
+            env0 = ctl.spawn_env if ctl is not None and ctl.spawn_env is not None else self.cap.env0
+            self.store.begin_controller(self.config_digest, self.runtime_digest, self.epoch, dict(env0),
+                                        len(self.config.getoption("tx") or ()),
+                                        ctl.testrunuid if ctl is not None else None)
+            store = self.store
+            self._shared_fetch(list(nids))
+            changed = list(store.changed_code_files())
+            for (path, content), f in zip(changed, self._read_facts([os.path.join(self.root, p) for p, _ in changed],
+                                                                     [c for _, c in changed])):
+                if f is not None:
+                    store.set_fresh(path, content, *f)
+            self._shared_adopt()
+            self.sess.seed_exclusive(store, self.cap)
+            seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
+            self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
+            return set(self.sess.hit_ids)
+        finally:
+            self.sess.t_check = _perf() - t0
+
+    # -- shared store (P4): Rust (detpy_core::shared); here only the calls ------------------------------------
+    def _shared_fetch(self, nids: list) -> None:
+        if not self.shared or self.role == "worker":
+            return  # a worker never talks to the shared store: its controller pulls and pushes
+        t0 = _perf()
+        cap, was = self.cap, self.cap.active
+        cap.active = False  # detpy's own reads of the shared store are not inputs
+        try:
+            tests, cands, rejected, torn = self.store.shared_fetch(self.shared, list(nids), 3)
+        except Exception as e:  # never break the session: the local store decides alone
+            self.shared_stats = {"error": f"{type(e).__name__}: {e}"}
+            return
         finally:
             cap.active = was
-        for (path, content), f in zip(changed, facts):
-            if f is not None:
-                store.set_fresh(path, content, f[0], f[1], f[2], f[3])
-        rng = random.Random(f"detpy-cache-verify:{self.run_id}")
-        for i, item in enumerate(items):
-            nid = item.nodeid
-            self.items[nid] = item
-            self.test_index[nid] = i
-            ok, info = store.check(nid)
-            if ok and self.max_age_s is not None:
-                # review R-009 F4: real-clock reads outside the virtual clock that detpy cannot see (C code such as
-                # OpenSSL's certificate validity) are bounded: an entry older than --det-cache-max-age (real time)
-                # is not reused
-                age = _now() - _run_time(json.loads(info).get("run", ""))
-                if age > self.max_age_s:
-                    ok, info = False, f"expired: recorded {age / 86400:.1f} days ago (--det-cache-max-age)"
-            if ok:
-                receipt = json.loads(info)
-                if self.verify and rng.random() < self.verify:
-                    self.verifying[nid] = receipt
-                else:
-                    self.hits[nid] = receipt
-            else:
-                self.misses[nid] = info
+        kinds: dict = {}
+        for _nid, _doc, kind, _detail in rejected:
+            kinds[kind] = kinds.get(kind, 0) + 1
+        self.shared_stats = {"tests": tests, "candidates": cands, "rejected": kinds, "rejected_detail": rejected[:20],
+                             "torn": torn, "adopted": 0, "pushed": 0, "fetch_s": round(_perf() - t0, 3)}
+
+    def _shared_adopt(self) -> None:
+        if self.shared_stats is None or "error" in self.shared_stats:
+            return
+        adopted = self.store.shared_adopt()
+        self.shared_stats["adopted"] = len(adopted)
+
+    def _shared_push(self) -> None:
+        if not self.shared or self.role == "worker":
+            return
+        st = self.shared_stats if self.shared_stats is not None else {}
+        try:
+            n, docs = self.store.shared_push(self.shared, self.receipts_path, self.run_id)
+            st.update(pushed=n, documents=docs)
+        except Exception as e:
+            st["push_error"] = f"{type(e).__name__}: {e}"
+        self.shared_stats = st
+
+    def check_workers(self, nids: list, assign: dict) -> list:
+        """After the plan: reused results that read ``PYTEST_XDIST_WORKER`` and that this run's plan places on
+        another worker are withdrawn (they run). Returns the withdrawn ids (review R-023 F3)."""
+        out = []
+        for nid, why in self.store.worker_check([n for n in nids if self.sess.is_hit(n)], dict(assign)):
+            if self.sess.demote(nid, why):
+                out.append(nid)
+        return out
+
+    def written_hits(self, shard_paths: list, order: list) -> list:
+        """After every worker finished: the reused results whose input a test that comes before them in the serial
+        order wrote in this session (``ProofCache.hits_written``). They are withdrawn; the controller runs them again.
+        Returns ``[(nodeid, reason)]`` (review R-023 F2)."""
+        out = []
+        hits = [n for n in order if self.sess.is_hit(n)]
+        for nid, key, writer in self.store.hits_written(list(shard_paths), hits, list(order)):
+            why = f"written: {key} was written by {writer}, which comes before the test, in this session"
+            if self.sess.demote(nid, why):
+                out.append((nid, why))
+        return out
+
+    def report_hits(self, nids: list) -> None:
+        """Reports of the reused results among ``nids``, from the controller (they are never sent to a worker):
+        logstart, the recorded setup/call reports, a passed teardown, logfinish."""
+        from _pytest.reports import TestReport
+
+        hook = self.config.hook
+        now = _now()
+        for nid in nids:
+            if not self.sess.is_hit(nid):
+                continue
+            receipt = self.sess.hit(nid)
+            rep, fingerprint = self.store.reuse_info(nid)
+            location = _location_of(nid)
+            hook.pytest_runtest_logstart(nodeid=nid, location=location)
+            props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]), ("detpy_fingerprint", fingerprint)]
+            for when in ("setup", "call"):
+                p = rep.get(when)
+                if p is None:
+                    continue
+                lr = p.get("longrepr")
+                r = TestReport(nid, location, {}, p["outcome"], tuple(lr) if lr else None, when, (), 0.0, now, now,
+                               list(props))
+                if "wasxfail" in p:
+                    r.wasxfail = p["wasxfail"]
+                hook.pytest_runtest_logreport(report=r)
+            hook.pytest_runtest_logreport(report=TestReport(nid, location, {}, "passed", None, "teardown", (), 0.0,
+                                                            now, now, list(props)))
+            hook.pytest_runtest_logfinish(nodeid=nid, location=location)
+            if fingerprint:
+                from . import plugin as _plugin
+
+                _plugin.S.fingerprints[nid] = fingerprint
+
+    def report_unrun(self, nids_reasons: list) -> None:
+        """Withdrawn reuses the controller could not run again (no worker to run them): reported as errors, never
+        as their recorded result."""
+        from _pytest.reports import TestReport
+
+        hook = self.config.hook
+        now = _now()
+        for nid, why in nids_reasons:
+            location = _location_of(nid)
+            hook.pytest_runtest_logstart(nodeid=nid, location=location)
+            hook.pytest_runtest_logreport(report=TestReport(
+                nid, location, {}, "failed", f"detpy --det-cache: the reused result was withdrawn ({why}) and no "
+                f"worker was left to run the test again", "setup", (), 0.0, now, now, []))
+            hook.pytest_runtest_logfinish(nodeid=nid, location=location)
+
+    def durations(self, nids: list) -> dict:
+        """``{nodeid: recorded duration}`` of the tests that have an entry: the plan's cache costs."""
+        return {n: d for n, d in zip(nids, self.store.durations(list(nids))) if d is not None}
+
+    def merge_workers(self, workeroutput: dict, sent: dict, edges: list = ()) -> None:
+        """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
+        their shards into the store (``ProofCache.merge_shards``)."""
+        t0 = _perf()
+        paths = []
+        for wid in sorted(workeroutput):
+            out = workeroutput[wid]
+            summ = out.get("detpy_cache_summary")
+            if summ:
+                ran, recorded, not_cached = summ[:3]
+                where = [tuple(x) for x in summ[3]] if len(summ) > 3 else None
+                self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached], where)
+            if out.get("detpy_cache_error"):
+                self.sess.error = out["detpy_cache_error"]
+            if out.get("detpy_cache_shard"):
+                paths.append(out["detpy_cache_shard"])
+        try:
+            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges]))
+        except Exception as e:  # never break the session: nothing is recorded this time
+            self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
+            res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}
+        self.sess.apply_merge([tuple(x) for x in res["dropped"]], [tuple(x) for x in res["stale"]])
+        self.merge_result = res
+        for p in paths:
+            try:
+                os.remove(p)
+            except OSError:
+                pass
+        self.sess.set_phase("merge", _perf() - t0)
+
+    # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
+    def worker_output(self) -> dict:
+        out = {"detpy_cache_summary": list(self.sess.worker_summary())}
+        if self.shard_path:
+            out["detpy_cache_shard"] = self.shard_path
+        err = self.sess.summary_data(self.cap).get("error")
+        if err:
+            out["detpy_cache_error"] = err
+        return out
+
+    def _read_facts(self, paths, contents) -> list:
+        """Facts of code files (``_codefacts``: CPython's parser), detpy's own reads not being inputs."""
+        if not paths:
+            return []
+        cap, was = self.cap, self.cap.active
+        cap.active = False
+        try:
+            return _codefacts.read_many([(p, c, *_module_of(p)) for p, c in zip(paths, contents)],
+                                        os.path.join(self.dir, "tmp"))
+        finally:
+            cap.active = was
 
     # -- fixtures and tests ------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -1436,7 +748,7 @@ class ProofCachePlugin:
 
     @pytest.hookimpl(tryfirst=True)
     def pytest_runtest_protocol(self, item, nextitem):
-        receipt = self.hits.get(item.nodeid)
+        receipt = self.sess.hit(item.nodeid)
         if receipt is None:
             return None
         self._reuse(item, nextitem, receipt)
@@ -1444,7 +756,10 @@ class ProofCachePlugin:
 
     def _wrap_protocol(self, item, nextitem):  # generator driven by _ProtocolWrapper
         nid = item.nodeid
-        if nid in self.hits:
+        if self.role == "serial" and self.sess.is_hit(nid):
+            # review R-023 F2: a reuse decided before a writer of this session wrote the test's input is withdrawn
+            self.sess.recheck_hit(self.store, self.cap, nid)
+        if self.sess.is_hit(nid):
             yield
             return
         fx = []
@@ -1455,30 +770,18 @@ class ProofCachePlugin:
                 if defs and defs[-1].scope != "function":
                     d = defs[-1]
                     fx.append(f"f|{d.scope}|{d.baseid}|{d.argname}")
-        self.fixture_ctx[nid] = sorted(set(fx))
+        self.sess.start_test(nid, fx)
         self.cap.switch("t|" + nid)
         t = _perf()
         try:
             yield
         finally:
-            self.dur[nid] = _perf() - t
+            dur = _perf() - t
             self.cap.switch("s")
-            self.cap.scan_modules(self.test_index.get(nid, len(self.ran)), self._conftests())
-            self.ran.append(nid)
+            self.cap.scan_modules(self.sess.end_test(nid, dur), self._conftests())
 
     def pytest_runtest_logreport(self, report):
-        if report.nodeid in self.hits:
-            return
-        p = self.parts.setdefault(report.nodeid, {})
-        info = {"outcome": report.outcome}
-        if hasattr(report, "wasxfail"):
-            info["wasxfail"] = report.wasxfail
-        if report.skipped and isinstance(report.longrepr, tuple) and len(report.longrepr) == 3:
-            info["longrepr"] = [str(report.longrepr[0]), report.longrepr[1], str(report.longrepr[2])]
-        p[report.when] = info
-        for k, v in report.user_properties:
-            if k == "detpy_fingerprint":
-                self.fingerprints[report.nodeid] = v
+        self.sess.report(report)
 
     def _conftests(self):
         pm = self.config.pluginmanager
@@ -1492,14 +795,13 @@ class ProofCachePlugin:
         from _pytest.reports import TestReport
         from _pytest.runner import CallInfo
 
-        e = json.loads(self.store.entry(item.nodeid))
-        rep = e.get("report") or {}
+        rep, fingerprint = self.store.reuse_info(item.nodeid)
         ihook = item.ihook
         ihook.pytest_runtest_logstart(nodeid=item.nodeid, location=item.location)
         now = _now()
         kw = {k: 1 for k in item.keywords}
         props = [("detpy_cache", "reused"), ("detpy_cache_key", receipt["key"]),
-                 ("detpy_fingerprint", e.get("fingerprint", ""))]
+                 ("detpy_fingerprint", fingerprint)]
         reports = []
         for when in ("setup", "call"):
             p = rep.get(when)
@@ -1526,12 +828,17 @@ class ProofCachePlugin:
     def finish(self, session) -> None:
         from . import plugin as _plugin  # the fingerprints of the tests that ran (Level 0 recorder)
 
-        for nid, fp in _plugin.S.fingerprints.items():
-            if nid not in self.hits:
-                self.fingerprints[nid] = fp
-        cap = self.cap
+        sess, cap = self.sess, self.cap
+        sess.add_fingerprints(_plugin.S.fingerprints)
         cap.switch("s")
         cap.stop()
+        if self.role == "controller":
+            # no test ran here: the workers recorded, the merge happened in merge_workers
+            sess.t_record = self.sess.phase("merge")
+            sess.compare_verified()
+            sess.write_receipts(self.store)
+            self._shared_push()
+            return
         t0 = _perf()
         try:
             self._record_all()
@@ -1539,510 +846,114 @@ class ProofCachePlugin:
             import traceback
             import warnings
 
-            self.error = f"{type(e).__name__}: {e}"
-            warnings.warn(f"detpy --det-cache: results not recorded: {self.error}\n{traceback.format_exc()}")
+            sess.error = f"{type(e).__name__}: {e}"
+            warnings.warn(f"detpy --det-cache: results not recorded: {type(e).__name__}: {e}\n{traceback.format_exc()}")
         finally:
-            self.t_record = _perf() - t0
-        self.compare_verified({n: _final(p) for n, p in self.parts.items()})
-        self._write_receipts()
+            sess.t_record = _perf() - t0
+        if self.role == "worker":
+            return  # the controller compares verified results and writes the receipts
+        sess.compare_verified()
+        sess.write_receipts(self.store)
+        self._shared_push()
 
-    def _facts_index(self, rel: str, cache: dict) -> int | None:
-        """Store index of the facts of the current version of ``rel`` (computed once per file)."""
-        if rel in cache:
-            return cache[rel]
-        p = os.path.join(self.root, rel)
-        content = _core.file_digest(p)
-        ix = None
-        if content is not None:
-            ix = self.store.file_index(rel, content)
-            if ix is None:
-                mod, is_pkg = _module_of(p)
-                f = _codefacts.read_facts(p, content, mod, is_pkg)
-                if f is not None:
-                    ix = self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
-        cache[rel] = ix
-        return ix
-
-    def _prefetch_facts(self, rels, cache: dict) -> None:
-        """Facts of every file in ``rels`` whose current version the store does not have yet, computed together."""
-        jobs, meta = [], []
+    def _facts(self, rels, cache: dict) -> None:
+        """Store index of the facts of the current version of every file in ``rels`` not in ``cache`` (new versions
+        parsed together)."""
+        jobs = []
         for rel in rels:
             if rel in cache:
                 continue
-            p = os.path.join(self.root, rel)
-            content = _core.file_digest(p)
-            if content is None:
-                cache[rel] = None
-                continue
-            ix = self.store.file_index(rel, content)
-            if ix is not None:
-                cache[rel] = ix
-                continue
-            mod, is_pkg = _module_of(p)
-            jobs.append((p, content, mod, is_pkg))
-            meta.append((rel, content))
-        if not jobs:
-            return
-        for (rel, content), f in zip(meta, _codefacts.read_many(jobs, os.path.join(self.dir, "tmp"))):
-            cache[rel] = None if f is None else self.store.add_file(rel, content, f[0], f[1], f[2], f[3])
+            content = _core.file_digest(os.path.join(self.root, rel))
+            ix = None if content is None else self.store.file_index(rel, content)
+            cache[rel] = ix
+            if content is not None and ix is None:
+                jobs.append((rel, content))
+        facts = _codefacts.read_many([(p, c, *_module_of(p)) for p, c in
+                                      ((os.path.join(self.root, r), c) for r, c in jobs)],
+                                     os.path.join(self.dir, "tmp")) if jobs else ()
+        for (rel, content), f in zip(jobs, facts):
+            cache[rel] = None if f is None else self.store.add_file(rel, content, *f)
 
     def _record_all(self) -> None:
-        cap, store = self.cap, self.store
-        if cap.rec is None:
+        if self.cap.rec is None:
             return
-        cap.collect_children()
+        t = _perf()
+        self.cap.collect_children()
+        self.sess.set_phase("children", _perf() - t)
+        self._record_captured()
+
+    def _record_captured(self) -> None:
+        """Record every test that ran: the record plan is built and recorded in Rust (``CacheSession.record``,
+        ``detpy_core::record``) from the session, the capture and the facts of the files it needs (CPython's
+        parser, ``_codefacts``)."""
+        cap, store, sess = self.cap, self.store, self.sess
+        t = _perf()
         fcache: dict[str, int | None] = {}
-        rels = cap.fnames
-        # file facts for every executed or loaded repository file (new versions parsed in parallel)
-        needed = set(rels) | {r for r, _ in cap.loaded_order} | cap.preloaded
-        self._prefetch_facts(sorted(needed), fcache)
-        for rel in needed:
-            self._facts_index(rel, fcache)
-        ranges = []
-        for rel in rels:
-            ix = fcache.get(rel)
-            if ix is None:
-                ranges.append([])
-            else:
-                ranges.append([(a, b) for _, a, b, _ in store.file_facts(ix)[4]])
-        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, ranges)
-        names = cap.ctx_names
-        ctx_of = {n: i for i, n in enumerate(names)}
-
-        def units_of(fids_units):
-            out = set()
-            for v in fids_units:
-                fid, u = v >> 32, v & 0xFFFFFFFF
-                ix = fcache.get(rels[fid])
-                if ix is not None:
-                    out.add((ix, u))
-            return out
-
-        def unparsable(fids):
-            out = set()
-            for fid in fids:
-                ix = fcache.get(rels[fid])
-                if ix is None or not store.file_facts(ix)[4]:
-                    if ix is not None:
-                        f = store.file_facts(ix)
-                        if f[2] == f[1]:  # not Python: whole content
-                            out.add(ix)
-            return out
-
-        conftests = {r for r in needed if r.rsplit("/", 1)[-1] == "conftest.py"}
-        test_files = {_ctx_file(n) for n in self.items}
-        # import graph: test modules imported by any loaded module are shared, others only serve their own tests
-        imported_names = set()
-        for rel in needed:
-            ix = fcache.get(rel)
-            if ix is not None:
-                imported_names.update(store.file_facts(ix)[5])
-        shared_test_files = set()
-        for tf in test_files:
-            mod, _ = _module_of(os.path.join(self.root, tf))
-            if mod and (mod in imported_names or mod.rsplit(".", 1)[-1] in imported_names):
-                shared_test_files.add(tf)
-
-        # global contexts: startup, between tests, import time
-        g_ctx = [ctx_of[c] for c in _GLOBAL_CTX if c in ctx_of]
-        g_units = units_of(imp[0])
-        g_unparsable = unparsable(imp[1])
-        for c in g_ctx:
-            g_units |= units_of(per[c][0])
-            g_unparsable |= unparsable(per[c][1])
-        # import-time reads of a test module that no other module imports serve only its own tests
-        own_import = {tf: ctx_of["i|" + tf] for tf in test_files - shared_test_files if "i|" + tf in ctx_of}
-        own_import_ix = set(own_import.values())
-        g_ctx_all = g_ctx + [cap.import_ctx] + [i for n, i in ctx_of.items()
-                                                if n.startswith("i|") and i not in own_import_ix]
-        g_data, g_env, g_flags, g_sdata = {}, set(), set(), {}
-        for c in g_ctx_all:
-            g_data.update(cap.data.get(c, {}))
-            for k, v in cap.sdata.get(c, {}).items():
-                g_sdata.setdefault(k, v)
-            g_env |= cap.env.get(c, set())
-            g_flags |= {f for f in cap.flags.get(c, set()) if f != "proc"}
-
-        pre_ix = {fcache[r] for r in cap.preloaded if fcache.get(r) is not None}
-        names_of = cap.ctx_names
-        session_written = {cap._key(p): sorted(names_of[c] for c in w) for p, w in cap.writers.items()
-                           if _encodable(p)}
-        written = {p: set(w) for p, w in store.written().items()}
-        for p, w in session_written.items():
-            written.setdefault(p, set()).update(w)
-        # persisted for the next sessions: paths in the repository only (temporary files have fresh names)
-        store.add_written({p: w for p, w in session_written.items() if not os.path.isabs(p)})
-        # results reused in this session whose input files code of this session then wrote: drop them
-        for nid in self.hits:
-            if not session_written:
-                break
-            try:
-                deps = json.loads(store.entry(nid)).get("data", [])
-            except KeyError:
-                continue
-            own = {"t|" + nid}
-            for path, _dep in deps:
-                if _dep.startswith(("s:", "t:", "T:", "i:")):
-                    continue  # an existence check: its kind is compared with the disk before any reuse
-                if path in session_written and not set(session_written[path]) <= own:
-                    self.stale_hits[nid] = path
-                    store.remove(nid)
-                    break
-        loaded_idx = cap.loaded_order  # (rel, index)
-        tr = cap.dists
-        g_dist: set = set()
-        dist_sets = {} if (tr is not None and os.environ.get("DETPY_DIST_SETS")) else None
-        if tr is not None:
-            g_dist |= tr.global_keys
-            for c in g_ctx_all:
-                g_dist |= tr.deps.get(c, set())
+        needed, whole = sess.files_needed(cap, self.items)
+        self._facts(needed, fcache)
+        self._facts(whole, fcache)
+        sess.set_phase("facts", _perf() - t)
+        t = _perf()
+        per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, store.unit_ranges([fcache.get(r) for r in cap.fnames]))
         cfg = _state.STATE.config
-        file_of_ix = {}
-        for rel, ix in fcache.items():
-            if ix is not None:
-                file_of_ix[ix] = rel
+        assemble = sess.record(store, cap, self.items, fcache, needed, per, imp, _module_of,
+                               bool(cfg.control_urandom), "time" in cfg.controls, cfg.cassette_path)
+        sess.set_phase("plan", _perf() - t - assemble)
+        sess.set_phase("assemble", assemble)
+        t = _perf()
+        if self.role == "worker":
+            self.shard_path = os.path.join(self.dir, "shards", f"{self.run_id}.{self.worker}.json")
+            store.save_shard(self.shard_path, self.worker)
+        else:
+            store.save()
+        sess.set_phase("save", _perf() - t)
 
-        def in_scope(rel: str, own: str) -> bool:
-            if rel in test_files:
-                return rel == own or rel in shared_test_files
-            if rel in conftests:
-                d = rel.rsplit("/", 1)[0] if "/" in rel else ""
-                return d == "" or own == d or own.startswith(d + "/")
-            return True
-
-        # review R-020 H1/O1 (prefix rule): a test, fixture or collection that ran before a test in this process
-        # can leave state that test reads without any event (functools.lru_cache, a module-level dict, a registry
-        # filled on first use): everything it depended on (code executed, files, environment variables,
-        # distributions, refusals) is an input of every later test of the process. Contexts in order of first
-        # activation; import contexts of test modules at the collection of their file.
-        first: dict[int, int] = {}
-        for k, (_t, c) in enumerate(cap.timeline):
-            first.setdefault(c, k)
-        g_set = set(g_ctx_all)
-        for n, i in ctx_of.items():
-            if n.startswith("i|") and i in own_import_ix:
-                first.setdefault(i, first.get(ctx_of.get("c|" + n[2:]), 0))
-        carry_order = sorted((k, c) for c, k in first.items() if c not in g_set)
-        carry_pos = 0
-        c_data: dict = {}
-        c_sdata: dict = {}
-        shared_stats: list = [-1, []]  # (size of c_sdata when compacted, compacted global + carried checks)
-        c_env: set = set()
-        c_flags: set = set()
-        c_units: set = set()
-        c_content: set = set()
-        c_dist: set = set()
-        c_ctxs: list = []
-
-        for nid in self.ran:
-            item = self.items.get(nid)
-            if item is None:
-                continue
-            tpos = first.get(ctx_of.get("t|" + nid), len(cap.timeline))
-            while carry_pos < len(carry_order) and carry_order[carry_pos][0] < tpos:
-                c = carry_order[carry_pos][1]
-                carry_pos += 1
-                c_ctxs.append(c)
-                c_data.update(cap.data.get(c, {}))
-                for k, v in cap.sdata.get(c, {}).items():
-                    c_sdata.setdefault(k, v)
-                c_env |= cap.env.get(c, set())
-                c_flags |= cap.flags.get(c, set())
-                if c < len(per):
-                    c_units |= units_of(per[c][0])
-                    c_content |= unparsable(per[c][1])
-                if tr is not None:
-                    c_dist |= tr.deps.get(c, set())
-            p = self.parts.get(nid, {})
-            outcome = _final(p)
-            if outcome not in ("passed", "skipped", "xfailed"):
-                self._not_cached(nid, f"outcome {outcome}")
-                continue
-            own = _ctx_file(nid)
-            ctxs = [ctx_of[c] for c in ["t|" + nid, "c|" + own, *self.fixture_ctx.get(nid, [])] if c in ctx_of]
-            if own in own_import:
-                ctxs.append(own_import[own])
-            def own_reads(path, _ctxs=ctxs):
-                return path in g_data or any(path in cap.data.get(c, ()) for c in _ctxs)
-
-            flags = set(g_flags)
-            data = dict(c_data)
-            data.update(g_data)
-            env = set(g_env) | c_env
-            units = set(c_units)
-            content = set(pre_ix) | g_unparsable | c_content
-            for c in ctxs:
-                flags |= cap.flags.get(c, set())
-                data.update(cap.data.get(c, {}))
-                env |= cap.env.get(c, set())
-                units |= units_of(per[c][0])
-                content |= unparsable(per[c][1])
-            why = _uncacheable(flags, cfg)
-            own_flags = set(flags)
-            if why is not None:
-                self.not_cached_where[nid] = self._where(why, g_ctx_all + ctxs)
-            elif c_flags:
-                why = _uncacheable(c_flags, cfg)
-                if why is not None:
-                    self.not_cached_where[nid] = self._where(why, c_ctxs)
-                    why = f"after an earlier test or fixture of this process: {why}"
-                else:
-                    flags |= c_flags
-            if why is None:
-                # writers credited to the test: its own contexts and the global ones (startup, between tests,
-                # import time), whose code is an input of every test. (Contexts that ran earlier are not credited:
-                # a file one of them wrote is not there when that context is reused instead of run.)
-                credited = set(ctxs) | set(g_ctx_all)
-                names = {names_of[c] for c in credited}
-                # a carried read of a file written in this session: its writers ran before that read, so before
-                # this test; their inputs are carried too, which credits them as for the test's own contexts
-                carried_credit = credited | set(c_ctxs)
-                for f in sorted(flags):
-                    if f.startswith("rw:") and not cap.writers.get(f[3:], set()) <= (
-                            credited if f in own_flags else carried_credit):
-                        why = f"reads a file another test or fixture wrote: {cap._key(f[3:])}"
-                        break
-                if why is None:
-                    # reads carried from earlier contexts are not checked here: that context read the file itself,
-                    # and its recorded digest is compared with the file on disk before any reuse
-                    for path in data:
-                        if path in c_data and c_data[path] == data[path] and not own_reads(path):
-                            continue
-                        w = written.get(path)
-                        if w and not w <= names:
-                            why = f"reads a file another test or fixture wrote: {path}"
-                            break
-            if why is None and "net-replay" in flags and cfg.cassette_path:
-                d = _core.file_digest(cfg.cassette_path)
-                data[cap._key(os.path.realpath(cfg.cassette_path))] = f"f:{d}" if d else "missing"
-            if why:
-                self._not_cached(nid, why)
-                continue
-            # existence checks: an input unless the same path's content (or listing) already is one. Many in one
-            # directory become its listing with kinds, many under one tree the tree with kinds (Rust:
-            # proof::compact_stats). The global and carried ones are shared by many tests: compacted once per
-            # change of the carried set.
-            if shared_stats[0] != len(c_sdata):
-                merged = dict(g_sdata)
-                for k, v in c_sdata.items():
-                    merged.setdefault(k, v)
-                shared_stats[:] = [len(c_sdata), self._compact(merged)]
-            # pytest's own lookups for this test: a conftest.py or __init__.py that appears between the root and the
-            # test file (plugins, fixtures, the test module's import name) changes what runs
-            own_s: dict = {}
-            for rel in _core.collection_candidates(os.path.dirname(own)):
-                ap = os.path.join(self.root, rel)
-                dep = cap._hashed.get("s" + ap)
-                if dep is None:
-                    dep = cap._hashed["s" + ap] = _core.stat_dep(ap)
-                own_s.setdefault(rel, dep)
-            for c in ctxs:
-                for k, v in cap.sdata.get(c, {}).items():
-                    own_s.setdefault(k, v)
-            for k, v in shared_stats[1]:
-                data.setdefault(k, v)
-            for k, v in self._compact(own_s):
-                data.setdefault(k, v)
-            idx = self.test_index.get(nid, 0)
-            skeleton, hooks = set(), set()
-            for rel, seen_at in loaded_idx:
-                if seen_at > idx:
-                    continue
-                ix = fcache.get(rel)
-                if ix is None:
-                    continue
-                if rel in conftests:
-                    hooks.add(ix)
-                if in_scope(rel, own):
-                    skeleton.add(ix)
-            for ix, u in g_units:
-                rel = file_of_ix.get(ix)
-                # hooks run outside tests can act on any test; test modules serve their own tests
-                if rel is not None and (rel in conftests or in_scope(rel, own)):
-                    units.add((ix, u))
-            if type(item).__name__ == "DoctestItem" or not hasattr(item, "obj"):
-                ix = fcache.get(own)
-                if ix is None:
-                    ix = self._facts_index(own, fcache)
-                if ix is not None:
-                    content.add(ix)
-            epoch = self.epoch if ("time" in flags and "time" in cfg.controls) else None
-            if "time" in flags and "time" not in cfg.controls:
-                self._not_cached(nid, "real clock")
-                continue
-            env_deps = []
-            for name in sorted(n for n in env if _encodable(n)):
-                if name == "*":
-                    env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
-                else:
-                    env_deps.append((name, _core.env_value_digest(cap.env0.get(name))))  # env0 is sanitised
-            if tr is not None:
-                keys = set(g_dist) | c_dist
-                for c in ctxs:
-                    keys |= tr.deps.get(c, set())
-                for k, seen_at in tr.loaded:
-                    if seen_at <= idx:
-                        keys.add(k)
-                data.update(tr.data_deps(sorted(keys)))
-                self.dist_keys_n.append(len(keys))
-                self.dist_all_n += distid.ALL in keys
-                if dist_sets is not None:
-                    own = set(g_dist)
-                    for c in ctxs:
-                        own |= tr.deps.get(c, set())
-                    own |= {k for k, seen_at in tr.loaded if seen_at in (-1, idx)}
-                    dist_sets[nid] = {"proof": sorted(keys), "own": sorted(own)}
-            report = {w: p[w] for w in ("setup", "call") if w in p}
-            data_items = sorted(data.items())
-            store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
-                         self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
-                         data_items, sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
-            self.recorded += 1
-        store.save()
-        if dist_sets is not None:
-            try:
-                with open(os.path.join(self.dir, f"dist-sets-{self.run_id}.json"), "w") as fh:
-                    json.dump({"identity": {k: open(os.path.join(tr.dir, k)).read() if os.path.exists(
-                        os.path.join(tr.dir, k)) else None for k in sorted({k for v in dist_sets.values()
-                                                                           for k in v["proof"] + v["own"]})},
-                               "tests": dist_sets}, fh)
-            except OSError:
-                pass
-
-    def _compact(self, stats: dict) -> list:
-        if len(stats) < _STATS_PER_DIR:
-            return list(stats.items())
-        return _core.compact_stats(sorted(stats.items()), self.root, _STATS_PER_DIR, self.run_id)
-
-    def _where(self, why: str, ctxs) -> str:
-        """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
-        flag = _FLAG_OF.get(why)
-        if flag is None:
-            return why
-        for c in ctxs:
-            d = self.cap.why.get((c, flag))
-            if d is not None:
-                return f"{d} ({_ctx_label(self.cap.ctx_names[c])})"
-        return ""
-
-    def _not_cached(self, nid: str, why: str) -> None:
-        self.not_cached[nid] = why
-        self.store.remove(nid)
-
-    def _write_receipts(self) -> None:
-        try:
-            os.makedirs(os.path.dirname(os.path.abspath(self.receipts_path)), exist_ok=True)
-            with open(self.receipts_path, "w") as fh:
-                for nid, r in self.hits.items():
-                    fh.write(json.dumps({"nodeid": nid, "reused": True, **r}) + "\n")
-                for nid, why in self.misses.items():
-                    fh.write(json.dumps({"nodeid": nid, "reused": False, "why": why}) + "\n")
-        except OSError:
-            pass
-
-    # -- reporting --------------------------------------------------------------------
+    # -- reporting (Rust: CacheSession) --------------------------------------------------
     def summary_data(self) -> dict:
-        kinds: dict[str, int] = {}
-        for why in self.misses.values():
-            k = why.split(":", 1)[0]
-            kinds[k] = kinds.get(k, 0) + 1
-        nc: dict[str, int] = {}
-        detail: dict[str, int] = {}
-        for nid, why in self.not_cached.items():
-            k = why.split(" ", 1)[0] if why.startswith("outcome") else why.split(":", 1)[0]
-            nc[k] = nc.get(k, 0) + 1
-            if not why.startswith("outcome"):
-                w = self.not_cached_where.get(nid)
-                full = f"{why}: {w}" if w else why
-                detail[full] = detail.get(full, 0) + 1
-        top = dict(sorted(detail.items(), key=lambda kv: (-kv[1], kv[0]))[:40])
-        return {
-            "reused": len(self.hits),
-            "verified": len(self.verifying),
-            "ran": len(self.ran),
-            "recorded": self.recorded,
-            "miss_reasons": kinds,
-            "not_cached": nc,
-            "not_cached_detail": top,
-            "children": self.cap.children,
-            "children_not_followed": (self.cap.follower.why_not if self.cap.follower is not None else None),
-            "child_entropy_draws": self.cap.child_entropy,
-            "reused_recorded_seconds": round(sum(self._entry_duration(n) for n in self.hits), 3),
-            "check_seconds": round(self.t_check, 3),
-            "record_seconds": round(self.t_record, 3),
-            "config": self.config_digest,
-            "runtime": self.runtime_digest,
-            "epoch_ns": self.epoch,
-            "verify_mismatches": [v for v in self.verify_results if not v["same"]],
-            "stale_reuses": self.stale_hits,
-            "error": self.error,
-            "receipts": self.receipts_path,
-            "dists": self._dist_summary(),
-        }
+        return self.sess.summary_data(self.cap)
 
-    def _dist_summary(self) -> dict | None:
-        tr = self.cap.dists
-        if tr is None:
-            return None
-        by_key: dict[str, int] = {}
-        pre = tr.dir + os.sep
-        for why in self.misses.values():
-            if why.startswith("data:") and pre in why:
-                k = why.split(pre, 1)[1].split(" ", 1)[0]
-                by_key[k] = by_key.get(k, 0) + 1
-        n = self.dist_keys_n
-        return {
-            "identity_dir": tr.dir,
-            "installed": len(tr.index.ident),
-            "miss_by_identity": dict(sorted(by_key.items(), key=lambda kv: -kv[1])[:40]),
-            "recorded_keys_mean": round(sum(n) / len(n), 1) if n else None,
-            "recorded_with_all": self.dist_all_n,
-            "unmapped": dict(sorted(tr.unmapped.items(), key=lambda kv: -kv[1])[:20]),
-            "loaded": len(tr.loaded),
-            "index_seconds": round(tr.index_seconds, 3),
-        }
-
-    def _entry_duration(self, nid: str) -> float:
-        return float(self.hits[nid].get("duration", 0.0) or 0.0)
-
-    def compare_verified(self, outcomes: dict) -> None:
-        for nid, r in self.verifying.items():
-            o = outcomes.get(nid)
-            fp = self.fingerprints.get(nid)
-            self.verify_results.append({"nodeid": nid, "cached": r["outcome"], "fresh": o,
-                                        "same": o == r["outcome"], "same_fingerprint": fp == r["fingerprint"]})
+    def outcomes_data(self) -> dict:
+        return self.sess.outcomes_data(self.cap)
 
     def terminal_summary(self, tr) -> None:
-        s = self.summary_data()
         tr.section("detpy cache with proof")
-        tr.write_line(f"reused {s['reused']} result(s) with proof, ran {s['ran']}, recorded {s['recorded']} "
-                      f"(check {s['check_seconds']}s, record {s['record_seconds']}s); config {s['config']}, "
-                      f"runtime {s['runtime']}")
-        if s["miss_reasons"]:
-            tr.write_line("not reused: " + ", ".join(f"{k} {v}" for k, v in sorted(s["miss_reasons"].items())))
-        if s["not_cached"]:
-            tr.write_line("not cacheable: " + ", ".join(f"{k} {v}" for k, v in sorted(s["not_cached"].items())))
-        for nid, path in self.stale_hits.items():
-            tr.write_line(f"WARNING reused {nid}, but this session then wrote its input {path}: entry dropped",
-                          yellow=True)
-        if self.verify_results:
-            bad = s["verify_mismatches"]
-            tr.write_line(f"verified {len(self.verify_results)} reusable result(s) by running them: "
-                          f"{len(bad)} mismatch(es)", red=bool(bad))
-            for b in bad:
-                tr.write_line(f"  MISMATCH {b['nodeid']}: cached {b['cached']}, fresh {b['fresh']}", red=True)
-        if tr.config.option.verbose > 0:
-            for nid, r in self.hits.items():
-                tr.write_line(f"REUSED {nid} key={r['key']} run={r['run']} outcome={r['outcome']}: checked "
-                              f"{r['n_units']} functions, {r['n_skeleton']} modules, {r['n_hooks']} conftest hook "
-                              f"sets, {r['n_content']} whole files, {r['n_data']} data paths, {r['n_env']} env "
-                              f"vars; runtime {r['runtime']}, config {r['config']}"
-                              f"{'' if r['epoch'] is None else ', epoch ' + str(r['epoch'])}")
-        tr.write_line(f"receipts: {s['receipts']}")
+        for text, markup in self.sess.summary_lines(self.cap, tr.config.option.verbose):
+            tr.write_line(text, **({markup: True} if markup else {}))
+        m = self.merge_result
+        if m is not None:
+            tr.write_line(f"parallel: decided once in the controller; {m['merged']} entries merged from the workers' "
+                          f"shards, {len(m['dropped'])} dropped by the cross-worker write rule, {len(m['stale'])} "
+                          f"reused results dropped (inputs written by this session), {m.get('edges', 0)} together "
+                          f"edge(s) noted for the next plans"
+                          + (f"; UNREADABLE shards: {len(m['unreadable'])}" if m["unreadable"] else ""))
+            if "proven" in m:
+                tr.write_line(f"parallel vs serial (P5): {m['proven']} entr(ies) proven equal to the serial result "
+                              f"(reusable by serial sessions), {len(m['diverged'])} diverged (not stored: the serial "
+                              f"entry stays), {m['unproven']} unproven (no stable serial fingerprint under their key)")
+        st = self.shared_stats
+        if self.shared and st is not None:
+            if "error" in st:
+                tr.write_line(f"shared store {self.shared}: not used ({st['error']})", yellow=True)
+            else:
+                rej = ", ".join(f"{k} {v}" for k, v in sorted(st.get("rejected", {}).items())) or "none"
+                tr.write_line(f"shared store {self.shared}: {st.get('candidates', 0)} candidate(s) for "
+                              f"{st.get('tests', 0)} test(s), {st.get('adopted', 0)} adopted after the check, "
+                              f"rejected: {rej}" + (f", {st['torn']} torn log line(s)" if st.get("torn") else "")
+                              + f"; pushed {st.get('pushed', 0)} entr(ies)"
+                              + (f"; PUSH FAILED: {st['push_error']}" if st.get("push_error") else ""))
+
+
+def _location_of(nodeid: str) -> tuple:
+    """A report location for a test reported by the xdist controller (which has no items): the file, no line, the
+    rest of the node id as the domain."""
+    path, _, rest = nodeid.partition("::")
+    return (path, None, rest.replace("::", ".") or path)
 
 
 def _run_time(run: str) -> float:
-    """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired)."""
+    """Real time (seconds) of a run id ``YYYYmmddTHHMMSS-pid``; 0 when unreadable (then the entry has expired).
+    (``time.strptime``'s rules, which depend on the Python version: called by ``ProofCache.check_all`` once per
+    distinct run id.)"""
     import calendar
 
     try:
@@ -2051,287 +962,7 @@ def _run_time(run: str) -> float:
         return 0.0
 
 
-def _final(parts: dict) -> str:
-    setup, call, teardown = parts.get("setup"), parts.get("call"), parts.get("teardown")
-    so = setup and setup["outcome"]
-    if so and so != "passed":
-        if so == "skipped":
-            return "xfailed" if "wasxfail" in setup else "skipped"
-        return "error"
-    if call is None:
-        return "unknown"
-    co = call["outcome"]
-    if teardown and teardown["outcome"] == "failed":
-        return "error"
-    if co == "skipped" and "wasxfail" in call:
-        return "xfailed"
-    if co == "passed" and "wasxfail" in call:
-        return "xpassed"
-    return co
 
-
-def _safe(s: str) -> str:
-    """``s`` as valid UTF-8 text (undecodable bytes of environment strings escaped)."""
-    return s if _encodable(s) else s.encode("utf-8", "surrogateescape").decode("utf-8", "backslashreplace")
-
-
-def _encodable(s: str) -> bool:
-    try:
-        s.encode("utf-8")
-        return True
-    except UnicodeEncodeError:
-        return False
-
-
-_LD_SO_CACHE = "/etc/ld.so.cache"
-
-
-_CTYPES_UTIL = os.sep + os.path.join("ctypes", "util.py")
-_UUID_PY = os.sep + "uuid.py"
-
-
-def _called_from(suffix: str) -> bool:
-    """Whether a frame of the running call stack is in a standard-library file ending with ``suffix``."""
-    f = _getframe(2)
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.endswith(suffix) and _sites._classify(fn)[0] != _sites._USER:
-            return True
-        f = f.f_back
-    return False
-
-
-def _is_find_library_ldconfig(args) -> bool:
-    """``subprocess.Popen(['/sbin/ldconfig', '-p'])`` called by ``ctypes.util.find_library``."""
-    try:
-        argv = list(args[1]) if len(args) > 1 and not isinstance(args[1], (str, bytes)) else None
-    except TypeError:
-        return False
-    if not argv or len(argv) != 2 or os.path.basename(os.fsdecode(argv[0])) != "ldconfig" or argv[1] != "-p":
-        return False
-    f = _getframe(2)
-    while f is not None:
-        fn = f.f_code.co_filename
-        if fn.endswith(os.sep + os.path.join("ctypes", "util.py")):
-            return True
-        f = f.f_back
-    return False
-
-
-import re as _re  # noqa: E402
-
-# sqlite reads the real clock for 'now', CURRENT_TIMESTAMP/DATE/TIME and the date functions called without a time
-# value (date(), datetime(), time(), julianday(), unixepoch(), strftime(format))
-_SQL_REAL_CLOCK = _re.compile(
-    r"""'now'|"now"|\bcurrent_(timestamp|date|time)\b|\b(date|time|datetime|julianday|unixepoch)\s*\(\s*\)"""
-    r"""|\bstrftime\s*\(\s*('[^']*'|"[^"]*")\s*\)""", _re.I)
-
-
-def _numeric_host(host: str) -> bool:
-    import ipaddress
-
-    try:
-        ipaddress.ip_address(host.split("%", 1)[0])
-        return True
-    except ValueError:
-        return False
-
-
-_FLAG_OF = {"real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
-            "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc",
-            "native code from the repository": "native"}
-
-
-def _ctx_label(name: str) -> str:
-    if name == "":
-        return "startup"
-    if name == "s":
-        return "between tests"
-    if name == "i":
-        return "import time"
-    kind, _, rest = name.partition("|")
-    if kind == "i":
-        return "import of " + rest
-    if kind == "c":
-        return "collection of " + rest
-    if kind == "f":
-        return "fixture " + rest.rsplit("|", 1)[-1]
-    return "test"
-
-
-def _first_user_site() -> str:
-    """``file:line`` of the innermost frame outside detpy and the standard library (else the innermost one)."""
-    try:
-        f = _getframe(1)
-    except ValueError:
-        return "?"
-    first = None
-    while f is not None:
-        fn = f.f_code.co_filename
-        if not fn.startswith(_DETPY_DIR):
-            kind, norm = _sites._classify(fn)
-            if first is None:
-                first = f"{norm}:{f.f_lineno}"
-            if kind == _sites._USER:
-                return f"{norm}:{f.f_lineno}"
-        f = f.f_back
-    return first or "?"
-
-
-def _spawn_detail(event: str, args) -> str:
-    """The program a spawn event starts and where it was called from."""
-    prog = None
-    try:
-        if event == "subprocess.Popen":
-            prog = args[0] if args[0] is not None else (args[1] if isinstance(args[1], (str, bytes)) else list(args[1])[0])
-        elif event == "os.system":
-            prog = os.fsdecode(args[0]).split()[0]
-        elif event.startswith("os.spawn"):
-            prog = args[1]
-        elif event in ("os.posix_spawn", "os.exec") or event.startswith("os.exec"):
-            prog = args[0]
-    except (IndexError, TypeError, ValueError):
-        prog = None
-    name = os.path.basename(os.fsdecode(prog)) if isinstance(prog, (str, bytes, os.PathLike)) else event
-    return f"{name} ({event}) at {_first_user_site()}"
-
-
-def _own_listener(args) -> bool:
-    """A TCP connect to a numeric loopback address whose port a listening socket of this very process holds."""
-    import ipaddress
-    import socket as _socket
-
-    try:
-        sock, addr = args[0], args[1]
-        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
-            return False
-        host, port = addr[0], int(addr[1])
-        ip = ipaddress.ip_address(str(host).split("%", 1)[0])
-    except (AttributeError, IndexError, TypeError, ValueError, OSError):
-        return False
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
-        return False
-    mine = _own_socket_inodes()
-    want = f"{port:04X}"
-    for t in ("tcp", "tcp6"):
-        try:
-            with open("/proc/self/net/" + t, "rb") as fh:
-                next(fh, None)
-                for line in fh:
-                    parts = line.split()
-                    if len(parts) < 10 or parts[3] != b"0A":  # LISTEN
-                        continue
-                    laddr, _, lport = parts[1].decode().rpartition(":")
-                    if lport != want or parts[9].decode() not in mine:
-                        continue
-                    if set(laddr) <= {"0"} or _loopback_hex(laddr):
-                        return True
-        except OSError:
-            continue
-    return False
-
-
-def _both_ends_mine(sock) -> bool:
-    """A connected TCP socket whose peer address is the local address of a socket this process holds."""
-    import socket as _socket
-
-    try:
-        if sock.family not in (_socket.AF_INET, _socket.AF_INET6) or sock.type & 0xF != _socket.SOCK_STREAM:
-            return False
-        peer = sock.getpeername()
-    except (AttributeError, OSError):
-        return False
-    try:
-        import ipaddress
-
-        ip = ipaddress.ip_address(str(peer[0]).split("%", 1)[0])
-    except ValueError:
-        return False
-    mapped = getattr(ip, "ipv4_mapped", None)
-    if not (ip.is_loopback or (mapped is not None and mapped.is_loopback)):
-        return False
-    mine = _own_socket_inodes()
-    want = f"{int(peer[1]):04X}"
-    for t in ("tcp", "tcp6"):
-        try:
-            with open("/proc/self/net/" + t, "rb") as fh:
-                next(fh, None)
-                for line in fh:
-                    parts = line.split()
-                    if len(parts) < 10:
-                        continue
-                    laddr, _, lport = parts[1].decode().rpartition(":")
-                    if lport == want and parts[9].decode() in mine and _loopback_hex(laddr):
-                        return True
-        except OSError:
-            continue
-    return False
-
-
-def _own_socket_inodes() -> set:
-    mine = set()
-    try:
-        fds = os.listdir("/proc/self/fd")
-    except OSError:
-        return mine
-    for fd in fds:
-        try:
-            link = os.readlink("/proc/self/fd/" + fd)
-        except OSError:
-            continue
-        if link.startswith("socket:["):
-            mine.add(link[8:-1])
-    return mine
-
-
-def _loopback_hex(laddr: str) -> bool:
-    """A /proc/net/tcp{,6} local address (hex, host byte order per 32-bit word) that is loopback."""
-    try:
-        b = bytes.fromhex(laddr)
-    except ValueError:
-        return False
-    if len(b) == 4:
-        return b[3] == 127  # little-endian 127.x.y.z
-    if len(b) == 16:
-        words = [b[i:i + 4][::-1] for i in range(0, 16, 4)]
-        raw = b"".join(words)
-        if raw == b"\0" * 15 + b"\1":
-            return True
-        return raw[:12] == b"\0" * 10 + b"\xff\xff" and raw[12] == 127
-    return False
-
-
-def _addr(args) -> str:
-    try:
-        a = args[1]
-        return f"{a[0]}:{a[1]}" if isinstance(a, tuple) else str(a)
-    except (IndexError, TypeError):
-        return "?"
-
-
-def _uncacheable(flags: set, cfg) -> str | None:
-    if "badpath" in flags:
-        return "reads a path that is not valid UTF-8"
-    if "rclock" in flags:
-        return "real clock read outside the virtual clock"
-    if "spawn" in flags:
-        return "subprocess"
-    if "connect" in flags:
-        return "network connection"
-    if "csock" in flags:
-        return "network socket opened outside Python (C extension)"
-    if "dns" in flags:
-        return "host name lookup"
-    if "net-record" in flags:
-        return "network recording (--det-record)"
-    if "entropy" in flags and not cfg.control_urandom:
-        return "os entropy (not controlled; use --det-urandom)"
-    if "proc" in flags:
-        return "reads /proc, /sys or /dev"
-    if "native" in flags:
-        return "native code from the repository"
-    return None
 
 
 _MODMAP: dict = {}
@@ -2363,23 +994,7 @@ def cache_epoch(cache_dir: str, head_ns: int, window_ns: int) -> int:
     checkout keeps the cache's epoch (later than its commit, as for any run after the commit). The epoch is part of
     the key of every test that read the clock, so moving it reruns those tests.
     """
-    path = os.path.join(os.path.abspath(cache_dir), "epoch.json")
-    try:
-        with open(path) as fh:
-            kept = int(json.load(fh)["epoch_ns"])
-    except (OSError, ValueError, KeyError, TypeError):
-        kept = None
-    if kept is not None and head_ns - kept <= window_ns:
-        return kept
-    try:
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        tmp = f"{path}.{os.getpid()}.tmp"
-        with open(tmp, "w") as fh:
-            json.dump({"epoch_ns": head_ns, "taken_from": "git HEAD commit time"}, fh)
-        os.replace(tmp, path)
-    except OSError:
-        pass
-    return head_ns
+    return _core.cache_epoch(cache_dir, head_ns, window_ns)  # Rust: identity.rs
 
 
 CAPTURE: Capture | None = None
@@ -2388,35 +1003,24 @@ PLUGIN: ProofCachePlugin | None = None
 
 def start(early_config, ns) -> None:
     """Start recording (from ``pytest_load_initial_conftests``, before conftests are imported)."""
-    global CAPTURE, _ENV_CAPTURE
+    global CAPTURE
     if not AVAILABLE:
         raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
     if CAPTURE is not None and CAPTURE.active:
         return  # nested in-process session: the outer one records
     root = str(early_config.rootpath)
     # detpy's own variables (set by its re-exec, e.g. the precompile time) are configuration, not inputs
-    env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if k not in _DETPY_OWN_ENV}
+    # (undecodable bytes of environment strings escaped: valid UTF-8 text, Rust _safe)
+    env0 = _core.safe_env(os.environ.items(), _DETPY_OWN_ENV)
     cap = Capture(root, env0)
     CAPTURE = cap
-    _ENV_CAPTURE = cap
+    _core.cap_set_env_capture(cap)
     _patch_environ()
     _state.set_event_listener(cap.event)
     # probed before recording starts: the probe's own strace run is not a child of any test
     cap.follower = follow.Follower(cap, os.path.join(os.path.abspath(ns.det_cache), f"follow-{os.getpid()}"),
                                    not getattr(ns, "det_cache_no_follow", False))
     cap.follower.install()
-    if getattr(ns, "det_cache_dists", False) or os.environ.get("DETPY_CACHE_DISTS") == "1":
-        # prototype: per-distribution identity (distid); built before recording starts, so its reads are not inputs
-        t0 = _perf()
-        index = distid.Index(root)
-        ident_dir = os.path.join(os.path.abspath(ns.det_cache), "dist-identity")
-        site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
-        index.write(ident_dir, site_dirs)
-        tr = distid.Tracker(cap, index, ident_dir)
-        tr.site_dirs = site_dirs
-        tr.index_seconds = _perf() - t0
-        tr.install()
-        cap.dists = tr
     cap.start()
 
 
@@ -2428,9 +1032,18 @@ def install(config) -> None:
         return
     opt = config.option
     plugin = ProofCachePlugin(cap, opt.det_cache, opt.det_cache_verify, opt.det_cache_receipts)
+    plugin.shared = getattr(opt, "det_cache_shared", None) or os.environ.get("DETPY_CACHE_SHARED") or None
     age = getattr(opt, "det_cache_max_age", 30.0)
     plugin.max_age_s = age * 86400 if age and age > 0 else None
+    from . import xdist as _xdist
+
+    if _xdist.worker_id(config) is not None:
+        plugin.role, plugin.worker = "worker", _xdist.worker_id(config)
+    elif _xdist.is_controller(config):
+        plugin.role = "controller"
     plugin.configure(config)
+    if getattr(opt, "det_plan_worker", None):
+        plugin.store.set_parallel()  # one worker's list of a parallel plan: its results are parallel results
     PLUGIN = plugin
     config.pluginmanager.register(plugin, "detpy-cache")
     config.pluginmanager.register(_ProtocolWrapper(plugin), "detpy-cache-wrapper")
@@ -2438,17 +1051,15 @@ def install(config) -> None:
 
 
 def uninstall() -> None:
-    global CAPTURE, PLUGIN, _ENV_CAPTURE
+    global CAPTURE, PLUGIN
     if CAPTURE is not None:
         CAPTURE.stop()
-        if CAPTURE.dists is not None:
-            CAPTURE.dists.uninstall()
         if CAPTURE.follower is not None:
             CAPTURE.follower.uninstall()
     _state.set_event_listener(None)
     CAPTURE = None
     PLUGIN = None
-    _ENV_CAPTURE = None
+    _core.cap_set_env_capture(None)
 
 
 class _ProtocolWrapper:

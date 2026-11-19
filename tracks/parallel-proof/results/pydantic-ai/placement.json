@@ -1,0 +1,91 @@
+{
+ "tests": 8029,
+ "serial_noise (serA != serB)": 5398,
+ "serial_noise_first_event": {
+  "entropy": 5388,
+  "time": 6,
+  "random": 4
+ },
+ "parallel_noise (parA != parB)": 5703,
+ "serial_vs_parallel_differs (either parallel run)": 5850,
+ "placement (differs from serial, serial runs agree)": 455,
+ "placement_in_both_parallel_runs": 164,
+ "placement_first_event": {
+  "time": 448,
+  "random": 7
+ },
+ "placement_outcome_flips": [],
+ "placement_top_files": [
+  [
+   "tests/models/test_anthropic.py",
+   76
+  ],
+  [
+   "tests/models/test_anthropic_batch.py",
+   40
+  ],
+  [
+   "tests/models/test_bedrock.py",
+   33
+  ],
+  [
+   "tests/models/google/test_image_generation.py",
+   17
+  ],
+  [
+   "tests/models/test_instrumented.py",
+   16
+  ],
+  [
+   "tests/models/test_anthropic_mid_conversation_system.py",
+   15
+  ],
+  [
+   "tests/models/google/test_media.py",
+   15
+  ],
+  [
+   "tests/models/anthropic/test_web_tools.py",
+   13
+  ],
+  [
+   "tests/models/google/test_transport.py",
+   12
+  ],
+  [
+   "tests/harness/code_mode/test_code_mode.py",
+   12
+  ]
+ ],
+ "tests_on_another_worker_between_parallel_runs": 5962,
+ "workers_A": {
+  "gw0": 2243,
+  "gw1": 2002,
+  "gw2": 2117,
+  "gw3": 1710
+ },
+ "workers_B": {
+  "gw0": 1920,
+  "gw1": 2187,
+  "gw2": 2265,
+  "gw3": 1700
+ },
+ "outcomes_differ_serial_vs_parallel": [],
+ "placement_examples": [
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_budget_retry_names_calls_that_raised",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_default_wraps_all_tools_behind_run_code",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_nested_call_budget_is_reserved_before_dispatch",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_caps_nested_tool_calls",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_description_explains_final_expression_return",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_executes_string_returning_tool_with_default_arg",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_function_examples_are_expressions",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_run_code_state_persists_between_calls",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_sandbox_panic_is_retryable",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_sanitize_tool_name[a-a]",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_unexpected_execution_error_reports_session_reset",
+  "tests/harness/code_mode/test_code_mode.py::TestCodeMode::test_unknown_function_call_surfaces_as_model_retry",
+  "tests/harness/code_mode/test_eager.py::TestEagerCodeMode::test_failure_in_a_streamed_fragment_stops_later_fragments",
+  "tests/harness/code_mode/test_eager.py::TestEagerCodeMode::test_failure_preserves_state_and_reports_prior_output",
+  "tests/harness/code_mode/test_os_policy.py::test_description_advertises_a_policy_clock"
+ ]
+}

@@ -1,0 +1,498 @@
+{
+ "spec": "click",
+ "shard": "0/1",
+ "engines": [
+  "base",
+  "r1",
+  "r2cp",
+  "r2"
+ ],
+ "cpus": 4,
+ "runner": "",
+ "engine_sha": "",
+ "walls": {
+  "P0": [
+   7.328273391000039,
+   7.034514011998908,
+   7.55923738400088
+  ],
+  "K0": [
+   3.549593026000366,
+   3.9968302020006377,
+   3.567418443000861
+  ],
+  "W:base": [
+   8.426358426999286,
+   8.2144269240016,
+   7.893131999000616
+  ],
+  "X:base": [
+   0.4439864720006881,
+   0.32286446500074817,
+   0.28981836900129565
+  ],
+  "W:r1": [
+   5.437979682999867,
+   5.016970266999124,
+   4.982043232999786
+  ],
+  "X:r1": [
+   0.2646951219994662,
+   0.34355918600158475,
+   0.26294780500029447
+  ],
+  "W:r2cp": [
+   4.947501835998992,
+   4.745764553001209,
+   4.769081234999248
+  ],
+  "X:r2cp": [
+   0.1779132829997252,
+   0.24149280700112286,
+   0.18951843200011353
+  ],
+  "W:r2": [
+   3.844887736999226,
+   3.7464608210011647,
+   3.82161503899988
+  ],
+  "X:r2": [
+   0.21112234900101612,
+   0.2076218649999646,
+   0.17213539199838124
+  ]
+ },
+ "cache": {
+  "C:base": [
+   {
+    "exit": 0,
+    "wall": 12.799544600000445,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.002,
+     "record_seconds": 4.183,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:r1": [
+   {
+    "exit": 0,
+    "wall": 9.19769306499984,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.002,
+     "record_seconds": 0.706,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.127,
+      "facts": 0.343,
+      "plan": 0.097,
+      "assemble": 0.114,
+      "save": 0.024
+     }
+    }
+   }
+  ],
+  "C:r2cp": [
+   {
+    "exit": 0,
+    "wall": 9.178398227999423,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.002,
+     "record_seconds": 0.671,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.143,
+      "facts": 0.315,
+      "plan": 0.086,
+      "assemble": 0.107,
+      "save": 0.021
+     }
+    }
+   }
+  ],
+  "C:r2": [
+   {
+    "exit": 0,
+    "wall": 7.734685770999931,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.009,
+     "record_seconds": 0.466,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.03,
+      "facts": 0.263,
+      "plan": 0.054,
+      "assemble": 0.095,
+      "save": 0.02
+     }
+    }
+   }
+  ],
+  "W:base": [
+   {
+    "exit": 0,
+    "wall": 8.426358426999286,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.126,
+     "record_seconds": 3.156,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 8.2144269240016,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.112,
+     "record_seconds": 3.121,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 7.893131999000616,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.121,
+     "record_seconds": 3.143,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:r1": [
+   {
+    "exit": 0,
+    "wall": 5.437979682999867,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.134,
+     "record_seconds": 0.077,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.02,
+      "facts": 0.001,
+      "plan": 0.01,
+      "assemble": 0.004,
+      "save": 0.04
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.016970266999124,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.129,
+     "record_seconds": 0.105,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.018,
+      "facts": 0.001,
+      "plan": 0.01,
+      "assemble": 0.004,
+      "save": 0.048
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.982043232999786,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.132,
+     "record_seconds": 0.091,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.025,
+      "facts": 0.001,
+      "plan": 0.012,
+      "assemble": 0.004,
+      "save": 0.046
+     }
+    }
+   }
+  ],
+  "W:r2cp": [
+   {
+    "exit": 0,
+    "wall": 4.947501835998992,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.127,
+     "record_seconds": 0.067,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.017,
+      "facts": 0.001,
+      "plan": 0.008,
+      "assemble": 0.003,
+      "save": 0.035
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.745764553001209,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.138,
+     "record_seconds": 0.075,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.018,
+      "facts": 0.001,
+      "plan": 0.01,
+      "assemble": 0.003,
+      "save": 0.041
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.769081234999248,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.14,
+     "record_seconds": 0.077,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.017,
+      "facts": 0.001,
+      "plan": 0.01,
+      "assemble": 0.004,
+      "save": 0.043
+     }
+    }
+   }
+  ],
+  "W:r2": [
+   {
+    "exit": 0,
+    "wall": 3.844887736999226,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.076,
+     "record_seconds": 0.066,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.005,
+      "facts": 0.001,
+      "plan": 0.007,
+      "assemble": 0.003,
+      "save": 0.049
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.7464608210011647,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.076,
+     "record_seconds": 0.058,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.006,
+      "facts": 0.001,
+      "plan": 0.007,
+      "assemble": 0.003,
+      "save": 0.041
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.82161503899988,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.062,
+     "record_seconds": 0.058,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": {
+      "children": 0.005,
+      "facts": 0.001,
+      "plan": 0.007,
+      "assemble": 0.003,
+      "save": 0.041
+     }
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "W:base": {
+   "wall": 8.123384806000104,
+   "exit": 0,
+   "samples": 1323,
+   "buckets": {
+    "collection": 617,
+    "other": 156,
+    "finish": 155,
+    "reuse": 113,
+    "imports": 103,
+    "configure": 68,
+    "tests": 66,
+    "check": 41,
+    "identity": 4
+   }
+  },
+  "W:r1": {
+   "wall": 5.0242480670003715,
+   "exit": 0,
+   "samples": 1221,
+   "buckets": {
+    "collection": 616,
+    "other": 184,
+    "reuse": 118,
+    "tests": 78,
+    "configure": 64,
+    "finish": 64,
+    "imports": 58,
+    "check": 34,
+    "identity": 5
+   }
+  },
+  "W:r2cp": {
+   "wall": 4.660086144000161,
+   "exit": 0,
+   "samples": 1073,
+   "buckets": {
+    "collection": 543,
+    "other": 151,
+    "reuse": 94,
+    "finish": 80,
+    "configure": 75,
+    "imports": 51,
+    "tests": 41,
+    "check": 32,
+    "identity": 6
+   }
+  },
+  "W:r2": {
+   "wall": 3.7419453490001615,
+   "exit": 0,
+   "samples": 850,
+   "buckets": {
+    "collection": 344,
+    "other": 141,
+    "reuse": 104,
+    "tests": 65,
+    "configure": 58,
+    "imports": 55,
+    "finish": 47,
+    "check": 22,
+    "identity": 14
+   }
+  }
+ },
+ "sha": "08b803cf32ceb2ae6a772c62d5da42757a897d44",
+ "units": 0,
+ "median": {
+  "P0": 7.328273391000039,
+  "K0": 3.567418443000861,
+  "W:base": 8.2144269240016,
+  "X:base": 0.32286446500074817,
+  "W:r1": 5.016970266999124,
+  "X:r1": 0.2646951219994662,
+  "W:r2cp": 4.769081234999248,
+  "X:r2cp": 0.18951843200011353,
+  "W:r2": 3.82161503899988,
+  "X:r2": 0.2076218649999646
+ },
+ "floor": {
+  "base": 1.120922553747771,
+  "r1": 0.6846046809826363,
+  "r2cp": 0.6507782912215349,
+  "r2": 0.5214891469105482
+ },
+ "finished": "2026-11-19T02:56:31Z"
+}

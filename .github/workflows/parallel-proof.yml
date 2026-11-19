@@ -1,0 +1,120 @@
+name: parallel-proof
+
+# Parallel with proof, P0: `pytest --det -n N` against plain `pytest -n N` and serial `--det` on the market-test
+# repositories that run pytest-xdist (docs/PARALLEL-PROOF-DESIGN.md 5). Triggered by a push that changes
+# tracks/parallel-proof/run.json on claude/parallel-proof. Each job: one repository, the variants of
+# harness/parallel_proof/variants.py run one after another on the same runner; results committed to
+# tracks/parallel-proof/results/<run_id>/<repo>/.
+# run.json: {"run_id": "...", "repos": [{"name", "url", "sha", "install": "pip args" | "install_cmd": "shell (in the
+#            repository; $PY, $VENV)", "python": "3.12", "env": {...}, "args": "shell words", "workers": 4,
+#            "dist": "", "variants": "...", "walk": K (walk_n over K commits instead of the variants), "modes"}]}
+
+on:
+  push:
+    branches: [claude/parallel-proof, claude/parallel-proof-3]
+    paths: [tracks/parallel-proof/run.json]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      repos: ${{ steps.p.outputs.repos }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+      - id: p
+        run: |
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json
+          run = json.load(open("tracks/parallel-proof/run.json"))
+          print("run_id=" + run["run_id"])
+          print("repos=" + json.dumps(run["repos"]))
+          PY
+
+  measure:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        repo: ${{ fromJson(needs.build.outputs.repos) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.repo.python || '3.12' }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: dist}
+      - name: checkout the repository under test
+        run: |
+          git init -q "$RUNNER_TEMP/repo" && cd "$RUNNER_TEMP/repo"
+          git remote add origin "${{ matrix.repo.url }}"
+          git fetch -q --depth "$(( ${{ matrix.repo.walk || 0 }} + 2 ))" origin "${{ matrix.repo.sha }}" && git checkout -q FETCH_HEAD
+      - name: install
+        env:
+          INSTALL_CMD: ${{ matrix.repo.install_cmd }}
+          PIP_INSTALL: ${{ matrix.repo.install }}
+        run: |
+          python -m pip install -q uv
+          python -m venv "$RUNNER_TEMP/venv"
+          export PY="$RUNNER_TEMP/venv/bin/python" VENV="$RUNNER_TEMP/venv"
+          cd "$RUNNER_TEMP/repo"
+          if [ -n "$INSTALL_CMD" ]; then bash -c "$INSTALL_CMD"; else "$PY" -m pip install -q $PIP_INSTALL; fi
+          uv pip install -q --python "$PY" pytest-xdist==3.8.0 pytest-timeout
+          uv pip install -q --python "$PY" --force-reinstall --no-deps "$GITHUB_WORKSPACE"/dist/*.whl
+      - name: variants or walk
+        env:
+          ARGS: ${{ matrix.repo.args }}
+          REPO_ENV: ${{ toJson(matrix.repo.env) }}
+        run: |
+          out="tracks/parallel-proof/results/${{ needs.build.outputs.run_id }}/${{ matrix.repo.name }}"
+          mkdir -p "$out" "$RUNNER_TEMP/out"
+          # tests that start the project's own console scripts by name (prefect: uvicorn) find them as in an
+          # activated environment
+          export PATH="$RUNNER_TEMP/venv/bin:$PATH" VIRTUAL_ENV="$RUNNER_TEMP/venv"
+          eval "$(python3 -c 'import json,os,shlex; e=json.loads(os.environ.get("REPO_ENV") or "null") or {}; print("\n".join(f"export {k}={shlex.quote(str(v))}" for k,v in e.items()))')"
+          cd "$RUNNER_TEMP/repo" && eval "set -- $ARGS" && cd "$GITHUB_WORKSPACE"
+          if [ -n "${{ matrix.repo.walk }}" ]; then
+            python -m harness.parallel_proof.walk_n --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
+              --commits "${{ matrix.repo.walk }}" --workers "${{ matrix.repo.workers }}" --dist "${{ matrix.repo.dist }}" \
+              --modes "${{ matrix.repo.modes || 'a_par' }}" --deadline-s 18000 --out "$out/walk.json" \
+              --det-args="${{ matrix.repo.det_args }}" --shard "${{ matrix.repo.shard }}" \
+              --work "$RUNNER_TEMP/walk" -- "$@" || true
+          else
+            python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
+              --out "$RUNNER_TEMP/out" --label "${{ matrix.repo.name }}" --workers "${{ matrix.repo.workers }}" \
+              --dist "${{ matrix.repo.dist }}" --variants "${{ matrix.repo.variants }}" \
+              --det-args="${{ matrix.repo.det_args }}" -- "$@" || true
+            python -m harness.parallel_proof.fpcompare --serial "$RUNNER_TEMP/out/det-serial-a.jsonl" \
+              "$RUNNER_TEMP/out/det-serial-b.jsonl" --parallel "$RUNNER_TEMP/out/det-n-b.jsonl" \
+              "$RUNNER_TEMP/out/det-n-c.jsonl" --json "$RUNNER_TEMP/out/fpcompare.json" || true
+            for r in "$RUNNER_TEMP"/out/cache-*.outcomes.json "$RUNNER_TEMP"/out/det-n-*.outcomes.json; do
+              [ -e "$r" ] || continue
+              python -m harness.parallel_proof.crosscheck --truth "$RUNNER_TEMP"/out/det-serial-*.outcomes.json \
+                --run "$r" --json "$RUNNER_TEMP/out/$(basename "$r" .outcomes.json).crosscheck.json" > /dev/null || true
+            done
+            cp "$RUNNER_TEMP"/out/summary.jsonl "$RUNNER_TEMP"/out/*.plan.json "$RUNNER_TEMP"/out/*.crosscheck.json "$out"/ || true
+            cp "$RUNNER_TEMP"/out/fpcompare.json "$out"/ || true
+            cp "$RUNNER_TEMP"/out/*.phases.jsonl "$out"/ 2>/dev/null || true
+            # per-test outcomes and cache decisions (reused ids, not-cached ids with their reasons) of every --det run
+            for r in "$RUNNER_TEMP"/out/*.outcomes.json; do [ -e "$r" ] && gzip -c "$r" > "$out/$(basename "$r").gz"; done
+            tail -c 20000 "$RUNNER_TEMP"/out/*.log > "$out/logs-tail.txt" 2>/dev/null || true
+          fi
+      - name: commit results
+        run: |
+          git config user.name "parallel-proof bot" && git config user.email "noreply@anthropic.com"
+          git add tracks/parallel-proof/results
+          git commit -qm "parallel-proof: ${{ matrix.repo.name }} (${{ needs.build.outputs.run_id }})" || exit 0
+          for i in 1 2 3 4 5; do git pull -q --rebase origin "${{ github.ref_name }}" && git push -q origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*5)); done

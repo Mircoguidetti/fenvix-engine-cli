@@ -1,0 +1,409 @@
+{
+ "spec": "click",
+ "shard": "0/1",
+ "engines": [
+  "new"
+ ],
+ "cpus": 4,
+ "runner": "GitHub Actions 1000010000",
+ "engine_sha": "9be5dc14f64fb81cc2cd03ec7fb90ae1262b4817",
+ "walls": {
+  "P0": [
+   10.093170430999976,
+   8.64097947099998,
+   8.670839501000046,
+   8.972601773999997,
+   8.926430142000015
+  ],
+  "B": [
+   9.375797929999976,
+   9.451996598999983,
+   9.284139823999965,
+   9.551189528000009,
+   9.469830516000002
+  ],
+  "C:new": [
+   18.587177398999984,
+   16.045050742,
+   16.112611715000014,
+   16.07677175400005,
+   16.415796814000032
+  ],
+  "W:new": [
+   9.624882483000022,
+   9.717764089000013,
+   9.804769483999962,
+   9.911924621000026,
+   9.882629296999994
+  ]
+ },
+ "cache": {
+  "P0": [
+   {
+    "exit": 0,
+    "wall": 10.093170430999976,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 8.64097947099998,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 8.670839501000046,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 8.972601773999997,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 8.926430142000015,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "B": [
+   {
+    "exit": 0,
+    "wall": 9.375797929999976,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.451996598999983,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.284139823999965,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.551189528000009,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.469830516000002,
+    "n": 2653,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:new": [
+   {
+    "exit": 0,
+    "wall": 18.587177398999984,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.003,
+     "record_seconds": 4.414,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 16.045050742,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.003,
+     "record_seconds": 4.456,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 16.112611715000014,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.003,
+     "record_seconds": 4.462,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 16.07677175400005,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.003,
+     "record_seconds": 4.441,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 16.415796814000032,
+    "n": 2653,
+    "cache": {
+     "reused": 0,
+     "ran": 2653,
+     "recorded": 2616,
+     "check_seconds": 0.003,
+     "record_seconds": 4.489,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:new": [
+   {
+    "exit": 0,
+    "wall": 9.624882483000022,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.162,
+     "record_seconds": 3.161,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.717764089000013,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.166,
+     "record_seconds": 3.151,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.804769483999962,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.163,
+     "record_seconds": 3.146,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.911924621000026,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.166,
+     "record_seconds": 3.15,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 9.882629296999994,
+    "n": 2653,
+    "cache": {
+     "reused": 2616,
+     "ran": 37,
+     "recorded": 0,
+     "check_seconds": 0.166,
+     "record_seconds": 3.149,
+     "not_cached": {
+      "subprocess": 37
+     },
+     "phase_seconds": null
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "P0": {
+   "wall": 19.33274060499997,
+   "exit": 0,
+   "samples": 4731,
+   "buckets": {
+    "test+pytest": 4696,
+    "det.plugin": 25,
+    "switch": 6,
+    "det.network": 4
+   }
+  },
+  "B": {
+   "wall": 19.59359506200002,
+   "exit": 0,
+   "samples": 4635,
+   "buckets": {
+    "test+pytest": 3363,
+    "compile": 965,
+    "det.seeds": 150,
+    "det.plugin": 87,
+    "det.clock": 30,
+    "det.network": 28,
+    "det.fsorder": 7,
+    "switch": 4,
+    "startup.capture": 1
+   }
+  },
+  "C:new": {
+   "wall": 30.501728394000054,
+   "exit": 0,
+   "samples": 6561,
+   "buckets": {
+    "test+pytest": 4056,
+    "compile": 996,
+    "record.facts": 437,
+    "record.loop": 181,
+    "switch.sockets": 151,
+    "det.seeds": 139,
+    "record.children": 108,
+    "det.plugin": 106,
+    "env": 90,
+    "det.fsorder": 82,
+    "lines": 71,
+    "det.clock": 41,
+    "switch": 32,
+    "follow": 18,
+    "audit": 13,
+    "det.network": 13,
+    "record.other": 13,
+    "startup.identity": 7,
+    "startup.capture": 7
+   }
+  }
+ },
+ "sha": "08b803cf32ceb2ae6a772c62d5da42757a897d44",
+ "units": 0,
+ "dropped": [],
+ "finished": "2026-11-18T14:32:37Z"
+}

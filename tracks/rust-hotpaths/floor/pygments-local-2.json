@@ -1,0 +1,229 @@
+{
+ "spec": "pygments",
+ "shard": "0/1",
+ "engines": [
+  "cur",
+  "cur2"
+ ],
+ "cpus": 4,
+ "runner": "",
+ "engine_sha": "",
+ "walls": {
+  "P0": [
+   13.969695493000017,
+   13.729609336000067,
+   13.291997324000022
+  ],
+  "K0": [
+   1.5281899010001325,
+   1.6611651530001836,
+   1.4530732389998775
+  ],
+  "W:cur": [
+   4.531200524000269,
+   3.9642082459999983,
+   3.8656737470000735
+  ],
+  "X:cur": [
+   0.21702440999979444,
+   0.20013539699993999,
+   0.2011527350000506
+  ],
+  "W:cur2": [
+   3.8933179259997814,
+   3.9566578399999344,
+   3.726744558000064
+  ],
+  "X:cur2": [
+   0.2013631620002343,
+   0.21938342999965244,
+   0.19737185600024532
+  ]
+ },
+ "cache": {
+  "C:cur": [
+   {
+    "exit": 0,
+    "wall": 18.632071441000335,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.005,
+     "record_seconds": 1.38,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.374,
+      "plan": 0.231,
+      "assemble": 0.658,
+      "save": 0.115
+     }
+    }
+   }
+  ],
+  "C:cur2": [
+   {
+    "exit": 0,
+    "wall": 20.76861918500026,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.005,
+     "record_seconds": 1.36,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.358,
+      "plan": 0.25,
+      "assemble": 0.648,
+      "save": 0.102
+     }
+    }
+   }
+  ],
+  "W:cur": [
+   {
+    "exit": 0,
+    "wall": 4.531200524000269,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.337,
+     "record_seconds": 0.04,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.032,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.9642082459999983,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.351,
+     "record_seconds": 0.04,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.032,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.8656737470000735,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.387,
+     "record_seconds": 0.04,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.031,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "W:cur2": [
+   {
+    "exit": 0,
+    "wall": 3.8933179259997814,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.28,
+     "record_seconds": 0.042,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.034,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.9566578399999344,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.34,
+     "record_seconds": 0.041,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.033,
+      "assemble": 0.004,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 3.726744558000064,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.27,
+     "record_seconds": 0.033,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.003,
+      "plan": 0.026,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ]
+ },
+ "profiles": {},
+ "sha": "156d85fdd18d34427fe893527e71da91dcfb0eb5",
+ "units": 0,
+ "median": {
+  "P0": 13.729609336000067,
+  "K0": 1.5281899010001325,
+  "W:cur": 3.9642082459999983,
+  "X:cur": 0.2011527350000506,
+  "W:cur2": 3.8933179259997814,
+  "X:cur2": 0.2013631620002343
+ },
+ "floor": {
+  "cur": 0.28873423481945304,
+  "cur2": 0.283570918204585
+ },
+ "finished": "2026-11-19T00:10:42Z"
+}

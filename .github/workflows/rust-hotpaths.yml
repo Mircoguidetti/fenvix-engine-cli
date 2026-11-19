@@ -1,0 +1,115 @@
+name: rust-hotpaths
+
+# Overhead profile of `pytest --det --det-cache` (rust-hotpaths session): for every (spec, shard) of run.json, plain
+# pytest, --det and cold/warm --det-cache runs of each engine (base ref and this commit), interleaved, plus py-spy
+# profiles. Triggered by a push that changes tracks/rust-hotpaths/run.json on claude/rust-hotpaths(-2); results are
+# committed (rebase-retry) to tracks/rust-hotpaths/results/<run_id>/. run.json "engines": [{"name", "ref" (empty =
+# this commit), "env" ({VAR: VALUE}, optional: the same wheel under another setting)}], in run order; without it,
+# "base" (if set) and this commit.
+
+on:
+  push:
+    branches: [claude/rust-hotpaths, claude/rust-hotpaths-2]
+    paths: [tracks/rust-hotpaths/run.json]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+  CP_BRANCH: ${{ github.ref_name }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      jobs: ${{ steps.p.outputs.jobs }}
+      wheels: ${{ steps.p.outputs.wheels }}
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - id: p
+        run: |
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json
+          run = json.load(open("tracks/rust-hotpaths/run.json"))
+          rows = []
+          for w in run["profile"]:
+              spec = json.load(open(f"harness/cache_proof/specs/{w['spec']}.json"))
+              n = w.get("shards", 1)
+              for s in w.get("only", range(n)):
+                  rows.append({"spec": w["spec"], "shard": f"{s}/{n}", "tag": f"{s}of{n}", "reps": w.get("reps", 3),
+                               "apt": " ".join(spec.get("apt", []))})
+          engines = run.get("engines") or ([{"name": "base", "ref": run["base"]}] if run.get("base") else []) + [
+              {"name": "new", "ref": ""}]
+          args = []
+          for e in engines:
+              wheel_dir = e.get("ref") or "HEAD"
+              args.append(f"--wheel {e['name']}=$RUNNER_TEMP/dist/{wheel_dir}/WHEEL")
+              for k, v in (e.get("env") or {}).items():
+                  args.append(f"--engine-env {e['name']}:{k}={v}")
+          print("run_id=" + run["run_id"])
+          print("jobs=" + json.dumps(rows))
+          print("wheels=" + " ".join(args))
+          refs = sorted({e["ref"] for e in engines if e.get("ref")})
+          open("refs.txt", "w").write("\n".join(refs))
+          PY
+      - run: maturin build --release --compatibility linux -o dist/HEAD
+      - name: engines at other commits
+        run: |
+          for ref in $(cat refs.txt); do
+            git worktree add "../e-$ref" "$ref"
+            (cd "../e-$ref" && maturin build --release --compatibility linux -o "$GITHUB_WORKSPACE/dist/$ref")
+          done
+      - uses: actions/upload-artifact@v4
+        with: {name: wheels, path: dist}
+
+  profile:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        include: ${{ fromJSON(needs.build.outputs.jobs) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with: {name: wheels, path: "${{ runner.temp }}/dist"}
+      - name: System packages
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null
+          pip install -q py-spy
+          sudo sysctl -w kernel.yama.ptrace_scope=0 || true
+      - name: Profile
+        env:
+          CP_REPO: ${{ github.workspace }}
+        run: |
+          git config user.name "rust-hotpaths-bot"
+          git config user.email "rust-hotpaths-bot@users.noreply.github.com"
+          wheels=""
+          for a in ${{ needs.build.outputs.wheels }}; do
+            case "$a" in
+              *=*/WHEEL) d="${a#*=}"; a="${a%%=*}=$(ls ${d%/WHEEL}/*.whl)";;
+            esac
+            wheels="$wheels $a"
+          done
+          echo "engines: $wheels"
+          out="tracks/rust-hotpaths/results/${{ needs.build.outputs.run_id }}/${{ matrix.spec }}-${{ matrix.tag }}.json"
+          python3 harness/rust_hotpaths/profile.py --spec "harness/cache_proof/specs/${{ matrix.spec }}.json" \
+            --work "$RUNNER_TEMP/w" --shard "${{ matrix.shard }}" --reps "${{ matrix.reps }}" --pyspy --clean-tmp $wheels --out "$out" || true
+          python3 -c "
+          import sys; sys.path.insert(0, 'harness/cache_proof'); import walk, glob
+          walk.commit_results(sorted(glob.glob('$out') + glob.glob('${out%.json}-*.raw.gz')), 'rust-hotpaths: profile ${{ matrix.spec }} ${{ matrix.tag }}')"

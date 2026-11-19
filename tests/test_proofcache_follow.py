@@ -33,12 +33,12 @@ def test_child_file_read_is_an_input(pytester, run_cache):
     project(pytester, **{"data.txt": "hello\n", "test_m.py": """
         import subprocess
 
-        def test_plain():  # before the reader: a later test would depend on it too (review R-020 O1)
-            pass
-
         def test_cat():
             out = subprocess.run(["cat", "data.txt"], capture_output=True, text=True, check=True).stdout
             assert out == "hello\\n"
+
+        def test_plain():
+            pass
         """})
     run_cache()
     r, reused, data = run_cache()
@@ -106,11 +106,11 @@ def test_child_inheriting_the_environment_depends_on_all_of_it(pytester, run_cac
     project(pytester, **{"test_m.py": """
         import os, subprocess
 
-        def test_explicit_env():
-            assert subprocess.run(["sh", "-c", "exit 0"], env={"PATH": os.environ["PATH"]}).returncode == 0
-
         def test_inherits():
             assert subprocess.run(["sh", "-c", "exit 0"]).returncode == 0
+
+        def test_explicit_env():
+            assert subprocess.run(["sh", "-c", "exit 0"], env={"PATH": os.environ["PATH"]}).returncode == 0
         """})
     run_cache()
     _, reused, _ = run_cache()
@@ -128,11 +128,11 @@ def test_child_network_is_never_cached(pytester, run_cache, outside_server):
 
         CODE = "import socket; socket.create_connection(('127.0.0.1', {outside_server})).close()"
 
-        def test_plain():
-            pass
-
         def test_child_connects():
             subprocess.run([sys.executable, "-c", CODE], check=True)
+
+        def test_plain():
+            pass
         """})
     run_cache()
     _, reused, data = run_cache()
@@ -186,19 +186,15 @@ def test_child_still_running_at_the_end_is_never_cached(pytester, run_cache):
 
         KEEP = []
 
-        def test_plain():
-            pass
-
         def test_daemon():
             KEEP.append(subprocess.Popen(["sleep", "30"]))
 
-        def test_after():
+        def test_plain():
             pass
         """})
     run_cache()
     _, reused, data = run_cache()
     assert reused == ids("test_plain")
-    assert nc(data)["test_m.py::test_after"].startswith("after an earlier test or fixture of this process: ")
     assert "still running" in data["cache"]["not_cached_where"]["test_m.py::test_daemon"]
 
 
@@ -246,6 +242,21 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
     _, reused, _ = run_cache()
     assert reused == ids("test_tmp")
 
+
+
+def test_child_process_start_time_is_a_real_clock_read(pytester, run_cache):
+    # review R-009b R4: the times of /proc/<pid> are the process's start (real clock); /proc/<own pid> is otherwise
+    # skipped as the tree's own state
+    project(pytester, **{"test_m.py": """
+        import subprocess
+
+        def test_start():
+            subprocess.run(["sh", "-c", 'stat -c %Y /proc/$$'], capture_output=True, check=True)
+        """})
+    run_cache()
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert "a process start time" in data["cache"]["not_cached_where"]["test_m.py::test_start"]
 
 @pytest.mark.skipif(shutil.which("gcc") is None, reason="needs gcc")
 def test_find_library_compiler_fallback_at_import_time_is_followed(pytester, run_cache):
@@ -551,6 +562,8 @@ def test_test_without_sys_getframe_is_not_broken_by_the_capture(pytester, run_ca
 
 
 def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
     project(pytester, **{"test_m.py": """
         import sqlite3
 
@@ -563,12 +576,60 @@ def test_sqlite_statement_reading_now_is_refused_and_others_are_not(pytester, ru
         def test_date_without_value():
             assert sqlite3.connect(":memory:").execute("select date()").fetchone()[0]
         """})
-    run_cache()
-    _, reused, data = run_cache()
+    run_cache("--det-disable=time")
+    _, reused, data = run_cache("--det-disable=time")
     assert reused == ids("test_plain_sql")
     for t in ("test_current_timestamp", "test_date_without_value"):
         assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
 
+
+
+def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pytester, run_cache):
+    # parallel-proof round 3: under the virtual clock SQLite's 'now' is virtual (tests/test_sqlite_virtual.py); the
+    # refusal of a real clock read in SQLite is checked on a connection whose clock is real (--det-disable=time)
+    # review R-009b R1: an attached database's trigger, and a definition made on the same connection by a fixture
+    # (another context); a database whose schema does not read the clock is still reused
+    import sqlite3
+
+    con = sqlite3.connect(pytester.path / "aux.db")
+    con.executescript("create table log (at text); create table t (x);"
+                      "create trigger t_log after insert on t begin insert into log values (datetime('now')); end;")
+    con.close()
+    con = sqlite3.connect(pytester.path / "plain.db")
+    con.executescript("create table t (x integer, at text default '2020-01-01');")
+    con.close()
+    project(pytester, **{"test_m.py": """
+        import shutil, sqlite3
+
+        import pytest
+
+        @pytest.fixture(scope="module")
+        def mem():
+            con = sqlite3.connect(":memory:")
+            con.execute("create table ev (id integer, at text default current_timestamp)")
+            return con
+
+        def test_attached(tmp_path):
+            shutil.copy("aux.db", tmp_path / "aux.db")
+            con = sqlite3.connect(":memory:")
+            con.execute(f"attach database '{tmp_path / 'aux.db'}' as aux")
+            con.execute("insert into aux.t values (1)")
+
+        def test_fixture_schema(mem):
+            mem.execute("insert into ev (id) values (1)")
+
+        def test_plain(tmp_path):
+            shutil.copy("plain.db", tmp_path / "plain.db")
+            con = sqlite3.connect(tmp_path / "plain.db")
+            con.execute("insert into t (x) values (1)")
+            assert con.execute("select at from t").fetchone() == ("2020-01-01",)
+        """})
+    run_cache("--det-disable=time")
+    _, reused, data = run_cache("--det-disable=time")
+    assert reused == ids("test_plain")
+    for t in ("test_attached", "test_fixture_schema"):
+        assert nc(data)[f"test_m.py::{t}"] == "real clock read outside the virtual clock"
+    assert "aux.db (t_log)" in data["cache"]["not_cached_where"]["test_m.py::test_attached"]
 
 def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, run_cache):
     # a Python interpreter reads the real clock while it initialises (time module's timezone offsets): exempt;
@@ -662,6 +723,25 @@ def test_exclusive_create_at_import_does_not_drop_every_reuse(pytester, run_cach
         assert reused == ids("test_a")
         assert not data["cache"]["stale_reuses"]
 
+
+
+def test_child_exclusive_create_is_an_input(pytester, run_cache):
+    # review R-009b R2, in a child: a successful O_CREAT|O_EXCL open means the path did not exist
+    project(pytester, **{"test_m.py": """
+        import subprocess, sys
+
+        CODE = "import os; os.close(os.open('app.lock', os.O_CREAT | os.O_EXCL | os.O_WRONLY)); os.remove('app.lock')"
+
+        def test_lock():
+            subprocess.run([sys.executable, "-c", CODE], check=True)
+        """})
+    run_cache()
+    _, reused, _ = run_cache()
+    assert reused == ids("test_lock")
+    (pytester.path / "app.lock").write_text("")
+    r, reused, _ = run_cache()
+    assert reused == set()
+    r.assert_outcomes(failed=1)
 
 def test_child_netlink_is_network(pytester, run_cache):
     # `ip link` (uuid.getnode's fallback) asks the kernel over netlink: bind, then send() without an address

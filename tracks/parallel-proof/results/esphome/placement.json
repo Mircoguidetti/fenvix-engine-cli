@@ -1,0 +1,92 @@
+{
+ "tests": 14446,
+ "serial_noise (serA != serB)": 67,
+ "serial_noise_first_event": {
+  "entropy": 59,
+  "fs": 3,
+  "time": 5
+ },
+ "parallel_noise (parA != parB)": 93,
+ "serial_vs_parallel_differs (either parallel run)": 116,
+ "placement (differs from serial, serial runs agree)": 50,
+ "placement_in_both_parallel_runs": 41,
+ "placement_first_event": {
+  "time": 18,
+  "random": 13,
+  "fs": 19
+ },
+ "placement_outcome_flips": [],
+ "placement_top_files": [
+  [
+   "tests/unit_tests/test_stacktrace.py",
+   20
+  ],
+  [
+   "tests/unit_tests/test_yaml_util.py",
+   8
+  ],
+  [
+   "tests/unit_tests/test_platformio_registry.py",
+   3
+  ],
+  [
+   "tests/unit_tests/build_gen/test_host.py",
+   3
+  ],
+  [
+   "tests/unit_tests/test_log.py",
+   3
+  ],
+  [
+   "tests/unit_tests/test_framework_helpers.py",
+   3
+  ],
+  [
+   "tests/unit_tests/test_nrf52_framework.py",
+   2
+  ],
+  [
+   "tests/unit_tests/test_zephyr_library.py",
+   2
+  ],
+  [
+   "tests/unit_tests/test_git.py",
+   1
+  ],
+  [
+   "tests/component_tests/lvgl/test_widget_state.py",
+   1
+  ]
+ ],
+ "tests_on_another_worker_between_parallel_runs": 4776,
+ "workers_A": {
+  "gw0": 3897,
+  "gw1": 2029,
+  "gw2": 4535,
+  "gw3": 3985
+ },
+ "workers_B": {
+  "gw0": 4077,
+  "gw1": 2029,
+  "gw2": 3286,
+  "gw3": 5054
+ },
+ "outcomes_differ_serial_vs_parallel": [],
+ "placement_examples": [
+  "tests/component_tests/lvgl/test_widget_state.py::test_static_state_emits_set_state_value",
+  "tests/script/test_helpers.py::test_get_integration_test_files_for_components_real_fixtures",
+  "tests/script/test_merge_component_configs.py::test_nested_package_includes_are_fully_expanded",
+  "tests/unit_tests/build_gen/test_host.py::test_write_project_pch_disabled",
+  "tests/unit_tests/build_gen/test_host.py::test_write_project_pch_skipped_for_a_force_include_in_the_compiler",
+  "tests/unit_tests/build_gen/test_host.py::test_write_project_pch_skipped_for_a_user_force_include",
+  "tests/unit_tests/test_espidf_component.py::test_generate_cmakelists_txt_uses_forward_slashes_on_windows",
+  "tests/unit_tests/test_framework_helpers.py::TestSevenZipExtractAll::test_path_traversal_skipped",
+  "tests/unit_tests/test_framework_helpers.py::TestZipExtractAllBranches::test_member_not_under_strip_prefix_skipped",
+  "tests/unit_tests/test_framework_helpers.py::TestZipExtractAllBranches::test_windows_drive_path_skipped",
+  "tests/unit_tests/test_git.py::test_clone_or_update_logs_wait_on_contended_lock",
+  "tests/unit_tests/test_helpers.py::test_is_ip_address__valid",
+  "tests/unit_tests/test_log.py::test_setup_log_dashboard_skips_colorama",
+  "tests/unit_tests/test_log.py::test_setup_log_mixed_streams_init_colorama",
+  "tests/unit_tests/test_log.py::test_setup_log_redirected_output_strips_ansi"
+ ]
+}

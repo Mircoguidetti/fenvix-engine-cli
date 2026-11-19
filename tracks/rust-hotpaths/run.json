@@ -1,0 +1,32 @@
+{
+ "run_id": "p9",
+ "note": "review R-017 fixes (H1 rewritten-test pycs keyed on the rewrite's configuration, H3 badenv) vs the engine before them (ac0110b, the round-2 final code of p8); interleaved; --clean-tmp (H2: p8's pygments --det runs exhausted the deterministic temporary names)",
+ "engines": [
+  {
+   "name": "pre",
+   "ref": "ac0110b20ea719795e3dbbf8989f89f2131ad0d9"
+  },
+  {
+   "name": "r017",
+   "ref": ""
+  }
+ ],
+ "profile": [
+  {
+   "spec": "home-assistant",
+   "shards": 16,
+   "only": [
+    0
+   ],
+   "reps": 3
+  },
+  {
+   "spec": "pygments",
+   "reps": 5
+  },
+  {
+   "spec": "click",
+   "reps": 5
+  }
+ ]
+}

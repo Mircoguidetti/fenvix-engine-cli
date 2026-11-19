@@ -1,0 +1,1314 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "--no-cov",
+  "tests",
+  "--ignore=tests/integration",
+  "--ignore=tests/benchmarks",
+  "-p",
+  "no:randomly",
+  "-k",
+  "not udp",
+  "--timeout=120"
+ ],
+ "commits": [
+  {
+   "i": 0,
+   "sha": "149b9280eb08719d96c0cea7fe79e9ad44fcc07e",
+   "a_par": {
+    "wall_s": 165.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14331,
+    "recorded": 13995,
+    "tests": 14331,
+    "miss_reasons": {
+     "new": 14331
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 1,
+   "sha": "b6c5a6e7c294323f7a59d8969f63493d1b36b926",
+   "a_par": {
+    "wall_s": 62.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 13980,
+    "ran": 351,
+    "recorded": 48,
+    "tests": 14331,
+    "miss_reasons": {
+     "new": 336,
+     "data": 15
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 2,
+   "sha": "1a9cce8bb88b611e1be830c913cb8c411ef31399",
+   "a_par": {
+    "wall_s": 62.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14013,
+    "ran": 318,
+    "recorded": 16,
+    "tests": 14331,
+    "miss_reasons": {
+     "new": 303,
+     "data": 15
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 3,
+   "sha": "71f55f270ecb0497e41f5960a86d65425d7a8be6",
+   "a_par": {
+    "wall_s": 62.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14014,
+    "ran": 317,
+    "recorded": 15,
+    "tests": 14331,
+    "miss_reasons": {
+     "new": 302,
+     "data": 15
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 4,
+   "sha": "34881c3e3c85080d5735a91f984445d27aa25699",
+   "a_par": {
+    "wall_s": 64.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 11569,
+    "ran": 2764,
+    "recorded": 2463,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 304,
+     "env": 2460
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 5,
+   "sha": "b617926576a4968eefed84dd04f6eac629a876d2",
+   "a_par": {
+    "wall_s": 59.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 6,
+   "sha": "85f0011e6bc2a912f6b311ef3b9dd588826a4023",
+   "a_par": {
+    "wall_s": 58.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 7,
+   "sha": "4a02a0d4ba4a250824a6deea38580ba0c09b54d2",
+   "a_par": {
+    "wall_s": 58.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14031,
+    "ran": 302,
+    "recorded": 1,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301,
+     "data": 1
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 8,
+   "sha": "59f6affb51b3990e2f5133d520bada042bf71b58",
+   "a_par": {
+    "wall_s": 58.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 9,
+   "sha": "23a83a9f3df8c673d9a81150297aef6946354a37",
+   "a_par": {
+    "wall_s": 58.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 10,
+   "sha": "82f2203cc3ed1e45464add7bd8ab2deadca062b2",
+   "a_par": {
+    "wall_s": 58.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 11,
+   "sha": "94cb20d9e11a2cfb52a7a982595f0ffc097a7835",
+   "a_par": {
+    "wall_s": 58.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 12,
+   "sha": "9f5ca49e2ff432e53a3e255c1a4c316267b2250c",
+   "a_par": {
+    "wall_s": 58.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 13,
+   "sha": "e3bfffc8ab6fbe50563a0edfbc677643be5feb69",
+   "a_par": {
+    "wall_s": 58.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 14,
+   "sha": "a155401afc61dc39faba243e521c57cc22463216",
+   "a_par": {
+    "wall_s": 58.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14032,
+    "ran": 301,
+    "recorded": 0,
+    "tests": 14333,
+    "miss_reasons": {
+     "new": 301
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 15,
+   "sha": "0c1606d3b8bde4dc4477ed51946f49a03e58fed7",
+   "a_par": {
+    "wall_s": 114.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14375,
+    "recorded": 14063,
+    "tests": 14375,
+    "miss_reasons": {
+     "code": 14032,
+     "new": 343
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 16,
+   "sha": "bc57ad5c87e76075868cd105c4535e1cef23966c",
+   "a_par": {
+    "wall_s": 63.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14046,
+    "ran": 329,
+    "recorded": 18,
+    "tests": 14375,
+    "miss_reasons": {
+     "data": 6,
+     "code": 11,
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 17,
+   "sha": "17baeae3eac742935ceb4c8d17312ec1c09c0e71",
+   "a_par": {
+    "wall_s": 115.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14388,
+    "recorded": 14075,
+    "tests": 14388,
+    "miss_reasons": {
+     "code": 14062,
+     "data": 2,
+     "new": 324
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 18,
+   "sha": "6b82e127fe27b820d78673d9b911369060ec7ab6",
+   "a_par": {
+    "wall_s": 113.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14388,
+    "recorded": 14076,
+    "tests": 14388,
+    "miss_reasons": {
+     "data": 14075,
+     "new": 313
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 19,
+   "sha": "e852e15ca348d641c29b003b2277dbc446465a1a",
+   "a_par": {
+    "wall_s": 115.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14388,
+    "recorded": 14076,
+    "tests": 14388,
+    "miss_reasons": {
+     "code": 14071,
+     "new": 312,
+     "data": 5
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 20,
+   "sha": "598d87836c2f77b98099e4df7b57428ea4dcb88b",
+   "a_par": {
+    "wall_s": 62.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14076,
+    "ran": 312,
+    "recorded": 1,
+    "tests": 14388,
+    "miss_reasons": {
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 21,
+   "sha": "731f6e2722f50e79aa85bd9e6886b61ce2dc6b88",
+   "a_par": {
+    "wall_s": 62.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14077,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14388,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 22,
+   "sha": "a2ac68faacdbb51e69aba19d5168293307ba27e1",
+   "a_par": {
+    "wall_s": 61.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14077,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14388,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 23,
+   "sha": "982cbba291e7f125ce27bad7afad7303c66c5578",
+   "a_par": {
+    "wall_s": 115.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14405,
+    "recorded": 14094,
+    "tests": 14405,
+    "miss_reasons": {
+     "code": 14077,
+     "new": 328
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 24,
+   "sha": "b621332de53587cdccd125bd1d3c21bcb3620202",
+   "a_par": {
+    "wall_s": 115.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14405,
+    "recorded": 14094,
+    "tests": 14405,
+    "miss_reasons": {
+     "code": 14088,
+     "data": 6,
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 25,
+   "sha": "be8f6c5e414689c91404e4d7202656e5ad7b36f3",
+   "a_par": {
+    "wall_s": 116.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14405,
+    "recorded": 14094,
+    "tests": 14405,
+    "miss_reasons": {
+     "code": 14086,
+     "data": 8,
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 152.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 26,
+   "sha": "db0121bc2171533115876f5ad7ac4961e9defe46",
+   "a_par": {
+    "wall_s": 114.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14405,
+    "recorded": 14093,
+    "tests": 14405,
+    "miss_reasons": {
+     "code": 14086,
+     "data": 8,
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 27,
+   "sha": "b60c2864ef2baa3bdd41315bf3aafdd6543a8c43",
+   "a_par": {
+    "wall_s": 115.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14405,
+    "recorded": 14094,
+    "tests": 14405,
+    "miss_reasons": {
+     "code": 14085,
+     "data": 8,
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 28,
+   "sha": "38c1646870c277305770aac0ef9ca1255db74556",
+   "a_par": {
+    "wall_s": 114.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14406,
+    "recorded": 14093,
+    "tests": 14406,
+    "miss_reasons": {
+     "code": 14083,
+     "data": 11,
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 29,
+   "sha": "61cce92aaa49522ca51045843a66200579b69bf2",
+   "a_par": {
+    "wall_s": 113.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14408,
+    "recorded": 14095,
+    "tests": 14408,
+    "miss_reasons": {
+     "code": 14073,
+     "data": 20,
+     "new": 315
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 30,
+   "sha": "144c799cf5195dfe5dfaa34fb3e1d1ef9df70906",
+   "a_par": {
+    "wall_s": 62.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14093,
+    "ran": 315,
+    "recorded": 4,
+    "tests": 14408,
+    "miss_reasons": {
+     "data": 2,
+     "new": 313
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 31,
+   "sha": "b75b3e2bef1610f9bee21c9283d14501401b2285",
+   "a_par": {
+    "wall_s": 115.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14409,
+    "recorded": 14098,
+    "tests": 14409,
+    "miss_reasons": {
+     "code": 14089,
+     "data": 8,
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 32,
+   "sha": "0054041d6ae9dd947366bbaea4069554d120af9d",
+   "a_par": {
+    "wall_s": 63.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 13440,
+    "ran": 972,
+    "recorded": 661,
+    "tests": 14412,
+    "miss_reasons": {
+     "new": 314,
+     "code": 656,
+     "data": 2
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 33,
+   "sha": "200bf69035292853fa427d2e737d0b2da7de25d0",
+   "a_par": {
+    "wall_s": 62.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14101,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14412,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 34,
+   "sha": "3f6c0f35fed9fd6dec7b2dc9a940fab5637a0c34",
+   "a_par": {
+    "wall_s": 61.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14101,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14412,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 35,
+   "sha": "7e3c2ebc10d3d717865d87b002a5b530c4290482",
+   "a_par": {
+    "wall_s": 63.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14096,
+    "ran": 316,
+    "recorded": 5,
+    "tests": 14412,
+    "miss_reasons": {
+     "data": 5,
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 36,
+   "sha": "bc3e9c88f44d0c97f72e5cad7ab125dc825542e8",
+   "a_par": {
+    "wall_s": 114.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14415,
+    "recorded": 14104,
+    "tests": 14415,
+    "miss_reasons": {
+     "code": 14087,
+     "data": 14,
+     "new": 314
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 37,
+   "sha": "e12784543daf79ffaac3646df8caac3fd5cc0ee6",
+   "a_par": {
+    "wall_s": 61.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14101,
+    "ran": 314,
+    "recorded": 3,
+    "tests": 14415,
+    "miss_reasons": {
+     "new": 311,
+     "data": 3
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 38,
+   "sha": "02d0bb56a6ca1d3abe2df053c0397979cf4d052e",
+   "a_par": {
+    "wall_s": 62.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14104,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14415,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 39,
+   "sha": "641c8bedc9ff426549fc05914de99fd795d1ac14",
+   "a_par": {
+    "wall_s": 113.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14432,
+    "recorded": 14119,
+    "tests": 14432,
+    "miss_reasons": {
+     "code": 14097,
+     "data": 6,
+     "new": 329
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 40,
+   "sha": "34b24d0cf54785c69083899ffd82e3bfbe92bf30",
+   "a_par": {
+    "wall_s": 61.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14119,
+    "ran": 313,
+    "recorded": 1,
+    "tests": 14432,
+    "miss_reasons": {
+     "new": 313
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 41,
+   "sha": "5c061f9e1e6d13b45feef3c69cb240a68aaca71a",
+   "a_par": {
+    "wall_s": 62.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14119,
+    "ran": 313,
+    "recorded": 1,
+    "tests": 14432,
+    "miss_reasons": {
+     "new": 312,
+     "code": 1
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 42,
+   "sha": "cfa27cea5898c4b51eec349d0ec42762f8ccc132",
+   "a_par": {
+    "wall_s": 114.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14437,
+    "recorded": 14125,
+    "tests": 14437,
+    "miss_reasons": {
+     "code": 14114,
+     "data": 6,
+     "new": 317
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 43,
+   "sha": "bc6fb7082fdab142b5505a594627e845fa52bd9f",
+   "a_par": {
+    "wall_s": 64.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 13912,
+    "ran": 527,
+    "recorded": 215,
+    "tests": 14439,
+    "miss_reasons": {
+     "code": 211,
+     "new": 314,
+     "data": 2
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.7,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 44,
+   "sha": "dbf6af2fd7feff28085f4adaeb01c01e3eee2367",
+   "a_par": {
+    "wall_s": 62.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14127,
+    "ran": 312,
+    "recorded": 0,
+    "tests": 14439,
+    "miss_reasons": {
+     "new": 312
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 45,
+   "sha": "84dea8078b0e7c0fb0c1af4f9328a22c8a071a66",
+   "a_par": {
+    "wall_s": 61.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14126,
+    "ran": 313,
+    "recorded": 1,
+    "tests": 14439,
+    "miss_reasons": {
+     "new": 312,
+     "data": 1
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 46,
+   "sha": "9bf2bbc24177485af9ae8a9200b5c1d5c1cfcfa5",
+   "a_par": {
+    "wall_s": 114.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 14133,
+    "tests": 14446,
+    "miss_reasons": {
+     "code": 13459,
+     "data": 668,
+     "new": 319
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 148.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 47,
+   "sha": "773afa0bb1d409dfa9c823450b15add826f76bc8",
+   "a_par": {
+    "wall_s": 62.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14133,
+    "ran": 313,
+    "recorded": 2,
+    "tests": 14446,
+    "miss_reasons": {
+     "new": 313
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.8,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 48,
+   "sha": "c4df1b163c4dd3a9f2a03ea1cf20b55ed3726619",
+   "a_par": {
+    "wall_s": 61.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 14135,
+    "ran": 311,
+    "recorded": 0,
+    "tests": 14446,
+    "miss_reasons": {
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  },
+  {
+   "i": 49,
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "a_par": {
+    "wall_s": 114.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 14134,
+    "tests": 14446,
+    "miss_reasons": {
+     "code": 14127,
+     "data": 8,
+     "new": 311
+    },
+    "reused_not_in_truth": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 149.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))"
+   }
+  }
+ ]
+}
