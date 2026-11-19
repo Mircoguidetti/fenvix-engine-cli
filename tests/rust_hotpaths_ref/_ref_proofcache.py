@@ -570,14 +570,18 @@ class Capture:
                 self.wrote(ctx, p)
         elif event == "sqlite3.connect":
             # sqlite opens the database read-write in C (no "open" event): its committed content is an input
+            # review R-017b F2: only detpy's own schema query is not the test's read (it was every "file:" URI);
+            # the patched connect says whether the name is a URI (unknown: both the literal name and the URI's file)
             db = args[0] if args else None
-            if isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:") \
-                    and not os.fsdecode(db).startswith("file:"):
-                p = self._abs(db)
-                if p is not None and not self._ignored(p) and self._caller_kind() not in ("import", "infra"):
-                    ctx = self._cur()
-                    self.read(ctx, p, "f")
-                    self.wrote(ctx, p)
+            mode = getattr(_SQL_CONNECT, "mode", 0)
+            if mode != 1 and isinstance(db, (str, bytes, os.PathLike)) and os.fsdecode(db) not in ("", ":memory:"):
+                is_uri = os.fsdecode(db).startswith("file:")
+                files = []
+                if not (is_uri and mode == 3):
+                    files.append(self._abs(db))
+                if is_uri and mode != 2:
+                    files.append(_sqlite_file(db, True))
+                self._sql_database([f for f in files if f is not None])
         elif event in ("os.listdir", "os.scandir"):
             if self._caller_kind() != "user":
                 return
@@ -683,9 +687,13 @@ class Capture:
         self._sql_schema: dict[str, tuple] = {}  # database file -> (signature, what reads the clock or None)
 
         def connect(*args, **kwargs):
-            conn = real(*args, **kwargs)
             db = args[0] if args else kwargs.get("database")
             uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            prev, _SQL_CONNECT.mode = getattr(_SQL_CONNECT, "mode", 0), (3 if uri else 2)
+            try:
+                conn = real(*args, **kwargs)
+            finally:
+                _SQL_CONNECT.mode = prev
             # the state holds no reference to the connection (a cycle would delay closing it; no weak references)
             st = _SqlConn(_sqlite_file(db, bool(uri)))
             try:
@@ -698,6 +706,14 @@ class Capture:
         self._sqlite_saved = [(sqlite3, "connect", real), (dbapi2, "connect", dbapi2.connect)]
         sqlite3.connect = connect
         dbapi2.connect = connect
+
+    def _sql_database(self, files) -> None:
+        files = [f for f in files if not self._ignored(f)]
+        if files and self._caller_kind() not in ("import", "infra"):
+            ctx = self._cur()
+            for p in files:
+                self.read(ctx, p, "f")
+                self.wrote(ctx, p)
 
     def _sql_trace(self, statement, st=None) -> None:
         if not self.active or not isinstance(statement, str):
@@ -712,6 +728,7 @@ class Capture:
         if m:
             f = _sqlite_file(m.group(1)[1:-1].replace("''", "'"), True)
             if f is not None:
+                self._sql_database([f])  # review R-017b F2: an attached database is an input too
                 st.dbs.append(f)
             return
         if _SQL_NO_SCHEMA.match(statement):
@@ -744,9 +761,9 @@ class Capture:
             return memo[1]
         from urllib.parse import quote
         why = None
+        prev, _SQL_CONNECT.mode = getattr(_SQL_CONNECT, "mode", 0), 1  # detpy's own: not the test's read
         try:
-            # a "file:" URI: the audit hook does not take this connection as the test's read of the file
-            con = self._sql_real_connect(f"file:{quote(path)}?mode=ro", uri=True, timeout=0)
+            con = self._sql_real_connect(f"file:{quote(os.fsencode(path))}?mode=ro", uri=True, timeout=0)
             try:
                 for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
                     if isinstance(sql, str) and _SQL_REAL_CLOCK.search(sql):
@@ -756,6 +773,8 @@ class Capture:
                 con.close()
         except Exception as e:
             why = f"the schema of {self._key(path)} (unreadable: {e})"
+        finally:
+            _SQL_CONNECT.mode = prev
         self._sql_schema[path] = (sig, why)
         return why
 
@@ -1819,6 +1838,9 @@ class _SqlConn:
         self.own: str | None = None
 
 
+_SQL_CONNECT = __import__("threading").local()  # .mode: 0 unknown, 1 detpy's own, 2 plain, 3 URI (review R-017b F2)
+
+
 def _sqlite_file(db, uri: bool) -> str | None:
     """The absolute path of the database file sqlite opens for ``db`` (None: in memory or not a file name)."""
     if not isinstance(db, (str, bytes, os.PathLike)):
@@ -1828,14 +1850,19 @@ def _sqlite_file(db, uri: bool) -> str | None:
     except (TypeError, ValueError):
         return None
     if uri and s.startswith("file:"):
-        from urllib.parse import unquote
+        from urllib.parse import unquote_to_bytes
         s, _, query = s[5:].partition("?")
         if "mode=memory" in query.split("#")[0].split("&"):
             return None
         if s.startswith("//"):
             host, _, rest = s[2:].partition("/")
             s = "/" + rest if host in ("", "localhost") else ""
-        s = unquote(s.split("#")[0])
+        s = s.split("#")[0]
+        if "%" in s:  # review R-017b F2: bytes-exact, as sqlite decodes it (up to a decoded NUL)
+            try:
+                s = os.fsdecode(unquote_to_bytes(os.fsencode(s)).split(b"\0")[0])
+            except UnicodeEncodeError:
+                return None
     if s in ("", ":memory:"):
         return None
     try:

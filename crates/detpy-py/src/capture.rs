@@ -899,6 +899,21 @@ impl CaptureCore {
         lock(&self.st).wrote(ctx, p);
     }
 
+    /// A database file a test's sqlite connection opens (its own connect, or `ATTACH`): its committed content is an
+    /// input, and the test may write it (sqlite opens it read-write in C, with no "open" event).
+    pub(crate) fn sql_database(&self, py: Python<'_>, files: &[W]) -> PyResult<()> {
+        let files: Vec<&W> = files.iter().filter(|p| !self.ignored(p)).collect();
+        if files.is_empty() || self.caller_kind(py)? != Caller::User {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        for p in files {
+            self.read_impl(py, ctx, p, b'f')?;
+            self.wrote_impl(ctx, p);
+        }
+        Ok(())
+    }
+
     fn ignored(&self, p: &[u8]) -> bool {
         lock(&self.st).ignored(p)
     }
@@ -1030,18 +1045,27 @@ impl CaptureCore {
                 if !(db.is_instance_of::<PyString>() || db.is_instance_of::<PyBytes>() || db.is_instance(&pathlike)?) {
                     return Ok(());
                 }
+                // review R-017b F2: only detpy's own schema query is not the test's read (it was every `file:` URI).
+                // The event does not carry `uri`: the patched `sqlite3.connect` says how it was called. A `file:`
+                // name opened as a URI is keyed by the file sqlite opens (bytes-exact `%XX`); when how is unknown
+                // (no patched call around it), both the literal name and the URI's file are inputs.
+                let mode = crate::sqlcap::connect_mode();
+                if mode == crate::sqlcap::CONNECT_OWN {
+                    return Ok(());
+                }
                 let dec = os.getattr("fsdecode")?.call1((&db,))?;
-                if dec.eq("")? || dec.eq(":memory:")? || dec.call_method1("startswith", ("file:",))?.is_truthy()? {
+                if dec.eq("")? || dec.eq(":memory:")? {
                     return Ok(());
                 }
-                let Some(p) = self.abs(py, &db)? else { return Ok(()) };
-                if self.ignored(&p) || self.caller_kind(py)? != Caller::User {
-                    return Ok(());
+                let mut files: Vec<W> = Vec::with_capacity(2);
+                let is_uri = dec.call_method1("startswith", ("file:",))?.is_truthy()?;
+                if !(is_uri && mode == crate::sqlcap::CONNECT_URI) {
+                    files.extend(self.abs(py, &db)?);
                 }
-                let ctx = self.cur(py)?;
-                self.read_impl(py, ctx, &p, b'f')?;
-                self.wrote_impl(ctx, &p);
-                Ok(())
+                if is_uri && mode != crate::sqlcap::CONNECT_PLAIN {
+                    files.extend(crate::sqlcap::sqlite_file_str(py, &w_of(dec.cast::<PyString>()?)?, true)?);
+                }
+                self.sql_database(py, &files)
             }
             "os.listdir" | "os.scandir" => {
                 if self.caller_kind(py)? != Caller::User {

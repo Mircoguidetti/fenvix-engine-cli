@@ -45,6 +45,8 @@ import pytest
 
 from . import __version__, _codefacts, _core, _sites, _state, follow
 
+_sql_connect_mode = _core.sql_connect_mode
+
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
 # real clocks, bound before Level 0 virtualises the time module
@@ -184,9 +186,15 @@ class Capture(_core.CaptureCore):
         cap = self
 
         def connect(*args, **kwargs):
-            conn = real(*args, **kwargs)
-            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"),
-                                kwargs.get("uri", args[7] if len(args) > 7 else False))
+            # review R-017b F2: the audit event does not say whether ``database`` is a URI; the capture's audit arm
+            # reads it here (crates/detpy-py/src/sqlcap.rs, connect modes)
+            uri = kwargs.get("uri", args[7] if len(args) > 7 else False)
+            prev = _sql_connect_mode(3 if uri else 2)
+            try:
+                conn = real(*args, **kwargs)
+            finally:
+                _sql_connect_mode(prev)
+            tr = _core.SqlTrace(cap, args[0] if args else kwargs.get("database"), uri)
             try:
                 conn.set_trace_callback(tr)
             except Exception:
@@ -202,9 +210,10 @@ class Capture(_core.CaptureCore):
         """What in the schema of database file ``path`` may read the real clock (None: nothing): the read-only query
         through the real connect, on a miss of the trace's memo."""
         from urllib.parse import quote
+        prev = _sql_connect_mode(1)  # detpy's own connection: the audit hook does not take it as the test's read
         try:
-            # a "file:" URI: the audit hook does not take this connection as the test's read of the file
-            con = self._sql_real_connect(f"file:{quote(path)}?mode=ro", uri=True, timeout=0)
+            # a URI of the path's bytes (a name that is not valid UTF-8 included)
+            con = self._sql_real_connect(f"file:{quote(os.fsencode(path))}?mode=ro", uri=True, timeout=0)
             try:
                 for name, sql in con.execute("select name, sql from sqlite_master where sql is not null"):
                     if isinstance(sql, str) and _core.sql_real_clock(sql):
@@ -213,6 +222,8 @@ class Capture(_core.CaptureCore):
                 con.close()
         except Exception as e:
             return f"the schema of {self._key(path)} (unreadable: {e})"
+        finally:
+            _sql_connect_mode(prev)
         return None
 
     # child_ignored, child_read, collect_children, _credit_child: Rust (CaptureCore)
