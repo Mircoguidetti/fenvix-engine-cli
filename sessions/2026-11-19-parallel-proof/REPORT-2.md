@@ -434,6 +434,41 @@ directory), `--det -n 4` against plain `-n 4`, same machine, alternating runs:
 * **Plan balance**: the planned makespan matches the measured test phase within a few seconds (litellm 37-39 s
   planned, 33-41 s measured); the last worker finishes 4 s after the first. Not the cause of the 1.2x.
 
+### Re-measured on the final engine (Actions, `r023-p0c-2026-11-19` and `r023-p0d-2026-11-19`, engine ddaffac, MEASURED)
+
+Same runners and selections as above; `--det-urandom` in every `--det` variant of litellm-vertex, moto and prefect
+(`det_args` in run.json; also in their serial truth runs). Three runs of plain and `--det -n 4`; the `--det -n 4` column
+uses runs b and c (run a plans on unit costs, a checkout's first run).
+
+| repository | plain `-n 4` | `--det -n 4` (b, c) | ratio (median) | warm `--det-cache -n 4` | reuse | vs plain | mismatches |
+|---|---|---|---|---|---|---|---|
+| esphome | 67.0 / 71.6 / 68.8 s | 68.5 / 69.5 s | **1.00x** | 49.9 / 49.5 / 49.8 s | 14,149-14,151 (97.9 %) | **0.72x** | 0 |
+| litellm-vertex | 68.4 / 69.5 / 71.1 s | 72.3 / 72.7 s | **1.04x** (was 1.25x) | 40.3 / 40.7 / 40.7 s | 4,178 of 4,181 (99.9 %; was 0 %) | **0.58x** | 0 |
+| moto (`-n 4` group) | 163.1 / 162.7 / 162.3 s | 86.9 / 88.2 s | **0.54x** | 35.8 / 27.1 / 29.7 s | 1,794, then 2,416 of 2,501 (96.6 %; was 0 %) | **0.17-0.22x** | 0 |
+| pydantic-ai (no cache) | 101.1 / 89.3 / 92.4 s | 89.1 / 100.0 s | **1.02x** (was 1.2x) | — | — | — | 0 reused; 1 ran (below) |
+| prefect (group 1) | see below | | | | | | |
+
+* **Target "within the noise of plain `-n 4`"**: met on esphome (inside the plain range) and pydantic-ai (inside the
+  plain range); moto is faster (virtual clock). litellm-vertex is at 1.04x: 3 s above the plain median and 1.2-1.6 s
+  above the slowest plain run, i.e. **just outside** the plain range with three runs each; the measured remaining
+  cost is the re-exec's second plugin load (2.8 s locally, cause 2 above), not fixed.
+* Truth: crosscheck 0 mismatches for every reused result in every repository, both mixed-store directions included.
+  Plans and per-test workers identical between runs b and c in all four (fpcompare). Outcome differences: 0 on
+  esphome, litellm, moto; **1 on pydantic-ai**: `tests/models/test_batch_runs.py::test_one_capability_serves_runs_on_
+  several_event_loops_and_threads` failed in `--det -n 4` run b with blockbuster's `BlockingError('Blocking call to
+  lock.acquire')` and passed in runs a and c and in both serial runs. Runs b and c have the identical plan and the
+  same worker for every test, so it is not placement: a thread-timing failure (the class of design 1.4.6 / LIMITS C4:
+  a lock taken in a thread blockbuster watches). fpcompare's "new failures caused by the split" counts it (its rule
+  compares outcomes only); classified here as a flaky verdict of one parallel run, no cache involved. Not fixed.
+* moto's remaining misses (MEASURED detail lines): docker SDK connecting to `/var/run/docker.sock` (between tests in
+  one worker in the cold run: 620 tests of that worker; then per test), `/proc/self/task/<tid>/children` reads in a
+  test, a C-extension socket left open by an xunit class fixture. The cold `-n 4` run records 1,833 entries against
+  2,410 serially (the between-tests docker probe taints one worker's tests); the next warm run records the rest.
+* The cross-mode row changed: a `-n 4` run on a serial store reuses 0 (litellm) / 312 (moto) of the serial entries:
+  whole-environment readers miss (`env`), because the controller now decides with its workers' start environment
+  (the conftest-set variables), which a serial session's start environment does not have. Serial entries still
+  serve a parallel run where no whole-environment read is involved (esphome: 14,161).
+
 ### What blocks the cache, per repository (MEASURED: the detail lines of the runs)
 
 | repository | blocking input (count) | where | made cacheable soundly? |
@@ -444,7 +479,7 @@ directory), `--det -n 4` against plain `-n 4`, same machine, alternating runs:
 | litellm-vertex | whole environment `*` (4,180, `-n` only) | the conftest sets two variables at import (`tests/unit/conftest.py:133-134`): the workers start with them, the controller decided with its own start environment | **yes, fixed**: the controller decides with the environment its workers start with (snapshot at `pytest_xdist_setupnodes`) |
 | litellm-vertex | data `/proc/self/fd` (4,180, `-n`) | `prometheus_client` lists the open descriptors at import time | **yes, fixed**: `/proc`, `/sys`, `/dev` reads of code that runs for every test (start-up, between tests, import) are not data inputs, as their `proc` flag already was not (Rust `record.rs` and the reference); a test's own `/proc` read still makes it uncacheable |
 | moto | os entropy (1,934-2,458) | uuid4 request ids | with `--det-urandom` |
-| moto | network connection (23-548), C-extension socket (10), host name lookup (1-2) | per test (boto3 endpoints; the counts move between runs) | not analysed further this round |
+| moto | docker SDK connect to `/var/run/docker.sock` (between tests in one worker, then per test), `/proc/self/task/<tid>/children` reads, a C-extension socket left open by an xunit fixture | MEASURED detail lines of `r023-p0d` | no: a connection to the Docker daemon is a real outside input; left as is (85 tests stay uncached) |
 | prefect | real clock read outside the virtual clock (2,418) | per test (detail line not in the first run's tail: the re-run reports it) | UNKNOWN this round |
 | pydantic-ai | not measured | the capture prerequisite of design 5 (blockbuster, 2,769 failures under `--det-cache`) | no |
 
