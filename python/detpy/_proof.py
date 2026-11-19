@@ -15,7 +15,7 @@ import sys
 import time
 from types import FunctionType
 
-from . import __version__, _codefacts, _core, _sites, _state, _statcap, follow
+from . import __version__, _codefacts, _core, _django, _sites, _state, _statcap, follow
 
 _sql_connect_mode = _core.sql_connect_mode
 
@@ -344,6 +344,7 @@ class ProofSession:
         """Collection is over: decide every test (``units``: groups of ids reused together or not at all)."""
         self.cap.switch("s")
         self.cap.scan_modules(-1, self._conftests())
+        _django.ensure(self.cap)  # Django's caches of file contents (every runner)
         t0 = _perf()
         try:
             self._decide(nids, items)
@@ -382,6 +383,7 @@ class ProofSession:
     def start(self, nid: str, fixtures: list) -> None:
         """A test that runs (not reused) starts, with the contexts of the wider-scoped fixtures it uses."""
         self.sess.start_test(nid, fixtures)
+        _django.ensure(self.cap)
         self.cap.switch("t|" + nid)
 
     def stop(self, nid: str, duration: float) -> None:
@@ -493,6 +495,7 @@ def start_capture(root: str, cache_dir: str, follow_children: bool) -> Capture:
 
 def stop_capture(cap: Capture | None) -> None:
     _statcap.uninstall()
+    _django.uninstall()
     if cap is not None:
         cap.stop()
         if cap.follower is not None:

@@ -153,3 +153,14 @@ To run them on GitHub Actions: copy `tracks/all-runners-python/run.json.example`
   and the cache needs 3.12+); `runner-ward-ward` gets `setuptools<81` and a 4-commit window (older ward calls
   `FileFinder.find_module`, removed in 3.12; it fails under plain `ward` too). A second ward repository needs a code
   search (`"tool.ward" filename:pyproject.toml`).
+
+## Hooks of the new shells that the pytest path needed too
+
+| hook | pytest path | now |
+|---|---|---|
+| Django cached template loader re-read, translation catalogs in the global context | same hole under pytest-django (the second renderer reused as passed after the template changed: MEASURED, `test_template_from_the_cached_loader_is_an_input_of_every_renderer_under_pytest_django` fails before) | shared `detpy/_django.py`, applied by `ProofSession` (every runner) whenever Django's template engine or translations are imported |
+| unittest `TestCase` class as the unit of reuse | same hole for `unittest.TestCase` classes run by pytest (`test_unittest_class_is_the_unit_of_reuse_under_pytest` fails before) | `proofcache._unittest_units`; plain pytest classes keep the plugin's rule (a fresh instance per test; class attributes follow the module-state rule) |
+| class / module tear-down error never reused | already handled: pytest reports it on the last test's teardown | no change |
+| ward nested suites, ward fixture contexts | ward only (pytest's nested in-process sessions are already the outer session's) | no change |
+| runner entry frame as infrastructure | pytest's own frames are infrastructure already | no change |
+| probes, import misses, `dir_fd` writes, in-tree `egg-info`, Hypothesis | shared from the start | — |

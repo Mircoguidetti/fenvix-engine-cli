@@ -11,10 +11,8 @@ Django's runner builds unittest suites, so the unittest shell (``unittest_shell`
 * ``SimpleTestCase.__call__`` is the test's bracket (Django's ``_pre_setup``: fixtures of a
   ``TransactionTestCase``, the database, are inside the test); ``TestCase.setUpClass`` (``setUpTestData``, class
   fixtures) is the class's ``f|class|...|setUpClass`` context.
-* Reads through Django's caches (R-021 "reads through infrastructure"): a template the cached loader returns from
-  memory is read again (its file is an input of every test that renders it, not only of the first one); a missing
-  template the cached loader remembers is probed again; translation catalogs (``.mo`` files) are loaded in the
-  global context (an input of every test).
+* Reads through Django's caches (R-021 "reads through infrastructure"): shared with the pytest plugin, in
+  ``detpy/_django.py`` (templates read again at every lookup, translation catalogs loaded in the global context).
 * The test database: whatever the settings say; the walks use sqlite (``harness/cache_proof/specs/django-*``).
 """
 
@@ -87,56 +85,7 @@ class DjangoHooks:
         p.set(DiscoverRunner, "run_tests", run_tests)
         if "__call__" in vars(SimpleTestCase):
             self.shell.bracket(SimpleTestCase)
-        self._templates()
-        self._translations()
         return self
-
-    def _templates(self) -> None:
-        try:
-            from django.template import TemplateDoesNotExist
-            from django.template.loaders.cached import Loader
-        except ImportError:  # pragma: no cover
-            return
-        real = Loader.get_template
-
-        def touch(origin) -> None:
-            name = getattr(origin, "name", None)
-            if isinstance(name, str) and os.path.isabs(name):
-                try:
-                    open(name, "rb").close()  # the capture takes the read (or the miss) as the template's input
-                except OSError:
-                    pass
-
-        def get_template(loader, template_name, skip=None):
-            try:
-                t = real(loader, template_name, skip)
-            except TemplateDoesNotExist as e:
-                for origin, _status in getattr(e, "tried", ()) or ():
-                    touch(origin)
-                raise
-            touch(getattr(t, "origin", None))
-            return t
-
-        get_template.__wrapped__ = real
-        self.shell.patcher.set(Loader, "get_template", get_template)
-
-    def _translations(self) -> None:
-        try:
-            from django.utils.translation import trans_real
-        except ImportError:  # pragma: no cover
-            return
-        cls = getattr(trans_real, "DjangoTranslation", None)
-        if cls is None:
-            return
-        real = cls.__init__
-        run = self.run
-
-        def init(self, *args, **kw):
-            with run.context("s"):
-                return real(self, *args, **kw)
-
-        init.__wrapped__ = real
-        self.shell.patcher.set(cls, "__init__", init)
 
 
 def _django_infra() -> list[str]:
