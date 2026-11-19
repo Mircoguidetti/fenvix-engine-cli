@@ -1,0 +1,48 @@
+{
+ "name": "biojava-biojava-structure",
+ "url": "https://github.com/biojava/biojava",
+ "sha": "e99364ac14294adeb9385b7b93c602c2d9b66bb6",
+ "module": "biojava-structure",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 355,
+ "documented": 16,
+ "documented_present": 16,
+ "documented_categories": {
+  "NOD": 16
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 8,
+ "broken_tests": [
+  "org.biojava.nbio.structure.PDBStatusTest::testGetCurrent",
+  "org.biojava.nbio.structure.PDBStatusTest::testGetStatus",
+  "org.biojava.nbio.structure.PDBStatusTest::testGetStatusMultipleIds",
+  "org.biojava.nbio.structure.TestURLIdentifier::testURLParameters",
+  "org.biojava.nbio.structure.align.util.AtomCacheTest::testEmptyChemComp",
+  "org.biojava.nbio.structure.align.util.AtomCacheTest::testEmptyGZChemComp",
+  "org.biojava.nbio.structure.io.TestNonDepositedFiles::testStructureWithBranchedEntities",
+  "org.biojava.nbio.structure.io.mmtf.TestMmtfRoundTrip::testStructWithBranchedEntitiesRoundTrip"
+ ],
+ "fingerprint_coverage": "355/355",
+ "fingerprint_covered": 355,
+ "fingerprinted": 355,
+ "timing_base_s": [
+  69.74300000000001,
+  69.75299999999999,
+  69.064
+ ],
+ "timing_det_s": [
+  10.043999999999999,
+  9.821999999999996,
+  9.034
+ ],
+ "slowdown": -0.8592,
+ "seconds": 2057.5
+}
