@@ -1,0 +1,8 @@
+repository prometheus/prometheus at 2b311b9762bb5834a17374fcf45a8e5b2043293f; packages ./model/... ./tsdb/... ./promql/... ./config/...; run 44639691571
+== record (skip mode, virtual day)
+exit 0
+fenvix-go: skip mode: tests see the real clock moved to today 00:00 UTC at the start of each test binary (the day is in the key; durations, sleeps and timers are real); a test that reads the real clock another way (C code, a raw system call, a program it starts that reads the clock, any Go program it starts) is never reused. Run --skip-real-clock nightly to catch fixtures that expire during the day
+fenvix-go: skip with proof: 0 of 1053 tests reusable (0.0 of 362.9 s of test time)
+== check (--skip-real-clock)
+exit 0
+fenvix-go: real clock: 1053 tests ran; 0 passed on the virtual day and fail on the real clock
