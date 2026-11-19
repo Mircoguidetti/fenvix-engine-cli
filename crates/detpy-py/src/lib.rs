@@ -284,6 +284,10 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<sysmon::SocketScan>()?;
     m.add_function(wrap_pyfunction!(sysmon::tracer_prefixes, m)?)?;
     m.add_class::<proofcache::ProofCache>()?;
+    m.add_class::<proofcache::DistFiles>()?;
+    m.add_function(wrap_pyfunction!(proofcache::dist_top_of, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::stat_dep, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::compact_stats, m)?)?;
     m.add_class::<session::CacheSession>()?;
     m.add_function(wrap_pyfunction!(session::det_outcome, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
@@ -291,6 +295,9 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(proofcache::json_dumps_str, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::stat_kind, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::lstat_kind, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::importable_dep, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::import_probe, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::import_candidates, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::collection_candidates, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;

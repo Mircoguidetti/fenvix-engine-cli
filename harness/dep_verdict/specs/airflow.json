@@ -1,0 +1,57 @@
+{
+ "name": "airflow",
+ "url": "https://github.com/apache/airflow",
+ "lang": "pytest",
+ "apt": [
+  "libkrb5-dev",
+  "libldap2-dev",
+  "libsasl2-dev",
+  "unixodbc-dev",
+  "default-libmysqlclient-dev",
+  "pkg-config",
+  "libpq-dev",
+  "freetds-dev",
+  "libxmlsec1-dev",
+  "libxml2-dev",
+  "libxslt1-dev",
+  "libgraphviz-dev",
+  "libffi-dev"
+ ],
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --frozen --all-packages || UV_PROJECT_ENVIRONMENT={venv} uv sync -q --python 3.12 --all-packages",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "build": [
+  "rm -rf {work}/afhome {work}/afh && mkdir -p {work}/afhome {work}/afh && AIRFLOW_HOME={work}/afhome AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:///{work}/afhome/unittests.db {py} -m pytest -q -p no:cacheprovider --with-db-init airflow-core/tests/unit/utils/test_helpers.py -x > {work}/afbuild.log 2>&1; tail -5 {work}/afbuild.log; test -f {work}/afhome/.airflow_db_initialised"
+ ],
+ "env": {
+  "AIRFLOW_HOME": "{work}/afh",
+  "BACKEND": "sqlite"
+ },
+ "units": {
+  "include": [
+   "airflow-core/tests/unit/**/test_*.py",
+   "providers/*/tests/unit/**/test_*.py",
+   "task-sdk/tests/**/test_*.py"
+  ],
+  "exclude": [
+   "*/tests/system/*",
+   "*/tests/integration/*"
+  ],
+  "sample": 0.06,
+  "seed": "s2"
+ },
+ "cmd": [
+  "bash",
+  "-c",
+  "h={work}/afh/$(printf %s '{unit}' | md5sum | cut -c1-12); rm -rf $h; cp -r {work}/afhome $h; AIRFLOW_HOME=$h AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:///$h/unittests.db exec {py} -m pytest -q -p no:cacheprovider -p s2_report {unit}"
+ ],
+ "unit_timeout": 900,
+ "ci": {
+  "workers": 4,
+  "source": "assumed 4 vCPU per test job (Airflow CI splits test types over many jobs)"
+ },
+ "repo": "airflow",
+ "max_units": 25
+}

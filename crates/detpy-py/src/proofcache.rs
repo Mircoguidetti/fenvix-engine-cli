@@ -966,3 +966,76 @@ pub fn import_candidates(dir: &str, name: &str, suffixes: Vec<String>) -> Vec<St
 pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
     proof::collection_candidates(rel_dir)
 }
+
+/// Installed files of the Python distributions (`--det-cache-dists`): see `detpy_core::distfiles`.
+#[pyclass(module = "detpy._core")]
+pub struct DistFiles {
+    inner: detpy_core::distfiles::DistFiles,
+}
+
+#[pymethods]
+impl DistFiles {
+    #[new]
+    fn new() -> Self {
+        DistFiles { inner: detpy_core::distfiles::DistFiles::new() }
+    }
+
+    fn add(&mut self, owner: &str, base: &str, record: &str, project: bool) {
+        self.inner.add(owner, base, record, project)
+    }
+
+    fn add_project_path(&mut self, path: &str) {
+        self.inner.add_project_path(path)
+    }
+
+    /// (owners, claim group or None) of `path`, None when no RECORD explains it.
+    fn lookup(&self, path: &str) -> Option<(Vec<String>, Option<String>)> {
+        self.inner.lookup(path)
+    }
+
+    fn tops(&self) -> Vec<(String, Vec<String>)> {
+        self.inner.tops()
+    }
+
+    fn claims(&self) -> Vec<(String, String)> {
+        self.inner.claims()
+    }
+}
+
+/// Top-level module name a RECORD path provides (None for metadata, scripts, data).
+#[pyfunction]
+pub fn dist_top_of(rel: &str) -> Option<String> {
+    detpy_core::distfiles::top_of(rel)
+}
+
+/// Dependency string of an existence check of `path`: "s:<kind>" (kind "missing" included).
+#[pyfunction]
+pub fn stat_dep(path: PathBuf) -> String {
+    detpy_core::distfiles::stat_dep(&path)
+}
+
+/// Existence checks of at least `min` entries of one directory replaced by the directory's listing with kinds, many
+/// under one directory tree by the tree with kinds (`proof::compact_stats`; what `record_session` does to each
+/// test's data, exposed for the equivalence tests' reference).
+#[pyfunction]
+pub fn compact_stats(data: Vec<(String, String)>, root: PathBuf, min: usize) -> Vec<(String, String)> {
+    proof::compact_stats(data, &root, min)
+}
+
+/// Kind of `path` without following a final symlink ("link", or `stat_kind`'s kinds).
+#[pyfunction]
+pub fn lstat_kind(path: PathBuf) -> &'static str {
+    proof::lstat_kind(&path)
+}
+
+/// Dependency on the importable entries of `dir` ("i:<digest>" or "i:missing").
+#[pyfunction]
+pub fn importable_dep(dir: PathBuf) -> String {
+    proof::importable_digest(&dir).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+}
+
+/// (a regular module or package found, the package directory exists) for module `name` in `dir`.
+#[pyfunction]
+pub fn import_probe(dir: &str, name: &str, suffixes: Vec<String>) -> (bool, bool) {
+    proof::import_probe(dir, name, &suffixes)
+}

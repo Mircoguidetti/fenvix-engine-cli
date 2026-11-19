@@ -36,6 +36,9 @@ REF = Path(__file__).parent / "rust_hotpaths_ref"
 HAS_TIME_MACHINE = importlib.util.find_spec("time_machine") is not None
 
 PROJECT = {
+    # collected first: a reusable result (under the prefix rule, review R-020, every test after a refused one in the
+    # same process is refused too)
+    "test_0_first.py": "def test_0_cacheable():\n    assert True\n",
     "pkg/__init__.py": "",
     "pkg/waits.py": '''
 import time

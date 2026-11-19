@@ -1,0 +1,30 @@
+name: dep-verdict-annotations
+
+# Step 4 helper: check-run annotations and outputs of the upstream CI failures after dependency-only commits.
+on:
+  push:
+    branches: [claude/dep-verdict-abjcfw]
+    paths: [harness/dep_verdict/annotations.py]
+
+permissions:
+  contents: write
+
+jobs:
+  annotations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "dep-verdict-bot"
+          git config user.email "dep-verdict-bot@users.noreply.github.com"
+          out=harness/dep_verdict/results/dv1/annotations.json
+          cd harness/dep_verdict && python3 annotations.py --ci results/dv1/ci-status.json --commits commits.json \
+            --out results/dv1/annotations.json && cd ../..
+          for i in 1 2 3 4 5 6 7 8; do
+            git fetch -q origin claude/dep-verdict-abjcfw && git reset -q --soft origin/claude/dep-verdict-abjcfw && git reset -q
+            git add -f "$out" && git commit -q -m "dep-verdict: upstream check-run annotations" || exit 0
+            git push -q origin HEAD:claude/dep-verdict-abjcfw && exit 0
+            sleep $((5 + RANDOM % 20))
+          done

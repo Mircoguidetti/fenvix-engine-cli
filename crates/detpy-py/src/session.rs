@@ -244,6 +244,7 @@ fn flag_of(why: &[u8]) -> Option<&'static str> {
         b"network socket opened outside Python (C extension)" => "csock",
         b"reads /proc, /sys or /dev" => "proc",
         b"reads this process's state under /proc (descriptors, status counters, threads)" => "pstate",
+        b"native code from the repository" => "native",
         _ => return None,
     })
 }
@@ -1116,6 +1117,8 @@ fn is_whole(item: &Bound<'_, PyAny>) -> PyResult<bool> {
 /// (`ProofCachePlugin._where`).
 fn where_(cap: &Bound<'_, CaptureCore>, names: &Bound<'_, PyList>, why: &[u8], ctxs: &[u32]) -> PyResult<W> {
     let py = cap.py();
+    // a refusal carried from an earlier context (prefix rule): its cause is looked up in those contexts
+    let why = why.strip_prefix(b"after an earlier test or fixture of this process: ".as_slice()).unwrap_or(why);
     let Some(flag) = flag_of(why) else { return Ok(why.to_vec()) };
     for &c in ctxs {
         let d = cap.call_method1(intern!(py, "why_of"), (c, flag))?;

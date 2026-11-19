@@ -1,0 +1,58 @@
+{
+ "run_id": "dv16",
+ "ci": false,
+ "plan": "harness/dep_verdict/plan-report2.json",
+ "note": "REPORT-3: the same 130 pairs and test files on the final REPORT-3 engine 905fb40; all 10 repositories on Actions, smaller shards (56 jobs). dv8-dv15 cancelled (engine changes before they produced rows; dv9-dv15 never left the queue).",
+ "pairs": [
+  {
+   "spec": "airflow",
+   "shards": 4,
+   "budget_min": 180
+  },
+  {
+   "spec": "integrations-core",
+   "shards": 4,
+   "budget_min": 180
+  },
+  {
+   "spec": "litellm",
+   "shards": 4,
+   "budget_min": 180
+  },
+  {
+   "spec": "mlflow",
+   "shards": 6,
+   "budget_min": 180
+  },
+  {
+   "spec": "prefect",
+   "shards": 4,
+   "budget_min": 180
+  },
+  {
+   "spec": "pydantic-ai",
+   "shards": 6,
+   "budget_min": 180
+  },
+  {
+   "spec": "transformers",
+   "shards": 4,
+   "budget_min": 180
+  },
+  {
+   "spec": "esphome",
+   "shards": 10,
+   "budget_min": 180
+  },
+  {
+   "spec": "moto",
+   "shards": 8,
+   "budget_min": 180
+  },
+  {
+   "spec": "community-general",
+   "shards": 6,
+   "budget_min": 180
+  }
+ ]
+}

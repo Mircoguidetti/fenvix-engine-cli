@@ -76,13 +76,16 @@ def test_unchanged_suite_is_reused_with_a_receipt(pytester, run_cache):
     assert f["reused"] and len(f["key"]) == 32 and f["n_units"] >= 2 and f["n_skeleton"] >= 1
 
 
-def test_function_change_reruns_only_the_tests_that_executed_it(pytester, run_cache):
+def test_function_change_reruns_the_tests_that_executed_it_and_the_later_ones(pytester, run_cache):
+    # review R-020 O1 (prefix rule): test_limit ran after test_g in the same process, so state test_g left (a
+    # memoised result of g) could reach it; it reruns too. test_f ran before: reused.
     project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
     run_cache()
     (pytester.path / "pkg/mod.py").write_text(MOD.replace("return x * 2", "return 2 * x"))
     r, reused, data = run_cache()
-    assert reused == ids("test_f", "test_limit")
+    assert reused == ids("test_f")
     assert data["cache"]["miss_ids"]["test_m.py::test_g"].startswith("code: pkg/mod.py::g")
+    assert data["cache"]["miss_ids"]["test_m.py::test_limit"].startswith("code: pkg/mod.py::g")
 
 
 def test_comment_and_formatting_changes_keep_the_results(pytester, run_cache):
@@ -132,22 +135,27 @@ def test_data_file_change_reruns_its_reader(pytester, run_cache):
         import os
         HERE = os.path.dirname(__file__)
 
+        def test_other():
+            assert True
+
         def test_data():
             with open(os.path.join(HERE, "data.txt")) as fh:
                 assert fh.read() == "hello"
 
-        def test_other():
+        def test_after():
             assert True
         """, "data.txt": "hello"})
     run_cache()
     (pytester.path / "data.txt").write_text("world")
     r, reused, data = run_cache()
+    # test_other ran before the reader: reused; test_after ran after it in the same process (R-020 O1): reruns
     assert reused == ids("test_other")
     assert data["cache"]["miss_ids"]["test_m.py::test_data"].startswith("data: data.txt")
-    r.assert_outcomes(passed=1, failed=1)
+    assert data["cache"]["miss_ids"]["test_m.py::test_after"].startswith("data: data.txt")
+    r.assert_outcomes(passed=2, failed=1)
 
 
-def test_import_time_read_of_a_test_module_serves_only_its_own_tests(pytester, run_cache):
+def test_import_time_read_of_a_test_module_is_an_input_of_every_later_test(pytester, run_cache):
     # test_a.py reads version.txt while it is imported; test_b.py does not import test_a
     project(pytester, **{
         "pkg/lib.py": "import os\nHERE = os.path.dirname(__file__)\n"
@@ -173,8 +181,11 @@ def test_import_time_read_of_a_test_module_serves_only_its_own_tests(pytester, r
     assert reused == ids("test_version", mod="test_a.py") | ids("test_b", mod="test_b.py")
     (pytester.path / "version.txt").write_text("2.0")
     r, reused, data = run_cache()
-    assert reused == ids("test_b", mod="test_b.py")
+    # review R-020 O1 (prefix rule): test_a.py is imported while the session collects, before every test; its
+    # module body can leave state any later test reads (a registry, os.environ), so test_b depends on it too
+    assert reused == set()
     assert data["cache"]["miss_ids"]["test_a.py::test_version"].startswith("data: version.txt")
+    assert data["cache"]["miss_ids"]["test_b.py::test_b"].startswith("data: version.txt")
     r.assert_outcomes(passed=1, failed=1)
     # a repository module's import-time read stays an input of every test
     (pytester.path / "version.txt").write_text("1.0")
@@ -226,22 +237,26 @@ def test_environment_variable_read_is_an_input_and_unread_ones_are_not(pytester,
     project(pytester, **{"test_m.py": """
         import os
 
+        def test_other():
+            assert True
+
         def test_flag():
             assert os.environ.get("DETPY_T_FLAG", "0") == "0"
 
-        def test_other():
+        def test_after():
             assert True
         """})
     monkeypatch.delenv("DETPY_T_FLAG", raising=False)
     run_cache()
     monkeypatch.setenv("DETPY_T_UNREAD", "x")
     _, reused, _ = run_cache()
-    assert reused == ids("test_flag", "test_other")
+    assert reused == ids("test_flag", "test_other", "test_after")
     monkeypatch.setenv("DETPY_T_FLAG", "1")
     r, reused, data = run_cache()
-    assert reused == ids("test_other")
+    assert reused == ids("test_other")  # test_after ran after the reader (R-020 O1, prefix rule)
     assert data["cache"]["miss_ids"]["test_m.py::test_flag"] == "env: environment variable DETPY_T_FLAG"
-    r.assert_outcomes(passed=1, failed=1)
+    assert data["cache"]["miss_ids"]["test_m.py::test_after"] == "env: environment variable DETPY_T_FLAG"
+    r.assert_outcomes(passed=2, failed=1)
 
 
 def test_runtime_identity_change_reruns_everything(pytester, run_cache):
@@ -275,6 +290,9 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache,
     project(pytester, **{"test_m.py": f"""
         import socket, subprocess, sys
 
+        def test_plain():
+            pass
+
         def test_loopback():
             c = socket.create_connection(("127.0.0.1", {outside_server}))
             c.close()
@@ -282,7 +300,7 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache,
         def test_spawn():
             subprocess.run([sys.executable, "-c", "pass"], check=True)
 
-        def test_plain():
+        def test_after():
             pass
         """})
     run_cache("--det-cache-no-follow")
@@ -291,6 +309,8 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache,
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_loopback"] == "network connection"
     assert nc["test_m.py::test_spawn"] == "subprocess"
+    # review R-020 O1: an answer the connection gave can be kept in memory for a later test of the process
+    assert nc["test_m.py::test_after"].startswith("after an earlier test or fixture of this process: ")
 
 
 @pytest.fixture
@@ -327,12 +347,12 @@ def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run
     project(pytester, **{"test_m.py": """
         import urllib.request
 
+        def test_plain():
+            pass
+
         def test_external():
             with urllib.request.urlopen("http://service.example/", timeout=10) as r:
                 assert r.read() == b"ok"
-
-        def test_plain():
-            pass
         """})
     # Level 0 treats the configured proxy as the outside and blocks it: the failure is never reused
     run_cache()
@@ -362,18 +382,20 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
 
         KEEP = []
 
+        # the cacheable tests run first: a refusal is carried into every later test of the process (R-020 prefix
+        # rule), checked at the end
+        def test_loopback_name_is_read_from_the_hosts_file():
+            assert socket.getaddrinfo("localhost", 80)  # review R-023: /etc/hosts etc. are its inputs
+
+        def test_numeric_address_is_not_a_lookup():
+            assert socket.getaddrinfo("127.0.0.1", 80)
+
         def test_lookup():
             import _socket  # past Level 0's guard (a lookup it lets through): the audit event is the C module's
             try:
                 _socket.getaddrinfo("detpy-lookup.example", 80)
             except OSError:
                 pass
-
-        def test_loopback_name_is_read_from_the_hosts_file():
-            assert socket.getaddrinfo("localhost", 80)  # review R-023: /etc/hosts etc. are its inputs
-
-        def test_numeric_address_is_not_a_lookup():
-            assert socket.getaddrinfo("127.0.0.1", 80)
 
         @pytest.fixture(scope="module")
         def c_connection():
@@ -398,6 +420,8 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
     assert nc["test_m.py::test_lookup"] == "host name lookup"
     assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"
     assert nc["test_m.py::test_c_socket_again"] == "network socket opened outside Python (C extension)"
+    # the tests after a refused one are refused too: the refused test's unseen input could be memoised
+    assert all(nc[f"test_m.py::{t}"] for t in ("test_c_socket", "test_c_socket_again"))
 
 
 @pytest.mark.skipif(not __import__("os").path.exists("/etc/ld.so.cache"), reason="needs ldconfig")
@@ -421,18 +445,23 @@ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
     project(pytester, **{"test_m.py": """
         import time
 
+        def test_no_clock():
+            pass
+
         def test_clock():
             assert time.time() > 0
 
-        def test_no_clock():
+        def test_after_clock():
             pass
         """})
     run_cache("--det-epoch=2025-01-01T00:00:00")
     _, reused, _ = run_cache("--det-epoch=2025-01-01T00:00:00")
-    assert reused == ids("test_clock", "test_no_clock")
+    assert reused == ids("test_clock", "test_no_clock", "test_after_clock")
     _, reused, data = run_cache("--det-epoch=2025-06-01T00:00:00")
     assert reused == ids("test_no_clock")
     assert data["cache"]["miss_ids"]["test_m.py::test_clock"].startswith("clock")
+    # a time test_clock read can be kept for a later test (R-020 O1, prefix rule)
+    assert data["cache"]["miss_ids"]["test_m.py::test_after_clock"].startswith("clock")
 
 
 def test_os_entropy_is_cached_only_when_controlled(pytester, run_cache):
@@ -559,8 +588,9 @@ def test_env_name_not_valid_utf8_refuses_the_test(pytester):
     import os
     import subprocess
 
-    pytester.makepyfile(test_m='import os\n\ndef test_e():\n    assert os.environ.get("R17\\udcfe") == "1"\n\n'
-                               'def test_plain():\n    assert True\n')
+    # test_plain runs first: test_e's refusal is carried into every later test of the process (R-020 prefix rule)
+    pytester.makepyfile(test_m='import os\n\ndef test_plain():\n    assert True\n\n'
+                               'def test_e():\n    assert os.environ.get("R17\\udcfe") == "1"\n')
     out = pytester.path / "o.json"
     res = []
     for v in (b"1", b"2"):

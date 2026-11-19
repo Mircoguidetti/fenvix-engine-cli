@@ -372,7 +372,34 @@ fn process_state(p: &[u8]) -> bool {
             return None;
         }
         let mut kind = kind;
-        if kind == b's' {
+        if kind == b'i' {
+            // a module lookup's searched directory: its importable entries with kinds (one dependency per directory,
+            // keyed "<dir>/\x01importable"; proof::importable_digest)
+            let mut hk = vec![b'i'];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = match proof::importable_digest(os_path(p)) {
+                        Some(x) => format!("i:{x}").into_bytes(),
+                        None => b"i:missing".to_vec(),
+                    };
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let mut k = self.key(p).to_vec();
+            k.extend_from_slice(proof::IMPORTABLE_SUFFIX.as_bytes());
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
+        if kind == b's' || kind == b'l' {
             // an existence or kind check (os.stat / lstat / access, a module lookup): the path's kind is the input
             // (absent inputs: a file, conftest.py, module or __init__.py that appears later). The project root and
             // its ancestors are directories for the whole session.
@@ -387,12 +414,17 @@ fn process_state(p: &[u8]) -> bool {
                 self.flag_set(ctx).add(f);
                 return None;
             }
-            let mut hk = vec![b's'];
+            let mut hk = vec![kind];
             hk.extend_from_slice(p);
             let dep = match self.hashed.get(&hk) {
                 Some(d) => d.clone(),
                 None => {
-                    let d = format!("s:{}", proof::stat_kind(os_path(p))).into_bytes();
+                    // `os.lstat` (lexists, islink): the kind without following a final symlink (LIMITS K4)
+                    let d = if kind == b'l' {
+                        format!("l:{}", proof::lstat_kind(os_path(p))).into_bytes()
+                    } else {
+                        format!("s:{}", proof::stat_kind(os_path(p))).into_bytes()
+                    };
                     self.hashed.insert(hk, d.clone());
                     d
                 }
@@ -492,7 +524,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd'] {
+            for k in [b'f', b'd', b's', b'l'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -500,9 +532,11 @@ fn process_state(p: &[u8]) -> bool {
         }
         // a path that is not valid UTF-8 is never read (a bad path) nor recorded as written; its directory's
         // listing changed all the same
-        let mut hk = vec![b'd'];
-        hk.extend_from_slice(dirname(p));
-        self.hashed.remove(&hk);
+        for k in [b'd', b'i'] {
+            let mut hk = vec![k];
+            hk.extend_from_slice(dirname(p));
+            self.hashed.remove(&hk);
+        }
     }
 
 }
@@ -534,6 +568,17 @@ pub struct CaptureCore {
     pub(crate) sql_schema: Mutex<HashMap<W, (crate::sqlcap::SqlSig, Option<W>)>>,
     env0: Py<PyDict>,
     root: Py<PyString>,
+    /// `path -> bool`: a distribution's RECORD lists the path (LIMITS K1: an installed library under the root is a
+    /// dependency, not the repository's native code); set by `proofcache.Capture`
+    installed: Mutex<Option<Py<PyAny>>>,
+    /// `--det-cache-dists` (prototype): `(ctx, path, listing) -> None`, the per-distribution tracker
+    /// (`distid.Tracker.path`) that turns a read or listing under a site directory into identity dependencies
+    dist_read: Mutex<Option<Py<PyAny>>>,
+}
+
+fn is_identifier(s: &str) -> bool {
+    let mut cs = s.chars();
+    matches!(cs.next(), Some(c) if c == '_' || c.is_alphabetic()) && cs.all(|c| c == '_' || c.is_alphanumeric())
 }
 
 /// `_sites._classify` through the Level 0 hub (its classification cache, without a Python frame) or, when the
@@ -1041,8 +1086,32 @@ impl CaptureCore {
                 continue;
             }
             self.read_impl(py, ctx, &p, b'f')?;
+            self.native_check(py, ctx, &p)?;
         }
         Ok(())
+    }
+
+    /// LIMITS K1/K2: a shared library from the project root (an extension built in place, a `ctypes` library) that
+    /// no distribution's RECORD lists runs C code whose file, clock and network access is not seen: its context
+    /// is not cached ("native"). detpy's own files (its extension, the clock shim in the cache directory) and an
+    /// installed wheel's library that happens to live under the root (`installed`, set from Python) are not.
+    fn native_check(&self, py: Python<'_>, ctx: usize, p: &[u8]) -> PyResult<()> {
+        let (root_sep, detpy_dir) = (lock(&self.st).root_sep.clone(), self.env.detpy_dir.clone());
+        if !p.starts_with(&root_sep) || p.starts_with(&detpy_dir) {
+            return Ok(());
+        }
+        let base = p.rsplit(|&b| b == b'/').next().unwrap_or(p);
+        if base.starts_with(b"clockshim-") {
+            return Ok(());
+        }
+        let cb = lock(&self.installed).as_ref().map(|c| c.clone_ref(py));
+        if let Some(cb) = cb {
+            let s = PyString::new(py, &String::from_utf8_lossy(p));
+            if cb.bind(py).call1((s,))?.is_truthy()? {
+                return Ok(());
+            }
+        }
+        self.flag_impl(py, ctx, b"native", Some(p.to_vec()))
     }
 
     fn read_impl(&self, py: Python<'_>, ctx: usize, p: &[u8], kind: u8) -> PyResult<()> {
@@ -1074,6 +1143,29 @@ impl CaptureCore {
 
     fn ignored(&self, p: &[u8]) -> bool {
         lock(&self.st).ignored(p)
+    }
+
+    /// `--det-cache-dists`: whether `p` is under a site directory (and not an editable install's metadata), where
+    /// the tracker, not the content digest, keys it.
+    fn dist_site(&self, py: Python<'_>, p: &[u8]) -> Option<Py<PyAny>> {
+        let cb = lock(&self.dist_read).as_ref().map(|c| c.clone_ref(py))?;
+        let st = lock(&self.st);
+        let site = st.site_dirs.iter().any(|d| p.starts_with(d)) && !st.dist_info_ok.iter().any(|x| p.starts_with(x));
+        site.then_some(cb)
+    }
+
+    /// Hand a read (or listing) under a site directory to the tracker; `true` when it was one.
+    fn dist_route(&self, py: Python<'_>, p: &[u8], listing: bool) -> PyResult<bool> {
+        let Some(cb) = self.dist_site(py, p) else { return Ok(false) };
+        if !listing && self.caller_kind(py)? != Caller::User {
+            return Ok(true); // the import system's and pytest's reads are not inputs, as without the flag
+        }
+        let ctx = self.cur(py)?;
+        let was = self.active();
+        self.set_active(false); // the tracker's own reads and writes are not inputs
+        let r = cb.bind(py).call1((ctx, PyString::new(py, &String::from_utf8_lossy(p)), listing));
+        self.set_active(was);
+        r.map(|_| true)
     }
 
     pub(crate) fn active(&self) -> bool {
@@ -1139,6 +1231,9 @@ impl CaptureCore {
                     // read. Any file, not only .py: a doctest text file is read at collection and runs later (review
                     // R-015b G3); the plan refuses only on files that are code inputs
                     self.note_code(py, p.clone())?;
+                }
+                if self.dist_route(py, &p, false)? {
+                    return Ok(());
                 }
                 {
                     let st = lock(&self.st);
@@ -1274,6 +1369,19 @@ impl CaptureCore {
                 }
                 self.sql_database(py, &files)
             }
+            "ctypes.dlopen" => {
+                // LIMITS K2: a library opened through ctypes names its path here, even when it is unloaded again
+                // before the next scan of the mappings; one from the project root is the repository's native code
+                let Some(a) = arg(0) else { return Ok(()) };
+                if a.is_none() {
+                    return Ok(());
+                }
+                let named = a.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false);
+                if named {
+                    self.native_path(py, &a)?;
+                }
+                Ok(())
+            }
             "os.listdir" | "os.scandir" => {
                 if self.caller_kind(py)? != Caller::User {
                     return Ok(());
@@ -1283,6 +1391,9 @@ impl CaptureCore {
                     _ => PyString::new(py, ".").into_any(),
                 };
                 let Some(p) = self.abs(py, &a0)? else { return Ok(()) };
+                if self.dist_route(py, &p, true)? {
+                    return Ok(());
+                }
                 if self.ignored(&p) {
                     return Ok(());
                 }
@@ -1597,6 +1708,8 @@ impl CaptureCore {
             sql_schema: Mutex::new(HashMap::new()),
             env0,
             root: root.unbind(),
+            installed: Mutex::new(None),
+            dist_read: Mutex::new(None),
         })
     }
 
@@ -1718,6 +1831,11 @@ impl CaptureCore {
             d.set_item(py_of(py, n)?, i)?;
         }
         Ok(d)
+    }
+    /// (real time, context) at every switch (the prefix rule's order of first activation).
+    #[getter]
+    fn timeline(&self) -> Vec<(f64, usize)> {
+        lock(&self.st).timeline.clone()
     }
     #[getter]
     fn segs(&self) -> Vec<(usize, usize)> {
@@ -1981,19 +2099,47 @@ impl CaptureCore {
         r
     }
 
-    /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
-    /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
-    /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture).
-    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>) -> PyResult<()> {
+    /// `--det-cache-dists`: the tracker's `(ctx, path, listing)` callback (see `dist_route`).
+    fn set_dist_read(&self, cb: Option<Py<PyAny>>) {
+        *lock(&self.dist_read) = cb;
+    }
+
+    /// `path -> bool`: whether a distribution's RECORD lists the path (see `native_check`).
+    fn set_installed(&self, cb: Option<Py<PyAny>>) {
+        *lock(&self.installed) = cb;
+    }
+
+    /// The scan of the mapped libraries at a point where no context switch follows (the end of a test whose
+    /// library may be unloaded before the next switch is covered by the ctypes event instead).
+    fn native_path(&self, py: Python<'_>, path: &Bound<'_, PyAny>) -> PyResult<()> {
         if !self.active() {
             return Ok(());
         }
         let Some(p) = self.abs(py, path)? else { return Ok(()) };
-        if self.ignored(&p) || self.caller_kind(py)? != Caller::User {
+        if self.ignored(&p) {
             return Ok(());
         }
         let ctx = self.cur(py)?;
-        self.read_impl(py, ctx, &p, b's')
+        self.native_check(py, ctx, &p)
+    }
+
+    /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
+    /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
+    /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
+    /// final symlink (LIMITS K4).
+    #[pyo3(signature = (path, link=false))]
+    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        // --det-cache-dists: a file a bump adds or removes under a site directory is an input (review R-020b N3)
+        let site = self.dist_site(py, &p).is_some();
+        if (!site && self.ignored(&p)) || self.caller_kind(py)? != Caller::User {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, if link { b'l' } else { b's' })
     }
 
     /// A module lookup (`importlib`'s path finder, called from a finder in front of `sys.meta_path`): for module
@@ -2007,6 +2153,7 @@ impl CaptureCore {
         }
         let ctx = self.cur(py)?;
         let n = suffixes.len();
+        let whole = is_identifier(tail) && suffixes.iter().all(|x| proof::IMPORTABLE_ENDINGS.iter().any(|e| x.ends_with(e)));
         for e in entries.try_iter()? {
             let e = e?;
             if !e.is_instance_of::<PyString>() {
@@ -2023,6 +2170,25 @@ impl CaptureCore {
                 continue;
             }
             let Ok(dstr) = std::str::from_utf8(&d) else { continue };
+            if whole {
+                // one dependency on the directory's importable entries covers every probe of an identifier name
+                // there; the package's __init__ files are inside the package directory, checked one by one when it
+                // exists
+                self.read_impl(py, ctx, &d, b'i')?;
+                let (mut regular, pkg_dir) = proof::import_probe(dstr, tail, &suffixes);
+                if pkg_dir {
+                    for c in &proof::import_candidates(dstr, tail, &suffixes)[1..1 + n] {
+                        self.read_impl(py, ctx, c.as_bytes(), b's')?;
+                        if std::path::Path::new(c).is_file() {
+                            regular = true;
+                        }
+                    }
+                }
+                if regular {
+                    break;
+                }
+                continue;
+            }
             let cands = proof::import_candidates(dstr, tail, &suffixes);
             let pkg_missing = !std::path::Path::new(&cands[0]).exists();
             self.read_impl(py, ctx, cands[0].as_bytes(), b's')?;
@@ -2672,6 +2838,8 @@ impl CaptureCore {
         pre.sort();
         plan.preloaded = pre;
         plan.changed = changed;
+        let mut seen = HashSet::new();
+        plan.first_order = st.timeline.iter().filter(|(_, c)| seen.insert(*c)).map(|(_, c)| *c as u32).collect();
         Ok(())
     }
 }

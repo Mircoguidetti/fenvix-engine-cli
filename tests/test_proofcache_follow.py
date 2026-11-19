@@ -33,12 +33,12 @@ def test_child_file_read_is_an_input(pytester, run_cache):
     project(pytester, **{"data.txt": "hello\n", "test_m.py": """
         import subprocess
 
+        def test_plain():  # before the reader: a later test would depend on it too (review R-020 O1)
+            pass
+
         def test_cat():
             out = subprocess.run(["cat", "data.txt"], capture_output=True, text=True, check=True).stdout
             assert out == "hello\\n"
-
-        def test_plain():
-            pass
         """})
     run_cache()
     r, reused, data = run_cache()
@@ -106,11 +106,11 @@ def test_child_inheriting_the_environment_depends_on_all_of_it(pytester, run_cac
     project(pytester, **{"test_m.py": """
         import os, subprocess
 
-        def test_inherits():
-            assert subprocess.run(["sh", "-c", "exit 0"]).returncode == 0
-
         def test_explicit_env():
             assert subprocess.run(["sh", "-c", "exit 0"], env={"PATH": os.environ["PATH"]}).returncode == 0
+
+        def test_inherits():
+            assert subprocess.run(["sh", "-c", "exit 0"]).returncode == 0
         """})
     run_cache()
     _, reused, _ = run_cache()
@@ -128,11 +128,11 @@ def test_child_network_is_never_cached(pytester, run_cache, outside_server):
 
         CODE = "import socket; socket.create_connection(('127.0.0.1', {outside_server})).close()"
 
-        def test_child_connects():
-            subprocess.run([sys.executable, "-c", CODE], check=True)
-
         def test_plain():
             pass
+
+        def test_child_connects():
+            subprocess.run([sys.executable, "-c", CODE], check=True)
         """})
     run_cache()
     _, reused, data = run_cache()
@@ -186,15 +186,19 @@ def test_child_still_running_at_the_end_is_never_cached(pytester, run_cache):
 
         KEEP = []
 
+        def test_plain():
+            pass
+
         def test_daemon():
             KEEP.append(subprocess.Popen(["sleep", "30"]))
 
-        def test_plain():
+        def test_after():
             pass
         """})
     run_cache()
     _, reused, data = run_cache()
     assert reused == ids("test_plain")
+    assert nc(data)["test_m.py::test_after"].startswith("after an earlier test or fixture of this process: ")
     assert "still running" in data["cache"]["not_cached_where"]["test_m.py::test_daemon"]
 
 
@@ -609,6 +613,13 @@ def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pyte
             con.execute("create table ev (id integer, at text default current_timestamp)")
             return con
 
+        # first: under the prefix rule (review R-020) a test after a refused one in the same process is refused too
+        def test_plain(tmp_path):
+            shutil.copy("plain.db", tmp_path / "plain.db")
+            con = sqlite3.connect(tmp_path / "plain.db")
+            con.execute("insert into t (x) values (1)")
+            assert con.execute("select at from t").fetchone() == ("2020-01-01",)
+
         def test_attached(tmp_path):
             shutil.copy("aux.db", tmp_path / "aux.db")
             con = sqlite3.connect(":memory:")
@@ -617,12 +628,6 @@ def test_sqlite_schema_reading_the_clock_is_refused_wherever_it_was_defined(pyte
 
         def test_fixture_schema(mem):
             mem.execute("insert into ev (id) values (1)")
-
-        def test_plain(tmp_path):
-            shutil.copy("plain.db", tmp_path / "plain.db")
-            con = sqlite3.connect(tmp_path / "plain.db")
-            con.execute("insert into t (x) values (1)")
-            assert con.execute("select at from t").fetchone() == ("2020-01-01",)
         """})
     run_cache("--det-disable=time")
     _, reused, data = run_cache("--det-disable=time")

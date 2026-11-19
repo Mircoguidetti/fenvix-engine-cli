@@ -1,0 +1,42 @@
+{
+ "name": "esphome",
+ "url": "https://github.com/esphome/esphome",
+ "lang": "pytest",
+ "install": [
+  "test -x {py} || uv venv -q --python 3.12 {venv}",
+  "uv pip install -q --python {py} -r requirements.txt -r requirements_test.txt -e .",
+  "{py} -m compileall -q -j 4 {venv}/lib > /dev/null 2>&1 || true"
+ ],
+ "units": {
+  "include": [
+   "tests/**/test_*.py"
+  ],
+  "exclude": [
+   "tests/integration/*",
+   "tests/benchmarks/*",
+   "tests/unit_tests/test_espota2.py"
+  ],
+  "sample": 0.5,
+  "seed": "s2"
+ },
+ "cmd": [
+  "{py}",
+  "-m",
+  "pytest",
+  "-q",
+  "-p",
+  "no:cacheprovider",
+  "-p",
+  "s2_report",
+  "--no-cov",
+  "{unit}"
+ ],
+ "unit_timeout": 900,
+ "ci": {
+  "workers": 4,
+  "source": "ci.yml pytest job: -n auto on one runner"
+ },
+ "repo": "esphome",
+ "max_units": 40,
+ "units_note": "tests/unit_tests/test_espota2.py hangs under --det on every run (killed at the 900 s unit timeout, D0, D1, T and B alike); excluded from dv3 local runs"
+}

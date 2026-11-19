@@ -62,7 +62,7 @@ _AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link")
+                 "os.link", "ctypes.dlopen")
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -146,6 +146,7 @@ class Capture(_core.CaptureCore):
         self._patch_sqlite()
         self._patch_stat()
         self._patch_lookups()
+        self.set_installed(self._installed)
         self.scan_maps()  # the libraries mapped before the start: inputs of every test (Rust, review R-019c E-8)
         # code that exists before the start: modules already loaded become whole-content inputs
         pre = False
@@ -191,7 +192,9 @@ class Capture(_core.CaptureCore):
         """``os.path.exists``, ``isfile``, ``isdir``, ``Path.exists``, ``shutil.which`` and ``glob`` on a literal path
         ask ``os.stat``, ``os.lstat`` or ``os.access``, which raise no audit event. The answer is an input: the
         path's kind is recorded (``CaptureCore.stat_check``, Rust), so a file that appears later invalidates the
-        test. (Code that bound ``from os import stat`` before the session keeps the original: not seen.)"""
+        test. ``os.lstat`` records the kind without following a final symlink (LIMITS K4). References bound before
+        the session (``from os import stat`` in a plugin loaded at startup) are rebound to the wrapper too (LIMITS
+        K3); the import system's own ``posix`` module is left alone (the module-lookup finder records its probes)."""
         cap = self
         self._stat_saved = []
         self._in_stat = False
@@ -201,11 +204,13 @@ class Capture(_core.CaptureCore):
             if orig is None:
                 return
 
+            link = name == "lstat"
+
             def checked(path, *args, **kwargs):
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
-                        cap.stat_check(path)
+                        cap.stat_check(path, link or kwargs.get("follow_symlinks") is False)
                     except Exception:
                         pass
                     finally:
@@ -217,9 +222,40 @@ class Capture(_core.CaptureCore):
             checked.__wrapped__ = orig
             self._stat_saved.append((os, name, orig))
             setattr(os, name, checked)
+            for mod in list(sys.modules.values()):
+                d = getattr(mod, "__dict__", None)
+                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
+                    continue
+                for k, v in list(d.items()):
+                    if v is orig:
+                        self._stat_saved.append((mod, k, orig))
+                        try:
+                            setattr(mod, k, checked)
+                        except Exception:
+                            pass
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
+
+    def _installed(self, p: str) -> bool:
+        """Whether a distribution's RECORD lists ``p`` (an installed wheel's library in an environment that lives
+        under the project root): a dependency, not the repository's native code (LIMITS K1). The file index (Rust:
+        distfiles.rs) is built on first use, with the capture inactive."""
+        idx = getattr(self, "_dist_index", None)
+        if idx is None:
+            from . import distid
+
+            was = self.active
+            self.active = False
+            try:
+                idx = self._dist_index = distid.Index(self.root)
+            except Exception:
+                return False
+            finally:
+                self.active = was
+        r = idx.owners(p)
+        return r is not None and r[0] != [""]
 
     def _patch_lookups(self) -> None:
         """A module the import system did *not* find is an input too (``try: import optional``, a namespace package
@@ -384,13 +420,18 @@ def _dist_infos(root: str, memo_path: str | None = None):
     return _core.dist_infos(root, memo_path, *_discovery())
 
 
-def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
+def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = False) -> tuple[str, dict, list]:
     import sysconfig
 
     state = (sys.version, sys.implementation.cache_tag, sys.executable, sysconfig.get_config_var("LIBDIR"),
              sysconfig.get_config_var("LDLIBRARY"), platform.system(), platform.machine(), platform.libc_ver(),
              os.__file__)
-    return _core.runtime_identity(root, memo_path, _discovery(), state)
+    digest, info, editable = _core.runtime_identity(root, memo_path, _discovery(), state)
+    if per_dist:
+        # --det-cache-dists: each test depends on the distributions it used (distid), not on all of them
+        info = {**info, "distributions": "per-test", "n_distributions": None}
+        digest = _core.digest(json.dumps(info, sort_keys=True, default=str).encode())
+    return digest, info, editable
 
 
 def tz_locale_identity() -> dict:
@@ -476,7 +517,7 @@ class ProofCachePlugin:
         self.config_digest, self.config_info = config_identity(config)
         os.makedirs(self.dir, exist_ok=True)
         self.runtime_digest, self.runtime_info, editable = runtime_identity(
-            self.root, os.path.join(self.dir, "distributions.json"))
+            self.root, os.path.join(self.dir, "distributions.json"), per_dist=getattr(self.cap, "dists", None) is not None)
         # sys.path and the .pth files of the site directories (Rust; review R-019c E-1/E-9)
         self.runtime_digest, pth, spath = _core.runtime_with_paths(
             self.runtime_digest, self.root, list(_sites._site_dirs), [e for e in sys.path if isinstance(e, str)])
@@ -485,6 +526,8 @@ class ProofCachePlugin:
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
         cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        if getattr(cap, "dists", None) is not None:
+            cap.dists.site_dirs = tuple(sorted(set(cap.site_dirs) | set(cap.dists.site_dirs)))
         factory = getattr(config, "_tmp_path_factory", None)
         if factory is not None:
             try:
@@ -513,6 +556,8 @@ class ProofCachePlugin:
     def pytest_collection_finish(self, session):
         self.cap.switch("s")
         self.cap.scan_modules(-1, self._conftests())
+        if getattr(self.cap, "dists", None) is not None:
+            self.cap.dists.scan(-1)
         if self.role == "worker":
             # the controller decided; this worker runs (and records) every test the plan sends it
             self.items = {item.nodeid: item for item in session.items}
@@ -798,7 +843,10 @@ class ProofCachePlugin:
         finally:
             dur = _perf() - t
             self.cap.switch("s")
-            self.cap.scan_modules(self.sess.end_test(nid, dur), self._conftests())
+            index = self.sess.end_test(nid, dur)
+            self.cap.scan_modules(index, self._conftests())
+            if getattr(self.cap, "dists", None) is not None:
+                self.cap.dists.scan(index, self.cap.ctx_index("t|" + nid))
 
     def pytest_runtest_logreport(self, report):
         self.sess.report(report)
@@ -930,10 +978,25 @@ class ProofCachePlugin:
 
     # -- reporting (Rust: CacheSession) --------------------------------------------------
     def summary_data(self) -> dict:
-        return self.sess.summary_data(self.cap)
+        return self._with_dists(self.sess.summary_data(self.cap))
+
+    def _with_dists(self, d):
+        tr = getattr(self.cap, "dists", None)
+        if tr is not None and isinstance(d, dict):
+            # --det-cache-dists (prototype): what the per-distribution identity cost and saw
+            keys = [len(v) for v in tr.deps.values()]
+            d["dists"] = {
+                "identity_dir": tr.dir,
+                "installed": len(tr.index.ident),
+                "index_seconds": round(tr.index_seconds, 3),
+                "contexts_with_keys": len(keys),
+                "keys_per_context_mean": round(sum(keys) / len(keys), 1) if keys else None,
+                "unmapped": dict(sorted(tr.unmapped.items(), key=lambda kv: -kv[1])[:20]),
+            }
+        return d
 
     def outcomes_data(self) -> dict:
-        return self.sess.outcomes_data(self.cap)
+        return self._with_dists(self.sess.outcomes_data(self.cap))
 
     def terminal_summary(self, tr) -> None:
         tr.section("detpy cache with proof")
@@ -1041,7 +1104,27 @@ def start(early_config, ns) -> None:
     cap.follower = follow.Follower(cap, os.path.join(os.path.abspath(ns.det_cache), f"follow-{os.getpid()}"),
                                    not getattr(ns, "det_cache_no_follow", False))
     cap.follower.install()
+    tr = None
+    if getattr(ns, "det_cache_dists", False) or os.environ.get("DETPY_CACHE_DISTS") == "1":
+        # prototype: per-distribution identity (distid, file index in Rust: distfiles.rs); built before recording
+        # starts, so its reads are not inputs
+        from . import distid
+
+        t0 = _perf()
+        index = distid.Index(root)
+        ident_dir = os.path.join(os.path.abspath(ns.det_cache), "dist-identity")
+        site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
+        index.write(ident_dir, site_dirs)
+        tr = distid.Tracker(cap, index, ident_dir)
+        tr.site_dirs = site_dirs
+        tr.index_seconds = _perf() - t0
+        tr.install()
+        cap.set_dist_read(lambda ctx, p, listing: tr.path(ctx, p))
+    cap.dists = tr
     cap.start()
+    if tr is not None:
+        for k in tr.global_keys:  # .pth files of the site directories: inputs of every test
+            tr.add(cap.import_ctx, k)
 
 
 def install(config) -> None:
@@ -1074,6 +1157,9 @@ def uninstall() -> None:
     global CAPTURE, PLUGIN
     if CAPTURE is not None:
         CAPTURE.stop()
+        if getattr(CAPTURE, "dists", None) is not None:
+            CAPTURE.dists.uninstall()
+            CAPTURE.set_dist_read(None)
         if CAPTURE.follower is not None:
             CAPTURE.follower.uninstall()
     _state.set_event_listener(None)

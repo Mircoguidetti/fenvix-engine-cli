@@ -286,6 +286,219 @@ pub fn import_candidates(dir: &str, name: &str, suffixes: &[String]) -> Vec<Stri
     out
 }
 
+/// Digest of a directory listing with the kind of every entry ("file", "dir", "other", following symlinks):
+/// the dependency that replaces many existence checks of one directory's entries (see [`compact_stats`]).
+pub fn kinds_digest(path: &Path) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(path).ok()? {
+        let e = e.ok()?;
+        let mut b = os_bytes(&e.file_name());
+        b.push(0);
+        b.extend_from_slice(stat_kind(&e.path()).as_bytes());
+        items.push(b);
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// Digest of every path under `path` (recursively, sorted, directories not followed through symlinks) with its
+/// kind; None when `path` is not a directory or holds more than `limit` entries.
+pub fn tree_kinds_digest(path: &Path, limit: usize) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    let mut stack = vec![(path.to_path_buf(), Vec::<u8>::new())];
+    if !fs::metadata(path).ok()?.is_dir() {
+        return None;
+    }
+    while let Some((dir, rel)) = stack.pop() {
+        for e in fs::read_dir(&dir).ok()? {
+            let e = e.ok()?;
+            let mut r = rel.clone();
+            if !r.is_empty() {
+                r.push(b'/');
+            }
+            r.extend_from_slice(&os_bytes(&e.file_name()));
+            let p = e.path();
+            let kind = stat_kind(&p);
+            let mut b = r.clone();
+            b.push(0);
+            b.extend_from_slice(kind.as_bytes());
+            items.push(b);
+            if items.len() > limit {
+                return None;
+            }
+            if e.file_type().ok()?.is_dir() {
+                stack.push((p, r));
+            }
+        }
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// Entries a "T:" dependency may cover (record and check time).
+pub const TREE_LIMIT: usize = 50_000;
+/// Key suffix of a "T:" dependency (the directory is the key without it).
+pub const TREE_SUFFIX: &str = "/\u{1}tree";
+
+/// File name endings the import system can load a module from (`importlib.machinery.all_suffixes()` on every
+/// platform ends with one of these); the caller checks that its interpreter's suffixes do.
+pub const IMPORTABLE_ENDINGS: [&str; 5] = [".py", ".pyc", ".pyw", ".so", ".pyd"];
+/// Key suffix of an "i:" dependency (the directory is the key without it).
+pub const IMPORTABLE_SUFFIX: &str = "/\u{1}importable";
+
+fn ident(s: &str) -> bool {
+    let mut cs = s.chars();
+    matches!(cs.next(), Some(c) if c == '_' || c.is_alphabetic()) && cs.all(|c| c == '_' || c.is_alphanumeric())
+}
+
+/// Digest of the entries of `dir` a module lookup can find: directories with an identifier name (packages,
+/// namespace portions) and files `<identifier>.<anything>` ending with an importable ending, each with its kind.
+/// One such dependency covers every lookup of an identifier name in `dir` (its package directory and module
+/// files); files that no import can find (a run's outputs, `.json`, `.txt`) do not change it. None when `dir` is
+/// not a directory.
+pub fn importable_digest(dir: &Path) -> Option<String> {
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let name = e.file_name().to_string_lossy().into_owned();
+        let p = e.path();
+        let kind = stat_kind(&p);
+        let keep = if kind == "dir" {
+            ident(&name)
+        } else {
+            IMPORTABLE_ENDINGS.iter().any(|x| name.ends_with(x)) && ident(name.split('.').next().unwrap_or(""))
+        };
+        if keep {
+            let mut b = name.into_bytes();
+            b.push(0);
+            b.extend_from_slice(kind.as_bytes());
+            items.push(b);
+        }
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
+/// What a lookup of module `name` finds in `dir`: (a regular module or package, the package directory exists).
+pub fn import_probe(dir: &str, name: &str, suffixes: &[String]) -> (bool, bool) {
+    let c = import_candidates(dir, name, suffixes);
+    let pkg_dir = stat_kind(Path::new(&c[0])) == "dir";
+    let start = if pkg_dir { 1 } else { 1 + suffixes.len() };
+    let regular = c[start..].iter().any(|p| stat_kind(Path::new(p)) == "file");
+    (regular, pkg_dir)
+}
+
+/// Key suffix of a "t:" dependency (the directory is the key without it).
+pub const KINDS_SUFFIX: &str = "/\u{1}kinds";
+
+/// Existence checks ("s:<kind>") of at least `min` entries of one directory are replaced by one dependency on
+/// that directory's listing with kinds ("t:<digest>", "missing" when it is not a directory). It is coarser (any
+/// entry added, removed or changing kind there invalidates), so every replaced check is still covered; a large
+/// suite's collection otherwise puts thousands of checks into every test's entry. `root` resolves relative keys.
+pub fn compact_stats(data: Vec<(String, String)>, root: &Path, min: usize) -> Vec<(String, String)> {
+    compact_stats_memo(data, root, min, &mut HashMap::new())
+}
+
+/// Digests computed by [`compact_stats_memo`] in one session ((directory, 't' or 'T') -> digest).
+pub type KindsMemo = HashMap<(PathBuf, char), Option<String>>;
+
+/// [`compact_stats`] with the directory digests kept across the tests of one session.
+pub fn compact_stats_memo(data: Vec<(String, String)>, root: &Path, min: usize, memo: &mut KindsMemo) -> Vec<(String, String)> {
+    let mut by_dir: BTreeMap<String, usize> = BTreeMap::new();
+    let parent = |k: &str| -> Option<String> {
+        let k = k.trim_end_matches('/');
+        match k.rfind('/') {
+            Some(0) => Some("/".to_string()),
+            Some(i) => Some(k[..i].to_string()),
+            None if !k.is_empty() && k != "." => Some(".".to_string()),
+            None => None,
+        }
+    };
+    for (k, v) in &data {
+        if v.starts_with("s:") {
+            if let Some(d) = parent(k) {
+                *by_dir.entry(d).or_default() += 1;
+            }
+        }
+    }
+    // never the project root: its listing changes with every output file a run writes there
+    let big: BTreeSet<&String> = by_dir
+        .iter()
+        .filter(|(d, n)| **n >= min && d.as_str() != "." && !root.starts_with(root.join(d.as_str())))
+        .map(|(d, _)| d)
+        .collect();
+    // second level: checks spread over many directories (one per language of an examples tree) under a common
+    // ancestor with at least `tree_min` of them become one dependency on the ancestor's whole tree with kinds;
+    // never the project root, an ancestor of it or the filesystem root
+    let tree_min = min * 8;
+    let mut under: BTreeMap<String, usize> = BTreeMap::new();
+    for (k, v) in &data {
+        if !v.starts_with("s:") {
+            continue;
+        }
+        let mut a = parent(k);
+        while let Some(d) = a {
+            if d == "." || d == "/" {
+                break;
+            }
+            *under.entry(d.clone()).or_default() += 1;
+            a = parent(&d);
+        }
+    }
+    let mut cands: Vec<(&String, &usize)> = under.iter().filter(|(d, n)| **n >= tree_min && {
+        let p = root.join(d.as_str());
+        !(root.starts_with(&p))
+    }).collect();
+    cands.sort_by_key(|(d, _)| std::cmp::Reverse(d.matches('/').count()));
+    let mut trees: BTreeMap<String, String> = BTreeMap::new();
+    for (d, _) in cands {
+        if trees.keys().any(|t| d.starts_with(&format!("{t}/")) || t.starts_with(&format!("{d}/"))) {
+            continue; // nested in (or around) a chosen tree: the deepest qualifying ancestor wins
+        }
+        let p = root.join(d.as_str());
+        let got = memo.entry((p.clone(), 'T')).or_insert_with(|| tree_kinds_digest(&p, TREE_LIMIT)).clone();
+        if let Some(x) = got {
+            trees.insert(d.clone(), format!("T:{x}"));
+        }
+    }
+    let in_tree = |k: &str| trees.keys().any(|t| k.starts_with(&format!("{t}/")));
+    if big.is_empty() && trees.is_empty() {
+        return data;
+    }
+    let mut out: BTreeMap<String, String> = BTreeMap::new();
+    for (k, v) in data {
+        if v.starts_with("s:") && (parent(&k).is_some_and(|d| big.contains(&d)) || in_tree(&k)) {
+            continue;
+        }
+        out.insert(k, v);
+    }
+    for d in big.into_iter().cloned().collect::<Vec<_>>() {
+        if in_tree(&format!("{d}/x")) {
+            continue; // its checks are covered by the enclosing tree
+        }
+        let p = root.join(&d);
+        let got = memo.entry((p.clone(), 't')).or_insert_with(|| kinds_digest(&p)).clone();
+        let dep = got.map(|x| format!("t:{x}")).unwrap_or_else(|| "t:missing".into());
+        // a content or listing dependency of the directory itself stays; the kinds one has its own key
+        out.insert(format!("{d}{KINDS_SUFFIX}"), dep);
+    }
+    for (d, dep) in trees {
+        out.insert(format!("{d}{TREE_SUFFIX}"), dep);
+    }
+    out.into_iter().collect()
+}
+
+/// Kind of `path` without following a final symlink: "link" for a symlink (dangling or not), else [`stat_kind`].
+/// The input of `os.lstat`, `os.path.lexists` and `os.path.islink` (LIMITS K4: a dangling link and a missing path
+/// differ here).
+pub fn lstat_kind(path: &Path) -> &'static str {
+    match fs::symlink_metadata(path) {
+        Ok(m) if m.file_type().is_symlink() => "link",
+        Ok(_) => stat_kind(path),
+        Err(_) => "missing",
+    }
+}
+
 /// Paths pytest looks for between the project root and a test file's directory (`rel_dir`, relative, "" for the
 /// root): `conftest.py` (plugins, fixtures) and `__init__.py` (the test module's package and import name).
 pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
@@ -314,6 +527,14 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("l:") {
+        format!("l:{}", lstat_kind(path))
+    } else if recorded.starts_with("i:") {
+        importable_digest(path).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+    } else if recorded.starts_with("T:") {
+        tree_kinds_digest(path, TREE_LIMIT).map(|d| format!("T:{d}")).unwrap_or_else(|| "T:missing".into())
+    } else if recorded.starts_with("t:") {
+        kinds_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "t:missing".into())
     } else {
         "unknown".into()
     }
@@ -1236,7 +1457,14 @@ impl Checker {
         let kind = if recorded == "missing" { 'f' } else { kind };
         let m = self.data_now.entry(kind).or_default();
         if !m.contains_key(path) {
-            let v = data_now(&self.cur.root.join(path), recorded);
+            // a directory-level dependency is keyed by the directory and a suffix naming its kind
+            let dir = match kind {
+                't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
+                'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
+                'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
+                _ => path,
+            };
+            let v = data_now(&self.cur.root.join(dir), recorded);
             m.insert(path.to_string(), v);
         }
         &m[path]
@@ -1425,6 +1653,109 @@ mod tests {
             },
         );
         (dir, s, cur)
+    }
+
+    #[test]
+    fn many_existence_checks_of_one_directory_become_its_kinds() {
+        let t = tempfile::tempdir().unwrap();
+        let root = t.path();
+        fs::create_dir(root.join("ex")).unwrap();
+        for i in 0..3 {
+            fs::write(root.join(format!("ex/{i}")), b"x").unwrap();
+        }
+        let data: Vec<(String, String)> = (0..3)
+            .map(|i| (format!("ex/{i}"), "s:file".to_string()))
+            .chain([("ex/9".to_string(), "s:missing".to_string()), ("ex/0x".to_string(), "f:1".to_string())])
+            .collect();
+        let c = compact_stats(data.clone(), root, 4);
+        assert_eq!(c.len(), 2, "{c:?}");
+        let (k, v) = c.iter().find(|(k, _)| k.ends_with(KINDS_SUFFIX)).unwrap();
+        assert_eq!(k, &format!("ex{KINDS_SUFFIX}"));
+        assert!(v.starts_with("t:"));
+        assert_eq!(compact_stats(data, root, 5).len(), 5);
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_eq!(ch.data(k, v), v.as_str());
+        // the missing entry appears, or an entry changes kind: the kinds change
+        fs::write(root.join("ex/9"), b"x").unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(ch.data(k, v), v.as_str());
+        fs::remove_file(root.join("ex/9")).unwrap();
+        fs::remove_file(root.join("ex/1")).unwrap();
+        fs::create_dir(root.join("ex/1")).unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(ch.data(k, v), v.as_str());
+        assert_eq!(data_now(&root.join("nodir"), "t:x"), "t:missing");
+    }
+
+    #[test]
+    fn existence_checks_spread_over_a_tree_become_the_tree() {
+        let t = tempfile::tempdir().unwrap();
+        let root = t.path();
+        let mut data = Vec::new();
+        for l in 0..20 {
+            fs::create_dir_all(root.join(format!("ex/l{l}"))).unwrap();
+            for i in 0..4 {
+                fs::write(root.join(format!("ex/l{l}/{i}")), b"x").unwrap();
+                data.push((format!("ex/l{l}/{i}"), "s:file".to_string()));
+            }
+        }
+        data.push(("other".to_string(), "s:missing".to_string()));
+        let c = compact_stats(data, root, 8);
+        assert_eq!(c.len(), 2, "{c:?}");
+        let (k, v) = c.iter().find(|(k, _)| k.ends_with(TREE_SUFFIX)).unwrap();
+        assert_eq!(k, &format!("ex{TREE_SUFFIX}"));
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_eq!(ch.data(k, v), v.as_str());
+        fs::write(root.join("ex/l3/new"), b"x").unwrap();
+        let mut ch = Checker::new(Current { root: root.to_path_buf(), ..Default::default() });
+        assert_ne!(ch.data(k, v), v.as_str());
+        // the project root is never a tree
+        let flat: Vec<(String, String)> = (0..100).map(|i| (format!("d{i}/x"), "s:missing".to_string())).collect();
+        assert_eq!(compact_stats(flat, root, 8).len(), 100);
+    }
+
+    #[test]
+    fn importable_entries_of_a_directory() {
+        let t = tempfile::tempdir().unwrap();
+        let r = t.path();
+        fs::write(r.join("mod.py"), b"").unwrap();
+        let d0 = importable_digest(r).unwrap();
+        // a run's output files and non-identifier directories are not importable
+        fs::write(r.join("out1.json"), b"{}").unwrap();
+        fs::create_dir(r.join(".cache")).unwrap();
+        fs::write(r.join("not-a-module.py"), b"").unwrap();
+        assert_eq!(importable_digest(r).unwrap(), d0);
+        // a module, an extension, a package directory, a kind change: all change it
+        for (i, f) in ["new.py", "ext.cpython-313-x86_64-linux-gnu.so"].iter().enumerate() {
+            fs::write(r.join(f), b"").unwrap();
+            assert_ne!(importable_digest(r).unwrap(), d0, "{i}");
+            fs::remove_file(r.join(f)).unwrap();
+        }
+        fs::create_dir(r.join("ns")).unwrap();
+        assert_ne!(importable_digest(r).unwrap(), d0);
+        fs::remove_dir(r.join("ns")).unwrap();
+        fs::remove_file(r.join("mod.py")).unwrap();
+        fs::create_dir(r.join("mod.py")).unwrap();
+        assert_ne!(importable_digest(r).unwrap(), d0);
+        assert_eq!(data_now(&r.join("nodir"), "i:x"), "i:missing");
+        let sx = vec![".py".to_string()];
+        fs::create_dir(r.join("pkg")).unwrap();
+        assert_eq!(import_probe(r.to_str().unwrap(), "pkg", &sx), (false, true));
+        fs::write(r.join("pkg/__init__.py"), b"").unwrap();
+        assert_eq!(import_probe(r.to_str().unwrap(), "pkg", &sx), (true, true));
+        assert_eq!(import_probe(r.to_str().unwrap(), "zz", &sx), (false, false));
+    }
+
+    #[test]
+    fn lstat_kind_tells_a_dangling_link_from_a_missing_path() {
+        let t = tempfile::tempdir().unwrap();
+        let l = t.path().join("l");
+        std::os::unix::fs::symlink(t.path().join("nowhere"), &l).unwrap();
+        assert_eq!(stat_kind(&l), "missing");
+        assert_eq!(lstat_kind(&l), "link");
+        assert_eq!(data_now(&l, "l:link"), "l:link");
+        fs::remove_file(&l).unwrap();
+        assert_eq!(data_now(&l, "l:link"), "l:missing");
     }
 
     #[test]

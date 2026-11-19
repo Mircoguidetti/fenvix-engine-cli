@@ -158,6 +158,12 @@ TLS_PORT = int(os.environ["UP_TLS_PORT"])
 external_only = pytest.mark.skipif(MODE == "record", reason="real attempts in record mode")
 
 
+def test_0_cacheable():
+    # first in the file: a reusable result (under the prefix rule, review R-020, every test after a refused one in
+    # the same process is refused too)
+    assert MODE in ("block", "replay", "record")
+
+
 def outcome(f, *a, **k):
     try:
         r = f(*a, **k)

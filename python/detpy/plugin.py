@@ -78,6 +78,9 @@ def pytest_addoption(parser, pluginmanager):
                      "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
     g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
+    g.addoption("--det-cache-dists", action="store_true", default=False,
+                help="with --det-cache (PROTOTYPE): installed distributions enter a test's key one by one (those it "
+                     "loaded, read or queried) instead of as one digest of the whole environment")
     g.addoption("--det-cache-no-follow", action="store_true", default=False,
                 help="with --det-cache: never cache a test that starts a process (default: the processes run under "
                      "strace and their files, program and environment become inputs of the test)")
