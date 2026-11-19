@@ -1534,6 +1534,7 @@ class ProofCachePlugin:
         carry_pos = 0
         c_data: dict = {}
         c_sdata: dict = {}
+        shared_stats: list = [-1, []]  # (size of c_sdata when compacted, compacted global + carried checks)
         c_env: set = set()
         c_flags: set = set()
         c_units: set = set()
@@ -1625,10 +1626,23 @@ class ProofCachePlugin:
             if why:
                 self._not_cached(nid, why)
                 continue
-            # existence checks: an input unless the same path's content (or listing) already is one
-            for src in (g_sdata, c_sdata, *(cap.sdata.get(c, {}) for c in ctxs)):
-                for k, v in src.items():
-                    data.setdefault(k, v)
+            # existence checks: an input unless the same path's content (or listing) already is one. Many in one
+            # directory become its listing with kinds, many under one tree the tree with kinds (Rust:
+            # proof::compact_stats). The global and carried ones are shared by many tests: compacted once per
+            # change of the carried set.
+            if shared_stats[0] != len(c_sdata):
+                merged = dict(g_sdata)
+                for k, v in c_sdata.items():
+                    merged.setdefault(k, v)
+                shared_stats[:] = [len(c_sdata), self._compact(merged)]
+            own_s: dict = {}
+            for c in ctxs:
+                for k, v in cap.sdata.get(c, {}).items():
+                    own_s.setdefault(k, v)
+            for k, v in shared_stats[1]:
+                data.setdefault(k, v)
+            for k, v in self._compact(own_s):
+                data.setdefault(k, v)
             idx = self.test_index.get(nid, 0)
             skeleton, hooks = set(), set()
             for rel, seen_at in loaded_idx:
@@ -1679,10 +1693,7 @@ class ProofCachePlugin:
                     own |= {k for k, seen_at in tr.loaded if seen_at in (-1, idx)}
                     dist_sets[nid] = {"proof": sorted(keys), "own": sorted(own)}
             report = {w: p[w] for w in ("setup", "call") if w in p}
-            # many existence checks in one directory (a collection hook checking every example file) become one
-            # dependency on the directory's listing with kinds, many under one directory tree one dependency on the
-            # tree with kinds (Rust: proof::compact_stats)
-            data_items = _core.compact_stats(sorted(data.items()), self.root, _STATS_PER_DIR, self.run_id)
+            data_items = sorted(data.items())
             store.record(nid, outcome, json.dumps(report), self.fingerprints.get(nid, ""), self.dur.get(nid, 0.0),
                          self.run_id, self.config_digest, self.runtime_digest, epoch, env_deps,
                          data_items, sorted(content), sorted(skeleton), sorted(hooks), sorted(units))
@@ -1697,6 +1708,11 @@ class ProofCachePlugin:
                                "tests": dist_sets}, fh)
             except OSError:
                 pass
+
+    def _compact(self, stats: dict) -> list:
+        if len(stats) < _STATS_PER_DIR:
+            return list(stats.items())
+        return _core.compact_stats(sorted(stats.items()), self.root, _STATS_PER_DIR, self.run_id)
 
     def _where(self, why: str, ctxs) -> str:
         """``why`` with the first occurrence of its cause: what (command, address...) and in which context."""
