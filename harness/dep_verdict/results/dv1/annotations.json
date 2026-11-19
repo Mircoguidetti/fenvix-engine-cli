@@ -1,0 +1,2308 @@
+{
+ "airflow": [
+  {
+   "sha": "0289ce3321c181189cb536890aea07c3ef42475e",
+   "runs": [
+    {
+     "name": "Explain 3.13:constraints",
+     "id": 133784282784,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/0289ce3321c181189cb536890aea07c3ef42475e/.github",
+       "start_line": 44,
+       "start_column": null,
+       "end_line": 44,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/0289ce3321c181189cb536890aea07c3ef42475e/.github",
+       "start_line": 43,
+       "start_column": null,
+       "end_line": 43,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "LaunchError",
+       "message": "Failed to launch runner: Assigned instance became unavailable before the queued job was claimed",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "cb3568622c2b727f12a28ac891e4947a660cd4e1",
+   "runs": [
+    {
+     "name": "Generate constraints / Generate constraints for 3.12 on linux/amd64",
+     "id": 128357130720,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/cb3568622c2b727f12a28ac891e4947a660cd4e1/.github",
+       "start_line": 627,
+       "start_column": null,
+       "end_line": 627,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "8d16905d77e790aa3dff5e0783780ec92ccc3b3d",
+   "runs": [
+    {
+     "name": "Finalize tests / Deps 3.14:constraints-no-providers",
+     "id": 102016056947,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/8d16905d77e790aa3dff5e0783780ec92ccc3b3d/.github",
+       "start_line": 661,
+       "start_column": null,
+       "end_line": 661,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/8d16905d77e790aa3dff5e0783780ec92ccc3b3d/.github",
+       "start_line": 660,
+       "start_column": null,
+       "end_line": 660,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Stash artifact download failed after 3 attempt(s) and fail-on-download is true.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/8d16905d77e790aa3dff5e0783780ec92ccc3b3d/.github",
+       "start_line": 659,
+       "start_column": null,
+       "end_line": 659,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "gh run download failed with exit code 1 on attempt 3.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/8d16905d77e790aa3dff5e0783780ec92ccc3b3d/.github",
+       "start_line": 656,
+       "start_column": null,
+       "end_line": 656,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "gh run download failed with exit code 1 on attempt 2.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/apache/airflow/blob/8d16905d77e790aa3dff5e0783780ec92ccc3b3d/.github",
+       "start_line": 653,
+       "start_column": null,
+       "end_line": 653,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "gh run download failed with exit code 1 on attempt 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "49423f8d659e46345bf8ea90fd5f66e00cc58bdc",
+   "runs": []
+  },
+  {
+   "sha": "381339d5e7f5f92bc751c934fdfce0e4411b5f26",
+   "runs": []
+  }
+ ],
+ "esphome": [
+  {
+   "sha": "f85ebd2e21ac1e9099ec015a477ea8a03bd93bc7",
+   "runs": [
+    {
+     "name": "CI Status",
+     "id": 129406391415,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/f85ebd2e21ac1e9099ec015a477ea8a03bd93bc7/.github",
+       "start_line": 147,
+       "start_column": null,
+       "end_line": 147,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "dd641ff9d86d5e6cf1a69d1cccfbffea425d99b1",
+   "runs": [
+    {
+     "name": "CI Status",
+     "id": 129405454556,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/dd641ff9d86d5e6cf1a69d1cccfbffea425d99b1/.github",
+       "start_line": 147,
+       "start_column": null,
+       "end_line": 147,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "59d507197df32b4d742431579393e94baa1ee8d1",
+   "runs": [
+    {
+     "name": "Run CodSpeed benchmarks",
+     "id": 126991946687,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/59d507197df32b4d742431579393e94baa1ee8d1/.github",
+       "start_line": 568,
+       "start_column": null,
+       "end_line": 568,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/59d507197df32b4d742431579393e94baa1ee8d1/.github",
+       "start_line": 566,
+       "start_column": null,
+       "end_line": 566,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Failed to retrieve upload data: 503 Service Unavailable\n  -> Reason: {\"message\":\"Service Unavailable\"}",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "9b138d17de16002cb7447b432915744ea7349122",
+   "runs": [
+    {
+     "name": "CI Status",
+     "id": 126812441605,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/9b138d17de16002cb7447b432915744ea7349122/.github",
+       "start_line": 121,
+       "start_column": null,
+       "end_line": 121,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "8a30af4ad10d188f34548f2fd6c8b3cd2a06ee62",
+   "runs": [
+    {
+     "name": "CI Status",
+     "id": 126163731891,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/esphome/esphome/blob/8a30af4ad10d188f34548f2fd6c8b3cd2a06ee62/.github",
+       "start_line": 121,
+       "start_column": null,
+       "end_line": 121,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  }
+ ],
+ "litellm": [
+  {
+   "sha": "ebd5a15b22ba012d2f5a5ee654afc93cd51add5e",
+   "runs": [
+    {
+     "name": "classify-issue",
+     "id": 130222197451,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/.github",
+       "start_line": 3,
+       "start_column": null,
+       "end_line": 3,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/.github",
+       "start_line": 46,
+       "start_column": null,
+       "end_line": 46,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": "scripts/classify-issue.ts",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/scripts/classify-issue.ts",
+       "start_line": 319,
+       "start_column": 30,
+       "end_line": 319,
+       "end_column": 30,
+       "annotation_level": "failure",
+       "title": "TypeError: getaddrinfo ENOTFOUND gateway.litellm-sandbox.ai",
+       "message": "\n      at async <anonymous> (/home/runner/work/litellm/litellm/scripts/classify-issue.ts:319:30)\n      at async classifyIssue (/home/runner/work/litellm/litellm/scripts/classify-issue.ts:308:25)",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Dependabot",
+     "id": 130216360818,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/.github",
+       "start_line": 166,
+       "start_column": null,
+       "end_line": 166,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1694243974 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/ebd5a15b22ba012d2f5a5ee654afc93cd51add5e/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "ee6ca049b3c6444afa7c18c8727ffb94fde1df06",
+   "runs": []
+  },
+  {
+   "sha": "801aba88ed40c122f8e951c64579f53bc18abe87",
+   "runs": [
+    {
+     "name": "osv-scan",
+     "id": 112049957912,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/801aba88ed40c122f8e951c64579f53bc18abe87/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/801aba88ed40c122f8e951c64579f53bc18abe87/.github",
+       "start_line": 32,
+       "start_column": null,
+       "end_line": 32,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/801aba88ed40c122f8e951c64579f53bc18abe87/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "4bcd4bef44fa940d04f9a70422c78d71c0d86fc7",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 70186445491,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/4bcd4bef44fa940d04f9a70422c78d71c0d86fc7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: github/dependabot-action@main. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/4bcd4bef44fa940d04f9a70422c78d71c0d86fc7/.github",
+       "start_line": 671,
+       "start_column": null,
+       "end_line": 671,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1310634176 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Dependabot",
+     "id": 70186444811,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/4bcd4bef44fa940d04f9a70422c78d71c0d86fc7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: github/dependabot-action@main. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/4bcd4bef44fa940d04f9a70422c78d71c0d86fc7/.github",
+       "start_line": 262,
+       "start_column": null,
+       "end_line": 262,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1310634111 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "cf045dc6d2b9b4383703628fb26feb9769190281",
+   "runs": [
+    {
+     "name": "create-staging-branch",
+     "id": 69970907203,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/cf045dc6d2b9b4383703628fb26feb9769190281/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/cf045dc6d2b9b4383703628fb26feb9769190281/.github",
+       "start_line": 33,
+       "start_column": null,
+       "end_line": 33,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 128.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "create-internal-dev-branch",
+     "id": 69970907202,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/cf045dc6d2b9b4383703628fb26feb9769190281/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Node.js 20 will be removed from the runner on September 16th, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/cf045dc6d2b9b4383703628fb26feb9769190281/.github",
+       "start_line": 33,
+       "start_column": null,
+       "end_line": 33,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 128.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "e5baa2232fe88174b0fe0f51b7b693b182021aa7",
+   "runs": [
+    {
+     "name": "check-duplicate",
+     "id": 67780154750,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67778214766,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67773892638,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67769448320,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67762126396,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67746430211,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67732550532,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "check-duplicate",
+     "id": 67728319208,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: actions/checkout@v4, actions/setup-python@v5, wow-actions/potential-duplicates@v1. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e5baa2232fe88174b0fe0f51b7b693b182021aa7/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Unexpected input(s) 'reaction', valid inputs are ['GITHUB_TOKEN', 'filter', 'exclude', 'label', 'state', 'threshold', 'comment', 'reactions']",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "9cd7ad263400c0db1ff70b671cbd1717b6582cf5",
+   "runs": []
+  },
+  {
+   "sha": "79ffcf297d19ad838e67f533442384dbbf18baab",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 66873873918,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/79ffcf297d19ad838e67f533442384dbbf18baab/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: github/dependabot-action@main. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/79ffcf297d19ad838e67f533442384dbbf18baab/.github",
+       "start_line": 263,
+       "start_column": null,
+       "end_line": 263,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1277159866 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Dependabot",
+     "id": 66873873779,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/79ffcf297d19ad838e67f533442384dbbf18baab/.github",
+       "start_line": 2,
+       "start_column": null,
+       "end_line": 2,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "Node.js 20 actions are deprecated. The following actions are running on Node.js 20 and may not work as expected: github/dependabot-action@main. Actions will be forced to run with Node.js 24 by default starting June 2nd, 2026. Please check if updated versions of these actions are available that support Node.js 24. To opt into Node.js 24 now, set the FORCE_JAVASCRIPT_ACTIONS_TO_NODE24=true environment variable on the runner or in your workflow file. Once Node.js 24 becomes the default, you can temporarily opt out by setting ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/79ffcf297d19ad838e67f533442384dbbf18baab/.github",
+       "start_line": 261,
+       "start_column": null,
+       "end_line": 261,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1277159871 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "c9434a80128e072834a57a2b45d1c985621e0d47",
+   "runs": []
+  },
+  {
+   "sha": "e156507ca7f54bb37d5b910b62d1a28835be6c81",
+   "runs": []
+  },
+  {
+   "sha": "5801f0b97f13e6dafc21cf7382411ae5efc10a7f",
+   "runs": []
+  },
+  {
+   "sha": "15cc641b7e93829c80a3612217344d4e3cb9ea4f",
+   "runs": []
+  },
+  {
+   "sha": "09ee2d54b857d5428f0e71f7c1330d98d4616288",
+   "runs": []
+  },
+  {
+   "sha": "adb9d94833cfc38d615e92ca12cef58a5897817a",
+   "runs": [
+    {
+     "name": "build",
+     "id": 65181306419,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/adb9d94833cfc38d615e92ca12cef58a5897817a/.github",
+       "start_line": 67,
+       "start_column": null,
+       "end_line": 67,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Dependabot",
+     "id": 65163198569,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/adb9d94833cfc38d615e92ca12cef58a5897817a/.github",
+       "start_line": 439,
+       "start_column": null,
+       "end_line": 439,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1260782755 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "6e10428e0062a64da2f232928f1d42ee8d4c99bb",
+   "runs": []
+  },
+  {
+   "sha": "22704b017653680e1da044353d464c8a5e151284",
+   "runs": []
+  },
+  {
+   "sha": "e487d711d6aecdbebcf392b0a838c2a7c88ddb74",
+   "runs": [
+    {
+     "name": "check-duplicates",
+     "id": 64388684694,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e487d711d6aecdbebcf392b0a838c2a7c88ddb74/.github",
+       "start_line": 37,
+       "start_column": null,
+       "end_line": 37,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Dependabot",
+     "id": 64386919326,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/e487d711d6aecdbebcf392b0a838c2a7c88ddb74/.github",
+       "start_line": 262,
+       "start_column": null,
+       "end_line": 262,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1252217426 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "2d3982586862ad0325388970cad24e48b4849f9c",
+   "runs": []
+  },
+  {
+   "sha": "00530cb65c51c4b24d8335ba8157789612634d74",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 63930534724,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/BerriAI/litellm/blob/00530cb65c51c4b24d8335ba8157789612634d74/.github",
+       "start_line": 494,
+       "start_column": null,
+       "end_line": 494,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/BerriAI/litellm/network/updates/1247194170 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "a2ce7fc99d2ee514d51a636f571cfbb51650959a",
+   "runs": []
+  }
+ ],
+ "mlflow": [
+  {
+   "sha": "3db42b9efabc964bdb9fbef9409d9e59b5a2381f",
+   "runs": []
+  },
+  {
+   "sha": "f3bdbe2f367a45722ade4d622daaabc0becb9196",
+   "runs": [
+    {
+     "name": "main",
+     "id": 116193143215,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f3bdbe2f367a45722ade4d622daaabc0becb9196/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-38663663804\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 116188781087,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f3bdbe2f367a45722ade4d622daaabc0becb9196/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-38661210910\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 116184215075,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f3bdbe2f367a45722ade4d622daaabc0becb9196/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-38661210910\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 116171231163,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f3bdbe2f367a45722ade4d622daaabc0becb9196/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-38657144955\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 116167792327,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f3bdbe2f367a45722ade4d622daaabc0becb9196/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-38656335988\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "074c0fcf4f42abd857afafccbbc5038ce30efa3d",
+   "runs": []
+  },
+  {
+   "sha": "f8b7b7dad1adb3d231e6dc55dbd61f50d665de63",
+   "runs": [
+    {
+     "name": "main",
+     "id": 109802753695,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f8b7b7dad1adb3d231e6dc55dbd61f50d665de63/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-36688782668\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 109801037136,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f8b7b7dad1adb3d231e6dc55dbd61f50d665de63/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-36688395288\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 109799659075,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f8b7b7dad1adb3d231e6dc55dbd61f50d665de63/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-36687891372\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 109798281848,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/f8b7b7dad1adb3d231e6dc55dbd61f50d665de63/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-36687467767\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "94fe99cf72dd6774d4bcf7890be3391f1951527e",
+   "runs": [
+    {
+     "name": "investigate",
+     "id": 109383026993,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/94fe99cf72dd6774d4bcf7890be3391f1951527e/.github",
+       "start_line": 24,
+       "start_column": null,
+       "end_line": 24,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 4.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/94fe99cf72dd6774d4bcf7890be3391f1951527e/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "573909833db55303bdc4960ff052250eb4fe8739",
+   "runs": [
+    {
+     "name": "main",
+     "id": 108750462202,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/573909833db55303bdc4960ff052250eb4fe8739/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-36364854784\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 108744588551,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/573909833db55303bdc4960ff052250eb4fe8739/.github",
+       "start_line": 26,
+       "start_column": null,
+       "end_line": 26,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/573909833db55303bdc4960ff052250eb4fe8739/.github",
+       "start_line": 25,
+       "start_column": null,
+       "end_line": 25,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Could not find PR for joshuawong-db:fix/26111-windows-trace-user",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "f6314d0476b0a6e27dc9351346a2c24480e9dcf8",
+   "runs": []
+  },
+  {
+   "sha": "c63fb454c7e1f5de879e6186255b0329a50ce0e4",
+   "runs": [
+    {
+     "name": "main",
+     "id": 106182280613,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/c63fb454c7e1f5de879e6186255b0329a50ce0e4/.github",
+       "start_line": 26,
+       "start_column": null,
+       "end_line": 26,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/c63fb454c7e1f5de879e6186255b0329a50ce0e4/.github",
+       "start_line": 25,
+       "start_column": null,
+       "end_line": 25,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Could not find PR for michaelonasis:fix-non-numeric-experiment-id-500",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/c63fb454c7e1f5de879e6186255b0329a50ce0e4/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "e1668aca0d205eb17d95890287e072444d47f85f",
+   "runs": [
+    {
+     "name": "main",
+     "id": 105066641945,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/e1668aca0d205eb17d95890287e072444d47f85f/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-35178646315\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "68183ad0e14cff3d821091e5d8b4c09eb3832416",
+   "runs": [
+    {
+     "name": "main",
+     "id": 100539989046,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/68183ad0e14cff3d821091e5d8b4c09eb3832416/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-30882207850\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 100539479875,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/68183ad0e14cff3d821091e5d8b4c09eb3832416/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-33720249203\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "6edb615f55e34625fdf024f7a227fa01a4ef6f35",
+   "runs": [
+    {
+     "name": "main",
+     "id": 99112899449,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/6edb615f55e34625fdf024f7a227fa01a4ef6f35/.github",
+       "start_line": 15,
+       "start_column": null,
+       "end_line": 15,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Unable to download artifact(s): Artifact not found for name: docs-build-30550580016\n        Please ensure that your artifact is not expired and the artifact was uploaded using a compatible version of toolkit/upload-artifact.\n        For more information, visit the GitHub Artifacts FAQ: https://github.com/actions/toolkit/blob/main/packages/artifact/docs/faq.md",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "main",
+     "id": 99111743792,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/6edb615f55e34625fdf024f7a227fa01a4ef6f35/.github",
+       "start_line": 26,
+       "start_column": null,
+       "end_line": 26,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/mlflow/mlflow/blob/6edb615f55e34625fdf024f7a227fa01a4ef6f35/.github",
+       "start_line": 25,
+       "start_column": null,
+       "end_line": 25,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Could not find PR for NeriCarcasci:local-job-executor",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  }
+ ],
+ "moto": [
+  {
+   "sha": "fd49aaef161503d941aa490d6f5c90f4e226ac25",
+   "runs": [
+    {
+     "name": "Update SSM Optimized AMIs",
+     "id": 91358553493,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/getmoto/moto/blob/fd49aaef161503d941aa490d6f5c90f4e226ac25/.github",
+       "start_line": 465,
+       "start_column": null,
+       "end_line": 465,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  }
+ ],
+ "prefect": [
+  {
+   "sha": "543767a6e08de426012b6497f54261bddc0afb53",
+   "runs": []
+  },
+  {
+   "sha": "c7b2f982ac34dae35cd0cb2408ca6178be5f1c37",
+   "runs": [
+    {
+     "name": "Save canonical test durations",
+     "id": 133664296394,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 30,
+       "start_column": null,
+       "end_line": 30,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 29,
+       "start_column": null,
+       "end_line": 29,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Expected 18 duration files, found 1",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "Prepare canonical test durations",
+     "id": 133664111584,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 21,
+       "start_column": null,
+       "end_line": 21,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Failed to CreateArtifact: Unable to make request: ECONNRESET\nIf you are using self-hosted runners, please make sure your runner has access to all GitHub endpoints: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners#communication-between-self-hosted-runners-and-github",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 26,
+       "start_column": null,
+       "end_line": 26,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "No valid cached durations; splitting tests by count",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/c7b2f982ac34dae35cd0cb2408ca6178be5f1c37/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "bf195ab012384574141cce118f15ca4be92841e2",
+   "runs": [
+    {
+     "name": "Canonical Tests: group 9/18 - python:3.13, postgres:14",
+     "id": 132946843453,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/bf195ab012384574141cce118f15ca4be92841e2/.github",
+       "start_line": 163,
+       "start_column": null,
+       "end_line": 163,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/bf195ab012384574141cce118f15ca4be92841e2/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "29241a3aff4ad41bf79ed5782ea4059cb74d0b4d",
+   "runs": []
+  },
+  {
+   "sha": "761de4f26e9394d1a5f99913e3a304028c4c74d9",
+   "runs": [
+    {
+     "name": "Canonical Tests: group 6/18 - python:3.15, postgres:14",
+     "id": 132021766635,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/761de4f26e9394d1a5f99913e3a304028c4c74d9/.github",
+       "start_line": 281,
+       "start_column": null,
+       "end_line": 281,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/761de4f26e9394d1a5f99913e3a304028c4c74d9/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "51708019dc03e8384ff63bf9616998565ac39f72",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 126908460095,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/51708019dc03e8384ff63bf9616998565ac39f72/.github",
+       "start_line": 502,
+       "start_column": null,
+       "end_line": 502,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/PrefectHQ/prefect/network/updates/1681699522 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/51708019dc03e8384ff63bf9616998565ac39f72/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "d672b5e920650a8c75f4f868f17baea45ac5df45",
+   "runs": [
+    {
+     "name": "Runner, Worker, Settings, Input, and CLI Tests - python:3.13, postgres:14",
+     "id": 125457251496,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/d672b5e920650a8c75f4f868f17baea45ac5df45/.github",
+       "start_line": 171,
+       "start_column": null,
+       "end_line": 171,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/d672b5e920650a8c75f4f868f17baea45ac5df45/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "169ca77a2028afebc5e0389d58b3a35fbb87d2bd",
+   "runs": [
+    {
+     "name": "Test (2)",
+     "id": 125446721307,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/169ca77a2028afebc5e0389d58b3a35fbb87d2bd/.github",
+       "start_line": 1364,
+       "start_column": null,
+       "end_line": 1364,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": "ui-v2/src/components/flow-runs/flow-run-card/flow-run-card.test.tsx",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/169ca77a2028afebc5e0389d58b3a35fbb87d2bd/ui-v2/src/components/flow-runs/flow-run-card/flow-run-card.test.tsx",
+       "start_line": 96,
+       "start_column": null,
+       "end_line": 96,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "src/components/flow-runs/flow-run-card/flow-run-card.test.tsx > FlowRunCard > does not render a relationships row when the run has no associations",
+       "message": "TestingLibraryElementError: Unable to find an element with the text: Ergonomic-Gulper Catfish (normalized from 'Ergonomic-Gulper Catfish\u00a0'). This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.\n\nIgnored nodes: comments, script, style\n<body>\n  <div>\n    <div\n      class=\"bg-card text-card-foreground rounded-xl border shadow-sm flex flex-col gap-2 p-4 border-l-8 border-l-state-completed-600\"\n      data-slot=\"card\"\n    >\n      <div\n        class=\"flex justify-between items-center min-w-0 overflow-hidden\"\n      >\n        <div\n          class=\"flex items-center gap-2 min-w-0\"\n        >\n          <div\n            class=\"flex items-center min-w-0 overflow-hidden\"\n          >\n            <nav\n              aria-label=\"breadcrumb\"\n              class=\"min-w-0\"\n              data-slot=\"breadcrumb\"\n            >\n              <ol\n                class=\"text-muted-foreground flex items-center gap-1.5 text-sm break-words sm:gap-2.5 flex-nowrap min-w-0 overflow-hidden\"\n                data-slot=\"breadcrumb-list\"\n              >\n                <li\n                  class=\"inline-flex items-center gap-1.5 min-w-0\"\n                  data-slot=\"breadcrumb-item\"\n                >\n                  <a\n                    class=\"hover:text-foreground transition-colors rounded-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring truncate block\"\n                    data-slot=\"breadcrumb-link\"\n                    href=\"/flows/flow/a147b10a-896f-415f-9d0c-c2393cfc0edc\"\n                    title=\"Small Plastic Table\"\n                  >\n                    Small Plastic Table\n                  </a>\n                </li>\n                <li\n                  aria-hidden=\"true\"\n                  class=\"[&>svg]:size-3.5\"\n                  data-slot=\"breadcrumb-separator\"\n                  role=\"presentation\"\n                >\n                  /\n                </li>\n                <li\n                  class=\"inline-flex items-center gap-1.5 font-bold text-base min-w-0\"\n                  data-slot=\"breadcrumb-item\"\n                >\n                  <a\n                    class=\"transition-colors rounded-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring truncate block text-link hover:text-link-hover hover:underline\"\n                    data-slot=\"breadcrumb-link\"\n                    href=\"/runs/flow-run/97f0b737-d365-4952-8389-d6462c4637e9\"\n                    title=\"Ergonomic-Gulper Catfish\u00a0\"\n                  >\n                    Ergonomic-Gulper Catfish\u00a0\n                  </a>\n                </li>\n              </ol>\n            </nav>\n          </div>\n        </div>\n        <div\n          class=\"flex-1 min-w-12 flex justify-end\"\n        />\n      </div>\n      <div\n        class=\"flex flex-wrap items-center gap-x-2 gap-y-1\"\n      >\n        <span\n          class=\"inline-flex items-center justify-center rounded-md border py-0.5 text-xs font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden border-transparent [a&]:hover:bg-primary/90 gap-1 bg-state-completed-100 text-state-completed-600 hover:bg-state-completed-200 px-2\"\n          data-slot=\"badge\"\n        >\n          <svg\n            aria-hidden=\"true\"\n            class=\"lucide lucide-check\"\n            fill=\"none\"\n            height=\"16\"\n            stroke=\"currentColor\"\n            stroke-linecap=\"round\"\n            stroke-linejoin=\"round\"\n            stroke-width=\"2\"\n            viewBox=\"0 0 24 24\"\n            width=\"16\"\n            xmlns=\"http://www.w3.org/2000/svg\"\n          >\n            <path\n              d=\"M20 6 9 17l-5-5\"\n            />\n          </svg>\n          Completed\n        </span>\n        <div\n          class=\"text-xs font-mono flex gap-2 items-center shrin",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/169ca77a2028afebc5e0389d58b3a35fbb87d2bd/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "0947ce1491fa24dfed8f4e71c866ef18cf9171a3",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 120613718575,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/0947ce1491fa24dfed8f4e71c866ef18cf9171a3/.github",
+       "start_line": 584,
+       "start_column": null,
+       "end_line": 584,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/PrefectHQ/prefect/network/updates/1648619518 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/0947ce1491fa24dfed8f4e71c866ef18cf9171a3/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "1ef3e516d3b3449d19f65b30c45d1e0bff656396",
+   "runs": [
+    {
+     "name": "Dependabot",
+     "id": 119019570316,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/1ef3e516d3b3449d19f65b30c45d1e0bff656396/.github",
+       "start_line": 184,
+       "start_column": null,
+       "end_line": 184,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Dependabot encountered an error performing the update\n\nError: The updater encountered one or more errors.\n\nFor more information see: https://github.com/PrefectHQ/prefect/network/updates/1641408578 (write access to the repository is required to view the log)",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/PrefectHQ/prefect/blob/1ef3e516d3b3449d19f65b30c45d1e0bff656396/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  }
+ ],
+ "pydantic-ai": [
+  {
+   "sha": "b40096c4c91e4db361ee3f23b0e3f6b85569faa2",
+   "runs": [
+    {
+     "name": "agent",
+     "id": 118475835168,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/.github",
+       "start_line": 818,
+       "start_column": null,
+       "end_line": 818,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "monitor",
+     "id": 118474382926,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/.github",
+       "start_line": 12,
+       "start_column": null,
+       "end_line": 12,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/b40096c4c91e4db361ee3f23b0e3f6b85569faa2/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "8d10c36022af9bc631cdcb0c7705cd92968db28e",
+   "runs": [
+    {
+     "name": "agent",
+     "id": 109904488350,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/8d10c36022af9bc631cdcb0c7705cd92968db28e/.github",
+       "start_line": 1229,
+       "start_column": null,
+       "end_line": 1229,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/8d10c36022af9bc631cdcb0c7705cd92968db28e/.github",
+       "start_line": 1,
+       "start_column": null,
+       "end_line": 1,
+       "end_column": null,
+       "annotation_level": "notice",
+       "title": "",
+       "message": "\"The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748\"",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "f46930acd644e0dd2a1a66f5ef21dadfce52e6c8",
+   "runs": [
+    {
+     "name": "record_attention_decision",
+     "id": 88926930435,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/f46930acd644e0dd2a1a66f5ef21dadfce52e6c8/.github",
+       "start_line": 19,
+       "start_column": null,
+       "end_line": 19,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "9b4417174f662679b2898100fefcf125186b59c9",
+   "runs": [
+    {
+     "name": "gateway-model-health",
+     "id": 88334519652,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/9b4417174f662679b2898100fefcf125186b59c9/.github",
+       "start_line": 14754,
+       "start_column": null,
+       "end_line": 14754,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  },
+  {
+   "sha": "f1c73056c44ae12d1a71292be0b6a9887c951d4b",
+   "runs": [
+    {
+     "name": "gateway-model-health",
+     "id": 86798957486,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/f1c73056c44ae12d1a71292be0b6a9887c951d4b/.github",
+       "start_line": 18529,
+       "start_column": null,
+       "end_line": 18529,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Process completed with exit code 1.",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    },
+    {
+     "name": "deploy-docs-preview",
+     "id": 86793266058,
+     "app": "github-actions",
+     "annotations": [
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/f1c73056c44ae12d1a71292be0b6a9887c951d4b/.github",
+       "start_line": 7,
+       "start_column": null,
+       "end_line": 7,
+       "end_column": null,
+       "annotation_level": "failure",
+       "title": "",
+       "message": "Cache path /home/runner/work/_temp/setup-uv-cache does not exist on disk. This likely indicates that there are no dependencies to cache. Consider disabling the cache input if it is not needed.",
+       "raw_details": ""
+      },
+      {
+       "path": ".github",
+       "blob_href": "https://github.com/pydantic/pydantic-ai/blob/f1c73056c44ae12d1a71292be0b6a9887c951d4b/.github",
+       "start_line": 61,
+       "start_column": null,
+       "end_line": 61,
+       "end_column": null,
+       "annotation_level": "warning",
+       "title": "",
+       "message": "no artifacts found",
+       "raw_details": ""
+      }
+     ],
+     "output": "\n\n",
+     "tests": []
+    }
+   ]
+  }
+ ]
+}
