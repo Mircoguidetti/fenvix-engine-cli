@@ -200,3 +200,67 @@ everything the serial run does.
 The 7 failures are the same in every `--det` run (serial, `-n`, cache or not), the 4 in every plain run, as in the
 previous batches. Placement moved from 32 to 35 with the new chunk boundaries (power-of-two target: chunks of up to
 512 tests instead of 452 on this suite); 0 of them change an outcome.
+
+## Measurements: the xdist set on GitHub Actions (P0, run 44509602787)
+
+Triggered by `tracks/parallel-proof/run.json` (commit f0dc2ad, engine b795295): GitHub-hosted `ubuntu-latest` (4 vCPU),
+one job per repository, variants one after another on the same runner; results committed by the workflow under
+`tracks/parallel-proof/results/r023-p0-2026-11-19/<repo>/` (summary.jsonl = one line per run, crosscheck.json per
+cache / `-n` run, fpcompare.json, plans, log tails). Selections: run.json (DECLARED from each repository's CI:
+CI-FACTS.md; one shard or group where the CI splits).
+
+### litellm, shard `llms-vertex-ai` (`tests/unit/llms/vertex_ai`, `-n 4 --dist loadscope` as its CI), MEASURED
+
+| variant | runs (wall) | vs plain `-n 4` median (64.3 s) |
+|---|---|---|
+| plain serial | 129.9 / 100.8 s | — |
+| plain `-n 4` | 65.5 / 63.8 / 64.3 s | 1 |
+| `--det` serial | 144.9 / 108.6 s | — |
+| `--det -n 4` (a: unit costs; b, c: durations) | 81.5 / 80.1 / 81.2 s | 1.25x |
+| cold / warm x3 `--det-cache -n 4` | 116.9 / 117.0, 115.2, 117.1 s (reuse 0 %) | 1.8x |
+| cold `--det-cache` serial; `-n 4` on that store | 151.8 s; 115.4 s (reuse 0 %) | — |
+
+* **The cache records nothing on this shard, serially and under `-n`**: "not cacheable: network connection 4,180"
+  (serial: "host name lookup 4,180"), plus 1 failure. Every test opens a connection or a lookup (the log shows a
+  tracing client dropping traces to `localhost:8126`); a test that touches the network is never cached (by
+  design). So the warm rows are a full run: they show the capture's cost under `-n` (115-117 s against 80-81 s for
+  `--det -n 4`), not a reuse share. The cause per test is UNKNOWN beyond the log line (the traces are not uploaded).
+* **`--det -n 4` misses P2's target here**: target = 64.3 x (126.8 / 115.4) x 1.05 = 74.2 s (ESTIMATED, means of the
+  two serial runs each); the three runs take 80.1-81.5 s, 1.25x plain `-n 4`, beyond the plain runs' 2.7 % spread.
+  Unlike esphome, the first run (unit costs) is not slower than the others, so the plan's balance is not the cause
+  that run 1 points to; the cause is UNKNOWN (candidates: per-worker start-up of `--det` on a 60 s job, `loadscope`
+  atoms against the plan). Not fixed in this session.
+* **Truth**: every run's outcomes (crosscheck against the two fresh serial `--det` runs): 0 mismatches; 0 outcome
+  differences, 0 new failures caused by the split, 0 hidden failures (fpcompare). The same 1 failure (a blocked DNS
+  lookup, Level 0's network policy) in every `--det` run; 0 in plain runs.
+* fpcompare in this run compares parallel run a (unit costs) with run b (durations): their plans differ by
+  construction, so its "placement 1,300 / parallel noise 430" mixes two plans and is not a stickiness or placement
+  measure. The workflow now compares b with c (fixed after this run was triggered; it applies to the next run).
+
+## Gates
+
+* `tests/test_review_r023.py`: unchanged (`git diff 8ffbaaa -- tests/test_review_r023.py` empty); **17 passed** (three
+  consecutive runs; also in the full suite). Before this session's changes: 10 failed, 7 passed.
+* `cargo test --release` (workspace): **94 passed**, 0 failed (81 before + 13 new `r023_*` tests).
+* Full Python suite (`pytest tests -p no:randomly`, Python 3.13.18, pytest 9.2.0, xdist 3.8.0, run without `-n`:
+  inner serial sessions must not inherit an outer worker's `PYTEST_XDIST_WORKER`): **586 passed, 8 skipped, 1
+  failed**. The failure is `test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does`,
+  the pre-existing one the review names (it reads `tracks/rust-hotpaths/results/p8/pygments-0of1.json`, which no
+  change here touches). New pytester file `tests/test_parallel_proof_r023_fixes.py`: 7 passed.
+
+## Not done, and why
+
+* **P0 / P3 on Actions**: run 44509602787 was still running when this was written: moto, mlflow (group 1),
+  prefect (group 1, newer uv on the runner), pydantic-ai (no cache variants: the capture prerequisite of design 5 is
+  not fixed here) and the three 50-commit walks (esphome, moto's `-n 4` group, litellm vertex; truth = a fresh serial
+  `--det` run per commit, `-n 4` cache walk only, stopped after 5 h per job). Their results land in
+  `tracks/parallel-proof/results/r023-p0-2026-11-19/` as the jobs finish. The litellm walk will show 0 reuse
+  (nothing is cacheable there, above).
+* **P4 (shared cache)**: not built. `claude/shared-cache`'s client (`remote_cache.py`, 668 lines, with
+  `cache_service.py` and `runtime_id.py`) reads and injects the Python store dict and uses Python runtime identities
+  that the Rust move removed from this base; porting it is its own change. Nothing in it was brought over.
+* **P5** beyond the `placement` class: not built (F1's guard stands in until then).
+* **F2 first-discovery gap** (stated above): the first session that sees a cross-worker writer/reader pair with no
+  edge yet gives the reader the parallel verdict.
+* **litellm `--det -n 4` at 1.25x plain `-n 4`**: measured, cause not found.
+* Blacksmith runner: not available (UNKNOWN numbers).
