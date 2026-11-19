@@ -1,0 +1,71 @@
+{
+ "run_id": "ar-py-1",
+ "walk": [
+  {
+   "spec": "runner-unittest-jc",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-unittest-icecream",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-django-healthchecks",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-django-debug-toolbar",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-nose2-nose2",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-nose2-howdoi",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-zope-irclog2html",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-zope-datetime",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-ward-ward",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-ward-pointers",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  },
+  {
+   "spec": "runner-doctest-autopep8",
+   "shards": 1,
+   "commits": 21,
+   "budget_min": 330
+  }
+ ]
+}
