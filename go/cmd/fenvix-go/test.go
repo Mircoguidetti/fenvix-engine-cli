@@ -341,6 +341,13 @@ func cmdTest(args []string) int {
 		epoch = t.UnixNano()
 	}
 
+	shim := ""
+	if want[overlay.CtlTime] && ov.Has(overlay.CtlTime) && !o.disable[overlay.CtlTime] && ov.Partial["os-time"] == "" {
+		var err error
+		if shim, err = buildShim(); err != nil {
+			fmt.Fprintf(os.Stderr, "fenvix-go: programs started by tests keep the real clock: %v\n", err)
+		}
+	}
 	if o.det {
 		for _, g := range sortedKeys(ov.Partial) {
 			fmt.Fprintf(os.Stderr, "fenvix-go: on %s: %s\n", ov.GoVersion, ov.Partial[g])
@@ -445,7 +452,7 @@ func cmdTest(args []string) int {
 
 	sess := &session.Session{
 		Dir: dir, Self: self, Det: o.det, Seed: o.seed, Controls: controls, Ctl: ctl, Unavailable: ov.Unavailable,
-		Epoch: epoch, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
+		Epoch: epoch, Shim: shim, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
 		Goroot: env["GOROOT"], GoVersion: env["GOVERSION"], GOOS: env["GOOS"], GOARCH: env["GOARCH"],
 		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: o.gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
 		BuildFlags: keyFlags,
@@ -688,4 +695,39 @@ func sortedKeys(m map[string]string) []string {
 	}
 	sort.Strings(out)
 	return out
+}
+
+// buildShim compiles (once per source) the library preloaded into programs
+// a --det test starts, so that their wall clock follows the virtual clock
+// (review R-025 D2). It needs a C compiler (CC, cc or gcc).
+func buildShim() (string, error) {
+	src := overlay.FaketimeC()
+	out := filepath.Join(cacheDir(), "faketime-"+core.Digest([]byte(src))[:16]+".so")
+	if _, err := os.Stat(out); err == nil {
+		return out, nil
+	}
+	if err := os.MkdirAll(cacheDir(), 0o755); err != nil {
+		return "", err
+	}
+	cc := os.Getenv("CC")
+	if cc == "" {
+		for _, c := range []string{"cc", "gcc", "clang"} {
+			if _, err := exec.LookPath(c); err == nil {
+				cc = c
+				break
+			}
+		}
+	}
+	if cc == "" {
+		return "", fmt.Errorf("no C compiler to build the clock library")
+	}
+	srcPath := out + ".c"
+	if err := os.WriteFile(srcPath, []byte(src), 0o644); err != nil {
+		return "", err
+	}
+	tmp := fmt.Sprintf("%s.%d.tmp", out, os.Getpid())
+	if b, err := exec.Command(cc, "-shared", "-fPIC", "-O2", "-o", tmp, srcPath).CombinedOutput(); err != nil {
+		return "", fmt.Errorf("%s: %v: %s", cc, err, strings.TrimSpace(string(b)))
+	}
+	return out, os.Rename(tmp, out)
 }

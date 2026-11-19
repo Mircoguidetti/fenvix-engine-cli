@@ -46,7 +46,8 @@ var fenvix struct {
 	maxEv     int
 	recording bool
 	explore   bool
-	epochReal bool
+	realOff   int64 // virtual wall minus real wall at the start of the test
+	shim      string
 	portCtr   uint64
 	inTest    bool
 	testGoid  uint64
@@ -124,8 +125,8 @@ func fenvixInit() {
 				fenvix.goroot = v
 			case "explore":
 				fenvix.explore = v == "1"
-			case "epochreal":
-				fenvix.epochReal = v == "1"
+			case "shim":
+				fenvix.shim = v
 			case "maxev":
 				if ok && n > 0 {
 					fenvix.maxEv = int(n)
@@ -134,7 +135,8 @@ func fenvixInit() {
 		}
 		fenvix.tick = fenvix.baseTick
 		fenvix.elapsed = fenvixMonoBase
-		fenvix.wallOff = fenvixEpoch() - fenvix.elapsed
+		fenvix.wallOff = fenvix.epoch - fenvix.elapsed
+		fenvix.realOff = fenvix.epoch - fenvixRealNow()
 		fenvix.testT0 = fenvix.elapsed
 		fenvix.goids = make(map[uint64]uint32)
 	})
@@ -339,7 +341,8 @@ func Fenvix_Begin(seed uint64) {
 	fenvix.mu.Lock()
 	fenvix.seed = seed
 	fenvix.gen++
-	fenvix.wallOff = fenvixEpoch() - fenvix.elapsed
+	fenvix.wallOff = fenvix.epoch - fenvix.elapsed
+	fenvix.realOff = fenvix.epoch - fenvixRealNow()
 	fenvix.portCtr = 0
 	fenvixRawSeed = fenvixMix(seed ^ 0x67657472616e64) // "getrand"
 	fenvixRawCtr = 0
@@ -623,20 +626,36 @@ func Fenvix_ClockCond(other, delta int64, sign int) {
 	Fenvix_Dep('K', string(v))
 }
 
-// fenvixEpoch: the wall clock at the start of a test. With epochreal=1
-// (--det, seed 0, no skip cache: review R-025 D2) it is the real time when
-// the test starts, so that times the virtual clock gives stay comparable with
-// real ones the kernel and child processes give (file timestamps, `date`,
-// git); the readings recorded in the trace are relative to the test start,
-// so fingerprints do not change. Otherwise the configured epoch.
-func fenvixEpoch() int64 {
-	if fenvix.epochReal {
-		var tv Timeval
-		if Gettimeofday(&tv) == nil {
-			return tv.Nano()
-		}
+func fenvixRealNow() int64 {
+	var tv Timeval
+	if Gettimeofday(&tv) == nil {
+		return tv.Nano()
 	}
-	return fenvix.epoch
+	return 0
+}
+
+// Fenvix_RealOffset is the virtual wall clock minus the real one at the
+// start of the current test (review R-025 D2); ok is false without the time
+// control.
+func Fenvix_RealOffset() (off int64, ok bool) {
+	if !runtime.Fenvix_On(runtime.FenvixTime) {
+		return 0, false
+	}
+	fenvixInit()
+	fenvix.mu.Lock()
+	off = fenvix.realOff
+	fenvix.mu.Unlock()
+	return off, true
+}
+
+// Fenvix_ChildClockEnv: the variables that give a started program the
+// test's clock offset (nil without the time control or the preload library).
+func Fenvix_ChildClockEnv() []string {
+	off, ok := Fenvix_RealOffset()
+	if !ok || fenvix.shim == "" {
+		return nil
+	}
+	return []string{"FENVIX_GO_CLOCK_OFFSET=" + string(fenvixItoa(nil, off)), "LD_PRELOAD=" + fenvix.shim}
 }
 
 // Fenvix_Port is the next listening port of the test's deterministic stream

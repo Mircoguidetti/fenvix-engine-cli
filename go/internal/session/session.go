@@ -28,7 +28,7 @@ type Session struct {
 	Ctl         uint32            `json:"ctl"`
 	Unavailable map[string]string `json:"unavailable,omitempty"`
 	Epoch       int64             `json:"epoch"`
-	EpochReal   bool              `json:"epoch_real,omitempty"` // each test starts the virtual clock at the real time (--det seed 0)
+	Shim        string            `json:"shim,omitempty"` // library preloaded into programs a --det test starts (their clock)
 	Tick        int64             `json:"tick"`
 	Adapt       int64             `json:"adapt"`
 	MaxEvents   int               `json:"max_events"`

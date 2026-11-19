@@ -20,10 +20,32 @@ def pct(a, b):
     return f"{100.0 * a / b:.1f}%" if b else "n/a"
 
 
+def slowdown_invalid(r):
+    """Why a slowdown comparison is not valid (review R-025 N3), or ""."""
+    tm = r.get("timing", {})
+    timeout = float(str(r["spec"].get("timeout", "10m")).rstrip("m")) * 60
+    if min(tm.get("plain", [0]) or [0]) >= timeout - 1 or min(tm.get("det", [0]) or [0]) >= timeout - 1:
+        return "both arms stopped by the go test timeout"
+    if len(r.get("det0", {})) < 0.5 * len(r.get("baseline", {})):
+        return f"--det ran {len(r.get('det0', {}))} of {len(r.get('baseline', {}))} tests"
+    return ""
+
+
+def det_gaps(r):
+    """Tests passing 10/10 plain with no --det seed-0 result, and those that do
+    not pass 3/3 under --det (review R-025 N2)."""
+    base, det = r.get("baseline", {}), r.get("det0", {})
+    allpass = [k for k, v in base.items() if v and all(x == "passed" for x in v) and "::Example" not in k]
+    missing = [k for k in allpass if k not in det]
+    notall = [k for k in allpass if k in det and any((x or [None])[0] != "passed" for x in det[k])]
+    return missing, notall
+
+
 def flaky(d):
     rows = []
     tot = collections.Counter()
     slow = []
+    invalid = {}
     for f in sorted(glob.glob(os.path.join(d, "*.json"))):
         r = json.load(open(f))
         if "spec" not in r:
@@ -47,26 +69,34 @@ def flaky(d):
         broken = r.get("broken", [])
         ntests = len(base)
         s = r.get("slowdown")
-        if s is not None:
+        why_bad = slowdown_invalid(r) if s is not None else ""
+        if s is not None and not why_bad:
             slow.append(s)
+        elif s is not None:
+            invalid[name] = why_bad
+        missing, notall = det_gaps(r)
         tot.update({"projects": 1, "ok": st == "done", "tests": ntests, "unstable": len(unstable),
                     "rep_unstable": len(rep_unstable), "documented": len(documented), "doc_seen": len(doc_seen),
                     "doc_flaky_base": len(doc_flaky_base), "rep_doc": len(rep_doc), "cov_same": cov[0],
-                    "cov_total": cov[1], "broken": len(broken)})
+                    "cov_total": cov[1], "broken": len(broken), "missing": len(missing), "notall": len(notall)})
         rows.append(f"| {name} | {st} | {r.get('go_version', '')} | {ntests} | {len(unstable)} | {len(rep_unstable)} | "
                     f"{len(doc_seen)}/{len(documented)} | {len(doc_flaky_base)} | {len(rep_doc)} | {len(broken)} | "
-                    f"{pct(cov[0], cov[1])} | {'' if s is None else f'{100 * s:+.1f}%'} |")
+                    f"{len(missing)} | {len(notall)} | {pct(cov[0], cov[1])} | "
+                    f"{'' if s is None else (f'{100 * s:+.1f}%' + (f' (invalid: {why_bad})' if why_bad else ''))} |")
     print("| project | status | go | tests | baseline-unstable | reproduced (of unstable) | documented test ran | "
-          "documented flaky in baseline | documented reproduced | broken by --det | fingerprint coverage | slowdown |")
-    print("|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
+          "documented flaky in baseline | documented reproduced | broken by --det (fails 3/3) | "
+          "10/10 plain, no --det result | 10/10 plain, not 3/3 --det | fingerprint coverage | slowdown |")
+    print("|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|")
     print("\n".join(rows))
     print()
     print(f"projects {tot['projects']} (done {tot['ok']}); tests {tot['tests']}; baseline-unstable {tot['unstable']}, "
           f"reproduced {tot['rep_unstable']} = {pct(tot['rep_unstable'], tot['unstable'])}; documented tests "
           f"{tot['documented']} (ran {tot['doc_seen']}, flaky in baseline {tot['doc_flaky_base']}, reproduced "
-          f"{tot['rep_doc']}); broken by --det {tot['broken']}; fingerprint coverage "
-          f"{pct(tot['cov_same'], tot['cov_total'])}; median slowdown "
-          f"{'n/a' if not slow else f'{100 * statistics.median(slow):+.1f}%'} over {len(slow)} projects")
+          f"{tot['rep_doc']}); broken by --det {tot['broken']}; passing 10/10 plain with no --det result "
+          f"{tot['missing']}, passing 10/10 plain but not 3/3 under --det {tot['notall']}; fingerprint coverage "
+          f"{pct(tot['cov_same'], tot['cov_total'])} (of {tot['cov_total']} tests with a --det result); median slowdown "
+          f"{'n/a' if not slow else f'{100 * statistics.median(slow):+.1f}%'} over {len(slow)} valid comparisons "
+          f"(left out: {invalid})")
 
 
 def mm(v):
@@ -138,6 +168,44 @@ def skip(d):
                     if not t["reuse"]:
                         reasons[(t["why"] or "").split(":")[0]] += 1
     print("rerun reasons (all repositories, test-transitions):", dict(reasons.most_common()))
+    # gap to go's cache by test time (review R-025 N1): the time of tests go's
+    # cache reused and fenvix ran, by fenvix's first own reason
+    print()
+    print("Test time go's cache reused and fenvix ran, by fenvix's reason (points of all test time):")
+    print()
+    print("| repository | gap | " + " | ".join(GAP_CLASSES) + " |")
+    print("|---|---:|" + "---:|" * len(GAP_CLASSES))
+    for name, shards in sorted(by.items()):
+        tot, gap = 0.0, collections.Counter()
+        for s in shards:
+            for c in s["commits"]:
+                if c.get("status") != "ok" or c["i"] == 0:
+                    continue
+                for t in c["tests"]:
+                    if t["fresh"] in ("", "skipped"):
+                        continue
+                    el = t.get("elapsed") or 0.0
+                    tot += el
+                    if t["go_cached"] and not t["reuse"]:
+                        gap[gap_class(t.get("why_own") or t["why"])] += el
+        if tot:
+            print(f"| {name} | {100 * sum(gap.values()) / tot:.1f} | " +
+                  " | ".join(f"{100 * gap[k] / tot:.1f}" for k in GAP_CLASSES) + " |")
+
+
+GAP_CLASSES = ["code-or-config", "network", "local-service", "clock", "exec", "telemetry", "file", "meta", "listing",
+               "env", "unkeyed", "other"]
+
+
+def gap_class(why):
+    if "/.config/go/telemetry/" in why:
+        return "telemetry"
+    head = why.split(":")[0]
+    if head in ("appeared", "vanished"):
+        return "meta"
+    if head == "volatile":
+        return "unkeyed"
+    return head if head in GAP_CLASSES else "other"
 
 
 if __name__ == "__main__":

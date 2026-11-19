@@ -140,12 +140,8 @@ func cmdExec(args []string) int {
 	if sess.Det && sess.Seed != 0 {
 		explore = 1
 	}
-	epochReal := 0
-	if sess.EpochReal {
-		epochReal = 1
-	}
-	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d;explore=%d;epochreal=%d",
-		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore, epochReal)
+	cfg := fmt.Sprintf("ctl=%d;epoch=%d;tick=%d;adapt=%d;seed=%d;root=%s;goroot=%s;maxev=%d;explore=%d;shim=%s",
+		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore, sess.Shim)
 	childEnv = append(childEnv, "FENVIX_GO_DET="+cfg, "FENVIX_GO_FDS=3,4,5")
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)

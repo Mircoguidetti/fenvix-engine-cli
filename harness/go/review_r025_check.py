@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """Review R-025: re-derive P-021's headline numbers from the committed data and
-check the Rust boundary. Exits 1 when a check fails (each failure is a finding
-of sessions/2026-11-19-review-go/REPORT.md in fenvix-brain-cli).
+check the Rust boundary. Exits 1 when a check fails.
+
+The review's version failed on each published number it found wrong (N1-N3)
+and on the Go skip decision (R1). After the fixes (REPORT-2.md of
+sessions/2026-11-18-go-l0 on this branch) each check verifies the corrected
+statement: the number REPORT-2 publishes must be the one the data gives, and
+the decision logic must be in the Rust core.
 
     python3 harness/go/review_r025_check.py
 
@@ -64,12 +69,24 @@ for repo, row in walk_rows():
             elif w.startswith("file:"):
                 w = "file"
             gap[repo][w] += el
-check(net == 61389, "N1a network reruns", f"data {net:,} test-transitions with reason network, report 61,389")
+REPORT2 = open(os.path.join(ROOT, "sessions", "2026-11-18-go-l0", "REPORT-2.md")).read() \
+    if os.path.exists(os.path.join(ROOT, "sessions", "2026-11-18-go-l0", "REPORT-2.md")) else ""
+
+
+def states(text: str) -> bool:
+    return text in REPORT2
+
+
+check(states(f"{net:,} test-transitions"), "N1a network reruns",
+      f"data {net:,} test-transitions with reason network (the report said 61,389); REPORT-2 states the data's count")
 tf = gap["terraform"]
 tf_gap = sum(tf.values())
 tf_net = tf["network"] + tf["prefix:network"]
 tf_tel = tf["telemetry"] + tf["prefix:telemetry"]
-check(tf_net > tf_gap / 2, "N1b terraform gap = network rule",
+n1b = (f"{100 * tf_gap / total['terraform']:.1f}", f"{100 * tf_net / total['terraform']:.1f}",
+       f"{100 * tf_tel / total['terraform']:.1f}")
+check(tf_tel > tf_net and all(states(x + (" points" if i else "%")) for i, x in enumerate(n1b)),
+      "N1b terraform gap attributed by test time",
       f"of the test time Go's cache reused and fenvix did not ({100 * tf_gap / total['terraform']:.1f}% of all), "
       f"network explains {100 * tf_net / total['terraform']:.1f} points, the Go telemetry counters "
       f"{100 * tf_tel / total['terraform']:.1f} points")
@@ -96,8 +113,9 @@ for name in ("terraform", "caddy"):
     mm = lambda v: f"{100 * statistics.median(v):.0f}% / {100 * statistics.mean(v):.0f}%"
     changed = round(100 * statistics.median(fix)) != round(100 * statistics.median(fen)) or \
         round(100 * statistics.mean(fix)) != round(100 * statistics.mean(fen))
-    check(not changed, f"N1c {name} unaffected by the telemetry defect",
-          f"published {mm(fen)}, with telemetry-only reruns counted as reused (upper bound) {mm(fix)}")
+    check(not changed or states(mm(fix)), f"N1c {name} telemetry upper bound published",
+          f"published {mm(fen)}, with telemetry-only reruns counted as reused (upper bound) {mm(fix)}; "
+          f"REPORT-2 states the upper bound")
 
 # N2. "tests 4099 ... broken by --det 0; fingerprint coverage 38.9%" (REPORT 5a)
 base_n = det_n = missing = notall = 0
@@ -116,10 +134,12 @@ for f in sorted(glob.glob(os.path.join(FLAKY, "*.json"))):
     notall += len(na)
     if miss or na:
         per_proj[r["spec"]["name"]] = (len(miss), len(na))
-check(missing == 0, "N2 tests without a --det result",
+agg = open(os.path.join(ROOT, "harness", "go", "aggregate.py")).read()
+check(states(f"{missing:,}") and "no --det result" in agg and states("no --det result"),
+      "N2 tests without a --det result in a column",
       f"{base_n:,} tests in the plain baseline, {det_n:,} with a --det seed-0 result; {missing:,} tests that passed "
       f"10/10 plain have no --det result and {notall} pass 10/10 plain but not 3/3 under --det; both groups are in "
-      f"no column (per project: {per_proj})")
+      f"no column in the report (per project: {per_proj}); aggregate.py and REPORT-2 now have the column")
 
 # N3. "median +2.1% over 23 projects" (REPORT 5a): both timing arms must have run the same tests to completion
 slow, bad = {}, {}
@@ -136,19 +156,30 @@ for f in sorted(glob.glob(os.path.join(FLAKY, "*.json"))):
     elif len(r.get("det0", {})) < 0.5 * len(r.get("baseline", {})):
         bad[name] = f"--det ran {len(r['det0'])} of {len(r['baseline'])} tests"
 valid = [v for k, v in slow.items() if k not in bad]
-check(not bad, "N3 slowdown comparisons valid",
+check(states(f"{100 * statistics.median(valid):+.1f}%") and "slowdown_invalid" in agg, "N3 slowdown over valid comparisons",
       f"median {100 * statistics.median(slow.values()):+.1f}% over {len(slow)}; invalid: {bad}; median over the "
       f"{len(valid)} valid comparisons {100 * statistics.median(valid):+.1f}%")
 
 # R1. Rust boundary (DECISIONS 2026-11-18: engine logic in Rust, shells keep thin shims): the skip decision
-skip_go = open(os.path.join(ROOT, "go", "internal", "skip", "skip.go")).read()
-strace_go = open(os.path.join(ROOT, "go", "internal", "strace", "strace.go")).read()
-in_go = [n for n, pat in (("decider Entry.Why", r"func \(e \*Entry\) Why\("),
-                          ("key composition MakeEntry/Absorb", r"func MakeEntry\("),
-                          ("key digest (sha256, not the core's BLAKE3)", r"crypto/sha256"),
-                          ("strace dependency rules", r"func Parse\("),
-                          ("path filter", r"func \(f \*Filter\) Keep\(")) if re.search(pat, skip_go + strace_go)]
-check(not in_go, "R1 skip decision in Rust", f"implemented in Go: {in_go}")
+go_src = ""
+for dp, _, fs in os.walk(os.path.join(ROOT, "go")):
+    if "testdata" in dp:
+        continue
+    for f in fs:
+        if f.endswith(".go") and not f.endswith("_test.go"):
+            go_src += open(os.path.join(dp, f)).read()
+rust = "".join(open(os.path.join(ROOT, "crates", "fenvix-go", "src", f)).read()
+               for f in ("skip.rs", "strace.rs") if os.path.exists(os.path.join(ROOT, "crates", "fenvix-go", "src", f)))
+in_go = [n for n, pat in (("decider (Why)", r"func \([a-z]+ \*?Entry\) Why\("),
+                          ("key composition (MakeEntry/Absorb)", r"func (MakeEntry|\([a-z]+ \*?Entry\) Absorb)\("),
+                          ("key digest (sha256)", r"crypto/sha256\"[\s\S]*func Hash\("),
+                          ("strace dependency rules", r"func Parse\(logPath"),
+                          ("path filter", r"func \([a-z]+ \*?Filter\) Keep\("),
+                          ("test-flag rules", r"neutralTestFlags"),
+                          ("network locality", r"func isLocal\(")) if re.search(pat, go_src)]
+in_rust = all(x in rust for x in ("pub fn why(", "pub fn record(", "pub fn parse(", "pub fn classify(", "fn outside("))
+check(not in_go and in_rust, "R1 skip decision in Rust",
+      f"in Go: {in_go or 'nothing'}; in crates/fenvix-go (skip.rs, strace.rs): {'yes' if in_rust else 'missing'}")
 
 print()
 print("failed:", ", ".join(failures) if failures else "none")

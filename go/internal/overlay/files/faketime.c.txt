@@ -1,0 +1,58 @@
+/* Code added by fenvix-go (--det). Not part of Go.
+ *
+ * Preloaded into the programs a --det test starts (LD_PRELOAD): their wall
+ * clock is shifted by FENVIX_GO_CLOCK_OFFSET (ns), the virtual clock minus the
+ * real clock at the start of the test, so that `date`, git and other tools
+ * agree with the test's virtual clock (review R-025 D2). Dynamically linked
+ * programs only: static binaries (Go programs) keep the real clock. */
+#define _GNU_SOURCE
+#include <stdlib.h>
+#include <sys/syscall.h>
+#include <sys/time.h>
+#include <time.h>
+#include <unistd.h>
+
+static long long fenvix_off;
+static int fenvix_init;
+
+static void fenvix_load(void) {
+	if (!fenvix_init) {
+		const char *s = getenv("FENVIX_GO_CLOCK_OFFSET");
+		fenvix_off = s ? atoll(s) : 0;
+		fenvix_init = 1;
+	}
+}
+
+int clock_gettime(clockid_t c, struct timespec *ts) {
+	long r = syscall(SYS_clock_gettime, c, ts);
+	if (r == 0 && ts && (c == CLOCK_REALTIME || c == CLOCK_REALTIME_COARSE)) {
+		fenvix_load();
+		long long ns = (long long)ts->tv_sec * 1000000000LL + ts->tv_nsec + fenvix_off;
+		ts->tv_sec = ns / 1000000000LL;
+		ts->tv_nsec = ns % 1000000000LL;
+		if (ts->tv_nsec < 0) {
+			ts->tv_nsec += 1000000000LL;
+			ts->tv_sec--;
+		}
+	}
+	return (int)r;
+}
+
+int gettimeofday(struct timeval *tv, void *tz) {
+	struct timespec ts;
+	int r = clock_gettime(CLOCK_REALTIME, &ts);
+	(void)tz;
+	if (r == 0 && tv) {
+		tv->tv_sec = ts.tv_sec;
+		tv->tv_usec = ts.tv_nsec / 1000;
+	}
+	return r;
+}
+
+time_t time(time_t *t) {
+	struct timespec ts;
+	clock_gettime(CLOCK_REALTIME, &ts);
+	if (t)
+		*t = ts.tv_sec;
+	return ts.tv_sec;
+}

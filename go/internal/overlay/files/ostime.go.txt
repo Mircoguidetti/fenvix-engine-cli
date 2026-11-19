@@ -1,0 +1,58 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// Real time seen next to the virtual clock (review R-025 D2):
+//   * file modification times from Stat, Lstat and File.Stat are moved by
+//     the offset between the virtual and the real clock at the start of the
+//     test, so a file written during the test is as old on the virtual clock
+//     as it is in real time since the test started (cache TTLs, staleness
+//     checks), and older files stay in the virtual past;
+//   * programs the test starts get the same offset for their wall clock
+//     through a preloaded library (dynamically linked programs only).
+// Not moved: access and change times through Sys().
+
+package os
+
+import (
+	"runtime"
+	"syscall"
+	"time"
+)
+
+func fenvixModTime(t time.Time) time.Time {
+	if off, ok := syscall.Fenvix_RealOffset(); ok && runtime.Fenvix_UserG() {
+		return t.Add(time.Duration(off))
+	}
+	return t
+}
+
+func fenvixChildAttr(attr *ProcAttr) *ProcAttr {
+	add := syscall.Fenvix_ChildClockEnv()
+	if add == nil || !runtime.Fenvix_UserG() {
+		return attr
+	}
+	a := ProcAttr{}
+	if attr != nil {
+		a = *attr
+	}
+	env := a.Env
+	if env == nil {
+		env = syscall.Environ()
+	}
+	out := make([]string, 0, len(env)+2)
+	pre := ""
+	for _, kv := range env {
+		switch {
+		case len(kv) >= 11 && kv[:11] == "LD_PRELOAD=":
+			pre = kv[11:]
+		case len(kv) >= 23 && kv[:23] == "FENVIX_GO_CLOCK_OFFSET=":
+		default:
+			out = append(out, kv)
+		}
+	}
+	lp := add[1]
+	if pre != "" {
+		lp += ":" + pre
+	}
+	a.Env = append(append(out, add[0]), lp)
+	return &a
+}

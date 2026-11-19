@@ -21,6 +21,13 @@ import (
 //go:embed files/*.txt
 var files embed.FS
 
+// FaketimeC is the source of the library preloaded into the programs a --det
+// test starts (their wall clock follows the test's virtual clock).
+func FaketimeC() string {
+	b, _ := files.ReadFile("files/faketime.c.txt")
+	return string(b)
+}
+
 // Control names, in bit order (keep in sync with files/runtime.go.txt).
 const (
 	CtlTime     = "time"
@@ -119,6 +126,12 @@ var patches = []patch{
 	{group: "net-ports", file: "net/udpsock_posix.go", ops: []op{
 		{kind: "replace", anchor: "func (sl *sysListener) listenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {", text: "func (sl *sysListener) fenvixOrigListenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {"},
 	}},
+	{group: "os-time", file: "os/stat_linux.go", ops: []op{
+		{kind: "replace", anchor: "fs.modTime = time.Unix(fs.sys.Mtim.Unix())", text: "\tfs.modTime = fenvixModTime(time.Unix(fs.sys.Mtim.Unix()))"},
+	}},
+	{group: "os-time", file: "os/exec.go", ops: []op{
+		{kind: "insert", anchor: "func StartProcess(name string, argv []string, attr *ProcAttr) (*Process, error) {", text: "\tattr = fenvixChildAttr(attr)"},
+	}},
 	{group: "maps-alg", file: "runtime/alg.go", ops: []op{
 		{kind: "replace", anchor: "func alginit() {", text: "func fenvixOrigAlginit() {"},
 	}},
@@ -184,6 +197,7 @@ var additions = []addition{
 	{file: "crypto/internal/sysrand/zz_fenvix.go", tmpl: "sysrand.go.txt", needs: "crypto"},
 	{file: "crypto/rand/zz_fenvix.go", tmpl: "cryptorand123.go.txt", needs: "crypto-123"},
 	{file: "os/zz_fenvix.go", tmpl: "os.go.txt"},
+	{file: "os/zz_fenvix_time.go", tmpl: "ostime.go.txt", needs: "os-time"},
 	{file: "net/zz_fenvix.go", tmpl: "net.go.txt", needs: "net"},
 	{file: "net/zz_fenvix_ports.go", tmpl: "netports.go.txt", needs: "net-ports"},
 }
@@ -211,6 +225,7 @@ type Result struct {
 var optionalGroups = map[string]string{
 	"getrandom":     "getrandom(2) through syscall.Syscall (x/sys/unix.Getrandom...) not controlled",
 	"getrandom-raw": "getrandom(2) through syscall.RawSyscall not controlled",
+	"os-time":       "file modification times and child processes' clocks keep real time",
 }
 
 // Has reports whether a control is available.
