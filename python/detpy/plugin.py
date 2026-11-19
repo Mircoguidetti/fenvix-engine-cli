@@ -522,6 +522,7 @@ def _rewriter_snapshot(rw) -> tuple:
     return (rw.rewrite_asserts, cls, tuple(vars(cls).values()), tuple(vars(rw).values()))
 
 
+_MODULE_METADATA = frozenset({"__builtins__", "__file__", "__cached__", "__loader__", "__spec__"})
 _SIMPLE = (str, bytes, int, float, complex, bool, type(None), type(Ellipsis))
 
 
@@ -595,7 +596,8 @@ def _rewriter_digest(rw, limit: int = 5000) -> str | None:
 
     h.update(f"rewrite_asserts={ref(rw.rewrite_asserts, None)}\nclass={ref(rw.AssertionRewriter, None)}\n".encode())
     for n in sorted(vars(rw)):
-        h.update(f"rw.{n}={ref(vars(rw)[n], None)}\n".encode())
+        if n not in _MODULE_METADATA:  # where it was loaded from: not what it does
+            h.update(f"rw.{n}={ref(vars(rw)[n], None)}\n".encode())
     while todo:
         if len(seen) > limit:
             return None
