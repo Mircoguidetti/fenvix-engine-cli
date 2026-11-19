@@ -1,0 +1,24 @@
+{
+ "name": "ava-globby",
+ "url": "https://github.com/sindresorhus/globby",
+ "node": "22",
+ "runner": "ava",
+ "install": [
+  "npm install --no-audit --no-fund --no-package-lock"
+ ],
+ "install_files": [
+  "package.json"
+ ],
+ "build": [],
+ "args": [],
+ "plain": "npx ava",
+ "shards": 1,
+ "source": "26 first-parent commits of main up to 2026-08-19 (AVA 6, workerThreads: false, ES modules; no lockfile: packages resolved at install)",
+ "window": [
+  0,
+  26
+ ],
+ "run_timeout": 3000,
+ "overhead": "shard0",
+ "unset_ci": true
+}

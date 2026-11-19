@@ -191,7 +191,7 @@ async function main(argv) {
     args.push(...runOptions, path.resolve(root, fileId));
     return common.runInherit(bin, args, { cwd: root, env: { ...process.env, ...extraEnv, DETJS_PRELOADS: preloads.join(path.delimiter) } });
   };
-  const code = await common.runFiles({
+  const code = await common.runFileProcesses({
     runner: 'bun', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile,
     isolation: 'bun test: one process per test file (detjs order); --max-concurrency=1', isolationShort: 'process per file',
     cliArgs: rest, meta: { bunfig_preloads: preloads.map((p) => path.relative(root, p)) },

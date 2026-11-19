@@ -111,6 +111,9 @@ function prepare(opts, root, runner) {
     DETJS_RUNNER: runner,
   };
   Object.assign(process.env, env);
+  // the capture's loader mode is chosen per shell for its own test processes (runners/common.js childEnv sets
+  // `register` for the tap, AVA, Jasmine and uvu shells): never inherited from an outer process
+  delete process.env.DETJS_CAPTURE_LOADER;
   const cfg = config.fromEnv(process.env);
   return { dir, cassette, netMode, cfg, tracePath: path.resolve(root, opts.trace || path.join('.detjs', 'trace.jsonl')) };
 }

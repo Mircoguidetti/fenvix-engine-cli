@@ -29,8 +29,9 @@ const { STATE } = require('../state');
 const SHELL_DIR = path.resolve(__dirname, '..') + path.sep; // node/src/
 const ENGINE_DIR = path.resolve(__dirname, '..', '..') + path.sep; // node/
 // detjs' own driver code (runner shells, session, cache): infrastructure; its wrappers of patched APIs are not
-const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest)[\\/]|[\\/]src[\\/](?:session|controls|register)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman)[\\/]/;
+// (the Bun and Deno runtime wrappers in src/runners/ are not driver code: transparent, the caller is below them)
+const DETJS_DRIVER = /[\\/]src[\\/](?:vitest|jest|nodetest|mocha)[\\/]|[\\/]src[\\/](?:session|controls|register|fileproc)\.js$|[\\/]src[\\/]runners[\\/](?:common|preload|tap|ava|jasmine|uvu)\.js$|[\\/]src[\\/]cache[\\/](?:proof|remote|runtime-id)\.js$|[\\/]bin[\\/]detjs\.js$/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|esbuild|rollup|@rollup|rolldown|@rolldown|oxc-[a-z-]+|@oxc-[a-z-]+|lightningcss|postcss|@babel|@ampproject|magic-string|es-module-lexer|tsx|@esbuild|graceful-fs|write-file-atomic|signal-exit|exit-x|istanbul-[a-z-]+|@istanbuljs|v8-to-istanbul|chokidar|fdir|picomatch|tinyglobby|fast-glob|micromatch|resolve|enhanced-resolve|import-local|jest-haste-map|walker|fb-watchman|mocha|workerpool|typescript|ts-node|@swc-node|esbuild-register|pirates|tap|@tapjs|tap-parser|tap-yaml|tcompare|async-hook-domain|process-on-spawn|ava|@ava|emittery|p-map|currently-unhandled|jasmine|jasmine-core|@jasminejs|uvu|sade|kleur)[\\/]/;
 const ENGINE_OWN = /^(?:src|bin|node_modules|scripts)(?:[\\/]|$)|^package(?:-lock)?\.json$|^detjs\.[^\\/]+\.node$/;
 // a Vite config bundled to a temporary module (it is user code: `vitest.config.ts.timestamp-<n>-<hash>.mjs`)
 const BUNDLED_CONFIG = /\.timestamp-\d+(?:-[0-9a-f]+)?\.m?[jt]s$/;
@@ -95,10 +96,10 @@ function flagsOf(flags, dflt) {
     const acc = flags & O_ACC;
     const reads = acc === fs.constants.O_RDONLY || acc === fs.constants.O_RDWR;
     const writes = acc === fs.constants.O_WRONLY || acc === fs.constants.O_RDWR || Boolean(flags & fs.constants.O_CREAT);
-    return { reads, writes, trunc: Boolean(flags & fs.constants.O_TRUNC) };
+    return { reads, writes, trunc: Boolean(flags & fs.constants.O_TRUNC), excl: Boolean(flags & fs.constants.O_EXCL) };
   }
   const m = String(flags);
-  return { reads: m.includes('r') || m.includes('+'), writes: /[wax+]/.test(m), trunc: m.includes('w') };
+  return { reads: m.includes('r') || m.includes('+'), writes: /[wax+]/.test(m), trunc: m.includes('w'), excl: m.includes('x') };
 }
 
 const structured = (_e, cs) => cs;
@@ -132,7 +133,10 @@ class Capture {
     // content-addressed caches of tools (a cached result equals recomputing it): jiti's transpile cache; the
     // runners' own caches are added by the shells (Jest cacheDirectory, Vite cacheDir); more with DETJS_CACHE_SKIP_DIRS
     const tmp = os.tmpdir();
-    this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'),
+    // tsx's and @swc-node's transform caches and v8-compile-cache (ts-node, older CLIs) are content-addressed too
+    const uid = typeof process.getuid === 'function' ? process.getuid() : '';
+    this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`),
+      path.join(tmp, `v8-compile-cache-${uid}`), path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`),
       ...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean)].map((d) => path.resolve(d) + path.sep);
   }
 
@@ -165,6 +169,8 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installBinding(this);
+    installRealClock(this);
     installNodeReaders(this);
     installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
@@ -180,6 +186,7 @@ class Capture {
     installSpawn(this);
     installNet(this);
     installDlopen(this);
+    installBinding(this);
     installNodeReaders(this);
     require('node:module').syncBuiltinESMExports();
   }
@@ -288,6 +295,7 @@ class Capture {
       if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { continue; } }
       // Node's own fs internals (cp, glob, ...) read Stats fields for their own checks
       if (f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/')) return 'infra';
+      if (f.startsWith('node:internal/test_runner/') || f.startsWith('internal/test_runner/')) return 'infra'; // node:test itself
       if (f.startsWith('node:') || f.startsWith('internal/') || !f.includes('/')) continue;
       if (f.startsWith(SHELL_DIR) && !DETJS_DRIVER.test(f)) continue;
       if (f.startsWith(ENGINE_DIR) && DETJS_DRIVER.test(f)) return 'infra';
@@ -770,6 +778,7 @@ class Capture {
 
   /** Modules loaded so far (Vitest worker state, CommonJS cache, native loader). */
   scanModules(extra) {
+    if (this.flushLoader) this.flushLoader();
     const st = globalThis.__vitest_worker__;
     if (st) {
       const em = st.evaluatedModules;
@@ -945,9 +954,38 @@ function installFs(cap) {
   const P = fs.promises;
   const read = (k) => (a) => cap.read(a[0], k);
   const write0 = (a) => cap.wrote(a[0]);
+  // writes whose success depends on what is at the path before them (an exclusive create, a link or an exclusive
+  // copy fails if the destination exists, mkdir without `recursive` too; unlink / rmdir / rm without `force` fail if
+  // it is missing, rmdir also if it is not empty): the path's prior state is an input (R-009, O_EXCL creates).
+  // Test processes: whoever calls (a library may be working for the test); the main process: not when runner
+  // infrastructure or Node's own internals call (global inputs are decided by the caller). Own outputs are skipped
+  // by read().
+  const prior = (p, kind = 's') => {
+    if (!cap.active || cap.busy) return;
+    try {
+      if (cap.isGlobal) {
+        cap.busy++;
+        let infra;
+        try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+        if (infra) return;
+      }
+      cap.read(p, kind);
+    } catch { /* never break the call */ }
+  };
+  const optsOf = (a, i) => (a[i] && typeof a[i] === 'object' && !Buffer.isBuffer(a[i]) && !ArrayBuffer.isView(a[i]) ? a[i] : null);
+  const writeFlag = (a) => {
+    const o = optsOf(a, 2);
+    if (o && o.flag !== undefined && flagsOf(o.flag, 'w').excl) prior(a[0]);
+    cap.wrote(a[0]);
+  };
+  const mkdir0 = (a) => { const o = optsOf(a, 1); if (!(o && o.recursive)) prior(a[0]); cap.wrote(a[0]); };
+  const unlink0 = (a) => { prior(a[0]); cap.wrote(a[0]); };
+  const rm0 = (a) => { const o = optsOf(a, 1); if (!(o && o.force)) prior(a[0]); cap.wrote(a[0]); };
+  const rmdir0 = (a) => { const o = optsOf(a, 1); prior(a[0], o && o.recursive ? 's' : 'd'); cap.wrote(a[0]); };
   const open = (dflt) => (a) => {
     const fl = flagsOf(a[1] && typeof a[1] === 'object' && !Buffer.isBuffer(a[1]) ? a[1].flags : a[1], dflt);
     if (fl.reads && !fl.trunc) cap.read(a[0], 'f');
+    if (fl.excl) prior(a[0]);
     if (fl.writes) cap.wrote(a[0]);
   };
   for (const [o, names, fn] of [
@@ -956,10 +994,19 @@ function installFs(cap) {
     [fs, ['existsSync', 'exists'], read('s')],
     [fs, ['readlinkSync', 'readlink'], read('l')],
     [P, ['readlink'], read('l')],
-    [fs, ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile', 'unlinkSync', 'unlink', 'rmSync', 'rm', 'rmdirSync', 'rmdir',
-      'mkdirSync', 'mkdir', 'truncateSync', 'truncate', 'utimesSync', 'utimes', 'lutimesSync', 'lutimes', 'chmodSync', 'chmod',
+    [fs, ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile'], writeFlag],
+    [P, ['writeFile', 'appendFile'], writeFlag],
+    [fs, ['mkdirSync', 'mkdir'], mkdir0],
+    [P, ['mkdir'], mkdir0],
+    [fs, ['unlinkSync', 'unlink'], unlink0],
+    [P, ['unlink'], unlink0],
+    [fs, ['rmdirSync', 'rmdir'], rmdir0],
+    [P, ['rmdir'], rmdir0],
+    [fs, ['rmSync', 'rm'], rm0],
+    [P, ['rm'], rm0],
+    [fs, ['truncateSync', 'truncate', 'utimesSync', 'utimes', 'lutimesSync', 'lutimes', 'chmodSync', 'chmod',
       'lchmodSync', 'lchmod', 'chownSync', 'chown', 'lchownSync', 'lchown', 'createWriteStream'], write0],
-    [P, ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
+    [P, ['truncate', 'utimes', 'lutimes', 'chmod', 'lchmod', 'chown', 'lchown'], write0],
   ]) {
     for (const n of names) wrapFn(cap, o, n, fn);
   }
@@ -997,14 +1044,20 @@ function installFs(cap) {
     wrapTreeOp(cap, o, n, (a) => cap.read(a[0], 'c'), (a) => a[1], style, style !== 'sync');
   }
   for (const [o, names] of [[fs, ['copyFileSync', 'copyFile']], [P, ['copyFile']]]) {
-    for (const n of names) wrapFn(cap, o, n, (a) => { cap.read(a[0], 'f'); cap.wrote(a[1]); });
+    for (const n of names) {
+      wrapFn(cap, o, n, (a) => {
+        cap.read(a[0], 'f');
+        if (typeof a[2] === 'number' && (a[2] & fs.constants.COPYFILE_EXCL)) prior(a[1]);
+        cap.wrote(a[1]);
+      });
+    }
   }
   // rename: what moves is read (unless the caller wrote it), the destination tree is an output
   for (const [o, n, style] of [[fs, 'renameSync', 'sync'], [fs, 'rename', 'cb'], [P, 'rename', 'promise']]) {
     wrapTreeOp(cap, o, n, (a) => { cap.read(a[0], 'c'); cap.wrote(a[0]); }, (a) => a[1], style);
   }
   for (const [o, names] of [[fs, ['symlinkSync', 'symlink', 'linkSync', 'link']], [P, ['symlink', 'link']]]) {
-    for (const n of names) wrapFn(cap, o, n, (a) => cap.wrote(a[1]));
+    for (const n of names) wrapFn(cap, o, n, (a) => { prior(a[1]); cap.wrote(a[1]); });
   }
   // descriptors: the path each was opened for, so that fstat results are recorded like stat results
   wrapFn(cap, fs, 'openSync', open('r'), (a, r) => { if (typeof r === 'number') cap.fdPaths.set(r, a[0]); });
@@ -1179,7 +1232,13 @@ function installSpawn(cap) {
     class Worker extends RealWorker {
       constructor(file, opts) {
         if (cap.active && !cap.busy) {
-          try { cap.flag('worker', `worker thread ${String(file).slice(0, 200)}`); } catch { /* ignore */ }
+          // esbuild's own service thread for its synchronous API (esbuild-register, tsx fallbacks): a transform of
+          // the source it is given (the source is keyed as a module, esbuild by the runtime identity)
+          const esbuildService = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?esbuild[\\/]lib[\\/]main\.js$/.test(String(file))
+            && (() => { cap.busy++; try { return cap.directCaller() === 'infra'; } finally { cap.busy--; } })();
+          if (!esbuildService) {
+            try { cap.flag('worker', `worker thread ${String(file).slice(0, 200)}`); } catch { /* ignore */ }
+          }
         }
         super(file, opts);
       }
@@ -1202,6 +1261,8 @@ function installNet(cap) {
     else target = { host: typeof a[1] === 'string' ? a[1] : 'localhost', port: o };
     if (target.path) {
       if (String(target.path).includes('detjs-replay')) return; // detjs' own replay server
+      // tsx's relay to a parent `tsx` CLI (watch mode): it only sends module paths and ignores a failed connect
+      if (/[\\/]tsx-\d+[\\/]\d+\.pipe$/.test(String(target.path)) && cap.directCaller() === 'infra') return;
       cap.flag('connect', `unix socket ${target.path}`);
     } else if (isLocalName(target.host) || allow.has(String(target.host).toLowerCase())) {
       cap.flag('connect', `${target.host}:${target.port}`);
@@ -1211,6 +1272,73 @@ function installNet(cap) {
   const dgram = require('node:dgram');
   wrapFn(cap, dgram.Socket.prototype, 'send', () => cap.flag('udp', 'dgram send'));
   wrapFn(cap, dgram.Socket.prototype, 'connect', () => cap.flag('udp', 'dgram connect'));
+}
+
+/**
+ * Clocks Level 0 does not virtualize (R-009 "real clock outside the virtual clock"): the process' own uptime and
+ * CPU / resource counters, `performance.timeOrigin` (reported by the clock control through STATE.onRealClock), and
+ * Intl date formatting of "now" (`Intl.DateTimeFormat#format()` / `formatToParts()` without a date reads V8's own
+ * clock). A test that reads them is not cached.
+ */
+function installRealClock(cap) {
+  const real = (what) => {
+    if (!cap.active || cap.busy || cap.isGlobal) return;
+    cap.busy++;
+    let infra;
+    try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+    if (!infra) cap.flag('clock-real', what);
+  };
+  for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
+  STATE.onRealClock = real;
+  // the process' own performance object (other realms get the clock control's wrapper, which reports it)
+  const perf = globalThis.performance;
+  if (perf && !Object.prototype.hasOwnProperty.call(perf, 'timeOrigin')) {
+    let d = null;
+    for (let o = perf; o && !d; o = Object.getPrototypeOf(o)) d = Object.getOwnPropertyDescriptor(o, 'timeOrigin');
+    if (d && typeof d.get === 'function') {
+      try {
+        Object.defineProperty(perf, 'timeOrigin', { configurable: true, enumerable: true, get() { real('performance.timeOrigin'); return d.get.call(perf); } });
+      } catch { /* not extensible */ }
+    }
+  }
+  const P = Intl.DateTimeFormat.prototype;
+  if (!P.__detjsCache) {
+    try {
+      const d = Object.getOwnPropertyDescriptor(P, 'format');
+      if (d && typeof d.get === 'function') {
+        Object.defineProperty(P, 'format', {
+          configurable: true,
+          enumerable: d.enumerable,
+          get() {
+            const f = d.get.call(this);
+            return function format(date) { if (date === undefined) real('Intl.DateTimeFormat#format() of now'); return f(date); };
+          },
+        });
+      }
+      const fp = P.formatToParts;
+      if (typeof fp === 'function') {
+        Object.defineProperty(P, 'formatToParts', {
+          configurable: true,
+          writable: true,
+          value: function formatToParts(date) { if (date === undefined) real('Intl.DateTimeFormat#formatToParts() of now'); return fp.call(this, date); },
+        });
+      }
+      Object.defineProperty(P, '__detjsCache', { value: true });
+    } catch { /* frozen intrinsics */ }
+  }
+}
+
+/** `process.binding('fs')` and friends reach the native readers without the wrapped functions: not cacheable. */
+function installBinding(cap) {
+  wrapFn(cap, process, 'binding', (a) => {
+    if (cap.busy) return;
+    const n = String(a[0]);
+    if (!/^(fs|fs_dir|fs_event_wrap|spawn_sync|process_wrap|tcp_wrap|pipe_wrap|udp_wrap|stream_wrap|os|cares_wrap)$/.test(n)) return;
+    cap.busy++;
+    let infra;
+    try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
+    if (!infra) cap.flag('binding', `process.binding('${n}')`);
+  });
 }
 
 function installDlopen(cap) {
@@ -1267,9 +1395,9 @@ function wrapSqlite(cap) {
     if (!(options && options.readOnly)) cap.wrote(abs);
   };
   class DatabaseSync extends Real {
-    constructor(loc, options) {
-      try { opened(loc, options); } catch { /* never break the call */ }
-      super(loc, options);
+    constructor(...args) {
+      try { opened(args[0], args[1]); } catch { /* never break the call */ }
+      super(...args); // the arity matters: an explicit undefined `options` is refused
     }
   }
   Object.defineProperty(DatabaseSync, '__detjsCache', { value: true });
@@ -1282,8 +1410,76 @@ function wrapSqlite(cap) {
   try { require('node:module').syncBuiltinESMExports(); } catch { /* ignore */ }
 }
 
+/**
+ * Node's loader seen through asynchronous customization hooks (`module.register`, off-thread), for test processes
+ * that also use asynchronous loaders of their own (tap's mock and process-info loaders, tsx's ESM loader): in Node
+ * 22 a synchronous hook (`module.registerHooks`) in such a process breaks their imports (`loadSync is not a
+ * function`, or a dead lock between the hooks thread and the main thread). The hooks post every loaded file and
+ * every failed resolution to this thread; `flushLoader` takes what was posted, synchronously, before the modules
+ * of a test are listed. Chosen by DETJS_CAPTURE_LOADER=register (the runner shells set it).
+ */
+function installAsyncLoaderHooks(cap) {
+  const m = require('node:module');
+  const wt = require('node:worker_threads');
+  if (typeof m.register !== 'function') {
+    cap.notes.add('module.register unavailable: ES modules loaded natively are not listed');
+    return;
+  }
+  const { port1, port2 } = new wt.MessageChannel();
+  const take = (msg) => {
+    if (!msg || !cap.active) return;
+    try {
+      if (msg.loaded) cap.nativeLoads.add(url.fileURLToPath(msg.loaded));
+      else if (msg.failed !== undefined && !cap.busy) cap.resolveFailed(msg.failed, msg.parent);
+      else if (msg.sqlite) wrapSqlite(cap);
+    } catch { /* ignore */ }
+  };
+  port1.on('message', take);
+  port1.unref();
+  cap.flushLoader = () => {
+    for (let r = wt.receiveMessageOnPort(port1); r; r = wt.receiveMessageOnPort(port1)) take(r.message);
+  };
+  try {
+    m.register(url.pathToFileURL(path.join(__dirname, 'loader-hooks.mjs')).href, { data: { port: port2 }, transferList: [port2] });
+  } catch (e) {
+    cap.notes.add(`module.register failed: ${e && e.message}`);
+  }
+  // CommonJS `require` does not go through asynchronous hooks: its failed resolutions and node:sqlite are seen here
+  // (the modules it loads are listed from require.cache)
+  const realResolve = m._resolveFilename;
+  if (typeof realResolve === 'function' && !realResolve.__detjsCache) {
+    const r = function _resolveFilename(request, parent, ...rest) {
+      try {
+        return realResolve.call(this, request, parent, ...rest);
+      } catch (e) {
+        if (cap.active && !cap.busy && e && e.code === 'MODULE_NOT_FOUND') {
+          try { cap.resolveFailed(String(request), parent && parent.filename); } catch { /* ignore */ }
+        }
+        throw e;
+      }
+    };
+    Object.defineProperty(r, '__detjsCache', { value: true });
+    m._resolveFilename = r;
+  }
+  const realLoad = m._load;
+  if (typeof realLoad === 'function' && !realLoad.__detjsCache) {
+    const l = function _load(request, ...rest) {
+      if (cap.active && (request === 'node:sqlite' || request === 'sqlite')) {
+        try { wrapSqlite(cap); } catch { /* ignore */ }
+      }
+      return realLoad.call(this, request, ...rest);
+    };
+    Object.defineProperty(l, '__detjsCache', { value: true });
+    m._load = l;
+  }
+}
+
 function installLoaderHooks(cap) {
   const m = require('node:module');
+  if (process.env.DETJS_CAPTURE_LOADER === 'register') {
+    installAsyncLoaderHooks(cap);
+    return;
+  }
   if (typeof m.registerHooks !== 'function') {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;

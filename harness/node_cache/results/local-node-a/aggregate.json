@@ -1,0 +1,439 @@
+{
+ "commander": {
+  "rows": [
+   {
+    "i": 27,
+    "sha": "16f4e456f5",
+    "share": 0.9127994638968001,
+    "tests_share": 0.9754237288135593,
+    "files": 109,
+    "reused_files": 107,
+    "verified": 1258,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 20.72,
+    "skip_s": 1.52,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "new": 2
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 28,
+    "sha": "85190885b4",
+    "share": 0.908359872611465,
+    "tests_share": 0.9754237288135593,
+    "files": 109,
+    "reused_files": 107,
+    "verified": 1258,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 21.71,
+    "skip_s": 1.8,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "new": 2
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 29,
+    "sha": "3431f071fa",
+    "share": 0.9090458488228004,
+    "tests_share": 0.9754237288135593,
+    "files": 109,
+    "reused_files": 107,
+    "verified": 1258,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 21.23,
+    "skip_s": 1.75,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "new": 2
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 30,
+    "sha": "a5a7dc084d",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 109,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 21.06,
+    "skip_s": 21.92,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "config": 107,
+     "new": 2
+    },
+    "changed": 2,
+    "nx_share": null,
+    "nx_error": "not run"
+   }
+  ],
+  "overhead": [
+   {
+    "i": 26,
+    "plain_s": 13.81,
+    "det_s": 20.46,
+    "capture_s": 21.46,
+    "cold": true,
+    "warm_s": 1.54,
+    "warm_reused": 107,
+    "files": 109,
+    "identity_s": 0.291,
+    "record_s": 0.118,
+    "packages": {
+     "files": 8789,
+     "bytes": 278473880,
+     "hashed": 8789,
+     "links": 24,
+     "followed": 13
+    }
+   }
+  ],
+  "commits": 5
+ },
+ "dependency-cruiser": {
+  "rows": [
+   {
+    "i": 28,
+    "sha": "925af173a0",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 217,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 131.02,
+    "skip_s": 142.11,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "runtime": 145,
+     "new": 72
+    },
+    "changed": 16,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 29,
+    "sha": "7bf8972978",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 217,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 116.46,
+    "skip_s": 119.89,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "runtime": 145,
+     "new": 72
+    },
+    "changed": 6,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 30,
+    "sha": "b89a8456fb",
+    "share": 0.1926037911385045,
+    "tests_share": 0.6665,
+    "files": 217,
+    "reused_files": 144,
+    "verified": 1477,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 121.07,
+    "skip_s": 75.71,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "new": 72,
+     "data": 1
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   }
+  ],
+  "overhead": [
+   {
+    "i": 27,
+    "plain_s": 11.68,
+    "det_s": 14.73,
+    "capture_s": 190.25,
+    "cold": true,
+    "warm_s": 112.52,
+    "warm_reused": 144,
+    "files": 217,
+    "identity_s": 0.962,
+    "record_s": 0.296,
+    "packages": {
+     "files": 13149,
+     "bytes": 372999760,
+     "hashed": 13149,
+     "links": 68,
+     "followed": 13
+    }
+   }
+  ],
+  "commits": 4
+ },
+ "simple-statistics": {
+  "rows": [
+   {
+    "i": 27,
+    "sha": "e13a4f6538",
+    "share": 1.0,
+    "tests_share": 1.0,
+    "files": 83,
+    "reused_files": 83,
+    "verified": 459,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 19.48,
+    "skip_s": 0.86,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {},
+    "changed": 3,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 28,
+    "sha": "20c4b12467",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 83,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 20.59,
+    "skip_s": 23.01,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "data": 83
+    },
+    "changed": 3,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 29,
+    "sha": "699a298269",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 83,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 21.58,
+    "skip_s": 19.84,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "runtime": 83
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 30,
+    "sha": "551ad9eebe",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 83,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 25.2,
+    "skip_s": 23.26,
+    "skip_rc": 0,
+    "verify_rc": 0,
+    "miss_reasons": {
+     "runtime": 83
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   }
+  ],
+  "overhead": [
+   {
+    "i": 26,
+    "plain_s": 0.75,
+    "det_s": 3.08,
+    "capture_s": 20.94,
+    "cold": true,
+    "warm_s": 0.83,
+    "warm_reused": 83,
+    "files": 83,
+    "identity_s": 0.803,
+    "record_s": 0.177,
+    "packages": {
+     "files": 22714,
+     "bytes": 589699317,
+     "hashed": 22714,
+     "links": 1650,
+     "followed": 13
+    }
+   }
+  ],
+  "commits": 5
+ },
+ "yargs": {
+  "rows": [
+   {
+    "i": 27,
+    "sha": "ee7b7ab533",
+    "share": 0.37158369375172545,
+    "tests_share": 0.5592417061611374,
+    "files": 14,
+    "reused_files": 11,
+    "verified": 483,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 15.29,
+    "skip_s": 9.23,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "new": 3
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 28,
+    "sha": "76543b251a",
+    "share": 0.328497055560297,
+    "tests_share": 0.5592417061611374,
+    "files": 14,
+    "reused_files": 11,
+    "verified": 483,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 15.99,
+    "skip_s": 9.53,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "new": 3
+    },
+    "changed": 2,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 29,
+    "sha": "f444858808",
+    "share": 0.35489609444489373,
+    "tests_share": 0.5592417061611374,
+    "files": 14,
+    "reused_files": 11,
+    "verified": 483,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 16.81,
+    "skip_s": 10.36,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "new": 3
+    },
+    "changed": 1,
+    "nx_share": null,
+    "nx_error": "not run"
+   },
+   {
+    "i": 30,
+    "sha": "9588a76436",
+    "share": 0.0,
+    "tests_share": 0.0,
+    "files": 14,
+    "reused_files": 0,
+    "verified": 0,
+    "mismatch": 0,
+    "flaky": 0,
+    "wrong": 0,
+    "verify_s": 18.15,
+    "skip_s": 17.96,
+    "skip_rc": 3,
+    "verify_rc": 3,
+    "miss_reasons": {
+     "runtime": 11,
+     "new": 3
+    },
+    "changed": 13,
+    "nx_share": null,
+    "nx_error": "not run"
+   }
+  ],
+  "overhead": [
+   {
+    "i": 26,
+    "plain_s": 9.44,
+    "det_s": 8.77,
+    "capture_s": 16.81,
+    "cold": true,
+    "warm_s": 10.11,
+    "warm_reused": 11,
+    "files": 14,
+    "identity_s": 0.793,
+    "record_s": 0.347,
+    "packages": {
+     "files": 23302,
+     "bytes": 315111037,
+     "hashed": 23302,
+     "links": 54,
+     "followed": 13
+    }
+   }
+  ],
+  "commits": 5
+ }
+}
