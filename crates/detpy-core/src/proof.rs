@@ -1635,6 +1635,7 @@ mod tests {
             store: st,
             fixtures: BTreeMap::new(),
             written: written.iter().map(|(k, w)| (k.to_string(), w.iter().map(|s| s.to_string()).collect())).collect(),
+            reads: BTreeMap::new(),
         }
     }
 

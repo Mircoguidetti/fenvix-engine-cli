@@ -81,11 +81,19 @@ def main(argv=None) -> int:
     DET_ARGS[:] = a.det_args.split()
     os.makedirs(a.out, exist_ok=True)
     for v in a.variants.split(","):
+        env = None
+        base = v.split("@", 1)[0]
+        pt = base.endswith("-pt")  # the same variant with per-process phase times (harness/parallel_proof/phasetimes.py)
         args = [a.python, "-m", "pytest", "-p", "no:cacheprovider", "-q", *a.pytest_args,
-                *variant_args(v, os.path.abspath(a.out), a.workers, a.dist)]
+                *variant_args(v.replace("-pt", "", 1) if pt else v, os.path.abspath(a.out), a.workers, a.dist)]
+        if pt:
+            here = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            env = dict(os.environ, PHASETIMES_OUT=os.path.join(os.path.abspath(a.out), f"{v}.phases.jsonl"),
+                       PYTHONPATH=os.pathsep.join(x for x in (here, os.environ.get("PYTHONPATH", "")) if x))
+            args[3:3] = ["-p", "harness.parallel_proof.phasetimes"]
         t0 = time.perf_counter()
         try:
-            p = subprocess.run(args, cwd=a.repo, capture_output=True, text=True, timeout=a.timeout)
+            p = subprocess.run(args, cwd=a.repo, capture_output=True, text=True, timeout=a.timeout, env=env)
             rc, text = p.returncode, p.stdout + p.stderr
         except subprocess.TimeoutExpired as e:
             rc, text = "timeout", (e.stdout or b"").decode(errors="replace") if isinstance(e.stdout, bytes) else ""

@@ -170,7 +170,10 @@ def _early_reexec(parser, pluginmanager) -> None:
         installed = {ep.name for ep in eps}
     except Exception:  # pragma: no cover - broken metadata
         installed = set()
-    block = [n for n in _CONFLICTING_PLUGINS if n in installed or pluginmanager.get_plugin(n) is not None]
+    # what the late re-exec blocked: the conflicting plugins that would load, never one the user blocked already
+    # (-p no:randomly: its options must stay as invalid as without --det)
+    block = [n for n in _CONFLICTING_PLUGINS
+             if not pluginmanager.is_blocked(n) and (n in installed or pluginmanager.get_plugin(n) is not None)]
     rootdir = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
     reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
 
@@ -926,6 +929,7 @@ class _Outcomes:
     def __init__(self, path):
         self.path = path
         self.outcomes: dict[str, str] = {}
+        self.durations: dict[str, float] = {}
         self.parts: dict[str, dict] = {}
         self.exceptions: dict[str, list] = {}
 
@@ -936,6 +940,8 @@ class _Outcomes:
             o = report.outcome
         parts = self.parts.setdefault(report.nodeid, {})
         parts[report.when] = o
+        # per-test time (setup + call + teardown, real seconds): the walks' reuse by test time (round 3, item 7)
+        self.durations[report.nodeid] = round(self.durations.get(report.nodeid, 0.0) + float(report.duration or 0.0), 6)
         self.outcomes[report.nodeid] = _det_outcome(parts.get("setup"), parts.get("call"), parts.get("teardown"))
         if report.failed and report.nodeid not in self.exceptions:
             self.exceptions[report.nodeid] = _exception_of(report)
@@ -945,7 +951,8 @@ class _Outcomes:
             return  # xdist worker: the controller writes the file
         os.makedirs(os.path.dirname(os.path.abspath(self.path)), exist_ok=True)
         with open(self.path, "w") as f:
-            json.dump({"outcomes": self.outcomes, "exceptions": self.exceptions, "exitstatus": int(exitstatus),
+            json.dump({"outcomes": self.outcomes, "durations": self.durations, "exceptions": self.exceptions,
+                       "exitstatus": int(exitstatus),
                        "order": [i.nodeid for i in getattr(session, "items", [])], **self.extra()}, f)
 
     def extra(self) -> dict:

@@ -256,7 +256,10 @@ class _TimedLock:
         self._lock.release()
 
     def __enter__(self):
-        return self.acquire()
+        # a with statement has no timeout: enter the real lock through its own __enter__, as a plain ``with lock:``
+        # does (round 3, item 8: tools that watch ``lock.acquire``, such as blockbuster, see what they see without
+        # --det; calling acquire here made pydantic-ai's uuid7 lock a "blocking call" under contention)
+        return self._lock.__enter__()
 
     def __exit__(self, *exc):
         self._lock.release()
