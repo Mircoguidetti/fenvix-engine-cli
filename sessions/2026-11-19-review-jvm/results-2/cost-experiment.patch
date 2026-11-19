@@ -1,0 +1,51 @@
+diff --git a/jvm/rt/src/main/java/dev/fenvix/rt/Deps.java b/jvm/rt/src/main/java/dev/fenvix/rt/Deps.java
+index e57def2..7b0a183 100644
+--- a/jvm/rt/src/main/java/dev/fenvix/rt/Deps.java
++++ b/jvm/rt/src/main/java/dev/fenvix/rt/Deps.java
+@@ -197,8 +197,36 @@ public final class Deps {
+             // a JDK enum constant
+             return c.isEnum() || (c.getSuperclass() != null && c.getSuperclass().isEnum());
+         }
+-        // the runtime class is known: its finality does not matter, its fields do
+-        return instancesImmutable(c.getName().replace('.', '/'), 0);
++        // REVIEW-EXPERIMENT R1: deep check of the runtime value over final fields (user classes only)
++        return deepImmutable(v, 0, new java.util.IdentityHashMap<Object, Boolean>());
++    }
++
++    static boolean deepImmutable(Object v, int depth, java.util.IdentityHashMap<Object, Boolean> seen) {
++        if (v == null) return true;
++        Class<?> c = v.getClass();
++        if (c.isArray()) return java.lang.reflect.Array.getLength(v) == 0;
++        if (IMMUTABLE_CLASS.contains(c.getName())) return true;
++        if (Infra.isJdk(c)) return c.isEnum() || (c.getSuperclass() != null && c.getSuperclass().isEnum());
++        if (depth > 8 || seen.size() > 200) return false;
++        if (seen.put(v, Boolean.TRUE) != null) return true;
++        for (Class<?> k = c; k != null && k != Object.class && k != Enum.class && !k.getName().equals("java.lang.Record"); k = k.getSuperclass()) {
++            // field-less JDK bases (their declared instance fields are still checked below)
++            if (Infra.isJdk(k) && !(k == java.util.AbstractCollection.class || k == java.util.AbstractSet.class || k == Number.class)) return false;
++            for (java.lang.reflect.Field f : k.getDeclaredFields()) {
++                if (Modifier.isStatic(f.getModifiers())) continue;
++                if (!Modifier.isFinal(f.getModifiers())) return false;
++                if (f.getType().isPrimitive()) continue;
++                Object x;
++                try {
++                    f.setAccessible(true);
++                    x = f.get(v);
++                } catch (Throwable t) {
++                    return false;
++                }
++                if (!deepImmutable(x, depth + 1, seen)) return false;
++            }
++        }
++        return true;
+     }
+ 
+     // --------------------------------------------------------- static sites
+@@ -286,6 +314,7 @@ public final class Deps {
+                 s.ids = ids;
+                 s.declaring = classId(d != null ? d : s.owner);
+                 if (s.finalField && immutableDesc(s.desc)) s.constant = Boolean.TRUE;
++                else if (s.finalField && s.name.equals("$VALUES") && s.desc.startsWith("[")) s.constant = Boolean.TRUE; // REVIEW-EXPERIMENT R2
+                 else if (s.finalField && s.desc.startsWith("L") && immutableUserClass(s.desc.substring(1, s.desc.length() - 1), 0)) {
+                     s.constant = Boolean.TRUE;
+                 } else if (!s.finalField) {

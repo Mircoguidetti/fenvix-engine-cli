@@ -1,0 +1,10 @@
+rv.CostDeepFinalTest::read()             mut=False mut_classes=[]
+rv.CostEnumConstTest::read()             mut=False mut_classes=[]
+rv.CostEnumValuesTest::read()            mut=False mut_classes=[]
+rv.CostLambdaTest::read()                mut=False mut_classes=[]
+rv.CostListOfTest::read()                mut=True  mut_classes=['rv/Cost']
+rv.CostOptionalTest::read()              mut=True  mut_classes=['rv/Cost']
+rv.CostSwitchTest::read()                mut=False mut_classes=[]
+rv.PlainTest::unchanged()                mut=False mut_classes=[]
+exit 0
+restored

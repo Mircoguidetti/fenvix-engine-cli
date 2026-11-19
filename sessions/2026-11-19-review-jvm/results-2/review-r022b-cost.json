@@ -1,0 +1,60 @@
+{
+ "rv.CostDeepFinalTest::read()": {
+  "mut": true,
+  "mut_classes": [
+   "rv/Cost"
+  ],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostEnumConstTest::read()": {
+  "mut": false,
+  "mut_classes": [],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostEnumValuesTest::read()": {
+  "mut": true,
+  "mut_classes": [
+   "rv/Cost$Color"
+  ],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostLambdaTest::read()": {
+  "mut": true,
+  "mut_classes": [
+   "rv/Cost"
+  ],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostListOfTest::read()": {
+  "mut": true,
+  "mut_classes": [
+   "rv/Cost"
+  ],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostOptionalTest::read()": {
+  "mut": true,
+  "mut_classes": [
+   "rv/Cost"
+  ],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.CostSwitchTest::read()": {
+  "mut": false,
+  "mut_classes": [],
+  "outcome": "passed",
+  "swrite": false
+ },
+ "rv.PlainTest::unchanged()": {
+  "mut": false,
+  "mut_classes": [],
+  "outcome": "passed",
+  "swrite": false
+ }
+}

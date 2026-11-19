@@ -1,0 +1,12 @@
+== junit4 gradle: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
+== junit4 gradle: 10/10 checks hold; fingerprints identical across --det runs: True
+  ok  control   fx4.Junit4ControlTest::currentTimeMillis()  without=passed,failed  det=passed,passed
+  ok  control   fx4.Junit4ControlTest::externalConnectIsRefused()  without=failed,failed  det=passed,passed
+  ok  control   fx4.Junit4ControlTest::listingIsSorted()  without=failed,failed  det=passed,passed
+  ok  control   fx4.Junit4ControlTest::newRandom()  without=passed,failed  det=passed,passed
+  ok  control   fx4.Junit4ControlTest::sleepIsVirtual()  without=failed,failed  det=passed,passed
+  ok  control   fx4.Junit4ControlTest::uuid()  without=passed,failed  det=passed,passed
+  ok  unchanged fx4.Junit4UnchangedTest::a()  without=passed,passed  det=passed,passed
+  ok  unchanged fx4.Junit4UnchangedTest::b()  without=passed,passed  det=passed,passed
+  ok  unchanged fx4.Junit4UnchangedTest::c()  without=passed,passed  det=passed,passed
+  ok  unchanged fx4.Junit4UnchangedTest::d()  without=passed,passed  det=passed,passed
