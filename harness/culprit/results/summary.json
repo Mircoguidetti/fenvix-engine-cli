@@ -11,8 +11,8 @@
    "attrs": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 31,
-    "unknown": 9
+    "correct": 40,
+    "unknown": 0
    },
    "boltons": {
     "cases": 40,
@@ -23,72 +23,72 @@
    "cachetools": {
     "cases": 38,
     "confident_wrong": 0,
-    "correct": 24,
-    "unknown": 14
+    "correct": 38,
+    "unknown": 0
    },
    "click": {
     "cases": 38,
     "confident_wrong": 0,
-    "correct": 34,
-    "unknown": 4
+    "correct": 38,
+    "unknown": 0
    },
    "jinja": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 28,
-    "unknown": 12
+    "correct": 40,
+    "unknown": 0
    },
    "marshmallow": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 40,
+    "unknown": 0
+   },
+   "more-itertools": {
     "cases": 40,
     "confident_wrong": 0,
     "correct": 37,
     "unknown": 3
    },
-   "more-itertools": {
-    "cases": 40,
-    "confident_wrong": 0,
-    "correct": 25,
-    "unknown": 15
-   },
    "sqlparse": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 21,
-    "unknown": 19
+    "correct": 37,
+    "unknown": 3
    },
    "structlog": {
     "cases": 36,
     "confident_wrong": 0,
-    "correct": 35,
-    "unknown": 1
+    "correct": 36,
+    "unknown": 0
    },
    "toolz": {
     "cases": 40,
     "confident_wrong": 0,
-    "correct": 30,
-    "unknown": 10
+    "correct": 40,
+    "unknown": 0
    }
   },
-  "candidate_replays": 1476,
-  "candidate_replays_pass": 803,
+  "candidate_replays": 1429,
+  "candidate_replays_pass": 769,
   "cases": 392,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 305,
+  "correct": 386,
   "excluded_key_runs": 0,
   "executions": {
-   "max": 43,
-   "mean": 10.71,
-   "median": 8.0,
-   "p90": 25
+   "max": 72,
+   "mean": 15.9,
+   "median": 10.0,
+   "p90": 37
   },
   "finder_round": [
-   3
+   4
   ],
   "not_rebuilt": 0,
   "status": {
-   "confirmed": 305,
-   "unknown": 87
+   "confirmed": 386,
+   "unknown": 6
   },
   "trivial_rules_correct": {
    "newest_candidate": 120,
@@ -98,9 +98,9 @@
   },
   "truth_is_planted": 392,
   "truth_position_first": 14,
-  "unknown": 87,
-  "unknown_suspect_is_truth": 87,
-  "unknown_with_suspect": 87
+  "unknown": 6,
+  "unknown_suspect_is_truth": 6,
+  "unknown_with_suspect": 6
  },
  "a2-placed": {
   "bisect_correct": 196,
@@ -115,16 +115,16 @@
   "cases": 196,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 135,
+  "correct": 190,
   "executions": {
-   "max": 31,
-   "mean": 10.25,
-   "median": 9.0,
-   "p90": 23
+   "max": 72,
+   "mean": 17.36,
+   "median": 11.0,
+   "p90": 43
   },
   "status": {
-   "confirmed": 135,
-   "unknown": 61
+   "confirmed": 190,
+   "unknown": 6
   },
   "trivial_rules_correct": {
    "newest_candidate": 44,
@@ -134,9 +134,9 @@
   },
   "truth_is_planted": 196,
   "truth_position_first": 14,
-  "unknown": 61,
-  "unknown_suspect_is_truth": 61,
-  "unknown_with_suspect": 61
+  "unknown": 6,
+  "unknown_suspect_is_truth": 6,
+  "unknown_with_suspect": 6
  },
  "a2-reland": {
   "bisect_correct": 100,
@@ -146,21 +146,20 @@
    "median": 5.0,
    "p90": 7
   },
-  "candidate_replays": 813,
-  "candidate_replays_pass": 443,
+  "candidate_replays": 766,
+  "candidate_replays_pass": 409,
   "cases": 196,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 170,
+  "correct": 196,
   "executions": {
-   "max": 43,
-   "mean": 11.16,
-   "median": 7.5,
-   "p90": 26
+   "max": 67,
+   "mean": 14.44,
+   "median": 9.0,
+   "p90": 34
   },
   "status": {
-   "confirmed": 170,
-   "unknown": 26
+   "confirmed": 196
   },
   "trivial_rules_correct": {
    "newest_candidate": 76,
@@ -170,9 +169,9 @@
   },
   "truth_is_planted": 196,
   "truth_position_first": 0,
-  "unknown": 26,
-  "unknown_suspect_is_truth": 26,
-  "unknown_with_suspect": 26
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_with_suspect": 0
  },
  "b": {
   "bisect_correct": 27,
@@ -187,18 +186,18 @@
   "cases": 27,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 9,
+  "correct": 27,
   "distinct_culprits": 25,
   "distinct_original_culprits": 12,
   "excluded_key_runs": 0,
   "executions": {
-   "max": 19,
-   "mean": 10.33,
-   "median": 11,
-   "p90": 17
+   "max": 52,
+   "mean": 25.63,
+   "median": 30,
+   "p90": 45
   },
   "finder_round": [
-   3
+   4
   ],
   "not_rebuilt": 0,
   "repos": [
@@ -213,8 +212,7 @@
   ],
   "sources": 12,
   "status": {
-   "confirmed": 9,
-   "unknown": 18
+   "confirmed": 27
   },
   "trivial_rules_correct": {
    "newest_candidate": 3,
@@ -225,9 +223,9 @@
   "truth_is_planted": 4,
   "truth_is_reverted_commit": 4,
   "truth_position_first": 2,
-  "unknown": 18,
-  "unknown_suspect_is_truth": 18,
-  "unknown_with_suspect": 18
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_with_suspect": 0
  },
  "c-edit": {
   "bisect_correct": 15,
@@ -245,7 +243,7 @@
   "correct": 15,
   "executions": {
    "max": 8,
-   "mean": 4.07,
+   "mean": 4.27,
    "median": 4,
    "p90": 6
   },
@@ -266,15 +264,15 @@
  },
  "c-nocode": {
   "bisect_correct": 0,
-  "cases": 38,
+  "cases": 35,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
   "correct": 31,
   "executions": {
    "max": 26,
-   "mean": 7.26,
-   "median": 4.0,
-   "p90": 21
+   "mean": 7.51,
+   "median": 4,
+   "p90": 25
   },
   "mechanisms": [
    "a dependency resolution change adds rich 13.0.0 to the test environment (it was absent; e.g. another dev tool pulls it in with an upper bound); structlog's dev console renderer uses rich when it can import it, and rich 13.0 lacks newer keywords (rich 15.0 passes)",
@@ -282,7 +280,6 @@
    "the CI job sets PYTHONDEVMODE=1",
    "the CI job sets PYTHONOPTIMIZE=1",
    "the CI job turns warnings into errors: PYTHONWARNINGS=error",
-   "the runner image has no home directory",
    "the runner's terminal is 40 columns wide"
   ],
   "rebuilt_exactly": [
@@ -302,7 +299,6 @@
    true,
    true,
    false,
-   null,
    false,
    true,
    true,
@@ -320,53 +316,51 @@
    true,
    null,
    null,
-   null,
-   null,
    true,
    true
   ],
-  "singles": 16,
+  "singles": 15,
   "singles_correct": 13,
-  "unknown": 7
+  "unknown": 4
  },
  "d": {
   "cases": 63,
   "confident_wrong": 0,
   "confident_wrong_ids": [],
-  "correct": 31,
+  "correct": 58,
   "distinct_culprits": 18,
   "executions": {
-   "max": 40,
-   "mean": 23.78,
-   "median": 26,
-   "p90": 31
+   "max": 96,
+   "mean": 33.08,
+   "median": 29,
+   "p90": 67
   },
   "note": "re-run in fix round 3 with the round-2 checkout (fresh stamps)",
-  "unknown": 32
+  "unknown": 5
  },
  "overall": {
-  "cases": 535,
+  "cases": 532,
   "confident_wrong": 0,
-  "correct": 391,
+  "correct": 517,
   "executions": {
-   "max": 43,
-   "mean": 11.8,
-   "median": 10,
-   "p90": 27
+   "max": 96,
+   "mean": 17.55,
+   "median": 11.0,
+   "p90": 39
   },
   "rebuild_cases": 32,
   "rebuild_failed": 2,
-  "share_correct": 0.7308,
-  "unknown": 144,
+  "share_correct": 0.9718,
+  "unknown": 15,
   "without_d": {
-   "cases": 472,
+   "cases": 469,
    "confident_wrong": 0,
-   "correct": 360,
+   "correct": 459,
    "executions": {
-    "max": 43,
-    "mean": 10.2,
-    "median": 7.0,
-    "p90": 24
+    "max": 72,
+    "mean": 15.46,
+    "median": 9,
+    "p90": 37
    }
   }
  }

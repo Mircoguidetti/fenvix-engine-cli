@@ -1,0 +1,373 @@
+{
+ "a2": {
+  "bisect_correct": 296,
+  "bisect_executions": {
+   "max": 8,
+   "mean": 4.88,
+   "median": 5.0,
+   "p90": 7
+  },
+  "by_repo": {
+   "attrs": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 31,
+    "unknown": 9
+   },
+   "boltons": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 40,
+    "unknown": 0
+   },
+   "cachetools": {
+    "cases": 38,
+    "confident_wrong": 0,
+    "correct": 24,
+    "unknown": 14
+   },
+   "click": {
+    "cases": 38,
+    "confident_wrong": 0,
+    "correct": 34,
+    "unknown": 4
+   },
+   "jinja": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 28,
+    "unknown": 12
+   },
+   "marshmallow": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 37,
+    "unknown": 3
+   },
+   "more-itertools": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 25,
+    "unknown": 15
+   },
+   "sqlparse": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 21,
+    "unknown": 19
+   },
+   "structlog": {
+    "cases": 36,
+    "confident_wrong": 0,
+    "correct": 35,
+    "unknown": 1
+   },
+   "toolz": {
+    "cases": 40,
+    "confident_wrong": 0,
+    "correct": 30,
+    "unknown": 10
+   }
+  },
+  "candidate_replays": 1476,
+  "candidate_replays_pass": 803,
+  "cases": 392,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 305,
+  "excluded_key_runs": 0,
+  "executions": {
+   "max": 43,
+   "mean": 10.71,
+   "median": 8.0,
+   "p90": 25
+  },
+  "finder_round": [
+   3
+  ],
+  "not_rebuilt": 0,
+  "status": {
+   "confirmed": 305,
+   "unknown": 87
+  },
+  "trivial_rules_correct": {
+   "newest_candidate": 120,
+   "newest_in_range": 53,
+   "oldest_candidate": 42,
+   "oldest_in_range": 14
+  },
+  "truth_is_planted": 392,
+  "truth_position_first": 14,
+  "unknown": 87,
+  "unknown_suspect_is_truth": 87,
+  "unknown_with_suspect": 87
+ },
+ "a2-placed": {
+  "bisect_correct": 196,
+  "bisect_executions": {
+   "max": 8,
+   "mean": 4.91,
+   "median": 5.0,
+   "p90": 7
+  },
+  "candidate_replays": 663,
+  "candidate_replays_pass": 360,
+  "cases": 196,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 135,
+  "executions": {
+   "max": 31,
+   "mean": 10.25,
+   "median": 9.0,
+   "p90": 23
+  },
+  "status": {
+   "confirmed": 135,
+   "unknown": 61
+  },
+  "trivial_rules_correct": {
+   "newest_candidate": 44,
+   "newest_in_range": 15,
+   "oldest_candidate": 42,
+   "oldest_in_range": 14
+  },
+  "truth_is_planted": 196,
+  "truth_position_first": 14,
+  "unknown": 61,
+  "unknown_suspect_is_truth": 61,
+  "unknown_with_suspect": 61
+ },
+ "a2-reland": {
+  "bisect_correct": 100,
+  "bisect_executions": {
+   "max": 8,
+   "mean": 4.84,
+   "median": 5.0,
+   "p90": 7
+  },
+  "candidate_replays": 813,
+  "candidate_replays_pass": 443,
+  "cases": 196,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 170,
+  "executions": {
+   "max": 43,
+   "mean": 11.16,
+   "median": 7.5,
+   "p90": 26
+  },
+  "status": {
+   "confirmed": 170,
+   "unknown": 26
+  },
+  "trivial_rules_correct": {
+   "newest_candidate": 76,
+   "newest_in_range": 38,
+   "oldest_candidate": 0,
+   "oldest_in_range": 0
+  },
+  "truth_is_planted": 196,
+  "truth_position_first": 0,
+  "unknown": 26,
+  "unknown_suspect_is_truth": 26,
+  "unknown_with_suspect": 26
+ },
+ "b": {
+  "bisect_correct": 27,
+  "bisect_executions": {
+   "max": 7,
+   "mean": 4.93,
+   "median": 5,
+   "p90": 7
+  },
+  "candidate_replays": 99,
+  "candidate_replays_pass": 27,
+  "cases": 27,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 9,
+  "distinct_culprits": 25,
+  "distinct_original_culprits": 12,
+  "excluded_key_runs": 0,
+  "executions": {
+   "max": 19,
+   "mean": 10.33,
+   "median": 11,
+   "p90": 17
+  },
+  "finder_round": [
+   3
+  ],
+  "not_rebuilt": 0,
+  "repos": [
+   "attrs",
+   "click",
+   "faker",
+   "filelock",
+   "jsonschema",
+   "markdown",
+   "pyparsing",
+   "pytest"
+  ],
+  "sources": 12,
+  "status": {
+   "confirmed": 9,
+   "unknown": 18
+  },
+  "trivial_rules_correct": {
+   "newest_candidate": 3,
+   "newest_in_range": 3,
+   "oldest_candidate": 7,
+   "oldest_in_range": 2
+  },
+  "truth_is_planted": 4,
+  "truth_is_reverted_commit": 4,
+  "truth_position_first": 2,
+  "unknown": 18,
+  "unknown_suspect_is_truth": 18,
+  "unknown_with_suspect": 18
+ },
+ "c-edit": {
+  "bisect_correct": 15,
+  "bisect_executions": {
+   "max": 3,
+   "mean": 2.8,
+   "median": 3,
+   "p90": 3
+  },
+  "candidate_replays": 22,
+  "candidate_replays_pass": 10,
+  "cases": 15,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 15,
+  "executions": {
+   "max": 8,
+   "mean": 4.07,
+   "median": 4,
+   "p90": 6
+  },
+  "status": {
+   "confirmed": 15
+  },
+  "trivial_rules_correct": {
+   "newest_candidate": 6,
+   "newest_in_range": 2,
+   "oldest_candidate": 8,
+   "oldest_in_range": 3
+  },
+  "truth_is_planted": 0,
+  "truth_position_first": 0,
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_with_suspect": 0
+ },
+ "c-nocode": {
+  "bisect_correct": 0,
+  "cases": 38,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 31,
+  "executions": {
+   "max": 26,
+   "mean": 7.26,
+   "median": 4.0,
+   "p90": 21
+  },
+  "mechanisms": [
+   "a dependency resolution change adds rich 13.0.0 to the test environment (it was absent; e.g. another dev tool pulls it in with an upper bound); structlog's dev console renderer uses rich when it can import it, and rich 13.0 lacks newer keywords (rich 15.0 passes)",
+   "lockfile bump of the test runner: pytest 8.4.2 -> 9.1.1 (pytest 9.1 removed _pytest.monkeypatch.notset, which flask's conftest used until July 2026)",
+   "the CI job sets PYTHONDEVMODE=1",
+   "the CI job sets PYTHONOPTIMIZE=1",
+   "the CI job turns warnings into errors: PYTHONWARNINGS=error",
+   "the runner image has no home directory",
+   "the runner's terminal is 40 columns wide"
+  ],
+  "rebuilt_exactly": [
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   true,
+   false,
+   null,
+   false,
+   true,
+   true,
+   true,
+   true,
+   null,
+   null,
+   null,
+   null,
+   true,
+   true,
+   null,
+   null,
+   true,
+   true,
+   null,
+   null,
+   null,
+   null,
+   true,
+   true
+  ],
+  "singles": 16,
+  "singles_correct": 13,
+  "unknown": 7
+ },
+ "d": {
+  "cases": 63,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "correct": 31,
+  "distinct_culprits": 18,
+  "executions": {
+   "max": 40,
+   "mean": 23.78,
+   "median": 26,
+   "p90": 31
+  },
+  "note": "re-run in fix round 3 with the round-2 checkout (fresh stamps)",
+  "unknown": 32
+ },
+ "overall": {
+  "cases": 535,
+  "confident_wrong": 0,
+  "correct": 391,
+  "executions": {
+   "max": 43,
+   "mean": 11.8,
+   "median": 10,
+   "p90": 27
+  },
+  "rebuild_cases": 32,
+  "rebuild_failed": 2,
+  "share_correct": 0.7308,
+  "unknown": 144,
+  "without_d": {
+   "cases": 472,
+   "confident_wrong": 0,
+   "correct": 360,
+   "executions": {
+    "max": 43,
+    "mean": 10.2,
+    "median": 7.0,
+    "p90": 24
+   }
+  }
+ }
+}

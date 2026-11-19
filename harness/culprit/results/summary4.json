@@ -1,0 +1,666 @@
+{
+ "a2": {
+  "budget_curve": {
+   "0": {
+    "right": 97,
+    "share": 0.2474,
+    "stated": 97
+   },
+   "4": {
+    "right": 254,
+    "share": 0.648,
+    "stated": 254
+   },
+   "8": {
+    "right": 289,
+    "share": 0.7372,
+    "stated": 289
+   },
+   "16": {
+    "right": 334,
+    "share": 0.852,
+    "stated": 334
+   },
+   "24": {
+    "right": 356,
+    "share": 0.9082,
+    "stated": 356
+   },
+   "32": {
+    "right": 366,
+    "share": 0.9337,
+    "stated": 366
+   },
+   "48": {
+    "right": 382,
+    "share": 0.9745,
+    "stated": 382
+   },
+   "64": {
+    "right": 386,
+    "share": 0.9847,
+    "stated": 386
+   }
+  },
+  "cases": 392,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 233.87,
+   "mean": 14.42,
+   "median": 9.135000000000002,
+   "p90": 33.94
+  },
+  "executions": {
+   "max": 72,
+   "mean": 15.9,
+   "median": 10.0,
+   "p90": 37
+  },
+  "red_inferred": {
+   "max": 67,
+   "mean": 8.18,
+   "median": 3.0,
+   "p90": 22
+  },
+  "red_side_replays": {
+   "max": 64,
+   "mean": 7.86,
+   "median": 3.0,
+   "p90": 23
+  },
+  "right": 386,
+  "stated": 386,
+  "stated_share": 0.9847,
+  "unknown": 6,
+  "unknown_suspect_is_truth": 6,
+  "unknown_why": {
+   "ambiguous (red-side budget)": 6
+  },
+  "unknown_with_suspect": 6,
+  "wall_s": {
+   "max": 238.97,
+   "mean": 16.34,
+   "median": 10.21,
+   "p90": 39.08
+  }
+ },
+ "a2-placed": {
+  "budget_curve": {
+   "0": {
+    "right": 53,
+    "share": 0.2704,
+    "stated": 53
+   },
+   "4": {
+    "right": 109,
+    "share": 0.5561,
+    "stated": 109
+   },
+   "8": {
+    "right": 126,
+    "share": 0.6429,
+    "stated": 126
+   },
+   "16": {
+    "right": 158,
+    "share": 0.8061,
+    "stated": 158
+   },
+   "24": {
+    "right": 172,
+    "share": 0.8776,
+    "stated": 172
+   },
+   "32": {
+    "right": 177,
+    "share": 0.9031,
+    "stated": 177
+   },
+   "48": {
+    "right": 187,
+    "share": 0.9541,
+    "stated": 187
+   },
+   "64": {
+    "right": 190,
+    "share": 0.9694,
+    "stated": 190
+   }
+  },
+  "cases": 196,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 233.87,
+   "mean": 14.79,
+   "median": 9.59,
+   "p90": 34.06
+  },
+  "executions": {
+   "max": 72,
+   "mean": 17.36,
+   "median": 11.0,
+   "p90": 43
+  },
+  "red_inferred": {
+   "max": 67,
+   "mean": 9.95,
+   "median": 4.0,
+   "p90": 26
+  },
+  "red_side_replays": {
+   "max": 64,
+   "mean": 9.98,
+   "median": 3.0,
+   "p90": 32
+  },
+  "right": 190,
+  "stated": 190,
+  "stated_share": 0.9694,
+  "unknown": 6,
+  "unknown_suspect_is_truth": 6,
+  "unknown_why": {
+   "ambiguous (red-side budget)": 6
+  },
+  "unknown_with_suspect": 6,
+  "wall_s": {
+   "max": 238.97,
+   "mean": 16.79,
+   "median": 11.25,
+   "p90": 39.21
+  }
+ },
+ "a2-reland": {
+  "budget_curve": {
+   "0": {
+    "right": 44,
+    "share": 0.2245,
+    "stated": 44
+   },
+   "4": {
+    "right": 145,
+    "share": 0.7398,
+    "stated": 145
+   },
+   "8": {
+    "right": 163,
+    "share": 0.8316,
+    "stated": 163
+   },
+   "16": {
+    "right": 176,
+    "share": 0.898,
+    "stated": 176
+   },
+   "24": {
+    "right": 184,
+    "share": 0.9388,
+    "stated": 184
+   },
+   "32": {
+    "right": 189,
+    "share": 0.9643,
+    "stated": 189
+   },
+   "48": {
+    "right": 195,
+    "share": 0.9949,
+    "stated": 195
+   },
+   "64": {
+    "right": 196,
+    "share": 1.0,
+    "stated": 196
+   }
+  },
+  "cases": 196,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 115.25,
+   "mean": 14.05,
+   "median": 8.625,
+   "p90": 33.77
+  },
+  "executions": {
+   "max": 67,
+   "mean": 14.44,
+   "median": 9.0,
+   "p90": 34
+  },
+  "red_inferred": {
+   "max": 64,
+   "mean": 6.41,
+   "median": 2.0,
+   "p90": 18
+  },
+  "red_side_replays": {
+   "max": 60,
+   "mean": 5.74,
+   "median": 3.0,
+   "p90": 17
+  },
+  "right": 196,
+  "stated": 196,
+  "stated_share": 1.0,
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_why": {},
+  "unknown_with_suspect": 0,
+  "wall_s": {
+   "max": 116.98,
+   "mean": 15.88,
+   "median": 9.9,
+   "p90": 38.29
+  }
+ },
+ "b": {
+  "budget_curve": {
+   "0": {
+    "right": 4,
+    "share": 0.1481,
+    "stated": 4
+   },
+   "4": {
+    "right": 7,
+    "share": 0.2593,
+    "stated": 7
+   },
+   "8": {
+    "right": 9,
+    "share": 0.3333,
+    "stated": 9
+   },
+   "16": {
+    "right": 12,
+    "share": 0.4444,
+    "stated": 12
+   },
+   "24": {
+    "right": 14,
+    "share": 0.5185,
+    "stated": 14
+   },
+   "32": {
+    "right": 22,
+    "share": 0.8148,
+    "stated": 22
+   },
+   "48": {
+    "right": 27,
+    "share": 1.0,
+    "stated": 27
+   },
+   "64": {
+    "right": 27,
+    "share": 1.0,
+    "stated": 27
+   }
+  },
+  "cases": 27,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 62.92,
+   "mean": 24.22,
+   "median": 21.9,
+   "p90": 46.8
+  },
+  "executions": {
+   "max": 52,
+   "mean": 25.63,
+   "median": 30,
+   "p90": 45
+  },
+  "red_inferred": {
+   "max": 86,
+   "mean": 25.96,
+   "median": 23,
+   "p90": 61
+  },
+  "red_side_replays": {
+   "max": 46,
+   "mean": 19.89,
+   "median": 19,
+   "p90": 39
+  },
+  "right": 27,
+  "stated": 27,
+  "stated_share": 1.0,
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_why": {},
+  "unknown_with_suspect": 0,
+  "wall_s": {
+   "max": 76.82,
+   "mean": 27.96,
+   "median": 24.43,
+   "p90": 53.37
+  }
+ },
+ "c-edit": {
+  "budget_curve": {
+   "0": {
+    "right": 7,
+    "share": 0.4667,
+    "stated": 7
+   },
+   "4": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "8": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "16": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "24": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "32": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "48": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   },
+   "64": {
+    "right": 15,
+    "share": 1.0,
+    "stated": 15
+   }
+  },
+  "cases": 15,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 8.07,
+   "mean": 4.63,
+   "median": 4.31,
+   "p90": 7.0
+  },
+  "executions": {
+   "max": 8,
+   "mean": 4.27,
+   "median": 4,
+   "p90": 6
+  },
+  "red_inferred": {
+   "max": 5,
+   "mean": 1.47,
+   "median": 1,
+   "p90": 4
+  },
+  "red_side_replays": {
+   "max": 4,
+   "mean": 1.13,
+   "median": 1,
+   "p90": 3
+  },
+  "right": 15,
+  "stated": 15,
+  "stated_share": 1.0,
+  "unknown": 0,
+  "unknown_suspect_is_truth": 0,
+  "unknown_why": {},
+  "unknown_with_suspect": 0,
+  "wall_s": {
+   "max": 11.69,
+   "mean": 6.25,
+   "median": 5.4,
+   "p90": 9.75
+  }
+ },
+ "c-nocode": {
+  "budget_curve": {
+   "0": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "4": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "8": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "16": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "24": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "32": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "48": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   },
+   "64": {
+    "right": 31,
+    "share": 0.8857,
+    "stated": 31
+   }
+  },
+  "cases": 35,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 27.62,
+   "mean": 8.07,
+   "median": 5.69,
+   "p90": 23.31
+  },
+  "executions": {
+   "max": 26,
+   "mean": 7.51,
+   "median": 4,
+   "p90": 25
+  },
+  "red_inferred": {
+   "max": 0,
+   "mean": 0,
+   "median": 0,
+   "p90": 0
+  },
+  "red_side_replays": {
+   "max": 0,
+   "mean": 0,
+   "median": 0,
+   "p90": 0
+  },
+  "right": 31,
+  "stated": 31,
+  "stated_share": 0.8857,
+  "unknown": 4,
+  "unknown_suspect_is_truth": 0,
+  "unknown_why": {
+   "green environment not rebuilt exactly": 2,
+   "reads ['csock'], which --det does not control": 2
+  },
+  "unknown_with_suspect": 0,
+  "wall_s": {
+   "max": 29.9,
+   "mean": 9.09,
+   "median": 6.87,
+   "p90": 26.14
+  }
+ },
+ "d": {
+  "budget_curve": {
+   "0": {
+    "right": 21,
+    "share": 0.3333,
+    "stated": 21
+   },
+   "4": {
+    "right": 28,
+    "share": 0.4444,
+    "stated": 28
+   },
+   "8": {
+    "right": 31,
+    "share": 0.4921,
+    "stated": 31
+   },
+   "16": {
+    "right": 52,
+    "share": 0.8254,
+    "stated": 52
+   },
+   "24": {
+    "right": 53,
+    "share": 0.8413,
+    "stated": 53
+   },
+   "32": {
+    "right": 53,
+    "share": 0.8413,
+    "stated": 53
+   },
+   "48": {
+    "right": 57,
+    "share": 0.9048,
+    "stated": 57
+   },
+   "64": {
+    "right": 58,
+    "share": 0.9206,
+    "stated": 58
+   }
+  },
+  "cases": 63,
+  "confident_wrong": 0,
+  "confident_wrong_ids": [],
+  "critical_wall_s": {
+   "max": 208.11,
+   "mean": 21.36,
+   "median": 12.58,
+   "p90": 31.81
+  },
+  "executions": {
+   "max": 96,
+   "mean": 33.08,
+   "median": 29,
+   "p90": 67
+  },
+  "red_inferred": null,
+  "red_side_replays": {
+   "max": 64,
+   "mean": 14.05,
+   "median": 9,
+   "p90": 44
+  },
+  "right": 58,
+  "stated": 58,
+  "stated_share": 0.9206,
+  "unknown": 5,
+  "unknown_suspect_is_truth": 5,
+  "unknown_why": {
+   "ambiguous (red-side budget)": 5
+  },
+  "unknown_with_suspect": 5,
+  "wall_s": {
+   "max": 211.84,
+   "mean": 22.3,
+   "median": 14.13,
+   "p90": 33.8
+  }
+ },
+ "overall": {
+  "budget_curve": {
+   "0": {
+    "share": 0.3008,
+    "stated": 160
+   },
+   "4": {
+    "share": 0.6297,
+    "stated": 335
+   },
+   "8": {
+    "share": 0.7049,
+    "stated": 375
+   },
+   "16": {
+    "share": 0.8346,
+    "stated": 444
+   },
+   "24": {
+    "share": 0.8816,
+    "stated": 469
+   },
+   "32": {
+    "share": 0.9154,
+    "stated": 487
+   },
+   "48": {
+    "share": 0.9624,
+    "stated": 512
+   },
+   "64": {
+    "share": 0.9718,
+    "stated": 517
+   }
+  },
+  "cases": 532,
+  "confident_wrong": 0,
+  "critical_wall_s": {
+   "max": 233.87,
+   "mean": 15.04,
+   "median": 9.155000000000001,
+   "p90": 32.8
+  },
+  "executions": {
+   "max": 96,
+   "mean": 17.55,
+   "median": 11.0,
+   "p90": 39
+  },
+  "right": 517,
+  "stated": 517,
+  "stated_share": 0.9718,
+  "unknown": 15,
+  "unknown_suspect_is_truth": 11,
+  "unknown_with_suspect": 11,
+  "wall_s": {
+   "max": 238.97,
+   "mean": 16.87,
+   "median": 10.145,
+   "p90": 37.28
+  },
+  "without_d": {
+   "cases": 469,
+   "executions": {
+    "max": 72,
+    "mean": 15.46,
+    "median": 9,
+    "p90": 37
+   },
+   "stated": 459
+  }
+ }
+}
