@@ -522,8 +522,8 @@
     "ok": true
    }
   ],
-  "verify": "detpy verify: 2 runs, 40 tests\n  run 0: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-1.jsonl\n  run 1: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 39  not covered: 1  missing: 0  outcome-unstable: 0\nreasons: thread=1\nNOT-COVERED fx.SleepControlTest::busyWaitOnTheClockEnds()  [thread] outcomes=passed,passed\n    runs 0 vs 1: event #1000: System.currentTimeMillis @ src/test/java/fx/SleepControlTest.java:32 returned different values: \"1002994\" vs \"1001000\"\n",
-  "fingerprints_identical": false,
+  "verify": "detpy verify: 2 runs, 40 tests\n  run 0: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-1.jsonl\n  run 1: /home/user/fenvix-engine-cli/jvm/test/results/logs/gradle-det-2.jsonl\norder: identical in every run\ncovered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0\n",
+  "fingerprints_identical": true,
   "seed_exploration": {
    "same_order_same_seed": true,
    "seed5_differs_from_seed0": true,
