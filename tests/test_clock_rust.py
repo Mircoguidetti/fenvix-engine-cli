@@ -268,7 +268,6 @@ def test_datetime_now():
     print("VAL", dt.datetime.now())
 ''',
     "test_waits.py": '''
-import asyncio
 import decimal
 import queue
 import selectors
@@ -351,20 +350,6 @@ def test_selectors():
     finally:
         a.close()
         b.close()
-
-
-def test_asyncio():
-    async def main():
-        t0 = time.monotonic()
-        await asyncio.sleep(0.01)
-        try:
-            await asyncio.wait_for(asyncio.Event().wait(), 0.02)
-        except asyncio.TimeoutError:
-            pass
-        time.sleep(0.003)                       # inside the loop: waits for real
-        return time.monotonic() - t0
-
-    print("VAL", asyncio.run(main()))
 ''',
     "test_processes.py": '''
 import os
@@ -398,10 +383,13 @@ def test_flag_is_per_test(external):
           subprocess.Popen.__init__.__name__, subprocess.Popen.__init__.__qualname__)
     time.sleep(0.001)
 ''',
-    # queue.Queue.get(timeout=...) waits for "deadline - now" on queue's own (real) clock: the virtual clock advances
-    # by a real-time-dependent amount, in both paths (wait_for alike). Last, with no clock read after it.
-    "test_zqueue.py": '''
+    # Last, with no recorded clock read after their waits: queue.Queue.get(timeout=...) waits for "deadline - now" on
+    # queue's own (real) clock, so the virtual clock advances by a real-time-dependent amount, in both paths
+    # (Condition.wait_for alike); asyncio's waits likewise (below).
+    "test_zlast.py": '''
+import asyncio
 import queue
+import time
 
 
 def test_queue_timeout():
@@ -410,6 +398,26 @@ def test_queue_timeout():
         q.get(timeout=0.006)
     except queue.Empty:
         print("VAL empty")
+
+
+def test_asyncio():
+    # The loop's select timeouts are "deadline - now" on the loop's real clock, rounded up to the millisecond: a
+    # loop iteration slower than that (a loaded machine) moves the virtual clock by one more millisecond, in both
+    # paths. So nothing reads the (recorded) clock after the loop's waits; the advance is checked unrecorded.
+    from detpy import _core
+
+    async def main():
+        e0 = _core.clock_state()["elapsed"]
+        time.monotonic()
+        await asyncio.sleep(0.01)
+        try:
+            await asyncio.wait_for(asyncio.Event().wait(), 0.02)
+        except asyncio.TimeoutError:
+            pass
+        time.sleep(0.003)                       # inside the loop: waits for real
+        return _core.clock_state()["elapsed"] - e0 >= 33_000_000
+
+    print("VAL", asyncio.run(main()))
 ''',
     "test_tm.py": '''
 import datetime as dt
