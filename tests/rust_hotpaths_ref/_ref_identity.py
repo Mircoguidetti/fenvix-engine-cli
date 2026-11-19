@@ -94,7 +94,7 @@ def _dist_infos(root: str, memo_path: str | None = None):
             os.replace(tmp, memo_path)
         except OSError:
             pass
-    return sorted(parts), editable
+    return sorted(set(parts)), sorted(set(editable))  # parallel-proof: duplicates dropped (identity.rs)
 
 
 def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:

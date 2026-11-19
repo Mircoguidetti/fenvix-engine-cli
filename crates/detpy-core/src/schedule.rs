@@ -158,6 +158,44 @@ fn lpt(atoms: &[Atom], order: &[usize], loads: &mut [u64], place: &mut [usize], 
     }
 }
 
+/// Locality for one-test atoms (`load`, `worksteal`): consecutive tests of the same file are merged into chunk atoms
+/// of at most `total cost / (workers * div)` (a test above that is a chunk of its own). A plan over single tests
+/// scatters every module over every worker: each worker then sets up every module-scoped fixture, and a test loses
+/// more of its serial in-process predecessors (placement). Merging atoms never splits one: atoms that are not
+/// one-test atoms (`t:` keys) are left as they are. Returns the new atom keys (`c:<first test id>`).
+pub fn chunk_test_atoms(ids: &[String], atoms: &[String], costs: &[Option<f64>], workers: usize, div: usize) -> Vec<String> {
+    if div == 0 || workers == 0 || ids.is_empty() {
+        return atoms.to_vec();
+    }
+    let known: Vec<u64> = costs.iter().flatten().map(|&c| micros(c)).collect();
+    let default = median(known).unwrap_or(1_000_000).max(1);
+    let cost: Vec<u64> = costs.iter().map(|c| c.map(micros).unwrap_or(default).max(1)).collect();
+    let cap = (cost.iter().sum::<u64>() / (workers as u64 * div as u64)).max(1);
+    let file = |id: &str| id.split("::").next().unwrap_or(id).to_string();
+    let mut out = Vec::with_capacity(ids.len());
+    let mut cur: Option<(String, String, u64)> = None; // (chunk key, file, cost so far)
+    for (i, id) in ids.iter().enumerate() {
+        if !atoms[i].starts_with("t:") {
+            cur = None;
+            out.push(atoms[i].clone());
+            continue;
+        }
+        let f = file(id);
+        match &mut cur {
+            Some((key, cf, c)) if *cf == f && *c + cost[i] <= cap => {
+                *c += cost[i];
+                out.push(key.clone());
+            }
+            _ => {
+                let key = format!("c:{id}");
+                cur = Some((key.clone(), f, cost[i]));
+                out.push(key);
+            }
+        }
+    }
+    out
+}
+
 /// Digest of a plan: the number of workers and every worker's ordered id list.
 pub fn plan_digest<S: AsRef<str>>(lists: &[Vec<S>]) -> String {
     let mut buf = Vec::new();
@@ -476,5 +514,40 @@ mod tests {
         assert!(plan(&PlanInput { workers: 0, ..Default::default() }).is_err());
         assert_eq!(cost_of(&[1.0, 5.0, 2.0, 3.0]), Some(3.0));
         assert_eq!(cost_of(&[]), None);
+    }
+
+    #[test]
+    fn chunks_are_consecutive_same_file_and_bounded() {
+        let mut rng = Rng(23);
+        let mut input = random_input(&mut rng, 300, 4, DistMode::Group);
+        // serial order: sort by id so files are contiguous
+        let mut idx: Vec<usize> = (0..input.ids.len()).collect();
+        idx.sort_by(|&a, &b| input.ids[a].cmp(&input.ids[b]));
+        input.ids = idx.iter().map(|&i| input.ids[i].clone()).collect();
+        input.atoms = idx.iter().map(|&i| input.atoms[i].clone()).collect();
+        input.costs = idx.iter().map(|&i| input.costs[i]).collect();
+        let chunked = chunk_test_atoms(&input.ids, &input.atoms, &input.costs, 4, 8);
+        for (i, a) in input.atoms.iter().enumerate() {
+            if !a.starts_with("t:") {
+                assert_eq!(&chunked[i], a, "a group atom changed");
+            } else {
+                let first = chunked[i].strip_prefix("c:").unwrap();
+                assert_eq!(first.split("::").next(), input.ids[i].split("::").next());
+            }
+        }
+        // members of a chunk are consecutive
+        let mut seen: BTreeMap<&str, usize> = BTreeMap::new();
+        for (i, c) in chunked.iter().enumerate() {
+            if let Some(&last) = seen.get(c.as_str()) {
+                assert!(c.starts_with("g:") || last + 1 == i, "chunk {c} not consecutive");
+            }
+            seen.insert(c, i);
+        }
+        let n_chunks = chunked.iter().filter(|c| c.starts_with("c:")).collect::<std::collections::BTreeSet<_>>().len();
+        assert!(n_chunks >= 4 * 8 / 2 && n_chunks < 300);
+        input.atoms = chunked;
+        let p = plan(&input).unwrap();
+        assert!(p.makespan <= p.lpt_makespan + 1e-9);
+        assert_eq!(chunk_test_atoms(&input.ids, &input.atoms, &input.costs, 4, 0), input.atoms);
     }
 }

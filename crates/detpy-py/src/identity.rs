@@ -617,6 +617,11 @@ fn dist_infos_w(
         write_replace(p, &out);
     }
     parts.sort();
+    // a distribution found through several sys.path entries naming the same directory (pytest-xdist's workers put
+    // the rootdir on sys.path once more than their controller) is one installed distribution
+    parts.dedup();
+    editable.sort();
+    editable.dedup();
     Ok((parts, editable))
 }
 

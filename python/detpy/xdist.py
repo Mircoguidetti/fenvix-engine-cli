@@ -31,6 +31,8 @@ from . import _core
 PLAN_FORMAT = "detpy-plan"
 PLAN_VERSION = 1
 STICKY_TOLERANCE = 0.10
+# one-test atoms are merged into same-file chunks of at most total / (workers * CHUNK_DIV) (0: off)
+CHUNK_DIV = int(os.environ.get("DETPY_PLAN_CHUNK_DIV", "8"))
 _UNSUPPORTED = {"each"}
 
 
@@ -303,6 +305,12 @@ class Controller:
         atoms = [_core.sched_atom_key(self.ids[i], mode, groups.get(self.ids[i])) for i in place]
         costs = self._costs([self.ids[i] for i in place], pc)
         replay = self._replay(n)
+        if replay is not None:
+            # exact replay: every test is its own atom, pinned to its recorded worker
+            atoms = [f"r:{self.ids[i]}" for i in place]
+        elif mode in ("load", "worksteal") and CHUNK_DIV:
+            # locality: consecutive same-file tests travel together (module fixtures, in-process predecessors)
+            atoms = _core.sched_chunk_atoms([self.ids[i] for i in place], atoms, costs, n, CHUNK_DIV)
         previous = {}
         prev = load_json(os.path.join(self.dir, "plan.json"))
         if replay is not None:
@@ -361,20 +369,20 @@ class Controller:
         d = load_json(path)
         if d is None or d.get("format") != PLAN_FORMAT:
             raise pytest.UsageError(f"--det-plan: {path} is not a detpy plan")
-        mode = d.get("mode") or "load"
+        lists = d.get("lists") or {}
+        assign = dict(d.get("assign") or {})
+        for wid, ids in lists.items():
+            for nid in ids:
+                assign[nid] = wid
         prev = {}
-        for wid, ids in (d.get("lists") or {}).items():
+        for nid, wid in assign.items():
             try:
                 k = int(str(wid)[2:])
             except ValueError:
                 continue
             if k >= n:
                 raise pytest.UsageError(f"--det-plan: the plan has worker {wid}, this run has {n} workers")
-            for nid in ids:
-                prev[_core.sched_atom_key(nid, mode, None) or nid] = k
-        groups_atoms = d.get("atoms") or {}
-        for a, k in groups_atoms.items():
-            prev.setdefault(a, int(k))
+            prev[f"r:{nid}"] = k
         return prev
 
     # -- end of session ------------------------------------------------------------------------------------

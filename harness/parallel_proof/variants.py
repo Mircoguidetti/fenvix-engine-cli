@@ -43,6 +43,9 @@ def variant_args(v: str, out: str, workers: int, dist: str) -> list[str]:
     if v.startswith("cache-x"):  # a parallel run on the serial store (cross-mode reuse)
         return det + par + [f"--det-cache={os.path.join(out, 'cache-ser')}",
                             f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
+    if v.startswith("cache-y"):  # a serial run on the store written under -n (cross-mode reuse)
+        return det + [f"--det-cache={os.path.join(out, 'cache-n')}",
+                      f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
     raise SystemExit(f"unknown variant {v}")
 
 

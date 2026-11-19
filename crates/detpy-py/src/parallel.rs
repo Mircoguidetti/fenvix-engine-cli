@@ -55,6 +55,12 @@ fn sched_plan(
     .map_err(json_err)
 }
 
+/// Chunk atoms of consecutive same-file one-test atoms (`detpy_core::schedule::chunk_test_atoms`).
+#[pyfunction]
+fn sched_chunk_atoms(ids: Vec<String>, atoms: Vec<String>, costs: Vec<Option<f64>>, workers: usize, div: usize) -> Vec<String> {
+    schedule::chunk_test_atoms(&ids, &atoms, &costs, workers, div)
+}
+
 /// Digest of a plan given as per-worker id lists.
 #[pyfunction]
 fn sched_plan_digest(lists: Vec<Vec<String>>) -> String {
@@ -92,6 +98,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sched_cost_of, m)?)?;
     m.add_function(wrap_pyfunction!(sched_plan, m)?)?;
     m.add_function(wrap_pyfunction!(sched_plan_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(sched_chunk_atoms, m)?)?;
     m.add_function(wrap_pyfunction!(merge_traces, m)?)?;
     Ok(())
 }

@@ -360,3 +360,19 @@ def test_cache_summary_and_trace_under_n(pytester):
     # everything reused by the controller, the worker-id reader too (same worker as in its recorded run)
     assert tests == {} and len(c["reused_ids"]) == N_SUITE
     assert h["meta"]["plan"]["hits"] == N_SUITE
+
+
+@needs_cache
+def test_whole_environment_readers_are_reused_across_modes(pytester):
+    """esphome: 3,000 tests that enumerate os.environ were never reused under -n (xdist's per-run uid, the workers'
+    COLUMNS/LINES), and entries recorded by workers never served a serial run."""
+    write(pytester, **{"tests/test_env.py": """
+        import os
+        def test_enumerates(): assert len(dict(os.environ)) > 0
+        def test_other(): pass
+        """})
+    cache_run(pytester, 2, "cold", "tests")[0].assert_outcomes(passed=2)
+    _, w, _ = cache_run(pytester, 2, "warm", "tests")
+    assert "tests/test_env.py::test_enumerates" in w["reused_ids"]
+    _, s, _ = cache_run(pytester, 0, "serial", "tests")
+    assert "tests/test_env.py::test_enumerates" in s["reused_ids"]
