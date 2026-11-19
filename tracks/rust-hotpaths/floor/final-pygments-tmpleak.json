@@ -1,0 +1,466 @@
+{
+ "spec": "pygments",
+ "shard": "0/1",
+ "engines": [
+  "base",
+  "r1",
+  "r2cp",
+  "r2"
+ ],
+ "cpus": 4,
+ "runner": "",
+ "engine_sha": "",
+ "walls": {
+  "P0": [
+   13.532928642000115,
+   13.240890223998576,
+   13.227890944001047
+  ],
+  "K0": [
+   1.500376452000637,
+   1.5014822420016571,
+   1.4863236860001052
+  ],
+  "W:base": [
+   5.370957597000597,
+   5.1073315650010045,
+   5.383893522001017
+  ],
+  "X:base": [
+   0.4215200939997885,
+   0.467155656999239,
+   0.4291781629999605
+  ],
+  "W:r1": [
+   4.853626179999992,
+   4.897659885000394,
+   5.2757375040000625
+  ],
+  "X:r1": [
+   0.45604436000030546,
+   0.41918971500126645,
+   0.435959783000726
+  ],
+  "W:r2cp": [
+   4.791196520000085,
+   4.7929383809987485,
+   4.64087666100022
+  ],
+  "X:r2cp": [
+   0.24813281299975642,
+   0.2199072060011531,
+   0.22614932100077567
+  ],
+  "W:r2": [
+   3.9225327519998245,
+   4.202816034001444,
+   4.098851746000946
+  ],
+  "X:r2": [
+   0.22007308800129977,
+   0.227640691000488,
+   0.20440168700042705
+  ]
+ },
+ "cache": {
+  "C:base": [
+   {
+    "exit": 0,
+    "wall": 18.711444558999574,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.961,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:r1": [
+   {
+    "exit": 0,
+    "wall": 17.965059339001527,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.396,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.423,
+      "plan": 0.187,
+      "assemble": 0.681,
+      "save": 0.105
+     }
+    }
+   }
+  ],
+  "C:r2cp": [
+   {
+    "exit": 0,
+    "wall": 18.108783592999316,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.004,
+     "record_seconds": 1.269,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.413,
+      "plan": 0.156,
+      "assemble": 0.603,
+      "save": 0.096
+     }
+    }
+   }
+  ],
+  "C:r2": [
+   {
+    "exit": 0,
+    "wall": 18.165187865000917,
+    "n": 5346,
+    "cache": {
+     "reused": 0,
+     "ran": 5346,
+     "recorded": 5346,
+     "check_seconds": 0.006,
+     "record_seconds": 1.403,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.539,
+      "plan": 0.097,
+      "assemble": 0.654,
+      "save": 0.111
+     }
+    }
+   }
+  ],
+  "W:base": [
+   {
+    "exit": 0,
+    "wall": 5.370957597000597,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.51,
+     "record_seconds": 0.251,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.1073315650010045,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.434,
+     "record_seconds": 0.232,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.383893522001017,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.445,
+     "record_seconds": 0.275,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:r1": [
+   {
+    "exit": 0,
+    "wall": 4.853626179999992,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.474,
+     "record_seconds": 0.043,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.035,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.897659885000394,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.349,
+     "record_seconds": 0.044,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.036,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 5.2757375040000625,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.564,
+     "record_seconds": 0.048,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.04,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "W:r2cp": [
+   {
+    "exit": 0,
+    "wall": 4.791196520000085,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.467,
+     "record_seconds": 0.043,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.035,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.7929383809987485,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.458,
+     "record_seconds": 0.044,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.036,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.64087666100022,
+    "n": 5346,
+    "cache": {
+     "reused": 5346,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.443,
+     "record_seconds": 0.038,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.004,
+      "facts": 0.003,
+      "plan": 0.029,
+      "assemble": 0.003,
+      "save": 0.0
+     }
+    }
+   }
+  ],
+  "W:r2": [
+   {
+    "exit": 0,
+    "wall": 3.9225327519998245,
+    "n": 5346,
+    "cache": {
+     "reused": 5344,
+     "ran": 2,
+     "recorded": 2,
+     "check_seconds": 0.154,
+     "record_seconds": 0.284,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.033,
+      "assemble": 0.021,
+      "save": 0.225
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.202816034001444,
+    "n": 5346,
+    "cache": {
+     "reused": 5344,
+     "ran": 2,
+     "recorded": 2,
+     "check_seconds": 0.144,
+     "record_seconds": 0.33,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.034,
+      "assemble": 0.025,
+      "save": 0.266
+     }
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 4.098851746000946,
+    "n": 5346,
+    "cache": {
+     "reused": 5344,
+     "ran": 2,
+     "recorded": 2,
+     "check_seconds": 0.17,
+     "record_seconds": 0.322,
+     "not_cached": {},
+     "phase_seconds": {
+      "children": 0.001,
+      "facts": 0.004,
+      "plan": 0.034,
+      "assemble": 0.024,
+      "save": 0.258
+     }
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "W:base": {
+   "wall": 5.244234380001217,
+   "exit": 0,
+   "samples": 1296,
+   "buckets": {
+    "collection": 431,
+    "reuse": 281,
+    "configure": 110,
+    "finish": 109,
+    "check": 106,
+    "other": 102,
+    "imports": 81,
+    "tests": 63,
+    "identity": 13
+   }
+  },
+  "W:r1": {
+   "wall": 4.536571054999513,
+   "exit": 0,
+   "samples": 1082,
+   "buckets": {
+    "collection": 369,
+    "reuse": 286,
+    "check": 102,
+    "other": 90,
+    "configure": 83,
+    "tests": 61,
+    "finish": 47,
+    "imports": 36,
+    "identity": 8
+   }
+  },
+  "W:r2cp": {
+   "wall": 4.450424414999361,
+   "exit": 0,
+   "samples": 1052,
+   "buckets": {
+    "collection": 393,
+    "reuse": 262,
+    "check": 135,
+    "configure": 84,
+    "other": 56,
+    "tests": 47,
+    "finish": 34,
+    "imports": 30,
+    "identity": 11
+   }
+  },
+  "W:r2": {
+   "wall": 4.181829450000805,
+   "exit": 0,
+   "samples": 1068,
+   "buckets": {
+    "collection": 410,
+    "reuse": 199,
+    "finish": 128,
+    "configure": 94,
+    "other": 85,
+    "tests": 55,
+    "imports": 43,
+    "check": 41,
+    "identity": 13
+   }
+  }
+ },
+ "sha": "156d85fdd18d34427fe893527e71da91dcfb0eb5",
+ "units": 0,
+ "median": {
+  "P0": 13.240890223998576,
+  "K0": 1.500376452000637,
+  "W:base": 5.370957597000597,
+  "X:base": 0.4291781629999605,
+  "W:r1": 4.897659885000394,
+  "X:r1": 0.435959783000726,
+  "W:r2cp": 4.791196520000085,
+  "X:r2cp": 0.22614932100077567,
+  "W:r2": 4.098851746000946,
+  "X:r2": 0.22007308800129977
+ },
+ "floor": {
+  "base": 0.4056341761119622,
+  "r1": 0.36988901819634334,
+  "r2cp": 0.361848519166501,
+  "r2": 0.3095601335453974
+ },
+ "finished": "2026-11-19T03:01:14Z"
+}

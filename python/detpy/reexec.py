@@ -12,11 +12,22 @@ Bytecode: a ``.pyc`` stores constants such as set literals (as ``frozenset``)
 in the iteration order of the process that compiled them, and loading it can
 yield a different set layout than compiling from source. To make every run
 read the *same* bytecode, before the exec detpy precompiles the standard
-library, site-packages and the project with ``compileall`` *under the fixed
+library, site-packages and the project (``_pycompile.py``) *under the fixed
 hash seed* into a private cache (``PYTHONPYCACHEPREFIX``), and the exec'd
 interpreter runs with ``PYTHONDONTWRITEBYTECODE=1``: modules are then either
 loaded from that deterministic cache or (if not precompiled, e.g. pytest's
 assertion-rewritten test modules) always compiled from source.
+
+The cached bytecode is *checked-hash* (PEP 552, ``_pycompile.py``): the import
+system hashes the source before it uses a ``.pyc``, so stale bytecode never
+runs, whatever the source's mtime says (a timestamp ``.pyc`` is valid for
+``(int(mtime), size)``: same-size edits within one second, restored or foreign
+mtimes, reinstalled library modules that keep their archive mtimes).
+
+The decisions are in Rust (``crates/detpy-py/src/reexec.rs``, ``crates/detpy-core/src/reexec.rs``): the personality
+read and set, the cache directory, ``plan``, the command line, ``can_reexec``, the precompile's directories and its
+stamps file with the todo/fresh decision. This module keeps the exec itself, ``sysconfig`` and the driver
+subprocess. The Python original is kept verbatim in ``tests/rust_hotpaths_ref/_ref_reexec_r2.py``.
 """
 
 from __future__ import annotations
@@ -30,7 +41,8 @@ import time
 ADDR_NO_RANDOMIZE = 0x0040000
 MARKER = "DETPY_REEXEC"
 PRECOMPILE_ENV = "DETPY_PRECOMPILE_S"
-_EXCLUDE = r"[/\\](\.git|\.hg|\.tox|\.nox|node_modules|\.venv|venv|\.eggs|\.mypy_cache|\.detpy)[/\\]"
+_EXCLUDE_NAMES = (".git", ".hg", ".tox", ".nox", "node_modules", ".venv", "venv", ".eggs", ".mypy_cache", ".detpy")
+_EXCLUDE = r"[/\\](" + "|".join(n.replace(".", r"\.") for n in _EXCLUDE_NAMES) + r")[/\\]"
 
 # Number of pytest sessions currently configured in this process. A nested,
 # in-process session (``pytest.main()`` from a test, pytester inline runs)
@@ -39,92 +51,45 @@ SESSION_DEPTH = 0
 
 
 def aslr_disabled() -> bool | None:
-    """True/False on Linux, None when unknown."""
-    try:
-        with open("/proc/self/personality") as f:
-            return bool(int(f.read().strip(), 16) & ADDR_NO_RANDOMIZE)
-    except (OSError, ValueError):
-        return None
+    """True/False on Linux, None when unknown (``/proc/self/personality``)."""
+    return _core().aslr_disabled()
 
 
 def _disable_aslr_for_exec() -> bool:
-    if not sys.platform.startswith("linux"):
-        return False
-    try:
-        import ctypes
-
-        libc = ctypes.CDLL(None, use_errno=True)
-        current = libc.personality(0xFFFFFFFF)
-        if current == -1:
-            return False
-        return libc.personality(current | ADDR_NO_RANDOMIZE) != -1
-    except Exception:
-        return False
+    """``personality(current | ADDR_NO_RANDOMIZE)``, inherited by the exec'd interpreter (Linux only)."""
+    return _core().disable_aslr_for_exec()
 
 
 def pyc_cache_dir(hashseed: str) -> str:
-    base = os.environ.get("DETPY_PYC_CACHE") or os.path.join(
-        os.environ.get("XDG_CACHE_HOME") or os.path.join(os.path.expanduser("~"), ".cache"), "detpy", "pyc"
-    )
-    return os.path.join(base, f"{sys.implementation.cache_tag}-hashseed{hashseed}")
+    return _core().pyc_cache_dir(hashseed)
 
 
 def bytecode_active(hashseed: str) -> bool:
-    prefix = sys.pycache_prefix
-    return bool(sys.flags.dont_write_bytecode and prefix
-                and os.path.realpath(prefix) == os.path.realpath(pyc_cache_dir(hashseed)))
+    return _core().bytecode_active(hashseed)
 
 
 def plan(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True) -> dict:
     """What a re-exec would fix: {'hashseed': bool, 'aslr': bool, 'bytecode': bool}."""
-    need_hash = os.environ.get("PYTHONHASHSEED") != want_hashseed
-    need_aslr = want_no_aslr and aslr_disabled() is False
-    need_bytecode = want_bytecode and not bytecode_active(want_hashseed)
-    return {"hashseed": need_hash, "aslr": need_aslr, "bytecode": need_bytecode}
+    return _core().reexec_plan(want_hashseed, want_no_aslr, want_bytecode)
 
 
 def _argv() -> list[str] | None:
-    orig = getattr(sys, "orig_argv", None)
-    if orig:
-        return [sys.executable] + list(orig[1:])
-    # Python < 3.10: rebuild the command line (interpreter flags are lost).
-    main = sys.modules.get("__main__")
-    spec = getattr(main, "__spec__", None)
-    if spec is not None and spec.name in ("pytest", "pytest.__main__"):
-        return [sys.executable, "-m", "pytest", *sys.argv[1:]]
-    if sys.argv and sys.argv[0]:
-        return [sys.executable, *sys.argv]
-    return None
+    return _core().reexec_argv()
 
 
 def can_reexec() -> tuple[bool, str]:
-    if os.environ.get(MARKER) == "1":
-        return False, "already re-executed"
-    if SESSION_DEPTH > 1:
-        return False, "nested in-process pytest session"
-    if os.name != "posix":
-        return False, "exec is only supported on POSIX"
-    if _argv() is None:
-        return False, "cannot reconstruct the command line"
-    return True, ""
+    return _core().reexec_can(SESSION_DEPTH)
 
 
 def precompile_dirs(rootdir: str | None) -> list[str]:
     paths = sysconfig.get_paths()
-    dirs = []
-    for key in ("stdlib", "purelib", "platlib"):
-        p = paths.get(key)
-        if p and os.path.isdir(p) and os.path.realpath(p) not in map(os.path.realpath, dirs):
-            dirs.append(p)
-    if rootdir and os.path.isdir(rootdir):
-        dirs.append(rootdir)
-    return dirs
+    return _core().reexec_precompile_dirs([paths.get(key) for key in ("stdlib", "purelib", "platlib")], rootdir)
 
 
 def precompile(hashseed: str, rootdir: str | None) -> float:
     """Compile every reachable module under the fixed hash seed; returns seconds.
 
-    Incremental: ``compileall`` skips modules whose cached ``.pyc`` is up to date.
+    Incremental: a module whose cached checked-hash ``.pyc`` matches its source's hash is skipped.
     """
     prefix = pyc_cache_dir(hashseed)
     os.makedirs(prefix, exist_ok=True)
@@ -136,64 +101,81 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # The standard library and site-packages hold tens of thousands of modules (home-assistant: compileall's
     # up-to-date check alone took 7-8 s per run). They are skipped while their top-level state (entries, their
     # mtimes, each dist-info's RECORD) is the one of the last complete precompile: an installer changes it. A
-    # module edited in place without that is loaded from source under the same fixed seed, in every run alike.
+    # module edited in place without that fails the import system's source-hash check and is loaded from source
+    # under the same fixed seed, in every run alike.
     # The project is always checked (it changes at every commit).
-    stamps_path = os.path.join(prefix, "stamps.json")
-    try:
-        import json
-
-        with open(stamps_path) as fh:
-            stamps = json.load(fh)
-    except (OSError, ValueError):
-        stamps = {}
-    root_real = os.path.realpath(rootdir) if rootdir else None
-    todo, fresh = [], {}
-    for d in dirs:
-        if root_real is not None and os.path.realpath(d) == root_real:
-            todo.append(d)
+    # v3: stamps written while the cache held timestamp .pyc files (v2 and earlier) do not count: every library
+    # directory is checked once more, which converts its bytecode to checked-hash pycs.
+    # The stamps file's read and write and the todo/fresh decision are in Rust (_core.reexec_precompile_plan).
+    # The exclusions (VCS, tool caches, virtual environments) apply to the project's tree only: a library
+    # directory is itself inside a virtual environment (venv/lib/python3.X/site-packages), and excluding it there
+    # left every installed module to be compiled from source at every run
+    stamps_path = os.path.join(prefix, "stamps-v3.json")
+    libs, project, stamps = _core().reexec_precompile_plan(dirs, rootdir, stamps_path)
+    driver = _driver_source()
+    for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
+        if not dirs_:
             continue
-        st = dir_stamp(d)
-        fresh[d] = st
-        if stamps.get(d) != st:
-            todo.append(d)
-    if todo:
-        cmd = [sys.executable, "-m", "compileall", "-qq", "-j", "0", "-x", _EXCLUDE, *todo]
-        p = subprocess.run(cmd, env=env, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
-                           stderr=subprocess.DEVNULL)
-        if p.returncode not in (0, 1):  # 1: some file does not compile (it never will); else: interrupted
+        stale = _stale_sources(dirs_, prefix, bool(extra))
+        if stale is None:  # no Rust check here: the driver walks and checks the directories itself
+            cmd, data = [sys.executable, "-c", driver, *extra, *dirs_], None
+        elif not stale:
+            continue
+        else:
+            cmd, data = [sys.executable, "-c", driver, "--stdin"], b"\0".join(os.fsencode(f) for f in stale)
+        p = subprocess.run(cmd, env=env, input=data, stdin=None if data is not None else subprocess.DEVNULL,
+                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if p.returncode != 0:  # interrupted: no stamps (a file that does not compile is skipped, not an error)
             return time.perf_counter() - t0
-    try:
-        import json
-
-        tmp = f"{stamps_path}.{os.getpid()}.tmp"
-        with open(tmp, "w") as fh:
-            json.dump({**stamps, **fresh}, fh)
-        os.replace(tmp, stamps_path)
-    except OSError:
-        pass
+    stamps.write(stamps_path)
     return time.perf_counter() - t0
 
 
-def dir_stamp(d: str) -> str:
-    """Digest of a library directory's top-level entries with their mtimes and each ``*.dist-info/RECORD``'s."""
-    import hashlib
+def _core():
+    from . import _core as c
 
-    h = hashlib.sha256()
-    try:
-        with os.scandir(d) as it:
-            entries = sorted(it, key=lambda e: e.name)
-    except OSError:
-        return "missing"
-    for e in entries:
-        try:
-            st = e.stat(follow_symlinks=False)
-            h.update(f"{e.name}\0{st.st_mtime_ns}\0{st.st_ino}\n".encode("utf-8", "surrogateescape"))
-            if e.name.endswith(".dist-info"):
-                r = os.stat(os.path.join(e.path, "RECORD"))
-                h.update(f"R{r.st_mtime_ns}\0{r.st_size}\0{r.st_ino}\n".encode())
-        except OSError:
-            h.update(f"{e.name}\0?\n".encode("utf-8", "surrogateescape"))
-    return h.hexdigest()
+    return c
+
+
+_SIP: list = []  # [(c_rounds, d_rounds)] of importlib.util.source_hash, [None] when the Rust hash does not match it
+
+
+def _hash_variant():
+    if not _SIP:
+        import importlib.util
+
+        key = int.from_bytes(importlib.util.MAGIC_NUMBER, "little")
+        probe = b"detpy source_hash probe\n" * 3
+        want = importlib.util.source_hash(probe)
+        _SIP.append(next((v for v in ((1, 3), (2, 4)) if _core().source_hash(probe, key, *v) == want), None))
+    return _SIP[0]
+
+
+def _stale_sources(dirs: list, prefix: str, project: bool) -> list | None:
+    """The sources the driver would compile for ``dirs`` (with the project's exclusions when ``project``), checked in
+    Rust (``_core.pyc_stale_hashed``: the driver's walk and up-to-date test); None when the Rust check does not apply
+    here (not POSIX, an optimization level that names ``.opt-N.pyc`` files, an unknown source hash)."""
+    import importlib.util
+
+    if os.name != "posix" or os.environ.get("PYTHONOPTIMIZE") or sys.flags.optimize:
+        return None
+    variant = _hash_variant()
+    if variant is None or sys.implementation.cache_tag is None:
+        return None
+    return _core().pyc_stale_hashed(dirs, prefix, sys.implementation.cache_tag, importlib.util.MAGIC_NUMBER,
+                                    os.getcwd(), list(_EXCLUDE_NAMES) if project else [],
+                                    int.from_bytes(importlib.util.MAGIC_NUMBER, "little"), *variant)
+
+
+def _driver_source() -> str:
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "_pycompile.py"), encoding="utf-8") as fh:
+        return fh.read()
+
+
+def dir_stamp(d: str) -> str:
+    """Digest of a library directory's top-level entries with their mtimes and each ``*.dist-info/RECORD``'s (in
+    Rust; the Python original is ``tests/rust_hotpaths_ref/_ref_reexec_r015.py``)."""
+    return _core().dir_stamp(d)
 
 
 BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"

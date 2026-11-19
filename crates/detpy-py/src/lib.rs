@@ -13,8 +13,31 @@ use pyo3::types::PyBytes;
 use std::path::PathBuf;
 use std::sync::{Mutex, MutexGuard};
 
+mod capture;
+mod follow;
+mod level0;
+mod precompile;
 mod proofcache;
+mod session;
 mod sysmon;
+
+// Level 0 seeds and filesystem order
+mod fsorder;
+mod seeds;
+mod standin;
+
+// rust-hotpaths-2: repro / reexec decisions
+mod reexec;
+mod repro;
+// Level 0 clock, round 2: sleep, wall-derived functions, datetime, wait timeouts
+mod clock;
+// Level 0 closed network
+mod network;
+// rust-hotpaths-2: the capture's sqlite trace and rare-event helpers
+mod sockcap;
+mod sqlcap;
+// rust-hotpaths-2: runtime identity of the cache with proof
+mod identity;
 
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     // A panic while holding the lock must not make every later call fail.
@@ -22,9 +45,16 @@ fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
 }
 
 /// Per-test fingerprinting recorder that streams a trace file.
-#[pyclass(module = "detpy._core")]
-struct Recorder {
+#[pyclass(module = "detpy._core", frozen)]
+pub(crate) struct Recorder {
     inner: Mutex<CoreRecorder>,
+}
+
+impl Recorder {
+    /// Record one event for the current test (the Rust event path of `level0`).
+    pub(crate) fn push(&self, event: Event) {
+        lock(&self.inner).record(event);
+    }
 }
 
 #[pymethods]
@@ -173,7 +203,7 @@ impl Cassette {
     }
 }
 
-fn trace_err(e: trace::TraceError) -> PyErr {
+pub(crate) fn trace_err(e: trace::TraceError) -> PyErr {
     match e {
         trace::TraceError::Io(e) => e.into(),
         other => PyValueError::new_err(other.to_string()),
@@ -247,10 +277,37 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(backends, m)?)?;
     m.add_class::<sysmon::LineRecorder>()?;
     m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
+    m.add_class::<sysmon::SocketScan>()?;
+    m.add_function(wrap_pyfunction!(sysmon::tracer_prefixes, m)?)?;
     m.add_class::<proofcache::ProofCache>()?;
+    m.add_class::<session::CacheSession>()?;
+    m.add_function(wrap_pyfunction!(session::det_outcome, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::file_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::py_repr_float, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::json_dumps_str, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::listing_digest, m)?)?;
+    m.add_function(wrap_pyfunction!(proofcache::dist_identity, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_value_digest, m)?)?;
     m.add_function(wrap_pyfunction!(proofcache::env_all_digest, m)?)?;
+    level0::register(m)?;
+    capture::register(m)?;
+    precompile::register(m)?;
+    follow::register(m)?;
+    // Level 0 seeds and filesystem order
+    standin::register(m)?;
+    seeds::register(m)?;
+    fsorder::register(m)?;
+    // rust-hotpaths-2: repro / reexec decisions
+    reexec::register(m)?;
+    repro::register(m)?;
+    // Level 0 clock, round 2
+    clock::register(m)?;
+    // Level 0 closed network
+    network::register(m)?;
+    // rust-hotpaths-2: the capture's sqlite trace and rare-event helpers
+    sqlcap::register(m)?;
+    sockcap::register(m)?;
+    // rust-hotpaths-2: runtime identity of the cache with proof
+    identity::register(m)?;
     Ok(())
 }

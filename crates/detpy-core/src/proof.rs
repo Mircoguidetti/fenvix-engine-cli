@@ -33,6 +33,10 @@ use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
 pub const STORE_VERSION: u32 = 1;
+
+/// A shared string: the data dependencies of every test of a session repeat the same global reads (paths and
+/// digests), stored once in memory (serialized as plain strings).
+pub type Str = std::sync::Arc<str>;
 const STORE_FILE: &str = "proof-cache.json";
 
 /// One outermost function of a source file: qualified name, body line range
@@ -81,7 +85,7 @@ pub struct Entry {
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
-    pub data: Vec<(String, String)>,
+    pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
     pub content: u32,
@@ -119,7 +123,7 @@ pub struct Observed {
     pub runtime: String,
     pub epoch: Option<i64>,
     pub env: Vec<(String, String)>,
-    pub data: Vec<(String, String)>,
+    pub data: Vec<(Str, Str)>,
     pub content: Vec<u32>,
     pub skeleton: Vec<u32>,
     pub hooks: Vec<u32>,
@@ -322,6 +326,38 @@ impl Store {
     /// compared (skeleton, unit and hook digests, not raw file bytes, so a
     /// reformatted but equivalent file keeps the key).
     pub fn key_of(&self, nodeid: &str, e: &Entry) -> String {
+        self.key_of_with(nodeid, e, &mut FxMap::default())
+    }
+
+    /// The bytes of one (content | skeleton | hooks) part of a key: the set's sorted (path, digest) pairs.
+    fn key_part(&self, tag: &str, id: u32) -> Vec<u8> {
+        let mut b = Vec::new();
+        let file = |i: u32| self.files.get(i as usize);
+        let mut parts: Vec<(&str, &str)> = self
+            .set(id)
+            .iter()
+            .filter_map(|&i| file(i))
+            .map(|f| {
+                (
+                    f.path.as_str(),
+                    match tag {
+                        "|content" => f.content.as_str(),
+                        "|skeleton" => f.skeleton.as_str(),
+                        _ => f.hooks.as_str(),
+                    },
+                )
+            })
+            .collect();
+        parts.sort();
+        for (p, d) in parts {
+            push_part(&mut b, p);
+            push_part(&mut b, d);
+        }
+        b
+    }
+
+    /// `key_of` with the set parts memoised in `parts` (they are shared by many entries of one session).
+    pub fn key_of_with(&self, nodeid: &str, e: &Entry, parts_memo: &mut FxMap<(u8, u32), Vec<u8>>) -> String {
         let mut b = Vec::new();
         push_part(&mut b, "detpy-proof-1");
         push_part(&mut b, nodeid);
@@ -338,28 +374,10 @@ impl Store {
             push_part(&mut b, v);
         }
         let file = |i: u32| self.files.get(i as usize);
-        for (tag, id) in [("|content", e.content), ("|skeleton", e.skeleton), ("|hooks", e.hooks)] {
+        for (t, (tag, id)) in [("|content", e.content), ("|skeleton", e.skeleton), ("|hooks", e.hooks)].into_iter().enumerate() {
             push_part(&mut b, tag);
-            let mut parts: Vec<(&str, &str)> = self
-                .set(id)
-                .iter()
-                .filter_map(|&i| file(i))
-                .map(|f| {
-                    (
-                        f.path.as_str(),
-                        match tag {
-                            "|content" => f.content.as_str(),
-                            "|skeleton" => f.skeleton.as_str(),
-                            _ => f.hooks.as_str(),
-                        },
-                    )
-                })
-                .collect();
-            parts.sort();
-            for (p, d) in parts {
-                push_part(&mut b, p);
-                push_part(&mut b, d);
-            }
+            let part = parts_memo.entry((t as u8, id)).or_insert_with(|| self.key_part(tag, id));
+            b.extend_from_slice(part);
         }
         push_part(&mut b, "|units");
         let mut units: Vec<(&str, &str, &str)> = e
@@ -577,11 +595,56 @@ pub struct Receipt {
     pub n_changed_files_proven: usize,
 }
 
+/// FxHash (rustc's hasher) for the checker's memo tables: string keys looked up for every dependency of every
+/// entry; SipHash was ~10 % of a warm session's check (MEASURED, py-spy --native). Keys are not adversarial.
+#[derive(Default, Clone, Copy)]
+pub struct FxHasher(u64);
+
+impl std::hash::Hasher for FxHasher {
+    fn finish(&self) -> u64 {
+        self.0
+    }
+    fn write(&mut self, bytes: &[u8]) {
+        const K: u64 = 0x51_7c_c1_b7_27_22_0a_95;
+        let mut h = self.0;
+        let mut chunks = bytes.chunks_exact(8);
+        for c in &mut chunks {
+            h = (h.rotate_left(5) ^ u64::from_le_bytes(c.try_into().unwrap())).wrapping_mul(K);
+        }
+        for &b in chunks.remainder() {
+            h = (h.rotate_left(5) ^ b as u64).wrapping_mul(K);
+        }
+        self.0 = h;
+    }
+    fn write_u8(&mut self, i: u8) {
+        self.0 = (self.0.rotate_left(5) ^ i as u64).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+    }
+    fn write_u32(&mut self, i: u32) {
+        self.0 = (self.0.rotate_left(5) ^ i as u64).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+    }
+    fn write_u64(&mut self, i: u64) {
+        self.0 = (self.0.rotate_left(5) ^ i).wrapping_mul(0x51_7c_c1_b7_27_22_0a_95);
+    }
+    fn write_usize(&mut self, i: usize) {
+        self.write_u64(i as u64);
+    }
+}
+
+pub type FxMap<K, V> = HashMap<K, V, std::hash::BuildHasherDefault<FxHasher>>;
+
 #[derive(Default)]
 pub struct Checker {
     pub cur: Current,
-    content_now: HashMap<String, Option<String>>,
-    data_now: HashMap<(String, char), String>,
+    content_now: FxMap<String, Option<String>>,
+    data_now: FxMap<char, FxMap<String, String>>,
+    /// Outcome of checking each (content | skeleton | hooks, set id): the same for every entry of the session
+    /// (Ok: the files proven unchanged in their used parts).
+    set_checks: FxMap<(u8, u32), Result<Vec<String>, Miss>>,
+    /// Digests of the current environment: the whole of it, and per variable (the same for every test).
+    env_all_now: Option<String>,
+    env_now: FxMap<String, String>,
+    /// Key bytes of each (content | skeleton | hooks, set id) part (sets are shared by many tests).
+    key_parts: FxMap<(u8, u32), Vec<u8>>,
     /// Facts of the current version of code files whose content changed.
     pub fresh: HashMap<String, CodeFile>,
 }
@@ -593,7 +656,16 @@ pub fn reusable_outcome(outcome: &str) -> bool {
 
 impl Checker {
     pub fn new(cur: Current) -> Self {
-        Checker { cur, content_now: HashMap::new(), data_now: HashMap::new(), fresh: HashMap::new() }
+        Checker {
+            cur,
+            content_now: FxMap::default(),
+            data_now: FxMap::default(),
+            env_all_now: None,
+            set_checks: FxMap::default(),
+            env_now: FxMap::default(),
+            key_parts: FxMap::default(),
+            fresh: HashMap::new(),
+        }
     }
 
     /// Current content digest of a code file (memoised for the session).
@@ -638,16 +710,64 @@ impl Checker {
         self.fresh.get(rel).filter(|f| f.content == d)
     }
 
-    fn data(&mut self, path: &str, recorded: &str) -> String {
+    /// The state of a data dependency as this session's code saw it before creating the path itself (an exclusive
+    /// create that found it missing, before the reuse decision): recorded dependencies on `path` are compared with
+    /// `dep` instead of the file the session then created (review R-009b R2).
+    pub fn observed(&mut self, path: &str, dep: &str) {
+        let kind = if dep == "missing" { 'f' } else { dep.chars().next().unwrap_or('?') };
+        self.data_now.entry(kind).or_default().insert(path.to_string(), dep.to_string());
+    }
+
+    fn data(&mut self, path: &str, recorded: &str) -> &str {
         let kind = recorded.chars().next().unwrap_or('?');
         let kind = if recorded == "missing" { 'f' } else { kind };
-        let k = (path.to_string(), kind);
-        if let Some(v) = self.data_now.get(&k) {
-            return v.clone();
+        let m = self.data_now.entry(kind).or_default();
+        if !m.contains_key(path) {
+            let v = data_now(&self.cur.root.join(path), recorded);
+            m.insert(path.to_string(), v);
         }
-        let v = data_now(&self.cur.root.join(path), recorded);
-        self.data_now.insert(k, v.clone());
-        v
+        &m[path]
+    }
+
+    /// `content(rel) == Some(digest)` without copying the memoised digest.
+    fn content_is(&mut self, rel: &str, digest: &str) -> bool {
+        if !self.content_now.contains_key(rel) {
+            let d = file_digest(&self.cur.root.join(rel));
+            self.content_now.insert(rel.to_string(), d);
+        }
+        self.content_now[rel].as_deref() == Some(digest)
+    }
+
+    /// Check one dependency set: `t` 0 = whole contents, 1 = skeletons, 2 = hook surfaces (in this order, the first
+    /// changed file of the set decides, as the per-entry loops did).
+    fn check_set(&mut self, store: &Store, t: u8, id: u32) -> Result<Vec<String>, Miss> {
+        let mut proven = Vec::new();
+        for &i in store.set(id) {
+            let Some(f) = store.files.get(i as usize) else { continue };
+            if self.content_is(&f.path, &f.content) {
+                continue;
+            }
+            if t == 0 {
+                return Err(Miss { kind: "code", detail: format!("{} (content)", f.path) });
+            }
+            let path = f.path.clone();
+            let ok = match self.now_facts(store, &path) {
+                None => false,
+                Some(n) => {
+                    if t == 1 {
+                        n.skeleton == f.skeleton
+                    } else {
+                        n.hooks == f.hooks
+                    }
+                }
+            };
+            if !ok {
+                let what = if t == 1 { "module level" } else { "pytest hooks" };
+                return Err(Miss { kind: "code", detail: format!("{path} ({what})") });
+            }
+            proven.push(path);
+        }
+        Ok(proven)
     }
 
     /// Reuse decision for `nodeid`.
@@ -670,57 +790,43 @@ impl Checker {
             }
         }
         for (k, v) in &e.env {
-            let now = if k == "*" {
-                env_all_digest(&self.cur.env)
+            let now: &str = if k == "*" {
+                if self.env_all_now.is_none() {
+                    self.env_all_now = Some(env_all_digest(&self.cur.env));
+                }
+                self.env_all_now.as_deref().unwrap()
             } else {
-                env_value_digest(self.cur.env.get(k).map(|s| s.as_str()))
+                if !self.env_now.contains_key(k) {
+                    let d = env_value_digest(self.cur.env.get(k).map(|s| s.as_str()));
+                    self.env_now.insert(k.clone(), d);
+                }
+                &self.env_now[k]
             };
-            if &now != v {
+            if now != v {
                 return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
             }
         }
         for (p, dep) in &e.data {
-            if &self.data(p, dep) != dep {
+            if self.data(p, dep) != &**dep {
                 return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
             }
         }
         let mut proven = std::collections::BTreeSet::new();
-        // whole-content dependencies
-        for &i in store.set(e.content) {
-            let Some(f) = store.files.get(i as usize) else { continue };
-            if self.content(&f.path).as_deref() != Some(f.content.as_str()) {
-                return Err(Miss { kind: "code", detail: format!("{} (content)", f.path) });
+        // whole-content, skeleton and hook dependencies: per set, memoised (sets are shared across entries)
+        for (t, id) in [(0u8, e.content), (1, e.skeleton), (2, e.hooks)] {
+            if !self.set_checks.contains_key(&(t, id)) {
+                let r = self.check_set(store, t, id);
+                self.set_checks.insert((t, id), r);
             }
-        }
-        for (tag, id) in [("skeleton", e.skeleton), ("hooks", e.hooks)] {
-            for &i in store.set(id) {
-                let Some(f) = store.files.get(i as usize) else { continue };
-                let now = self.content(&f.path);
-                if now.as_deref() == Some(f.content.as_str()) {
-                    continue;
-                }
-                let path = f.path.clone();
-                let ok = match self.now_facts(store, &path) {
-                    None => false,
-                    Some(n) => {
-                        if tag == "skeleton" {
-                            n.skeleton == f.skeleton
-                        } else {
-                            n.hooks == f.hooks
-                        }
-                    }
-                };
-                if !ok {
-                    let what = if tag == "skeleton" { "module level" } else { "pytest hooks" };
-                    return Err(Miss { kind: "code", detail: format!("{path} ({what})") });
-                }
-                proven.insert(path);
+            match &self.set_checks[&(t, id)] {
+                Ok(p) => proven.extend(p.iter().cloned()),
+                Err(m) => return Err(m.clone()),
             }
         }
         for c in e.units.chunks(2) {
             let Some(f) = store.files.get(c[0] as usize) else { continue };
             let Some(u) = f.units.get(c[1] as usize) else { continue };
-            if self.content(&f.path).as_deref() == Some(f.content.as_str()) {
+            if self.content_is(&f.path, &f.content) {
                 continue;
             }
             let path = f.path.clone();
@@ -734,7 +840,7 @@ impl Checker {
             proven.insert(path);
         }
         Ok(Receipt {
-            key: store.key_of(nodeid, e),
+            key: store.key_of_with(nodeid, e, &mut self.key_parts),
             run: e.run.clone(),
             outcome: e.outcome.clone(),
             fingerprint: e.fingerprint.clone(),
@@ -786,7 +892,7 @@ mod tests {
                 config: "C".into(),
                 runtime: "R".into(),
                 env: vec![("HOME".into(), env_value_digest(Some("/root")))],
-                data: vec![("data.txt".into(), format!("f:{}", file_digest(&root.join("data.txt")).unwrap()))],
+                data: vec![("data.txt".into(), format!("f:{}", file_digest(&root.join("data.txt")).unwrap()).into())],
                 skeleton: vec![fi],
                 units: vec![(fi, 0)],
                 ..Default::default()
@@ -881,6 +987,31 @@ mod tests {
     }
 
     #[test]
+    fn memoised_checks_and_keys_match_the_unmemoised_ones() {
+        // one checker over every entry (memo shared) vs a fresh checker per entry; and key_of_with vs key_of
+        let (d, mut s, cur) = setup();
+        for i in 0..5 {
+            let mut o = Observed { outcome: "passed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() };
+            o.env = vec![("*".into(), env_all_digest(&cur.env)), ("HOME".into(), env_value_digest(None))];
+            if i % 2 == 0 {
+                o.env.pop();
+            }
+            s.record(&format!("t::g{i}"), o);
+        }
+        fs::write(d.path().join("m.py"), "def f():\n    return 3\n").unwrap();
+        let ids: Vec<String> = s.tests.keys().cloned().collect();
+        let mut shared = Checker::new(cur.clone());
+        for id in &ids {
+            let a = shared.check(&s, id);
+            let b = Checker::new(cur.clone()).check(&s, id);
+            assert_eq!(a, b, "{id}");
+            if let Ok(r) = a {
+                assert_eq!(r.key, s.key_of(id, &s.tests[id]));
+            }
+        }
+    }
+
+    #[test]
     fn failure_is_never_reused() {
         let (_d, mut s, cur) = setup();
         s.record("t::f", Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() });
@@ -901,7 +1032,7 @@ mod tests {
                 runtime: "R".into(),
                 data: vec![
                     ("nope.txt".into(), "missing".into()),
-                    ("dir".into(), format!("d:{}", listing_digest(&root.join("dir")).unwrap())),
+                    ("dir".into(), format!("d:{}", listing_digest(&root.join("dir")).unwrap()).into()),
                 ],
                 ..Default::default()
             },

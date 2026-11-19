@@ -1,6 +1,9 @@
 //! Python binding of the cache with proof (`detpy._core.ProofCache`).
 
-use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Store, Unit};
+use detpy_core::proof::{self, Checker, CodeFile, Current, Observed, Receipt, Store, Unit};
+use pyo3::types::{PyDict, PyList, PyString};
+use std::collections::HashMap;
+use detpy_core::record;
 use pyo3::exceptions::{PyKeyError, PyValueError};
 use pyo3::prelude::*;
 use std::collections::{BTreeMap, BTreeSet};
@@ -11,6 +14,10 @@ struct Inner {
     store: Store,
     checker: Checker,
     touched: BTreeSet<String>,
+    /// `store.written` as loaded: unchanged and nothing touched, saving would rewrite the same store.
+    written0: BTreeMap<String, BTreeSet<String>>,
+    /// Receipts of the reusable results found by `check_all` (written by `write_receipts`).
+    receipts: HashMap<String, Receipt>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -58,7 +65,8 @@ impl ProofCache {
     fn new(dir: PathBuf, root: PathBuf) -> Self {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new() }) }
+        let written0 = store.written.clone();
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new() }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -81,6 +89,12 @@ impl ProofCache {
         lock(&self.inner).checker.set_fresh(code_file(path, content, skeleton, hooks, units, imports));
     }
 
+    /// Compare recorded dependencies on `path` with `dep`, the state this session's code saw before it created the
+    /// path (see `Checker::observed`).
+    pub(crate) fn observed(&self, path: &str, dep: &str) {
+        lock(&self.inner).checker.observed(path, dep);
+    }
+
     /// `(True, receipt_json)` when the recorded result of `nodeid` may be
     /// reused, else `(False, "kind: detail")`.
     fn check(&self, nodeid: &str) -> PyResult<(bool, String)> {
@@ -90,6 +104,97 @@ impl ProofCache {
             Ok(r) => (true, serde_json::to_string(&r).map_err(|e| PyValueError::new_err(e.to_string()))?),
             Err(m) => (false, format!("{}: {}", m.kind, m.detail)),
         })
+    }
+
+    /// The decision of every collected test, in order (`ProofCachePlugin._decide`'s loop without its verification
+    /// draw): `(True, receipt dict)` when the recorded result may be reused, else `(False, "kind: detail")`. With
+    /// `max_age_s`, an entry recorded (`run_time(run id)`, Python's `_run_time`: `time.strptime`'s rules, called
+    /// once per distinct run id) more than `max_age_s` before `now` is not reused (review R-009 F4):
+    /// `"expired: recorded N.N days ago (--det-cache-max-age)"`.
+    #[pyo3(signature = (nodeids, max_age_s, now, run_time))]
+    pub(crate) fn check_all<'py>(
+        &self,
+        py: Python<'py>,
+        nodeids: Vec<String>,
+        max_age_s: Option<f64>,
+        now: f64,
+        run_time: Bound<'py, PyAny>,
+    ) -> PyResult<Bound<'py, PyList>> {
+        let out = PyList::empty(py);
+        let mut times: HashMap<String, f64> = HashMap::new();
+        let mut g = lock(&self.inner);
+        for nid in nodeids {
+            let r = {
+                let Inner { store, checker, .. } = &mut *g;
+                checker.check(store, &nid)
+            };
+            match r {
+                Ok(r) => {
+                    if let Some(max) = max_age_s {
+                        let t = match times.get(&r.run) {
+                            Some(t) => *t,
+                            None => {
+                                let t: f64 = run_time.call1((&r.run,))?.extract()?;
+                                times.insert(r.run.clone(), t);
+                                t
+                            }
+                        };
+                        let age = now - t;
+                        if age > max {
+                            let why = format!("expired: recorded {:.1} days ago (--det-cache-max-age)", age / 86400.0);
+                            out.append((false, why))?;
+                            continue;
+                        }
+                    }
+                    out.append((true, receipt_dict(py, &r)?))?;
+                    g.receipts.insert(nid, r);
+                }
+                Err(m) => out.append((false, format!("{}: {}", m.kind, m.detail)))?,
+            }
+        }
+        Ok(out)
+    }
+
+    /// What a reused result's reports are rebuilt from: `(entry["report"] or {}, entry["fingerprint"])`.
+    fn reuse_info<'py>(&self, py: Python<'py>, nodeid: &str) -> PyResult<(Bound<'py, PyAny>, String)> {
+        let g = lock(&self.inner);
+        let e = g.store.tests.get(nodeid).ok_or_else(|| PyKeyError::new_err(nodeid.to_string()))?;
+        let rep = value_to_py(py, &e.report)?;
+        let rep = if rep.is_truthy()? { rep } else { PyDict::new(py).into_any() };
+        Ok((rep, e.fingerprint.clone()))
+    }
+
+    /// Write the receipts file as `ProofCachePlugin._write_receipts` did (`json.dumps` of
+    /// `{"nodeid", "reused": true, **receipt}` per hit, then `{"nodeid", "reused": false, "why"}` per miss), the
+    /// hits being results `check_all` found reusable. I/O errors are ignored, as they were.
+    pub(crate) fn write_receipts(&self, py: Python<'_>, path: PathBuf, hits: Vec<Bound<'_, PyString>>, misses: Vec<(Bound<'_, PyString>, Bound<'_, PyString>)>) -> PyResult<()> {
+        let mut text = String::new();
+        {
+            let g = lock(&self.inner);
+            for nid in &hits {
+                let id = nid.to_cow().map(|c| c.into_owned()).unwrap_or_default();
+                let Some(r) = g.receipts.get(&id) else { continue };
+                text.push_str("{\"nodeid\": ");
+                json_str(py, nid, &mut text)?;
+                text.push_str(", \"reused\": true, ");
+                receipt_json(r, &mut text);
+                text.push_str("}\n");
+            }
+        }
+        for (nid, why) in &misses {
+            text.push_str("{\"nodeid\": ");
+            json_str(py, nid, &mut text)?;
+            text.push_str(", \"reused\": false, \"why\": ");
+            json_str(py, why, &mut text)?;
+            text.push_str("}\n");
+        }
+        py.detach(|| {
+            if let Some(d) = path.parent() {
+                let _ = std::fs::create_dir_all(d);
+            }
+            let _ = std::fs::write(&path, text.as_bytes());
+        });
+        Ok(())
     }
 
     /// Recorded entry of `nodeid` as JSON.
@@ -140,8 +245,80 @@ impl ProofCache {
         g.touched.insert(nodeid.to_string());
         Ok(g.store.record(
             nodeid,
-            Observed { outcome, report, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units },
+            Observed {
+                outcome,
+                report,
+                fingerprint,
+                duration,
+                run,
+                config,
+                runtime,
+                epoch,
+                env,
+                data: data.into_iter().map(|(k, v)| (k.into(), v.into())).collect(),
+                content,
+                skeleton,
+                hooks,
+                units,
+            },
         ))
+    }
+
+    /// Body line ranges `[(first, last)]` of the units of each file index (`None`: no facts, empty).
+    fn unit_ranges(&self, indices: Vec<Option<u32>>) -> Vec<Vec<(u32, u32)>> {
+        let g = lock(&self.inner);
+        indices
+            .into_iter()
+            .map(|ix| {
+                ix.and_then(|i| g.store.files.get(i as usize))
+                    .map(|f| f.units.iter().map(|u| (u.a, u.b)).collect())
+                    .unwrap_or_default()
+            })
+            .collect()
+    }
+
+    /// Record every test of the session from its capture (`plan_json`, see `detpy_core::record::Plan`).
+    /// Returns `(recorded, [(nodeid, why, contexts)], [(stale nodeid, path)], global contexts)`; the store is
+    /// not saved.
+    #[allow(clippy::type_complexity)]
+    fn record_session(
+        &self,
+        plan_json: &str,
+    ) -> PyResult<(usize, Vec<(String, String, Vec<u32>)>, Vec<(String, String)>, Vec<u32>)> {
+        let plan: record::Plan =
+            serde_json::from_str(plan_json).map_err(|e| PyValueError::new_err(format!("plan: {e}")))?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session(&mut g.store, &plan);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok((out.recorded, out.not_cached, out.stale, out.global_ctx))
+    }
+
+    /// `record_session` with the capture's part of the plan taken from `cap` (`CaptureCore.fill_plan`); `plan_json`
+    /// holds the rest (tests, file indices, folded lines, configuration).
+    #[allow(clippy::type_complexity)]
+    fn record_captured(
+        &self,
+        py: Python<'_>,
+        plan_json: &str,
+        cap: &Bound<'_, crate::capture::CaptureCore>,
+    ) -> PyResult<(usize, Vec<(String, String, Vec<u32>)>, Vec<(String, String)>, Vec<u32>)> {
+        let mut plan: record::Plan =
+            serde_json::from_str(plan_json).map_err(|e| PyValueError::new_err(format!("plan: {e}")))?;
+        cap.get().fill_plan(py, &mut plan)?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session(&mut g.store, &plan);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok((out.recorded, out.not_cached, out.stale, out.global_ctx))
     }
 
     fn remove(&self, nodeid: &str) -> bool {
@@ -173,11 +350,223 @@ impl ProofCache {
     }
 
     /// Merge this session's changes into the store on disk (under a lock) and write it atomically.
+    /// Nothing to merge (no entry touched, no new written path) leaves the store on disk as it is: merging
+    /// nothing into it and compacting it again would write the same content.
     fn save(&self) -> PyResult<()> {
         let g = lock(&self.inner);
+        if g.touched.is_empty() && g.store.written == g.written0 {
+            return Ok(());
+        }
         g.store.save_merged(&self.dir, &g.touched)?;
         Ok(())
     }
+}
+
+impl ProofCache {
+    /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);
+    /// the store is not saved (`CacheSession.record`).
+    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>,
+                              keys: Option<&mut serde_json::Map<String, serde_json::Value>>) -> PyResult<record::Outcome> {
+        cap.get().fill_plan(py, &mut plan)?;
+        let mut g = lock(&self.inner);
+        for t in &plan.tests {
+            g.touched.insert(t.nodeid.clone());
+        }
+        let out = record::record_session_keys(&mut g.store, &plan, keys);
+        for (n, _) in &out.stale {
+            g.touched.insert(n.clone());
+        }
+        Ok(out)
+    }
+}
+
+/// `repr(float)` (Python's shortest round-trip form: fixed notation for decimal exponents -4..16, else `1e-05`).
+pub fn py_float_repr(x: f64) -> String {
+    if x.is_nan() {
+        return "NaN".into();
+    }
+    if x.is_infinite() {
+        return if x > 0.0 { "Infinity".into() } else { "-Infinity".into() };
+    }
+    if x == 0.0 {
+        return if x.is_sign_negative() { "-0.0".into() } else { "0.0".into() };
+    }
+    // the fewest digits that round-trip (Rust's shortest form), correctly rounded with ties to even as Python's
+    // dtoa does (Rust's shortest form breaks a tie upwards: 942816266129506.25 -> ...506.3, Python ...506.2)
+    let short = format!("{x:e}");
+    let n = short.split_once('e').unwrap().0.chars().filter(|c| c.is_ascii_digit()).count();
+    let exact = format!("{:.*e}", n.saturating_sub(1), x);
+    let e = if exact.parse::<f64>().ok() == Some(x) { exact } else { short };
+    let (mant, exp) = e.split_once('e').unwrap();
+    let exp: i32 = exp.parse().unwrap();
+    let neg = mant.starts_with('-');
+    let digits: String = mant.chars().filter(|c| c.is_ascii_digit()).collect();
+    let mut out = String::new();
+    if neg {
+        out.push('-');
+    }
+    if (-4..16).contains(&exp) {
+        if exp < 0 {
+            out.push_str("0.");
+            out.push_str(&"0".repeat((-exp - 1) as usize));
+            out.push_str(&digits);
+        } else {
+            let k = exp as usize + 1;
+            if digits.len() <= k {
+                out.push_str(&digits);
+                out.push_str(&"0".repeat(k - digits.len()));
+                out.push_str(".0");
+            } else {
+                out.push_str(&digits[..k]);
+                out.push('.');
+                out.push_str(&digits[k..]);
+            }
+        }
+    } else {
+        out.push_str(&digits[..1]);
+        if digits.len() > 1 {
+            out.push('.');
+            out.push_str(&digits[1..]);
+        }
+        out.push_str(&format!("e{}{:02}", if exp < 0 { '-' } else { '+' }, exp.abs()));
+    }
+    out
+}
+
+/// `json.dumps(s)` (ensure_ascii) of a UTF-8 string, appended to `out`.
+pub fn json_escape(s: &str, out: &mut String) {
+    out.push('"');
+    for c in s.chars() {
+        match c {
+            '"' => out.push_str("\\\""),
+            '\\' => out.push_str("\\\\"),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            '\u{8}' => out.push_str("\\b"),
+            '\u{c}' => out.push_str("\\f"),
+            c if (c as u32) < 0x20 || (c as u32) > 0x7e => {
+                let mut buf = [0u16; 2];
+                for u in c.encode_utf16(&mut buf) {
+                    out.push_str(&format!("\\u{:04x}", u));
+                }
+            }
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+}
+
+/// `json.dumps` of a Python `str` (lone surrogates included, through Python itself).
+fn json_str(py: Python<'_>, s: &Bound<'_, PyString>, out: &mut String) -> PyResult<()> {
+    match s.to_cow() {
+        Ok(t) => json_escape(&t, out),
+        Err(_) => {
+            let d = py.import("json")?.getattr("dumps")?.call1((s,))?;
+            out.push_str(&d.cast::<PyString>()?.to_cow()?);
+        }
+    }
+    Ok(())
+}
+
+/// The receipt's fields as `json.dumps` writes the dict `check_all` returns (without braces).
+fn receipt_json(r: &Receipt, out: &mut String) {
+    let mut f = |k: &str, v: String| {
+        if !out.ends_with(' ') {
+            out.push_str(", ");
+        }
+        out.push('"');
+        out.push_str(k);
+        out.push_str("\": ");
+        out.push_str(&v);
+    };
+    let s = |x: &str| {
+        let mut t = String::new();
+        json_escape(x, &mut t);
+        t
+    };
+    f("key", s(&r.key));
+    f("run", s(&r.run));
+    f("outcome", s(&r.outcome));
+    f("fingerprint", s(&r.fingerprint));
+    f("duration", py_float_repr(r.duration));
+    f("config", s(&r.config));
+    f("runtime", s(&r.runtime));
+    f("epoch", r.epoch.map(|e| e.to_string()).unwrap_or_else(|| "null".into()));
+    f("n_units", r.n_units.to_string());
+    f("n_skeleton", r.n_skeleton.to_string());
+    f("n_hooks", r.n_hooks.to_string());
+    f("n_content", r.n_content.to_string());
+    f("n_data", r.n_data.to_string());
+    f("n_env", r.n_env.to_string());
+    f("n_changed_files_proven", r.n_changed_files_proven.to_string());
+}
+
+/// The receipt as the dict `json.loads(serde_json::to_string(receipt))` gave.
+fn receipt_dict<'py>(py: Python<'py>, r: &Receipt) -> PyResult<Bound<'py, PyDict>> {
+    let d = PyDict::new(py);
+    d.set_item("key", &r.key)?;
+    d.set_item("run", &r.run)?;
+    d.set_item("outcome", &r.outcome)?;
+    d.set_item("fingerprint", &r.fingerprint)?;
+    d.set_item("duration", r.duration)?;
+    d.set_item("config", &r.config)?;
+    d.set_item("runtime", &r.runtime)?;
+    d.set_item("epoch", r.epoch)?;
+    d.set_item("n_units", r.n_units)?;
+    d.set_item("n_skeleton", r.n_skeleton)?;
+    d.set_item("n_hooks", r.n_hooks)?;
+    d.set_item("n_content", r.n_content)?;
+    d.set_item("n_data", r.n_data)?;
+    d.set_item("n_env", r.n_env)?;
+    d.set_item("n_changed_files_proven", r.n_changed_files_proven)?;
+    Ok(d)
+}
+
+/// A JSON value as `json.loads` gives it.
+pub(crate) fn value_to_py<'py>(py: Python<'py>, v: &serde_json::Value) -> PyResult<Bound<'py, PyAny>> {
+    use pyo3::IntoPyObjectExt;
+    Ok(match v {
+        serde_json::Value::Null => py.None().into_bound(py),
+        serde_json::Value::Bool(b) => b.into_bound_py_any(py)?,
+        serde_json::Value::Number(n) => {
+            if let Some(i) = n.as_i64() {
+                i.into_bound_py_any(py)?
+            } else if let Some(u) = n.as_u64() {
+                u.into_bound_py_any(py)?
+            } else {
+                n.as_f64().unwrap_or(f64::NAN).into_bound_py_any(py)?
+            }
+        }
+        serde_json::Value::String(s) => PyString::new(py, s).into_any(),
+        serde_json::Value::Array(a) => {
+            let l = PyList::empty(py);
+            for x in a {
+                l.append(value_to_py(py, x)?)?;
+            }
+            l.into_any()
+        }
+        serde_json::Value::Object(o) => {
+            let d = PyDict::new(py);
+            for (k, x) in o {
+                d.set_item(k, value_to_py(py, x)?)?;
+            }
+            d.into_any()
+        }
+    })
+}
+
+/// `repr(x)` / `json.dumps(s)` as Rust computes them (for the tests).
+#[pyfunction]
+pub fn py_repr_float(x: f64) -> String {
+    py_float_repr(x)
+}
+
+#[pyfunction]
+pub fn json_dumps_str(s: &str) -> String {
+    let mut o = String::new();
+    json_escape(s, &mut o);
+    o
 }
 
 /// Digest of a file's bytes (None if unreadable).
@@ -202,4 +591,78 @@ pub fn env_value_digest(value: Option<&str>) -> String {
 #[pyfunction]
 pub fn env_all_digest(env: BTreeMap<String, String>) -> String {
     proof::env_all_digest(&env)
+}
+
+/// Text of a file as `pathlib.Path.read_text(encoding="utf-8")` returns it (universal newlines), `Err` when that
+/// raises a decoding error, `Ok(None)` when the file cannot be read.
+fn read_text_universal(path: &std::path::Path) -> Result<Option<String>, ()> {
+    let Ok(raw) = std::fs::read(path) else { return Ok(None) };
+    let s = String::from_utf8(raw).map_err(|_| ())?;
+    if !s.contains('\r') {
+        return Ok(Some(s));
+    }
+    Ok(Some(s.replace("\r\n", "\n").replace('\r', "\n")))
+}
+
+/// First `Name` and `Version` header values of a core-metadata text, as `email.message_from_string(...).get()`
+/// gives them through `importlib.metadata`; `None` whenever the header block is not plain (folded or unusual
+/// lines, a byte-order mark, a missing version): the caller then uses `importlib.metadata` itself.
+fn name_version(text: &str) -> Option<(Option<String>, String)> {
+    if text.starts_with('\u{feff}') || text.starts_with("From ") {
+        return None;
+    }
+    let mut name: Option<String> = None;
+    let mut version: Option<String> = None;
+    let mut last: Option<String> = None;
+    for line in text.split('\n') {
+        if line.is_empty() {
+            break;
+        }
+        if line.starts_with(' ') || line.starts_with('\t') {
+            // continuation of the previous header: only harmless for headers we do not read
+            match last.as_deref() {
+                Some("name") | Some("version") | None => return None,
+                _ => continue,
+            }
+        }
+        let (h, v) = line.split_once(':')?;
+        if !h.bytes().all(|b| (0x21..=0x7e).contains(&b) && b != b':') {
+            return None;
+        }
+        let key = h.to_ascii_lowercase();
+        let val = v.trim_start_matches([' ', '\t']).trim_end_matches(['\r', '\n']).to_string();
+        if key == "name" && name.is_none() {
+            name = Some(val);
+        } else if key == "version" && version.is_none() {
+            version = Some(val);
+        }
+        last = Some(key);
+    }
+    Some((name, version?))
+}
+
+/// `(name or "?", version, digest of RECORD's text)` of a `*.dist-info` / `*.egg-info` directory, read as
+/// `importlib.metadata` reads it; `None` when the plain reading is not certain to match it (the caller falls
+/// back to `importlib.metadata`).
+#[pyfunction]
+pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, String)> {
+    py.detach(|| {
+        if !path.is_dir() {
+            return None;
+        }
+        let mut meta = None;
+        for f in ["METADATA", "PKG-INFO"] {
+            match read_text_universal(&path.join(f)) {
+                Err(()) => return None,
+                Ok(Some(t)) if !t.is_empty() => {
+                    meta = Some(t);
+                    break;
+                }
+                Ok(_) => {}
+            }
+        }
+        let (name, version) = name_version(&meta?)?;
+        let rec = read_text_universal(&path.join("RECORD")).unwrap_or(None).unwrap_or_default();
+        Some((name.unwrap_or_else(|| "?".into()), version, detpy_core::fingerprint::digest_bytes(rec.as_bytes()).short()))
+    })
 }

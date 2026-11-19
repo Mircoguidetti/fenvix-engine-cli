@@ -23,15 +23,18 @@ explore --budget MINUTES
 
 Both use only pytest subprocesses with the plugin (``--det``, ``--det-order``,
 ``--det-outcomes``), so they work wherever ``pytest --det`` works.
+
+The decisions are in Rust (``crates/detpy-core/src/repro.rs``, bound in ``crates/detpy-py/src/repro.rs``): the
+search, ddmin, the replay verdicts, the first diverging event, the bundle (in its key order), the texts printed and
+``explore``'s seed/budget bookkeeping. This module keeps the process orchestration: the ``Runner`` (pytest command
+lines, subprocesses, outcome files), the bundle files, argument handling and printing. The Python original is kept
+verbatim in ``tests/rust_hotpaths_ref/_ref_repro.py``.
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import os
-import re
-import shlex
 import shutil
 import subprocess
 import sys
@@ -45,7 +48,7 @@ FIXED = "fixed"
 
 
 def is_fail(outcome) -> bool:
-    return isinstance(outcome, str) and ("failed" in outcome or "error" in outcome)
+    return _core.repro_is_fail(outcome)
 
 
 @dataclass
@@ -62,7 +65,7 @@ class Run:
     meta: dict = field(default_factory=dict)
 
     def outcome(self, nid):
-        return self.outcomes.get(nid, "missing")
+        return _core.repro_outcome(self.outcomes, nid)
 
 
 @dataclass
@@ -151,78 +154,33 @@ class Runner:
         return order
 
 
+
 def order_for(collected: list, config: str) -> list:
     """The shuffle alone (no plugin adjustments such as pytest-django's groups);
     ``Runner.order_of`` gives the order a run really uses."""
-    if config == FIXED:
-        return list(collected)
-    perm = _core.shuffle_order(list(collected), int(config))
-    return [collected[i] for i in perm]
+    return _core.repro_order_for(list(collected), config)
 
 
 def prefix_through(order: list, target: str) -> list:
     """Tests up to the target, plus the next one (its teardown matches the full run)."""
-    i = order.index(target)
-    return order[: i + 2]
+    return _core.repro_prefix_through(order, target)
 
 
 def ddmin(items: list, still_fails, max_tests: int | None = None) -> list:
     """Zeller's ddmin keeping the relative order: a 1-minimal sublist of ``items``
     for which ``still_fails`` holds (``still_fails(items)`` must hold)."""
-    n = 2
-    while len(items) >= 2:
-        size = len(items)
-        chunks = [items[i * size // n:(i + 1) * size // n] for i in range(n)]
-        chunks = [c for c in chunks if c]
-        reduced = False
-        for c in chunks:
-            if still_fails(c):
-                items, n, reduced = c, 2, True
-                break
-        if not reduced:
-            for i in range(len(chunks)):
-                comp = [x for j, c in enumerate(chunks) if j != i for x in c]
-                if still_fails(comp):
-                    items, n, reduced = comp, max(n - 1, 2), True
-                    break
-        if not reduced:
-            if n >= len(items):
-                break
-            n = min(len(items), 2 * n)
-    if len(items) == 1 and still_fails([]):
-        return []
-    return items
+    return _core.repro_ddmin(list(items), still_fails)
 
 
-def _version() -> str:
-    from . import __version__
-
-    return __version__
-
-
-class OutOfRuns(Exception):
-    pass
+OutOfRuns = _core.ReproOutOfRuns
 
 
 def _slug(nodeid: str) -> str:
-    base = re.sub(r"[^A-Za-z0-9_.-]+", "_", nodeid.split("::")[-1])[:60]
-    return f"{base}-{hashlib.sha1(nodeid.encode()).hexdigest()[:8]}"
+    return _core.repro_slug(nodeid)
 
 
 def _divergence(pass_run: Run | None, fail_run: Run, nodeid: str) -> dict | None:
-    if pass_run is None or not os.path.exists(pass_run.trace) or not os.path.exists(fail_run.trace):
-        return None
-    try:
-        rep = json.loads(_core.verify([pass_run.trace, fail_run.trace]))
-    except Exception as exc:  # pragma: no cover - corrupt trace
-        return {"error": repr(exc)}
-    t = next((t for t in rep["tests"] if t["nodeid"] == nodeid), None)
-    if not t:
-        return None
-    d = t.get("divergence") or {}
-    keep = {k: d.get(k) for k in ("index", "reason", "description", "event_a", "event_b")}
-    keep["fingerprints"] = t.get("fingerprints")
-    return keep
+    return _core.repro_divergence(pass_run.trace if pass_run is not None else None, fail_run.trace, nodeid)
 
 
 def reproduce(runner: Runner, target: str, *, collected: list | None = None, seeds: int = 50,
@@ -230,133 +188,21 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
               max_runs: int = 400, out_dir: Path | None = None, command_args: list | None = None) -> dict:
     """Search, minimise, bundle and prove one failing test. Returns the bundle dict
     (``status`` = reproduced | not-found | not-minimised | replay-unstable)."""
-    t_start = time.monotonic()
-    runs_at_start = runner.runs
-    collected = collected if collected is not None else runner.order_of(FIXED)
-    if target not in collected:
-        return {"test": target, "status": "not-collected"}
-    budget = {"left": max_runs}
-    cache: dict = {}
-
-    def run_order(config, order, tag):
-        key = (config, tuple(order))
-        if key in cache:
-            return cache[key]
-        if budget["left"] <= 0:
-            raise OutOfRuns()
-        budget["left"] -= 1
-        r = runner.run(config, order, tag)
-        cache[key] = r
-        return r
-
-    # 1. search ----------------------------------------------------------------
-    passing: list = list(known_pass or [])
-    found = None
-    configs = [FIXED] + [str(s) for s in range(1, seeds + 1)]
-    if known_fail:
-        # The configuration that failed in a full run first; if its prefix does not
-        # fail (state from a later test, or a non-L0 source), keep searching.
-        configs = [known_fail] + [c for c in configs if c != known_fail]
-    searched = 0
-    for config in configs:
-        order = prefix_through(runner.order_of(config), target)
-        r = run_order(config, order, f"search-{config}")
-        searched += 1
-        if is_fail(r.outcome(target)):
-            found = (config, order, r)
-            break
-        if r.outcome(target) == "passed":
-            passing.append(config)
-    result = {"test": target, "configs_searched": searched}
-    if found is None:
-        result.update(status="not-found", runs=runner.runs - runs_at_start,
-                      seconds=round(time.monotonic() - t_start, 2))
+    result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
+                                                           confirm, max_runs)
+    if fail_trace is None:  # not collected, not found or not minimised: no bundle
         return result
-    config, order, first_fail = found
-    before = order[: order.index(target)]
-
-    # 2. minimise --------------------------------------------------------------
-    tests_run = {"n": 0}
-
-    def fails_with(sub):
-        tests_run["n"] += 1
-        r = run_order(config, list(sub) + [target], f"min-{config}-{tests_run['n']}")
-        return is_fail(r.outcome(target))
-
-    kind, polluters, setters, pass_run = "order", [], [], None
-    try:
-        alone = run_order(config, [target], f"alone-{config}")
-        if is_fail(alone.outcome(target)):
-            kind = "fails-alone"
-            minimal = []
-            # Brittle test: name what makes it pass, from a passing configuration.
-            # Configurations already seen passing first, then every other one of
-            # the search space (review E6: when the target fails in the fixed
-            # order, a standalone repro has seen no passing configuration yet).
-            all_configs = [FIXED] + [str(s) for s in range(1, seeds + 1)]
-            candidates = list(dict.fromkeys(list(passing) + [c for c in all_configs if c != config]))
-            for pconf in candidates:
-                porder = prefix_through(runner.order_of(pconf), target)
-                pbefore = porder[: porder.index(target)]
-                if not pbefore:
-                    continue
-
-                def passes_with(sub, pconf=pconf):
-                    tests_run["n"] += 1
-                    r = run_order(config, list(sub) + [target], f"set-{pconf}-{tests_run['n']}")
-                    return r.outcome(target) == "passed"
-
-                if passes_with(pbefore):
-                    setters = ddmin(pbefore, passes_with)
-                    if setters:
-                        kind = "brittle"
-                        pass_run = run_order(config, setters + [target], "setter-pass")
-                    break
-        else:
-            pass_run = alone
-            minimal = ddmin(before, fails_with)
-            polluters = minimal
-    except OutOfRuns:
-        result.update(status="not-minimised", config=config, prefix_length=len(before) + 1,
-                      runs=runner.runs - runs_at_start, seconds=round(time.monotonic() - t_start, 2))
-        return result
-    bundle_order = minimal + [target]
-
-    # 3 + 4. replay and prove ----------------------------------------------------
-    replays = [runner.run(config, bundle_order, f"replay-{i}") for i in range(confirm)]
-    outcomes = [r.outcome(target) for r in replays]
-    fps = [r.fingerprints.get(target) for r in replays]
-    fails = sum(is_fail(o) for o in outcomes)
-    identical = len(set(fps)) == 1 and fps[0] is not None
-    div = _divergence(pass_run, replays[0], target)
-    seed_args = [] if config == FIXED else [f"--det-seed={config}"]
-    result.update(
-        status="reproduced" if fails == confirm and identical else "replay-unstable",
-        config=config, seed=None if config == FIXED else int(config), kind=kind,
-        prefix_length=len(before) + 1, minimal_length=len(bundle_order),
-        polluters=polluters, setters=setters,
-        order=bundle_order, outcome=outcomes[0], exception=replays[0].exceptions.get(target),
-        replay={"runs": confirm, "fails": fails, "fingerprints": sorted(set(f for f in fps if f)),
-                "identical_fingerprint": identical},
-        divergence=div, runs=runner.runs - runs_at_start, seconds=round(time.monotonic() - t_start, 2),
-        controls=replays[0].meta.get("controls"), detpy=_version(),
-        python=sys.version.split()[0] if runner.python == sys.executable else runner.python,
-    )
     if out_dir is not None:
         b = Path(out_dir) / _slug(target)
         if b.exists():
             shutil.rmtree(b)
         b.mkdir(parents=True)
-        (b / "order.txt").write_text("".join(n + "\n" for n in bundle_order))
-        shutil.copy2(replays[0].trace, b / "fail.trace.jsonl")
-        if pass_run is not None and os.path.exists(pass_run.trace):
-            shutil.copy2(pass_run.trace, b / "pass.trace.jsonl")
+        (b / "order.txt").write_text("".join(n + "\n" for n in result["order"]))
+        shutil.copy2(fail_trace, b / "fail.trace.jsonl")
+        if pass_trace is not None and os.path.exists(pass_trace):
+            shutil.copy2(pass_trace, b / "pass.trace.jsonl")
         args = list(command_args if command_args is not None else runner.pytest_args)
-        result["command"] = " ".join(shlex.quote(a) for a in
-                                     ["pytest", "--det", *seed_args, f"--det-order={b / 'order.txt'}", *args])
-        result["replay_command"] = f"detpy replay {shlex.quote(str(b))}"
-        result["pytest_args"] = args
-        result["bundle"] = str(b)
+        result.update(_core.repro_bundle_commands(result["config"], str(b), args))
         (b / "bundle.json").write_text(json.dumps(result, indent=2))
     if not runner.keep_traces:
         runner.drop_traces()
@@ -367,97 +213,43 @@ def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
     data = json.loads((bundle / "bundle.json").read_text())
     runner = Runner(cwd=Path.cwd(), workdir=bundle / "replay", python=python, pytest_args=data.get("pytest_args", []))
     rs = [runner.run(data["config"], data["order"], f"replay-{i}") for i in range(runs)]
-    target = data["test"]
-    fps = {r.fingerprints.get(target) for r in rs}
-    fails = sum(is_fail(r.outcome(target)) for r in rs)
-    return {"test": target, "runs": runs, "fails": fails, "identical_fingerprint": len(fps) == 1 and None not in fps,
-            "matches_bundle": fps <= set(data.get("replay", {}).get("fingerprints", [])) and None not in fps}
+    return _core.repro_replay_verdict(data, rs, runs)
 
 
 def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, confirm: int = 10,
             targets: set | None = None, repro: bool = True, max_runs: int = 400, fallback_seeds: int = 5) -> dict:
     """Seeds 1..N within the budget; one bundle per failing test (flaky only)."""
-    t0 = time.monotonic()
+    book = _core.ExploreBook(budget_s, max_seeds)
     out_dir.mkdir(parents=True, exist_ok=True)
     collected = runner.order_of(FIXED)
-    seeds_log, fail_cfg, pass_cfg = [], {}, {}
-    for s in range(1, max_seeds + 1):
-        if time.monotonic() - t0 > budget_s:
-            break
+    while (s := book.next_seed()) is not None:
         r = runner.run(str(s), None, f"seed-{s}")
         if r.order:
             runner.orders.setdefault(str(s), list(r.order))
         if not runner.keep_traces:
             Path(r.trace).unlink(missing_ok=True)
-        failing = sorted(n for n, o in r.outcomes.items() if is_fail(o))
-        seeds_log.append({"seed": s, "seconds": round(r.duration, 3), "tests": len(r.outcomes),
-                          "failing": failing, "exit": r.exit_code, "timed_out": r.timed_out})
-        for n, o in r.outcomes.items():
-            if is_fail(o):
-                fail_cfg.setdefault(n, str(s))
-            elif o == "passed":
-                pass_cfg.setdefault(n, []).append(str(s))
-        (out_dir / "explore.json").write_text(json.dumps({"seeds": seeds_log}, indent=1))
-    seeds_done = len(seeds_log)
-    always = sorted(n for n in fail_cfg if not pass_cfg.get(n) and
-                    all(n in x["failing"] for x in seeds_log if n in collected))
-    flaky = sorted(n for n in fail_cfg if n not in always)
-    bundles, skipped = [], []
-    if repro:
-        # With targets (measurement), a target that failed under every seed is
-        # reproduced too: it was flaky in the baseline even if not here.
-        todo = flaky if targets is None else [n for n in sorted(fail_cfg) if n in targets]
-        for n in todo:
-            if time.monotonic() - t0 > budget_s:
-                skipped.append(n)
-                continue
-            b = reproduce(runner, n, collected=collected, known_fail=fail_cfg[n], known_pass=pass_cfg.get(n, []),
-                          confirm=confirm, out_dir=out_dir / "bundles", max_runs=max_runs, seeds=fallback_seeds)
-            b["first_failing_seed"] = int(fail_cfg[n])
-            bundles.append(b)
-            if not runner.keep_traces:
-                runner.drop_traces()
-    # Deduplication: by failing test (one bundle each), then families by first
-    # diverging event and by polluter set.
-    fam_div, fam_pol = {}, {}
-    for b in bundles:
-        if b.get("status") != "reproduced":
+        book.add_seed(s, r)
+        (out_dir / "explore.json").write_text(json.dumps({"seeds": book.seeds_log}, indent=1))
+    book.classify(collected)
+    # With targets (measurement), a target that failed under every seed is
+    # reproduced too: it was flaky in the baseline even if not here.
+    for n in book.todo(targets, repro):
+        if book.over_budget():
+            book.skip(n)
             continue
-        d = b.get("divergence") or {}
-        ev = d.get("event_b") or {}
-        key = f"{d.get('reason')}|{ev.get('s')}|{ev.get('at')}"
-        fam_div.setdefault(key, []).append(b["test"])
-        fam_pol.setdefault(" + ".join(b.get("polluters") or b.get("setters") or ["<none>"]), []).append(b["test"])
-    summary = {
-        "seeds": seeds_done, "seconds": round(time.monotonic() - t0, 2), "runs": runner.runs,
-        "collected": len(collected), "failing_tests": len(fail_cfg), "always_failing": always,
-        "flaky_failing": flaky, "bundles": bundles, "not_reproduced_budget": skipped,
-        "families_by_divergence": fam_div, "families_by_polluter": fam_pol, "seeds_log": seeds_log,
-        "run_log": runner.log,
-    }
+        known_fail, known_pass = book.known(n)
+        b = reproduce(runner, n, collected=collected, known_fail=known_fail, known_pass=known_pass,
+                      confirm=confirm, out_dir=out_dir / "bundles", max_runs=max_runs, seeds=fallback_seeds)
+        book.add_bundle(n, b)
+        if not runner.keep_traces:
+            runner.drop_traces()
+    summary = book.summary(runner.runs, len(collected), runner.log)
     (out_dir / "explore.json").write_text(json.dumps(summary, indent=1))
     return summary
 
 
 def _print_bundle(b: dict) -> None:
-    print(f"detpy repro: {b['test']}: {b['status']}")
-    if b.get("status") in ("reproduced", "replay-unstable"):
-        where = "fixed order" if b["config"] == FIXED else f"--det-seed={b['config']}"
-        print(f"  found with {where}; order minimised from {b['prefix_length']} to {b['minimal_length']} test(s)")
-        if b.get("polluters"):
-            print(f"  polluter(s): {', '.join(b['polluters'])}")
-        if b.get("setters"):
-            print(f"  fails without (state setter): {', '.join(b['setters'])}")
-        if b.get("kind") == "fails-alone":
-            print("  fails when run alone (no polluter)")
-        rp = b["replay"]
-        print(f"  replay: {rp['fails']}/{rp['runs']} failed, identical fingerprint: {rp['identical_fingerprint']}")
-        d = b.get("divergence") or {}
-        if d.get("description"):
-            print(f"  first diverging event vs a passing run: {d.get('reason')}: {d.get('description')}")
-        if b.get("command"):
-            print(f"  replay: {b['command']}")
-    print(f"  {b.get('runs')} pytest runs, {b.get('seconds')} s")
+    print(_core.repro_render_bundle(b))
 
 
 def main_repro(args) -> int:
@@ -479,11 +271,5 @@ def main_explore(args) -> int:
         targets = {line.strip() for line in open(args.targets) if line.strip()}
     s = explore(runner, budget_s=args.budget * 60, max_seeds=args.max_seeds, out_dir=Path(args.out),
                 confirm=args.confirm, targets=targets, repro=not args.no_repro, max_runs=args.max_runs)
-    rep = [b for b in s["bundles"] if b.get("status") == "reproduced"]
-    print(f"detpy explore: {s['seeds']} seeds in {s['seconds']} s; {len(s['flaky_failing'])} flaky failing tests "
-          f"({len(s['always_failing'])} always failing, not flaky); {len(rep)} replay bundles; "
-          f"{len(s['families_by_divergence'])} distinct first diverging events, "
-          f"{len(s['families_by_polluter'])} distinct polluter sets")
-    for b in s["bundles"]:
-        _print_bundle(b)
+    print(_core.repro_render_explore(s))
     return 0

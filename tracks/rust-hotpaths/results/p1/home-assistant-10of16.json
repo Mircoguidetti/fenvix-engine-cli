@@ -1,0 +1,268 @@
+{
+ "spec": "home-assistant",
+ "shard": "10/16",
+ "engines": [
+  "new"
+ ],
+ "cpus": 4,
+ "runner": "GitHub Actions 1000009997",
+ "engine_sha": "9be5dc14f64fb81cc2cd03ec7fb90ae1262b4817",
+ "walls": {
+  "P0": [
+   35.935812123000005,
+   35.11869304900006,
+   35.04648059300007
+  ],
+  "B": [
+   47.696472982000046,
+   44.41340423999998,
+   43.680255654999996
+  ],
+  "C:new": [
+   52.96102511599997,
+   53.395048807999956,
+   52.51171010099995
+  ],
+  "W:new": [
+   18.23576596399994,
+   18.344887540999935,
+   18.286308302000066
+  ]
+ },
+ "cache": {
+  "P0": [
+   {
+    "exit": 1,
+    "wall": 35.935812123000005,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 35.11869304900006,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 35.04648059300007,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "B": [
+   {
+    "exit": 1,
+    "wall": 47.696472982000046,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 44.41340423999998,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 43.680255654999996,
+    "n": 624,
+    "cache": {
+     "reused": null,
+     "ran": null,
+     "recorded": null,
+     "check_seconds": null,
+     "record_seconds": null,
+     "not_cached": null,
+     "phase_seconds": null
+    }
+   }
+  ],
+  "C:new": [
+   {
+    "exit": 1,
+    "wall": 52.96102511599997,
+    "n": 624,
+    "cache": {
+     "reused": 0,
+     "ran": 624,
+     "recorded": 624,
+     "check_seconds": 0.001,
+     "record_seconds": 4.327,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 53.395048807999956,
+    "n": 624,
+    "cache": {
+     "reused": 0,
+     "ran": 624,
+     "recorded": 624,
+     "check_seconds": 0.001,
+     "record_seconds": 4.361,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 1,
+    "wall": 52.51171010099995,
+    "n": 624,
+    "cache": {
+     "reused": 0,
+     "ran": 624,
+     "recorded": 624,
+     "check_seconds": 0.001,
+     "record_seconds": 4.248,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ],
+  "W:new": [
+   {
+    "exit": 0,
+    "wall": 18.23576596399994,
+    "n": 624,
+    "cache": {
+     "reused": 624,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.383,
+     "record_seconds": 1.484,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 18.344887540999935,
+    "n": 624,
+    "cache": {
+     "reused": 624,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.374,
+     "record_seconds": 1.505,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   },
+   {
+    "exit": 0,
+    "wall": 18.286308302000066,
+    "n": 624,
+    "cache": {
+     "reused": 624,
+     "ran": 0,
+     "recorded": 0,
+     "check_seconds": 0.388,
+     "record_seconds": 1.489,
+     "not_cached": {},
+     "phase_seconds": null
+    }
+   }
+  ]
+ },
+ "profiles": {
+  "P0": {
+   "wall": 163.04355663400008,
+   "exit": 0,
+   "samples": 45621,
+   "buckets": {
+    "test+pytest": 42094,
+    "switch": 3508,
+    "det.plugin": 19
+   }
+  },
+  "B": {
+   "wall": 197.57937419400014,
+   "exit": 0,
+   "samples": 53381,
+   "buckets": {
+    "test+pytest": 42281,
+    "compile": 5032,
+    "switch": 3324,
+    "det.plugin": 1571,
+    "det.clock": 906,
+    "det.seeds": 154,
+    "det.fsorder": 108,
+    "follow": 3,
+    "det.network": 2
+   }
+  },
+  "C:new": {
+   "wall": 243.855656769,
+   "exit": 0,
+   "samples": 65598,
+   "buckets": {
+    "test+pytest": 48675,
+    "compile": 3983,
+    "switch": 3237,
+    "record.loop": 2477,
+    "lines": 2198,
+    "det.plugin": 1911,
+    "det.clock": 1113,
+    "record.facts": 947,
+    "startup.identity": 329,
+    "audit": 219,
+    "det.fsorder": 190,
+    "det.seeds": 133,
+    "switch.sockets": 98,
+    "env": 42,
+    "startup.capture": 28,
+    "record.other": 9,
+    "check": 5,
+    "follow": 2,
+    "det.network": 2
+   }
+  }
+ },
+ "sha": "7c78cc7c2ed07fcd84b1cee6f4e593227f27b562",
+ "units": 41,
+ "dropped": [],
+ "finished": "2026-11-18T14:53:00Z"
+}
