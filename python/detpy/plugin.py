@@ -355,10 +355,10 @@ def _install(config, ns, controls) -> None:
     if "fs" in controls:
         fsorder.install(_PATCHER)
     if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
-        S.rewrite_cache = _cache_rewritten_tests()
+        S.rewrite_cache = _cache_rewritten_tests(config)
 
 
-def _cache_rewritten_tests() -> bool:
+def _cache_rewritten_tests(config) -> bool:
     """Keep pytest's assertion-rewritten test modules (and conftests) in the deterministic bytecode cache.
 
     Under ``--det`` the interpreter runs with ``PYTHONDONTWRITEBYTECODE=1`` and ``PYTHONPYCACHEPREFIX`` set to the
@@ -367,10 +367,16 @@ def _cache_rewritten_tests() -> bool:
     keeps them as checked-hash pycs (``_read_pyc`` compares the source's hash before use), so a stale one never
     runs; detpy writes them with pytest's own writer. The module then runs from the marshalled code in the first
     run too (``marshal.loads``), as it does in every later run: a set constant has one layout in every run.
+
+    pytest's own check covers the source, the interpreter (magic number, cache tag) and pytest's version only, but
+    the rewritten code also depends on the configuration (``enable_assertion_pass_hook``), the optimisation level
+    and the rewriter itself (review R-017 H1: a run with the option loaded the code an earlier run wrote without
+    it). So under ``--det`` pytest reads, and detpy writes, these pycs under a name keyed on all of that
+    (``_rewrite_key``): a run only ever loads code that its own configuration would have produced. A rewriter
+    replaced by a plugin is not keyed: nothing is read or written then. The pytest-named pycs (written by earlier
+    versions of detpy without the key) are never read under ``--det``.
     Older pytest versions (timestamp pycs, ``(mtime, size)``: stale same-size edits, review R-015) are left alone;
-    ``DETPY_REWRITE_CACHE=0`` turns it off."""
-    if os.environ.get("DETPY_REWRITE_CACHE", "1") == "0":
-        return False
+    ``DETPY_REWRITE_CACHE=0`` turns the cache off (no read, no write)."""
     try:
         import marshal
 
@@ -378,23 +384,64 @@ def _cache_rewritten_tests() -> bool:
 
         if b"\x03\x00\x00\x00" not in rw._read_pyc.__code__.co_consts:
             return False  # not a checked-hash reader
-        real, write_pyc, cache_dir_of, tail, key = (rw._rewrite_test, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL,
-                                                    rw.assertstate_key)
+        real, read_pyc, write_pyc, cache_dir_of, tail, ext, key = (
+            rw._rewrite_test, rw._read_pyc, rw._write_pyc, rw.get_cache_dir, rw.PYC_TAIL, rw.PYC_EXT,
+            rw.assertstate_key)
+        originals = (rw.rewrite_asserts, rw.AssertionRewriter)
     except (ImportError, AttributeError):
         return False
+    enabled = os.environ.get("DETPY_REWRITE_CACHE", "1") != "0"
+    memo: list = []
+
+    def keyed_tail():
+        """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written)."""
+        if not enabled or (rw.rewrite_asserts, rw.AssertionRewriter) != originals:
+            return None
+        if not memo:
+            memo.append(_rewrite_key(config, rw))
+        k = memo[0]
+        return None if k is None else tail[:-len(ext)] + ".det-" + k + ext
+
+    def _read_pyc(source, pyc, trace=lambda x: None):
+        t = keyed_tail()
+        name = pyc.name
+        if t is None or not name.endswith(tail):
+            return None
+        return read_pyc(source, pyc.with_name(name[:-len(tail)] + t), trace)
 
     def _rewrite_test(fn, config):
         source_hash, co = real(fn, config)
+        t = keyed_tail()
+        if t is None:
+            return source_hash, co
         cache_dir = cache_dir_of(fn)
         try:
             os.makedirs(cache_dir, exist_ok=True)
-            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + tail))
+            write_pyc(config.stash[key], co, source_hash, cache_dir / (fn.name[:-3] + t))
         except (OSError, KeyError):
             pass
         return source_hash, marshal.loads(marshal.dumps(co))
 
+    _PATCHER.set(rw, "_read_pyc", _read_pyc)
     _PATCHER.set(rw, "_rewrite_test", _rewrite_test)
-    return True
+    return enabled
+
+
+def _rewrite_key(config, rw) -> str | None:
+    """A digest of everything pytest's assertion rewrite depends on besides the source and the interpreter/pytest
+    version (which pytest's pyc check and name already cover): the ``enable_assertion_pass_hook`` ini option (the
+    one configuration value ``AssertionRewriter`` reads), the optimisation level ``compile`` uses, and the
+    rewriter's own source. None (no cache) when one of them cannot be read."""
+    import hashlib
+
+    try:
+        hook = bool(config.getini("enable_assertion_pass_hook"))
+        with open(rw.__file__, "rb") as fh:
+            code = hashlib.sha256(fh.read()).hexdigest()
+    except (OSError, ValueError, TypeError, AttributeError):
+        return None
+    parts = f"pass_hook={hook}\noptimize={sys.flags.optimize}\nrewriter={code}\n"
+    return hashlib.sha256(parts.encode()).hexdigest()[:16]
 
 
 def _owner(config) -> bool:
