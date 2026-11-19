@@ -376,7 +376,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             let own = format!("t|{nid}");
             let mut stale = None;
             for (path, _) in &e.data {
-                if let Some(w) = stale_written.get(&**path) {
+                if let Some(w) = stale_written.get(crate::proof::data_path(path)) {
                     if !w.iter().all(|x| *x == own) {
                         stale = Some(path.to_string());
                         break;
@@ -556,9 +556,9 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             }
             if why.is_none() {
                 for path in data.keys() {
-                    if let Some(w) = written.get(path) {
+                    if let Some(w) = written.get(crate::proof::data_path(path)) {
                         if !w.is_empty() && !w.iter().all(|x| cnames.contains(x.as_str())) {
-                            why = Some(format!("reads a file another test or fixture wrote: {path}"));
+                            why = Some(format!("reads a file another test or fixture wrote: {}", crate::proof::data_path(path)));
                             break;
                         }
                     }

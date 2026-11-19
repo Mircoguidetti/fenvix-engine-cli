@@ -1,0 +1,17 @@
+{
+ "name": "runner-unittest-jc",
+ "url": "https://github.com/kellyjonbrazil/jc",
+ "head": "d8698b5829bd",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "unittest",
+ "runner_args": [
+  "discover",
+  "tests"
+ ],
+ "note": "CI: python -m unittest discover tests (.github/workflows/pythonapp.yml); tests expect TZ=America/Los_Angeles (runtests.sh)",
+ "env": {
+  "TZ": "America/Los_Angeles"
+ }
+}

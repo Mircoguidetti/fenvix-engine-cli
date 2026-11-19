@@ -1,0 +1,13 @@
+{
+ "name": "runner-doctest-autopep8",
+ "url": "https://github.com/hhatto/autopep8",
+ "head": "d6b5b3342aac",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "doctest",
+ "runner_args": [
+  "README.rst"
+ ],
+ "note": "CI: python -m doctest -v README.rst"
+}

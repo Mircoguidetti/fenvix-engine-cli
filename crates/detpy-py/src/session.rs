@@ -100,6 +100,21 @@ impl<V> OMap<V> {
     fn contains(&self, k: &[u8]) -> bool {
         self.ix.contains_key(k)
     }
+    /// Remove every key in `drop`, keeping the others' order; returns the removed entries in their order.
+    fn remove_all(&mut self, drop: &std::collections::HashSet<W>) -> Vec<(W, V)> {
+        let keys = std::mem::take(&mut self.keys);
+        let vals = std::mem::take(&mut self.vals);
+        self.ix.clear();
+        let mut out = Vec::new();
+        for (k, v) in keys.into_iter().zip(vals) {
+            if drop.contains(&k) {
+                out.push((k, v));
+            } else {
+                self.insert(k, v);
+            }
+        }
+        out
+    }
     fn len(&self) -> usize {
         self.keys.len()
     }
@@ -345,6 +360,50 @@ impl CacheSession {
                 }
             } else {
                 st.misses.insert(w, w_any(&info)?);
+            }
+        }
+        Ok(())
+    }
+
+    /// Units of reuse larger than a test (a unittest class whose methods share class-level state): each group of
+    /// ids is reused as a whole or not at all. In a group with a test that runs (not reusable), every reusable
+    /// member runs too and becomes a miss `unit: <that test> runs`; in a group whose only runs are verification
+    /// draws, every reusable member is verified too (the group would have been reused as a whole). Ids that were
+    /// not decided are ignored.
+    fn regroup(&self, groups: Vec<Vec<Bound<'_, PyString>>>) -> PyResult<()> {
+        let mut st = lock(&self.st);
+        let mut to_miss: Vec<(W, W)> = Vec::new();
+        let mut to_verify: std::collections::HashSet<W> = std::collections::HashSet::new();
+        for g in &groups {
+            let ids = g.iter().map(w_of).collect::<PyResult<Vec<_>>>()?;
+            if let Some(m) = ids.iter().find(|i| st.misses.contains(i)) {
+                let mut why = b"unit: ".to_vec();
+                why.extend_from_slice(m);
+                why.extend_from_slice(b" runs");
+                for i in &ids {
+                    if st.hits.contains(i) || st.verifying.contains(i) {
+                        to_miss.push((i.clone(), why.clone()));
+                    }
+                }
+            } else if ids.iter().any(|i| st.verifying.contains(i)) {
+                for i in &ids {
+                    if st.hits.contains(i) {
+                        to_verify.insert(i.clone());
+                    }
+                }
+            }
+        }
+        if !to_miss.is_empty() {
+            let drop: std::collections::HashSet<W> = to_miss.iter().map(|(i, _)| i.clone()).collect();
+            st.hits.remove_all(&drop);
+            st.verifying.remove_all(&drop);
+            for (i, why) in to_miss {
+                st.misses.insert(i, why);
+            }
+        }
+        if !to_verify.is_empty() {
+            for (k, v) in st.hits.remove_all(&to_verify) {
+                st.verifying.insert(k, v);
             }
         }
         Ok(())

@@ -2,86 +2,32 @@
 
 from __future__ import annotations
 
-import datetime as _dt
 import json
 import os
-import platform
 import sys
 import warnings
 
 import pytest
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, proofcache, reexec, seeds
-from ._patch import Patcher
+from . import __version__, _core, _level0, _sites, _state, network, proofcache, reexec
 
 # --det-outcomes: the outcome of a test from its phase outcomes (Rust; the Python original is
 # tests/rust_hotpaths_ref/_ref_plugin_helpers.py)
 _det_outcome = _core.det_outcome
 
-CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
-_PATCHER = Patcher()
-_INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
+# the Level 0 controls, the option table, the epoch and the per-test bracket are shared with the other runners'
+# driver (runners/): _level0.py
+CONTROLS = _level0.CONTROLS
+_PATCHER = _level0.PATCHER
+_INFRA_PREFIXES = _level0.INFRA_PREFIXES
 _CONFLICTING_PLUGINS = ("randomly", "random_order", "pytest_randomly", "random-order")
 
 
 def pytest_addoption(parser, pluginmanager):
     _accept_blocked_plugin_options(parser, pluginmanager)
     g = parser.getgroup("detpy", "deterministic execution (Level 0)")
-    g.addoption("--det", action="store_true", default=False, help="enable deterministic execution (Level 0)")
-    g.addoption("--det-seed", type=int, default=None, metavar="N",
-                help="reproducible shuffle of the test order and seed of every generator (default: fixed order, seed 0)")
-    g.addoption("--det-order", default=None, metavar="FILE",
-                help="run exactly the test ids listed in FILE (one per line), in that order; other tests are "
-                     "deselected. With --det-seed the seed still drives every generator, not the order "
-                     "(replay bundles written by `detpy repro`)")
-    g.addoption("--det-trace", default=None, metavar="PATH",
-                help="where to write the execution trace (default: <rootdir>/.detpy/trace.jsonl)")
-    g.addoption("--det-compare", default=None, metavar="TRACE",
-                help="compare fingerprints with a previous trace and report tests not covered by Level 0")
-    g.addoption("--det-record", action="store_true", default=False,
-                help="allow external network access and record responses into the cassette")
-    g.addoption("--det-cassette", default=None, metavar="PATH",
-                help="network cassette (default: <rootdir>/.detpy/cassette.json); replayed when present")
-    g.addoption("--det-allow-host", action="append", default=[], metavar="HOST",
-                help="external host that may be reached (repeatable)")
-    g.addoption("--det-epoch", default="auto", metavar="ISO",
-                help="wall-clock value at the start of every test (default auto: the commit time of the "
-                     f"checked-out git HEAD, else {_FALLBACK_EPOCH})")
-    g.addoption("--det-tick", type=int, default=1000, metavar="NS",
-                help="nanoseconds the virtual clock advances on every read (default 1000)")
-    g.addoption("--det-tick-adapt", type=int, default=8, metavar="N",
-                help="double the tick after N consecutive clock reads with no other event (0 = fixed tick)")
-    g.addoption("--det-sleep", choices=("virtual", "real"), default="virtual",
-                help="virtual: time.sleep only advances the clock; real: it also waits")
-    g.addoption("--det-disable", default="", metavar="LIST",
-                help=f"comma separated controls to turn off: {','.join(CONTROLS)}")
-    g.addoption("--det-urandom", action="store_true", default=False,
-                help="also make os.urandom/uuid4/secrets deterministic (beyond Level 0; NOT for crypto tests)")
-    g.addoption("--det-keep-aslr", action="store_true", default=False,
-                help="do not disable address space randomisation when re-executing")
-    g.addoption("--det-no-reexec", action="store_true", default=False,
-                help="never re-exec the interpreter to fix PYTHONHASHSEED")
-    g.addoption("--det-max-events", type=int, default=10_000, metavar="N",
-                help="events stored verbatim per test (the fingerprint always covers all of them)")
-    g.addoption("--det-outcomes", default=None, metavar="PATH",
-                help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")
-    g.addoption("--det-cache", default=None, metavar="DIR",
-                help="cache with proof (needs --det, Python 3.12+): reuse a test's previous result from DIR only "
-                     "when every input it depended on (code executed, files read, environment variables read, "
-                     "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
-    g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
-                help="run this random fraction of the reusable tests anyway and compare with the cached result")
-    g.addoption("--det-cache-no-follow", action="store_true", default=False,
-                help="with --det-cache: never cache a test that starts a process (default: the processes run under "
-                     "strace and their files, program and environment become inputs of the test)")
-    g.addoption("--det-cache-max-age", type=float, default=30.0, metavar="DAYS",
-                help="with --det-cache: never reuse a result recorded more than DAYS ago on the real clock (default "
-                     "30; 0 = no limit). Bounds real-clock reads detpy cannot see (C code such as TLS validity)")
-    g.addoption("--det-cache-epoch-window", type=float, default=30.0, metavar="DAYS",
-                help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the HEAD commit time is at "
-                     "most DAYS later (default 30), so tests that read the clock are reusable across commits")
-    g.addoption("--det-cache-receipts", default=None, metavar="PATH",
-                help="where to write the per-test receipts (JSON lines; default DIR/receipts.jsonl)")
+    for flags, kw in _level0.OPTIONS:
+        g.addoption(*flags, **kw)
 
 
 _BLOCKED_BY_REEXEC: list[str] | None = None
@@ -166,103 +112,35 @@ S = _Session()
 
 
 def _controls(ns) -> frozenset:
-    off = {c.strip() for c in (getattr(ns, "det_disable", "") or "").split(",") if c.strip()}
-    unknown = off - set(CONTROLS)
-    if unknown:
-        raise pytest.UsageError(f"--det-disable: unknown control(s) {sorted(unknown)}; known: {CONTROLS}")
-    return frozenset(CONTROLS) - off
-
-
-_PLUGIN_PACKAGES: set = set()
-
-
-def _skip_module(name: str, mod) -> bool:
-    """Modules whose references to real clock objects must not be rebound.
-
-    Besides the standard library and pytest itself, third-party pytest plugins
-    are test infrastructure (pytest-benchmark, pytest-timeout, ...): they keep
-    real timers, otherwise time-calibrated loops would spin on virtual time.
-    """
-    top = name.split(".", 1)[0]
-    if top in _INFRA_PREFIXES or top.startswith("pytest_") or top in _PLUGIN_PACKAGES:
-        return True
-    f = getattr(mod, "__file__", None)
-    if not f:
-        return True  # builtins / namespace packages
-    kind, _ = _sites._classify(f)
-    return kind != _sites._USER
-
-
-_FALLBACK_EPOCH = "2025-01-01T00:00:00+00:00"
-EPOCH_SOURCE = {"source": "default"}
-
-
-def _head_commit_time(root: str) -> int | None:
-    """Commit time (seconds) of the git HEAD containing ``root``, or None."""
-    import subprocess
-
     try:
-        p = subprocess.run(["git", "log", "-1", "--format=%ct"], cwd=root, capture_output=True, text=True,
-                           timeout=10)
-    except (OSError, subprocess.SubprocessError):
-        return None
-    out = p.stdout.strip()
-    return int(out) if p.returncode == 0 and out.isdigit() else None
+        return _level0.controls_of(getattr(ns, "det_disable", "") or "")
+    except _level0.UsageError as e:
+        raise pytest.UsageError(str(e))
 
 
-def _epoch_ns(text: str, root: str) -> int:
-    """--det-epoch: an ISO time, or "auto" = the HEAD commit time (T2).
-
-    A test written at a commit may take dates before the commit as past; a fixed
-    epoch older than the commit made such tests fail only under --det. The commit
-    time is a pure function of the checkout and never later than the real time.
-    """
-    if text == "auto":
-        ct = _head_commit_time(root)
-        if ct is not None:
-            EPOCH_SOURCE.update(source="git HEAD commit time", value=ct)
-            return ct * 1_000_000_000
-        EPOCH_SOURCE.update(source="fixed default (no git HEAD)", value=_FALLBACK_EPOCH)
-        text = _FALLBACK_EPOCH
-    else:
-        EPOCH_SOURCE.update(source="--det-epoch", value=text)
-    return _parse_epoch(text)
+_PLUGIN_PACKAGES = _level0.INFRA_PACKAGES  # third-party pytest plugins: test infrastructure (pytest-benchmark, ...)
+_skip_module = _level0.skip_module
 
 
-def _epoch_for(ns, root: str) -> int:
-    """The session's epoch. Under ``--det-cache`` with ``--det-epoch=auto`` it is the cache's epoch: the HEAD commit
-    time when the cache took it, kept while HEAD is at most ``--det-cache-epoch-window`` days later. The epoch is a
-    configuration input of every test that reads the clock; one that moved at every commit made those tests (and,
-    through a clock read at import time, every test) unreusable from one commit to the next."""
-    ns_epoch = _epoch_ns(ns.det_epoch, root)
-    cache = getattr(ns, "det_cache", None)
-    if cache and ns.det_epoch == "auto" and EPOCH_SOURCE.get("source") == "git HEAD commit time":
-        window = getattr(ns, "det_cache_epoch_window", 30.0)
-        kept = proofcache.cache_epoch(cache, ns_epoch, int(window * 86400 * 1_000_000_000))
-        if kept != ns_epoch:
-            EPOCH_SOURCE.update(source="cache epoch (HEAD commit time when the cache took it)",
-                                value=kept // 1_000_000_000, head=ns_epoch // 1_000_000_000)
-        return kept
-    return ns_epoch
+_FALLBACK_EPOCH = _level0.FALLBACK_EPOCH
+EPOCH_SOURCE = _level0.EPOCH_SOURCE
+_head_commit_time = _level0.head_commit_time
+_epoch_ns = _level0.epoch_ns
+_epoch_for = _level0.epoch_for
 
 
 def _parse_epoch(text: str) -> int:
     try:
-        d = _dt.datetime.fromisoformat(text)
-    except ValueError as e:
-        raise pytest.UsageError(f"--det-epoch: {e}")
-    if d.tzinfo is None:
-        d = d.replace(tzinfo=_dt.timezone.utc)
-    delta = d - _dt.datetime(1970, 1, 1, tzinfo=_dt.timezone.utc)
-    return (delta.days * 86400 + delta.seconds) * 1_000_000_000 + delta.microseconds * 1000
+        return _level0.parse_epoch(text)
+    except _level0.UsageError as e:
+        raise pytest.UsageError(str(e))
 
 
 def _hashseed(ns) -> str:
-    return str((ns.det_seed or 0) % 4294967296)
+    return _level0.hashseed(ns.det_seed)
 
 
-def _hashseed_value() -> str:
-    return str(_state.STATE.config.seed % 4294967296)
+_hashseed_value = _level0.hashseed_value
 
 
 @pytest.hookimpl(tryfirst=True)
@@ -279,28 +157,17 @@ def pytest_load_initial_conftests(early_config, parser, args):
     controls = _controls(ns)
     if getattr(ns, "det_cache", None) and not proofcache.AVAILABLE:
         raise pytest.UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
-    want_bytecode = "bytecode" in controls
-    if "hashseed" in controls:
-        need = reexec.plan(_hashseed(ns), not ns.det_keep_aslr, want_bytecode)
-        if any(need.values()):
-            ok, why = reexec.can_reexec()
-            if ok and not ns.det_no_reexec:
-                # pytest already redirected fd 1/2 for early capture: restore
-                # them, otherwise the new process writes into a lost temp file.
-                capman = early_config.pluginmanager.getplugin("capturemanager")
-                if capman is not None:
-                    capman.stop_global_capturing()
-                rootdir = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
-                block = [n for n in _CONFLICTING_PLUGINS if early_config.pluginmanager.get_plugin(n) is not None]
-                reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
-            reason = "--det-no-reexec" if ns.det_no_reexec else why
-            if need["hashseed"]:
-                S.reexec_status = f"PYTHONHASHSEED not fixed ({reason})"
-            else:
-                missing = [k for k in ("aslr", "bytecode") if need[k]]
-                S.reexec_status = f"hash seed fixed; not applied: {','.join(missing)} ({reason})"
-        else:
-            S.reexec_status = "ok"
+    rootdir = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
+
+    def before_exec():
+        # pytest already redirected fd 1/2 for early capture: restore them, otherwise the new process writes into
+        # a lost temp file.
+        capman = early_config.pluginmanager.getplugin("capturemanager")
+        if capman is not None:
+            capman.stop_global_capturing()
+
+    block = [n for n in _CONFLICTING_PLUGINS if early_config.pluginmanager.get_plugin(n) is not None]
+    S.reexec_status = _level0.reexec_status(ns, controls, rootdir, block, before_exec)  # may not return
     if "time" in controls:
         # pytest-benchmark: the adaptive tick lets calibration terminate, but the
         # number of rounds is then max_time / (virtual) duration, unrelated to
@@ -315,20 +182,11 @@ def pytest_load_initial_conftests(early_config, parser, args):
 
 
 def _install(config, ns, controls) -> None:
-    cfg = _state.Config(
-        seed=ns.det_seed or 0,
-        shuffle=ns.det_seed is not None and not getattr(ns, "det_order", None),
-        epoch_ns=_epoch_for(ns, str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()),
-        tick_ns=max(0, ns.det_tick),
-        tick_adapt=max(0, ns.det_tick_adapt),
-        sleep=ns.det_sleep,
-        controls=controls,
-        record_net=ns.det_record,
-        allow_hosts=tuple(ns.det_allow_host),
-        control_urandom=ns.det_urandom,
-        max_events=ns.det_max_events,
-    )
-    _state.STATE.config = cfg
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    try:
+        cfg = _level0.make_config(ns, root, controls)
+    except _level0.UsageError as e:
+        raise pytest.UsageError(str(e))
     _sites.refresh(str(config.rootpath) if hasattr(config, "rootpath") else None)
     S.active = True
     S.config = config
@@ -343,17 +201,12 @@ def _install(config, ns, controls) -> None:
             # plugin defined may stay active (documented limit).
             pm.unregister(name=name)
             S.disabled_plugins.append(name + " (unregistered after loading)")
-    if "seeds" in controls:
-        seeds.install(_PATCHER, cfg.control_urandom)
     for plugin in pm.get_plugins():
         modname = getattr(plugin, "__name__", None)
         if isinstance(modname, str) and modname not in ("__main__",) and hasattr(plugin, "__file__"):
             _PLUGIN_PACKAGES.add(modname.split(".", 1)[0])
     _PLUGIN_PACKAGES.discard("conftest")
-    if "time" in controls:
-        S.rebound = clock.install(_PATCHER, cfg.epoch_ns, cfg.tick_ns, _skip_module, cfg.tick_adapt)
-    if "fs" in controls:
-        fsorder.install(_PATCHER)
+    S.rebound = _level0.install_controls(cfg, str(config.rootpath) if hasattr(config, "rootpath") else None)
     if "bytecode" in controls and reexec.bytecode_active(_hashseed_value()):
         S.rewrite_cache = _cache_rewritten_tests(config)
     else:
@@ -361,63 +214,9 @@ def _install(config, ns, controls) -> None:
 
 
 def _hash_checked_imports(config) -> bool:
-    """Review R-019b N5: under ``--det`` without the bytecode control (``--det-no-reexec``, ``--det-disable``, or no
-    re-exec possible), validate the bytecode of every imported project module by its source's hash.
-
-    With the control, the import system reads only the precompile's checked-hash pycs (``reexec``), which it
-    validates by hash itself. Without it, it uses the project's ``__pycache__``, whose timestamp pycs are valid for
-    ``(int(mtime), size)``: after a same-size edit checked out within the same second, the previous version's
-    bytecode runs, and the proof key (from the source) pairs the new source with the old outcome (a cached false
-    pass). ``SourceFileLoader.get_code`` is patched for project sources (under the rootdir, without the precompile's
-    excluded names): a pyc is used only when it is a hash-based pyc of exactly the current source; otherwise the
-    source is compiled and, when bytecode may be written, cached as a checked-hash pyc (which plain Python also
-    validates by hash). The decision and the hash are in Rust (``_core.HashCheckedPycs``); this is the importlib
-    interface. Other modules (libraries) keep the import system's own check."""
-    try:
-        import importlib.util
-        from importlib import _bootstrap_external as be
-        from importlib.machinery import SourceFileLoader
-
-        variant = reexec._hash_variant()
-        compile_bytecode, code_to_hash_pyc = be._compile_bytecode, be._code_to_hash_pyc
-        cache_from_source, magic = importlib.util.cache_from_source, importlib.util.MAGIC_NUMBER
-    except (ImportError, AttributeError):
-        return False
-    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
-    check = _core.HashCheckedPycs(os.path.abspath(root), list(reexec._EXCLUDE_NAMES), magic,
-                                  int.from_bytes(magic, "little"), *(variant or (1, 3)))
-    real = SourceFileLoader.get_code
-
-    def get_code(self, fullname):
-        path = self.get_filename(fullname)
-        if variant is None:  # the Rust hash is not the interpreter's: never read a project pyc
-            if not check.applies(path):
-                return real(self, fullname)
-            with open(path, "rb") as fh:
-                return self.source_to_code(fh.read(), path)
-        try:
-            cfile = cache_from_source(path)
-        except NotImplementedError:
-            cfile = None
-        got = check(path, cfile)
-        if got is None:
-            return real(self, fullname)
-        source, source_hash, data = got
-        if data is not None:
-            try:
-                return compile_bytecode(memoryview(data)[16:], name=fullname, bytecode_path=cfile, source_path=path)
-            except (ImportError, EOFError):
-                pass
-        code = self.source_to_code(source, path)
-        if cfile is not None and not sys.dont_write_bytecode:
-            try:
-                self._cache_bytecode(path, cfile, code_to_hash_pyc(code, source_hash, True))
-            except NotImplementedError:
-                pass
-        return code
-
-    _PATCHER.set(SourceFileLoader, "get_code", get_code)
-    return True
+    """Review R-019b N5 (``_level0.hash_checked_imports``): project bytecode validated by its source's hash under
+    ``--det`` without the bytecode control."""
+    return _level0.hash_checked_imports(str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd())
 
 
 def _cache_rewritten_tests(config) -> bool:
@@ -663,12 +462,9 @@ def _configure_det(config) -> None:
     root = str(config.rootpath)
     _sites.refresh(root)
     opt = config.option
-    cassette = opt.det_cassette or os.path.join(root, ".detpy", "cassette.json")
-    _state.STATE.config.cassette_path = cassette
-    if "net" in _state.STATE.config.controls:
-        S.net_mode = network.install(_PATCHER, opt.det_record, cassette, opt.det_allow_host)
+    S.net_mode = _level0.open_session(root, opt.det_cassette, opt.det_record, opt.det_allow_host,
+                                      opt.det_max_events)
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
-    _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
         proofcache.install(config)
     factory = getattr(config, "_tmp_path_factory", None)
@@ -682,13 +478,7 @@ def _configure_det(config) -> None:
 def pytest_unconfigure(config):
     reexec.SESSION_DEPTH = max(0, reexec.SESSION_DEPTH - 1)
     if _owner(config):
-        _PATCHER.undo_all()
-        clock.uninstall()
-        seeds.uninstall()
-        network.uninstall()
-        _state.STATE.recorder = None
-        _state.STATE.nodeid = None
-        _sites.set_basetemp_provider(None)
+        _level0.uninstall()
         proofcache.uninstall()
         S.active = False
         S.config = None
@@ -845,34 +635,8 @@ class _DetSession(_Outcomes):
     def pytest_collection_finish(self, session):
         S.order = [i.nodeid for i in session.items]
         S.order_digest = _core.order_digest(S.order)
-        cfg = _state.STATE.config
-        meta = {
-            "detpy": __version__,
-            "seed": cfg.seed,
-            "shuffle": cfg.shuffle,
-            "controls": sorted(cfg.controls),
-            "hashseed": os.environ.get("PYTHONHASHSEED"),
-            "reexec": S.reexec_status,
-            "aslr_disabled": reexec.aslr_disabled(),
-            "bytecode": ("precompiled" if reexec.bytecode_active(_hashseed_value()) else "default"),
-            "precompile_s": (float(os.environ[reexec.PRECOMPILE_ENV]) if reexec.PRECOMPILE_ENV in os.environ
-                             else None),
-            "tick_adapt": cfg.tick_adapt,
-            "epoch_ns": cfg.epoch_ns,
-            "epoch_source": EPOCH_SOURCE.get("source"),
-            "tick_ns": cfg.tick_ns,
-            "sleep": cfg.sleep,
-            "network": S.net_mode,
-            "urandom_controlled": cfg.control_urandom,
-            "python": platform.python_version(),
-            "implementation": platform.python_implementation(),
-            "platform": sys.platform,
-            "pytest": pytest.__version__,
-            "disabled_plugins": S.disabled_plugins,
-            "adjustments": S.adjustments,
-            "rebound_references": len(S.rebound),
-            "order_digest": S.order_digest,
-        }
+        meta = _level0.trace_meta(S.reexec_status, S.net_mode, len(S.rebound), S.order_digest, "pytest",
+                                  pytest.__version__, S.disabled_plugins, S.adjustments)
         _state.STATE.recorder.open(S.trace_path, json.dumps(meta), S.order)
 
     # Per-test control ---------------------------------------------------------
@@ -892,26 +656,12 @@ class _DetSession(_Outcomes):
             if fp:
                 S.fingerprints[item.nodeid] = fp
             return
-        controls = st.config.controls
-        rec.begin_test(item.nodeid, S.index)
+        _level0.begin_test(item.nodeid, S.index)
         S.index += 1
-        _state.reset_threads()
-        if "time" in controls:
-            clock.start_test()
-        st.nodeid = item.nodeid
-        if "seeds" in controls:
-            seeds.start_test(_PATCHER, item.nodeid)
-        if "net" in controls:
-            network.start_test()
         try:
             yield
         finally:
-            if "seeds" in controls:
-                seeds.end_test()
-            if "net" in controls:
-                network.end_test()
-            st.nodeid = None
-            fp = rec.end_test(self.outcomes.get(item.nodeid, "unknown"))
+            fp = _level0.end_test(self.outcomes.get(item.nodeid, "unknown"))
             if fp is not None:
                 S.fingerprints[item.nodeid] = fp
                 item.user_properties.append(("detpy_fingerprint", fp))

@@ -10,6 +10,18 @@
 * ``os.urandom`` / ``SystemRandom`` / ``uuid4`` / ``secrets`` are *observed*
   (their output is digested into the fingerprint) but not controlled, unless
   ``--det-urandom`` is given.
+* Hypothesis (under every runner): its seed of a test without ``@seed`` or
+  ``derandomize`` comes from a generator Hypothesis creates once per thread and
+  draws from at every test, so a test's examples depended on how many tests
+  drew before it (another order, or tests skipped by the cache, gave other
+  examples). That generator is dropped at the start of every test: Hypothesis
+  creates it again, seeded from the test id like every ``Random()``. The
+  example database is off (``settings.database`` is None): replaying examples
+  saved by earlier runs made a test's examples depend on history, and its reads
+  under ``.hypothesis/`` are not inputs of the cache. Hypothesis's storage is
+  off (its caches of constants and of the Unicode table are computed in every
+  run) and so are its local constants (constants of every local module loaded
+  so far, which made a test's examples depend on what earlier tests imported).
 
 The recording stand-ins (``random.random`` ... ``random.shuffle``, ``random.randbytes``, ``random.seed``,
 ``random.Random.seed``, ``os.urandom`` / ``random._urandom``, ``numpy.random.default_rng``) and the per-test counter
@@ -93,6 +105,9 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     tempfile = sys.modules.get("tempfile")
     if tempfile is not None and hasattr(tempfile, "_name_sequence"):
         tempfile._name_sequence = None
+    core = sys.modules.get("hypothesis.core")
+    if core is not None:
+        _hypothesis(patcher, core)
     np = sys.modules.get("numpy")
     if np is not None and hasattr(np, "random"):
         try:
@@ -103,6 +118,62 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
                 _numpy_patched.append(True)
         except Exception:  # pragma: no cover - exotic numpy builds
             pass
+
+
+_hypothesis_patched: list = []
+
+
+def _hypothesis(patcher: Patcher, core) -> None:
+    """Hypothesis under ``--det`` (module docstring): the per-thread generator of seeds is dropped at every test,
+    the example database is off."""
+    tl = getattr(core, "threadlocal", None)
+    try:
+        if tl is not None and hasattr(tl, "_hypothesis_global_random"):
+            tl._hypothesis_global_random = None
+        elif hasattr(core, "_hypothesis_global_random"):  # older Hypothesis: a module global
+            core._hypothesis_global_random = None
+    except Exception:  # pragma: no cover - an unknown Hypothesis layout: its own seeding stays
+        pass
+    if _hypothesis_patched:
+        return
+    _hypothesis_patched.append(True)
+    hyp = sys.modules.get("hypothesis")
+    settings = getattr(hyp, "settings", None)
+    if not isinstance(settings, type) or "database" not in vars(settings):
+        return
+    original = vars(settings)["database"]
+    # the settings class refuses assignment through its metaclass: set and restore through type's own setattr
+    type.__setattr__(settings, "database", property(lambda self: None, doc="detpy --det: no example database"))
+    undo_steps = [lambda: type.__setattr__(settings, "database", original)]
+    # Hypothesis's storage (its caches of local constants and of the Unicode table): a cache made by an earlier
+    # run changed what a run executes (read the cache, or compute it and write it): no storage, computed every run
+    conf = sys.modules.get("hypothesis.configuration")
+    if conf is not None and hasattr(conf, "set_hypothesis_home_dir"):
+        home = vars(conf).get("__hypothesis_home_directory")
+        conf.set_hypothesis_home_dir(os.path.join(os.devnull, "detpy-no-hypothesis-storage"))
+        undo_steps.append(lambda: conf.set_hypothesis_home_dir(home))
+    # local constants: Hypothesis biases examples with the constants of every local module loaded so far, so a
+    # test's examples depended on which modules earlier tests imported and on code it never ran: none under --det
+    prov = sys.modules.get("hypothesis.internal.conjecture.providers")
+    real_local = getattr(prov, "_get_local_constants", None)
+    if real_local is not None:
+        try:
+            empty = type(prov._local_constants)(
+                integers=type(prov._local_constants.integers)(), floats=type(prov._local_constants.floats)(
+                    key=prov.float_to_int), bytes=type(prov._local_constants.bytes)(),
+                strings=type(prov._local_constants.strings)())
+        except Exception:  # pragma: no cover - an unknown Hypothesis layout: its local constants stay
+            empty = None
+        if empty is not None:
+            prov._get_local_constants = lambda: empty
+            undo_steps.append(lambda: setattr(prov, "_get_local_constants", real_local))
+
+    def undo() -> None:
+        for step in reversed(undo_steps):
+            step()
+        _hypothesis_patched.clear()
+
+    patcher._undo.append((undo, None, None))
 
 
 def end_test() -> None:

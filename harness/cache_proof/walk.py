@@ -12,6 +12,11 @@ spec changed, and runs:
 * every 10th commit (and the first), **capture overhead**: a run with an empty cache directory (everything recorded)
   and a second plain ``--det`` run.
 
+``runner`` (default ``pytest``): another Python runner, run as ``python -m detpy <runner> [--det ...]
+<runner_args>`` (``unittest``, ``django``, ``nose2``, ``doctest``, ``zope-testrunner``, ``ward``; the driver in
+``python/detpy/runners``); ``runner_args`` is its command line (e.g. ``["discover", "-s", "tests", "-t", "."]``,
+``["manage.py", "test"]``). Per-test times then come from the driver's ``--det-outcomes`` file (``times``).
+
 ``mode: suite`` runs the selected test files in one pytest process (the 14 libraries, sharded apps);
 ``mode: files`` runs one process per test file (Home Assistant, as in skip study 2); there, B runs every unit at
 every 10th commit and a random sample of the units with reused results at the other commits.
@@ -116,6 +121,7 @@ class Walk:
         self.last_dep = None
         self.args: list[str] = []
         self.collect_ok: dict[str, bool] = {}
+        self.runner = spec.get("runner", "pytest")
 
     # -- setup -------------------------------------------------------------------
     def fmt(self, s: str) -> str:
@@ -175,9 +181,11 @@ class Walk:
             args, groups, reqs = detect_install(self.src)
             extra = self.spec.get("pip", [])
             how, out = None, ""
+            runner_pkg = {"pytest": ["pytest"], "nose2": ["nose2"], "zope-testrunner": ["zope.testrunner"],
+                          "ward": ["ward"], "django": ["django"]}.get(self.runner, [])
             for attempt in (args + groups + reqs + extra, args + groups + extra, args + reqs + extra, args + extra,
                             ["-e", "."] + extra):
-                code, out, _ = sh(base + attempt + ["pytest"], cwd=self.src, timeout=1800)
+                code, out, _ = sh(base + attempt + runner_pkg, cwd=self.src, timeout=1800)
                 with open(logf, "a") as fh:
                     fh.write(" ".join(attempt) + f"\n-> {code}\n{out[-2000:]}\n")
                 if code == 0:
@@ -197,6 +205,8 @@ class Walk:
         return True, how
 
     def pytest_args(self) -> list[str]:
+        if self.runner != "pytest":
+            return list(self.spec.get("runner_args", []))
         has = lambda mod: sh([self.py, "-c", f"import {mod}"], env=self.env())[0] == 0  # noqa: E731
         args = list(self.spec.get("pytest_args", [])) + ["-p", "times_plugin", "-p", "no:cacheprovider", "-q",
                                                            "-rN", "--tb=no"]
@@ -234,7 +244,10 @@ class Walk:
         outp.unlink(missing_ok=True)
         tim.unlink(missing_ok=True)
         # --det-urandom: under --det the randomness is controlled (os.urandom included), as for the clock
-        cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest"]
+        if self.runner == "pytest":
+            cmd = [self.py, *self.spec.get("python_flags", []), "-m", "pytest"]
+        else:
+            cmd = [self.py, *self.spec.get("python_flags", []), "-m", "detpy", self.runner]
         if det:
             cmd += ["--det", "--det-urandom"]
         cmd.append(f"--det-outcomes={outp}")
@@ -242,7 +255,10 @@ class Walk:
             cmd.append(f"--det-cache={cache}")
             if receipts is not None:
                 cmd.append(f"--det-cache-receipts={receipts}")
-        cmd += [*self.args, *extra, *targets]
+        if self.runner == "pytest":
+            cmd += [*self.args, *extra, *targets]
+        else:  # the --det options first (the driver takes them anywhere), then the runner's command line
+            cmd += [*extra, *self.args, *targets]
         env = self.env()
         env["CP_TIMES_OUT"] = str(tim)
         code, out, wall = sh(cmd, cwd=self.src, env=env, timeout=self.spec.get("timeout", 3000))
@@ -258,6 +274,11 @@ class Walk:
             r["times"] = {k: v[0] for k, v in json.loads(tim.read_text())["tests"].items()}
         except (OSError, ValueError, KeyError):
             r["times"] = {}
+        if not r["times"] and self.runner != "pytest":
+            try:  # the runners driver measures each test that ran (real clock)
+                r["times"] = dict(json.loads(outp.read_text()).get("times") or {})
+            except (OSError, ValueError):
+                pass
         return r
 
     # -- one commit --------------------------------------------------------------------

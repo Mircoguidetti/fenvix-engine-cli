@@ -86,7 +86,8 @@ pub struct Entry {
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
-    /// [`crate::deps`] ("m:", "r:", "e:", "t:", "c:"), "l:", "p:", "g:".
+    /// [`crate::deps`] ("m:", "r:", "e:", "t:", "c:"), "l:", "p:", "g:"; a probe of a path (key [`probe_key`],
+    /// first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
     pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -195,6 +196,84 @@ pub fn stat_kind(path: &Path) -> &'static str {
         Ok(_) => "other",
         Err(_) => "missing",
     }
+}
+
+/// The first character of the data key of a probe of a path (`os.stat`, `os.lstat`, `os.path.exists`, ...): the key
+/// is `PROBE`, the probe's mode, then the path's key. A probe's dependency is kept apart from the path's content or
+/// listing dependency (a test may read a file and look at its size).
+pub const PROBE: char = '\u{1}';
+
+/// The probe modes: `e` existence and kind (following symlinks), `E` the same without following, `q` metadata
+/// (following), `Q` metadata of the path itself (a symlink's target included).
+pub fn probe_key(mode: u8, key: &str) -> String {
+    let mut k = String::with_capacity(key.len() + 2);
+    k.push(PROBE);
+    k.push(mode as char);
+    k.push_str(key);
+    k
+}
+
+/// (mode, path key) of a probe's data key, None for a content or listing key.
+pub fn probe_parts(key: &str) -> Option<(u8, &str)> {
+    let b = key.as_bytes();
+    if b.len() >= 2 && b[0] == PROBE as u8 {
+        Some((b[1], &key[2..]))
+    } else {
+        None
+    }
+}
+
+/// The path a data key depends on (a probe's key without its prefix).
+pub fn data_path(key: &str) -> &str {
+    probe_parts(key).map(|(_, p)| p).unwrap_or(key)
+}
+
+/// What a probe of `path` sees now: `missing`, `s:<kind>` (modes `e`, `E`), `m:<digest>` / `n:<digest>` (modes `q`,
+/// `Q`: the kind and permission bits; for a file its size and modification time; for a symlink its target; a
+/// directory's size and times are left out: its entries are the listing's business).
+pub fn probe_now(path: &Path, mode: u8) -> String {
+    let follow = matches!(mode, b'e' | b'q');
+    let meta = if follow { fs::metadata(path) } else { fs::symlink_metadata(path) };
+    let Ok(m) = meta else { return "missing".into() };
+    let ft = m.file_type();
+    let kind = if ft.is_symlink() {
+        "link"
+    } else if ft.is_file() {
+        "file"
+    } else if ft.is_dir() {
+        "dir"
+    } else {
+        "other"
+    };
+    if matches!(mode, b'e' | b'E') {
+        return format!("s:{kind}");
+    }
+    let mut b = Vec::new();
+    push_part(&mut b, kind);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt;
+        push_part(&mut b, &format!("{:o}", m.mode() & 0o7777));
+        if ft.is_file() {
+            push_part(&mut b, &m.size().to_string());
+            push_part(&mut b, &format!("{}.{:09}", m.mtime(), m.mtime_nsec()));
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        push_part(&mut b, if m.permissions().readonly() { "ro" } else { "rw" });
+        if ft.is_file() {
+            push_part(&mut b, &m.len().to_string());
+            let t = m.modified().ok().and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok());
+            push_part(&mut b, &t.map(|d| format!("{}.{:09}", d.as_secs(), d.subsec_nanos())).unwrap_or_default());
+        }
+    }
+    if ft.is_symlink() {
+        if let Ok(t) = fs::read_link(path) {
+            push_part(&mut b, &t.to_string_lossy());
+        }
+    }
+    format!("{}:{}", if follow { "m" } else { "n" }, digest_bytes(&b).short())
 }
 
 /// Current dependency string of a recorded data dependency of the same kind.
@@ -859,6 +938,15 @@ impl Checker {
     }
 
     fn data(&mut self, path: &str, recorded: &str) -> &str {
+        if let Some((mode, real)) = probe_parts(path) {
+            // probes are memoised under their own key (its prefix names the mode)
+            let m = self.data_now.entry(PROBE).or_default();
+            if !m.contains_key(path) {
+                let v = probe_now(&self.cur.root.join(real), mode);
+                m.insert(path.to_string(), v);
+            }
+            return &m[path];
+        }
         let kind = recorded.chars().next().unwrap_or('?');
         let kind = if recorded == "missing" { 'f' } else { kind };
         let m = self.data_now.entry(kind).or_default();

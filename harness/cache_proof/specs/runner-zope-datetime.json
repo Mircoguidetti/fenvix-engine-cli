@@ -1,0 +1,16 @@
+{
+ "name": "runner-zope-datetime",
+ "url": "https://github.com/zopefoundation/DateTime",
+ "head": "b157397e2162",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "zope-testrunner",
+ "runner_args": [
+  "--test-path=src"
+ ],
+ "pip": [
+  "zope.testrunner"
+ ],
+ "note": "tox.ini: buildout's test script (zope.testrunner over src)"
+}

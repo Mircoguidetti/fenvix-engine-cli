@@ -1,0 +1,13 @@
+{
+ "name": "runner-ward-pointers",
+ "url": "https://github.com/ZeroIntensity/pointers.py",
+ "head": "37fa094230bf",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.12",
+ "runner": "ward",
+ "runner_args": [
+  "test"
+ ],
+ "note": "[tool.ward] path = tests"
+}

@@ -1,0 +1,90 @@
+name: all-runners-python
+
+# All runners (P-032), Python: measure `python -m detpy <runner> --det --det-cache=DIR` (unittest, Django, nose2,
+# doctest, zope.testrunner, ward; the spec's "runner") over consecutive commits, with the same walk as the pytest
+# cache-proof runs (harness/cache_proof/walk.py: cache run A, full run B, every reuse compared, B' on a mismatch).
+# Triggered by a push that changes tracks/all-runners-python/run.json on claude/all-runners. The engine is this
+# branch at the triggering commit. run.json: {"run_id": "...", "walk": [{"spec": "runner-unittest-jc",
+# "shards": 1, "commits": 21, "budget_min": 330}, ...]} (spec names from harness/cache_proof/specs/).
+#   build -> detpy wheel, job matrix from run.json
+#   walk  -> one job per (spec, shard): harness/cache_proof/walk.py; results committed (rebase-retry) to
+#            tracks/all-runners-python/results/<run_id>/
+
+on:
+  push:
+    branches: [claude/all-runners]
+    paths: [tracks/all-runners-python/run.json]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+  CP_COMMIT: "1"
+  CP_BRANCH: claude/all-runners
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      run_id: ${{ steps.p.outputs.run_id }}
+      walk: ${{ steps.p.outputs.walk }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+      - id: p
+        run: |
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json
+          run = json.load(open("tracks/all-runners-python/run.json"))
+          rows = []
+          for w in run["walk"]:
+              spec = json.load(open(f"harness/cache_proof/specs/{w['spec']}.json"))
+              n = w.get("shards", 1)
+              for s in range(n):
+                  rows.append({"spec": w["spec"], "shard": f"{s}/{n}", "tag": f"{s}of{n}", "budget": w.get("budget_min", 330),
+                               "commits": w.get("commits", 0), "apt": " ".join(spec.get("apt", []))})
+          print("run_id=" + run["run_id"])
+          print("walk=" + json.dumps(rows))
+          PY
+
+  walk:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 32
+      matrix:
+        include: ${{ fromJSON(needs.build.outputs.walk) }}
+    steps:
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost || true
+          df -h / | tail -1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: "${{ runner.temp }}/dist"}
+      - name: System packages (strace for following child processes, plus the spec's)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq strace ${{ matrix.apt }} > /dev/null && strace -V | head -1
+      - name: Walk
+        env:
+          CP_REPO: ${{ github.workspace }}
+        run: |
+          git config user.name "cache-proof-bot"
+          git config user.email "cache-proof-bot@users.noreply.github.com"
+          extra=""
+          if [ "${{ matrix.commits }}" != "0" ]; then extra="--commits ${{ matrix.commits }}"; fi
+          python3 harness/cache_proof/walk.py --spec "harness/cache_proof/specs/${{ matrix.spec }}.json" \
+            --work "$RUNNER_TEMP/w" --wheel "$(ls $RUNNER_TEMP/dist/*.whl)" --shard "${{ matrix.shard }}" \
+            --budget-min "${{ matrix.budget }}" $extra \
+            --out "tracks/all-runners-python/results/${{ needs.build.outputs.run_id }}/${{ matrix.spec }}-${{ matrix.tag }}.json.gz"

@@ -313,6 +313,8 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
 
     root = pytester.path
     steps = []
+    # the reference predates the probes of paths (_statcap: os.stat, os.path.exists, ...): both paths without them
+    monkeypatch.setenv("DETPY_CACHE_PROBES", "0")
     # each path runs the same four sessions on a fresh copy of the project, in the same directory (paths are part
     # of the store; the project's own writes are inputs), each with its own cache
     for mode in ("ref", "new"):

@@ -363,6 +363,25 @@ impl State {
             self.flag_set(ctx).add(f);
             return None;
         }
+        if matches!(kind, b'e' | b'E' | b'q' | b'Q') {
+            // a probe (os.stat, os.lstat, os.path.exists, ...): its own dependency, apart from the content's
+            let mut hk = vec![kind];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = proof::probe_now(os_path(p), kind).into_bytes();
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let k = proof::probe_key(kind, &String::from_utf8_lossy(self.key(p))).into_bytes();
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            self.data.entry(ctx).or_default().set(k, dep);
+            return None;
+        }
         let mut hk = vec![kind];
         hk.extend_from_slice(p);
         let dep = match self.hashed.get(&hk) {
@@ -406,7 +425,7 @@ impl State {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd'] {
+            for k in [b'f', b'd', b'e', b'E', b'q', b'Q'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -495,6 +514,27 @@ impl Classifier {
             }
         }
     }
+}
+
+/// The outermost frame of a non-pytest runner's shell (``runners._detpy_runner_entry``): the walk over the calling
+/// frames that reaches it found no test code (no user frame) on the way, so the call is the shell's own (as pytest's
+/// own frames are infrastructure).
+fn is_runner_entry(code: &Bound<'_, PyAny>) -> PyResult<bool> {
+    code.getattr(intern!(code.py(), "co_name"))?.eq("_detpy_runner_entry")
+}
+
+thread_local! {
+    /// Depth of the capture's own calls into Python (``os.path.realpath`` of a code file, ...): a probe of a path
+    /// made by them is the capture's, never the code under test's (``CaptureCore.probe``).
+    static INTERNAL: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
+}
+
+/// Run `f` as the capture's own work (see [`INTERNAL`]).
+fn internal<T>(f: impl FnOnce() -> T) -> T {
+    INTERNAL.with(|c| c.set(c.get() + 1));
+    let out = f();
+    INTERNAL.with(|c| c.set(c.get() - 1));
+    out
 }
 
 /// The current frame (the code that raised the event or called the patched API), if any.
@@ -595,11 +635,11 @@ impl CaptureCore {
         if !k.is_empty() && !k.starts_with(b"<") {
             let os = os_mod(py)?;
             let path = os.getattr(intern!(py, "path"))?;
-            let p = match path
-                .getattr(intern!(py, "abspath"))?
-                .call1((fs,))
-                .and_then(|a| path.getattr(intern!(py, "realpath"))?.call1((a,)))
-            {
+            let p = match internal(|| {
+                path.getattr(intern!(py, "abspath"))?
+                    .call1((fs,))
+                    .and_then(|a| path.getattr(intern!(py, "realpath"))?.call1((a,)))
+            }) {
                 Ok(p) => w_of(p.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                     || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -646,7 +686,7 @@ impl CaptureCore {
         }
         let k = stat_key(&p);
         let realpath = os_mod(py)?.getattr("path")?.getattr("realpath")?;
-        let r = match realpath.call1((py_of(py, &p)?,)) {
+        let r = match internal(|| realpath.call1((py_of(py, &p)?,))) {
             Ok(r) => Some(w_of(r.cast::<PyString>()?)?),
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -703,7 +743,7 @@ impl CaptureCore {
                     }
                     return Ok(Some(out));
                 }
-                cur = w_of(os.getattr("path")?.getattr("realpath")?.call1((py_of(py, &q)?,))?.cast::<PyString>()?)?;
+                cur = w_of(internal(|| os.getattr("path")?.getattr("realpath")?.call1((py_of(py, &q)?,)))?.cast::<PyString>()?)?;
             } else {
                 cur = q;
             }
@@ -721,9 +761,46 @@ impl CaptureCore {
                 return Ok(Caller::Import);
             }
             if starts_with_str(&fname, &self.env.detpy_dir) {
+                if is_runner_entry(&_code)? {
+                    return Ok(Caller::Infra);
+                }
                 f = level0::back(&fr)?;
                 continue;
             }
+            match hub.classify(py, &fname)?.0 {
+                Kind::User => return Ok(Caller::User),
+                Kind::Infra => return Ok(Caller::Infra),
+                Kind::Stdlib => {}
+            }
+            f = level0::back(&fr)?;
+        }
+        Ok(Caller::User)
+    }
+
+    /// The caller of a probe (`probe`): as `caller_kind`, past the probe's own frames (``_statcap.py``); any other
+    /// detpy frame means detpy itself probed or imported (its own bookkeeping), which is not an input.
+    fn probe_caller(&self, py: Python<'_>, past_import: bool) -> PyResult<Caller> {
+        let hub = Classifier::get(py)?;
+        let mut f = current_frame(py);
+        let mut own = true;
+        while let Some(fr) = f {
+            let (_code, fname) = code_filename(&fr)?;
+            if starts_with_str(&fname, b"<frozen importlib") || starts_with_str(&fname, b"<frozen zipimport") {
+                if !past_import {
+                    return Ok(Caller::Import);
+                }
+                own = false;
+                f = level0::back(&fr)?;
+                continue;
+            }
+            if starts_with_str(&fname, &self.env.detpy_dir) {
+                if !own || !ends_with_str(&fname, b"/_statcap.py") {
+                    return Ok(Caller::Infra);
+                }
+                f = level0::back(&fr)?;
+                continue;
+            }
+            own = false;
             match hub.classify(py, &fname)?.0 {
                 Kind::User => return Ok(Caller::User),
                 Kind::Infra => return Ok(Caller::Infra),
@@ -897,6 +974,34 @@ impl CaptureCore {
 
     fn wrote_impl(&self, ctx: usize, p: &[u8]) {
         lock(&self.st).wrote(ctx, p);
+    }
+
+    /// A probe of `path` by the code under test (`_statcap`: `os.stat`, `os.lstat`, `os.path.exists`, ...; there is no
+    /// audit event for them): `mode` "e" existence and kind, "E" the same without following symlinks, "s" metadata,
+    /// "S" metadata of the path itself. Paths of the interpreter and installed libraries are not inputs (the runtime
+    /// identity covers them), as for reads.
+    pub(crate) fn probe(&self, py: Python<'_>, path: &Bound<'_, PyAny>, mode: &str) -> PyResult<()> {
+        if !self.active() || INTERNAL.with(|c| c.get()) > 0 {
+            return Ok(());
+        }
+        // "M": a path the import system looked for and did not find (a module that a later run may find): the
+        // caller is the code that imported, past the import system's frames
+        if self.probe_caller(py, mode == "M")? != Caller::User {
+            return Ok(());
+        }
+        let Some(p) = internal(|| self.abs(py, path))? else { return Ok(()) };
+        if lock(&self.st).ignored(&p) {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        let kind = match mode {
+            "e" => b'e',
+            "E" => b'E',
+            "s" => b'q',
+            "M" => b'e',
+            _ => b'Q',
+        };
+        self.read_impl(py, ctx, &p, kind)
     }
 
     /// A database file a test's sqlite connection opens (its own connect, or `ATTACH`): its committed content is an
@@ -1758,7 +1863,7 @@ impl CaptureCore {
     /// The audit hook (`_core.set_audit_hook(cap.audit, ...)`).
     fn audit(slf: &Bound<'_, Self>, event: &str, args: &Bound<'_, PyTuple>) -> PyResult<()> {
         let py = slf.py();
-        slf.get().audit_impl(py, slf.as_any(), event, args)
+        internal(|| slf.get().audit_impl(py, slf.as_any(), event, args))
     }
 
     #[pyo3(signature = (ctx, flag, detail = None))]
@@ -1812,6 +1917,10 @@ impl CaptureCore {
         while let Some(fr) = f {
             let (_code, fname) = code_filename(&fr)?;
             if starts_with_str(&fname, &self.env.detpy_dir) {
+                if is_runner_entry(&_code)? {
+                    user = false;
+                    break;
+                }
                 f = level0::back(&fr)?;
                 continue;
             }
@@ -2358,8 +2467,19 @@ pub fn cap_note_env(py: Python<'_>, key: &Bound<'_, PyAny>) -> PyResult<()> {
     }
 }
 
+/// `_statcap`'s probes of the running capture (the one `cap_set_env_capture` set).
+#[pyfunction]
+pub fn cap_note_stat(py: Python<'_>, path: &Bound<'_, PyAny>, mode: &str) -> PyResult<()> {
+    let cap = lock(&ENV_CAPTURE).as_ref().map(|c| c.clone_ref(py));
+    match cap {
+        Some(c) => c.bind(py).get().probe(py, path, mode),
+        None => Ok(()),
+    }
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<CaptureCore>()?;
+    m.add_function(wrap_pyfunction!(cap_note_stat, m)?)?;
     m.add_function(wrap_pyfunction!(cap_set_env_capture, m)?)?;
     m.add_function(wrap_pyfunction!(cap_note_env, m)?)?;
     Ok(())
