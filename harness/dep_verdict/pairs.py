@@ -242,7 +242,10 @@ class Pairs:
     # -- runs -----------------------------------------------------------------------
     def run(self, unit, tag, cache=None, dists=False, epoch=()) -> dict:
         git(self.repo, "clean", "-qffd", check=False)
-        outp, tim, rec = (self.work / f"{x}-{tag}.json" for x in ("o", "t", "r"))
+        outp, rec = (self.work / f"{x}-{tag}.json" for x in ("o", "r"))
+        # one path for every run: CP_TIMES_OUT is an environment variable, and a test that reads the whole
+        # environment (os.environ) records it; a per-run value made such tests miss on "env: *" (dv1)
+        tim = self.work / "t.json"
         for p in (outp, tim, rec):
             p.unlink(missing_ok=True)
         det = ["--det", "--det-urandom", f"--det-outcomes={outp}"]
