@@ -12,7 +12,7 @@ import json
 import os
 
 from detpy import _core, _state
-from detpy.proofcache import _GLOBAL_CTX, _ctx_file, _encodable, _final, _module_of, _uncacheable
+from _ref_pc_helpers import _GLOBAL_CTX, _ctx_file, _encodable, _final, _module_of, _uncacheable  # (were in detpy.proofcache)
 
 
 def record_reference(self, store) -> None:
