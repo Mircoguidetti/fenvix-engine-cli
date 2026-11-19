@@ -1,0 +1,13 @@
+{
+ "name": "runner-ward-ward",
+ "url": "https://github.com/darrenburns/ward",
+ "head": "3289bd641e9b",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.12",
+ "runner": "ward",
+ "runner_args": [
+  "test"
+ ],
+ "note": "ward runs its own suite ([tool.ward] path = tests)"
+}

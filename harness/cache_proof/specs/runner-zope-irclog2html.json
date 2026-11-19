@@ -1,0 +1,16 @@
+{
+ "name": "runner-zope-irclog2html",
+ "url": "https://github.com/mgedmin/irclog2html",
+ "head": "cd63e13d44ed",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "zope-testrunner",
+ "runner_args": [
+  "--test-path=src"
+ ],
+ "pip": [
+  "zope.testrunner"
+ ],
+ "note": "tox.ini: zope-testrunner --test-path=src"
+}

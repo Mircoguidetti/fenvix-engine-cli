@@ -1,0 +1,11 @@
+{
+ "name": "runner-unittest-icecream",
+ "url": "https://github.com/gruns/icecream",
+ "head": "05af3e95b008",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "unittest",
+ "runner_args": [],
+ "note": "tox.ini: python -m unittest"
+}
