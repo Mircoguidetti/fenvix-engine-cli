@@ -79,7 +79,11 @@ plain run has 3 failures in this container (stdin and locale dependent), `--det`
   `node/src/sites.js` (node:test internals are infrastructure; mocha in INFRA), `node/bin/detjs.js` (`node-test`,
   `mocha`), new `node/src/fileproc.js`. `node/package.json` devDependencies: mocha 11, tsx, ts-node, typescript 5,
   esbuild-register, @swc-node/register, @swc/core (fixtures of the tests).
-* Suites of the base branch re-run with these changes: see the final message.
+* Suites of the base branch re-run with these changes (MEASURED, Node 22.23.5): `test/cache.test.js` 45 of 45,
+  `test/review-r021.test.js` + `test/r021-fixes.test.js` 56 pass + 1 skipped (F3b under Jest, as on the base),
+  `test/{controls,jsdom,projects,regressions,unchanged}.test.js` 27 of 27.
+* `--test-isolation=none` on a real suite: simple-statistics passes 378 of 378 both in one process (`--det`) and with
+  one process per file (`--det-cache`): 0 outcomes change (MEASURED).
 * Workflow: `.github/workflows/all-runners-node.yml`, triggered by a push to `claude/all-runners` that changes
   `harness/node_cache/RUN-all-runners` (JSON: `{"label": "...", "repos": ["commander", "simple-statistics",
   "dependency-cruiser", "yargs"], "tests": true, "shards": {"repo": n}, "windows": {"repo": [lo, hi]}}`); results to
