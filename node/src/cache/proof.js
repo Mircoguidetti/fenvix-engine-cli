@@ -51,6 +51,10 @@ const UNCACHEABLE = {
   sqlite: 'opens an SQLite database that cannot be keyed by its path',
   resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
   'import-glob': 'an import.meta.glob call that cannot be keyed',
+  // runtimes other than Node (src/runners: bun test, deno test)
+  'runtime-api': 'uses a runtime API whose inputs are not keyed',
+  'dynamic-import': 'a dynamic import whose target is not known before the run',
+  unobserved: 'the runtime reported an access the capture did not see',
 };
 
 function digest(x) {
@@ -100,7 +104,7 @@ function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {
 // configuration file, the files it imports and its resolved configuration), not as a configuration of every file.
 const NESTED_VITE_CONFIG = /^(vite|vitest)\.config\.[cm]?[jt]s$/;
 
-function configFiles(root, { nestedViteConfigs = true } = {}, limit = 200000) {
+function configFiles(root, { nestedViteConfigs = true, extra = null } = {}, limit = 200000) {
   const out = [];
   let n = 0;
   const walk = (dir, rel) => {
@@ -114,7 +118,7 @@ function configFiles(root, { nestedViteConfigs = true } = {}, limit = 200000) {
         walk(path.join(dir, e.name), r);
       } else if (!nestedViteConfigs && rel && NESTED_VITE_CONFIG.test(e.name)) {
         continue;
-      } else if (CONFIG_FILES.test(e.name) || (r === 'package.json')) {
+      } else if (CONFIG_FILES.test(e.name) || (r === 'package.json') || (extra && extra.test(e.name))) {
         out.push([r, native.fileDigest(path.join(dir, e.name)) || 'unreadable']);
       }
     }
