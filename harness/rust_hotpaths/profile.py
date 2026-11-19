@@ -158,6 +158,12 @@ class Prof:
             c.append(f"--det-cache={cache}")
         return c + [*w.args, *units]
 
+    def drop_pyc(self) -> None:
+        """Drop the bytecode caches another process left (an earlier profile.py or floor.py run, possibly of other
+        wheels): each engine compiles its own at its warm-up run."""
+        for d in [self.w.work / "pyc", *self.w.work.glob("pyc-*")]:
+            shutil.rmtree(d, ignore_errors=True)
+
     def clean_tmp(self) -> None:
         """--clean-tmp: remove the ``tmp*`` files left in the temporary directory. A test that leaves its
         ``mkstemp`` file behind (pygments: test_unicode_options, test_valid_output) takes, under --det, the same
@@ -320,10 +326,7 @@ class Prof:
             self.res["error"] = how
             self.save()
             return
-        # bytecode caches another process left (an earlier profile.py or floor.py run, possibly of other wheels) are
-        # dropped: each engine compiles its own at its warm-up run
-        for d in [w.work / "pyc", *w.work.glob("pyc-*")]:
-            shutil.rmtree(d, ignore_errors=True)
+        self.drop_pyc()
         self.cur = next(iter(self.engines))
         w.args = w.pytest_args()
         units = w.units()

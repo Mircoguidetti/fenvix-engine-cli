@@ -127,6 +127,7 @@ class Floor(P.Prof):
             self.res["error"] = how
             self.save()
             return
+        self.drop_pyc()
         self.cur = None
         w.args = w.pytest_args()
         units = w.units()
