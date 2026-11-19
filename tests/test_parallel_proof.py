@@ -298,7 +298,8 @@ def test_cross_worker_write_is_never_reused(pytester, tmp_path_factory, monkeypa
     assert "another worker" in c["not_cached_detail_by_id"]["tests/test_b_reader.py::test_b_reads"] \
         if "not_cached_detail_by_id" in c else True
     (pytester.path / "tests" / "value.txt").write_text("y\n")
-    shared.unlink()
+    # review R-023 F2: the outside file is not deleted (deleting it made B miss for another reason); B is never
+    # cached because the store keeps who wrote the outside file, and B waits for its writer in the other worker
     r, c, _ = cache_run(pytester, 2, "s3", "--dist", "loadfile", "--det-sleep=real", "tests")
     assert "tests/test_b_reader.py::test_b_reads" not in set(c.get("reused_ids", ()))
     r.assert_outcomes(passed=1, failed=1)  # B runs and fails, as serially
@@ -320,7 +321,10 @@ def test_serial_and_parallel_sessions_take_the_same_decisions(pytester):
 
 
 @needs_cache
-def test_a_store_written_under_n_serves_a_serial_run_and_receipts_are_stable(pytester):
+def test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable(pytester):
+    """Review R-023 F1 (design 2.5): until the parallel-vs-serial proof (P5), a result recorded by a worker is not
+    offered to a serial session (miss "placement"); the serial session records serial entries, which both modes
+    reuse."""
     write(pytester, **SUITE)
     r, c, _ = cache_run(pytester, 2, "cold", "tests")
     r.assert_outcomes(passed=N_SUITE)
@@ -330,8 +334,13 @@ def test_a_store_written_under_n_serves_a_serial_run_and_receipts_are_stable(pyt
     assert len(w1["reused_ids"]) == N_SUITE
     assert receipts(rc1) == receipts(rc2)
     _, ser, _ = cache_run(pytester, 0, "serial", "tests")
-    # every entry recorded by a worker is offered to a serial run; the worker-id reader runs again
-    assert set(ser["reused_ids"]) == {f for f in w1["reused_ids"] if f != "tests/test_c.py::test_worker"}
+    assert ser["reused_ids"] == []
+    assert ser["miss_reasons"] == {"placement": N_SUITE}
+    _, ser2, _ = cache_run(pytester, 0, "serial2", "tests")
+    assert len(ser2["reused_ids"]) == N_SUITE
+    _, par, _ = cache_run(pytester, 2, "par-on-serial", "tests")
+    # serial entries serve a parallel run (the worker-id reader excepted: its recorded value is unset)
+    assert set(par["reused_ids"]) == set(ser2["reused_ids"]) - {"tests/test_c.py::test_worker"}
 
 
 @needs_cache
@@ -365,8 +374,8 @@ def test_cache_summary_and_trace_under_n(pytester):
 @needs_cache
 def test_whole_environment_readers_are_reused_under_n(pytester):
     """esphome: 3,000 tests that enumerate os.environ were never reused under -n (xdist's fresh uid per run, the
-    workers' COLUMNS/LINES). They are now; a serial run does not reuse them: enumerating os.environ reads every
-    variable by name, and a worker's PYTEST_XDIST_WORKER, COLUMNS, LINES are not set serially (a real difference)."""
+    workers' COLUMNS/LINES). They are now. A serial run does not reuse a parallel entry at all
+    (review R-023 F1)."""
     write(pytester, **{"tests/test_env.py": """
         import os
         def test_enumerates(): assert len(dict(os.environ)) > 0
@@ -376,7 +385,8 @@ def test_whole_environment_readers_are_reused_under_n(pytester):
     _, w, _ = cache_run(pytester, 2, "warm", "tests")
     assert "tests/test_env.py::test_enumerates" in w["reused_ids"]
     _, s, _ = cache_run(pytester, 0, "serial", "tests")
-    assert s["reused_ids"] == ["tests/test_env.py::test_other"]
+    assert s["reused_ids"] == []  # parallel entries are not offered to a serial session (review R-023 F1)
+    assert s["miss_ids"]["tests/test_env.py::test_other"].startswith("placement:")
 
 
 def test_workers_see_the_controllers_terminal_geometry(pytester, monkeypatch):

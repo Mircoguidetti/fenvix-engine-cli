@@ -93,7 +93,19 @@ pub struct Entry {
     pub hooks: u32,
     /// Flat (file index, unit index) pairs.
     pub units: Vec<u32>,
+    /// Contexts of the wider-scoped fixtures the test used when it was recorded (`f|scope|baseid|name`): a path one
+    /// of them wrote is the test's own write (a reused result is not invalidated by it). Not part of the key.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub fixtures: Vec<String>,
+    /// Where the result was recorded: "" (a serial session) or [`PLACEMENT_PARALLEL`] (a worker of a parallel
+    /// session). Until the proof of docs/PARALLEL-PROOF-DESIGN.md 3.3 (P5) exists, a serial session does not reuse a
+    /// parallel result (2.5: its in-process predecessors were not its serial ones). Not part of the key.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub placement: String,
 }
+
+/// [`Entry::placement`] of a result recorded by a worker of a parallel (`-n`) session.
+pub const PLACEMENT_PARALLEL: &str = "parallel";
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Store {
@@ -105,6 +117,11 @@ pub struct Store {
     /// them: a test that reads one is cached only if every writer is its own code (test, its fixtures).
     #[serde(default)]
     pub written: BTreeMap<String, BTreeSet<String>>,
+    /// Together edges (writer test, reader test): the reader read a file the writer wrote in the same session
+    /// (review R-023 F2). A parallel plan runs the two in one worker, in the serial order, so the reader sees what
+    /// a serial session gives it (not the race of two processes).
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub edges: BTreeSet<(String, String)>,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
@@ -128,6 +145,7 @@ pub struct Observed {
     pub skeleton: Vec<u32>,
     pub hooks: Vec<u32>,
     pub units: Vec<(u32, u32)>,
+    pub fixtures: Vec<String>,
 }
 
 fn push_part(buf: &mut Vec<u8>, part: &str) {
@@ -319,6 +337,13 @@ impl Store {
             skeleton,
             hooks,
             units: o.units.into_iter().flat_map(|(f, u)| [f, u]).collect(),
+            fixtures: {
+                let mut f = o.fixtures;
+                f.sort();
+                f.dedup();
+                f
+            },
+            placement: String::new(),
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -504,6 +529,16 @@ impl Store {
         for (p, w) in &self.written {
             disk.written.entry(p.clone()).or_default().extend(w.iter().cloned());
         }
+        disk.edges.extend(self.edges.iter().cloned());
+    }
+
+    /// Note that `reader` read a path writer context `writer` wrote (a together edge when the writer is a test).
+    pub fn add_edge(&mut self, writer: &str, reader: &str) {
+        if let Some(x) = writer.strip_prefix("t|") {
+            if x != reader {
+                self.edges.insert((x.to_string(), reader.to_string()));
+            }
+        }
     }
 
     /// Merge this session's changes (`touched` entries, written paths) into the
@@ -520,6 +555,7 @@ impl Store {
     /// Compact and write atomically to `dir`.
     pub fn save(&mut self, dir: &Path) -> io::Result<()> {
         self.compact();
+        self.written.retain(|k, _| persist_written(k));
         fs::create_dir_all(dir)?;
         let path = Self::path_in(dir);
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
@@ -610,6 +646,68 @@ pub fn foreign_write(
     None
 }
 
+/// Whether a path key a session wrote is kept in the store for later sessions ([`Store::written`]): a path in the
+/// repository always; a path outside it (absolute key) while it exists. Review R-023 F2: a file outside the
+/// repository that one test writes and another reads survives the session, and a later session in which the writer is
+/// reused (it does not run, so it writes nothing) must still know who wrote it; temporary files that are gone again
+/// are not kept (their names are fresh in every session).
+pub fn persist_written(key: &str) -> bool {
+    !key.starts_with('/') || fs::symlink_metadata(key).is_ok()
+}
+
+/// A writer context that is not a reused result's own code (review R-023 F2): another test (with `rank`, only one
+/// that comes before it in the serial order; a test the order does not know counts), or a wider-scoped fixture the
+/// test did not use when it was recorded. Startup, between-tests, import-time and collection contexts run in every
+/// session alike: not foreign.
+pub fn foreign_to_entry(w: &str, nodeid: &str, e: &Entry, rank: Option<&HashMap<String, usize>>) -> bool {
+    if let Some(x) = w.strip_prefix("t|") {
+        if x == nodeid {
+            return false;
+        }
+        match rank {
+            None => true,
+            Some(r) => match (r.get(x), r.get(nodeid)) {
+                (Some(a), Some(b)) => a < b,
+                _ => true,
+            },
+        }
+    } else if w.starts_with("f|") {
+        !e.fixtures.iter().any(|f| f == w)
+    } else {
+        false
+    }
+}
+
+/// The reused results of a parallel session whose input a test of the same session that comes before them in the
+/// serial order (or a fixture they did not use) wrote: `(nodeid, path key, writer)`, in `order`. The controller
+/// decided them before any worker ran; a serial session would have run the writer first, so their recorded result is
+/// not the serial result. The controller runs them again (review R-023 F2).
+pub fn hits_with_written_inputs(
+    store: &Store,
+    hits: &[String],
+    order: &[String],
+    written: &BTreeMap<String, BTreeSet<String>>,
+    dirs: &BTreeMap<String, BTreeSet<String>>,
+) -> Vec<(String, String, String)> {
+    let rank: HashMap<String, usize> = order.iter().enumerate().map(|(i, n)| (n.clone(), i)).collect();
+    let hit_set: BTreeSet<&str> = hits.iter().map(|s| s.as_str()).collect();
+    let mut out = Vec::new();
+    for nid in order.iter().filter(|n| hit_set.contains(n.as_str())) {
+        let Some(e) = store.tests.get(nid) else { continue };
+        let found = e.data.iter().find_map(|(key, dep)| {
+            let mut ws: Vec<&String> = written.get(&**key).map(|w| w.iter().collect()).unwrap_or_default();
+            if dep.starts_with("d:") {
+                ws.extend(dirs.get(&**key).into_iter().flatten());
+            }
+            ws.into_iter().find(|w| foreign_to_entry(w, nid, e, Some(&rank))).map(|w| (key.to_string(), w.clone()))
+        });
+        if let Some((k, w)) = found {
+            out.push((nid.clone(), k, w));
+        }
+    }
+    out
+}
+
 /// What [`merge_shards`] did.
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
 pub struct ShardMerge {
@@ -618,6 +716,8 @@ pub struct ShardMerge {
     pub dropped: Vec<(String, String)>,
     /// (nodeid, path key) of results reused in this session whose inputs the session wrote: dropped from the store.
     pub stale: Vec<(String, String)>,
+    /// Together edges noted by this merge (writer test, reader test).
+    pub edges: usize,
 }
 
 /// The writer union of a session's shards: path key -> contexts, and parent key -> contexts.
@@ -643,12 +743,16 @@ pub fn merge_shards(dir: &Path, shards: &mut [Shard], hits: &[String]) -> io::Re
     shards.sort_by(|a, b| a.worker.cmp(&b.worker));
     let (written, dirs) = writer_union(shards);
     let mut out = ShardMerge::default();
+    let mut edges: BTreeSet<(String, String)> = BTreeSet::new();
     for s in shards.iter_mut() {
         let mut drop = Vec::new();
         for (nid, e) in &s.store.tests {
             let fx = s.fixtures.get(nid).map(|v| v.as_slice()).unwrap_or(&[]);
             if let Some((key, w)) = foreign_write(nid, fx, &e.data, &written, &dirs) {
                 drop.push((nid.clone(), format!("reads a file another test or fixture wrote in another worker: {key} ({w})")));
+                for ws in written.get(&*key).into_iter().chain(dirs.get(&*key)) {
+                    edges.extend(ws.iter().filter_map(|x| x.strip_prefix("t|")).filter(|x| *x != nid).map(|x| (x.to_string(), nid.clone())));
+                }
             }
         }
         for (nid, why) in drop {
@@ -668,13 +772,25 @@ pub fn merge_shards(dir: &Path, shards: &mut [Shard], hits: &[String]) -> io::Re
         let Some(e) = disk.tests.get(nid) else { continue };
         let own = format!("t|{nid}");
         let stale = e.data.iter().find_map(|(k, _)| {
-            written.get(&**k).filter(|w| !w.iter().all(|x| *x == own)).map(|_| k.to_string())
+            written
+                .get(&**k)
+                .filter(|w| !w.iter().all(|x| *x == own || e.fixtures.iter().any(|f| f == x)))
+                .map(|_| k.to_string())
         });
         if let Some(k) = stale {
+            for w in written.get(&k).into_iter().flatten() {
+                if let Some(x) = w.strip_prefix("t|") {
+                    if x != nid {
+                        edges.insert((x.to_string(), nid.clone()));
+                    }
+                }
+            }
             disk.tests.remove(nid);
             out.stale.push((nid.clone(), k));
         }
     }
+    out.edges = edges.len();
+    disk.edges.extend(edges);
     disk.save(dir)?;
     Ok(out)
 }
@@ -806,10 +922,16 @@ pub struct Checker {
     key_parts: FxMap<(u8, u32), Vec<u8>>,
     /// Facts of the current version of code files whose content changed.
     pub fresh: HashMap<String, CodeFile>,
-    /// Parallel session (controller): the value of `PYTEST_XDIST_WORKER` each test will see (its worker in the
-    /// previous, sticky plan); a test without one does not reuse a result that depends on the variable.
-    pub xdist_worker: HashMap<String, String>,
-    pub xdist_mode: bool,
+    /// Parallel session (the controller of `-n`, or one worker's list replayed with `--det-plan-worker`): a result
+    /// recorded by a worker of a parallel session ([`PLACEMENT_PARALLEL`]) may be reused. A serial session does not
+    /// reuse one (docs/PARALLEL-PROOF-DESIGN.md 2.5, review R-023 F1).
+    pub parallel: bool,
+    /// The controller of `-n`: the worker a test runs on is decided by the plan, after the reuse decision. A
+    /// recorded `PYTEST_XDIST_WORKER` is not compared here: it is kept in [`Checker::worker_reads`] and compared with
+    /// the test's worker in this run's plan by [`Checker::worker_check`] (review R-023 F3).
+    pub defer_worker: bool,
+    /// nodeid -> recorded digest of `PYTEST_XDIST_WORKER`, for the reusable results that read it (`defer_worker`).
+    pub worker_reads: HashMap<String, String>,
 }
 
 /// Outcomes whose results may be reused: never a failure.
@@ -828,9 +950,29 @@ impl Checker {
             env_now: FxMap::default(),
             key_parts: FxMap::default(),
             fresh: HashMap::new(),
-            xdist_worker: HashMap::new(),
-            xdist_mode: false,
+            parallel: false,
+            defer_worker: false,
+            worker_reads: HashMap::new(),
         }
+    }
+
+    /// The reusable results whose recorded `PYTEST_XDIST_WORKER` differs from the worker `assign` gives them in this
+    /// run's plan (or that have no worker there): `(nodeid, reason)`, in `nodeids` order. Their result depends on
+    /// the worker they run on, and this run places them elsewhere.
+    pub fn worker_check(&self, nodeids: &[String], assign: &HashMap<String, String>) -> Vec<(String, String)> {
+        let mut out = Vec::new();
+        for nid in nodeids {
+            let Some(rec) = self.worker_reads.get(nid) else { continue };
+            let now = assign.get(nid).map(|w| env_value_digest(Some(w)));
+            if now.as_deref() != Some(rec.as_str()) {
+                let w = assign.get(nid).map(|w| w.as_str()).unwrap_or("none");
+                out.push((
+                    nid.clone(),
+                    format!("env: environment variable PYTEST_XDIST_WORKER (this run's plan places the test on {w})"),
+                ));
+            }
+        }
+        out
     }
 
     /// Current content digest of a code file (memoised for the session).
@@ -943,6 +1085,14 @@ impl Checker {
         if !reusable_outcome(&e.outcome) {
             return Err(Miss { kind: "failed-before", detail: format!("recorded outcome {}", e.outcome) });
         }
+        if e.placement == PLACEMENT_PARALLEL && !self.parallel {
+            return Err(Miss {
+                kind: "placement",
+                detail: "recorded in a worker of a parallel (-n) session: not offered to a serial session until the \
+                         parallel-vs-serial proof (P5)"
+                    .into(),
+            });
+        }
         if e.config != self.cur.config {
             return Err(Miss { kind: "config", detail: "pytest/detpy configuration or plugins changed".into() });
         }
@@ -955,11 +1105,8 @@ impl Checker {
             }
         }
         for (k, v) in &e.env {
-            if k == "PYTEST_XDIST_WORKER" && self.xdist_mode {
-                let now = self.xdist_worker.get(nodeid).map(|w| env_value_digest(Some(w)));
-                if now.as_deref() != Some(v.as_str()) {
-                    return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
-                }
+            if k == "PYTEST_XDIST_WORKER" && self.defer_worker {
+                self.worker_reads.insert(nodeid.to_string(), v.clone());
                 continue;
             }
             let now: &str = if k == "*" {
@@ -1392,5 +1539,84 @@ mod tests {
         assert_eq!(env_all_digest(&a), env_all_digest(&b));
         b.insert("OTHER".to_string(), "1".to_string());
         assert_ne!(env_all_digest(&a), env_all_digest(&b));
+    }
+    // -- review R-023 ------------------------------------------------------------------------------------------------
+    #[test]
+    fn r023_f1_a_serial_session_does_not_reuse_a_parallel_entry() {
+        let (_d, mut s, cur) = setup();
+        s.tests.get_mut("t::a").unwrap().placement = PLACEMENT_PARALLEL.into();
+        let mut c = Checker::new(cur.clone());
+        assert_eq!(c.check(&s, "t::a").unwrap_err().kind, "placement");
+        let mut c = Checker::new(cur);
+        c.parallel = true;
+        assert!(c.check(&s, "t::a").is_ok());
+        // the placement is not part of the key: a serial entry keeps its key when it is recorded again in a worker
+        let k = s.tests["t::a"].key.clone();
+        assert_eq!(s.key_of("t::a", &s.tests["t::a"]), k);
+    }
+
+    #[test]
+    fn r023_f3_worker_reads_are_checked_against_this_runs_plan() {
+        let (_d, mut s, cur) = setup();
+        s.tests.get_mut("t::a").unwrap().env.push(("PYTEST_XDIST_WORKER".into(), env_value_digest(Some("gw0"))));
+        let mut c = Checker::new(cur);
+        c.parallel = true;
+        c.defer_worker = true;
+        assert!(c.check(&s, "t::a").is_ok()); // deferred: decided after the plan
+        let on = |w: &str| HashMap::from([("t::a".to_string(), w.to_string())]);
+        assert!(c.worker_check(&["t::a".into()], &on("gw0")).is_empty());
+        let out = c.worker_check(&["t::a".into()], &on("gw1"));
+        assert_eq!(out.len(), 1);
+        assert!(out[0].1.contains("gw1"));
+        assert_eq!(c.worker_check(&["t::a".into()], &HashMap::new()).len(), 1);
+    }
+
+    #[test]
+    fn r023_f2_written_paths_outside_the_repository_persist_while_they_exist() {
+        let d = tempfile::tempdir().unwrap();
+        let kept = d.path().join("shared.txt");
+        fs::write(&kept, "x").unwrap();
+        let gone = d.path().join("gone.txt");
+        assert!(persist_written("rel/in/repo.txt"));
+        assert!(persist_written(kept.to_str().unwrap()));
+        assert!(!persist_written(gone.to_str().unwrap()));
+        let mut st = Store::new();
+        st.written.insert(kept.to_str().unwrap().into(), BTreeSet::from(["t|a".to_string()]));
+        st.written.insert(gone.to_str().unwrap().into(), BTreeSet::from(["t|a".to_string()]));
+        let dir = tempfile::tempdir().unwrap();
+        st.save(dir.path()).unwrap();
+        let back = Store::load(dir.path());
+        assert!(back.written.contains_key(kept.to_str().unwrap()));
+        assert!(!back.written.contains_key(gone.to_str().unwrap()));
+    }
+
+    #[test]
+    fn r023_f2_hits_whose_input_an_earlier_test_wrote() {
+        let mut st = Store::new();
+        entry_reading(&mut st, "t.py::b", &[("/tmp/x", "f:1")]);
+        entry_reading(&mut st, "t.py::c", &[("/tmp/y", "f:1")]);
+        entry_reading(&mut st, "t.py::f", &[("/tmp/z", "f:1")]);
+        st.tests.get_mut("t.py::f").unwrap().fixtures = vec!["f|session||db".into()];
+        let order: Vec<String> = ["t.py::a", "t.py::b", "t.py::c", "t.py::d", "t.py::f"].iter().map(|s| s.to_string()).collect();
+        let shards = vec![shard("gw0", &[], &[("/tmp/x", &["t|t.py::a"]), ("/tmp/y", &["t|t.py::d"]),
+                                              ("/tmp/z", &["f|session||db"])])];
+        let (written, dirs) = writer_union(&shards);
+        let hits: Vec<String> = ["t.py::b", "t.py::c", "t.py::f"].iter().map(|s| s.to_string()).collect();
+        let out = hits_with_written_inputs(&st, &hits, &order, &written, &dirs);
+        // b: written by a, which comes first; c: written by d, which comes after it (a serial run reads it before);
+        // f: written by a fixture f used when it was recorded
+        assert_eq!(out, vec![("t.py::b".to_string(), "/tmp/x".to_string(), "t|t.py::a".to_string())]);
+    }
+
+    #[test]
+    fn r023_merge_notes_data_edges() {
+        let d = tempfile::tempdir().unwrap();
+        let mut shards = vec![
+            shard("gw1", &[("t.py::b", &[("/tmp/x", "f:1")])], &[]),
+            shard("gw0", &[("t.py::a", &[])], &[("/tmp/x", &["t|t.py::a"])]),
+        ];
+        let m = merge_shards(d.path(), &mut shards, &[]).unwrap();
+        assert_eq!(m.edges, 1);
+        assert!(Store::load(d.path()).edges.contains(&("t.py::a".to_string(), "t.py::b".to_string())));
     }
 }

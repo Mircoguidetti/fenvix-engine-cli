@@ -701,7 +701,7 @@ def _configure_det(config) -> None:
         if getattr(config.option, "testrunuid", None) is None:
             config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)
         ctl.testrunuid = config.option.testrunuid
-        _xdist.export_controller_env()
+        _xdist.export_controller_env(ctl.barrier)
         S.controller = ctl
         config.pluginmanager.register(ctl, "detpy-xdist-controller")
     root = str(config.rootpath)

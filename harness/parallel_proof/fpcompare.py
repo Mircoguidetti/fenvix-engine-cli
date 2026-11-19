@@ -59,8 +59,9 @@ def compare(sa: dict, sb: dict, pa: dict, pb: dict) -> dict:
     outcome_diff = [n for n in both if {sa[n]["outcome"], sb[n]["outcome"]} != {pa[n]["outcome"], pb[n]["outcome"]}]
     new_failures = [n for n in outcome_diff if "failed" in (pa[n]["outcome"], pb[n]["outcome"])
                     and sa[n]["outcome"] == sb[n]["outcome"] != "failed"]
+    # review R-023 F5: a failure is hidden when either parallel run does not fail it (not only the first)
     hidden_failures = [n for n in outcome_diff if "failed" in (sa[n]["outcome"], sb[n]["outcome"])
-                       and pa[n]["outcome"] != "failed"]
+                       and "failed" not in {pa[n]["outcome"]} & {pb[n]["outcome"]}]
     src = collections.Counter(first_source(sa[n], pa[n] if fp(pa, n) != fp(sa, n) else pb[n]) for n in placement)
     noise_src = collections.Counter(first_source(sa[n], sb[n]) for n in serial_noise)
     return {

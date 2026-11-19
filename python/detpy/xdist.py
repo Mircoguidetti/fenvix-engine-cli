@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import os
+import time as _time
 
 import pytest
 
@@ -38,8 +39,17 @@ WORKER_ENV = ("COLUMNS", "LINES")
 CONTROLLER_ENV = "DETPY_XDIST_ENV"
 
 
-def export_controller_env() -> None:
-    os.environ[CONTROLLER_ENV] = json.dumps({k: os.environ.get(k) for k in WORKER_ENV})
+def export_controller_env(barrier: str | None = None) -> None:
+    d = {k: os.environ.get(k) for k in WORKER_ENV}
+    if barrier:
+        d["_barrier"] = barrier  # not a variable: the directory of this run's cross-worker waits (Barrier)
+    os.environ[CONTROLLER_ENV] = json.dumps(d)
+
+
+_BARRIER_DIR: str | None = None
+# real clocks, bound before Level 0 virtualises the time module
+_sleep = _time.sleep
+_mono = _time.monotonic
 
 
 def restore_controller_env() -> None:
@@ -51,6 +61,8 @@ def restore_controller_env() -> None:
         want = json.loads(raw)
     except ValueError:
         return
+    global _BARRIER_DIR
+    _BARRIER_DIR = want.pop("_barrier", None)
     for k, v in want.items():
         if v is None:
             os.environ.pop(k, None)
@@ -207,14 +219,19 @@ class DetScheduling:
 
     def remove_node(self, node):
         pending = self.node2pending.pop(node)
-        if not pending:
-            return None
-        assert self.collection is not None
-        crash = self.collection[pending.pop(0)]
-        # never a rebalance: the replacement worker gets the rest of this worker's list, in order
-        self.orphans.extend(pending)
-        self.ctl.note_crash(node, crash, pending)
-        return crash
+        assert self.collection is not None or not pending
+        crash, rest = _core.sched_crash_split(list(pending))
+        if crash is not None:
+            # never a rebalance: the replacement worker gets the rest of this worker's list, in order
+            self.orphans.extend(rest)
+            self.ctl.note_crash(node, self.collection[crash], rest)
+            return self.collection[crash]
+        if not self.node2pending and not self.orphans and self.collection is not None:
+            # every worker finished its list: the controller settles its reused results (and may run some again)
+            rerun = self.ctl.all_finished(node)
+            if rerun:
+                self.orphans.extend(rerun)
+        return None
 
     def schedule(self) -> None:
         assert self.collection_is_completed
@@ -279,6 +296,11 @@ class Controller:
         self.workeroutput: dict[str, dict] = {}
         self.merge_summary: dict | None = None
         self.testrunuid = None
+        self.pending_hits: list[str] = []  # reused results not reported yet (until every worker finished)
+        self.settled = False
+        self.rerun: list[str] = []  # withdrawn reuses run again by an extra worker
+        self.barrier = os.path.join(self.dir, "barrier", f"{os.getpid()}-{_time.time_ns()}")
+        self.waits: dict = {}
 
     # -- hooks -----------------------------------------------------------------------------------------
     @pytest.hookimpl(tryfirst=True)
@@ -312,63 +334,88 @@ class Controller:
         self.crashed.append((node.gateway.id, crash))
 
     def make_plan(self, collection: list[str], nodes: list) -> list[list[int]]:
-        """Per node (in worker order), the indices into ``collection`` it runs. Reused results are reported here,
-        by the controller, and not sent."""
+        """Per node (in worker order), the indices into ``collection`` it runs. The plan (``_core.sched_controller_plan``)
+        covers every collected test: reused tests get a worker too (cost 0) and are not sent; their reports come
+        from the controller once every worker finished (``all_finished``)."""
         from . import proofcache
 
         self.ids = list(collection)
         self.S.order = list(collection)
         self.S.order_digest = _core.order_digest(self.S.order)
-        hits: set[str] = set()
         pc = proofcache.PLUGIN
-        if pc is not None:
-            hits = pc.decide_controller(self.ids)
-        place = [i for i, nid in enumerate(self.ids) if nid not in hits]
-        n = len(nodes)
-        groups = self._groups(nodes) if self.dist == "loadgroup" else {}
-        mode = self.dist if _core.sched_atom_key("x", self.dist) is not None else "load"
-        atoms = [_core.sched_atom_key(self.ids[i], mode, groups.get(self.ids[i])) for i in place]
-        costs = self._costs([self.ids[i] for i in place], pc)
-        replay = self._replay(n)
-        if replay is not None:
-            # exact replay: every test is its own atom, pinned to its recorded worker
-            atoms = [f"r:{self.ids[i]}" for i in place]
-        elif mode in ("load", "worksteal") and CHUNK_DIV:
-            # locality: consecutive same-file tests travel together (module fixtures, in-process predecessors)
-            atoms = _core.sched_chunk_atoms([self.ids[i] for i in place], atoms, costs, n, CHUNK_DIV)
-        previous = {}
-        prev = load_json(os.path.join(self.dir, "plan.json"))
-        if replay is not None:
-            previous = replay
-        elif prev and prev.get("workers") == n and prev.get("dist") == self.dist:
-            previous = {k: int(v) for k, v in (prev.get("atoms") or {}).items()}
-        # replay: the recorded assignment whatever the costs; else sticky within the tolerance
-        tol = float("inf") if replay is not None else STICKY_TOLERANCE
-        p = json.loads(_core.sched_plan([self.ids[i] for i in place], atoms, costs, n, previous, tol))
-        lists = [[place[j] for j in lst] for lst in p["lists"]]
+        hits = pc.decide_controller(self.ids) if pc is not None else set()
         wids = [node.gateway.id for node in nodes]
-        # every test's worker, kept for the tests not placed now (reused): the sticky plan and the controller's
-        # check of tests that read PYTEST_XDIST_WORKER (proofcache) use it
-        keep_prev = prev if (prev and prev.get("workers") == n) else {}
-        assign = {str(k): str(v) for k, v in (keep_prev.get("assign") or {}).items()}
-        atoms_all = {str(k): int(v) for k, v in (keep_prev.get("atoms") or {}).items()}
-        for w, lst in zip(wids, lists):
-            for i in lst:
-                assign[self.ids[i]] = w
-        atoms_all.update(p["atom_worker"])
-        self.plan = {
-            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": n, "dist": self.dist, "mode": mode,
-            "testrunuid": self.testrunuid, "digest": p["digest"], "makespan": round(p["makespan"], 6),
-            "lpt_makespan": round(p["lpt_makespan"], 6), "sticky": p["sticky"], "kept": p["kept"],
-            "replayed": replay is not None, "hits": len(hits), "order_digest": self.S.order_digest,
-            "loads": [round(x, 6) for x in p["loads"]],
-            "lists": {w: [self.ids[i] for i in lst] for w, lst in zip(wids, lists)},
-            "atoms": atoms_all,
-            "assign": assign,
+        replay_path = self.config.getoption("det_plan", None)
+        replay = None
+        if replay_path:
+            replay = load_json(replay_path)
+            if replay is None:
+                raise pytest.UsageError(f"--det-plan: {replay_path} is not a detpy plan")
+        hist = load_json(os.path.join(self.dir, "durations.json")) or {}
+        inp = {
+            "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": self.dist,
+            "groups": self._groups(nodes) if self.dist == "loadgroup" else {}, "workers": wids,
+            "chunk_div": CHUNK_DIV, "tolerance": STICKY_TOLERANCE, "slack": 1.0,
+            "history": {k: v for k, v in hist.items() if isinstance(v, list)},
+            "cached": pc.durations(self.ids) if pc is not None else {},
+            "previous": load_json(os.path.join(self.dir, "plan.json")), "replay": replay,
+            "edges": [list(e) for e in pc.store.edges()] if pc is not None else [],
         }
-        if pc is not None:
-            pc.report_hits(self.ids, hits)
+        try:
+            p = json.loads(_core.sched_controller_plan(json.dumps(inp)))
+        except ValueError as e:
+            if replay is not None:
+                raise pytest.UsageError(f"--det-plan: {replay_path}: {e}") from None
+            raise
+        withdrawn = pc.check_workers(self.ids, p["assign"]) if pc is not None else []
+        index = {nid: i for i, nid in enumerate(self.ids)}
+        # sent: the plan's list of each worker without the results reused in the end
+        lists = [[index[nid] for nid in p["lists"].get(w, []) if pc is None or not pc.sess.is_hit(nid)]
+                 for w in wids]
+        self.pending_hits = [n for n in self.ids if pc is not None and pc.sess.is_hit(n)]
+        self.waits = p["waits"]
+        if self.waits:
+            write_json(os.path.join(self.barrier, "waits.json"), {"waits": self.waits})
+        self.plan = {
+            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": len(wids), "dist": self.dist,
+            "mode": p["mode"], "testrunuid": self.testrunuid, "digest": p["digest"],
+            "makespan": round(p["makespan"], 6), "lpt_makespan": round(p["lpt_makespan"], 6), "sticky": p["sticky"],
+            "kept": p["kept"], "replayed": p["replayed"], "previous_ignored": p["previous_ignored"],
+            "hits": len(self.pending_hits), "withdrawn_worker": len(withdrawn), "order_digest": self.S.order_digest,
+            "loads": [round(x, 6) for x in p["loads"]], "lists": p["lists"], "atoms": p["atoms"],
+            "assign": p["assign"], "waits": p["waits"],
+        }
         return lists
+
+    def all_finished(self, last_node) -> list[int]:
+        """Every worker finished its list. Reused results whose input a test that comes before them wrote in this
+        session are withdrawn (review R-023 F2): a fresh worker runs them; the other reused results are reported now.
+        Returns the indices to run again."""
+        from . import proofcache
+
+        if self.settled:
+            return []
+        self.settled = True
+        pc = proofcache.PLUGIN
+        if pc is None:
+            return []
+        shards = [o.get("detpy_cache_shard") for o in self.workeroutput.values() if o.get("detpy_cache_shard")]
+        withdrawn = pc.written_hits(shards, self.ids)
+        pc.report_hits(self.pending_hits)
+        self.pending_hits = []
+        if not withdrawn:
+            return []
+        dsession = self.config.pluginmanager.getplugin("dsession")
+        if dsession is None or not hasattr(dsession, "_clone_node"):
+            pc.report_unrun(withdrawn)
+            return []
+        # xdist's own way to add a worker (as for a crashed one): it collects, then DetScheduling.schedule sends it
+        # the orphans
+        dsession.shuttingdown = False
+        dsession._clone_node(last_node)
+        self.rerun = [nid for nid, _ in withdrawn]
+        index = {nid: i for i, nid in enumerate(self.ids)}
+        return [index[nid] for nid in self.rerun]
 
     def _groups(self, nodes) -> dict:
         for node in nodes:
@@ -377,43 +424,14 @@ class Controller:
                 return d.get("groups") or {}
         return {}
 
-    def _costs(self, ids: list[str], pc) -> list:
-        hist = load_json(os.path.join(self.dir, "durations.json")) or {}
-        cached = pc.durations(ids) if pc is not None else [None] * len(ids)
-        out = []
-        for nid, c in zip(ids, cached):
-            h = hist.get(nid)
-            v = _core.sched_cost_of([float(x) for x in h]) if isinstance(h, list) and h else None
-            out.append(v if v is not None else c)
-        return out
-
-    def _replay(self, n: int) -> dict | None:
-        path = self.config.getoption("det_plan", None)
-        if not path:
-            return None
-        d = load_json(path)
-        if d is None or d.get("format") != PLAN_FORMAT:
-            raise pytest.UsageError(f"--det-plan: {path} is not a detpy plan")
-        lists = d.get("lists") or {}
-        assign = dict(d.get("assign") or {})
-        for wid, ids in lists.items():
-            for nid in ids:
-                assign[nid] = wid
-        prev = {}
-        for nid, wid in assign.items():
-            try:
-                k = int(str(wid)[2:])
-            except ValueError:
-                continue
-            if k >= n:
-                raise pytest.UsageError(f"--det-plan: the plan has worker {wid}, this run has {n} workers")
-            prev[f"r:{nid}"] = k
-        return prev
-
     # -- end of session ------------------------------------------------------------------------------------
     def finish(self, session, trace_path: str, meta: dict) -> None:
         from . import proofcache
 
+        if self.pending_hits and proofcache.PLUGIN is not None:
+            # the session stopped before every worker finished (-x, --maxfail, an interrupt): nothing was settled
+            proofcache.PLUGIN.report_hits(self.pending_hits)
+            self.pending_hits = []
         os.makedirs(self.dir, exist_ok=True)
         workers = []
         for wid in sorted(set(self.sent) | set(self.workeroutput), key=lambda w: _gw_number(_N(w))):
@@ -424,7 +442,7 @@ class Controller:
         if self.plan is not None:
             meta["plan"] = {k: v for k, v in self.plan.items() if k not in ("atoms", "assign")}
         meta["parallel"] = {"workers": len(self.sent), "crashed": [list(c) for c in self.crashed],
-                            "reused_by_controller": len(self.reused)}
+                            "reused_by_controller": len(self.reused), "rerun_written": list(self.rerun)}
         summary = json.loads(_core.merge_traces(self.ids, workers, json.dumps(meta, sort_keys=True),
                                                 self.plan["digest"] if self.plan else None, trace_path))
         self.merge_summary = summary
@@ -432,6 +450,9 @@ class Controller:
             self.S.fingerprints[nid] = fp
         if self.plan is not None:
             write_json(os.path.join(self.dir, "plan.json"), self.plan)
+        import shutil
+
+        shutil.rmtree(self.barrier, ignore_errors=True)
         self._save_durations()
         self._merge_cassettes()
         if proofcache.PLUGIN is not None:
@@ -476,10 +497,18 @@ class Controller:
         p = self.plan
         if p is None:
             return []
-        sizes = ", ".join(f"{w}={len(ids)}" for w, ids in p["lists"].items())
-        lines = [f"plan {p['digest']}: {p['workers']} workers ({sizes}), planned makespan {p['makespan']:.1f}s "
-                 f"(LPT {p['lpt_makespan']:.1f}s){', sticky' if p['sticky'] else ''}"
-                 f"{', replayed' if p['replayed'] else ''}; reused by the controller: {p['hits']}"]
+        sizes = ", ".join(f"{w}={len(self.sent.get(w, []))}/{len(ids)}" for w, ids in p["lists"].items())
+        lines = [f"plan {p['digest']}: {p['workers']} workers (ran/planned {sizes}), planned makespan "
+                 f"{p['makespan']:.1f}s (LPT {p['lpt_makespan']:.1f}s){', sticky' if p['sticky'] else ''}"
+                 f"{', replayed' if p['replayed'] else ''}; reused by the controller: {len(self.reused)}"
+                 + (f"; {p['withdrawn_worker']} reuse(s) withdrawn: the plan moved a worker-id reader"
+                    if p.get("withdrawn_worker") else "")]
+        if self.waits:
+            lines.append(f"{len(self.waits)} test(s) waited for a writer on another worker (data edges of earlier "
+                         f"sessions)")
+        if self.rerun:
+            lines.append(f"{len(self.rerun)} reuse(s) withdrawn after the run (an earlier test of this session wrote "
+                         f"their input): run again in an extra worker")
         s = self.merge_summary
         if s is not None:
             lines.append(f"merged trace: {s['n_tests']} tests from {len(self.sent)} worker traces"
@@ -503,10 +532,22 @@ class Worker:
         self.config = config
         self.wid = wid
         self.loadgroup = bool(getattr(config.option, "loadgroup", False))
+        self.barrier = Barrier(_BARRIER_DIR) if _BARRIER_DIR else None
         if self.loadgroup:
             # xdist appends "@group" to node ids under --dist=loadgroup; under --det the ids stay the serial ids
             # (trace, cache keys) and the groups go to the controller's plan instead
             config.option.loadgroup = False
+
+    @pytest.hookimpl(hookwrapper=True, tryfirst=True)
+    def pytest_runtest_protocol(self, item, nextitem):
+        b = self.barrier
+        if b is not None:
+            b.wait_for(item.nodeid)
+        try:
+            yield
+        finally:
+            if b is not None:
+                b.done(item.nodeid)
 
     @pytest.hookimpl(trylast=True)
     def pytest_collection_modifyitems(self, session, config, items):
@@ -527,6 +568,51 @@ class Worker:
             out["detpy_cassette"] = plugin.S.cassette_out
         if proofcache.PLUGIN is not None:
             out.update(proofcache.PLUGIN.worker_output())
+
+
+# ---------------------------------------------------------------------------------------------------------------
+class Barrier:
+    """Cross-worker waits of one run (review R-023 F2). The controller's plan (Rust) lists, for a test that read a file
+    another test wrote in an earlier session, the writers that run this time on another worker and come before it in
+    the serial order (``waits.json``). The test starts only once they finished (``done/<digest>``), so it reads what
+    a serial session gives it instead of the result of a race between two processes. Files under ``.detpy/`` are
+    not inputs of the cache's capture. Waiting is real time; a writer whose worker died is not waited for longer
+    than ``timeout`` seconds."""
+
+    def __init__(self, path: str, timeout: float = 600.0):
+        self.path = path
+        self.timeout = timeout
+        self._waits: dict | None = None
+        self._writers: set = set()
+
+    def _load(self) -> dict:
+        if self._waits is None:
+            d = load_json(os.path.join(self.path, "waits.json")) or {}
+            self._waits = {str(k): [str(x) for x in v] for k, v in (d.get("waits") or {}).items()}
+            self._writers = {w for v in self._waits.values() for w in v}
+        return self._waits
+
+    def _marker(self, nid: str) -> str:
+        return os.path.join(self.path, "done", _core.digest(nid.encode())[:32])
+
+    def wait_for(self, nid: str) -> list[str]:
+        """Wait until every writer ``nid`` waits for is done; returns the ones still missing at the timeout."""
+        need = self._load().get(nid)
+        if not need:
+            return []
+        t0 = _mono()
+        while True:
+            missing = [w for w in need if not os.path.exists(self._marker(w))]
+            if not missing or _mono() - t0 > self.timeout:
+                return missing
+            _sleep(0.005)
+
+    def done(self, nid: str) -> None:
+        self._load()
+        if nid in self._writers:
+            os.makedirs(os.path.join(self.path, "done"), exist_ok=True)
+            with open(self._marker(nid), "w"):
+                pass
 
 
 # ---------------------------------------------------------------------------------------------------------------

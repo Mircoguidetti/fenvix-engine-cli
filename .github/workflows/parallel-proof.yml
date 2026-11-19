@@ -5,8 +5,9 @@ name: parallel-proof
 # tracks/parallel-proof/run.json on claude/parallel-proof. Each job: one repository, the variants of
 # harness/parallel_proof/variants.py run one after another on the same runner; results committed to
 # tracks/parallel-proof/results/<run_id>/<repo>/.
-# run.json: {"run_id": "...", "repos": [{"name", "url", "sha", "install": "...", "args": "...", "workers": 4,
-#            "dist": "", "variants": "..."}]}
+# run.json: {"run_id": "...", "repos": [{"name", "url", "sha", "install": "pip args" | "install_cmd": "shell (in the
+#            repository; $PY, $VENV)", "python": "3.12", "env": {...}, "args": "shell words", "workers": 4,
+#            "dist": "", "variants": "...", "walk": K (walk_n over K commits instead of the variants), "modes"}]}
 
 on:
   push:
@@ -53,31 +54,56 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: {python-version: "3.12"}
+        with: {python-version: "${{ matrix.repo.python || '3.12' }}"}
       - uses: actions/download-artifact@v4
         with: {name: wheel, path: dist}
       - name: checkout the repository under test
         run: |
           git init -q "$RUNNER_TEMP/repo" && cd "$RUNNER_TEMP/repo"
           git remote add origin "${{ matrix.repo.url }}"
-          git fetch -q --depth 1 origin "${{ matrix.repo.sha }}" && git checkout -q FETCH_HEAD
+          git fetch -q --depth "$(( ${{ matrix.repo.walk || 0 }} + 2 ))" origin "${{ matrix.repo.sha }}" && git checkout -q FETCH_HEAD
       - name: install
+        env:
+          INSTALL_CMD: ${{ matrix.repo.install_cmd }}
+          PIP_INSTALL: ${{ matrix.repo.install }}
         run: |
+          python -m pip install -q uv
           python -m venv "$RUNNER_TEMP/venv"
+          export PY="$RUNNER_TEMP/venv/bin/python" VENV="$RUNNER_TEMP/venv"
           cd "$RUNNER_TEMP/repo"
-          "$RUNNER_TEMP/venv/bin/pip" install -q ${{ matrix.repo.install }} pytest-xdist==3.8.0 pytest-timeout
-          "$RUNNER_TEMP/venv/bin/pip" install -q --force-reinstall --no-deps "$GITHUB_WORKSPACE"/dist/*.whl
-      - name: variants
+          if [ -n "$INSTALL_CMD" ]; then bash -c "$INSTALL_CMD"; else "$PY" -m pip install -q $PIP_INSTALL; fi
+          uv pip install -q --python "$PY" pytest-xdist==3.8.0 pytest-timeout
+          uv pip install -q --python "$PY" --force-reinstall --no-deps "$GITHUB_WORKSPACE"/dist/*.whl
+      - name: variants or walk
+        env:
+          ARGS: ${{ matrix.repo.args }}
+          REPO_ENV: ${{ toJson(matrix.repo.env) }}
         run: |
           out="tracks/parallel-proof/results/${{ needs.build.outputs.run_id }}/${{ matrix.repo.name }}"
-          python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
-            --out "$RUNNER_TEMP/out" --label "${{ matrix.repo.name }}" --workers "${{ matrix.repo.workers }}" \
-            --dist "${{ matrix.repo.dist }}" --variants "${{ matrix.repo.variants }}" -- ${{ matrix.repo.args }}
-          python -m harness.parallel_proof.fpcompare --serial "$RUNNER_TEMP/out/det-serial-a.jsonl" \
-            "$RUNNER_TEMP/out/det-serial-b.jsonl" --parallel "$RUNNER_TEMP/out/det-n-a.jsonl" \
-            "$RUNNER_TEMP/out/det-n-b.jsonl" --json "$RUNNER_TEMP/out/fpcompare.json" || true
-          mkdir -p "$out" && cp "$RUNNER_TEMP"/out/summary.jsonl "$RUNNER_TEMP"/out/*.plan.json "$out"/ || true
-          cp "$RUNNER_TEMP"/out/fpcompare.json "$out"/ || true
+          mkdir -p "$out" "$RUNNER_TEMP/out"
+          eval "$(python3 -c 'import json,os,shlex; e=json.loads(os.environ.get("REPO_ENV") or "null") or {}; print("\n".join(f"export {k}={shlex.quote(str(v))}" for k,v in e.items()))')"
+          cd "$RUNNER_TEMP/repo" && eval "set -- $ARGS" && cd "$GITHUB_WORKSPACE"
+          if [ -n "${{ matrix.repo.walk }}" ]; then
+            python -m harness.parallel_proof.walk_n --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
+              --commits "${{ matrix.repo.walk }}" --workers "${{ matrix.repo.workers }}" --dist "${{ matrix.repo.dist }}" \
+              --modes "${{ matrix.repo.modes || 'a_par' }}" --deadline-s 18000 --out "$out/walk.json" \
+              --work "$RUNNER_TEMP/walk" -- "$@" || true
+          else
+            python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
+              --out "$RUNNER_TEMP/out" --label "${{ matrix.repo.name }}" --workers "${{ matrix.repo.workers }}" \
+              --dist "${{ matrix.repo.dist }}" --variants "${{ matrix.repo.variants }}" -- "$@" || true
+            python -m harness.parallel_proof.fpcompare --serial "$RUNNER_TEMP/out/det-serial-a.jsonl" \
+              "$RUNNER_TEMP/out/det-serial-b.jsonl" --parallel "$RUNNER_TEMP/out/det-n-a.jsonl" \
+              "$RUNNER_TEMP/out/det-n-b.jsonl" --json "$RUNNER_TEMP/out/fpcompare.json" || true
+            for r in "$RUNNER_TEMP"/out/cache-*.outcomes.json "$RUNNER_TEMP"/out/det-n-*.outcomes.json; do
+              [ -e "$r" ] || continue
+              python -m harness.parallel_proof.crosscheck --truth "$RUNNER_TEMP"/out/det-serial-*.outcomes.json \
+                --run "$r" --json "$RUNNER_TEMP/out/$(basename "$r" .outcomes.json).crosscheck.json" > /dev/null || true
+            done
+            cp "$RUNNER_TEMP"/out/summary.jsonl "$RUNNER_TEMP"/out/*.plan.json "$RUNNER_TEMP"/out/*.crosscheck.json "$out"/ || true
+            cp "$RUNNER_TEMP"/out/fpcompare.json "$out"/ || true
+            tail -c 20000 "$RUNNER_TEMP"/out/*.log > "$out/logs-tail.txt" 2>/dev/null || true
+          fi
       - name: commit results
         run: |
           git config user.name "parallel-proof bot" && git config user.email "noreply@anthropic.com"

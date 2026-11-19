@@ -264,6 +264,7 @@ impl ProofCache {
                 skeleton,
                 hooks,
                 units,
+                fixtures: Vec::new(),
             },
         ))
     }
@@ -348,16 +349,57 @@ impl ProofCache {
         }
     }
 
+    /// Together edges of the store: `[(writer test, reader test)]` (`Store::edges`).
+    fn edges(&self) -> Vec<(String, String)> {
+        lock(&self.inner).store.edges.iter().cloned().collect()
+    }
+
     fn __len__(&self) -> usize {
         lock(&self.inner).store.tests.len()
     }
 
     // -- parallel sessions (pytest-xdist under --det) ----------------------------------------------------------------
-    /// Parallel session (controller): the `PYTEST_XDIST_WORKER` each test will see (after `begin`).
-    fn set_xdist_workers(&self, workers: HashMap<String, String>) {
+    /// The controller of a parallel (`-n`) session: `begin` with the environment a worker of this run sees (the
+    /// session's start environment plus `PYTEST_XDIST_WORKER_COUNT` = `workers` and `PYTEST_XDIST_TESTRUNUID` =
+    /// `testrunuid`); results recorded by workers may be reused; `PYTEST_XDIST_WORKER` is compared after the plan
+    /// (`worker_check`). Review R-023 R4, F3.
+    #[pyo3(signature = (config, runtime, epoch, env, workers, testrunuid))]
+    fn begin_controller(&self, config: String, runtime: String, epoch: i64, mut env: BTreeMap<String, String>, workers: usize, testrunuid: Option<String>) {
+        env.insert("PYTEST_XDIST_WORKER_COUNT".into(), workers.to_string());
+        if let Some(u) = testrunuid {
+            env.insert("PYTEST_XDIST_TESTRUNUID".into(), u);
+        }
         let mut g = lock(&self.inner);
-        g.checker.xdist_worker = workers;
-        g.checker.xdist_mode = true;
+        let root = g.checker.cur.root.clone();
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
+        g.checker.parallel = true;
+        g.checker.defer_worker = true;
+    }
+
+    /// A session that runs one worker's list of a parallel plan (`--det-plan-worker`): results recorded by workers
+    /// may be reused, and what it records is a parallel result (after `begin`).
+    fn set_parallel(&self) {
+        lock(&self.inner).checker.parallel = true;
+    }
+
+    /// After the plan: the reused results that read `PYTEST_XDIST_WORKER` and that this run's plan (`assign`:
+    /// nodeid -> worker of every collected test) places on another worker than the recorded one: `[(nodeid,
+    /// reason)]` (`Checker::worker_check`).
+    fn worker_check(&self, nodeids: Vec<String>, assign: HashMap<String, String>) -> Vec<(String, String)> {
+        lock(&self.inner).checker.worker_check(&nodeids, &assign)
+    }
+
+    /// After every worker of a parallel session finished: the reused results whose input a test that comes before
+    /// them in `order` (or a fixture they did not use) wrote in this session, from the writers in the workers' shards
+    /// at `paths`: `[(nodeid, path key, writer)]` (`detpy_core::proof::hits_with_written_inputs`, review R-023 F2).
+    fn hits_written(&self, py: Python<'_>, paths: Vec<PathBuf>, hits: Vec<String>, order: Vec<String>) -> Vec<(String, String, String)> {
+        if hits.is_empty() {
+            return Vec::new();
+        }
+        let shards: Vec<proof::Shard> = py.detach(|| paths.iter().filter_map(|p| proof::Shard::load(p).ok()).collect());
+        let (written, dirs) = proof::writer_union(&shards);
+        let g = lock(&self.inner);
+        proof::hits_with_written_inputs(&g.store, &hits, &order, &written, &dirs)
     }
 
     /// Recorded durations (seconds) of `nodeids` (None: no entry): the plan's costs.
@@ -372,11 +414,15 @@ impl ProofCache {
         let g = lock(&self.inner);
         let mut sub = Store::new();
         g.store.merge_into(&mut sub, &g.touched);
-        // persisted for the next sessions: repository paths only (as record_session keeps them)
+        // a worker's results are parallel results: a serial session does not reuse them (review R-023 F1)
+        for e in sub.tests.values_mut() {
+            e.placement = proof::PLACEMENT_PARALLEL.to_string();
+        }
+        // persisted for the next sessions (as record_session keeps them)
         sub.written = g
             .last_written
             .iter()
-            .filter(|(k, _)| !k.starts_with('/'))
+            .filter(|(k, _)| proof::persist_written(k))
             .map(|(k, v)| (k.clone(), v.iter().cloned().collect()))
             .collect();
         let n = sub.tests.len();
@@ -412,6 +458,7 @@ impl ProofCache {
         })?;
         serde_json::to_string(&serde_json::json!({
             "merged": merge.merged, "dropped": merge.dropped, "stale": merge.stale, "unreadable": unreadable,
+            "edges": merge.edges,
         }))
         .map_err(|e| PyValueError::new_err(e.to_string()))
     }
@@ -425,9 +472,18 @@ impl ProofCache {
     /// Nothing to merge (no entry touched, no new written path) leaves the store on disk as it is: merging
     /// nothing into it and compacting it again would write the same content.
     fn save(&self) -> PyResult<()> {
-        let g = lock(&self.inner);
+        let mut g = lock(&self.inner);
         if g.touched.is_empty() && g.store.written == g.written0 {
             return Ok(());
+        }
+        if g.checker.parallel {
+            // one worker's list of a parallel plan (`--det-plan-worker`): parallel results (review R-023 F1)
+            let Inner { store, touched, .. } = &mut *g;
+            for nid in touched.iter() {
+                if let Some(e) = store.tests.get_mut(nid) {
+                    e.placement = proof::PLACEMENT_PARALLEL.to_string();
+                }
+            }
         }
         g.store.save_merged(&self.dir, &g.touched)?;
         Ok(())
@@ -435,6 +491,12 @@ impl ProofCache {
 }
 
 impl ProofCache {
+    /// The recorded data inputs and fixture contexts of `nodeid`'s entry, with the check `foreign` needs.
+    pub(crate) fn with_entry<T>(&self, nodeid: &str, f: impl FnOnce(&proof::Entry) -> T) -> Option<T> {
+        let g = lock(&self.inner);
+        g.store.tests.get(nodeid).map(f)
+    }
+
     /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);
     /// the store is not saved (`CacheSession.record`).
     pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>) -> PyResult<record::Outcome> {

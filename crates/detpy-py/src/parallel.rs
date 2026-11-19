@@ -61,6 +61,23 @@ fn sched_chunk_atoms(ids: Vec<String>, atoms: Vec<String>, costs: Vec<Option<f64
     schedule::chunk_test_atoms(&ids, &atoms, &costs, workers, div)
 }
 
+/// The controller's plan (`detpy_core::schedule::controller_plan`): input and output as JSON (see
+/// `ControllerInput` / `ControllerPlan`). A plan to replay that is not a detpy plan, or that has more workers than
+/// this run, raises `ValueError`.
+#[pyfunction]
+fn sched_controller_plan(py: Python<'_>, input_json: &str) -> PyResult<String> {
+    let input: schedule::ControllerInput =
+        serde_json::from_str(input_json).map_err(|e| PyValueError::new_err(format!("plan input: {e}")))?;
+    let p = py.detach(|| schedule::controller_plan(&input)).map_err(PyValueError::new_err)?;
+    serde_json::to_string(&p).map_err(json_err)
+}
+
+/// A worker went down with `pending` positions not finished: (the one it crashed in, the rest for its replacement).
+#[pyfunction]
+fn sched_crash_split(pending: Vec<usize>) -> (Option<usize>, Vec<usize>) {
+    schedule::crash_split(&pending)
+}
+
 /// Digest of a plan given as per-worker id lists.
 #[pyfunction]
 fn sched_plan_digest(lists: Vec<Vec<String>>) -> String {
@@ -100,5 +117,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sched_plan_digest, m)?)?;
     m.add_function(wrap_pyfunction!(sched_chunk_atoms, m)?)?;
     m.add_function(wrap_pyfunction!(merge_traces, m)?)?;
+    m.add_function(wrap_pyfunction!(sched_controller_plan, m)?)?;
+    m.add_function(wrap_pyfunction!(sched_crash_split, m)?)?;
     Ok(())
 }

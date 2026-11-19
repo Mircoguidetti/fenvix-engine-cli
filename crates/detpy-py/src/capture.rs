@@ -2085,6 +2085,46 @@ fn cat(parts: &[&[u8]]) -> W {
 }
 
 impl CaptureCore {
+    /// The first input of a reused result (`data`: its recorded (path key, dependency) pairs) that code of this
+    /// session has written so far, with a writer context `foreign` accepts: (path key, writer). A listing
+    /// (`d:` dependency) counts when a path directly in the directory was written (review R-023 F2).
+    pub(crate) fn written_input(&self, data: &[(String, String)], foreign: impl Fn(&str) -> bool) -> Option<(String, String)> {
+        let st = lock(&self.st);
+        if st.writers.is_empty() {
+            return None;
+        }
+        let names = |cs: &BTreeSet<usize>| -> Option<String> {
+            cs.iter().filter_map(|&c| st.ctx_names.get(c)).filter_map(|n| std::str::from_utf8(n).ok()).find(|n| foreign(n)).map(|n| n.to_string())
+        };
+        for (key, dep) in data {
+            let abs: W = if key.starts_with('/') {
+                key.as_bytes().to_vec()
+            } else {
+                let mut a = st.root_sep.clone();
+                a.extend_from_slice(key.as_bytes());
+                a
+            };
+            if let Some(cs) = st.writers.get(&abs) {
+                if let Some(w) = names(cs) {
+                    return Some((key.clone(), w));
+                }
+            }
+            if dep.starts_with("d:") {
+                for (p, cs) in st.writers.iter() {
+                    let parent = p.iter().rposition(|&b| b == b'/').map(|i| if i == 0 { &p[..1] } else { &p[..i] });
+                    if parent == Some(abs.as_slice()) {
+                        if let Some(w) = names(cs) {
+                            return Some((key.clone(), w));
+                        }
+                    }
+                }
+            }
+        }
+        None
+    }
+}
+
+impl CaptureCore {
     /// `Capture.child_ignored(p)`: paths a followed child touches that are not inputs (bytecode caches, pytest's
     /// temporary directory, the follower's own logs, this interpreter's standard library and distributions).
     fn child_ignored_w(&self, logdir: Option<&[u8]>, p: &[u8]) -> bool {

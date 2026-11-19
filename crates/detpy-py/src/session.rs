@@ -24,6 +24,16 @@ use std::time::Instant;
 
 type W = Vec<u8>;
 
+/// SplitMix64: a uniform float in [0, 1) from the state (advanced).
+fn splitmix_unit(state: &mut u64) -> f64 {
+    *state = state.wrapping_add(0x9E37_79B9_7F4A_7C15);
+    let mut z = *state;
+    z = (z ^ (z >> 30)).wrapping_mul(0xBF58_476D_1CE4_E5B9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94D0_49BB_1331_11EB);
+    z ^= z >> 31;
+    (z >> 11) as f64 * (1.0 / (1u64 << 53) as f64)
+}
+
 fn lock<T>(m: &Mutex<T>) -> MutexGuard<'_, T> {
     m.lock().unwrap_or_else(|e| e.into_inner())
 }
@@ -96,6 +106,18 @@ impl<V> OMap<V> {
             }
         };
         &mut self.vals[i]
+    }
+    /// Remove `k` keeping the order of the others (rare: a withdrawn reuse).
+    fn remove(&mut self, k: &[u8]) -> Option<V> {
+        let i = self.ix.remove(k)?;
+        self.keys.remove(i);
+        let v = self.vals.remove(i);
+        for j in self.ix.values_mut() {
+            if *j > i {
+                *j -= 1;
+            }
+        }
+        Some(v)
     }
     fn contains(&self, k: &[u8]) -> bool {
         self.ix.contains_key(k)
@@ -326,6 +348,9 @@ impl CacheSession {
         let nids: Vec<String> = nodeids.iter().map(|n| n.extract()).collect::<PyResult<_>>()?;
         let decided = store.get().check_all(py, nids, max_age_s, now, run_time)?;
         let verify = verify.unwrap_or(0.0);
+        // the draw: a Python callable (serial sessions: Mersenne Twister seeded per run), or an integer seed (the
+        // controller of a parallel session: SplitMix64 from `derive_seed`, review R-023 R4)
+        let mut rust_rng: Option<u64> = rng_random.extract::<u64>().ok();
         let mut st = lock(&self.st);
         for (i, (nid, d)) in nodeids.iter().zip(decided.iter()).enumerate() {
             let w = w_of(nid)?;
@@ -335,7 +360,10 @@ impl CacheSession {
             let info = d.get_item(1)?;
             if ok {
                 let draw = verify != 0.0 && {
-                    let x: f64 = rng_random.call0()?.extract()?;
+                    let x: f64 = match rust_rng.as_mut() {
+                        Some(state) => splitmix_unit(state),
+                        None => rng_random.call0()?.extract()?,
+                    };
                     x < verify
                 };
                 if draw {
@@ -348,6 +376,51 @@ impl CacheSession {
             }
         }
         Ok(())
+    }
+
+    /// The seed of the verification draw of a parallel session's controller: `derive_seed(seed,
+    /// "detpy-cache-verify:<order digest>:<configuration digest>")`, so two runs on the same inputs verify the same
+    /// tests (docs/PARALLEL-PROOF-DESIGN.md 2.5; review R-023 R4).
+    #[staticmethod]
+    fn controller_verify_seed(seed: u64, nodeids: Vec<String>, config: &str) -> u64 {
+        let od = detpy_core::trace::order_digest(&nodeids);
+        detpy_core::order::derive_seed(seed, &format!("detpy-cache-verify:{od}:{config}"))
+    }
+
+    /// A decided reuse is withdrawn: the test runs (and is recorded) instead; `reason` goes to its receipt.
+    fn demote(&self, nodeid: Bound<'_, PyString>, reason: Bound<'_, PyString>) -> PyResult<bool> {
+        let w = w_of(&nodeid)?;
+        let mut st = lock(&self.st);
+        if st.hits.get(&w).is_none() {
+            return Ok(false);
+        }
+        st.hits.remove(&w);
+        st.misses.insert(w, w_of(&reason)?);
+        Ok(true)
+    }
+
+    /// Serial session, at the test's turn: a reused result whose input code of this session already wrote (another
+    /// test, which ran before it, or a fixture it did not use when it was recorded) is withdrawn and the test runs
+    /// (review R-023 F2: the decision was made before that writer ran; a fresh serial session gives the test the
+    /// written file). Returns the reason when withdrawn.
+    fn recheck_hit(&self, store: &Bound<'_, ProofCache>, cap: &Bound<'_, CaptureCore>, nodeid: Bound<'_, PyString>) -> PyResult<Option<String>> {
+        let nid: String = nodeid.extract()?;
+        if !lock(&self.st).hits.contains(nid.as_bytes()) {
+            return Ok(None);
+        }
+        let Some(found) = store.get().with_entry(&nid, |e| {
+            let data: Vec<(String, String)> = e.data.iter().map(|(k, d)| (k.to_string(), d.to_string())).collect();
+            cap.get().written_input(&data, |w| detpy_core::proof::foreign_to_entry(w, &nid, e, None))
+        }) else {
+            return Ok(None);
+        };
+        let Some((key, writer)) = found else { return Ok(None) };
+        let reason = format!("written: {key} was written by {writer} earlier in this session");
+        let w = nid.as_bytes().to_vec();
+        let mut st = lock(&self.st);
+        st.hits.remove(&w);
+        st.misses.insert(w, reason.clone().into_bytes());
+        Ok(Some(reason))
     }
 
     /// The receipt of a result reused in this session (None: not reused).

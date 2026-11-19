@@ -359,9 +359,10 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     for (p, w) in &plan.session_written {
         written.entry(p.clone()).or_default().extend(w.iter().cloned());
     }
-    // persisted for the next sessions: paths in the repository only (temporary files have fresh names)
+    // persisted for the next sessions: paths in the repository, and paths outside it that still exist (review R-023
+    // F2: a reader of a file another test wrote stays uncached in a later session in which the writer is reused)
     for (p, w) in &plan.session_written {
-        if !p.starts_with('/') {
+        if crate::proof::persist_written(p) {
             store.written.entry(p.clone()).or_default().extend(w.iter().cloned());
         }
     }
@@ -377,7 +378,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             let mut stale = None;
             for (path, _) in &e.data {
                 if let Some(w) = stale_written.get(&**path) {
-                    if !w.iter().all(|x| *x == own) {
+                    if !w.iter().all(|x| *x == own || e.fixtures.iter().any(|f| f == x)) {
                         stale = Some(path.to_string());
                         break;
                     }
@@ -498,6 +499,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         hit.map(|r| format!("source changed during the session: {r}"))
     };
 
+    let mut new_edges: Vec<(String, String)> = Vec::new();
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
         if !reusable_outcome(&t.outcome) {
@@ -550,6 +552,11 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                     let ok = plan.writers.get(p).map(|w| w.iter().all(|c| credited.contains(c))).unwrap_or(true);
                     if !ok {
                         why = Some(format!("reads a file another test or fixture wrote: {}", key(p)));
+                        for c in plan.writers.get(p).into_iter().flatten() {
+                            if let Some(n) = names.get(*c as usize) {
+                                new_edges.push((n.clone(), nid.to_string()));
+                            }
+                        }
                         break;
                     }
                 }
@@ -559,6 +566,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                     if let Some(w) = written.get(path) {
                         if !w.is_empty() && !w.iter().all(|x| cnames.contains(x.as_str())) {
                             why = Some(format!("reads a file another test or fixture wrote: {path}"));
+                            new_edges.extend(w.iter().map(|x| (x.clone(), nid.to_string())));
                             break;
                         }
                     }
@@ -569,6 +577,9 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             if let Some((k, d)) = &plan.cassette {
                 data.set(k, d);
             }
+        }
+        for (w, r) in new_edges.drain(..) {
+            store.add_edge(&w, &r);
         }
         if let Some(w) = why {
             store.remove(nid);
@@ -641,6 +652,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),
                 units: units.into_iter().collect(),
+                fixtures: t.fixtures.clone(),
             },
         );
         out.recorded += 1;

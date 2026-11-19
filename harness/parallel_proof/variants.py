@@ -1,13 +1,15 @@
 """Run the variants of the parallel-proof measurement in one repository (P0; design 1.3, 5).
 
 usage: python -m harness.parallel_proof.variants --repo DIR --python PY --out OUTDIR --label L -- PYTEST ARGS...
-       [--variants plain-serial,plain-n4,det-serial-a,det-n4-a,det-serial-b,det-n4-b,cache-ser-cold,...]
+       [--variants plain-serial,plain-n,plain-n@2,det-serial-a,det-n-a,det-serial-b,det-n-b,cache-ser-cold,...]
        [--workers 4] [--dist load] [--timeout 3600]
 
 Each variant runs ``PY -m pytest -p no:cacheprovider -q <PYTEST ARGS> <variant args>`` in DIR, one after another,
 and appends one JSON line to OUTDIR/summary.jsonl: label, variant, wall seconds (MEASURED, wall clock around the
 process), return code, the pytest summary line. ``--det`` variants write their trace to OUTDIR/<variant>.jsonl and
 ``-n`` variants copy ``.detpy/plan.json`` to OUTDIR/<variant>.plan.json. Cache variants share OUTDIR/cache-<mode>/.
+``<variant>@K`` repeats a variant (repeated runs for the spread); ``--det`` variants also write
+OUTDIR/<variant>.outcomes.json (per-test outcomes and the cache's reused ids, for truth comparisons: crosscheck.py).
 """
 
 from __future__ import annotations
@@ -23,9 +25,12 @@ DEFAULT = ("plain-serial,plain-n,det-serial-a,det-n-a,det-serial-b,det-n-b,"
            "cache-ser-cold,cache-ser-warm,cache-n-cold,cache-n-warm,cache-n-warm2")
 
 
-def variant_args(v: str, out: str, workers: int, dist: str) -> list[str]:
+def variant_args(name: str, out: str, workers: int, dist: str) -> list[str]:
+    """Arguments of variant ``name``; ``name@K`` is repetition K of the same variant (its own trace and log)."""
+    v = name.split("@", 1)[0]
     par = ["-n", str(workers)] + (["--dist", dist] if dist else [])
-    det = ["--det", f"--det-trace={os.path.join(out, v + '.jsonl')}"]
+    det = ["--det", f"--det-trace={os.path.join(out, name + '.jsonl')}",
+           f"--det-outcomes={os.path.join(out, name + '.outcomes.json')}"]
     if v == "plain-serial":
         return []
     if v == "plain-n":
@@ -36,16 +41,16 @@ def variant_args(v: str, out: str, workers: int, dist: str) -> list[str]:
         return det + par
     if v.startswith("cache-ser"):
         return det + [f"--det-cache={os.path.join(out, 'cache-ser')}",
-                      f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
+                      f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
     if v.startswith("cache-n"):
         return det + par + [f"--det-cache={os.path.join(out, 'cache-n')}",
-                            f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
+                            f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
     if v.startswith("cache-x"):  # a parallel run on the serial store (cross-mode reuse)
         return det + par + [f"--det-cache={os.path.join(out, 'cache-ser')}",
-                            f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
+                            f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
     if v.startswith("cache-y"):  # a serial run on the store written under -n (cross-mode reuse)
         return det + [f"--det-cache={os.path.join(out, 'cache-n')}",
-                      f"--det-cache-receipts={os.path.join(out, v + '.receipts.jsonl')}"]
+                      f"--det-cache-receipts={os.path.join(out, name + '.receipts.jsonl')}"]
     raise SystemExit(f"unknown variant {v}")
 
 

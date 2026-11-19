@@ -69,6 +69,10 @@ def main(argv=None) -> int:
     ap.add_argument("--reinstall", default="")
     ap.add_argument("--timeout", type=int, default=3600)
     ap.add_argument("--work", default=None)
+    ap.add_argument("--deadline-s", type=float, default=0,
+                    help="start no further commit after this many seconds (a CI job's limit; 0: none)")
+    ap.add_argument("--modes", default="a_par,a_ser",
+                    help="cache modes to walk besides the truth run b (a_ser can be left out to fit a CI job)")
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
     work = os.path.abspath(a.work or os.path.join(os.path.dirname(os.path.abspath(a.out)), "walk-work"))
@@ -78,7 +82,11 @@ def main(argv=None) -> int:
     par = ["-n", str(a.workers)] + (["--dist", a.dist] if a.dist else [])
     rows = []
     deps = None
+    t_start = time.perf_counter()
     for i, sha in enumerate(shas):
+        if a.deadline_s and time.perf_counter() - t_start > a.deadline_s:
+            print(f"deadline: stopped after {i} of {len(shas)} commits", flush=True)
+            break
         git(a.repo, "checkout", "-q", "--force", sha)
         d = deps_digest(a.repo)
         if deps is not None and d != deps and a.reinstall:
@@ -86,15 +94,16 @@ def main(argv=None) -> int:
         deps = d
         row = {"i": i, "sha": sha}
         runs = {}
-        for name, extra in (("a_par", ["--det", f"--det-cache={work}/cache-par",
-                                       f"--det-trace={work}/a_par.jsonl", *par]),
-                            ("a_ser", ["--det", f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
-                            ("b", ["--det", f"--det-trace={work}/b.jsonl"])):
+        modes = [m for m in a.modes.split(",") if m]
+        variants = (("a_par", ["--det", f"--det-cache={work}/cache-par", f"--det-trace={work}/a_par.jsonl", *par]),
+                    ("a_ser", ["--det", f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
+                    ("b", ["--det", f"--det-trace={work}/b.jsonl"]))
+        for name, extra in [v for v in variants if v[0] in modes or v[0] == "b"]:
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
         truth = runs["b"].get("outcomes", {})
-        for mode in ("a_par", "a_ser"):
+        for mode in [m for m in ("a_par", "a_ser") if m in runs]:
             c = runs[mode].get("cache", {})
             reused = c.get("reused_ids", [])
             outcomes = runs[mode].get("outcomes", {})

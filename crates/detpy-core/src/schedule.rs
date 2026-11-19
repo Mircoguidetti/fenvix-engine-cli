@@ -158,43 +158,69 @@ fn lpt(atoms: &[Atom], order: &[usize], loads: &mut [u64], place: &mut [usize], 
     }
 }
 
-/// Locality for one-test atoms (`load`, `worksteal`): consecutive tests of the same file are merged into chunk atoms
-/// of at most `ceil(tests / (workers * div))` tests. The boundaries depend on the collection only, never on the
-/// recorded durations, so the chunks (and the sticky plan over them) stay put from run to run. A plan over single tests
-/// scatters every module over every worker: each worker then sets up every module-scoped fixture, and a test loses
-/// more of its serial in-process predecessors (placement). Merging atoms never splits one: atoms that are not
-/// one-test atoms (`t:` keys) are left as they are. Returns the new atom keys (`c:<first test id>`).
+/// Locality for one-test atoms (`load`, `worksteal`): consecutive tests of the same file are merged into chunk atoms.
+/// A plan over single tests scatters every module over every worker: each worker then sets up every module-scoped
+/// fixture, and a test loses more of its serial in-process predecessors (placement). Merging atoms never splits one:
+/// atoms that are not one-test atoms (`t:` keys) are left as they are. Returns the new atom keys (`c:<first test
+/// id>`).
+///
+/// The boundaries must not move when tests are added or removed elsewhere (review R-023 F4: a cap of `tests /
+/// (workers x div)` tests per chunk moved every boundary after one added test, and with them half of the tests'
+/// workers). So:
+/// * the target size is `tests / (workers x div)` rounded **up to a power of two**: it changes only when the suite
+///   doubles or halves, or the number of workers changes;
+/// * a same-file run of at most the target size is one chunk;
+/// * a longer run is cut **by content**: before a test whose id digest is 0 modulo the target (expected chunk size =
+///   the target), and before a test that would make the chunk twice the target. A cut depends on the test's own id,
+///   so adding or removing a test changes at most the chunk it is in (and, through the forced cut, the chunks up to
+///   the next content cut of that file).
+///
+/// Durations are never used (`costs` is accepted for the binding's signature).
 pub fn chunk_test_atoms(ids: &[String], atoms: &[String], costs: &[Option<f64>], workers: usize, div: usize) -> Vec<String> {
-    // `costs` is accepted for the binding's signature; the boundaries deliberately ignore it
     if div == 0 || workers == 0 || ids.is_empty() {
         return atoms.to_vec();
     }
     let _ = costs;
-    let cap = ids.len().div_ceil(workers * div).max(1) as u64;
-    let cost = vec![1u64; ids.len()];
+    let target = chunk_target(ids.len(), workers, div);
     let file = |id: &str| id.split("::").next().unwrap_or(id).to_string();
-    let mut out = Vec::with_capacity(ids.len());
-    let mut cur: Option<(String, String, u64)> = None; // (chunk key, file, cost so far)
-    for (i, id) in ids.iter().enumerate() {
+    let mut out = atoms.to_vec();
+    let mut i = 0;
+    while i < ids.len() {
         if !atoms[i].starts_with("t:") {
-            cur = None;
-            out.push(atoms[i].clone());
+            i += 1;
             continue;
         }
-        let f = file(id);
-        match &mut cur {
-            Some((key, cf, c)) if *cf == f && *c + cost[i] <= cap => {
-                *c += cost[i];
-                out.push(key.clone());
-            }
-            _ => {
-                let key = format!("c:{id}");
-                cur = Some((key.clone(), f, cost[i]));
-                out.push(key);
-            }
+        // the same-file run of one-test atoms starting at i
+        let f = file(&ids[i]);
+        let mut j = i + 1;
+        while j < ids.len() && atoms[j].starts_with("t:") && file(&ids[j]) == f {
+            j += 1;
         }
+        let whole = (j - i) as u64 <= target;
+        let mut key = format!("c:{}", ids[i]);
+        let mut size = 0u64;
+        for k in i..j {
+            let cut = k > i && !whole && (content_cut(&ids[k], target) || size >= 2 * target);
+            if cut {
+                key = format!("c:{}", ids[k]);
+                size = 0;
+            }
+            out[k] = key.clone();
+            size += 1;
+        }
+        i = j;
     }
     out
+}
+
+/// The chunk target size: `ceil(tests / (workers x div))` rounded up to a power of two.
+pub fn chunk_target(tests: usize, workers: usize, div: usize) -> u64 {
+    (tests.div_ceil((workers * div).max(1)).max(1) as u64).next_power_of_two()
+}
+
+fn content_cut(id: &str, target: u64) -> bool {
+    let d = digest_bytes(id.as_bytes()).0;
+    u64::from_le_bytes(d[..8].try_into().unwrap()) % target.max(1) == 0
 }
 
 /// Digest of a plan: the number of workers and every worker's ordered id list.
@@ -281,6 +307,272 @@ pub fn plan(input: &PlanInput) -> Result<Plan, String> {
         atom_worker,
         digest,
     })
+}
+
+// -------------------------------------------------------------------------------------------------------------
+// The controller's plan (review R-023 R1-R3: every decision of `DetScheduling` in Rust; `xdist.py` is the glue).
+
+/// What the controller of a `--det -n N` session plans with.
+#[derive(Clone, Debug, Default, serde::Deserialize)]
+pub struct ControllerInput {
+    /// Every collected test, in the serial order.
+    pub ids: Vec<String>,
+    /// The tests whose recorded result is reused (not sent to a worker; they still get a worker in the plan, at
+    /// cost 0, so that the plan, its chunks and every test's worker are a function of the collection, not of the
+    /// cache's hits: review R-023 F3, F4).
+    #[serde(default)]
+    pub hits: Vec<String>,
+    /// The customer's `--dist` mode.
+    pub dist: String,
+    /// `xdist_group` of the tests that have one (`loadgroup`).
+    #[serde(default)]
+    pub groups: BTreeMap<String, String>,
+    /// Worker ids (`gw0`, `gw1`, ...), in worker order.
+    pub workers: Vec<String>,
+    /// One-test atoms merged into same-file chunks (`chunk_test_atoms`, 0: off).
+    pub chunk_div: usize,
+    pub tolerance: f64,
+    pub slack: f64,
+    /// Recorded durations per test (`.detpy/durations.json`).
+    #[serde(default)]
+    pub history: BTreeMap<String, Vec<f64>>,
+    /// The cache entry's duration per test.
+    #[serde(default)]
+    pub cached: BTreeMap<String, f64>,
+    /// The previous plan (`.detpy/plan.json`), when there is one.
+    #[serde(default)]
+    pub previous: Option<serde_json::Value>,
+    /// `--det-plan`: the plan to replay exactly.
+    #[serde(default)]
+    pub replay: Option<serde_json::Value>,
+    /// Data edges (writer test, reader test) from the cache store: the reader read a file the writer wrote in an
+    /// earlier session. When both run in this session on different workers and the writer comes first in the serial
+    /// order, the reader waits for the writer to finish ([`ControllerPlan::waits`]), so it reads what a serial session
+    /// gives it, not the outcome of a race between two processes (review R-023 F2).
+    #[serde(default)]
+    pub edges: Vec<(String, String)>,
+}
+
+/// The controller's plan.
+#[derive(Clone, Debug, serde::Serialize)]
+pub struct ControllerPlan {
+    /// Per worker, the positions (into `ids`) it runs: the plan's list without the reused tests.
+    pub send: Vec<Vec<usize>>,
+    /// Per worker id, every test the plan gives it (reused ones included), in serial order.
+    pub lists: BTreeMap<String, Vec<String>>,
+    /// Every collected test's worker in this run.
+    pub assign: BTreeMap<String, String>,
+    /// Atom key -> worker index (the next run's `previous`).
+    pub atoms: BTreeMap<String, usize>,
+    pub mode: String,
+    pub digest: String,
+    pub makespan: f64,
+    pub lpt_makespan: f64,
+    pub loads: Vec<f64>,
+    pub sticky: bool,
+    pub kept: usize,
+    pub replayed: bool,
+    /// Why the previous plan was not used for stickiness ("" when it was, or there was none).
+    pub previous_ignored: String,
+    /// Reader test -> the writer tests it waits for: both sent this run, on different workers, the writer first in
+    /// the serial order. A wait never deadlocks: every worker runs its list in the serial order and only waits for
+    /// tests that come earlier in that order.
+    pub waits: BTreeMap<String, Vec<String>>,
+}
+
+pub const PLAN_FORMAT: &str = "detpy-plan";
+
+/// A test's cost (review R-023 R3): the median of its last 3 recorded durations, else the duration of its cache
+/// entry, else unknown (the plan then uses the median of the known costs).
+pub fn cost_precedence(history: Option<&[f64]>, cached: Option<f64>) -> Option<f64> {
+    history.and_then(cost_of).or(cached)
+}
+
+/// `gwK` -> K.
+pub fn worker_number(wid: &str) -> Option<usize> {
+    wid.strip_prefix("gw").and_then(|k| k.parse().ok())
+}
+
+/// The assignment of a plan file to replay (`--det-plan`): `r:<nodeid>` -> worker index (review R-023 R2).
+pub fn replay_assignment(plan: &serde_json::Value, workers: usize) -> Result<BTreeMap<String, usize>, String> {
+    if plan.get("format").and_then(|f| f.as_str()) != Some(PLAN_FORMAT) {
+        return Err("is not a detpy plan".into());
+    }
+    let mut assign: BTreeMap<String, String> = BTreeMap::new();
+    if let Some(a) = plan.get("assign").and_then(|a| a.as_object()) {
+        for (k, v) in a {
+            if let Some(w) = v.as_str() {
+                assign.insert(k.clone(), w.to_string());
+            }
+        }
+    }
+    if let Some(l) = plan.get("lists").and_then(|l| l.as_object()) {
+        for (w, ids) in l {
+            for id in ids.as_array().into_iter().flatten().filter_map(|x| x.as_str()) {
+                assign.insert(id.to_string(), w.clone());
+            }
+        }
+    }
+    let mut out = BTreeMap::new();
+    for (nid, wid) in assign {
+        let Some(k) = worker_number(&wid) else { continue };
+        if k >= workers {
+            return Err(format!("the plan has worker {wid}, this run has {workers} workers"));
+        }
+        out.insert(format!("r:{nid}"), k);
+    }
+    Ok(out)
+}
+
+/// Whether the previous plan's placement is kept (stickiness), and its atom map (review R-023 R1, R2): only a plan
+/// of the same number of workers and the same `--dist`, and not a replay (its atoms are pinned tests, not this
+/// mode's atoms).
+pub fn previous_atoms(prev: &serde_json::Value, workers: usize, dist: &str) -> Result<BTreeMap<String, usize>, String> {
+    if prev.get("format").and_then(|f| f.as_str()) != Some(PLAN_FORMAT) {
+        return Err("not a detpy plan".into());
+    }
+    if prev.get("workers").and_then(|w| w.as_u64()) != Some(workers as u64) {
+        return Err("another number of workers".into());
+    }
+    if prev.get("dist").and_then(|d| d.as_str()) != Some(dist) {
+        return Err("another --dist".into());
+    }
+    if prev.get("replayed").and_then(|r| r.as_bool()) == Some(true) {
+        return Err("a replayed plan".into());
+    }
+    let mut out = BTreeMap::new();
+    if let Some(a) = prev.get("atoms").and_then(|a| a.as_object()) {
+        for (k, v) in a {
+            if let Some(w) = v.as_u64() {
+                out.insert(k.clone(), w as usize);
+            }
+        }
+    }
+    Ok(out)
+}
+
+/// The controller's plan: atoms from `--dist` (chunks for one-test atoms), costs (`cost_precedence`; reused tests
+/// cost 0), stickiness to the previous plan or the exact replay of `--det-plan`, then the lists to send (without the
+/// reused tests). The plan covers every collected test.
+pub fn controller_plan(input: &ControllerInput) -> Result<ControllerPlan, String> {
+    let n = input.workers.len();
+    if n == 0 {
+        return Err("a plan needs at least one worker".into());
+    }
+    let parsed = DistMode::parse(&input.dist);
+    let mode = parsed.unwrap_or(DistMode::Test);
+    let mode_name = if parsed.is_some() { input.dist.clone() } else { "load".to_string() };
+    let hits: std::collections::HashSet<&str> = input.hits.iter().map(|s| s.as_str()).collect();
+    let ids = &input.ids;
+    // costs: reused tests 0; the others by precedence, unknown ones the median of the known ones
+    let mut costs: Vec<Option<f64>> = ids
+        .iter()
+        .map(|id| {
+            if hits.contains(id.as_str()) {
+                Some(0.0)
+            } else {
+                cost_precedence(input.history.get(id).map(|v| v.as_slice()), input.cached.get(id).copied())
+            }
+        })
+        .collect();
+    let known: Vec<u64> = ids
+        .iter()
+        .zip(&costs)
+        .filter(|(id, _)| !hits.contains(id.as_str()))
+        .filter_map(|(_, c)| c.map(micros))
+        .collect();
+    let default = median(known).unwrap_or(1_000_000).max(1) as f64 / 1e6;
+    for c in costs.iter_mut() {
+        if c.is_none() {
+            *c = Some(default);
+        }
+    }
+    let replay = match &input.replay {
+        Some(r) => Some(replay_assignment(r, n)?),
+        None => None,
+    };
+    let atoms: Vec<String> = if replay.is_some() {
+        // exact replay: every test is its own atom, pinned to its recorded worker
+        ids.iter().map(|id| format!("r:{id}")).collect()
+    } else {
+        let a: Vec<String> =
+            ids.iter().map(|id| atom_key(id, mode, input.groups.get(id).map(|g| g.as_str()))).collect();
+        if mode == DistMode::Test && input.chunk_div > 0 {
+            chunk_test_atoms(ids, &a, &costs, n, input.chunk_div)
+        } else {
+            a
+        }
+    };
+    let mut previous_ignored = String::new();
+    let (previous, tolerance) = match (&replay, &input.previous) {
+        (Some(r), _) => (r.clone(), f64::INFINITY),
+        (None, Some(p)) => match previous_atoms(p, n, &input.dist) {
+            Ok(m) => (m, input.tolerance),
+            Err(e) => {
+                previous_ignored = e;
+                (BTreeMap::new(), input.tolerance)
+            }
+        },
+        (None, None) => (BTreeMap::new(), input.tolerance),
+    };
+    let p = plan(&PlanInput {
+        ids: ids.clone(),
+        atoms,
+        costs,
+        workers: n,
+        previous,
+        tolerance,
+        slack: input.slack,
+    })?;
+    let mut lists = BTreeMap::new();
+    let mut assign = BTreeMap::new();
+    let mut send = Vec::with_capacity(n);
+    for (w, l) in p.lists.iter().enumerate() {
+        let wid = &input.workers[w];
+        lists.insert(wid.clone(), l.iter().map(|&i| ids[i].clone()).collect());
+        for &i in l {
+            assign.insert(ids[i].clone(), wid.clone());
+        }
+        send.push(l.iter().copied().filter(|&i| !hits.contains(ids[i].as_str())).collect());
+    }
+    let pos: HashMap<&str, usize> = ids.iter().enumerate().map(|(i, id)| (id.as_str(), i)).collect();
+    let mut waits: BTreeMap<String, Vec<String>> = BTreeMap::new();
+    for (w, r) in &input.edges {
+        let (Some(&pw), Some(&pr)) = (pos.get(w.as_str()), pos.get(r.as_str())) else { continue };
+        if pw >= pr || hits.contains(w.as_str()) || hits.contains(r.as_str()) || assign.get(w) == assign.get(r) {
+            continue;
+        }
+        let v = waits.entry(r.clone()).or_default();
+        if !v.contains(w) {
+            v.push(w.clone());
+            v.sort();
+        }
+    }
+    Ok(ControllerPlan {
+        send,
+        lists,
+        assign,
+        atoms: p.atom_worker,
+        mode: mode_name,
+        digest: p.digest,
+        makespan: p.makespan,
+        lpt_makespan: p.lpt_makespan,
+        loads: p.loads,
+        sticky: p.sticky,
+        kept: p.kept,
+        replayed: replay.is_some(),
+        previous_ignored,
+        waits,
+    })
+}
+
+/// A worker went down with `pending` tests of its list not finished (review R-023 R4: crash policy): the first is
+/// the test it crashed in, the rest go to its replacement, in order (never a rebalance).
+pub fn crash_split(pending: &[usize]) -> (Option<usize>, Vec<usize>) {
+    match pending.split_first() {
+        None => (None, Vec::new()),
+        Some((c, rest)) => (Some(*c), rest.to_vec()),
+    }
 }
 
 #[cfg(test)]
@@ -555,5 +847,164 @@ mod tests {
         let a = chunk_test_atoms(&input.ids, &input.atoms, &input.costs, 4, 8);
         let b = chunk_test_atoms(&input.ids, &input.atoms, &other, 4, 8);
         assert_eq!(a, b);
+    }
+    // -- review R-023 ------------------------------------------------------------------------------------------------
+    fn files(n_files: usize, per: usize) -> Vec<String> {
+        (0..n_files).flat_map(|f| (0..per).map(move |i| format!("tests/test_{f}.py::test_{i}"))).collect()
+    }
+
+    fn worker_of(ids: &[String], div: usize, n: usize, prev: &BTreeMap<String, usize>) -> (BTreeMap<String, usize>, Plan) {
+        let atoms0: Vec<String> = ids.iter().map(|i| atom_key(i, DistMode::Test, None)).collect();
+        let costs = vec![Some(1.0); ids.len()];
+        let atoms = chunk_test_atoms(ids, &atoms0, &costs, n, div);
+        let input = PlanInput { ids: ids.to_vec(), atoms, costs, workers: n, previous: prev.clone(), tolerance: 0.1, slack: 0.0 };
+        let p = plan(&input).unwrap();
+        (assignment(&input, &p), p)
+    }
+
+    #[test]
+    fn r023_f4_chunks_do_not_move_when_tests_are_added_or_removed() {
+        let mut rng = Rng(23);
+        for _ in 0..40 {
+            let n_files = 2 + rng.below(10) as usize;
+            let per = 5 + rng.below(80) as usize;
+            let ids = files(n_files, per);
+            let atoms0: Vec<String> = ids.iter().map(|i| atom_key(i, DistMode::Test, None)).collect();
+            let costs = vec![None; ids.len()];
+            let a = chunk_test_atoms(&ids, &atoms0, &costs, 4, 8);
+            // add one test at a random place, or remove one
+            let k = rng.below(ids.len() as u64) as usize;
+            let mut ids2 = ids.clone();
+            let add = rng.below(2) == 0;
+            if add {
+                ids2.insert(k, format!("{}_new", ids[k]));
+            } else {
+                ids2.remove(k);
+            }
+            if chunk_target(ids.len(), 4, 8) != chunk_target(ids2.len(), 4, 8) {
+                continue; // the suite crossed a power of two: every boundary may move (documented)
+            }
+            let atoms2: Vec<String> = ids2.iter().map(|i| atom_key(i, DistMode::Test, None)).collect();
+            let b = chunk_test_atoms(&ids2, &atoms2, &vec![None; ids2.len()], 4, 8);
+            let old: BTreeMap<&str, &str> = ids.iter().zip(&a).map(|(i, c)| (i.as_str(), c.as_str())).collect();
+            let file_of = |id: &str| id.split("::").next().unwrap().to_string();
+            let changed_file = file_of(&ids[k]);
+            for (id, c) in ids2.iter().zip(&b) {
+                if let Some(o) = old.get(id.as_str()) {
+                    if file_of(id) != changed_file {
+                        assert_eq!(o, c, "a chunk of another file moved");
+                    }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn r023_f4_adding_one_test_keeps_every_other_test_on_its_worker() {
+        let ids = files(8, 48);
+        let (w1, p1) = worker_of(&ids, 8, 4, &BTreeMap::new());
+        let mut ids2 = ids.clone();
+        ids2.push("tests/test_7.py::test_new".into());
+        let (w2, p2) = worker_of(&ids2, 8, 4, &p1.atom_worker);
+        assert!(p2.sticky);
+        assert_eq!(ids.iter().filter(|i| w1[*i] != w2[*i]).count(), 0);
+        // and in the middle of a file
+        let mut ids3 = ids.clone();
+        ids3.insert(100, "tests/test_2.py::test_inserted".into());
+        let (w3, _) = worker_of(&ids3, 8, 4, &p1.atom_worker);
+        assert!(ids.iter().filter(|i| w1[*i] != w3[*i]).count() <= ids.len() / 20);
+    }
+
+    fn cinput(ids: &[String], hits: &[&str]) -> ControllerInput {
+        ControllerInput {
+            ids: ids.to_vec(),
+            hits: hits.iter().map(|s| s.to_string()).collect(),
+            dist: "load".into(),
+            workers: vec!["gw0".into(), "gw1".into()],
+            chunk_div: 8,
+            tolerance: 0.1,
+            slack: 1.0,
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn r023_controller_plan_places_every_test_and_sends_only_misses() {
+        let ids = files(4, 10);
+        let p = controller_plan(&cinput(&ids, &["tests/test_0.py::test_3"])).unwrap();
+        assert_eq!(p.assign.len(), ids.len()); // the reused test has a worker too
+        let sent: usize = p.send.iter().map(|l| l.len()).sum();
+        assert_eq!(sent, ids.len() - 1);
+        assert!(!p.send.iter().flatten().any(|&i| ids[i] == "tests/test_0.py::test_3"));
+        // the plan's chunks and workers do not depend on which tests are reused (with the previous plan kept)
+        let mut inp = cinput(&ids, &[]);
+        let p0 = controller_plan(&inp).unwrap();
+        inp.previous = Some(serde_json::json!({"format": PLAN_FORMAT, "workers": 2, "dist": "load", "atoms": p0.atoms}));
+        inp.hits = ids.iter().step_by(2).cloned().collect(); // half of every chunk reused: loads stay balanced
+        let p1 = controller_plan(&inp).unwrap();
+        assert!(p1.sticky);
+        assert_eq!(p0.assign, p1.assign);
+        assert_eq!(p0.atoms.keys().collect::<Vec<_>>(), p1.atoms.keys().collect::<Vec<_>>());
+    }
+
+    #[test]
+    fn r023_previous_plan_counts_only_for_the_same_workers_and_dist() {
+        let ids = files(2, 5);
+        let prev = |w: u64, d: &str, rep: bool| {
+            serde_json::json!({"format": PLAN_FORMAT, "workers": w, "dist": d, "replayed": rep, "atoms": {}})
+        };
+        assert!(previous_atoms(&prev(2, "load", false), 2, "load").is_ok());
+        assert_eq!(previous_atoms(&prev(3, "load", false), 2, "load").unwrap_err(), "another number of workers");
+        assert_eq!(previous_atoms(&prev(2, "loadfile", false), 2, "load").unwrap_err(), "another --dist");
+        assert_eq!(previous_atoms(&prev(2, "load", true), 2, "load").unwrap_err(), "a replayed plan");
+        let mut inp = cinput(&ids, &[]);
+        inp.previous = Some(prev(2, "loadfile", false));
+        assert_eq!(controller_plan(&inp).unwrap().previous_ignored, "another --dist");
+    }
+
+    #[test]
+    fn r023_replay_maps_workers_and_refuses_a_bigger_plan() {
+        let ids = files(1, 3);
+        let mut inp = cinput(&ids, &[]);
+        inp.replay = Some(serde_json::json!({"format": PLAN_FORMAT, "lists": {"gw1": [ids[0]], "gw0": [ids[1], ids[2]]}}));
+        let p = controller_plan(&inp).unwrap();
+        assert!(p.replayed);
+        assert_eq!(p.assign[&ids[0]], "gw1");
+        assert_eq!(p.assign[&ids[1]], "gw0");
+        inp.replay = Some(serde_json::json!({"format": PLAN_FORMAT, "lists": {"gw2": [ids[0]]}}));
+        assert!(controller_plan(&inp).unwrap_err().contains("gw2"));
+        inp.replay = Some(serde_json::json!({"lists": {}}));
+        assert!(controller_plan(&inp).is_err());
+    }
+
+    #[test]
+    fn r023_cost_precedence_history_then_cache_then_unknown() {
+        assert_eq!(cost_precedence(Some(&[1.0, 5.0, 3.0]), Some(9.0)), Some(3.0));
+        assert_eq!(cost_precedence(Some(&[]), Some(9.0)), Some(9.0));
+        assert_eq!(cost_precedence(None, None), None);
+    }
+
+    #[test]
+    fn r023_waits_only_across_workers_for_an_earlier_writer() {
+        let ids: Vec<String> = vec!["tests/test_a.py::w".into(), "tests/test_b.py::r".into(), "tests/test_c.py::x".into()];
+        let mut inp = cinput(&ids, &[]);
+        inp.dist = "loadfile".into();
+        inp.edges = vec![
+            ("tests/test_a.py::w".into(), "tests/test_b.py::r".into()),
+            ("tests/test_c.py::x".into(), "tests/test_a.py::w".into()), // writer after the reader: no wait
+        ];
+        let p = controller_plan(&inp).unwrap();
+        let cross = p.assign["tests/test_a.py::w"] != p.assign["tests/test_b.py::r"];
+        assert_eq!(p.waits.contains_key("tests/test_b.py::r"), cross);
+        assert!(!p.waits.contains_key("tests/test_a.py::w"));
+        // a reused writer does not run: nothing to wait for
+        inp.hits = vec!["tests/test_a.py::w".into()];
+        assert!(controller_plan(&inp).unwrap().waits.is_empty());
+    }
+
+    #[test]
+    fn r023_crash_split() {
+        assert_eq!(crash_split(&[]), (None, vec![]));
+        assert_eq!(crash_split(&[4, 7, 9]), (Some(4), vec![7, 9]));
     }
 }
