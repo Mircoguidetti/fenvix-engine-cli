@@ -123,6 +123,33 @@ def find_reverts(repo: Path, pairs, head: str):
     return out
 
 
+def footprint_diff(st):
+    """Step 5: for the tests D1 reran because a distribution changed, what their footprint gained or lost."""
+    fp = st.get("footprint") or {}
+    P, C = fp.get("P") or {}, fp.get("C") or {}
+    if not isinstance(P, dict) or "error" in P:
+        return None
+    out = {"tests": len(P), "new_env": Counter(), "gone_env": Counter(), "new_files": Counter(), "gone_files": Counter(),
+           "new_dists": Counter(), "gone_dists": Counter(), "unchanged": 0}
+    for n, a in P.items():
+        b = C.get(n)
+        if not isinstance(b, dict):
+            continue
+        da, db = set(a.get("data", ())), set(b.get("data", ()))
+        ea, eb = set(a.get("env", ())), set(b.get("env", ()))
+        dist = lambda xs: {x.split(IDENT, 1)[1] for x in xs if IDENT in x}  # noqa: E731
+        files = lambda xs: {x for x in xs if IDENT not in x}  # noqa: E731
+        changed = False
+        for k, xs in (("new_env", eb - ea), ("gone_env", ea - eb), ("new_files", files(db) - files(da)),
+                      ("gone_files", files(da) - files(db)), ("new_dists", dist(db) - dist(da)),
+                      ("gone_dists", dist(da) - dist(db))):
+            for x in xs:
+                out[k][x] += 1
+                changed = True
+        out["unchanged"] += not changed
+    return out
+
+
 def pct(a, b):
     return 100.0 * a / b if b else float("nan")
 
@@ -174,7 +201,8 @@ def main(argv=None):
                          "D_of_cacheable": pct(ps["D"]["time"], ps["cacheable_time"]) if ps["cacheable_time"] else None,
                          "cacheable_share": pct(ps["cacheable_time"], ps["time"]),
                          "D": ps["D"], "T": ps["T"], "miss": dict(ps["miss"]), "miss_ident": dict(ps["miss_ident"]),
-                         "broken": ps["broken"], "units_not_run": ps["units_not_run"]})
+                         "broken": ps["broken"], "units_not_run": ps["units_not_run"],
+                         "footprint": footprint_diff(st)})
             for m in ("D", "T"):
                 tot[f"{m}_checked"] += ps[m]["checked"]
                 tot[f"{m}_wrong"] += ps[m]["wrong"]
