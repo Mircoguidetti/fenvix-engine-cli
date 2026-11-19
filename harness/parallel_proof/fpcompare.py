@@ -59,9 +59,12 @@ def compare(sa: dict, sb: dict, pa: dict, pb: dict) -> dict:
     outcome_diff = [n for n in both if {sa[n]["outcome"], sb[n]["outcome"]} != {pa[n]["outcome"], pb[n]["outcome"]}]
     new_failures = [n for n in outcome_diff if "failed" in (pa[n]["outcome"], pb[n]["outcome"])
                     and sa[n]["outcome"] == sb[n]["outcome"] != "failed"]
-    # review R-023 F5: a failure is hidden when either parallel run does not fail it (not only the first)
-    hidden_failures = [n for n in outcome_diff if "failed" in (sa[n]["outcome"], sb[n]["outcome"])
+    # review R-023 F5: a failure is hidden when either parallel run does not fail it (not only the first). It must be
+    # a serial failure: both serial runs fail it (a test that fails in one serial run only is serial noise, counted
+    # in serial_failure_noise, not hidden by the split)
+    hidden_failures = [n for n in outcome_diff if sa[n]["outcome"] == sb[n]["outcome"] == "failed"
                        and "failed" not in {pa[n]["outcome"]} & {pb[n]["outcome"]}]
+    serial_failure_noise = [n for n in both if (sa[n]["outcome"] == "failed") != (sb[n]["outcome"] == "failed")]
     src = collections.Counter(first_source(sa[n], pa[n] if fp(pa, n) != fp(sa, n) else pb[n]) for n in placement)
     noise_src = collections.Counter(first_source(sa[n], sb[n]) for n in serial_noise)
     return {
@@ -73,7 +76,7 @@ def compare(sa: dict, sb: dict, pa: dict, pb: dict) -> dict:
         "placement": len(placement), "placement_in_both_parallel_runs": len(placement_both),
         "placement_first_source": dict(src),
         "outcome_differences": len(outcome_diff), "new_failures_caused_by_split": new_failures,
-        "hidden_failures": hidden_failures,
+        "hidden_failures": hidden_failures, "serial_failure_noise": serial_failure_noise,
         "placement_examples": placement[:20], "serial_noise_examples": serial_noise[:20],
     }
 

@@ -22,11 +22,10 @@ class is not built.
 * **Speed (MEASURED, repeated)**: warm `--det-cache -n 4` is **0.66-0.72x plain `-n 4`** on esphome (local and Actions,
   three runs each, clear of the noise). `--det -n 4` without a cache is **within the noise of plain `-n 4`** on esphome
   (not "closed the gap" beyond noise, O1), **0.52x** on moto (the virtual clock skips its real sleeps), **1.25x** on
-  litellm-vertex and **1.2x** on pydantic-ai (P2's target missed on both; cause not found).
+  litellm-vertex, **1.2x** on pydantic-ai and prefect (P2's target missed on all three; cause not found).
 * **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex and moto
   record 0 entries serially and in parallel (network / OS entropy per test). mlflow's job had an incomplete install
-  (not valid) and prefect's errored in its server fixture (a harness defect); both were re-run, and the re-run and
-  the three 50-commit walks were still running.
+  (not valid; re-run pending); prefect's first run hit a harness defect, its re-run is above.
 
 ## Per finding: change, test before / after
 
@@ -326,15 +325,35 @@ CI-FACTS.md; one shard or group where the CI splits).
 * The cache variants were not run: the capture prerequisite of design 5 (2,769 failures under `--det-cache`) is not
   fixed on this branch.
 
-### prefect, group 1 of 8 (SQLite, `--dist worksteal`): first run **not valid**, re-run triggered
+### prefect, group 1 of 8 (SQLite, `--dist worksteal`), re-run `r023-p0b-2026-11-19`, MEASURED
 
-In run 44509602787, 2,431 of 2,438 tests errored in **every** variant, plain pytest included: prefect's
-`hosted_api_server` fixture starts `uvicorn` by command name, and the workflow called the venv's Python by path
-without the venv's `bin` on `PATH` (`FileNotFoundError: 'uvicorn'`). A harness defect, not an engine one. What the
-run still shows: identical outcomes in all 14 runs (crosscheck 0 mismatches; fpcompare 0 outcome differences) and
-the cache recording nothing (only 7 tests ran past setup). The workflow now puts the venv's `bin` on `PATH`;
-prefect and mlflow (with the extras its CI installs, Python 3.12 so that the cache rows run) were re-run as
-`r023-p0b-2026-11-19` (commit 82331c6, same engine).
+The first run (44509602787) was not valid: 2,431 of 2,438 tests errored in every variant, plain pytest included,
+because prefect's `hosted_api_server` fixture starts `uvicorn` by command name and the workflow did not put the venv's
+`bin` on `PATH` (a harness defect, fixed in 82331c6). The re-run (same engine):
+
+| variant | runs (wall) | vs plain `-n 4` median (171.2 s) |
+|---|---|---|
+| plain serial | 507.2 s | — |
+| plain `-n 4` | 173.4 / 171.2 / 169.5 s | 1 |
+| `--det` serial | 509.4 / 467.4 s | — |
+| `--det -n 4` a (unit costs) / b / c | 257.7 / 205.3 / 207.0 s | 1.20-1.21x (b, c) |
+| cold / warm x2 `--det-cache -n 4` | 246.5 / 246.1, 242.4 s (reuse 0 %) | 1.42-1.44x |
+| cold `--det-cache` serial; `-n 4` on that store | 540.9 s; 247.8 s (reuse 0 %) | — |
+
+* `--det -n 4` **misses P2's target**: 171.2 x (488.4 / 507.2) x 1.05 = 173.1 s (ESTIMATED; one plain serial run);
+  runs b and c take 205-207 s (1.2x), beyond the plain runs' 2 % spread. Cause UNKNOWN (not profiled).
+* **The cache records nothing** (every test `new` again in every warm run; recorded 0): prefect's autouse session
+  fixture starts an API server subprocess that every test talks to over loopback, and a test that connects is never
+  cached (design 5.1 predicted it). 0 % reuse is prefect's inputs, not `-n`.
+* Verdicts: plain runs fail 6 tests; `--det` runs fail 20 (serial b, every `-n` and cache run) and 28 in the first
+  serial run. The 8 extra failures of serial run a are `tests/_internal/concurrency/*` timeout tests ("DID NOT RAISE
+  CancelledError") that pass in serial run b and in all parallel runs: serial noise, not the split. The 14 failures
+  `--det` adds over plain are the same serially and under `-n` (a Level 0 limit on this suite: not analysed here).
+* Truth: crosscheck 0 mismatches in every run (the 8 tests whose two serial runs disagree are counted apart as flaky
+  in the truth); fpcompare 0 new failures caused by the split. fpcompare first reported those 8 serially flaky tests
+  as 7 "hidden failures": its rule counted a test that fails in *one* serial run. A hidden failure now has to fail in
+  both serial runs (`serial_failure_noise` lists the others); with that rule the hidden failures here are 0
+  (ESTIMATED from the per-run failure lists: the traces are not uploaded, so `fpcompare.json` was not recomputed).
 
 ### mlflow, parallel group 1 of 6: **not a valid measurement**
 
