@@ -1,0 +1,1080 @@
+{
+ "spec": {
+  "name": "rclone",
+  "repo": "rclone/rclone",
+  "sha": "dd5250ca55f1e5a5cc407ee768fb7f3f76b1df41",
+  "fix_commit": "bf55d5e6d37fd86164a87782191f9e1ffcaafa82",
+  "fix_date": "2026-04-13T18:21:22.000+01:00",
+  "title": "bisync: fix flaky TestBisyncConcurrent by increasing random name entropy",
+  "tests": [
+   "TestBisyncConcurrent"
+  ],
+  "source": "github commit search 'repo:rclone/rclone flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestBisyncConcurrent": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./cmd/bisync"
+ ],
+ "imports": [
+  "github.com/rclone/rclone/cmd/bisync"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 103.4,
+ "build_det_s": 140.4,
+ "baseline": {
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithoutMaxLock": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncLocalRemote": [
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidNotExpired": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteLocal": [
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidExpired": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithMaxLock": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 522.2,
+ "det0_fail_output": {
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote": "00:00:03 INFO  : file61.txt: Deleted\n2025/01/01 00:00:03 INFO  : file62.txt: Deleted\n2025/01/01 00:00:03 INFO  : file63.txt: Deleted\n2025/01/01 00:00:03 INFO  : file64.txt: Deleted\n2025/01/01 00:00:03 INFO  : file65.txt: Deleted\n2025/01/01 00:00:03 INFO  : file66.txt: Deleted\n2025/01/01 00:00:03 INFO  : file67.txt: Deleted\n2025/01/01 00:00:03 INFO  : file68.txt: Deleted\n2025/01/01 00:00:03 INFO  : file69.txt: Deleted\n2025/01/01 00:00:03 INFO  : file7.txt: Deleted\n2025/01/01 00:00:03 INFO  : file70.txt: Deleted\n2025/01/01 00:00:03 INFO  : file71.txt: Deleted\n2025/01/01 00:00:03 INFO  : file72.txt: Deleted\n2025/01/01 00:00:03 INFO  : file73.txt: Deleted\n2025/01/01 00:00:03 INFO  : file74.txt: Deleted\n2025/01/01 00:00:03 INFO  : file75.txt: Deleted\n2025/01/01 00:00:03 INFO  : file76.txt: Deleted\n2025/01/01 00:00:03 INFO  : file77.txt: Deleted\n2025/01/01 00:00:03 INFO  : file78.txt: Deleted\n2025/01/01 00:00:03 INFO  : file79.txt: Deleted\n2025/01/01 00:00:03 INFO  : file8.txt: Deleted\n2025/01/01 00:00:03 INFO  : file80.txt: Deleted\n2025/01/01 00:00:03 INFO  : file81.txt: Deleted\n2025/01/01 00:00:03 INFO  : file82.txt: Deleted\n2025/01/01 00:00:03 INFO  : file83.txt: Deleted\n2025/01/01 00:00:03 INFO  : file84.txt: Deleted\n2025/01/01 00:00:03 INFO  : file85.txt: Deleted\n2025/01/01 00:00:03 INFO  : file86.txt: Deleted\n2025/01/01 00:00:03 INFO  : file87.txt: Deleted\n2025/01/01 00:00:03 INFO  : file88.txt: Deleted\n2025/01/01 00:00:03 INFO  : file89.txt: Deleted\n2025/01/01 00:00:03 INFO  : file9.txt: Deleted\n2025/01/01 00:00:03 INFO  : file90.txt: Deleted\n2025/01/01 00:00:03 INFO  : file91.txt: Deleted\n2025/01/01 00:00:03 INFO  : file92.txt: Deleted\n2025/01/01 00:00:03 INFO  : file94.txt: Deleted\n2025/01/01 00:00:03 INFO  : file95.txt: Deleted\n2025/01/01 00:00:03 INFO  : file96.txt: Deleted\n2025/01/01 00:00:03 INFO  : file97.txt: Deleted\n2025/01/01 00:00:03 INFO  : file98.txt: Deleted\n2025/01/01 00:00:03 INFO  : file99.txt: Deleted\n2025/01/01 00:00:03 INFO  : file93.txt: Deleted\n2025/01/01 00:00:03 INFO  : Local file system at /tmp/000000pa/volatile/path2: Removing directory\n    bisync_test.go:608: \u001b[31mTEST volatile FAILED - 9 MISCOMPARED FILES\u001b[0m\n--- FAIL: TestBisyncRemoteRemote/volatile (1.25s)\n2025/01/01 00:00:03 ERROR : error listing: directory not found\n2025/01/01 00:00:03 NOTICE: purge failed to rmdir \"\": stat /tmp/rclone3957312855: no such file or directory\n2025/01/01 00:00:03 NOTICE: purge failed: directory not found\n--- FAIL: TestBisyncRemoteRemote (3.56s)\n",
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent": "000 UTC \"\\\"file1.copy4.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | +-        0 - - 1994-05-08 19:59:14 +0000 UTC \"\\\"file1.copy4.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | @@ -11 +11 @@\n2025/01/01 00:00:00 NOTICE: | --        0 - - 2000-01-01 00:00:00 +0000 UTC \"\\\"file1.copy5.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | +-        0 - - 1994-05-08 19:59:14 +0000 UTC \"\\\"file1.copy5.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | @@ -13 +13 @@\n2025/01/01 00:00:00 NOTICE: | --        0 - - 2000-01-01 00:00:00 +0000 UTC \"\\\"file1.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | +-        0 - - 1994-05-08 19:59:14 +0000 UTC \"\\\"file1.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | @@ -15 +15 @@\n2025/01/01 00:00:00 NOTICE: | --        0 - - 2000-01-01 00:00:00 +0000 UTC \"\\\"subdir/file20.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: | +-        0 - - 1994-05-08 19:59:14 +0000 UTC \"\\\"subdir/file20.txt\\\"\"\n2025/01/01 00:00:00 NOTICE: ----------------------------------------------------------\n2025/01/01 00:00:00 INFO  : RCLONE_TEST: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy1.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy2.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy3.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy4.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy5.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.txt: Deleted\n2025/01/01 00:00:00 INFO  : subdir/file20.txt: Deleted\n2025/01/01 00:00:00 INFO  : subdir: Removing directory\n2025/01/01 00:00:00 INFO  : Local file system at /tmp/000000va/basic/path1: Removing directory\n2025/01/01 00:00:00 INFO  : file1.copy1.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy2.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy3.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy4.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.copy5.txt: Deleted\n2025/01/01 00:00:00 INFO  : file1.txt: Deleted\n2025/01/01 00:00:00 INFO  : subdir/file20.txt: Deleted\n2025/01/01 00:00:00 INFO  : RCLONE_TEST: Deleted\n2025/01/01 00:00:00 INFO  : subdir: Removing directory\n2025/01/01 00:00:00 INFO  : Local file system at /tmp/000000va/basic/path2: Removing directory\n    bisync_test.go:608: \u001b[31mTEST basic FAILED - 6 MISCOMPARED FILES\u001b[0m\n--- FAIL: TestBisyncConcurrent/test1/basic (0.06s)\n2025/01/01 00:00:00 ERROR : error listing: directory not found\n2025/01/01 00:00:00 NOTICE: purge failed to rmdir \"\": stat /tmp/rclone1119271142: no such file or directory\n2025/01/01 00:00:00 NOTICE: purge failed: directory not found\n--- FAIL: TestBisyncConcurrent/test1 (0.06s)\n--- FAIL: TestBisyncConcurrent (0.11s)\n"
+ },
+ "det0_events_by_source": {
+  "time": 47998,
+  "outcome": 8,
+  "fs": 2420,
+  "entropy": 1148
+ },
+ "det0_top_tests_by_events": [
+  [
+   50001,
+   "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote"
+  ],
+  [
+   1555,
+   "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent"
+  ],
+  [
+   7,
+   "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidNotExpired"
+  ],
+  [
+   5,
+   "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidExpired"
+  ],
+  [
+   2,
+   "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithoutMaxLock"
+  ],
+  [
+   2,
+   "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithMaxLock"
+  ],
+  [
+   1,
+   "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteLocal"
+  ],
+  [
+   1,
+   "github.com/rclone/rclone/cmd/bisync::TestBisyncLocalRemote"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote",
+   "status": "diverged",
+   "outcomes": [
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 5908,
+    "window": null,
+    "event_a": {
+     "t": 892,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "fs/accounting/accounting.go:218",
+     "v": "1000000000"
+    },
+    "event_b": {
+     "t": 880,
+     "s": "time",
+     "o": "time.Now",
+     "at": "fs/accounting/accounting.go:265",
+     "v": "5067000"
+    },
+    "reason": "thread",
+    "description": "event #5908: [time] time.NewTicker @ fs/accounting/accounting.go:218 = 1000000000 (thread 892)  <>  [time] time.Now @ fs/accounting/accounting.go:265 = 5067000 (thread 880)"
+   }
+  },
+  {
+   "nodeid": "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent",
+   "status": "diverged",
+   "outcomes": [
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.Now",
+     "at": "cmd/bisync/bisync_test.go:399",
+     "v": "3000"
+    },
+    "event_b": {
+     "t": 2,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "-1107000"
+    },
+    "reason": "thread",
+    "description": "event #3: [time] time.Now @ cmd/bisync/bisync_test.go:399 = 3000 (thread 2)  <>  [time] time.tick @ timer = -1107000 (thread 2)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 8,
+  "stable": 6,
+  "diverged": 2,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 2
+  }
+ },
+ "det0": {
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidExpired": [
+   [
+    "passed",
+    "0639a377f97d2bd8a15630a32fccf05d"
+   ],
+   [
+    "passed",
+    "0639a377f97d2bd8a15630a32fccf05d"
+   ],
+   [
+    "passed",
+    "0639a377f97d2bd8a15630a32fccf05d"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithoutMaxLock": [
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ],
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ],
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteLocal": [
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote": [
+   [
+    "failed",
+    "de0aa97d17f9fe3261a278119503fd65"
+   ],
+   [
+    "failed",
+    "cd1cf10d0335d3c63f912a2184261475"
+   ],
+   [
+    "failed",
+    "167b6843726039c4b7073a56205696b3"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncLocalRemote": [
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidNotExpired": [
+   [
+    "passed",
+    "8e87039de6baba8ee374d30c2a2cbcd1"
+   ],
+   [
+    "passed",
+    "8e87039de6baba8ee374d30c2a2cbcd1"
+   ],
+   [
+    "passed",
+    "8e87039de6baba8ee374d30c2a2cbcd1"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithMaxLock": [
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ],
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ],
+   [
+    "passed",
+    "d5e5b0366ac2c2dda209117611999b7e"
+   ]
+  ],
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent": [
+   [
+    "failed",
+    "766908cbfaf9ac062372cccd4464235c"
+   ],
+   [
+    "failed",
+    "896c5618808b10296626c9a621528a33"
+   ],
+   [
+    "failed",
+    "84af7121213fedc3271d45f0c0783d95"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote": {
+   "1": [
+    "failed",
+    "ea19239a3d288dce84316d839292cac3"
+   ],
+   "2": [
+    "failed",
+    "15595f08a30c170a282a0ccfdc6647cc"
+   ],
+   "3": [
+    "failed",
+    "191347ae68a8d94dc661dfd6012c07ba"
+   ],
+   "4": [
+    "failed",
+    "ef659e3e952acda8f028bc60cda801ce"
+   ],
+   "5": [
+    "failed",
+    "180a3c7bfa2a567fe03ad8263e88a480"
+   ],
+   "6": [
+    "failed",
+    "366f2025791ff3dc0a8dc7e268ac669a"
+   ],
+   "7": [
+    "failed",
+    "5ee0ef014a6bef9f60ac49f290144c35"
+   ],
+   "8": [
+    "failed",
+    "fcb18dd17fe55e2257132ee45e653abc"
+   ],
+   "9": [
+    "failed",
+    "dbb5147eb7acf6af45d4c62640f0bab3"
+   ],
+   "10": [
+    "failed",
+    "39226da421a1e7fe46f18f2821fe5755"
+   ],
+   "11": [
+    "failed",
+    "0d40ca0da44e28cc880d738013865ab2"
+   ],
+   "12": [
+    "failed",
+    "7c0b057c461f20d200856e58743644a5"
+   ],
+   "13": [
+    "failed",
+    "07ff72384de2d9dafff1002c08353411"
+   ],
+   "14": [
+    "failed",
+    "490d2b4c48018649fb21ba1fd08a0c3f"
+   ],
+   "15": [
+    "failed",
+    "d086ad1529f62eb3838d497c6d5b4dca"
+   ],
+   "16": [
+    "failed",
+    "253d141ce546008752de8a7b42815e29"
+   ],
+   "17": [
+    "failed",
+    "38c0cd8e83f6d7735f925debc9dadd59"
+   ],
+   "18": [
+    "failed",
+    "42d09b065c2d884ab2f7f42a32392fa8"
+   ],
+   "19": [
+    "failed",
+    "b3c3f03406d9308b96d9f44d0ab0b4aa"
+   ],
+   "20": [
+    "failed",
+    "84c8d2ff9643c4c11034f58940f8d9d2"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncLocalRemote": {
+   "1": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "2": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "3": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "4": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "5": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "6": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "7": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "8": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "9": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "10": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "11": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "12": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "13": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "14": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "15": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "16": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "17": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "18": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "19": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "20": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidExpired": {
+   "1": [
+    "passed",
+    "ae1da6feb7b51a831a9da0d5339e0f6d"
+   ],
+   "2": [
+    "passed",
+    "064cf527519d72cec2bd8478be70b074"
+   ],
+   "3": [
+    "passed",
+    "d3716d59d69b6f7582d1490262356c10"
+   ],
+   "4": [
+    "passed",
+    "e15ae491c7eaf0201e07b99d85a75ef3"
+   ],
+   "5": [
+    "passed",
+    "1f7d131af6157b813fcac7f496a85a46"
+   ],
+   "6": [
+    "passed",
+    "b998475a96f93d28b5ad4d1d56e4a232"
+   ],
+   "7": [
+    "passed",
+    "cabd175717a39f29349bd7bc96f6f771"
+   ],
+   "8": [
+    "passed",
+    "f9374232f9647d7c37019d338598cec6"
+   ],
+   "9": [
+    "passed",
+    "dc3209d0b2b0a34bb3d62a5e33638938"
+   ],
+   "10": [
+    "passed",
+    "63b60d4747612bb5e78ee1e7a45ce7cc"
+   ],
+   "11": [
+    "passed",
+    "895b4c2e60f240570ecc787e28144444"
+   ],
+   "12": [
+    "passed",
+    "2f0c5a5ad9e0ce822f91a6de76cf84cb"
+   ],
+   "13": [
+    "passed",
+    "834f6ec868dabde425cd119c45c98aed"
+   ],
+   "14": [
+    "passed",
+    "7c3e53ef226716a349f9fe401bd35043"
+   ],
+   "15": [
+    "passed",
+    "7c3cf02b6e9e9e85bda9388f358ca7ac"
+   ],
+   "16": [
+    "passed",
+    "a1ef606e509f23ae9a670dd9734db087"
+   ],
+   "17": [
+    "passed",
+    "5298a7f91578cbbaf52531743be59fc2"
+   ],
+   "18": [
+    "passed",
+    "dbfd881c605d19a33946fb5ba17abc42"
+   ],
+   "19": [
+    "passed",
+    "89d6e43c42bad75744d08deb57121625"
+   ],
+   "20": [
+    "passed",
+    "ee1d969fafc07586cbb3e081d48e0945"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithMaxLock": {
+   "1": [
+    "passed",
+    "1d57bfdc4e4bf88a53e0078723e9d42a"
+   ],
+   "2": [
+    "passed",
+    "0855922e413498fa8bcc2510f66c5505"
+   ],
+   "3": [
+    "passed",
+    "730cb38cebe8630fef00dc4aa857f278"
+   ],
+   "4": [
+    "passed",
+    "3d9914669c950d344b6d553c30a4c313"
+   ],
+   "5": [
+    "passed",
+    "0d5e9277b8e188add9f7fc154418d10d"
+   ],
+   "6": [
+    "passed",
+    "ab19ab6e5bf2282bc9c2088a6f26e7ca"
+   ],
+   "7": [
+    "passed",
+    "fee948bda1a81561f81b378085413509"
+   ],
+   "8": [
+    "passed",
+    "8ac371ae1ec0858a1ffe84111dfd3d83"
+   ],
+   "9": [
+    "passed",
+    "2e2a5fc5db31fcfbc043ead0ac3d6d7b"
+   ],
+   "10": [
+    "passed",
+    "ec593ebaa4b2db0d877f8078fdb85cb4"
+   ],
+   "11": [
+    "passed",
+    "8604cb752a631b62202f641598e6f829"
+   ],
+   "12": [
+    "passed",
+    "c131d6abdf7a444320399a37a470e461"
+   ],
+   "13": [
+    "passed",
+    "2111bfc72a7a4640236e9c029efc91e3"
+   ],
+   "14": [
+    "passed",
+    "ad3e067715dc009d3c17a0a9c58e2ccb"
+   ],
+   "15": [
+    "passed",
+    "72e5ff4eb03eeb220f781753a5eea7d2"
+   ],
+   "16": [
+    "passed",
+    "dd4355d6bb9a0ba102e4987ffae6c619"
+   ],
+   "17": [
+    "passed",
+    "4eb45e5f9736a94993146f38c556abea"
+   ],
+   "18": [
+    "passed",
+    "91dc6597381723ad8caf4e1da785635b"
+   ],
+   "19": [
+    "passed",
+    "bb601b46be43177aec5f7613ac0020d0"
+   ],
+   "20": [
+    "passed",
+    "2d8f850bf8bb4a4d44662253fd9cd728"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent": {
+   "1": [
+    "failed",
+    "0e2846ba5fbf8fdadac409cec2e602ce"
+   ],
+   "2": [
+    "failed",
+    "9382c10830a43fe4b69dbbead782c98b"
+   ],
+   "3": [
+    "failed",
+    "1d201490a13a015df33feaffc78ecc89"
+   ],
+   "4": [
+    "failed",
+    "0dee6ee529a8af4c50ab20008ca02ad4"
+   ],
+   "5": [
+    "failed",
+    "f2261520efa9802d570b6a5c1414b1b3"
+   ],
+   "6": [
+    "failed",
+    "fb9fa905f2123bd018110cabb69ade8c"
+   ],
+   "7": [
+    "failed",
+    "04fbcbd044a1567a6a7a6090afe28482"
+   ],
+   "8": [
+    "failed",
+    "145422d610e22f23fbf29d252d792141"
+   ],
+   "9": [
+    "failed",
+    "3e3f7cd82a77df8ad97d3d8a30f8331b"
+   ],
+   "10": [
+    "failed",
+    "f12014495321133cf1d13cd3536a93db"
+   ],
+   "11": [
+    "failed",
+    "7843bb6412c91d6628e960ec3b8c5fae"
+   ],
+   "12": [
+    "failed",
+    "dabcfe3b82a69de0cfaf7690f7486411"
+   ],
+   "13": [
+    "failed",
+    "27931fc63b19ada6c2605522713b0b0b"
+   ],
+   "14": [
+    "failed",
+    "d52b204846eb301b9cb0dabcd83935b1"
+   ],
+   "15": [
+    "failed",
+    "e63e6879b3f907a01a4480553fb8ccc9"
+   ],
+   "16": [
+    "failed",
+    "7abe6b1010a93fb55c4188e5d8cb04a9"
+   ],
+   "17": [
+    "failed",
+    "922d9b6338fd2154493a51f813684f8a"
+   ],
+   "18": [
+    "failed",
+    "b982c22e29abf4078fc2453b737cea9d"
+   ],
+   "19": [
+    "failed",
+    "67bf0ebb40f69abc786ae0e5f47088d6"
+   ],
+   "20": [
+    "failed",
+    "f7cbd00a5a309e54f7e4a6638350b46d"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_UnreadableWithoutMaxLock": {
+   "1": [
+    "passed",
+    "1d57bfdc4e4bf88a53e0078723e9d42a"
+   ],
+   "2": [
+    "passed",
+    "0855922e413498fa8bcc2510f66c5505"
+   ],
+   "3": [
+    "passed",
+    "730cb38cebe8630fef00dc4aa857f278"
+   ],
+   "4": [
+    "passed",
+    "3d9914669c950d344b6d553c30a4c313"
+   ],
+   "5": [
+    "passed",
+    "0d5e9277b8e188add9f7fc154418d10d"
+   ],
+   "6": [
+    "passed",
+    "ab19ab6e5bf2282bc9c2088a6f26e7ca"
+   ],
+   "7": [
+    "passed",
+    "fee948bda1a81561f81b378085413509"
+   ],
+   "8": [
+    "passed",
+    "8ac371ae1ec0858a1ffe84111dfd3d83"
+   ],
+   "9": [
+    "passed",
+    "2e2a5fc5db31fcfbc043ead0ac3d6d7b"
+   ],
+   "10": [
+    "passed",
+    "ec593ebaa4b2db0d877f8078fdb85cb4"
+   ],
+   "11": [
+    "passed",
+    "8604cb752a631b62202f641598e6f829"
+   ],
+   "12": [
+    "passed",
+    "c131d6abdf7a444320399a37a470e461"
+   ],
+   "13": [
+    "passed",
+    "2111bfc72a7a4640236e9c029efc91e3"
+   ],
+   "14": [
+    "passed",
+    "ad3e067715dc009d3c17a0a9c58e2ccb"
+   ],
+   "15": [
+    "passed",
+    "72e5ff4eb03eeb220f781753a5eea7d2"
+   ],
+   "16": [
+    "passed",
+    "dd4355d6bb9a0ba102e4987ffae6c619"
+   ],
+   "17": [
+    "passed",
+    "4eb45e5f9736a94993146f38c556abea"
+   ],
+   "18": [
+    "passed",
+    "91dc6597381723ad8caf4e1da785635b"
+   ],
+   "19": [
+    "passed",
+    "bb601b46be43177aec5f7613ac0020d0"
+   ],
+   "20": [
+    "passed",
+    "2d8f850bf8bb4a4d44662253fd9cd728"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteLocal": {
+   "1": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "2": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "3": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "4": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "5": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "6": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "7": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "8": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "9": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "10": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "11": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "12": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "13": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "14": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "15": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "16": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "17": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "18": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "19": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "20": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  },
+  "github.com/rclone/rclone/cmd/bisync::TestLockfileIsExpired_ValidNotExpired": {
+   "1": [
+    "passed",
+    "780fd481f8528dcd9bf49a360c7edb5b"
+   ],
+   "2": [
+    "passed",
+    "2e0fedd37ddd99e87153e43b4e1d1b5b"
+   ],
+   "3": [
+    "passed",
+    "cd03fae4d23dee59dfe820651381c7db"
+   ],
+   "4": [
+    "passed",
+    "2197672b789b925ccaaea260454599ba"
+   ],
+   "5": [
+    "passed",
+    "15aba8bc1687a2951f55f33184757cbf"
+   ],
+   "6": [
+    "passed",
+    "9f691d5e70b7677438abe12164e2f689"
+   ],
+   "7": [
+    "passed",
+    "5a70dc135cc499feeb494b4bd67b3938"
+   ],
+   "8": [
+    "passed",
+    "7c5981a6310553990a1e0031dd83cfb0"
+   ],
+   "9": [
+    "passed",
+    "98a9876f5ea6e01a27cad7a18de2a2de"
+   ],
+   "10": [
+    "passed",
+    "e8c645e72a0b932f666b1128cae19823"
+   ],
+   "11": [
+    "passed",
+    "56fa5fb56158b50e9f5d3a14c5b3a1a0"
+   ],
+   "12": [
+    "passed",
+    "dd39e0327010f1a5a68b87d562b9fa1b"
+   ],
+   "13": [
+    "passed",
+    "144dbf21c09459c63d7c48f5ced8bc5d"
+   ],
+   "14": [
+    "passed",
+    "dc3a829385094500d3c6466a979d297a"
+   ],
+   "15": [
+    "passed",
+    "dfe2b5adcfe75e72da59730a810d6a09"
+   ],
+   "16": [
+    "passed",
+    "15f29dcf92977c172bff5f77ad8e70a3"
+   ],
+   "17": [
+    "passed",
+    "a7fc2c9a974534fd2c42223dc7d6799a"
+   ],
+   "18": [
+    "passed",
+    "5eee21fe194f4121a58af036024e0182"
+   ],
+   "19": [
+    "passed",
+    "6bddd7be95b26a577f29b95881e81f00"
+   ],
+   "20": [
+    "passed",
+    "9213d3a41f7c0bcb71062e8a86fe28be"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent": {
+   "fail_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "passes_in_some_seed": false,
+   "seed": 0,
+   "outcomes": [
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed",
+    "failed"
+   ],
+   "fingerprints": 10,
+   "reproduced": false
+  }
+ },
+ "broken": [
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncConcurrent",
+  "github.com/rclone/rclone/cmd/bisync::TestBisyncRemoteRemote"
+ ],
+ "fingerprint_coverage": [
+  6,
+  8
+ ],
+ "timing_keep_parallel": [
+  3.76,
+  3.76,
+  3.677
+ ],
+ "timing": {
+  "plain": [
+   2.898,
+   2.719,
+   2.725
+  ],
+  "det": [
+   3.691,
+   3.669,
+   3.7199999999999998
+  ]
+ },
+ "slowdown": 0.3544954128440366
+}
