@@ -100,3 +100,17 @@ What the cache cannot see of the real clock is bounded by `--det-cache-max-age` 
 | K2 | **File timestamps** set by the real clock: read in the test process (`os.stat(p).st_mtime` after writing `p`, C7), or in a child through `fstat` on a descriptor. A child's stat **by path** of a file its process tree wrote, or of `/proc/<pid>`, is refused (review R-009b R4; `rm`, `rmdir`, `mkdir`, `ln`, `chmod`, `chown` exempt). | D | Bounded by max-age. |
 | K3 | **Dynamically linked Go children** (cgo) load the clock library but read the clock through the vDSO, never through libc. Today every Go binary is refused by accident: the Go runtime reads `/sys/kernel/mm/transparent_hugepage/hpage_pmd_size` at start-up (a `/sys` content read). If a Go release stops reading it, a cgo binary's real-clock reads become invisible (review R-009b, F4 note). Static Go binaries are refused (no clock-library marker). | D | Bounded by max-age. |
 | K4 | A trace callback set by the test on a sqlite connection replaces detpy's: its statements and schema are no longer checked for `'now'`. | D | Bounded by max-age. |
+
+## 9. Cache with proof (`--det-cache`): inputs the recorder cannot see
+
+The cache reuses a result only when every input it recorded is unchanged. An input it cannot see must not leave a
+reusable result behind: such a test is **refused** (rerun every time) or keyed more coarsely, never reused on a
+partial key. Each row has a test that changes only that input and requires the test to rerun, serially and under
+`-n 2` (`tests/test_proofcache_import_lookups.py`); each test fails on `claude/parallel-proof-3` de41574.
+
+| # | input not seen | found | handling | test |
+|---|---|---|---|---|
+| A1 | A file the **repository's native code** stats, opens or reads from C (an extension built in place, a `ctypes` library): S1, no Python event. | D (coordinator, dependency verdict REPORT-3) | A context in which a shared library from the project root is mapped (`/proc/self/maps`, read at every context switch) is **not cached** ("native code from the repository"), unless a distribution's RECORD lists it (an installed wheel's library under the root is a dependency). Installed and system libraries are inputs by content; what *their* C code reads stays S1. | `test_stat_from_c_code_of_the_repository` |
+| A2 | A library `dlopen()`ed and `dlclose()`d within one context leaves no mapping to scan. | D (dependency verdict REPORT-2) | Through `ctypes`, the `ctypes.dlopen` audit event names the path: refused as A1 when it is in the project root. A load by C code without an event is A1 or S1 (that C code is itself mapped). | `test_library_loaded_and_unloaded_within_one_test` |
+| A3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose probes the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
+| A4 | `os.lstat` / `os.path.lexists` / `islink` of a dangling symlink: following the link, it reads as missing either way. | D (coordinator) | `os.lstat` (and `follow_symlinks=False`) records the kind without following a final symlink (`l:<kind>`, kinds `link`, `file`, `dir`, `other`, `missing`). | `test_dangling_symlink_that_goes_away` |

@@ -103,6 +103,10 @@ pub struct Plan {
     /// Environment at session start (sanitised).
     #[serde(default)]
     pub env0: BTreeMap<String, String>,
+    /// Context indices in the order of their first activation (the capture's timeline, deduplicated): the prefix
+    /// rule carries everything a context that ran before a test depended on into that test (review R-020 H1/O1).
+    #[serde(default)]
+    pub first_order: Vec<u32>,
     pub config: String,
     pub runtime: String,
     pub run: String,
@@ -157,6 +161,9 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("proc") {
         return Some("reads /proc, /sys or /dev");
     }
+    if has("native") {
+        return Some("native code from the repository");
+    }
     None
 }
 
@@ -165,8 +172,13 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
 /// dependency stays whatever context order the reads are merged in (an existence check in an import context must not
 /// replace a test's listing or content read of the same path).
 fn weaker(new: &str, old: &str) -> bool {
-    new.starts_with("s:") && !old.starts_with("s:")
+    let kind = |d: &str| d.starts_with("s:") || d.starts_with("l:");
+    kind(new) && !kind(old)
 }
+
+/// Existence checks of one directory's entries kept one by one; more become its listing with kinds (`t:`), more than
+/// eight times as many under one ancestor its tree with kinds (`T:`): see `proof::compact_stats`.
+const STATS_PER_DIR: usize = 8;
 
 #[derive(Clone, Default)]
 struct OrderedData {
@@ -224,6 +236,9 @@ impl<'a> TestData<'a> {
             self.new_keys.push(k);
         }
         self.over.insert(k, v);
+    }
+    fn get(&self, k: &str) -> Option<&str> {
+        self.over.get(k).copied().or_else(|| self.g.pos.get(k).map(|&i| &*self.g.items[i].1))
     }
     fn set_if_absent(&mut self, k: &'a str, v: &'a str) {
         if !self.g.pos.contains_key(k) && !self.over.contains_key(k) {
@@ -551,9 +566,78 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         });
     }
 
+    // Review R-020 H1/O1 (prefix rule, ported from claude/dep-verdict-abjcfw 8896c36/a4f35f0/9e0d005): a test,
+    // fixture or collection that ran before a test in this process can leave state that test reads without any
+    // event (functools.lru_cache, a module-level dict, a registry filled on first use): everything it depended on
+    // (code executed, files, environment variables, refusals) is an input of every later test of the process.
+    // Contexts in order of first activation; the import context of a test module at the collection of its file.
+    let mut first: HashMap<u32, usize> = HashMap::new();
+    for (k, &c) in plan.first_order.iter().enumerate() {
+        first.entry(c).or_insert(k);
+    }
+    for (tf, &i) in &own_import {
+        let at = ctx_of.get(format!("c|{tf}").as_str()).and_then(|c| first.get(c)).copied().unwrap_or(0);
+        first.entry(i).or_insert(at);
+    }
+    let g_set: HashSet<u32> = g_ctx_all.iter().copied().collect();
+    let mut carry_order: Vec<(usize, u32)> = first.iter().filter(|(c, _)| !g_set.contains(c)).map(|(&c, &k)| (k, c)).collect();
+    carry_order.sort_unstable();
+    let mut carry_pos = 0usize;
+    let mut c_data = OrderedData::default();
+    let mut c_vec: Vec<(String, String)> = Vec::new();
+    let mut c_vec_n = usize::MAX;
+    let mut c_env: BTreeSet<&str> = BTreeSet::new();
+    let mut c_flags: BTreeSet<&str> = BTreeSet::new();
+    let mut c_units: BTreeSet<(u32, u32)> = BTreeSet::new();
+    let mut c_content: BTreeSet<u32> = BTreeSet::new();
+    let mut c_ctxs: Vec<u32> = Vec::new();
+
+    // existence checks are many (a collection hook checking every example file, carried into every test): compacted
+    // per test into directory-level dependencies, the directory digests computed once per session
+    let root_path = std::path::PathBuf::from(root_dir);
+    let mut memo = crate::proof::KindsMemo::new();
+    let mut compact = |d: Vec<(Str, Str)>| -> Vec<(Str, Str)> {
+        let n = d.iter().filter(|(_, v)| v.starts_with("s:")).count();
+        if n < STATS_PER_DIR {
+            return d;
+        }
+        let owned: Vec<(String, String)> = d.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
+        crate::proof::compact_stats_memo(owned, &root_path, STATS_PER_DIR, &mut memo)
+            .into_iter()
+            .map(|(k, v)| (Str::from(k.as_str()), Str::from(v.as_str())))
+            .collect()
+    };
+
     let mut new_edges: Vec<(String, String)> = Vec::new();
     for t in &plan.tests {
         let nid = t.nodeid.as_str();
+        let tpos = ctx_of.get(format!("t|{nid}").as_str()).and_then(|c| first.get(c)).copied().unwrap_or(usize::MAX);
+        while carry_pos < carry_order.len() && carry_order[carry_pos].0 < tpos {
+            let c = carry_order[carry_pos].1;
+            carry_pos += 1;
+            c_ctxs.push(c);
+            if let Some(d) = plan.data.get(&c) {
+                c_data.update(d);
+            }
+            if let Some(e) = plan.env.get(&c) {
+                c_env.extend(e.iter().map(|s| s.as_str()));
+            }
+            if let Some(f) = plan.flags.get(&c) {
+                c_flags.extend(f.iter().map(|s| s.as_str()));
+            }
+            units_of(&per(c).0, &mut c_units);
+            unparsable(&per(c).1, &mut c_content);
+        }
+        if c_vec_n != c_data.items.len() || c_vec.len() != c_data.items.len() {
+            c_vec = c_data.items.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect();
+            c_vec_n = c_data.items.len();
+        } else {
+            for (i, (_, v)) in c_data.items.iter().enumerate() {
+                if *c_vec[i].1 != **v {
+                    c_vec[i].1 = v.to_string();
+                }
+            }
+        }
         {
             let own = ctx_file(nid);
             let mut keys: BTreeSet<&str> = BTreeSet::new();
@@ -591,10 +675,13 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         }
         let mut flags = g_flags.clone();
         let mut data = TestData::new(&g_data, &g_sorted);
+        data.update(&c_vec);
         let mut env = g_env.clone();
-        let mut units: BTreeSet<(u32, u32)> = BTreeSet::new();
+        env.extend(c_env.iter().copied());
+        let mut units: BTreeSet<(u32, u32)> = c_units.clone();
         let mut content: BTreeSet<u32> = pre_ix.clone();
         content.extend(g_unparsable.iter().copied());
+        content.extend(c_content.iter().copied());
         for &c in &ctxs {
             if let Some(f) = plan.flags.get(&c) {
                 flags.extend(f.iter().map(|s| s.as_str()));
@@ -608,18 +695,27 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             units_of(&per(c).0, &mut units);
             unparsable(&per(c).1, &mut content);
         }
+        let own_flags = flags.clone();
         let mut why: Option<String> = uncacheable(&flags, plan.control_urandom).map(|s| s.to_string());
         let mut where_ctx: Vec<u32> = Vec::new();
         if why.is_some() {
             where_ctx = g_ctx_all.iter().chain(ctxs.iter()).copied().collect();
+        } else if let Some(w) = uncacheable(&c_flags, plan.control_urandom) {
+            where_ctx = c_ctxs.clone();
+            why = Some(format!("after an earlier test or fixture of this process: {w}"));
         } else {
+            flags.extend(c_flags.iter().copied());
             // writers credited to the test: its own contexts and the global ones (startup, between tests,
             // import time), whose code is an input of every test
             let credited: HashSet<u32> = ctxs.iter().chain(g_ctx_all.iter()).copied().collect();
             let cnames: HashSet<&str> = credited.iter().filter_map(|&c| names.get(c as usize)).map(|s| s.as_str()).collect();
+            // a carried read of a file written in this session: its writers ran before that read, so before this
+            // test; their inputs are carried too, which credits them as for the test's own contexts
+            let carried_credit: HashSet<u32> = credited.iter().chain(c_ctxs.iter()).copied().collect();
             for f in &flags {
                 if let Some(p) = f.strip_prefix("rw:") {
-                    let ok = plan.writers.get(p).map(|w| w.iter().all(|c| credited.contains(c))).unwrap_or(true);
+                    let cr = if own_flags.contains(f) { &credited } else { &carried_credit };
+                    let ok = plan.writers.get(p).map(|w| w.iter().all(|c| cr.contains(c))).unwrap_or(true);
                     if !ok {
                         why = Some(format!("reads a file another test or fixture wrote: {}", key(p)));
                         for c in plan.writers.get(p).into_iter().flatten() {
@@ -632,7 +728,17 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 }
             }
             if why.is_none() {
+                // reads carried from earlier contexts are not checked here: that context read the file itself, and
+                // its recorded digest is compared with the file on disk before any reuse
+                let own_reads = |p: &str| {
+                    g_data.pos.contains_key(p) || ctxs.iter().any(|c| plan.data.get(c).is_some_and(|d| d.iter().any(|(k, _)| k == p)))
+                };
                 for path in data.keys() {
+                    if let Some(&i) = c_data.pos.get(path) {
+                        if data.get(path) == Some(&*c_data.items[i].1) && !own_reads(path) {
+                            continue;
+                        }
+                    }
                     if let Some(w) = written.get(path) {
                         if !w.is_empty() && !w.iter().all(|x| cnames.contains(x.as_str())) {
                             why = Some(format!("reads a file another test or fixture wrote: {path}"));
@@ -691,7 +797,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 content.insert(ix);
             }
         }
-        if let Some(w) = code_changed(t, &ctxs) {
+        let all_ctxs: Vec<u32> = ctxs.iter().chain(c_ctxs.iter()).copied().collect();
+        if let Some(w) = code_changed(t, &all_ctxs) {
             store.remove(nid);
             out.not_cached.push((nid.to_string(), w, Vec::new()));
             continue;
@@ -725,7 +832,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 runtime: plan.runtime.clone(),
                 epoch,
                 env: env_deps,
-                data: data.sorted(),
+                data: compact(data.sorted()),
                 content: content.into_iter().collect(),
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),

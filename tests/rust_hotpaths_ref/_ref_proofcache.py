@@ -1828,6 +1828,8 @@ class ProofCachePlugin:
             "root_sep": cap.root_sep, "control_urandom": bool(cfg.control_urandom),
             "time_controlled": "time" in cfg.controls, "epoch": self.epoch, "cassette": cassette,
             "env0": dict(cap.env0), "config": self.config_digest, "runtime": self.runtime_digest, "run": self.run_id,
+            # review R-020 prefix rule: contexts in the order of their first activation
+            "first_order": list(dict.fromkeys(c for _t, c in cap.timeline)),
         }
 
     def _where(self, why: str, ctxs) -> str:

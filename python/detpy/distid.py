@@ -29,8 +29,10 @@ Existence checks (``os.stat``, ``os.path.exists``, ``shutil.which``) of paths un
 as the path's kind by ``proofcache`` (review R-020b N3), as for any other path.
 
 Each of these is a small identity file under ``<cache>/dist-identity/``, rewritten from the current environment at
-the start of every session; a test records the content digest of the files it depends on as ordinary data
-dependencies, so the Rust checker needs no change. A read under ``site-packages`` that maps to no distribution
+the start of every session. On the Rust capture, a context's dependency on one is recorded at once as an ordinary
+data read of that file (``Tracker.add`` -> ``CaptureCore.read``), so the Rust record step (including the prefix
+rule) and the checker need no change; the capture hands reads, listings and existence checks under a site directory
+to ``Tracker.path`` (``CaptureCore.set_dist_read``). A read under ``site-packages`` that maps to no distribution
 falls back to the identity of the whole environment (``@all``).
 """
 
@@ -295,7 +297,14 @@ class Tracker:
         return getattr(self.local, "depth", 0) > 0
 
     def add(self, ctx: int, key: str) -> None:
-        self.deps.setdefault(ctx, set()).add(key)
+        """Context ``ctx`` depends on identity ``key``: recorded at once as an ordinary data read of the identity
+        file (the Rust capture keys it by content; the record step and the prefix rule need nothing else)."""
+        d = self.deps.setdefault(ctx, set())
+        if key in d:
+            return
+        d.add(key)
+        p = key if key.startswith("/") else os.path.join(self.dir, key)  # "/...": a file outside every RECORD
+        self.cap.read(ctx, p, "f")
 
     def in_site(self, p: str) -> bool:
         return any(p.startswith(d) for d in self.site_dirs)
@@ -377,9 +386,14 @@ class Tracker:
         if key not in self._loaded_seen:
             self._loaded_seen.add(key)
             self.loaded.append((key, index))
+            # an input of the context that loaded it (the test that just ran, or collection); every later test
+            # carries it (prefix rule)
+            self.add(self._scan_ctx, key)
 
-    def scan(self, index: int) -> None:
-        """Distributions of the modules and native libraries loaded so far (after the test at ``index``)."""
+    def scan(self, index: int, ctx: int | None = None) -> None:
+        """Distributions of the modules and native libraries loaded so far (after the test at ``index``, whose
+        context is ``ctx``; the current context when None)."""
+        self._scan_ctx = self.cap._cur() if ctx is None else ctx
         mods = sys.modules
         if len(mods) != self._nmods:
             self._nmods = len(mods)
@@ -516,7 +530,7 @@ class Tracker:
             sys.meta_path.remove(f)
 
     # -- keys ---------------------------------------------------------------------------
-    def data_deps(self, keys) -> dict[str, str]:
+    def data_deps(self, keys) -> dict[str, str]:  # (not used on the Rust capture: see add)
         """{absolute identity file path: dependency string} for identity keys."""
         from . import _core
 
