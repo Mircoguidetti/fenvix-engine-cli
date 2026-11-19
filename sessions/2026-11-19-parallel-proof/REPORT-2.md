@@ -27,7 +27,7 @@ class is not built.
 * **The cache's reach on the other repositories is limited by their inputs, not by `-n`**: litellm-vertex, moto and
   prefect record 0 entries serially and in parallel (network, OS entropy, a loopback API server per test). mlflow's
   first job had an incomplete install (not valid; re-run pending); prefect's first run hit a harness defect (re-run
-  below). P3 walk: moto 50/50 commits (0 reuse, nothing cacheable); esphome and litellm walks pending.
+  below). P3 walks: moto and litellm 50/50 commits each (0 reuse: nothing cacheable there); the esphome walk pending.
 
 ## Per finding: change, test before / after
 
@@ -376,7 +376,10 @@ extras its CI installs, Python 3.12 for the cache rows.
 | repository | commits walked | reused (sum) | wrong reuses | `-n 4` wall per commit | truth wall per commit |
 |---|---|---|---|---|---|
 | moto (`-n 4` group, 2,480-2,501 tests) | 50 of 50 (f1057262 .. 96f50b1a) | **0** | 0 (vacuous) | 64.5-70.9 s (cold 113.3 s) | 151.8-171.9 s |
+| litellm vertex shard (4,165-4,181 tests) | 50 of 50 (a41f124b .. 17e6ea8c) | **0** | 0 (vacuous) | 101.5-111.8 s (cold 155.5 s) | 99.9-109.3 s |
 
+* litellm: the same (no entry is recorded: every test touches the network). There the `-n 4` cache run is as slow as
+  the serial `--det` truth run (~106 s each): the capture's cost under `-n` on this shard.
 * moto: nothing is reused at any commit (every miss is `new`: no entry is ever recorded, above), so the walk proves
   nothing about reuse there; it shows the parallel cache runs 50 commits without an error. The walk compares *reused*
   results with the truth only, so the `-n 4` verdicts of the tests that ran are not checked per commit by it (the
