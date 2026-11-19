@@ -209,6 +209,30 @@ one job per repository, variants one after another on the same runner; results c
 cache / `-n` run, fpcompare.json, plans, log tails). Selections: run.json (DECLARED from each repository's CI:
 CI-FACTS.md; one shard or group where the CI splits).
 
+### esphome on Actions (same selection as the local batch), MEASURED
+
+| variant | runs (wall) | median | vs plain `-n 4` median (81.0 s) |
+|---|---|---|---|
+| plain serial | 160.0 / 141.5 s | 150.8 s (mean) | — |
+| plain `-n 4` | 79.6 / 82.7 / 81.0 s | 81.0 s | 1 |
+| `--det` serial | 163.5 / 143.0 s | 153.3 s (mean) | — |
+| `--det -n 4` a (unit costs) / b / c | 90.4 / 82.3 / 82.5 s | 82.4 s (b, c) | 1.02x (b, c) |
+| cold `--det-cache -n 4` | 109.1 s (14,150 recorded) | — | 1.35x |
+| warm `--det-cache -n 4` | 53.2 / 52.9 / 53.2 s | 53.2 s | **0.66x** |
+| cold `--det-cache` serial (14,161 recorded); `-n 4` on that store | 185.0 s; 54.3 s (14,161 reused) | — | — ; 0.67x |
+
+* P2 target (ESTIMATED): 81.0 x (153.3 / 150.8) x 1.05 = 86.5 s; runs b and c (82.3, 82.5 s) meet it, run a (unit
+  costs, 90.4 s) does not.
+* `--det -n 4` against plain `-n 4`: 82.3-82.5 s against 79.6-82.7 s: **inside the plain runs' range, 2 % above their
+  median: within noise, not faster** (same reading as locally).
+* Warm: 52.9-53.2 s against 79.6-82.7 s: 26 s below the fastest plain run, 0.66x, three runs each, clear of the noise.
+  Reuse 14,150-14,151 of 14,446 under `-n 4` against 14,161 serially (0.07-0.08 point).
+* Truth: crosscheck 0 mismatches in every row (reused and ran), fpcompare 0 outcome differences, 0 new failures
+  caused by the split, 0 hidden failures. 3 failures in every `--det` run (the 3 LIMITS C7 mtime tests; the 4
+  root-only failures of the container do not occur on the non-root runner), 0 in plain runs.
+* fpcompare (parallel a against b, see the litellm note): placement 42, parallel noise 100 (run a's unit-cost plan
+  against run b's). The local batch, which compares b with c, is the stickiness measurement (35 / 65, plans identical).
+
 ### litellm, shard `llms-vertex-ai` (`tests/unit/llms/vertex_ai`, `-n 4 --dist loadscope` as its CI), MEASURED
 
 | variant | runs (wall) | vs plain `-n 4` median (64.3 s) |
