@@ -132,10 +132,10 @@ class Capture {
     // content-addressed caches of tools (a cached result equals recomputing it): jiti's transpile cache; the
     // runners' own caches are added by the shells (Jest cacheDirectory, Vite cacheDir); more with DETJS_CACHE_SKIP_DIRS
     const tmp = os.tmpdir();
-    // tsx's transform cache and v8-compile-cache (ts-node, older CLIs) are content-addressed too
+    // tsx's and @swc-node's transform caches and v8-compile-cache (ts-node, older CLIs) are content-addressed too
     const uid = typeof process.getuid === 'function' ? process.getuid() : '';
     this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`),
-      path.join(tmp, `v8-compile-cache-${uid}`), path.join(tmp, 'v8-compile-cache'),
+      path.join(tmp, `v8-compile-cache-${uid}`), path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`),
       ...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean)].map((d) => path.resolve(d) + path.sep);
   }
 
@@ -1195,7 +1195,13 @@ function installSpawn(cap) {
     class Worker extends RealWorker {
       constructor(file, opts) {
         if (cap.active && !cap.busy) {
-          try { cap.flag('worker', `worker thread ${String(file).slice(0, 200)}`); } catch { /* ignore */ }
+          // esbuild's own service thread for its synchronous API (esbuild-register, tsx fallbacks): a transform of
+          // the source it is given (the source is keyed as a module, esbuild by the runtime identity)
+          const esbuildService = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?esbuild[\\/]lib[\\/]main\.js$/.test(String(file))
+            && (() => { cap.busy++; try { return cap.directCaller() === 'infra'; } finally { cap.busy--; } })();
+          if (!esbuildService) {
+            try { cap.flag('worker', `worker thread ${String(file).slice(0, 200)}`); } catch { /* ignore */ }
+          }
         }
         super(file, opts);
       }

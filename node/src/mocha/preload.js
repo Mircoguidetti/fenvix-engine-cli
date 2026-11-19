@@ -16,7 +16,8 @@ const path = require('node:path');
 
 const env = process.env;
 let role = null;
-if (env.DETJS === '1' && !env.DETJS_MO_INNER && env.DETJS_MO_PLAN) {
+// worker threads of a test process inherit its execArgv and environment: they are part of that process
+if (env.DETJS === '1' && !env.DETJS_MO_INNER && env.DETJS_MO_PLAN && require('node:worker_threads').isMainThread) {
   if (env.DETJS_MO_CHILD) role = 'file';
   else if (env.DETJS_MO_DRIVER === '1') role = 'driver';
 }
@@ -84,6 +85,8 @@ if (role) {
         try { res = JSON.parse(fs.readFileSync(outPath, 'utf8')); } catch { /* below */ }
         results.files[fid] = { status: r.status, signal: r.signal, failures: res ? res.failureCount : null };
         if (!res) throw new Error(`detjs mocha: ${fid} ended without results (exit ${r.status}${r.signal ? `, signal ${r.signal}` : ''})`);
+        // a process that failed after its tests (an exception at exit, a signal) fails like Mocha's single process
+        if ((r.status !== 0 && !(res.failureCount > 0)) || r.signal) throw new Error(`detjs mocha: ${fid}: the file's process exited with ${r.signal || r.status} after its tests`);
         return deserialize(res);
       },
       async terminate() {},

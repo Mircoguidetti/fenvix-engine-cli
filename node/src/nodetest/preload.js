@@ -19,7 +19,8 @@ const { AsyncResource } = require('node:async_hooks');
 
 const env = process.env;
 let role = null;
-if (env.DETJS === '1' && !env.DETJS_NT_INNER) {
+// worker threads of a test process inherit its execArgv and environment: they are part of that process
+if (env.DETJS === '1' && !env.DETJS_NT_INNER && require('node:worker_threads').isMainThread) {
   if (env.NODE_TEST_CONTEXT === 'child-v8' || env.NODE_TEST_CONTEXT === 'child') role = 'file';
   else if (env.DETJS_NT_DRIVER === '1') role = env.DETJS_NT_ISOLATION === 'none' ? 'shared' : 'driver';
 }
