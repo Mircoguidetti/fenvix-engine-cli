@@ -294,10 +294,7 @@ async function main(argv) {
   const needs = {
     read: [engineDir, run.dir, root, os.tmpdir()],
     write: [run.dir],
-    env: ['DETJS', 'DETJS_SEED', 'DETJS_SHUFFLE', 'DETJS_DIR', 'DETJS_ROOT', 'DETJS_EPOCH', 'DETJS_TICK', 'DETJS_TICK_ADAPT', 'DETJS_TIMERS',
-      'DETJS_TIMER_BUDGET', 'DETJS_DISABLE', 'DETJS_NET_MODE', 'DETJS_CASSETTE', 'DETJS_ALLOW_HOSTS', 'DETJS_URANDOM', 'DETJS_MAX_EVENTS',
-      'DETJS_SITES', 'DETJS_RUNNER', 'DETJS_FILE', 'DETJS_CACHE', 'DETJS_CACHE_SKIP_DIRS', 'DETJS_CACHE_DEBUG', 'DETJS_NATIVE',
-      'DETJS_AUDIT_START', 'TMPDIR', 'TMP', 'TEMP', 'HOME', 'HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy', 'NO_PROXY', 'no_proxy',
+    env: ['DETJS', 'DETJS_*', 'TMPDIR', 'TMP', 'TEMP', 'HOME', 'HTTP_PROXY', 'HTTPS_PROXY', 'http_proxy', 'https_proxy', 'NO_PROXY', 'no_proxy',
       'ALL_PROXY', 'all_proxy'],
     ffi: [require('../native').__path],
     sys: ['hostname', 'osRelease', 'networkInterfaces', 'uid', 'gid', 'homedir'],

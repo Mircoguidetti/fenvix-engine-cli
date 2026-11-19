@@ -1078,7 +1078,9 @@ function installFs(cap) {
 
 function installEnv(cap, proc) {
   const env = proc.env;
-  if (env && env.__detjsCache) return;
+  let wrapped = false;
+  try { wrapped = Boolean(env && env.__detjsCache); } catch { /* Deno without env permission for that name: not ours yet */ }
+  if (wrapped) return;
   const handler = {
     get(t, k) {
       if (typeof k === 'string' && k !== '__detjsCache') cap.env(k);
