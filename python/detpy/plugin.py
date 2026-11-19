@@ -394,12 +394,18 @@ def _cache_rewritten_tests(config) -> bool:
     memo: list = []
 
     def keyed_tail():
-        """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written)."""
+        """The pyc tail for this run, or None when the rewrite cannot be keyed (nothing is read or written).
+
+        Review R-017b F1: the key holds a digest of the rewriter as loaded (``_rewriter_digest``), so a plugin or
+        conftest that patches a method of ``AssertionRewriter`` (or a helper of ``rewrite.py``) gets its own pycs.
+        It is re-checked at each read and write by the identity of the namespaces' values (cheap): a conftest
+        loaded later that patches the rewriter changes the key from then on."""
         if not enabled or (rw.rewrite_asserts, rw.AssertionRewriter) != originals:
             return None
-        if not memo:
-            memo.append(_rewrite_key(config, rw))
-        k = memo[0]
+        snap = _rewriter_snapshot(rw)
+        if not memo or memo[0] != snap:
+            memo[:] = [snap, _rewrite_key(config, rw)]
+        k = memo[1]
         return None if k is None else tail[:-len(ext)] + ".det-" + k + ext
 
     def _read_pyc(source, pyc, trace=lambda x: None):
@@ -440,8 +446,133 @@ def _rewrite_key(config, rw) -> str | None:
             code = hashlib.sha256(fh.read()).hexdigest()
     except (OSError, ValueError, TypeError, AttributeError):
         return None
-    parts = f"pass_hook={hook}\noptimize={sys.flags.optimize}\nrewriter={code}\n"
+    loaded = _rewriter_digest(rw)
+    if loaded is None:
+        return None
+    parts = f"pass_hook={hook}\noptimize={sys.flags.optimize}\nrewriter={code}\nloaded={loaded}\n"
     return hashlib.sha256(parts.encode()).hexdigest()[:16]
+
+
+def _rewriter_snapshot(rw) -> tuple:
+    """The identity of what the rewrite runs (compared at each read and write): ``rewrite_asserts``,
+    ``AssertionRewriter``, and the values of their module's and the class's namespaces."""
+    cls = rw.AssertionRewriter
+    return (rw.rewrite_asserts, cls, tuple(vars(cls).values()), tuple(vars(rw).values()))
+
+
+_SIMPLE = (str, bytes, int, float, complex, bool, type(None), type(Ellipsis))
+
+
+def _rewriter_digest(rw, limit: int = 5000) -> str | None:
+    """Review R-017b F1: a digest of pytest's assertion rewriter *as loaded*, stable across runs.
+
+    It covers ``rewrite_asserts`` and every value of ``rewrite.py``'s namespace and of ``AssertionRewriter``'s (by
+    name). A function is its code (bytecode, constants, names, recursively; not its file name or line numbers, so
+    two installs of the same pytest share pycs), its defaults, its closure cells and the globals its code names.
+    Functions are followed wherever they are defined (a plugin's replacement method, and the original it wraps
+    from its closure); a function's globals are followed within its own module (a plugin's helpers), other
+    modules' objects are named. A class of ``rewrite.py`` (or of the referring function's module) is its name,
+    bases and namespace; other classes are named. A constant is its ``repr``, a module its name, anything else its
+    type. None (no cache) past ``limit`` objects."""
+    import hashlib
+    import types
+
+    h = hashlib.sha256()
+    seen: dict = {}
+    todo: list = []
+    home = rw.__name__
+
+    def name(v) -> str:
+        return f"{getattr(v, '__module__', None)}.{getattr(v, '__qualname__', '?')}"
+
+    def ref(v, mod: str | None) -> str:
+        """A token for ``v``; objects to follow are queued and named by their order. ``mod``: the module whose
+        classes and functions are followed (None: functions always)."""
+        if isinstance(v, _SIMPLE):
+            return f"{type(v).__name__}:{v!r}"
+        if isinstance(v, (tuple, list, frozenset, set)):
+            items = [ref(x, mod) for x in v]
+            if isinstance(v, (frozenset, set)):
+                items.sort()
+            return f"{type(v).__name__}({','.join(items)})"
+        if isinstance(v, dict):
+            return "dict(" + ",".join(sorted(f"{ref(k, mod)}={ref(x, mod)}" for k, x in v.items())) + ")"
+        if isinstance(v, (staticmethod, classmethod)):
+            return f"{type(v).__name__}({ref(v.__func__, None)})"
+        if isinstance(v, property):
+            return f"property({ref(v.fget, None)},{ref(v.fset, None)},{ref(v.fdel, None)})"
+        if isinstance(v, types.ModuleType):
+            return f"module:{v.__name__}"
+        if isinstance(v, (types.BuiltinFunctionType, types.MethodWrapperType, types.WrapperDescriptorType)):
+            return f"builtin:{name(v)}"
+        m = getattr(v, "__module__", None)
+        if isinstance(v, type):
+            follow = m == home or m == mod
+        elif isinstance(v, types.FunctionType) or hasattr(v, "__wrapped__"):
+            follow = mod is None or m == mod or m == home
+        else:
+            return f"other:{type(v).__module__}.{type(v).__qualname__}"
+        if not follow:
+            return f"named:{name(v)}"
+        if id(v) not in seen:
+            seen[id(v)] = (len(seen), v)
+            todo.append(v)
+        return f"obj#{seen[id(v)][0]}"
+
+    def code(co) -> str:
+        consts = ",".join(code(c) if isinstance(c, types.CodeType) else ref(c, None) for c in co.co_consts)
+        return (f"code({co.co_qualname}|{co.co_argcount},{co.co_posonlyargcount},{co.co_kwonlyargcount},"
+                f"{co.co_flags}|{co.co_code.hex()}|{','.join(co.co_names)}|{','.join(co.co_varnames)}|"
+                f"{','.join(co.co_freevars)}|{','.join(co.co_cellvars)}|{consts})")
+
+    def names(co):
+        yield from co.co_names
+        for c in co.co_consts:
+            if isinstance(c, types.CodeType):
+                yield from names(c)
+
+    h.update(f"rewrite_asserts={ref(rw.rewrite_asserts, None)}\nclass={ref(rw.AssertionRewriter, None)}\n".encode())
+    for n in sorted(vars(rw)):
+        h.update(f"rw.{n}={ref(vars(rw)[n], None)}\n".encode())
+    while todo:
+        if len(seen) > limit:
+            return None
+        v = todo.pop(0)
+        i = seen[id(v)][0]
+        if isinstance(v, type):
+            body = ";".join(f"{n}={ref(x, None)}" for n, x in sorted(vars(v).items(), key=lambda kv: kv[0])
+                            if n not in ("__dict__", "__weakref__"))
+            bases = ",".join(ref(b, v.__module__) for b in v.__bases__)
+            h.update(f"#{i}=class {name(v)}({bases}){{{body}}}\n".encode())
+            continue
+        f = inspect_unwrap(v)
+        co = getattr(f, "__code__", None)
+        if co is None:
+            h.update(f"#{i}=callable {type(v).__module__}.{type(v).__qualname__}\n".encode())
+            continue
+        cells = ",".join(ref(c.cell_contents, None) if _cell_full(c) else "empty" for c in (f.__closure__ or ()))
+        g, fm = f.__globals__, f.__module__
+        glob = ",".join(f"{n}={ref(g[n], fm)}" for n in sorted(set(names(co))) if n in g)
+        h.update(f"#{i}=function {code(co)} defaults={ref(f.__defaults__, None)} kw={ref(f.__kwdefaults__, None)} "
+                 f"cells=({cells}) globals=({glob})\n".encode())
+    return h.hexdigest()[:16]
+
+
+def inspect_unwrap(v):
+    """``v`` itself when it has code; else what it wraps (``functools.lru_cache`` and the like)."""
+    for _ in range(10):
+        if hasattr(v, "__code__") or not hasattr(v, "__wrapped__"):
+            return v
+        v = v.__wrapped__
+    return v
+
+
+def _cell_full(cell) -> bool:
+    try:
+        cell.cell_contents
+    except ValueError:
+        return False
+    return True
 
 
 def _owner(config) -> bool:
