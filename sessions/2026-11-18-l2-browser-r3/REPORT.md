@@ -232,7 +232,7 @@ Today (MEASURED): **0 of 55**. No seed reproduced a real failure (E6: 0 of 2 tri
 three projects that flake without load: documenso (E5, every clock arm), actual (E2, frozen or not), uptime-kuma
 (E6 replays: 3-5 fp). After this round's fixes, **the first divergence on all three is the same kind: when the runner
 acts in real time** (documenso: which of the runner's request and the page's fetch reaches the queue first; actual:
-page draw counts and early scheduling events; uptime-kuma: queue order, `sched` 49 of 62 diverged tests). The
+page draw counts and early scheduling events; uptime-kuma: network queue order, `net` 65 of 67 diverged tests in step 3 on the fixed engine). The
 database clock is not the first blocker on documenso (E5).
 
 | Design item | Needed for | Tests of 55 it unlocks (with the items above it) | Cost (ESTIMATED, engineer-days) | UNKNOWN that could stop it |
