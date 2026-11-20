@@ -1,0 +1,584 @@
+{
+ "name": "idoft-freezegun",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_class_import.py::test_import_after_start",
+  "tests/test_datetimes.py::test_min_and_max",
+  "tests/test_datetimes.py::test_time_ns",
+  "tests/test_ticking.py::test_ticking_time",
+  "tests/test_uuid.py::test_uuid1_future",
+  "tests/test_uuid.py::test_uuid1_past",
+  "tests/test_warnings.py::test_ignore_warnings_in_start",
+  "tests/test_warnings.py::test_ignore_warnings_in_stop"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009168",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_class_import.py::test_import_after_start",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 41,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_class_import.py::test_import_after_start"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert <class 'freezegun.api.FakeDatetime'> is FakeDatetime",
+    "/tmp/work/src/idoft-freezegun/tests/test_class_import.py:140"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2bb6efcebacc4fc76c62aa89ad832c30"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5cacf126688066c7e1a5c598e52277ab",
+     "2bb6efcebacc4fc76c62aa89ad832c30"
+    ]
+   },
+   "runs": 23,
+   "seconds": 44.55,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_import_after_start-994f2408/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_import_after_start-994f2408",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_import_after_start-994f2408"
+  },
+  {
+   "test": "tests/test_datetimes.py::test_min_and_max",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 84,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert <class 'freezegun.api.FakeDatetime'> == FakeDatetime",
+    "/tmp/work/src/idoft-freezegun/tests/test_datetimes.py:601"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c8efee82171f63c478832d6e5a5f4592"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "dc9d7f221b218e7ff0ba198f932f9041",
+     "c8efee82171f63c478832d6e5a5f4592"
+    ]
+   },
+   "runs": 24,
+   "seconds": 39.31,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_min_and_max-030d9ecf/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_min_and_max-030d9ecf",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_min_and_max-030d9ecf"
+  },
+  {
+   "test": "tests/test_datetimes.py::test_time_ns",
+   "configs_searched": 8,
+   "status": "reproduced",
+   "config": "7",
+   "seed": 7,
+   "kind": "order",
+   "prefix_length": 80,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_datetimes.py::test_time_ns"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 1326499200.0 != 1326499200.0",
+    "/tmp/work/src/idoft-freezegun/tests/test_datetimes.py:703"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "725094af5d3305c908fd7d5009c690d9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] datetime.now @ <site>/dateutil/parser/_parser.py:637 = 1000  <>  [random] random.state @ <end> = 6a6fcaedfbf83de6d533f65dda283f35",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "datetime.now",
+     "at": "<site>/dateutil/parser/_parser.py:637",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "6a6fcaedfbf83de6d533f65dda283f35"
+    },
+    "fingerprints": [
+     "2d9d7f635785fbbca0f701fddf35dfe1",
+     "725094af5d3305c908fd7d5009c690d9"
+    ]
+   },
+   "runs": 61,
+   "seconds": 112.97,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_time_ns-a6e461b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_time_ns-a6e461b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_time_ns-a6e461b1"
+  },
+  {
+   "test": "tests/test_ticking.py::test_ticking_time",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 201.58
+  },
+  {
+   "test": "tests/test_uuid.py::test_uuid1_future",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 108,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:29"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ed9e261e90dab88dcfdfb009f3acde43"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 3,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d35702f482497f1c6f54ea6b087d75ce",
+     "ed9e261e90dab88dcfdfb009f3acde43"
+    ]
+   },
+   "runs": 65,
+   "seconds": 108.03,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_future-49f7e267/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_future-49f7e267",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_future-49f7e267"
+  },
+  {
+   "test": "tests/test_uuid.py::test_uuid1_past",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 109,
+   "minimal_length": 4,
+   "polluters": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_not_skip_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_uuid.py::test_uuid1_future",
+    "tests/test_uuid.py::test_uuid1_past"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert FakeDatetime(2056, 2, 6, 14, 3, 21) == FakeDatetime(1978, 7, 6, 23, 6, 31)",
+    "/tmp/work/src/idoft-freezegun/tests/test_uuid.py:39"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "random",
+    "description": "event #1: [random] random.getrandbits @ tests/test_uuid.py:43 = 11539  <>  [random] random.state @ <end> = 9a4f4649393e11f978bb188eeeffde4a",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.getrandbits",
+     "at": "tests/test_uuid.py:43",
+     "v": "11539"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "9a4f4649393e11f978bb188eeeffde4a"
+    },
+    "fingerprints": [
+     "0263616249c75418a8e25839a507c36a",
+     "11590e4e4fa9d3aa9ad4ea7b80c65856"
+    ]
+   },
+   "runs": 108,
+   "seconds": 177.56,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_past-3a271656/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_past-3a271656",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_uuid1_past-3a271656"
+  },
+  {
+   "test": "tests/test_warnings.py::test_ignore_warnings_in_start",
+   "configs_searched": 11,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 93,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_warnings.py::test_ignore_warnings_in_start"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert False",
+    "/tmp/work/src/idoft-freezegun/tests/test_warnings.py:51"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d1f8cd7585197b7d9a477a30dcda6afe"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "55ab276f5673f8da827fca38cfb54db3",
+     "d1f8cd7585197b7d9a477a30dcda6afe"
+    ]
+   },
+   "runs": 68,
+   "seconds": 111.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_start-15c5744c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_start-15c5744c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_start-15c5744c"
+  },
+  {
+   "test": "tests/test_warnings.py::test_ignore_warnings_in_stop",
+   "configs_searched": 11,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 92,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::test_should_skip_non_cpython",
+    "tests/test_datetimes.py::test_min_and_max",
+    "tests/test_warnings.py::test_ignore_warnings_in_stop"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert False",
+    "/tmp/work/src/idoft-freezegun/tests/test_warnings.py:51"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "291a8422060d03c7b459b6362c430986"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b79a9b0cd5a846420a82353af4af05e3",
+     "291a8422060d03c7b459b6362c430986"
+    ]
+   },
+   "runs": 64,
+   "seconds": 104.69,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-freezegun/bin/python",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_stop-29fcaddd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_stop-29fcaddd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-freezegun/standalone/bundles/test_ignore_warnings_in_stop-29fcaddd"
+  }
+ ],
+ "seconds": 899.98
+}

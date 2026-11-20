@@ -1,0 +1,179 @@
+{
+ "name": "arrow",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+  "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009153",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1883,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert None",
+    "/tmp/work/src/arrow/tests/test_locales.py:42"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8d0da0e269e72c9cb9ff5f60354e8795"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3b09cbf873396a716ade802f165b5e13",
+     "8d0da0e269e72c9cb9ff5f60354e8795"
+    ]
+   },
+   "runs": 34,
+   "seconds": 349.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/arrow/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/standalone/bundles/test_locale_name_validation-9cea9591/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/arrow/standalone/bundles/test_locale_name_validation-9cea9591",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/standalone/bundles/test_locale_name_validation-9cea9591"
+  },
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_validation",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1882,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 0 == 8",
+    "/tmp/work/src/arrow/tests/test_locales.py:13"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "810321e968d5a5c7a5b7318d69aca5b0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "97962b7cc37e8bf611b93b36d99c8b5c",
+     "810321e968d5a5c7a5b7318d69aca5b0"
+    ]
+   },
+   "runs": 35,
+   "seconds": 317.62,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/arrow/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/standalone/bundles/test_locale_validation-9b2db556/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/arrow/standalone/bundles/test_locale_validation-9b2db556",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/standalone/bundles/test_locale_validation-9b2db556"
+  }
+ ],
+ "seconds": 667.54
+}

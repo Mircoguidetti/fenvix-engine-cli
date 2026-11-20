@@ -1,0 +1,3522 @@
+{
+ "name": "idoft-pykicad",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_module.py::CurveTests::test_curve",
+  "tests/test_module.py::DrillTests::test_drill",
+  "tests/test_module.py::DrillTests::test_drill_offset",
+  "tests/test_module.py::DrillTests::test_drill_oval",
+  "tests/test_module.py::LineTests::test_line",
+  "tests/test_module.py::ModelTests::test_model",
+  "tests/test_module.py::ModuleTests::test_module",
+  "tests/test_module.py::NetTests::test_net_auto_numbering",
+  "tests/test_module.py::PadTests::test_pad",
+  "tests/test_module.py::PadTests::test_pad_with_drill",
+  "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+  "tests/test_module.py::PolygonTests::test_polygon",
+  "tests/test_module.py::TextTests::test_text",
+  "tests/test_module.py::TextTests::test_text_with_hide",
+  "tests/test_module.py::TextTests::test_text_with_justify",
+  "tests/test_module.py::TextTests::test_text_with_rotation",
+  "tests/test_module.py::TextTests::test_text_with_thickness",
+  "tests/test_pcb.py::NetClassTests::test_parse",
+  "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+  "tests/test_pcb.py::NetClassTests::test_with_net",
+  "tests/test_pcb.py::NetClassTests::test_without_net",
+  "tests/test_pcb.py::PcbTests::test_comment",
+  "tests/test_pcb.py::PcbTests::test_layers",
+  "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+  "tests/test_pcb.py::PcbTests::test_num_nets",
+  "tests/test_pcb.py::PcbTests::test_page",
+  "tests/test_pcb.py::PcbTests::test_single_module",
+  "tests/test_pcb.py::ZoneTests::test_parse"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008996",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.731,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::NetTests::test_net_auto_numbering"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 3.008,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 2.917,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.937,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 2.606,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 2.932,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.199,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 2.182,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 2.153,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 2.621,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 2.978,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 2.965,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 2.632,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 2.571,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 2.949,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 2.942,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 2.177,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 2.543,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 2.859,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 2.554,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 2.49,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 1.704,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 2.814,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 2.106,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 2.86,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 1.712,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 1.664,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 1.696,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 2.539,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 1.695,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 1.69,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 2.941,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 2.848,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 1.721,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 2.147,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 2.129,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 2.932,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 2.164,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 2.894,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 2.535,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 2.135,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 1.7,
+   "tests": 48,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 1.731,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::NetTests::test_net_auto_numbering"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 2.509,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 2.797,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 2.152,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 2.526,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::NetTests::test_net_auto_numbering",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 1.661,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::NetTests::test_net_auto_numbering"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 2.811,
+   "tests": 48,
+   "failing": [
+    "tests/test_module.py::CurveTests::test_curve",
+    "tests/test_module.py::DrillTests::test_drill",
+    "tests/test_module.py::DrillTests::test_drill_offset",
+    "tests/test_module.py::DrillTests::test_drill_oval",
+    "tests/test_module.py::LineTests::test_line",
+    "tests/test_module.py::ModelTests::test_model",
+    "tests/test_module.py::ModuleTests::test_module",
+    "tests/test_module.py::PadTests::test_pad",
+    "tests/test_module.py::PadTests::test_pad_with_drill",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+    "tests/test_module.py::PolygonTests::test_polygon",
+    "tests/test_module.py::TextTests::test_text",
+    "tests/test_module.py::TextTests::test_text_with_hide",
+    "tests/test_module.py::TextTests::test_text_with_justify",
+    "tests/test_module.py::TextTests::test_text_with_rotation",
+    "tests/test_module.py::TextTests::test_text_with_thickness",
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 2.088,
+   "tests": 48,
+   "failing": [
+    "tests/test_pcb.py::NetClassTests::test_parse",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+    "tests/test_pcb.py::NetClassTests::test_with_net",
+    "tests/test_pcb.py::NetClassTests::test_without_net",
+    "tests/test_pcb.py::PcbTests::test_comment",
+    "tests/test_pcb.py::PcbTests::test_layers",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_pcb.py::PcbTests::test_page",
+    "tests/test_pcb.py::PcbTests::test_single_module",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_module.py::CurveTests::test_curve",
+  "tests/test_module.py::DrillTests::test_drill",
+  "tests/test_module.py::DrillTests::test_drill_offset",
+  "tests/test_module.py::DrillTests::test_drill_oval",
+  "tests/test_module.py::LineTests::test_line",
+  "tests/test_module.py::ModelTests::test_model",
+  "tests/test_module.py::ModuleTests::test_module",
+  "tests/test_module.py::NetTests::test_net_auto_numbering",
+  "tests/test_module.py::PadTests::test_pad",
+  "tests/test_module.py::PadTests::test_pad_with_drill",
+  "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+  "tests/test_module.py::PolygonTests::test_polygon",
+  "tests/test_module.py::TextTests::test_text",
+  "tests/test_module.py::TextTests::test_text_with_hide",
+  "tests/test_module.py::TextTests::test_text_with_justify",
+  "tests/test_module.py::TextTests::test_text_with_rotation",
+  "tests/test_module.py::TextTests::test_text_with_thickness",
+  "tests/test_pcb.py::NetClassTests::test_parse",
+  "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+  "tests/test_pcb.py::NetClassTests::test_with_net",
+  "tests/test_pcb.py::NetClassTests::test_without_net",
+  "tests/test_pcb.py::PcbTests::test_comment",
+  "tests/test_pcb.py::PcbTests::test_layers",
+  "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+  "tests/test_pcb.py::PcbTests::test_num_nets",
+  "tests/test_pcb.py::PcbTests::test_page",
+  "tests/test_pcb.py::PcbTests::test_single_module",
+  "tests/test_pcb.py::ZoneTests::test_parse"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_module.py::CurveTests::test_curve",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 22,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::CurveTests::test_curve"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b7f0cfeb78e3eb02f8587a3bef221086"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "07f467c266d7a63f2e332e3d4342da8e",
+     "b7f0cfeb78e3eb02f8587a3bef221086"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.1,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_curve-6afc86d3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_curve-6afc86d3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_curve-6afc86d3",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::DrillTests::test_drill",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 31,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::DrillTests::test_drill"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'drill'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d921e9969ad0b06865c6c6e020724982"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0d539ef1de6fa03e4971a5e9f9c82cce",
+     "d921e9969ad0b06865c6c6e020724982"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.57,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill-5c3c3c43/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill-5c3c3c43",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill-5c3c3c43",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::DrillTests::test_drill_offset",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 32,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::DrillTests::test_drill_offset"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'drill'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dc450a77c337cda7449a21b4a9171d49"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c3d6b2cf4a963c5f0e81087b357eac43",
+     "dc450a77c337cda7449a21b4a9171d49"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.61,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_offset-a1e96bc1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_offset-a1e96bc1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_offset-a1e96bc1",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::DrillTests::test_drill_oval",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 30,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::DrillTests::test_drill_oval"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'drill'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b2c77c247054b54b598fdfee9797fae7"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "91af61e963472e8c415d92e3d72eeabb",
+     "b2c77c247054b54b598fdfee9797fae7"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.47,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_oval-e51b0f2a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_oval-e51b0f2a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_drill_oval-e51b0f2a",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::LineTests::test_line",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 29,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::LineTests::test_line"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "47809c11e3288848d9cce476764b1190"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1f0aa85369124d98c90a5a96173d8fab",
+     "47809c11e3288848d9cce476764b1190"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.64,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_line-8c11fc6e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_line-8c11fc6e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_line-8c11fc6e",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::ModelTests::test_model",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 21,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::ModelTests::test_model"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'model'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "39d143d89114bf62ac1a618d5195bd03"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0e106339c78c7e97045f4262ba06e046",
+     "39d143d89114bf62ac1a618d5195bd03"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_model-7d1b1581/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_model-7d1b1581",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_model-7d1b1581",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::ModuleTests::test_module",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 23,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::ModuleTests::test_module"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'module'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a5539c7f2a7c1f7d2db4777d7153dd08"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0cd0c607e4e465819137b9c849a06d2b",
+     "a5539c7f2a7c1f7d2db4777d7153dd08"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_module-b1e9736d/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_module-b1e9736d",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_module-b1e9736d",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::NetTests::test_net_auto_numbering",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 28,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_pcb.py::PcbTests::test_num_nets"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_pcb.py::PcbTests::test_num_nets",
+    "tests/test_module.py::NetTests::test_net_auto_numbering"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 2 == 1",
+    "/tmp/work/src/idoft-pykicad/tests/test_module.py:148"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "13e287b32e8a783de84feb43bd2020ef"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1bfaa8873883ae2dd13d9cdcb0d13f09",
+     "13e287b32e8a783de84feb43bd2020ef"
+    ]
+   },
+   "runs": 19,
+   "seconds": 14.76,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_net_auto_numbering-8d0e1d7e",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_module.py::PadTests::test_pad",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 36,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::PadTests::test_pad"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'pad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6d62915904d480370644d35fa5115f6f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "457ae9007926a83b50b2c5a757fff8b6",
+     "6d62915904d480370644d35fa5115f6f"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.68,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad-8f0d1bd7",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::PadTests::test_pad_with_drill",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 35,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::PadTests::test_pad_with_drill"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'pad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "12eaef9e02f63ff6520247c8e6b5aa82"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "adac200a5f78afce19c864e5d8174846",
+     "12eaef9e02f63ff6520247c8e6b5aa82"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.56,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_drill-562f0182/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_drill-562f0182",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_drill-562f0182",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 34,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::PadTests::test_pad_with_multiple_layers"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'pad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2b6e04e222376ad809c412865cfa8d5f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "95e39a2c2a06e7ba080163595c8317c0",
+     "2b6e04e222376ad809c412865cfa8d5f"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.6,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_multiple_layers-bfa79f7b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_multiple_layers-bfa79f7b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_pad_with_multiple_layers-bfa79f7b",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::PolygonTests::test_polygon",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 37,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::PolygonTests::test_polygon"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "93e2f72ce8c6a59fdf949679bd83e1c8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f876fe02a39cb756500f0855d40c59c5",
+     "93e2f72ce8c6a59fdf949679bd83e1c8"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.53,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_polygon-b3b8eaed/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_polygon-b3b8eaed",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_polygon-b3b8eaed",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::TextTests::test_text",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 26,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::TextTests::test_text"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0c19e5e031c16cf8faf513ecfe6d6d8e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "7aeb2eeba89668b1249044b7b690351b",
+     "0c19e5e031c16cf8faf513ecfe6d6d8e"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.2,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text-9ee9c231/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_text-9ee9c231",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text-9ee9c231",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::TextTests::test_text_with_hide",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 25,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::TextTests::test_text_with_hide"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "77ac71c73cd9b137c973b840492cbebe"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d07fb71504d636c50e6c9684bd0cded7",
+     "77ac71c73cd9b137c973b840492cbebe"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_hide-22104eee/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_hide-22104eee",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_hide-22104eee",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::TextTests::test_text_with_justify",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 28,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::TextTests::test_text_with_justify"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a21c2023b1fb5ea1c4fb125c2341dca3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0122b2b529e9cc2e0ca7025767bcc2a0",
+     "a21c2023b1fb5ea1c4fb125c2341dca3"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_justify-ca2a9fb2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_justify-ca2a9fb2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_justify-ca2a9fb2",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::TextTests::test_text_with_rotation",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 24,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::TextTests::test_text_with_rotation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cabe579647ef06fc3eb99b01f6ec0bd9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9cebbcf22b8efea108fcdfb9bc291acd",
+     "cabe579647ef06fc3eb99b01f6ec0bd9"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_rotation-e5a69dcd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_rotation-e5a69dcd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_rotation-e5a69dcd",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_module.py::TextTests::test_text_with_thickness",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 27,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_module.py::TextTests::test_text_with_thickness"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'fp'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "716e4efb9bbe08d684092cca6a2c4416"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "921e1d22a2a14a2ea7c3e8457783d91d",
+     "716e4efb9bbe08d684092cca6a2c4416"
+    ]
+   },
+   "runs": 16,
+   "seconds": 12.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_thickness-06421266/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_thickness-06421266",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_text_with_thickness-06421266",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::NetClassTests::test_parse",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 46,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::NetClassTests::test_parse"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'net'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d8f8e48d1a5354ce6a9fd53855abb43d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c07f9130222228b56d3c2bf66d0a58f8",
+     "d8f8e48d1a5354ce6a9fd53855abb43d"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.97,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-15f481fc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-15f481fc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-15f481fc",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 44,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::NetClassTests::test_with_multiple_nets"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'net'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "71b1238b395b60997b4358e1731d9854"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b09be1a2d39d88d9b2e0f6580977d9e9",
+     "71b1238b395b60997b4358e1731d9854"
+    ]
+   },
+   "runs": 17,
+   "seconds": 14.01,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_multiple_nets-0bdaeeaf/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_multiple_nets-0bdaeeaf",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_multiple_nets-0bdaeeaf",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::NetClassTests::test_with_net",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 45,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::NetClassTests::test_with_net"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'net'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1cdb0b041282dd57e9e3d49e73718aed"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b80e72b1b8e4f407bb2b7299b4369ec2",
+     "1cdb0b041282dd57e9e3d49e73718aed"
+    ]
+   },
+   "runs": 17,
+   "seconds": 14.05,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_net-6ba1a850/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_net-6ba1a850",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_with_net-6ba1a850",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::NetClassTests::test_without_net",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 47,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::NetClassTests::test_without_net"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'net'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6d3975d7dffc58a17f5f3ebf4a62ea52"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "a5fc9c7ef95476b227de5e92a0ab139b",
+     "6d3975d7dffc58a17f5f3ebf4a62ea52"
+    ]
+   },
+   "runs": 17,
+   "seconds": 14.24,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_without_net-c78edb72/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_without_net-c78edb72",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_without_net-c78edb72",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_comment",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 39,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_comment"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "62c5c23adb7a73d46d2668c9e66ffc4c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "2c6379f4191f99732f06db81d7306b76",
+     "62c5c23adb7a73d46d2668c9e66ffc4c"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.78,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_comment-1bb53668/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_comment-1bb53668",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_comment-1bb53668",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_layers",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 41,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_layers"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d530da5990c1578980d29878882cbf4b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "58711e69d9712d7c2d09a79fd6a0ef93",
+     "d530da5990c1578980d29878882cbf4b"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_layers-a86dc970/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_layers-a86dc970",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_layers-a86dc970",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 43,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_minimal_pcb"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "40b2a9c058e00bd71712ff4eb7841013"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b327d6c6893d080683b4bdf9db332102",
+     "40b2a9c058e00bd71712ff4eb7841013"
+    ]
+   },
+   "runs": 17,
+   "seconds": 14.2,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_minimal_pcb-94c759e2",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_num_nets",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 38,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_num_nets"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "af25b5436e827ec4f6d17fd49493ec8c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "e8b904e44c762257d90ab2d33c961f99",
+     "af25b5436e827ec4f6d17fd49493ec8c"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_num_nets-49a5ca8a/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_num_nets-49a5ca8a",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_num_nets-49a5ca8a",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_page",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 42,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_page"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "559ec0f2fe1c6e488bce42f071671144"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "53bfcc9212c29914fbb512168ded6233",
+     "559ec0f2fe1c6e488bce42f071671144"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.95,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_page-f681291e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_page-f681291e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_page-f681291e",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::PcbTests::test_single_module",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 40,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::PcbTests::test_single_module"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'kicad'  (at char 2), (line:2, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "44df3f3e3ccf97407168b6171e9ed8d8"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "92ffbfc027b3b39c619979e414bba456",
+     "44df3f3e3ccf97407168b6171e9ed8d8"
+    ]
+   },
+   "runs": 17,
+   "seconds": 13.9,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_single_module-8366fe64/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_single_module-8366fe64",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_single_module-8366fe64",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_pcb.py::ZoneTests::test_parse",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 48,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_sexpr.py::ASTTests::test_multiple_multiple",
+    "tests/test_pcb.py::ZoneTests::test_parse"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParseException",
+    "call",
+    "pyparsing.exceptions.ParseException: Expected 'sexpr', found 'zone'  (at char 1), (line:1, col:2)",
+    "/tmp/work/venvs/idoft-pykicad/lib/python3.9/site-packages/pyparsing/core.py:1346"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b479cdec41d3e90763bc361f11b7f90f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5ee5fa4bceb468c89a33c72171c5b236",
+     "b479cdec41d3e90763bc361f11b7f90f"
+    ]
+   },
+   "runs": 17,
+   "seconds": 14.31,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pykicad/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-a3186c5e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-a3186c5e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pykicad/detpy/bundles/test_parse-a3186c5e",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_module.py::CurveTests::test_curve",
+   "tests/test_module.py::DrillTests::test_drill",
+   "tests/test_module.py::DrillTests::test_drill_offset",
+   "tests/test_module.py::DrillTests::test_drill_oval",
+   "tests/test_module.py::LineTests::test_line",
+   "tests/test_module.py::ModelTests::test_model",
+   "tests/test_module.py::ModuleTests::test_module",
+   "tests/test_module.py::NetTests::test_net_auto_numbering",
+   "tests/test_module.py::PadTests::test_pad",
+   "tests/test_module.py::PadTests::test_pad_with_drill",
+   "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+   "tests/test_module.py::PolygonTests::test_polygon",
+   "tests/test_module.py::TextTests::test_text",
+   "tests/test_module.py::TextTests::test_text_with_hide",
+   "tests/test_module.py::TextTests::test_text_with_justify",
+   "tests/test_module.py::TextTests::test_text_with_rotation",
+   "tests/test_module.py::TextTests::test_text_with_thickness",
+   "tests/test_pcb.py::NetClassTests::test_parse",
+   "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+   "tests/test_pcb.py::NetClassTests::test_with_net",
+   "tests/test_pcb.py::NetClassTests::test_without_net",
+   "tests/test_pcb.py::PcbTests::test_comment",
+   "tests/test_pcb.py::PcbTests::test_layers",
+   "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+   "tests/test_pcb.py::PcbTests::test_num_nets",
+   "tests/test_pcb.py::PcbTests::test_page",
+   "tests/test_pcb.py::PcbTests::test_single_module",
+   "tests/test_pcb.py::ZoneTests::test_parse"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_sexpr.py::ASTTests::test_multiple_multiple": [
+   "tests/test_module.py::CurveTests::test_curve",
+   "tests/test_module.py::DrillTests::test_drill",
+   "tests/test_module.py::DrillTests::test_drill_offset",
+   "tests/test_module.py::DrillTests::test_drill_oval",
+   "tests/test_module.py::LineTests::test_line",
+   "tests/test_module.py::ModelTests::test_model",
+   "tests/test_module.py::ModuleTests::test_module",
+   "tests/test_module.py::PadTests::test_pad",
+   "tests/test_module.py::PadTests::test_pad_with_drill",
+   "tests/test_module.py::PadTests::test_pad_with_multiple_layers",
+   "tests/test_module.py::PolygonTests::test_polygon",
+   "tests/test_module.py::TextTests::test_text",
+   "tests/test_module.py::TextTests::test_text_with_hide",
+   "tests/test_module.py::TextTests::test_text_with_justify",
+   "tests/test_module.py::TextTests::test_text_with_rotation",
+   "tests/test_module.py::TextTests::test_text_with_thickness",
+   "tests/test_pcb.py::NetClassTests::test_parse",
+   "tests/test_pcb.py::NetClassTests::test_with_multiple_nets",
+   "tests/test_pcb.py::NetClassTests::test_with_net",
+   "tests/test_pcb.py::NetClassTests::test_without_net",
+   "tests/test_pcb.py::PcbTests::test_comment",
+   "tests/test_pcb.py::PcbTests::test_layers",
+   "tests/test_pcb.py::PcbTests::test_minimal_pcb",
+   "tests/test_pcb.py::PcbTests::test_num_nets",
+   "tests/test_pcb.py::PcbTests::test_page",
+   "tests/test_pcb.py::PcbTests::test_single_module",
+   "tests/test_pcb.py::ZoneTests::test_parse"
+  ],
+  "tests/test_pcb.py::PcbTests::test_num_nets": [
+   "tests/test_module.py::NetTests::test_net_auto_numbering"
+  ]
+ },
+ "collected": 48,
+ "seconds": 492.26
+}

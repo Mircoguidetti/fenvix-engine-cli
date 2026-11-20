@@ -1,0 +1,995 @@
+{
+ "name": "idoft-py-autodoc",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+  "examples/test_gen_each_case.py::TestUnittest::test_get",
+  "examples/test_gen_each_case.py::TestUnittest::test_post",
+  "examples/test_pytest.py::test_index",
+  "examples/test_pytest.py::test_post",
+  "examples/test_requests.py::TestUnittest::test_foo_bar",
+  "examples/test_requests.py::TestUnittest::test_get",
+  "examples/test_requests.py::TestUnittest::test_post",
+  "examples/test_unittest.py::TestUnittest::test_foo_bar",
+  "examples/test_unittest.py::TestUnittest::test_get",
+  "examples/test_unittest.py::TestUnittest::test_post",
+  "tests/test_autodoc.py::TestAutodoc::test_create_document",
+  "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+  "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+  "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008995",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 0.364,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 0.339,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 0.336,
+   "tests": 27,
+   "failing": [
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 0.352,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 0.36,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 0.351,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 0.365,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.337,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.362,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.364,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.357,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.342,
+   "tests": 27,
+   "failing": [
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.352,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.342,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.35,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.341,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.359,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_get",
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.341,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.35,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_get"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.363,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.338,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.36,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.336,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.366,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.307,
+   "tests": 27,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.351,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.336,
+   "tests": 27,
+   "failing": [
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.358,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.357,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.363,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.352,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.356,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.334,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_foo_bar"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.351,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.356,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.366,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.345,
+   "tests": 27,
+   "failing": [
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.347,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.334,
+   "tests": 27,
+   "failing": [
+    "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.347,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.368,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_post",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.352,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_requests.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.35,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.348,
+   "tests": 27,
+   "failing": [
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.359,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_post",
+    "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "tests/test_autodoc.py::TestAutodoc::test_should_change_separators"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.341,
+   "tests": 27,
+   "failing": [
+    "examples/test_unittest.py::TestUnittest::test_get",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.362,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_requests.py::TestUnittest::test_get",
+    "examples/test_unittest.py::TestUnittest::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.352,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.369,
+   "tests": 27,
+   "failing": [
+    "examples/test_gen_each_case.py::TestUnittest::test_foo_bar",
+    "examples/test_gen_each_case.py::TestUnittest::test_get",
+    "examples/test_gen_each_case.py::TestUnittest::test_post",
+    "examples/test_pytest.py::test_index",
+    "examples/test_requests.py::TestUnittest::test_post",
+    "tests/test_autodoc.py::TestAutodoc::test_create_document",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.343,
+   "tests": 27,
+   "failing": [
+    "examples/test_pytest.py::test_post"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "examples/test_pytest.py::test_index": 1,
+  "examples/test_requests.py::TestUnittest::test_get": 1,
+  "tests/test_autodoc.py::TestAutodoc::test_create_document": 1,
+  "tests/test_autodoc.py::TestAutodoc::test_parse_response": 1,
+  "tests/test_autodoc.py::TestAutodoc::test_parse_responses": 1,
+  "tests/test_autodoc.py::TestAutodoc::test_should_change_separators": 1,
+  "examples/test_pytest.py::test_post": 2,
+  "examples/test_unittest.py::TestUnittest::test_post": 3,
+  "examples/test_requests.py::TestUnittest::test_post": 4,
+  "examples/test_gen_each_case.py::TestUnittest::test_foo_bar": 5,
+  "examples/test_gen_each_case.py::TestUnittest::test_get": 5,
+  "examples/test_gen_each_case.py::TestUnittest::test_post": 5,
+  "examples/test_unittest.py::TestUnittest::test_foo_bar": 5,
+  "examples/test_requests.py::TestUnittest::test_foo_bar": 7,
+  "examples/test_unittest.py::TestUnittest::test_get": 19
+ },
+ "replays": {
+  "examples/test_pytest.py::test_index": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "examples/test_requests.py::TestUnittest::test_get": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "tests/test_autodoc.py::TestAutodoc::test_create_document": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "tests/test_autodoc.py::TestAutodoc::test_parse_response": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "tests/test_autodoc.py::TestAutodoc::test_parse_responses": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "tests/test_autodoc.py::TestAutodoc::test_should_change_separators": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.347,
+    0.366,
+    0.358,
+    0.365,
+    0.357,
+    0.367,
+    0.367,
+    0.357,
+    0.366,
+    0.369
+   ]
+  },
+  "examples/test_pytest.py::test_post": {
+   "seed": 2,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.359,
+    0.348,
+    0.338,
+    0.343,
+    0.338,
+    0.343,
+    0.343,
+    0.343,
+    0.349,
+    0.352
+   ]
+  },
+  "examples/test_unittest.py::TestUnittest::test_post": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.334,
+    0.331,
+    0.339,
+    0.337,
+    0.355,
+    0.331,
+    0.334,
+    0.346,
+    0.342,
+    0.34
+   ]
+  },
+  "examples/test_requests.py::TestUnittest::test_post": {
+   "seed": 4,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.338,
+    0.341,
+    0.334,
+    0.335,
+    0.34,
+    0.329,
+    0.335,
+    0.341,
+    0.339,
+    0.341
+   ]
+  },
+  "examples/test_gen_each_case.py::TestUnittest::test_foo_bar": {
+   "seed": 5,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.359,
+    0.354,
+    0.352,
+    0.362,
+    0.351,
+    0.354,
+    0.348,
+    0.351,
+    0.351,
+    0.354
+   ]
+  },
+  "examples/test_gen_each_case.py::TestUnittest::test_get": {
+   "seed": 5,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.359,
+    0.354,
+    0.352,
+    0.362,
+    0.351,
+    0.354,
+    0.348,
+    0.351,
+    0.351,
+    0.354
+   ]
+  },
+  "examples/test_gen_each_case.py::TestUnittest::test_post": {
+   "seed": 5,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.359,
+    0.354,
+    0.352,
+    0.362,
+    0.351,
+    0.354,
+    0.348,
+    0.351,
+    0.351,
+    0.354
+   ]
+  },
+  "examples/test_unittest.py::TestUnittest::test_foo_bar": {
+   "seed": 5,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.359,
+    0.354,
+    0.352,
+    0.362,
+    0.351,
+    0.354,
+    0.348,
+    0.351,
+    0.351,
+    0.354
+   ]
+  },
+  "examples/test_requests.py::TestUnittest::test_foo_bar": {
+   "seed": 7,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.343,
+    0.345,
+    0.351,
+    0.346,
+    0.356,
+    0.347,
+    0.357,
+    0.351,
+    0.355,
+    0.35
+   ]
+  },
+  "examples/test_unittest.py::TestUnittest::test_get": {
+   "seed": 19,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.343,
+    0.341,
+    0.341,
+    0.339,
+    0.342,
+    0.34,
+    0.342,
+    0.343,
+    0.353,
+    0.346
+   ]
+  }
+ },
+ "seconds": 41.87
+}

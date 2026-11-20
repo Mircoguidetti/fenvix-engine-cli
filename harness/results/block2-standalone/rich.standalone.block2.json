@@ -1,0 +1,410 @@
+{
+ "name": "rich",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_box.py::test_get_row",
+  "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+  "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+  "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009187",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_box.py::test_get_row",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 975,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_box.py::test_get_row"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'ijkjjkjjjl' == '|-+--+---|'",
+    "/tmp/work/src/rich/tests/test_box.py:37"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "41cef8ddaea3745b06a9d44a373f8c70"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "2b0aaca615f54aa89331274cdff23ebd",
+     "41cef8ddaea3745b06a9d44a373f8c70"
+    ]
+   },
+   "runs": 27,
+   "seconds": 87.02,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/standalone/bundles/test_get_row-724075fe/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/standalone/bundles/test_get_row-724075fe",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/standalone/bundles/test_get_row-724075fe"
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 273,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_expanded_table"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbbbbbb...rrrrrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:50"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "268f62c4eff224eb975063eb4e650641"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "4618dafdb9aa2290db38048ce422a610",
+     "268f62c4eff224eb975063eb4e650641"
+    ]
+   },
+   "runs": 25,
+   "seconds": 60.52,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/standalone/bundles/test_rule_in_expanded_table-81c43516/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/standalone/bundles/test_rule_in_expanded_table-81c43516",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/standalone/bundles/test_rule_in_expanded_table-81c43516"
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 274,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_ratio_table"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbbbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:70"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "971e87cc900a418563201bcf0e30cdb4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "25ee155539b0a0e25fc24b7a7f690ab4",
+     "971e87cc900a418563201bcf0e30cdb4"
+    ]
+   },
+   "runs": 25,
+   "seconds": 61.34,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/standalone/bundles/test_rule_in_ratio_table-c0f66751/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/standalone/bundles/test_rule_in_ratio_table-c0f66751",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/standalone/bundles/test_rule_in_ratio_table-c0f66751"
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 275,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbcbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:30"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dea5bda84d7f9308b3b45097bc029c42"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "087641528037d97f5fa01f5e1be05b71",
+     "dea5bda84d7f9308b3b45097bc029c42"
+    ]
+   },
+   "runs": 25,
+   "seconds": 62.16,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg0_-eb6252b8"
+  },
+  {
+   "test": "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 276,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_table.py::test_placement_table_box_elements[True-False-expected1]",
+    "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg1]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'abbbbbbcbbbb...rrrsrrrrrrt\\n' == '+-----------...----------+\\n'",
+    "/tmp/work/src/rich/tests/test_rule_in_table.py:30"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "59c53ba060466626e57f80fd4d918206"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9d2133ce91ea9040ecf879d4bf1f60c3",
+     "59c53ba060466626e57f80fd4d918206"
+    ]
+   },
+   "runs": 25,
+   "seconds": 62.75,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/rich/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/rich/standalone/bundles/test_rule_in_unexpanded_table_expand_kwarg1_-762d72b6"
+  }
+ ],
+ "seconds": 333.8
+}

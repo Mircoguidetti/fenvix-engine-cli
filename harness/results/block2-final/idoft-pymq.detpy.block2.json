@@ -1,0 +1,706 @@
+{
+ "name": "idoft-pymq",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009004",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 13.499,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 12.279,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 12.255,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 13.503,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 13.442,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 12.172,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 13.496,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 12.469,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 12.245,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 12.259,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 12.274,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 13.492,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 12.246,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 13.695,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 12.237,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 12.444,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 12.435,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 12.253,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 12.249,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 12.243,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 13.535,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 12.167,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 12.454,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 12.239,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 13.711,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 12.448,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 12.269,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 12.443,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 13.495,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 12.255,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 12.447,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 12.436,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 12.452,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 13.5,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 13.717,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 12.242,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 12.265,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 12.434,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 13.513,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 13.716,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 12.428,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 13.495,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 12.246,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 12.253,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 13.518,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 13.504,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 13.51,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 13.695,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 13.5,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 12.449,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tests/test_provider_ipc.py::IpcQueueTest::test_queue_get_blocking_timeout",
+  "tests/test_provider_redis.py::RedisQueueTest::test_queue_get_blocking_timeout"
+ ],
+ "flaky_failing": [
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire",
+   "configs_searched": 1,
+   "status": "replay-unstable",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 30,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_function"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_function",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 1 != 0",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 6,
+    "fingerprints": [
+     "1e9c2735b82e6cac0d25193316a86e6b",
+     "3b54a364c92bcef7ce3f8425e2beef30",
+     "48428190e70c024897c58a2cd76e9c56",
+     "4aebfee8dd87c3911ce3a79fbb04a0b8",
+     "72d38c266fcca52894f8787a48456080",
+     "8067a87bff835fd6a379318174526f26",
+     "9c9e348f33991ce0e87b81c4bad82363",
+     "a77e97e20d0ac53d56c7c11482b36fbc",
+     "bafc23be48e795973cfc0a754804ea12",
+     "cb8334aa74356aa623f41cae7578f6ac"
+    ],
+    "identical_fingerprint": false
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] Random.seed(None) @ tests/testutils.py:22 = 15089582537443466598  <>  [entropy] os.urandom @ pymq/provider/base.py:154 = 16:bbbee30ad9d22769daff37ae5dd488d3",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "Random.seed(None)",
+     "at": "tests/testutils.py:22",
+     "v": "15089582537443466598"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "pymq/provider/base.py:154",
+     "v": "16:bbbee30ad9d22769daff37ae5dd488d3"
+    },
+    "fingerprints": [
+     "bc75534d76aa0f05e3ca4c973ae21486",
+     "72d38c266fcca52894f8787a48456080"
+    ]
+   },
+   "runs": 32,
+   "seconds": 224.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pymq/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pymq/detpy/bundles/test_channel_expire-de599f84",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {},
+ "families_by_polluter": {},
+ "collected": 127,
+ "seconds": 865.88
+}

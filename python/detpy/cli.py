@@ -1,4 +1,6 @@
-"""Command line: ``detpy verify``, ``detpy backends``, ``detpy repro``, ``detpy explore``, ``detpy replay``."""
+"""Command line: ``detpy verify``, ``detpy backends``, ``detpy repro``, ``detpy explore``, ``detpy replay``, and the
+runners other than pytest: ``detpy unittest|django|nose2|doctest|zope-testrunner|ward [--det ...] [runner args]``
+(``runners/``)."""
 
 from __future__ import annotations
 
@@ -10,8 +12,18 @@ from . import _core
 
 
 def main(argv: list[str] | None = None) -> int:
+    args0 = list(sys.argv[1:] if argv is None else argv)
+    from .runners import RUNNERS
+
+    if args0 and args0[0] in RUNNERS:
+        from . import runners
+
+        return runners.main(args0[0], args0[1:])
     p = argparse.ArgumentParser(prog="detpy", description="deterministic Python test execution (Level 0)")
     sub = p.add_subparsers(dest="cmd", required=True)
+    for name in RUNNERS:
+        sub.add_parser(name, help=f"run {name} tests under --det / --det-cache (detpy {name} --det [args])",
+                       add_help=False)
     v = sub.add_parser("verify", help="compare the fingerprints of several runs")
     v.add_argument("traces", nargs="+")
     v.add_argument("--json", action="store_true", help="print the full report as JSON")

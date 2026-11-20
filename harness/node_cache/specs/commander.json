@@ -1,0 +1,10 @@
+{
+ "name": "commander", "url": "https://github.com/tj/commander.js", "node": "22", "runner": "node-test",
+ "install": ["(npm ci --no-audit --no-fund --silent || npm install --no-audit --no-fund --silent); git checkout -q -- package-lock.json 2>/dev/null || true"],
+ "install_files": ["package-lock.json", "package.json"],
+ "build": [],
+ "args": ["--test-reporter=dot"],
+ "patterns": [],
+ "plain": "node --test --test-reporter=dot",
+ "shards": 1, "source": "the 31 latest first-parent commits of main (2026-11-19); `npm test` runs `node --test` (default pattern, process per file)"
+}

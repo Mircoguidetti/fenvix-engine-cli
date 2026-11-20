@@ -107,6 +107,12 @@ pub struct Plan {
     /// rule carries everything a context that ran before a test depended on into that test (review R-020 H1/O1).
     #[serde(default)]
     pub first_order: Vec<u32>,
+    /// Dotted module names of the running runner's own framework (a non-pytest shell: `unittest`'s loader and loop,
+    /// `doctest`, `nose2.*`, `zope.testrunner.*`, `ward.*`), infrastructure in the carried-set rule's reference
+    /// closure as pytest's modules are ([`INFRA_TOP`]): `pkg.*` is a package and its submodules, any other entry one
+    /// module exactly.
+    #[serde(default)]
+    pub infra_modules: Vec<String>,
     pub config: String,
     pub runtime: String,
     pub run: String,
@@ -307,6 +313,20 @@ const INFRA_TOP: &[&str] = &["pytest", "_pytest", "pluggy", "xdist", "execnet", 
 /// standard library; a name matched only as a suffix may be a library too). Infrastructure modules are no node.
 /// `imports[fid]` is `None` for a file without facts (not Python): it reaches [`LIB_NODE`] (unknown references).
 pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>]) -> Vec<Vec<u32>> {
+    reference_closure_with(fnames, imports, &[])
+}
+
+/// Whether module `name` is the infrastructure entry `x`: `pkg.*` is `pkg` and its submodules, any other entry is
+/// that module exactly (`unittest` is infrastructure, `unittest.mock`, whose patches are state, is not).
+fn infra_match(x: &str, name: &str) -> bool {
+    match x.strip_suffix(".*") {
+        Some(p) => name == p || (name.starts_with(p) && name.as_bytes().get(p.len()) == Some(&b'.')),
+        None => name == x,
+    }
+}
+
+/// [`reference_closure`] with the session's runner framework modules (`Plan::infra_modules`) as infrastructure too.
+pub fn reference_closure_with(fnames: &[String], imports: &[Option<&[String]>], infra: &[String]) -> Vec<Vec<u32>> {
     let mut by_name: HashMap<String, (Vec<u32>, bool)> = HashMap::new();
     for (fid, rel) in fnames.iter().enumerate() {
         let Some(stem) = rel.strip_suffix(".py") else { continue };
@@ -328,7 +348,9 @@ pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>]) -> Ve
                 Some(names) => {
                     for name in names {
                         let top = name.split('.').next().unwrap_or(name);
-                        if INFRA_TOP.contains(&top) {
+                        if INFRA_TOP.contains(&top)
+                            || infra.iter().any(|x| infra_match(x, name))
+                        {
                             continue;
                         }
                         let mut full = false;
@@ -516,7 +538,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             let own = format!("t|{nid}");
             let mut stale = None;
             for (path, _) in &e.data {
-                if let Some(w) = stale_written.get(&**path) {
+                if let Some(w) = stale_written.get(crate::proof::data_path(path)) {
                     if !w.iter().all(|x| *x == own || e.fixtures.iter().any(|f| f == x)) {
                         stale = Some(path.to_string());
                         break;
@@ -703,7 +725,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     // reference closure of every executed repository file (the coordinator's third-party memo attack)
     let imports: Vec<Option<&[String]>> =
         fix.iter().map(|ix| ix.and_then(|ix| store.files.get(ix as usize)).map(|f| f.imports.as_slice())).collect();
-    let closure = reference_closure(&plan.fnames, &imports);
+    let closure = reference_closure_with(&plan.fnames, &imports, &plan.infra_modules);
     let mut rev: HashMap<u32, Vec<u32>> = HashMap::new();
     for (fid, ns) in closure.iter().enumerate() {
         for &n in ns {
@@ -974,9 +996,9 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                             continue;
                         }
                     }
-                    if let Some(w) = written.get(path) {
+                    if let Some(w) = written.get(crate::proof::data_path(path)) {
                         if !w.is_empty() && !w.iter().all(|x| cnames.contains(x.as_str())) {
-                            why = Some(format!("reads a file another test or fixture wrote: {path}"));
+                            why = Some(format!("reads a file another test or fixture wrote: {}", crate::proof::data_path(path)));
                             new_edges.extend(w.iter().map(|x| (x.clone(), nid.to_string())));
                             break;
                         }
@@ -1125,6 +1147,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 hooks: hooks.into_iter().collect(),
                 units: units.into_iter().collect(),
                 fixtures: t.fixtures.clone(),
+                // start-up process outputs are not captured by the pytest shell (Node shells only)
+                startup: String::new(),
             },
         );
         out.recorded += 1;
@@ -1165,6 +1189,29 @@ mod tests {
         assert_eq!(cl[5], vec![5]);
         // a name matched only as a suffix (src layout) may be a library too
         assert_eq!(cl[7], vec![6, 7, LIB_NODE]);
+    }
+
+    #[test]
+    fn runner_framework_modules_are_infrastructure_in_the_closure() {
+        // a non-pytest runner's framework (unittest, zope.testrunner) is no node, as pytest is; its siblings
+        // (zope.interface) and a name that only starts with it (unittestx) stay libraries
+        let fnames: Vec<String> = ["test_a.py", "test_b.py", "test_c.py"].iter().map(|s| s.to_string()).collect();
+        let a: Vec<String> = vec!["unittest".into(), "unittest.case".into(), "zope.testrunner.layer".into()];
+        let b: Vec<String> = vec!["zope.interface".into()];
+        let c: Vec<String> = vec!["unittestx".into()];
+        let d: Vec<String> = vec!["unittest".into(), "unittest.mock".into()];
+        let imports: Vec<Option<&[String]>> = vec![Some(&a), Some(&b), Some(&c), Some(&d)];
+        let mut fnames = fnames;
+        fnames.push("test_d.py".into());
+        let infra: Vec<String> = vec!["unittest".into(), "unittest.case".into(), "zope.testrunner.*".into()];
+        let cl = reference_closure_with(&fnames, &imports, &infra);
+        assert_eq!(cl[0], vec![0]);
+        assert_eq!(cl[1], vec![1, LIB_NODE]);
+        assert_eq!(cl[2], vec![2, LIB_NODE]);
+        // unittest.mock's patches are state: a library node
+        assert_eq!(cl[3], vec![3, LIB_NODE]);
+        // without the session's list, unittest is a library like any other
+        assert_eq!(reference_closure(&fnames, &imports)[0], vec![0, LIB_NODE]);
     }
 
     #[test]

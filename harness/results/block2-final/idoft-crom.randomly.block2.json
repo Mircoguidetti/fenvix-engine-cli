@@ -1,0 +1,969 @@
+{
+ "name": "idoft-crom",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+  "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+  "tests/test_model.py::TestBaseResource::test_allows_multiple",
+  "tests/test_model.py::TestBaseResource::test_check_reference",
+  "tests/test_model.py::TestBaseResource::test_init_params",
+  "tests/test_model.py::TestBaseResource::test_list_my_props",
+  "tests/test_model.py::TestBaseResource::test_multiplicity",
+  "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+  "tests/test_model.py::TestFactorySerialization::test_toFile",
+  "tests/test_model.py::TestFactorySerialization::test_toJSON",
+  "tests/test_model.py::TestFactorySerialization::test_toString",
+  "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+  "tests/test_vocab.py::TestClassBuilder::test_multitype"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008918",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 0.275,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toString"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 0.424,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_ordering",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_production_mode",
+    "tests/test_model.py::TestFactorySerialization::test_recursion",
+    "tests/test_model.py::TestFactorySerialization::test_string_list",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance",
+    "tests/test_model.py::TestMagicMethods::test_validation_wrong_type"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 0.263,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 0.298,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 0.28,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_ordering",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 0.235,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 0.291,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.241,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.237,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.274,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.414,
+   "tests": 84,
+   "failing": [
+    "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+    "tests/test_vocab.py::TestClassBuilder::test_aa_check",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.243,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.412,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestBaseResource::test_allows_multiple",
+    "tests/test_model.py::TestBaseResource::test_init_params",
+    "tests/test_model.py::TestBaseResource::test_list_my_props",
+    "tests/test_model.py::TestBaseResource::test_multiplicity",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestPropertyCache::test_cache_hierarchy"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.636,
+   "tests": 84,
+   "failing": [
+    "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple",
+    "tests/test_model.py::TestBaseResource::test_init_params",
+    "tests/test_model.py::TestBaseResource::test_list_my_props",
+    "tests/test_model.py::TestBaseResource::test_multiplicity",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance",
+    "tests/test_model.py::TestMagicMethods::test_validate_multiplicity",
+    "tests/test_model.py::TestMagicMethods::test_validate_profile_off",
+    "tests/test_model.py::TestPropertyCache::test_cache_hierarchy",
+    "tests/test_vocab.py::TestClassBuilder::test_aa_check",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.289,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.384,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_vocab.py::TestClassBuilder::test_aa_check",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.312,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.237,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.303,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_ordering",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.277,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.286,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.221,
+   "tests": 84,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.272,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.226,
+   "tests": 84,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.269,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestBaseResource::test_check_reference"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.289,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.276,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.24,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.346,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_ordering",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.658,
+   "tests": 84,
+   "failing": [
+    "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestBaseResource::test_init_params",
+    "tests/test_model.py::TestBaseResource::test_list_my_props",
+    "tests/test_model.py::TestBaseResource::test_multiplicity",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance",
+    "tests/test_model.py::TestMagicMethods::test_validate_multiplicity",
+    "tests/test_model.py::TestMagicMethods::test_validate_profile_off",
+    "tests/test_vocab.py::TestClassBuilder::test_aa_check",
+    "tests/test_vocab.py::TestClassBuilder::test_boundary_setter",
+    "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts",
+    "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype",
+    "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.294,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.222,
+   "tests": 84,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.311,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.267,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.297,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.248,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.379,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple",
+    "tests/test_model.py::TestBaseResource::test_init_params",
+    "tests/test_model.py::TestBaseResource::test_list_my_props",
+    "tests/test_model.py::TestBaseResource::test_multiplicity",
+    "tests/test_model.py::TestPropertyCache::test_cache_hierarchy"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.27,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.499,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple",
+    "tests/test_model.py::TestBaseResource::test_init_params",
+    "tests/test_model.py::TestBaseResource::test_list_my_props",
+    "tests/test_model.py::TestBaseResource::test_multiplicity",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_recursion",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestMagicMethods::test_not_multiple_instance",
+    "tests/test_model.py::TestMagicMethods::test_validate_multiplicity",
+    "tests/test_model.py::TestMagicMethods::test_validate_profile_off"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.246,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.245,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.239,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.268,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestPropertyCache::test_cache_hierarchy"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.22,
+   "tests": 84,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.315,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.238,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.295,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.275,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_toString"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.274,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.312,
+   "tests": 84,
+   "failing": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestBaseResource::test_check_reference",
+    "tests/test_model.py::TestFactorySerialization::test_breadth",
+    "tests/test_model.py::TestFactorySerialization::test_pipe_scoped",
+    "tests/test_model.py::TestFactorySerialization::test_toFile",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_fast",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON_normal",
+    "tests/test_model.py::TestFactorySerialization::test_toString"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "tests/test_model.py::TestAutoIdentifiers::test_no_ident": 1,
+  "tests/test_model.py::TestBaseResource::test_check_reference": 1,
+  "tests/test_model.py::TestFactorySerialization::test_toString": 1,
+  "tests/test_model.py::TestFactorySerialization::test_breadth": 2,
+  "tests/test_model.py::TestFactorySerialization::test_ordering": 2,
+  "tests/test_model.py::TestFactorySerialization::test_pipe_scoped": 2,
+  "tests/test_model.py::TestFactorySerialization::test_production_mode": 2,
+  "tests/test_model.py::TestFactorySerialization::test_recursion": 2,
+  "tests/test_model.py::TestFactorySerialization::test_string_list": 2,
+  "tests/test_model.py::TestFactorySerialization::test_toJSON": 2,
+  "tests/test_model.py::TestFactorySerialization::test_toJSON_fast": 2,
+  "tests/test_model.py::TestFactorySerialization::test_toJSON_normal": 2,
+  "tests/test_model.py::TestFactorySerialization::test_toString_fast": 2,
+  "tests/test_model.py::TestMagicMethods::test_not_multiple_instance": 2,
+  "tests/test_model.py::TestMagicMethods::test_validation_wrong_type": 2,
+  "tests/test_model.py::TestFactorySerialization::test_toFile": 3,
+  "tests/test_add_classification.py::TestAddClassification::test_add_classification": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_aa_check": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_boundary_setter": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_conceptual_parts": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_linguistic_object_boundary": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_multitype": 11,
+  "tests/test_vocab.py::TestClassBuilder::test_procurement_boundary": 11,
+  "tests/test_model.py::TestBaseResource::test_allows_multiple": 13,
+  "tests/test_model.py::TestBaseResource::test_init_params": 13,
+  "tests/test_model.py::TestBaseResource::test_list_my_props": 13,
+  "tests/test_model.py::TestBaseResource::test_multiplicity": 13,
+  "tests/test_model.py::TestPropertyCache::test_cache_hierarchy": 13,
+  "tests/test_model.py::TestMagicMethods::test_validate_multiplicity": 14,
+  "tests/test_model.py::TestMagicMethods::test_validate_profile_off": 14,
+  "tests/test_model.py::TestFactorySerialization::test_collapse_json": 23
+ },
+ "replays": {
+  "tests/test_model.py::TestAutoIdentifiers::test_no_ident": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.278,
+    0.28,
+    0.277,
+    0.276,
+    0.277,
+    0.28,
+    0.278,
+    0.276,
+    0.278,
+    0.277
+   ]
+  },
+  "tests/test_model.py::TestBaseResource::test_check_reference": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.278,
+    0.28,
+    0.277,
+    0.276,
+    0.277,
+    0.28,
+    0.278,
+    0.276,
+    0.278,
+    0.277
+   ]
+  },
+  "tests/test_model.py::TestFactorySerialization::test_toString": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.278,
+    0.28,
+    0.277,
+    0.276,
+    0.277,
+    0.28,
+    0.278,
+    0.276,
+    0.278,
+    0.277
+   ]
+  },
+  "tests/test_model.py::TestFactorySerialization::test_toJSON": {
+   "seed": 2,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.424,
+    0.423,
+    0.421,
+    0.427,
+    0.433,
+    0.421,
+    0.421,
+    0.422,
+    0.424,
+    0.425
+   ]
+  },
+  "tests/test_model.py::TestFactorySerialization::test_toString_fast": {
+   "seed": 2,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.424,
+    0.423,
+    0.421,
+    0.427,
+    0.433,
+    0.421,
+    0.421,
+    0.422,
+    0.424,
+    0.425
+   ]
+  },
+  "tests/test_model.py::TestFactorySerialization::test_toFile": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.267,
+    0.265,
+    0.267,
+    0.267,
+    0.267,
+    0.265,
+    0.269,
+    0.268,
+    0.265,
+    0.264
+   ]
+  },
+  "tests/test_add_classification.py::TestAddClassification::test_add_classification": {
+   "seed": 11,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.416,
+    0.414,
+    0.42,
+    0.413,
+    0.412,
+    0.414,
+    0.415,
+    0.414,
+    0.415
+   ]
+  },
+  "tests/test_vocab.py::TestClassBuilder::test_multitype": {
+   "seed": 11,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.416,
+    0.414,
+    0.42,
+    0.413,
+    0.412,
+    0.414,
+    0.415,
+    0.414,
+    0.415
+   ]
+  },
+  "tests/test_model.py::TestBaseResource::test_allows_multiple": {
+   "seed": 13,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.418,
+    0.437,
+    0.419,
+    0.417,
+    0.419,
+    0.413,
+    0.422,
+    0.419,
+    0.419
+   ]
+  },
+  "tests/test_model.py::TestBaseResource::test_init_params": {
+   "seed": 13,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.418,
+    0.437,
+    0.419,
+    0.417,
+    0.419,
+    0.413,
+    0.422,
+    0.419,
+    0.419
+   ]
+  },
+  "tests/test_model.py::TestBaseResource::test_list_my_props": {
+   "seed": 13,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.418,
+    0.437,
+    0.419,
+    0.417,
+    0.419,
+    0.413,
+    0.422,
+    0.419,
+    0.419
+   ]
+  },
+  "tests/test_model.py::TestBaseResource::test_multiplicity": {
+   "seed": 13,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.417,
+    0.418,
+    0.437,
+    0.419,
+    0.417,
+    0.419,
+    0.413,
+    0.422,
+    0.419,
+    0.419
+   ]
+  },
+  "tests/test_model.py::TestFactorySerialization::test_collapse_json": {
+   "seed": 23,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.272,
+    0.273,
+    0.272,
+    0.273,
+    0.27,
+    0.269,
+    0.269,
+    0.27,
+    0.27,
+    0.269
+   ]
+  }
+ },
+ "seconds": 35.9
+}

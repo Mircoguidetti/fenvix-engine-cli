@@ -1,0 +1,2035 @@
+{
+ "name": "idoft-odinweb",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008975",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.877,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.842,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.856,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.721,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.667,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.76,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.725,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 1.644,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 1.632,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 1.744,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 1.618,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 1.638,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 1.646,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 1.607,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 1.747,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 1.646,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 1.675,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 1.615,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 1.593,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 1.645,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 1.653,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 1.634,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 1.633,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 1.722,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 1.85,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 1.621,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 1.661,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 1.642,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 1.692,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 1.61,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 1.654,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 1.687,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 1.748,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 1.566,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 1.597,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 1.607,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 1.612,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 1.665,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 1.658,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 1.891,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 1.667,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 1.676,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 1.602,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 1.668,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 1.681,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 1.669,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 1.675,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 1.599,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 1.661,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 1.664,
+   "tests": 450,
+   "failing": [
+    "tests/test_containers.py::TestApiContainer::test_extra_option",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+    "tests/test_utils.py::TestToken::test_invalid_bit_length"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [
+  "tests/test_containers.py::TestApiContainer::test_extra_option",
+  "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+  "tests/test_swagger.py::TestSwaggerSpec::test_parse_operations",
+  "tests/test_utils.py::TestToken::test_invalid_bit_length"
+ ],
+ "flaky_failing": [
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__encode_error_with_debug_enabled",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error2-400]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 409,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 303",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:352"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1f4a193a638373cdd2b61fb74e7465bd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "a7095707f497a91b71a052db1fed26c2",
+     "1f4a193a638373cdd2b61fb74e7465bd"
+    ]
+   },
+   "runs": 27,
+   "seconds": 20.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware-dbc1ec61/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware-dbc1ec61",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware-dbc1ec61",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 387,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 500",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:367"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d81d56bf6f2c3a0e8a110f6839ca461e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ odinweb/containers.py:291 = 1000  <>  [random] random.state @ <end> = 9c368d9282aa613483aee4be68cf25e7",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "odinweb/containers.py:291",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "9c368d9282aa613483aee4be68cf25e7"
+    },
+    "fingerprints": [
+     "92a6cb67143394ba7e60091c13ce7e9b",
+     "d81d56bf6f2c3a0e8a110f6839ca461e"
+    ]
+   },
+   "runs": 25,
+   "seconds": 19.11,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_handled_by_middleware_raises_exception-e4af7ba1",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 388,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "Failed",
+    "call",
+    "Failed: DID NOT RAISE <class 'ValueError'>",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:336"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "24ee720239cb040933aac33f325d93ec"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3fbbc9ba02cafb5af8fe0b2702197ff1",
+     "24ee720239cb040933aac33f325d93ec"
+    ]
+   },
+   "runs": 24,
+   "seconds": 18.13,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_with_debug_enabled-77524508/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_with_debug_enabled-77524508",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__error_with_debug_enabled-77524508",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 390,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 501",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fd63f1ba02e6a2382925178ad93ac4c6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "328cca47b28b59ed09a8d5b6b5354160",
+     "fd63f1ba02e6a2382925178ad93ac4c6"
+    ]
+   },
+   "runs": 22,
+   "seconds": 16.43,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_NotImplementedError-501_-6e22a314/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_NotImplementedError-501_-6e22a314",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_NotImplementedError-501_-6e22a314",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 391,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 500",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a817d8f291d14687d40438b3d10f0e18"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ odinweb/containers.py:291 = 1000  <>  [random] random.state @ <end> = d411ed3410be85db0c73f5a4a11c2df9",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "odinweb/containers.py:291",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "d411ed3410be85db0c73f5a4a11c2df9"
+    },
+    "fingerprints": [
+     "4331084cbf56b05b26b140652e17f354",
+     "a817d8f291d14687d40438b3d10f0e18"
+    ]
+   },
+   "runs": 29,
+   "seconds": 20.89,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_ValueError-500_-cf985be5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_ValueError-500_-cf985be5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_ValueError-500_-cf985be5",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 394,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == <HTTPStatus.NOT_MODIFIED: 304>",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fee4793b5b881755106784a32a509d6d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "56b32780788c309689efcbcb2d00b98f",
+     "fee4793b5b881755106784a32a509d6d"
+    ]
+   },
+   "runs": 28,
+   "seconds": 19.65,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error0-HTTPStatus.NOT_MODIFIED_-0910a059",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 408,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 400",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "53ff60ddae1fe73b482767028abb2994"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "fbe42708a1694334754bf403b49fbcf9",
+     "53ff60ddae1fe73b482767028abb2994"
+    ]
+   },
+   "runs": 28,
+   "seconds": 19.79,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error1-400_-3de78292/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error1-400_-3de78292",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error1-400_-3de78292",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 401,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 500",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:275"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c5bc0aeb97700a4957ced2124c4b1a44"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] time.time @ odinweb/containers.py:291 = 1000  <>  [random] random.state @ <end> = d67460f1e8b6d60cb1c040a498764b4e",
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "odinweb/containers.py:291",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "d67460f1e8b6d60cb1c040a498764b4e"
+    },
+    "fingerprints": [
+     "432f02697783b3542a51e02288dde3eb",
+     "c5bc0aeb97700a4957ced2124c4b1a44"
+    ]
+   },
+   "runs": 27,
+   "seconds": 19.31,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error5-500_-e5c8adf2/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error5-500_-e5c8adf2",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__exceptions_error5-500_-e5c8adf2",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 389,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 'Unprocessable Entity' == 'eek'",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:387"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "794d01521acc0098478694a8be1fe916"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "6c55ee8d40c63ca9f0ceee9da903f12b",
+     "794d01521acc0098478694a8be1fe916"
+    ]
+   },
+   "runs": 22,
+   "seconds": 15.94,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__http_response-817dd12c/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__http_response-817dd12c",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__http_response-817dd12c",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 403,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 406",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:256"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "24893414120ecf05d8a05800becab49b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "9dc80be8fd6795a4e5db52059ecd8e5b",
+     "24893414120ecf05d8a05800becab49b"
+    ]
+   },
+   "runs": 25,
+   "seconds": 17.96,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r1-406-URI_not_available_in_p-62e04721",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 392,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 422 == 405",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:256"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dd07355fd16134a015ed5c9dd466e0ca"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "071aff39b2221a04527efaf70e3cbc97",
+     "dd07355fd16134a015ed5c9dd466e0ca"
+    ]
+   },
+   "runs": 28,
+   "seconds": 19.64,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r2-405-Specified_method_is_in-b4f643b3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r2-405-Specified_method_is_in-b4f643b3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__invalid_headers_r2-405-Specified_method_is_in-b4f643b3",
+   "first_failing_seed": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 398,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger",
+    "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "assert 'Unprocessable Entity' == '\"eekboo\"'",
+    "/tmp/work/src/idoft-odinweb/tests/test_containers.py:305"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "cd363904d58b0517f1e602bf09ea4e60"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "29e3f31f6f0eec7c4f37b12a2f5f9273",
+     "cd363904d58b0517f1e602bf09ea4e60"
+    ]
+   },
+   "runs": 27,
+   "seconds": 19.42,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-odinweb/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__with_middleware-c639daa9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__with_middleware-c639daa9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-odinweb/detpy/bundles/test_dispatch__with_middleware-c639daa9",
+   "first_failing_seed": 1
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+  ],
+  "time|random|<end>": [
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_swagger.py::TestSwaggerSpec::test_get_swagger": [
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+  ]
+ },
+ "collected": 450,
+ "seconds": 311.96
+}

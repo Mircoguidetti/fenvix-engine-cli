@@ -1,0 +1,674 @@
+{
+ "name": "arrow",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+  "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008873",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 15.231,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 14.704,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 14.629,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 14.255,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 14.545,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 14.493,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 14.575,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 14.266,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 14.672,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 14.63,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 14.799,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 14.975,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 14.823,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 14.673,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 14.531,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 14.56,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 15.447,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 14.99,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 14.673,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 14.33,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 14.314,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 14.935,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 14.777,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 14.957,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 14.652,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 14.56,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 14.622,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 14.661,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 14.714,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 14.651,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 14.755,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 14.491,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 14.54,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 14.665,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 14.573,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 14.558,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 14.585,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 14.52,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 14.241,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 14.312,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 14.672,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 14.606,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 14.557,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 14.377,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 14.564,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 14.465,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 14.731,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 14.485,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 14.869,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 14.868,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+  "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+ ],
+ "bundles": [
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1883,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert None",
+    "/tmp/work/src/arrow/tests/test_locales.py:42"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8d0da0e269e72c9cb9ff5f60354e8795"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3b09cbf873396a716ade802f165b5e13",
+     "8d0da0e269e72c9cb9ff5f60354e8795"
+    ]
+   },
+   "runs": 32,
+   "seconds": 236.42,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/arrow/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/detpy/bundles/test_locale_name_validation-9cea9591",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_validation",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1882,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 0 == 8",
+    "/tmp/work/src/arrow/tests/test_locales.py:13"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "810321e968d5a5c7a5b7318d69aca5b0"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "97962b7cc37e8bf611b93b36d99c8b5c",
+     "810321e968d5a5c7a5b7318d69aca5b0"
+    ]
+   },
+   "runs": 33,
+   "seconds": 229.04,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/arrow/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/detpy/bundles/test_locale_validation-9b2db556/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/arrow/detpy/bundles/test_locale_validation-9b2db556",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/detpy/bundles/test_locale_validation-9b2db556",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+  ]
+ },
+ "families_by_polluter": {
+  "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass": [
+   "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+  ]
+ },
+ "collected": 1904,
+ "seconds": 1211.84
+}

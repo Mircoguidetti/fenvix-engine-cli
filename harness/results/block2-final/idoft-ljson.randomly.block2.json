@@ -1,0 +1,903 @@
+{
+ "name": "idoft-ljson",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "test/test_ljson_disk.py::test_edit",
+  "test/test_ljson_disk.py::test_read",
+  "test/test_ljson_mem.py::test_contains",
+  "test/test_ljson_mem.py::test_edit"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008971",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 0.257,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 0.231,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 0.273,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 0.291,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 0.317,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 0.293,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 0.306,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.262,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.255,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.293,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.302,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.307,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.272,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.329,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.317,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.897,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.618,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.737,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.31,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.238,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.315,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.303,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.271,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.294,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.319,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.286,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.297,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.235,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.258,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.234,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.232,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.232,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.233,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.258,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.258,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.275,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.307,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.308,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.266,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.255,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.231,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.256,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.3,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_contains",
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.227,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.234,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.232,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.263,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_edit"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.29,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_delete",
+    "test/test_ljson_disk.py::test_edit",
+    "test/test_ljson_disk.py::test_read",
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_disk.py::test_unique_check",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.252,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.256,
+   "tests": 33,
+   "failing": [
+    "test/test_ljson_disk.py::test_speedup_contains",
+    "test/test_ljson_disk.py::test_speedup_delete",
+    "test/test_ljson_disk.py::test_speedup_edit",
+    "test/test_ljson_disk.py::test_speedup_selection_iter",
+    "test/test_ljson_mem.py::test_contains"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "test/test_ljson_disk.py::test_speedup_contains": 1,
+  "test/test_ljson_disk.py::test_speedup_delete": 1,
+  "test/test_ljson_disk.py::test_speedup_edit": 1,
+  "test/test_ljson_disk.py::test_speedup_selection_iter": 1,
+  "test/test_ljson_mem.py::test_edit": 1,
+  "test/test_ljson_disk.py::test_delete": 3,
+  "test/test_ljson_disk.py::test_edit": 3,
+  "test/test_ljson_disk.py::test_read": 3,
+  "test/test_ljson_disk.py::test_unique_check": 3,
+  "test/test_ljson_disk.py::test_contains": 5,
+  "test/test_ljson_mem.py::test_contains": 5
+ },
+ "replays": {
+  "test/test_ljson_mem.py::test_edit": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.259,
+    0.253,
+    0.257,
+    0.254,
+    0.255,
+    0.261,
+    0.255,
+    0.281,
+    0.261,
+    0.251
+   ]
+  },
+  "test/test_ljson_disk.py::test_edit": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.284,
+    0.279,
+    0.287,
+    0.284,
+    0.283,
+    0.291,
+    0.283,
+    0.285,
+    0.281,
+    0.291
+   ]
+  },
+  "test/test_ljson_disk.py::test_read": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.284,
+    0.279,
+    0.287,
+    0.284,
+    0.283,
+    0.291,
+    0.283,
+    0.285,
+    0.281,
+    0.291
+   ]
+  },
+  "test/test_ljson_mem.py::test_contains": {
+   "seed": 5,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.303,
+    0.301,
+    0.307,
+    0.307,
+    0.311,
+    0.304,
+    0.311,
+    0.307,
+    0.306,
+    0.303
+   ]
+  }
+ },
+ "seconds": 23.6
+}

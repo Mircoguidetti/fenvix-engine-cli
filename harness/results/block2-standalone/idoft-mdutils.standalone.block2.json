@@ -1,0 +1,641 @@
+{
+ "name": "idoft-mdutils",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+  "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_header",
+  "tests/test_mdutils.py::TestMdUtils::test_new_list",
+  "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+  "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents",
+  "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009159",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 77,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_create_md_file"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6c53f9b2de564ed3e0c9a2c5de7a26a9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "78e431672873d3349bf7ac719ae49529",
+     "6c53f9b2de564ed3e0c9a2c5de7a26a9"
+    ]
+   },
+   "runs": 22,
+   "seconds": 18.78,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_create_md_file-f87fe7e0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_create_md_file-f87fe7e0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_create_md_file-f87fe7e0"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 92,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8ebb16417b38cb52fc73e3e0877e1bac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "62e28a4bd9e32bfc072c1a4c88455b16",
+     "8ebb16417b38cb52fc73e3e0877e1bac"
+    ]
+   },
+   "runs": 24,
+   "seconds": 17.59,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_checked_list-37a4553b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_checked_list-37a4553b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_checked_list-37a4553b"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 69,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "fef8d231774ec1e9c0e0c72482e501b5"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "45d421304e3309a164b22a6076ed11f8",
+     "fef8d231774ec1e9c0e0c72482e501b5"
+    ]
+   },
+   "runs": 24,
+   "seconds": 17.32,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_list-13f0cb4f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_list-13f0cb4f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_checkbox_list-13f0cb4f"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_header",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 73,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_header"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7aa73eeaf1c0f1962cdd6daf7f69700b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "f8f3d6a8c7646f71e97a5b572ce3c7b4",
+     "7aa73eeaf1c0f1962cdd6daf7f69700b"
+    ]
+   },
+   "runs": 22,
+   "seconds": 15.92,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_header-53413c77/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_header-53413c77",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_header-53413c77"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_list",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 89,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "23409c5d5d1b31c7b9a781c3c40e38b7"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d47f0905d5275fb8ad98213f7995d615",
+     "23409c5d5d1b31c7b9a781c3c40e38b7"
+    ]
+   },
+   "runs": 24,
+   "seconds": 17.43,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_list-468c08c5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_list-468c08c5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_list-468c08c5"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 74,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_reference_image_markdown_data"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b64485d47d07df0b8b595b0fcff02ce2"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "963570fc674aa270ba887abaf252edb6",
+     "b64485d47d07df0b8b595b0fcff02ce2"
+    ]
+   },
+   "runs": 22,
+   "seconds": 15.88,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_reference_image_markdown_data-ff694099/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_reference_image_markdown_data-ff694099",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_reference_image_markdown_data-ff694099"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 85,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_new_table_of_contents"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2d4e1e55111762b880e9f0487e6ea8f7"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "a24405a2f7ee6ff5c8e4ebd8729ec46f",
+     "2d4e1e55111762b880e9f0487e6ea8f7"
+    ]
+   },
+   "runs": 21,
+   "seconds": 15.29,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_table_of_contents-e7990fd0/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_table_of_contents-e7990fd0",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_new_table_of_contents-e7990fd0"
+  },
+  {
+   "test": "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 80,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_fileutils/test_fileutils.py::TestMarkdownFile::test_create_file",
+    "tests/test_mdutils.py::TestMdUtils::test_references_placed_in_markdown_file"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "FileNotFoundError",
+    "call",
+    "FileNotFoundError: [Errno 2] No such file or directory: 'Test_file.md'",
+    "/tmp/work/src/idoft-mdutils/mdutils/fileutils/fileutils.py:23"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "351bc3c69695fbf2b687959cf5b8294a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "283dddb45a4e342044a0373383e18a7f",
+     "351bc3c69695fbf2b687959cf5b8294a"
+    ]
+   },
+   "runs": 22,
+   "seconds": 16.05,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-mdutils/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-mdutils/standalone/bundles/test_references_placed_in_markdown_file-9a625d26/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-mdutils/standalone/bundles/test_references_placed_in_markdown_file-9a625d26",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-mdutils/standalone/bundles/test_references_placed_in_markdown_file-9a625d26"
+  }
+ ],
+ "seconds": 134.27
+}

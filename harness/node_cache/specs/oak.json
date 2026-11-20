@@ -1,0 +1,15 @@
+{
+ "name": "oak",
+ "url": "https://github.com/oakserver/oak",
+ "node": "22",
+ "runner": "deno-test",
+ "deno": "2.9.8",
+ "install": [],
+ "install_files": ["deno.json", "deps.ts"],
+ "build": [],
+ "unset_ci": true,
+ "args": ["--allow-read", "--allow-write", "--allow-net", "--ignore=npm"],
+ "plain": "deno test --allow-read --allow-write --allow-net --parallel --ignore=npm --junit-path={report}",
+ "shards": 1,
+ "source": "21 consecutive first-parent commits of main, 2025-07-05 (f5e53627) to 2026-11-03 (9e2ca3c, Release 17.2.2). The project's own `deno task test` command (deno.json) in every commit of the window, minus --parallel (detjs runs one file per process); 21 test files, about 259 tests, dependencies from jsr.io fetched into DENO_DIR, no services (checked locally: 258 pass, 1 fail in the plain run)."
+}

@@ -1,0 +1,106 @@
+{
+ "name": "idoft-pymq",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009181",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire",
+   "configs_searched": 4,
+   "status": "replay-unstable",
+   "config": "3",
+   "seed": 3,
+   "kind": "order",
+   "prefix_length": 123,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_response_function"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_echo_command_response_function",
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "outcome": "passed",
+   "exception": null,
+   "replay": {
+    "runs": 10,
+    "fails": 3,
+    "fingerprints": [
+     "05fd2b0f67d73a32d58f8e8f498194bf",
+     "1d9a0d4ead52f78b3752986821848b4f",
+     "44a3fa5077f96400c9c7e98a6956a7d0",
+     "481e5b9f2a510c5f074f7786bc94924c",
+     "656fd50656932d4cb7b5481a4587ea8c",
+     "678bc96cdecc3cadc77fbd6f17470559",
+     "753b1e8317014dc8d1355febb56d4ce2",
+     "d2cdeb94996aebc2176d53aeb0ebdcf2",
+     "da7de368affbeb3089796fce1b8e7f40",
+     "f961ff943b41aa7e366af88705145375"
+    ],
+    "identical_fingerprint": false
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] Random.seed(None) @ tests/testutils.py:22 = 12460299019030784046  <>  [entropy] os.urandom @ pymq/provider/base.py:154 = 16:045c43eae93ec27309c8cef9cf9c8a31",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "Random.seed(None)",
+     "at": "tests/testutils.py:22",
+     "v": "12460299019030784046"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "pymq/provider/base.py:154",
+     "v": "16:045c43eae93ec27309c8cef9cf9c8a31"
+    },
+    "fingerprints": [
+     "0240a5969863ed32c37b391d88afc0c8",
+     "481e5b9f2a510c5f074f7786bc94924c"
+    ]
+   },
+   "runs": 33,
+   "seconds": 236.14,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-pymq/bin/python",
+   "command": "pytest --det --det-seed=3 --det-order=/tmp/work/block2/idoft-pymq/standalone/bundles/test_channel_expire-de599f84/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-pymq/standalone/bundles/test_channel_expire-de599f84",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-pymq/standalone/bundles/test_channel_expire-de599f84"
+  }
+ ],
+ "seconds": 236.14
+}

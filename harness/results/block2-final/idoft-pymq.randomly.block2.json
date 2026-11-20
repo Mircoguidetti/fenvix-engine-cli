@@ -1,0 +1,488 @@
+{
+ "name": "idoft-pymq",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009009",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "INTEL(R) XEON(R) PLATINUM 8573C"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 27.89,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 40.554,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 25.304,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 36.11,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 39.115,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 35.833,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 36.362,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 44.354,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 42.757,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 30.985,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 35.309,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 34.517,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 38.484,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 43.174,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 33.752,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 32.295,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 34.603,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 30.969,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 34.676,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 41.708,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 39.989,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 44.166,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 37.989,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 42.978,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 49.318,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 34.211,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 34.398,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 25.882,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 35.429,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 37.525,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 42.118,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 37.388,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 43.302,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 33.003,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 43.223,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 41.608,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 48.603,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 40.552,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 40.768,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 42.294,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 44.624,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 35.182,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 44.388,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 39.118,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 48.576,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 29.853,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 58.09,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 34.57,
+   "tests": 127,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 39.613,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 41.306,
+   "tests": 127,
+   "failing": [
+    "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": 1
+ },
+ "replays": {
+  "tests/test_provider_redis.py::RedisRpcTest::test_channel_expire": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 3,
+   "seconds": [
+    29.078,
+    29.071,
+    27.852,
+    29.083,
+    27.863,
+    29.077,
+    29.073,
+    29.08,
+    27.843,
+    29.079
+   ]
+  }
+ },
+ "seconds": 2215.94
+}

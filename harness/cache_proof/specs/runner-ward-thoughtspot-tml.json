@@ -1,0 +1,17 @@
+{
+ "name": "runner-ward-thoughtspot-tml",
+ "url": "https://github.com/thoughtspot/thoughtspot_tml",
+ "head": "4d3433e54a52",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "ward",
+ "runner_args": [
+  "test",
+  "--order=standard"
+ ],
+ "pip": [
+  "ward"
+ ],
+ "note": "pyproject [tool.hatch.envs.dev.scripts] test = ward test --order=standard ([tool.ward] path = tests/); ward unpinned (0.68: runs on 3.12+); local walk of the 21 commits (MEASURED): all ok, fails under --det = fails under plain ward (24, 7, 0 at commits 0, 10, 20), 0 wrong; no reuse across commits: ward stats pyproject.toml (click.Path) and its mtime changes at every checkout of this repository, plus the epoch window (commits months apart)"
+}

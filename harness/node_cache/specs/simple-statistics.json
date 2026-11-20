@@ -1,0 +1,10 @@
+{
+ "name": "simple-statistics", "url": "https://github.com/simple-statistics/simple-statistics", "node": "22", "runner": "node-test",
+ "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"],
+ "install_files": ["pnpm-lock.yaml", "package.json", "pnpm-workspace.yaml"],
+ "build": [],
+ "args": ["--experimental-test-isolation=none", "--test-reporter=dot"],
+ "patterns": ["test/*.test.js"],
+ "plain": "node --test --experimental-test-isolation=none --test-reporter=dot 'test/*.test.js'",
+ "shards": 1, "source": "the 31 latest first-parent commits of main (2026-11-19); `npm test` runs `node --test --experimental-test-isolation=none test/*.test.js` (one process; detjs --det-cache runs each file in its own process)"
+}

@@ -1,0 +1,641 @@
+{
+ "name": "idoft-coinbase-commerce-python",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+  "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+  "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+  "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+  "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+  "tests/test_api_client.py::TestApiClient::test_authentication_error",
+  "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+  "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009154",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 73,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <TestCreateResource id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "44f72d282f9d52cee7934aa98bc5dc61"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "66a6a8690abb90a0a5a522fd72836fec",
+     "44f72d282f9d52cee7934aa98bc5dc61"
+    ]
+   },
+   "runs": 21,
+   "seconds": 28.71,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_create-44edfb1b/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_create-44edfb1b",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_create-44edfb1b"
+  },
+  {
+   "test": "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 76,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: False is not true",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:688"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "f932a52f2ddfe95d8b61940af467e53b"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "5866a4e486a75abbce49e36b2e397f53",
+     "f932a52f2ddfe95d8b61940af467e53b"
+    ]
+   },
+   "runs": 24,
+   "seconds": 30.07,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list-33cc60ef/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list-33cc60ef",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list-33cc60ef"
+  },
+  {
+   "test": "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 42,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "91ad40b9921037e3eab2ab110633d634"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "1cf9db2552484b40ba08fb134900c9be",
+     "91ad40b9921037e3eab2ab110633d634"
+    ]
+   },
+   "runs": 20,
+   "seconds": 25.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-016deb49/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-016deb49",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-016deb49"
+  },
+  {
+   "test": "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 49,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a25f2fd471f1abf793e8801e57d5dbaa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c29df96089f051d762c88353e5e038f3",
+     "a25f2fd471f1abf793e8801e57d5dbaa"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.43,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-2f946ceb/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-2f946ceb",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-2f946ceb"
+  },
+  {
+   "test": "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 55,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_utils.py::TestUtils::test_register_resource_cls",
+    "tests/api_resources/test_event.py::TestEvent::test_list_iter_mapping"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: <APIObject id=No ID> Serialized: {",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d0cc8de586ca69aa85866ab3d3e00388"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8d3c6a9d67a2dbf0868362a68729a286",
+     "d0cc8de586ca69aa85866ab3d3e00388"
+    ]
+   },
+   "runs": 21,
+   "seconds": 26.37,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-a98e9c0e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-a98e9c0e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_list_iter_mapping-a98e9c0e"
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_authentication_error",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 55,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error",
+    "tests/test_api_client.py::TestApiClient::test_authentication_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParamRequiredError",
+    "call",
+    "coinbase_commerce.error.ParamRequiredError: Request id <MagicMock name='mock.get().headers.get()' id='140737320939040'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7bfb26a2a7e588f43772ef26359523ca"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8c8125a4fef265c4e3218f0c9b3509a8",
+     "7bfb26a2a7e588f43772ef26359523ca"
+    ]
+   },
+   "runs": 25,
+   "seconds": 37.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_authentication_error-9f1ab912/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_authentication_error-9f1ab912",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_authentication_error-9f1ab912"
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_invalid_request_error",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 57,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_validation_error",
+    "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ValidationError",
+    "call",
+    "coinbase_commerce.error.ValidationError: Request id <MagicMock name='mock.get().headers.get()' id='140737320934416'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "2d3b0ed09074145bd8c451ed8cd869e3"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "3ae7e48792ffba40f7db5fa7a6c012e4",
+     "2d3b0ed09074145bd8c451ed8cd869e3"
+    ]
+   },
+   "runs": 25,
+   "seconds": 32.12,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_invalid_request_error-b1c8fe08/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_invalid_request_error-b1c8fe08",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_invalid_request_error-b1c8fe08"
+  },
+  {
+   "test": "tests/test_api_client.py::TestApiClient::test_resource_not_found_error",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 57,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_api_client.py::TestApiClient::test_param_required_error",
+    "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ParamRequiredError",
+    "call",
+    "coinbase_commerce.error.ParamRequiredError: Request id <MagicMock name='mock.get().headers.get()' id='140737320939040'>: <empty message>",
+    "/tmp/work/src/idoft-coinbase-commerce-python/coinbase_commerce/client.py:89"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ef89b9294f9d76196ab8fe1ca2ac0e11"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "bc8a64eb6291f29dadbd06b2f6b4776f",
+     "ef89b9294f9d76196ab8fe1ca2ac0e11"
+    ]
+   },
+   "runs": 25,
+   "seconds": 32.52,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-coinbase-commerce-python/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_resource_not_found_error-7c5e64b1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_resource_not_found_error-7c5e64b1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-coinbase-commerce-python/standalone/bundles/test_resource_not_found_error-7c5e64b1"
+  }
+ ],
+ "seconds": 238.59
+}

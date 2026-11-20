@@ -1,0 +1,15 @@
+{
+ "name": "runner-nose2-howdoi",
+ "url": "https://github.com/gleitz/howdoi",
+ "head": "033dd3ced067",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "nose2",
+ "runner_args": [],
+ "pip": [
+  "-r",
+  "requirements/dev.txt"
+ ],
+ "note": "CI: nose2 (.github/workflows/python.yml); search results from page_cache/ (no network)"
+}

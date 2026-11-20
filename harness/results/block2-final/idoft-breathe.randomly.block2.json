@@ -1,0 +1,987 @@
+{
+ "name": "idoft-breathe",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "randomly",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_command_context.py::test_manual_context_noccr",
+  "tests/test_loading.py::test_loading",
+  "tests/test_loading.py::test_loading_failure",
+  "tests/test_loading.py::test_reloading",
+  "tests/test_merger.py::test_context_commands",
+  "tests/test_merger.py::test_core_commands",
+  "tests/test_merger.py::test_invalid",
+  "tests/test_merger.py::test_noccr_commands"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000008874",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 0.509,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_loading_failure",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 0.493,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 0.515,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 0.504,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 0.514,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_loading_failure",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 0.528,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.516,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.546,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.513,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.516,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.513,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.522,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.533,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.509,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.523,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.525,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.523,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.517,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_loading_failure",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.51,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_loading_failure",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.528,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.523,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.521,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.499,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.51,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.505,
+   "tests": 24,
+   "failing": [
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.514,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.511,
+   "tests": 24,
+   "failing": [
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.527,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.516,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.522,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.515,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.514,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.514,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.526,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.521,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.515,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.537,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.502,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.498,
+   "tests": 24,
+   "failing": [
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.519,
+   "tests": 24,
+   "failing": [
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.529,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.52,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.537,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.528,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_core_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_noccr_commands",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.522,
+   "tests": 24,
+   "failing": [
+    "tests/test_command_context.py::test_manual_context_noccr",
+    "tests/test_loading.py::test_loading",
+    "tests/test_loading.py::test_reloading",
+    "tests/test_merger.py::test_context_commands",
+    "tests/test_merger.py::test_grammar_numbers",
+    "tests/test_merger.py::test_invalid",
+    "tests/test_top_level.py::test_recognition",
+    "tests/test_top_level.py::test_top_level_command_failure"
+   ],
+   "exit": 1,
+   "timed_out": false
+  }
+ ],
+ "first_fail": {
+  "tests/test_loading.py::test_loading": 1,
+  "tests/test_loading.py::test_loading_failure": 1,
+  "tests/test_merger.py::test_context_commands": 1,
+  "tests/test_merger.py::test_grammar_numbers": 1,
+  "tests/test_top_level.py::test_recognition": 1,
+  "tests/test_top_level.py::test_top_level_command_failure": 1,
+  "tests/test_command_context.py::test_manual_context_noccr": 2,
+  "tests/test_merger.py::test_noccr_commands": 2,
+  "tests/test_loading.py::test_reloading": 3,
+  "tests/test_merger.py::test_invalid": 3,
+  "tests/test_merger.py::test_core_commands": 7
+ },
+ "replays": {
+  "tests/test_loading.py::test_loading": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.512,
+    0.512,
+    0.517,
+    0.521,
+    0.513,
+    0.521,
+    0.531,
+    0.515,
+    0.551,
+    0.511
+   ]
+  },
+  "tests/test_loading.py::test_loading_failure": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.512,
+    0.512,
+    0.517,
+    0.521,
+    0.513,
+    0.521,
+    0.531,
+    0.515,
+    0.551,
+    0.511
+   ]
+  },
+  "tests/test_merger.py::test_context_commands": {
+   "seed": 1,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.512,
+    0.512,
+    0.517,
+    0.521,
+    0.513,
+    0.521,
+    0.531,
+    0.515,
+    0.551,
+    0.511
+   ]
+  },
+  "tests/test_command_context.py::test_manual_context_noccr": {
+   "seed": 2,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.507,
+    0.512,
+    0.513,
+    0.522,
+    0.496,
+    0.502,
+    0.499,
+    0.512,
+    0.507,
+    0.506
+   ]
+  },
+  "tests/test_merger.py::test_noccr_commands": {
+   "seed": 2,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.507,
+    0.512,
+    0.513,
+    0.522,
+    0.496,
+    0.502,
+    0.499,
+    0.512,
+    0.507,
+    0.506
+   ]
+  },
+  "tests/test_loading.py::test_reloading": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.512,
+    0.524,
+    0.515,
+    0.517,
+    0.566,
+    0.545,
+    0.531,
+    0.528,
+    0.54,
+    0.546
+   ]
+  },
+  "tests/test_merger.py::test_invalid": {
+   "seed": 3,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.512,
+    0.524,
+    0.515,
+    0.517,
+    0.566,
+    0.545,
+    0.531,
+    0.528,
+    0.54,
+    0.546
+   ]
+  },
+  "tests/test_merger.py::test_core_commands": {
+   "seed": 7,
+   "runs": 10,
+   "fails": 10,
+   "seconds": [
+    0.54,
+    0.54,
+    0.526,
+    0.526,
+    0.525,
+    0.525,
+    0.526,
+    0.527,
+    0.527,
+    0.533
+   ]
+  }
+ },
+ "seconds": 46.81
+}

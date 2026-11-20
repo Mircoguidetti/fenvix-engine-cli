@@ -1,0 +1,794 @@
+{
+ "name": "idoft-tunacell",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tunacell/tests/test_experiment.py::test_counts",
+  "tunacell/tests/test_experiment.py::test_experiment_abspath",
+  "tunacell/tests/test_experiment.py::test_experiment_attributes",
+  "tunacell/tests/test_experiment.py::test_experiment_datatype",
+  "tunacell/tests/test_experiment.py::test_experiment_iter",
+  "tunacell/tests/test_experiment.py::test_experiment_label",
+  "tunacell/tests/test_experiment.py::test_experiment_metadata",
+  "tunacell/tests/test_experiment.py::test_load_experiment",
+  "tunacell/tests/test_filters.py::test_cell_any",
+  "tunacell/tests/test_observable.py::test_observable_str"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009184",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.82.6",
+  "cpu_model": "Intel(R) Xeon(R) 6975P-C"
+ },
+ "bundles": [
+  {
+   "test": "tunacell/tests/test_experiment.py::test_counts",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 21,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_counts"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "276ef66ca4a0c60274865a1095418006"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:3268877900257ea861b4f93f1fa93c34  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:3268877900257ea861b4f93f1fa93c34"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "5d7890a44d923b28cdf0d3bdf4777a9e",
+     "276ef66ca4a0c60274865a1095418006"
+    ]
+   },
+   "runs": 21,
+   "seconds": 45.55,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_counts-ec3abdbd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_counts-ec3abdbd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_counts-ec3abdbd"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_abspath",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 19,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_abspath"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "014339adc20420ba2f1d7b2826594659"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:4b59aad6d5e216a0651316e1b617321d  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:4b59aad6d5e216a0651316e1b617321d"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "a40ee7e8b9a49de78bed03ca03fca7ec",
+     "014339adc20420ba2f1d7b2826594659"
+    ]
+   },
+   "runs": 22,
+   "seconds": 38.27,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_abspath-e4653c44/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_abspath-e4653c44",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_abspath-e4653c44"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_attributes",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 18,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_attributes"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c70d772cf465e2613443dc222f0342c6"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:67e2e1f7c7277dc4fa5c55290b773fec  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:67e2e1f7c7277dc4fa5c55290b773fec"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "013079eec73fb39092091e597b69a741",
+     "c70d772cf465e2613443dc222f0342c6"
+    ]
+   },
+   "runs": 18,
+   "seconds": 31.76,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_attributes-5ac886f6/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_attributes-5ac886f6",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_attributes-5ac886f6"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_datatype",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 14,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_datatype"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "74c20d3475f371ca60a0a0ea1ad4ac19"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:e2f6d5cb89645b7b90b9925452e8396b  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:e2f6d5cb89645b7b90b9925452e8396b"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "4c06991b81bc9aa79d160671e127eaca",
+     "74c20d3475f371ca60a0a0ea1ad4ac19"
+    ]
+   },
+   "runs": 20,
+   "seconds": 34.49,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_datatype-7880b2e7/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_datatype-7880b2e7",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_datatype-7880b2e7"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_iter",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 22,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_iter"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5ec52738a2e33a21b5977839e2cf9d1f"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:3f24f587e1bee718d0886079172180ed  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:3f24f587e1bee718d0886079172180ed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "96679c027e133adfe4cdd5aa97866184",
+     "5ec52738a2e33a21b5977839e2cf9d1f"
+    ]
+   },
+   "runs": 21,
+   "seconds": 36.3,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_iter-dfdeb15f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_iter-dfdeb15f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_iter-dfdeb15f"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_label",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 16,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_label"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "514e988dde61034b65de2af7729a1215"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:678e0633ce8779abb34d469df19e18a0  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:678e0633ce8779abb34d469df19e18a0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "265e71cbcc6d2846d93fa7b55e58ccb3",
+     "514e988dde61034b65de2af7729a1215"
+    ]
+   },
+   "runs": 19,
+   "seconds": 32.96,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_label-3226a49e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_label-3226a49e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_label-3226a49e"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_experiment_metadata",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 15,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_experiment_metadata"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "d97c0919d447040ce1af5aecfbe98c65"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:a55bbffe8cfa183fce2310ca27111b96  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:a55bbffe8cfa183fce2310ca27111b96"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "00f594dac54d7954dba6db262aedf5e9",
+     "d97c0919d447040ce1af5aecfbe98c65"
+    ]
+   },
+   "runs": 19,
+   "seconds": 33.0,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_metadata-582bd747/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_metadata-582bd747",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_experiment_metadata-582bd747"
+  },
+  {
+   "test": "tunacell/tests/test_experiment.py::test_load_experiment",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 20,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_experiment.py::test_load_experiment"
+   ],
+   "outcome": "error",
+   "exception": [
+    "ValueError",
+    "setup",
+    "ValueError: no field of name width",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/cell.py:250"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "b95ca24c01a74f31065a2a15a7a6b395"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 5,
+    "reason": "entropy",
+    "description": "event #5: [entropy] os.urandom @ tunacell/base/colony.py:85 = 16:150744a689c966a41c4284463b2ae776  <>  [time] time.time @ <site>/tqdm/std.py:1463 = 3000",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "tunacell/base/colony.py:85",
+     "v": "16:150744a689c966a41c4284463b2ae776"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.time",
+     "at": "<site>/tqdm/std.py:1463",
+     "v": "3000"
+    },
+    "fingerprints": [
+     "e84f9ae8f0c4c35893129836dc54ed26",
+     "b95ca24c01a74f31065a2a15a7a6b395"
+    ]
+   },
+   "runs": 22,
+   "seconds": 37.93,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_load_experiment-d12d2402/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_load_experiment-d12d2402",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_load_experiment-d12d2402"
+  },
+  {
+   "test": "tunacell/tests/test_filters.py::test_cell_any",
+   "configs_searched": 7,
+   "status": "reproduced",
+   "config": "6",
+   "seed": 6,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "tunacell/tests/test_filters.py::test_unroll"
+   ],
+   "setters": [],
+   "order": [
+    "tunacell/tests/test_filters.py::test_unroll",
+    "tunacell/tests/test_filters.py::test_cell_any"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert [Observable(n... tref=None, )] == []",
+    "/tmp/work/src/idoft-tunacell/tunacell/tests/test_filters.py:24"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0b421a7a65131d51703550af0b300158"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "cf2bffa6ffda944838ec08108d41a5ca",
+     "0b421a7a65131d51703550af0b300158"
+    ]
+   },
+   "runs": 26,
+   "seconds": 66.86,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_cell_any-dcfad64e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_cell_any-dcfad64e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_cell_any-dcfad64e"
+  },
+  {
+   "test": "tunacell/tests/test_observable.py::test_observable_str",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "brittle",
+   "prefix_length": 35,
+   "minimal_length": 1,
+   "polluters": [],
+   "setters": [
+    "tunacell/tests/test_observable.py::test_observable_init"
+   ],
+   "order": [
+    "tunacell/tests/test_observable.py::test_observable_str"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ObservableStringError",
+    "call",
+    "tunacell.base.observable.ObservableStringError: Not a valid codestring",
+    "/tmp/work/src/idoft-tunacell/tunacell/base/observable.py:236"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "002dc2e37dfa0677441ff1e72f85ac1d"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 2,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "b00ad37777a2ab9e13211adf315cc2c4",
+     "002dc2e37dfa0677441ff1e72f85ac1d"
+    ]
+   },
+   "runs": 24,
+   "seconds": 42.08,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-tunacell/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-tunacell/standalone/bundles/test_observable_str-95598458/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-tunacell/standalone/bundles/test_observable_str-95598458",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-tunacell/standalone/bundles/test_observable_str-95598458"
+  }
+ ],
+ "seconds": 399.21
+}

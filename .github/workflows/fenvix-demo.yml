@@ -1,0 +1,43 @@
+name: fenvix-demo
+
+# The first `runs-on: fenvix`: two jobs on OUR machine (a GitHub self-hosted runner with labels self-hosted,fenvix,
+# set up by runner/bootstrap.sh). Job 1 runs a public pytest project at commit N inside the fenvix engine; job 2 runs
+# commit N+1 on the same machine, reuses with proof the tests whose inputs did not change, and checks every reuse.
+#
+# Security (the repository is public): this workflow never runs on pull_request or pull_request_target, so a pull
+# request from a fork can never send its code to our machine through it. It runs on a push to the runner branch only
+# once the repository variable FENVIX_RUNNER_READY is "true" (set it when a fenvix runner is online; without a runner
+# the jobs would wait in the queue), or by hand (Actions -> fenvix-demo -> Run workflow, once this file is on the
+# default branch). See docs/RUNNER-PROTOTYPE.md.
+
+on:
+  push:
+    branches: [claude/runner-prototype-ee21he]
+    paths: [".github/workflows/fenvix-demo*.yml", "runner/**"]
+  workflow_dispatch:
+    inputs:
+      target: {description: "public pytest project (owner/repo)", default: "pygments/pygments"}
+      commit_n: {description: "commit N", default: "9c436b34ccafdf9376527f66c6e587ffe0d1b84c"}
+      commit_n1: {description: "commit N+1", default: "b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101"}
+      extra_pip: {description: "extra test requirements of the target", default: "wcag-contrast-ratio"}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fenvix-demo
+  cancel-in-progress: false
+
+jobs:
+  demo:
+    if: >-
+      github.repository == 'Mircoguidetti/fenvix-engine-cli' &&
+      (github.event_name == 'workflow_dispatch' || vars.FENVIX_RUNNER_READY == 'true')
+    uses: ./.github/workflows/fenvix-demo-jobs.yml
+    with:
+      runs_on: '["self-hosted", "fenvix"]'
+      hosted: false
+      target: ${{ inputs.target || 'pygments/pygments' }}
+      commit_n: ${{ inputs.commit_n || '9c436b34ccafdf9376527f66c6e587ffe0d1b84c' }}
+      commit_n1: ${{ inputs.commit_n1 || 'b6aaaca75fd3bd30c2a2c0e5eb4e1bf0c325e101' }}
+      extra_pip: ${{ inputs.extra_pip || 'wcag-contrast-ratio' }}
