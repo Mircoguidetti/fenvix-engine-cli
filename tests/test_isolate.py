@@ -111,3 +111,41 @@ def test_isolated_entries_are_not_offered_to_a_session_without_isolation(pyteste
     out = pytester.path / "plain.json"
     pytester.runpytest_subprocess("--det", cache, f"--det-outcomes={out}", "-p", "no:cacheprovider")
     assert json.loads(out.read_text())["cache"]["reused_ids"] == []
+
+
+def test_wider_scopes_are_set_up_once_in_the_parent_and_torn_down_there(pytester, monkeypatch, tmp_path_factory):
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+    log = tmp_path_factory.mktemp("log") / "events"
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_m=f"""
+        import os, pytest
+
+        LOG = {str(log)!r}
+
+        def note(x):
+            with open(LOG, "a") as fh:
+                fh.write(x + "\\n")
+
+        @pytest.fixture(scope="module")
+        def shared(tmp_path_factory):
+            d = tmp_path_factory.mktemp("shared")
+            note("setup")
+            yield {{"dir": d, "items": []}}
+            note("teardown")
+            assert d.exists()
+
+        def test_one(shared):
+            shared["items"].append(1)       # a child's change: not seen by the next test
+            assert shared["dir"].exists()
+
+        def test_two(shared):
+            assert shared["items"] == []
+            assert shared["dir"].exists()   # the first child did not tear the module's fixture down
+
+        def setup_module():
+            note("setup_module")
+        """)
+    r, o, _, _ = _run(pytester, 0)
+    assert o == {"test_m.py::test_one": "passed", "test_m.py::test_two": "passed"}, r.stdout.str()
+    assert log.read_text().split() == ["setup_module", "setup", "teardown"]

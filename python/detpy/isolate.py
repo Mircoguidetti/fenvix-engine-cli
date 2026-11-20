@@ -52,9 +52,23 @@ def _det_outcome(reports) -> str:
     return o(parts.get("setup"), parts.get("call"), parts.get("teardown"))
 
 
+class _Collectors:
+    """The ``nextitem`` a child passes to pytest's protocol: it shares every collector with the test, so the child's
+    teardown stops at the test itself."""
+
+    def __init__(self, item):
+        self._chain = item.listchain()[:-1]
+        self.nodeid = item.nodeid
+        self.session = item.session
+
+    def listchain(self):
+        return list(self._chain)
+
+
 class Isolate:
     def __init__(self, config):
         self.config = config
+        self.scope_errors: set[str] = set()
 
     @pytest.hookimpl
     def pytest_runtest_protocol(self, item, nextitem):
@@ -65,6 +79,9 @@ class Isolate:
             return None  # served by the cache (its own protocol hook)
         if pc is not None:
             pc.iso_prepare()
+        s0 = _perf()
+        self._scope_setup(item)
+        STATS["scope_setup_s"] = STATS.get("scope_setup_s", 0.0) + (_perf() - s0)
         t0 = _perf()
         r, w = os.pipe()
         sys.stdout.flush()
@@ -101,6 +118,7 @@ class Isolate:
         except Exception as e:  # noqa: BLE001
             payload = {"error": f"unreadable payload: {type(e).__name__}: {e}"}
         self._parent(item, pc, payload)
+        self._scope_teardown(item, nextitem)
         STATS["tests"] += 1
         STATS["child_s"] += payload.get("child_s", 0.0)
         STATS["record_s"] += payload.get("record_s", 0.0)
@@ -119,7 +137,9 @@ class Isolate:
         plugin.level0_begin(item)
         t = pc.iso_begin(item) if pc is not None else None
         p0 = _perf()
-        reports = runtestprotocol(item, nextitem=None, log=False)
+        # the test's own teardown only: the collectors and the fixtures of wider scopes belong to the parent
+        # (torn down there once, when their scope ends)
+        reports = runtestprotocol(item, nextitem=_Collectors(item), log=False)
         protocol_s = _perf() - p0
         if pc is not None:
             for rep in reports:
@@ -136,6 +156,52 @@ class Isolate:
         return {"reports": ser, "fingerprint": fp, "shard": shard, "summary": summary,
                 "facts": list(pc.iso_new_facts) if pc is not None else [],
                 "protocol_s": protocol_s, "record_s": record_s, "child_s": _perf() - c0}
+
+    # -- parent: scopes ----------------------------------------------------------
+    def _scope_setup(self, item) -> None:
+        """Set up, in the parent, the collectors above the test (xunit setup_module/setup_class) and the fixtures of
+        wider scope it uses, once per scope as pytest does: the children start from that snapshot, so a module's
+        tests share the fixture's set-up value, never what an earlier test did to it. A failure is kept where pytest
+        keeps it (the collector's stack entry, the fixture's cached exception): the child reports it."""
+        ss = item.session._setupstate
+        chain = item.listchain()[:-1]
+        for col, (_fins, exc) in list(ss.stack.items()):
+            if col not in chain or exc:
+                return
+        for col in chain[len(ss.stack):]:
+            ss.stack[col] = ([col.teardown], None)
+            try:
+                col.setup()
+            except BaseException as exc:  # noqa: BLE001 - kept for the child, as SetupState.setup keeps it
+                ss.stack[col] = (ss.stack[col][0], (exc, exc.__traceback__))
+                return
+        info = getattr(item, "_fixtureinfo", None)
+        req = getattr(item, "_request", None)
+        if info is None or req is None:
+            return
+        for name in item.fixturenames:
+            defs = info.name2fixturedefs.get(name)
+            if not defs or defs[-1].scope == "function":
+                continue
+            try:
+                req.getfixturevalue(name)
+            except BaseException:  # noqa: BLE001 - cached by the fixture definition: the child reports it
+                pass
+
+    def _scope_teardown(self, item, nextitem) -> None:
+        """Tear down, in the parent, the scopes the next test does not share (pytest's teardown_exact)."""
+        try:
+            item.session._setupstate.teardown_exact(nextitem)
+        except BaseException as e:  # noqa: BLE001
+            STATS["scope_teardown_errors"] = STATS.get("scope_teardown_errors", 0) + 1
+            from _pytest.reports import TestReport
+
+            now = _real_time()
+            rep = TestReport(item.nodeid, item.location, {k: 1 for k in item.keywords}, "failed",
+                             f"detpy --det-isolate: teardown of a wider scope after this test failed: "
+                             f"{type(e).__name__}: {e}", "teardown", (), 0.0, now, now)
+            self.scope_errors.add(item.nodeid)
+            item.ihook.pytest_runtest_logreport(report=rep)
 
     # -- parent ------------------------------------------------------------------
     def _parent(self, item, pc, payload) -> None:
