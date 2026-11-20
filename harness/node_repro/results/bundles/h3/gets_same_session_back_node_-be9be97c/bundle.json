@@ -1,0 +1,76 @@
+{
+  "test": "test/session.test.ts::session::node::gets same session back (node)",
+  "configs_searched": 2,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 1109,
+  "minimal_length": 2,
+  "polluters": [
+    "test/session.test.ts::session::node::stores large data in chunks (node)"
+  ],
+  "setters": [],
+  "order": [
+    "test/session.test.ts::session::node::stores large data in chunks (node)",
+    "test/session.test.ts::session::node::gets same session back (node)"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "expected { session: { id: '2', data: {} } } to match object { session: { id: '1', data: {} } }",
+    "test/session.test.ts:77"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "cdc394b77b01f585d0bc0c3ca275dfac"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 1,
+    "reason": "time",
+    "description": "event #1: [time] setTimeout @ <node> = schedule:499000000  <>  [time] Date.now @ <node> = 2000",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "setTimeout",
+      "at": "<node>",
+      "v": "schedule:499000000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "Date.now",
+      "at": "<node>",
+      "v": "2000"
+    },
+    "fingerprints": [
+      "01c7938e6d52208c3eb58c08b2fef051",
+      "cdc394b77b01f585d0bc0c3ca275dfac"
+    ]
+  },
+  "runs": 32,
+  "seconds": 232.06,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=1 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/gets_same_session_back_node_-be9be97c/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/gets_same_session_back_node_-be9be97c",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/gets_same_session_back_node_-be9be97c",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/h3",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}
