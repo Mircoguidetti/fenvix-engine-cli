@@ -83,7 +83,9 @@ def test_function_change_reruns_the_tests_that_executed_it_and_the_later_ones(py
     run_cache()
     (pytester.path / "pkg/mod.py").write_text(MOD.replace("return x * 2", "return 2 * x"))
     r, reused, data = run_cache()
-    assert reused == ids("test_f")
+    # test_f ran before test_g: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_f"].startswith("placement: a predecessor of test_m.py::")
     assert data["cache"]["miss_ids"]["test_m.py::test_g"].startswith("code: pkg/mod.py::g")
     assert data["cache"]["miss_ids"]["test_m.py::test_limit"].startswith("code: pkg/mod.py::g")
 
@@ -148,8 +150,9 @@ def test_data_file_change_reruns_its_reader(pytester, run_cache):
     run_cache()
     (pytester.path / "data.txt").write_text("world")
     r, reused, data = run_cache()
-    # test_other ran before the reader: reused; test_after ran after it in the same process (R-020 O1): reruns
-    assert reused == ids("test_other")
+    # test_other ran before the reader: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need; test_after ran after it (R-020 O1): reruns
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_other"].startswith("placement: a predecessor of")
     assert data["cache"]["miss_ids"]["test_m.py::test_data"].startswith("data: data.txt")
     assert data["cache"]["miss_ids"]["test_m.py::test_after"].startswith("data: data.txt")
     r.assert_outcomes(passed=2, failed=1)
@@ -248,14 +251,19 @@ def test_environment_variable_read_is_an_input_and_unread_ones_are_not(pytester,
         """})
     monkeypatch.delenv("DETPY_T_FLAG", raising=False)
     run_cache()
-    monkeypatch.setenv("DETPY_T_UNREAD", "x")
+    # py-cache F-05: the process environment is part of every key (C code and libraries read it without a recorded
+    # read), except the variables of _proof.ENV_ALLOWLIST, each with its reason
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
     _, reused, _ = run_cache()
     assert reused == ids("test_flag", "test_other", "test_after")
+    monkeypatch.setenv("DETPY_T_UNREAD", "x")
+    _, reused, data = run_cache()
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_other"].startswith("config")
+    run_cache()
     monkeypatch.setenv("DETPY_T_FLAG", "1")
     r, reused, data = run_cache()
-    assert reused == ids("test_other")  # test_after ran after the reader (R-020 O1, prefix rule)
-    assert data["cache"]["miss_ids"]["test_m.py::test_flag"] == "env: environment variable DETPY_T_FLAG"
-    assert data["cache"]["miss_ids"]["test_m.py::test_after"] == "env: environment variable DETPY_T_FLAG"
+    assert reused == set()
     r.assert_outcomes(passed=2, failed=1)
 
 
@@ -458,7 +466,9 @@ def test_clock_reader_depends_on_the_epoch(pytester, run_cache):
     _, reused, _ = run_cache("--det-epoch=2025-01-01T00:00:00")
     assert reused == ids("test_clock", "test_no_clock", "test_after_clock")
     _, reused, data = run_cache("--det-epoch=2025-06-01T00:00:00")
-    assert reused == ids("test_no_clock")
+    # test_no_clock ran before the clock reader: review R-023c E7 (py-cache): a test that runs runs after every earlier test of its process whose in-process state it may need
+    assert reused == set()
+    assert data["cache"]["miss_ids"]["test_m.py::test_no_clock"].startswith("placement: a predecessor of")
     assert data["cache"]["miss_ids"]["test_m.py::test_clock"].startswith("clock")
     # a time test_clock read can be kept for a later test (R-020 O1, prefix rule)
     assert data["cache"]["miss_ids"]["test_m.py::test_after_clock"].startswith("clock")
@@ -603,4 +613,5 @@ def test_env_name_not_valid_utf8_refuses_the_test(pytester):
     assert [d["outcomes"]["test_m.py::test_e"] for d in res] == ["passed", "failed"]
     assert res[0]["cache"]["not_cached_ids"]["test_m.py::test_e"] == (
         "reads an environment variable whose name is not valid UTF-8")
-    assert res[1]["cache"]["reused_ids"] == ["test_m.py::test_plain"]
+    # the variable's value is part of the process environment, a part of every key (py-cache F-05)
+    assert res[1]["cache"]["reused_ids"] == []

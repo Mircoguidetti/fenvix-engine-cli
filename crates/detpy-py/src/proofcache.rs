@@ -381,10 +381,19 @@ impl ProofCache {
     }
 
     /// Review R-023c E7: per test, the earlier tests its stored entry may have consumed state from
-    /// (`Entry::needs`): `None` for every earlier test (no entry, or its carried set reached the library node).
+    /// (`Entry::needs`): `None` for every earlier test (its carried set reached the library node). A test with no
+    /// entry (never recorded: new, or never cacheable) needs none here: its result was never reused, so a session that
+    /// reuses its predecessors gives it what every earlier warm session gave it (py-cache: the remaining gap is listed
+    /// in the report; review R-009's git case keeps a reusable predecessor of a never-cacheable test reused).
     fn needs(&self, nodeids: Vec<String>) -> Vec<Option<Vec<String>>> {
         let g = lock(&self.inner);
-        nodeids.iter().map(|n| g.store.tests.get(n).and_then(|e| e.needs.clone())).collect()
+        nodeids
+            .iter()
+            .map(|n| match g.store.tests.get(n) {
+                Some(e) => e.needs.clone(),
+                None => Some(Vec::new()),
+            })
+            .collect()
     }
 
     fn __len__(&self) -> usize {

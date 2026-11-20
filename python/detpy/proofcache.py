@@ -169,6 +169,8 @@ class ProofCachePlugin(ProofSession):
             return
         nids = [item.nodeid for item in session.items]
         self.check(nids, dict(zip(nids, session.items)), _unittest_units(nids, session.items))
+        if self.isolate and not self.iso_child:
+            self._expect_serial(nids)
 
     # -- pytest-xdist under --det: the controller --------------------------------------------------------------
     def decide_controller(self, nids: list) -> set:
@@ -197,9 +199,54 @@ class ProofCachePlugin(ProofSession):
             seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
             self._demote_writers_of_running_readers(list(nids))
+            self._expect_serial(list(nids))
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
+
+    # -- PY-05 / audit G-0175, G-0169: -n and --det-isolate never change an outcome silently ----------------------
+    def _expect_serial(self, nids) -> None:
+        """The outcome a serial session gives each test that runs here, where the store proves it: a serial entry (or
+        a parallel one proven equal to the serial result) whose inputs are unchanged. ``placement_findings`` compares
+        it with the outcome this session got."""
+        exp = self.serial_expect = {}
+        for nid in nids:
+            if self.sess.is_hit(nid):
+                continue
+            try:
+                ok, _ = self.store.check(nid)
+                if not ok:
+                    continue
+                e = json.loads(self.store.entry(nid))
+            except Exception:
+                continue
+            if e.get("placement", "") in ("", "parallel-proven") and e.get("outcome"):
+                exp[nid] = e["outcome"]
+
+    def _note_outcome(self, report) -> None:
+        got = self.__dict__.setdefault("got_outcome", {})
+        nid = report.nodeid
+        if report.failed:
+            got[nid] = "failed"
+        elif got.get(nid) == "failed":
+            return
+        elif report.when == "call" or (report.when == "setup" and report.skipped):
+            out = report.outcome
+            if hasattr(report, "wasxfail"):
+                out = "xfailed" if report.skipped else "xpassed"
+            got[nid] = out
+
+    def placement_findings(self) -> list:
+        """(nodeid, serial outcome, this session's outcome) of every test whose outcome under -n / --det-isolate
+        differs from the outcome a serial session gives it with the same inputs (the store's proof)."""
+        exp = getattr(self, "serial_expect", None) or {}
+        got = getattr(self, "got_outcome", None) or {}
+        return [(n, exp[n], got[n]) for n in exp if n in got and got[n] != exp[n]]
+
+    @pytest.hookimpl(trylast=True)
+    def pytest_sessionfinish(self, session):
+        if self.placement_findings() and session.exitstatus == 0:
+            session.exitstatus = pytest.ExitCode.TESTS_FAILED
 
     def check_workers(self, nids: list, assign: dict) -> list:
         """After the plan: reused results that read ``PYTEST_XDIST_WORKER`` and that this run's plan places on
@@ -380,6 +427,8 @@ class ProofCachePlugin(ProofSession):
         return super().iso_record(_plugin.S.fingerprints if fingerprints is None else fingerprints)
 
     def pytest_runtest_logreport(self, report):
+        if self.role == "controller" or (self.isolate and not self.iso_child):
+            self._note_outcome(report)
         if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
             return  # the child reported it to its own session
         self.sess.report(report)
@@ -466,6 +515,13 @@ class ProofCachePlugin(ProofSession):
             return []
 
     def terminal_summary(self, tr) -> None:
+        found = self.placement_findings()
+        if found:
+            how = "-n" if self.role == "controller" else "--det-isolate"
+            tr.section(f"detpy PLACEMENT FINDINGS: outcomes under {how} differ from the serial run", red=True)
+            for nid, want, got in found:
+                tr.write_line(f"placement: {nid}: {got} here, {want} in a serial session with the same inputs "
+                              f"(it depends on another test's in-process state or on its worker)", red=True)
         tr.section("detpy cache with proof")
         for text, markup in self.summary_lines(tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))

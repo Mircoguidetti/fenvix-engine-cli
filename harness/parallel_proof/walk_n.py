@@ -33,19 +33,47 @@ def git(repo, *args) -> str:
 def pytest(repo, py, args, out_json, timeout):
     env = {k: v for k, v in os.environ.items() if k not in ("DETPY_REEXEC", "PYTHONHASHSEED")}
     t0 = time.perf_counter()
-    try:
-        p = subprocess.run([py, "-m", "pytest", "-p", "no:cacheprovider", "-q", f"--det-outcomes={out_json}", *args],
-                           cwd=repo, capture_output=True, text=True, timeout=timeout, env=env)
-        tail = (p.stdout + p.stderr).strip().splitlines()[-1:] or [""]
-        rc = p.returncode
-    except subprocess.TimeoutExpired:
-        tail, rc = ["timeout"], "timeout"
+    log = out_json + ".log"
+    peak_kb = None
+    with open(log, "w") as fh:
+        p = subprocess.Popen([py, "-m", "pytest", "-p", "no:cacheprovider", "-q", f"--det-outcomes={out_json}", *args],
+                             cwd=repo, stdout=fh, stderr=subprocess.STDOUT, text=True, env=env)
+        try:
+            p.wait(timeout=timeout)
+        except subprocess.TimeoutExpired:
+            p.kill()
+        try:
+            # py-cache item 4: the peak resident set of the pytest process and of every worker it reaped (Linux:
+            # wait4's ru_maxrss covers the reaped descendants)
+            _, status, ru = os.wait4(p.pid, 0)
+            p.returncode = os.waitstatus_to_exitcode(status)
+            peak_kb = ru.ru_maxrss
+        except ChildProcessError:
+            pass
+    with open(log) as fh:
+        lines = fh.read().strip().splitlines()
+    tail = lines[-1:] or [""]
+    rc = p.returncode if p.returncode is not None else "timeout"
+    if rc == -9:
+        rc = "killed"
     wall = round(time.perf_counter() - t0, 1)
     data = {}
     if os.path.exists(out_json):
         with open(out_json) as f:
             data = json.load(f)
-    return {"wall_s": wall, "rc": rc, "tail": tail[0]}, data
+    return {"wall_s": wall, "rc": rc, "tail": tail[0], "peak_rss_mb": round(peak_kb / 1024, 1) if peak_kb else None}, data
+
+
+def store_mb(cache_dir) -> float | None:
+    """Size of a cache directory's files (the store, its shards), MB."""
+    total = 0
+    for dp, _, fns in os.walk(cache_dir):
+        for fn in fns:
+            try:
+                total += os.path.getsize(os.path.join(dp, fn))
+            except OSError:
+                pass
+    return round(total / 2**20, 2) if total else None
 
 
 def deps_digest(repo) -> str:
@@ -117,6 +145,8 @@ def main(argv=None) -> int:
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
+            if name != "b":
+                meta["store_mb"] = store_mb(os.path.join(work, "cache-par" if name == "a_par" else "cache-ser"))
             if name != "b" and os.path.exists(cf):
                 # the carried-set rule: tests whose key carries earlier contexts of their process (every worker's
                 # recording session appends one line)
@@ -169,6 +199,7 @@ def main(argv=None) -> int:
                        "det_args": det_args, "shard": a.shard, "commits": rows}, f, indent=1)
         print(json.dumps({k: (v if not isinstance(v, dict) else {x: v[x] for x in ("wall_s", "reused", "ran",
                                                                                    "mismatches", "wrong_reuses",
+                                                                                   "peak_rss_mb", "store_mb",
                                                                                    "reused_time_s", "test_time_s")
                                                                  if x in v}) for k, v in row.items()}), flush=True)
     git(a.repo, "checkout", "-q", "--force", head)

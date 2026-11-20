@@ -99,6 +99,10 @@ def _reaches_user(f) -> bool:
             return False
         if f.f_code.co_name == "copystat" and f.f_globals.get("__name__") == "shutil":
             return False
+        if fn == "<string>" or fn.startswith("<frozen"):
+            # code compiled from a string (execnet's worker bootstrap, a user's exec): its caller decides
+            f = f.f_back
+            continue
         if _sites._classify(fn)[0] == _sites._USER:
             return True
         f = f.f_back
@@ -794,6 +798,118 @@ def tz_locale_identity() -> dict:
     return _core.tz_locale_identity(os.environ)  # os.environ._data: no recorded-environ event
 
 
+# ---------------------------------------------------------------------------
+# Process-level state (F-05 "flip the default", review R-023c, audit G-0160..G-0163): what every test of the process
+# can see without a read the capture attributes to one test (C code, libraries reading it at import, the pools and
+# limits a test is sized by). It is part of every test's key, except what is on this allowlist, each with its reason.
+# A variable on the allowlist is still an input of every test that reads it from Python (os.environ is recorded per
+# test); it only stays out of the process-wide part.
+ENV_ALLOWLIST: dict[str, str] = {
+    **{k: "detpy's own bookkeeping (re-exec, bytecode cache, assertion-rewrite cache, worker hand-over): set by "
+          "detpy itself for its own processes, never an input of the project's code"
+       for k in ("DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS", "DETPY_XDIST_ENV",
+                 "DETPY_REWRITE_CACHE", "DETPY_REWRITE_OWN")},
+    "PYTEST_XDIST_*": "pytest-xdist's per-worker identity: differs between the controller and each worker of one "
+                      "session; a test that reads it is keyed per test and pinned to its worker (placement)",
+    "PYTEST_CURRENT_TEST": "set by pytest around each test (the running test's id)",
+    "PWD": "the shell's copy of the working directory; the project root is part of every key",
+    "OLDPWD": "the shell's previous directory: shell bookkeeping",
+    "SHLVL": "shell nesting depth: shell bookkeeping",
+    "_": "the shell's last command: shell bookkeeping",
+    "GITHUB_RUN_ID": "a per-run identifier of GitHub Actions: different on every run by construction",
+    "GITHUB_RUN_NUMBER": "a per-run counter of GitHub Actions: different on every run by construction",
+    "GITHUB_RUN_ATTEMPT": "the attempt number of a GitHub Actions run",
+    "GITHUB_JOB": "the job id of a GitHub Actions run",
+    "GITHUB_ACTION": "the step id of a GitHub Actions run",
+    "GITHUB_ENV": "a per-step file path of GitHub Actions (a test that reads the file reads it as a data input)",
+    "GITHUB_OUTPUT": "a per-step file path of GitHub Actions",
+    "GITHUB_PATH": "a per-step file path of GitHub Actions",
+    "GITHUB_STATE": "a per-step file path of GitHub Actions",
+    "GITHUB_STEP_SUMMARY": "a per-step file path of GitHub Actions",
+    "INVOCATION_ID": "systemd's per-invocation identifier",
+    "TERM_SESSION_ID": "a terminal's per-session identifier",
+    "SSH_CLIENT": "the client address of an SSH login",
+    "SSH_CONNECTION": "the addresses of an SSH login",
+    "SSH_TTY": "the terminal of an SSH login",
+}
+
+
+def _env_allowed(name: str) -> bool:
+    if name in ENV_ALLOWLIST:
+        return True
+    return any(k.endswith("*") and name.startswith(k[:-1]) for k in ENV_ALLOWLIST)
+
+
+def _raw_environ() -> dict:
+    """os.environ without its recording hooks (the process's environment as C and children see it)."""
+    data = getattr(os.environ, "_data", None)
+    if isinstance(data, dict):
+        out = {}
+        for k, v in data.items():
+            k = os.fsdecode(k) if isinstance(k, bytes) else k
+            v = os.fsdecode(v) if isinstance(v, bytes) else v
+            out[k] = v
+        return out
+    return dict(os.environ)
+
+
+def process_identity() -> dict:
+    """The process-level state of the session (see ENV_ALLOWLIST). Every part a test may depend on without a read
+    the capture attributes to it: the environment (allowlist above), usable CPUs, umask, resource limits, host name,
+    the preloaded shared objects, the warning filters, interpreter flags. Part of every test's key."""
+    d: dict = {}
+    env = _raw_environ()
+    d["environment"] = {k: _core.env_value_digest(v) for k, v in sorted(env.items()) if not _env_allowed(k)}
+    try:
+        d["cpus"] = sorted(os.sched_getaffinity(0))
+    except (AttributeError, OSError):
+        d["cpus"] = None
+    d["cpu_count"] = os.cpu_count()
+    try:
+        u = os.umask(0)
+        os.umask(u)
+        d["umask"] = u
+    except OSError:
+        d["umask"] = None
+    try:
+        import resource
+        lim = {}
+        for name in sorted(dir(resource)):
+            if name.startswith("RLIMIT_"):
+                try:
+                    lim[name] = resource.getrlimit(getattr(resource, name))
+                except (OSError, ValueError):
+                    lim[name] = None
+        d["rlimits"] = lim
+    except ImportError:
+        d["rlimits"] = None
+    try:
+        d["host"] = os.uname().nodename
+    except AttributeError:
+        d["host"] = platform.node()
+    d["warnoptions"] = list(sys.warnoptions)
+    d["xoptions"] = sorted((str(k), str(v)) for k, v in getattr(sys, "_xoptions", {}).items())
+    d["flags"] = repr(sys.flags)
+    try:
+        d["uid"] = (os.getuid(), os.geteuid(), os.getgid(), os.getegid(), sorted(os.getgroups()))
+    except (AttributeError, OSError):
+        d["uid"] = None
+    return d
+
+
+def load_store(path: str) -> dict:
+    """A store file (proof-cache.json) with every entry's data expanded to its (key, dependency) pairs: store
+    version 2 writes each data chunk once (``chunks``) and entries list chunk addresses (py-cache item 4)."""
+    with open(path) as fh:
+        s = json.load(fh)
+    chunks = s.pop("chunks", None) or {}
+    for e in (s.get("tests") or {}).values():
+        d = e.get("data") or []
+        if d and isinstance(d[0], str):
+            e["data"] = [list(p) for a in d for p in chunks[a]]
+    return s
+
+
 def level0_identity() -> dict:
     """The Level 0 part of every runner's configuration digest: detpy's version and encoding, the controls, and the
     time zone and locale as C sees them."""
@@ -810,6 +926,8 @@ def level0_identity() -> dict:
         # review R-009 F3: the time zone and locale are read by C (getenv, tzset, /etc/localtime), never through
         # os.environ: they are configuration of every test
         "tz_locale": tz_locale_identity(),
+        # F-05: process-level state no read attributes to one test is part of every key (ENV_ALLOWLIST)
+        "process": process_identity(),
     }
 
 
@@ -935,7 +1053,7 @@ class ProofSession:
         it reads (review R-023b N8). ``lists``: the tests of each process, in order. Not under --det-isolate (each test
         in its own child: no in-process state reaches it). Returns the demoted tests."""
         out: list = []
-        if self.config is not None and self.config.getoption("det_isolate", False):
+        if getattr(self, "isolate", False):
             return out
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
@@ -1058,6 +1176,10 @@ class ProofSession:
         sess, cap = self.sess, self.cap
         sess.add_fingerprints(fingerprints)
         cap.switch("s")
+        try:
+            self._outside_modules()
+        except Exception:
+            pass
         cap.stop()
         if self.isolate and not self.iso_child:
             # --det-isolate: nothing ran in this process; the children's shards are merged here (serial) or by the
@@ -1091,6 +1213,31 @@ class ProofSession:
         sess.write_receipts(self.store)
         self._shared_push()
         self._after_session()
+
+    def _outside_modules(self) -> None:
+        """Audit G-0164 (F-05): a module loaded from outside the project root, the standard library and every
+        installed distribution's RECORD (PYTHONPATH, a directory a .pth file adds, a file dropped into site-packages)
+        is code the capture does not follow. Its content is an input of every test of the process (the start-up
+        context: a module may have been imported by any test, or at import time of any other)."""
+        cap = self.cap
+        root = os.path.realpath(self.root) + os.sep
+        stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+        ctx = cap.ctx_index("")
+        seen = set()
+        for m in list(sys.modules.values()):
+            f = getattr(m, "__file__", None)
+            if not isinstance(f, str) or not f:
+                continue
+            try:
+                p = os.path.realpath(f)
+            except (OSError, ValueError):
+                continue
+            if p in seen or p.startswith(root) or p.startswith(stdlib) or p.startswith(_DETPY_DIR):
+                continue
+            seen.add(p)
+            if not os.path.isfile(p) or cap._installed(p):
+                continue
+            cap.read(ctx, p, "f")
 
     def _after_session(self) -> None:
         """A shell's own bookkeeping once the receipts are written (pytest: the quarantine of the next -n plan)."""

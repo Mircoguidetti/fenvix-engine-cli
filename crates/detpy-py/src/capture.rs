@@ -3109,6 +3109,24 @@ impl CaptureCore {
     /// `Capture._credit_child(ctx, sp, res)`: the inputs, writes and refusals of one followed process tree, as
     /// inputs of context `ctx`.
     fn credit_child_impl(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
+        self.credit_child_reads(py, logdir, ctx, sp, res)?;
+        let detail = w_any(&sp.getattr("detail")?)?;
+        // PY-08 (go-live scope): a process started by a test or by a fixture runs, and the test is never reused: what
+        // a child does (its clock, its randomness, files it reads through paths the trace does not name, the native
+        // code it runs) is not under the controls. Children of the import, collection and start-up contexts are
+        // followed and keyed as before (a library's find_library probe at import time).
+        let test_ctx = {
+            let st = lock(&self.st);
+            st.ctx_names.get(ctx).is_some_and(|n| n.starts_with(b"t|") || n.starts_with(b"f|"))
+        };
+        if test_ctx {
+            self.flag_impl(py, ctx, b"spawn", Some(cat(&[&detail, b" [a test that starts a process is never reused]"])))?;
+        }
+        Ok(())
+    }
+
+    /// What a followed child read and wrote, credited to `ctx` (`credit_child_impl`).
+    fn credit_child_reads(&self, py: Python<'_>, logdir: Option<&[u8]>, ctx: usize, sp: &Bound<'_, PyAny>, res: &Bound<'_, PyAny>) -> PyResult<()> {
         let detail = w_any(&sp.getattr("detail")?)?;
         let opt = |name: &str| -> PyResult<Option<W>> {
             let v = res.getattr(name)?;

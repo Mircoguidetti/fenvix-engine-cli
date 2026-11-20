@@ -212,8 +212,11 @@ def test_class_state_makes_the_class_the_unit_of_reuse(tmp_path):
     write(root, {"test_s.py": src.replace("self.seen.append(1)", "self.seen.extend([1, 2])")})
     r = ut(root)
     assert "test_s.py::S::test_b" not in r.reused and r.outcomes["test_s.py::S::test_b"] == "failed", r
-    assert r.reused == {"test_s.py::Other::test_c"}, r
+    # Other.test_c runs before S in the same process: review R-023c E7 runs it too (a running test runs after every
+    # predecessor whose in-process state it may need)
+    assert r.reused == set(), r
     receipts = (root.parent / "p-cache" / "receipts.jsonl").read_text()
+    assert '"why": "placement: a predecessor of test_s.py::S::test_' in receipts
     assert '"why": "unit: test_s.py::S::test_a runs"' in receipts
 
 

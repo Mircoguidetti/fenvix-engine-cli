@@ -271,6 +271,12 @@ def after_worker_reader(pytester):
     for lst in plan["lists"].values():
         if "tests/test_c.py::test_worker" in lst:
             out |= set(lst[lst.index("tests/test_c.py::test_worker"):])
+    # review R-023c E7 (py-cache): a test that runs runs after the earlier tests of its worker whose state it may need
+    # (here every earlier one: they reach modules outside the repository)
+    for lst in plan["lists"].values():
+        idx = [i for i, n in enumerate(lst) if n in out]
+        if idx:
+            out |= set(lst[:max(idx) + 1])
     return out
 
 
@@ -332,6 +338,7 @@ def test_serial_and_parallel_sessions_take_the_same_decisions(pytester):
     assert set(ser["reused_ids"]) - after == set(par["reused_ids"])
     assert "tests/test_c.py::test_worker" not in par["reused_ids"]
     assert len(par["reused_ids"]) == N_SUITE - len(after)
+    assert all(why.startswith(("env:", "placement: a predecessor of")) for why in par["miss_ids"].values()), par
     # receipts come from the controller and cover every test
     assert len(receipts(rc_par)) == N_SUITE
 

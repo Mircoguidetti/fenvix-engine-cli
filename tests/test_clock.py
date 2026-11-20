@@ -2,6 +2,8 @@
 
 import time
 
+import pytest
+
 CLOCK_TESTS = """
 import asyncio, datetime, threading, time, queue
 import pytest

@@ -675,7 +675,7 @@ mod tests {
         let dir = SharedDir::new(d.path());
         let mut a = store_with("t.py::a", "rt");
         // claims the old key but its data input was changed (a forged pass)
-        a.tests.get_mut("t.py::a").unwrap().data = vec![("data.txt".into(), "f:zzz".into())];
+        a.tests.get_mut("t.py::a").unwrap().data = vec![("data.txt".into(), "f:zzz".into())].into();
         dir.push(&a, &["t.py::a".into()]).unwrap();
         let mut b = Store::new();
         let f = fetch(&dir, &mut b, &["t.py::a".into()], "cfg", "rt", 3);

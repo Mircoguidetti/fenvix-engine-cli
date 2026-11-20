@@ -43,12 +43,12 @@ def test_child_file_read_is_an_input(pytester, run_cache):
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=2)
-    assert reused == ids("test_cat", "test_plain")
-    # the child read data.txt: changing it reruns the test (and here the fresh run fails)
+    # PY-08 (py-cache): a test that starts a process is never reused; the test before it is
+    assert reused == ids("test_plain")
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_cat"]
     (pytester.path / "data.txt").write_text("changed\n")
     r, reused, data = run_cache()
     assert reused == ids("test_plain")
-    assert miss(data)["test_m.py::test_cat"].startswith("data")
     r.assert_outcomes(passed=1, failed=1)
     # a failure is never reused, even with every input unchanged
     r, reused, data = run_cache()
@@ -67,12 +67,12 @@ def test_child_python_module_is_an_input(pytester, run_cache):
             assert out.stdout.strip() == "1", out.stderr
         """})
     run_cache()
-    _, reused, _ = run_cache()
-    assert reused == ids("test_child")
+    _, reused, data = run_cache()
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_child"]
     (pytester.path / "pkg" / "helper.py").write_text("X = 2\n")
     r, reused, data = run_cache()
     assert reused == set()
-    assert miss(data)["test_m.py::test_child"].startswith("data")
     r.assert_outcomes(failed=1)
 
 
@@ -91,11 +91,10 @@ def test_child_program_is_an_input(pytester, run_cache):
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_tool")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     tool.write_text("#!/bin/sh\necho two\n")
     r, reused, data = run_cache()
     assert reused == set()
-    assert miss(data)["test_m.py::test_tool"].startswith("data")
     r.assert_outcomes(failed=1)
 
 
@@ -114,11 +113,10 @@ def test_child_inheriting_the_environment_depends_on_all_of_it(pytester, run_cac
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_inherits", "test_explicit_env")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     monkeypatch.setenv("DETPY_T_A", "2")
     _, reused, data = run_cache()
-    assert reused == ids("test_explicit_env")
-    assert miss(data)["test_m.py::test_inherits"].startswith("env")
+    assert reused == set()
 
 
 def test_child_network_is_never_cached(pytester, run_cache, outside_server):
@@ -230,7 +228,9 @@ def test_file_a_child_wrote_is_not_an_input_of_another_test(pytester, run_cache)
     run_cache()
     _, reused, data = run_cache()
     assert "test_m.py::test_b_reader" not in reused
-    assert nc(data)["test_m.py::test_b_reader"].startswith("reads a file another test or fixture wrote")
+    # (py-cache PY-08: the writer is refused, its refusal is carried into the reader first)
+    assert nc(data)["test_m.py::test_b_reader"].startswith(("reads a file another test or fixture wrote",
+                                                            "after an earlier test or fixture of this process"))
 
 
 def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
@@ -245,7 +245,8 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
     run_cache()
     _, reused, data = run_cache()
     c = data.get("cache") or {}
-    assert reused == ids("test_tmp"), (c.get("not_cached_ids"), c.get("not_cached_where"), c.get("stale_hits"))
+    assert reused == set(), (c.get("not_cached_ids"), c.get("not_cached_where"), c.get("stale_hits"))  # PY-08
+    assert "[a test that starts a process is never reused]" in c["not_cached_where"]["test_m.py::test_tmp"]
 
 
 
@@ -651,7 +652,8 @@ def test_python_child_start_is_exempt_and_its_time_reads_are_refused(pytester, r
         """})
     run_cache()
     _, reused, data = run_cache()
-    assert reused == ids("test_child_no_clock")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
+    assert "[a test that starts a process is never reused]" in data["cache"]["not_cached_where"]["test_m.py::test_child_no_clock"]
     assert "reads the real clock" in data["cache"]["not_cached_where"]["test_m.py::test_child_clock"]
 
 
@@ -743,7 +745,7 @@ def test_child_exclusive_create_is_an_input(pytester, run_cache):
         """})
     run_cache()
     _, reused, _ = run_cache()
-    assert reused == ids("test_lock")
+    assert reused == set()  # PY-08 (py-cache): a test that starts a process is never reused
     (pytester.path / "app.lock").write_text("")
     r, reused, _ = run_cache()
     assert reused == set()

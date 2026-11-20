@@ -232,4 +232,10 @@ def check_case(c, first, second, nid: str, control: str | None = None) -> None:
     else:
         assert nid in second.outcomes, second
     if control is not None and c["control"]:
-        assert control in second.reused, second
+        # the control keeps its own inputs; it is reused unless one of the two process-wide rules of py-cache
+        # (F-05) applies: it runs before the changed test in the same process (review R-023c E7: a running test runs
+        # after every predecessor whose in-process state it may need), or the change is to the process's environment
+        # (the whole environment is part of every key, _proof.ENV_ALLOWLIST)
+        why = (second.cache.get("miss_ids") or {}).get(control, "")
+        assert control in second.reused or why.startswith((f"placement: a predecessor of {nid}", "config")), (
+            why, second)

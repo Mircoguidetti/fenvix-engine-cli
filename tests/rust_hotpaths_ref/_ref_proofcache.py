@@ -49,7 +49,7 @@ from types import CodeType, FunctionType
 
 import pytest
 
-from . import __version__, _codefacts, _core, _sites, _state, follow
+from . import __version__, _codefacts, _core, _proof, _sites, _state, follow
 
 # bound once: a test may remove sys._getframe (attrs' test_missing_sys_getframe) while detpy's hooks run
 _getframe = sys._getframe
@@ -701,7 +701,12 @@ class Capture:
             def checked(path, *args, **kwargs):
                 timed = False
                 if not kwargs.get("dir_fd"):
-                    note(path, own or kwargs.get("follow_symlinks") is False, True)
+                    # py-cache (as detpy/_proof.py): an existence or kind check of the standard library sees the kind
+                    try:
+                        kind = name in ("stat", "lstat") and _proof._kind_check_caller()
+                    except Exception:
+                        kind = False
+                    note(path, own or kwargs.get("follow_symlinks") is False, not kind)
                     if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
                         try:
                             timed = _user_stat_caller() and cap._caller_kind() == "user"
@@ -1588,6 +1593,9 @@ class Capture:
                 if interp:
                     self.child_read(ctx, interp)
             self.child_read(ctx, p, "d" if op == "d" else "f")
+        # PY-08 (py-cache, as capture.rs credit_child_impl): a process started by a test or fixture: never reused
+        if self.ctx_names[ctx].startswith(("t|", "f|")):
+            self.flag(ctx, "spawn", f"{sp.detail} [a test that starts a process is never reused]")
 
 
     def env_read(self, name: str) -> None:
@@ -1893,6 +1901,8 @@ def config_identity(config) -> tuple[str, dict]:
         # review R-009 F3: the time zone and locale are read by C (getenv, tzset, /etc/localtime), never through
         # os.environ: they are configuration of every test
         "tz_locale": tz_locale_identity(),
+        # py-cache F-05: process-level state (as detpy/_proof.py)
+        "process": _proof.process_identity(),
     }
     return _core.digest(json.dumps(d, sort_keys=True, default=str).encode()), d
 
@@ -2222,6 +2232,10 @@ class ProofCachePlugin:
                 self.fingerprints[nid] = fp
         cap = self.cap
         cap.switch("s")
+        try:
+            _proof.ProofSession._outside_modules(self)  # py-cache, audit G-0164 (as detpy/_proof.py)
+        except Exception:
+            pass
         cap.stop()
         t0 = _perf()
         try:

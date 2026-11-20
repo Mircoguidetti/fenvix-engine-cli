@@ -33,7 +33,8 @@ use std::fs;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
-pub const STORE_VERSION: u32 = 1;
+/// Version 2 (py-cache item 4): entries list the addresses of their data chunks, written once in `Store::chunks`.
+pub const STORE_VERSION: u32 = 2;
 
 /// A shared string: the data dependencies of every test of a session repeat the same global reads (paths and
 /// digests), stored once in memory (serialized as plain strings).
@@ -89,7 +90,7 @@ pub struct Entry {
     /// [`crate::deps`] ("m:", "V:" (one stat field), "r:", "e:", "w:" (recursive listing), "u:" (recursive listing,
     /// links not followed), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key
     /// [`probe_key`], first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
-    pub data: Vec<(Str, Str)>,
+    pub data: crate::datachunks::Data,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
     pub content: u32,
@@ -198,6 +199,12 @@ pub struct Store {
     /// a serial session gives it (not the race of two processes).
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub edges: BTreeSet<(String, String)>,
+    /// The data chunks of every entry, by address (written by [`Store::save`]; resolved and emptied on load).
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub chunks: BTreeMap<String, crate::datachunks::Chunk>,
+    /// One copy of each distinct chunk in memory.
+    #[serde(skip)]
+    interner: crate::datachunks::Interner,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
@@ -982,8 +989,30 @@ impl Store {
             .and_then(|b| serde_json::from_slice::<Store>(&b).ok())
             .filter(|s| s.version == STORE_VERSION)
             .unwrap_or_else(Store::new);
+        s.resolve_chunks();
         s.reindex();
         s
+    }
+
+    /// After a load: entries' chunk addresses to the chunks (one shared copy each); an entry whose chunk is missing
+    /// (a torn file) is dropped.
+    pub fn resolve_chunks(&mut self) {
+        let table: HashMap<String, crate::datachunks::Chunk> = std::mem::take(&mut self.chunks).into_iter().collect();
+        let mut bad = Vec::new();
+        for (nid, e) in self.tests.iter_mut() {
+            if !e.data.resolve(&table) {
+                bad.push(nid.clone());
+            }
+        }
+        for nid in bad {
+            self.tests.remove(&nid);
+        }
+        self.interner = crate::datachunks::Interner::from_table(table);
+        let mut i = std::mem::take(&mut self.interner);
+        for e in self.tests.values_mut() {
+            e.data.share(&mut i);
+        }
+        self.interner = i;
     }
 
     fn reindex(&mut self) {
@@ -1052,7 +1081,7 @@ impl Store {
             runtime: o.runtime,
             epoch: o.epoch,
             env: o.env,
-            data: o.data,
+            data: o.data.into(),
             content,
             skeleton,
             hooks,
@@ -1072,6 +1101,7 @@ impl Store {
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
+        e.data.share(&mut self.interner);
         self.tests.insert(nodeid.to_string(), e);
         k
     }
@@ -1263,6 +1293,7 @@ impl Store {
                     for c in e.units.chunks_mut(2) {
                         c[0] = remap_file(c[0], disk);
                     }
+                    e.data.share(&mut disk.interner);
                     disk.tests.insert(nid.clone(), e);
                 }
             }
@@ -1300,7 +1331,17 @@ impl Store {
         fs::create_dir_all(dir)?;
         let path = Self::path_in(dir);
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
+        // each chunk once, entries by address (py-cache item 4)
+        let mut chunks = BTreeMap::new();
+        for e in self.tests.values() {
+            for c in e.data.chunks() {
+                chunks.entry(crate::datachunks::address(c)).or_insert_with(|| c.clone());
+            }
+        }
+        self.chunks = chunks;
+        let bytes = crate::datachunks::by_address(|| serde_json::to_vec(self));
+        self.chunks.clear();
+        fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
 }
@@ -1368,7 +1409,7 @@ fn foreign(w: &str, own: &str, fixtures: &[String]) -> bool {
 pub fn foreign_write(
     nodeid: &str,
     fixtures: &[String],
-    data: &[(Str, Str)],
+    data: &crate::datachunks::Data,
     written: &BTreeMap<String, BTreeSet<String>>,
     dirs: &BTreeMap<String, BTreeSet<String>>,
 ) -> Option<(String, String)> {
@@ -2516,11 +2557,11 @@ mod tests {
         written.insert("/tmp/imp".to_string(), BTreeSet::from(["i".to_string(), "c|t.py".to_string(), "s".to_string()]));
         let dirs = BTreeMap::new();
         let data = |k: &str| vec![(Str::from(k), Str::from("f:1"))];
-        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/own"), &written, &dirs), None);
-        assert_eq!(foreign_write("t.py::a", &["f|session||db".into()], &data("/tmp/fx"), &written, &dirs), None);
-        assert!(foreign_write("t.py::a", &[], &data("/tmp/fx"), &written, &dirs).is_some());
-        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/imp"), &written, &dirs), None);
-        assert!(foreign_write("t.py::b", &[], &data("/tmp/own"), &written, &dirs).is_some());
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/own").into(), &written, &dirs), None);
+        assert_eq!(foreign_write("t.py::a", &["f|session||db".into()], &data("/tmp/fx").into(), &written, &dirs), None);
+        assert!(foreign_write("t.py::a", &[], &data("/tmp/fx").into(), &written, &dirs).is_some());
+        assert_eq!(foreign_write("t.py::a", &[], &data("/tmp/imp").into(), &written, &dirs), None);
+        assert!(foreign_write("t.py::b", &[], &data("/tmp/own").into(), &written, &dirs).is_some());
     }
 
     #[test]
@@ -2528,9 +2569,9 @@ mod tests {
         let shards = vec![shard("gw0", &[], &[("/tmp/d/new", &["t|t.py::w"])])];
         let (written, dirs) = writer_union(&shards);
         let listing = vec![(Str::from("/tmp/d"), Str::from("d:abc"))];
-        assert!(foreign_write("t.py::r", &[], &listing, &written, &dirs).is_some());
+        assert!(foreign_write("t.py::r", &[], &listing.clone().into(), &written, &dirs).is_some());
         let file = vec![(Str::from("/tmp/d"), Str::from("missing"))];
-        assert!(foreign_write("t.py::r", &[], &file, &written, &dirs).is_none());
+        assert!(foreign_write("t.py::r", &[], &file.clone().into(), &written, &dirs).is_none());
     }
 
     #[test]
