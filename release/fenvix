@@ -5,8 +5,10 @@ file hands those commands to it, and keeps the image-only entries below (Go, JVM
 Every decision (controls, fingerprints, traces, keys, reuse) is the engine's (Rust: detpy-core, fenvix-skip,
 fenvix-go; the shells call it).
 
-    fenvix repro TEST | explore --budget MIN | replay BUNDLE | verify TRACE... | pytest ... | <runner> ...
-                                           python -m detpy.fenvix ... (see `fenvix --help` there)
+    fenvix repro TEST                      a flaky test as a reproducible defect (cause, seed, order, replay)
+    fenvix explore --budget MIN            nightly exploration of seeds; a bundle per flaky test
+    fenvix replay BUNDLE                   replay a defect bundle N times, one fingerprint
+    fenvix pytest ... | <runner> ...       a runner under the product command (python -m detpy.fenvix, see its --help)
 
     fenvix python [pytest args]            pytest with the detpy plugin  (e.g. --det, --det-cache=DIR)
     fenvix python-runner RUNNER [args]     python -m detpy RUNNER ...    (unittest, django, nose2, ward, zope, doctest)

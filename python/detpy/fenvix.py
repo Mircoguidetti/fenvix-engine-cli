@@ -321,26 +321,44 @@ def render_repro(b: dict, out: Path) -> str:
     unc = _uncontrolled_of(bundle_dir, test)
     if status == "reproduced":
         fps = b.get("fingerprints") or rp.get("fingerprints") or []
-        lines.append(f"  status:  REPRODUCED: failed {rp.get('fails')}/{rp.get('runs')} replays with one fingerprint"
+        lines.append(f"  status: REPRODUCED: failed {rp.get('fails')}/{rp.get('runs')} replays with one fingerprint"
                      f"{' ' + fps[0] if fps else ''}")
     else:
-        lines.append(f"  status:  NOT REPRODUCIBLE under fenvix: failed {rp.get('fails')}/{rp.get('runs')} replays, "
+        lines.append(f"  status: NOT REPRODUCIBLE under fenvix: failed {rp.get('fails')}/{rp.get('runs')} replays, "
                      f"identical fingerprint: {rp.get('identical_fingerprint')}"
                      + (f"; the test uses a source this release does not control: {', '.join(unc)}" if unc else ""))
-    lines.append(f"  cause:   {cause_of(b)}")
+    lines.append(f"  cause: {cause_of(b)}")
     cfg = b.get("config")
-    lines.append(f"  seed:    {'none (fixed order)' if cfg == 'fixed' else cfg}")
-    lines.append(f"  order:   {' -> '.join(b.get('order') or [])}")
+    lines.append(f"  seed: {'none (fixed order)' if cfg == 'fixed' else cfg}")
+    lines.append(f"  order: {' -> '.join(b.get('order') or [])}")
     exc = b.get("exception")
     if exc:
         if isinstance(exc, (list, tuple)) and len(exc) >= 3:
             exc = f"{exc[2]}" + (f" ({exc[3]})" if len(exc) > 3 and exc[3] else "")
-        lines.append(f"  error:   {str(exc).splitlines()[0][:300]}")
-    lines.append(f"  replay:  {PROG} replay {_q(bundle_dir)}")
+        lines.append(f"  error: {str(exc).splitlines()[0][:300]}")
+    # replay: the failing run itself, once, as a command a developer (or CI) runs: it fails when the defect reproduces
+    # and takes runner arguments (`-x`, `--det-trace=PATH`); check: N replays with one fingerprint
+    one = _product_command(b.get("command"))
+    if one:
+        lines.append(f"  replay: {one}")
+    lines.append(f"  check: {PROG} replay {_q(bundle_dir)}  (replays {rp.get('runs') or 10}x, exit 0 when every run "
+                 f"fails with the bundle's fingerprint)")
     if b.get("command"):
-        lines.append(f"  rerun:   {b['command']}")
-    lines.append(f"  bundle:  {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
+        lines.append(f"  rerun: {b['command']}")
+    lines.append(f"  bundle: {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
     return "\n".join(lines)
+
+
+def _product_command(cmd) -> str | None:
+    """The bundle's single-run command (``pytest --det ...``, ``python -m detpy RUNNER --det ...``) as the product
+    command: ``fenvix pytest --det ...``, ``fenvix RUNNER --det ...``."""
+    if not cmd or not isinstance(cmd, str):
+        return None
+    for prefix, repl in (("pytest ", f"{PROG} pytest "), ("python -m pytest ", f"{PROG} pytest "),
+                         ("python -m detpy ", f"{PROG} ")):
+        if cmd.startswith(prefix):
+            return repl + cmd[len(prefix):]
+    return None
 
 
 def _slug(test: str) -> str:

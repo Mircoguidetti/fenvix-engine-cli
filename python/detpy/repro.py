@@ -322,6 +322,8 @@ def finish_bundle(b: dict, out_dir: Path, cwd: Path, python: str, runner_name: s
     _relative_exception(data, cwd)
     f.write_text(json.dumps(data, indent=2))
     b.update({k: data[k] for k in ("replay_command", "provenance", "exception") if k in data})
+    if data.get("command"):
+        b.setdefault("command", data["command"])  # the single failing run (printed as `fenvix pytest ...`)
     return b
 
 

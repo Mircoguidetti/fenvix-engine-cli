@@ -92,12 +92,26 @@ def test_repro_prints_cause_seed_order_and_replay_command(project):
     p = fx("repro", "tests/test_o.py::test_victim", "--confirm", "4", "--seeds", "3", cwd=project)
     assert p.returncode == 0, p.stdout + p.stderr
     out = p.stdout
-    assert "status:  REPRODUCED: failed 4/4 replays with one fingerprint" in out, out
-    assert "cause:   test order: it fails when run after tests/test_o.py::test_polluter" in out, out
-    assert "seed:    none (fixed order)" in out, out
-    assert "order:   tests/test_o.py::test_polluter -> tests/test_o.py::test_victim" in out, out
-    line = next(x for x in out.splitlines() if x.strip().startswith("replay:"))
-    bundle = line.split("fenvix replay ", 1)[1].strip()
+    assert "status: REPRODUCED: failed 4/4 replays with one fingerprint" in out, out
+    assert "cause: test order: it fails when run after tests/test_o.py::test_polluter" in out, out
+    assert "seed: none (fixed order)" in out, out
+    assert "order: tests/test_o.py::test_polluter -> tests/test_o.py::test_victim" in out, out
+    # replay: the single failing run as a product command; it takes runner arguments and fails when the defect
+    # reproduces (what CI and the exam run: `<replay> --det-trace=T`, then `fenvix verify` of the traces)
+    replay = next(x.strip()[len("replay: "):] for x in out.splitlines() if x.strip().startswith("replay: "))
+    assert replay.startswith("fenvix pytest --det ") and "--det-order=" in replay, replay
+    traces = []
+    for i in range(2):
+        t = project / f"replay-{i}.jsonl"
+        r = subprocess.run([*FX, *replay.split()[1:], "-p", "no:cacheprovider", f"--det-trace={t}"], cwd=project,
+                           env=_env(), capture_output=True, text=True, timeout=600)
+        assert r.returncode == 1 and t.exists(), r.stdout + r.stderr
+        traces.append(str(t))
+    v = fx("verify", *traces, cwd=project)
+    assert v.returncode == 0, v.stdout
+    # check: N replays with one fingerprint
+    line = next(x for x in out.splitlines() if x.strip().startswith("check: "))
+    bundle = line.split("fenvix replay ", 1)[1].split()[0].strip()
     data = json.loads((project / bundle / "bundle.json").read_text())
     assert data["runner"] == "pytest" and data["status"] == "reproduced"
     # G-0178 / G-0991: the first divergent event against the passing run names the polluter, not an unrelated event
@@ -194,8 +208,8 @@ def test_repro_and_replay_work_for_the_unittest_shell(tmp_path):
     p = fx("repro", "test_u.py::T::test_d_victim", "--runner", "unittest", "--confirm", "3", "--seeds", "2", "--",
            "discover", "-p", "test_*.py", cwd=tmp_path)
     assert p.returncode == 0, p.stdout + p.stderr
-    assert "cause:   test order: it fails when run after test_u.py::T::test_b_polluter" in p.stdout, p.stdout
-    assert "rerun:   python -m detpy unittest --det --det-order=" in p.stdout, p.stdout
+    assert "cause: test order: it fails when run after test_u.py::T::test_b_polluter" in p.stdout, p.stdout
+    assert "rerun: python -m detpy unittest --det --det-order=" in p.stdout, p.stdout
     bundle = next((tmp_path / ".detpy" / "repro").glob("test_d_victim-*"))
     assert json.loads((bundle / "bundle.json").read_text())["runner"] == "unittest"
     r = fx("replay", str(bundle), "--runs", "2", cwd=tmp_path)
@@ -285,3 +299,13 @@ def test_explore_with_targets_reports_each_target_as_block2_reads_it(project):
     cause, replay = h.parse_fenvix_defects(p.stdout)[target]
     assert cause.startswith("test order: it fails when run after tests/test_o.py::test_polluter"), cause
     assert replay.startswith("replay: fenvix replay "), replay
+
+
+def test_image_help_lists_every_product_command_on_its_own_line():
+    """F-18: `fenvix --help` of the runner image (release/fenvix) names each command at the start of a line."""
+    p = subprocess.run([sys.executable, str(ROOT / "release" / "fenvix"), "--help"], capture_output=True, text=True)
+    assert p.returncode == 0
+    import re
+
+    for cmd in ("python", "node", "repro", "explore", "replay", "verify", "version", "pytest"):
+        assert re.search(rf"^\s+fenvix {cmd}\b", p.stdout, re.M), (cmd, p.stdout)

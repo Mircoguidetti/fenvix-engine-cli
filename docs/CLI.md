@@ -90,15 +90,20 @@ Output (exit 0 when reproduced):
 
 ```
 fenvix repro: tests/test_o.py::test_victim
-  status:  REPRODUCED: failed 10/10 replays with one fingerprint a63bad0ce5fccfced3e227003bc9d3cc
-  cause:   test order: it fails when run after tests/test_o.py::test_polluter (state left behind by that test)
-  seed:    none (fixed order)
-  order:   tests/test_o.py::test_polluter -> tests/test_o.py::test_victim
-  error:   AssertionError: assert 'x' not in {'x': 1} (tests/test_o.py:5)
-  replay:  fenvix replay .detpy/repro/test_victim-a60269ec
-  rerun:   pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
-  bundle:  .detpy/repro/test_victim-a60269ec (10 runs, 6.5 s)
+  status: REPRODUCED: failed 10/10 replays with one fingerprint a63bad0ce5fccfced3e227003bc9d3cc
+  cause: test order: it fails when run after tests/test_o.py::test_polluter (state left behind by that test)
+  seed: none (fixed order)
+  order: tests/test_o.py::test_polluter -> tests/test_o.py::test_victim
+  error: AssertionError: assert 'x' not in {'x': 1} (tests/test_o.py:5)
+  replay: fenvix pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
+  check: fenvix replay .detpy/repro/test_victim-a60269ec  (replays 10x, exit 0 when every run fails with the bundle's fingerprint)
+  rerun: pytest --det --det-order=.detpy/repro/test_victim-a60269ec/order.txt
+  bundle: .detpy/repro/test_victim-a60269ec (10 runs, 6.5 s)
 ```
+
+`replay` is the failing run itself: it fails (exit 1) when the defect reproduces and takes runner arguments
+(`--det-trace=PATH`, `-x`, ...). `check` replays the bundle N times and exits 0 when every run fails with the bundle's
+fingerprint.
 
 Causes: `test order` (polluters, or state setters), `seed` (fails alone under one seed, passes under another), or the
 first divergent event against a passing run. A failure that does not replay N/N with one fingerprint is reported
