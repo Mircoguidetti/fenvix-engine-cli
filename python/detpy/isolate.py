@@ -179,14 +179,23 @@ class Isolate:
         req = getattr(item, "_request", None)
         if info is None or req is None:
             return
-        for name in item.fixturenames:
-            defs = info.name2fixturedefs.get(name)
-            if not defs or defs[-1].scope == "function":
-                continue
-            try:
-                req.getfixturevalue(name)
-            except BaseException:  # noqa: BLE001 - cached by the fixture definition: the child reports it
-                pass
+        # the item is on the setup stack while its wider-scoped fixtures are set up here (as in pytest's own setup):
+        # a request for a node that is not active is deprecated (audit G-2211, pytest 9.1) and an error in pytest 10
+        pushed = item not in ss.stack
+        if pushed:
+            ss.stack[item] = ([], None)
+        try:
+            for name in item.fixturenames:
+                defs = info.name2fixturedefs.get(name)
+                if not defs or defs[-1].scope == "function":
+                    continue
+                try:
+                    req.getfixturevalue(name)
+                except BaseException:  # noqa: BLE001 - cached by the fixture definition: the child reports it
+                    pass
+        finally:
+            if pushed:
+                ss.stack.pop(item, None)
 
     def _scope_teardown(self, item, nextitem) -> None:
         """Tear down, in the parent, the scopes the next test does not share (pytest's teardown_exact)."""

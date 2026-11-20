@@ -78,6 +78,19 @@ CHUNK_DIV = int(os.environ.get("DETPY_PLAN_CHUNK_DIV", "8"))
 _UNSUPPORTED = {"each"}
 
 
+def _asked_dist(config) -> str | None:
+    """The --dist value on the command line (or in addopts), before pytest-xdist's own change."""
+    args = list(getattr(getattr(config, "invocation_params", None), "args", ()) or ())
+    args += list(getattr(config.option, "addopts", None) or ())
+    asked = None
+    for i, a in enumerate(args):
+        if a == "--dist" and i + 1 < len(args):
+            asked = args[i + 1]
+        elif isinstance(a, str) and a.startswith("--dist="):
+            asked = a.split("=", 1)[1]
+    return asked
+
+
 def is_worker(config) -> bool:
     return hasattr(config, "workerinput")
 
@@ -220,7 +233,9 @@ class DetScheduling:
         node.send_runtest_some([idx])
 
     def remove_pending_tests_from_node(self, node, indices) -> None:
-        raise NotImplementedError("--det: work stealing is not used (fixed plan)")
+        """Work stealing is not used (fixed plan): nothing is taken from a worker's list. A call (an xdist version
+        that asks on node loss) is answered by keeping the plan, never by a crash (audit G-0708)."""
+        return None
 
     def remove_node(self, node):
         pending = self.node2pending.pop(node)
@@ -290,6 +305,14 @@ class Controller:
         self.config = config
         self.S = session_state
         self.dist = config.getoption("dist", "load") or "load"
+        # the --dist the user asked for (xdist turns "no" into "load" under -n): said in the header (audit G-2215)
+        self.asked_dist = _asked_dist(config)
+        if self.dist in _UNSUPPORTED and config.getoption("det_cache", None):
+            # audit G-1548: every worker runs every test: one test id has as many results as workers, so no result
+            # is the test's own; the cache cannot record or reuse them. Said, not silently recorded
+            raise pytest.UsageError("--det-cache with pytest-xdist --dist=each is not supported: every worker runs "
+                                    "every test, so a test has one result per worker (run --dist each without "
+                                    "--det-cache, or -n with another --dist)")
         self.dir = state_dir(config)
         self.plan: dict | None = None
         self.ids: list[str] = []
@@ -325,6 +348,13 @@ class Controller:
         environment, so the controller decides with it too, not with its own start environment."""
         from . import proofcache
 
+        for spec in specs or ():
+            # audit G-1552: the plan, the worker traces, the cache shards and the barrier are files under this
+            # machine's <rootdir>/.detpy; a worker on another machine (ssh, socket) cannot reach them
+            if not getattr(spec, "popen", False) or getattr(spec, "ssh", None) or getattr(spec, "socket", None):
+                raise pytest.UsageError(f"--det with a remote pytest-xdist worker ({spec}) is not supported: detpy's "
+                                        f"plan, traces and cache shards are files of this machine; use local workers "
+                                        f"(-n N / --tx popen)")
         env = dict(os.environ)
         # review R-023b N4: --tx popen//env:NAME=VALUE starts the workers with more variables than the controller
         # has. The same items on every spec are the workers' values; a variable the specs set differently gets a
@@ -563,6 +593,10 @@ class Controller:
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.merge_workers(self.workeroutput, self.sent, self.racy_edges,
                                             (self.plan or {}).get("lists") or {})
+        if summary.get("missing") and session.exitstatus == 0:
+            # audit G-1551: planned tests that never ran (their worker died with no restart left): the run is not
+            # complete, so it does not pass
+            session.exitstatus = pytest.ExitCode.TESTS_FAILED
 
     def _save_durations(self) -> None:
         if not self.durations:
@@ -597,7 +631,12 @@ class Controller:
     def header_lines(self) -> list[str]:
         if self.dist in _UNSUPPORTED:
             return [f"detpy: pytest-xdist --dist={self.dist} is not planned by detpy (xdist's own scheduling)"]
-        return [f"detpy: pytest-xdist under a fixed plan (--dist={self.dist}); testrun_uid {self.testrunuid}"]
+        note = ""
+        if self.asked_dist and self.asked_dist != self.dist:
+            note = f" (--dist={self.asked_dist} asked; pytest-xdist runs {self.dist} under -n)"
+        if self.dist == "worksteal":
+            note += " (work stealing is replaced by the fixed plan: LPT on recorded durations, sticky across runs)"
+        return [f"detpy: pytest-xdist under a fixed plan (--dist={self.dist}){note}; testrun_uid {self.testrunuid}"]
 
     def summary_lines(self) -> list[str]:
         p = self.plan
@@ -630,6 +669,9 @@ class Controller:
                          + (f"; unreadable worker traces: {', '.join(s['unreadable'])}" if s["unreadable"] else ""))
         for w, t in self.crashed:
             lines.append(f"worker {w} crashed in {t}; its remaining tests went to its replacement")
+        if s is not None and s.get("missing"):
+            lines.append(f"NOT RUN: {len(s['missing'])} planned test(s) never ran (a worker died with no restart "
+                         f"left): {', '.join(list(s['missing'])[:5])}; the session fails")
         return lines
 
 

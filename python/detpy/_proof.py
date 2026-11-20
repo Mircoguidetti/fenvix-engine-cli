@@ -1205,6 +1205,7 @@ class ProofSession:
             sess.t_record = self.sess.phase("merge")
             sess.compare_verified()
             sess.write_receipts(self.store)
+            self._receipts_extras()
             self._shared_push()
             self._after_session()
             return
@@ -1224,8 +1225,110 @@ class ProofSession:
             return  # the controller compares verified results and writes the receipts
         sess.compare_verified()
         sess.write_receipts(self.store)
+        self._receipts_extras()
         self._shared_push()
         self._after_session()
+
+    # -- receipts: what changed in a configuration miss, and a history of runs ---------------------------------------
+    _HISTORY = 30
+
+    def _config_file(self, digest: str) -> str:
+        return os.path.join(self.dir, "configs", f"{digest}.json")
+
+    def _save_config(self) -> None:
+        """The parts of this session's configuration digest (process identity included), once per digest: a later
+        miss with reason "config" names the parts that changed (audit G-2197, G-1509)."""
+        p = self._config_file(self.config_digest)
+        if os.path.exists(p):
+            return
+        try:
+            os.makedirs(os.path.dirname(p), exist_ok=True)
+            tmp = f"{p}.{os.getpid()}"
+            with open(tmp, "w") as fh:
+                json.dump(self.config_info, fh, sort_keys=True, default=str)
+            os.replace(tmp, p)
+        except OSError:
+            pass
+
+    @staticmethod
+    def _changed_parts(old: dict, new: dict, prefix: str = "") -> list:
+        out = []
+        for k in sorted(set(old) | set(new)):
+            a, b = old.get(k), new.get(k)
+            if a == b:
+                continue
+            name = f"{prefix}{k}"
+            if isinstance(a, dict) and isinstance(b, dict) and len(out) < 20:
+                out.extend(ProofSession._changed_parts(a, b, name + "."))
+            elif k == "options" and isinstance(a, list) and isinstance(b, list):
+                da, db = dict(map(tuple, a)), dict(map(tuple, b))
+                out.extend(f"option {o}" for o in sorted(set(da) | set(db)) if da.get(o) != db.get(o))
+            else:
+                out.append(name)
+        return out
+
+    def _previous_config(self):
+        d = os.path.join(self.dir, "configs")
+        try:
+            files = [(os.path.getmtime(os.path.join(d, f)), f[:-5]) for f in os.listdir(d)
+                     if f.endswith(".json") and f[:-5] != self.config_digest]
+        except OSError:
+            return None
+        return max(files)[1] if files else None
+
+    def _receipts_extras(self) -> None:
+        cap, was = self.cap, getattr(self.cap, "active", False)
+        cap.active = False
+        try:
+            self._save_config()
+            path = self.receipts_path
+            if not os.path.exists(path):
+                return
+            with open(path) as fh:
+                lines = [json.loads(x) for x in fh if x.strip()]
+            changed = False
+            memo: dict = {}
+            for r in lines:
+                why = r.get("why") or ""
+                if not why.startswith("config") or "(changed:" in why:
+                    continue
+                try:
+                    old_digest = json.loads(self.store.entry(r["nodeid"])).get("config")
+                except Exception:
+                    old_digest = None
+                if old_digest in (None, self.config_digest):
+                    # recorded again in this session: the configuration of the previous session (the newest other)
+                    old_digest = self._previous_config()
+                if old_digest not in memo:
+                    try:
+                        with open(self._config_file(old_digest)) as fh:
+                            memo[old_digest] = self._changed_parts(json.load(fh), json.loads(
+                                json.dumps(self.config_info, default=str)))
+                    except (OSError, ValueError):
+                        memo[old_digest] = None
+                parts = memo[old_digest]
+                if parts:
+                    r["why"] = f"{why} (changed: {', '.join(parts[:12])})"
+                    changed = True
+            if changed:
+                with open(path, "w") as fh:
+                    fh.writelines(json.dumps(r) + "\n" for r in lines)
+            # audit G-2196: every run's receipts are kept (the last _HISTORY runs) beside the latest
+            hist = os.path.join(self.dir, "receipts")
+            os.makedirs(hist, exist_ok=True)
+            import shutil
+
+            shutil.copyfile(path, os.path.join(hist, f"{self.run_id}.jsonl"))
+            old = sorted(os.listdir(hist))
+            for name in old[:-self._HISTORY]:
+                try:
+                    os.remove(os.path.join(hist, name))
+                except OSError:
+                    pass
+        except Exception:
+            pass
+        finally:
+            cap.active = was
 
     def _outside_modules(self) -> None:
         """Audit G-0164 (F-05): a module loaded from outside the project root, the standard library and every

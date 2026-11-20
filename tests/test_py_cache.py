@@ -380,3 +380,109 @@ def test_g0510_entropy_read_by_the_test_itself_still_refuses(pytester):
     for label in ("r1", "r2"):
         p, c, _ = run(pytester, label, "-rA", "tests")
     assert reused(c) == set() and "os entropy" in c["not_cached_ids"]["tests/test_p.py::test_entropy"]
+
+
+def test_g2211_isolate_sets_up_unittest_classes_without_the_teardown_deprecation(pytester):
+    """Audit G-2211: --det-isolate's parent set up a unittest class fixture through a request of an inactive node
+    (PytestRemovedIn10Warning); it must not warn."""
+    _probe(pytester, """
+        import unittest
+        class T(unittest.TestCase):
+            @classmethod
+            def setUpClass(cls):
+                cls.x = 1
+            def test_a(self):
+                self.assertEqual(self.x, 1)
+        """)
+    p, _, _ = run(pytester, "iso", "-rA", "-W", "error::pytest.PytestRemovedIn10Warning", "--det-isolate", "tests",
+                  cache=False)
+    assert p.returncode == 0 and "PytestRemovedIn10Warning" not in p.stdout, p.stdout
+
+
+def test_g2197_a_configuration_miss_names_what_changed_and_g2196_receipts_are_kept_per_run(pytester):
+    """Audit G-2197/G-1509: a receipt whose reason is the configuration names the parts that changed (here a
+    variable of the process environment, TZ). Audit G-2196: every run's receipts are kept under DIR/receipts/."""
+    _probe(pytester, """
+        def test_pure():
+            pass
+        """)
+    run(pytester, "r1", "tests")
+    p, c, _ = run(pytester, "r2", "tests", env={"TZ": "Asia/Tokyo"})
+    rows = [json.loads(x) for x in (pytester.path / ".c" / "receipts.jsonl").read_text().splitlines() if x.strip()]
+    why = next(r["why"] for r in rows if r["nodeid"] == "tests/test_p.py::test_pure")
+    assert why.startswith("config") and "environment.TZ" in why, why
+    assert len(list((pytester.path / ".c" / "receipts").glob("*.jsonl"))) == 2
+
+
+def test_g1510_cache_command_stats_explain_gc_clear(pytester):
+    """Audit G-1510/G-1509: ``detpy cache`` shows, explains, bounds and clears a cache directory."""
+    _probe(pytester, """
+        def test_pure():
+            pass
+        def test_other():
+            pass
+        """)
+    run(pytester, "r1", "tests")
+    run(pytester, "r2", "tests")
+    d = str(pytester.path / ".c")
+
+    def cache(*a):
+        p = subprocess.run([sys.executable, "-m", "detpy", "cache", *a], capture_output=True, text=True,
+                           cwd=pytester.path)
+        assert p.returncode == 0, p.stderr
+        return json.loads(p.stdout)
+
+    st = cache("stats", d)
+    assert st["entries"] == 2 and st["latest_run"]["reused"] == 2 and st["history_runs"] == 2, st
+    ex = cache("explain", d, "tests/test_p.py::test_pure")
+    assert ex["entry"]["outcome"] == "passed" and ex["latest"]["reused"] is True and len(ex["history"]) == 2, ex
+    assert "tests/conftest.py" in ex["entry"]["project_files"], ex
+    g = cache("gc", d, "--max-age", "0.000001")
+    assert g["dropped"] == 2, g
+    assert cache("stats", d)["entries"] == 0
+    assert cache("clear", d)["removed"] is True and not os.path.exists(d)
+
+
+# -- pytest-xdist modes (audit G-1548, G-1552, G-2215, G-1553, G-1551, G-0708) ---------------------------------------
+def test_g1548_dist_each_with_the_cache_is_refused_with_a_reason(pytester):
+    pytest.importorskip("xdist")
+    _probe(pytester, "def test_a():\n    pass\n")
+    p, _, _ = run(pytester, "each", "-n", "2", "--dist", "each", "tests")
+    assert p.returncode != 0 and "--dist=each is not supported" in (p.stdout + p.stderr), p.stdout + p.stderr
+
+
+def test_g1552_remote_workers_are_refused_with_a_reason(pytester):
+    pytest.importorskip("xdist")
+    _probe(pytester, "def test_a():\n    pass\n")
+    p, _, _ = run(pytester, "tx", "--dist", "load", "--tx", "socket=127.0.0.1:1", "tests", cache=False)
+    assert p.returncode != 0 and "remote pytest-xdist worker" in (p.stdout + p.stderr), p.stdout + p.stderr
+
+
+def test_g2215_g1553_header_says_what_happened_to_the_asked_dist(pytester):
+    pytest.importorskip("xdist")
+    _probe(pytester, "def test_a():\n    pass\n")
+    p, _, _ = run(pytester, "no", "-n", "2", "--dist", "no", "tests", cache=False)
+    assert "--dist=no asked; pytest-xdist runs load under -n" in p.stdout, p.stdout
+    p, _, _ = run(pytester, "ws", "-n", "2", "--dist", "worksteal", "tests", cache=False)
+    assert "work stealing is replaced by the fixed plan" in p.stdout, p.stdout
+
+
+def test_g1551_tests_a_dead_worker_never_ran_fail_the_session(pytester):
+    pytest.importorskip("xdist")
+    write(pytester, **{"tests/conftest.py": "", "tests/test_a.py": """
+        import os
+        def test_crash():
+            os._exit(17)
+        def test_after_1():
+            pass
+        def test_after_2():
+            pass
+        """})
+    p, _, _ = run(pytester, "dead", "-n", "1", "--max-worker-restart=0", "tests", cache=False)
+    assert p.returncode != 0 and "NOT RUN: " in p.stdout and "test_after_2" in p.stdout, p.stdout
+
+
+def test_g0708_work_stealing_callback_keeps_the_plan():
+    from detpy.xdist import DetScheduling
+
+    assert DetScheduling.remove_pending_tests_from_node(object.__new__(DetScheduling), None, [1]) is None
