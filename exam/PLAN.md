@@ -188,7 +188,7 @@ Projects: `simple-statistics/simple-statistics@f9d368f4` (v7.9.3, node:test-comp
 Legs: linux-x64 x Node 22 x {vitest 3, vitest 4, jest 29, jest 30}.
 Projects: ufo@0f15ddc6 and `pmndrs/zustand@3f9127f4` (v5.0.3) for Vitest; `moment/luxon@a4044fe6` (3.5.0) and
 `typestack/class-validator@adffae38` (v0.14.1) for Jest. The runner major is installed over the project's pin
-(`npm i -D vitest@3` / `@4`, `jest@29` / `@30`).
+(`npm i -D vitest@3` / `@4`, `jest@29` / `@30`; ts-jest stays 29.x, which serves Jest 29 and 30).
 
 | check | expected |
 |---|---|
@@ -207,7 +207,7 @@ Legs: linux-x64 x Node 22 (Bun latest 1.x, Deno 2.x).
 | node:test | simple-statistics@f9d368f4 |
 | AVA | `sindresorhus/p-map@2ba3a002` (v7.0.3) |
 | tap | `isaacs/minimatch@0569cd33` (v10.0.1) |
-| uvu | `lukeed/dequal@37d4f27d` (v2.0.3) |
+| uvu | `lukeed/clsx@925494cf` (v2.1.1; run with `-r tsx/cjs`: the project's own `-r esm` loader no longer works on Node 22, and lukeed/dequal v2.0.3, the first choice, fails plainly for the same reason) |
 | Jasmine | `jasmine/jasmine-npm@2cd62ca5` (v5.5.0, with `jasmine@5` installed as a customer would) |
 | Bun | `elysiajs/elysia@353efd2a` (1.2.10) |
 | Deno | `oakserver/oak@08a7eb1c` (v17.1.4) |
@@ -238,7 +238,7 @@ TS: class-validator@adffae38 (Jest + ts-jest).
 |---|---|
 | JS-05.<kind>.det2 | DET2 |
 | JS-05.<kind>.cache2 | CACHE2 |
-| JS-05.ts-edit | EDIT on class-validator: change one decorator's message in `src/`; dependent test files rerun, outcomes equal plain |
+| JS-05.ts-edit | EDIT on class-validator: a comment-only change of `src/decorator/common/IsDefined.ts` (a message change makes the project's own spec throw an unhandled rejection that also crashes plain Jest); dependent test files rerun, the others are reused, outcomes equal plain |
 | JS-05.gaps | assigned gap probes |
 
 ### JS-06 jsdom and happy-dom

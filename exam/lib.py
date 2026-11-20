@@ -336,6 +336,13 @@ def counts(out: str) -> dict:
     m = re.findall(r"# \{ total: (\d+), pass: (\d+)(?:, fail: (\d+))?", out)  # tap 18+
     if m:
         return {"passed": int(m[-1][1]), "failed": int(m[-1][2] or 0)}
+    m = re.findall(r"ℹ pass (\d+)", out)  # node:test spec reporter (Node 23+)
+    if m:
+        f = re.findall(r"ℹ fail (\d+)", out)
+        return {"passed": int(m[-1]), "failed": int(f[-1]) if f else 0}
+    m = re.findall(r"\| (\d+) passed \| (\d+) failed", out)  # deno
+    if m:
+        return {"passed": int(m[-1][0]), "failed": int(m[-1][1])}
     bp = re.findall(r"^\s*(\d+) pass$", out, re.M)  # bun: one summary per process
     if bp:
         bf = re.findall(r"^\s*(\d+) fail$", out, re.M)

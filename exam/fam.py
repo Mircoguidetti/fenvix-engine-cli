@@ -267,7 +267,7 @@ def js_cache2(ctx: Ctx, d: Path, runner: str, args: str, tag: str, env=None, min
         cok, cdesc = js_cmp({"files": ro2}, plain)
     else:
         cok, cdesc = (rc2 == plain.get("rc")), f"engine rc={rc2}, plain rc={plain.get('rc')} counts={plain.get('counts')}"
-    need = max(1, int(min_share * total))
+    need = max(1, int(min_share * total)) if "files" in plain else 1  # count-only runners count assertions, not tests
     return cok and reused >= need, f"run 2 reused {reused} (needed >= {need} of {total} passing); outcomes vs plain: {cdesc}", {
         "rc": [r[0] for r in res], "plain_rc": rc0}
 

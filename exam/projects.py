@@ -39,7 +39,7 @@ P = {
                          tests=["tests"]),
     "anyio": dict(url="https://github.com/agronholm/anyio", sha="a6e9ebb75f0e1492ab5d0740b2ca76d0137f95e3",
                   tag="4.9.0", install=["-e", ".", "pytest", "trustme", "exceptiongroup", "hypothesis", "psutil",
-                                        "trio", "blockbuster", "uvloop", "truststore"],
+                                        "trio", "blockbuster", "truststore"],
                   tests=["tests/test_taskgroups.py", "tests/test_synchronization.py", "-k", "asyncio", "-p", "no:cacheprovider"]),
     # Block 2 flaky sets (harness/flaky_candidates.json pins; targets from harness/block2_targets.json)
     "idoft-accessify": dict(url="https://github.com/dmytrostriletskyi/accessify",
@@ -66,6 +66,7 @@ P = {
     "minimatch": dict(url="https://github.com/isaacs/minimatch", sha="0569cd3373408f9d701d3aab187b3f43a24a0db7",
                       tag="v10.0.1"),
     "dequal": dict(url="https://github.com/lukeed/dequal", sha="37d4f27de03fa6264e406cd03288cec8255fca4c", tag="v2.0.3"),
+    "clsx": dict(url="https://github.com/lukeed/clsx", sha="925494cf31bcd97d3337aacd34e659e80cae7fe2", tag="v2.1.1"),
     "jasmine-npm": dict(url="https://github.com/jasmine/jasmine-npm", sha="2cd62ca565f8c1c9b9a23c76b88619731be03a8f",
                         tag="v5.5.0"),
     "elysia": dict(url="https://github.com/elysiajs/elysia", sha="353efd2a9aabe3a6aeac6946b2cbb2bad101712f", tag="1.2.10"),

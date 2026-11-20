@@ -19,7 +19,7 @@ JEST = os.environ.get("EXAM_JEST", "29")
 
 def _ufo(ctx, pm="npm", vitest=None):
     v = vitest or VITEST
-    return fam.js_setup(ctx, "ufo", pm, [f"vitest@{v}"] if pm == "npm" else [f"vitest@{v}"], key=f"ufo-{pm}-v{v}")
+    return setup(ctx, "ufo", [f"vitest@{v}"], key=f"ufo-vitest@{v}")
 
 
 def _npm_legacy(ctx, d, extra=None):
@@ -58,11 +58,12 @@ PROJ = {
     "zustand": ("zustand", [f"vitest@{VITEST}", "jsdom@25"], "tests", None, "vitest"),
     "simple-statistics": ("simple-statistics", [], "--experimental-test-isolation=none test/*.test.js", None, "node-test"),
     "luxon": ("luxon", [f"jest@{JEST}"], "test", None, "jest"),
-    "class-validator": ("class-validator", [f"jest@{JEST}", f"ts-jest@{JEST}"], "", None, "jest"),
+    "class-validator": ("class-validator", [f"jest@{JEST}", "ts-jest@29"], "", None, "jest"),  # ts-jest 29.x serves Jest 29 and 30
     "express": ("express", [], "--require test/support/env --check-leaks test/ test/acceptance/", None, "mocha"),
     "p-map": ("p-map", ["ava@6"], "", None, "ava"),
     "minimatch": ("minimatch", [], "", "npm run prepare", "tap"),
-    "dequal": ("dequal", [], "-r esm test", "npm run build", "uvu"),
+    # uvu projects load ESM with the `esm` package, which no longer works on Node 22; tsx is the loader instead
+    "clsx": ("clsx", ["tsx@4"], "-r tsx/cjs test", None, "uvu"),
     "jasmine-npm": ("jasmine-npm", ["jasmine@5"], "", None, "jasmine"),
     "elysia": ("elysia", [], "test/core", None, "bun-test"),
     "oak": ("oak", [], "--allow-all", None, "deno-test"),
@@ -141,7 +142,7 @@ def JS_02(ctx: Ctx):
 
 
 def JS_03(ctx: Ctx):
-    for k in ("express", "simple-statistics", "p-map", "minimatch", "dequal", "jasmine-npm", "elysia", "oak"):
+    for k in ("express", "simple-statistics", "p-map", "minimatch", "clsx", "jasmine-npm", "elysia", "oak"):
         runner = PROJ[k][4]
         det2(ctx, f"JS-03.{runner}.det2", k)
         cache2(ctx, f"JS-03.{runner}.cache2", k)
@@ -220,14 +221,14 @@ def JS_05(ctx: Ctx):
         if not f.exists():
             raise Skip("src/decorator/common/IsDefined.ts not found")
         s = f.read_text()
-        f.write_text(s.replace("should not be null or undefined", "must not be null or undefined"))
+        f.write_text("// exam edit: comment only\n" + s)
         shutil.rmtree(d / ".detjs", ignore_errors=True)
         rc2, out2, j2 = fam.js_run(ctx, d, runner, args, "cv-run2", True, f"--det --det-cache={cache}")
         o2, n = fam._receipt_outcomes(d, j2)
         rcp, _, plain = fam.js_run(ctx, d, runner, args, "cv-plain", False)
         ctx.reset(d)
         ok, desc = fam.js_cmp({"files": o2}, plain)
-        return ok and n > 0, f"edit IsDefined message; run 2 reused {n}; vs plain rerun: {desc}"
+        return ok and n > 0, f"edit src/decorator/common/IsDefined.ts (comment); run 2 reused {n}; vs plain rerun: {desc}"
     ctx.run_check("JS-05.ts-edit", "EDIT on TypeScript source: dependent files rerun, outcomes equal plain", ts_edit)
 
 
