@@ -72,6 +72,47 @@ fn os_mod(py: Python<'_>) -> PyResult<Bound<'_, PyModule>> {
     Ok(OS.get_or_try_init(py, || py.import("os").map(|m| m.unbind()))?.bind(py).clone())
 }
 
+/// The real `os.path.abspath`, `os.path.realpath` and `os.getcwd`, bound when the capture is created (session start).
+static REAL_OS: pyo3::sync::PyOnceLock<(Py<PyAny>, Py<PyAny>, Py<PyAny>)> = pyo3::sync::PyOnceLock::new();
+
+fn real_os(py: Python<'_>) -> PyResult<&(Py<PyAny>, Py<PyAny>, Py<PyAny>)> {
+    REAL_OS.get_or_try_init(py, || -> PyResult<_> {
+        let os = os_mod(py)?;
+        let path = os.getattr("path")?;
+        Ok((path.getattr("abspath")?.unbind(), path.getattr("realpath")?.unbind(), os.getattr("getcwd")?.unbind()))
+    })
+}
+
+/// `os.path.<name>(arg)` or `os.getcwd()` as the session sees them (a tool may patch them: pyfakefs), falling back to
+/// the real function when the patched one raises something else than OSError/ValueError: blockbuster's wrappers raise
+/// BlockingError when detpy's own audit hook resolves a path inside an event loop (pydantic-ai: 81 tests failed under
+/// --det-cache only).
+fn os_call<'py>(py: Python<'py>, name: &str, arg: Option<&Bound<'py, PyAny>>) -> PyResult<Bound<'py, PyAny>> {
+    let os = os_mod(py)?;
+    let f = if name == "getcwd" { os.getattr("getcwd")? } else { os.getattr("path")?.getattr(name)? };
+    let r = match arg {
+        Some(a) => f.call1((a,)),
+        None => f.call0(),
+    };
+    match r {
+        Err(e) if !(e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
+            || e.is_instance_of::<pyo3::exceptions::PyValueError>(py)) =>
+        {
+            let real = real_os(py)?;
+            let g = match name {
+                "abspath" => real.0.bind(py),
+                "realpath" => real.1.bind(py),
+                _ => real.2.bind(py),
+            };
+            match arg {
+                Some(a) => g.call1((a,)),
+                None => g.call0(),
+            }
+        }
+        r => r,
+    }
+}
+
 /// `w_of(s)`: the lossless bytes of a Python `str`.
 fn w_of(s: &Bound<'_, PyString>) -> PyResult<W> {
     match s.to_cow() {
@@ -745,13 +786,7 @@ impl CaptureCore {
         let mut w = false;
         let mut rel = None;
         if !k.is_empty() && !k.starts_with(b"<") {
-            let os = os_mod(py)?;
-            let path = os.getattr(intern!(py, "path"))?;
-            let p = match path
-                .getattr(intern!(py, "abspath"))?
-                .call1((fs,))
-                .and_then(|a| path.getattr(intern!(py, "realpath"))?.call1((a,)))
-            {
+            let p = match os_call(py, "abspath", Some(fs.as_any())).and_then(|a| os_call(py, "realpath", Some(&a))) {
                 Ok(p) => w_of(p.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                     || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -797,8 +832,7 @@ impl CaptureCore {
             return Ok(());
         }
         let k = stat_key(&p);
-        let realpath = os_mod(py)?.getattr("path")?.getattr("realpath")?;
-        let r = match realpath.call1((py_of(py, &p)?,)) {
+        let r = match os_call(py, "realpath", Some(&py_of(py, &p)?)) {
             Ok(r) => Some(w_of(r.cast::<PyString>()?)?),
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -819,8 +853,7 @@ impl CaptureCore {
     /// is a link, or is in a linked directory), or None; links outside it (the root reached through a linked path)
     /// are resolved (review R-015b G2).
     fn code_link(&self, py: Python<'_>, filename: &Bound<'_, PyString>) -> PyResult<Option<W>> {
-        let os = os_mod(py)?;
-        let a = match os.getattr("path")?.getattr("abspath")?.call1((filename,)) {
+        let a = match os_call(py, "abspath", Some(filename.as_any())) {
             Ok(a) => w_of(a.cast::<PyString>()?)?,
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -855,7 +888,7 @@ impl CaptureCore {
                     }
                     return Ok(Some(out));
                 }
-                cur = w_of(os.getattr("path")?.getattr("realpath")?.call1((py_of(py, &q)?,))?.cast::<PyString>()?)?;
+                cur = w_of(os_call(py, "realpath", Some(&py_of(py, &q)?))?.cast::<PyString>()?)?;
             } else {
                 cur = q;
             }
@@ -1039,7 +1072,7 @@ impl CaptureCore {
             return Ok(None);
         }
         if !w.starts_with(b"/") {
-            let cwd = match os.getattr(intern!(py, "getcwd"))?.call0() {
+            let cwd = match os_call(py, "getcwd", None) {
                 Ok(c) => w_of(c.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py) => return Ok(None),
                 Err(e) => return Err(e),
@@ -1721,6 +1754,7 @@ impl CaptureCore {
         o_flags: (i64, i64, i64, i64, i64, i64, i64),
     ) -> PyResult<Self> {
         let _ = hot;
+        real_os(py)?; // the real path functions, before a test or a plugin patches them
         let mut root_sep = w_of(&root)?;
         root_sep.push(b'/');
         let st = State {
