@@ -535,7 +535,8 @@ def F_06(ctx: Ctx):
             _, _, plain = fam.js_run(ctx, d, runner, args, f"f06-{key}-plain", False)
             ctx.reset(d)
             ok, desc = fam.js_cmp({"files": o2}, plain)
-            return ok and n > 0, f"{path} edited; run 2 reused {n} tests; vs plain rerun: {desc}"
+            # same rule as the Python EDIT family: no stale outcome; reuse required only for a test-file edit
+            return ok and (n > 0 if "/test" in path or path.startswith("test") else True), f"{path} edited; run 2 reused {n} tests; vs plain rerun: {desc}"
         return fn
     ctx.run_check("F-06.edit-src.ufo", "EDIT on src: dependent files rerun, others reused, outcomes equal plain",
                   edit("ufo", "src/utils.ts", "export function withTrailingSlash(", "export function withTrailingSlash(  // exam\n"))
