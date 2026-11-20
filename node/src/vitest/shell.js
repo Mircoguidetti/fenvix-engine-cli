@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const controls = require('../controls');
+const parallel = require('../parallel');
 const repro = require('../repro');
 
 const { STATE } = controls;
@@ -51,15 +52,15 @@ function vitestDir() {
 }
 
 /** The default runner class of the project's Vitest (v1-v4: vitest/runners, v5: vitest). */
-async function loadBaseRunner() {
+async function loadBaseRunner(imp = (url) => import(url)) {
   const dir = vitestDir();
   const runners = exportFile(dir, './runners');
   if (runners) {
-    const m = await import(pathToFileURL(runners).href);
+    const m = await imp(pathToFileURL(runners).href);
     if (m.VitestTestRunner) return m.VitestTestRunner;
   }
   const main = exportFile(dir, '.');
-  const m = await import(pathToFileURL(main).href);
+  const m = await imp(pathToFileURL(main).href);
   if (m.TestRunner) return m.TestRunner;
   throw new Error(`detjs: cannot find the default test runner of vitest in ${dir}`);
 }
@@ -73,7 +74,22 @@ function outcomeOf(test) {
   return { pass: 'passed', fail: 'failed', skip: 'skipped', todo: 'todo' }[s] || (test.mode === 'todo' ? 'todo' : test.mode === 'skip' ? 'skipped' : 'unknown');
 }
 
-function makeRunner(Base) {
+/**
+ * The worker's command line as Vitest gives it (audit G-2164): detjs' own worker preloads (the cache's early capture,
+ * the vm pools' preload) are not shown to test code in process.execArgv.
+ */
+function hideOwnExecArgv() {
+  const own = (f) => typeof f === 'string' && f.startsWith(require('../sites').SHELL_DIR);
+  const a = process.execArgv;
+  for (let i = a.length - 2; i >= 0; i--) if ((a[i] === '--require' || a[i] === '-r') && own(a[i + 1])) a.splice(i, 2);
+  for (let i = a.length - 1; i >= 0; i--) if (/^(?:--require|-r)=/.test(a[i]) && own(a[i].replace(/^[^=]*=/, ''))) a.splice(i, 1);
+}
+
+/**
+ * detjs' runner class extending `Base` (Vitest's default runner, or the project's own runner composed with it, G-1437).
+ * `realm`: the global object test files run in (the worker's, or a vm context's in the vm pools, G-0461).
+ */
+function makeRunner(Base, realm = globalThis) {
   return class DetRunner extends Base {
     constructor(config) {
       super(config);
@@ -81,8 +97,14 @@ function makeRunner(Base) {
       this.__det = { active: c.active, ids: new Map(), fileOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
       if (c.active) {
         controls.installProcess();
-        controls.installRealm(globalThis, { sameRealm: true });
+        controls.installRealm(realm, { sameRealm: realm === globalThis });
+        // Vitest 5's vm pools: their own copies of Node's modules' named exports, re-synced after the controls
+        const req = realm !== globalThis && realm.__vitest_required__;
+        if (req && typeof req.syncBuiltinESMExports === 'function') { try { req.syncBuiltinESMExports(); } catch { /* the preload covers it */ } }
+        hideOwnExecArgv();
         if (CAP) CAP.install({ role: 'worker', root: this.__det.root });
+        // parallel lanes: the paths and ports each file touches (cross-worker hazards, src/parallel.js)
+        if (Number(process.env.DETJS_WORKERS || 1) > 1) parallel.installFootprint(this.__det.root);
       }
     }
 
@@ -90,6 +112,8 @@ function makeRunner(Base) {
       const fileId = path.relative(this.__det.root, filepath).split(path.sep).join('/');
       if (this.__det.opened === fileId) return;
       this.__det.opened = fileId;
+      // a lane runs one file at a time, in plan order (waits for the lane's previous file); pool id = lane
+      parallel.enter(project ? `${project}|${fileId}` : fileId, { runner: 'vitest' });
       controls.openFile(fileId, project);
       if (CAP) CAP.setCtx('f', project ? `${project}|${fileId}` : fileId);
     }
@@ -175,6 +199,10 @@ function makeRunner(Base) {
       if (this.__det.active) {
         controls.closeFile();
         this.__det.opened = null;
+        for (const f of files || []) {
+          const fileId = fileIdOf(f, this.__det.root);
+          parallel.leave(this.config.name ? `${this.config.name}|${fileId}` : fileId);
+        }
         for (const f of files || []) reproSide(f, this.__det, this.config.name);
         if (CAP && process.env.DETJS_DIR) {
           for (const f of files || []) {

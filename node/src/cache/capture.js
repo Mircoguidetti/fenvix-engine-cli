@@ -613,7 +613,9 @@ class Capture {
       if (!s) this.written.set(abs, (s = new Set()));
       s.add(global ? '' : this.label);
       if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
-      this.add(['write', this.key(abs)], global);
+      // a write of the main process after the reuse decision (the tests are running, a teardown) is marked: only
+      // what the start-up wrote before the decision can be keyed by content (src/cache/proof.js, G-1401)
+      this.add(global && this.phase === 'run' ? ['write', this.key(abs), 'run'] : ['write', this.key(abs)], global);
       for (const k of ['f', 'd', 's', 'l', 'm', 'e']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
       this.memo.delete(`e${path.dirname(abs)}`);
@@ -1519,27 +1521,32 @@ function installEnv(cap, proc) {
   const custom = Symbol.for('nodejs.util.inspect.custom');
   const stand = Object.create(realGetProto(real));
   realDefine(stand, custom, {
-    value: function inspectEnv() { cap.env('*'); return real; },
+    value: function inspectEnv() { cap.env('*'); return STATE.envView ? STATE.envView.view(real) : real; },
     writable: true, enumerable: false, configurable: true,
   });
-  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126)
+  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126); STATE.envView: detjs' own
+  // variables are absent for test code (src/envview.js, audit G-2162)
   const handler = {
     get(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.get(real, k);
     },
     has(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return false;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.has', k, real); }
       return Reflect.has(real, k);
     },
     getOwnPropertyDescriptor(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.getOwnPropertyDescriptor(real, k);
     },
     ownKeys() {
       cap.env('*');
       if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', real);
-      return Reflect.ownKeys(real);
+      const keys = Reflect.ownKeys(real);
+      return STATE.envView ? STATE.envView.visibleKeys(keys) : keys;
     },
     set(_t, k, v) { real[k] = v; return true; },
     deleteProperty(_t, k) { delete real[k]; return true; },
@@ -2193,6 +2200,9 @@ function offThreadLoader() {
 // (`module.register`, `--loader`), so they are removed when such hooks are registered (the tests are then not
 // cacheable: flag `loader`)
 const SYNC_HOOKS = [];
+// off-thread hooks were registered in this thread (module.register): in-thread hooks registered after them make
+// Node fail every resolution (ERR_METHOD_NOT_IMPLEMENTED), so none is registered any more
+const OFF_THREAD = { registered: false };
 
 function dropSyncHooks() {
   CAPTURE.loadHooked = false; // module loads are no longer seen: scan the registries every time
@@ -2213,6 +2223,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
         if (user) cap.add(['flag', 'loader', `module.register(${String(spec).slice(0, 200)})`], cap.isGlobal);
       }
       dropSyncHooks();
+      OFF_THREAD.registered = true;
       return realRegister.call(this, spec, ...rest);
     };
     realDefine(reg, '__detjsCache', { value: true });
@@ -2229,7 +2240,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;
   }
-  if (offThreadLoader()) return;
+  if (offThreadLoader() || OFF_THREAD.registered) return;
   try {
     const hooks = {
       resolve(spec, context, next) {

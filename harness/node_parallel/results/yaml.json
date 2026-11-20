@@ -1,0 +1,109 @@
+{
+ "name": "yaml",
+ "runner": "vitest",
+ "workers": 4,
+ "commands": {
+  "plain": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run",
+  "det_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "det_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "det_parallel_2": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "cache_cold_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache",
+  "cache_warm_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache",
+  "fresh_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "cache_verify_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache --det-cache-verify",
+  "cache_warm_serial_on_parallel_store": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache"
+ },
+ "plain": {
+  "exit": 0,
+  "wall_s": 9.48
+ },
+ "det_serial": {
+  "exit": 0,
+  "wall_s": 14.5,
+  "tests": 3421,
+  "carried": 0
+ },
+ "det_parallel": {
+  "exit": 0,
+  "wall_s": 13.25,
+  "tests": 3421,
+  "plan_digest": "dcae2f06cc91d4a00c1c63bfcdcdaccd",
+  "lanes": [
+   1,
+   8,
+   8,
+   7
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 2.696,
+  "carried": 0
+ },
+ "det_parallel_2": {
+  "exit": 0,
+  "wall_s": 15.6,
+  "tests": 3421,
+  "plan_digest": "dcae2f06cc91d4a00c1c63bfcdcdaccd",
+  "lanes": [
+   1,
+   8,
+   8,
+   7
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 2.118,
+  "carried": 0
+ },
+ "plan_identical": true,
+ "parallel_vs_serial": {
+  "common": 3421,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 3421,
+  "equal_outcome": 3421,
+  "differ": []
+ },
+ "cache_cold_parallel": {
+  "exit": 2,
+  "wall_s": 14.39,
+  "recorded": null,
+  "not_cached": null
+ },
+ "cache_warm_parallel": {
+  "exit": 2,
+  "wall_s": 18.54,
+  "reused_tests": null,
+  "reused_files": null,
+  "ran_files": null,
+  "total_tests": 3421,
+  "reuse_pct": 0.0,
+  "miss_reasons": null
+ },
+ "fresh_serial": {
+  "exit": 0,
+  "wall_s": 19.41,
+  "tests": 3421,
+  "carried": 0
+ },
+ "wrong_reuse_vs_fresh_serial": {
+  "reused_checked": 0,
+  "reused_not_in_fresh": 0,
+  "wrong_outcome": 0,
+  "wrong": [],
+  "fingerprint_equal": 0
+ },
+ "cache_verify_parallel": {
+  "exit": 2,
+  "wall_s": 16.93,
+  "verified_tests": null,
+  "mismatches_tests": null,
+  "mismatches": []
+ },
+ "cache_warm_serial_on_parallel_store": {
+  "exit": 2,
+  "wall_s": 18.19,
+  "reused_tests": null,
+  "miss_reasons": null
+ }
+}

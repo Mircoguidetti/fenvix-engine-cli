@@ -10,10 +10,13 @@
 // (jest-circus).
 const path = require('node:path');
 const controls = require('../controls');
+const parallel = require('../parallel');
 const repro = require('../repro');
 
 const { STATE } = controls;
-const CAP = globalThis[Symbol.for('detjs.cache.session')] ? require('../cache/capture').CAPTURE : null;
+// the session's capture (in band: the main process) or a worker's (parallel lanes: src/jest/worker.js)
+const IN_WORKER = Boolean(globalThis[Symbol.for('detjs.cache.worker')]);
+const CAP = globalThis[Symbol.for('detjs.cache.session')] || IN_WORKER ? require('../cache/capture').CAPTURE : null;
 
 /** Modules Jest's runtime loaded for the current file (sources it read and its module registries). */
 function runtimeModules(runtime) {
@@ -34,7 +37,54 @@ function baseRunner(config) {
     ? configured
     : require.resolve('jest-circus/runner', { paths: [config.rootDir, process.cwd()] });
   const mod = require(target);
-  return mod.default || mod;
+  const fn = mod.default || mod;
+  if (/[\\/]jest-jasmine2[\\/]/.test(target)) Object.defineProperty(fn, '__detjsJasmine', { value: true, configurable: true });
+  return fn;
+}
+
+/** Jasmine's spec status -> outcome. */
+function jasmineOutcome(status) {
+  return { passed: 'passed', failed: 'failed', todo: 'todo' }[status] || 'skipped';
+}
+
+/** Ids of a jasmine tree (suites and specs by object), declaration order, duplicates numbered. */
+function jasmineIds(top, fileId) {
+  const ids = new Map();
+  const flat = [];
+  const walk = (suite, prefix) => {
+    for (const ch of suite.children || []) {
+      const id = `${prefix}::${ch.description}`;
+      if (Array.isArray(ch.children)) { ids.set(ch, id); walk(ch, id); } else flat.push([ch, id]);
+    }
+  };
+  ids.set(top, fileId);
+  walk(top, fileId);
+  const unique = controls.uniqueIds(flat.map(([, id]) => id));
+  flat.forEach(([t], i) => { ids.set(t, unique[i]); ids.set(t.id, unique[i]); });
+  return ids;
+}
+
+/**
+ * jest-jasmine2 has no circus events (audit G-1467): it assigns `jasmine` on the test file's global object before
+ * the file is loaded; the setter installed here then adds a jasmine reporter (specStarted / specDone bracket every
+ * test, beforeEach and afterEach included) and wraps env.execute (ids in declaration order; --det-seed shuffles the
+ * suites and specs before jasmine walks the tree).
+ */
+function hookJasmine(g, onEnv) {
+  let value;
+  Object.defineProperty(g, 'jasmine', {
+    configurable: true,
+    enumerable: true,
+    get() { return value; },
+    set(v) {
+      value = v;
+      Object.defineProperty(g, 'jasmine', { value: v, writable: true, configurable: true, enumerable: true });
+      let env = null;
+      try { env = v && typeof v.getEnv === 'function' ? v.getEnv() : null; } catch { env = null; }
+      if (env) onEnv(env);
+      else process.stderr.write('detjs: WARNING: jest-jasmine2 environment not found: no per-test brackets for this file\n');
+    },
+  });
 }
 
 function childrenOf(block) {
@@ -124,7 +174,7 @@ function reproPlan(rootBlock, ids) {
   return out;
 }
 
-module.exports = async function detjsJestRunner(globalConfig, config, environment, runtime, testPath, sendMessageToJest) {
+async function detjsJestRunner(globalConfig, config, environment, runtime, testPath, sendMessageToJest) {
   const run = baseRunner(config);
   const c = controls.cfg();
   if (!c.active) return run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
@@ -134,18 +184,40 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
     // Jest <= 29: runtime._resolver; Jest 30: runtime._resolution.resolver
     CAP.hookJestResolver(runtime && (runtime._resolver || (runtime._resolution && runtime._resolution.resolver)), config);
   }
-  controls.installRealm(environment.global, { sameRealm: environment.global === globalThis });
-  if (environment.fakeTimersModern) {
-    try {
-      environment.fakeTimersModern = new environment.fakeTimersModern.constructor({ config, global: environment.global });
-    } catch { /* keep Jest's instance */ }
-    if (c.controls.has('time')) virtualFakeClock(environment.fakeTimersModern, config);
-  }
   const root = process.env.DETJS_ROOT || process.cwd();
   const fileId = path.relative(root, testPath).split(path.sep).join('/');
   const project = config.displayName ? config.displayName.name : '';
   const label = project ? `${project}|${fileId}` : fileId;
-  controls.openFile(fileId, project);
+  if (Number(process.env.DETJS_WORKERS || 1) > 1) parallel.installFootprint(root);
+  // a lane runs one file at a time, in plan order (src/parallel.js); then the process-wide state that earlier files
+  // of this process left changed (a worker, or the in-band process, runs many files): reported, and not cached
+  parallel.enter(label, { runner: 'jest' });
+  const carried = parallel.carriedBefore();
+  // the wrapped test environment (src/jest/environment.js) installed the controls before setupFiles ran (G-1312)
+  const early = require('./environment').opened(environment, fileId);
+  if (!early) {
+    controls.installRealm(environment.global, { sameRealm: environment.global === globalThis });
+    // legacy fake timers restore the virtual timers on useRealTimers() (G-1468)
+    if (c.controls.has('timers')) require('../realmx').virtualLegacyTimers(environment.fakeTimers, environment.global);
+    if (environment.fakeTimersModern) {
+      try {
+        environment.fakeTimersModern = new environment.fakeTimersModern.constructor({ config, global: environment.global });
+      } catch { /* keep Jest's instance */ }
+      if (c.controls.has('time')) virtualFakeClock(environment.fakeTimersModern, config);
+    }
+    if (config.setupFiles && config.setupFiles.length) {
+      // never silent: an environment detjs could not wrap (loaded as native ESM) ran setupFiles uncontrolled
+      process.stderr.write(`detjs: WARNING: the test environment of ${fileId} was not wrapped: its setupFiles ran before the Level 0 controls\n`);
+      STATE.notes.push(`setupFiles of ${fileId} ran before the controls`);
+    }
+    controls.openFile(fileId, project);
+    if (config.setupFiles && config.setupFiles.length) {
+      STATE.onTestStart.push(() => {
+        if (STATE.fileId !== fileId) return;
+        require('../uncovered').mark('setupFiles ran before the controls');
+      });
+    }
+  }
 
   let ids = new Map();
   let collected = [];
@@ -228,6 +300,36 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
       default:
     }
   };
+  if (run.__detjsJasmine) {
+    hookJasmine(environment.global, (env) => {
+      let jids = new Map();
+      const exec = env.execute;
+      env.execute = function execute(...a) {
+        const top = env.topSuite();
+        jids = jasmineIds(top, fileId);
+        ids = jids;
+        if (c.controls.has('order') && c.shuffle) {
+          const keyOf = (b) => (b === top ? label : `${label}${jids.get(b).slice(fileId.length)}`);
+          const out = controls.shuffleTree(top.children, c.seed, label, keyOf, (b) => (Array.isArray(b.children) ? b.children : null));
+          top.children.splice(0, top.children.length, ...out);
+        }
+        return exec.apply(this, a);
+      };
+      const idOf = (r) => jids.get(r.id) || `${fileId}::${r.description}`;
+      env.addReporter({
+        specStarted(r) {
+          const id = idOf(r);
+          if (STATE.testId !== id) begin(id);
+        },
+        specDone(r) {
+          const id = idOf(r);
+          if (STATE.testId !== id) begin(id);
+          pending = null;
+          endTest(id, jasmineOutcome(r.status), { duration: typeof r.duration === 'number' ? r.duration : 0 });
+        },
+      });
+    });
+  }
   const prev = environment.handleTestEvent;
   environment.handleTestEvent = function handleTestEvent(event, state) {
     handler(event, state);
@@ -236,6 +338,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   if (CAP) {
     CAP.beginFileTests();
     if (CAP.label !== label) { CAP.resetFile(); CAP.setCtx('f', label); }
+    if (carried.length) CAP.add(['flag', 'carried', carried.slice(0, 3).map((x) => `${x.key} changed by ${x.by}`).join('; ')], false);
   }
   const t0 = Date.now();
   let result;
@@ -248,6 +351,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   } finally {
     endPending();
     controls.closeFile();
+    parallel.carriedAfter(label);
+    parallel.leave(label, carried.length ? { carried } : {});
     if (!fileError && result && result.testExecError) fileError = repro.exceptionOf(result.testExecError, 'collect', root);
     repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, file_error: fileError });
     if (CAP && c.dir) {
@@ -257,6 +362,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
         const ended = new Set(CAP.tests.map((t) => t.id));
         for (const [t, id] of ids) if (t && t.type === 'test' && !ended.has(id)) CAP.tests.push({ id, outcome: 'skipped', duration: 0, fingerprint: '', upto: CAP.log.length });
         const capture = CAP.fileCapture({ fileId, project, label, ok, duration: (Date.now() - t0) / 1000 }, runtimeModules(runtime));
+        // a worker's own items outside any file (src/jest/worker.js): global inputs, as the main process's in band
+        if (IN_WORKER) capture.worker_global = CAP.global;
         controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(fileId, project).replace(/\.jsonl$/, '')}-${process.pid}.json`), capture);
       } catch (e) {
         process.stderr.write(`detjs cache: capture of ${fileId} not written: ${e && e.stack}\n`);
@@ -265,4 +372,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
       CAP.setCtx('', '');
     }
   }
-};
+}
+
+module.exports = detjsJestRunner;
+module.exports.virtualFakeClock = virtualFakeClock;

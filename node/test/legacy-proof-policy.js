@@ -41,6 +41,9 @@ const UNCACHEABLE = {
   // (G-0181), and any flag the table does not know refuses reuse instead of being ignored
   native: 'loads a native addon (its reads are not observable)',
   'level0-gap': 'a Level 0 control could not be installed',
+  placement: 'reads the worker or pool id the runner gives its process (depends on placement)',
+  carried: 'ran after a test file that left process-wide state changed in the same process',
+  'cross-worker': 'touched a path or port another test file running in parallel also touched',
 };
 const UNKNOWN_FLAG = 'an input the engine cannot key';
 

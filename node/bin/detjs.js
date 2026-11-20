@@ -21,6 +21,9 @@ const USAGE = `usage: detjs vitest|jest|playwright|node-test|mocha|bun-test|deno
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
+  // --det-isolate for Vitest and Jest: one runner session per test (src/isolate.js), which run without it
+  if ((cmd === 'vitest' || cmd === 'jest') && !process.env.DETJS_ISOLATE_CHILD
+    && rest.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true')) return require('../src/isolate').main(cmd, rest);
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'playwright') return require('../src/playwright/cli').main(rest);
@@ -42,8 +45,10 @@ async function main(argv) {
     let rep;
     try {
       rep = JSON.parse(native.verify(paths));
-      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify(rep)}\n`);
-      else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'));
+      // settings, order and reuse behind each divergence (G-1482, G-1483, G-1402): src/verify-explain.js
+      const ex = require('../src/verify-explain').explain(paths, rep);
+      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify({ ...rep, ...ex.json })}\n`);
+      else process.stdout.write(require('../src/verify-explain').annotate(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'), ex));
     } catch (e) {
       console.error(`detjs verify: unreadable trace: ${e && e.message}`);
       return 2;

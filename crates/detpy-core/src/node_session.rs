@@ -47,6 +47,10 @@ pub const UNCACHEABLE: &[(&str, &str)] = &[
     ("native", "loads a native addon (its reads are not observable)"),
     // audit G-0181: a control that could not be installed leaves its source real and unrecorded
     ("level0-gap", "a Level 0 control could not be installed"),
+    // parallel runs (detjs --det-workers): placement-dependent results
+    ("placement", "reads the worker or pool id the runner gives its process (depends on placement)"),
+    ("carried", "ran after a test file that left process-wide state changed in the same process"),
+    ("cross-worker", "touched a path or port another test file running in parallel also touched"),
 ];
 
 /// A flag a shell reports that this table does not know: never ignored (a source the engine cannot attribute
