@@ -77,9 +77,6 @@ jobs:
       - name: install the wheel (and its extension in python/detpy)
         run: |
           pip install pytest pytest-xdist && pip install --no-deps dist/fenvix-*.whl
-          # the optional runners and plugins the suites importorskip, so that none of them is skipped (audit G-0010)
-          pip install django pytest-django nose2 ward zope.testrunner hypothesis numpy time-machine pytest-benchmark \
-            freezegun pytest-asyncio pytest-mock pytest-cov
           cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
       - name: Python suites and reviewer test files
         # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
@@ -90,6 +87,13 @@ jobs:
             -rfE 2>&1 | tee py-${{ matrix.python }}.log | tail -60; rc=${PIPESTATUS[0]}
           echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}.log || true
           exit $rc
+      - name: runner suites with their runners installed (audit G-0010; own environment, so that pytest-django does not load into the main suites)
+        run: |
+          python -m venv .venv-runners && . .venv-runners/bin/activate
+          pip install -q pytest pytest-xdist django pytest-django nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
+          python -m pytest -q -p no:randomly -rfE tests/test_runners_django.py tests/test_runners_nose2.py \
+            tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py \
+            2>&1 | tee py-${{ matrix.python }}.runners.log | tail -30; exit ${PIPESTATUS[0]}
       - name: R-001 results checks (test_review_results.py; informational, not a gate)
         continue-on-error: true
         run: python -m pytest -q -p no:randomly test_review_results.py 2>&1 | tee py-r001-${{ matrix.python }}.log | tail -20; exit ${PIPESTATUS[0]}
