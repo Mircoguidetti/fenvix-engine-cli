@@ -315,3 +315,41 @@ def test_state_directory_keeps_the_checkout_clean(pytester):
     assert (pytester.path / ".detpy" / "trace.jsonl").exists()
     st = subprocess.run(["git", "-C", str(pytester.path), "status", "--porcelain"], capture_output=True, text=True).stdout
     assert ".detpy" not in st, st
+
+
+def test_targeted_runs_select_by_documented_rules_and_fall_back_to_everything():
+    """CI speed (coordinator task 2): a session-branch push runs the tests its paths need; anything no rule names
+    runs everything."""
+    sys.path.insert(0, os.path.join(ROOT, "release", "ci"))
+    try:
+        import affected as af
+    finally:
+        sys.path.pop(0)
+    assert af.affected(["docs/INSTALL.md", "sessions/x/REPORT.md"]) == {"python": [], "node": [], "why": {
+        "docs/INSTALL.md": "no code", "sessions/x/REPORT.md": "no code"}}
+    r = af.affected(["tests/test_order.py", "node/test/cache.test.js"])
+    assert r["python"] == ["tests/test_order.py"] and r["node"] == ["test/cache.test.js"]
+    assert af.affected(["python/detpy/plugin.py"])["python"] == "all"
+    assert af.affected(["node/src/native.js"])["node"] == "all"
+    assert af.affected(["crates/detpy-core/src/host.rs"]) == {"python": "all", "node": "all",
+                                                              "why": {"crates/detpy-core/src/host.rs": "the shared core"}}
+    for unknown in (".github/workflows/release-1.yml", "Cargo.toml", "runner/bootstrap.sh", "something/new.txt"):
+        r = af.affected([unknown])
+        assert r["python"] == "all" and r["node"] == "all", unknown
+
+
+def test_shards_cover_every_test_file_once_and_keep_the_serial_files_alone():
+    """CI speed (coordinator task 1): the plan puts every test file in exactly one shard and the explicit serial
+    files alone in shard 0; the same plan for every run."""
+    sys.path.insert(0, os.path.join(ROOT, "release", "ci"))
+    try:
+        import shard
+    finally:
+        sys.path.pop(0)
+    files = shard.test_files()
+    for n in (2, 4, 6):
+        plan = shard.plan(n)
+        flat = [f for s in plan for f in s]
+        assert sorted(flat) == files and len(flat) == len(set(flat)), n
+        assert plan[0] == shard.serial_files() and all(f not in shard.serial_files() for s in plan[1:] for f in s)
+        assert plan == shard.plan(n)
