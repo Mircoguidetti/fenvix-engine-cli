@@ -1,0 +1,95 @@
+# Gap audit P-036: bounded platform probe (audit only; no gate, changes nothing in the engine).
+# other-os     every engine component built and exercised on macOS (arm64, Intel), Windows and Linux arm64.
+# containers   the Linux x86_64 artifacts inside common CI images: Alpine/musl, old glibc, Docker default seccomp.
+# Result: the step summary tables and the probe-*.json artifacts. Runs only when the probe itself changes.
+name: gap-audit
+
+on:
+  push:
+    branches: [claude/gap-audit]
+    paths: [".github/workflows/gap-audit.yml", ".github/gap-audit/**"]
+
+concurrency:
+  group: gap-audit-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  other-os:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 150
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-14, macos-15-intel, windows-latest, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "21"}
+      - name: probe
+        run: python .github/gap-audit/probe.py --name ${{ matrix.os }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "probe-${{ matrix.os }}", path: "probe-*.json"}
+
+  containers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - name: build the Linux x86_64 wheel and addon as release-1.yml does
+        run: |
+          pip install -q "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist 2>&1 | tail -3
+          cargo build -p detpy-node --release 2>&1 | tail -2 && cp target/release/libdetpy_node.so dist/detjs.linux-x64.node
+          cargo build -p fenvix-skip --release 2>&1 | tail -2 && cp target/release/fenvix-skip dist/
+          ls -la dist
+          for f in dist/detjs.linux-x64.node dist/fenvix-skip; do echo "$f needs $(objdump -T $f | grep -o 'GLIBC_[0-9.]*' | sort -V | tail -1)"; done
+          mkdir -p whl && cd whl && unzip -q ../dist/detpy-*.whl && for f in $(find . -name '*.so'); do echo "$f needs $(objdump -T $f | grep -o 'GLIBC_[0-9.]*' | sort -V | tail -1)"; done
+      - name: probes in containers
+        run: |
+          mkdir -p proj && cat > proj/test_a.py <<'PY'
+          import time, random, os, pathlib
+          def test_time(): assert time.time() > 0
+          def test_random(): assert 0 <= random.random() < 1
+          def test_file(): assert pathlib.Path(__file__).exists()
+          PY
+          cat > proj/addon.js <<'JS'
+          try { const n = require('/dist/detjs.linux-x64.node'); console.log('addon loaded', Object.keys(n).length, 'exports'); }
+          catch (e) { console.log('ADDON LOAD FAILED:', String(e.message).split('\n')[0]); process.exit(1); }
+          JS
+          run() { # name image command
+            echo "::group::$1"; echo "### $1" >> "$GITHUB_STEP_SUMMARY"
+            timeout 900 docker run --rm $DOCKER_EXTRA -v "$PWD/dist:/dist:ro" -v "$PWD/proj:/proj" -w /proj "$2" sh -c "$3" > out.log 2>&1; rc=$?
+            tail -40 out.log; echo "rc=$rc"
+            { echo '```'; echo "image: $2 $DOCKER_EXTRA"; echo "cmd: $3"; tail -15 out.log; echo "rc=$rc"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            echo "::endgroup::"
+          }
+          PYRUN='pip install -q pytest && pip install --no-deps /dist/detpy-*.whl && cp -r /proj /tmp/p && cd /tmp/p && python -m pytest -q --det -p no:cacheprovider 2>&1 | tail -15'
+          DOCKER_EXTRA="" run "python wheel on Alpine (musl)" python:3.12-alpine "$PYRUN"
+          DOCKER_EXTRA="" run "python wheel on Debian 11 (glibc 2.31)" python:3.12-slim-bullseye "$PYRUN"
+          DOCKER_EXTRA="" run "python wheel on manylinux2014 (glibc 2.17)" quay.io/pypa/manylinux2014_x86_64 "export PATH=/opt/python/cp312-cp312/bin:\$PATH; $PYRUN"
+          DOCKER_EXTRA="" run "python --det in Docker default seccomp (ASLR re-exec, hash seed)" python:3.12-slim "$PYRUN; python -m pytest -q --det -p no:cacheprovider -rA 2>&1 | grep -iE 'aslr|hashseed|warn' | head"
+          DOCKER_EXTRA="" run "python --det-cache in Docker default seccomp (strace child capture)" python:3.12-slim "apt-get update -qq >/dev/null && apt-get install -y -qq strace >/dev/null 2>&1; strace -f -o /tmp/s.txt true; echo strace-rc=\$?; $PYRUN; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12"
+          DOCKER_EXTRA="" run "python --det-cache without strace installed" python:3.12-slim "$PYRUN; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12"
+          DOCKER_EXTRA="--security-opt no-new-privileges --cap-drop ALL" run "python --det-cache with all capabilities dropped (hardened CI pod)" python:3.12-slim "apt-get update -qq >/dev/null 2>&1; apt-get install -y -qq strace >/dev/null 2>&1; $PYRUN; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12"
+          DOCKER_EXTRA="" run "python 3.9 (Level 0 only) + --det-cache" python:3.9-slim "$PYRUN; python -m pytest -q --det --det-cache=/tmp/c -p no:cacheprovider 2>&1 | tail -12"
+          DOCKER_EXTRA="" run "python 3.14 wheel" python:3.14-slim "$PYRUN"
+          DOCKER_EXTRA="" run "node addon on Alpine (musl)" node:22-alpine "node /proj/addon.js"
+          DOCKER_EXTRA="" run "node addon on Debian 11 (glibc 2.31)" node:22-bullseye-slim "node /proj/addon.js"
+          DOCKER_EXTRA="" run "node addon on Node 18" node:18-slim "node /proj/addon.js"
+          DOCKER_EXTRA="" run "node addon on Node 24" node:24-slim "node /proj/addon.js"
+          DOCKER_EXTRA="" run "fenvix-skip on Alpine (musl)" alpine:3 "/dist/fenvix-skip --help | head -5"
+          DOCKER_EXTRA="" run "fenvix-skip on Debian 11" debian:11-slim "/dist/fenvix-skip --help | head -5"
