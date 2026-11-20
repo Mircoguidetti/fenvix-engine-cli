@@ -232,3 +232,36 @@ finding 11, outside D4, and was not reviewed here.)
 **Result after the re-check rounds:** D1, D2 and D3 are fixed on PR #9 (3a90d44) and D4 on PR #10 (fdf6029), each
 re-checked against its own branch head. Neither PR is merged into the trunk yet, so the trunk itself was not
 re-checked.
+
+## Re-check #3 #4 #11: PASS
+
+Coordinator re-check round, 2026-11-20. These are findings 3, 4 and 11 of the earlier review
+`claude/review-p1-verifier`, all fixed by PR #10, re-checked on `claude/p1-python-leaks` @ fdf6029 with the same build
+and venvs as the D4 re-check.
+
+- **The tests are the originals:**
+  - The three tests in `tests/test_review_p1_python_leaks.py` on fdf6029 are byte-identical to those in
+    `claude/review-p1-verifier:tests/test_review_p1_verifier.py` (checked function by function with `ast`). The shared
+    helpers differ only in the module docstring.
+  - Finding 11's test, `tests/test_verifier_truth.py::test_parallel_trace_records_inputs`, is unchanged between
+    a996b68 and fdf6029.
+- **Run (`-p no:randomly`; pytest-xdist installed for #11):** 4 passed on CPython 3.12.13, 3.13.18 and 3.14.6.
+  - #3: `test_f03_a_test_that_uses_threads_is_never_reported_identical`
+  - #3, #4: `test_f03_no_test_whose_value_differs_is_reported_identical`
+  - #4: `test_f01_det_result_does_not_depend_on_the_pid_or_os_entropy`
+  - #11: `test_parallel_trace_records_inputs`
+- **The fixes do not hide inputs (MEASURED on 3.13):**
+  - **#4, os control:** the trace header records the os control as a run input: `os: virtual pid; temporary directory
+    fenvix-det (fresh); /dev/urandom, /dev/random, /proc/uptime virtual; other files read, devices and OS
+    measurements recorded`. Under `--det` the PID is 10000 and `tempfile.gettempdir()` is `/tmp/fenvix-det` in every
+    run. A file outside the project read by a test is still an observed input: unchanged A/A gives IDENTICAL (exit 0);
+    changed A→B gives DIVERGENT (exit 1), "fs.read @ tests/test_a.py:4 returned different values" naming the file.
+  - **#3, threads alive before a test:** the re-run test itself asserts that a test using `_thread` threads or a pool
+    started at import is never reported identical. It passes, so these tests are marked rather than called identical.
+  - **#11, xdist controller cold count zeroed:** a cold rewrite in the workers is still recorded. Setup: a module
+    registered with `pytest.register_assert_rewrite` outside the root, so neither the project walk nor the
+    plugin-distribution pre-warm reaches it. `-n 2 --det` run 1 records `bytecode: precompiled; test modules rewritten
+    from source in this run (cold rewrite cache: 1)`, run 2 `precompiled`, and `fenvix verify` says DIVERGENT 4 of 4
+    (exit 1). Only the controller's own rewrites (xdist's modules; the controller runs no test) left the input.
+- **Note (non-blocking, not re-checked further):** the "fresh" temporary directory has the fixed name `/tmp/fenvix-det`.
+  Whether two `--det` runs at the same time on one machine (two jobs on one runner) can share it was not examined here.
