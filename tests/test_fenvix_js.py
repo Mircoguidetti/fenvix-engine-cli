@@ -277,3 +277,42 @@ def test_detjs_not_found_is_explained(monkeypatch, tmp_path):
     monkeypatch.setenv("FENVIX_DETJS", str(tmp_path / "no-such-detjs"))
     why = fenvix_js.ADAPTERS["vitest"].available()
     assert why and why.startswith("repro / explore / replay for vitest need detjs: detjs could not start")
+
+
+STAMPED_FILE = """const cache = new Map();
+test('stamped ' + new Date().toISOString(), () => { expect(cache.size).toBe(0); });
+describe('g', () => {
+  test('polluter', () => { cache.set('k', 1); });
+});
+test('drawn ' + Math.random(), () => {});
+test('drawn ' + Math.random(), () => {});
+"""
+
+
+@pytest.mark.parametrize("runner", ["vitest", "jest"])
+def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatch):
+    """Node Block 1 (yup): a name built from `new Date()` gives a different id in every plain run, so the id a plain
+    run reported is never collected again. Under --det the clock is virtual and the test has one id in every run:
+    repro matches the reported id to it with the run-dependent values masked, and says so."""
+    d = make_project(runner, "stamped")
+    ext = SUITE[runner]["ext"]
+    (d / "tests" / f"c{ext}").write_text(SUITE[runner]["head"] + STAMPED_FILE)
+    monkeypatch.chdir(d)
+    a = fenvix_js.ADAPTERS[runner]
+    r = fenvix_js.DetjsRunner(cwd=d, workdir=d / "w", runner=runner)
+    ids = [t for t in r.collect() if t.startswith(f"tests/c{ext}::stamped ")]
+    assert len(ids) == 1 and ids == [t for t in r.collect("3") if t.startswith(f"tests/c{ext}::stamped ")], ids
+    plain_id = f"tests/c{ext}::stamped 2026-11-17T13:21:49.978Z"  # as a plain run at that moment named it
+    assert plain_id != ids[0]
+    b = a.repro(ns(plain_id, d / "out"))
+    assert b["status"] == "reproduced", b
+    assert b["test"] == ids[0] and b["requested_test"] == plain_id and b["id"]["stable"] == ids[0]
+    assert b["polluters"] == [f"tests/c{ext}::g::polluter"]
+    text = fenvix_js.render_repro(b, d / "out")
+    assert f"reproduced as its stable id under --det: {ids[0]}" in text
+    # two tests match once the value is masked: refused, both named, never a guess
+    b2 = a.repro(ns(f"tests/c{ext}::drawn 0.8178353402527408", d / "out2"))
+    assert b2["status"] == "not-collected" and len(b2["id"]["candidates"]) == 2, b2
+    assert "2 tests match it" in fenvix_js.render_repro(b2, d / "out2")
+    # an id without run-dependent values is unchanged
+    assert fenvix_js.stable_id(f"tests/a{ext}::nope", ids) == (f"tests/a{ext}::nope", None)

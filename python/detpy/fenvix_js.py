@@ -175,6 +175,48 @@ class DetjsRunner(_repro.Runner):
         return order
 
 
+# Values that differ from run to run when a test's name is built from them (a date, a timestamp, a random number):
+# such an id names a different test in every plain run. Under --det the clock and the generators are virtual, so the
+# same test has one id in every run; the id a plain run reported is matched to it with these values masked.
+_RUN_DEPENDENT = [
+    (r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?", "<date>"),          # ISO 8601
+    (r"(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{2} \d{4} "
+     r"\d{2}:\d{2}:\d{2} GMT[+-]\d{4}(?: \([^)]*\))?", "<date>"),                                       # Date#toString
+    (r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}", "<uuid>"),
+    (r"\b0\.\d{6,}(?:e-\d+)?\b", "<random>"),                                                        # Math.random()
+    (r"(?<![\w.])\d{10,}(?:\.\d+)?(?![\w.])", "<number>"),                                              # Date.now(), hrtime
+    (r"\b[0-9a-f]{16,}\b", "<hex>"),
+]
+
+
+def mask_run_dependent(test_id: str) -> str:
+    import re
+
+    for pat, rep in _RUN_DEPENDENT:
+        test_id = re.sub(pat, rep, test_id)
+    return test_id
+
+
+def stable_id(test: str, collected: list) -> tuple:
+    """(id to reproduce, note). The id itself when it is collected; else the one collected id (under --det) that
+    equals it once run-dependent values are masked, with a note saying so; (None, note) when several match; the id
+    itself and no note when none does (repro then reports it not collected)."""
+    if test in collected:
+        return test, None
+    m = mask_run_dependent(test)
+    if m == test:
+        return test, None
+    hits = [c for c in collected if mask_run_dependent(c) == m]
+    if len(hits) == 1:
+        return hits[0], {"stable": hits[0], "masked": m,
+                         "why": "the id carries values that differ from run to run (a date, a timestamp, a random "
+                                "number); under --det they are virtual, so the test has one id in every run"}
+    if len(hits) > 1:
+        return None, {"masked": m, "candidates": hits,
+                      "why": "the id carries run-dependent values and several tests match it once they are masked"}
+    return test, None
+
+
 def _killpg(pid: int) -> None:
     try:
         os.killpg(pid, signal.SIGKILL)
@@ -308,11 +350,19 @@ class DetjsAdapter(_AdapterBase):
 
     def repro(self, ns) -> dict:
         runner = self._runner(ns, Path(ns.out) / ".work")
+        test, note = ns.test, None
         try:
-            b = _repro.reproduce(runner, ns.test, seeds=ns.seeds, confirm=ns.confirm, max_runs=ns.max_runs,
-                                 out_dir=Path(ns.out), known_fail=ns.seed)
+            collected = runner.collect()
+            test, note = stable_id(ns.test, collected)
+            if test is None:  # ambiguous: several collected ids match once run-dependent values are masked
+                return {"test": ns.test, "status": "not-collected", "runner": self.name, "id": note}
+            b = _repro.reproduce(runner, test, collected=collected, seeds=ns.seeds, confirm=ns.confirm,
+                                 max_runs=ns.max_runs, out_dir=Path(ns.out), known_fail=ns.seed)
         except RuntimeError as e:  # the suite could not be collected: say so, no traceback
             raise SystemExit(f"fenvix repro: {self.name}: {e}") from None
+        if note:
+            b["requested_test"] = ns.test
+            b["id"] = note
         return finish_bundle(b, Path(ns.out), runner)
 
     def explore(self, ns) -> dict:
@@ -410,6 +460,14 @@ def render_repro(b: dict, out: Path) -> str:
     test = b.get("test", "?")
     status = b.get("status", "?")
     lines = [f"fenvix repro: {test}"]
+    idn = b.get("id") or {}
+    if idn.get("stable"):
+        lines.append(f"  id:      {b.get('requested_test')} carries run-dependent values; reproduced as its stable id "
+                     f"under --det: {idn['stable']}")
+    if status == "not-collected" and idn.get("candidates"):
+        lines.append(f"  not collected: the id carries run-dependent values ({idn['masked']}) and "
+                     f"{len(idn['candidates'])} tests match it: " + "; ".join(idn["candidates"][:5]))
+        return "\n".join(lines)
     if status == "not-collected":
         lines.append(f"  not collected: no test has this id. Use an id as detjs writes it (<file>::<describe>::<name>, "
                      f"e.g. from `detjs {b.get('runner', 'vitest')} --det --det-collect --det-outcomes=ids.json`).")

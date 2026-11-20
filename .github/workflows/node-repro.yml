@@ -1,0 +1,107 @@
+name: node-repro
+
+# F-02 Node: `fenvix repro` on every test of the Node Block 1 flaky set (harness/node_repro/flaky_set.py), on the
+# engine of this commit. One job per (repository, shard): harness/node_repro/run_shared.py (the verdict of `fenvix
+# repro TEST` for each test, the full-suite search runs shared per repository, 10 separate replays of each
+# REPRODUCED bundle). The aggregate job writes harness/node_repro/results-final/ (rows, REPORT.md, summary.json) and
+# commits it to the branch. Started by a push that changes harness/node_repro/RUN (JSON: {"label": "...",
+# "repos": [...] (default: every repository with unstable Vitest/Jest tests), "budget_s": N}).
+
+on:
+  push:
+    branches: [claude/node]
+    paths: [harness/node_repro/RUN]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: node-repro-${{ github.sha }}
+  cancel-in-progress: false
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  config:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.c.outputs.matrix }}
+      label: ${{ steps.c.outputs.label }}
+      budget: ${{ steps.c.outputs.budget }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: c
+        run: python3 harness/node_repro/shards.py --run harness/node_repro/RUN --github-output "$GITHUB_OUTPUT"
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: cargo build -p detpy-node --release && cp target/release/libdetpy_node.so node/detjs.linux-x64.node
+      - run: pip install "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: engine
+          path: |
+            node/detjs.linux-x64.node
+            dist/*.whl
+
+  repro:
+    needs: [config, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJSON(needs.config.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/download-artifact@v4
+        with: {name: engine, path: .}
+      - run: pip install --no-deps dist/*.whl
+      - name: repro ${{ matrix.repo }} shard ${{ matrix.shard }}/${{ matrix.nshards }}
+        run: |
+          echo "runner: $(nproc) cpus; $(grep -m1 'model name' /proc/cpuinfo); node $(node --version)"
+          (cd node && npm ci --no-audit --no-fund > /dev/null)
+          python3 harness/node_repro/run_shared.py --work /tmp/work --repos ${{ matrix.repo }} \
+            --shard ${{ matrix.shard }} --nshards ${{ matrix.nshards }} --out /tmp/out \
+            --budget ${{ needs.config.outputs.budget }} --engine "${{ github.sha }}"
+      - name: keep the rows only (bundles hold full traces)
+        if: always()
+        run: |
+          mkdir -p /tmp/out && cd /tmp/out
+          for f in *.jsonl; do [ -f "$f" ] && mv "$f" "${f%.jsonl}.${{ matrix.shard }}.jsonl"; done; rm -rf bundles; ls -la
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: "repro-${{ matrix.repo }}-${{ matrix.shard }}"
+          path: /tmp/out/
+          if-no-files-found: ignore
+
+  aggregate:
+    needs: [config, repro]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {path: /tmp/art, pattern: "repro-*", merge-multiple: true}
+      - name: report and commit
+        run: |
+          D=harness/node_repro/results-final/${{ needs.config.outputs.label }}
+          mkdir -p $D && cp /tmp/art/*.jsonl $D/ || true
+          python3 harness/node_repro/report_final.py $D --run-id ${{ github.run_id }} --engine ${{ github.sha }}
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $D
+          git commit -m "F-02 Node: fenvix repro on the Node Block 1 flaky set, run ${{ github.run_id }} (${{ needs.config.outputs.label }})" || exit 0
+          for i in 1 2 3 4; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep $((i*10)); done
