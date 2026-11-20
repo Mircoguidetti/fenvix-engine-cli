@@ -1,6 +1,6 @@
 {
- "run_id": "py-cache-2026-11-20b",
- "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit; run b: the engine with the unlinked-descriptor fix and walk_n's wait4 measurement (run a, 44727482348, cancelled: its moto pairs had no memory numbers and every moto test refused on an unlinked descriptor)",
+ "run_id": "py-cache-2026-11-20c",
+ "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit; run c: the engine with the virtual-day epoch (G-0159) and the quiet numpy reseed (G-0510) as well (run b, 44732661898, cancelled after 10 minutes); run b: the engine with the unlinked-descriptor fix and walk_n's wait4 measurement (run a, 44727482348, cancelled: its moto pairs had no memory numbers and every moto test refused on an unlinked descriptor)",
  "before_ref": "d27c1a59",
  "repos": [
   {
