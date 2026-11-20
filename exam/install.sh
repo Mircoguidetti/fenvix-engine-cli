@@ -43,7 +43,8 @@ if ! gh run download "$run" -R "$repo" -n "$name" -D "$dist"; then
   write ok=false source=ci-artifact platform="$plat" artifact="$name" release_run="$run" release_commit="$sha" reason="artifact download failed"
   exit 0
 fi
-git fetch -q --depth 1 origin "$sha" && git worktree add -q --detach "$rel" "$sha" || {
+mkdir -p "$rel"
+git fetch -q --depth 1 --filter=blob:none origin "$sha" && git archive "$sha" release node | tar -x -C "$rel" || {
   write ok=false source=ci-artifact platform="$plat" release_run="$run" release_commit="$sha" reason="cannot check out release commit"; exit 0; }
 mkdir -p "$home"
 if (cd "$rel" && bash release/install-image.sh "$dist" "$home") > "$out/install.log" 2>&1; then

@@ -31,6 +31,14 @@ jobs:
       legs: ${{ steps.p.outputs.legs }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
       - id: p
         env: {ROWS: "${{ github.event.inputs.rows }}"}
         run: |
@@ -62,7 +70,16 @@ jobs:
       PIP_DISABLE_PIP_VERSION_CHECK: "1"
     steps:
       - uses: actions/checkout@v4
-        with: {fetch-depth: 1}
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
+
       - uses: actions/setup-python@v5
         with: {python-version: "${{ matrix.python }}", allow-prereleases: true}
       - uses: actions/setup-node@v4
@@ -107,7 +124,16 @@ jobs:
     env: {GH_TOKEN: "${{ github.token }}"}
     steps:
       - uses: actions/checkout@v4
-        with: {ref: claude/exam}
+        with:
+          ref: claude/exam
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /exam/
+            /.github/
+            /harness/block2_targets.json
+            /harness/flaky_candidates.json
+
       - uses: actions/download-artifact@v4
         with: {pattern: "exam-*", path: exam-out-all}
       - name: job ids
