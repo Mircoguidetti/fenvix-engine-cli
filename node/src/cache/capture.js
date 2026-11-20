@@ -1882,13 +1882,24 @@ function installDlopen(cap) {
   // gets Node's require cache (Jest in band requires `.node` files with the host's require). Every load request of a
   // `.node` file counts, cached or not.
   const M = require('node:module');
-  wrapFn(cap, M, '_load', (a) => {
-    const req = a[0];
-    if (typeof req !== 'string' || !/\.node$/i.test(req) || !cap.active || cap.isGlobal) return;
-    const parent = a[1];
-    const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
-    if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
-  });
+  // (not wrapFn: its marker would make the loader hooks below skip their own `_load` wrapper, which wraps
+  // node:sqlite; the two compose)
+  const realLoad = M._load;
+  if (typeof realLoad === 'function' && !realLoad.__detjsNative) {
+    const w = function _load(...a) {
+      const req = a[0];
+      if (typeof req === 'string' && /\.node$/i.test(req) && cap.active && !cap.busy && !cap.isGlobal) {
+        try {
+          const parent = a[1];
+          const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
+          if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+        } catch { /* never break the load */ }
+      }
+      return realLoad.apply(this, a);
+    };
+    Object.defineProperty(w, '__detjsNative', { value: true });
+    M._load = w;
+  }
 }
 
 /**
