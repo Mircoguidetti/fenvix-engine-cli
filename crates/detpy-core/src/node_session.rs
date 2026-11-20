@@ -335,11 +335,7 @@ impl<'a> Observation<'a> {
                     Some(Value::Null) => "null".to_string(),
                     None => "undefined".to_string(),
                     Some(Value::Object(_)) => "[object Object]".to_string(),
-                    Some(Value::Array(a)) => a.iter().map(|x| match x {
-                        Value::String(t) => t.clone(),
-                        Value::Null => String::new(),
-                        o => o.to_string(),
-                    }).collect::<Vec<_>>().join(","),
+                    Some(Value::Array(a)) => js_join(a),
                     Some(v) => v.to_string(),
                 };
                 self.flags.insert_first(&s(it.get(1)), &detail);
@@ -372,6 +368,21 @@ impl<'a> Observation<'a> {
             clock: self.clock,
         }
     }
+}
+
+/// `String(array)` in JavaScript: elements joined by ",", null as "", objects as "[object Object]", arrays
+/// recursively.
+fn js_join(a: &[Value]) -> String {
+    a.iter()
+        .map(|x| match x {
+            Value::String(t) => t.clone(),
+            Value::Null => String::new(),
+            Value::Object(_) => "[object Object]".to_string(),
+            Value::Array(b) => js_join(b),
+            o => o.to_string(),
+        })
+        .collect::<Vec<_>>()
+        .join(",")
 }
 
 fn observed(snap: &Snapshot, outcome: &str, report: Value, fingerprint: String, duration: f64, input: &RecordInput, config: &str) -> Observed {

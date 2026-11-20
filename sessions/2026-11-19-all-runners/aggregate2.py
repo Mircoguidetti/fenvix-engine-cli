@@ -20,6 +20,12 @@ import statistics
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# run sets: "first" = the walks on engine 7510773 (before the parallel-proof-3 quarantine merge), "final" = the walks
+# on the final engine (review R-032b F7). --set first|final (default final)
+SETS = {"first": (["ar2-py-1"], ["ar2-node-a", "ar2-node-b", "ar2-node-c"]),
+        "final": (["ar2-py-2"], ["ar2-node-a2", "ar2-node-b2", "ar2-node-c2"])}
+SET = sys.argv[sys.argv.index("--set") + 1] if "--set" in sys.argv else "final"
+PY_RUNS, NODE_RUNS = SETS[SET]
 
 
 def load(p):
@@ -32,7 +38,7 @@ def med_mean(xs):
 
 
 rows = []
-for p in sorted(glob.glob(f"{ROOT}/tracks/all-runners-python/results/ar2-py-*/*.json.gz")):
+for p in sorted(x for run in PY_RUNS for x in glob.glob(f"{ROOT}/tracks/all-runners-python/results/{run}/*.json.gz")):
     d = load(p)
     name = os.path.basename(p).rsplit("-", 1)[0]
     r = next((x for x in rows if x["repo"] == name), None)
@@ -47,7 +53,12 @@ for p in sorted(glob.glob(f"{ROOT}/tracks/all-runners-python/results/ar2-py-*/*.
     for s in d.get("steps", [])[1:]:  # the shard's first commit records only
         r["transitions"] += 1
         v = s.get("verify") or {}
-        r["verified"] += v.get("checked", 0) or 0
+        if "pairs" in v:  # re-derived test by test: [id, cached, fresh]
+            r["verified"] += len(v["pairs"])
+            r["rederived"] = r.get("rederived", 0) + len(v["pairs"])
+            r["pair_mismatches"] = r.get("pair_mismatches", 0) + sum(1 for _, a, b in v["pairs"] if a != b)
+        else:
+            r["verified"] += v.get("checked", 0) or 0
         mm = v.get("mismatches") or []
         r["mismatches"] += len(mm)
         r["wrong"] += sum(1 for m in mm if m.get("verdict") == "wrong")
@@ -56,7 +67,7 @@ for p in sorted(glob.glob(f"{ROOT}/tracks/all-runners-python/results/ar2-py-*/*.
         if s.get("time_total"):
             r["share_time"].append((s.get("time_reused") or 0) / s["time_total"])
 
-for p in sorted(glob.glob(f"{ROOT}/harness/node_cache/results/ar2-node-*/*.json.gz")):
+for p in sorted(x for run in NODE_RUNS for x in glob.glob(f"{ROOT}/harness/node_cache/results/{run}/*.json.gz")):
     d = load(p)
     name = os.path.basename(p).rsplit("-", 1)[0].removesuffix(".json")
     r = next((x for x in rows if x["repo"] == name), None)
@@ -72,7 +83,12 @@ for p in sorted(glob.glob(f"{ROOT}/harness/node_cache/results/ar2-node-*/*.json.
         if cmp_ is None:
             continue  # the shard's first commit records only
         r["transitions"] += 1
-        r["verified"] += cmp_.get("checked", 0)
+        if "pairs" in cmp_:
+            r["verified"] += len(cmp_["pairs"])
+            r["rederived"] = r.get("rederived", 0) + len(cmp_["pairs"])
+            r["pair_mismatches"] = r.get("pair_mismatches", 0) + sum(1 for _, a, b in cmp_["pairs"] if a != b)
+        else:
+            r["verified"] += cmp_.get("checked", 0)
         r["mismatches"] += len(cmp_.get("mismatches") or [])
         r["wrong"] += cmp_.get("confirmed_wrong", 0)
         r["missing"] += cmp_.get("n_missing", 0)
@@ -94,6 +110,8 @@ for r in rows:
     st, sm = med_mean(r["share_tests"])
     tt, tm = med_mean(r["share_time"])
     ev = f"{r['engine_verified']} ({r['engine_mismatches']} differ)" if r["lang"] == "node" else "—"
+    if r.get("rederived") is not None:
+        ev += f"; re-derived from pairs: {r['rederived']}, {r['pair_mismatches']} differ"
     print(f"| {r['lang']} | {r['repo']} | {', '.join(sorted(r['runs']))} | {r['transitions']} | {st} / {sm} | "
           f"{'—' if tt is None else f'{tt} / {tm}'} | {r['verified']} | {r['mismatches']} | {r['wrong']} | {ev} |")
     t = tot[r["lang"]]

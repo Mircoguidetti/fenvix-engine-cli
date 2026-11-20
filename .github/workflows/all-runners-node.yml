@@ -91,7 +91,8 @@ jobs:
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=../cache-tests.xml \
             test/runner-node-test.test.js test/runner-mocha.test.js test/review-r021.test.js test/r021-fixes.test.js \
-            test/r021b-fixes.test.js test/review-r032.test.js test/policy-equivalence.test.js 2>&1 | tee ../cache-tests.log
+            test/r021b-fixes.test.js test/review-r032.test.js test/policy-equivalence.test.js \
+            test/review-r032b.test.js test/review-r032b-policy.test.js 2>&1 | tee ../cache-tests.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:

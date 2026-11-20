@@ -1694,6 +1694,21 @@ function installSpawn(cap) {
     Object.defineProperty(Worker, '__detjsCache', { value: true });
     try { wt.Worker = Worker; } catch { /* read-only */ }
   }
+  // the global Web Worker (Bun; Deno refuses workers in its audit): its reads are another thread's, not observed
+  // here (review R-032b F6)
+  const GW = globalThis.Worker;
+  if (typeof GW === 'function' && !GW.__detjsCache && GW !== RealWorker) {
+    const Wrapped = new Proxy(GW, {
+      construct(t, args, nt) {
+        if (cap.active && !cap.busy) {
+          try { cap.flag('worker', `Worker ${String(args[0]).slice(0, 200)}`); } catch { /* ignore */ }
+        }
+        return Reflect.construct(t, args, nt === Wrapped ? t : nt);
+      },
+      get(t, k, r) { return k === '__detjsCache' ? true : Reflect.get(t, k, r); },
+    });
+    try { globalThis.Worker = Wrapped; } catch { /* read-only */ }
+  }
 }
 
 function installNet(cap) {
@@ -1740,6 +1755,14 @@ function installRealClock(cap) {
   };
   for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
   STATE.onRealClock = real;
+  // Temporal.Now (Deno; any runtime that has it): the real clock, which Level 0 does not virtualize (review R-032b
+  // F5). timeZoneId() reads the time zone, which is part of the runtime identity, not the clock
+  const TN = globalThis.Temporal && globalThis.Temporal.Now;
+  if (TN && typeof TN === 'object') {
+    for (const k of Object.getOwnPropertyNames(TN)) {
+      if (k !== 'timeZoneId' && typeof TN[k] === 'function') wrapFn(cap, TN, k, () => real(`Temporal.Now.${k}()`));
+    }
+  }
   // the process' own performance object (other realms get the clock control's wrapper, which reports it)
   const perf = globalThis.performance;
   if (perf && !Object.prototype.hasOwnProperty.call(perf, 'timeOrigin')) {
@@ -1805,6 +1828,29 @@ function installDlopen(cap) {
  */
 function installNodeReaders(cap) {
   wrapFn(cap, process, 'loadEnvFile', (a) => cap.read(a[0] === undefined ? '.env' : a[0], 'f'));
+  // module.findPackageJSON (Node >= 22.14): the nearest package.json, found in C++ (review R-032b F4, the R-032 F6
+  // class through another API): every package.json probed on the way and not found is an input (absent), the one
+  // found too (kind); a specifier that is not a path is resolved first, which is not keyed: not cacheable
+  wrapFn(cap, require('node:module'), 'findPackageJSON', (a) => {
+    let target = null;
+    const s = a[0];
+    try {
+      if (s instanceof URL || (typeof s === 'string' && s.startsWith('file:'))) target = url.fileURLToPath(s);
+      else if (typeof s === 'string' && path.isAbsolute(s)) target = s;
+      else if (typeof s === 'string' && /^\.{1,2}(\/|$)/.test(s) && a[1] !== undefined) {
+        const b = a[1] instanceof URL || String(a[1]).startsWith('file:') ? url.fileURLToPath(a[1]) : String(a[1]);
+        target = path.resolve(path.dirname(b), s);
+      }
+    } catch { target = null; }
+    if (target === null) {
+      cap.flag('runtime-api', `module.findPackageJSON(${String(s).slice(0, 200)})`);
+      return;
+    }
+    cap.pkgMemo.clear(); // what is on disk now
+    const { found, absent } = cap.nearestPackageJson(path.dirname(target));
+    for (const p of absent) cap.read(p, 'f');
+    if (found) cap.read(found, 's');
+  });
   const realGet = process.getBuiltinModule;
   if (typeof realGet === 'function' && !realGet.__detjsCache) {
     const g = function getBuiltinModule(id) {

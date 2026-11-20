@@ -1,0 +1,761 @@
+TAP version 13
+# Subtest: tap: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 21545.041388
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 3666.267773
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 3595.450953
+      type: 'test'
+      ...
+    1..3
+ok 1 - tap: R-032 F7
+  ---
+  duration_ms: 28807.682501
+  type: 'suite'
+  ...
+# Subtest: ava: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 1571.943232
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 1555.14067
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 1472.055229
+      type: 'test'
+      ...
+    1..3
+ok 2 - ava: R-032 F7
+  ---
+  duration_ms: 4599.527538
+  type: 'suite'
+  ...
+# Subtest: jasmine: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 690.202871
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 673.711118
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 732.259046
+      type: 'test'
+      ...
+    1..3
+ok 3 - jasmine: R-032 F7
+  ---
+  duration_ms: 2096.678274
+  type: 'suite'
+  ...
+# Subtest: uvu: R-032 F7
+    # Subtest: F7 OS randomness in native crypto (subtle) makes the file not cached
+    ok 1 - F7 OS randomness in native crypto (subtle) makes the file not cached
+      ---
+      duration_ms: 624.201517
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (keypair) makes the file not cached
+    ok 2 - F7 OS randomness in native crypto (keypair) makes the file not cached
+      ---
+      duration_ms: 612.944583
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh) makes the file not cached
+    ok 3 - F7 OS randomness in native crypto (ecdh) makes the file not cached
+      ---
+      duration_ms: 673.657185
+      type: 'test'
+      ...
+    1..3
+ok 4 - uvu: R-032 F7
+  ---
+  duration_ms: 1911.031568
+  type: 'suite'
+  ...
+# Subtest: bun: R-032 F6/F7
+    # Subtest: F7 OS randomness in native crypto (keypair)
+    ok 1 - F7 OS randomness in native crypto (keypair)
+      ---
+      duration_ms: 2748.469394
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh)
+    ok 2 - F7 OS randomness in native crypto (ecdh)
+      ---
+      duration_ms: 500.732504
+      type: 'test'
+      ...
+    # Subtest: F6 a nested package.json with "type": "module" appears (lib/x.js)
+    ok 3 - F6 a nested package.json with "type": "module" appears (lib/x.js)
+      ---
+      duration_ms: 603.04917
+      type: 'test'
+      ...
+    1..3
+ok 5 - bun: R-032 F6/F7
+  ---
+  duration_ms: 3852.51226
+  type: 'suite'
+  ...
+# Subtest: deno: R-032 F6/F7
+    # Subtest: F7 OS randomness in native crypto (keypair)
+    ok 1 - F7 OS randomness in native crypto (keypair)
+      ---
+      duration_ms: 1599.304155
+      type: 'test'
+      ...
+    # Subtest: F7 OS randomness in native crypto (ecdh)
+    ok 2 - F7 OS randomness in native crypto (ecdh)
+      ---
+      duration_ms: 1645.902507
+      type: 'test'
+      ...
+    # Subtest: F6 a nested package.json with "type": "module" appears (lib/x.js)
+    ok 3 - F6 a nested package.json with "type": "module" appears (lib/x.js)
+      ---
+      duration_ms: 1753.059957
+      type: 'test'
+      ...
+    1..3
+ok 6 - deno: R-032 F6/F7
+  ---
+  duration_ms: 4998.522985
+  type: 'suite'
+  ...
+# Subtest: real node-test sessions: the Rust policy equals the JavaScript one
+ok 7 - real node-test sessions: the Rust policy equals the JavaScript one
+  ---
+  duration_ms: 2783.776937
+  type: 'test'
+  ...
+# Subtest: real mocha sessions: the Rust policy equals the JavaScript one
+ok 8 - real mocha sessions: the Rust policy equals the JavaScript one
+  ---
+  duration_ms: 4216.25534
+  type: 'test'
+  ...
+# Subtest: seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+ok 9 - seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+  ---
+  duration_ms: 147.094077
+  type: 'test'
+  ...
+# Subtest: receipt lines: the Rust lines equal the JavaScript ones
+ok 10 - receipt lines: the Rust lines equal the JavaScript ones
+  ---
+  duration_ms: 2.678051
+  type: 'test'
+  ...
+# Subtest: the uncacheable table is the same
+ok 11 - the uncacheable table is the same
+  ---
+  duration_ms: 0.217602
+  type: 'test'
+  ...
+# Subtest: tap: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    not ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 4264.619141
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032-runners-b-orig.test.js:12:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        the change must make a fresh run fail (test precondition)
+        status=0
+        reused=undefined
+        misses=undefined
+        not_cached=undefined
+        stdout=detjs 0.1.0: Level 0 active; runner=tap 21.8.1; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (tap --jobs=1: one test file at a time, each in its own process; top-level subtests in declaration order); network=block; timers=virtual; node v22.23.5
+        TAP version 14
+        1..1
+        # Subtest: test/nt.test.js
+            # Subtest: nt
+                1..0
+            ok 1 - nt # time=2.334ms
+            
+            1..1
+            # time=12.247ms
+        ok 1 - test/nt.test.js # time=12.247ms
+        
+        # { total: 1, pass: 1 }
+        # time=1159.802ms
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest 01ebb69f0371f73b9535377ed5bcd57a
+        
+        stderr=
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: 0
+      actual: 0
+      operator: 'notStrictEqual'
+      stack: |-
+        Object.noWrongReuse (/home/user/fenvix-engine-cli/node/test/runner-b-cases.js:151:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032-runners-b-orig.test.js:17:9)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Test.start (node:internal/test_runner/test:944:17)
+        node:internal/test_runner/test:1440:71
+        node:internal/per_context/primordials:466:82
+        new Promise (<anonymous>)
+        new SafePromise (node:internal/per_context/primordials:435:3)
+        node:internal/per_context/primordials:466:9
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 6253.617886
+      type: 'test'
+      ...
+    1..2
+not ok 12 - tap: review r032
+  ---
+  duration_ms: 10519.11103
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032-runners-b-orig.test.js:11:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: ava: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 2538.908663
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 2544.371867
+      type: 'test'
+      ...
+    1..2
+ok 13 - ava: review r032
+  ---
+  duration_ms: 5083.541267
+  type: 'suite'
+  ...
+# Subtest: jasmine: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 1111.764173
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 1107.313073
+      type: 'test'
+      ...
+    1..2
+ok 14 - jasmine: review r032
+  ---
+  duration_ms: 2219.522797
+  type: 'suite'
+  ...
+# Subtest: uvu: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 910.733236
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 951.055169
+      type: 'test'
+      ...
+    1..2
+ok 15 - uvu: review r032
+  ---
+  duration_ms: 1862.074443
+  type: 'suite'
+  ...
+# Subtest: tap: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 6798.151952
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 6829.297613
+      type: 'test'
+      ...
+    1..2
+ok 16 - tap: review r032
+  ---
+  duration_ms: 13628.322869
+  type: 'suite'
+  ...
+# Subtest: ava: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 2541.024826
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 2626.25018
+      type: 'test'
+      ...
+    1..2
+ok 17 - ava: review r032
+  ---
+  duration_ms: 5167.486361
+  type: 'suite'
+  ...
+# Subtest: jasmine: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 1197.688403
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 1168.013001
+      type: 'test'
+      ...
+    1..2
+ok 18 - jasmine: review r032
+  ---
+  duration_ms: 2366.057405
+  type: 'suite'
+  ...
+# Subtest: uvu: review r032
+    # Subtest: N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+    ok 1 - N3 a nested package.json with "type": "module" appears (lib/x.js changes module format)
+      ---
+      duration_ms: 1082.128665
+      type: 'test'
+      ...
+    # Subtest: N3b a workspace package.json "main" retargeted (both files exist)
+    ok 2 - N3b a workspace package.json "main" retargeted (both files exist)
+      ---
+      duration_ms: 1013.743628
+      type: 'test'
+      ...
+    1..2
+ok 19 - uvu: review r032
+  ---
+  duration_ms: 2096.07564
+  type: 'suite'
+  ...
+# R032-RESULT bun tests/d.test.ts sound
+# R032-RESULT bun tests/t.test.ts sound
+# R032-RESULT bun tests/ff.test.ts sound
+# R032-RESULT bun tests/mm.test.ts sound
+# R032-RESULT bun tests/sl.test.ts sound
+# R032-RESULT bun tests/w.test.ts uncached
+# R032-RESULT bun tests/rs.test.ts sound
+# R032-RESULT bun tests/ffi.test.ts uncached
+# R032-RESULT deno tests/cfg_test.ts uncached
+# R032-RESULT deno tests/p_test.ts uncached
+# R032-RESULT deno tests/rl_test.ts sound
+# R032-RESULT deno tests/ffi_test.ts uncached
+# R032-RESULT deno tests/wk_test.ts uncached
+# R032-RESULT deno tests/nl_test.ts sound
+# Subtest: bun
+    # Subtest: B1 bunfig.toml appears (absent input): a [define] the test sees
+    ok 1 - B1 bunfig.toml appears (absent input): a [define] the test sees
+      ---
+      duration_ms: 841.791235
+      type: 'test'
+      ...
+    # Subtest: B2 text import with { type: "text" }
+    ok 2 - B2 text import with { type: "text" }
+      ---
+      duration_ms: 832.113454
+      type: 'test'
+      ...
+    # Subtest: B3 fetch(file://)
+    ok 3 - B3 fetch(file://)
+      ---
+      duration_ms: 800.159892
+      type: 'test'
+      ...
+    # Subtest: B4 Bun.mmap
+    ok 4 - B4 Bun.mmap
+      ---
+      duration_ms: 786.069544
+      type: 'test'
+      ...
+    # Subtest: B5 Bun.file().slice().text() and .bytes()
+    ok 5 - B5 Bun.file().slice().text() and .bytes()
+      ---
+      duration_ms: 819.53607
+      type: 'test'
+      ...
+    # Subtest: B6 Bun.which() (PATH lookup: a tool appears)
+    ok 6 - B6 Bun.which() (PATH lookup: a tool appears)
+      ---
+      duration_ms: 553.758551
+      type: 'test'
+      ...
+    # Subtest: B7 Bun.resolveSync probe of an optional module
+    ok 7 - B7 Bun.resolveSync probe of an optional module
+      ---
+      duration_ms: 901.235434
+      type: 'test'
+      ...
+    # Subtest: B8 bun:ffi dlopen of a project library
+    ok 8 - B8 bun:ffi dlopen of a project library
+      ---
+      duration_ms: 615.040238
+      type: 'test'
+      ...
+    # Subtest: B9 entropy through crypto.subtle.generateKey
+    ok 9 - B9 entropy through crypto.subtle.generateKey
+      ---
+      duration_ms: 553.002607
+      type: 'test'
+      ...
+    1..9
+ok 20 - bun
+  ---
+  duration_ms: 6705.416
+  type: 'suite'
+  ...
+# Subtest: deno
+    # Subtest: D1 deno.json appears (absent input): an import map entry shadows a bare specifier fallback
+    ok 1 - D1 deno.json appears (absent input): an import map entry shadows a bare specifier fallback
+      ---
+      duration_ms: 1558.637118
+      type: 'test'
+      ...
+    # Subtest: D2 deno.json appears in a PARENT directory of the project (auto-discovered upwards)
+    ok 2 - D2 deno.json appears in a PARENT directory of the project (auto-discovered upwards)
+      ---
+      duration_ms: 1570.127756
+      type: 'test'
+      ...
+    # Subtest: D3 Deno.readLinkSync
+    ok 3 - D3 Deno.readLinkSync
+      ---
+      duration_ms: 1975.678058
+      type: 'test'
+      ...
+    # Subtest: D4 Deno.dlopen (FFI) of a project library
+    ok 4 - D4 Deno.dlopen (FFI) of a project library
+      ---
+      duration_ms: 1590.65408
+      type: 'test'
+      ...
+    # Subtest: D5 a Worker reads a file
+    ok 5 - D5 a Worker reads a file
+      ---
+      duration_ms: 2450.006516
+      type: 'test'
+      ...
+    # Subtest: D6 Deno.statSync().ino / nlink (hard link added)
+    ok 6 - D6 Deno.statSync().ino / nlink (hard link added)
+      ---
+      duration_ms: 1972.527011
+      type: 'test'
+      ...
+    # Subtest: D7 entropy through crypto.subtle.generateKey
+    ok 7 - D7 entropy through crypto.subtle.generateKey
+      ---
+      duration_ms: 1737.246385
+      type: 'test'
+      ...
+    # Subtest: D8 Deno.permissions.querySync depends on the permission flags (detjs passes -A)
+    ok 8 - D8 Deno.permissions.querySync depends on the permission flags (detjs passes -A)
+      ---
+      duration_ms: 1089.535547
+      type: 'test'
+      ...
+    1..8
+ok 21 - deno
+  ---
+  duration_ms: 13944.88761
+  type: 'suite'
+  ...
+# R032-LATE node-test exitCode set at module level: fresh run fails
+# R032-LATE node-test late uncaught exception: fresh run fails
+# R032-LATE node-test late unhandled rejection: fresh run fails
+# R032-LATE node-test process.exit(2) on beforeExit: fresh run fails
+# R032-LATE mocha exitCode set at module level: runner ignores it
+# R032-LATE mocha late uncaught exception: fresh run fails
+# R032-LATE mocha late unhandled rejection: runner ignores it
+# R032-LATE mocha process.exit(2) on beforeExit: runner ignores it
+# Subtest: node-test: absent inputs resolved by Node in C++ (package.json)
+    # Subtest: N1 workspace package "exports" retargeted (both targets exist)
+    ok 1 - N1 workspace package "exports" retargeted (both targets exist)
+      ---
+      duration_ms: 1071.180581
+      type: 'test'
+      ...
+    # Subtest: N2 nested package.json "imports" (\#alias) retargeted
+    ok 2 - N2 nested package.json "imports" (\#alias) retargeted
+      ---
+      duration_ms: 1049.244527
+      type: 'test'
+      ...
+    # Subtest: N3 a nested package.json with "type": "module" appears (module format of lib/x.js changes)
+    ok 3 - N3 a nested package.json with "type": "module" appears (module format of lib/x.js changes)
+      ---
+      duration_ms: 1035.080066
+      type: 'test'
+      ...
+    # Subtest: N4 an optional module appears inside an existing node_modules
+    ok 4 - N4 an optional module appears inside an existing node_modules
+      ---
+      duration_ms: 620.464264
+      type: 'test'
+      ...
+    # Subtest: N5 require.resolve probe of an optional module
+    ok 5 - N5 require.resolve probe of an optional module
+      ---
+      duration_ms: 1477.688831
+      type: 'test'
+      ...
+    1..5
+ok 22 - node-test: absent inputs resolved by Node in C++ (package.json)
+  ---
+  duration_ms: 5254.733639
+  type: 'suite'
+  ...
+# Subtest: node-test: environment read in C (libuv), entropy
+    # Subtest: N8b entropy through WebCrypto subtle.generateKey (OS randomness in C++) makes the file not cached
+    ok 1 - N8b entropy through WebCrypto subtle.generateKey (OS randomness in C++) makes the file not cached
+      ---
+      duration_ms: 603.922915
+      type: 'test'
+      ...
+    # Subtest: N6 os.homedir() reads HOME through libuv, not process.env
+    ok 2 - N6 os.homedir() reads HOME through libuv, not process.env
+      ---
+      duration_ms: 1090.633205
+      type: 'test'
+      ...
+    # Subtest: N7 os.userInfo().homedir (passwd database, not HOME) — machine fact
+    ok 3 - N7 os.userInfo().homedir (passwd database, not HOME) — machine fact
+      ---
+      duration_ms: 296.525384
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomBytes) makes the file not cached
+    ok 4 - N8 entropy (randomBytes) makes the file not cached
+      ---
+      duration_ms: 631.273857
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomInt) makes the file not cached
+    ok 5 - N8 entropy (randomInt) makes the file not cached
+      ---
+      duration_ms: 602.46518
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomFillSync) makes the file not cached
+    ok 6 - N8 entropy (randomFillSync) makes the file not cached
+      ---
+      duration_ms: 599.29773
+      type: 'test'
+      ...
+    1..6
+ok 23 - node-test: environment read in C (libuv), entropy
+  ---
+  duration_ms: 3824.657019
+  type: 'suite'
+  ...
+# Subtest: mocha: absent inputs resolved by Node in C++ (package.json)
+    # Subtest: N1 workspace package "exports" retargeted (both targets exist)
+    ok 1 - N1 workspace package "exports" retargeted (both targets exist)
+      ---
+      duration_ms: 1608.707017
+      type: 'test'
+      ...
+    # Subtest: N2 nested package.json "imports" (\#alias) retargeted
+    ok 2 - N2 nested package.json "imports" (\#alias) retargeted
+      ---
+      duration_ms: 1529.323209
+      type: 'test'
+      ...
+    # Subtest: N3 a nested package.json with "type": "module" appears (module format of lib/x.js changes)
+    ok 3 - N3 a nested package.json with "type": "module" appears (module format of lib/x.js changes)
+      ---
+      duration_ms: 1458.331373
+      type: 'test'
+      ...
+    # Subtest: N4 an optional module appears inside an existing node_modules
+    ok 4 - N4 an optional module appears inside an existing node_modules
+      ---
+      duration_ms: 941.315665
+      type: 'test'
+      ...
+    # Subtest: N5 require.resolve probe of an optional module
+    ok 5 - N5 require.resolve probe of an optional module
+      ---
+      duration_ms: 2180.986391
+      type: 'test'
+      ...
+    1..5
+ok 24 - mocha: absent inputs resolved by Node in C++ (package.json)
+  ---
+  duration_ms: 7719.242297
+  type: 'suite'
+  ...
+# Subtest: mocha: environment read in C (libuv), entropy
+    # Subtest: N8b entropy through WebCrypto subtle.generateKey (OS randomness in C++) makes the file not cached
+    ok 1 - N8b entropy through WebCrypto subtle.generateKey (OS randomness in C++) makes the file not cached
+      ---
+      duration_ms: 912.770705
+      type: 'test'
+      ...
+    # Subtest: N6 os.homedir() reads HOME through libuv, not process.env
+    ok 2 - N6 os.homedir() reads HOME through libuv, not process.env
+      ---
+      duration_ms: 1553.759629
+      type: 'test'
+      ...
+    # Subtest: N7 os.userInfo().homedir (passwd database, not HOME) — machine fact
+    ok 3 - N7 os.userInfo().homedir (passwd database, not HOME) — machine fact
+      ---
+      duration_ms: 443.109809
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomBytes) makes the file not cached
+    ok 4 - N8 entropy (randomBytes) makes the file not cached
+      ---
+      duration_ms: 938.107884
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomInt) makes the file not cached
+    ok 5 - N8 entropy (randomInt) makes the file not cached
+      ---
+      duration_ms: 891.68587
+      type: 'test'
+      ...
+    # Subtest: N8 entropy (randomFillSync) makes the file not cached
+    ok 6 - N8 entropy (randomFillSync) makes the file not cached
+      ---
+      duration_ms: 921.748752
+      type: 'test'
+      ...
+    1..6
+ok 25 - mocha: environment read in C (libuv), entropy
+  ---
+  duration_ms: 5661.537876
+  type: 'suite'
+  ...
+# Subtest: mocha: configuration file absent then present
+    # Subtest: N9 .mocharc.json appears (adds a --require setup that sets a global)
+    ok 1 - N9 .mocharc.json appears (adds a --require setup that sets a global)
+      ---
+      duration_ms: 1509.83502
+      type: 'test'
+      ...
+    # Subtest: N10 .mocharc.yml appears next to an existing .mocharc.json? (precedence: .mocharc.js wins)
+    ok 2 - N10 .mocharc.yml appears next to an existing .mocharc.json? (precedence: .mocharc.js wins)
+      ---
+      duration_ms: 1584.201075
+      type: 'test'
+      ...
+    1..2
+ok 26 - mocha: configuration file absent then present
+  ---
+  duration_ms: 3094.183278
+  type: 'suite'
+  ...
+# Subtest: failure outside a test body
+    # Subtest: node-test: exitCode set at module level
+    ok 1 - node-test: exitCode set at module level
+      ---
+      duration_ms: 822.326699
+      type: 'test'
+      ...
+    # Subtest: node-test: late uncaught exception
+    ok 2 - node-test: late uncaught exception
+      ---
+      duration_ms: 962.593924
+      type: 'test'
+      ...
+    # Subtest: node-test: late unhandled rejection
+    ok 3 - node-test: late unhandled rejection
+      ---
+      duration_ms: 966.094582
+      type: 'test'
+      ...
+    # Subtest: node-test: process.exit(2) on beforeExit
+    ok 4 - node-test: process.exit(2) on beforeExit
+      ---
+      duration_ms: 801.994077
+      type: 'test'
+      ...
+    # Subtest: mocha: exitCode set at module level
+    ok 5 - mocha: exitCode set at module level
+      ---
+      duration_ms: 229.82524
+      type: 'test'
+      ...
+    # Subtest: mocha: late uncaught exception
+    ok 6 - mocha: late uncaught exception
+      ---
+      duration_ms: 1302.945974
+      type: 'test'
+      ...
+    # Subtest: mocha: late unhandled rejection
+    ok 7 - mocha: late unhandled rejection
+      ---
+      duration_ms: 282.351364
+      type: 'test'
+      ...
+    # Subtest: mocha: process.exit(2) on beforeExit
+    ok 8 - mocha: process.exit(2) on beforeExit
+      ---
+      duration_ms: 225.563002
+      type: 'test'
+      ...
+    1..8
+ok 27 - failure outside a test body
+  ---
+  duration_ms: 5594.12479
+  type: 'suite'
+  ...
+1..27
+# tests 88
+# suites 22
+# pass 87
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 148494.919728
+EXIT 1

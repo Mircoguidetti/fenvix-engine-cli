@@ -1,0 +1,4 @@
+cargo test --release --workspace: 138 passed, 0 failed (sum of 'test result' lines)
+pytest tests/test_runners_{unittest,django,nose2,doctest,zope,ward}.py tests/review_r032 -p no:randomly:
+228 passed, 2 skipped in 278.02s (0:04:38)
+EXIT 0

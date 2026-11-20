@@ -325,11 +325,14 @@ class Walk:
         return [u for u in units if self.collect_ok[u]]
 
     def compare(self, cached: dict, fresh: dict, ids, confirm) -> dict:
-        v = {"checked": 0, "same": 0, "mismatches": []}
+        # pairs: every checked test as [nodeid, cached outcome, fresh outcome] (claude/all-runners-2, review R-032b
+        # F7: the per-test comparison re-derivable from the committed raw file)
+        v = {"checked": 0, "same": 0, "mismatches": [], "pairs": []}
         for nid in ids:
             if nid not in fresh:
                 continue
             v["checked"] += 1
+            v["pairs"].append([nid, cached.get(nid), fresh[nid]])
             if fresh[nid] == cached.get(nid):
                 v["same"] += 1
             else:
@@ -414,7 +417,7 @@ class Walk:
                "check_seconds": 0.0, "record_seconds": 0.0, "failed_units": 0}
         outcomes, reused, times = {}, {}, {}
         b_wall = 0.0
-        ver = {"checked": 0, "same": 0, "mismatches": [], "units": 0}
+        ver = {"checked": 0, "same": 0, "mismatches": [], "units": 0, "pairs": []}
         a_by_unit = {}
         for u in units:
             rc = self.work / "receipts.jsonl"
@@ -452,6 +455,7 @@ class Walk:
             ver["units"] += 1
             ver["checked"] += v["checked"]
             ver["same"] += v["same"]
+            ver["pairs"] += v["pairs"]
             ver["mismatches"] += [dict(m, unit=u) for m in v["mismatches"]]
         st["A"] = agg
         st["B"] = {"wall": b_wall, "units": len(verify_units), "full": full}

@@ -1,9 +1,15 @@
 'use strict';
 // TEST-ONLY reference: the Node session policy as it was in JavaScript (node/src/cache/proof.js on
 // claude/all-runners b8c6333 + claude/node-cache-proof 8cd01e6a: UNCACHEABLE, uncacheable(), recordAll()'s
-// observation and entry composition with its environment dependencies, verifyOne(), writeReceipts()), unchanged
-// except that what it read from `this` and CAPTURE comes from the same input object the Rust policy takes
-// (crates/detpy-core/src/node_session.rs). Used by test/policy-equivalence.test.js only; the engine calls Rust.
+// observation and entry composition with its environment dependencies, verifyOne(), writeReceipts()). Changes
+// (review R-032b nit): what it read from `this` and CAPTURE comes from the same input object the Rust policy
+// takes (crates/detpy-core/src/node_session.rs); `envDep` reads only own string values of the environment
+// (`hasOwnProperty` and `typeof === 'string'`), as the Rust policy's input is built by proof.js (all-runners had
+// `curEnv[name] ?? null`, which also returned inherited properties such as `constructor`). Two inputs on which
+// the policies differ and which real captures never produce (the flag set is fixed, its details are strings): a
+// flag named after an Object.prototype property (`constructor`, `toString`) is a refusal here and not in Rust.
+// (Object details inside an array detail were written as JSON by Rust: now `[object Object]`, as here.) Used by test/policy-equivalence.test.js
+// and test/review-r032b-policy.test.js only; the engine calls Rust.
 const native = require('../src/native');
 
 const UNCACHEABLE = {

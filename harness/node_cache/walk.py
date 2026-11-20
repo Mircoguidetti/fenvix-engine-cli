@@ -399,15 +399,18 @@ class Walk:
     def compare(self, reused, fresh):
         """Every test the skip run reused against the fresh run of the same commit: checked (tests, not file entries),
         mismatches (each confirmed or not by two more fresh runs), reused tests the fresh run did not report."""
-        mism, missing = [], []
-        for nid, cached in reused.items():
+        mism, missing, pairs = [], [], []
+        for nid, cached in sorted(reused.items()):
             got = fresh.get(nid)
             if got is None:
                 missing.append(nid)
-            elif got != cached:
+                continue
+            # every checked test as [id, reused outcome, fresh outcome] (review R-032b F7: re-derivable)
+            pairs.append([nid, cached, got])
+            if got != cached:
                 mism.append({"nodeid": nid, "cached": cached, "fresh": got})
         out = {"checked": len(reused) - len(missing), "mismatches": mism, "missing": missing[:50],
-               "n_missing": len(missing)}
+               "n_missing": len(missing), "pairs": pairs}
         if mism:
             reruns = [self.fresh_tests(f"fresh-recheck{k}")["tests"] for k in range(2)]
             for m in mism:
