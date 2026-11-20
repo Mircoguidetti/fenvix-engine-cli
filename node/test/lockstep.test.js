@@ -76,3 +76,14 @@ test('socket faults (point 4): a seed that resets the runner API request gives t
     for (const t of v.tests) assert.equal(t.distinct_fingerprints, 1, `${fault}: ${JSON.stringify(t.divergence)}`);
   }
 });
+
+test('multi-worker (point 3): two Playwright workers on one schedule replay with one fingerprint per test', { skip, timeout: 1500000 }, () => {
+  const dir = project();
+  const runs = [1, 2, 3].map((i) => run(dir, `mw${i}`, { DETJS_PW_WORKERS: '2' }));
+  for (const r of runs) {
+    assert.match(r.out, /workers=2/, r.out);
+    assert.deepEqual(r.tests.map((t) => t.outcome).sort(), ['passed', 'passed'], r.out);
+  }
+  const v = JSON.parse(spawnSync(process.execPath, [BIN, 'verify', ...runs.map((r) => r.path), '--json'], { encoding: 'utf8' }).stdout);
+  for (const t of v.tests) assert.equal(t.distinct_fingerprints, 1, JSON.stringify(t.divergence));
+});

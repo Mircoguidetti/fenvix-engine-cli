@@ -246,8 +246,31 @@ class Coordinator {
     this.clockFile = path.join(o.dir, 'lockstep-clock.json');
     let start = 0;
     try { start = Number(JSON.parse(fs.readFileSync(this.clockFile, 'utf8')).t) || 0; } catch { start = 0; }
-    this.sched = new native.Lockstep(o.seed, !!o.seeded, start, this.quantumMs * NS, this.latencyMs * NS);
-    this.applySeedSpace();
+    // Point 3: with a hub (several Playwright workers, DETJS_LS_HUB), the scheduler and the clock T are the hub's.
+    this.multi = !!ENV.DETJS_LS_HUB;
+    if (this.multi) {
+      this.sched = new (require('./hub').RemoteScheduler)(ENV.DETJS_LS_HUB, process.pid); // unique per worker process (TEST_WORKER_INDEX is not set yet here)
+      this.remoteActions = [];
+      this.sched.onAction = (a) => { this.remoteActions.push(a); this.poke(); };
+      // A worker whose dispatcher has no more test groups for it waits idle until the run ends: it must not hold the
+      // other workers' decisions. Playwright's worker IPC tells: a 'done' event, then either 'runTestGroup' (it joins
+      // again, at a decision point, since the hub waits for it) or nothing within PARK ms (parked).
+      const origSend = process.send && process.send.bind(process);
+      if (origSend) {
+        process.send = (msg, ...rest) => {
+          try {
+            if (msg && msg.method === '__dispatch__' && msg.params && msg.params.method === 'done') this.sched.write({ op: 'groupDone' });
+          } catch { /* not ours */ }
+          return origSend(msg, ...rest);
+        };
+      }
+      process.on('message', (msg) => {
+        if (msg && msg.method === '__dispatch__' && msg.params && msg.params.method === 'runTestGroup') this.sched.write({ op: 'parked', on: false });
+      });
+    } else {
+      this.sched = new native.Lockstep(o.seed, !!o.seeded, start, this.quantumMs * NS, this.latencyMs * NS);
+      this.applySeedSpace();
+    }
     this.msgs = new Map(); // id -> { item, resolve, owner, page }
     this.nextMsg = 1;
     this.holds = []; // { due, seq, id, info }
@@ -1119,7 +1142,9 @@ class Coordinator {
       if (key !== this.lastKey) {
         if (this.lastKey) this.endTest(this.lastKey);
         this.lastKey = key;
+        if (this.multi) { await this.sched.ready; this.sched.active(!!key); }
       }
+      if (this.multi && this.remoteActions.length) { this.applyRemote(this.remoteActions.shift(), key); continue; }
       if (!key) { await new Promise((r) => { this.wake = r; const h = REAL.setTimeout(r, 5); if (h.unref) h.unref(); }); continue; }
       if (!(await this.settle(key))) continue;
       if (this.quietHooks.length) {
@@ -1173,7 +1198,17 @@ class Coordinator {
       }
       this.sched.setDeadline('servers', srvNext);
       this.sched.setWaiting('servers', false); // only the runner's wait moves time (see runnerState)
-      const a = this.sched.next();
+      if (this.multi) {
+        const ra = await this.sched.nextAsync(rs.state === 'waiting');
+        if (ra.kind === 'again') continue;
+        if (ra.kind !== 'idle') {
+          if (ra.kind === 'advance') { this.trace(`advance to=${ra.toNs / NS} (hub)`); this.stats.advances++; this.flushWindow(); this.saveClock(); if (this.responses.length) await this.deliverResponses(); for (const p of this.pages) this.grant(p, ra.toNs); continue; }
+          this.applyRemote(ra, key);
+          continue;
+        }
+        // idle: the same as below
+      }
+      const a = this.multi ? { kind: 'idle' } : this.sched.next();
       this.trace(`${a.kind} ${a.kind === 'release' ? (this.msgs.get(a.id) || {}).key : a.kind === 'advance' ? `to=${a.toNs / NS} rs=${rs.state}/${rs.why} calls=${CALLS.inflight}[${[...CALLS.byMethod.keys()]}] rn=${this.clock.nextDue() === null ? '-' : this.clock.nextDue() / NS} srv=${srvNext === null ? '-' : srvNext / NS}/${srvWait} holds=${this.holds.length}` : ''}`);
       if (a.kind === 'release') {
         const m = this.msgs.get(a.id);
@@ -1215,6 +1250,24 @@ class Coordinator {
         if (this.responses.length) await this.deliverResponses();
         for (const p of this.pages) this.grant(p, to);
       }
+    }
+  }
+
+  /** A hub action for this worker (point 3): a release (possibly held by the hub for its latency), or the delivery of
+   * a message the hub held. */
+  applyRemote(ra, key) {
+    const m = this.msgs.get(ra.id);
+    if (ra.kind === 'release' || ra.kind === 'released') {
+      this.sched.released(ra.id);
+      this.decision(m ? (m.item.test || key) : key, 'sched.io', `${ra.idx}/${ra.n}:${m ? m.key : '?'}${ra.fault && ra.fault !== 'none' ? ` fault=${ra.fault}` : ''}${ra.latencyNs !== this.latencyMs * NS ? ` lat=${ra.latencyNs / NS}` : ''}`);
+      if (ra.kind === 'release') this.deliver(ra.id, { fault: ra.fault, latencyNs: ra.latencyNs, decision: ra.decision });
+      else if (m) m.held = { fault: ra.fault, latencyNs: ra.latencyNs, decision: ra.decision };
+      return;
+    }
+    if (ra.kind === 'deliver') {
+      this.decision((m && m.item.test) || key, 'ls.deliver', `${ra.info.decision} ${m ? m.key : ''}`);
+      this.trace(`deliver #${ra.id} (hub)`);
+      this.deliver(ra.id, ra.info);
     }
   }
 

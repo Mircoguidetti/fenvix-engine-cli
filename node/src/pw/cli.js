@@ -138,7 +138,15 @@ async function main(argv) {
     if (args[i] === '--reporter') { args[i + 1] = `${args[i + 1]},${reporter}`; hasReporter = true; }
     else if (args[i].startsWith('--reporter=')) { args[i] = `${args[i]},${reporter}`; hasReporter = true; }
   }
-  args.push(`--config=${wrapper}`, '--workers=1', '--retries=0');
+  // Point 3: DETJS_PW_WORKERS=N runs N Playwright workers on one schedule (the hub, hub.js); default one worker.
+  const nWorkers = Math.max(1, Number(process.env.DETJS_PW_WORKERS || 1));
+  args.push(`--config=${wrapper}`, `--workers=${nWorkers}`, '--retries=0');
+  let hub = null;
+  if (nWorkers > 1 && pwEnv.DETJS_PW_LOCKSTEP !== '0') {
+    const sockPath = path.join(runEnv.dir, 'hub.sock');
+    hub = require('./hub').start({ path: sockPath, seed: String(runEnv.cfg.seed), seeded: !!runEnv.cfg.shuffle, workers: nWorkers });
+    pwEnv.DETJS_LS_HUB = sockPath;
+  }
   const boot = path.join(__dirname, 'boot.js');
   // The replay command printed for every failing test (reporter.js): the options that decide the run.
   const replay = ['--det'];
@@ -178,12 +186,13 @@ async function main(argv) {
   };
   if (process.env.DETJS_ROOT === undefined) env.DETJS_ROOT = root;
   env.PATH = binPath(cwd, env.PATH);
-  process.stderr.write(`detjs ${session.VERSION}: Level 2 browser prototype; playwright ${version}; seed ${env.DETJS_SEED}${runEnv.cfg.shuffle ? ' (seeded order)' : ''}; epoch ${opts.epoch}; vtime=${env.DETJS_PW_VTIME || 'paced'}; net=${env.DETJS_PW_NET || 'on'}; server=${env.DETJS_PW_SERVER === '0' ? 'off' : 'on'}; workers=1\n`);
+  process.stderr.write(`detjs ${session.VERSION}: Level 2 browser prototype; playwright ${version}; seed ${env.DETJS_SEED}${runEnv.cfg.shuffle ? ' (seeded order)' : ''}; epoch ${opts.epoch}; vtime=${env.DETJS_PW_VTIME || 'paced'}; net=${env.DETJS_PW_NET || 'on'}; server=${env.DETJS_PW_SERVER === '0' ? 'off' : 'on'}; workers=${nWorkers}\n`);
   let code;
   try {
     code = await run(process.execPath, [cli, ...args], env);
   } finally {
     fs.rmSync(wrapper, { force: true });
+    if (hub) hub.close();
   }
   // Keep the app servers' trace parts for diagnosis; drop the worker buckets.
   const parts = path.join(runEnv.dir, 'parts');

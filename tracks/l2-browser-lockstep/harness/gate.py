@@ -419,7 +419,7 @@ if JOB == "gate":
         save()
 
 
-if JOB == "hunt":
+if JOB in ("hunt", "huntp"):
     # Points 2 + 5 (round 4): for each of the project's round-3 flaky tests (targets55.json), search seeds 1..S for one
     # whose lockstep run fails with the test's real first error line, then replay that seed R times. A target counts
     # as reproduced when all R replays fail with that line and give one fingerprint. The seed space is set per
@@ -430,6 +430,12 @@ if JOB == "hunt":
     only = P.get("only")
     if only:
         T55 = [t for t in T55 if any(o in t["key"] for o in only)]
+    PAR = {}
+    if JOB == "huntp":
+        # Point 3: the targets whose failure is neither a socket reset nor a timeout (round 3: parallel-worker data
+        # interference and shared lists), hunted with several Playwright workers on one schedule (the hub).
+        T55 = [t for t in T55 if t["messages"] and "ECONNRESET" not in t["messages"][0][0] and not t["messages"][0][0].startswith("Test timeout of")]
+        PAR = {"DETJS_PW_WORKERS": str(P.get("workers", 4))}
     SEEDS = int(P.get("seeds", 8))
     REPLAYS = int(P.get("replays", 10))
 
@@ -495,7 +501,7 @@ if JOB == "hunt":
         groups.setdefault(mech(t)[0], []).append(t)
     for g, ts in groups.items():
         # Only the targets are perturbed (setup tests and the rest run the default schedule).
-        env = {**mech(ts[0])[1], "DETJS_LS_FOCUS_TEST": "||".join(t["key"] for t in ts)}
+        env = {**mech(ts[0])[1], **PAR, "DETJS_LS_FOCUS_TEST": "||".join(t["key"] for t in ts)}
         keys = sorted({f"api {real_step(t)}" for t in ts if real_step(t)})
         if g == "reset" and keys:
             env["DETJS_LS_FOCUS_KEYS"] = "|".join(keys)
