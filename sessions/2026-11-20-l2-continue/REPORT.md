@@ -92,8 +92,8 @@ is GitHub Actions.
 
 ## Run 17 (44783946608): the one-engine round on ca3a330, in progress at pause
 
-- gate: sveltekit 2/2 one fingerprint, uptime-kuma 2/2, actual 1/2 (the regression above); documenso pending.
-  MEASURED.
+- gate (MEASURED): **7 of 8** targets with one fingerprint in 10 runs. sveltekit 2/2, uptime-kuma 2/2, documenso
+  2/2, actual 1/2 (the regression above).
 - hunt: uptime-kuma 1 of 2 reproduced (MEASURED); actual, sveltekit, documenso (2 jobs) and huntp pending.
 - Because of the actual gate regression, this round is not the final one: the round has to be repeated on the
   engine with a31d6ae.
