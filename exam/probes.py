@@ -396,9 +396,9 @@ def _(ctx):
 
 @probe("JS-06.probe.global-shape")
 def _(ctx):
-    d, runner, args = rows_js.proj(ctx, "dom-testing-library")
+    d, runner, args = rows_js.proj(ctx, "tabbable")
     body = "test('shape', () => { require('fs').writeFileSync(process.env.EXAM_OUT, JSON.stringify([typeof setImmediate, typeof clearImmediate, typeof crypto.randomUUID])); });\n"
-    rel = "src/__tests__/exam-shape.js"
+    rel = "test/exam-shape.test.js"
     lib.write(d / rel, body)
     vals = []
     for i, eng in enumerate((False, True)):

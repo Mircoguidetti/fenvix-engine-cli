@@ -72,6 +72,8 @@ P = {
     "oak": dict(url="https://github.com/oakserver/oak", sha="08a7eb1ceb39ec468acfc14e593df9e7dddce04c", tag="v17.1.4"),
     "dom-testing-library": dict(url="https://github.com/testing-library/dom-testing-library",
                                 sha="a86c54ccda5242ad8dfc1c70d31980bdbf96af7f", tag="v10.4.0"),
+    "tabbable": dict(url="https://github.com/focus-trap/tabbable", sha="8e8df70b0295c3121c22bbefa6866b7289d648dd",
+                     tag="master@2026-11-20"),
     "pw-coverage": dict(url="https://github.com/mxschmitt/playwright-test-coverage",
                         sha="910da570d958112f0b67040f6dd8abc61bcef4fa", tag="main@2026-11-20"),
 }

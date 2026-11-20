@@ -196,9 +196,9 @@ def _receipt_outcomes(d: Path, run_json: dict | None = None) -> tuple:
     res = {k: dict(v) for k, v in ((run_json or {}).get("files") or {}).items()}
     ran_files = set(res)
     for nid, out in o.items():
-        if "::" not in nid or nid.split("::")[0] in ran_files:
+        if "::" not in nid or nid.split("::")[0].split("@@")[0] in ran_files:
             continue
-        f = nid.split("::")[0]
+        f = nid.split("::")[0].split("@@")[0]
         c = res.setdefault(f, {"passed": 0, "failed": 0, "skipped": 0})
         c[lib.norm(out)] = c.get(lib.norm(out), 0) + 1
     return res, n

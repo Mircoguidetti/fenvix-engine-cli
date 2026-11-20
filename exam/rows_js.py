@@ -26,7 +26,9 @@ def _npm_legacy(ctx, d, extra=None):
     key = f"node:{d}:npm"
     if key in ctx._venvs:
         return
-    rc, out = ctx.sh("npm-install", "npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps", cwd=d, timeout=1800)
+    cmd = ("npm ci --no-audit --no-fund --ignore-scripts" if (d / "package-lock.json").exists() and not extra
+           else "npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps")
+    rc, out = ctx.sh("npm-install", cmd, cwd=d, timeout=1800)
     if rc != 0:
         raise Skip(f"npm install failed: {out[-400:]}")
     if extra:
@@ -64,8 +66,7 @@ PROJ = {
     "jasmine-npm": ("jasmine-npm", ["jasmine@5"], "", None, "jasmine"),
     "elysia": ("elysia", [], "test/core", None, "bun-test"),
     "oak": ("oak", [], "--allow-all", None, "deno-test"),
-    "dom-testing-library": ("dom-testing-library", [f"jest@{JEST}", f"jest-environment-jsdom@{JEST}"],
-                            "--config ./node_modules/kcd-scripts/dist/config/jest.config.js", None, "jest"),
+    "tabbable": ("tabbable", [], "", None, "jest"),
 }
 
 
@@ -244,8 +245,8 @@ test('exam tz locale', () => {
 def JS_06(ctx: Ctx):
     det2(ctx, "JS-06.jsdom-vitest.det2", "zustand")
     cache2(ctx, "JS-06.jsdom-vitest.cache2", "zustand")
-    det2(ctx, "JS-06.jsdom-jest.det2", "dom-testing-library")
-    cache2(ctx, "JS-06.jsdom-jest.cache2", "dom-testing-library")
+    det2(ctx, "JS-06.jsdom-jest.det2", "tabbable")
+    cache2(ctx, "JS-06.jsdom-jest.cache2", "tabbable")
 
     def hd(kind):
         def fn():
