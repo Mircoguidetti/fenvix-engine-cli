@@ -1,0 +1,327 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "--no-cov",
+  "tests",
+  "--ignore=tests/integration",
+  "--ignore=tests/benchmarks",
+  "-p",
+  "no:randomly",
+  "-k",
+  "not udp",
+  "--timeout=120"
+ ],
+ "det_args": [],
+ "shard": "4/5",
+ "commits": [
+  {
+   "i": 40,
+   "sha": "34b24d0cf54785c69083899ffd82e3bfbe92bf30",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 658.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 15099,
+    "carried_of_recorded": 3459,
+    "reused": 0,
+    "ran": 15102,
+    "recorded": 0,
+    "tests": 14432,
+    "miss_reasons": {
+     "new": 14432
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 127.998
+   }
+  },
+  {
+   "i": 41,
+   "sha": "5c061f9e1e6d13b45feef3c69cb240a68aaca71a",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 641.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14458,
+    "carried_of_recorded": 6871,
+    "reused": 0,
+    "ran": 14461,
+    "recorded": 1795,
+    "tests": 14432,
+    "miss_reasons": {
+     "new": 14432
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.6,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 127.209
+   }
+  },
+  {
+   "i": 42,
+   "sha": "cfa27cea5898c4b51eec349d0ec42762f8ccc132",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 671.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14434,
+    "carried_of_recorded": 6871,
+    "reused": 0,
+    "ran": 14437,
+    "recorded": 1795,
+    "tests": 14437,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12642
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 156.3,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 129.101
+   }
+  },
+  {
+   "i": 43,
+   "sha": "bc6fb7082fdab142b5505a594627e845fa52bd9f",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 670.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14436,
+    "carried_of_recorded": 6872,
+    "reused": 0,
+    "ran": 14439,
+    "recorded": 1795,
+    "tests": 14439,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12644
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 153.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 127.847
+   }
+  },
+  {
+   "i": 44,
+   "sha": "dbf6af2fd7feff28085f4adaeb01c01e3eee2367",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 673.0,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14436,
+    "carried_of_recorded": 6872,
+    "reused": 0,
+    "ran": 14439,
+    "recorded": 1795,
+    "tests": 14439,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12644
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 126.324
+   }
+  },
+  {
+   "i": 45,
+   "sha": "84dea8078b0e7c0fb0c1af4f9328a22c8a071a66",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 643.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14436,
+    "carried_of_recorded": 6872,
+    "reused": 0,
+    "ran": 14439,
+    "recorded": 1795,
+    "tests": 14439,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12644
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 150.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 125.942
+   }
+  },
+  {
+   "i": 46,
+   "sha": "9bf2bbc24177485af9ae8a9200b5c1d5c1cfcfa5",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 655.9,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14443,
+    "carried_of_recorded": 6879,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 1795,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12651
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 152.4,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 126.526
+   }
+  },
+  {
+   "i": 47,
+   "sha": "773afa0bb1d409dfa9c823450b15add826f76bc8",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 647.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14443,
+    "carried_of_recorded": 6879,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 1795,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12651
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.2,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 126.069
+   }
+  },
+  {
+   "i": 48,
+   "sha": "c4df1b163c4dd3a9f2a03ea1cf20b55ed3726619",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 633.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14443,
+    "carried_of_recorded": 6879,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 1795,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12651
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 153.5,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 128.142
+   }
+  },
+  {
+   "i": 49,
+   "sha": "141789d2400fb9f465d95263167c367a79aa8277",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 657.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "carried": 14443,
+    "carried_of_recorded": 6879,
+    "reused": 0,
+    "ran": 14446,
+    "recorded": 1795,
+    "tests": 14446,
+    "miss_reasons": {
+     "runtime": 1795,
+     "new": 12651
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 151.1,
+    "rc": 1,
+    "tail": "  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))",
+    "test_time_s": 125.859
+   }
+  }
+ ]
+}
