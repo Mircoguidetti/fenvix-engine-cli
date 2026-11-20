@@ -1,5 +1,0 @@
-# The serial shard (release/ci/shard.py, shard 0): test files that change the interpreter's own installation or host
-# files while they run, so they run alone in one process, in collection order, on their own runner. Explicit list.
-tests/test_absent_inputs_r019c.py              # writes a .pth and a dist-info into the interpreter's site-packages (R-019c E9/E10)
-tests/test_review_r023b.py                     # writes a .pth into site-packages; root-only cases change /etc files
-tests/review_r032/test_review_r032_python.py   # installs into site.getsitepackages()[0]

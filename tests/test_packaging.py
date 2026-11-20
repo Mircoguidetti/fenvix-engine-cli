@@ -317,39 +317,18 @@ def test_state_directory_keeps_the_checkout_clean(pytester):
     assert ".detpy" not in st, st
 
 
-def test_targeted_runs_select_by_documented_rules_and_fall_back_to_everything():
-    """CI speed (coordinator task 2): a session-branch push runs the tests its paths need; anything no rule names
-    runs everything."""
-    sys.path.insert(0, os.path.join(ROOT, "release", "ci"))
-    try:
-        import affected as af
-    finally:
-        sys.path.pop(0)
-    assert af.affected(["docs/INSTALL.md", "sessions/x/REPORT.md"]) == {"python": [], "node": [], "why": {
-        "docs/INSTALL.md": "no code", "sessions/x/REPORT.md": "no code"}}
-    r = af.affected(["tests/test_order.py", "node/test/cache.test.js"])
-    assert r["python"] == ["tests/test_order.py"] and r["node"] == ["test/cache.test.js"]
-    assert af.affected(["python/detpy/plugin.py"])["python"] == "all"
-    assert af.affected(["node/src/native.js"])["node"] == "all"
-    assert af.affected(["crates/detpy-core/src/host.rs"]) == {"python": "all", "node": "all",
-                                                              "why": {"crates/detpy-core/src/host.rs": "the shared core"}}
-    for unknown in (".github/workflows/release-1.yml", "Cargo.toml", "runner/bootstrap.sh", "something/new.txt"):
-        r = af.affected([unknown])
-        assert r["python"] == "all" and r["node"] == "all", unknown
-
-
-def test_shards_cover_every_test_file_once_and_keep_the_serial_files_alone():
-    """CI speed (coordinator task 1): the plan puts every test file in exactly one shard and the explicit serial
-    files alone in shard 0; the same plan for every run."""
-    sys.path.insert(0, os.path.join(ROOT, "release", "ci"))
-    try:
-        import shard
-    finally:
-        sys.path.pop(0)
-    files = shard.test_files()
-    for n in (2, 4, 6):
-        plan = shard.plan(n)
-        flat = [f for s in plan for f in s]
-        assert sorted(flat) == files and len(flat) == len(set(flat)), n
-        assert plan[0] == shard.serial_files() and all(f not in shard.serial_files() for s in plan[1:] for f in s)
-        assert plan == shard.plan(n)
+def test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs():
+    """CI load (founder decision 2026-11-20): no run on session-branch pushes; the full gate on pull requests into the
+    trunk (latest head only), on trunk merges (never cancelled) and by hand; one job per Python and Node version."""
+    wfdir = os.path.join(ROOT, ".github", "workflows")
+    text = open(os.path.join(wfdir, "release-1.yml")).read()
+    on = text[text.index("\non:\n"):text.index("\nconcurrency:")]
+    assert re.search(r"push:\n    branches: \[claude/release-1\]", on)
+    assert re.search(r"pull_request:\n    branches: \[claude/release-1\]", on) and "workflow_dispatch" in on
+    assert "group: release-1-${{ github.event_name }}-${{ github.ref }}" in text
+    assert "cancel-in-progress: ${{ github.event_name == 'pull_request' }}" in text
+    assert 'python: ["3.12", "3.13", "3.14"]' in text and 'node: ["22", "24", "26"]' in text
+    assert "python-shard" not in text and "shard-proof" not in text
+    # no workflow of the gate runs on session-branch pushes (the harness launchers of other sessions, which start on a
+    # committed RUN file under a path filter, are not the gate and stay as they are)
+    assert not os.path.exists(os.path.join(wfdir, "targeted.yml"))
