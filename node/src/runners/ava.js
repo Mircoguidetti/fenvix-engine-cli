@@ -203,7 +203,7 @@ function preloadChild() {
         for (const k of ['serial', 'concurrent']) {
           const list = this.tasks[k];
           if (!list || list.length < 2) continue;
-          const perm = native.shuffleIndices(list.length, c.seed, `${file.fileId}\u0000${k}`);
+          const perm = native.shuffleIndices(list.length, c.orderSeed, `${file.fileId}\u0000${k}`);
           const out = perm.map((i) => list[i]);
           list.splice(0, list.length, ...out);
         }

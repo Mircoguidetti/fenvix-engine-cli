@@ -1,0 +1,75 @@
+{
+  "test": "packages/form-core/tests/FormApi.spec.ts::form api::should run validators in order form sync -> field sync -> form async -> field async",
+  "configs_searched": 4,
+  "status": "reproduced",
+  "config": "3",
+  "seed": 3,
+  "kind": "brittle",
+  "prefix_length": 3,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "packages/form-core/tests/FormApi.spec.ts::form api::should run async validation onChange"
+  ],
+  "order": [
+    "packages/form-core/tests/FormApi.spec.ts::form api::should run validators in order form sync -> field sync -> form async -> field async"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Error",
+    "call",
+    "A function to advance timers was called but the timers APIs are not mocked. Call `vi.useFakeTimers()` in the test file first.",
+    "packages/form-core/tests/FormApi.spec.ts:2689"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "d6d17cb30dc7ee1a02b83fb1dc7feb7b"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [outcome] outcome @  = passed  <>  [random] Math.random @ packages/form-core/src/utils.ts:662 = 0.02106822604751224",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "random",
+      "o": "Math.random",
+      "at": "packages/form-core/src/utils.ts:662",
+      "v": "0.02106822604751224"
+    },
+    "fingerprints": [
+      "31af55e422bc4accd412eab03c7f8ad0",
+      "d6d17cb30dc7ee1a02b83fb1dc7feb7b"
+    ]
+  },
+  "runs": 26,
+  "seconds": 183.3,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=3 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/should_run_validators_in_order_form_sync_-_field_sync_-_form-9b7d6d32/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/should_run_validators_in_order_form_sync_-_field_sync_-_form-9b7d6d32",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/should_run_validators_in_order_form_sync_-_field_sync_-_form-9b7d6d32",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/tanstack-form",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

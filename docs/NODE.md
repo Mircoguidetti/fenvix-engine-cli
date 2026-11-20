@@ -16,6 +16,7 @@ detjs verify .detjs/run1.jsonl .detjs/trace.jsonl
 detjs vitest run --det --det-workers=4       # parallel lanes with a fixed plan (also: --maxWorkers=4)
 detjs jest --det -w 4                        # Jest workers, one lane per worker
 detjs jest --det --det-plan=.detjs/run1.jsonl  # replay the lanes of an earlier parallel run
+detjs vitest run --det --det-order=order.txt --det-outcomes=o.json   # exactly these tests, in this order
 detjs --det-help                             # every option
 ```
 
@@ -24,6 +25,82 @@ own CLI unchanged.
 
 `--det-cache=DIR|URL` adds the cache with proof (skip test files whose every recorded input is unchanged, with a
 receipt per reused result): [NODE-CACHE.md](NODE-CACHE.md).
+
+A failing test under `--det` ends the run with ready-to-paste commands (every Node shell): the failing file(s) again
+with the same seeds and order, and, for Vitest, Jest and Playwright, the command that turns each failing test into a
+defect (as the pytest plugin does):
+
+```
+1 test(s) failed under --det (seed 7, shuffled). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/a.test.ts::cache::evicts --runner=vitest --seed=7
+  rerun the failing file with the same seeds and order: detjs vitest run --det --det-seed=7 tests/a.test.ts
+  the same run again: detjs vitest run --det --det-seed=7 (with the same arguments)
+```
+
+`--det-seed=N` seeds both the order (shuffle) and every generator; `--det-order-seed=M` shuffles the order with `M`
+and leaves the generators on `--det-seed` (a new order with the same `Math.random` / `randomUUID` values, or new values
+in the same order: an order-dependent failure is told apart from a value-dependent one). Both are in the trace header
+(`seed`, `order_seed`) and in the rerun command.
+
+`detjs playwright [test] --det [playwright test args]` runs Playwright Test with the project's configuration, one
+worker, no parallel mode and no retries, and the Level 0 controls and per-test brackets in the worker processes
+(`node/src/playwright/`): one trace, fingerprints per test, the repro options below. The browser and the web servers
+Playwright starts are separate processes, not controlled (the L2 lane); the test process is.
+
+## Repro: flaky test to reproducible defect (Vitest, Jest, Playwright)
+
+`fenvix repro TEST`, `fenvix explore --budget MIN` and `fenvix replay BUNDLE` work for Vitest, Jest and Playwright Test
+with the same options, output and bundle as for pytest (docs/CLI.md on branch verifier-cli). `detjs repro|explore|
+replay` runs the same driver (`python -m detpy.fenvix_js`, Python with detpy: `FENVIX_PYTHON`). The search, the minimisation, the replay verdict and
+the bundle are the runner-neutral Rust ones (`crates/detpy-core/src/repro.rs`); `python/detpy/fenvix_js.py` drives
+detjs (`DetjsRunner`, the `vitest` / `jest` / `playwright` adapters). The bundle's `runner` field picks the runner at
+replay; `command` is the detjs command line that reruns the bundle.
+
+```
+fenvix repro: tests/doc/errors.ts::logLevel::by default, warn for tag fallback
+  status:  REPRODUCED: failed 10/10 replays with one fingerprint 214284b09894c726bb4150da8040cc9e
+  cause:   test order: it fails when run after tests/doc/errors.ts::logLevel::silence warnings with logLevel: 'silent' (state left behind by that test)
+  seed:    1
+  order:   tests/doc/errors.ts::logLevel::silence warnings with logLevel: 'silent' -> tests/doc/errors.ts::logLevel::by default, warn for tag fallback
+  error:   expected [] to match object [ Array(1) ] (tests/doc/errors.ts:458)
+  replay:  fenvix replay .detpy/repro/by_default_warn_for_tag_fallback-9c19e945
+  rerun:   detjs vitest run --det --det-seed=1 --det-order=.detpy/repro/by_default_warn_for_tag_fallback-9c19e945/order.txt
+```
+
+What the driver uses from detjs (`node/src/repro.js`):
+
+| option | what it does |
+|---|---|
+| `--det-order=FILE` | runs exactly the test ids listed in FILE (one per line, `#` comments), in the listed order; a test outside the list does not run, a listed id no test has is reported in `order_missing` |
+| `--det-outcomes=PATH` | JSON of the run: `order` (the tests in run order), `outcomes` {id: `passed`/`failed`/`skipped`/`error`}, `fingerprints` {id: hex}, `exceptions` {id: [type, phase, message, `file:line`]}, `controls`, `seed`, `shuffle`, `order_missing`, `order_regrouped`, `file_errors` |
+| `--det-collect` | collection only: writes to `--det-outcomes` the order a run with the same options (seed, filters) would use; the test files are imported (as collection does), no test body and no hook runs |
+| `--det-seed=N` | with `--det-order` the listed order wins; the seed still seeds `Math.random` & co. (per test id: a test draws the same values whatever ran before it) |
+
+How an order is honoured. Vitest and Jest run one test file at a time, each file in its own module registry, and the
+tests of a file in its describe tree. An order is run as: files in the order of their first listed test; inside a
+file, at every level of the describe tree, children in the order of their first listed test; unlisted tests, and
+describe blocks left without a listed test, are removed before the file runs (their `beforeAll`/`afterAll` hooks do
+not run; the hooks of the blocks that keep a test do). Every order a whole-suite run produces (fixed or shuffled:
+files → describe blocks → tests) and every sublist of it (what the minimisation tries) is contiguous per file and per
+describe block, so it is run exactly as listed and a bundle replays exactly. A hand-written order that interleaves
+two files or two describe blocks is run grouped as above; the run says so (`order_regrouped`, a line in the output)
+and `order` holds the order really run. The minimisation therefore works at test granularity, and a polluter in
+another file is found when state crosses files (Jest in band: `process.env`, the file system, Node's module
+cache for native modules; Vitest with `isolate: false`).
+
+A listed test whose file fails to load (import error, a throw at module level) is reported `error` with the load error
+(phase `collect`), not missing. When a failure does not replay N/N with one fingerprint and the test used a source
+Level 0 does not control (its `uncontrolled.child|thread|io|level0` events, control 7c/7d below; OS entropy:
+`crypto.randomBytes` & co. without `--det-urandom`), `fenvix repro` reports it `NOT REPRODUCIBLE under fenvix` and
+names the source (e.g. `child (execSync node -e ...)`); the polluters / setters its minimisation found on those
+unstable outcomes are kept in the bundle's `minimised` field, not reported as the cause.
+
+Playwright Test: the reporter detjs adds (`node/src/playwright/reporter.js`, Playwright >= 1.56 `preprocess`) orders
+and filters the tests before Playwright groups them; the worker (`node/src/playwright/worker.js`) runs a file's tests
+in that order (Playwright reloads the file in declaration order) and brackets each with Playwright's own `testBegin` /
+`testEnd`. Playwright starts a new worker after a failure: the file's remaining tests go to a second trace part,
+merged in run order. Test ids are the detjs ids (`<file>::<describe>::<title>`, ` [<project>]` appended for a named
+project, as Playwright and the Block 1 harness name them).
 
 ## Layout
 
@@ -42,6 +119,9 @@ node/src/fsorder.js   sorted readdir / readdirSync / promises.readdir / opendir
 node/src/network.js   closed network, record/replay (net, tls, dns => http, https, fetch, undici)
 node/src/controls.js  installation (process-wide and per realm), per-file trace parts
 node/src/session.js   main process: options, DETJS_* environment, merge of parts, compare
+node/src/repro.js     --det-order / --det-outcomes / --det-collect, the `fenvix repro` line of a failing run
+node/src/playwright/   cli.js (detjs playwright: wrapped config, worker preload, merge of the parts), config.js,
+                      reporter.js (ids, order, --det-order / --det-collect, outcomes), worker.js (controls, brackets)
 node/src/vitest/      cli.js (Node API + sequencer), runner.mjs/shell.js (custom runner in the worker)
 node/src/jest/        cli.js (in-process jest-cli), sequencer.js, runner.js (wraps jest-circus)
 ```
@@ -203,15 +283,16 @@ Found by the shell tests (**T**), by the harness (**H**) or by design (**D**).
 | J7 | Network replay: a replayed socket is a Unix socket (`remoteAddress`/`remotePort` undefined); request bytes that differ from the recording reset the connection (the test sees the error, the trace has `replay-mismatch`, detjs prints the request; G-0130); recorded and replayed connections are closed when their test ends, so keep-alive agents reconnect per test (G-0129); credential request headers (`Authorization`, `Cookie`, `*-token`, `*-key`, ...) are stored as a digest padded to the same length (G-0131); UDP to non-local addresses is refused like a connection (G-0128); sockets intercepted by a mocking library (nock >= 14 / @mswjs/interceptors: an own `connect` on the socket and on its handle) are answered by the mock, the network stays closed for everything else (G-0127). TLS replay does not negotiate ALPN `h2`; `new dns.Resolver()` instances are not guarded (connections are). | T,D |
 | J8 | Only the order of directory enumeration is normalised; libraries that issue several asynchronous `readdir` calls in parallel (fast-glob) still merge results in completion order. | D |
 | J9 | (Vitest projects get the detjs runner and ordering on every resolved project, found by the harness on date-fns: before the fix project configs ignored them.) A file run by two projects of a Vitest workspace / Jest multi-project config yields two parts with the same test ids; the verifier then keeps one. | D |
-| J11 | Playwright Test is measured only (`node/src/register.js`, enabled with `NODE_OPTIONS=--require` in the worker processes): controls without per-test brackets or traces; the browser and web servers are not controlled. Playwright versions that set `TEST_WORKER_INDEX` after the worker starts (1.65.1, MEASURED) get no controls at all; placement across workers is never controlled (see "Parallel"). | D,T |
+| J11 | Playwright Test (`detjs playwright`): the test process is controlled and traced per test; the browser and the web servers are separate processes and are not controlled (what a page does in Chromium is not an event). Retries and parallel workers are switched off under `--det`. `node/src/register.js` (the earlier measurement-only preload) is kept for the harness. | D |
 | J19 | `test.concurrent`, `describe.concurrent` and `sequence.concurrent` still run one test at a time under `--det` (`maxConcurrency: 1`): their waits on virtual timers cost nothing, but waits on real I/O add up (MEASURED here, one file of 8 concurrent tests, 4 waiting 0.5 s on virtual timers and 4 on a child process: Vitest 5.1 plain 2.1 s vs `--det` 3.7 s, Jest 30 plain 3.4 s vs 4.6 s, on a shared 4 vCPU machine). A deterministic interleaving needs per-test clocks, generators and event buffers carried by async context (AsyncLocalStorage) instead of the process-wide test bracket: not built (audit G-1449, G-1456). | D,T |
 | J18 | Parallel lanes (`--det-workers`): what a test changes in process state that the carried-state check does not compare (a library's module-level cache outside the vm context, native state) and interference through channels the footprint does not see (native code, child processes, sockets other than fixed loopback ports, a database server) are not detected; a parallel fingerprint that differs from the serial one still shows in `detjs verify`. A test that copies the whole environment and then depends on the worker id inside the copy is keyed with the serial value (the copy is keyed as a whole). A Vitest 3 project whose files use several environments can see `lane order broken` (Vitest 3 dispatches by environment group). A worker that waits for its lane predecessor blocks its thread (`Atomics.wait`). | D |
-| J14 | Jest under `--det` runs in band with `--forceExit` by default: a handle left open by a suite would otherwise keep the single process alive forever (react-testing-library hangs in band without `--det` too; in worker mode Jest kills the workers). Recorded in `meta.isolation`. | H |
+| J14 | Jest under `--det` runs in band with `--forceExit`: a handle left open by a suite would otherwise keep the single process alive forever (react-testing-library hangs in band without `--det` too; in worker mode Jest kills the workers). Recorded in `meta.isolation`. | H |
 | J13 | Vitest (and Jest, since matrix-js-sdk: Jest compiles its `testRunner` with the project's Babel config, whose `transform-runtime` then required `@babel/runtime` from detjs's directory) load the detjs runner through a one-line shim in `<root>/node_modules/.detjs/` (removed at exit): a runner outside the project root is served by Vite and refused when the project restricts `server.fs` (found on jotai: 0 of 44 files ran). | H |
 | J12 | The wrappers call the runners' Node APIs in-process, so they reproduce what the runners' own CLIs set up first: `NODE_ENV=test` (Jest's bin; Babel configs such as kcd-scripts depend on it), `TEST`/`VITEST`/`NODE_ENV` and the CLI filters at `createVitest` (Vitest's `startVitest`). Found by the harness on user-event and jotai/pinia. | H |
 | J15 | CPU time is not virtual time: a loop bounded by a virtual deadline (apollo-client: `setInterval(…, 1)` calling `gc()` for 1000 virtual ms) runs every iteration that the virtual deadline allows (1000 `gc()` calls instead of ~50 in real time) and can exceed the runner's *real* test timeout. The runners' timeouts are not virtualised. | H |
 | J16 | A custom Jest `runner` (jest-light-runner, used by babel and prettier) runs the tests without jest-circus's `testRunner`, out of detjs's reach: Level 0 does not apply to them (0 of ~25 000 tests traced); detjs warns and records it in `meta.isolation`. `DETJS_JEST_RUNNER=replace` uses Jest's default `jest-runner` instead, but the suites written for the custom runner (native ESM) then fail (measured: babel 238/238 suites, prettier 1429/1429, under `--det` and the serial reference alike). | H |
 | J17 | Each patched call (clock, random, fs) runs a few extra JavaScript frames (the wrapper, event recording, call-site capture): code that recurses close to V8's stack limit can overflow under `--det` only (assistant-ui: a JavaScript bash emulator reported `Maximum call stack size exceeded` in 4 tests). | H |
+| J18 | `--det-order` cannot interleave test files or describe blocks (the runners run one file, and one describe block, at a time): such an order is run grouped by first listed test and reported (`order_regrouped`). Orders produced by a run or by the repro minimisation never interleave. | D |
 | J10 | With Vitest `isolate: false`, several files can be collected before the first runs: the module-level seed of later files is approximate. | D |
 
 The harness results (`harness/node/results/`) add the limits found on real

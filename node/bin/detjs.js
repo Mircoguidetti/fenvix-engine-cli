@@ -8,16 +8,23 @@
 //   detjs node-test [--det ...] [node flags] [file patterns]   (node --test)
 //   detjs mocha  [--det ...] [mocha args]
 //   detjs tap|ava|jasmine|uvu [--det ...] [runner args]  (src/runners/<name>.js)
+//   detjs playwright [test] [--det ...] [playwright test args]  (src/playwright/cli.js)
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
+//   detjs repro TEST | explore --budget MIN | replay BUNDLE  (the repro driver: python -m detpy.fenvix_js, as fenvix)
 const RUNNER_SHELLS = new Set(['tap', 'ava', 'jasmine', 'uvu']);
-const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [runner args]
+const USAGE = `usage: detjs vitest|jest|playwright|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
+       detjs repro TEST [options] [-- runner args]     flaky Vitest / Jest / Playwright test -> reproducible defect
+       detjs explore --budget MIN [options] [-- runner args]
+       detjs replay BUNDLE [--runs N]                  (same options and output as fenvix repro / explore / replay)
        detjs --det-help`;
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
+  if (cmd === 'playwright') return require('../src/playwright/cli').main(rest);
+  if (cmd === 'repro' || cmd === 'explore' || cmd === 'replay') return reproDriver(cmd, rest);
   if (cmd === 'bun-test') return require('../src/runners/bun').main(rest);
   if (cmd === 'deno-test') return require('../src/runners/deno').main(rest);
   if (cmd === 'node-test') return require('../src/nodetest/cli').main(rest);
@@ -47,6 +54,23 @@ async function main(argv) {
   if (cmd === '--det-help') { process.stdout.write(require('../src/session').HELP); return 0; }
   console.error(USAGE);
   return 2;
+}
+
+/**
+ * `detjs repro|explore|replay`: the repro driver is runner-neutral Rust behind the Python package (python/detpy/
+ * fenvix_js.py, the same code as `fenvix repro`): run it with this detjs. FENVIX_PYTHON names the interpreter that has
+ * detpy installed (default python3).
+ */
+function reproDriver(cmd, rest) {
+  const { spawnSync } = require('node:child_process');
+  const py = process.env.FENVIX_PYTHON || 'python3';
+  const env = { ...process.env, FENVIX_DETJS: process.env.FENVIX_DETJS || `${JSON.stringify(process.execPath)} ${JSON.stringify(__filename)}` };
+  const r = spawnSync(py, ['-m', 'detpy.fenvix_js', cmd, ...rest], { stdio: 'inherit', env });
+  if (r.error) {
+    console.error(`detjs ${cmd}: cannot start ${py} (${r.error.message}): the repro driver needs Python with detpy installed (FENVIX_PYTHON=<python>)`);
+    return 2;
+  }
+  return r.status ?? 1;
 }
 
 // Preload modules of the user (`NODE_OPTIONS`, `node --require/--import ... detjs`) run before detjs. With the

@@ -103,7 +103,7 @@ async function main(argv) {
   let keyed = [...new Set(all.filter((f) => !fileSet.has(path.resolve(f))))]
     .map((f) => ({ f: path.resolve(f), fileId: path.relative(root, path.resolve(f)).split(path.sep).join('/') }));
   keyed.sort((a, b) => (a.fileId < b.fileId ? -1 : a.fileId > b.fileId ? 1 : 0));
-  if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
+  if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.orderSeed, '').map((i) => keyed[i]);
 
   const mode = det.cache ? 'perfile' : 'single';
   const nodeOptions = env0.NODE_OPTIONS;

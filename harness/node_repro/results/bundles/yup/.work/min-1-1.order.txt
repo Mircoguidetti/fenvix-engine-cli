@@ -1,0 +1,56 @@
+test/number.ts::Number types::should type check
+test/number.ts::Number types::should resolve param refs when describing
+test/number.ts::Number types::should check POSITIVE correctly
+test/number.ts::Number types::moreThan::invalid:::-10
+test/number.ts::Number types::moreThan::invalid:::null
+test/number.ts::Number types::moreThan::invalid:::64
+test/number.ts::Number types::moreThan::invalid:::5
+test/number.ts::Number types::moreThan::valid:::null
+test/number.ts::Number types::moreThan::valid:::56445435
+test/number.ts::Number types::moreThan::valid:::6
+test/number.ts::Number types::moreThan::should return default message
+test/number.ts::Number types::should handle DEFAULT
+test/number.ts::Number types::should VALIDATE correctly
+test/number.ts::Number types::lessThan::invalid:::7
+test/number.ts::Number types::lessThan::invalid:::5
+test/number.ts::Number types::lessThan::invalid:::14
+test/number.ts::Number types::lessThan::invalid:::null
+test/number.ts::Number types::lessThan::valid:::-10
+test/number.ts::Number types::lessThan::valid:::4
+test/number.ts::Number types::lessThan::valid:::null
+test/number.ts::Number types::lessThan::should return default message
+test/number.ts::Number types::should check NEGATIVE correctly
+test/number.ts::Number types::integer::invalid:::10.53
+test/number.ts::Number types::integer::invalid:::2025-01-01T00:00:00.000Z
+test/number.ts::Number types::integer::invalid:::0.020000000000000004
+test/number.ts::Number types::integer::invalid:::-34512535.626
+test/number.ts::Number types::integer::valid:::-5222
+test/number.ts::Number types::integer::valid:::3.12312e+51
+test/number.ts::Number types::integer::valid:::4
+test/number.ts::Number types::integer::should return default message
+test/number.ts::Number types::casting::should not cast 2025-01-01T00:00:00.000Z
+test/number.ts::Number types::casting::should truncate
+test/number.ts::Number types::casting::should return NaN for failed casts
+test/number.ts::Number types::casting::should not cast 
+test/number.ts::Number types::casting::should not cast null
+test/number.ts::Number types::casting::should cast 3 to 3
+test/number.ts::Number types::casting::should not cast true
+test/number.ts::Number types::casting::should not cast false
+test/number.ts::Number types::casting::should round
+test/number.ts::Number types::casting::should cast 5 to 5
+test/number.ts::Number types::casting::should cast  5.656  to 5.656
+test/number.ts::Number types::max::valid:::-5222
+test/number.ts::Number types::max::valid:::4
+test/number.ts::Number types::max::valid:::null
+test/number.ts::Number types::max::invalid:::16
+test/number.ts::Number types::max::invalid:::null
+test/number.ts::Number types::max::invalid:::10
+test/number.ts::Number types::is extensible
+test/number.ts::Number types::min::invalid:::2
+test/number.ts::Number types::min::invalid:::14
+test/number.ts::Number types::min::invalid:::null
+test/number.ts::Number types::min::valid:::null
+test/number.ts::Number types::min::valid:::35738787838
+test/number.ts::Number types::min::valid:::7
+test/bool.ts::Boolean types::should type check
+test/setLocale.ts::Custom locale::should get default locale

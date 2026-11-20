@@ -1,0 +1,76 @@
+{
+  "test": "packages/zod/src/v4/mini/tests/prototypes.test.ts::prototype extension",
+  "configs_searched": 3,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 714,
+  "minimal_length": 2,
+  "polluters": [
+    "packages/zod/src/v4/mini/tests/prototypes.test.ts::prototype extension #2"
+  ],
+  "setters": [],
+  "order": [
+    "packages/zod/src/v4/mini/tests/prototypes.test.ts::prototype extension #2",
+    "packages/zod/src/v4/mini/tests/prototypes.test.ts::prototype extension"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "TypeError",
+    "call",
+    "Cannot read properties of undefined (reading 'bind')",
+    "packages/zod/src/v4/core/core.ts:48"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "214284b09894c726bb4150da8040cc9e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "31af55e422bc4accd412eab03c7f8ad0",
+      "214284b09894c726bb4150da8040cc9e"
+    ]
+  },
+  "runs": 34,
+  "seconds": 697.64,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=2 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/zod-flaky/prototype_extension-cfdad45f/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/zod-flaky/prototype_extension-cfdad45f",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/zod-flaky/prototype_extension-cfdad45f",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/zod-flaky",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

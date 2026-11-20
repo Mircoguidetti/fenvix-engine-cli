@@ -195,7 +195,7 @@ function preloadSingle() {
       const fid = fname && byAbs.get(path.resolve(fname)) ? byAbs.get(path.resolve(fname)).fileId : '';
       return [fid, ...parts].join('::');
     };
-    const shuffle = (list, key) => native.shuffleIndices(list.length, c.seed, key).map((i) => list[i]);
+    const shuffle = (list, key) => native.shuffleIndices(list.length, c.orderSeed, key).map((i) => list[i]);
     if (node.parentSuite) return shuffle(kids, keyOf(node));
     // top suite: group by file (in load order), shuffle each group
     const groups = new Map();

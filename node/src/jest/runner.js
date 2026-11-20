@@ -11,6 +11,7 @@
 const path = require('node:path');
 const controls = require('../controls');
 const parallel = require('../parallel');
+const repro = require('../repro');
 
 const { STATE } = controls;
 // the session's capture (in band: the main process) or a worker's (parallel lanes: src/jest/worker.js)
@@ -94,6 +95,38 @@ function virtualFakeClock(ft, config) {
   Object.defineProperty(ft, '__detjsVirtual', { value: true });
 }
 
+/**
+ * --det-order / --det-collect (src/repro.js): reduce and order the file's describe tree to the plan (run_start, after
+ * the shuffle); returns the ids that will run, in order. Collection only: every block and test is skipped (no hook
+ * runs: jest-circus runs the hooks of a block only when it has an enabled test).
+ */
+function reproPlan(rootBlock, ids) {
+  const p = repro.plan();
+  // Jest >= 27 runs `children` (describe blocks and tests mixed; Jest 30 still keeps a `tests` list beside it); older
+  // Jest has tests and describe blocks in separate lists. Decided once, before the tree changes.
+  const modern = !Array.isArray(rootBlock.tests) || childrenOf(rootBlock) === rootBlock.children;
+  const kids = (b) => (modern ? b.children || [] : childrenOf(b));
+  const idOf = (t) => (t.type === 'describeBlock' ? null : ids.get(t) || null);
+  const kidsOf = (b) => (b.type === 'describeBlock' ? kids(b) : null);
+  if (p && modern) repro.filterTree(rootBlock.children, idOf, kidsOf, p);
+  else if (p) {
+    const reduce = (block) => {
+      repro.filterTree(block.tests, idOf, () => null, p);
+      for (const ch of block.children) reduce(ch);
+      const first = (b) => Math.min(...repro.flatIds(kids(b), idOf, kidsOf).map((id) => p.index.get(id)));
+      const kept = block.children.filter((b) => repro.flatIds(kids(b), idOf, kidsOf).length).sort((x, y) => first(x) - first(y));
+      block.children.splice(0, block.children.length, ...kept);
+    };
+    reduce(rootBlock);
+  }
+  const out = repro.flatIds(kids(rootBlock), idOf, kidsOf);
+  if (process.env.DETJS_COLLECT === '1') {
+    const skip = (b) => { for (const ch of kids(b)) { ch.mode = 'skip'; if (ch.type === 'describeBlock') skip(ch); } };
+    skip(rootBlock);
+  }
+  return out;
+}
+
 module.exports = async function detjsJestRunner(globalConfig, config, environment, runtime, testPath, sendMessageToJest) {
   const run = baseRunner(config);
   const c = controls.cfg();
@@ -123,6 +156,9 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   controls.openFile(fileId, project);
 
   let ids = new Map();
+  let collected = [];
+  const exceptions = {};
+  let fileError = null;
   let pending = null; // test whose last attempt finished (retries reuse the id)
   const endTest = (id, outcome, test) => {
     const fp = STATE.endTest(outcome);
@@ -156,13 +192,13 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
           const keyOf = (b) => (b === state.rootDescribeBlock ? label : `${label}${ids.get(b).slice(fileId.length)}`);
           const shuffleBlock = (block) => {
             if (!Array.isArray(block.tests) || childrenOf(block) === block.children) {
-              const out = controls.shuffleTree(block.children, c.seed, keyOf(block), keyOf, (b) => (b.type === 'describeBlock' ? b.children : null));
+              const out = controls.shuffleTree(block.children, c.orderSeed, keyOf(block), keyOf, (b) => (b.type === 'describeBlock' ? b.children : null));
               block.children.splice(0, block.children.length, ...out);
             } else {
               // Jest < 27: tests and describe blocks are separate lists
               for (const k of ['tests', 'children']) {
                 if (!block[k] || !block[k].length) continue;
-                const perm = require('../native').shuffleIndices(block[k].length, c.seed, `${keyOf(block)}\0${k}`);
+                const perm = require('../native').shuffleIndices(block[k].length, c.orderSeed, `${keyOf(block)}\0${k}`);
                 const out = perm.map((i) => block[k][i]);
                 block[k].splice(0, block[k].length, ...out);
               }
@@ -171,6 +207,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
           };
           if (rootKids.length) shuffleBlock(state.rootDescribeBlock);
         }
+        collected = reproPlan(state.rootDescribeBlock, ids);
         break;
       }
       case 'test_start': {
@@ -181,6 +218,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
       case 'test_done': {
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
         if (STATE.testId === id) pending = { id, outcome: outcomeOf(event.test), test: event.test };
+        if (event.test.errors && event.test.errors.length) exceptions[id] = repro.exceptionOf(event.test.errors[0], 'call', root);
+        else delete exceptions[id]; // a retry passed
         break;
       }
       case 'test_skip':
@@ -212,11 +251,16 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   try {
     result = await run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
     return result;
+  } catch (e) {
+    fileError = repro.exceptionOf(e, 'collect', root);
+    throw e;
   } finally {
     endPending();
     controls.closeFile();
     parallel.carriedAfter(label);
     parallel.leave(label, carried.length ? { carried } : {});
+    if (!fileError && result && result.testExecError) fileError = repro.exceptionOf(result.testExecError, 'collect', root);
+    repro.writeSide(c.dir, controls.partName(fileId, project), { file: fileId, project, collected, states: {}, exceptions, file_error: fileError });
     if (CAP && c.dir) {
       try {
         const ok = Boolean(result) && !result.testExecError && !(result.numFailingTests > 0);
