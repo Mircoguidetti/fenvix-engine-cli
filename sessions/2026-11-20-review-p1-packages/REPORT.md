@@ -198,3 +198,37 @@ were re-run (founder rule). D4 is not re-checked here (PR #10, later).
 - **Note (non-blocking):** the D2 `artifact` line reads `$FENVIX_HOME/VERSION.json`, so it names the image's artifact,
   not the build of the wheel actually imported. A job that pip-installs a wheel from another build into its own venv
   still sees the image's build and commit. Both carry version 0.1.0.
+
+## Re-check D4: PASS
+
+Coordinator re-check round, 2026-11-20: PR #10, `claude/p1-python-leaks` @ fdf6029 (contains trunk a996b68). Fix commit
+0e5a47a: `plugin._plugin_rewrite_files()` adds the `.py` files of every installed pytest-plugin distribution (a
+`pytest11` entry point) to the G-0168 pre-warm. The serial accounting is unchanged: a module still rewritten from
+source in the test process remains the run input `bytecode … (cold rewrite cache: N)`. So the fix warms the modules;
+it does not hide the input. (fdf6029 also zeroes the xdist controller's own cold count, under `-n`. That is P1
+finding 11, outside D4, and was not reviewed here.)
+
+- **Build:** wheel built from fdf6029 as CI builds it (maturin, manylinux_2_28). Fresh venv per version; `_core` copied
+  into `python/detpy`, as in the `python` job.
+- **My test, unchanged (`test_d4_…`, as committed in 0119874):** 1 passed on CPython 3.12.13, 3.13.18 and 3.14.6.
+- **python-attrs/attrs@3dca08ce, fresh venv per version (PyPI reachable from here):**
+  - Setup: `pip install --no-cache-dir -e . pytest hypothesis pytest-xdist` plus the fdf6029 wheel; exam arguments
+    (`tests -p no:randomly --ignore=…mypy/pyright/hooks`).
+  - `pytest --det` twice, then `fenvix verify`. Traces and logs were written outside the checkout.
+  - Results:
+
+    | | run 1 `bytecode` | `fenvix verify` | engine runs 1 and 2 = plain |
+    |---|---|---|---|
+    | 3.12 | `precompiled` | exit 0, IDENTICAL, 1330/1330 | 2 failed, 1322 passed, 6 skipped, 1 xfailed |
+    | 3.13 | `precompiled` | exit 0, IDENTICAL, 1330/1330 | 2 failed, 1325 passed, 3 skipped, 1 xfailed |
+    | 3.14 | `precompiled` | exit 0, IDENTICAL, 1330/1330 | 2 failed, 1321 passed, 3 skipped, 5 xfailed |
+
+    The 2 failures are attrs' own; plain pytest in the same venv gives them too. Outcomes were compared by counts,
+    not per test.
+  - A first try had written the traces into the checkout root between the two runs. There 1 of 1330 tests diverged on
+    `os.listdir(".")` (26 vs 28 entries) with run inputs identical: a real input change made by my command, correctly
+    reported, not an engine defect.
+
+**Result after the re-check rounds:** D1, D2 and D3 are fixed on PR #9 (3a90d44) and D4 on PR #10 (fdf6029), each
+re-checked against its own branch head. Neither PR is merged into the trunk yet, so the trunk itself was not
+re-checked.
