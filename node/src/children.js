@@ -61,7 +61,7 @@ function installWorkers(patcher) {
       if (at === null) return Reflect.construct(target, args, nt === W ? target : nt);
       const [file, opts0] = args;
       const opts = opts0 && typeof opts0 === 'object' ? opts0 : {};
-      const key = `${STATE.testId}\u0000worker${workers++}`;
+      const key = `${STATE.testId}\u001fworker${workers++}`; // an environment value: no NUL byte (a NUL made every Worker constructor throw)
       const env = opts.env === wt.SHARE_ENV ? opts.env : { ...(opts.env || process.env), DETJS_WORKER_KEY: key };
       const withPreload = { ...opts, env, execArgv: [...(opts.execArgv !== undefined ? opts.execArgv : process.execArgv), '--require', WORKER_PRELOAD] };
       let w;
