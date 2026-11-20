@@ -194,10 +194,10 @@ def test_g0164_module_from_pythonpath_outside_the_root_is_an_input(pytester, tmp
 def test_py08_a_test_that_starts_a_process_runs_every_time(pytester):
     _probe(pytester, """
         import subprocess, sys
+        def test_pure():  # before the child: a refusal is carried into the later tests of the process
+            pass
         def test_child():
             assert subprocess.run([sys.executable, "-c", "print(1)"], capture_output=True, text=True).stdout == "1\\n"
-        def test_pure():
-            pass
         """)
     for label in ("r1", "r2", "r3"):
         p, c, _ = run(pytester, label, "-rA", "tests")

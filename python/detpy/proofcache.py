@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 
 import pytest
 
@@ -89,7 +90,9 @@ _VOLATILE_OPTIONS = {
 }
 
 
-def config_identity(config) -> tuple[str, dict]:
+def config_identity(config, as_if: dict | None = None) -> tuple[str, dict]:
+    """The configuration digest and its parts; ``as_if``: option values to use instead of the session's (the serial
+    session's configuration of an isolated one)."""
     plugins = sorted({f"{dist.project_name}=={dist.version}"
                       for _, dist in config.pluginmanager.list_plugin_distinfo()})
     ini = getattr(config, "_inicfg", None)
@@ -107,6 +110,8 @@ def config_identity(config) -> tuple[str, dict]:
     for k, v in sorted(vars(config.option).items()):
         if k in _VOLATILE_OPTIONS or (inert and k.startswith(inert)):
             continue
+        if as_if and k in as_if:
+            v = as_if[k]
         r = repr(v)
         if " at 0x" in r:
             r = type(v).__name__
@@ -145,6 +150,11 @@ class ProofCachePlugin(ProofSession):
                 basetemp = None
             self.cap.basetemp = basetemp
         self.open(str(config.rootpath), *config_identity(config))
+        # audit G-0169: the configuration of the same session without --det-isolate, under which the serial results
+        # of these tests are stored (_expect_serial compares an isolated outcome with them)
+        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False})[0]
+                                     if config.getoption("det_isolate", False) else None)
+
 
     # -- collection -------------------------------------------------------------
     @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -210,14 +220,24 @@ class ProofCachePlugin(ProofSession):
         a parallel one proven equal to the serial result) whose inputs are unchanged. ``placement_findings`` compares
         it with the outcome this session got."""
         exp = self.serial_expect = {}
+        store = self.store
+        if self.isolate and getattr(self, "serial_config_digest", None):
+            # a read-only view of the same store under the serial session's configuration
+            cap, was = self.cap, self.cap.active
+            cap.active = False
+            try:
+                store = _core.ProofCache(self.dir, self.root)
+                store.begin(self.serial_config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+            finally:
+                cap.active = was
         for nid in nids:
             if self.sess.is_hit(nid):
                 continue
             try:
-                ok, _ = self.store.check(nid)
+                ok, _ = store.check(nid)
                 if not ok:
                     continue
-                e = json.loads(self.store.entry(nid))
+                e = json.loads(store.entry(nid))
             except Exception:
                 continue
             if e.get("placement", "") in ("", "parallel-proven") and e.get("outcome"):
