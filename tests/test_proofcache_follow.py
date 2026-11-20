@@ -243,8 +243,9 @@ def test_child_own_temporary_files_are_not_inputs(pytester, run_cache):
                            capture_output=True)
         """})
     run_cache()
-    _, reused, _ = run_cache()
-    assert reused == ids("test_tmp")
+    _, reused, data = run_cache()
+    c = data.get("cache") or {}
+    assert reused == ids("test_tmp"), (c.get("not_cached_ids"), c.get("not_cached_where"), c.get("stale_hits"))
 
 
 
