@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time as _time
 
 import pytest
@@ -85,6 +86,25 @@ def is_worker(config) -> bool:
 def worker_id(config) -> str | None:
     wi = getattr(config, "workerinput", None)
     return wi.get("workerid") if isinstance(wi, dict) else None
+
+
+XDIST_MIN = (3, 7)
+
+
+def require_version() -> None:
+    """pytest-xdist older than 3.7 lacks what the --det scheduler uses: one usage error naming the version, instead
+    of an INTERNALERROR on the workers (audit G-0530; the package declares the extra ``fenvix[xdist]``)."""
+    import pytest
+    from importlib.metadata import PackageNotFoundError, version
+
+    try:
+        v = version("pytest-xdist")
+    except PackageNotFoundError:
+        return
+    nums = tuple(int(x) for x in re.findall(r"\d+", v)[:2])
+    if nums < XDIST_MIN:
+        raise pytest.UsageError(f"fenvix: -n under --det needs pytest-xdist {XDIST_MIN[0]}.{XDIST_MIN[1]} or newer "
+                                f"(installed: {v}); pip install 'fenvix[xdist]'")
 
 
 def is_controller(config) -> bool:

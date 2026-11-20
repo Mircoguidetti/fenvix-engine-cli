@@ -17,8 +17,6 @@ name: packages
 on:
   pull_request:
     branches: [claude/release-1]
-  push:
-    branches: [claude/packages]
   workflow_dispatch: {}
   workflow_call:
     inputs:

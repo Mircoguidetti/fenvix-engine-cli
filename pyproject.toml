@@ -14,7 +14,7 @@ license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "fenvix" }]
 keywords = ["pytest", "flaky tests", "deterministic", "test cache", "ci"]
-dependencies = ["pytest>=8"]
+dependencies = ["pytest>=8.1"]  # 8.0: --det-isolate breaks unittest classes (G-0171)
 classifiers = [
   "Framework :: Pytest",
   "Development Status :: 4 - Beta",

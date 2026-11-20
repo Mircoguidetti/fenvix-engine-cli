@@ -183,3 +183,25 @@ def test_no_hard_coded_linux_x64_in_install_paths():
                 "release/npm/pack.py", ".github/workflows/packages.yml"):
         text = open(os.path.join(ROOT, rel)).read()
         assert not bad.search(text), (rel, bad.search(text).group(0))
+
+
+def test_pytest_floor_excludes_versions_that_break_det():
+    """G-0529 (pytest 7.0-7.2: INTERNALERROR on cache reuse), G-0171 (pytest 7.0-8.0: --det-isolate errors every
+    unittest class): the package requires pytest 8.1+."""
+    meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))
+    assert meta["project"]["dependencies"] == ["pytest>=8.1"]
+    assert meta["project"]["optional-dependencies"]["xdist"] == ["pytest-xdist>=3.7"]
+
+
+def test_old_xdist_refused_with_usage_error(monkeypatch):
+    """G-0530: pytest-xdist < 3.7 under --det -n: a usage error naming the version, not an INTERNALERROR."""
+    import importlib.metadata as md
+
+    from detpy import xdist as dx
+
+    real = md.version
+    monkeypatch.setattr(md, "version", lambda n: "3.5.0" if n == "pytest-xdist" else real(n))
+    with pytest.raises(pytest.UsageError, match=r"pytest-xdist 3\.7 or newer \(installed: 3\.5\.0\)"):
+        dx.require_version()
+    monkeypatch.setattr(md, "version", lambda n: "3.8.0" if n == "pytest-xdist" else real(n))
+    dx.require_version()

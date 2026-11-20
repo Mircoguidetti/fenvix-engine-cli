@@ -18,9 +18,13 @@ verifier shows the exact event where the runs diverge.
 ## Install
 
 ```bash
-pip install maturin
-maturin develop --release        # or: maturin build --release && pip install target/wheels/*.whl
+pip install fenvix                # Python: pytest plugin, runner shells, `fenvix` command (CPython 3.12-3.14)
+npm install --save-dev fenvix     # Node: runner shells, `fenvix` / `detjs` commands (Node 22, 24, 26)
+fenvix --version
 ```
+
+Linux x86_64 / arm64 (glibc 2.28+) and macOS on Apple silicon. Requirements, containers, uninstall:
+[docs/INSTALL.md](docs/INSTALL.md). From a checkout (needs Rust): `pip install maturin && maturin develop --release`.
 
 ## Use
 
