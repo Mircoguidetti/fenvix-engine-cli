@@ -1082,10 +1082,14 @@ def test_t():
          "localtime": per_call(time.localtime, 20000), "event_wait": per_call(lambda: ev.wait(0.001), 200)}
     print("NSPERCALL", r)
 ''')
+    # interleaved runs, the fastest of each path compared: one run per path compared two samples taken at different
+    # moments, and the load of the machine in between (other suites, CI neighbours) decided the outcome
     res = {}
-    for mode in ("ref", "new"):
-        r = _run(pytester, mode, f"--det-trace={pytester.path / f'trace-{mode}.jsonl'}")
-        line = [x for x in r.stdout.lines if "NSPERCALL" in x][0]
-        res[mode] = eval(line.split("NSPERCALL", 1)[1])  # noqa: S307 - our own printed dict
-    print("ns per call in a recorded test:", res)
+    for i in range(3):
+        for mode in ("ref", "new"):
+            r = _run(pytester, mode, f"--det-trace={pytester.path / f'trace-{mode}-{i}.jsonl'}")
+            line = [x for x in r.stdout.lines if "NSPERCALL" in x][0]
+            got = eval(line.split("NSPERCALL", 1)[1])  # noqa: S307 - our own printed dict
+            res[mode] = {k: min(v, res.get(mode, {}).get(k, v)) for k, v in got.items()}
+    print("ns per call in a recorded test (fastest of 3):", res)
     assert res["new"]["now"] < res["ref"]["now"] and res["new"]["localtime"] < res["ref"]["localtime"]
