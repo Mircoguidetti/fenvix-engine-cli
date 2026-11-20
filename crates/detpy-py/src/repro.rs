@@ -46,14 +46,18 @@ fn repro_outcome<'py>(outcomes: &Bound<'py, PyAny>, nodeid: &Bound<'py, PyAny>) 
     outcomes.call_method1("get", (nodeid, "missing"))
 }
 
-fn not_in_list(py: Python<'_>, target: &str) -> PyErr {
-    let r = PyString::new(py, target).repr().map(|r| r.to_string()).unwrap_or_else(|_| format!("{target:?}"));
-    PyValueError::new_err(format!("{r} is not in list"))
+/// The error `order.index(target)` raises: Python's own, whose wording changed in 3.14
+/// (`list.index(x): x not in list` before, `'<target>' is not in list` since).
+fn not_in_list(py: Python<'_>, order: &[String], target: &str) -> PyErr {
+    match PyList::new(py, order).and_then(|l| l.call_method1("index", (target,))) {
+        Err(e) => e,
+        Ok(_) => PyValueError::new_err(format!("{target:?} is not in list")),
+    }
 }
 
 #[pyfunction]
 fn repro_prefix_through(py: Python<'_>, order: Vec<String>, target: String) -> PyResult<Vec<String>> {
-    core::prefix_through(&order, &target).ok_or_else(|| not_in_list(py, &target))
+    core::prefix_through(&order, &target).ok_or_else(|| not_in_list(py, &order, &target))
 }
 
 /// `order_for`: the collection order for `fixed`, else its shuffle under `int(config)`.
@@ -141,7 +145,7 @@ fn repro_err(py: Python<'_>, e: ReproError<PyErr>) -> PyErr {
     match e {
         ReproError::Driver(e) => e,
         ReproError::OutOfRuns => ReproOutOfRuns::new_err(()),
-        ReproError::NotInList(t) => not_in_list(py, &t),
+        ReproError::NotInList(t) => not_in_list(py, &[], &t), // the message names only the target
         ReproError::NoReplays => PyIndexError::new_err("list index out of range"),
     }
 }

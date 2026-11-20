@@ -899,7 +899,12 @@ fn parse_one(lines: &[&[u8]], times: &[Option<f64>], cwd0: &[u8], res: &mut Pars
             }
             _ => {
                 if ok && STAT_CALLS.contains(&name) && !prog.as_deref().is_some_and(|g| NO_TIME_PROGRAMS.contains(&g)) {
-                    res.stats.push((t.unwrap_or(f64::INFINITY), p.clone(), name.to_vec()));
+                    // the program that made the call is named in the reason
+                    let call = match prog.as_deref() {
+                        Some(g) if !g.is_empty() => cat(&[g, b" ", name]),
+                        _ => name.to_vec(),
+                    };
+                    res.stats.push((t.unwrap_or(f64::INFINITY), p.clone(), call));
                 }
                 res.ops.push(("r", p));
             }

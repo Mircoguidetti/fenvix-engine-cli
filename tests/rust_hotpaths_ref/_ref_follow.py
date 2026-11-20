@@ -376,7 +376,7 @@ def _parse_one(lines: list[str], cwd: str, res: Result, times: list | None = Non
         else:
             ops.append(("r", p))
             if ok and name in _STAT_CALLS and prog not in _NO_TIME_PROGRAMS:
-                res.stats.append((t if t is not None else float("inf"), p, name))
+                res.stats.append((t if t is not None else float("inf"), p, f"{prog} {name}" if prog else name))
     if unmarked is not None:
         res.unshimmed = res.unshimmed or unmarked
 
