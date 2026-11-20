@@ -1,14 +1,14 @@
-PARTIAL
+DONE
 
-Status: all four findings (G1-G4) and R-032 F6/F7 are fixed and tested. 0 wrong in 568,879 verified reuses. The overhead A/B of the final engine (r7c, run 44644365780) is still running.
+Status: all four findings (G1-G4) and R-032 F6/F7 are fixed and tested. 0 wrong in 738,552 verified reuses (r7, r7b, r7c). Capture overhead is down on all three A/B-measured repositories, measured on the final engine (r7c). The copy to the brain repository is not made, because attaching it was refused in this session (see the end).
 
 # Skip with proof for JS/TS (`detjs --det-cache`): fixes of review r021b (report 3)
 
 Branch `claude/node-cache-proof`. Review: `sessions/2026-11-19-review-node-cache/REPORT-2.md` (verdict FIX 4), merged
 from `claude/review-r021b` (7aa8540) with `node/test/review-r021b.test.js` unchanged. Commits: a27d565 (G1-G4 and
 overhead work; measured as r7, Actions run 44580359261), 3781872 (early capture only where needed; measured as r7b,
-run 44615968050), de10518 (review R-032 F6/F7, added by the coordinator to this round; r7c, run 44644365780,
-pending). Labels: **MEASURED** (command or run id), **ESTIMATED**, **DECLARED**, **UNKNOWN**.
+run 44615968050), de10518 (review R-032 F6/F7, added by the coordinator to this round; the final engine, measured as r7c, run
+44644365780). Labels: **MEASURED** (command or run id), **ESTIMATED**, **DECLARED**, **UNKNOWN**.
 
 ## Findings G1-G4
 
@@ -81,11 +81,11 @@ captures of **ea5bba6 (before)** and of this branch (after) on the **same machin
 each, with `detjs --det` runs in between (`walk.py --engine-before`, `aggregate.py`). Overhead = cold capture /
 `detjs --det` − 1, median of the runs. All MEASURED.
 
-| repository | r6 (run 44485937741), cross-run | r7 a27d565 (run 44580359261): before → after, same machine | r7b 3781872 (run 44615968050): before → after, same machine |
-|---|---|---|---|
-| docusaurus | +12.5% to +23.2% | +12.5% → +12.5% (median of 5 commits; ranges +11.4..+12.8 → +11.7..+13.6) | **+12.7% → +10.6%** (3 commits; +12.4..+14.1 → +10.5..+12.6) |
-| TanStack Query | +9.5% to +15.7% | +10.9% → +13.0% (4 commits) | **+9.7% → +7.3%** (3 commits; +9.7..+9.7 → +7.1..+7.4) |
-| vue-core | +7.6% to +9.8% | +6.7% → +10.6% (5 commits) | **+7.3% → +5.4%** (3 commits; +7.0..+7.5 → +5.2..+5.6) |
+| repository | r6 (run 44485937741), cross-run | r7 a27d565 (run 44580359261): before → after | r7b 3781872 (run 44615968050): before → after | **r7c de10518, final (run 44644365780): before → after** |
+|---|---|---|---|---|
+| docusaurus | +12.5% to +23.2% | +12.5% → +12.5% (median of 5 commits) | +12.7% → +10.6% (3 commits) | **+12.2% → +11.4%** (3 commits; +12.0..+13.2 → +9.9..+11.7) |
+| TanStack Query | +9.5% to +15.7% | +10.9% → +13.0% (4) | +9.7% → +7.3% (3) | **+9.1% → +6.0%** (3; +7.3..+11.3 → +4.6..+11.7) |
+| vue-core | +7.6% to +9.8% | +6.7% → +10.6% (5) | +7.3% → +5.4% (3) | **+6.6% → +5.8%** (3; +5.9..+7.2 → +5.8..+6.5) |
 
 How to read it:
 * r6's 12.5-23.2% on docusaurus was cross-run, one capture per commit. On the same machine, ea5bba6 measures
@@ -102,9 +102,12 @@ How to read it:
   point). r7 cross-run (one point per commit, r7 engine): React Native +0.2% to +0.7%; Lexical +7.0% (1790.29 /
   1672.48, one commit; r6 had +2.3% on a different machine). UNKNOWN whether that Lexical difference is the engine or
   the machine.
-* r7c (run 44644365780): the same A/B for the final engine (de10518, R-032 F6/F7 added). PENDING. F6 adds a few
-  absent-file entries per module directory and F7 adds wrappers only on crypto key generation, so ESTIMATED: no
-  measurable change from r7b.
+* r7c is the final engine: R-032 F6 keys the absent `package.json` files on each module's way up, and F7 adds
+  crypto wrappers. Its medians are 0.8 points lower than before on docusaurus, 3.1 on TanStack Query and 0.8 on
+  vue-core. The gain is smaller than in r7b on docusaurus and vue-core. Each A/B point is 2 runs on one machine, and
+  the point-to-point spread is up to ±2 points (TanStack commit 10: +11.3% → +11.7%), so ESTIMATED: part of the
+  r7b → r7c difference is F6's extra entries and part is noise. The final engine is not slower than ea5bba6 in
+  any of the 9 commits of r7c except two (TanStack 10 by +0.4 points, vue-core 0 by +0.6 points).
 
 ## Measurement r7 / r7b (0 wrong reuses)
 
@@ -120,11 +123,14 @@ Every would-be reuse was checked by a fresh run at the same commit (verify mode)
 | r7b (44615968050) | docusaurus | 20 | 89% / 89% | 64,522 | 0 | 0 |
 | r7b | TanStack Query | 20 | 86% / 60% | 61,653 | 0 | 0 |
 | r7b | vue-core | 20 | 27% / 36% | 43,498 | 0 | 0 |
+| r7c (44644365780) | docusaurus | 20 | 89% / 89% | 64,522 | 0 | 0 |
+| r7c | TanStack Query | 20 | 86% / 60% | 61,653 | 0 | 0 |
+| r7c | vue-core | 20 | 26% / 36% | 43,498 | 0 | 0 |
 
-**0 wrong in 568,879 verified reuses** (r7: 399,206; r7b: 169,673). Reuse vs r6: docusaurus rises from 85% / 70% to
+**0 wrong in 738,552 verified reuses** (r7: 399,206; r7b: 169,673; r7c, the final engine: 169,673). Reuse vs r6: docusaurus rises from 85% / 70% to
 88% / 72%. The mtime reads that were "not cacheable" in r6 are now keyed by value, and the harness keeps the
 working tree between commits, so unchanged files keep their times. TanStack Query and vue-core are unchanged within
-a point. Tables: `harness/node_cache/results/r7/TABLES.md`, `results/r7b/TABLES.md`
+a point. Tables: `harness/node_cache/results/r7/TABLES.md`, `results/r7b/TABLES.md`, `results/r7c/TABLES.md`
 (`python3 harness/node_cache/aggregate.py r7 --md`).
 
 ## Not done / limits
