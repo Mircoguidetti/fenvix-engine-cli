@@ -76,9 +76,8 @@ impl ProofCache {
     /// Load the store of `dir`; the checker compares with the session state
     /// given to `begin` (until then nothing is reusable).
     #[new]
-    #[pyo3(signature = (dir, root, tests=true))]
-    fn new(dir: PathBuf, root: PathBuf, tests: bool) -> Self {
-        let store = if tests { Store::load(&dir) } else { Store::load_without_tests(&dir) };
+    fn new(dir: PathBuf, root: PathBuf) -> Self {
+        let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
         ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new() }) }
@@ -224,11 +223,7 @@ impl ProofCache {
     fn entry(&self, nodeid: &str) -> PyResult<String> {
         let g = lock(&self.inner);
         let e = g.store.tests.get(nodeid).ok_or_else(|| PyKeyError::new_err(nodeid.to_string()))?;
-        // the entry with its data and units expanded (round 4: the store keeps them as chunk ids)
-        let mut v = serde_json::to_value(e).map_err(|e| PyValueError::new_err(e.to_string()))?;
-        v["data"] = serde_json::json!(g.store.data_of(e).map(|(k, d)| [k.to_string(), d.to_string()]).collect::<Vec<_>>());
-        v["units"] = serde_json::json!(g.store.units_of(e).flat_map(|(f, u)| [f, u]).collect::<Vec<u32>>());
-        serde_json::to_string(&v).map_err(|e| PyValueError::new_err(e.to_string()))
+        serde_json::to_string(e).map_err(|e| PyValueError::new_err(e.to_string()))
     }
 
     /// Index of known facts for (`path`, `content`), if any.
@@ -654,9 +649,9 @@ impl ProofCache {
 
 impl ProofCache {
     /// The recorded data inputs and fixture contexts of `nodeid`'s entry, with the check `foreign` needs.
-    pub(crate) fn with_entry<T>(&self, nodeid: &str, f: impl FnOnce(&proof::Store, &proof::Entry) -> T) -> Option<T> {
+    pub(crate) fn with_entry<T>(&self, nodeid: &str, f: impl FnOnce(&proof::Entry) -> T) -> Option<T> {
         let g = lock(&self.inner);
-        g.store.tests.get(nodeid).map(|e| f(&g.store, e))
+        g.store.tests.get(nodeid).map(f)
     }
 
     /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);

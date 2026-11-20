@@ -32,7 +32,7 @@ use std::fs;
 use std::io::{self, Read};
 use std::path::{Path, PathBuf};
 
-pub const STORE_VERSION: u32 = 2;
+pub const STORE_VERSION: u32 = 1;
 
 /// A shared string: the data dependencies of every test of a session repeat the same global reads (paths and
 /// digests), stored once in memory (serialized as plain strings).
@@ -84,17 +84,14 @@ pub struct Entry {
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
-    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", sorted: as ids of the store's
-    /// data chunks ([`Store::data_chunks`], round 4: a test carries its process's earlier inputs, so entries share
-    /// long runs of dependencies; read them with [`Store::data_of`]).
-    pub data: Vec<u32>,
+    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
+    pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
     pub content: u32,
     pub skeleton: u32,
     pub hooks: u32,
-    /// Flat (file index, unit index) pairs, sorted: as ids of the store's unit chunks ([`Store::unit_chunks`]; read
-    /// them with [`Store::units_of`]).
+    /// Flat (file index, unit index) pairs.
     pub units: Vec<u32>,
     /// Contexts of the wider-scoped fixtures the test used when it was recorded (`f|scope|baseid|name`): a path one
     /// of them wrote is the test's own write (a reused result is not invalidated by it). Not part of the key.
@@ -193,39 +190,10 @@ pub struct Store {
     /// a serial session gives it (not the race of two processes).
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub edges: BTreeSet<(String, String)>,
-    /// Content-defined chunks of the entries' data dependencies (round 4): a chunk ends after a pair whose key
-    /// hashes to a multiple of [`CHUNK_SPAN`], so the runs entries share are the same chunks wherever they start.
-    #[serde(default)]
-    pub data_chunks: Vec<Vec<(Str, Str)>>,
-    /// Content-defined chunks of the entries' flat (file, unit) pairs.
-    #[serde(default)]
-    pub unit_chunks: Vec<Vec<u32>>,
     #[serde(skip)]
     file_ix: HashMap<(String, String), u32>,
     #[serde(skip)]
     set_ix: HashMap<Vec<u32>, u32>,
-    #[serde(skip)]
-    data_chunk_ix: HashMap<Vec<(Str, Str)>, u32>,
-    #[serde(skip)]
-    unit_chunk_ix: HashMap<Vec<u32>, u32>,
-}
-
-/// Chunk length cap unit: a data chunk holds at most 4 * CHUNK_SPAN pairs, a unit chunk at most 4 * CHUNK_SPAN
-/// (file, unit) pairs. Cuts are content-defined (below), so equal runs of sorted keys in two entries fall into equal
-/// chunks and are stored once.
-pub const CHUNK_SPAN: u64 = 16;
-
-/// A cut after an element whose hash has its top 5 bits clear (1 in 32 on average; the caps above bound the rest).
-fn chunk_cut(h: u64) -> bool {
-    h.wrapping_mul(0x9E37_79B9_7F4A_7C15) >> 59 == 0
-}
-
-fn str_hash(s: &str) -> u64 {
-    let mut h: u64 = 0xcbf2_9ce4_8422_2325;
-    for b in s.bytes() {
-        h = (h ^ b as u64).wrapping_mul(0x0100_0000_01b3);
-    }
-    h
 }
 
 /// What a session observed about one test (input of [`Store::record`]).
@@ -695,41 +663,14 @@ impl Store {
             .and_then(|b| serde_json::from_slice::<Store>(&b).ok())
             .filter(|s| s.version == STORE_VERSION)
             .unwrap_or_else(Store::new);
-        s.drop_dangling();
         s.reindex();
         s
-    }
-
-    /// Remove the entries that refer to a set, data chunk, unit chunk, file or unit this store does not hold (a
-    /// damaged or hand-edited store or shard): resolving such a reference to nothing would drop inputs of the entry
-    /// and could reuse it wrongly. Returns how many entries were removed.
-    pub fn drop_dangling(&mut self) -> usize {
-        let nf = self.files.len();
-        let bad_set: Vec<bool> = self.sets.iter().map(|s| s.iter().any(|&f| f as usize >= nf)).collect();
-        let bad_uchunk: Vec<bool> = self
-            .unit_chunks
-            .iter()
-            .map(|c| {
-                c.len() % 2 != 0
-                    || c.chunks(2).any(|p| self.files.get(p[0] as usize).is_none_or(|f| p[1] as usize >= f.units.len()))
-            })
-            .collect();
-        let nd = self.data_chunks.len();
-        let before = self.tests.len();
-        self.tests.retain(|_, e| {
-            [e.content, e.skeleton, e.hooks].iter().all(|&i| bad_set.get(i as usize) == Some(&false))
-                && e.data.iter().all(|&i| (i as usize) < nd)
-                && e.units.iter().all(|&i| bad_uchunk.get(i as usize) == Some(&false))
-        });
-        before - self.tests.len()
     }
 
     fn reindex(&mut self) {
         self.file_ix =
             self.files.iter().enumerate().map(|(i, f)| ((f.path.clone(), f.content.clone()), i as u32)).collect();
         self.set_ix = self.sets.iter().enumerate().map(|(i, s)| (s.clone(), i as u32)).collect();
-        self.data_chunk_ix = self.data_chunks.iter().enumerate().map(|(i, c)| (c.clone(), i as u32)).collect();
-        self.unit_chunk_ix = self.unit_chunks.iter().enumerate().map(|(i, c)| (c.clone(), i as u32)).collect();
     }
 
     /// Index of the facts of `path` at `content`, if known.
@@ -770,84 +711,6 @@ impl Store {
         self.sets.get(id as usize).map(|v| v.as_slice()).unwrap_or(&[])
     }
 
-    fn intern_data_chunk(&mut self, c: Vec<(Str, Str)>) -> u32 {
-        if let Some(&i) = self.data_chunk_ix.get(&c) {
-            return i;
-        }
-        let i = self.data_chunks.len() as u32;
-        self.data_chunks.push(c.clone());
-        self.data_chunk_ix.insert(c, i);
-        i
-    }
-
-    fn intern_unit_chunk(&mut self, c: Vec<u32>) -> u32 {
-        if let Some(&i) = self.unit_chunk_ix.get(&c) {
-            return i;
-        }
-        let i = self.unit_chunks.len() as u32;
-        self.unit_chunks.push(c.clone());
-        self.unit_chunk_ix.insert(c, i);
-        i
-    }
-
-    /// Chunk sorted data dependencies into this store's data chunks.
-    pub fn chunk_data(&mut self, data: Vec<(Str, Str)>) -> Vec<u32> {
-        let mut out = Vec::new();
-        let mut cur: Vec<(Str, Str)> = Vec::new();
-        for (k, v) in data {
-            let cut = chunk_cut(str_hash(&k)) || cur.len() >= 4 * CHUNK_SPAN as usize;
-            cur.push((k, v));
-            if cut {
-                out.push(self.intern_data_chunk(std::mem::take(&mut cur)));
-            }
-        }
-        if !cur.is_empty() {
-            out.push(self.intern_data_chunk(cur));
-        }
-        out
-    }
-
-    /// Chunk flat sorted (file, unit) pairs into this store's unit chunks (cut on the hash of the pair). A merge
-    /// remaps a worker's chunks whole, so their cuts can differ from cuts made here: sharing is lower, the pairs
-    /// are the same.
-    pub fn chunk_units(&mut self, flat: Vec<u32>) -> Vec<u32> {
-        let mut out = Vec::new();
-        let mut cur: Vec<u32> = Vec::new();
-        for c in flat.chunks(2) {
-            if c.len() < 2 {
-                break;
-            }
-            cur.extend_from_slice(c);
-            if chunk_cut((c[1] as u64).wrapping_add((c[0] as u64) << 32)) || cur.len() >= 2 * 4 * CHUNK_SPAN as usize {
-                out.push(self.intern_unit_chunk(std::mem::take(&mut cur)));
-            }
-        }
-        if !cur.is_empty() {
-            out.push(self.intern_unit_chunk(cur));
-        }
-        out
-    }
-
-    /// An entry's data dependencies, in order.
-    pub fn data_of<'a>(&'a self, e: &'a Entry) -> impl Iterator<Item = &'a (Str, Str)> + 'a {
-        e.data.iter().flat_map(move |&i| self.data_chunks.get(i as usize).map(|c| c.as_slice()).unwrap_or(&[]))
-    }
-
-    /// An entry's (file, unit) pairs, in order.
-    pub fn units_of<'a>(&'a self, e: &'a Entry) -> impl Iterator<Item = (u32, u32)> + 'a {
-        e.units.iter().flat_map(move |&i| {
-            self.unit_chunks.get(i as usize).map(|c| c.as_slice()).unwrap_or(&[]).chunks(2).map(|c| (c[0], c[1]))
-        })
-    }
-
-    pub fn n_data(&self, e: &Entry) -> usize {
-        e.data.iter().map(|&i| self.data_chunks.get(i as usize).map_or(0, |c| c.len())).sum()
-    }
-
-    pub fn n_units(&self, e: &Entry) -> usize {
-        e.units.iter().map(|&i| self.unit_chunks.get(i as usize).map_or(0, |c| c.len() / 2)).sum()
-    }
-
     /// Record (replace) the entry of `nodeid`; returns its key.
     pub fn record(&mut self, nodeid: &str, mut o: Observed) -> String {
         o.env.sort();
@@ -859,8 +722,6 @@ impl Store {
         let content = self.intern(o.content);
         let skeleton = self.intern(o.skeleton);
         let hooks = self.intern(o.hooks);
-        let data = self.chunk_data(std::mem::take(&mut o.data));
-        let units = self.chunk_units(std::mem::take(&mut o.units).into_iter().flat_map(|(f, u)| [f, u]).collect());
         let mut e = Entry {
             outcome: o.outcome,
             report: o.report,
@@ -872,11 +733,11 @@ impl Store {
             runtime: o.runtime,
             epoch: o.epoch,
             env: o.env,
-            data,
+            data: o.data,
             content,
             skeleton,
             hooks,
-            units,
+            units: o.units.into_iter().flat_map(|(f, u)| [f, u]).collect(),
             fixtures: {
                 let mut f = o.fixtures;
                 f.sort();
@@ -946,7 +807,7 @@ impl Store {
             push_part(&mut b, v);
         }
         push_part(&mut b, "|data");
-        for (k, v) in self.data_of(e) {
+        for (k, v) in &e.data {
             push_part(&mut b, k);
             push_part(&mut b, v);
         }
@@ -957,11 +818,12 @@ impl Store {
             b.extend_from_slice(part);
         }
         push_part(&mut b, "|units");
-        let mut units: Vec<(&str, &str, &str)> = self
-            .units_of(e)
-            .filter_map(|(fi, ui)| {
-                let f = file(fi)?;
-                let u = f.units.get(ui as usize)?;
+        let mut units: Vec<(&str, &str, &str)> = e
+            .units
+            .chunks(2)
+            .filter_map(|c| {
+                let f = file(c[0])?;
+                let u = f.units.get(c[1] as usize)?;
                 Some((f.path.as_str(), u.q.as_str(), u.d.as_str()))
             })
             .collect();
@@ -984,27 +846,9 @@ impl Store {
                     *u = true;
                 }
             }
-        }
-        let mut used_dchunks = vec![false; self.data_chunks.len()];
-        let mut used_uchunks = vec![false; self.unit_chunks.len()];
-        for e in self.tests.values() {
-            for &i in &e.data {
-                if let Some(u) = used_dchunks.get_mut(i as usize) {
+            for c in e.units.chunks(2) {
+                if let Some(u) = used_files.get_mut(c[0] as usize) {
                     *u = true;
-                }
-            }
-            for &i in &e.units {
-                if let Some(u) = used_uchunks.get_mut(i as usize) {
-                    *u = true;
-                }
-            }
-        }
-        for (i, c) in self.unit_chunks.iter().enumerate() {
-            if used_uchunks[i] {
-                for p in c.chunks(2) {
-                    if let Some(u) = used_files.get_mut(p[0] as usize) {
-                        *u = true;
-                    }
                 }
             }
         }
@@ -1033,41 +877,16 @@ impl Store {
                 sets.push(s.into_iter().map(|f| fmap[f as usize]).collect());
             }
         }
-        // chunks: the used ones, unit chunks with their files remapped
-        let mut dmap = vec![u32::MAX; self.data_chunks.len()];
-        let mut dchunks = Vec::new();
-        for (i, c) in self.data_chunks.drain(..).enumerate() {
-            if used_dchunks[i] {
-                dmap[i] = dchunks.len() as u32;
-                dchunks.push(c);
-            }
-        }
-        let mut umap = vec![u32::MAX; self.unit_chunks.len()];
-        let mut uchunks = Vec::new();
-        for (i, mut c) in self.unit_chunks.drain(..).enumerate() {
-            if used_uchunks[i] {
-                for p in c.chunks_mut(2) {
-                    p[0] = fmap[p[0] as usize];
-                }
-                umap[i] = uchunks.len() as u32;
-                uchunks.push(c);
-            }
-        }
         for e in self.tests.values_mut() {
             e.content = smap[e.content as usize];
             e.skeleton = smap[e.skeleton as usize];
             e.hooks = smap[e.hooks as usize];
-            for i in e.data.iter_mut() {
-                *i = dmap[*i as usize];
-            }
-            for i in e.units.iter_mut() {
-                *i = umap[*i as usize];
+            for c in e.units.chunks_mut(2) {
+                c[0] = fmap[c[0] as usize];
             }
         }
         self.files = files;
         self.sets = sets;
-        self.data_chunks = dchunks;
-        self.unit_chunks = uchunks;
         self.reindex();
     }
 
@@ -1088,8 +907,6 @@ impl Store {
             }
         };
         let mut smap: BTreeMap<u32, u32> = BTreeMap::new();
-        let mut dmap: HashMap<u32, u32> = HashMap::new();
-        let mut umap: HashMap<u32, u32> = HashMap::new();
         for nid in touched {
             match self.tests.get(nid) {
                 None => {
@@ -1118,30 +935,8 @@ impl Store {
                         smap.insert(*id, j);
                         *id = j;
                     }
-                    // chunks: copied into the disk store's tables once each (unit chunks with their files remapped)
-                    for i in e.data.iter_mut() {
-                        *i = match dmap.get(i) {
-                            Some(&j) => j,
-                            None => {
-                                let j = disk.intern_data_chunk(self.data_chunks.get(*i as usize).cloned().unwrap_or_default());
-                                dmap.insert(*i, j);
-                                j
-                            }
-                        };
-                    }
-                    for i in e.units.iter_mut() {
-                        *i = match umap.get(i) {
-                            Some(&j) => j,
-                            None => {
-                                let mut c = self.unit_chunks.get(*i as usize).cloned().unwrap_or_default();
-                                for p in c.chunks_mut(2) {
-                                    p[0] = remap_file(p[0], disk);
-                                }
-                                let j = disk.intern_unit_chunk(c);
-                                umap.insert(*i, j);
-                                j
-                            }
-                        };
+                    for c in e.units.chunks_mut(2) {
+                        c[0] = remap_file(c[0], disk);
                     }
                     disk.tests.insert(nid.clone(), e);
                 }
@@ -1180,42 +975,9 @@ impl Store {
         fs::create_dir_all(dir)?;
         let path = Self::path_in(dir);
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        write_json(&tmp, self)?;
+        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
-
-    /// The store of `dir` without its test entries (round 4: a worker of `-n` records a shard and needs the code
-    /// facts, sets and written paths, not the entries, which the controller decides with; loading them cost each
-    /// esphome worker about 900 MB).
-    pub fn load_without_tests(dir: &Path) -> Store {
-        #[derive(Deserialize)]
-        struct NoTests {
-            version: u32,
-            files: Vec<CodeFile>,
-            sets: Vec<Vec<u32>>,
-            #[serde(default)]
-            written: BTreeMap<String, BTreeSet<String>>,
-            #[serde(default)]
-            edges: BTreeSet<(String, String)>,
-        }
-        let mut s = fs::read(Self::path_in(dir))
-            .ok()
-            .and_then(|b| serde_json::from_slice::<NoTests>(&b).ok())
-            .filter(|s| s.version == STORE_VERSION)
-            .map(|n| Store { version: n.version, files: n.files, sets: n.sets, written: n.written, edges: n.edges, ..Store::new() })
-            .unwrap_or_else(Store::new);
-        s.reindex();
-        s
-    }
-}
-
-/// Write `v` as JSON through a buffer (round 4: not one string of the whole store or shard in memory first).
-fn write_json<T: Serialize>(path: &Path, v: &T) -> io::Result<()> {
-    use std::io::Write;
-    let f = fs::File::create(path)?;
-    let mut w = io::BufWriter::with_capacity(1 << 20, f);
-    serde_json::to_writer(&mut w, v).map_err(io::Error::other)?;
-    w.flush()
 }
 
 // -------------------------------------------------------------------------------------------------------------
@@ -1249,8 +1011,6 @@ impl Shard {
         if s.format != SHARD_FORMAT || s.version != SHARD_VERSION {
             return Err(io::Error::other(format!("not a detpy cache shard: {}", path.display())));
         }
-        let mut s = s;
-        s.store.drop_dangling();
         Ok(s)
     }
 
@@ -1259,7 +1019,7 @@ impl Shard {
             fs::create_dir_all(d)?;
         }
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        write_json(&tmp, self)?;
+        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
 }
@@ -1280,10 +1040,10 @@ fn foreign(w: &str, own: &str, fixtures: &[String]) -> bool {
 /// contexts of the paths written in it (a listing whose directory another test wrote into). Same rule as a serial
 /// session's (`record::record_session`: "reads a file another test or fixture wrote"), extended across processes;
 /// it does not depend on which worker ran first.
-pub fn foreign_write<'a>(
+pub fn foreign_write(
     nodeid: &str,
     fixtures: &[String],
-    data: impl IntoIterator<Item = &'a (Str, Str)>,
+    data: &[(Str, Str)],
     written: &BTreeMap<String, BTreeSet<String>>,
     dirs: &BTreeMap<String, BTreeSet<String>>,
 ) -> Option<(String, String)> {
@@ -1410,7 +1170,7 @@ pub fn hits_with_written_inputs(
     let mut out = Vec::new();
     for nid in order.iter().filter(|n| hit_set.contains(n.as_str())) {
         let Some(e) = store.tests.get(nid) else { continue };
-        let found = store.data_of(e).find_map(|(key, dep)| {
+        let found = e.data.iter().find_map(|(key, dep)| {
             let mut ws: Vec<&String> = written.get(&**key).map(|w| w.iter().collect()).unwrap_or_default();
             if dep.starts_with("d:") {
                 ws.extend(dirs.get(&**key).into_iter().flatten());
@@ -1475,7 +1235,7 @@ pub fn merge_shards_with(dir: &Path, shards: &mut [Shard], hits: &[String], extr
         let mut drop = Vec::new();
         for (nid, e) in &s.store.tests {
             let fx = s.fixtures.get(nid).map(|v| v.as_slice()).unwrap_or(&[]);
-            if let Some((key, w)) = foreign_write(nid, fx, s.store.data_of(e), &written, &dirs) {
+            if let Some((key, w)) = foreign_write(nid, fx, &e.data, &written, &dirs) {
                 drop.push((nid.clone(), format!("reads a file another test or fixture wrote in another worker: {key} ({w})")));
                 for ws in written.get(&*key).into_iter().chain(dirs.get(&*key)) {
                     edges.extend(ws.iter().filter_map(|x| x.strip_prefix("t|")).filter(|x| *x != nid).map(|x| (x.to_string(), nid.clone())));
@@ -1520,7 +1280,7 @@ pub fn merge_shards_with(dir: &Path, shards: &mut [Shard], hits: &[String], extr
     for nid in hits {
         let Some(e) = disk.tests.get(nid) else { continue };
         let own = format!("t|{nid}");
-        let stale = disk.data_of(e).find_map(|(k, _)| {
+        let stale = e.data.iter().find_map(|(k, _)| {
             written
                 .get(&**k)
                 .filter(|w| !w.iter().all(|x| *x == own || e.fixtures.iter().any(|f| f == x)))
@@ -1664,7 +1424,6 @@ pub struct Checker {
     /// Outcome of checking each (content | skeleton | hooks, set id): the same for every entry of the session
     /// (Ok: the files proven unchanged in their used parts).
     set_checks: FxMap<(u8, u32), Result<Vec<String>, Miss>>,
-    data_chunk_checks: FxMap<u32, Result<(), Miss>>,
     /// Digests of the current environment: the whole of it, and per variable (the same for every test).
     env_all_now: Option<String>,
     env_now: FxMap<String, String>,
@@ -1697,7 +1456,6 @@ impl Checker {
             data_now: FxMap::default(),
             env_all_now: None,
             set_checks: FxMap::default(),
-            data_chunk_checks: FxMap::default(),
             env_now: FxMap::default(),
             key_parts: FxMap::default(),
             fresh: HashMap::new(),
@@ -1886,20 +1644,9 @@ impl Checker {
                 return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
             }
         }
-        // data dependencies: per chunk, memoised (round 4: chunks are shared by the entries of a process)
-        for &cid in &e.data {
-            if !self.data_chunk_checks.contains_key(&cid) {
-                let mut r = Ok(());
-                for (p, dep) in store.data_chunks.get(cid as usize).map(|c| c.as_slice()).unwrap_or(&[]) {
-                    if self.data(p, dep) != &**dep {
-                        r = Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
-                        break;
-                    }
-                }
-                self.data_chunk_checks.insert(cid, r);
-            }
-            if let Err(m) = &self.data_chunk_checks[&cid] {
-                return Err(m.clone());
+        for (p, dep) in &e.data {
+            if self.data(p, dep) != &**dep {
+                return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
             }
         }
         let mut proven = std::collections::BTreeSet::new();
@@ -1914,9 +1661,9 @@ impl Checker {
                 Err(m) => return Err(m.clone()),
             }
         }
-        for (fi, ui) in store.units_of(e) {
-            let Some(f) = store.files.get(fi as usize) else { continue };
-            let Some(u) = f.units.get(ui as usize) else { continue };
+        for c in e.units.chunks(2) {
+            let Some(f) = store.files.get(c[0] as usize) else { continue };
+            let Some(u) = f.units.get(c[1] as usize) else { continue };
             if self.content_is(&f.path, &f.content) {
                 continue;
             }
@@ -1939,11 +1686,11 @@ impl Checker {
             config: e.config.clone(),
             runtime: e.runtime.clone(),
             epoch: e.epoch,
-            n_units: store.n_units(e),
+            n_units: e.units.len() / 2,
             n_skeleton: store.set(e.skeleton).len(),
             n_hooks: store.set(e.hooks).len(),
             n_content: store.set(e.content).len(),
-            n_data: store.n_data(e),
+            n_data: e.data.len(),
             n_env: e.env.len(),
             n_changed_files_proven: proven.len(),
         })
@@ -2296,137 +2043,6 @@ mod tests {
     }
 
     // -- parallel sessions ------------------------------------------------------------------------------------------
-    #[test]
-    fn round4_entries_share_chunks_and_survive_compact_merge_and_save() {
-        // 300 tests of one process: each carries the inputs of every earlier one (the prefix-like carried set)
-        let mut st = Store::new();
-        let mut expect: BTreeMap<String, Vec<(String, String)>> = BTreeMap::new();
-        let mut prefix: Vec<(String, String)> = (0..500).map(|i| (format!("g/{i:04}"), format!("f:{i}"))).collect();
-        for t in 0..300 {
-            prefix.push((format!("t/{t:04}/in"), format!("f:{t}")));
-            let mut d = prefix.clone();
-            d.push((format!("own/{t}"), "s:file".into()));
-            d.sort();
-            let nid = format!("t.py::t{t}");
-            let o = Observed {
-                outcome: "passed".into(),
-                data: d.iter().map(|(k, v)| (Str::from(k.as_str()), Str::from(v.as_str()))).collect(),
-                units: (0..(10 + t as u32)).map(|u| (0u32, u)).collect(),
-                ..Default::default()
-            };
-            st.add_file(CodeFile { path: "m.py".into(), content: "c".into(), skeleton: "s".into(), hooks: "h".into(),
-                units: (0..400).map(|i| Unit { q: format!("f{i}"), a: i, b: i, d: format!("d{i}") }).collect(),
-                imports: vec![] });
-            st.record(&nid, o);
-            expect.insert(nid, d);
-        }
-        let check = |st: &Store| {
-            for (nid, d) in &expect {
-                let e = &st.tests[nid];
-                let got: Vec<(String, String)> = st.data_of(e).map(|(k, v)| (k.to_string(), v.to_string())).collect();
-                assert_eq!(&got, d, "{nid}");
-                assert_eq!(st.n_units(e), 10 + nid.rsplit('t').next().unwrap().parse::<usize>().unwrap());
-                assert_eq!(st.key_of(nid, e), e.key);
-            }
-        };
-        check(&st);
-        let pairs: usize = expect.values().map(|d| d.len()).sum();
-        let stored: usize = st.data_chunks.iter().map(|c| c.len()).sum();
-        assert!(stored * 10 < pairs, "chunks hold {stored} pairs for {pairs} entry pairs");
-        st.compact();
-        check(&st);
-        let mut disk = Store::new();
-        let touched: BTreeSet<String> = expect.keys().cloned().collect();
-        st.merge_into(&mut disk, &touched);
-        check(&disk);
-        let dir = std::env::temp_dir().join(format!("detpy-chunks-{}", std::process::id()));
-        disk.save(&dir).unwrap();
-        let back = Store::load(&dir);
-        check(&back);
-        let _ = std::fs::remove_dir_all(&dir);
-    }
-
-    #[test]
-    fn round4_a_changed_input_of_a_shared_chunk_refuses_every_entry_that_holds_it() {
-        let t = tempfile::tempdir().unwrap();
-        let root = t.path();
-        fs::create_dir(root.join("shared")).unwrap();
-        for i in 0..200 {
-            fs::write(root.join(format!("shared/{i:03}")), b"x").unwrap();
-        }
-        fs::write(root.join("own_a"), b"a").unwrap();
-        fs::write(root.join("own_b"), b"b").unwrap();
-        let mut st = Store::new();
-        for own in ["own_a", "own_b"] {
-            let mut d: Vec<(Str, Str)> =
-                (0..200).map(|i| (Str::from(format!("shared/{i:03}").as_str()), Str::from("s:file"))).collect();
-            d.push((Str::from(own), Str::from("s:file")));
-            st.record(&format!("t.py::{own}"), Observed { outcome: "passed".into(), data: d, ..Default::default() });
-        }
-        let (a, b) = (&st.tests["t.py::own_a"], &st.tests["t.py::own_b"]);
-        let shared: BTreeSet<u32> = a.data.iter().filter(|c| b.data.contains(c)).copied().collect();
-        assert!(shared.len() >= 2, "the entries share chunks: {:?} {:?}", a.data, b.data);
-        let cur = || Current { root: root.to_path_buf(), ..Default::default() };
-        let mut ch = Checker::new(cur());
-        assert!(ch.check(&st, "t.py::own_a").is_ok() && ch.check(&st, "t.py::own_b").is_ok());
-        // an input in a shared chunk changes kind: both entries are refused, by a fresh checker and by one that
-        // checks the chunk once for both
-        fs::remove_file(root.join("shared/117")).unwrap();
-        fs::create_dir(root.join("shared/117")).unwrap();
-        let mut ch = Checker::new(cur());
-        for nid in ["t.py::own_a", "t.py::own_b"] {
-            let m = ch.check(&st, nid).unwrap_err();
-            assert_eq!((m.kind, m.detail.as_str()), ("data", "shared/117 (s)"), "{nid}");
-        }
-        for nid in ["t.py::own_a", "t.py::own_b"] {
-            assert_eq!(Checker::new(cur()).check(&st, nid).unwrap_err().kind, "data", "{nid}");
-        }
-        // back as before; an input only one entry holds changes: only that entry is refused
-        fs::remove_dir(root.join("shared/117")).unwrap();
-        fs::write(root.join("shared/117"), b"x").unwrap();
-        fs::remove_file(root.join("own_b")).unwrap();
-        let mut ch = Checker::new(cur());
-        assert!(ch.check(&st, "t.py::own_a").is_ok());
-        assert_eq!(ch.check(&st, "t.py::own_b").unwrap_err().detail, "own_b (s)");
-    }
-
-    #[test]
-    fn round4_an_entry_referring_to_a_chunk_or_set_the_store_lacks_is_dropped_at_load() {
-        let mut st = Store::new();
-        entry_reading(&mut st, "t.py::ok", &[("a", "f:1")]);
-        entry_reading(&mut st, "t.py::data", &[("b", "f:2")]);
-        entry_reading(&mut st, "t.py::units", &[("c", "f:3")]);
-        entry_reading(&mut st, "t.py::set", &[("d", "f:4")]);
-        st.tests.get_mut("t.py::data").unwrap().data.push(st.data_chunks.len() as u32 + 7);
-        st.tests.get_mut("t.py::units").unwrap().units.push(st.unit_chunks.len() as u32);
-        st.tests.get_mut("t.py::set").unwrap().hooks = st.sets.len() as u32;
-        let d = tempfile::tempdir().unwrap();
-        // the store: written as is (no compact), then loaded
-        write_json(&Store::path_in(d.path()), &st).unwrap();
-        let back = Store::load(d.path());
-        assert_eq!(back.tests.keys().collect::<Vec<_>>(), ["t.py::ok"]);
-        // a shard
-        let sh = Shard {
-            format: SHARD_FORMAT.into(),
-            version: SHARD_VERSION,
-            worker: "gw0".into(),
-            touched: st.tests.keys().cloned().collect(),
-            store: st.clone(),
-            fixtures: BTreeMap::new(),
-            written: BTreeMap::new(),
-            reads: BTreeMap::new(),
-        };
-        let p = d.path().join("s.json");
-        write_json(&p, &sh).unwrap();
-        assert_eq!(Shard::load(&p).unwrap().store.tests.keys().collect::<Vec<_>>(), ["t.py::ok"]);
-        // a unit chunk naming a unit its file does not have
-        let mut st2 = Store::new();
-        let f = st2.add_file(CodeFile { path: "m.py".into(), content: "c".into(), skeleton: "s".into(), hooks: "h".into(),
-            units: vec![], imports: vec![] });
-        st2.record("t.py::u", Observed { outcome: "passed".into(), units: vec![(f, 3)], ..Default::default() });
-        assert_eq!(st2.drop_dangling(), 1);
-    }
-
     fn entry_reading(store: &mut Store, nid: &str, data: &[(&str, &str)]) {
         let o = Observed {
             outcome: "passed".into(),

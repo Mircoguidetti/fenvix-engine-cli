@@ -19,17 +19,6 @@ def _data(data):
     return [[p, "<engine clock shim>"] if _SHIM.search(p) else [p, d] for p, d in data]
 
 
-def expand(s: dict, e: dict) -> tuple:
-    """An entry's (data pairs, flat units) from a store document: the store keeps both as ids of its chunk tables
-    (store version 2, round 4); an older store has them inline."""
-    if "data_chunks" not in s:
-        return e["data"], e["units"]
-    dc, uc = s["data_chunks"], s["unit_chunks"]
-    data = [pair for i in e["data"] for pair in dc[i]]
-    units = [x for i in e["units"] for x in uc[i]]
-    return data, units
-
-
 def canon(path: str) -> dict:
     s = json.load(open(path))
     files, sets = s["files"], s["sets"]
@@ -39,11 +28,11 @@ def canon(path: str) -> dict:
 
     out = {}
     for nid, e in s["tests"].items():
-        data, u = expand(s, e)
+        u = e["units"]
         units = sorted((files[u[i]]["path"], files[u[i]]["content"], files[u[i]]["units"][u[i + 1]]["q"])
                        for i in range(0, len(u), 2))
         out[nid] = {"outcome": e["outcome"], "report": e.get("report"), "fingerprint": e["fingerprint"],
-                    "config": e["config"], "epoch": e["epoch"], "env": e["env"], "data": _data(data),
+                    "config": e["config"], "epoch": e["epoch"], "env": e["env"], "data": _data(e["data"]),
                     "content": fset(e["content"]), "skeleton": fset(e["skeleton"]), "hooks": fset(e["hooks"]),
                     "units": units}
     return {"tests": out, "written": s.get("written", {})}
