@@ -10,9 +10,6 @@ name: fenvix-shared-cache
 # Never runs on pull requests (see docs/RUNNER-PROTOTYPE.md, "Security").
 
 on:
-  push:
-    branches: [claude/shared-cache]
-    paths: [".github/workflows/fenvix-shared-cache.yml"]
   workflow_dispatch:
     inputs:
       isa:
