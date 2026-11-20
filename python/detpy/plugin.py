@@ -131,6 +131,7 @@ def _early_reexec(parser, pluginmanager) -> None:
     block = [n for n in _CONFLICTING_PLUGINS
              if not pluginmanager.is_blocked(n) and (n in installed or pluginmanager.get_plugin(n) is not None)]
     rootdir = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    reexec.PRE_EXEC[:] = [lambda env: prewarm_rewrite_cache(config, env)]
     reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
 
 
@@ -243,6 +244,14 @@ def pytest_load_initial_conftests(early_config, parser, args):
     if os.environ.get(_xdist.CONTROLLER_ENV) is not None:
         _xdist.restore_controller_env()  # an xdist worker of a --det controller
     ns = early_config.known_args_namespace
+    # FENVIX_DET=1 / [tool.fenvix] (audit G-1536): the options join the command line (pytest parses this list); also
+    # in the re-executed process, which runs the original command line again
+    root0 = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
+    extra = _level0.config_args(root0, list(args))
+    if extra:
+        args[:0] = extra
+        ns = parser.parse_known_args(args)
+        early_config.known_args_namespace = ns
     if not getattr(ns, "det", False):
         return
     if S.active:
@@ -263,6 +272,7 @@ def pytest_load_initial_conftests(early_config, parser, args):
             capman.stop_global_capturing()
 
     block = [n for n in _CONFLICTING_PLUGINS if early_config.pluginmanager.get_plugin(n) is not None]
+    reexec.PRE_EXEC[:] = [lambda env: prewarm_rewrite_cache(early_config, env)]
     S.reexec_status = _level0.reexec_status(ns, controls, rootdir, block, before_exec)  # may not return
     if "time" in controls:
         # pytest-benchmark: the adaptive tick lets calibration terminate, but the
@@ -425,6 +435,7 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
         t = keyed_tail(config)
         if t is None:
             return stamp, co
+        _level0.REWRITE["cold"] += 1  # a miss: G-0168 (prewarm_rewrite_cache wrote what it could before)
         cache_dir = cache_dir_of(fn)
         target = cache_dir / (fn.name[:-3] + t)
         try:
@@ -459,6 +470,62 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
 
 _REWRITE_CONFIG: list = [None]
 _EARLY_REWRITE_CACHE = [False]
+
+
+_SKIP_DIRS = frozenset({"node_modules", "__pycache__", "site-packages", "dist-packages"})
+
+
+def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
+    """Files pytest may rewrite in this project: conftest.py and the ``python_files`` patterns, under the root
+    (hidden directories, virtual environments and installed packages left out). More than pytest collects is
+    harmless: an extra cache entry."""
+    import fnmatch
+
+    try:
+        patterns = list(config.getini("python_files")) or ["test_*.py", "*_test.py"]
+    except Exception:
+        patterns = ["test_*.py", "*_test.py"]
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    out: list[str] = []
+    for d, dirs, files in os.walk(root):
+        dirs[:] = sorted(x for x in dirs if not x.startswith(".") and x not in _SKIP_DIRS
+                         and not os.path.exists(os.path.join(d, x, "pyvenv.cfg")))
+        for f in sorted(files):
+            if f.endswith(".py") and (f == "conftest.py" or any(fnmatch.fnmatch(f, p) for p in patterns)):
+                out.append(os.path.join(d, f))
+                if len(out) >= limit:
+                    return out
+    return out
+
+
+def prewarm_rewrite_cache(config, env: dict) -> None:
+    """Audit G-0168: before the re-exec into the process that runs the tests, write the assertion-rewritten test
+    modules into the rewrite cache (``detpy._prewarm``, in a subprocess with that process's environment: hash seed,
+    bytecode prefix), so the first run after a checkout or an edit loads them from the cache like every later run and
+    lays out memory the same way. Nothing is imported or executed (no side effect runs twice). Best effort: what
+    is still compiled from source in the test process is a run input (``_level0.REWRITE``)."""
+    if os.environ.get("DETPY_REWRITE_CACHE", "1") == "0" or config is None:
+        return
+    try:
+        import subprocess
+
+        from _pytest.assertion import rewrite as rw
+
+        key = _rewrite_key(config, rw)
+        if key is None:
+            return
+        hashed = (b"\x03\x00\x00\x00" in rw._read_pyc.__code__.co_consts
+                  and os.environ.get("DETPY_REWRITE_OWN") != "1")
+        job = {"key": key, "hashed": hashed, "pass_hook": bool(config.getini("enable_assertion_pass_hook")),
+               "files": _rewrite_candidates(config)}
+        if not job["files"]:
+            return
+        child = dict(env)
+        child.pop("DETPY_REEXEC", None)
+        subprocess.run([sys.executable, "-m", "detpy._prewarm"], input=json.dumps(job), env=child,
+                       capture_output=True, text=True, timeout=600)
+    except Exception:
+        pass
 
 
 def _early_rewrite_cache() -> None:
@@ -635,6 +702,13 @@ def pytest_configure(config):
     out = config.getoption("det_outcomes", None)
     if config.getoption("det_cache", None) and not config.getoption("det", False):
         raise pytest.UsageError("--det-cache needs --det (the cache relies on Level 0 controls)")
+    if not config.getoption("det", False):
+        # audit G-1532, G-1533: a --det option without --det did nothing, silently
+        for opt, flag in (("det_seed", "--det-seed"), ("det_isolate", "--det-isolate"), ("det_order", "--det-order"),
+                          ("det_record", "--det-record"), ("det_urandom", "--det-urandom")):
+            if config.getoption(opt, None) not in (None, False):
+                raise pytest.UsageError(f"{flag} needs --det (without it the run is not deterministic; add --det, "
+                                        f"or run `fenvix pytest`, which adds it)")
     if _owner(config):
         config.pluginmanager.register(_DetSession(config, out), "detpy-session")
         _configure_det(config)
@@ -660,6 +734,7 @@ def _configure_det(config) -> None:
         S.worker = wid
         config.pluginmanager.register(_xdist.Worker(config, wid), "detpy-xdist-worker")
     elif _xdist.is_controller(config):
+        _xdist.require_version()
         ctl = _xdist.Controller(config, S)
         if getattr(config.option, "testrunuid", None) is None:
             config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)
@@ -886,7 +961,7 @@ class _DetSession(_Outcomes):
         lines = [
             f"detpy {__version__}: Level 0 active; controls={','.join(sorted(cfg.controls))}; order {order}",
             f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
-            f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
+            f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={_level0.sleep_label(cfg)}",
         ]
         if S.disabled_plugins:
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
@@ -985,6 +1060,9 @@ class _DetSession(_Outcomes):
     def _controller_meta(self) -> dict:
         """Header metadata of the merged trace (the controller's view; the workers' headers stay in their traces)."""
         cfg = _state.STATE.config
+        if S.controller is not None:  # G-0168: workers that rewrote test modules from source
+            _level0.REWRITE["workers"] = sum(int(o.get("detpy_rewrite_cold") or 0)
+                                             for o in S.controller.workeroutput.values())
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
@@ -994,6 +1072,10 @@ class _DetSession(_Outcomes):
             "python": platform.python_version(), "implementation": platform.python_implementation(),
             "platform": sys.platform, "pytest": pytest.__version__, "disabled_plugins": S.disabled_plugins,
             "adjustments": S.adjustments, "order_digest": S.order_digest, "merged": True,
+            "runtime": platform.python_implementation(), "runtime_version": platform.python_version(),
+            # the run inputs the verifier compares (the workers inherit the controller's environment; their own
+            # PYTEST_XDIST_* variables are engine-internal)
+            "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
@@ -1007,6 +1089,33 @@ class _DetSession(_Outcomes):
                 tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        if getattr(network, "REFUSED", None):
+            tests = sorted({t for t, _ in network.REFUSED if t})
+            tr.write_line(f"network: replay refused for {len(tests)} test(s): the request differs from the recorded "
+                          f"one (re-record with --det-record): {', '.join(tests[:5])}", red=True)
+        if getattr(network, "STALE", None):
+            tr.write_line(f"network: {len(network.STALE)} recording(s) older than --det-cassette-max-age not "
+                          f"replayed: {', '.join(network.STALE[:5])}", yellow=True)
+        failed = [getattr(r, "nodeid", None) for r in tr.stats.get("failed", [])]
+        failed = list(dict.fromkeys(n for n in failed if n))
+        if failed:
+            # G-1554: a failure under --det is a defect to reproduce, not a red run to re-run
+            seed = f" --det-seed={cfg.seed}" if cfg.shuffle else ""
+            tr.write_line(f"{len(failed)} test(s) failed under --det (seed {cfg.seed}"
+                          f"{', shuffled' if cfg.shuffle else ', fixed order'}). Turn each into a reproducible "
+                          f"defect (cause, seed, order, replay command):")
+            import shlex
+
+            for n in failed[:5]:
+                tr.write_line(f"    fenvix repro {shlex.quote(n)}{' --seed=' + str(cfg.seed) if cfg.shuffle else ''}")
+            if len(failed) > 5:
+                tr.write_line(f"    ... and {len(failed) - 5} more")
+            tr.write_line(f"  the same run again: pytest --det{seed} (with the same arguments)")
+            if S.controller is not None:
+                # audit G-1557: under -n a test ran in its worker's list; repro and replay start from that list
+                plan = os.path.join(S.controller.dir, "plan.json")
+                tr.write_line(f"  under -n each worker ran its own list: fenvix repro TEST --plan {plan}; one worker's "
+                              f"list again: pytest --det{seed} --det-plan={plan} --det-plan-worker=gwN")
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.terminal_summary(tr)
         rep = S.compare_report

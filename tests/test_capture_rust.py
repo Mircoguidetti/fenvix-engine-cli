@@ -308,6 +308,25 @@ def test_capture_reference_plugin_is_active(pytester, ref_env):
     assert "REF False CaptureCore" in _run(pytester, "new", "-s").stdout.str()
 
 
+def _first_diff(a: bytes, b: bytes):
+    """The first test entry (or top-level key) of two stores that differs, with both values."""
+    try:
+        ja, jb = json.loads(a), json.loads(b)
+    except ValueError:
+        i = next((k for k in range(min(len(a), len(b))) if a[k] != b[k]), min(len(a), len(b)))
+        return a[max(0, i - 200):i + 200], b[max(0, i - 200):i + 200]
+    for k in sorted(set(ja) | set(jb)):
+        va, vb = ja.get(k), jb.get(k)
+        if va == vb:
+            continue
+        if isinstance(va, dict) and isinstance(vb, dict):
+            for t in sorted(set(va) | set(vb)):
+                if va.get(t) != vb.get(t):
+                    return k, t, va.get(t), vb.get(t)
+        return k, va, vb
+    return None
+
+
 def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
     import shutil
 
@@ -348,7 +367,8 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
         steps.append(out)
     ref, new = steps
     for i in range(6):
-        assert ref[i]["store"] == new[i]["store"], f"session {i + 1}: stores differ"
+        assert ref[i]["store"] == new[i]["store"], (f"session {i + 1}: stores differ", _first_diff(ref[i]["store"],
+                                                                                                  new[i]["store"]))
         assert ref[i]["receipts"] == new[i]["receipts"], f"session {i + 1}: receipts differ"
         assert ref[i]["outcomes"] == new[i]["outcomes"], f"session {i + 1}"
         # the summary's details name /proc/self/task/<tid>: the thread id is the process's own

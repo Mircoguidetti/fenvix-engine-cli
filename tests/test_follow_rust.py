@@ -617,7 +617,7 @@ def test_parse_review_r009b_cases(tmp_path):
         "proc-self-task": [_log('lstat("/proc/self/task/77", {st_mode=S_IFDIR|0555}) = 0')],
         "rm-exempt": [_log('execve("/bin/rm", ["rm", "-r", "d"], 0x1) = 0',
                            'unlinkat(AT_FDCWD</w>, "d/x", 0) = 0', 'newfstatat(AT_FDCWD</w>, "d/x", 0x1, 0) = 0',
-                           'execve("/bin/ls", ["ls"], 0x1) = 0',
+                           'execve("/bin/ls", ["ls", "-l"], 0x1) = 0',
                            'mkdir("y", 0755) = 0', 'stat("y", 0x1) = 0')],
         # py-cache CI: GitHub runners' cat statx-es the file its own tree wrote; its output is the content only
         "cat-own": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
@@ -627,6 +627,11 @@ def test_parse_review_r009b_cases(tmp_path):
         "ls-own": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
                         'execve("/usr/bin/ls", ["ls", "-l", "f"], 0x1) = 0',
                         'statx(AT_FDCWD</w>, "f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0')],
+        "cat-exempt": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3</w/f>',
+                            'execve("/usr/bin/cat", ["cat", "f"], 0x1) = 0',
+                            'statx(AT_FDCWD</w>, "f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0'),
+                       _log('execve("/usr/bin/stat", ["stat", "f"], 0x1) = 0',
+                            'statx(AT_FDCWD</w>, "/w/f", AT_STATX_SYNC_AS_STAT, STATX_ALL, 0x1) = 0')],
         "two-logs": [_log('stat("/w/out", 0x1) = 0'), _log('openat(AT_FDCWD</w>, "out", O_WRONLY|O_CREAT, 0644) = 3</w/out>')],
         "no-ts": [_log('openat(AT_FDCWD</w>, "f", O_WRONLY|O_CREAT, 0644) = 3</w/f>', 'stat("f", 0x1) = 0', ts=False)],
     }
@@ -645,3 +650,5 @@ def test_parse_review_r009b_cases(tmp_path):
     assert out["rm-exempt"].clock and "/w/y" in out["rm-exempt"].clock
     assert out["cat-own"].clock is None, out["cat-own"].clock
     assert out["ls-own"].clock and "statx /w/f" in out["ls-own"].clock
+    # a program that reads the file it wrote (cat) does not read its time; stat does, and is named
+    assert out["cat-exempt"].clock and "stat statx /w/f" in out["cat-exempt"].clock

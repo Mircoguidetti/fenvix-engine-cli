@@ -250,6 +250,19 @@ def _mark_external(real):
     return wrapper
 
 
+def _os_children_alive() -> bool:
+    """Off Linux (no /proc): the OS's own list (macOS: proc_listchildpids); unknown counts as alive (audit G-0158)."""
+    if sys.platform == "darwin":
+        import ctypes
+
+        libc = ctypes.CDLL(None)
+        buf = (ctypes.c_int * 64)()
+        n = libc.proc_listchildpids(os.getpid(), buf, ctypes.sizeof(buf))
+        if n >= 0:
+            return n > 0
+    return True
+
+
 def _children_alive() -> bool:
     """True if this process has live child processes (Linux: /proc children lists). detpy's own probe (py-cache):
     its reads are not the test's (``_core.detpy_probe_call``, as the engine's clock)."""
@@ -262,6 +275,8 @@ def _children_alive() -> bool:
 
 
 def _children_alive_probe() -> bool:
+    if not sys.platform.startswith("linux"):
+        return _os_children_alive()
     try:
         for tid in _real_listdir("/proc/self/task"):
             with open(f"/proc/self/task/{tid}/children") as f:
@@ -539,7 +554,8 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
     # asyncio's event loop must keep real time: its selector waits for real.
     import asyncio.base_events
 
-    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: real_monotonic())
+    # claude/verifier-cli (audit G-1514): the loop runs on the virtual monotonic clock (no event), as detpy.clock does
+    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: (_MONO_BASE_NS + CLOCK.read()) / NS)
     return rebind_module_references(patcher, replacements, skip_module)
 
 

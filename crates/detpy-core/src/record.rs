@@ -203,8 +203,13 @@ fn weaker(new: &str, old: &str) -> bool {
 }
 
 /// Existence checks of one directory's entries kept one by one; more become its listing with kinds (`t:`), more than
-/// eight times as many under one ancestor its tree with kinds (`T:`): see `proof::compact_stats`.
-const STATS_PER_DIR: usize = 8;
+/// eight times as many under one ancestor its tree with kinds (`T:`): see `proof::compact_stats`. The listing is
+/// coarser (any new file there invalidates), so the threshold sits well above the fixed probes a runner makes in its
+/// own start directory at every session: nose2 on CPython 3.14 alone checks nine names in it (`__init__.py`,
+/// `.pyc`, `.pyo`, `lib`, `src`, `conftest.py`, `nose2.cfg`, `unittest.cfg`, `pyproject.toml`), and with a threshold
+/// of 8 a new test module there invalidated every test of the suite. It still bounds an entry when a collection hook
+/// checks many files.
+pub(crate) const STATS_PER_DIR: usize = 32;
 
 #[derive(Clone, Default)]
 struct OrderedData {
@@ -1395,6 +1400,29 @@ fn dump_test(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_runner_start_directory_probes_stay_per_name() {
+        // nose2 on CPython 3.14 checks these names in its start directory at every session (inputs of every test);
+        // compacted into the directory's listing, a new test module there would invalidate the whole suite
+        let d = tempfile::tempdir().unwrap();
+        let root = d.path();
+        std::fs::create_dir(root.join("tests")).unwrap();
+        std::fs::write(root.join("tests/test_case.py"), "").unwrap();
+        let names = ["__init__.py", "__init__.pyc", "__init__.pyo", "lib", "src", "conftest.py", "nose2.cfg",
+                     "unittest.cfg", "pyproject.toml"];
+        let data: Vec<(String, String)> =
+            names.iter().map(|n| (format!("tests/{n}"), "s:missing".to_string())).collect();
+        assert!(data.len() < STATS_PER_DIR);
+        let c = crate::proof::compact_stats(data.clone(), root, STATS_PER_DIR);
+        assert_eq!(c, data);
+        // many checks of one directory are still compacted
+        let many: Vec<(String, String)> =
+            (0..STATS_PER_DIR).map(|i| (format!("tests/ex{i}.txt"), "s:missing".to_string())).collect();
+        let c = crate::proof::compact_stats(many, root, STATS_PER_DIR);
+        assert_eq!(c.len(), 1);
+        assert!(c[0].0.ends_with(crate::proof::KINDS_SUFFIX) && c[0].1.starts_with("t:"));
+    }
 
     #[test]
     fn reference_closure_reaches_imported_repository_modules_and_the_library_node() {

@@ -217,6 +217,11 @@ pub fn clock_children_alive(py: Python<'_>) -> PyResult<bool> {
 }
 
 fn children_alive(py: Python<'_>) -> PyResult<bool> {
+    if !cfg!(target_os = "linux") {
+        // no /proc: the OS's own list (macOS: proc_listchildpids); unknown counts as alive, so the virtual
+        // clock never jumps over a child's real work (audit G-0158)
+        return Ok(detpy_core::host::children_alive().unwrap_or(true));
+    }
     const TASKS: &str = "/proc/self/task";
     let real_listdir = REAL_LISTDIR.get_or_try_init(py, || -> PyResult<Py<PyAny>> {
         let m = py.import("posix").or_else(|_| py.import("nt"))?;

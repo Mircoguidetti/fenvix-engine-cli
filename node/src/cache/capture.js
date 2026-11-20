@@ -167,6 +167,7 @@ class Capture {
     const uid = typeof process.getuid === 'function' ? process.getuid() : '';
     this.skipDirs = [path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`),
       path.join(tmp, `v8-compile-cache-${uid}`), path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`),
+      probeParent(), // detjs's own probe of fs.promises.readdir (probePromisesTypedReaddir)
       ...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean)].map((d) => path.resolve(d) + path.sep);
   }
 
@@ -1248,15 +1249,47 @@ function wrapStat(cap, o, name, kind, style, pathOf = (a) => a[0]) {
  * `fs.promises.readdir` does without `withFileTypes`; `u:` where it does not: `fs.promises.readdir` with
  * `withFileTypes`, recursive `opendir`).
  */
-function listKind(dflt, followTyped = true) {
+function listKind(dflt, followTyped = () => true) {
   return (a) => {
     const o = a[1];
     if (o && typeof o === 'object') {
-      if (o.recursive) return o.withFileTypes && !followTyped ? 'u' : 't';
+      if (o.recursive) return o.withFileTypes && !followTyped() ? 'u' : 't';
       if (o.withFileTypes) return 'e';
     }
     return dflt;
   };
+}
+
+/**
+ * Whether `fs.promises.readdir(dir, { recursive: true, withFileTypes: true })` descends into links to directories on
+ * this runtime: it does not before Node 26, it does from Node 26 on (as `readdirSync` always did). Observed once on a
+ * scratch tree, never assumed from the version: until the probe has answered, and if it fails, the listing is keyed
+ * as following links (`t:`), which may refuse a reuse but never allows a wrong one.
+ */
+const promisesTyped = { follows: true, probed: false };
+/** The directory of detjs's scratch probes: never an input (in every capture's skip list). */
+function probeParent() {
+  return path.join(os.tmpdir(), `detjs-probe-${typeof process.getuid === 'function' ? process.getuid() : ''}`);
+}
+function probePromisesTypedReaddir(realReaddir) {
+  if (promisesTyped.probed) return;
+  promisesTyped.probed = true;
+  let root;
+  try {
+    fs.mkdirSync(probeParent(), { recursive: true });
+    root = fs.mkdtempSync(path.join(probeParent(), 'rd-'));
+    fs.mkdirSync(path.join(root, 'tree'));
+    fs.mkdirSync(path.join(root, 'other'));
+    fs.writeFileSync(path.join(root, 'other', 'x'), '');
+    fs.symlinkSync(path.join(root, 'other'), path.join(root, 'tree', 'link'), 'dir');
+  } catch {
+    if (root) try { fs.rmSync(root, { recursive: true, force: true }); } catch { /* ignore */ }
+    return;
+  }
+  Promise.resolve()
+    .then(() => realReaddir(path.join(root, 'tree'), { recursive: true, withFileTypes: true }))
+    .then((ents) => { promisesTyped.follows = ents.some((e) => e.name === 'x'); }, () => {})
+    .finally(() => { try { fs.rmSync(root, { recursive: true, force: true }); } catch { /* ignore */ } });
 }
 
 /** An access check: existence (`s:`), or permission bits too when a mode other than F_OK is asked. */
@@ -1381,7 +1414,8 @@ function installFs(cap) {
   // listings (F2): names (`d:`), with entry types (`e:`), recursive (`t:`); a Dir yields typed entries
   wrapFn(cap, fs, 'readdirSync', (a) => cap.read(a[0], listKind('d')(a)));
   wrapFn(cap, fs, 'readdir', (a) => cap.read(a[0], listKind('d')(a)));
-  wrapFn(cap, P, 'readdir', (a) => cap.read(a[0], listKind('d', false)(a)));
+  if (P && typeof P.readdir === 'function' && !P.readdir.__detjsCache) probePromisesTypedReaddir(P.readdir.bind(P));
+  wrapFn(cap, P, 'readdir', (a) => cap.read(a[0], listKind('d', () => promisesTyped.follows)(a)));
   for (const [o, n] of [[fs, 'opendirSync'], [fs, 'opendir'], [P, 'opendir']]) {
     wrapFn(cap, o, n, (a) => cap.read(a[0], (a[1] && typeof a[1] === 'object' && a[1].recursive) ? 'u' : 'e'));
   }

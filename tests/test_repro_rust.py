@@ -144,6 +144,19 @@ def test_prefix_through_matches_reference():
     assert repro.prefix_through(dup, "a") == ref.prefix_through(dup, "a") == ["a", "b"]
 
 
+def test_prefix_through_missing_target_raises_this_interpreters_list_index_error():
+    # CPython 3.14 words list.index's error "list.index(x): x not in list" (3.12/3.13: "'x' is not in list"): the
+    # Rust path raises the interpreter's own error, as the reference (order.index) does, on every version
+    for target in ("missing::x", "it's 'q'", ""):
+        try:
+            [].index(target)
+        except ValueError as e:
+            want = str(e)
+        with pytest.raises(ValueError) as got:
+            repro.prefix_through(["a", "b"], target)
+        assert str(got.value) == want
+
+
 def test_order_for_matches_reference():
     rng = random.Random(8)
     for _ in range(200):

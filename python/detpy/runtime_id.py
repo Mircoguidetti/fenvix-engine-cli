@@ -618,7 +618,9 @@ def _cpu_part() -> dict:
     except OSError:
         pass
     if flags is None:
-        d["isa"] = platform.processor() or platform.machine()
+        feats = _core.cpu_features()  # macOS: CPU brand and hw.optional feature flags (audit G-0157 family)
+        d["isa"] = (f"{platform.machine()}:{_h(feats)}" if feats is not None
+                    else platform.processor() or platform.machine())
     elif platform.machine() in ("x86_64", "AMD64"):
         level = "v1"
         for name, need in _X86_LEVELS:
@@ -712,8 +714,22 @@ def runtime_parts(root: str, memo_path: str | None = "default") -> tuple[dict, d
                 libpython = dg
         unresolved = sorted(missing)
         native_lines += [f"{n}:unresolved" for n in unresolved]
-    else:  # not ELF (macOS, Windows): the OS release stands for the system libraries
-        native_lines.append(f"os:{platform.platform()}")
+    else:
+        # not ELF (macOS): every image dyld has loaded into this process by now (Homebrew/MacPorts libraries,
+        # extension dependencies; audit G-0156), by file name and bytes; images that exist only inside the dyld
+        # shared cache (the system libraries) have no file: the OS release and build stand for them
+        own = set(os.path.realpath(p) for p in natives)
+        images = _core.loaded_images()
+        if images is None:
+            native_lines.append("images:unobservable")
+        else:
+            for p in sorted(set(images)):
+                rp = os.path.realpath(p)
+                if rp in own or os.path.realpath(exe) == rp:
+                    continue
+                dg = memo.digest(p) if os.path.isfile(p) else None
+                native_lines.append(f"{os.path.basename(p)}:{dg if dg else 'shared-cache'}")
+        native_lines.append(f"os:{platform.platform()}:{os.uname().version}")
     if libpython is None:
         libdir, ldlib = sysconfig.get_config_var("LIBDIR"), sysconfig.get_config_var("LDLIBRARY")
         if libdir and ldlib and os.path.exists(os.path.join(libdir, ldlib)) and ldlib.endswith((".so", ".dylib")):

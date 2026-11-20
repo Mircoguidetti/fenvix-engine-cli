@@ -579,6 +579,31 @@ def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     return res
 
 
+def parse_fenvix_explore(out: str) -> dict:
+    """The JSON summary `fenvix explore --json` prints after its text lines (the last top-level object)."""
+    i = out.find("\n{")
+    while i >= 0:
+        try:
+            return json.JSONDecoder().raw_decode(out[i + 1:])[0]
+        except ValueError:
+            i = out.find("\n{", i + 1)
+    return {}
+
+
+def parse_fenvix_defects(out: str) -> dict:
+    """``{test: (cause, "replay: fenvix replay <bundle>")}`` from the ``defect:`` lines `fenvix explore` prints."""
+    printed = {}
+    for ln in out.splitlines():
+        ln = ln.strip()
+        if ln.startswith("defect: "):
+            body = ln[len("defect: "):]
+            cut = body.find(": ", body.find("::") + 2 if "::" in body else 0)  # a test id holds "::", not ": "
+            test, rest = body[:cut], body[cut + 2:]
+            cause, _, replay = rest.rpartition("; replay: ")
+            printed[test] = (cause.strip(), "replay: " + replay.strip() if replay else None)
+    return printed
+
+
 def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     """Block 2 measurement on one repository (P-010 items 3 and 4).
 
@@ -629,6 +654,38 @@ def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
                             out_dir=rundir / "bundles")
             bundles.append(b)
             runner.drop_traces()
+        res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
+    elif args.tool == "fenvix":
+        # The product command for a suite with several flaky tests, as a developer runs it: `fenvix explore
+        # --targets FILE` (a subprocess of the project's interpreter): one search of seeds 1..N over the whole suite,
+        # shared by every target (as the detpy tool's exploration), then minimisation, a bundle and --confirm
+        # replays for each target that failed. Its printed `defect:` lines (cause and replay command) and its JSON
+        # summary are recorded. `fenvix repro TARGET` per target searched the suite again for each target: 16
+        # anyio targets did not fit the budget (Block 2 run 44743585438: 5 targets in 2h15m, MEASURED).
+        tfile = rundir / "targets.txt"
+        tfile.write_text("\n".join(targets) + "\n")
+        out_dir = rundir / "bundles"
+        cmd = [p.python, "-m", "detpy.fenvix", "explore", "--targets", str(tfile),
+               "--budget", str(round(args.repo_budget / 60.0, 2)), "--max-seeds", str(args.seeds),
+               "--confirm", str(args.confirm), "--max-runs", str(args.max_repro_runs),
+               "--timeout", str(args.run_timeout), "--out", str(out_dir), "--json", "--", *p.pytest_args, *serial]
+        try:
+            pr = subprocess.run(cmd, cwd=p.src, env=env, capture_output=True, text=True,
+                                timeout=args.repo_budget + 2 * args.run_timeout + 600)
+            out, code = pr.stdout, pr.returncode
+        except subprocess.TimeoutExpired as e:
+            out, code = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""), -9
+        summary = parse_fenvix_explore(out)
+        printed = parse_fenvix_defects(out)
+        by_test = {b.get("test"): b for b in summary.get("bundles", []) if isinstance(b, dict)}
+        bundles = []
+        for t in targets:
+            b = dict(by_test.get(t) or {"test": t, "status": "not-found"})
+            cause, replay = printed.get(t, (None, None))
+            b["cause_line"], b["replay_line"], b["exit"] = cause, replay, code
+            bundles.append(b)
+            log(f"{p.name}: fenvix explore target {t}: {b.get('status')}")
+        res.update(seeds_log=summary.get("seeds_log", []), explore_exit=code, explore_printed=out[:3000])
         res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
     else:
         seeds_log, first_fail = [], {}
@@ -1268,14 +1325,14 @@ def write_report(outdir: Path, meta: dict) -> Path:
 # ---------------------------------------------------------------------------
 def build_wheel(work: Path) -> str:
     dist = work / "dist"
-    existing = sorted(glob.glob(str(dist / "detpy-*.whl")))
+    existing = sorted(glob.glob(str(dist / "fenvix-*.whl")))
     if existing:
         return existing[-1]
     code, out, _, _ = sh(["maturin", "build", "--release", "--compatibility", "linux", "-o", str(dist)],
                          cwd=ROOT, timeout=1800)
     if code != 0:
         sys.exit("wheel build failed:\n" + out[-3000:])
-    return sorted(glob.glob(str(dist / "detpy-*.whl")))[-1]
+    return sorted(glob.glob(str(dist / "fenvix-*.whl")))[-1]
 
 
 def load_pools(cfg: dict) -> tuple[list[dict], list[dict]]:
@@ -1313,7 +1370,7 @@ def main(argv=None) -> int:
                          "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
                          "control disabled except the order (--targets); baseline: --runs baseline runs only, "
                          "with the installed package versions")
-    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone"), default="detpy",
+    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone", "fenvix"), default="detpy",
                     help="block2: which seed search to measure")
     ap.add_argument("--block2-targets", default=str(HERE / "block2_targets.json"))
     ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),

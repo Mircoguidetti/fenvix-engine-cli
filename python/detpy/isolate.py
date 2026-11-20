@@ -180,10 +180,11 @@ class Isolate:
         req = getattr(item, "_request", None)
         if info is None or req is None:
             return
-        # the item is on the setup stack while its wider-scoped fixtures are set up here (as in pytest's own setup):
-        # a request for a node that is not active is deprecated (audit G-2211, pytest 9.1) and an error in pytest 10
-        pushed = item not in ss.stack
-        if pushed:
+        # The item is marked active on the setup stack while its wider fixtures are set up here, as during its own
+        # setup: pytest 9.1+ warns (PytestRemovedIn10Warning) and pytest 10.1 refuses a getfixturevalue() for a node
+        # that is not active (audit G-1543). The child sets the item up itself; the entry is removed afterwards.
+        added = item not in ss.stack
+        if added:
             ss.stack[item] = ([], None)
         try:
             for name in item.fixturenames:
@@ -195,7 +196,7 @@ class Isolate:
                 except BaseException:  # noqa: BLE001 - cached by the fixture definition: the child reports it
                     pass
         finally:
-            if pushed:
+            if added:
                 ss.stack.pop(item, None)
 
     def _scope_teardown(self, item, nextitem) -> None:

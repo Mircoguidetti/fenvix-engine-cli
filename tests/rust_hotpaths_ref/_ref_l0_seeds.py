@@ -137,6 +137,58 @@ def uninstall() -> None:
     _urandom_rng = None
 
 
+class _NumpyOnImport:
+    """The product's import hook for numpy.random (detpy/seeds.py ``_SeedOnImport``, audit G-1525 / G-0179): numpy
+    imported during a test reads OS entropy for its global generator while it loads (no event: it is reseeded right
+    after, for that test, as if it had been loaded before the test started)."""
+
+    def __init__(self, patcher):
+        self.patcher = patcher
+        self.busy = False
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname != "numpy.random" or self.busy or _state.STATE.nodeid is None:
+            return None
+        import importlib.util
+
+        self.busy = True
+        try:
+            spec = importlib.util.find_spec(fullname)
+        finally:
+            self.busy = False
+        if spec is None or spec.loader is None or not hasattr(spec.loader, "exec_module"):
+            return None
+        loader, hook = spec.loader, self
+
+        class _Loader:
+            def create_module(self, spec):
+                return loader.create_module(spec)
+
+            def exec_module(self, module):
+                with _state.quiet():
+                    loader.exec_module(module)
+                st = _state.STATE
+                if st.nodeid is not None:
+                    _seed_numpy_module(hook.patcher, module, _core.derive_seed(st.config.seed, st.nodeid))
+
+        spec.loader = _Loader()
+        return spec
+
+
+def _seed_numpy_module(patcher, rnd, s: int) -> None:
+    try:
+        with _state.quiet():
+            rnd.seed(s & 0xFFFFFFFF)
+        if not _numpy_patched and hasattr(rnd, "default_rng"):
+            patcher.set(rnd, "default_rng", _numpy_default_rng(rnd.default_rng))
+            _numpy_patched.append(True)
+    except Exception:  # pragma: no cover - exotic numpy builds
+        pass
+
+
+_hook: list = []
+
+
 def _numpy_default_rng(real):
     def default_rng(seed=None):
         if seed is None:
@@ -165,18 +217,15 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     tempfile = sys.modules.get("tempfile")
     if tempfile is not None and hasattr(tempfile, "_name_sequence"):
         tempfile._name_sequence = None
+    if not _hook:
+        _hook.append(_NumpyOnImport(patcher))
+        sys.meta_path.insert(0, _hook[0])
     np = sys.modules.get("numpy")
     if np is not None:
         try:
-            # py-cache (as detpy/seeds.py, audit G-0510): detpy's own reseed imports numpy.random quietly
-            with _state.quiet():
-                nprandom = getattr(np, "random", None)
-                if nprandom is None:
-                    raise AttributeError("numpy.random")
-                nprandom.seed(s & 0xFFFFFFFF)
-            if not _numpy_patched and hasattr(np.random, "default_rng"):
-                patcher.set(np.random, "default_rng", _numpy_default_rng(np.random.default_rng))
-                _numpy_patched.append(True)
+            # quietly, as the product (detpy/seeds.py, audit G-0179): numpy imports numpy.random._pickle lazily on
+            # the first seed call and reads OS entropy there, which is no event of whichever test came first
+            _seed_numpy_module(patcher, np.random, s)
         except Exception:  # pragma: no cover - exotic numpy builds
             pass
 

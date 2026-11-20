@@ -124,8 +124,12 @@ CASES = [
          lambda r, m: {"DETPY_T_X": "1"}),
     case("env_enumeration", 'assert not [k for k in os.environ if k.startswith("DETPY_T_")]',
          lambda r, m: {"DETPY_T_Y": "1"}),
+    # claude/verifier-cli: --det pins TZ (--det-tz, default UTC); FENVIX_TZ=keep keeps the machine's zone, read by C
     case("timezone_read_by_c", 'assert time.strftime("%H", time.localtime(0)) == "00"',
-         lambda r, m: {"TZ": "Asia/Tokyo"}, env1={"TZ": "UTC"}, control=False),
+         lambda r, m: {"TZ": "Asia/Tokyo", "FENVIX_TZ": "keep"}, env1={"TZ": "UTC", "FENVIX_TZ": "keep"},
+         control=False),
+    case("timezone_pinned", 'assert time.strftime("%H", time.localtime(0)) == "00"',
+         lambda r, m: {"TZ": "Asia/Tokyo"}, env1={"TZ": "UTC"}, expect="reused", control=False),
     case("child_process_reads_file",
          'out = subprocess.run(["cat", "data.txt"], capture_output=True, text=True, check=True).stdout\n'
          'assert out == "hello\\n"',
@@ -156,7 +160,7 @@ CASES = [
          'c = sqlite3.connect("file:r17.db?mode=ro", uri=True)\nassert c.execute("select v from t").fetchone()[0] == 1',
          lambda r, m: _sqlite(r / "r17.db", 2), setup=lambda r: _sqlite(r / "r17.db", 1)),
     case("file_written_by_child_timestamp",
-         'out = subprocess.run(["sh", "-c", "echo > stamp && stat -c %Y stamp"], capture_output=True, text=True,\n'
+         'out = subprocess.run(["sh", "-c", "echo > stamp && date -r stamp +%s"], capture_output=True, text=True,\n'
          '                     check=True).stdout\nassert int(out) > 0',
          lambda r, m: None, expect="rerun"),
 ]
@@ -166,11 +170,11 @@ def needs_ok(c, request_env: dict) -> str | None:
     """None when the case can run here, else why not."""
     import shutil
 
+    if c["needs"] == "shm" and not os.path.isdir("/dev/shm"):
+        return "no /dev/shm"  # macOS: the scenario does not exist
     if c["name"].startswith("child") or c["name"].startswith("file_written_by_child"):
         if shutil.which("strace") is None:
             return None  # without strace a test that starts a process is never cached: the assertions hold too
-    if c["needs"] == "shm" and not os.path.isdir("/dev/shm"):
-        return "no /dev/shm"
     return None
 
 

@@ -91,6 +91,9 @@ def test_child_read_of_dev_shm_is_an_input_or_refused(pytester, run_cache, tmp_p
 def test_timezone_read_by_c_is_an_input(pytester, run_cache, monkeypatch):
     # time.localtime / datetime.fromtimestamp read TZ through C getenv (and /etc/localtime through C open): neither
     # passes os.environ, so neither is recorded. A fresh run under another TZ gives another result.
+    # (claude/verifier-cli: --det pins TZ; this case keeps the machine's zone, FENVIX_TZ=keep. The pinned case is
+    # test_pinned_timezone_makes_the_machine_zone_irrelevant below.)
+    monkeypatch.setenv("FENVIX_TZ", "keep")
     project(pytester, **{"test_m.py": """
         import time
 
@@ -103,6 +106,24 @@ def test_timezone_read_by_c_is_an_input(pytester, run_cache, monkeypatch):
     r, reused, data = run_cache()
     assert reused == set()
     r.assert_outcomes(failed=1)
+
+
+def test_pinned_timezone_makes_the_machine_zone_irrelevant(pytester, run_cache, monkeypatch):
+    # claude/verifier-cli (F-01, audit G-0519): --det runs every test in TZ=UTC (--det-tz): the machine's zone no
+    # longer changes the result, so reusing it is right.
+    project(pytester, **{"test_m.py": """
+        import time
+
+        def test_local_hour():
+            assert time.strftime("%H", time.localtime(0)) == "00"
+        """})
+    monkeypatch.delenv("FENVIX_TZ", raising=False)
+    monkeypatch.setenv("TZ", "UTC")
+    run_cache()
+    monkeypatch.setenv("TZ", "Asia/Tokyo")
+    r, reused, data = run_cache()
+    assert reused == {"test_m.py::test_local_hour"}
+    r.assert_outcomes(passed=1)
 
 
 def test_real_clock_read_in_c_is_not_reused_after_it_moves(pytester, run_cache):

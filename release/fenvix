@@ -1,108 +1,15 @@
 #!/usr/bin/env python3
-"""fenvix: the single CLI entry of release 1. Interface only: it finds the language shell installed by the runner
-image and hands it the arguments unchanged. Every decision (controls, fingerprints, traces, keys, reuse) is the
-engine's (Rust: detpy-core, fenvix-skip, fenvix-go; the shells call it).
+"""fenvix: the single CLI entry, as the runner image installs it ($FENVIX_HOME/bin/fenvix).
 
-    fenvix python [pytest args]            pytest with the detpy plugin  (e.g. --det, --det-cache=DIR)
-    fenvix python-runner RUNNER [args]     python -m detpy RUNNER ...    (unittest, django, nose2, ward, zope, doctest)
-    fenvix node RUNNER [args]              detjs RUNNER ...              (vitest, jest, mocha, node-test, ava, tap, ...)
-    fenvix go test [args]                  fenvix-go test ...            (--det, --skip-cache=DIR)
-    fenvix jvm run [opts] -- BUILD CMD     java -jar fenvix-agent.jar run ...  (--det, --deps)
-    fenvix jvm decide A_DEPS B_DEPS --root-b DIR [--json OUT]   fenvix-skip decide ...
-    fenvix verify TRACE_A TRACE_B          python -m detpy verify (every shell writes the same trace format)
-    fenvix detect [DIR]                    the languages of DIR by their build files (one per line)
-    fenvix version                         versions of every installed component
-
-Locations (runner image layout, overridable): FENVIX_HOME (default /opt/fenvix) holds node/ (detjs with its
-addon), bin/fenvix-go, bin/fenvix-skip, jvm/fenvix-agent.jar; detpy is a wheel in the job's Python.
+The command itself lives in the Python package (detpy/fenvix.py, console script `fenvix` of the
+package `fenvix`); this file only runs it with the image's Python, where release/install-image.sh installed it.
 """
-from __future__ import annotations
-
-import os
-import shutil
-import subprocess
 import sys
 
-HOME = os.environ.get("FENVIX_HOME", "/opt/fenvix")
-VERSION = "release-1"
+try:
+    from detpy.fenvix import main
+except ImportError as e:
+    sys.stderr.write(f"fenvix: the Python package fenvix is not installed in {sys.executable} ({e})\n")
+    sys.exit(127)
 
-
-def _path(*p):
-    return os.path.join(HOME, *p)
-
-
-def _exec(argv):
-    try:
-        os.execvp(argv[0], argv)
-    except FileNotFoundError:
-        sys.stderr.write(f"fenvix: {argv[0]} not found (FENVIX_HOME={HOME})\n")
-        sys.exit(127)
-
-
-def _first(*cands):
-    for c in cands:
-        if c and (os.path.exists(c) or shutil.which(c)):
-            return c
-    return cands[-1]
-
-
-def detect(d):
-    files = set(os.listdir(d))
-    out = []
-    if files & {"pyproject.toml", "setup.py", "setup.cfg", "pytest.ini", "tox.ini"}:
-        out.append("python")
-    if "package.json" in files:
-        out.append("node")
-    if "go.mod" in files:
-        out.append("go")
-    if files & {"pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts"}:
-        out.append("jvm")
-    return out
-
-
-def version():
-    def run(cmd):
-        try:
-            return subprocess.run(cmd, capture_output=True, text=True, timeout=60).stdout.strip().splitlines()[0]
-        except Exception as e:  # reported, not hidden
-            return f"unavailable ({type(e).__name__})"
-
-    print(f"fenvix {VERSION}")
-    print("detpy", run([sys.executable, "-c", "import importlib.metadata as m; print(m.version('detpy'))"]))
-    print("detjs", run(["node", "-p", f"require({_path('node', 'package.json')!r}).version"]))
-    print("fenvix-go", "present" if os.path.exists(_path("bin", "fenvix-go")) else "absent")
-    print("fenvix-skip", "present" if os.path.exists(_path("bin", "fenvix-skip")) else "absent")
-    print("fenvix-agent.jar", "present" if os.path.exists(_path("jvm", "fenvix-agent.jar")) else "absent")
-
-
-def main(argv):
-    if not argv or argv[0] in ("-h", "--help", "help"):
-        print(__doc__)
-        return 0
-    cmd, rest = argv[0], argv[1:]
-    if cmd == "python":
-        _exec([sys.executable, "-m", "pytest"] + rest)
-    if cmd == "python-runner":
-        _exec([sys.executable, "-m", "detpy"] + rest)
-    if cmd == "node":
-        _exec(["node", _first(_path("node", "bin", "detjs.js"))] + rest)
-    if cmd == "go":
-        _exec([_first(_path("bin", "fenvix-go"), "fenvix-go")] + rest)
-    if cmd == "jvm":
-        if rest and rest[0] == "decide":
-            _exec([_first(_path("bin", "fenvix-skip"), "fenvix-skip")] + rest)
-        _exec(["java", "-jar", _path("jvm", "fenvix-agent.jar")] + rest)
-    if cmd == "verify":
-        _exec([sys.executable, "-m", "detpy", "verify"] + rest)
-    if cmd == "detect":
-        print("\n".join(detect(rest[0] if rest else ".")))
-        return 0
-    if cmd == "version":
-        version()
-        return 0
-    sys.stderr.write(f"fenvix: unknown command {cmd!r} (fenvix --help)\n")
-    return 2
-
-
-if __name__ == "__main__":
-    sys.exit(main(sys.argv[1:]))
+sys.exit(main())

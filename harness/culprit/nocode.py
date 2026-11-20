@@ -36,7 +36,7 @@ from finder import EnvBuilder, Finder  # noqa: E402
 from mutants import commit  # noqa: E402
 
 WORK = Path(os.environ.get("CULPRIT_WORK", "/home/user/work"))
-WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("detpy-*.whl"), "")))
+WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("fenvix-*.whl"), "")))
 H2H = "origin/claude/sweet-mendel-rtdg7f:harness/skip_study2/headtohead/"
 URLS = {"flask": "pallets/flask", "structlog": "hynek/structlog", "jinja": "pallets/jinja",
         "werkzeug": "pallets/werkzeug", "sqlparse": "andialbrecht/sqlparse", "pygments": "pygments/pygments",

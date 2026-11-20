@@ -13,6 +13,10 @@ from runners_util import run, write
 
 pytestmark = pytest.mark.skipif(sys.version_info < (3, 12), reason="--det-cache needs sys.monitoring")
 pytest.importorskip("ward")
+if not hasattr(textwrap, "_leading_whitespace_re"):
+    # ward itself cannot run here (CPython 3.14: ward 0.68.0b0 stops with an AttributeError on its own); detpy refuses
+    # it with one sentence instead, proved by tests/test_runners_ward_support.py on every interpreter
+    pytest.skip("ward does not run on this Python", allow_module_level=True)
 
 
 def wd(root, *args, **kw):

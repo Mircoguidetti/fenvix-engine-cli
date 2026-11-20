@@ -85,6 +85,7 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
     if ssl is not None and hasattr(ssl, "RAND_bytes"):
         patcher.set(ssl, "RAND_bytes", _core.stand_in("urandom", globals(), "ssl", "RAND_bytes",
                                                       wrapped=ssl.RAND_bytes, fname="urandom"))
+    _install_uuid1(patcher)
     if control_urandom:
         _urandom_rng = random.Random()
         _real_seed(_urandom_rng, _core.derive_seed(_state.STATE.config.seed, "<urandom>"))
@@ -95,6 +96,29 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
             _real_seed(obj, _core.derive_seed(_state.STATE.config.seed, "<preexisting>"))
             preexisting += 1
     _state.STATE.installed.append(f"random(preexisting={preexisting})")
+
+
+def _install_uuid1(patcher: Patcher) -> None:
+    """``uuid.uuid1()`` (audit G-1524): libuuid mixes the real clock, the MAC address and a random sequence. Under
+    --det it takes Python's own path with a node and a clock sequence derived from the test (and a per-test counter),
+    and the virtual clock (``time.time_ns``); the last timestamp is reset at every test, so a value does not depend on
+    the tests before."""
+    import uuid
+
+    real = uuid.uuid1
+
+    def uuid1(node=None, clock_seq=None):
+        st = _state.STATE
+        if st.nodeid is not None:
+            if node is None:
+                node = (_core.derive_seed(st.config.seed, st.nodeid + "\0uuid1-node") & 0xFFFFFFFFFFFF) | 0x010000000000
+            if clock_seq is None:
+                _NP_COUNTER[0] += 1
+                clock_seq = _core.derive_seed(st.config.seed, f"{st.nodeid}\0uuid1-seq#{_NP_COUNTER[0]}") & 0x3FFF
+        return real(node, clock_seq)
+
+    uuid1.__doc__ = real.__doc__
+    patcher.set(uuid, "uuid1", uuid1)
 
 
 def uninstall() -> None:
@@ -109,6 +133,10 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     """Re-seed every generator for ``nodeid``."""
     base = _state.STATE.config.seed
     _core.seeds_reset_counter()
+    _NP_COUNTER[0] = 0
+    uuid = sys.modules.get("uuid")
+    if uuid is not None and hasattr(uuid, "_last_timestamp"):
+        uuid._last_timestamp = None  # uuid1's monotonic guard: per test, not per process
     s = _core.derive_seed(base, nodeid)
     _real_seed(random._inst, s)
     _core.sqlvirt_start_test(_core.derive_seed(base, nodeid + "\0sqlite"))  # SQLite's random() / randomblob()
@@ -121,24 +149,171 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     core = sys.modules.get("hypothesis.core")
     if core is not None:
         _hypothesis(patcher, core)
-    np = sys.modules.get("numpy")
-    if np is not None:
+    _seed_numpy(patcher, s)
+    _seed_libraries(s)
+    _install_import_hook(patcher)
+
+
+def _seed_numpy(patcher: Patcher, s: int, rnd=None) -> None:
+    """numpy's global state, ``default_rng()`` and the generators built without a seed (``RandomState()``,
+    ``PCG64()`` ...: audit G-1526) take seeds derived from the test. The reseed runs quietly: numpy imports
+    ``numpy.random._pickle`` lazily on the first ``seed`` call and reads OS entropy there, which was recorded as an
+    event of whichever test came first (audit G-0179, G-0177). ``rnd``: the numpy.random module (during its own
+    import, ``numpy.random`` cannot be read from the numpy package yet)."""
+    rnd = rnd if rnd is not None else sys.modules.get("numpy.random")
+    if rnd is None or not hasattr(rnd, "seed"):
+        return
+    try:
+        if not _numpy_patched and hasattr(rnd, "default_rng"):
+            real = rnd.default_rng
+            patcher.set(rnd, "default_rng", _core.stand_in("default_rng", real, "numpy.random", "default_rng"))
+            _patch_numpy_generators(patcher, rnd)
+            _numpy_patched.append(True)
+        with _state.quiet():
+            rnd.seed(s & 0xFFFFFFFF)
+    except Exception:  # pragma: no cover - exotic numpy builds
+        pass
+
+
+def _derived(tag: str) -> int:
+    """A seed for an unseeded generator: the test, a per-test counter (as ``Random()``), the generator's kind."""
+    st = _state.STATE
+    _NP_COUNTER[0] += 1
+    return _core.derive_seed(st.config.seed, f"{st.nodeid or '<session>'}\0{tag}#{_NP_COUNTER[0]}")
+
+
+_NP_COUNTER = [0]
+
+
+class _SameType(type):
+    """The stand-in classes are the original for ``isinstance`` / ``issubclass``: numpy's own instances (the global
+    ``RandomState``) still pass ``isinstance(x, np.random.RandomState)`` checks (sklearn's check_random_state)."""
+
+    def __instancecheck__(cls, inst):
+        return isinstance(inst, cls._detpy_base)
+
+    def __subclasscheck__(cls, sub):
+        return issubclass(sub, cls._detpy_base)
+
+
+def _patch_numpy_generators(patcher: Patcher, rnd) -> None:
+    for name in ("RandomState", "PCG64", "PCG64DXSM", "MT19937", "Philox", "SFC64"):
+        base = getattr(rnd, name, None)
+        if not isinstance(base, type):
+            continue
+
+        def make(base, name):
+            def __init__(self, seed=None, *args, **kwargs):
+                if seed is None and _state.STATE.nodeid is not None:
+                    seed = _derived(name) & (0xFFFFFFFF if name == "RandomState" else (1 << 63) - 1)
+                base.__init__(self, seed, *args, **kwargs)
+
+            return _SameType(name, (base,), {"__init__": __init__, "__module__": base.__module__,
+                                             "__qualname__": base.__qualname__, "__doc__": base.__doc__,
+                                             "_detpy_base": base})
+
         try:
-            # audit G-0510 / G-0179: detpy's own reseed may be what imports numpy.random (numpy loads it lazily);
-            # the OS entropy numpy draws at that import seeds the global RandomState only, which is reseeded on the
-            # next line: it reaches no test, so it is not recorded (it made the first test of every process "os
-            # entropy" and every later one "after an earlier test")
-            with _state.quiet():
-                nprandom = getattr(np, "random", None)
-                if nprandom is None:
-                    raise AttributeError("numpy.random")
-                nprandom.seed(s & 0xFFFFFFFF)
-            if not _numpy_patched and hasattr(np.random, "default_rng"):
-                real = np.random.default_rng
-                patcher.set(np.random, "default_rng", _core.stand_in("default_rng", real, "numpy.random", "default_rng"))
-                _numpy_patched.append(True)
-        except Exception:  # pragma: no cover - exotic numpy builds
+            patcher.set(rnd, name, make(base, name))
+        except TypeError:  # pragma: no cover - a final type in some numpy build
             pass
+    real_seed = rnd.seed
+
+    def seed(seed=None):
+        if seed is None and _state.STATE.nodeid is not None and not _state.is_quiet():
+            seed = _derived("numpy.random.seed") & 0xFFFFFFFF
+        return real_seed(seed)
+
+    patcher.set(rnd, "seed", seed)
+
+
+def _seed_libraries(s: int) -> None:
+    """Global generators of other libraries, when they are loaded (audit G-1527): torch, TensorFlow, Faker (and so
+    factory_boy, which draws through Faker and ``random``). JAX has no global generator (explicit keys)."""
+    mods = sys.modules
+    try:
+        with _state.quiet():
+            torch = mods.get("torch")
+            if torch is not None and hasattr(torch, "manual_seed"):
+                torch.manual_seed(s & 0xFFFFFFFFFFFF)
+            tf = mods.get("tensorflow")
+            if tf is not None and hasattr(getattr(tf, "random", None), "set_seed"):
+                tf.random.set_seed(s & 0x7FFFFFFF)
+            faker = mods.get("faker")
+            fk = getattr(faker, "Faker", None)
+            if fk is not None and hasattr(fk, "seed"):
+                fk.seed(s)
+    except Exception:  # pragma: no cover - a library version with another API: it keeps its own seeding
+        pass
+
+
+_hook_installed: list = []
+
+
+class _SeedOnImport:
+    """``sys.meta_path`` finder: when numpy.random, torch, tensorflow or faker is imported during a test (lazily,
+    inside the test or a library it calls: audit G-1525), its generators are seeded for that test right after the
+    module is loaded, as if it had been loaded before the test started."""
+
+    WATCH = ("numpy.random", "torch", "tensorflow", "faker")
+
+    def __init__(self, patcher: Patcher) -> None:
+        self.patcher = patcher
+        self.busy = False
+
+    def find_spec(self, fullname, path=None, target=None):
+        if fullname not in self.WATCH or self.busy or _state.STATE.nodeid is None:
+            return None
+        import importlib.util
+
+        self.busy = True
+        try:
+            spec = importlib.util.find_spec(fullname)
+        finally:
+            self.busy = False
+        if spec is None or spec.loader is None or not hasattr(spec.loader, "exec_module"):
+            return None
+        loader, hook = spec.loader, self
+
+        class _Loader:
+            def create_module(self, spec):
+                return loader.create_module(spec)
+
+            def exec_module(self, module):
+                if fullname == "numpy.random":
+                    # numpy seeds its global generator from OS entropy while it imports; it is reseeded right after,
+                    # so that read decides nothing (audit G-0179)
+                    with _state.quiet():
+                        loader.exec_module(module)
+                else:
+                    loader.exec_module(module)
+                st = _state.STATE
+                if st.nodeid is not None:
+                    s = _core.derive_seed(st.config.seed, st.nodeid)
+                    if fullname == "numpy.random":
+                        _seed_numpy(hook.patcher, s, module)
+                    else:
+                        _seed_libraries(s)
+
+            def __getattr__(self, name):
+                return getattr(loader, name)
+
+        spec.loader = _Loader()
+        return spec
+
+
+def _install_import_hook(patcher: Patcher) -> None:
+    if _hook_installed:
+        return
+    hook = _SeedOnImport(patcher)
+    sys.meta_path.insert(0, hook)
+    _hook_installed.append(hook)
+
+    def undo() -> None:
+        if hook in sys.meta_path:
+            sys.meta_path.remove(hook)
+        _hook_installed.clear()
+
+    patcher._undo.append((undo, None, None))
 
 
 _hypothesis_patched: list = []

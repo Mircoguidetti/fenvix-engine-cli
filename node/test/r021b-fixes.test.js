@@ -105,6 +105,9 @@ function keepsReuse(runner, dir, file, change) {
 }
 
 before(() => fs.mkdirSync(path.join(TMP, 'r021b-fixes'), { recursive: true }));
+
+/** Whether this Node's fs.promises.readdir (recursive, withFileTypes) follows a link to a directory (Node >= 26). */
+const PROMISES_READDIR_FOLLOWS = Number(process.versions.node.split('.')[0]) >= 26;
 const t = (name, opts, fn) => test(name, ONLY && !ONLY.test(name) ? { ...opts, skip: 'R021BF_ONLY' } : opts, fn);
 
 for (const runner of RUNNERS) {
@@ -149,8 +152,9 @@ for (const runner of RUNNERS) {
   expect(util.inspect(st, { showHidden: true })).toBe(util.inspect(plain, { showHidden: true }));
   expect(Object.keys(st)).toEqual(Object.keys(plain));
   expect(Object.getOwnPropertyDescriptor(st, 'size')).toEqual({ value: 3, writable: true, enumerable: true, configurable: true });
-  expect(structuredClone(st)).toEqual({ ...plain });
-  expect(v8.deserialize(v8.serialize(st))).toEqual({ ...plain });
+  // a clone keeps the string-keyed fields only (Node 26 Stats also carry own symbol fields: partialAtimeNs, ...)
+  expect(structuredClone(st)).toEqual(Object.fromEntries(Object.entries(plain)));
+  expect(v8.deserialize(v8.serialize(st))).toEqual(Object.fromEntries(Object.entries(plain)));
   st.size = 99;
   expect(st.size).toBe(99);
   expect(Object.getOwnPropertyDescriptor(st, 'size').value).toBe(99);
@@ -178,7 +182,17 @@ for (const runner of RUNNERS) {
       });
       fs.symlinkSync('a.txt', path.join(dir, 'data/cur'));
       fs.writeFileSync(path.join(dir, 'ino.txt'), String(fs.lstatSync(path.join(dir, 'data/cur')).ino));
-      noWrongReuse(runner, dir, F('lino'), () => { fs.rmSync(path.join(dir, 'data/cur')); fs.writeFileSync(path.join(dir, 'data/tmp'), ''); fs.symlinkSync('b.txt', path.join(dir, 'data/cur')); });
+      noWrongReuse(runner, dir, F('lino'), () => {
+        // a new link with another inode (a filesystem may hand the freed inode straight back: retry until it differs)
+        const cur = path.join(dir, 'data/cur');
+        const old = fs.lstatSync(cur).ino;
+        fs.rmSync(cur);
+        for (let i = 0; ; i++) {
+          fs.symlinkSync('b.txt', cur);
+          if (fs.lstatSync(cur).ino !== old) break;
+          fs.renameSync(cur, path.join(dir, `data/held${i}`));
+        }
+      });
     });
 
     t('keeps: isFile() of a Stats object does not make its size an input', T, () => {
@@ -272,13 +286,16 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('rcy'), { 'tree/a/g.txt': '' });
     });
 
-    t('keeps: fs.promises.readdir withFileTypes does not follow links: a file added behind one', T, () => {
+    // Node 26 made fs.promises.readdir (recursive, withFileTypes) follow links like readdirSync: there a file added
+    // behind the link changes the result and must not be reused; before 26 it cannot change it and stays reused
+    t(`${PROMISES_READDIR_FOLLOWS ? 'G3' : 'keeps'}: fs.promises.readdir withFileTypes ${PROMISES_READDIR_FOLLOWS ? 'follows' : 'does not follow'} links: a file added behind one`, T, () => {
       const dir = fixture(runner, 'rnofollow', {
         'other/x.json': '{}', 'tree/keep.txt': '',
-        ...tfile(runner, 'rnf', "test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(2); });"),
+        ...tfile(runner, 'rnf', `test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(${PROMISES_READDIR_FOLLOWS ? 3 : 2}); });`),
       });
       fs.symlinkSync('../other', path.join(dir, 'tree', 'link'));
-      keepsReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
+      if (PROMISES_READDIR_FOLLOWS) noWrongReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
+      else keepsReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
     });
 
     // -- G4: code that runs before the runner -------------------------------------------------------------------

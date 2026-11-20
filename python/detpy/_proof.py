@@ -800,8 +800,14 @@ def _dist_infos(root: str, memo_path: str | None = None):
 def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = False) -> tuple[str, dict, list]:
     import sysconfig
 
+    libc = platform.libc_ver()
+    if sys.platform == "darwin":
+        # macOS has no glibc version: its system libraries (libSystem, libc++, libm in the dyld shared cache) change
+        # with the OS release and build, which stand in the libc slot of the key, with the CPU's feature set
+        # (audit G-0156, G-0157 family; Linux keys the glibc version as before)
+        libc = ("macOS", f"{platform.mac_ver()[0]} {os.uname().version} {_core.cpu_features() or ''}")
     state = (sys.version, sys.implementation.cache_tag, sys.executable, sysconfig.get_config_var("LIBDIR"),
-             sysconfig.get_config_var("LDLIBRARY"), platform.system(), platform.machine(), platform.libc_ver(),
+             sysconfig.get_config_var("LDLIBRARY"), platform.system(), platform.machine(), libc,
              os.__file__)
     digest, info, editable = _core.runtime_identity(root, memo_path, _discovery(), state)
     if per_dist:

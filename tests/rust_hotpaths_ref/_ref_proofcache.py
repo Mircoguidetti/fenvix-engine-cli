@@ -1503,8 +1503,14 @@ class Capture:
             # held in a module global) works for whichever test talks to it; that test raises no event. Every test,
             # fixture or collection context that ran during the tree's lifetime (strace -ttt, real clock) gets the
             # tree's inputs and refusals, as the context that started it does.
-            t1 = float("inf") if res.bad and "still running" in res.bad else res.t1
-            targets = [ctx] + sorted(self._contexts_during(res.t0, t1) - {ctx})
+            still = bool(res.bad and "still running" in res.bad)
+            t1 = float("inf") if still else res.t1
+            # the tree lives from its spawn (real clock), not from strace's first logged system call
+            started = getattr(sp, "started", None)
+            t0 = res.t0
+            if started is not None and (t0 is not None or still):
+                t0 = started if t0 is None else min(t0, started)
+            targets = [ctx] + sorted(self._contexts_during(t0, t1) - {ctx})
             res.late = self._changed_after_start(res)
             for c in targets:
                 self._credit_child(c, sp, res)

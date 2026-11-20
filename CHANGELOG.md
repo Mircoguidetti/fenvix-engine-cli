@@ -1,0 +1,32 @@
+# Changelog
+
+All notable changes of the fenvix engine. One version for every component (`release/version.py`: Cargo.toml,
+`detpy/_version.py`, `node/package.json`). The engine ships as one artifact per trunk build,
+`fenvix-engine-<version>-r<run>.<sha7>-linux-x86_64.tar.gz`, published by `.github/workflows/release-1.yml`
+(docs/INSTALL.md). The format follows Keep a Changelog; versions follow Semantic Versioning.
+
+## [Unreleased]
+
+## [0.1.0]
+
+First versioned engine artifact.
+
+### Added
+- The engine artifact for our machines: Linux x86_64 with glibc 2.28+ (manylinux_2_28, built with zig), one
+  reproducible tarball with its sha256, a manifest of every file (`VERSION.json`) and an installer (`install.sh`);
+  built, install-tested in clean containers (AlmaLinux 8 / glibc 2.28, Debian 12, Debian 13) and published as a
+  GitHub pre-release on every merge into the trunk.
+- The wheel `fenvix` (`cp312-abi3-manylinux_2_28_x86_64`): pytest plugin, `python -m detpy` runners and the single
+  `fenvix` command (`--version`, `version`, `doctor`, `python`, `python-runner`, `node`, `verify`, `detect`).
+- `fenvix` / `detjs` Node commands answer `--version` and `--help`, name an unknown runner, and print a user error
+  without a JavaScript stack.
+- `detpy_core::host`: the loaded images, CPU features and live children of the process, from `/proc` on Linux (and
+  from the OS's own interfaces on macOS, which the engine does not ship for).
+
+### Changed
+- Supported interpreters: CPython 3.12, 3.13, 3.14 (`Requires-Python >=3.12`, stable ABI 3.12); older ones,
+  free-threaded builds and other implementations are refused with one message and exit code 4 by the installer,
+  `pytest --det`, `python -m detpy` and the commands, never with a traceback.
+- pytest 8.1+ is required (8.0 broke `--det-isolate` on unittest classes); pytest-xdist older than 3.7 under
+  `--det -n` is a usage error naming the version.
+- Unsupported platforms (macOS, arm64, musl, glibc < 2.28, Windows) get one message naming the supported one.

@@ -11,9 +11,6 @@ name: fenvix-demo
 # default branch). See docs/RUNNER-PROTOTYPE.md.
 
 on:
-  push:
-    branches: [claude/runner-prototype-ee21he]
-    paths: [".github/workflows/fenvix-demo*.yml", "runner/**"]
   workflow_dispatch:
     inputs:
       target: {description: "public pytest project (owner/repo)", default: "pygments/pygments"}

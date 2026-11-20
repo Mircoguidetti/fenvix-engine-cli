@@ -3,26 +3,54 @@ requires = ["maturin>=1.5,<2"]
 build-backend = "maturin"
 
 [project]
-name = "detpy"
-version = "0.1.0"
-description = "Deterministic execution of Python tests (Level 0) with execution fingerprints"
-readme = "README.md"
-requires-python = ">=3.9"
-license = { text = "MIT" }
-dependencies = ["pytest>=7"]
-classifiers = ["Framework :: Pytest", "Programming Language :: Rust", "Programming Language :: Python :: 3"]
+# The distribution is `fenvix`. The import package stays `detpy` (pytest plugin `detpy.plugin`,
+# `python -m detpy`); the PyPI name `detpy` belongs to another project and is never used (audit G-0170).
+name = "fenvix"
+dynamic = ["version"]  # from Cargo.toml [workspace.package] version (release/version.py keeps every manifest equal)
+description = "Deterministic CI test runs: reproducible flaky tests, nightly exploration, skip with proof (pytest plugin and runners)"
+readme = "python/README.md"
+requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "fenvix" }]
+keywords = ["pytest", "flaky tests", "deterministic", "test cache", "ci"]
+dependencies = ["pytest>=8.1"]  # 8.0: --det-isolate breaks unittest classes (G-0171)
+classifiers = [
+  "Framework :: Pytest",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Testing",
+  "Programming Language :: Rust",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: MacOS",
+]
+
+[project.optional-dependencies]
+xdist = ["pytest-xdist>=3.7"]
+
+[project.urls]
+Homepage = "https://fenvix.dev"
+Changelog = "https://github.com/Mircoguidetti/fenvix-engine-cli/blob/claude/release-1/CHANGELOG.md"
 
 [project.entry-points.pytest11]
 detpy = "detpy.plugin"
 
 [project.scripts]
 detpy = "detpy.cli:main"
+fenvix = "detpy.fenvix:main"
 
 [tool.maturin]
 manifest-path = "crates/detpy-py/Cargo.toml"
 python-source = "python"
 module-name = "detpy._core"
 features = ["pyo3/extension-module"]
+include = [{ path = "LICENSE", format = "sdist" }]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

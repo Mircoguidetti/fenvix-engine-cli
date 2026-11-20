@@ -170,8 +170,10 @@ def test_child_through_a_proxy_named_by_a_loopback_hostname_is_never_cached(pyte
             out = subprocess.run(["curl", "-s", "http://service.example/"], capture_output=True, text=True)
             assert out.stdout == "ok"
         """})
-    run_cache()
-    r, reused, data = run_cache()
+    # claude/verifier-cli (audit G-1520): under --det a child process meets the closed network (its proxy variables
+    # point at a closed port); the network is open to it in record mode, which this case needs
+    run_cache("--det-record")
+    r, reused, data = run_cache("--det-record")
     r.assert_outcomes(passed=1)
     assert reused == set()
     assert nc(data)["test_m.py::test_curl"] == "subprocess"
@@ -196,12 +198,12 @@ def test_child_still_running_at_the_end_is_never_cached(pytester, run_cache):
     run_cache()
     _, reused, data = run_cache()
     assert reused == ids("test_plain")
-    # test_after is never cached: by the carried rule, or (a loaded machine: the daemon's exec lands after test_daemon
-    # ended) because the process ran while it did; both refuse it (py-cache: CI and a loaded container saw the second)
-    why = nc(data)["test_m.py::test_after"]
-    assert why.startswith("after an earlier test or fixture of this process: ") or (
-        why == "subprocess" and "still running" in data["cache"]["not_cached_where"]["test_m.py::test_after"]), why
-    assert "still running" in data["cache"]["not_cached_where"]["test_m.py::test_daemon"]
+    # the daemon lives from its spawn on, so test_after ran during its lifetime and gets its refusal as its own
+    # (review R-009 F1), whatever the tracer's start-up latency: strace's first logged system call of the child may
+    # come after test_after ended (it did on a fast machine, not on CI), and the reason was then only the carried one
+    assert nc(data)["test_m.py::test_after"] == "subprocess"
+    for t in ("test_daemon", "test_after"):
+        assert "still running" in data["cache"]["not_cached_where"][f"test_m.py::{t}"]
 
 
 def test_child_reading_proc_is_never_cached(pytester, run_cache):

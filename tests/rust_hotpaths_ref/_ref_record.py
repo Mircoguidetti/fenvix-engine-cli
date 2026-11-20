@@ -506,14 +506,18 @@ def _merge_data(into: dict, new: dict) -> None:
         into[k] = v
 
 
+# record.rs STATS_PER_DIR
+STATS_PER_DIR = 32
+
+
 def _compact(data: dict, base: dict, root: str) -> list:
     """record_session's compaction of existence checks: the base's checks (global and carried) as one set, the test's
     own as another; a base check the test replaced (a stronger read, another kind) is dropped from the base's."""
     stats = [k for k, v in data.items() if v.startswith("s:")]
-    if len(stats) < 8:
+    if len(stats) < STATS_PER_DIR:
         return sorted(data.items())
     base_s = sorted((k, v) for k, v in base.items() if v.startswith("s:"))
-    shared = base_s if len(base_s) < 8 else _core.compact_stats(base_s, root, 8)
+    shared = base_s if len(base_s) < STATS_PER_DIR else _core.compact_stats(base_s, root, STATS_PER_DIR)
     rest, own, overridden = [], [], set()
     for k, v in data.items():
         if not v.startswith("s:"):
@@ -526,7 +530,7 @@ def _compact(data: dict, base: dict, root: str) -> list:
             overridden.add(k)
             own.append((k, v))
     own = sorted(own)
-    own_c = own if len(own) < 8 else _core.compact_stats(own, root, 8)
+    own_c = own if len(own) < STATS_PER_DIR else _core.compact_stats(own, root, STATS_PER_DIR)
     merged = {k: v for k, v in shared if k not in overridden}
     merged.update(own_c)
     merged.update(rest)
