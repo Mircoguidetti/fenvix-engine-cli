@@ -423,3 +423,26 @@ for (const runner of RUNNERS) {
     assert.equal(r.status, 0, show(r));
   });
 }
+
+// G-0126: environment variables read by a test are events (`env.get NAME=<digest>`): two runs that differ only in a
+// variable the test read are not identical, and the verifier names the variable; values never reach the trace.
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0126 environment reads are recorded; a different value diverges`, T, () => {
+    const dir = proj(runner, 'env', {
+      a: "test('reads a flag', () => { expect(typeof (process.env.P041_FLAG || '')).toBe('string'); });\ntest('reads nothing', () => { expect(1).toBe(1); });",
+    });
+    const r1 = run(runner, dir, [], { cache: false, env: { P041_FLAG: 'secret-one' } });
+    assert.equal(r1.status, 0, show(r1));
+    fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, 'one.jsonl'));
+    const text = fs.readFileSync(path.join(dir, 'one.jsonl'), 'utf8');
+    assert.match(text, /"env\.get"/);
+    assert.ok(!text.includes('secret-one'), 'values never reach the trace');
+    const r2 = run(runner, dir, [], { cache: false, env: { P041_FLAG: 'secret-two' } });
+    assert.equal(r2.status, 0, show(r2));
+    const rep = JSON.parse(native.verify([path.join(dir, 'one.jsonl'), path.join(dir, '.detjs', 'trace.jsonl')]));
+    const bad = rep.tests.filter((t) => t.status !== 'stable' && t.status !== 'covered');
+    assert.ok(rep.summary.stable < rep.summary.tests, JSON.stringify(rep.summary));
+    assert.ok(JSON.stringify(rep).includes('P041_FLAG'), 'the variable is named');
+    assert.ok(bad.length >= 1);
+  });
+}

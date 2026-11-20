@@ -1516,21 +1516,23 @@ function installEnv(cap, proc) {
     value: function inspectEnv() { cap.env('*'); return real; },
     writable: true, enumerable: false, configurable: true,
   });
+  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126)
   const handler = {
     get(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.get(real, k);
     },
     has(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.has', k, real); }
       return Reflect.has(real, k);
     },
     getOwnPropertyDescriptor(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.getOwnPropertyDescriptor(real, k);
     },
     ownKeys() {
       cap.env('*');
+      if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', real);
       return Reflect.ownKeys(real);
     },
     set(_t, k, v) { real[k] = v; return true; },
@@ -1545,6 +1547,34 @@ function installEnv(cap, proc) {
     proc.env = p;
     if (proc.env !== p) realDefine(proc, 'env', { value: p, writable: true, configurable: true, enumerable: true });
   } catch { cap.notes.add('process.env not replaceable: environment reads not captured'); }
+}
+
+/**
+ * Level 0 without the cache (`--det`): the same recording environment object, its reads reported to STATE.onEnvRead
+ * only. With the cache on, the capture's own object is already in place and reports them as well.
+ */
+const LEVEL0_CAP = { env() {}, notes: new Set() };
+let level0CloneRetry = false;
+function installLevel0Env(proc) {
+  if (!proc || !proc.env) return;
+  installEnv(LEVEL0_CAP, proc);
+  if (level0CloneRetry) return;
+  level0CloneRetry = true;
+  installCloneRetry(LEVEL0_CAP);
+  const g = globalThis;
+  if (typeof g.structuredClone === 'function' && !g.structuredClone.__detjsCache) {
+    const real = g.structuredClone;
+    const sc = function structuredClone(v, ...rest) {
+      try { return real.call(this, v, ...rest); } catch (err) {
+        const u = unproxyEnv(LEVEL0_CAP, v);
+        if (u === v) throw err;
+        return real.call(this, u, ...rest);
+      }
+    };
+    realDefine(sc, '__detjsCache', { value: true });
+    realDefine(sc, 'length', { value: real.length, configurable: true });
+    try { realDefine(g, 'structuredClone', { ...realGOPD(g, 'structuredClone'), value: sc }); } catch { /* keep */ }
+  }
 }
 
 /** `v` with every recording environment Proxy in it replaced by the environment it stands for (null if none). */
@@ -2190,4 +2220,4 @@ function installLoaderHooks(cap, resolveOnly = false) {
 const KEY = Symbol.for('detjs.cache.capture');
 const CAPTURE = globalThis[KEY] || (globalThis[KEY] = new Capture());
 
-module.exports = { CAPTURE, Capture, machineFacts, installEnv, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };
+module.exports = { CAPTURE, Capture, machineFacts, installEnv, installLevel0Env, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };
