@@ -24,13 +24,15 @@ function modelInfo(dm, name) {
   if (!m.__detjs) {
     const now = [];
     const upd = [];
+    const gen = [];
     const rel = new Map();
     for (const f of m.fields || []) {
       if (f.kind === 'scalar' && f.default && f.default.name === 'now') now.push(f.name);
+      if (f.kind === 'scalar' && f.default && GEN.has(f.default.name)) gen.push([f.name, f.default.name, f.default.args || []]);
       if (f.isUpdatedAt) upd.push(f.name);
       if (f.kind === 'object') rel.set(f.name, f.type);
     }
-    Object.defineProperty(m, '__detjs', { value: { now, upd, rel } });
+    Object.defineProperty(m, '__detjs', { value: { now, upd, gen, rel } });
   }
   return m.__detjs;
 }
@@ -42,7 +44,44 @@ function fillCreate(dm, model, data, t) {
   if (!mi) return;
   for (const f of mi.now) if (data[f] === undefined) data[f] = new Date(t);
   for (const f of mi.upd) if (data[f] === undefined) data[f] = new Date(t);
+  for (const [f, kind, args] of mi.gen) if (data[f] === undefined) data[f] = genId(kind, args, t);
   nested(dm, mi, data, t);
+}
+
+// Ids Prisma's engine would generate (cuid from time, process id and a counter; uuid; nanoid; ulid): drawn from the
+// process's own randomness instead (seeded per test in the runner, per message in app servers), same formats.
+const GEN = new Set(['cuid', 'uuid', 'nanoid', 'ulid']);
+function rand(n) {
+  const b = new Uint8Array(n);
+  globalThis.crypto.getRandomValues(b);
+  return b;
+}
+function genId(kind, args, t) {
+  if (kind === 'uuid') return globalThis.crypto.randomUUID();
+  if (kind === 'cuid') {
+    const a = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const b = rand(24);
+    let s = 'c';
+    for (let i = 0; i < 24; i++) s += a[b[i] % 36];
+    return s;
+  }
+  if (kind === 'nanoid') {
+    const n = Number(args && args[0]) || 21;
+    const a = 'useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict';
+    const b = rand(n);
+    let s = '';
+    for (let i = 0; i < n; i++) s += a[b[i] & 63];
+    return s;
+  }
+  // ulid: 10 characters of time, 16 of randomness (Crockford base32)
+  const a = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+  let ts = Math.floor(t);
+  let head = '';
+  for (let i = 0; i < 10; i++) { head = a[ts % 32] + head; ts = Math.floor(ts / 32); }
+  const b = rand(16);
+  let tail = '';
+  for (let i = 0; i < 16; i++) tail += a[b[i] & 31];
+  return head + tail;
 }
 
 function fillUpdate(dm, model, data, t) {

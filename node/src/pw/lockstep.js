@@ -1199,7 +1199,13 @@ class Coordinator {
       this.sched.setDeadline('servers', srvNext);
       this.sched.setWaiting('servers', false); // only the runner's wait moves time (see runnerState)
       if (this.multi) {
-        const ra = await this.sched.nextAsync(rs.state === 'waiting');
+        // The question is withdrawn when this worker's test ends meanwhile (its end must be recorded and flushed).
+        const ask = this.sched.nextAsync(rs.state === 'waiting');
+        let ra = null;
+        while (!ra) {
+          ra = await Promise.race([ask.promise, realSleep(20).then(() => null)]);
+          if (!ra && (this.clock.sync() !== key || this.remoteActions.length)) { this.sched.unask(ask.seq); ra = { kind: 'again' }; }
+        }
         if (ra.kind === 'again') continue;
         if (ra.kind !== 'idle') {
           if (ra.kind === 'advance') { this.trace(`advance to=${ra.toNs / NS} (hub)`); this.stats.advances++; this.flushWindow(); this.saveClock(); if (this.responses.length) await this.deliverResponses(); for (const p of this.pages) this.grant(p, ra.toNs); continue; }
@@ -1256,6 +1262,8 @@ class Coordinator {
   /** A hub action for this worker (point 3): a release (possibly held by the hub for its latency), or the delivery of
    * a message the hub held. */
   applyRemote(ra, key) {
+    if (ra.kind === 'advance') { for (const p of this.pages) this.grant(p, ra.toNs); return; } // a late answer
+    if (ra.kind === 'again' || ra.kind === 'idle') return;
     const m = this.msgs.get(ra.id);
     if (ra.kind === 'release' || ra.kind === 'released') {
       this.sched.released(ra.id);

@@ -146,9 +146,10 @@ function start(opts) {
           case 'deadline': (s.names = s.names || new Set()).add(`${m.name}@${w}`); sched.setDeadline(`${m.name}@${w}`, m.ns === null ? null : m.ns); break;
           case 'waiting': (s.names = s.names || new Set()).add(`${m.name}@${w}`); sched.setWaiting(`${m.name}@${w}`, !!m.on); break;
           case 'next':
-            s.ask = { waiting: !!m.waiting, reply: (action) => send(w, { op: 'action', seq: m.seq, action }) };
+            s.ask = { seq: m.seq, waiting: !!m.waiting, reply: (action) => send(w, { op: 'action', seq: m.seq, action }) };
             decide();
             break;
+          case 'unask': if (s.ask && s.ask.seq === m.seq) s.ask = null; break;
           default: break;
         }
       }
@@ -210,7 +211,14 @@ class RemoteScheduler {
   active(on) { this.write({ op: 'active', on: !!on }); }
   nextAsync(waiting) {
     const seq = ++this.seq;
-    return new Promise((resolve) => { this.waitingFor.set(seq, resolve); this.write({ op: 'next', seq, waiting: !!waiting }); });
+    const promise = new Promise((resolve) => { this.waitingFor.set(seq, resolve); this.write({ op: 'next', seq, waiting: !!waiting }); });
+    return { seq, promise };
+  }
+
+  /** Withdraw a question (the worker's test ended meanwhile); a late answer goes to onAction. */
+  unask(seq) {
+    this.waitingFor.delete(seq);
+    this.write({ op: 'unask', seq });
   }
 }
 
