@@ -79,6 +79,25 @@ True now:
   nothing was reused. Fixed in `detpy/runners/driver.py` (the state directory is marked before the capture starts);
   both tests are the regression tests, neither skipped nor xfailed (MEASURED locally: with the write after the capture
   2 failed / 30 passed, after the fix 32 passed). The pytest plugin already wrote it before its capture.
+- **Runner suites on CPython 3.14** (full run 44763521026, 33 failures in the runner environment):
+  - nose2 `test_wrong_reuse[optional_module_appears]`: a precision defect of the engine. On 3.14
+    `pathlib.Path.exists` is a kind check, so nose2's fixed probes of its start directory at every session
+    (`__init__.py`, `.pyc`, `.pyo`, `lib`, `src`, `conftest.py`, `nose2.cfg`, `unittest.cfg`, `pyproject.toml`:
+    nine, MEASURED from the recorded entry) crossed the per-directory compaction threshold of 8; every test then
+    depended on the whole listing of `tests/`, and one new test module invalidated the whole suite. Fixed:
+    `STATS_PER_DIR` 8 → 32 (`detpy_core::record`, and the Python reference `_ref_record.py`); regression test
+    `record::tests::a_runner_start_directory_probes_stay_per_name`; `test_many_existence_checks_in_one_directory_are_one_dependency`
+    now proves the compaction with 60 checks. Locally on 3.14: nose2, Django, zope, django_order,
+    django_pytest_cache 111 passed / 1 skipped.
+  - ward (32 tests): **explicit exclusion on 3.14** (coordinator decision). ward 0.68.0b0, its newest release,
+    does not run on CPython 3.14 at all, without fenvix (MEASURED on 3.14.6, `ward` in a one-test project):
+    `AttributeError: module 'textwrap' has no attribute '_leading_whitespace_re'` (from `ward/_rewrite.py`, line 99),
+    exit 1. `python -m detpy ward` now refuses there before anything runs, with one sentence and exit 4
+    (a capability check on `textwrap`, not a version check): "detpy ward: error: ward 0.68.0b0 does not run on Python
+    3.14.6: it uses textwrap._leading_whitespace_re, which this Python no longer has (plain `ward` stops the same
+    way). Run ward suites on CPython 3.12 or 3.13" (MEASURED). Test `test_runners_ward_support.py` asserts it on
+    every interpreter (for real on 3.14, with the name removed in a child on 3.12/3.13); the ward suite runs where
+    ward runs (3.12, 3.13). textwrap is not patched.
 - Install test on 3.12 (glibc 2.28, pytest 8.1), 3.13, 3.14.
 - **Below 3.12: refused, never a crash** (`detpy/_support.py`, decided before the native core is imported):
   `install.sh` exits 4 with "fenvix: needs CPython 3.12, 3.13 or 3.14 (default build); … is cpython 3.11"; a copy
@@ -180,6 +199,10 @@ where known).
 | G-2172 npm package fields | OUT | no npm package (founder decision) |
 | G-2177, G-2194 state directories dirty the checkout | FIXED | `test_state_directory_keeps_the_checkout_clean`, `platform.test.js` (.detjs) |
 | PY-03 ward tests red once ward is installed (caused by the G-2194 fix in the runner driver) | FIXED | `test_runners_ward.py::test_module_and_global_fixture_reads_are_inputs_of_their_users`, `::test_a_suite_run_inside_a_test_is_that_tests_code` |
+| PY-01/PY-03 nose2 on 3.14: a new test module invalidates the whole suite | FIXED | `test_runners_nose2.py::test_wrong_reuse[optional_module_appears]` on 3.14, `record::tests::a_runner_start_directory_probes_stay_per_name` |
+| PY-01/PY-03 ward on 3.14 (ward itself crashes) | REFUSED (explicit exclusion) | `test_runners_ward_support.py::test_ward_refused_with_one_sentence_where_ward_cannot_run[*]` |
+| suite determinism: a followed child's lifetime started at strace's first logged call (tracer latency decided which later tests got its refusal; `test_child_still_running_at_the_end_is_never_cached` on 3.14, `test_clock_rust::test_cache_matches_reference` locally) | FIXED | `follow.Spawn.started` (real clock at the spawn) in `collect_children` and its reference; `test_proofcache_follow.py::test_child_still_running_at_the_end_is_never_cached` expects the deterministic outcome |
+| suite determinism: `test_clock_rust::test_wall_derived_and_gettime_match_reference` compared two real CPU-clock readings (clock id -7 is this process's CPU clock on Linux) | FIXED | the test compares negative clock ids by kind, as the named CPU clocks |
 | G-0205, G-0242, G-0561 default branch is a Block 2 tip | FIXED (by the founder) | default branch `claude/release-1` (MEASURED via the repository API, 2026-11-20); section 4 |
 | G-0522, G-1439 names unregistered | FOUNDER / OUT | PyPI `fenvix` reserved by the founder's pending publisher; npm dropped |
 | G-0155, G-0156, G-0157, G-0158, G-0472..G-0477, G-0492..G-0495, G-0415, G-0416, G-0255, G-0526, G-0527, G-0441..G-0443, G-0723, G-1500..G-1506 macOS and Linux arm64 | OUT | founder decision; the Node loader names the supported platform; `detpy_core::host` keeps the loaded-image list of Linux in one place |
@@ -197,8 +220,10 @@ where known).
 | G-1493, G-1494, G-1495 Go pid, gVisor, Docker-in-Docker | OUT / OTHER ROW | |
 | G-1503 replay across operating systems | OUT | |
 
-Trunk failures not in these rows (coordinator's assignment): `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs`
-(Python cache session), `test_repro_rust.py::test_prefix_through_matches_reference` on 3.14 (verifier session).
+Trunk failures not in these rows: `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs` (fixed
+by PR #4), `test_repro_rust.py::test_prefix_through_matches_reference` on 3.14 (MEASURED: fails on the trunk itself,
+run 44714888645, job 136217550170, the same assertion: `'missing::x' is not in list` against the reference's
+`list.index(x): x not in list`; the verifier session's row).
 
 ## 4. Per il fondatore (passi da fare a mano)
 

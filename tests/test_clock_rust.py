@@ -833,7 +833,10 @@ def test_wall_derived_and_gettime_match_reference(ref, capture):
         return (res[0], type(res[1])) if res[0] == "ok" else res, st
 
     for name, args in cases:
-        view = kind_only if args and type(args[0]) is int and args[0] in real_ids else (lambda r: r)
+        # a negative id is a CPU-time clock of a process or thread on Linux (-7: this process's user time,
+        # (~0 << 3) | CPUCLOCK_VIRT), real like the named ones: two readings agree only until its tick advances
+        view = (kind_only if args and type(args[0]) is int and (args[0] in real_ids or args[0] < 0)
+                else (lambda r: r))
         _both(ref, getattr(clock, name), getattr(ref, name), *args, _view=view)
     for kw in ({"secs": 5}, {"t": time.gmtime(0)}, {"fmt": "%Y"}, {"clk_id": 0}, {"x": 1}):
         for name in ("localtime", "asctime", "strftime", "clock_gettime"):

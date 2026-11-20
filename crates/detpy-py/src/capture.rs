@@ -2742,6 +2742,15 @@ impl CaptureCore {
             let bad = res.getattr("bad")?;
             let still = bad.is_truthy()? && w_any(&bad).map(|b| contains(&b, b"still running")).unwrap_or(false);
             let t0r: Option<f64> = res.getattr("t0")?.extract()?;
+            // the tree lives from its spawn (real clock, follow.Spawn.started), not from the first system call strace
+            // logged, which can come after later contexts already ended: which contexts overlap it must not depend on
+            // the tracer's start-up latency
+            let started: Option<f64> = sp.getattr("started").ok().and_then(|v| v.extract().ok());
+            let t0r = match (t0r, started) {
+                (Some(a), Some(s)) => Some(a.min(s)),
+                (None, Some(s)) if still => Some(s),
+                (t, _) => t,
+            };
             let t1r: Option<f64> = if still { Some(f64::INFINITY) } else { res.getattr("t1")?.extract()? };
             let mut others: Vec<usize> = me._contexts_during(t0r, t1r).into_iter().filter(|&c| c != ctx).collect();
             others.sort_unstable();

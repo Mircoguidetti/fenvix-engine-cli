@@ -41,6 +41,7 @@ from . import _core
 
 # real clocks, bound before Level 0 virtualises the time module (waiting for a tracer is real waiting)
 _mono = _time_mod.monotonic
+_real_time = _time_mod.time
 _sleep = _time_mod.sleep
 
 STRACE_TRACE = ("%file,getdents,getdents64,chdir,fchdir,connect,sendto,sendmsg,bind,getrandom,"
@@ -127,12 +128,15 @@ _tls = threading.local()
 
 
 class Spawn:
-    __slots__ = ("ctx", "prefix", "cwd", "exe", "argv", "detail", "clock_exempt")
+    __slots__ = ("ctx", "prefix", "cwd", "exe", "argv", "detail", "clock_exempt", "started")
 
-    def __init__(self, ctx, prefix, cwd, exe, argv, detail, clock_exempt=False):
+    def __init__(self, ctx, prefix, cwd, exe, argv, detail, clock_exempt=False, started=None):
         self.ctx, self.prefix, self.cwd, self.exe, self.argv, self.detail = ctx, prefix, cwd, exe, argv, detail
         # ctypes.util.find_library's helpers: their result is a library path matched in their output
         self.clock_exempt = clock_exempt
+        # the real clock when the spawn was asked for: the tree lives from here, even before strace logs its first
+        # system call (which can come after later tests already ended; the contexts it overlaps get its refusals)
+        self.started = started
 
 
 class Result:
@@ -318,7 +322,8 @@ class Follower:
             return args
         self.n += 1
         prefix = os.path.join(self.logdir, f"s{os.getpid()}-{self.n}")
-        self.spawns.append(Spawn(ctx, prefix, cwd, exe, [os.fsdecode(a) for a in argv], detail, clock_exempt))
+        self.spawns.append(Spawn(ctx, prefix, cwd, exe, [os.fsdecode(a) for a in argv], detail, clock_exempt,
+                                 _real_time()))
         argv0 = os.fsdecode(argv[0]) if argv else exe
         new_argv = [self.exe, "-DDD", "-ff", "-q", "-y", "-ttt", "-s", "1", "--seccomp-bpf", "-e",
                     "trace=" + STRACE_TRACE, "-e", "signal=none", "-o", prefix, "--argv0", argv0, "--", exe,
