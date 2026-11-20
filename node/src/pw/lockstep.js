@@ -619,7 +619,31 @@ class Coordinator {
     // Exact request barrier (round 4): the renderer announces every request it starts (Network.requestWillBeSent)
     // on this session before it answers a later Runtime.evaluate; the engine waits until as many requests reached
     // its route handler. Parser-started requests (scripts, styles) are covered, which the page counters were not.
-    cdp.on('Network.requestWillBeSent', (e) => { if (e && e.request && /^https?:/.test(e.request.url)) { p.issued++; activity(); } });
+    // Per request (CDP request id): a request is open until it reached the route handler (matched by URL, oldest
+    // first), or ended without reaching it: served from a cache, or failed/cancelled before interception (found on
+    // documenso: preloads served from the memory cache or cancelled kept the barrier open for its 3 s timeout at
+    // every step).
+    p.open = new Map(); // requestId -> url (announced, not routed, not ended)
+    p.early = new Map(); // url -> routed before announced
+    const unroute = (id) => { if (p.open.delete(id)) { p.issued--; activity(); this.poke(); } };
+    // Only requests that drive the page's code are waited for: scripts, styles, fetch/XHR. Navigations have their
+    // own accounting (navigation marks, p.navs); fonts and images may be started late by the renderer or not
+    // intercepted at all (found on documenso: a preloaded web font and a redirected document held the barrier).
+    const BARRIER_TYPES = new Set(['Script', 'Stylesheet', 'Fetch', 'XHR']);
+    cdp.on('Network.requestWillBeSent', (e) => {
+      if (!(e && e.request && /^https?:/.test(e.request.url))) return;
+      if (!BARRIER_TYPES.has(e.type)) return;
+      if (e.redirectResponse && p.open.has(e.requestId)) unroute(e.requestId); // the previous hop is over
+      // The route event can reach the engine before this announcement (two sessions): matched here then.
+      const n = p.early.get(e.request.url) || 0;
+      if (n > 0) { if (n === 1) p.early.delete(e.request.url); else p.early.set(e.request.url, n - 1); return; }
+      p.open.set(e.requestId, e.request.url);
+      p.issued++; activity();
+    });
+    cdp.on('Network.requestServedFromCache', (e) => unroute(e.requestId));
+    cdp.on('Network.loadingFailed', (e) => unroute(e.requestId));
+    cdp.on('Network.loadingFinished', (e) => unroute(e.requestId));
+    cdp.on('Network.responseReceived', (e) => { if (e && e.response && (e.response.fromDiskCache || e.response.fromPrefetchCache || e.response.fromServiceWorker)) unroute(e.requestId); });
     try { ACT.ownDepth++; await cdp.send('Network.enable', { maxTotalBufferSize: 0, maxResourceBufferSize: 0 }); } catch { /* ignore */ } finally { ACT.ownDepth--; }
     cdp.on('Emulation.virtualTimeBudgetExpired', () => {
       if (!p.inBudget) return;
@@ -692,9 +716,18 @@ class Coordinator {
   }
 
   /** Any request of `page` reached the route handler. */
-  routedAny(page) {
+  routedAny(page, url) {
     const p = this.pageState(page);
-    if (p) { p.routedAll++; activity(); this.poke(); }
+    if (!p) return;
+    if (url && p.open) {
+      const bare = url.split('#')[0];
+      for (const [id, u] of p.open) if (u === bare || u === url) { p.open.delete(id); p.issued--; activity(); this.poke(); return; }
+      // Not announced yet (or never: a worker's request, or a type the barrier does not wait for): kept briefly.
+      p.early.set(bare, (p.early.get(bare) || 0) + 1);
+      if (p.early.size > 500) p.early.clear();
+      return;
+    }
+    p.routedAll++; activity(); this.poke();
   }
 
   /** A request with no page reached the route handler: a service worker's fetch. A page request the worker answers
@@ -707,11 +740,12 @@ class Coordinator {
   /** Request barrier: every request a page announced reached the engine, directly or through a service worker. */
   barrierMet() {
     let deficit = 0;
-    for (const p of this.pages) if (!p.closed && p.routedAll < p.issued) deficit += p.issued - p.routedAll;
+    const open = (p) => (p.open ? p.open.size : Math.max(0, p.issued - p.routedAll));
+    for (const p of this.pages) if (!p.closed) deficit += open(p);
     if (deficit === 0) return true;
     if (!(this.swCredit >= deficit)) return false;
     this.swCredit -= deficit;
-    for (const p of this.pages) if (!p.closed && p.routedAll < p.issued) p.routedAll = p.issued;
+    for (const p of this.pages) if (!p.closed) { if (p.open) { p.open.clear(); p.issued = 0; } else p.routedAll = p.issued; }
     return true;
   }
 
@@ -927,6 +961,9 @@ class Coordinator {
     while ((routed() < started || !this.barrierMet()) && realNow() - t < this.probeMaxMs) {
       this.stats.probeWaits++;
       await realSleep(2);
+    }
+    if (realNow() - t >= this.probeMaxMs && ENV.DETJS_LS_TRACE) {
+      this.trace(`probe-timeout routed=${routed()} started=${started} open=${[...this.pages].map((p) => (p.open ? [...p.open.values()].map((u) => u.slice(-50)).join(' ') : '-'))}`);
     }
   }
 

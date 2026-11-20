@@ -508,6 +508,7 @@ function patchServer(proto) {
 
 if (install()) {
   if (SCOPE) installScope();
+  if (SCOPE) require('../prisma').install(); // @default(now()) / @updatedAt in JS (engine clock), not Prisma's native clock
   if (LOCKSTEP && SCOPE) {
     if (process.env.DETJS_LS_OUTBOUND !== '0') installOutbound();
     clockMod.setLockstep({ on: true, now: nowNs, runIn: (ctx, fn) => MSG.run(ctx, fn) });

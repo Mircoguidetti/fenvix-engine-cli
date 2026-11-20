@@ -45,7 +45,8 @@ const LOCKSTEP = ENV.DETJS_PW_LOCKSTEP !== '0' && ENV.DETJS_PW_VTIME !== 'off';
 const lockstep = require('./lockstep');
 // The driver's own clock is the real one, captured before the test code's clock is made virtual (round 2: a
 // virtual Date.now() here stalled the paced virtual-time grants: found on uptime-kuma).
-const realNow = Date.now.bind(Date);
+// Real elapsed time from the monotonic clock: Date may be frozen by libfaketime (documenso harness) or virtual.
+const realNow = require("./runner-clock").REAL.perfNow;
 // The engine's own timers are real ones (lockstep makes the globals virtual inside tests).
 const { REAL: REAL_TIMERS } = require('./runner-clock');
 const setTimeout = REAL_TIMERS.setTimeout;
@@ -388,7 +389,7 @@ async function routeHandlerInner(route, request, uncount = () => {}) {
   if (LS) {
     let pg = null;
     try { pg = request.frame().page(); } catch { pg = null; }
-    if (pg) LS.routedAny(pg);
+    if (pg) LS.routedAny(pg, request.url());
     else if (typeof request.serviceWorker === 'function' && request.serviceWorker()) LS.routedServiceWorker();
   }
   const key = currentKey();
@@ -1313,6 +1314,15 @@ function patchBrowserType(bt) {
       // later time slice: compile on the main thread (V8 single-threaded, no script streaming).
       ...(ENV.DETJS_LS_V8_SINGLE === '1' ? ['--js-flags=--single-threaded'] : []), // off by default: it crashes WebAssembly-heavy apps (actual)
       '--disable-features=LocalNetworkAccessChecks,BlockInsecurePrivateNetworkRequests,PrivateNetworkAccessSendPreflights,ScriptStreaming,ScriptStreamingForNonHTTP,ScriptStreamingForInlineScripts,OffMainThreadCSSPaintImageGeneration'] };
+    // A runner under libfaketime (documenso harness: native code such as Prisma's query engine on the engine clock)
+    // does not hand the preload to the browser: Chromium keeps the machine's clocks (its time is virtual anyway).
+    if (process.env.LD_PRELOAD && /faketime/.test(process.env.LD_PRELOAD)) {
+      const env = { ...(opts.env || process.env) };
+      env.LD_PRELOAD = String(env.LD_PRELOAD || '').split(/[: ]/).filter((x) => x && !/faketime/.test(x)).join(':');
+      if (!env.LD_PRELOAD) delete env.LD_PRELOAD;
+      for (const k of Object.keys(env)) if (k.startsWith('FAKETIME')) delete env[k];
+      opts = { ...opts, env };
+    }
     const browser = await origLaunch.call(this, opts);
     patchBrowser(browser);
     return browser;
@@ -1337,6 +1347,7 @@ function patchBrowserType(bt) {
 }
 
 let corePatched = false;
+if (LS) require('../prisma').install(); // seeding code's @default(now()) / @updatedAt on the runner clock
 const origLoad = Module._load;
 Module._load = function load(request, parent, isMain) {
   const exp = origLoad.apply(this, arguments);
