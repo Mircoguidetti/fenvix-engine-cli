@@ -38,6 +38,14 @@ session: this report lives on the engine branch.
 * **No soundness traded.** Every conflict was resolved toward the stricter rule (section 3), and each port carries its
   branch's tests. The tests found four integration defects, all fixed (section 3.4).
 
+### Scope decision (coordinator, 09:55 UTC)
+
+`claude/release-1` is now the engine trunk. Engine sessions branch from it and return by pull request, which the
+coordinator merges, so this session merges no further moving tips (parallel-proof-3 round 4 included: it comes as a
+PR). Commit 644a455b makes `release-1.yml` run on every pull request into the trunk, with Python 3.12/3.13/3.14 and
+Node 22/24/26 (Python 3.14, Node 24 and Node 26 are not measured yet: UNKNOWN until the first run). The Go and JVM jobs
+and their smoke legs are not blocking: they stay in the tree but are out of go-live scope.
+
 ## 1. Branches, merge bases, unique content
 
 All four lines share history with `claude/parallel-proof-3`. They looked unrelated only because the session's
