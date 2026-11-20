@@ -91,5 +91,26 @@ full suite took 39–42 min per version here, as before (UNKNOWN: no same-machin
 
 No Node suite run: no Rust or Node code changed (DECLARED).
 
+### After merging trunk (f84dde7, then a996b68)
+
+`origin/claude/release-1` merged twice (no conflict). Wheel rebuilt as the new workflow does (`dist/fenvix-*.whl`).
+
+- Main Python suite on the f84dde7-merged tree, same command, fresh `XDG_CACHE_HOME`, own `TMPDIR` per version
+  (MEASURED): 3.12 `2 failed, 1073 passed, 73 skipped, 1 xfailed`; 3.13 `1076 passed, 72 skipped, 1 xfailed`;
+  3.14 `4 failed, 1072 passed, 72 skipped, 1 xfailed` (exactly the 4 local-interpreter failures listed above).
+  The 2 on 3.12 pass alone (`2 passed`, MEASURED): `test_level0_seeds_fsorder_rust.py::test_rust_stand_ins_are_faster_than_the_reference`
+  (timing) and `test_level0_rust.py::test_level0_traces_match_reference`, which also fails on trunk a996b68 itself
+  when four copies run at once (MEASURED: 4 concurrent runs with trunk's `python/` on `PYTHONPATH` → 3 failed,
+  1 passed; this branch, 2 concurrent → passed, alone → passed): a pre-existing load flake.
+- The suites the a996b68 merge touches plus this branch's files, on the final tree (MEASURED, each version):
+  `python -m pytest -q -p no:randomly tests/test_review_p1_packages_d123.py tests/test_packaging.py
+  tests/test_fenvix_cli.py tests/test_review_p1_python_leaks.py tests/test_review_p1_packages_d4.py
+  tests/test_verifier_truth.py tests/test_fingerprint.py tests/test_harness_parallel_proof.py` → 3.12, 3.13, 3.14:
+  `84 passed, 1 skipped`.
+- **Not run locally:** the workflow's extra environments (runner suites, numpy/time-machine, hypothesis/benchmark)
+  and the exam's det2 check on attrs and itsdangerous: pypi.org was unreachable from this container from about
+  21:45 UTC (`curl https://pypi.org/simple/attrs/` → `Could not resolve host`), so their dependencies could not be
+  installed. They run in the full CI on the PR head and in the exam on its artifact (coordinator's decision).
+
 Build: as `.github/workflows/release-1.yml` (`maturin build --release --compatibility linux -o dist`, wheel installed
 `--no-deps` in three venvs with pytest 9.2.0 and pytest-xdist; `_core` copied into `python/detpy/`).
