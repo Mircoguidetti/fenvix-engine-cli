@@ -162,7 +162,7 @@ function traceTests(file) {
 
 // Runners whose failures `fenvix repro` turns into defects (python/detpy/fenvix_js.py adapters); the detjs command of
 // each runner name a shell reports.
-const REPRO_RUNNERS = new Set(['vitest', 'jest', 'playwright']);
+const REPRO_RUNNERS = new Set(['vitest', 'jest', 'playwright', 'node-test']);
 const COMMAND = { vitest: 'vitest run', deno: 'deno-test', bun: 'bun-test', playwright: 'playwright test' };
 
 /**

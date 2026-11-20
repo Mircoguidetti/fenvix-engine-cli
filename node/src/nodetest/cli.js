@@ -162,11 +162,36 @@ async function main(argv) {
   let keyed = files.map((f) => ({ f, fileId: path.relative(root, path.resolve(root, f)).split(path.sep).join('/') }));
   keyed.sort((a, b) => (a.fileId < b.fileId ? -1 : a.fileId > b.fileId ? 1 : 0));
   if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.orderSeed, '').map((i) => keyed[i]);
+  // --det-order (src/repro.js): the listed files only, in the order of their first listed test (the tests of each
+  // file are reduced to the listed ones by the facade, src/nodetest/facade.js)
+  if (opts.order) {
+    const repro = require('../repro');
+    keyed = repro.orderFiles(keyed, repro.makePlan(repro.readOrder(path.resolve(opts.order))));
+  }
 
   const nodeOptions = env0.NODE_OPTIONS;
   let pc = null;
   const notes = [];
+  // parallel lanes (row JS-07): --det-workers, or node --test's own --test-concurrency when given on the command line;
+  // a fixed plan (src/parallel.js), one driver per lane, each file still in its own process
+  const parallel = require('../parallel');
+  if (opts.plan) {
+    opts.plan = path.resolve(opts.plan);
+    if (opts.workers == null) opts.workers = String(parallel.readReplay(opts.plan).lanes.length);
+  }
+  const tc = values(flags, '--test-concurrency').pop();
+  const want = parallel.resolveWorkers(opts, { workers: tc !== undefined ? parallel.workerCount(tc) : null, source: '--test-concurrency' });
+  const par = { workers: want.workers, source: want.source, refused: null, plan: null, result: null };
+  if (par.workers > 1) {
+    const reasons = [];
+    if (isolation === 'none') reasons.push('--test-isolation=none (every file in one process)');
+    if (run.netMode === 'record') reasons.push('--det-record (one cassette per process)');
+    if (opts.order || opts.collect) reasons.push('--det-order / --det-collect (one exact order)');
+    if (reasons.length) { par.refused = reasons.join('; '); par.workers = 1; notes.push(`parallel refused, serial: ${par.refused}`); }
+  }
+  process.env.DETJS_WORKERS = String(par.workers);
   if (userIso === 'none' && opts.cache) notes.push('--test-isolation=none: under --det-cache every file runs in its own process (skipping a file must not change the context of another)');
+  if (opts.cache && (opts.order || opts.collect)) throw new Error('detjs node-test: --det-cache cannot be combined with --det-order or --det-collect');
   if (opts.cache) {
     const { ProofSession } = require('../cache/proof');
     pc = new ProofSession(opts, root, 'node-test', run, env0);
@@ -177,10 +202,19 @@ async function main(argv) {
     keyed = keyed.filter((k) => !skip.has(k.fileId));
   }
   const executed = keyed.map((k) => ({ fileId: k.fileId, part: controls.partName(k.fileId, '') }));
+  if (par.workers > 1 && keyed.length > 1) {
+    par.plan = parallel.makePlan(root, keyed.map((k) => k.fileId), par.workers, { replay: opts.plan ? parallel.readReplay(opts.plan) : null });
+    parallel.writeRunPlan(run.dir, par.plan, 'node-test');
+  }
   const iso = isolation === 'none'
     ? 'node:test isolation=none: every file in the driver process, files and tests one at a time'
     : 'node:test isolation=process: each file in its own process, one file at a time';
-  for (const l of session.header(run, opts, { runner: 'node-test', runnerVersion: process.version, isolation: iso })) process.stdout.write(`${l}\n`);
+  const header = { runner: 'node-test', runnerVersion: process.version, isolation: iso };
+  if (par.plan) {
+    header.parallel = `parallel execution in ${par.plan.workers} lanes with a fixed plan (${par.source})`;
+    header.isolation = 'node:test isolation=process: one file at a time per lane, each in its own process';
+  }
+  for (const l of session.header(run, opts, header)) process.stdout.write(`${l}\n`);
   for (const n of notes) process.stdout.write(`detjs: ${n}\n`);
 
   // the driver: the user's node flags (minus the ones it handles) after detjs' preload
@@ -211,9 +245,8 @@ async function main(argv) {
     coverage: covFlags,
     results: path.join(run.dir, 'node-test-results.json'),
   };
-  const planPath = path.join(run.dir, 'node-test-plan.json');
-  fs.writeFileSync(planPath, JSON.stringify(plan));
-  const driverEnv = { ...process.env, DETJS_NT_DRIVER: '1', DETJS_NT_ISOLATION: isolation, DETJS_NT_PLAN: planPath };
+  const lanes = par.plan ? par.plan.lanes.map((l) => l.map((fileId) => keyed.find((k) => k.fileId === fileId).f)) : [plan.files];
+  const driverEnv = { ...process.env, DETJS_NT_DRIVER: '1', DETJS_NT_ISOLATION: isolation };
   delete driverEnv.NODE_TEST_CONTEXT;
   // modules NODE_OPTIONS preloads would run before detjs' preload (their reads unseen): they move to the command
   // line after it; test processes get NODE_OPTIONS back for the processes they start
@@ -225,12 +258,52 @@ async function main(argv) {
     driverEnv.NODE_OPTIONS = keep;
   }
   const preload = path.join(__dirname, 'preload.js');
-  const r = spawnSync(process.execPath, ['--require', preload, ...early, ...childFlags, path.join(__dirname, 'driver.js')],
-    { stdio: 'inherit', env: driverEnv, cwd: root });
-  let status = r.status ?? 1;
-  if (r.error) process.stderr.write(`detjs node-test: driver failed: ${r.error.message}\n`);
-  let results = null;
-  try { results = JSON.parse(fs.readFileSync(plan.results, 'utf8')); } catch { /* none: every capture counts as failed */ }
+  const driverArgs = ['--require', preload, ...early, ...childFlags, path.join(__dirname, 'driver.js')];
+  let status = 0;
+  let results = { files: {}, failed: false, unmapped: 0 };
+  if (lanes.length === 1) {
+    const planPath = path.join(run.dir, 'node-test-plan.json');
+    fs.writeFileSync(planPath, JSON.stringify(plan));
+    const r = spawnSync(process.execPath, driverArgs, { stdio: 'inherit', env: { ...driverEnv, DETJS_NT_PLAN: planPath }, cwd: root });
+    status = r.status ?? 1;
+    if (r.error) process.stderr.write(`detjs node-test: driver failed: ${r.error.message}\n`);
+    try { results = JSON.parse(fs.readFileSync(plan.results, 'utf8')); } catch { results = null; /* none: every capture counts as failed */ }
+  } else {
+    // one driver per lane, at the same time; each reporter's output is kept apart and printed lane by lane
+    const { spawn } = require('node:child_process');
+    const outs = await Promise.all(lanes.map((laneFiles, i) => new Promise((resolve) => {
+      const lp = { ...plan, files: laneFiles, results: path.join(run.dir, `node-test-results-${i}.json`) };
+      const planPath = path.join(run.dir, `node-test-plan-${i}.json`);
+      fs.writeFileSync(planPath, JSON.stringify(lp));
+      const chunks = [];
+      const ch = spawn(process.execPath, driverArgs, { stdio: ['ignore', 'pipe', 'pipe'], env: { ...driverEnv, DETJS_NT_PLAN: planPath }, cwd: root });
+      ch.stdout.on('data', (d) => chunks.push(d));
+      ch.stderr.on('data', (d) => chunks.push(d));
+      ch.on('error', (e) => { chunks.push(Buffer.from(`detjs node-test: lane ${i + 1} driver failed: ${e.message}\n`)); });
+      ch.on('close', (code) => resolve({ code: code ?? 1, out: Buffer.concat(chunks), results: lp.results }));
+    })));
+    for (const [i, o] of outs.entries()) {
+      process.stdout.write(`detjs: lane ${i + 1}/${outs.length}: ${lanes[i].length} files\n`);
+      process.stdout.write(o.out);
+      if (o.code !== 0) status = o.code;
+      let lr = null;
+      try { lr = JSON.parse(fs.readFileSync(o.results, 'utf8')); } catch { lr = null; }
+      if (!lr) { results = null; continue; }
+      if (results) {
+        Object.assign(results.files, lr.files);
+        results.failed = results.failed || lr.failed;
+        results.unmapped += lr.unmapped;
+      }
+    }
+  }
+  {
+    // placement against the plan, hazards and the cost of serial (G-1458), parallel or not
+    par.result = parallel.collect(root, run.dir, keyed.map((k) => k.fileId), par.plan, {
+      shared: false, planned: { workers: par.workers, source: par.source, refused: par.refused },
+    });
+    for (const l of par.result.lines) process.stderr.write(`${l}\n`);
+  }
+  if (pc && par.result) pc.parallelFlags = par.result.flags;
   if (pc) {
     // a file is recorded as passed only when the runner saw it pass (its summary) and its process exited cleanly
     pc.captureFilter = (c) => {
@@ -243,7 +316,8 @@ async function main(argv) {
     await pc.finish();
   }
   const { lines } = session.finish(run, opts, executed, {
-    runner: 'node-test', runner_version: process.version, isolation: iso, serial: true, cli_args: rest,
+    runner: 'node-test', runner_version: process.version, isolation: header.isolation, serial: !par.plan, cli_args: rest,
+    ...(par.result ? { parallel: par.result.meta } : {}),
   });
   for (const l of lines) process.stdout.write(`${l}\n`);
   if (status === 0 && results && results.failed) status = 1;

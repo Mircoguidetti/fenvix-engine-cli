@@ -251,7 +251,7 @@ describe('bun: wrong reuse (--det-cache)', { skip: SKIP }, () => {
 
   test('time zone (TZ, read by the runtime\'s ICU)', T, () => {
     const dir = H.fixture(RT, 'tz', { ...tf('tz', "test('tz', () => { expect(new Intl.DateTimeFormat('en', { timeZoneName: 'short' }).resolvedOptions().timeZone).toBe('UTC'); });") });
-    H.noWrongReuse(RT, dir, F('tz'), null, { env1: { TZ: 'UTC' }, env2: { TZ: 'Asia/Tokyo' } });
+    H.noWrongReuse(RT, dir, F('tz'), null, { args1: ['--det-tz=keep'], env1: { TZ: 'UTC' }, env2: { TZ: 'Asia/Tokyo' } });
   });
 
   test('runner configuration file: bunfig.toml (a [define] the test sees)', T, () => {

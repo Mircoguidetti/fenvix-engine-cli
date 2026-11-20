@@ -422,7 +422,28 @@ class PlaywrightAdapter(DetjsAdapter):
         return any((Path(d) / m).exists() for m in self.markers)
 
 
-ADAPTERS = {"vitest": VitestAdapter(), "jest": JestAdapter(), "playwright": PlaywrightAdapter()}
+class NodeTestAdapter(DetjsAdapter):
+    """The Node.js test runner (`node --test`) through `detjs node-test --det` (node/src/nodetest/): built into
+    Node, so nothing has to be installed in the project. Runner arguments are `node --test`'s (file patterns, node
+    flags such as --experimental-strip-types, --test-shard)."""
+
+    name = "node-test"
+    shapes = (".test.", "-test.", "_test.", "test-", "/test/")
+    markers = ()
+
+    def available(self) -> str | None:
+        why = _detjs_problem(detjs_command())
+        return f"repro / explore / replay for node-test need detjs: {why}" if why else None
+
+    def detect(self, d: Path) -> bool:
+        try:
+            scripts = json.loads((Path(d) / "package.json").read_text()).get("scripts", {}) or {}
+        except (OSError, ValueError, AttributeError):
+            return False
+        return any("node --test" in str(v) or "node --experimental-strip-types --test" in str(v) for v in scripts.values())
+
+
+ADAPTERS = {"vitest": VitestAdapter(), "jest": JestAdapter(), "playwright": PlaywrightAdapter(), "node-test": NodeTestAdapter()}
 
 
 def register(adapters: dict) -> dict:

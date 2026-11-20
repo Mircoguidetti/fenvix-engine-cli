@@ -328,7 +328,7 @@ function sharedCases(runner) {
     }],
     ['time zone: TZ is part of the runtime identity', () => {
       const dir = fx('tz', { ...tf('tz', "test('tz', () => { expect(new Date(Date.UTC(2020, 0, 1)).getHours()).toBe(0); });") });
-      noWrongReuse(runner, dir, F('tz'), () => {}, { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+      noWrongReuse(runner, dir, F('tz'), () => {}, { args: ['--det-tz=keep'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
     }],
     ['never cached: a child process', () => {
       const dir = fx('spawn', { ...tf('spawn', "test('spawn', () => { expect(String(cp.execFileSync(process.execPath, ['-e', 'process.stdout.write(String(7))'])).trim()).toBe('7'); });") });

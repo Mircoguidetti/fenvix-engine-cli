@@ -35,21 +35,33 @@ test('the header records the run inputs; same inputs are identical', T, () => {
   assert.equal(rep.summary.inputs_recorded, true);
 });
 
-for (const [name, envA, envB, reason] of [
-  ['tz', { TZ: 'UTC' }, { TZ: 'Asia/Tokyo' }, 'tz'],
-  ['env', { TZ: 'UTC', NODE_TRUTH_FLAG: 'a' }, { TZ: 'UTC', NODE_TRUTH_FLAG: 'b' }, 'env'],
-  ['seed', { TZ: 'UTC', DETJS_SEED: '1' }, { TZ: 'UTC', DETJS_SEED: '2' }, 'seed'],
+// tz: the job's own time zone, kept with --det-tz=keep (by default --det pins TZ=UTC: next test)
+for (const [name, envA, envB, reason, det] of [
+  ['tz', { TZ: 'UTC' }, { TZ: 'Asia/Tokyo' }, 'tz', ['--det', '--det-tz=keep']],
+  ['env', { TZ: 'UTC', NODE_TRUTH_FLAG: 'a' }, { TZ: 'UTC', NODE_TRUTH_FLAG: 'b' }, 'env', undefined],
+  ['seed', { TZ: 'UTC', DETJS_SEED: '1' }, { TZ: 'UTC', DETJS_SEED: '2' }, 'seed', undefined],
 ]) {
   test(`runs differing only in ${name} are divergent and name it`, T, () => {
     const dir = fixture('verifier-inputs', name, { 'tests/a.test.mjs': BODY });
-    const a = runTo(dir, 'a', envA);
-    const b = runTo(dir, 'b', envB);
+    const a = runTo(dir, 'a', envA, det);
+    const b = runTo(dir, 'b', envB, det);
     const rep = JSON.parse(native.verify([a, b]));
     assert.equal(rep.summary.stable, 0, JSON.stringify(rep.summary));
     assert.equal(rep.input_differences[0].reason, reason, JSON.stringify(rep.input_differences));
     for (const t of rep.tests) assert.equal(t.divergence.reason, reason, t.nodeid);
   });
 }
+
+// review P1 #7, coordinator decision option A: by default --det pins TZ=UTC and the locale (C.UTF-8) whatever the
+// environment sets, so two runs under different TZ / LANG are the same run: identical, with identical inputs
+test('by default the time zone and the locale are pinned: runs under different TZ and LANG are identical', T, () => {
+  const dir = fixture('verifier-inputs', 'tz-pinned', { 'tests/a.test.mjs': BODY });
+  const a = runTo(dir, 'a', { TZ: 'UTC', LANG: 'C.UTF-8', LC_ALL: 'C.UTF-8' });
+  const b = runTo(dir, 'b', { TZ: 'Asia/Tokyo', LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' });
+  const rep = JSON.parse(native.verify([a, b]));
+  assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.input_differences));
+  for (const t of ['tz', 'locale']) assert.ok(!rep.input_differences.some((d) => d.reason === t), JSON.stringify(rep.input_differences));
+});
 
 // HANDOFF P-041 "verifier: constant uncontrolled.* values": a test that runs a child process records a constant
 // `uncontrolled.child` event (no per-run nonce, so its replays keep one fingerprint); the verifier never reports it

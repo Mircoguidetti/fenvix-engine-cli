@@ -227,7 +227,7 @@ describe('deno: wrong reuse (--det-cache)', { skip: SKIP }, () => {
 
   test('time zone (TZ)', T, () => {
     const dir = H.fixture(RT, 'tz', { ...tf('tz', "Deno.test('tz', () => { eq(new Intl.DateTimeFormat('en').resolvedOptions().timeZone, 'UTC'); });") });
-    H.noWrongReuse(RT, dir, F('tz'), null, { env1: { TZ: 'UTC' }, env2: { TZ: 'Asia/Tokyo' } });
+    H.noWrongReuse(RT, dir, F('tz'), null, { args1: ['--det-tz=keep'], env1: { TZ: 'UTC' }, env2: { TZ: 'Asia/Tokyo' } });
   });
 
   test('runner configuration file: deno.json compilerOptions (jsx factory, the loader)', T, () => {

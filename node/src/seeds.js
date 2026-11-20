@@ -290,6 +290,70 @@ function installProcess(patcher, cfg) {
     patcher.define(nodeCrypto.webcrypto, 'getRandomValues', getRandomValues);
     patcher.define(nodeCrypto.webcrypto, 'randomUUID', randomUUID);
   }
+  installDevRandom(patcher);
+}
+
+// /dev/urandom and /dev/random read as files (review P1 F-03: the bytes differed between runs and the verifier
+// called the test identical): the same contract as crypto.randomBytes. Observed (an `entropy` event with the
+// bytes' digest), or, with --det-urandom, replaced by the controlled stream.
+const DEV_RANDOM = /^\/dev\/u?random$/;
+const randomFds = new Set();
+function isDevRandom(p) {
+  try {
+    const s = typeof p === 'string' ? p : Buffer.isBuffer(p) ? p.toString() : (p && p.protocol === 'file:') ? require('node:url').fileURLToPath(p) : null;
+    return s !== null && DEV_RANDOM.test(require('node:path').resolve(s));
+  } catch { return false; }
+}
+function offsetOf(a) {
+  if (typeof a[0] === 'number') return a[0];
+  if (a[0] && typeof a[0] === 'object' && !ArrayBuffer.isView(a[0]) && typeof a[0].offset === 'number') return a[0].offset;
+  return 0;
+}
+function devRandomRead(op, buf, offset, n) {
+  if (!ArrayBuffer.isView(buf) || !(n > 0)) return;
+  require('./concur').sync();
+  observe(op, new Uint8Array(buf.buffer, buf.byteOffset + offset, n));
+}
+function installDevRandom(patcher) {
+  const fs = require('node:fs');
+  const w = (name, make) => { const real = fs[name]; if (typeof real === 'function') patcher.set(fs, name, make(real)); };
+  w('openSync', (real) => function openSync(p, ...a) { const fd = real.call(this, p, ...a); if (isDevRandom(p)) randomFds.add(fd); return fd; });
+  w('open', (real) => function open(p, ...a) {
+    const cb = a[a.length - 1];
+    if (typeof cb === 'function' && isDevRandom(p)) a[a.length - 1] = (e, fd) => { if (!e) randomFds.add(fd); cb(e, fd); };
+    return real.call(this, p, ...a);
+  });
+  w('closeSync', (real) => function closeSync(fd, ...a) { randomFds.delete(fd); return real.call(this, fd, ...a); });
+  w('close', (real) => function close(fd, ...a) { randomFds.delete(fd); return real.call(this, fd, ...a); });
+  w('readSync', (real) => function readSync(fd, buf, ...a) {
+    const n = real.call(this, fd, buf, ...a);
+    if (randomFds.has(fd)) devRandomRead('/dev/urandom read', buf, offsetOf(a), n);
+    return n;
+  });
+  w('read', (real) => function read(fd, ...a) {
+    const cb = a[a.length - 1];
+    if (randomFds.has(fd) && typeof cb === 'function') {
+      const off = ArrayBuffer.isView(a[0]) ? offsetOf(a.slice(1)) : offsetOf(a);
+      a[a.length - 1] = (e, n, buf) => { if (!e) devRandomRead('/dev/urandom read', buf, off, n); cb(e, n, buf); };
+    }
+    return real.call(this, fd, ...a);
+  });
+  const P = fs.promises;
+  if (P && typeof P.open === 'function') {
+    const realOpen = P.open;
+    patcher.set(P, 'open', async function open(p, ...a) {
+      const fh = await realOpen.call(this, p, ...a);
+      if (isDevRandom(p) && fh && typeof fh.read === 'function') {
+        const rr = fh.read;
+        fh.read = async function read(buf, ...b) {
+          const r = await rr.call(this, buf, ...b);
+          if (r && r.buffer) devRandomRead('/dev/urandom read', r.buffer, ArrayBuffer.isView(buf) ? offsetOf(b) : offsetOf([buf]), r.bytesRead);
+          return r;
+        };
+      }
+      return fh;
+    });
+  }
 }
 
 function installRealm(patcher, g, _cfg, { sameRealm }) {

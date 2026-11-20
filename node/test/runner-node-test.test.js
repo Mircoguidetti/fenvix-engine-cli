@@ -241,7 +241,7 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
 
   test('time zone (read by ICU, not through process.env)', T, () => {
     const dir = proj('tz', tf('z', "test('z', () => { assert.equal(new Date(0).getHours(), 0); });"));
-    noWrongReuse(R, dir, F('z'), null, { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+    noWrongReuse(R, dir, F('z'), null, { args: ['--det-tz=keep'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
   });
 
   test('child process: not cacheable', T, () => {

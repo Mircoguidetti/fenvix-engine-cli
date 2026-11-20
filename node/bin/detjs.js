@@ -90,10 +90,11 @@ function needsEarly(argv) {
   return PRELOAD.test(process.env.NODE_OPTIONS || '') || process.execArgv.some((a) => PRELOAD.test(a));
 }
 
-// Time zone and locale (audit G-0139, G-0140): under --det they are pinned for the runner and every process it
-// starts, `TZ` (UTC when the job does not set it) and `LC_ALL`/`LANG` (C.UTF-8 when the job sets neither;
-// `LANGUAGE` removed); `--det-tz=ZONE|keep` / `--det-locale=LOC|keep` choose explicitly (recorded in the trace
-// header either way). The locale of ICU is chosen when
+// Time zone and locale (audit G-0139, G-0140; review P1 #7): under --det they are pinned for the runner and every
+// process it starts, whatever the machine or the job's environment sets: `TZ=UTC`, `LC_ALL`/`LANG=C.UTF-8`
+// (`LANGUAGE` removed), as the Python shell does. A job keeps its own value only explicitly, `--det-tz=ZONE|keep` /
+// `--det-locale=LOC|keep`; that value is recorded in the trace header, keyed by the cache and named by verify. A
+// detjs started by a pinned one keeps the choice made at the top (DETJS_PINNED). The locale of ICU is chosen when
 // Node starts: detjs starts itself again with the pinned environment.
 const RUNNERS_ALL = new Set(['vitest', 'jest', 'bun-test', 'deno-test', 'node-test', 'mocha', ...RUNNER_SHELLS]);
 function pinned(argv) {
@@ -108,10 +109,10 @@ function pinned(argv) {
     }
     return v;
   };
-  // default: the machine's own default (TZ unset: /etc/localtime; no LC_ALL/LANG) is replaced by UTC / C.UTF-8; a
-  // value the job sets explicitly is its configuration and is kept (recorded, and keyed by the cache)
-  const tz = opt('--det-tz', process.env.TZ !== undefined && process.env.DETJS_PINNED === undefined ? 'keep' : 'UTC');
-  const loc = opt('--det-locale', (process.env.LC_ALL || process.env.LANG) && process.env.DETJS_PINNED === undefined ? 'keep' : 'C.UTF-8');
+  // default: UTC / C.UTF-8 whatever the environment says; under a pinned detjs, the choice made there
+  const top = /^tz=([^;]*);locale=(.*)$/.exec(process.env.DETJS_PINNED || '');
+  const tz = opt('--det-tz', top ? (top[1] === 'keep' ? 'keep' : top[1]) : 'UTC');
+  const loc = opt('--det-locale', top ? (top[2] === 'keep' ? 'keep' : top[2]) : 'C.UTF-8');
   const env = {};
   if (tz !== 'keep') env.TZ = tz;
   if (loc !== 'keep') { env.LC_ALL = loc; env.LANG = loc; }

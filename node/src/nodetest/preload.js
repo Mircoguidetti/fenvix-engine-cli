@@ -28,6 +28,8 @@ if (env.DETJS === '1' && !env.DETJS_NT_INNER && require('node:worker_threads').i
 const KEY = Symbol.for('detjs.nodetest');
 
 if (role === 'file' || role === 'shared') {
+  // before Level 0: src/parallel.js keeps the real clock for lane timing
+  const parallelMod = require('../parallel');
   const { FileProcess } = require('../fileproc');
   const root = env.DETJS_ROOT || process.cwd();
   // processes the tests start do not take part (they inherit this environment and, sometimes, the execArgv)
@@ -87,16 +89,19 @@ if (role === 'file' || role === 'shared') {
   // --det-seed: top-level declarations of the file are held until its module finished evaluating (facade.js)
   const c = fp.c;
   const shuffle = Boolean(c.shuffle && c.controls.has('order'));
+  const ordered = Boolean(env.DETJS_ORDER) && env.DETJS_COLLECT !== '1';
   const held = [];
-  let rootOpen = shuffle && role === 'file';
+  let rootOpen = (shuffle || ordered) && role === 'file';
+  let release = null; // the facade's: shuffled, or by --det-order position
   const flushRoot = () => {
     if (!rootOpen) return;
     rootOpen = false;
-    const perm = require('../native').shuffleIndices(held.length, c.orderSeed, fp.fileId || '');
     const items = held.splice(0);
-    for (const i of perm) items[i]();
+    if (release) { release(items, fp.fileId || ''); return; }
+    for (const i of require('../native').shuffleIndices(items.length, c.orderSeed, fp.fileId || '')) items[i]();
   };
   let facadeObj = null;
+  const declared = []; // --det-order / --det-collect: the ids this file runs (or would run), in order
   const { makeFacade, wrapContextTest } = require('./facade');
   globalThis[KEY] = {
     role,
@@ -105,6 +110,10 @@ if (role === 'file' || role === 'shared') {
     facade(real) {
       if (!facadeObj) {
         facadeObj = makeFacade(real, {
+          plan: require('../repro').plan(),
+          collect: env.DETJS_COLLECT === '1',
+          onDeclared: (id) => declared.push(id),
+          setRelease: (f) => { release = f; },
           shuffle,
           seed: c.orderSeed,
           fileKey: () => fp.fileId || '',
@@ -152,7 +161,7 @@ if (role === 'file' || role === 'shared') {
     });
   } else if (role === 'file') {
     attach(); // Node < 22.15: attach now (the file's root test exists from here on)
-    if (rootOpen) { rootOpen = false; process.stderr.write('detjs: module.registerHooks unavailable (Node < 22.15): test order is not shuffled\n'); }
+    if (rootOpen) { rootOpen = false; process.stderr.write('detjs: module.registerHooks unavailable (Node < 22.15): test order is not shuffled or reordered\n'); }
   }
   if (rootOpen) {
     // a CommonJS entry has finished evaluating when runMain returns
@@ -165,6 +174,13 @@ if (role === 'file' || role === 'shared') {
     };
   }
   if (role === 'file') fp.open(fp.fileIdOf(entryFile || '<unknown>'));
+  // parallel lanes (src/nodetest/cli.js): the file's place in its lane, its footprint (paths, ports) for the
+  // cross-lane hazards, and the timing every run records
+  const parallel = role === 'file' && fp.fileId ? parallelMod : null;
+  if (parallel) {
+    if (Number(env.DETJS_WORKERS || 1) > 1) parallel.installFootprint(root);
+    parallel.enter(fp.fileId, { runner: 'node-test' });
+  }
   // the file ends after every other 'exit' listener ran (code reading files at shutdown is part of the file)
   const realEmit = process.emit;
   let closed = false;
@@ -175,6 +191,11 @@ if (role === 'file' || role === 'shared') {
       closed = true;
       const code = process.exitCode !== undefined && process.exitCode !== null ? Number(process.exitCode) : Number(a[0] || 0);
       endCurrent();
+      if (parallel) parallel.leave(fp.fileId);
+      if ((env.DETJS_ORDER || env.DETJS_COLLECT === '1') && fp.fileId) {
+        const repro = require('../repro');
+        repro.writeSide(fp.c.dir, require('../controls').partName(fp.fileId, ''), { file: fp.fileId, collected: declared, states: {}, exceptions: {}, file_error: null });
+      }
       fp.close({ ok: code === 0 });
     }
     return r;

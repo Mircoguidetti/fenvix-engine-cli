@@ -447,9 +447,9 @@ for (const runner of RUNNERS) {
   });
 }
 
-// G-0139 G-0140: the machine's default time zone and locale never decide a --det run: unset, they are pinned (UTC,
-// C.UTF-8); set by the job, they are its configuration (kept); --det-tz / --det-locale choose explicitly. The header
-// records what the run used.
+// G-0139 G-0140 (review P1 #7, coordinator decision option A): the time zone and the locale of the machine or the
+// job's environment never decide a --det run: pinned to UTC / C.UTF-8 whatever TZ / LANG / LC_ALL say; a job keeps
+// its own value only with --det-tz / --det-locale (a zone, a locale, or keep). The header records what the run used.
 for (const runner of RUNNERS) {
   test(`${runner}: G-0139 G-0140 time zone and locale pinned and recorded`, T, () => {
     const dir = proj(runner, 'tz', { a: `${PUT}\ntest('local time', () => { put('tz', new Date(0).getTimezoneOffset() + '|' + (1234.5).toLocaleString() + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone); });` });
@@ -457,9 +457,11 @@ for (const runner of RUNNERS) {
     for (const k of ['TZ', 'LANG', 'LC_ALL', 'LANGUAGE']) clean[k] = undefined;
     const cases = [
       [{}, [], '0|1,234.5|UTC'],
-      [{ TZ: 'Asia/Tokyo' }, [], '-540|1,234.5|Asia/Tokyo'],
-      [{ LANG: 'de_DE.UTF-8' }, [], '0|1.234,5|UTC'],
-      [{ TZ: 'Asia/Tokyo' }, ['--det-tz=UTC'], '0|1,234.5|UTC'],
+      [{ TZ: 'Asia/Tokyo' }, [], '0|1,234.5|UTC'],
+      [{ LANG: 'de_DE.UTF-8', LC_ALL: 'de_DE.UTF-8' }, [], '0|1,234.5|UTC'],
+      [{ TZ: 'Asia/Tokyo' }, ['--det-tz=keep'], '-540|1,234.5|Asia/Tokyo'],
+      [{ LANG: 'de_DE.UTF-8' }, ['--det-locale=keep'], '0|1.234,5|UTC'],
+      [{ TZ: 'Asia/Tokyo' }, ['--det-tz=Europe/Paris'], '-60|1,234.5|Europe/Paris'],
     ];
     for (const [env, extra, want] of cases) {
       const e = { ...clean, ...env };
