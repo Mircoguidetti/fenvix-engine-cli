@@ -62,6 +62,16 @@ describe('bun: R-032 F6/F7', { skip: H.BINARY.bun ? false : 'no bun' }, () => {
       ...tf('nt', "test('nt', () => { expect(require('../lib/x.js').v).toBe(1); });") });
     agreesAfter(RT, dir, { 'lib/package.json': JSON.stringify({ type: 'module' }) });
   });
+  // Review R-032b F5 asked to check Bun: Bun 1.4 has Temporal (MEASURED: typeof Temporal === 'object'), and
+  // Temporal.Now is the real clock there too. A file that reads it is not cached (clock-real).
+  test('R-032b F5 Temporal.Now (real clock) makes the file not cached', T, () => {
+    const dir = H.fixture(RT, 'ar2-temporal', { ...tf('tp', "test('tp', () => { expect(typeof globalThis.Temporal.Now.instant().epochMilliseconds).toBe('number'); });") });
+    const r1 = H.crun(RT, dir);
+    assert.equal(r1.status, 0, H.show(r1));
+    const r2 = H.crun(RT, dir);
+    assert.equal(r2.status, 0, H.show(r2));
+    assert.ok(!H.reused(r2).includes(F('tp')), `a file that read Temporal.Now was reused\n${H.show(r2)}`);
+  });
 });
 
 describe('deno: R-032 F6/F7', { skip: H.BINARY.deno ? false : 'no deno' }, () => {

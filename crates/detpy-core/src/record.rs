@@ -175,6 +175,9 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("native") {
         return Some("native code from the repository");
     }
+    if has("cdll") {
+        return Some("calls a C library through ctypes (its file, clock and environment reads are not observed)");
+    }
     None
 }
 
@@ -183,8 +186,17 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
 /// dependency stays whatever context order the reads are merged in (an existence check in an import context must not
 /// replace a test's listing or content read of the same path).
 fn weaker(new: &str, old: &str) -> bool {
-    let kind = |d: &str| d.starts_with("s:") || d.starts_with("l:");
-    kind(new) && !kind(old)
+    // kinds < a size (review R-032b F2) < content and listings
+    let rank = |d: &str| {
+        if d.starts_with("s:") || d.starts_with("l:") {
+            0
+        } else if d.starts_with("z:") {
+            1
+        } else {
+            2
+        }
+    };
+    rank(new) < rank(old)
 }
 
 /// Existence checks of one directory's entries kept one by one; more become its listing with kinds (`t:`), more than
@@ -297,6 +309,22 @@ fn basename(rel: &str) -> &str {
     rel.rsplit('/').next().unwrap_or(rel)
 }
 
+/// Markers of access to modules or shared namespaces by name in a file's text (review R-032b F1): a file that holds
+/// one is connected to every module ([`LIB_NODE`]).
+pub const DYNAMIC_MARKERS: &[&str] = &["__import__", "importlib", "setattr", "getattr", "delattr", "sys.modules",
+    "builtins", "globals(", "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv"];
+
+/// Whether a file's text holds a [`DYNAMIC_MARKERS`] marker (an unreadable file does: unknown references).
+pub fn dynamic_access(path: &std::path::Path) -> bool {
+    match std::fs::read(path) {
+        Ok(b) => {
+            let t = String::from_utf8_lossy(&b);
+            DYNAMIC_MARKERS.iter().any(|m| t.contains(m))
+        }
+        Err(_) => true,
+    }
+}
+
 /// The node standing for every module outside the repository (site-packages, the standard library, extension
 /// modules) in the carried-set rule's connectivity.
 pub const LIB_NODE: u32 = u32::MAX;
@@ -312,8 +340,8 @@ const INFRA_TOP: &[&str] = &["pytest", "_pytest", "pluggy", "xdist", "execnet", 
 /// [`LIB_NODE`] for any import that is not resolved to a repository file by its full dotted path (a library, the
 /// standard library; a name matched only as a suffix may be a library too). Infrastructure modules are no node.
 /// `imports[fid]` is `None` for a file without facts (not Python): it reaches [`LIB_NODE`] (unknown references).
-pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>]) -> Vec<Vec<u32>> {
-    reference_closure_with(fnames, imports, &[])
+pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>], dynamic: &[bool]) -> Vec<Vec<u32>> {
+    reference_closure_with(fnames, imports, dynamic, &[])
 }
 
 /// Whether module `name` is the infrastructure entry `x`: `pkg.*` is `pkg` and its submodules, any other entry is
@@ -326,7 +354,12 @@ fn infra_match(x: &str, name: &str) -> bool {
 }
 
 /// [`reference_closure`] with the session's runner framework modules (`Plan::infra_modules`) as infrastructure too.
-pub fn reference_closure_with(fnames: &[String], imports: &[Option<&[String]>], infra: &[String]) -> Vec<Vec<u32>> {
+pub fn reference_closure_with(
+    fnames: &[String],
+    imports: &[Option<&[String]>],
+    dynamic: &[bool],
+    infra: &[String],
+) -> Vec<Vec<u32>> {
     let mut by_name: HashMap<String, (Vec<u32>, bool)> = HashMap::new();
     for (fid, rel) in fnames.iter().enumerate() {
         let Some(stem) = rel.strip_suffix(".py") else { continue };
@@ -374,6 +407,11 @@ pub fn reference_closure_with(fnames: &[String], imports: &[Option<&[String]>], 
                         }
                     }
                 }
+            }
+            // review R-032b F1: a file that reaches modules by name (mock.patch('pkg.mod.V'), importlib, __import__,
+            // sys.modules, setattr, builtins, globals) can write into, or read from, any module
+            if dynamic.get(fid).copied().unwrap_or(false) {
+                out.insert(LIB_NODE);
             }
             out.remove(&(fid as u32));
             out.into_iter().collect()
@@ -725,7 +763,14 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     // reference closure of every executed repository file (the coordinator's third-party memo attack)
     let imports: Vec<Option<&[String]>> =
         fix.iter().map(|ix| ix.and_then(|ix| store.files.get(ix as usize)).map(|f| f.imports.as_slice())).collect();
-    let closure = reference_closure_with(&plan.fnames, &imports, &plan.infra_modules);
+    let root_dir_p = std::path::Path::new(plan.root_sep.trim_end_matches('/'));
+    let dynamic: Vec<bool> = plan.fnames.iter().map(|r| dynamic_access(&root_dir_p.join(r))).collect();
+    let closure = reference_closure_with(&plan.fnames, &imports, &dynamic, &plan.infra_modules);
+    // a context that reaches outside the repository (or reaches modules by name) can have written into any module,
+    // builtins or os.environ: it is carried into every later test of its process; a test that does carries every
+    // earlier context (review R-032b F1)
+    let lib_file: Vec<bool> = closure.iter().map(|ns| ns.contains(&LIB_NODE)).collect();
+    let reaches_lib = |c: u32| -> bool { files_of(c).iter().any(|&f| lib_file.get(f as usize).copied().unwrap_or(false)) };
     let mut rev: HashMap<u32, Vec<u32>> = HashMap::new();
     for (fid, ns) in closure.iter().enumerate() {
         for &n in ns {
@@ -735,7 +780,11 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
     let nodes_of = |f: u32| -> &[u32] { closure.get(f as usize).map(|v| v.as_slice()).unwrap_or(&[]) };
     let mut by_file: HashMap<u32, Vec<(usize, u32)>> = HashMap::new();
     let mut no_code: Vec<(usize, u32)> = Vec::new();
+    let mut lib_ctxs: Vec<(usize, u32)> = Vec::new();
     for &(p, c) in &carry_order {
+        if reaches_lib(c) {
+            lib_ctxs.push((p, c));
+        }
         let fs = files_of(c);
         if fs.is_empty() {
             let has_inputs = plan.data.get(&c).is_some_and(|d| !d.is_empty())
@@ -817,7 +866,13 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         // carried (the placement-aware fallback, for this context only). A test that can reach nothing an earlier
         // context reached carries nothing, so its key is the same in any process.
         let mut sel: BTreeSet<(usize, u32)> = BTreeSet::new();
-        {
+        if ctxs.iter().any(|&c| reaches_lib(c)) {
+            for &(p, c) in &carry_order {
+                if p < tpos && !ctxs.contains(&c) {
+                    sel.insert((p, c));
+                }
+            }
+        } else {
             // reach: nodes (repository files, LIB_NODE) the test's contexts and the selected ones can reference;
             // an earlier context is connected when one of its executed files references a node in reach
             let mut reach: HashSet<u32> = HashSet::new();
@@ -863,7 +918,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                     }
                 }
             }
-            for &(p, c) in &no_code {
+            for &(p, c) in no_code.iter().chain(lib_ctxs.iter()) {
                 if p < tpos && !ctxs.contains(&c) {
                     sel.insert((p, c));
                 }
@@ -1180,7 +1235,7 @@ mod tests {
         imports.push(Some(&t2));
         let mut fnames = fnames;
         fnames.push("test_d.py".into());
-        let cl = reference_closure(&fnames, &imports);
+        let cl = reference_closure(&fnames, &imports, &[]);
         // test_b -> pkg.memo (and its package) -> pkg.deep -> json (outside the repository)
         assert_eq!(cl[0], vec![0, 1, 2, 3, LIB_NODE]);
         // a file without facts references what it likes
@@ -1204,14 +1259,14 @@ mod tests {
         let mut fnames = fnames;
         fnames.push("test_d.py".into());
         let infra: Vec<String> = vec!["unittest".into(), "unittest.case".into(), "zope.testrunner.*".into()];
-        let cl = reference_closure_with(&fnames, &imports, &infra);
+        let cl = reference_closure_with(&fnames, &imports, &[], &infra);
         assert_eq!(cl[0], vec![0]);
         assert_eq!(cl[1], vec![1, LIB_NODE]);
         assert_eq!(cl[2], vec![2, LIB_NODE]);
         // unittest.mock's patches are state: a library node
         assert_eq!(cl[3], vec![3, LIB_NODE]);
         // without the session's list, unittest is a library like any other
-        assert_eq!(reference_closure(&fnames, &imports)[0], vec![0, LIB_NODE]);
+        assert_eq!(reference_closure(&fnames, &imports, &[])[0], vec![0, LIB_NODE]);
     }
 
     #[test]

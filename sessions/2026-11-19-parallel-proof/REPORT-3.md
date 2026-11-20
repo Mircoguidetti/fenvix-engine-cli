@@ -2,8 +2,8 @@
 
 # Parallel with proof, round 3: P4, P5, SQLite clock, speed, absent inputs, review R-023b
 
-Branch `claude/parallel-proof-3` (from `claude/parallel-proof` at a13e2dc). Final engine: **{{ENGINE}}** (code identical
-to 16c3794; later commits add results and this report only). Review R-023b's tests (`tests/test_review_r023b.py`,
+Branch `claude/parallel-proof-3` (from `claude/parallel-proof` at a13e2dc). Final engine: **{{ENGINE}}** (later commits add
+results and this report only). Review R-023b's tests (`tests/test_review_r023b.py`,
 from `claude/review-r023b` e9e6c16) were merged unchanged and are this round's gate.
 
 Labels: **MEASURED** = a run named here with its committed raw file; **ESTIMATED** = derived, derivation given;
@@ -17,8 +17,9 @@ available, what was checked is said.
 | gate | result | raw file |
 |---|---|---|
 | `tests/test_review_r023b.py` (review R-023b) + `tests/test_review_r023.py` | **77 passed, 4 skipped**, 0 failed (on a13e2dc: 50 failed, 11 passed, 3 skipped, per the review) | `tracks/parallel-proof/gates/r3/review-r023b-and-r023.txt` |
-| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **721 passed, 12 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names; it reads a tracks file no change here touches) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
-| `cargo test --release` (workspace) | **101 + 1 passed**, 0 failed (REPORT-2: 94) | `tracks/parallel-proof/gates/r3/cargo-test.txt` |
+| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **788 passed, 12 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names; it reads a tracks file no change here touches) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
+| `cargo test --release` (workspace) | **113 + 1 passed**, 0 failed (REPORT-2: 94) | `tracks/parallel-proof/gates/r3/cargo-test.txt` |
+| the coordinator's attacks (`tests/test_carried_library_memo.py`: library memo 5 kinds, order dependence, own output outside the repository, quarantine; `tests/test_isolate.py`) | all pass, serial and `-n 2` (part of the full suite) | as above |
 
 The 4 skips of the review file are the review's own conditions (`HOSTALIASES` ignored by libc here; the `[n2]` variant
 of the session-fixture test, which the review marks as not applicable under `loadfile`).
@@ -123,6 +124,18 @@ ran before it in its process, i.e. on placement. The coordinator chose a carried
 | order-dependence attack | B passes only after A set a library's state, fails alone. Recorded serially then reused under `-n 2 --dist loadfile` (B alone in a worker), and the reverse: each run's outcomes equal that placement's fresh truth, 0 wrong reuses (MEASURED locally, 2 of 2 pass) |
 | cost | almost every test file imports something outside the repository, so almost every test reaches `LIB` and carries every earlier context of its process: the carried sets approach the prefix rule. Carried count per commit and reuse by test time on the walks: item 7 |
 | incremental fold | the selection of a test usually extends the previous test's by later contexts: those are folded in order (same result as a rebuild in order) instead of rebuilding, which is quadratic when every test is connected |
+
+## The scheduler under the carried-set rule: stable placement and quarantine
+
+| what | result |
+|---|---|
+| before (Actions r3-p3, run 44633041849, the moto jobs that finished: walk shards s0, s1, s4) | MEASURED (`tracks/parallel-proof/results/r3-p3-2026-11-19/`): 0 wrong reuses, **238 of 67,101 test runs reused (0.4 %) on 27 warm commits**; every recorded test carried earlier contexts (21,983 of 21,983) |
+| causes (MEASURED locally, moto 96f50b1, `-n 4 --dist loadscope`, unchanged reruns, `/tmp` raw files summarised in the commit 2e7c944) | (1) the plan moved atoms between runs whenever the balance drifted over 10 %: a test's in-process predecessors, and so its carried inputs (`PYTEST_XDIST_WORKER` reads of `worker_id` users, planned predecessors), changed at every run, every entry missed; (2) the Docker probes, `/proc` readers and failing tests with network flags refused every later test of their worker (1,750 of 2,500 "after an earlier test or fixture of this process") |
+| fix (2e7c944) | under `--det-cache` the previous placement is kept whatever the balance (new atoms by LPT); each session writes `quarantine.json` (tests refused for their own non-file inputs, and tests that did not pass, whose flags are carried but not evaluated; kept while they stay refused); the next `-n` plan runs their atoms alone on the last k workers (k from the full costs, kept within one of the previous k; the quarantined part placed without stickiness, its tests are refused anyway). Soundness-neutral: what a test carries is unchanged, only where it runs |
+| after, locally (unchanged warm rerun, same checkout) | **1,972 of 2,501 reused, 82 s** wall (before the fix: 0 reused); the 529 others are the quarantined tests and the tests after them on the quarantine workers |
+| after, Actions r3-p4 | item 7 |
+| test | `test_a_test_refused_for_its_own_inputs_runs_on_a_worker_of_its_own_next_time`; Rust `round3_quarantined_atoms_get_the_last_worker_alone` |
+| remaining (stated) | a code commit that touches a module every test reaches (moto's core) still misses every test that carries a context which executed it: the carried-set rule's cost on changing commits. The coordinator's fork-isolation variant (`--det-isolate`, committed 54480f5, `tests/test_isolate.py` 16 pass) removes the carried set by construction; by the coordinator's decision it is an option, measured and reviewed in round 4. Local first numbers (moto, `-n 4`): cold 450 s, warm unchanged rerun 2,336 of 2,501 reused in 77 s |
 
 ## Review R-023b: findings and fixes
 

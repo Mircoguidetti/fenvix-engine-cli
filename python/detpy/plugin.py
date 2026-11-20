@@ -38,6 +38,10 @@ def pytest_addoption(parser, pluginmanager):
                      "with that worker's xdist identity")
     g.addoption("--det-plan-worker", default=None, metavar="GWK",
                 help="with --det-plan, without -n: the worker whose list to replay")
+    g.addoption("--det-isolate", action="store_true", default=False,
+                help="run each test in a child process forked from the session's snapshot (after collection): no "
+                     "test sees state an earlier test left in memory, so a test's cache key carries no earlier test "
+                     "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
     _early_reexec(parser, pluginmanager)
 
 
@@ -182,6 +186,8 @@ class _Session:
         self.saved_cassette = 0
         self.index = 0
         self.rewrite_cache = False
+        # --det-isolate is active (isolate.py): tests run in forked children
+        self.isolate = False
         # pytest-xdist under --det (xdist.py): the controller's state, or this worker's id
         self.controller = None
         self.worker = None
@@ -655,6 +661,16 @@ def _configure_det(config) -> None:
             S.cassette_out = _xdist.worker_path(_state.STATE.config.cassette_path, S.worker)
     if opt.det_cache:
         proofcache.install(config)
+    if getattr(opt, "det_isolate", False) and S.controller is None:
+        from . import isolate as _isolate
+
+        if _isolate.available():
+            S.isolate = True
+            if proofcache.PLUGIN is not None:
+                proofcache.PLUGIN.isolate = True
+            config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
+        else:
+            S.adjustments.append("--det-isolate: fork is not available here; the carried-set rule applies")
     factory = getattr(config, "_tmp_path_factory", None)
     if factory is not None:
         def basetemp():
@@ -670,6 +686,7 @@ def pytest_unconfigure(config):
         proofcache.uninstall()
         S.active = False
         S.config = None
+        S.isolate = False
         if S.controller is not None:
             os.environ.pop(_xdist.CONTROLLER_ENV, None)
         S.controller = None
@@ -805,6 +822,11 @@ class _DetSession(_Outcomes):
         if S.controller is not None:
             out["order"] = list(S.order)
             out["plan"] = S.controller.plan
+        if S.isolate or S.controller is not None:
+            from . import isolate as _isolate
+
+            if _isolate.STATS["tests"]:
+                out["isolate"] = dict(_isolate.STATS)
         return out
 
     def pytest_report_header(self, config):
@@ -877,15 +899,16 @@ class _DetSession(_Outcomes):
             if fp:
                 S.fingerprints[item.nodeid] = fp
             return
-        _level0.begin_test(item.nodeid, S.index)
-        S.index += 1
+        if S.isolate:
+            # --det-isolate: the test runs in a forked child, which does Level 0's part (level0_begin/_end) and sends
+            # its fingerprint back (isolate.py)
+            yield
+            return
+        level0_begin(item)
         try:
             yield
         finally:
-            fp = _level0.end_test(self.outcomes.get(item.nodeid, "unknown"))
-            if fp is not None:
-                S.fingerprints[item.nodeid] = fp
-                item.user_properties.append(("detpy_fingerprint", fp))
+            level0_end(item, self.outcomes.get(item.nodeid, "unknown"))
 
     def pytest_sessionfinish(self, session, exitstatus):
         st = _state.STATE
@@ -953,3 +976,18 @@ class _DetSession(_Outcomes):
 
 
 _early_rewrite_cache()
+
+
+def level0_begin(item) -> None:
+    """Level 0's start of a test (the protocol wrapper's, or a --det-isolate child's): ``_level0.begin_test``."""
+    _level0.begin_test(item.nodeid, S.index)
+    S.index += 1
+
+
+def level0_end(item, outcome: str):
+    """Level 0's end of a test: returns the fingerprint (also kept in ``S.fingerprints``)."""
+    fp = _level0.end_test(outcome)
+    if fp is not None:
+        S.fingerprints[item.nodeid] = fp
+        item.user_properties.append(("detpy_fingerprint", fp))
+    return fp

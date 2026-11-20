@@ -18,7 +18,20 @@ from _ref_pc_helpers import _GLOBAL_CTX, _ctx_file, _encodable, _final, _module_
 _INFRA_TOP = {"pytest", "_pytest", "pluggy", "xdist", "execnet", "detpy", "iniconfig", "__future__"}
 
 
-def _reference_closure(fnames, imports):
+_DYNAMIC_MARKERS = ("__import__", "importlib", "setattr", "getattr", "delattr", "sys.modules", "builtins", "globals(",
+                    "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv")
+
+
+def _dynamic_access(path):
+    """``detpy_core::record::dynamic_access``."""
+    try:
+        t = open(path, "rb").read().decode("utf-8", "replace")
+    except OSError:
+        return True
+    return any(m in t for m in _DYNAMIC_MARKERS)
+
+
+def _reference_closure(fnames, imports, dynamic=()):
     """``detpy_core::record::reference_closure`` (-1 stands for ``LIB_NODE``)."""
     by_name: dict = {}
     for fid, rel in enumerate(fnames):
@@ -57,6 +70,8 @@ def _reference_closure(fnames, imports):
                     n = n.rsplit(".", 1)[0]
                 if not full:
                     out.add(-1)
+        if fid < len(dynamic) and dynamic[fid]:
+            out.add(-1)
         out.discard(fid)
         direct.append(out)
     clos = []
@@ -208,7 +223,12 @@ def record_reference(self, store) -> None:
     # reference closure (coordinator's third-party memo attack): nodes each executed repository file can reach
     # by import, transitively; -1 for every module outside the repository
     clos = _reference_closure(list(rels), [None if fcache.get(r) is None else store.file_facts(fcache[r])[5]
-                                           for r in rels])
+                                           for r in rels],
+                              [_dynamic_access(os.path.join(self.root, r)) for r in rels])
+    lib_file = [-1 in ns for ns in clos]
+
+    def reaches_lib(c):
+        return any(0 <= f < len(lib_file) and lib_file[f] for f in files_of(c))
     rev: dict = {}
     for fid, ns in enumerate(clos):
         for n in ns:
@@ -224,7 +244,10 @@ def record_reference(self, store) -> None:
             fixtures_of[tc] = [ctx_of[f] for f in self.fixture_ctx.get(n, []) if f in ctx_of]
     by_file: dict = {}
     no_code: list = []
+    lib_ctxs: list = []
     for k, c in carry_order:
+        if reaches_lib(c):
+            lib_ctxs.append((k, c))
         fs = files_of(c)
         if not fs and (cap.data.get(c) or cap.env.get(c) or cap.flags.get(c)):
             no_code.append((k, c))
@@ -248,41 +271,44 @@ def record_reference(self, store) -> None:
             own_ctxs.append(own_import[own])
         # parallel-proof round 3, carried-set rule: only earlier contexts connected to the test through shared
         # executed repository files (closure), plus earlier contexts that ran no repository code
-        reach = set()
-        visited = set()
-        queue = []
-        for c in own_ctxs:
-            for f in files_of(c):
-                for n in nodes_of(f):
-                    if n not in reach:
-                        reach.add(n)
-                        queue.append(n)
         sel = set()
-        while queue:
-            n = queue.pop()
-            for f in rev.get(n, ()):
-                if f in visited:
-                    continue
-                visited.add(f)
-                for k, c in by_file.get(f, ()):
-                    if k >= tpos or c in own_ctxs or (k, c) in sel:
+        if any(reaches_lib(c) for c in own_ctxs):
+            sel = {(k, c) for k, c in carry_order if k < tpos and c not in own_ctxs}
+        else:
+            reach = set()
+            visited = set()
+            queue = []
+            for c in own_ctxs:
+                for f in files_of(c):
+                    for n in nodes_of(f):
+                        if n not in reach:
+                            reach.add(n)
+                            queue.append(n)
+            while queue:
+                n = queue.pop()
+                for f in rev.get(n, ()):
+                    if f in visited:
                         continue
+                    visited.add(f)
+                    for k, c in by_file.get(f, ()):
+                        if k >= tpos or c in own_ctxs or (k, c) in sel:
+                            continue
+                        sel.add((k, c))
+                        group = [c]
+                        for fc in fixtures_of.get(c, ()):  # an earlier test comes with its wider-scoped fixtures
+                            fk = first.get(fc)
+                            if fk is not None and fk < tpos and fc not in own_ctxs and fc not in g_set and (fk, fc) not in sel:
+                                sel.add((fk, fc))
+                                group.append(fc)
+                        for g in group:
+                            for f2 in files_of(g):
+                                for n2 in nodes_of(f2):
+                                    if n2 not in reach:
+                                        reach.add(n2)
+                                        queue.append(n2)
+            for k, c in no_code + lib_ctxs:
+                if k < tpos and c not in own_ctxs:
                     sel.add((k, c))
-                    group = [c]
-                    for fc in fixtures_of.get(c, ()):  # an earlier test comes with its wider-scoped fixtures
-                        fk = first.get(fc)
-                        if fk is not None and fk < tpos and fc not in own_ctxs and fc not in g_set and (fk, fc) not in sel:
-                            sel.add((fk, fc))
-                            group.append(fc)
-                    for g in group:
-                        for f2 in files_of(g):
-                            for n2 in nodes_of(f2):
-                                if n2 not in reach:
-                                    reach.add(n2)
-                                    queue.append(n2)
-        for k, c in no_code:
-            if k < tpos and c not in own_ctxs:
-                sel.add((k, c))
         if sel != last_sel:
             c_data, c_env, c_flags, c_units, c_content, c_ctxs = {}, set(), set(), set(), set(), []
             for _k, c in sorted(sel):
@@ -455,8 +481,8 @@ def _merge_data(into: dict, new: dict) -> None:
     """dict.update, except that a kind check ("s:...") never replaces a content or listing dependency."""
     for k, v in new.items():
         old = into.get(k)
-        kind = lambda d: d.startswith(("s:", "l:"))  # noqa: E731
-        if old is not None and kind(v) and not kind(old):
+        rank = lambda d: 0 if d.startswith(("s:", "l:")) else 1 if d.startswith("z:") else 2  # noqa: E731
+        if old is not None and rank(v) < rank(old):
             continue
         into[k] = v
 

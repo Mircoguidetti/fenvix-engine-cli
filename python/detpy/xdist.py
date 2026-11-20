@@ -391,7 +391,8 @@ class Controller:
             # under the cache, a test's carried inputs are those of the tests before it on its worker: the placement
             # is kept whatever the balance (new atoms by LPT), so that keys do not churn with timing noise
             "chunk_div": CHUNK_DIV, "tolerance": STICKY_TOLERANCE if pc is None else 1e9, "slack": 1.0,
-            "quarantine": pc.quarantine() if pc is not None else [],
+            # --det-isolate: a refused test's state does not reach the next test (each runs in its own child)
+            "quarantine": pc.quarantine() if pc is not None and not self.config.getoption("det_isolate", False) else [],
             "history": {k: v for k, v in hist.items() if isinstance(v, list)},
             "cached": pc.durations(self.ids) if pc is not None else {},
             "previous": load_json(os.path.join(self.dir, "plan.json")), "replay": replay,

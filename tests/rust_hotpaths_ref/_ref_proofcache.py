@@ -502,7 +502,7 @@ class Capture:
             if orig is not None:
                 rebind(posixpath, name, orig, fn)
 
-    def stat_check(self, path, link=False, meta=False) -> None:  # noqa: D401
+    def stat_check(self, path, link=False, meta=False, sized=False) -> None:  # noqa: D401
         if not self.active:
             return
         p = self._abs(path)
@@ -516,7 +516,7 @@ class Capture:
             f = f.f_back  # the probe's own wrappers; a frame of this file further out is the capture's own call
         if self._kind_from(f) != "user":
             return
-        self.read(self._cur(), p, ("Q" if link else "q") if meta else ("l" if link else "s"))
+        self.read(self._cur(), p, ("Q" if link else "q") if meta else ("l" if link else "z" if sized else "s"))
 
     def _kind_from(self, f) -> str:
         while f is not None:
@@ -764,7 +764,7 @@ class Capture:
                 dep = self._hashed[hk] = _core.importable_name_dep(p)
             self.data.setdefault(ctx, {}).setdefault(self._key(p) + "\x01imp", dep)
             return
-        if kind in ("s", "l"):
+        if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
             if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
@@ -775,8 +775,13 @@ class Capture:
             hk = kind + p
             dep = self._hashed.get(hk)
             if dep is None:
-                dep = self._hashed[hk] = ("l:" + _core.lstat_kind(p)) if kind == "l" else ("s:" + _core.stat_kind(p))
-            self.data.setdefault(ctx, {}).setdefault(self._key(p), dep)
+                dep = self._hashed[hk] = (("l:" + _core.lstat_kind(p)) if kind == "l" else
+                                          ("z:" + _core.size_kind(p)) if kind == "z" else ("s:" + _core.stat_kind(p)))
+            m = self.data.setdefault(ctx, {})
+            k = self._key(p)
+            # review R-032b F2: a size replaces a kind check of the same path
+            if k not in m or (kind == "z" and m[k].startswith(("s:", "l:"))):
+                m[k] = dep
             return
         if kind == "m":
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
@@ -940,6 +945,8 @@ class Capture:
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
             if name is None:
+                if self._caller_kind() == "user":  # CDLL(None): the program's symbols (review R-032b F3)
+                    self.flag(self._cur(), "cdll", "<the program's symbols>")
                 return
             if "/" in str(name):  # LIMITS A2/K2: a library opened by path is an input by content, whoever opens it
                 p = self._abs(name)
@@ -947,6 +954,10 @@ class Capture:
                     self._native(self._cur(), p)
             if self._caller_kind() != "user":
                 return
+            # review R-032b F3: a C library outside the repository called directly: its reads are not observed
+            ap = self._abs(name) if "/" in str(name) else None
+            if not (ap is not None and ap.startswith(self.root_sep)):
+                self.flag(self._cur(), "cdll", str(name))
             n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
             if n is None:
                 return
@@ -2340,7 +2351,8 @@ def _process_state(p):
     return after.split("/", 1)[0] in ("fd", "fdinfo", "task", "stat", "statm", "io")
 
 
-_FLAG_OF = {"native code from the repository": "native", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
+_FLAG_OF = {"native code from the repository": "native",
+            "calls a C library through ctypes (its file, clock and environment reads are not observed)": "cdll", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
 
@@ -2546,6 +2558,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "reads this process's state under /proc (descriptors, status counters, threads)"
     if "native" in flags:
         return "native code from the repository"
+    if "cdll" in flags:
+        return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
 
 

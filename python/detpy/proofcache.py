@@ -272,7 +272,7 @@ class ProofCachePlugin(ProofSession):
         """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
         their shards into the store (``ProofCache.merge_shards``)."""
         t0 = _perf()
-        paths = []
+        paths = list(self.iso_shards) if self.isolate else []
         for wid in sorted(workeroutput):
             out = workeroutput[wid]
             summ = out.get("detpy_cache_summary")
@@ -284,26 +284,26 @@ class ProofCachePlugin(ProofSession):
                 self.sess.error = out["detpy_cache_error"]
             if out.get("detpy_cache_shard"):
                 paths.append(out["detpy_cache_shard"])
-        try:
-            res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges],
-                                                     {w: list(v) for w, v in (lists or {}).items()}))
-        except Exception as e:  # never break the session: nothing is recorded this time
-            self.sess.error = f"merge of the workers' shards: {type(e).__name__}: {e}"
-            res = {"merged": 0, "dropped": [], "stale": [], "unreadable": paths}
-        self.sess.apply_merge([tuple(x) for x in res["dropped"]], [tuple(x) for x in res["stale"]])
-        self.merge_result = res
-        for p in paths:
-            try:
-                os.remove(p)
-            except OSError:
-                pass
-        self.sess.set_phase("merge", _perf() - t0)
+            paths.extend(out.get("detpy_cache_shards") or ())  # --det-isolate: the worker's children
+            if out.get("detpy_isolate"):
+                from . import isolate as _isolate
+
+                for k, v in out["detpy_isolate"].items():
+                    _isolate.STATS[k] = _isolate.STATS.get(k, 0) + v
+        self.merge_shards(paths, edges, lists, t0)
 
     # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
     def worker_output(self) -> dict:
+        self.iso_merge_summaries()
         out = {"detpy_cache_summary": list(self.sess.worker_summary())}
         if self.shard_path:
             out["detpy_cache_shard"] = self.shard_path
+        if self.iso_shards:
+            out["detpy_cache_shards"] = list(self.iso_shards)
+        if self.isolate:
+            from . import isolate as _isolate
+
+            out["detpy_isolate"] = dict(_isolate.STATS)
         err = self.sess.summary_data(self.cap).get("error")
         if err:
             out["detpy_cache_error"] = err
@@ -333,9 +333,19 @@ class ProofCachePlugin(ProofSession):
     def _wrap_protocol(self, item, nextitem):  # generator driven by _ProtocolWrapper
         nid = item.nodeid
         self.recheck(nid)
-        if self.sess.is_hit(nid):
+        if self.sess.is_hit(nid) or (self.isolate and not self.iso_child):
+            # a reused result; or --det-isolate's parent: the child does iso_begin / iso_end
             yield
             return
+        t = self.iso_begin(item)
+        try:
+            yield
+        finally:
+            self.iso_end(item, t)
+
+    def iso_begin(self, item) -> float:
+        """The cache's start of a test that runs (the protocol wrapper's, or a --det-isolate child's)."""
+        nid = item.nodeid
         fx = []
         info = getattr(item, "_fixtureinfo", None)
         if info is not None:
@@ -353,13 +363,19 @@ class ProofCachePlugin(ProofSession):
             self.cap.env_read("PYTEST_XDIST_WORKER")
         if "testrun_uid" in names:
             self.cap.env_read("PYTEST_XDIST_TESTRUNUID")
-        t = _perf()
-        try:
-            yield
-        finally:
-            self.stop(nid, _perf() - t)
+        return _perf()
+
+    def iso_end(self, item, t: float) -> None:
+        self.stop(item.nodeid, _perf() - t)
+
+    def iso_record(self, fingerprints: dict | None = None) -> tuple:  # noqa: D102 (isolate.py calls it bare)
+        from . import plugin as _plugin
+
+        return super().iso_record(_plugin.S.fingerprints if fingerprints is None else fingerprints)
 
     def pytest_runtest_logreport(self, report):
+        if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
+            return  # the child reported it to its own session
         self.sess.report(report)
 
     def _conftests(self):

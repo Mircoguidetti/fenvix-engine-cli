@@ -1,0 +1,7 @@
+{
+ "first": {"engine": "7510773", "note": "before the parallel-proof-3 quarantine merge; runs cancelled after the landed shards were kept",
+           "runs": {"python": 44656473683, "node-a": 44656473680, "node-b": 44656473679, "node-c": 44656473729}},
+ "second": {"engine": "0f969116", "note": "R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept",
+            "runs": {"python": 44674519585, "node-a": 44674519607, "node-b": 44674519657, "node-c": 44674520289}},
+ "final": {"engine": "PENDING", "note": "the final engine", "runs": {}}
+}

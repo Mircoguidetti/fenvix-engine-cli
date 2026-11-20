@@ -280,6 +280,18 @@ pub fn stat_kind(path: &Path) -> &'static str {
     }
 }
 
+/// What `os.stat` tells beyond the kind (review R-032b F2): "file:<size>" for a regular file, else the kind. A test
+/// that asks for a file's size (`os.stat(p).st_size`, `Path.stat()`, `DirEntry.stat()`) depends on it; an existence
+/// or kind check (`exists`, `isfile`, `is_dir`) stays a kind ("s:"). Modification times are not inputs (LIMITS).
+pub fn size_kind(path: &Path) -> String {
+    match fs::metadata(path) {
+        Ok(m) if m.is_file() => format!("file:{}", m.len()),
+        Ok(m) if m.is_dir() => "dir".into(),
+        Ok(_) => "other".into(),
+        Err(_) => "missing".into(),
+    }
+}
+
 /// Paths the import system probes for module `name` in directory `dir` (`FileFinder`): the package directory, its
 /// `__init__` with every suffix, and the module with every suffix (`importlib.machinery.all_suffixes()`). Ported from
 /// `claude/dep-verdict-abjcfw` (d972a3e) onto the Rust store.
@@ -695,6 +707,8 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         listing_digest(path).map(|d| format!("d:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("s:") {
         format!("s:{}", stat_kind(path))
+    } else if recorded.starts_with("z:") {
+        format!("z:{}", size_kind(path))
     } else if recorded.starts_with("l:") {
         format!("l:{}", lstat_kind(path))
     } else if recorded.starts_with("i:") {

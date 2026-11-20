@@ -60,6 +60,78 @@ _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GE
 
 
 # ---------------------------------------------------------------------------
+class _ScandirEntry:
+    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2;
+    ``Capture._patch_scandir``)."""
+
+    __slots__ = ("_e", "_cap")
+
+    def __init__(self, e, cap):
+        self._e = e
+        self._cap = cap
+
+    def _check(self, meta: bool, follow: bool = True) -> None:
+        cap = self._cap
+        if cap._in_stat:
+            return
+        cap._in_stat = True
+        try:
+            cap.stat_check(self._e.path, not follow, meta)
+        except Exception:
+            pass
+        finally:
+            cap._in_stat = False
+
+    def stat(self, *, follow_symlinks=True):
+        self._check(True, follow_symlinks)
+        return self._e.stat(follow_symlinks=follow_symlinks)
+
+    def is_file(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_file(follow_symlinks=follow_symlinks)
+
+    def is_dir(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_dir(follow_symlinks=follow_symlinks)
+
+    def is_symlink(self):
+        self._check(False, False)
+        return self._e.is_symlink()
+
+    def __fspath__(self):
+        return self._e.__fspath__()
+
+    def __getattr__(self, name):
+        return getattr(self._e, name)
+
+    def __repr__(self):
+        return repr(self._e)
+
+
+class _ScandirIter:
+    __slots__ = ("_it", "_cap")
+
+    def __init__(self, it, cap):
+        self._it = it
+        self._cap = cap
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return _ScandirEntry(next(self._it), self._cap)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self._it.close()
+        return False
+
+    def close(self):
+        self._it.close()
+
+
 class Capture(_core.CaptureCore):
     """Records, per context, executed code, data reads, environment reads and events.
 
@@ -99,6 +171,7 @@ class Capture(_core.CaptureCore):
         _core.set_audit_hook(self.audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         self._patch_stat()
+        self._patch_scandir()
         self._patch_lookups()
         self.set_installed(self._installed)
         self.scan_maps()  # the libraries mapped before the start: inputs of every test (Rust, review R-019c E-8)
@@ -252,6 +325,32 @@ class Capture(_core.CaptureCore):
             if orig is not None:
                 fn.__wrapped__ = orig
                 rebind(posixpath, name, orig, fn)
+
+    def _patch_scandir(self) -> None:
+        """Review R-032b F2 (claude/parallel-proof-3 c5f0e70): ``os.scandir``'s entries answer ``stat()``,
+        ``is_file()``, ``is_dir()`` and ``is_symlink()`` without ``os.stat``. User code iterating ``os.scandir`` gets
+        entries whose ``stat()`` is an input like ``os.stat`` here (the path's metadata: ``q``, ``Q`` without
+        following a symlink) and whose kind checks are kind checks. Library code's iterations (glob, shutil) keep the
+        plain entries (their callers' own checks are recorded where they look)."""
+        cap = self
+        orig_scandir = os.scandir
+
+        def scandir(path=".", *args, **kwargs):
+            it = orig_scandir(path, *args, **kwargs)
+            if isinstance(path, int) or cap._in_stat:
+                return it
+            try:
+                if cap._caller_kind() != "user":
+                    return it
+            except Exception:
+                return it
+            return _ScandirIter(it, cap)
+
+        scandir.__name__ = "scandir"
+        scandir.__doc__ = orig_scandir.__doc__
+        scandir.__wrapped__ = orig_scandir
+        self._stat_saved.append((os, "scandir", orig_scandir))
+        os.scandir = scandir
 
     def _installed(self, p: str) -> bool:
         """Whether a distribution's RECORD lists ``p`` (an installed wheel's library in an environment that lives
@@ -513,6 +612,15 @@ class ProofSession:
         self.worker = None
         self.shard_path = None
         self.merge_result: dict | None = None
+        # --det-isolate (claude/parallel-proof-3 isolate.py; the pytest shell today): tests run in forked children,
+        # each records a one-test shard; this process merges them (serial) or hands them to the controller (worker)
+        self.isolate = False
+        self.iso_child = False
+        self.iso_shards: list[str] = []
+        self.iso_forked: set[str] = set()
+        self.iso_summaries: list = []
+        self.iso_new_facts: list = []
+        self.iso_warm = False
 
     # -- setup ----------------------------------------------------------------
     def open(self, root: str, config_digest: str, config_info: dict, basetemp: str | None = None) -> None:
@@ -665,8 +773,15 @@ class ProofSession:
         sess.add_fingerprints(fingerprints)
         cap.switch("s")
         cap.stop()
-        if self.role == "controller":
-            # no test ran here: the workers recorded, the merge happened in merge_workers
+        if self.isolate and not self.iso_child:
+            # --det-isolate: nothing ran in this process; the children's shards are merged here (serial) or by the
+            # controller (worker)
+            if self.role == "worker":
+                return
+            self.iso_merge_summaries()
+            self.merge_shards(list(self.iso_shards))
+        if self.role == "controller" or (self.isolate and not self.iso_child):
+            # no test ran here: the workers (or children) recorded, the merge happened in merge_workers
             sess.t_record = self.sess.phase("merge")
             sess.compare_verified()
             sess.write_receipts(self.store)
@@ -711,6 +826,8 @@ class ProofSession:
                                      os.path.join(self.dir, "tmp")) if jobs else ()
         for (rel, content), f in zip(jobs, facts):
             cache[rel] = None if f is None else self.store.add_file(rel, content, *f)
+            if self.iso_child and f is not None:
+                self.iso_new_facts.append((rel, content, tuple(f)))
 
     def _record_all(self) -> None:
         if self.cap.rec is None:
@@ -741,10 +858,80 @@ class ProofSession:
         t = _perf()
         if self.role == "worker":
             self.shard_path = os.path.join(self.dir, "shards", f"{self.run_id}.{self.worker}.json")
-            store.save_shard(self.shard_path, self.worker)
+            store.save_shard(self.shard_path, self.worker, "" if self.iso_child else None)
         else:
             store.save()
         sess.set_phase("save", _perf() - t)
+
+    # -- --det-isolate (a shell that forks a child per test calls these) ------------------------------------------
+    def merge_shards(self, paths: list, edges=(), lists: dict | None = None, t0: float | None = None) -> None:
+        """One merge of recorded shards into the store (``ProofCache.merge_shards``: the cross-worker write rule);
+        the shard files are removed. The pytest shell's xdist controller and --det-isolate's parent call it."""
+        t0 = _perf() if t0 is None else t0
+        try:
+            res = json.loads(self.store.merge_shards(list(paths), list(self.sess.hit_ids), [tuple(e) for e in edges],
+                                                     {w: list(v) for w, v in (lists or {}).items()}))
+        except Exception as e:  # never break the session: nothing is recorded this time
+            self.sess.error = f"merge of the shards: {type(e).__name__}: {e}"
+            res = {"merged": 0, "dropped": [], "stale": [], "unreadable": list(paths)}
+        self.sess.apply_merge([tuple(x) for x in res["dropped"]], [tuple(x) for x in res["stale"]])
+        self.merge_result = res
+        for p in paths:
+            try:
+                os.remove(p)
+            except OSError:
+                pass
+        self.sess.set_phase("merge", _perf() - t0)
+
+    def iso_record(self, fingerprints: dict) -> tuple:
+        """In a --det-isolate child, after its test: record it as a one-test shard (no placement: the test ran
+        alone from the session's snapshot); returns (shard path or None, the child's summary)."""
+        self.role = "worker"
+        self.worker = f"iso{os.getpid()}"
+        self.sess.add_fingerprints(fingerprints)
+        self.cap.switch("s")
+        self.cap.stop()
+        self._record_all()
+        return self.shard_path, list(self.sess.worker_summary())
+
+    def iso_prepare(self) -> None:
+        """--det-isolate's parent, before its first child: the facts of the repository files executed so far
+        (collection, imports) are parsed once here; the children inherit them."""
+        if self.iso_warm:
+            return
+        self.iso_warm = True
+        try:
+            needed, whole = self.sess.files_needed(self.cap, self.items)
+            fc: dict = {}
+            self._facts(needed, fc)
+            self._facts(whole, fc)
+        except Exception:
+            pass
+
+    def iso_add_facts(self, facts) -> None:
+        """Facts a child parsed (files first executed by its test): kept, so the next children need not parse them."""
+        for rel, content, f in facts or ():
+            try:
+                if self.store.file_index(rel, content) is None:
+                    self.store.add_file(rel, content, *f)
+            except Exception:
+                pass
+
+    def iso_child_done(self, nodeid: str, shard, summary) -> None:
+        """The parent's side: the child's summary joins this session's at the end (merged now, the next children
+        would inherit it and record those tests again), its shard is merged at the end."""
+        self.iso_forked.add(nodeid)
+        if summary:
+            self.iso_summaries.append(summary)
+        if shard:
+            self.iso_shards.append(shard)
+
+    def iso_merge_summaries(self) -> None:
+        for summary in self.iso_summaries:
+            ran, recorded, not_cached = summary[:3]
+            where = [tuple(x) for x in summary[3]] if len(summary) > 3 else None
+            self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached], where)
+        self.iso_summaries = []
 
     # -- reporting (Rust: CacheSession) --------------------------------------------------
     def summary_data(self) -> dict:

@@ -20,10 +20,12 @@ import statistics
 import sys
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-# run sets: "first" = the walks on engine 7510773 (before the parallel-proof-3 quarantine merge), "final" = the walks
-# on the final engine (review R-032b F7). --set first|final (default final)
+# run sets (review R-032b F7: the walks on the final engine): "first" = engine 7510773 (before the parallel-proof-3
+# quarantine merge), "second" = engine 0f969116 (R-032b F4-F6, before the parallel-proof-3 F1-F3 engine fix; runs
+# cancelled once that fix landed, landed shards kept), "final" = the walks on the final engine. --set (default final)
 SETS = {"first": (["ar2-py-1"], ["ar2-node-a", "ar2-node-b", "ar2-node-c"]),
-        "final": (["ar2-py-2"], ["ar2-node-a2", "ar2-node-b2", "ar2-node-c2"])}
+        "second": (["ar2-py-2"], ["ar2-node-a2", "ar2-node-b2", "ar2-node-c2"]),
+        "final": (["ar2-py-3"], ["ar2-node-a3", "ar2-node-b3", "ar2-node-c3"])}
 SET = sys.argv[sys.argv.index("--set") + 1] if "--set" in sys.argv else "final"
 PY_RUNS, NODE_RUNS = SETS[SET]
 
