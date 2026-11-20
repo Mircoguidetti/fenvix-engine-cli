@@ -149,8 +149,10 @@ for (const runner of RUNNERS) {
   expect(util.inspect(st, { showHidden: true })).toBe(util.inspect(plain, { showHidden: true }));
   expect(Object.keys(st)).toEqual(Object.keys(plain));
   expect(Object.getOwnPropertyDescriptor(st, 'size')).toEqual({ value: 3, writable: true, enumerable: true, configurable: true });
-  expect(structuredClone(st)).toEqual({ ...plain });
-  expect(v8.deserialize(v8.serialize(st))).toEqual({ ...plain });
+  // compared with the clone of the plain copy: from Node 26 a Stats object has own symbol-keyed fields
+  // (Symbol(partialAtimeNs), ...) that {...st} copies and structuredClone / v8.serialize drop
+  expect(structuredClone(st)).toEqual(structuredClone({ ...plain }));
+  expect(v8.deserialize(v8.serialize(st))).toEqual(v8.deserialize(v8.serialize({ ...plain })));
   st.size = 99;
   expect(st.size).toBe(99);
   expect(Object.getOwnPropertyDescriptor(st, 'size').value).toBe(99);
@@ -178,7 +180,17 @@ for (const runner of RUNNERS) {
       });
       fs.symlinkSync('a.txt', path.join(dir, 'data/cur'));
       fs.writeFileSync(path.join(dir, 'ino.txt'), String(fs.lstatSync(path.join(dir, 'data/cur')).ino));
-      noWrongReuse(runner, dir, F('lino'), () => { fs.rmSync(path.join(dir, 'data/cur')); fs.writeFileSync(path.join(dir, 'data/tmp'), ''); fs.symlinkSync('b.txt', path.join(dir, 'data/cur')); });
+      noWrongReuse(runner, dir, F('lino'), () => {
+        // a new link with another inode (a filesystem may hand the freed inode straight back: retry until it differs)
+        const cur = path.join(dir, 'data/cur');
+        const old = fs.lstatSync(cur).ino;
+        fs.rmSync(cur);
+        for (let i = 0; ; i++) {
+          fs.symlinkSync('b.txt', cur);
+          if (fs.lstatSync(cur).ino !== old) break;
+          fs.renameSync(cur, path.join(dir, `data/held${i}`));
+        }
+      });
     });
 
     t('keeps: isFile() of a Stats object does not make its size an input', T, () => {
@@ -272,13 +284,28 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('rcy'), { 'tree/a/g.txt': '' });
     });
 
-    t('keeps: fs.promises.readdir withFileTypes does not follow links: a file added behind one', T, () => {
+    // Node 22 and 24: fs.promises.readdir({ recursive, withFileTypes }) does not enter a linked directory, so a file
+    // added behind the link cannot change the result (reuse kept). Node 26 enters it (MEASURED: 3 entries instead of
+    // 2): the file added behind the link is an input, and the cache must not reuse the old result.
+    const readdirFollows = (() => {
+      const d = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'rnf-'));
+      fs.mkdirSync(path.join(d, 'o')); fs.writeFileSync(path.join(d, 'o', 'x'), ''); fs.mkdirSync(path.join(d, 't'));
+      fs.symlinkSync('../o', path.join(d, 't', 'l'));
+      const r = require('node:child_process').spawnSync(process.execPath, ['-e',
+        "require('node:fs').promises.readdir(process.argv[1], { recursive: true, withFileTypes: true }).then((a) => console.log(a.length))",
+        path.join(d, 't')], { encoding: 'utf8' });
+      fs.rmSync(d, { recursive: true, force: true });
+      return Number(r.stdout.trim()) > 1;
+    })();
+    t(`${readdirFollows ? 'no wrong reuse' : 'keeps'}: fs.promises.readdir withFileTypes${readdirFollows ? ' follows' : ' does not follow'} links: a file added behind one`, T, () => {
+      const n = readdirFollows ? 3 : 2;
       const dir = fixture(runner, 'rnofollow', {
         'other/x.json': '{}', 'tree/keep.txt': '',
-        ...tfile(runner, 'rnf', "test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(2); });"),
+        ...tfile(runner, 'rnf', `test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(${n}); });`),
       });
       fs.symlinkSync('../other', path.join(dir, 'tree', 'link'));
-      keepsReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
+      if (readdirFollows) noWrongReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
+      else keepsReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
     });
 
     // -- G4: code that runs before the runner -------------------------------------------------------------------

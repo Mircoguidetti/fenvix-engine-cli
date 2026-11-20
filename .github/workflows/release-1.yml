@@ -153,10 +153,11 @@ jobs:
       - name: detjs suites and reviewer test files
         working-directory: node
         run: |
-          npm ci --no-audit --no-fund
+          set +e  # print the log and the failures before failing (bash -e would stop at the test command)
+          npm ci --no-audit --no-fund || exit 1
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
             --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1; rc=$?
-          tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; grep -nE "✖|not ok|Error" ../node-tests-${{ matrix.node }}.log | head -80 || true
+          tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; sed -n '/^✖ failing tests:/,$p' ../node-tests-${{ matrix.node }}.log | grep -vE "^\s+at " | head -400
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()
