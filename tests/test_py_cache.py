@@ -146,8 +146,9 @@ def test_environment_variable_no_python_read_sees_is_an_input(pytester):
         def test_c_reads_env():
             assert time.strftime("%Z", time.localtime(0)) in ("UTC", "GMT")
         """)
+    # --det pins TZ (UTC) since the release-1 time-zone control; with "keep" the machine's TZ is an input again
     recorded_then_changed(pytester, "tests/test_p.py::test_c_reads_env", change_env={"TZ": "Asia/Tokyo"},
-                          before=None)
+                          before=None, args=("-rA", "--det-tz=keep", "tests"))
 
 
 def test_new_unread_variable_invalidates_and_allowlisted_one_does_not(pytester):
@@ -455,8 +456,8 @@ def test_g2197_a_configuration_miss_names_what_changed_and_g2196_receipts_are_ke
         def test_pure():
             pass
         """)
-    run(pytester, "r1", "tests")
-    p, c, _ = run(pytester, "r2", "tests", env={"TZ": "Asia/Tokyo"})
+    run(pytester, "r1", "--det-tz=keep", "tests")  # --det pins TZ unless "keep": then TZ is part of the config
+    p, c, _ = run(pytester, "r2", "--det-tz=keep", "tests", env={"TZ": "Asia/Tokyo"})
     rows = [json.loads(x) for x in (pytester.path / ".c" / "receipts.jsonl").read_text().splitlines() if x.strip()]
     why = next(r["why"] for r in rows if r["nodeid"] == "tests/test_p.py::test_pure")
     assert why.startswith("config") and "environment.TZ" in why, why

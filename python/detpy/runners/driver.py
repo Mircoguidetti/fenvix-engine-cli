@@ -57,7 +57,7 @@ def parser(prog: str) -> argparse.ArgumentParser:
     return p
 
 
-_PYTEST_ONLY = ("--det-isolate", "--det-plan", "--det-plan-worker")
+_PYTEST_ONLY = ("--det-isolate", "--det-isolate-scope", "--det-cache-in-process", "--det-plan", "--det-plan-worker")
 
 
 def parse(argv: list[str], prog: str = "detpy") -> tuple[argparse.Namespace, list[str]]:
