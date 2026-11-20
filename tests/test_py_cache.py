@@ -285,3 +285,23 @@ def test_g0174_serial_testrun_uid_is_derived_under_det(pytester):
         p, _, _ = run(pytester, label, "-s", "tests", cache=False)
         uids.append(re.findall(r"UID ([0-9a-f]+)", p.stdout))
     assert uids[0] and uids[0] == uids[1], uids
+
+
+def test_status_of_an_unlinked_temporary_file_is_not_a_refusal(pytester):
+    """py-cache (moto walk): os.fstat of a descriptor whose file was unlinked (a temporary file) names no input; the
+    test is recorded and reused. Its time fields stay real-clock reads (refused)."""
+    _probe(pytester, """
+        import os, tempfile
+        def test_size():
+            with tempfile.TemporaryFile() as f:
+                f.write(b"abc"); f.flush()
+                assert os.fstat(f.fileno()).st_size == 3
+        def test_time():
+            with tempfile.TemporaryFile() as f:
+                assert os.fstat(f.fileno()).st_mtime > 0
+        """)
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", "tests")
+        assert p.returncode == 0, p.stdout
+    assert "tests/test_p.py::test_size" in reused(c), c.get("not_cached_ids")
+    assert "tests/test_p.py::test_time" not in reused(c)

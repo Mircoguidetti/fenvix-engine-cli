@@ -134,6 +134,9 @@ _REAL_STAT = os.stat
 _REAL_READLINK = os.readlink
 
 
+_UNLINKED = object()
+
+
 class _TimedStat:
     """An ``os.stat_result`` given to user code (review R-032b F2, round 4, review R-023c E2/E4), each field an input
     when it is read: ``st_mtime``/``st_ctime`` (their ``_ns`` variants, indices 8 and 9) the file's modification and
@@ -170,9 +173,12 @@ class _TimedStat:
         try:
             st = _REAL_STAT(p)
         except OSError:
-            return None
-        if (st.st_dev, st.st_ino) != (self._r.st_dev, self._r.st_ino):
-            return None  # deleted or replaced since it was opened
+            st = None
+        if st is None or (st.st_dev, st.st_ino) != (self._r.st_dev, self._r.st_ino):
+            # unlinked or replaced since it was opened (a temporary file, " (deleted)"): no path names it any more;
+            # its status is what this process did to it (its content was an input when it was opened). Its times
+            # are real-clock values: _input refuses those (py-cache: moto's spooled bodies refused every test)
+            return _UNLINKED
         return p
 
     def _flag(self, flag, detail):
@@ -186,6 +192,10 @@ class _TimedStat:
 
     def _input(self, check):
         p = self._named()
+        if p is _UNLINKED:
+            if check == "time_check":
+                self._timed()
+            return
         if p is None:
             return self._flag("pstate", f"the status of descriptor {self._path} (its file cannot be named)")
         if p == "":

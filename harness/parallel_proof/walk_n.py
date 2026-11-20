@@ -38,18 +38,22 @@ def pytest(repo, py, args, out_json, timeout):
     with open(log, "w") as fh:
         p = subprocess.Popen([py, "-m", "pytest", "-p", "no:cacheprovider", "-q", f"--det-outcomes={out_json}", *args],
                              cwd=repo, stdout=fh, stderr=subprocess.STDOUT, text=True, env=env)
-        try:
-            p.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            p.kill()
-        try:
-            # py-cache item 4: the peak resident set of the pytest process and of every worker it reaped (Linux:
-            # wait4's ru_maxrss covers the reaped descendants)
-            _, status, ru = os.wait4(p.pid, 0)
-            p.returncode = os.waitstatus_to_exitcode(status)
-            peak_kb = ru.ru_maxrss
-        except ChildProcessError:
-            pass
+        # py-cache item 4: the peak resident set of the pytest process and of every worker it reaped (Linux: wait4's
+        # ru_maxrss covers the reaped descendants). The child is reaped here, by wait4, not by Popen.wait.
+        deadline = time.perf_counter() + timeout
+        while True:
+            pid, status, ru = os.wait4(p.pid, os.WNOHANG)
+            if pid:
+                p.returncode = os.waitstatus_to_exitcode(status)
+                peak_kb = ru.ru_maxrss
+                break
+            if time.perf_counter() > deadline:
+                p.kill()
+                _, status, ru = os.wait4(p.pid, 0)
+                p.returncode = -9
+                peak_kb = ru.ru_maxrss
+                break
+            time.sleep(0.2)
     with open(log) as fh:
         lines = fh.read().strip().splitlines()
     tail = lines[-1:] or [""]

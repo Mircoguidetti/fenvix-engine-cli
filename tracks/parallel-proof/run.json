@@ -1,6 +1,6 @@
 {
- "run_id": "py-cache-2026-11-20",
- "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit (triggered by a push of this file to claude/py-cache)",
+ "run_id": "py-cache-2026-11-20b",
+ "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit; run b: the engine with the unlinked-descriptor fix and walk_n's wait4 measurement (run a, 44727482348, cancelled: its moto pairs had no memory numbers and every moto test refused on an unlinked descriptor)",
  "before_ref": "d27c1a59",
  "repos": [
   {
@@ -59,19 +59,6 @@
    "det_args": "",
    "walk": 8,
    "modes": "a_par,a_ser",
-   "unchanged": true
-  },
-  {
-   "name": "prefect-g1-walk",
-   "url": "https://github.com/PrefectHQ/prefect",
-   "sha": "5e8ca118fc514ffe9ab3355ea5cf1c28c347de11",
-   "install_cmd": "UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\" --frozen || UV_PROJECT_ENVIRONMENT=\"$VENV\" uv sync -q --python \"$PY\"",
-   "args": "tests -m 'not windows' --exclude-service kubernetes --exclude-service docker --disable-docker-image-builds --splits 8 --group 1 -p no:randomly --timeout=600",
-   "workers": 4,
-   "dist": "worksteal",
-   "det_args": "--det-urandom",
-   "walk": 6,
-   "modes": "a_par",
    "unchanged": true
   },
   {
