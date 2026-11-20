@@ -444,7 +444,7 @@ function snapshotShared() {
   }
   for (const k of ['umask', 'cwd', 'emitWarning', 'nextTick', 'exit', 'on', 'emit']) { try { snap.set(`process.${k}`, process[k]); } catch { /* ignore */ } }
   try { snap.set('process.cwd()', process.cwd()); } catch { /* ignore */ }
-  try { snap.set('Error.prepareStackTrace', Error.prepareStackTrace); snap.set('Error.stackTraceLimit', Error.stackTraceLimit); } catch { /* ignore */ }
+  // (Error.prepareStackTrace is not compared: Jest's source-map support installs its own on every test file)
   return snap;
 }
 
@@ -531,6 +531,13 @@ function hazards(markers, laneOf) {
   return [...out.values()].sort((x, y) => (x.a < y.a ? -1 : x.a > y.a ? 1 : x.b < y.b ? -1 : x.b > y.b ? 1 : 0));
 }
 
+/** Real start and end of each file (ms after the first start): how the lanes overlapped. */
+function spansOf(markers, keys) {
+  const ms = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number');
+  const t0 = Math.min(...ms.map((m) => m.start));
+  return Object.fromEntries(ms.map((m) => [m.label, [m.start - t0, m.end - t0]]));
+}
+
 /**
  * After the run: read the markers, compare placement with the plan, find hazards, update the state, and return
  * { meta, lines, flags: Map(label -> [flag, detail]) } (flags: what makes a file's results not cacheable).
@@ -590,7 +597,7 @@ function collect(root, dir, keys, plan, { shared, planned, write = true } = {}) 
         costs_known: plan.costs_known, sticky: plan.sticky, loads: plan.loads, makespan: plan.makespan, lpt_makespan: plan.lpt_makespan,
         together: plan.together, replayed: plan.replayed, dispatch: plan.dispatch, mode: plan.mode, shared_process: Boolean(shared),
       },
-      placement: { processes: [...procs.values()], deviations, waited_seconds: Math.round(waited * 1000) / 1000 },
+      placement: { processes: [...procs.values()], deviations, waited_seconds: Math.round(waited * 1000) / 1000, spans: spansOf(markers, keys) },
       hazards: hz,
     });
     lines.push(`detjs: parallel: ${plan.workers} lanes, plan ${plan.digest}${plan.replayed ? ' (replayed)' : plan.sticky ? ' (sticky)' : ''}; `

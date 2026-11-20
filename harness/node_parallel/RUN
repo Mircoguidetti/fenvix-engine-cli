@@ -1,0 +1,17 @@
+#!/bin/sh
+# Parallel --det measurements (row JS-07). Projects cloned at the pins of harness/node/results/node-final/REPORT.md
+# into $WORK (git clone + git checkout <sha>), installed with their own lockfile:
+#   immer       784c86bb234e805566481c9425fcb2a3897e8bcc  yarn install --frozen-lockfile   (vitest 3.2.6)
+#   yaml        528ef30d6ded4bd9f2c3521b670eb2b29d503c5c  npm ci                           (vitest 4.1.11)
+#   cheerio     d013f2b6f735b324aa66fba88804d6edc37d8136  npm ci                           (vitest 5.1.0)
+#   mobx        016642e064bcf0d8cafb4d765dcb8b5994393c83  npm ci                           (jest 30.3.0)
+#   dom-testing-library 6049cc0bc7cf2201625c476c95fa6299d0e2fa8b  npm install --legacy-peer-deps (jest 29.7.0)
+set -e
+WORK=${WORK:-$(dirname "$0")/../../.harness-work/par}
+OUT=${OUT:-$(dirname "$0")/results}
+M="python3 $(dirname "$0")/measure.py"
+$M --name immer --dir "$WORK/immer" --runner vitest --out "$OUT"
+$M --name yaml --dir "$WORK/yaml" --runner vitest --out "$OUT"
+$M --name cheerio --dir "$WORK/cheerio" --runner vitest --out "$OUT"
+$M --name mobx --dir "$WORK/mobx" --runner jest --out "$OUT"
+$M --name dom-testing-library --dir "$WORK/dom-testing-library" --runner jest --out "$OUT"

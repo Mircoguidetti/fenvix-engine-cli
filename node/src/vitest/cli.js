@@ -278,6 +278,7 @@ async function main(argv) {
     || (ctx.state && ctx.state.errorsSet && ctx.state.errorsSet.size > 0);
   if (failed) process.exitCode = 1;
   if (!ctx.closingPromise) await ctx.close();
+  collectParallel();
   if (pc) {
     pc.finishSync();
     await pc.finish();

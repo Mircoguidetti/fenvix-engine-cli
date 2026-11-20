@@ -67,6 +67,25 @@ the test modules are covered by the module graph).
 * Reused files do not appear in the runner's reporters; they are in the detjs summary line, the receipts and
   `cache-summary.json` (`reused_files_list`).
 
+## Parallel runs (`--det-workers`, docs/NODE.md "Parallel")
+
+* The reuse decision is made once, in the main process, before the plan: only the files that run are placed in
+  lanes; reused files cost no worker time.
+* Inputs per file stay per file when files run at the same time: Vitest records them in each file's fresh worker,
+  as serially; Jest workers start the capture in each worker process (`src/jest/worker.js`, the in-band main
+  process's capture role and environment wrapping), and what a worker logs outside any file (a custom environment
+  module's own reads) is a global input of every file of the session, as the main process's own items are in band.
+* The writers rule ("never reuse a test that read a file another test file wrote") is applied by the session
+  policy over every file's capture, whichever process ran it, so it does not depend on timing. On top of it, a file
+  that touched a path or a fixed port that a file of another lane touched is not cached (`cross-worker`), a file
+  that ran after a file that left process-wide state changed in its process is not cached (`carried`), and a test
+  that reads its worker or pool id is not cached (`placement`, serially too: the value depends on the plan).
+* Keys are the serial keys: worker counts (`maxWorkers`, `minWorkers`, `fileParallelism`, pool thread/fork counts,
+  wherever the resolved configuration repeats them, and the runners' worker options on the command line) are not
+  part of the configuration digest, so an entry recorded in parallel is reused serially and the reverse (MEASURED in
+  `node/test/parallel-p041.test.js` on Vitest 3, 4, 5 and Jest 29, 30).
+* Receipts and the summary are written once, by the main process, for every decided file.
+
 ## Shared cache
 
 `--det-cache=https://host/<namespace>` works on a local mirror (`FENVIX_CACHE_LOCAL` or
