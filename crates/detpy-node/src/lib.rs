@@ -530,6 +530,25 @@ impl ProofCache {
         ))
     }
 
+    /// The Node session policy (detpy_core::node_session::record_session): record every test and file that ran,
+    /// from the session's capture logs (`input` as JSON); returns what was done as JSON (recorded, not_cached,
+    /// verified, ran_files, session_written).
+    #[napi]
+    pub fn record_session(&self, input: String) -> Result<String> {
+        let inp: detpy_core::node_session::RecordInput =
+            serde_json::from_str(&input).map_err(|e| bad(format!("record input: {e}")))?;
+        let mut g = lock(&self.inner);
+        let out = detpy_core::node_session::record_session(&mut g.store, &inp);
+        for c in &inp.captures {
+            let proj = c.project.clone().unwrap_or_default();
+            g.touched.insert(detpy_core::node_session::id_of(&c.file_id, &proj));
+            for t in &c.tests {
+                g.touched.insert(detpy_core::node_session::test_key(&t.id, &proj));
+            }
+        }
+        serde_json::to_string(&out).map_err(|e| bad(e.to_string()))
+    }
+
     #[napi]
     pub fn remove(&self, nodeid: String) -> bool {
         let mut g = lock(&self.inner);
@@ -569,6 +588,25 @@ impl ProofCache {
         let g = lock(&self.inner);
         g.store.save_merged(&self.dir, &g.touched).map_err(io_err)
     }
+}
+
+/// The receipt lines of a Node session (detpy_core::node_session::receipt_lines): `hits` = [[nodeid, receipt JSON
+/// object text]], `misses` = [[nodeid, why]].
+#[napi]
+pub fn receipt_lines(hits: Vec<Vec<String>>, misses: Vec<Vec<String>>, verify: bool) -> String {
+    let pair = |v: Vec<String>| -> (String, String) {
+        let mut it = v.into_iter();
+        (it.next().unwrap_or_default(), it.next().unwrap_or_default())
+    };
+    let h: Vec<(String, String)> = hits.into_iter().map(pair).collect();
+    let m: Vec<(String, String)> = misses.into_iter().map(pair).collect();
+    detpy_core::node_session::receipt_lines(&h, &m, verify)
+}
+
+/// The flags that make a result not cached, with their descriptions (detpy_core::node_session::UNCACHEABLE).
+#[napi]
+pub fn uncacheable_table() -> HashMap<String, String> {
+    detpy_core::node_session::UNCACHEABLE.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect()
 }
 
 #[napi]

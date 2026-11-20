@@ -78,7 +78,7 @@ def summary_of(repo):
     s = load_json(os.path.join(repo, ".detjs", "cache-summary.json")) or {}
     keep = ("reused_files", "reused_tests", "reused_files_list", "reused_recorded_seconds", "missed_files", "miss_reasons",
             "recorded", "not_cached", "not_cached_top", "identity_seconds", "check_seconds", "record_seconds", "config",
-            "runtime", "runtime_parts", "verified", "verify_mismatches", "ran_files", "error", "notes", "startup",
+            "runtime", "runtime_parts", "verified", "verified_tests", "verify_mismatches_tests", "verify_mismatches", "ran_files", "error", "notes", "startup",
             "uncacheable_projects", "misses")
     out = {k: s.get(k) for k in keep}
     pk = s.get("packages") or {}
@@ -152,6 +152,41 @@ def outcomes_of(report_path, runner, repo=None):
         failed = sum(1 for a in res if a.get("status") == "failed")
         out[name] = {"ok": f.get("status") == "passed" or (failed == 0 and f.get("status") != "failed"), "tests": len(res),
                      "failed": failed}
+    return out
+
+
+def trace_outcomes(path):
+    """{test id: outcome} of a detjs trace (`.detjs/trace.jsonl`); a project suffix (`file@@project::name`) kept."""
+    out = {}
+    try:
+        with open(path) as fh:
+            for line in fh:
+                try:
+                    d = json.loads(line)
+                except ValueError:
+                    continue
+                if d.get("type") == "test" and d.get("nodeid"):
+                    out[d["nodeid"]] = d.get("outcome")
+    except OSError:
+        pass
+    return out
+
+
+def reused_tests(repo):
+    """{test id: recorded outcome} of the tests (not file entries) the last session reused, from its receipts."""
+    out = {}
+    try:
+        with open(os.path.join(repo, ".detjs", "receipts.jsonl")) as fh:
+            for line in fh:
+                try:
+                    d = json.loads(line)
+                except ValueError:
+                    continue
+                nid = d.get("nodeid") or ""
+                if d.get("reused") and d.get("kind") != "file" and "::" in nid:
+                    out[nid] = d.get("outcome")
+    except OSError:
+        pass
     return out
 
 
@@ -308,6 +343,10 @@ class Walk:
             if first:
                 shutil.rmtree(self.cache, ignore_errors=True)
             else:
+                # claude/all-runners-2: a separate fresh run of the same commit (detjs --det, no cache: every test
+                # runs, as the Python walks' run B), compared test by test with what the skip run reuses
+                fresh = self.fresh_tests()
+                rec["fresh"] = {k: v for k, v in fresh.items() if k != "tests"}
                 skip_cache = os.path.join(self.work, "cache-skip")
                 shutil.rmtree(skip_cache, ignore_errors=True)
                 shutil.copytree(self.cache, skip_cache)
@@ -315,6 +354,7 @@ class Walk:
                 rc, out, dt = self.detjs(skip_cache, [], rp)
                 rec["skip"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo),
                                "outcomes": outcomes_of(rp, self.spec["runner"], self.repo), "tail": out[-1500:] if rc else ""}
+                rec["compare"] = self.compare(reused_tests(self.repo), fresh["tests"])
             rp = os.path.join(self.work, "verify.json")
             rc, out, dt = self.detjs(self.cache, ["--det-cache-verify"], rp)
             rec["verify"] = {"rc": rc, "seconds": round(dt, 2), "summary": summary_of(self.repo), "cold": first,
@@ -341,6 +381,41 @@ class Walk:
                   f"mismatches {len(mism)}", flush=True)
             prev = sha
             first = False
+
+    def fresh_tests(self, label="fresh"):
+        """`detjs <runner> --det` without cache: {"rc", "seconds", "n", "tests": {test id: outcome}} from its trace."""
+        rp = os.path.join(self.work, f"{label}.json")
+        args = detjs_cmd(self.spec["runner"]) + ["--det"] + self.runner_args() + self.report_args(rp)
+        trace = os.path.join(self.repo, ".detjs", "trace.jsonl")
+        try:
+            os.remove(trace)
+        except OSError:
+            pass
+        rc, out, dt = sh(args, cwd=self.repo, timeout=self.a.run_timeout, env=self.env)
+        tests = trace_outcomes(trace)
+        return {"rc": rc, "seconds": round(dt, 2), "n": len(tests), "tests": tests,
+                "tail": out[-1500:] if rc and not tests else ""}
+
+    def compare(self, reused, fresh):
+        """Every test the skip run reused against the fresh run of the same commit: checked (tests, not file entries),
+        mismatches (each confirmed or not by two more fresh runs), reused tests the fresh run did not report."""
+        mism, missing = [], []
+        for nid, cached in reused.items():
+            got = fresh.get(nid)
+            if got is None:
+                missing.append(nid)
+            elif got != cached:
+                mism.append({"nodeid": nid, "cached": cached, "fresh": got})
+        out = {"checked": len(reused) - len(missing), "mismatches": mism, "missing": missing[:50],
+               "n_missing": len(missing)}
+        if mism:
+            reruns = [self.fresh_tests(f"fresh-recheck{k}")["tests"] for k in range(2)]
+            for m in mism:
+                m["recheck"] = [r.get(m["nodeid"]) for r in reruns]
+                # confirmed wrong: every fresh run disagrees with the reused result
+                m["confirmed"] = all(x is not None and x != m["cached"] for x in m["recheck"])
+            out["confirmed_wrong"] = sum(1 for m in mism if m["confirmed"])
+        return out
 
     def recheck(self, mism):
         """Run each test file with a mismatch 3 more times at the same commit (flaky or wrong?)."""

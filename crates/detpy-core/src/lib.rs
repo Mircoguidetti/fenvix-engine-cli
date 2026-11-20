@@ -22,6 +22,7 @@ pub mod cassette;
 pub mod deps;
 pub mod distfiles;
 pub mod event;
+pub mod node_session;
 pub mod fingerprint;
 pub mod order;
 pub mod proof;

@@ -34,33 +34,9 @@ const { runtimeIdentity, startPackages } = require('./runtime-id');
 const VERSION = require('../../package.json').version;
 const CONFIG_FILES = /^(tsconfig.*\.json|jsconfig.*\.json|babel\.config\.[cm]?[jt]s(on)?|\.babelrc(\.[cm]?[jt]s(on)?)?|\.swcrc|postcss\.config\.[cm]?[jt]s|\.postcssrc(\.[a-z]+)?|\.browserslistrc|browserslist|vite\.config\.[cm]?[jt]s|vitest\.config\.[cm]?[jt]s|vitest\.(workspace|projects)\.[cm]?[jt]s(on)?|jest\.config\.[cm]?[jt]s(on)?|jest\.preset\.[cm]?js|\.env(\..+)?|\.swcrc|\.nvmrc|\.node-version)$/;
 const SKIP_DIRS = new Set(['node_modules', '.git', '.detjs', '.hg', '.svn', 'coverage', '.nx', '.turbo']);
-const UNCACHEABLE = {
-  spawn: 'subprocess',
-  worker: 'worker thread',
-  connect: 'network connection',
-  udp: 'UDP socket',
-  'net-record': 'network recording (--det-record)',
-  proc: 'reads /proc, /sys or /dev',
-  rw: 'reads a file another test file or the start-up code wrote',
-  entropy: 'os entropy (not controlled; use --det-urandom)',
-  'env-unobserved': 'environment reads not observable in this process',
-  machine: 'reads a machine fact that changes between calls',
-  stat: 'reads file metadata that is not keyed (times, inode, owner)',
-  statfs: 'reads file system statistics',
-  watch: 'watches the file system',
-  sqlite: 'opens an SQLite database that cannot be keyed by its path',
-  resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
-  'import-glob': 'an import.meta.glob call that cannot be keyed',
-  // runtimes other than Node (src/runners: bun test, deno test)
-  'runtime-api': 'uses a runtime API whose inputs are not keyed',
-  'dynamic-import': 'a dynamic import whose target is not known before the run',
-  unobserved: 'the runtime reported an access the capture did not see',
-  binding: 'reaches native bindings directly (process.binding): reads not observable',
-  'clock-real': 'reads a clock Level 0 does not virtualize',
-  keygen: 'OS randomness drawn in native crypto (key generation, randomized encryption or signatures)',
-  preload: 'a preload module read the clock or OS entropy before Level 0 was installed',
-  loader: 'an off-thread module loader (--loader, module.register): what it reads is not observable',
-};
+// the flags that make a result not cached: Rust (crates/detpy-core/src/node_session.rs), as the rest of the session
+// policy (review R-032 claim 3, DECISIONS 2026-11-18)
+const UNCACHEABLE = native.uncacheableTable();
 
 function digest(x) {
   return native.digest(typeof x === 'string' ? x : JSON.stringify(x));
@@ -448,151 +424,46 @@ class ProofSession {
     return this.writeSummary();
   }
 
+  /**
+   * Record the entries of the files that ran: the observation of each capture log, the entries, the reasons a result
+   * is not cached, the verified comparisons and the written paths are the Rust session policy
+   * (`detpy_core::node_session::record_session`, review R-032 claim 3); here the inputs are gathered.
+   */
   recordAll(captures) {
-    const store = this.store;
-    const curEnv = this.curEnv;
-    const envAll = native.envAllDigest(curEnv);
+    const curEnv = {};
     // an own string value only: a read of `process.env.__proto__` or `.constructor` is the absence of a variable
-    const envDep = (name) => (name === '*' ? envAll : native.envValueDigest(Object.prototype.hasOwnProperty.call(curEnv, name) && typeof curEnv[name] === 'string' ? curEnv[name] : null));
-    // global (main process) inputs: start-up reads by anyone minus the test files themselves, plus user code's
-    // reads during the run
-    const global = CAPTURE.global.filter((it) => !(it[0] === 'data' && (it[3] === 'infra' || it[3] === 'plugin') && this.specKeys.has(it[1])));
-    // writers of this session and of earlier sessions
-    const writers = new Map();
-    const addW = (k, l) => { let s = writers.get(k); if (!s) writers.set(k, (s = new Set())); s.add(l); };
-    for (const it of CAPTURE.global) if (it[0] === 'write') addW(it[1], '');
-    for (const c of captures) for (const it of c.items) if (it[0] === 'write') addW(it[1], c.label);
-    let past = {};
-    try { past = JSON.parse(store.written()); } catch { /* none */ }
-    for (const [k, ls] of Object.entries(past)) for (const l of ls) addW(k, l);
-    const sessionWritten = {};
-    for (const [k, s] of writers) sessionWritten[k] = [...s];
-    const startup = this.startupDigest();
-    const fileIx = new Map();
-    const codeIndex = (rel, d) => {
-      const k = `${rel}\u0000${d}`;
-      let i = fileIx.get(k);
-      if (i === undefined) { i = store.addFile(rel, d); fileIx.set(k, i); }
-      return i;
+    for (const k of Object.keys(this.curEnv)) if (typeof this.curEnv[k] === 'string') curEnv[k] = this.curEnv[k];
+    const projects = new Set(['', ...captures.map((c) => c.project || '')]);
+    const configFor = {};
+    for (const p of projects) configFor[p] = this.configFor(p);
+    const hits = {};
+    for (const [nid, rc] of this.hits) hits[nid] = rc.outcome;
+    const input = {
+      global: CAPTURE.global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
+      urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
+      run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
+      uncacheable_projects: [...this.uncacheableProjects.keys()], verify: Boolean(this.verify), hits,
     };
-    // Observation of a file's log, advanced item by item: the inputs of a test are the global items and the file's
-    // items up to the test's end (a prefix), so one pass serves every test of the file (they were re-read per test)
-    const globalItems = global;
-    const urandom = Boolean(this.run.cfg.urandom);
-    const newObservation = (label, base) => {
-      const flags = new Map();
-      const env = new Map();
-      const data = new Map();
-      const content = new Set();
-      let clock = false;
-      let rwFirst = null; // first data key another writer wrote (in data insertion order)
-      const take = (it) => {
-        switch (it[0]) {
-          case 'data': {
-            const dk = `${it[1]}\u0000${it[2]}`;
-            if (!data.has(dk)) {
-              data.set(dk, [it[1], it[2]]);
-              if (rwFirst === null) {
-                const ws = writers.get(it[1]);
-                if (ws && [...ws].some((w) => w !== label)) rwFirst = `${it[1]} written by ${[...ws].filter((w) => w !== label).join(',') || 'start-up'}`;
-              }
-            }
-            break;
-          }
-          case 'code': content.add(codeIndex(it[1], it[2])); break;
-          case 'env': if (!env.has(it[1])) env.set(it[1], envDep(it[1])); break;
-          case 'clock': clock = true; break;
-          case 'flag': if (!flags.has(it[1])) flags.set(it[1], it[2]); break;
-          default:
-        }
-      };
-      for (const it of globalItems) take(it);
-      let pos = 0;
-      return {
-        /** Advance to `upto` items of `items`; the observation at that point. */
-        at(items, upto) {
-          for (; pos < upto && pos < items.length; pos++) take(items[pos]);
-          const f = new Map(flags);
-          if (base) for (const it of base) if (it[0] === 'flag' && !f.has(it[1])) f.set(it[1], it[2]);
-          if (rwFirst !== null && !f.has('rw')) f.set('rw', rwFirst);
-          if (f.has('entropy') && urandom) f.delete('entropy');
-          return { flags: f, env: [...env.entries()], data: [...data.values()], content: [...content], clock };
-        },
-      };
-    };
-    this.ranFiles = {};
-    for (const c of captures) {
-      const proj = c.project || '';
-      const mid = this.idOf(c.fileId, proj);
-      this.ranFiles[mid] = { duration: Math.round((c.duration || 0) * 1000) / 1000, tests: c.tests.length, ok: Boolean(c.ok) };
-      if (this.uncacheableProjects.has(proj)) continue;
-      const notes = c.notes || [];
-      const extraFlags = notes.some((n) => n.startsWith('process.env not replaceable')) ? [['flag', 'env-unobserved', 'process.env']] : [];
-      const ids = [];
-      const obs = newObservation(c.label, extraFlags);
-      // tests in log order (each one's inputs are a prefix of the next one's)
-      const order = c.tests.map((t, i) => [t, i]).sort((x, y) => (x[0].upto - y[0].upto) || (x[1] - y[1]));
-      const byTest = new Map();
-      for (const [t] of order) byTest.set(t, obs.at(c.items, t.upto));
-      for (const t of c.tests) {
-        const nid = this.testKey(t.id, proj);
-        ids.push(t.id);
-        const o = byTest.get(t);
-        const why = this.uncacheable(o, t.outcome);
-        this.verifyOne(nid, t.outcome);
-        if (why) {
-          store.remove(nid);
-          this.notCached.set(nid, why);
-          continue;
-        }
-        store.record(nid, JSON.stringify({
-          outcome: t.outcome, report: { outcome: t.outcome }, fingerprint: t.fingerprint || '', duration: t.duration || 0,
-          run: this.runId, config: this.configFor(proj), runtime: this.runtimeDigest, epoch: o.clock ? this.epochMs : null,
-          env: o.env, data: o.data, content: o.content, startup,
-        }));
-        this.recorded++;
-      }
-      const o = obs.at(c.items, c.items.length);
-      const outcome = c.ok ? 'passed' : 'failed';
-      this.verifyOne(mid, outcome);
-      const why = this.uncacheable(o, outcome);
-      if (why) {
-        store.remove(mid);
-        this.notCached.set(mid, why);
-        continue;
-      }
-      store.record(mid, JSON.stringify({
-        outcome, report: { kind: 'file', file: c.fileId, project: proj || null, tests: ids }, fingerprint: '',
-        duration: c.duration || 0, run: this.runId, config: this.configFor(proj), runtime: this.runtimeDigest,
-        epoch: o.clock ? this.epochMs : null, env: o.env, data: o.data, content: o.content, startup,
-      }));
+    const text = JSON.stringify(input);
+    if (process.env.DETJS_POLICY_DUMP) {
+      // test-only: the inputs of the policy, for test/policy-equivalence.test.js
+      try {
+        fs.mkdirSync(process.env.DETJS_POLICY_DUMP, { recursive: true });
+        fs.writeFileSync(path.join(process.env.DETJS_POLICY_DUMP, `${this.runId}-${process.pid}.json`), text);
+      } catch { /* test aid only */ }
     }
-    store.addWritten(JSON.stringify(sessionWritten));
-  }
-
-  uncacheable(o, outcome) {
-    if (!['passed', 'skipped', 'todo'].includes(outcome)) return `outcome ${outcome}`;
-    for (const [f, detail] of o.flags) {
-      if (UNCACHEABLE[f]) return `${UNCACHEABLE[f]}: ${detail}`;
-    }
-    return null;
-  }
-
-  /** Verify mode: a result that would have been reused, compared with the fresh run. */
-  verifyOne(nid, outcome) {
-    if (!this.verify || !this.hits.has(nid)) return;
-    this.verified = this.verified || [];
-    const rc = this.hits.get(nid);
-    this.verified.push({ nodeid: nid, cached: rc.outcome, fresh: outcome, same: rc.outcome === outcome });
+    const out = JSON.parse(this.store.recordSession(text));
+    this.recorded += out.recorded;
+    for (const [nid, why] of out.not_cached) this.notCached.set(nid, why);
+    this.verified = [...(this.verified || []), ...out.verified];
+    this.ranFiles = out.ran_files;
   }
 
   writeReceipts() {
     try {
       fs.mkdirSync(path.dirname(this.receiptsPath), { recursive: true });
-      const lines = [];
-      for (const [nid, r] of this.hits) lines.push(JSON.stringify({ nodeid: nid, reused: !this.verify, ...(this.verify ? { would_reuse: true } : {}), ...r }));
-      for (const [nid, why] of this.misses) lines.push(JSON.stringify({ nodeid: nid, reused: false, why }));
-      fs.writeFileSync(this.receiptsPath, lines.length ? `${lines.join('\n')}\n` : '');
+      const hits = [...this.hits].map(([nid, r]) => [nid, JSON.stringify(r)]);
+      fs.writeFileSync(this.receiptsPath, native.receiptLines(hits, [...this.misses], Boolean(this.verify)));
     } catch { /* report only */ }
   }
 
@@ -636,6 +507,9 @@ class ProofSession {
       disabled: this.disabled,
       uncacheable_projects: Object.fromEntries(this.uncacheableProjects),
       verified: verified.length,
+      // tests only (a reused file is also verified as a file entry over the same tests: review R-032 F8)
+      verified_tests: verified.filter((v) => v.nodeid.includes('::')).length,
+      verify_mismatches_tests: verified.filter((v) => !v.same && v.nodeid.includes('::')).length,
       verify_mismatches: verified.filter((v) => !v.same),
       receipts: this.receiptsPath,
       cache_dir: this.dir,
