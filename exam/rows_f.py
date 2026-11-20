@@ -52,9 +52,9 @@ SOURCES = {
                 [{}, {"HTTPS_PROXY": "http://127.0.0.1:9", "HTTP_PROXY": "http://127.0.0.1:9"}], None),
     "hostname": (PYW + "def test_hostname():\n    import socket, platform\n    _w([socket.gethostname(), platform.node()])\n",
                  JSW + "import os from 'node:os';\ntest('hostname', () => _w(os.hostname()));\n",
-                 [{}, {}], None),
-    "cpu-count": (PYW + "def test_cpu():\n    import os\n    _w(os.cpu_count())\n",
-                  JSW + "import os from 'node:os';\ntest('cpu', () => _w(os.cpus().length));\n",
+                 [{}, {"EXAM_UNSHARE_HOST": "exam-other-host"}], None),
+    "cpu-count": (PYW + "def test_cpu():\n    import os\n    _w(len(os.sched_getaffinity(0)))\n",
+                  JSW + "import os from 'node:os';\ntest('cpu', () => _w(os.availableParallelism()));\n",
                   [{}, {"EXAM_TASKSET": "1"}], None),
 }
 
@@ -84,14 +84,10 @@ def _py_value(ctx, src):
         out_p.unlink(missing_ok=True)
         t = ctx.work / f"f01-py-{src}-{i}.jsonl"
         t.unlink(missing_ok=True)
-        cmd_pre = []
         e["EXAM_OUT"] = str(out_p)
         args = ["--det", f"--det-trace={t}", "-W", "ignore", rel]
-        if e.pop("EXAM_TASKSET", None) and shutil.which("taskset"):
-            rc, out = ctx.sh(f"f01-py-{src}-{i}", ["taskset", "-c", "0", "fenvix", "python", "-q", "-p", "no:cacheprovider"] + args,
-                             cwd=d, env=dict(env, **e))
-        else:
-            lib.pytest_engine(ctx, d, env, args, f"f01-py-{src}-{i}", e)
+        e, cmd = _wrap_cmd(e, ["fenvix", "python", "-q", "-p", "no:cacheprovider"] + args, env["PATH"])
+        ctx.sh(f"f01-py-{src}-{i}", cmd, cwd=d, env=dict(env, **e))
         vals.append(out_p.read_text() if out_p.exists() else None)
         traces.append(t)
     vok, vdesc, rep = lib.verify(ctx, d, env, traces[0], traces[1], f"f01-py-{src}-verify")
@@ -116,8 +112,8 @@ def _js_value(ctx, src, d=None, runner="vitest", rel=None):
         t = ctx.work / f"f01-js-{src}-{i}.jsonl"
         t.unlink(missing_ok=True)
         e["EXAM_OUT"] = str(out_p)
-        pre = "taskset -c 0 " if e.pop("EXAM_TASKSET", None) and shutil.which("taskset") else ""
-        ctx.sh(f"f01-js-{src}-{i}", f"{pre}fenvix node vitest run --det --det-trace={t} {rel}", cwd=d, env=e)
+        e, cmd = _wrap_cmd(e, ["fenvix", "node", "vitest", "run", "--det", f"--det-trace={t}", rel])
+        ctx.sh(f"f01-js-{src}-{i}", cmd, cwd=d, env=e)
         vals.append(out_p.read_text() if out_p.exists() else None)
         traces.append(t)
     vok, vdesc, rep = lib.verify(ctx, d, {}, traces[0], traces[1], f"f01-js-{src}-verify")
@@ -335,7 +331,7 @@ def F_03(ctx: Ctx):
         (d / rel).unlink(missing_ok=True)
         rc, out = ctx.sh("vthr-verify", ["fenvix", "verify"] + [str(t) for t in traces], cwd=d, env=env)
         if len(set(outs)) == 1:
-            return rc == 0, f"one outcome over 6 runs; verify rc={rc}"
+            return False, f"INCONCLUSIVE: one outcome over 6 runs (the race was not exercised); verify rc={rc}"
         return rc != 0, f"{len(set(outs))} outcomes over 6 runs; verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
     ctx.run_check("F-03.thread", "runs whose thread order differed are never 'identical'", thread_py)
 
@@ -389,7 +385,7 @@ EDITS = {
 }
 
 WRONG_REUSE = {
-    "cpu-count": ("import os\n\ndef test_cpu():\n    assert os.cpu_count() >= 2\n", {}, {"EXAM_TASKSET": "1"}),
+    "cpu-count": ("import os\n\ndef test_cpu():\n    assert len(os.sched_getaffinity(0)) >= 2\n", {}, {"EXAM_TASKSET": "1"}),
     "umask": ("import os\n\ndef test_umask():\n    m = os.umask(0)\n    os.umask(m)\n    assert m == 0o022\n", {"EXAM_UMASK": "022"}, {"EXAM_UMASK": "077"}),
     "rlimit": ("import resource\n\ndef test_rlimit():\n    assert resource.getrlimit(resource.RLIMIT_NOFILE)[0] >= 4096\n",
                {"EXAM_ULIMIT": "8192"}, {"EXAM_ULIMIT": "1024"}),
@@ -585,7 +581,7 @@ def F_06(ctx: Ctx):
     def host_reuse():
         d = rows_js._ufo(ctx)
         body = ("import { test, expect } from 'vitest';\nimport os from 'node:os';\n"
-                "test('host', () => { expect(os.cpus().length).toBeGreaterThan(1); });\n")
+                "test('host', () => { expect(os.availableParallelism()).toBeGreaterThan(1); });\n")
         lib.write(d / "test/exam-cpu.test.ts", body)
         cache = ctx.work / "f06-cpu"
         shutil.rmtree(cache, ignore_errors=True)

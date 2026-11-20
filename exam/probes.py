@@ -210,7 +210,8 @@ def _(ctx):
     cache = ctx.work / "pvday"
     shutil.rmtree(cache, ignore_errors=True)
     base = ["fenvix", "python", "-q", "-p", "no:cacheprovider", "--det", f"--det-cache={cache}", "-W", "ignore", rel]
-    ctx.sh("pvday-1", base, cwd=d, env=dict(env, EXAM_DAY=day))
+    # both runs under faketime (its LD_PRELOAD is then the same in both): only the date differs
+    ctx.sh("pvday-1", ["faketime", "-f", "+0d"] + base, cwd=d, env=dict(env, EXAM_DAY=day))
     rc2, out2 = ctx.sh("pvday-2", ["faketime", "-f", "+1d"] + base, cwd=d, env=dict(env, EXAM_DAY=day))
     (d / rel).unlink(missing_ok=True)
     n = lib.reused_count(out2)
@@ -583,7 +584,7 @@ def _(ctx):
     cache = ctx.work / "vday-cache"
     shutil.rmtree(cache, ignore_errors=True)
     shutil.rmtree(d / ".detjs", ignore_errors=True)
-    ctx.sh("vday-1", f"fenvix node vitest run --det --det-cache={cache} {rel}", cwd=d, env={"EXAM_DAY": str(today)})
+    ctx.sh("vday-1", f"faketime -f '+0d' fenvix node vitest run --det --det-cache={cache} {rel}", cwd=d, env={"EXAM_DAY": str(today)})
     shutil.rmtree(d / ".detjs", ignore_errors=True)
     rc2, out2 = ctx.sh("vday-2", f"faketime -f '+1d' fenvix node vitest run --det --det-cache={cache} {rel}", cwd=d,
                        env={"EXAM_DAY": str(today)})

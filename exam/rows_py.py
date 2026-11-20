@@ -296,13 +296,13 @@ def test_thread_race():
     n = [0]
 
     def work():
-        for _ in range(20000):
+        for _ in range(200000):
             v = n[0]
             n[0] = v + 1
     ts = [threading.Thread(target=work) for _ in range(2)]
     [t.start() for t in ts]
     [t.join() for t in ts]
-    assert n[0] == 40000
+    assert n[0] == 400000
 '''
 
 EXECUTOR_RACE = '''
@@ -339,15 +339,18 @@ def PY_07(ctx: Ctx):
         res = {}
         for nm, body in (("thread_race", THREAD_RACE), ("executor_race", EXECUTOR_RACE)):
             rel = fam.write_probe(d, nm, body)
-            outs, fps = [], []
+            plain, det = set(), set()
             for i in range(8):
-                t = ctx.work / f"l1-{nm}-{i}.jsonl"
-                rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-threads", "--det-async", f"--det-trace={t}", rel],
-                                               f"l1-{nm}-{i}")
-                outs.append(tuple(sorted(o.items())))
-            res[nm] = len(set(outs))
+                _, _, p = lib.pytest_plain(ctx, d, env, [rel], f"l1p-{nm}-{i}")
+                plain.add(tuple(sorted(p.items())))
+                rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-threads", "--det-async", rel], f"l1-{nm}-{i}")
+                det.add(tuple(sorted(o.items())))
+            res[nm] = (len(plain), len(det))
             (d / rel).unlink(missing_ok=True)
-        return all(v == 1 for v in res.values()), f"distinct outcome sets over 8 runs: {res}"
+        exercised = all(p >= 2 for p, _ in res.values())
+        ok = exercised and all(dd == 1 for _, dd in res.values())
+        pre = "" if exercised else "INCONCLUSIVE (the race did not show in 8 plain runs): "
+        return ok, f"{pre}distinct outcome sets over 8 runs (plain, --det): {res}"
     ctx.run_check("PY-07.probe-stable", "8 --det runs of a thread race and an executor race: one outcome each", stable,
                   gaps=["G-0518"])
 
@@ -355,16 +358,16 @@ def PY_07(ctx: Ctx):
         d, env = fam.probe_host(ctx)
         rel = fam.write_probe(d, "thread_race", THREAD_RACE)
         traces, outs = [], []
-        for i in range(6):
+        for i in range(8):
             t = ctx.work / f"hon-{i}.jsonl"
             rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", f"--det-trace={t}", rel], f"hon-{i}")
             traces.append(t)
             outs.append(tuple(sorted(o.items())))
         (d / rel).unlink(missing_ok=True)
         if len(set(outs)) == 1:
-            return True, f"one outcome over 6 runs ({outs[0]}): nothing to flag"
+            return False, f"INCONCLUSIVE: one outcome over 8 --det runs ({outs[0]}): the race was not exercised, nothing to judge"
         rc, out = ctx.sh("hon-verify", ["fenvix", "verify"] + [str(t) for t in traces], cwd=d, env=env)
-        return rc != 0, f"{len(set(outs))} distinct outcomes over 6 runs; verify rc={rc}: {out.strip().splitlines()[-1] if out.strip() else ''}"
+        return rc != 0, f"{len(set(outs))} distinct outcomes over 8 runs; verify rc={rc} ({out.strip().splitlines()[-1] if out.strip() else ''})"
     ctx.run_check("PY-07.verify-honest", "runs whose thread order differed are never reported identical", honest,
                   gaps=["G-0180"])
 
