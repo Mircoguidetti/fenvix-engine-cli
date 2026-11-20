@@ -655,6 +655,8 @@ function installProcess(patcher, cfg) {
   }
   patcher.set(process, 'hrtime', hrtime);
   patcher.set(process, 'uptime', uptime);
+  // clocks this process now reads virtually (the cache capture no longer counts them as real-clock reads)
+  STATE.virtualClocks = ['process.uptime()', 'performance.timeOrigin', 'Intl.DateTimeFormat#format'];
   // The host's performance object is also `require('perf_hooks').performance` (Jest: a test file that imports it
   // gets the host object, not its context's wrapper; G-0141). Runner frames keep the real clock (callerIsInfra).
   const hp = globalThis.performance;
@@ -708,9 +710,37 @@ function installAtomicsWait(patcher, g) {
   patcher.set(A, 'wait', w);
 }
 
+// Intl.DateTimeFormat#format() / formatToParts() without a date format "now" from V8's own clock: give them the
+// virtual clock (same family as audit G-0135; the cache keyed it as a real-clock read, R-009).
+function installIntlNow(g) {
+  const I = g.Intl;
+  const P = I && I.DateTimeFormat && I.DateTimeFormat.prototype;
+  if (!P || P.__detjsIntlNow) return;
+  const D = g.Date && g.Date.__detjsReal ? g.Date : null;
+  const now = () => (D ? D.now() : (CLOCK ? Math.floor(CLOCK.wallMs(readFor('Intl.DateTimeFormat'))) : Date.now()));
+  try {
+    const d = Object.getOwnPropertyDescriptor(P, 'format');
+    if (d && typeof d.get === 'function') {
+      Object.defineProperty(P, 'format', {
+        configurable: true, enumerable: d.enumerable,
+        get() { const f = d.get.call(this); return function format(date) { return f(date === undefined && !callerIsInfra() ? now() : date); }; },
+      });
+    }
+    const fp = P.formatToParts;
+    if (typeof fp === 'function') {
+      Object.defineProperty(P, 'formatToParts', {
+        configurable: true, writable: true,
+        value: function formatToParts(date) { return fp.call(this, date === undefined && !callerIsInfra() ? now() : date); },
+      });
+    }
+    Object.defineProperty(P, '__detjsIntlNow', { value: true });
+  } catch { /* frozen intrinsics */ }
+}
+
 /** Installation into one realm (global object). */
 function installRealm(patcher, g, cfg, { sameRealm }) {
   if (!(g.Date && g.Date.__detjsReal)) patcher.set(g, 'Date', makeDate(g.Date));
+  installIntlNow(g);
   if (g.performance) {
     if (sameRealm) patcher.define(g.performance, 'now', performanceNow);
     else patcher.set(g, 'performance', wrapPerformance(g.performance));

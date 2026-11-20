@@ -1797,6 +1797,8 @@ function installNet(cap) {
 function installRealClock(cap) {
   const real = (what) => {
     if (!cap.active || cap.busy || cap.isGlobal) return;
+    // a clock Level 0 virtualizes in this process (src/clock.js): a clock read keyed by the epoch, not a real one
+    if (STATE.virtualClocks && STATE.virtualClocks.some((v) => String(what).startsWith(v))) return;
     cap.busy++;
     let infra;
     try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
@@ -1870,13 +1872,41 @@ function installBinding(cap) {
 // test is never reused); a binding missing here costs reuse, never correctness.
 const TOOL_BINDING = new RegExp(`${INFRA.source}|[\\\\/]node_modules[\\\\/](?:\\.pnpm[\\\\/][^\\\\/]+[\\\\/]node_modules[\\\\/])?(?:@unrs|unrs-resolver|@rollup|rollup|@rolldown|rolldown|@oxc-[a-z-]+|oxc-[a-z-]+|@oxc-parser|lightningcss[a-z-]*|@parcel[\\\\/]watcher|fsevents|@esbuild|esbuild|@swc[a-z-]*|@napi-rs)[\\\\/@]`);
 
+/**
+ * A native binding a runner or tool loads for itself (a transpiler's hash binding, a resolver): the first stack frame
+ * outside the binding's own package belongs to the runner's or a tool's code. A binding reached from any other code
+ * (the test, a library it uses, a loader helper such as node-gyp-build or bindings) is the test's.
+ */
+function loadedByTool(cap, f) {
+  const m = /^(.*[\\/]node_modules[\\/](?:@[^\\/]+[\\/])?[^\\/]+)[\\/]/.exec(f);
+  const own = m ? m[1] + path.sep : null; // an addon of the project itself: its loader is the test's code
+  if (own === null) return false;
+  cap.busy++;
+  try {
+    for (const cs of cap.stackFiles(40, loadedByTool)) {
+      const raw = cs.getFileName && cs.getFileName();
+      if (!raw || raw.startsWith('node:') || raw.startsWith(own) || LOADS_FOR_TEST.test(raw)) continue;
+      const c = cap.frameClass(raw) & 7;
+      if (c === F_USER) return false;
+      if (c === F_INFRA || c === F_DRIVER) return true;
+      // the binding's loader and other libraries in between (index.js of a platform package, node-gyp-build,
+      // bindings): keep looking for the code that wanted it
+    }
+  } finally { cap.busy--; }
+  return false; // no runner or tool frame: the test's (an ES module import chain has no caller frame)
+}
+// a runner's module system loading a module on behalf of the test (Jest's runtime requires `.node` files with the
+// host's require; Vitest's module runner imports externalized dependencies): transparent for the attribution of a
+// native addon
+const LOADS_FOR_TEST = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:jest-runtime|vitest|@vitest[\\/]runner|vite-node|vite)[\\/]/;
+
 function installDlopen(cap) {
   wrapFn(cap, process, 'dlopen', (a) => {
     const f = a[1];
     if (typeof f !== 'string') return;
     cap.nativeLoads.add(f);
     if (!cap.active || cap.busy || cap.isGlobal) return;
-    if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+    if (!TOOL_BINDING.test(f) && !loadedByTool(cap, f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
   });
   // process.dlopen runs once per process (or thread) and addon: a later file of the same process that loads it again
   // gets Node's require cache (Jest in band requires `.node` files with the host's require). Every load request of a
@@ -1892,7 +1922,7 @@ function installDlopen(cap) {
         try {
           const parent = a[1];
           const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
-          if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+          if (!TOOL_BINDING.test(f) && !loadedByTool(cap, f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
         } catch { /* never break the load */ }
       }
       return realLoad.apply(this, a);

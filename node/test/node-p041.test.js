@@ -605,3 +605,45 @@ test('G-2185 G-2186 G-2187: detjs verify names itself, refuses one trace and unr
   assert.match(missing.stderr, /cannot read trace/);
   assert.doesNotMatch(missing.stderr, /\n\s+at /);
 });
+
+// G-0181: a control that cannot be installed is never silent: the test gets an `uncontrolled.level0` event (the
+// verifier does not call it identical) and the cache never reuses it.
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0181 a realm whose globals cannot be replaced is marked and never reused`, T, () => {
+    const dir = proj(runner, 'gap0181', {
+      a: `${REQ[runner]}
+test('frozen realm', () => {
+  const sb = {};
+  const own = { getRandomValues: (a) => a, randomUUID: () => 'x' };
+  Object.defineProperty(sb, 'crypto', { value: own, writable: false, configurable: false, enumerable: true });
+  const ctx = vm.createContext(sb);
+  expect(vm.runInContext('typeof crypto.getRandomValues', ctx)).toBe('function');
+});`,
+    });
+    const r = run(runner, dir, [], { cache: false });
+    assert.equal(r.status, 0, show(r));
+    assert.match(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8'), /uncontrolled\.level0/);
+    notReused(runner, dir, fileOf(runner, 'a'), 'a Level 0 control could not be installed');
+  });
+}
+
+// JS-09: an addon inside an installed dependency, reached through the dependency's own loader (a platform package /
+// node-gyp-build pattern) from an ES module import (Vitest) or a require (Jest): the test's, never reused.
+for (const runner of RUNNERS) {
+  test(`${runner}: JS-09 a dependency's native addon imported by a test is never reused`, T, () => {
+    const imp = runner === 'vitest' ? "import dep from 'fake-native-dep';" : "const dep = require('fake-native-dep');";
+    const dir = proj(runner, 'native-dep', {
+      a: `${imp}\ntest('dep addon', () => { expect(typeof dep.digest(Buffer.from('x'))).toBe('string'); });`,
+      b: "test('plain', () => { expect(1).toBe(1); });",
+    }, {
+      'node_modules/fake-native-dep/package.json': JSON.stringify({ name: 'fake-native-dep', main: 'index.js' }),
+      'node_modules/fake-native-dep/index.js': "module.exports = require('./loader.js')(__dirname);\n",
+      'node_modules/fake-native-dep/loader.js': "const path = require('node:path'); module.exports = (d) => require(path.join(d, 'build', 'dep.node'));\n",
+    });
+    fs.mkdirSync(path.join(dir, 'node_modules', 'fake-native-dep', 'build'), { recursive: true });
+    fs.copyFileSync(ADDON, path.join(dir, 'node_modules', 'fake-native-dep', 'build', 'dep.node'));
+    notReused(runner, dir, fileOf(runner, 'a'), 'native addon');
+    const r3 = run(runner, dir);
+    assert.ok(reused(r3).includes(fileOf(runner, 'b')), `the other file is reused\n${show(r3)}`);
+  });
+}

@@ -307,18 +307,25 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     noWrongReuse(R, dir, F('u'), { 'data/a.txt': 'two' }, { env: { NODE_OPTIONS: '--require ./early.cjs' } });
   });
 
-  test('R-009 real clocks Level 0 does not virtualize (uptime, performance.timeOrigin, Intl format of now): not cacheable', T, () => {
+  // R-009 made these real-clock reads not cacheable; since P-041 (audit G-0135, G-0136) Level 0 virtualizes them, so
+  // they are clock reads keyed by the epoch: reused on the same epoch, never across a change of the epoch.
+  test('R-009 uptime, performance.timeOrigin, Intl format of now: virtual, keyed by the epoch', T, () => {
     const dir = proj('real-clock', {
       ...tf('u', "test('u', () => { assert.ok(process.uptime() >= 0); });"),
-      ...tf('o', "test('o', () => { assert.ok(performance.timeOrigin > 0); });"),
-      ...tf('i', "test('i', () => { assert.ok(new Intl.DateTimeFormat('en', { year: 'numeric' }).format().length >= 4); });"),
+      ...tf('o', "test('o', () => { assert.ok(performance.timeOrigin < Date.parse('2026-01-01')); });"),
+      ...tf('i', "test('i', () => { assert.equal(new Intl.DateTimeFormat('en', { year: 'numeric', timeZone: 'UTC' }).format(), '2025'); });"),
     });
-    notCached(R, dir, F('u'), 'process.uptime');
-    const r = crun(R, dir);
-    for (const [f, why] of [[F('o'), 'performance.timeOrigin'], [F('i'), 'Intl.DateTimeFormat']]) {
-      assert.ok(!reused(r).includes(f), `${f} must not be reused\n${show(r)}`);
-      assert.match(JSON.stringify(r.summary.not_cached_detail), new RegExp(why.replace('.', '\\.')));
-    }
+    const A = ['--det', '--det-epoch=2025-03-01T00:00:00Z'];
+    const B = ['--det', '--det-epoch=2026-03-01T00:00:00Z'];
+    const r1 = crun(R, dir, [], { det: A });
+    assert.equal(r1.status, 0, show(r1));
+    const r2 = crun(R, dir, [], { det: A });
+    for (const f of [F('u'), F('o'), F('i')]) assert.ok(reused(r2).includes(f), `${f} reused on the same epoch\n${show(r2)}`);
+    const fresh = crun(R, dir, [], { cache: false, det: B });
+    assert.notEqual(fresh.status, 0, `the epoch decides o and i\n${show(fresh)}`);
+    const r3 = crun(R, dir, [], { det: B });
+    for (const f of [F('o'), F('i')]) assert.ok(!reused(r3).includes(f), `WRONG REUSE of ${f} across epochs\n${show(r3)}`);
+    assert.notEqual(r3.status, 0, show(r3));
   });
 
   test('R-009 /dev/shm listed by the test: not cacheable', T, () => {
