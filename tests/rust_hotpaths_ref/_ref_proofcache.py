@@ -711,7 +711,7 @@ class Capture:
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
             if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep or \
-                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", (os.environ.get("TMPDIR") or "\0").rstrip(os.sep)):
+                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", _tmpdir_raw().rstrip(os.sep)):
                 return
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)
@@ -2492,6 +2492,12 @@ def _uncacheable(flags: set, cfg) -> str | None:
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
+
+
+def _tmpdir_raw() -> str:
+    """$TMPDIR without an environment read of the capture (the Rust side reads the C environment)."""
+    v = os.environ._data.get(os.environ.encodekey("TMPDIR"))
+    return os.environ.decodevalue(v) if v is not None else "\0"
 
 
 def _caller_in_repo(cap) -> bool:

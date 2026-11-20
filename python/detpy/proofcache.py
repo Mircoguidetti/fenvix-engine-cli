@@ -380,7 +380,8 @@ class Capture(_core.CaptureCore):
                         # by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by the kind
                         sized = name == "stat" and not nolink and not _kind_check_caller()
                         cap.stat_check(path, nolink, sized)
-                        timed = name in ("stat", "lstat") and _user_stat_caller()
+                        # pytest's assertion rewriting compares source mtimes: infrastructure, not the test's
+                        timed = name in ("stat", "lstat") and _user_stat_caller() and cap._caller_kind() == "user"
                     except Exception:
                         pass
                     finally:
