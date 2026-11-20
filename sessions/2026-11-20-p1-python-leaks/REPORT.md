@@ -1,4 +1,4 @@
-STATUS-LINE
+DONE: the tests of findings #3, #4, #11 and R-050 D4 pass locally on CPython 3.12, 3.13 and 3.14 (MEASURED below); the CI run on the PR head confirms
 
 # P1 Python leaks: review P1 findings #3, #4, #11 (+ R-050 D4)
 
@@ -46,6 +46,12 @@ Rule: under `--det` every OS source a test can observe is controlled or recorded
 - `tests/rust_hotpaths_ref/_ref_proofcache.py` (the Python reference of the Rust cache, not a test assertion): its
   `/etc/hosts` / `nsswitch.conf` read runs under `_state.quiet()`, as the Rust path reads them with `std::fs`, which the
   audit hook never sees (otherwise `test_capture_rust.py` compared fingerprints that differed only by this read).
+- `tests/test_harness_parallel_proof.py::test_synthetic_project_and_comparison`: the synthetic project's
+  `test_reader` reads a file `test_writer` writes outside the project, from the other worker under `--dist loadfile`.
+  That cross-worker race was real but unobserved; the read is now an event, so the reader may differ by placement and
+  between the two parallel runs. The test now requires: placement = the victim (when apart) plus at most the
+  reader, parallel noise at most the reader, and for the reader the first differing event must be that `fs.read`
+  (every other assertion unchanged).
 - Copied tests: of the reviewer's 7 tests in `test_review_p1_verifier.py`, the 3 of findings #3/#4 are in
   `tests/test_review_p1_python_leaks.py` verbatim (only the module docstring differs); the other 4 (findings 5, 8, 9,
   10) belong to `claude/verifier-cli` and would be red here.
@@ -59,7 +65,31 @@ No Rust code changed (no Node suite needed). Files the verifier session may also
 
 ## Measurements
 
-SUITE-RESULTS
+Full Python suite as the CI job runs it, each version with a fresh `XDG_CACHE_HOME` and its own `TMPDIR` (the three
+ran at once on a 4-core machine), on commit 0e5a47a of this branch (engine code final; before the harness test edit):
+`python -m pytest -q -p no:randomly tests --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does -rfE`
+
+| version | MEASURED result | failures and their status |
+|---|---|---|
+| 3.12.3 | 2 failed, 1043 passed, 72 skipped, 1 xfailed | `test_harness_parallel_proof.py::test_synthetic_project_and_comparison` (fixed afterwards, see above; then `2 passed`, MEASURED with `-p no:randomly tests/test_harness_parallel_proof.py`); `test_clock_rust.py::test_rust_clock_is_faster_than_the_reference` (a timing comparison while three suites shared 4 cores: `1 passed` alone, MEASURED) |
+| 3.13.18 | 1 failed, 1045 passed, 71 skipped, 1 xfailed | the harness test above (fixed: `2 passed` × 3 runs, MEASURED) |
+| 3.14.6 (uv build) | 5 failed, 1041 passed, 71 skipped, 1 xfailed | the harness test (fixed); `test_clock_rust.py::test_traces_match_reference`, `::test_children_alive_and_its_audit_events_match_reference`, `test_review_r023b.py::test_2e_os_getrandom_is_entropy[serial,n2]`: **pre-existing in this interpreter**: the same 4 fail on trunk 71f8081 with the same interpreter (MEASURED: `PYTHONPATH=<worktree of 71f8081>/python python3.14 -m pytest -q -p no:randomly tests/test_review_r023b.py::test_2e_os_getrandom_is_entropy tests/test_clock_rust.py` → `4 failed, 12 passed`); this 3.14.6 build has no `os.getrandom` (`hasattr(os, "getrandom")` → False) and its `mock_open` differs. UNKNOWN whether CI's 3.14 shows them; CI on trunk is the reference |
+
+Targeted, after the last edits: `python -m pytest -q -p no:randomly tests/test_harness_parallel_proof.py
+tests/test_review_p1_python_leaks.py tests/test_review_p1_packages_d4.py tests/test_verifier_truth.py
+tests/test_fingerprint.py` → 3.12: `35 passed` (MEASURED); 3.13: `35 passed`; 3.14: `35 passed` (MEASURED, each run alone). A 3.14 run made at the same time as the 3.13 one, both with the default `TMPDIR`, gave `5 failed, 30 passed`; ESTIMATED cause: the two sessions contended for `/tmp/fenvix-det`, and the session that took `fenvix-det.1` has a different `os` run input, so traces compared across them differ by input (the intended, honest behaviour; CI jobs do not share a machine).
+
+Before the fix (MEASURED, 3.13, trunk code): `tests/test_review_p1_python_leaks.py` → 3 failed (pid, tempfile name,
+/dev/urandom, /proc/uptime, outside file, raw thread race, pre-started pool race all "stable" although they differed;
+8 runs gave `['1 failed, 1 passed', '2 passed']`); `tests/test_verifier_truth.py` → `1 failed, 18 passed`; the D4
+test → `1 failed` (fresh `XDG_CACHE_HOME`). After: all pass (fresh `XDG_CACHE_HOME` for #11 and D4: `19 passed`,
+`1 passed`).
+
+Cost (ESTIMATED, not measured separately): one audit-hook call per audit event of the process, one `stat` and a
+digest of up to 1 MiB per file a test reads, one thread CPU-clock read per non-infrastructure thread per test. The
+full suite took 39–42 min per version here, as before (UNKNOWN: no same-machine baseline run).
+
+No Node suite run: no Rust or Node code changed (DECLARED).
 
 Build: as `.github/workflows/release-1.yml` (`maturin build --release --compatibility linux -o dist`, wheel installed
 `--no-deps` in three venvs with pytest 9.2.0 and pytest-xdist; `_core` copied into `python/detpy/`).
