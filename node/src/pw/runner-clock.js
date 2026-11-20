@@ -78,9 +78,13 @@ function classify() {
   Error.captureStackTrace(o, classify);
   Error.stackTraceLimit = prev;
   const stack = String(o.stack || '');
-  if (/_updateTimeout|timeoutManager/i.test(stack)) return 'watchdog';
-  // Deadlines of one Playwright operation (action/expect/event timeouts): the operation waits for something.
+  // The test/hook watchdog is created by TimeoutManager itself (top frames). Every timer of a test has TimeoutManager
+  // among its async frames (the test runs inside it): matching the whole stack made expect.poll's interval sleep a
+  // "watchdog", so a polling runner looked idle (MEASURED locally, documenso email-transport-claims: the run hung).
   const head = stack.split('\n').slice(1, 9).join('\n');
+  const top = stack.split('\n').slice(1, 4).join('\n');
+  if (process.env.DETJS_LS_WATCHDOG_WIDE === '1' ? /_updateTimeout|timeoutManager/i.test(stack) : /_updateTimeout|TimeoutManager\./.test(top)) return 'watchdog';
+  // Deadlines of one Playwright operation (action/expect/event timeouts): the operation waits for something.
   if (/ProgressController\.run|raceAgainstDeadline|rejectOnTimeout|pollAgainstDeadline.*deadline/.test(head)) return 'deadline';
   // Playwright's own bookkeeping (network-idle lifecycle, worker shutdown): not a wait of the runner.
   if (/_startNetworkIdleTimer|gracefullyCloseAndExit|gracefullyClose|_scheduleGC|heartbeat/i.test(head)) return 'lib';

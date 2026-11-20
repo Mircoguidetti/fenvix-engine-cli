@@ -78,6 +78,16 @@ function start(opts) {
           continue;
         }
         const idle = active.filter(([, s]) => !s.ask.waiting);
+        if (idle.length && holds.length && process.env.DETJS_LS_HUB_HOLD_ADVANCE !== '0') {
+          // A released message travels for its latency while no runner waits on time (its test code waits on the
+          // page, the page on this message): T moves to its due time, fixed at its release. Before, the hub answered
+          // "idle" forever (MEASURED locally, documenso email-transport-claims with 2 workers: every run hung until
+          // the run timeout, as all huntp runs of run 44717542771 did).
+          const to = holds[0].due;
+          sched.advanceTo(to);
+          for (const [, s] of active) { const r = s.ask.reply; s.ask = null; r({ kind: 'advance', toNs: to, t: to }); }
+          continue;
+        }
         if (idle.length) {
           for (const [w, s] of idle) { const r = s.ask.reply; s.ask = null; r({ kind: 'idle', t: T }); void w; }
           return;

@@ -1176,6 +1176,13 @@ class Coordinator {
     for (const it of this.inprogress.values()) if (it.kind === 'api') api++;
     for (const h of this.holds) { const m = this.msgs.get(h.id); if (m && m.item.kind === 'api') api++; }
     if (api > 0) return { state: 'waiting', why: `api:${api}` };
+    // Engine work with a due time (a held message's latency, a fetched response waiting for its page's FETCH_MS):
+    // the runner waits on it through the page even when its own code awaits nothing we see. Without this, time moved
+    // only after a real-time stall (one worker) or never (several workers: the hub answered "idle" forever).
+    if (ENV.DETJS_LS_DUE_WAIT !== '0') {
+      const T = this.sched.now();
+      if (this.holds.length || this.responses.some((r) => r.notBefore > T)) return { state: 'waiting', why: 'net-due' };
+    }
     return { state: 'idle', why: '' };
   }
 
@@ -1301,7 +1308,7 @@ class Coordinator {
       // database query of a seed helper): wait for activity. A wait that never ends would be a call we do not
       // see as a wait: after STALL ms the runner is counted as waiting once (recorded).
       this.stats.idleWaits++;
-      this.trace(`idle-state kinds=${JSON.stringify(this.clock.kinds())} waits=${CALLS.waits.size} calls=${CALLS.inflight}`);
+      this.trace(`idle-state kinds=${JSON.stringify(this.clock.kinds())} waits=${CALLS.waits.size} calls=${CALLS.inflight}${ENV.DETJS_LS_TRACE_ALL ? ` q=${this.clock.queue.map((t) => `${t._kind}:${t._delay}@${t._due / NS}`).join(',')} xw=${this.extraWaiting ? this.extraWaiting() : '-'} routes=${ACT.routes} admits=${this.admits.length} msgs=${this.msgs.size}` : ''}`);
       const t0 = realNow();
       const n0 = ACT.n;
       await new Promise((r) => { this.wake = r; REAL.setTimeout(r, this.stallMs); });
