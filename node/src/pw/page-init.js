@@ -119,7 +119,10 @@ function pageInit(seedHi, seedLo) {
         if (pre) anchor(pre, 0);
       }
       if (!anc) return null;
-      var e = rperf() - anc.perf;
+      // Progress inside the slice from Chromium's virtual Date (whole ms): performance.now() is coarsened with a
+      // random per-process jitter, enough to move Math.floor by 1 ms between runs (MEASURED on uptime-kuma's RSS
+      // replays: socket.io's polling id 1 ms apart).
+      var e = rnow() - anc.raw;
       if (e < 0) e = 0;
       if (e > anc.allow) e = anc.allow;
       return anc.base + e;
@@ -152,8 +155,8 @@ function pageInit(seedHi, seedLo) {
       } catch (e) { /* frozen */ }
     }
     function anchor(baseMs, allowMs) {
-      if (tOrigin === null) tOrigin = baseMs - rperf();
-      anc = { base: baseMs, perf: rperf(), allow: allowMs };
+      if (tOrigin === null) tOrigin = baseMs - Math.round(rperf()); // whole ms: the jitter of the first read stays out
+      anc = { base: baseMs, perf: rperf(), raw: rnow(), allow: allowMs };
       return rnow();
     }
 
