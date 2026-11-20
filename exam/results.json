@@ -1,34 +1,21 @@
 {
  "exam": "go-live acceptance exam (exam/PLAN.md)",
- "run_id": "44813379036",
+ "run_id": "44814365673",
  "base_run": null,
  "rows_rerun_in_run_id": null,
- "installed": {
-  "44813379036": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14667656404",
-   "release_run": "44811997318",
-   "release_commit": "f84dde74f3a415acc4678b2e0d6f71a03a2c9903",
-   "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.12.16);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
-   "sha256": {
-    "detjs.linux-x64.node": "e65ffbe27207918f8cbacef4d0702596ca9f75c0cd52d10071cd502e56703d79",
-    "fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl": "09d47744a6b3e3711be729e2b77b120e9fe50503514e3e06c7d89114b76c0d16"
-   }
-  }
- },
+ "release_run_requested": "44804076830",
+ "artifacts_tested": [],
+ "installed": {},
  "decisions": [
   "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
   "MCP gaps belong to F-14 (remote MCP server), not examined here"
  ],
  "summary": {
   "rows": 24,
-  "pass": 1,
-  "fail": 23,
-  "checks": 38,
-  "checks_passed": 22,
+  "pass": 0,
+  "fail": 24,
+  "checks": 0,
+  "checks_passed": 0,
   "gaps_in_scope": 207,
   "gaps_closed": 0,
   "gaps_out_of_scope": 410,
@@ -125,115 +112,19 @@
   },
   "F-09": {
    "status": "FAIL",
-   "legs": {
-    "linux-x64/py3.13/node22": {
-     "job": "F-09 linux-x64 py3.13 node22",
-     "job_id": 136555463509,
-     "run_id": "44813379036",
-     "seconds": 46,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     }
-    }
-   },
-   "checks": [
-    {
-     "id": "F-09.install",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "the engine-linux-x64 artifact of the newest release-1 run installs with release/install-image.sh; version and sha256 recorded",
-     "observed": "install ok; artifact engine-linux-x64 from release run 44811997318 at f84dde74f3a415acc4678b2e0d6f71a03a2c9903; version fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.13.18);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;; files 2",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "F-09.artifact-identity",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "the artifact carries its own version and sha256 manifest, and `fenvix version` names the release commit it came from",
-     "observed": "checksum/version manifest shipped in the artifact: none; `fenvix version` names the release commit: False (fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.13.18) | detjs 0.1.0 | fenvix-go absent)",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22",
-     "gaps": [
-      "G-0251"
-     ]
-    },
-    {
-     "id": "F-09.node-addon",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "the detjs native addon of the artifact loads on Linux x86_64",
-     "observed": "native addon loads: rc=0 ",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "F-09.job-venv",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "a job that creates its own venv gets the engine from the runner image (`fenvix python --det` works there)",
-     "observed": "`fenvix python --det` in the job's own venv: rc=127: fenvix: the Python package fenvix is not installed in /home/runner/work/_temp/exam-work/src/itsdangerous-jobvenv/.venv/bin/python3 (No module named 'detpy')",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22",
-     "gaps": [
-      "G-0413"
-     ]
-    },
-    {
-     "id": "F-09.py-det2",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "DET2 on itsdangerous",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "F-09.py-cache2",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "CACHE2 on itsdangerous",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "F-09.node-det2",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "DET2 on ufo",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 471}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "F-09.node-cache2",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "CACHE2 on ufo",
-     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "F-09 linux-x64 py3.13 node22"
-    }
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
    ],
-   "failed": [
-    "F-09.artifact-identity @ linux-x64/py3.13/node22",
-    "F-09.job-venv @ linux-x64/py3.13/node22",
-    "F-09.py-cache2 @ linux-x64/py3.13/node22",
-    "F-09.py-det2 @ linux-x64/py3.13/node22"
-   ],
-   "missing_legs": [],
-   "n_checks": 8,
-   "n_passed": 4,
+   "n_checks": 0,
+   "n_passed": 0,
    "gaps": {
     "total": 2,
     "closed": 0,
-    "open": 2,
-    "no_check_ran": 0
+    "open": 0,
+    "no_check_ran": 2
    }
   },
   "F-18": {
@@ -254,189 +145,17 @@
    }
   },
   "JS-01": {
-   "status": "PASS",
-   "legs": {
-    "linux-x64/py3.13/node22": {
-     "job": "JS-01 linux-x64 py3.13 node22",
-     "job_id": 136555463499,
-     "run_id": "44813379036",
-     "seconds": 64,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     }
-    },
-    "linux-x64/py3.13/node24": {
-     "job": "JS-01 linux-x64 py3.13 node24",
-     "job_id": 136555463521,
-     "run_id": "44813379036",
-     "seconds": 48,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.133.1"
-     }
-    },
-    "linux-x64/py3.13/node26": {
-     "job": "JS-01 linux-x64 py3.13 node26",
-     "job_id": 136555463731,
-     "run_id": "44813379036",
-     "seconds": 58,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     }
-    }
-   },
-   "checks": [
-    {
-     "id": "JS-01.install",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints detjs",
-     "observed": "fenvix version: ['detjs 0.1.0']; node v22.23.5",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "JS-01.det2.simple-statistics",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 277, \"stable\": 277, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 277}; outcomes vs plain: engine rc=0 counts={'passed': 277, 'failed': 0}; plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "JS-01.cache2.simple-statistics",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 277 (needed >= 1 of 277 passing); outcomes vs plain: engine rc=0, plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "JS-01.det2.ufo",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 471}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "JS-01.cache2.ufo",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "JS-01.install",
-     "leg": "linux-x64/py3.13/node24",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints detjs",
-     "observed": "fenvix version: ['detjs 0.1.0']; node v24.22.3",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node24"
-    },
-    {
-     "id": "JS-01.det2.simple-statistics",
-     "leg": "linux-x64/py3.13/node24",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 277, \"stable\": 277, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 277}; outcomes vs plain: engine rc=0 counts={'passed': 277, 'failed': 0}; plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node24"
-    },
-    {
-     "id": "JS-01.cache2.simple-statistics",
-     "leg": "linux-x64/py3.13/node24",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 277 (needed >= 1 of 277 passing); outcomes vs plain: engine rc=0, plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node24"
-    },
-    {
-     "id": "JS-01.det2.ufo",
-     "leg": "linux-x64/py3.13/node24",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 471}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node24"
-    },
-    {
-     "id": "JS-01.cache2.ufo",
-     "leg": "linux-x64/py3.13/node24",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node24"
-    },
-    {
-     "id": "JS-01.install",
-     "leg": "linux-x64/py3.13/node26",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints detjs",
-     "observed": "fenvix version: ['detjs 0.1.0']; node v26.13.1",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node26"
-    },
-    {
-     "id": "JS-01.det2.simple-statistics",
-     "leg": "linux-x64/py3.13/node26",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 277, \"stable\": 277, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 277}; outcomes vs plain: engine rc=0 counts={'passed': 277, 'failed': 0}; plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node26"
-    },
-    {
-     "id": "JS-01.cache2.simple-statistics",
-     "leg": "linux-x64/py3.13/node26",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 277 (needed >= 1 of 277 passing); outcomes vs plain: engine rc=0, plain rc=0 counts={'passed': 277, 'failed': 0}",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node26"
-    },
-    {
-     "id": "JS-01.det2.ufo",
-     "leg": "linux-x64/py3.13/node26",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 471}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node26"
-    },
-    {
-     "id": "JS-01.cache2.ufo",
-     "leg": "linux-x64/py3.13/node26",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44813379036",
-     "job": "JS-01 linux-x64 py3.13 node26"
-    }
-   ],
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
    "failed": [],
-   "missing_legs": [],
-   "n_checks": 15,
-   "n_passed": 15,
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node24",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
    "gaps": {
     "total": 0,
     "closed": 0,
@@ -591,201 +310,16 @@
   },
   "PY-01": {
    "status": "FAIL",
-   "legs": {
-    "linux-x64/py3.12/node22": {
-     "job": "PY-01 linux-x64 py3.12 node22",
-     "job_id": 136555463505,
-     "run_id": "44813379036",
-     "seconds": 29,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.133.1"
-     }
-    },
-    "linux-x64/py3.13/node22": {
-     "job": "PY-01 linux-x64 py3.13 node22",
-     "job_id": 136555463546,
-     "run_id": "44813379036",
-     "seconds": 39,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     }
-    },
-    "linux-x64/py3.14/node22": {
-     "job": "PY-01 linux-x64 py3.14 node22",
-     "job_id": 136555463542,
-     "run_id": "44813379036",
-     "seconds": 41,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     }
-    }
-   },
-   "checks": [
-    {
-     "id": "PY-01.install",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints the detpy version; `fenvix python --help` lists --det",
-     "observed": "fenvix version rc=0: fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.12.16) | detjs 0.1.0 | fenvix-go absent; --det in pytest help: fenvix: compiling the standard library and site-packages under PYTHONHASHSEED=0 into /home/runner/.cache/detpy/pyc/cpython-312-hashseed0 (once per environment and hash seed)\n42",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "PY-01.det2.itsdangerous",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "PY-01.cache2.itsdangerous",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "PY-01.det2.attrs",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "PY-01.cache2.attrs",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "PY-01.install",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints the detpy version; `fenvix python --help` lists --det",
-     "observed": "fenvix version rc=0: fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.13.18) | detjs 0.1.0 | fenvix-go absent; --det in pytest help: fenvix: compiling the standard library and site-packages under PYTHONHASHSEED=0 into /home/runner/.cache/detpy/pyc/cpython-313-hashseed0 (once per environment and hash seed)\n42",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "PY-01.det2.itsdangerous",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "PY-01.cache2.itsdangerous",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "PY-01.det2.attrs",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "PY-01.cache2.attrs",
-     "leg": "linux-x64/py3.13/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.13 node22"
-    },
-    {
-     "id": "PY-01.install",
-     "leg": "linux-x64/py3.14/node22",
-     "ok": true,
-     "expected": "install succeeds; `fenvix version` prints the detpy version; `fenvix python --help` lists --det",
-     "observed": "fenvix version rc=0: fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.14.10) | detjs 0.1.0 | fenvix-go absent; --det in pytest help: fenvix: compiling the standard library and site-packages under PYTHONHASHSEED=0 into /home/runner/.cache/detpy/pyc/cpython-314-hashseed0 (once per environment and hash seed)\n42",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.14 node22"
-    },
-    {
-     "id": "PY-01.det2.itsdangerous",
-     "leg": "linux-x64/py3.14/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.14 node22"
-    },
-    {
-     "id": "PY-01.cache2.itsdangerous",
-     "leg": "linux-x64/py3.14/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.14 node22"
-    },
-    {
-     "id": "PY-01.det2.attrs",
-     "leg": "linux-x64/py3.14/node22",
-     "ok": false,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.14 node22"
-    },
-    {
-     "id": "PY-01.cache2.attrs",
-     "leg": "linux-x64/py3.14/node22",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "not run: engine install into the venv failed: EXAM_WHEEL unset",
-     "run_id": "44813379036",
-     "job": "PY-01 linux-x64 py3.14 node22"
-    }
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.14/node22"
    ],
-   "failed": [
-    "PY-01.cache2.attrs @ linux-x64/py3.12/node22",
-    "PY-01.cache2.attrs @ linux-x64/py3.13/node22",
-    "PY-01.cache2.attrs @ linux-x64/py3.14/node22",
-    "PY-01.cache2.itsdangerous @ linux-x64/py3.12/node22",
-    "PY-01.cache2.itsdangerous @ linux-x64/py3.13/node22",
-    "PY-01.cache2.itsdangerous @ linux-x64/py3.14/node22",
-    "PY-01.det2.attrs @ linux-x64/py3.12/node22",
-    "PY-01.det2.attrs @ linux-x64/py3.13/node22",
-    "PY-01.det2.attrs @ linux-x64/py3.14/node22",
-    "PY-01.det2.itsdangerous @ linux-x64/py3.12/node22",
-    "PY-01.det2.itsdangerous @ linux-x64/py3.13/node22",
-    "PY-01.det2.itsdangerous @ linux-x64/py3.14/node22"
-   ],
-   "missing_legs": [],
-   "n_checks": 15,
-   "n_passed": 3,
+   "n_checks": 0,
+   "n_passed": 0,
    "gaps": {
     "total": 0,
     "closed": 0,
@@ -1841,11 +1375,9 @@
   "G-0251": {
    "row": "F-09",
    "check": "F-09.artifact-identity",
-   "status": "OPEN",
+   "status": "NO-CHECK-RAN",
    "severity": "BLOCKS-USE",
-   "checks": [
-    "F-09.artifact-identity @ linux-x64/py3.13/node22"
-   ]
+   "checks": []
   },
   "G-0264": {
    "row": "F-02",
@@ -2179,11 +1711,9 @@
   "G-0413": {
    "row": "F-09",
    "check": "F-09.job-venv",
-   "status": "OPEN",
+   "status": "NO-CHECK-RAN",
    "severity": "BLOCKS-USE",
-   "checks": [
-    "F-09.job-venv @ linux-x64/py3.13/node22"
-   ]
+   "checks": []
   },
   "G-0420": {
    "row": "F-02",
