@@ -1,5 +1,6 @@
 'use strict';
-// Parallel `--det` (row JS-07, audit gap G-1044): Vitest threads/forks pools and Jest workers run test files in
+// Parallel `--det` (row JS-07, audit gaps G-1044, G-1304, G-1395, G-1396, G-1448, G-1450, G-1455, G-1457, G-1458,
+// G-1449, G-1456): Vitest threads/forks pools and Jest workers run test files in
 // lanes with a fixed plan (src/parallel.js). Checked here:
 //   * the plan is a function of the inputs (identical across runs, written in the trace, replayed from the trace);
 //   * the lanes really overlap in time;
