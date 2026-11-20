@@ -161,7 +161,9 @@ impl Cassette {
     }
 
     fn clear_test(&self, nodeid: &str) {
-        lock(&self.inner).clear_test(nodeid)
+        let mut c = lock(&self.inner);
+        c.clear_test(nodeid);
+        c.recorded.remove(nodeid);
     }
 
     fn open_connection(&self, nodeid: &str, host: &str, port: u16) -> usize {
@@ -205,6 +207,38 @@ impl Cassette {
         let o = lock(&other.inner).clone();
         lock(&self.inner).merge(o);
     }
+
+    /// Note when `nodeid`'s connections were recorded (UTC, RFC 3339).
+    fn set_recorded(&self, nodeid: &str, when: &str) {
+        lock(&self.inner).recorded.insert(nodeid.to_string(), when.to_string());
+    }
+
+    /// When `nodeid`'s connections were recorded, if the cassette says.
+    fn recorded(&self, nodeid: &str) -> Option<String> {
+        lock(&self.inner).recorded.get(nodeid).cloned()
+    }
+
+    /// Rename a test's recordings (`fenvix cassette rename`); False when the old one has none.
+    fn rename_test(&self, old: &str, new: &str) -> bool {
+        let mut c = lock(&self.inner);
+        match c.tests.remove(old) {
+            Some(conns) => {
+                c.tests.insert(new.to_string(), conns);
+                if let Some(w) = c.recorded.remove(old) {
+                    c.recorded.insert(new.to_string(), w);
+                }
+                true
+            }
+            None => false,
+        }
+    }
+}
+
+/// The bytes with the values of secret HTTP headers masked (same length): what a cassette stores and what replay
+/// compares (detpy_core::cassette::redact).
+#[pyfunction]
+fn net_redact<'py>(py: Python<'py>, data: &[u8]) -> Bound<'py, PyBytes> {
+    PyBytes::new(py, &detpy_core::cassette::redact(data))
 }
 
 pub(crate) fn trace_err(e: trace::TraceError) -> PyErr {
@@ -284,6 +318,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
     m.add_function(wrap_pyfunction!(verify_with, m)?)?;
+    m.add_function(wrap_pyfunction!(net_redact, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
     m.add_function(wrap_pyfunction!(shuffle_order, m)?)?;
     m.add_function(wrap_pyfunction!(order_digest, m)?)?;

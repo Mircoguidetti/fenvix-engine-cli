@@ -13,6 +13,9 @@
     fenvix replay BUNDLE [--runs N]         replay a defect and check it fails every time with one fingerprint
     fenvix verify TRACE TRACE... [--json] [--show-stable] [--ignore-env NAME]
                                             compare runs: identical only when the inputs and every event match
+    fenvix cassette list|rename OLD NEW|drop TEST...
+                                            the network recordings, per test
+    fenvix doctor                           what this machine can give: every control, checked
     fenvix detect [DIR]                     languages and runners of DIR (one per line)
     fenvix version | --version | -V         versions of the installed components
 
@@ -421,6 +424,120 @@ def cmd_verify(argv: list) -> int:
     return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
 
 
+def doctor_checks() -> list:
+    """(name, ok, detail, what it affects) for every control this machine must give (audit G-0700)."""
+    import platform
+
+    from . import _level0, reexec
+
+    out = []
+
+    def run(cmd):
+        try:
+            return subprocess.run(cmd, capture_output=True, text=True, timeout=30).returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            return False
+
+    v = sys.version_info
+    out.append(("python", platform.python_implementation() == "CPython" and v >= (3, 12),
+                f"{platform.python_implementation()} {platform.python_version()}",
+                "go-live scope is CPython 3.12-3.14; the cache with proof needs 3.12+"))
+    ok, why = reexec.can_reexec()
+    out.append(("hash seed re-exec", ok, why or "the interpreter can re-execute itself under a fixed PYTHONHASHSEED",
+                "hash seed and bytecode controls"))
+    setarch = shutil.which("setarch")
+    aslr = bool(setarch) and run([setarch, platform.machine(), "-R", "true"])
+    out.append(("ASLR switch", aslr or sys.platform == "darwin",
+                "setarch -R allowed" if aslr else ("macOS: not needed" if sys.platform == "darwin"
+                                                   else "personality(ADDR_NO_RANDOMIZE) refused or setarch missing"),
+                "address-dependent order (sets of objects, id())"))
+    loc = next((c for c in _level0.LOCALE_FALLBACKS if _level0._locale_exists(c)), None)
+    out.append(("locale", loc is not None, loc or "none of " + ", ".join(_level0.LOCALE_FALLBACKS),
+                "the locale control (--det-locale)"))
+    tz = os.path.exists("/usr/share/zoneinfo/UTC") or os.path.exists("/usr/share/zoneinfo/Etc/UTC")
+    out.append(("time zone database", tz or sys.platform == "darwin", "/usr/share/zoneinfo",
+                "time zones other than UTC under --det-tz"))
+    strace = shutil.which("strace")
+    st_ok = bool(strace) and run([strace, "-f", "-qq", "-o", os.devnull, "true"])
+    out.append(("strace", st_ok, strace or "not installed",
+                "the cache with proof follows child processes (otherwise a test that starts one is never reused)"))
+    cc = shutil.which("cc") or shutil.which("gcc") or shutil.which("clang")
+    out.append(("C compiler", bool(cc), cc or "none",
+                "the clock shim of followed child processes (the cache with proof)"))
+    libc = " ".join(platform.libc_ver()) or "unknown"
+    out.append(("C library", sys.platform == "darwin" or platform.libc_ver()[0] == "glibc", libc,
+                "the engine is built for glibc (Linux) and macOS"))
+    js = _detjs()
+    out.append(("detjs (JavaScript runners)", bool(js), " ".join(js) if js else "not installed",
+                "fenvix vitest|jest|... (optional)"))
+    return out
+
+
+def cmd_doctor(argv: list) -> int:
+    p = argparse.ArgumentParser(prog=f"{PROG} doctor", description="Check what this machine can give: every control "
+                                "of a deterministic run and of the cache with proof. Exit 1 when a required check "
+                                "fails.")
+    p.add_argument("--json", action="store_true")
+    p.parse_args(argv)
+    checks = doctor_checks()
+    optional = {"detjs (JavaScript runners)", "strace", "C compiler", "time zone database"}
+    if "--json" in argv:
+        print(json.dumps([{"check": n, "ok": ok, "detail": d, "affects": a} for n, ok, d, a in checks], indent=2))
+    else:
+        for n, ok, d, a in checks:
+            print(f"{'OK     ' if ok else ('MISSING' if n in optional else 'FAILED ')} {n}: {d}"
+                  + ("" if ok else f"  (affects: {a})"))
+    return 0 if all(ok for n, ok, _, _ in checks if n not in optional) else 1
+
+
+def cmd_cassette(argv: list) -> int:
+    """``fenvix cassette list|rename|drop``: the recordings of the closed network, per test (audit G-2200)."""
+    from . import _core
+
+    p = argparse.ArgumentParser(prog=f"{PROG} cassette", description="Inspect and maintain the network cassette "
+                                "(recordings of external connections, per test; docs/NETWORK.md).")
+    p.add_argument("--cassette", default=".detpy/cassette.json", help="cassette file (default .detpy/cassette.json)")
+    sub = p.add_subparsers(dest="op", required=True)
+    sub.add_parser("list", help="every test with recordings: connections, hosts, recording date")
+    r = sub.add_parser("rename", help="move a test's recordings to its new id (a renamed or moved test)")
+    r.add_argument("old")
+    r.add_argument("new")
+    d = sub.add_parser("drop", help="remove the recordings of tests (they are blocked until recorded again)")
+    d.add_argument("tests", nargs="+")
+    ns = p.parse_args(argv)
+    if not os.path.isfile(ns.cassette):
+        print(f"{PROG} cassette: no cassette at {ns.cassette} (record one with `{PROG} pytest --det-record`)",
+              file=sys.stderr)
+        return 2
+    c = _core.Cassette.load(ns.cassette)
+    if ns.op == "list":
+        for t in c.tests():
+            hosts, i = [], 0
+            while True:
+                try:
+                    h, port, tls, nseg = c.info(t, i)
+                except KeyError:
+                    break
+                hosts.append(f"{'https' if tls else 'tcp'}://{h}:{port}")
+                i += 1
+            print(f"{t}\t{i} connection(s)\trecorded {c.recorded(t) or 'unknown'}\t{', '.join(sorted(set(hosts)))}")
+        return 0
+    if ns.op == "rename":
+        if not c.rename_test(ns.old, ns.new):
+            print(f"{PROG} cassette: no recordings for {ns.old}", file=sys.stderr)
+            return 1
+        c.save(ns.cassette)
+        print(f"renamed {ns.old} -> {ns.new}")
+        return 0
+    missing = [t for t in ns.tests if t not in set(c.tests())]
+    for t in ns.tests:
+        c.clear_test(t)
+    c.save(ns.cassette)
+    print(f"dropped {len(ns.tests) - len(missing)} test(s)" + (f"; no recordings for {', '.join(missing)}" if missing
+                                                                 else ""))
+    return 0
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # runner entries
 def _with_det(args: list) -> list:
@@ -525,6 +642,10 @@ def main(argv: list | None = None) -> int:
         return cmd_replay(rest)
     if cmd == "verify":
         return cmd_verify(rest)
+    if cmd == "cassette":
+        return cmd_cassette(rest)
+    if cmd == "doctor":
+        return cmd_doctor(rest)
     if cmd in ("pytest", "python"):  # `python`: the release-1 name of the same entry
         return _exec([sys.executable, "-m", "pytest", *_with_det(rest)])
     if cmd in PY_RUNNERS or cmd == "zope":

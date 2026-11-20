@@ -967,6 +967,13 @@ class _DetSession(_Outcomes):
                 tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        if getattr(network, "REFUSED", None):
+            tests = sorted({t for t, _ in network.REFUSED if t})
+            tr.write_line(f"network: replay refused for {len(tests)} test(s): the request differs from the recorded "
+                          f"one (re-record with --det-record): {', '.join(tests[:5])}", red=True)
+        if getattr(network, "STALE", None):
+            tr.write_line(f"network: {len(network.STALE)} recording(s) older than --det-cassette-max-age not "
+                          f"replayed: {', '.join(network.STALE[:5])}", yellow=True)
         failed = [getattr(r, "nodeid", None) for r in tr.stats.get("failed", [])]
         failed = list(dict.fromkeys(n for n in failed if n))
         if failed:

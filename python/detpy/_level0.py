@@ -62,6 +62,10 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
     (("--det-cassette",), dict(default=None, metavar="PATH",
                                help="network cassette (default: <rootdir>/.detpy/cassette.json); replayed when "
                                     "present")),
+    (("--det-cassette-max-age",), dict(type=float, default=0.0, metavar="DAYS",
+                                       help="do not replay recordings older than DAYS (or without a recording date): "
+                                            "those tests meet the closed network and must be re-recorded with "
+                                            "--det-record (default 0: no limit)")),
     (("--det-allow-host",), dict(action="append", default=[], metavar="HOST",
                                  help="external host that may be reached (repeatable)")),
     (("--det-epoch",), dict(default="auto", metavar="ISO",
@@ -390,6 +394,7 @@ def make_config(ns, root: str, controls) -> _state.Config:
         control_urandom=ns.det_urandom,
         max_events=ns.det_max_events,
     )
+    cfg.cassette_max_age = getattr(ns, "det_cassette_max_age", 0.0) or 0.0
     _state.STATE.config = cfg
     return cfg
 
@@ -503,7 +508,9 @@ def open_session(root: str, cassette: str | None, record: bool, allow_hosts, max
     cfg.cassette_path = cassette or os.path.join(root, ".detpy", "cassette.json")
     mode = None
     if "net" in cfg.controls:
-        mode = network.install(PATCHER, record, cfg.cassette_path, allow_hosts)
+        age = getattr(cfg, "cassette_max_age", 0.0)
+        extra = {"max_age_days": age} if age else {}
+        mode = network.install(PATCHER, record, cfg.cassette_path, allow_hosts, **extra)
     _state.STATE.recorder = _core.Recorder(max_events=max_events)
     return mode
 

@@ -112,15 +112,6 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # left every installed module to be compiled from source at every run
     stamps_path = os.path.join(prefix, "stamps-v3.json")
     libs, project, stamps = _core().reexec_precompile_plan(dirs, rootdir, stamps_path)
-    if libs:
-        # audit G-2202: the first run under a hash seed compiles the libraries (seconds): say so before it starts
-        try:
-            sys.stderr.write(f"fenvix: compiling the standard library and site-packages under PYTHONHASHSEED="
-                             f"{hashseed} into {prefix} (once per environment and hash seed)\n")
-            sys.stderr.flush()
-        except Exception:
-            pass
-        _evict_old_caches(prefix)
     driver = _driver_source()
     for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
         if not dirs_:
@@ -132,6 +123,15 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
             continue
         else:
             cmd, data = [sys.executable, "-c", driver, "--stdin"], b"\0".join(os.fsencode(f) for f in stale)
+        if not extra:
+            # audit G-2202: compiling the libraries takes seconds the first time: say so before it starts
+            try:
+                sys.stderr.write(f"fenvix: compiling the standard library and site-packages under PYTHONHASHSEED="
+                                 f"{hashseed} into {prefix} (once per environment and hash seed)\n")
+                sys.stderr.flush()
+            except Exception:
+                pass
+            _evict_old_caches(prefix)
         p = subprocess.run(cmd, env=env, input=data, stdin=None if data is not None else subprocess.DEVNULL,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if p.returncode != 0:  # interrupted: no stamps (a file that does not compile is skipped, not an error)

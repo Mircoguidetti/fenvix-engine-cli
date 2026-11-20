@@ -202,10 +202,16 @@ def _connect_common(sock, address, real):
     mode = POLICY.mode
     nodeid = _state.STATE.nodeid
     if mode == "record" and nodeid is not None:
-        result = real(sock, address)
+        try:  # claude/verifier-cli (audit G-0516): a non-blocking connect under way is recorded too
+            result = real(sock, address)
+            pending = None
+        except BlockingIOError as e:
+            result, pending = None, e
         idx = POLICY.cassette.open_connection(nodeid, host, int(port))
         _conns[sock] = (nodeid, idx)
         _state.record("net", "socket.connect", f"{host}:{port} record#{idx}", depth=2)
+        if pending is not None:
+            raise pending
         return result
     if mode == "record":  # outside a test: allow, do not record
         return real(sock, address)
@@ -378,8 +384,12 @@ def _serve(peer, segments, label, mismatches) -> None:
         for direction, data in segments:
             if direction == "send":
                 got = _recv_upto(peer, len(data))
-                if got != data:
+                # secret header values are compared masked (a cassette stores them masked: audit G-0167)
+                if _core.net_redact(got) != _core.net_redact(data):
                     mismatches.append((label, len(data), len(got), _core.digest(data), _core.digest(got)))
+                    # the test sent another request than the recorded one: the recorded answer is not served
+                    # (audit G-0166: a stale cassette answered requests it never saw); the test reads end of file
+                    break
             else:
                 peer.sendall(data)
         try:
@@ -534,6 +544,11 @@ def save_recordings(cassette_path: str) -> int:
     recorded = POLICY.cassette
     if not recorded.tests():
         return 0
+    import datetime as _dt  # claude/verifier-cli (audit G-1519): the recording date of every test, as detpy.network
+
+    when = _dt.datetime.now(_dt.timezone.utc).replace(microsecond=0).isoformat()
+    for t in recorded.tests():
+        recorded.set_recorded(t, when)
     target = _core.Cassette.load(cassette_path) if os.path.exists(cassette_path) else _core.Cassette()
     target.merge(recorded)
     target.save(cassette_path)
