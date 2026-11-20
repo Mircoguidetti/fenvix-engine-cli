@@ -470,7 +470,10 @@ if JOB in ("hunt", "huntp"):
             # A timeout in the test body (not "while running beforeEach"): holds only after the first decisions, the
             # window moving later with the seed (seed_env), so a hold lands past the hooks.
             g = "timeout" if "while running" in m else "timeout_body"
-            return g, {"DETJS_LS_LATENCIES": P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5"),
+            # In the body, one deadline-scale hold trips a 5 s expect first: the body is slowed throughout instead
+            # (every message in the window travels 1.5-2.5 s), as on a starved CI machine.
+            lat = P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5") if g == "timeout" else P.get("timeout_body_latencies", "1500,2000,2500")
+            return g, {"DETJS_LS_LATENCIES": lat,
                        "DETJS_PW_DEADLINE_MS": ms.group(1) if ms else "30000"}
         return "latency", {"DETJS_LS_LATENCIES": P.get("latencies", "1,1,1,5,20,50,200,1000")}
 
