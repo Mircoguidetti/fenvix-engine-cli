@@ -49,6 +49,7 @@ from . import repro as _repro
 _AdapterBase = object
 PROG = "fenvix" if importlib.util.find_spec("detpy.fenvix") is not None else "python -m detpy.fenvix_js"
 
+SUBCOMMAND = {"vitest": ["run"], "playwright": ["test"]}  # detjs <runner> <subcommand> --det ...
 JS_EXT = (".js", ".ts", ".mjs", ".cjs", ".mts", ".cts", ".jsx", ".tsx")
 
 
@@ -105,7 +106,7 @@ class DetjsRunner(_repro.Runner):
 
     def _cmd(self, config: str, extra: list) -> list:
         extra = ["--det-collect" if a == "--collect-only" else a for a in extra]
-        cmd = [*self.detjs, self.runner, *(["run"] if self.runner == "vitest" else []), "--det", *extra]
+        cmd = [*self.detjs, self.runner, *SUBCOMMAND.get(self.runner, []), "--det", *extra]
         if config != _repro.FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return [*cmd, *self.pytest_args]
@@ -182,7 +183,7 @@ def _killpg(pid: int) -> None:
 
 
 def runner_command(runner: str, config: str, order_file: str, args: list) -> str:
-    words = ["detjs", runner, *(["run"] if runner == "vitest" else []), "--det"]
+    words = ["detjs", runner, *SUBCOMMAND.get(runner, []), "--det"]
     if config != _repro.FIXED:
         words.append(f"--det-seed={config}")
     words.append(f"--det-order={order_file}")
@@ -266,18 +267,21 @@ class DetjsAdapter(_AdapterBase):
     shapes: tuple = ()
     markers: tuple = ()
     package = "?"
+    packages: tuple = ()
 
     def available(self) -> str | None:
         why = _detjs_problem(detjs_command())
         if why:
             return f"repro / explore / replay for {self.name} need detjs: {why}"
         cwd = Path.cwd()
-        try:
-            p = subprocess.run(["node", "-e", f"require('module').createRequire(process.cwd() + '/x.js')"
-                                f".resolve('{self.package}/package.json')"], cwd=cwd, capture_output=True, timeout=120)
-            found = p.returncode == 0
-        except (OSError, subprocess.TimeoutExpired):
-            found = False
+        found = False
+        for pkg in self.packages or (self.package,):
+            try:
+                p = subprocess.run(["node", "-e", f"require('module').createRequire(process.cwd() + '/x.js')"
+                                    f".resolve('{pkg}/package.json')"], cwd=cwd, capture_output=True, timeout=120)
+                found = found or p.returncode == 0
+            except (OSError, subprocess.TimeoutExpired):
+                pass
         if not found:
             return (f"{self.name} is not installed in {cwd}: detjs runs the project's own {self.name} (install the "
                     f"project's dependencies, and run fenvix from the directory the tests run from)")
@@ -349,41 +353,19 @@ class JestAdapter(DetjsAdapter):
     markers = ("jest.config.js", "jest.config.ts", "jest.config.cjs", "jest.config.mjs", "jest.config.json")
 
 
-class PlaywrightAdapter(_AdapterBase):
-    """Playwright Test: no repro driver (``available`` says why)."""
+class PlaywrightAdapter(DetjsAdapter):
+    """Playwright Test through `detjs playwright test --det` (node/src/playwright/): the test process is controlled
+    and traced per test; the browser and the web servers are separate processes (not controlled, the L2 lane)."""
 
     name = "playwright"
-    shapes = (".spec.ts", ".spec.js", ".e2e.ts", ".e2e.js")
+    package = "@playwright/test"
+    packages = ("@playwright/test", "playwright")
+    shapes = (".spec.", ".e2e.", ".test.")
     markers = ("playwright.config.ts", "playwright.config.js", "playwright.config.mjs", "playwright.config.cjs",
-               "playwright.config.mts")
-
-    REASON = ("repro / explore / replay are not available for playwright in this version: detjs runs Playwright Test "
-              "measured only (node/src/register.js loaded with NODE_OPTIONS in the worker processes; docs/NODE.md J11): "
-              "the controls are installed in the worker, but there are no per-test brackets, no trace and therefore no "
-              "fingerprints, and no --det-order / --det-outcomes / --det-collect for Playwright (no detjs shell orders and "
-              "brackets its tests yet), while the browser and the web servers it starts "
-              "are separate processes Level 0 does not control. The repro driver (docs/CLI.md, \"Runner adapters\") needs "
-              "per-test outcomes and fingerprints of runs in a chosen order, so it cannot bundle a Playwright failure "
-              "yet.")
-
-    def available(self) -> str | None:
-        return self.REASON
-
-    def owns(self, test: str) -> bool:
-        f = test.split("::", 1)[0]
-        return any(f.endswith(s) for s in self.shapes)
+               "playwright.config.mts", "playwright.config.cts")
 
     def detect(self, d: Path) -> bool:
         return any((Path(d) / m).exists() for m in self.markers)
-
-    def repro(self, ns) -> dict:
-        raise RuntimeError(self.REASON)
-
-    def explore(self, ns) -> dict:
-        raise RuntimeError(self.REASON)
-
-    def replay(self, bundle: Path, runs: int, python: str = sys.executable) -> dict:
-        raise RuntimeError(self.REASON)
 
 
 ADAPTERS = {"vitest": VitestAdapter(), "jest": JestAdapter(), "playwright": PlaywrightAdapter()}

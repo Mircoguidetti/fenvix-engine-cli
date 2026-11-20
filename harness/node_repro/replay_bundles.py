@@ -27,6 +27,8 @@ def main(argv=None) -> int:
     ap.add_argument("--repos", default=None)
     ap.add_argument("--runs", type=int, default=10)
     ap.add_argument("--python", default=sys.executable)
+    ap.add_argument("--detjs", default=None)
+    ap.add_argument("--pythonpath", default=None)
     args = ap.parse_args(argv)
     res = HERE / "results"
     for f in sorted(res.glob("*.jsonl")):
@@ -52,7 +54,7 @@ def main(argv=None) -> int:
                 p.src, p.node_bin = str(src), RR.node_bin(Path(args.work).resolve())
                 RR.NH.snapshot_tree(p)
             RR.NH.clean_tree(p)
-            env = RR.NH.node_env(p, {"FENVIX_DETJS": f"node {RR.DETJS}"})
+            env = RR.NH.node_env(p, RR.engine_env(args.detjs, args.pythonpath))
             t0 = time.monotonic()
             pr = subprocess.run([args.python, "-m", "detpy.fenvix_js", "replay", b["bundle"], "--runs", str(args.runs),
                                  "--json"], cwd=src, env=env, capture_output=True, text=True)

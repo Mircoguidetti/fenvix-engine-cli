@@ -31,6 +31,15 @@ import flaky_set  # noqa: E402
 DETJS = ROOT / "node" / "bin" / "detjs.js"
 
 
+def engine_env(detjs: str | None, pythonpath: str | None) -> dict:
+    """The engine a run measures: detjs (FENVIX_DETJS) and the detpy package (PYTHONPATH), by default this tree's.
+    A frozen copy keeps a long measurement on one engine while the tree changes."""
+    out = {"FENVIX_DETJS": f"node {detjs or DETJS}"}
+    if pythonpath:
+        out["PYTHONPATH"] = pythonpath + (os.pathsep + os.environ["PYTHONPATH"] if os.environ.get("PYTHONPATH") else "")
+    return out
+
+
 def node_bin(work: Path) -> str:
     """A private bin directory with the installed Node 22 (corepack writes its pnpm / yarn shims there)."""
     d = work / "nodebin"
@@ -89,6 +98,9 @@ def main(argv=None) -> int:
     ap.add_argument("--max-tests", type=int, default=0, help="at most N tests per repository (0: all)")
     ap.add_argument("--repo-budget", type=float, default=0, help="stop starting repros in a repository after S seconds")
     ap.add_argument("--python", default=sys.executable)
+    ap.add_argument("--detjs", default=None, help="detjs.js to measure (default: this tree's)")
+    ap.add_argument("--engine", default=None, help="label of the measured engine (commit), stored in every row")
+    ap.add_argument("--pythonpath", default=None, help="directory holding the detpy package to measure (default: installed)")
     ap.add_argument("--only", default=None, help="file of test ids (restrict the set)")
     ap.add_argument("--replay", type=int, default=0, help="then replay each REPRODUCED bundle N times (replay_bundles.py)")
     ap.add_argument("--keep-clones", action="store_true", help="keep each repository installed after its repros")
@@ -124,7 +136,7 @@ def main(argv=None) -> int:
             n += 1
             NH.clean_tree(p)
             bundles = out / "bundles" / name
-            env = NH.node_env(p, {"FENVIX_DETJS": f"node {DETJS}"})
+            env = NH.node_env(p, engine_env(args.detjs, args.pythonpath))
             cmd = [args.python, "-m", "detpy.fenvix_js", "repro", test, "--runner", p.runner, "--seeds", str(args.seeds),
                    "--confirm", str(args.confirm), "--max-runs", str(args.max_runs), "--timeout", str(args.timeout),
                    "--out", str(bundles), "--json", "--", *p.pytest_args]
@@ -139,7 +151,7 @@ def main(argv=None) -> int:
                     b = json.loads(text[i + 1:])
                 except ValueError:
                     b = None
-            row = {"repo": name, "test": test, "runner": p.runner, "runner_version": p.runner_version,
+            row = {"repo": name, "test": test, "engine": args.engine, "runner": p.runner, "runner_version": p.runner_version,
                    "commit": p.commit, "exit": r.returncode, "wall_s": round(dur, 1),
                    "command": " ".join(cmd[:3] + ["repro", "<test>"] + cmd[5:]), "cwd": os.path.relpath(p.src, work),
                    "status": (b or {}).get("status", "crashed"), "bundle": b,
@@ -152,7 +164,9 @@ def main(argv=None) -> int:
         if args.replay:
             import replay_bundles
 
-            replay_bundles.main(["--work", str(work), "--repos", name, "--runs", str(args.replay), "--python", args.python])
+            replay_bundles.main(["--work", str(work), "--repos", name, "--runs", str(args.replay), "--python", args.python,
+                                 *(["--detjs", args.detjs] if args.detjs else []),
+                                 *(["--pythonpath", args.pythonpath] if args.pythonpath else [])])
         if not args.keep_clones:  # the disk holds one or two installed projects at a time
             shutil.rmtree(work / "src" / name, ignore_errors=True)
     return 0

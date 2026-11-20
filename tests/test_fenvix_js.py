@@ -31,8 +31,9 @@ def _ready() -> str | None:
         return "node is not installed"
     if not list(NODE.glob("detjs.*.node")):
         return "detjs native core not built (cd node && node scripts/build.js)"
-    if not (NODE / "node_modules" / "vitest").is_dir() or not (NODE / "node_modules" / "jest").is_dir():
-        return "node dev dependencies not installed (cd node && npm ci)"
+    for dep in ("vitest", "jest", "@playwright/test"):
+        if not (NODE / "node_modules" / dep).is_dir():
+            return "node dev dependencies not installed (cd node && npm ci)"
     return None
 
 
@@ -48,6 +49,13 @@ SUITE = {
         "config": ("jest.config.js", "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node' };\n"),
         "ext": ".test.js",
         "head": "const { execSync } = require('node:child_process');\n",
+    },
+    "playwright": {
+        "config": ("playwright.config.ts", "import { defineConfig } from '@playwright/test';\n"
+                   "export default defineConfig({ testDir: './tests', reporter: 'list' });\n"),
+        "ext": ".spec.ts",
+        "head": "import { test, expect } from '@playwright/test';\nimport { execSync } from 'node:child_process';\n"
+                "const describe = test.describe;\n",
     },
 }
 
@@ -96,7 +104,14 @@ def env(monkeypatch):
         monkeypatch.delenv(k, raising=False)
 
 
-RUNNERS = ["vitest", "jest"]
+RUNNERS = ["vitest", "jest", "playwright"]
+
+
+def _chromium() -> str | None:
+    p = subprocess.run(["node", "-e", "const fs=require('fs');const e=require('playwright-core').chromium.executablePath();"
+                        "process.stdout.write(fs.existsSync(e)?'':'Chromium not installed: '+e)"],
+                       cwd=NODE, capture_output=True, text=True)
+    return (p.stdout or p.stderr).strip() or None
 
 
 @pytest.mark.parametrize("runner", RUNNERS)
@@ -129,7 +144,7 @@ def test_order_dependent_test_is_reproduced_with_its_polluter(runner, env, monke
     res = a.replay(bundle, 10)
     assert res == {"test": victim, "runs": 10, "fails": 10, "identical_fingerprint": True, "matches_bundle": True}
     # replay picks the runner from the bundle, whatever adapter is asked
-    other = fenvix_js.ADAPTERS["jest" if runner == "vitest" else "vitest"]
+    other = fenvix_js.ADAPTERS["jest" if runner != "jest" else "vitest"]
     assert other.replay(bundle, 2)["fails"] == 2
 
 
@@ -172,7 +187,7 @@ def test_not_collected_and_detect(runner, env, monkeypatch):
     a = fenvix_js.ADAPTERS[runner]
     b = a.repro(ns(f"tests/a{SUITE[runner]['ext']}::nope", d / "out"))
     assert b["status"] == "not-collected" and b["runner"] == runner
-    assert a.detect(d) and not fenvix_js.ADAPTERS["jest" if runner == "vitest" else "vitest"].detect(d)
+    assert a.detect(d) and not any(o.detect(d) for n, o in fenvix_js.ADAPTERS.items() if n != runner)
     assert a.owns(f"tests/a{SUITE[runner]['ext']}::victim")
     assert not a.owns("tests/test_x.py::test_y")
     # the driver's runner: collection gives the order of a run of the same configuration
@@ -214,13 +229,48 @@ def test_register_replaces_the_planned_adapters():
     assert adapters["pytest"] is not None and not isinstance(adapters["pytest"], fenvix_js.DetjsAdapter)
 
 
-def test_playwright_says_exactly_why_it_is_not_available():
+def test_playwright_browser_test_order_dependent_is_reproduced(env, monkeypatch):
+    """A Playwright test that opens a page in Chromium and fails after a polluter: REPRODUCED, polluter named, the
+    bundle replays 10/10 with one fingerprint (audit G-0406, G-0455)."""
+    why = _chromium()
+    if why:
+        pytest.skip(why)
+    d = make_project("playwright", "browser")
+    (d / "tests" / "c.spec.ts").write_text(SUITE["playwright"]["head"] + """const seen: string[] = [];
+test('theme', async ({ page }) => {
+  await page.setContent('<p id="t">' + (seen.length ? 'dark' : 'light') + '</p>');
+  await expect(page.locator('#t')).toHaveText('light');
+});
+test('f5', async () => {});
+test('sets-dark', async ({ page }) => { await page.setContent('<b>x</b>'); seen.push('dark'); });
+""")
+    monkeypatch.chdir(d)
     a = fenvix_js.ADAPTERS["playwright"]
-    why = a.available()
-    assert why and "per-test brackets" in why and "--det-order" in why and "browser" in why
-    assert a.owns("tests/login.spec.ts::logs in") and not a.owns("src/a.test.ts::x")
-    with pytest.raises(RuntimeError):
-        a.repro(None)
+    assert a.available() is None
+    b = a.repro(ns("tests/c.spec.ts::theme", d / "out", confirm=10))
+    assert b["status"] == "reproduced", b
+    assert b["polluters"] == ["tests/c.spec.ts::sets-dark"]
+    assert b["order"] == ["tests/c.spec.ts::sets-dark", "tests/c.spec.ts::theme"]
+    assert b["replay"]["fails"] == 10 and b["replay"]["identical_fingerprint"]
+    assert b["command"].startswith("detjs playwright test --det ")
+    res = a.replay(d / "out" / _repro._slug("tests/c.spec.ts::theme"), 10)
+    assert res["fails"] == 10 and res["identical_fingerprint"] and res["matches_bundle"]
+
+
+def test_detjs_repro_subcommands_run_the_driver(env, monkeypatch):
+    """`detjs repro|replay` (audit G-0420, G-0448, G-0449): the same driver and output as fenvix repro / replay."""
+    d = make_project("jest", "detjs-cli")
+    e = {**os.environ, "FENVIX_PYTHON": sys.executable}
+    e.pop("FENVIX_DETJS", None)
+    p = subprocess.run(["node", str(NODE / "bin" / "detjs.js"), "repro", "tests/a.test.js::victim", "--seeds", "10",
+                        "--confirm", "3", "--out", "o"], cwd=d, env=e, capture_output=True, text=True, timeout=1500)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert "status:  REPRODUCED: failed 3/3 replays" in p.stdout
+    assert "cause:   test order: it fails when run after tests/a.test.js::g::polluter" in p.stdout
+    bundle = d / "o" / _repro._slug("tests/a.test.js::victim")
+    p = subprocess.run(["node", str(NODE / "bin" / "detjs.js"), "replay", str(bundle), "--runs", "3"], cwd=d, env=e,
+                       capture_output=True, text=True, timeout=1500)
+    assert p.returncode == 0 and "REPRODUCED: failed 3/3 runs" in p.stdout, p.stdout + p.stderr
 
 
 def test_detjs_not_found_is_explained(monkeypatch, tmp_path):
