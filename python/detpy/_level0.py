@@ -408,3 +408,19 @@ def uninstall() -> None:
     _state.STATE.recorder = None
     _state.STATE.nodeid = None
     _sites.set_basetemp_provider(None)
+
+
+def mark_state_dir(root: str) -> None:
+    """``<root>/.detpy`` holds the engine's run state (trace, plan, cassette): it gets a ``.gitignore`` of ``*`` so
+    that a checkout stays clean for later CI steps (``git status --porcelain`` checks, release steps; audit G-2194),
+    as pytest's own cache directory does. Best effort: a read-only tree is left as it is."""
+    d = os.path.join(root, ".detpy")
+    gi = os.path.join(d, ".gitignore")
+    try:
+        if not os.path.exists(gi):
+            os.makedirs(d, exist_ok=True)
+            with open(gi, "x") as fh:
+                fh.write("# created by fenvix (the engine's run state)\n*\n")
+    except OSError:
+        pass
+

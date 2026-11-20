@@ -47,3 +47,18 @@ test('a user error of the shell is printed without a JavaScript stack', () => {
   assert.match(r.stderr, /detjs: /);
   assert.doesNotMatch(r.stderr, /\n\s+at /);
 });
+
+test('a --det run leaves the checkout clean: .detjs carries a .gitignore (G-2177)', () => {
+  const fs = require('node:fs');
+  const os = require('node:os');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'detjs-gi-'));
+  fs.writeFileSync(path.join(dir, 'a.test.js'), "require('node:test')('a', () => {});\n");
+  spawnSync('git', ['init', '-q', dir]);
+  spawnSync('git', ['-C', dir, 'add', '-A']);
+  const r = spawnSync(process.execPath, [bin, 'node-test', '--det', 'a.test.js'], { cwd: dir, encoding: 'utf8' });
+  assert.strictEqual(r.status, 0, r.stdout + r.stderr);
+  assert.ok(fs.existsSync(path.join(dir, '.detjs', '.gitignore')));
+  const st = spawnSync('git', ['-C', dir, 'status', '--porcelain'], { encoding: 'utf8' }).stdout;
+  assert.doesNotMatch(st, /\.detjs/, st);
+  fs.rmSync(dir, { recursive: true, force: true });
+});

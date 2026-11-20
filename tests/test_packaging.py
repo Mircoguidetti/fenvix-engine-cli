@@ -303,3 +303,15 @@ def test_runner_image_fetch_is_pinned_and_fails_closed(tmp_path):
     assert r.returncode != 0 and not (tmp_path / "evil").exists() and not (tmp_path.parent / "escape").exists()
     r = run(f"file://{tmp_path}/missing.tar.gz", sha, tmp_path / "missing")
     assert r.returncode != 0 and "download failed" in r.stderr
+
+
+def test_state_directory_keeps_the_checkout_clean(pytester):
+    """G-2194: after `pytest --det` a git checkout has no untracked engine state (.detpy/ carries a .gitignore)."""
+    pytester.makepyfile(test_a="def test_a():\n    assert 1\n")
+    subprocess.run(["git", "init", "-q", str(pytester.path)], check=True)
+    subprocess.run(["git", "-C", str(pytester.path), "add", "-A"], check=True)
+    r = pytester.runpytest_subprocess("--det", "-p", "no:cacheprovider")
+    assert r.ret == 0, r.stdout.str()
+    assert (pytester.path / ".detpy" / "trace.jsonl").exists()
+    st = subprocess.run(["git", "-C", str(pytester.path), "status", "--porcelain"], capture_output=True, text=True).stdout
+    assert ".detpy" not in st, st

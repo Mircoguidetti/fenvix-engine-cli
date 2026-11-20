@@ -656,6 +656,7 @@ def _configure_det(config) -> None:
     S.net_mode = _level0.open_session(root, opt.det_cassette, opt.det_record, opt.det_allow_host,
                                       opt.det_max_events)
     S.trace_path = opt.det_trace or os.path.join(root, ".detpy", "trace.jsonl")
+    _level0.mark_state_dir(root)
     if S.worker is not None:
         S.trace_path = _xdist.worker_path(S.trace_path, S.worker)
         if opt.det_record:
