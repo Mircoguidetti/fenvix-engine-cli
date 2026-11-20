@@ -98,8 +98,10 @@ print(f"S1  tests failing in fenvix's fresh run in >=10 commits of skip-r5 and <
 for x in sorted(broken):
     print("      ", x)
 # after the fixes: the same 8 tests and any other test in the newest walk
-# (skip-r8), failing under fenvix in >= 10 commits while plain go test passes
-latest = "skip-r8"
+# (skip-r9: skip-r8 was walked with a strace parser that dropped padded
+# lines, see REPORT-3), failing under fenvix in >= 10 commits while plain go
+# test passes; the three repositories of the 8 tests must be in it
+latest = "skip-r9"
 now_broken = []
 names = sorted({os.path.basename(f).split("-")[0] for f in glob.glob(f"{ROOT}/{latest}/*.json.gz")})
 for name in names:
@@ -115,7 +117,8 @@ s8 = {k[1] for k in broken}
 seen = {(t["test"]) for name in names for _, _, t in rows(walk(latest, name)) if t["test"] in s8}
 print(f"S1  {latest} ({', '.join(names) or 'no data'}): broken by skip mode (fresh fenvix failed, plain passed, "
       f">= 10 commits): {len(now_broken)} {now_broken[:8]}; of the 8, present in {latest}: {len(seen)}")
-if not names or now_broken or f"broken by skip mode: {len(now_broken)}" not in REPORT3:
+if not {"prometheus", "telegraf", "terraform"} <= set(names) or now_broken or \
+        f"broken by skip mode: {len(now_broken)}" not in REPORT3:
     findings.append("S1")
 
 # Q3: /proc/1/stat upper bound (skip-r6, telegraf, 5 of 6 shards)
