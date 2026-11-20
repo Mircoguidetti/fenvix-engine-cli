@@ -137,10 +137,22 @@ fn os_call<'py>(py: Python<'py>, name: &str, arg: Option<&Bound<'py, PyAny>>) ->
                 "realpath" => real.1.bind(py),
                 _ => real.2.bind(py),
             };
-            match arg {
+            // Python 3.12's posixpath.realpath calls the module's abspath at each use: the patched one raised again
+            // (review R-023c 5a on 3.12). The real abspath is the module's for the call, then the patch is restored.
+            let path_mod = os.getattr("path")?;
+            let cur_abs = path_mod.getattr("abspath")?;
+            let swap = name == "realpath" && !cur_abs.is(real.0.bind(py));
+            if swap {
+                path_mod.setattr("abspath", real.0.bind(py))?;
+            }
+            let r = match arg {
                 Some(a) => g.call1((a,)),
                 None => g.call0(),
+            };
+            if swap {
+                path_mod.setattr("abspath", cur_abs)?;
             }
+            r
         }
         r => r,
     }

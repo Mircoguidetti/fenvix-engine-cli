@@ -542,6 +542,18 @@ impl ProofCache {
         true
     }
 
+    /// The reused results among `hits` whose input a test of this process's children wrote earlier in this session
+    /// (their shards folded by `shard_absorb`): `[(nodeid, path key, writer)]` (`proof::hits_with_written_inputs`
+    /// over the folded shard's writers; `order`: the session's tests in run order). A serial session with one child
+    /// per test file checks a file's results before the file starts (the in-process session withdraws them as the
+    /// writer runs; its children's writes are not this process's).
+    fn absorbed_written_hits(&self, hits: Vec<String>, order: Vec<String>) -> Vec<(String, String, String)> {
+        let g = lock(&self.inner);
+        let Some(a) = g.absorbed.as_ref() else { return Vec::new() };
+        let (written, dirs) = proof::writer_union(std::slice::from_ref(a));
+        proof::hits_with_written_inputs(&g.store, &hits, &order, &written, &dirs)
+    }
+
     /// Write the folded shard (`shard_absorb`) at `path` under `worker`'s name; false when nothing was folded.
     fn shard_absorbed_save(&self, py: Python<'_>, path: PathBuf, worker: String) -> PyResult<bool> {
         let Some(mut s) = lock(&self.inner).absorbed.take() else { return Ok(false) };

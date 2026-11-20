@@ -968,6 +968,11 @@ fn runtime_with_paths(base: &str, root: PathBuf, site_dirs: Vec<PathBuf>, sys_pa
             }
         })
         .collect();
+    // each directory once, in order of first occurrence: a later copy resolves no import differently, and
+    // pytest's `pythonpath` plus pytest-xdist put the project root on a worker's path once more than on the
+    // controller's (py-cache: esphome, every worker result missed on the runtime)
+    let mut seen = std::collections::HashSet::new();
+    let norm: Vec<String> = norm.into_iter().filter(|e| seen.insert(e.clone())).collect();
     let mut all = format!("{base}\0pth:{pth_digest}\0");
     for e in &norm {
         all.push_str(e);

@@ -196,7 +196,11 @@ def test_child_still_running_at_the_end_is_never_cached(pytester, run_cache):
     run_cache()
     _, reused, data = run_cache()
     assert reused == ids("test_plain")
-    assert nc(data)["test_m.py::test_after"].startswith("after an earlier test or fixture of this process: ")
+    # test_after is never cached: by the carried rule, or (a loaded machine: the daemon's exec lands after test_daemon
+    # ended) because the process ran while it did; both refuse it (py-cache: CI and a loaded container saw the second)
+    why = nc(data)["test_m.py::test_after"]
+    assert why.startswith("after an earlier test or fixture of this process: ") or (
+        why == "subprocess" and "still running" in data["cache"]["not_cached_where"]["test_m.py::test_after"]), why
     assert "still running" in data["cache"]["not_cached_where"]["test_m.py::test_daemon"]
 
 

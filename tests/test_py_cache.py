@@ -832,3 +832,41 @@ def test_file_scope_a_subprocess_in_a_files_child_runs_and_is_never_reused(pytes
         assert p.returncode == 0, p.stdout + p.stderr
     assert "tests/test_s.py::test_runs_python" not in reused(c)
     assert "not followed" in json.dumps(c.get("not_cached_detail")) or "process" in json.dumps(c.get("not_cached_detail"))
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+@pytest.mark.parametrize("par", [(), ("-n", "2", "--dist", "loadfile")], ids=["serial", "n2"])
+def test_file_scope_a_file_another_files_test_writes_this_session_is_not_a_wrong_reuse(pytester, tmp_path_factory,
+                                                                                      monkeypatch, par):
+    """Review R-023b F2 (absent input) under the per-file default: after value.txt changes, test_a_flag (an earlier
+    file) creates the flag test_b_no_flag checks is absent. The in-process session withdraws B as A writes; with one
+    child per file A's writes are its child's: serial, a file is gated against the children's writes before it
+    starts (its whole file runs); under -n the controller checks the workers' children's shards (it read only the
+    workers' own shard). Both were wrong reuses (B reused as passed, a fresh run fails it)."""
+    if par:
+        pytest.importorskip("xdist")
+    monkeypatch.delenv("DETPY_CACHE_IN_PROCESS", raising=False)
+    d = tmp_path_factory.mktemp("outside")
+    write(pytester, **{"tests/conftest.py": "", "tests/value.txt": "x\n", "tests/test_a_writer.py": """
+        import os, pathlib
+        def test_a_flag():
+            p = pathlib.Path(os.environ["SHARED_DIR"]) / "flag"
+            if (pathlib.Path(__file__).parent / "value.txt").read_text().strip() == "y":
+                p.write_text("1")
+            elif p.exists():
+                p.unlink()
+        """, "tests/test_b_reader.py": """
+        import os
+        def test_b_no_flag():
+            assert not os.path.exists(os.path.join(os.environ["SHARED_DIR"], "flag"))
+        """})
+    env = {"SHARED_DIR": str(d)}
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", *par, "tests", env=env)
+        assert p.returncode == 0, p.stdout
+    assert "tests/test_b_reader.py::test_b_no_flag" in reused(c)
+    (pytester.path / "tests" / "value.txt").write_text("y\n")
+    (d / "flag").unlink(missing_ok=True)
+    p, c, _ = run(pytester, "after", "-rA", *par, "tests", env=env)
+    assert "tests/test_b_reader.py::test_b_no_flag" not in reused(c), ("WRONG REUSE", p.stdout)
+    assert outcome_of(p, "tests/test_b_reader.py::test_b_no_flag") == "failed", p.stdout

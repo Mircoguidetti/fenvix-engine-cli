@@ -1,0 +1,21 @@
+Local full suites at the commit that follows this file (python -m pytest -q -p no:randomly tests --deselect tests/test_review_r017.py::test_h2_..., the three run in parallel on 4 CPUs, 2026-11-20T21:41Z)
+
+== Python 312
+FAILED tests/test_level0_seeds_fsorder_rust.py::test_rust_stand_ins_are_faster_than_the_reference
+1 failed, 1039 passed, 79 skipped, 1 deselected, 4 warnings in 1838.15s (0:30:38)
+
+== Python 313
+1040 passed, 79 skipped, 1 deselected, 4 warnings in 2369.21s (0:39:29)
+
+== Python 314
+FAILED tests/test_rand.py::test_draw - AttributeError: module 'os' has no att...
+FAILED tests/test_rand.py::test_draw - AttributeError: module 'os' has no att...
+FAILED tests/test_clock_rust.py::test_traces_match_reference - AssertionError...
+FAILED tests/test_clock_rust.py::test_children_alive_and_its_audit_events_match_reference
+FAILED tests/test_repro_rust.py::test_prefix_through_matches_reference - asse...
+FAILED tests/test_review_r023b.py::test_2e_os_getrandom_is_entropy[serial] - ...
+FAILED tests/test_review_r023b.py::test_2e_os_getrandom_is_entropy[n2] - Asse...
+5 failed, 1036 passed, 78 skipped, 1 deselected, 4 warnings in 1972.30s (0:32:52)
+
+3.12 test_level0_seeds_fsorder_rust.py::test_rust_stand_ins_are_faster_than_the_reference rerun alone: 1 passed (a timing comparison under three parallel suites).
+3.14 (uv's standalone CPython 3.14.6): os.getrandom is absent (test_rand, test_2e_*); test_clock_rust's two mock_open cases and test_repro_rust fail the same way with the trunk engine (claude/release-1 1ae6ca25) in this interpreter; CI's 3.14 runs them.

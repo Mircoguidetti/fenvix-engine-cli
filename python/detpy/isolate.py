@@ -310,17 +310,48 @@ class FileIsolate(Isolate):
     def __init__(self, config):
         super().__init__(config)
         self.child: _Child | None = None
+        self._gated: str | None = None
+        self._files: dict | None = None
+        self._order: list | None = None
 
-    @pytest.hookimpl
+    def _file_gate(self, item, key, pc) -> None:
+        """Before a test file starts (serial; under -n the controller withdraws after the run, F2): a reused result of
+        the file whose input a test of an earlier file wrote in this session is not reused, and neither is the rest of
+        the file (its tests share the child: they run in order, as in a fresh run of the file). Nothing of the file
+        has been reported yet."""
+        if pc is None or getattr(pc, "role", "") == "worker":
+            return
+        if self._files is None:
+            self._files, self._order = {}, []
+            for it in item.session.items:
+                self._files.setdefault(_file_key(it), []).append(it.nodeid)
+                self._order.append(it.nodeid)
+        nids = self._files.get(key, [])
+        hits = [n for n in nids if pc.sess.is_hit(n)]
+        if not hits:
+            return
+        found = pc.store.absorbed_written_hits(hits, self._order)
+        if not found:
+            return
+        nid, path, writer = found[0]
+        for n in nids:
+            pc.sess.demote(n, f"written: {path} by {writer} earlier in this session ({nid} reads it; its file runs)")
+
+    # tryfirst, registered after the cache: before the cache serves a reused result, the previous file's child is
+    # closed (its writes folded) and the file is gated (_file_gate)
+    @pytest.hookimpl(tryfirst=True)
     def pytest_runtest_protocol(self, item, nextitem):
         from . import proofcache
 
         pc = proofcache.PLUGIN
-        if pc is not None and pc.sess.is_hit(item.nodeid):
-            return None
         key = _file_key(item)
         if self.child is not None and self.child.key != key:
             self._close(item)
+        if key != self._gated:
+            self._gated = key
+            self._file_gate(item, key, pc)
+        if pc is not None and pc.sess.is_hit(item.nodeid):
+            return None
         if self.child is None:
             if pc is not None:
                 pc.iso_prepare()

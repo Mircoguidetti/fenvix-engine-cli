@@ -518,6 +518,8 @@ class Controller:
         if pc is None:
             return []
         shards = [o.get("detpy_cache_shard") for o in self.workeroutput.values() if o.get("detpy_cache_shard")]
+        # --det-isolate (one child per test or per file, the cache's default): a worker's children's shards
+        shards += [p for o in self.workeroutput.values() for p in (o.get("detpy_cache_shards") or ())]
         withdrawn = pc.written_hits(shards, self.ids)
         pc.report_hits(self.pending_hits)
         self.pending_hits = []

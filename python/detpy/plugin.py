@@ -685,6 +685,12 @@ def _configure_det(config) -> None:
             S.cassette_out = _xdist.worker_path(_state.STATE.config.cassette_path, S.worker)
     if os.environ.get("DETPY_CACHE_IN_PROCESS") == "1":
         opt.det_cache_in_process = True  # the same as --det-cache-in-process (detpy's own test suites set it)
+    if os.environ.get("DETPY_ISOLATE") in ("test", "file") and not getattr(opt, "det_isolate", False) \
+            and not getattr(opt, "det_plan_worker", None):
+        # the same as --det-isolate --det-isolate-scope=<value>, with or without the cache (detpy's own suites run
+        # the review gates with uncached runs isolated like the cached ones: the oracle of a per-file result)
+        opt.det_isolate = True
+        opt.det_isolate_scope = os.environ["DETPY_ISOLATE"]
     if (opt.det_cache and not getattr(opt, "det_isolate", False) and not getattr(opt, "det_cache_in_process", False)
             and not getattr(opt, "det_plan_worker", None)):
         # coordinator decision 2026-11-20 (py-cache, F-05): under --det-cache the tests of a file run in one child
