@@ -311,6 +311,19 @@ function sharedCases(runner) {
     }],
     ['environment: enumeration makes the whole environment an input', () => {
       const dir = fx('env-enum', { ...tf('envall', "test('envall', () => { expect(Object.keys(process.env).includes('RB_EXTRA')).toBe(false); });") });
+      if (runner === 'tap') {
+        // tap sets variables in each test process (_TAPJS_PROCESSINFO_*, TAP_CHILD_ID, ...) that the session's
+        // environment, against which the key is computed, does not have; enumerating the environment exposes them
+        // (Object.keys asks each key's descriptor, value included: no difference from Object.entries is visible),
+        // so the test is never reused. The change is still never missed.
+        neverCached(runner, dir, F('envall'), /set by tap for each test process/);
+        const fresh = crun(runner, dir, { cache: false, env: { RB_EXTRA: '1' } });
+        assert.notEqual(fresh.status, 0, show(fresh));
+        const r3 = crun(runner, dir, { env: { RB_EXTRA: '1' } });
+        assert.ok(!reused(r3).includes(F('envall')), show(r3));
+        assert.notEqual(r3.status, 0, show(r3));
+        return;
+      }
       noWrongReuse(runner, dir, F('envall'), () => {}, { env3: { RB_EXTRA: '1' } });
     }],
     ['time zone: TZ is part of the runtime identity', () => {

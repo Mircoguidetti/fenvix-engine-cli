@@ -155,8 +155,12 @@ function mappedValue(st, e, k) {
   if (!e.seen.has(k)) {
     e.seen.add(k);
     if (STATE.testId !== null) STATE.recordAt('fs', `fs.stat.${k}`, e.site, text);
-    // (outside a test too: a module-level read belongs to every test of the file)
-    if (realDep && STATE.onRealClock) STATE.onRealClock(`fs.stat ${k} (file time on the virtual clock: depends on when the run happens)`);
+  }
+  // (outside a test too: a module-level read belongs to every test of the file). Until a read by the test's code has
+  // been flagged: the runner reading the field first (Jest's console printing the Stats) must not hide the test's
+  // own later read of it (r021b G1 on Jest: such a test was reused although it printed a run-dependent time)
+  if (realDep && STATE.onRealClock && !e.clockFlagged.has(k)) {
+    if (STATE.onRealClock(`fs.stat ${k} (file time on the virtual clock: depends on when the run happens)`) !== false) e.clockFlagged.add(k);
   }
   return value;
 }
@@ -169,7 +173,7 @@ function mapStats(st, site) {
   // (the fields are not read here: a read is an input of the test for the cache)
   const proto = Object.getPrototypeOf(st);
   const bigint = Boolean(proto && proto.constructor && proto.constructor.name === 'BigIntStats');
-  const e = { raw: {}, get: {}, infra: false, seen: new Set(), bigint, site: site || '' };
+  const e = { raw: {}, get: {}, infra: false, seen: new Set(), clockFlagged: new Set(), bigint, site: site || '' };
   const keys = ['ino', 'dev'];
   for (const f of TIME_FIELDS) keys.push(`${f}Ms`, `${f}Ns`);
   for (const k of keys) {

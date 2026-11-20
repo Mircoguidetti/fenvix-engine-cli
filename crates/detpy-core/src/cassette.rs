@@ -146,14 +146,27 @@ pub fn redact(data: &[u8]) -> Vec<u8> {
                     v += 1;
                 }
                 let stop = if end > v && out[end - 1] == b'\r' { end - 1 } else { end };
-                for b in &mut out[v..stop] {
-                    *b = b'*';
+                if !already_tagged(&out[v..stop]) {
+                    for b in &mut out[v..stop] {
+                        *b = b'*';
+                    }
                 }
             }
         }
         start = end + 1;
     }
     out
+}
+
+/// A value detjs has already masked (node/src/network.js `redact`): `<` 12 hex digits of its digest `>` then only
+/// `*`. Kept as it is: replay compares the request masked the same way, and the digest tells two different
+/// credentials of the same length apart (it is not the credential and does not reveal it).
+fn already_tagged(v: &[u8]) -> bool {
+    v.len() >= 14
+        && v[0] == b'<'
+        && v[13] == b'>'
+        && v[1..13].iter().all(|b| b.is_ascii_hexdigit())
+        && v[14..].iter().all(|&b| b == b'*')
 }
 
 impl Cassette {
@@ -262,6 +275,15 @@ mod tests {
         fs::remove_file(&dir).ok();
         assert!(!String::from_utf8(back.tests["t"][0].segments[0].data.clone()).unwrap().contains("SECRET"));
         assert!(!text.contains("U0VDUkVU"), "base64 of SECRET in the file");
+    }
+
+    #[test]
+    fn redact_keeps_a_detjs_tag_and_masks_everything_else() {
+        let tagged = b"GET /x HTTP/1.1\r\nauthorization: <196c70f93800>****\r\ncookie: <zz6c70f93800>****\r\n\r\n";
+        let t = String::from_utf8(redact(tagged)).unwrap();
+        assert!(t.contains("authorization: <196c70f93800>****\r\n"), "{t}");
+        assert!(t.contains("cookie: ******************\r\n"), "not hex: masked {t}");
+        assert_eq!(redact(&redact(tagged)), redact(tagged));
     }
 
     #[test]

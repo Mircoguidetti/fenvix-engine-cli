@@ -262,12 +262,20 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     notCached(R, dir, F('b'), 'written by tests/a.test.mjs');
   });
 
-  test('stat().mtimeMs read by the test: keyed by its value', T, () => {
-    // claude/all-runners-2: claude/node-cache-proof's review r021b fixes key a Stats field by its value (V:), so a
-    // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
-    const dir = proj('mtime', { 'data/a.txt': 'a', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < 1e12); });") });
-    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
-    noWrongReuse(R, dir, F('m'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
+  // claude/node (P-041, Level 0's file times, src/fstime.js G-0143): a file time the test did not set is read on the
+  // virtual clock as its age at the test start, a value that depends on when the run happens. The sound contract:
+  // never reused (r021-fixes.test.js has the same case for Vitest and Jest); a touch changes the fresh result.
+  test('stat().mtimeMs read by the test: a real-clock read, never reused; a touch changes the fresh result', T, () => {
+    const dir = proj('mtime', { 'data/a.txt': 'a', 'data/b.txt': 'b', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < fs.statSync('data/b.txt').mtimeMs); });") });
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 5000);
+    fs.utimesSync(path.join(dir, 'data', 'b.txt'), 6000, 6000);
+    notCached(R, dir, F('m'), 'reads a clock Level 0 does not virtualize');
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 7000, 7000);
+    const fresh = crun(R, dir, [], { cache: false });
+    assert.notEqual(fresh.status, 0, `the touch makes a fresh run fail\n${show(fresh)}`);
+    const r3 = crun(R, dir, []);
+    assert.ok(!reused(r3).includes(F('m')), show(r3));
+    assert.equal(r3.status, fresh.status);
   });
 
   test('R-009 exclusive create (wx): the path appears before the run', T, () => {

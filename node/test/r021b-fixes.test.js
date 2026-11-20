@@ -135,7 +135,18 @@ for (const runner of RUNNERS) {
         'data/blob.bin': 'abc',
         ...tfile(runner, 'fmt', "test('fmt', async () => { const st = await fs.promises.stat('data/blob.bin'); console.log(st); expect(util.format('%o', st)).toContain('size: 3'); });"),
       });
-      noWrongReuse(runner, dir, F('fmt'), { 'data/blob.bin': 'abcd' });
+      // printing the whole Stats prints its file times too, read on the virtual clock as their age at the test start:
+      // a value that depends on when the run happens, so the test is never reused (Jest included: its console
+      // reading the fields first does not hide the test's own read); the size change is still never missed
+      assert.equal(noWrongReuse(runner, dir, F('fmt'), { 'data/blob.bin': 'abc' }, { mayRefuse: true }), 'refused');
+      const r = crun(runner, dir);
+      assert.match(JSON.stringify(r.summary && r.summary.not_cached_detail), /file time on the virtual clock/, show(r));
+      write(dir, { 'data/blob.bin': 'abcd' });
+      const fresh = crun(runner, dir, { cache: false });
+      assert.notEqual(fresh.status, 0, show(fresh));
+      const r3 = crun(runner, dir);
+      assert.ok(!reusedFiles(r3).includes(F('fmt')), show(r3));
+      assert.equal(r3.status, fresh.status, show(r3));
     });
 
     t('G2 same: a Stats object is a plain fs.Stats (prototype, isProxy, inspect, clone, serialize, descriptors)', T, () => {

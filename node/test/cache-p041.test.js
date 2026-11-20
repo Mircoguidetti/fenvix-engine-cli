@@ -197,8 +197,10 @@ for (const runner of RUNNERS) {
       const fail = Object.keys(outcomes).find((s) => outcomes[s] !== 0);
       assert.ok(pass && fail, JSON.stringify(outcomes));
       const v = verify(path.join(dir, `s${pass}.jsonl`), path.join(dir, `s${fail}.jsonl`));
-      assert.match(v.stdout, /a2 victim.*\[outcome-only\]/);
-      assert.match(v.stdout, /order-dependent: it fails in run 1 and passes in run 0 .*Candidates \(ran before it in run 1 only\): [^\n]*a1 pollutes/, v.stdout);
+      // the verifier of claude/verifier-cli: the first divergence is the run input (the seed), then the tests that
+      // ran before the victim only in the failing run (G-1483: the polluter is among them)
+      assert.match(v.stdout, /a2 victim\s+\[seed\] outcomes=passed,failed/, v.stdout);
+      assert.match(v.stdout, /a2 victim[^\n]*\n[^\n]*run input seed differs[^\n]*\n\s+before it only in run 1: [^\n]*a1 pollutes/, v.stdout);
     });
   });
 

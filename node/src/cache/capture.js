@@ -1841,14 +1841,16 @@ function installNet(cap) {
  * clock). A test that reads them is not cached.
  */
 function installRealClock(cap) {
+  // returns false when the read was the runner's (not flagged): a caller that dedups reads asks again on the next one
   const real = (what) => {
-    if (!cap.active || cap.busy || cap.isGlobal) return;
+    if (!cap.active || cap.busy || cap.isGlobal) return true;
     // a clock Level 0 virtualizes in this process (src/clock.js): a clock read keyed by the epoch, not a real one
-    if (STATE.virtualClocks && STATE.virtualClocks.some((v) => String(what).startsWith(v))) return;
+    if (STATE.virtualClocks && STATE.virtualClocks.some((v) => String(what).startsWith(v))) return true;
     cap.busy++;
     let infra;
     try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
     if (!infra) cap.flag('clock-real', what);
+    return !infra;
   };
   for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
   STATE.onRealClock = real;

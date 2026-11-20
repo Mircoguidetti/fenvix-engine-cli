@@ -206,8 +206,15 @@ for (const runner of RUNNERS) {
       const r2 = run(runner, dir);
       assert.equal(r2.status, 0, show(r2));
       assert.equal(got(dir, 'wins'), 'io,io,io,io,io');
+      // the choice is controlled and recorded: the same sched events in both runs. The connections' own I/O overlaps
+      // (the server and the client in one process), which Level 0 records but does not order (uncontrolled.io): the
+      // verifier never calls such a test identical and names it (claude/verifier-cli: uncontrolled.* is never stable)
+      const schedOf = (f) => fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
+        .filter((j) => j.type === 'test').flatMap((j) => j.events.filter((e) => e.s === 'sched').map((e) => `${e.o}=${e.v}`));
+      assert.deepEqual(schedOf(path.join(dir, '.detjs', 'trace.jsonl')), schedOf(path.join(dir, 'run1.jsonl')));
       const rep = verify(dir, path.join(dir, 'run1.jsonl'), path.join(dir, '.detjs', 'trace.jsonl'));
-      assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.summary));
+      assert.equal(rep.summary.stable, 0, JSON.stringify(rep.summary));
+      assert.deepEqual(rep.summary.reasons, { io: 1 }, JSON.stringify(rep.summary));
     });
 
     test('G-1435 G-1484: stdio and an idle worker do not turn virtual timers into real waits; a busy worker does', T, () => {
@@ -329,7 +336,8 @@ for (const runner of RUNNERS) {
       assert.equal(got(dir, 'dirty'), '0');
     });
 
-    test('G-1468: Jest legacy fake timers restore the virtual timers', { ...T, skip: runner !== 'jest' }, () => {
+    // Jest only (Vitest has no legacy fake timers): defined for Jest, not skipped elsewhere
+    (runner === 'jest' ? test : () => {})('G-1468: Jest legacy fake timers restore the virtual timers', T, () => {
       const dir = proj(runner, 'legacy', {
         a: "test('legacy', async () => { jest.useFakeTimers({ legacyFakeTimers: true }); jest.useRealTimers(); await new Promise((r) => setTimeout(r, 8000)); put('done', 'yes'); }, 30000);",
       });
