@@ -12,6 +12,7 @@ Audit gaps closed here (regression tests named after the family they close):
 """
 from __future__ import annotations
 
+import glob
 import json
 import os
 import re
@@ -183,13 +184,48 @@ def test_children_alive_seen_by_virtual_clock():
         p.wait()
 
 
-def test_no_hard_coded_linux_x64_in_install_paths():
-    """G-0478, G-0496, G-0497, G-0240 family: no installer or build script names one OS/arch's file."""
-    bad = re.compile(r"detjs\.linux-x64\.node|libfenvix_jvm\.so\"\s+\"\$stage|linux_x86_64")
-    for rel in ("release/install-image.sh", "jvm/build.sh", "node/src/native.js", "node/scripts/build.js",
-                "release/npm/pack.py", ".github/workflows/packages.yml"):
-        text = open(os.path.join(ROOT, rel)).read()
-        assert not bad.search(text), (rel, bad.search(text).group(0))
+def test_installers_pick_the_machine_s_files():
+    """G-0478, G-0496, G-0497 family: the runner-image installer takes the addon of the machine it runs on, and the
+    JVM build the library file the host produced, not one OS/arch's file name."""
+    image = open(os.path.join(ROOT, "release", "install-image.sh")).read()
+    assert 'cp "$dist/detjs.linux-x64.node"' not in image and "process.platform" in image
+    jvm = open(os.path.join(ROOT, "jvm", "build.sh")).read()
+    assert 'cp "$root/target/release/libfenvix_jvm.so" "$stage' not in jvm and "libfenvix_jvm.dylib" in jvm
+
+
+DIST = os.path.join(ROOT, "dist")
+
+
+@pytest.mark.skipif(not glob.glob(os.path.join(DIST, "fenvix-*-manylinux_2_28_x86_64.whl"))
+                    or not os.path.exists(os.path.join(DIST, "detjs.linux-x64.node")),
+                    reason="needs the CI build directory dist/ (release-1.yml, job build)")
+def test_engine_artifact_is_reproducible_and_complete(tmp_path):
+    """F-09: one versioned artifact for our machines, with a checksum; assembling it twice gives the same bytes (the
+    runner image pins version + sha256), and its manifest lists every file with its digest."""
+    import hashlib
+    import tarfile
+
+    shas = []
+    for k in ("a", "b"):
+        out = tmp_path / k
+        r = subprocess.run(["bash", os.path.join(ROOT, "release", "engine", "assemble.sh"), DIST, str(out)],
+                           capture_output=True, text=True, env=dict(os.environ, ENGINE_BUILD="test"))
+        assert r.returncode == 0, r.stdout + r.stderr
+        (tgz,) = glob.glob(str(out / "fenvix-engine-*-test-linux-x86_64.tar.gz"))
+        line = open(tgz + ".sha256").read().split()
+        assert line[0] == hashlib.sha256(open(tgz, "rb").read()).hexdigest() and line[1] == os.path.basename(tgz)
+        shas.append(line[0])
+    assert shas[0] == shas[1]
+    with tarfile.open(tgz) as t:
+        names = t.getnames()
+        top = names[0].split("/")[0]
+        meta = json.load(t.extractfile(f"{top}/VERSION.json"))
+    import detpy
+
+    assert meta["version"] == detpy.__version__ and meta["platform"] == "linux-x86_64" and meta["glibc_min"] == "2.28"
+    for need in ("install.sh", "bin/fenvix", "node/bin/fenvix.js", "node/detjs.linux-x64.node", "LICENSE"):
+        assert f"{top}/{need}" in names and need in meta["files"], need
+    assert sum(n.startswith(f"{top}/wheels/fenvix-") for n in names) == 1
 
 
 def test_pytest_floor_excludes_versions_that_break_det():
@@ -214,15 +250,17 @@ def test_old_xdist_refused_with_usage_error(monkeypatch):
     dx.require_version()
 
 
-def test_release_workflow_uses_trusted_publishing_with_the_configured_names():
-    """F-10: the PyPI trusted publisher the founder configured (project fenvix, workflow release.yml, environment
-    pypi) must keep matching; publishing uses OIDC only: no stored token, no TestPyPI."""
+def test_pypi_publishing_is_off_and_keeps_the_reserved_publisher_names():
+    """Founder decision 2026-11-20: no PyPI publishing for the go-live. release.yml keeps the job, switched off, with
+    the names of the pending trusted publisher (project fenvix, workflow release.yml, environment pypi); no token,
+    no TestPyPI, no npm."""
     path = os.path.join(ROOT, ".github", "workflows", "release.yml")
     text = open(path).read()
-    assert os.path.basename(path) == "release.yml"
-    assert re.search(r"(?m)^  pypi:\n(?:    .*\n)*?    environment: pypi\n", text), "pypi job must use environment pypi"
-    assert text.count("id-token: write") >= 2 and "pypa/gh-action-pypi-publish" in text
-    assert "${{ secrets." not in text and "password:" not in text and "NPM_TOKEN" not in text
-    assert "test.pypi.org" not in text and "testpypi" not in text.lower()
+    assert re.search(r"(?m)^  pypi:\n(?:    .*\n)*?    if: false", text), "the pypi job must be disabled"
+    assert re.search(r"(?m)^  pypi:\n(?:    .*\n)*?    environment: pypi\n", text)
+    assert "id-token: write" in text and "pypa/gh-action-pypi-publish" in text
+    assert "${{ secrets." not in text and "password:" not in text and "npm publish" not in text
+    assert "test.pypi.org" not in text and "tags:" not in text
+    assert not os.path.exists(os.path.join(ROOT, ".github", "workflows", "packages.yml"))
     meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))
     assert meta["project"]["name"] == "fenvix"

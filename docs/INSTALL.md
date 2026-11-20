@@ -1,58 +1,65 @@
-# Installing fenvix
+# Installing the fenvix engine
 
-Two packages, one version (CHANGELOG.md):
+The go-live runs on our machines only. The engine ships as **one versioned artifact** for them, built and tested by
+the trunk CI (`.github/workflows/release-1.yml`) on every merge into `claude/release-1` and published as a GitHub
+pre-release with a stable URL:
 
-| ecosystem | install | gives |
-|---|---|---|
-| Python | `pip install fenvix` (or `fenvix[xdist]`) | pytest plugin (`pytest --det`), runner shells (`python -m detpy unittest\|django\|nose2\|ward\|zope-testrunner\|doctest`), the `fenvix` command |
-| Node | `npm install --save-dev fenvix` | runner shells (`npx fenvix vitest\|jest\|mocha\|node-test\|ava\|tap\|uvu\|jasmine\|bun-test\|deno-test`), commands `fenvix` and `detjs` |
+    https://github.com/Mircoguidetti/fenvix-engine-cli/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<version>-r<run>.<sha7>-linux-x86_64.tar.gz
+    ... and the same URL + .sha256
 
-Check an installation with `fenvix --version` (both packages print `fenvix X.Y.Z`) and `fenvix doctor` (Python).
+The runner image pins the file name (version + build) and its sha256. The tarball is reproducible (fixed order,
+owner, mtimes; gzip without name or time): the same commit gives the same sha256.
+
+## Contents
+
+| path | what |
+|---|---|
+| `wheels/fenvix-<v>-cp312-abi3-manylinux_2_28_x86_64.whl` | pytest plugin (`pytest --det`), runners (`python -m detpy unittest\|django\|nose2\|ward\|zope-testrunner\|doctest`), the `fenvix` command |
+| `node/` | Node shells (`fenvix node vitest\|jest\|mocha\|node-test\|ava\|tap\|uvu\|jasmine\|bun-test\|deno-test`) and the native core `detjs.linux-x64.node` |
+| `bin/fenvix` | the `fenvix` command for the image (runs the wheel's `detpy.fenvix_cli` with the image's Python) |
+| `install.sh` | the installer |
+| `VERSION`, `VERSION.json` | version, build, commit, supported versions, sha256 of every file |
+
+## Install
+
+```bash
+sha256sum -c fenvix-engine-<...>-linux-x86_64.tar.gz.sha256
+tar xzf fenvix-engine-<...>-linux-x86_64.tar.gz
+PYTHON=python3 ./fenvix-engine-<...>-linux-x86_64/install.sh /opt/fenvix   # PREFIX, default $FENVIX_HOME or /opt/fenvix
+fenvix --version && fenvix doctor
+```
+
+`install.sh` installs the wheel into `$PYTHON`'s environment (its one dependency, pytest>=8.1, from the index unless
+already there) and the Node shells into `PREFIX/node` (no npm install: no runtime dependencies). A job that makes
+its own environment (tox, nox, uv, poetry, another setup-python) installs the wheel from `wheels/` into it the same
+way (`pip install wheels/fenvix-*.whl`).
 
 ## Supported
 
-| | supported | refused with a message |
+| | supported | otherwise |
 |---|---|---|
-| OS / CPU | Linux x86_64 and arm64 with glibc 2.28+ (Debian 10+, Ubuntu 20.04+, RHEL/Alma/Rocky 8+, Amazon Linux 2023); macOS 11+ on Apple silicon | musl (Alpine), glibc < 2.28, Windows, macOS on Intel |
-| Python | CPython 3.12, 3.13, 3.14 | older CPython (pip: `Requires-Python >=3.12`; at start: exit 4), free-threaded builds (3.13t/3.14t), PyPy |
-| pytest | 8.1+ and 9; pytest-xdist 3.7+ for `-n` under `--det` | older pytest (pip), older xdist (usage error) |
-| Node | 22, 24, 26 (`engines: >=22`) | older Node is not tested |
-
-Wheels: `cp312-abi3-manylinux_2_28_x86_64`, `cp312-abi3-manylinux_2_28_aarch64`, `cp312-abi3-macosx_11_0_arm64`
-(one wheel per platform serves every supported CPython). npm: the native core is the optional dependency of your
-platform (`@fenvix/linux-x64-gnu`, `@fenvix/linux-arm64-gnu`, `@fenvix/darwin-arm64`); do not install with
-`--omit=optional`.
+| machine | Linux x86_64, glibc 2.28+ (tested: AlmaLinux 8 / manylinux_2_28, Debian 12, Debian 13, Ubuntu 24.04) | `install.sh` and the Node loader stop with one sentence (macOS, arm64, musl/Alpine, older glibc) |
+| Python | CPython 3.12, 3.13, 3.14 | `install.sh` exits 4 with one sentence; a copy forced into an older interpreter refuses `pytest --det` and `python -m detpy` (exit 4); free-threaded builds and PyPy likewise |
+| pytest | 8.1+ and 9; pytest-xdist 3.7+ for `-n` under `--det` | older xdist: a usage error naming the version |
+| Node | 22, 24, 26 | other versions: a warning at install, not tested |
 
 The Python import package is `detpy`. The unrelated PyPI project `detpy` installs a package with the same import
-name: never `pip install detpy`; `fenvix doctor` reports it if it is present.
+name: never install it next to the engine; `fenvix doctor` reports it.
 
-## In tox, nox, hatch, poetry, uv
-
-The plugin must be installed in the environment that runs pytest: add `fenvix` to that environment's test
-dependencies (`deps = fenvix` in tox, `session.install("fenvix")` in nox, a dev dependency in poetry/uv).
-
-## What the machine needs besides the packages
+## What the machine needs besides the artifact
 
 | need | for | without it |
 |---|---|---|
-| `strace` (Linux) | skip with proof of tests that start processes (`--det-cache`) | those tests run every time ("not cacheable: subprocess") |
-| a C compiler (`cc`, `gcc` or `clang`) at run time (Linux) | the child-process clock shim of `--det-cache` | tests that start processes run every time |
-| permission to call `personality(ADDR_NO_RANDOMIZE)` (Linux) | ASLR off under `--det` (addresses, `id()` order) | the run continues with "ASLR on" in the header |
+| `strace` | skip with proof of tests that start processes (`--det-cache`) | those tests run every time ("not cacheable: subprocess") |
+| a C compiler (`cc`, `gcc` or `clang`) at run time | the child-process clock shim of `--det-cache` | tests that start processes run every time |
+| permission for `personality(ADDR_NO_RANDOMIZE)` | ASLR off under `--det` | the run continues with "ASLR on" in the header |
+| `git` | nothing in the engine; the projects' own steps | |
 
-macOS: child processes are not followed (no strace), so under `--det-cache` a test that starts a process runs
-every time; ASLR cannot be switched off; `--det-isolate` falls back to the carried-set rule (one line in the
-summary). The libraries a test loads, the CPU's features, internet sockets opened by C code and live children are
-observed on macOS as on Linux.
-
-## Containers and CI images
-
-Docker's default seccomp profile (GitHub Actions `container:` jobs, GitLab Docker executors, Kubernetes
-`RuntimeDefault`) denies the ASLR switch: run with `--security-opt seccomp=unconfined` or accept "ASLR on". `strace`
-must be installed in the image and ptrace allowed (default Docker allows it; gVisor does not). Mount the cache
-directory (`--det-cache=DIR`) on a volume that outlives the container.
+Containers: Docker's default seccomp profile denies the ASLR switch (`--security-opt seccomp=unconfined`, or accept
+"ASLR on"); ptrace must be allowed for strace (default Docker allows it; gVisor does not). Keep the `--det-cache`
+directory on a volume that outlives the container.
 
 ## Uninstall
 
-`pip uninstall fenvix`, `npm uninstall fenvix`. What runs leave behind (safe to delete): `.detpy/`, `.detjs/`,
-`.fenvix/` in the project; `~/.cache/detpy/` (precompiled bytecode under a fixed hash seed), `~/.cache/fenvix/`;
-`node_modules/.detjs/`; the `--det-cache` directory you chose.
+`pip uninstall fenvix`; remove `PREFIX`. Runs leave (safe to delete): `.detpy/`, `.detjs/`, `.fenvix/` in the
+project, `~/.cache/detpy/`, `~/.cache/fenvix/`, `node_modules/.detjs/`, and the `--det-cache` directory chosen.

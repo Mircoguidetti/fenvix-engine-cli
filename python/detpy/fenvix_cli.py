@@ -1,4 +1,4 @@
-"""``fenvix``: the command installed by the PyPI package ``fenvix`` (and, as ``release/fenvix``, by the runner image).
+"""``fenvix``: the single command of the engine (console script of the wheel; ``bin/fenvix`` of the engine artifact).
 
 Interface only: it finds the language shell and hands it the arguments unchanged. Every decision (controls,
 fingerprints, traces, keys, reuse) is the engine's.
@@ -8,14 +8,14 @@ fingerprints, traces, keys, reuse) is the engine's.
     fenvix doctor                          checks the installation (interpreter, native core, foreign ``detpy``)
     fenvix python [pytest args]            pytest with the detpy plugin  (e.g. --det, --det-cache=DIR)
     fenvix python-runner RUNNER [args]     python -m detpy RUNNER ...    (unittest, django, nose2, ward, zope, doctest)
-    fenvix node RUNNER [args]              the npm package's shell: npx fenvix RUNNER ... (vitest, jest, mocha, ...)
+    fenvix node RUNNER [args]              the Node shell: RUNNER = vitest, jest, mocha, node-test, ava, tap, ...
     fenvix verify TRACE_A TRACE_B          python -m detpy verify (every shell writes the same trace format)
     fenvix detect [DIR]                    the languages of DIR by their build files (one per line)
     fenvix go test [args]                  fenvix-go test ...  (runner image only: $FENVIX_HOME/bin)
     fenvix jvm ...                         the JVM agent       (runner image only: $FENVIX_HOME/jvm)
 
-Node: the shells live in the npm package ``fenvix`` (``npm i -D fenvix``); ``fenvix node`` uses, in order,
-$FENVIX_HOME/node (runner image), the project's node_modules/.bin/fenvix, then ``npx --no-install fenvix``.
+Node: the shells are installed by the engine artifact into $FENVIX_HOME/node (release/engine/install.sh);
+``fenvix node`` uses them, else a checkout's node_modules/.bin/fenvix.
 """
 from __future__ import annotations
 
@@ -140,8 +140,6 @@ def _node_cmd() -> list[str] | None:
         if parent == d:
             break
         d = parent
-    if shutil.which("npx"):
-        return ["npx", "--no-install", "fenvix"]
     return None
 
 
@@ -174,7 +172,8 @@ def main(argv: list[str] | None = None) -> int:
     if cmd == "node":
         node = _node_cmd()
         if node is None:
-            sys.stderr.write("fenvix: the Node shells are not installed: npm install --save-dev fenvix\n")
+            sys.stderr.write(f"fenvix: the Node shells are not installed (no {_path('node', 'bin', 'fenvix.js')}): "
+                             "install the engine artifact, or set FENVIX_HOME\n")
             return 127
         _exec(node + rest)
     if cmd == "go":

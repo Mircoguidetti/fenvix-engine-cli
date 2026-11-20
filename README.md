@@ -17,14 +17,17 @@ verifier shows the exact event where the runs diverge.
 
 ## Install
 
+The engine ships as one versioned artifact for our machines (Linux x86_64, glibc 2.28+, CPython 3.12-3.14,
+Node 22/24/26), published by the trunk CI on every merge as a GitHub pre-release with its sha256:
+
 ```bash
-pip install fenvix                # Python: pytest plugin, runner shells, `fenvix` command (CPython 3.12-3.14)
-npm install --save-dev fenvix     # Node: runner shells, `fenvix` / `detjs` commands (Node 22, 24, 26)
+tar xzf fenvix-engine-<version>-<build>-linux-x86_64.tar.gz
+PYTHON=python3 ./fenvix-engine-<version>-<build>-linux-x86_64/install.sh /opt/fenvix
 fenvix --version
 ```
 
-Linux x86_64 / arm64 (glibc 2.28+) and macOS on Apple silicon. Requirements, containers, uninstall:
-[docs/INSTALL.md](docs/INSTALL.md). From a checkout (needs Rust): `pip install maturin && maturin develop --release`.
+Details, requirements, containers, uninstall: [docs/INSTALL.md](docs/INSTALL.md). From a checkout (needs Rust):
+`pip install maturin && maturin develop --release`.
 
 ## Use
 

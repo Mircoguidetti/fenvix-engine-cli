@@ -1,57 +1,33 @@
-# Release: build and test every package (packages.yml: per-platform builds, platform floor, `twine check --strict`,
-# `npm publish --dry-run`, the clean-install test on Linux x86_64/arm64 and macOS arm64), then publish with trusted
-# publishing (OIDC). No token or password is stored in this repository or in its secrets.
-#
-#   push a tag vX.Y.Z (equal to release/version.py)       -> PyPI, npm (dry run until enabled), GitHub Release
-#   workflow_dispatch, version X.Y.Z-rc.N                  -> PyPI pre-release X.Y.ZrcN (maturin maps the semver
-#                                                             pre-release to PEP 440), npm dry run
-#
-# PyPI trusted publisher (configured by the founder): project `fenvix`, owner Mircoguidetti, repository
-# fenvix-engine-cli, workflow `release.yml`, environment `pypi`. These names must not change.
-# npm: dry run until the founder sets the repository variable FENVIX_PUBLISH_NPM=true after the first publish and the
-# trusted publisher of each package (sessions/2026-11-20-packages/REPORT.md, "Per il fondatore").
+# PyPI publishing of the wheel `fenvix` — DISABLED. The go-live runs only on our machines (founder decision,
+# 2026-11-20): the engine ships as one versioned artifact attached to a GitHub release by release-1.yml
+# (job publish-engine). The PyPI name `fenvix` is reserved by a pending trusted publisher (project `fenvix`, owner
+# Mircoguidetti, repository fenvix-engine-cli, workflow `release.yml`, environment `pypi`): this file keeps exactly
+# those names, so that switching the job on later is one line (`if: false` -> a condition) and needs no token.
 name: release
 
 on:
-  push:
-    tags: ["v*"]
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "pre-release version to build and publish to PyPI (semver, e.g. 0.1.0-rc.1 -> 0.1.0rc1)"
-        required: true
-        type: string
+  workflow_dispatch: {}
 
 permissions:
   contents: read
 
 jobs:
-  check-tag:
+  wheel:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.v.outputs.version }}
     steps:
       - uses: actions/checkout@v4
-      - id: v
-        run: |
-          if [ "${{ github.event_name }}" = push ]; then
-            v="$(python3 release/version.py)"
-            [ "${GITHUB_REF_NAME}" = "v$v" ] || { echo "tag ${GITHUB_REF_NAME} is not v$v (release/version.py)"; exit 1; }
-            grep -qE "^## \[$v\]" CHANGELOG.md || { echo "CHANGELOG.md has no section [$v]"; exit 1; }
-          else
-            v="${{ inputs.version }}"
-            echo "$v" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' || { echo "a manual release is a pre-release X.Y.Z-rc.N"; exit 1; }
-          fi
-          echo "version=$v" >> "$GITHUB_OUTPUT"
-
-  build:
-    needs: check-tag
-    uses: ./.github/workflows/packages.yml
-    with:
-      version: ${{ github.event_name == 'workflow_dispatch' && inputs.version || '' }}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: |
+          pip install "maturin>=1.5,<2" ziglang twine
+          maturin build --release --zig --compatibility manylinux_2_28 -o dist && maturin sdist -o dist
+          twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with: {name: wheels, path: dist/}
 
   pypi:
-    needs: build
+    needs: wheel
+    if: false   # disabled: no PyPI publishing for the go-live (see the header)
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
@@ -59,45 +35,4 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with: {name: wheels, path: dist}
-      - run: pip install twine && twine check --strict dist/*
       - uses: pypa/gh-action-pypi-publish@release/v1
-
-  npm:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: npm
-    permissions:
-      id-token: write   # npm trusted publishing (OIDC) and provenance
-    steps:
-      - uses: actions/setup-node@v4
-        with: {node-version: "24", registry-url: "https://registry.npmjs.org"}
-      - uses: actions/download-artifact@v4
-        with: {name: npm-tarballs, path: tarballs}
-      - name: publish the platform packages first, then fenvix (dry run unless FENVIX_PUBLISH_NPM=true on a tag)
-        env:
-          REAL: ${{ github.event_name == 'push' && vars.FENVIX_PUBLISH_NPM == 'true' }}
-        run: |
-          npm install -g npm@latest
-          flag="--dry-run"; [ "$REAL" = true ] && flag="--provenance"
-          for t in tarballs/fenvix-linux-*.tgz tarballs/fenvix-darwin-*.tgz tarballs/fenvix-[0-9]*.tgz; do
-            npm publish "$t" --access public $flag
-          done
-
-  github-release:
-    needs: [check-tag, build, pypi, npm]
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with: {name: wheels, path: dist}
-      - uses: actions/download-artifact@v4
-        with: {name: npm-tarballs, path: dist}
-      - env:
-          GH_TOKEN: ${{ github.token }}
-          V: ${{ needs.check-tag.outputs.version }}
-        run: |
-          awk -v v="$V" '$0 ~ "^## \\["v"\\]" {on=1; next} on && /^## / {exit} on' CHANGELOG.md > notes.md
-          gh release create "v$V" dist/* --title "fenvix $V" --notes-file notes.md --verify-tag

@@ -1,45 +1,37 @@
 #!/usr/bin/env python3
-"""Install test: only the built packages, no checkout of the engine (.github/workflows/packages.yml, job install).
+"""Install test of the engine artifact, in a clean container, without a checkout of the engine
+(.github/workflows/release-1.yml, job `install`).
 
-    python3 install_test.py --wheels DIR --npm DIR --version X.Y.Z --work DIR [--py311 PATH] --out result.json
+    python3 install_test.py --artifact fenvix-engine-<v>-<b>-linux-x86_64.tar.gz --python PY --work DIR --out result.json
+    python3 install_test.py --artifact ... --refuse --python PY311 --work DIR --out result.json
 
-DIR (--wheels) holds the wheels (and the sdist) built by CI; DIR (--npm) the `npm pack` tarballs of `fenvix` and
-the `@fenvix/<platform>` packages. In a fresh virtual environment and a fresh Node project it:
-
-  1. installs `fenvix` from a local package index (PEP 503, with data-requires-python as PyPI serves it) and the
-     npm tarballs, checks `fenvix --version` (both commands) and `fenvix doctor`;
-  2. runs `pytest --det` twice on a small real Python project (traces verified identical) and `--det-cache` twice
-     (the second run reuses tests, no outcome differs);
-  3. runs `fenvix vitest run --det` twice on a small real Vitest project (traces verified) and `--det-cache`
-     twice (the second run reuses);
-  4. with --py311: on CPython 3.11, pip refuses the package with the Requires-Python message, and a copy forced
-     into that interpreter refuses `pytest --det` and `python -m detpy` at start (exit 4, one sentence).
-
+Default mode: checks the artifact against its .sha256, unpacks it, runs its install.sh into a fresh virtual
+environment of PY and a fresh prefix, checks `fenvix --version` (Python command and Node shell) and `fenvix doctor`,
+then on small real projects pinned to a tag:
+  * Python: `pytest --det` twice (traces verified identical by `fenvix verify`) and `--det-cache` twice (the second
+    run reuses tests with proof and no outcome differs);
+  * Vitest: `fenvix node vitest run --det` twice (traces verified) and `--det-cache` twice (the second run reuses).
+--refuse (CPython 3.11): install.sh exits 4 with one sentence; a copy of the wheel forced into that interpreter
+refuses `pytest --det` and `python -m detpy` at start (exit 4, one sentence, no traceback).
 Exit code 0 only when every check passed; every command and its output go to --work/logs.
 """
 from __future__ import annotations
 
 import argparse
 import glob
-import html
+import hashlib
 import json
 import os
 import re
-import shutil
 import subprocess
 import sys
-import threading
+import tarfile
 import time
 import zipfile
-from functools import partial
-from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
 # Small real projects, pinned (DECLARED choice).
-PY_PROJECT = {"url": "https://github.com/pallets/itsdangerous", "ref": "2.2.0", "tests": "tests",
-              "extra": ["freezegun"]}
+PY_PROJECT = {"url": "https://github.com/pallets/itsdangerous", "ref": "2.2.0", "tests": "tests", "extra": ["freezegun"]}
 VITEST_PROJECT = {"url": "https://github.com/unjs/ufo", "ref": "v1.6.1"}
-
-BIN = "Scripts" if os.name == "nt" else "bin"
 
 
 class Run:
@@ -69,47 +61,47 @@ class Run:
         print(f"-- check {name}: {'OK' if ok else 'FAILED'} {str(detail)[:300]}", flush=True)
 
 
-def serve_index(wheels: str, root: str) -> tuple[str, ThreadingHTTPServer]:
-    """A PEP 503 index of the local files, with data-requires-python from each file's metadata (as PyPI)."""
-    d = os.path.join(root, "simple", "fenvix")
-    os.makedirs(d, exist_ok=True)
-    links = []
-    for f in sorted(os.listdir(wheels)):
-        if not (f.endswith(".whl") or f.endswith(".tar.gz")):
-            continue
-        shutil.copy(os.path.join(wheels, f), d)
-        rp = ""
-        if f.endswith(".whl"):
-            with zipfile.ZipFile(os.path.join(wheels, f)) as z:
-                meta = next(n for n in z.namelist() if n.endswith(".dist-info/METADATA"))
-                m = re.search(r"^Requires-Python: (.+)$", z.read(meta).decode(), re.M)
-                rp = m.group(1).strip() if m else ""
-        else:
-            rp = ">=3.12"  # same metadata as the wheels (pyproject.toml)
-        links.append(f'<a href="{f}" data-requires-python="{html.escape(rp)}">{f}</a>')
-    open(os.path.join(d, "index.html"), "w").write("<html><body>\n" + "\n".join(links) + "\n</body></html>\n")
-    srv = ThreadingHTTPServer(("127.0.0.1", 0), partial(SimpleHTTPRequestHandler, directory=root))
-    threading.Thread(target=srv.serve_forever, daemon=True).start()
-    return f"http://127.0.0.1:{srv.server_address[1]}/simple", srv
+def last(out):
+    return out.strip().splitlines()[-1:] if out and out.strip() else ""
 
 
-def pip_install(r, name, py, index, extra):
-    return r.sh(name, [py, "-m", "pip", "install", "-q", "--disable-pip-version-check", "--index-url", index,
-                       "--extra-index-url", "https://pypi.org/simple", "--only-binary", "fenvix", "fenvix", *extra])
+def unpack(r, a) -> str:
+    """Verify the checksum, unpack, return the artifact directory."""
+    data = open(a.artifact, "rb").read()
+    want = open(a.artifact + ".sha256").read().split()[0]
+    got = hashlib.sha256(data).hexdigest()
+    r.check("artifact_sha256", got == want, f"{got} vs {want}")
+    dest = os.path.join(r.work, "artifact")
+    with tarfile.open(a.artifact) as t:
+        t.extractall(dest, filter="data") if hasattr(tarfile, "data_filter") else t.extractall(dest)
+    (d,) = glob.glob(os.path.join(dest, "fenvix-engine-*"))
+    meta = json.load(open(os.path.join(d, "VERSION.json")))
+    r.check("artifact_layout", all(os.path.exists(os.path.join(d, p)) for p in
+                                   ("install.sh", "bin/fenvix", "node/bin/fenvix.js", "node/detjs.linux-x64.node"))
+            and len(glob.glob(os.path.join(d, "wheels", "fenvix-*-manylinux_2_28_x86_64.whl"))) == 1, d)
+    bad = [p for p, h in meta["files"].items()
+           if hashlib.sha256(open(os.path.join(d, p), "rb").read()).hexdigest() != h]
+    r.check("artifact_files_match_manifest", not bad, bad[:5])
+    a.version = meta["version"]
+    return d
 
 
-def python_part(r, a, index):
+def install(r, a, d):
     venv = os.path.join(r.work, "venv")
-    r.sh("venv", [sys.executable, "-m", "venv", venv])
-    py = os.path.join(venv, BIN, "python")
-    fx = os.path.join(venv, BIN, "fenvix")
-    rc, _ = pip_install(r, "pip-install-fenvix", py, index, ["pytest-xdist"])
-    r.check("pip_install", rc == 0)
+    r.sh("venv", [a.python, "-m", "venv", venv])
+    py = os.path.join(venv, "bin", "python")
+    home = os.path.join(r.work, "fenvix-home")
+    rc, out = r.sh("install-sh", ["bash", os.path.join(d, "install.sh"), home], env={"PYTHON": py})
+    r.check("install_sh", rc == 0, last(out))
+    fx = os.path.join(venv, "bin", "fenvix")
     rc, out = r.sh("fenvix-version", [fx, "--version"])
     r.check("fenvix_version_python", rc == 0 and out.strip() == f"fenvix {a.version}", out.strip())
     rc, out = r.sh("fenvix-doctor", [fx, "doctor"])
     r.check("fenvix_doctor", rc == 0, out.strip())
+    return py, fx, home
 
+
+def python_part(r, py, fx):
     proj = os.path.join(r.work, "pyproj")
     r.sh("py-clone", ["git", "clone", "-q", "--depth", "1", "--branch", PY_PROJECT["ref"], PY_PROJECT["url"], proj])
     rc, _ = r.sh("py-project-install", [py, "-m", "pip", "install", "-q", "--disable-pip-version-check", ".",
@@ -120,12 +112,12 @@ def python_part(r, a, index):
         t = os.path.join(r.work, f"py-det{i}.jsonl")
         rc, out = r.sh(f"py-det{i}", [py, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det", f"--det-trace={t}",
                                       PY_PROJECT["tests"]], cwd=proj)
-        r.check(f"py_det_run{i}", rc == 0 and " passed" in out, out.strip().splitlines()[-1:] if out else "")
+        r.check(f"py_det_run{i}", rc == 0 and " passed" in out, last(out))
         traces.append(t)
     rc, out = r.sh("py-verify", [fx, "verify", *traces])
-    r.check("py_det_traces_identical", rc == 0, out.strip().splitlines()[-1:] if out else "")
+    r.check("py_det_traces_identical", rc == 0, last(out))
     cache = os.path.join(r.work, "py-cache")
-    outs = []
+    outs, reused = [], 0
     for i in (1, 2):
         o = os.path.join(r.work, f"py-outcomes{i}.json")
         rc, out = r.sh(f"py-cache{i}", [py, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
@@ -138,84 +130,70 @@ def python_part(r, a, index):
     r.check("py_cache_same_outcomes", not diff and len(outs[1]) >= len(outs[0]) > 0, f"{len(outs[0])} outcomes; differing {diff[:5]}")
 
 
-def node_part(r, a):
+def node_part(r, a, fx, home):
+    env = {"FENVIX_HOME": home}
+    rc, out = r.sh("fenvix-node-version", [fx, "node", "--version"], env=env)
+    r.check("fenvix_version_node", rc == 0 and out.strip() == f"fenvix {a.version}", out.strip())
     proj = os.path.join(r.work, "vitestproj")
     r.sh("vitest-clone", ["git", "clone", "-q", "--depth", "1", "--branch", VITEST_PROJECT["ref"], VITEST_PROJECT["url"], proj])
     rc, _ = r.sh("vitest-project-install", "npm install --no-audit --no-fund --ignore-scripts --no-package-lock", cwd=proj)
     r.check("vitest_project_installed", rc == 0)
-    # the main package and the platform package of this machine (npm refuses another platform's package given by
-    # file: EBADPLATFORM); from a registry npm picks it from the optionalDependencies itself
-    import platform as _pf
-    arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64", "arm64": "arm64"}[_pf.machine().lower()]
-    triple = f"darwin-{arch}" if sys.platform == "darwin" else f"linux-{arch}-gnu"
-    npm_dir = os.path.abspath(a.npm)
-    tarballs = sorted(glob.glob(os.path.join(npm_dir, "fenvix-[0-9]*.tgz")) +
-                      glob.glob(os.path.join(npm_dir, f"fenvix-{triple}-*.tgz")))
-    r.check("npm_tarballs_found", len(tarballs) == 2, tarballs)
-    rc, out = r.sh("npm-install-fenvix", ["npm", "install", "--no-audit", "--no-fund", "--no-save", "--no-package-lock",
-                                          *tarballs], cwd=proj)
-    r.check("npm_install", rc == 0, out.strip().splitlines()[-1:] if out else "")
-    rc, out = r.sh("npx-fenvix-version", ["npx", "--no-install", "fenvix", "--version"], cwd=proj)
-    r.check("fenvix_version_node", rc == 0 and out.strip() == f"fenvix {a.version}", out.strip())
     traces = []
     for i in (1, 2):
         t = os.path.join(r.work, f"vitest-det{i}.jsonl")
-        rc, out = r.sh(f"vitest-det{i}", ["npx", "--no-install", "fenvix", "vitest", "run", "--det", f"--det-trace={t}"], cwd=proj)
-        r.check(f"vitest_det_run{i}", rc == 0 and os.path.exists(t), out.strip().splitlines()[-1:] if out else "")
+        rc, out = r.sh(f"vitest-det{i}", [fx, "node", "vitest", "run", "--det", f"--det-trace={t}"], cwd=proj, env=env)
+        r.check(f"vitest_det_run{i}", rc == 0 and os.path.exists(t), last(out))
         traces.append(t)
-    rc, out = r.sh("vitest-verify", ["npx", "--no-install", "fenvix", "verify", *traces], cwd=proj)
-    r.check("vitest_det_traces_identical", rc == 0, out.strip().splitlines()[-1:] if out else "")
+    rc, out = r.sh("vitest-verify", [fx, "verify", *traces])
+    r.check("vitest_det_traces_identical", rc == 0, last(out))
     cache = os.path.join(r.work, "vitest-cache")
     for i in (1, 2):
-        rc, out = r.sh(f"vitest-cache{i}", ["npx", "--no-install", "fenvix", "vitest", "run", "--det", f"--det-cache={cache}"], cwd=proj)
+        rc, out = r.sh(f"vitest-cache{i}", [fx, "node", "vitest", "run", "--det", f"--det-cache={cache}"], cwd=proj, env=env)
     m = re.search(r"reused (\d+)", out)
     r.check("vitest_cache_reused", rc == 0 and m and int(m.group(1)) > 0, m.group(0) if m else out.strip()[-300:])
 
 
-def old_python_part(r, a, index, py311):
-    venv = os.path.join(r.work, "venv311")
-    r.sh("venv311", [py311, "-m", "venv", venv])
-    py = os.path.join(venv, BIN, "python")
-    rc, out = r.sh("pip311-install-fenvix", [py, "-m", "pip", "install", "--disable-pip-version-check", "--index-url",
-                                             index, "fenvix"])
-    r.check("py311_pip_refuses", rc != 0 and "Requires-Python >=3.12" in out, out.strip().splitlines()[:2])
-    # a copy forced past pip (copied site-packages): refused at start, never a crash
-    r.sh("pip311-pytest", [py, "-m", "pip", "install", "-q", "--disable-pip-version-check", "pytest"])
+def refuse_part(r, a, d):
+    venv = os.path.join(r.work, "venv-old")
+    r.sh("venv-old", [a.python, "-m", "venv", venv])
+    py = os.path.join(venv, "bin", "python")
+    rc, out = r.sh("install-sh-old", ["bash", os.path.join(d, "install.sh"), os.path.join(r.work, "home-old")],
+                   env={"PYTHON": py})
+    r.check("install_refuses_old_python", rc == 4 and "needs CPython 3.12" in out and "Traceback" not in out, out.strip())
+    # a copy forced past the installer (copied site-packages): refused at start, never a crash
+    r.sh("pip-pytest-old", [py, "-m", "pip", "install", "-q", "--disable-pip-version-check", "pytest"])
     site = subprocess.check_output([py, "-c", "import sysconfig; print(sysconfig.get_paths()['purelib'])"], text=True).strip()
-    whl = sorted(glob.glob(os.path.join(a.wheels, "fenvix-*.whl")))[0]
-    zipfile.ZipFile(whl).extractall(site)
-    proj = os.path.join(r.work, "p311")
+    zipfile.ZipFile(glob.glob(os.path.join(d, "wheels", "fenvix-*.whl"))[0]).extractall(site)
+    proj = os.path.join(r.work, "p-old")
     os.makedirs(proj, exist_ok=True)
     open(os.path.join(proj, "test_a.py"), "w").write("def test_a():\n    assert 1\n")
-    rc, out = r.sh("py311-pytest-det", [py, "-m", "pytest", "-q", "--det", "test_a.py"], cwd=proj)
-    r.check("py311_pytest_det_refused", rc == 4 and "needs CPython 3.12" in out and "Traceback" not in out, out.strip()[-300:])
-    rc, out = r.sh("py311-python-m-detpy", [py, "-m", "detpy", "unittest", "--det"], cwd=proj)
-    r.check("py311_python_m_detpy_refused", rc == 4 and "needs CPython 3.12" in out and "Traceback" not in out, out.strip()[-300:])
+    rc, out = r.sh("old-pytest-det", [py, "-m", "pytest", "-q", "--det", "test_a.py"], cwd=proj)
+    r.check("old_pytest_det_refused", rc == 4 and "needs CPython 3.12" in out and "Traceback" not in out, out.strip()[-300:])
+    rc, out = r.sh("old-plain-pytest", [py, "-m", "pytest", "-q", "test_a.py"], cwd=proj)
+    r.check("old_plain_pytest_unchanged", rc == 0 and "1 passed" in out, last(out))
+    rc, out = r.sh("old-python-m-detpy", [py, "-m", "detpy", "unittest", "--det"], cwd=proj)
+    r.check("old_python_m_detpy_refused", rc == 4 and "needs CPython 3.12" in out and "Traceback" not in out, out.strip()[-300:])
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--wheels", required=True)
-    ap.add_argument("--npm", required=True)
-    ap.add_argument("--version", required=True)
+    ap.add_argument("--artifact", required=True)
+    ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--work", required=True)
-    ap.add_argument("--py311", default=None)
-    ap.add_argument("--skip-node", action="store_true")
+    ap.add_argument("--refuse", action="store_true", help="the interpreter is unsupported: check the refusals only")
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
-    a.wheels = os.path.abspath(a.wheels)
+    a.artifact = os.path.abspath(a.artifact)
     r = Run(a.work)
-    index, srv = serve_index(a.wheels, os.path.join(r.work, "index"))
-    try:
-        python_part(r, a, index)
-        if not a.skip_node:
-            node_part(r, a)
-        if a.py311:
-            old_python_part(r, a, index, a.py311)
-    finally:
-        srv.shutdown()
+    d = unpack(r, a)
+    if a.refuse:
+        refuse_part(r, a, d)
+    else:
+        py, fx, home = install(r, a, d)
+        python_part(r, py, fx)
+        node_part(r, a, fx, home)
     ok = all(c["ok"] for c in r.checks.values()) and bool(r.checks)
-    json.dump({"ok": ok, "platform": sys.platform, "python": sys.version.split()[0],
+    json.dump({"ok": ok, "python": a.python, "artifact": os.path.basename(a.artifact),
                "projects": {"python": PY_PROJECT, "vitest": VITEST_PROJECT},
                "checks": r.checks, "steps": r.steps}, open(a.out, "w"), indent=2)
     print("install test:", "PASSED" if ok else "FAILED", flush=True)

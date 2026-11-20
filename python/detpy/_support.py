@@ -35,7 +35,7 @@ PROBLEM = problem()
 
 
 def message():
-    return ("fenvix: %s. Supported: CPython %s on Linux x86_64/arm64 (glibc 2.28+) and macOS arm64."
+    return ("fenvix: %s. Supported: CPython %s on Linux x86_64 (glibc 2.28+)."
             % (PROBLEM, ", ".join(SUPPORTED)))
 
 

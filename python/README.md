@@ -5,12 +5,13 @@ nightly exploration finds hidden bugs, and a test is skipped only when its resul
 (skip with proof).
 
 This package is the Python side: the pytest plugin (`--det`), the runner shells (`python -m detpy unittest|django|nose2|ward|zope|doctest`)
-and the `fenvix` command. The Node side is the npm package `fenvix`.
+and the `fenvix` command. It ships inside the engine artifact for our machines (docs/INSTALL.md of the source
+repository), with the Node shells.
 
 ## Install
 
 ```bash
-pip install fenvix            # CPython 3.12, 3.13, 3.14 on Linux x86_64 / arm64 (glibc 2.28+) and macOS arm64
+pip install wheels/fenvix-*.whl   # from the engine artifact; CPython 3.12, 3.13, 3.14 on Linux x86_64 (glibc 2.28+)
 fenvix --version
 ```
 

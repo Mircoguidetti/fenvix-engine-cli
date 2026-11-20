@@ -40,10 +40,27 @@ jobs:
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
       - name: Rust workspace tests
         run: cargo test --workspace --exclude detpy-py 2>&1 | tee cargo-test.log | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
-      - name: PyO3 wheel (detpy)
-        run: pip install "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist
-      - name: napi addon (detjs)
-        run: cargo build -p detpy-node --release && cp target/release/libdetpy_node.so dist/detjs.linux-x64.node
+      # the binaries every job below tests are the ones the engine artifact ships: manylinux_2_28 (glibc 2.28 floor,
+      # through zig), checked by release/check_floor.py (audit G-0479, G-0488, G-0489, G-0250)
+      - name: wheel fenvix (cp312-abi3, manylinux_2_28 x86_64)
+        run: |
+          pip install "maturin>=1.5,<2" ziglang cargo-zigbuild twine
+          python3 release/version.py
+          maturin build --release --zig --compatibility manylinux_2_28 -o dist && twine check --strict dist/*.whl
+      - name: napi addon (detjs, glibc 2.28)
+        run: |
+          rustup target add x86_64-unknown-linux-gnu
+          cargo zigbuild -p detpy-node --release --target x86_64-unknown-linux-gnu.2.28
+          cp target/x86_64-unknown-linux-gnu/release/libdetpy_node.so dist/detjs.linux-x64.node
+      - name: platform floor (glibc 2.28)
+        run: python3 release/check_floor.py dist/fenvix-*.whl dist/detjs.linux-x64.node
+      - name: engine artifact (one versioned tarball + sha256)
+        run: |
+          export ENGINE_BUILD="r${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
+          release/engine/assemble.sh dist engine-artifact
+          cp release/install_test.py engine-artifact/
+      - uses: actions/upload-artifact@v4
+        with: {name: engine-artifact, path: engine-artifact/}
       - name: Go overlay core (libfenvix_go.a)
         run: |
           cargo build -p fenvix-go --release && cp target/release/libfenvix_go.a dist/
@@ -225,3 +242,64 @@ jobs:
           path: |
             smoke-${{ matrix.lang }}.json
             /tmp/smoke/logs/
+
+  # The engine artifact, installed alone (no checkout) in clean containers: the glibc 2.28 floor (manylinux_2_28,
+  # AlmaLinux 8) and current Debian images, each CPython 3.12/3.13/3.14 with Node 22/24/26; CPython 3.11 is refused.
+  install:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {name: "glibc 2.28, CPython 3.12, Node 22", image: "quay.io/pypa/manylinux_2_28_x86_64", python: "/opt/python/cp312-cp312/bin/python3.12", node: "22", mode: ""}
+          - {name: "Debian 12, CPython 3.13, Node 24", image: "python:3.13-slim-bookworm", python: "python3", node: "24", mode: ""}
+          - {name: "Debian, CPython 3.14, Node 26", image: "python:3.14-slim", python: "python3", node: "26", mode: ""}
+          - {name: "CPython 3.11 refused", image: "python:3.11-slim", python: "python3", node: "", mode: "--refuse"}
+    name: install (${{ matrix.name }})
+    container: {image: "${{ matrix.image }}"}
+    steps:
+      - name: git
+        run: command -v git || (apt-get update -qq && apt-get install -y -qq --no-install-recommends git ca-certificates > /dev/null)
+      - uses: actions/setup-node@v4
+        if: matrix.node != ''
+        with: {node-version: "${{ matrix.node }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: engine-artifact, path: engine}
+      - name: install only the engine artifact; real Python and Vitest projects (or the refusal)
+        run: |
+          ${{ matrix.python }} engine/install_test.py --artifact "$(ls engine/fenvix-engine-*.tar.gz)" \
+            --python ${{ matrix.python }} ${{ matrix.mode }} --work /tmp/it --out install-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: "install-${{ strategy.job-index }}"
+          path: |
+            install-result.json
+            /tmp/it/logs/
+
+  # Every merge into the trunk publishes its engine artifact as a GitHub pre-release with a stable URL, for the
+  # runner image to pin by version and sha256:
+  #   https://github.com/<owner>/<repo>/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<...>.tar.gz
+  publish-engine:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-1'
+    needs: [build, python, node, smoke, install]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: engine-artifact, path: engine}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          f="$(cd engine && ls fenvix-engine-*.tar.gz)"
+          tag="engine-${f#fenvix-engine-}"; tag="${tag%-linux-x86_64.tar.gz}"
+          cat > notes.md <<NOTES
+          Engine artifact of claude/release-1 at ${GITHUB_SHA} (run ${GITHUB_RUN_ID}): Linux x86_64, glibc 2.28+,
+          CPython 3.12-3.14, Node 22/24/26. Pin: \`$f\`, sha256 \`$(cut -d' ' -f1 engine/$f.sha256)\`.
+          Install: \`tar xzf $f && PYTHON=python3 ./${f%.tar.gz}/install.sh /opt/fenvix\`.
+          NOTES
+          gh release create "$tag" "engine/$f" "engine/$f.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --prerelease --title "fenvix engine $tag" --notes-file notes.md
