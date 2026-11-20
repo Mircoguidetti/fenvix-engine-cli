@@ -57,6 +57,9 @@ def parser(prog: str) -> argparse.ArgumentParser:
     return p
 
 
+_PYTEST_ONLY = ("--det-isolate", "--det-plan", "--det-plan-worker")
+
+
 def parse(argv: list[str], prog: str = "detpy") -> tuple[argparse.Namespace, list[str]]:
     """The ``--det*`` options anywhere in ``argv`` (``--det-seed 3`` and ``--det-seed=3``); the rest, in order, is the
     runner's command line."""
@@ -70,6 +73,11 @@ def parse(argv: list[str], prog: str = "detpy") -> tuple[argparse.Namespace, lis
         if a == "--":
             rest.extend(argv[i:])
             break
+        if name in _PYTEST_ONLY:
+            # audit G-1539: a pytest-plugin option the runner shells do not have; an unknown --det option left in the
+            # runner's command line made unittest run nothing at all
+            raise SystemExit(f"{prog}: {name} is a pytest option of detpy (pytest --det {name}); the {prog} runner "
+                             f"shell does not support it")
         if name.startswith("--det") and any(name == f for flags, _ in _level0.OPTIONS for f in flags):
             det.append(a)
             if name in takes_value and "=" not in a and i + 1 < len(argv):

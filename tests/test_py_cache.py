@@ -486,3 +486,19 @@ def test_g0708_work_stealing_callback_keeps_the_plan():
     from detpy.xdist import DetScheduling
 
     assert DetScheduling.remove_pending_tests_from_node(object.__new__(DetScheduling), None, [1]) is None
+
+
+def test_g1539_runner_shells_refuse_pytest_only_options(tmp_path):
+    """Audit G-1539: ``python -m detpy unittest --det --det-isolate`` ran no test at all; it is refused with why."""
+    (tmp_path / "test_u.py").write_text("import unittest\n\nclass T(unittest.TestCase):\n    def test_a(self):\n"
+                                        "        pass\n")
+    p = subprocess.run([sys.executable, "-m", "detpy", "unittest", "--det", "--det-isolate", "test_u"], cwd=tmp_path,
+                       capture_output=True, text=True)
+    assert p.returncode != 0 and "--det-isolate is a pytest option" in p.stderr, (p.stdout, p.stderr)
+
+
+def test_g1544_missing_strace_is_said(pytester, tmp_path):
+    """Audit G-1544: without strace, the summary says that processes started outside a test are not followed."""
+    _probe(pytester, "def test_a():\n    pass\n")
+    p, _, _ = run(pytester, "nostrace", "tests", env={"PATH": str(tmp_path)})
+    assert "install strace" in p.stdout, p.stdout

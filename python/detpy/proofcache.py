@@ -567,6 +567,13 @@ class ProofCachePlugin(ProofSession):
         tr.section("detpy cache with proof")
         for text, markup in self.summary_lines(tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))
+        fo = getattr(self.cap, "follower", None)
+        why = getattr(fo, "why_not", None) if fo is not None else None
+        if why and why != "--det-cache-no-follow":
+            # audit G-1544: processes started at import, collection or start-up are followed with strace; without
+            # it, the tests after them are refused for "subprocess" and nothing said why
+            tr.write_line(f"processes started outside a test are not followed ({why}): install strace so that the "
+                          f"tests after them can be reused", yellow=True)
         m = self.merge_result
         if m is not None:
             tr.write_line(f"parallel: decided once in the controller; {m['merged']} entries merged from the workers' "
