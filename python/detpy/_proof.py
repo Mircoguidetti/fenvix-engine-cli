@@ -355,8 +355,10 @@ class Capture(_core.CaptureCore):
                     note(path, own or kwargs.get("follow_symlinks") is False, True)
                     # review R-032b F2 (coordinator's correction, claude/parallel-proof-3 6cfae24): a result given to
                     # repository or library code flags the test when a time field is read (atime and ctime are not
-                    # keyed by the metadata probe; mtime is, the flag refuses all three alike)
-                    if timed_ok and not isinstance(path, int) and not cap._in_stat and _user_stat_caller():
+                    # keyed by the metadata probe; mtime is, the flag refuses all three alike). Only user code's reads
+                    # count: pytest's assertion rewriting compares source mtimes (infrastructure; pp3 97e61ac)
+                    if timed_ok and not isinstance(path, int) and not cap._in_stat and _user_stat_caller() \
+                            and cap._caller_kind() == "user":
                         return _TimedStat(orig(path, *args, **kwargs), cap, path)
                 return orig(path, *args, **kwargs)
 
