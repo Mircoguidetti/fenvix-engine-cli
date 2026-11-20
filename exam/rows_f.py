@@ -121,21 +121,35 @@ def _js_value(ctx, src, d=None, runner="vitest", rel=None):
     return vals, vok, vdesc, rep
 
 
+def _env_input_differs(vals, vdesc, rep):
+    """Env design A (DECISIONS 2026-11-20): a non-volatile variable the test reads is a run input, kept real. Two runs
+    that differ only in it must be reported by `fenvix verify` as INPUT DIFFERS naming it (exit 3), never as
+    identical and never as an unstable test."""
+    import json as _j
+    named = "EXAM_X" in _j.dumps(rep) or "EXAM_X" in vdesc
+    ok = vals[0] is not None and vals[1] is not None and vdesc.startswith("rc=3") and named
+    return ok, f"values {vals}; verify {vdesc}; names EXAM_X: {named}"
+
+
 def F_01(ctx: Ctx):
     for src in [s for s in SOURCES if s != "random-l0"]:
         def py(src=src):
-            vals, vok, vdesc, _ = _py_value(ctx, src)
+            vals, vok, vdesc, rep = _py_value(ctx, src)
+            if src == "env":
+                return _env_input_differs(vals, vdesc, rep)
             ok = vals[0] is not None and vals[0] == vals[1] and vok
             return ok, f"values {vals}; verify {vdesc}"
         ctx.run_check(f"F-01.{src}.pinned.python",
-                      f"two pytest --det runs differing only in {src} give the same value and verify identical", py)
+                      f"two pytest --det runs differing only in {src}: " + ("verify says INPUT DIFFERS naming the variable (exit 3)" if src == "env" else "the same value and verify identical"), py)
 
         def js(src=src):
-            vals, vok, vdesc, _ = _js_value(ctx, src)
+            vals, vok, vdesc, rep = _js_value(ctx, src)
+            if src == "env":
+                return _env_input_differs(vals, vdesc, rep)
             ok = vals[0] is not None and vals[0] == vals[1] and vok
             return ok, f"values {vals}; verify {vdesc}"
         ctx.run_check(f"F-01.{src}.pinned.node",
-                      f"two Vitest --det runs differing only in {src} give the same value and verify identical", js)
+                      f"two Vitest --det runs differing only in {src}: " + ("verify says INPUT DIFFERS naming the variable (exit 3)" if src == "env" else "the same value and verify identical"), js)
 
     def luxon():
         d, runner, args = rows_js.proj(ctx, "luxon")

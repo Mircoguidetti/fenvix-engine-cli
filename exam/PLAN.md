@@ -300,7 +300,7 @@ env var `EXAM_X`), `tz` (`datetime.now().astimezone()`, `new Date().toString()`)
 
 | check | expected |
 |---|---|
-| F-01.<source>.pinned | two `--det` runs whose machines differ only in that source (real time 2 s apart; env `EXAM_X=a/b`; `TZ=UTC/Asia/Tokyo`; `LANG=C.UTF-8/de_DE.UTF-8`; files created in two orders; network reachable vs not) give the same printed value and the same outcome, and `fenvix verify` says identical |
+| F-01.<source>.pinned | two `--det` runs whose machines differ only in that source (real time 2 s apart; `TZ=UTC/Asia/Tokyo`; `LANG=C.UTF-8/de_DE.UTF-8`; files created in two orders; network reachable vs not) give the same printed value and the same outcome, and `fenvix verify` says identical. Env (design A, DECISIONS 2026-11-20): CI-volatile variables are pinned by `--det`; any other variable the test reads (`EXAM_X=a/b`) stays real and is a run input, so `fenvix verify` must say INPUT DIFFERS naming it (exit 3), never identical and never an unstable test. The exam's own plumbing variables (`EXAM_OUT`, …) are declared volatile through `FENVIX_VOLATILE_ENV`. |
 | F-01.real-projects | DET2 on luxon (TZ- and locale-heavy) under TZ=America/New_York vs TZ=Asia/Kolkata: outcomes equal and traces identical |
 | F-01.gaps | assigned gap probes |
 

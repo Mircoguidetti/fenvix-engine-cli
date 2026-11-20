@@ -66,6 +66,9 @@ class Ctx:
         safe = re.sub(r"[^A-Za-z0-9_.-]+", "_", name)[:90]
         logf = self.logs / f"{self._n:04d}-{safe}.log"
         e = dict(os.environ)
+        # The exam's own plumbing variables (output paths) are declared volatile to the engine: they are not inputs
+        # of the code under test (DECISIONS 2026-11-20, env design A).
+        e.setdefault("FENVIX_VOLATILE_ENV", "EXAM_OUT,EXAM_OUTCOMES,EXAM_DIR,EXAM_OUT_DIR,EXAM_TMP,EXAM_WHEEL,EXAM_INSTALL_INFO")
         e.update({k: str(v) for k, v in (env or {}).items() if v is not None})
         for k, v in (env or {}).items():
             if v is None:
