@@ -12,6 +12,7 @@ REV = os.path.join(HERE, "..", "..", "2026-11-19-review-dep-verdict", "o1-walks"
 for p in ("click", "pygments"):
     rows = {}
     for v, path in (("96f4bd1", f"{REV}/{p}-before.json.gz"), ("9019c6d", f"{REV}/{p}-after.json.gz"),
+                    ("a5c90e2", f"{HERE}/walks-rust/{p}-new-a5c90e2.json.gz"),
                     ("bac3317", f"{HERE}/walks-rust/{p}-bac.json.gz"), ("new", f"{HERE}/walks-rust/{p}-new.json.gz")):
         if os.path.exists(path):
             rows[v] = {s["i"]: s for s in json.load(gzip.open(path))["steps"] if s.get("status") == "ok"}

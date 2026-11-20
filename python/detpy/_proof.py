@@ -1143,6 +1143,12 @@ def start_capture(root: str, cache_dir: str, follow_children: bool, dists: bool 
     # (undecodable bytes of environment strings escaped: valid UTF-8 text, Rust _safe)
     env0 = _core.safe_env(os.environ.items(), _DETPY_OWN_ENV)
     cap = Capture(root, env0)
+    # known before the first lookup (claude/parallel-proof-3 9b20f6a): a root conftest is imported between the start
+    # and pytest_configure, and its module lookups must not key site-packages or the standard library as searched
+    # directories (each is covered by the runtime identity, or by the per-distribution identity under
+    # --det-cache-dists)
+    cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
+    cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
     _core.cap_set_env_capture(cap)
     _patch_environ()
     _state.set_event_listener(cap.event)
