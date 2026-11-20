@@ -5,7 +5,7 @@ cd /home/user/work; WD=/home/user/work
 export CULPRIT_RED_BUDGET=${CULPRIT_RED_BUDGET:-64} CULPRIT_D_BUDGET=${CULPRIT_D_BUDGET:-64} CULPRIT_WORKERS=${CULPRIT_WORKERS:-4}
 export CULPRIT_ROUND=4
 E=/home/user/fenvix-engine-cli/harness/culprit
-W=$(ls /home/user/work/wheels/detpy-*.whl)
+W=$(ls /home/user/work/wheels/fenvix-*.whl)
 mkdir -p r4/locks-a r4/logs r4/results
 for n in jinja attrs toolz marshmallow click cachetools more-itertools sqlparse boltons structlog; do
   mkdir r4/locks-a/$n 2>/dev/null || continue

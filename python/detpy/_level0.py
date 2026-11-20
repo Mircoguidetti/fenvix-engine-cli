@@ -410,9 +410,15 @@ def env_inputs() -> dict:
     trace), engine-internal and CI-volatile variables excepted (``VOLATILE_PINNED``, ``VOLATILE_KEPT``,
     ``FENVIX_VOLATILE_ENV``). The verifier reports a test that read one whose value differs as ``input-differs``."""
     out = {}
+    # the engine's own read (os.environ._data, decoded as os.environ does): not an enumeration by the code under
+    # test, which the cache's and the env control's wrappers of os.environ would record (a runner shell writes its
+    # trace header while the capture is active: every test then depended on the whole environment)
+    e = os.environ
+    data = getattr(e, "_data", None)
+    items = list(e.items()) if data is None else [(e.decodekey(k), e.decodevalue(v)) for k, v in dict.items(data)]
     patterns = volatile_env_patterns()
-    for k, v in os.environ.items():
-        if is_volatile_env(k, patterns):  # CI-volatile (design A): never a run input
+    for k, v in items:
+        if k.startswith(ENGINE_ENV_PREFIXES) or is_volatile_env(k, patterns):  # engine's own, or CI-volatile
             continue
         # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
         # is JSON, and its digest still covers the exact bytes
@@ -775,3 +781,4 @@ def uninstall() -> None:
     _state.STATE.recorder = None
     _state.STATE.nodeid = None
     _sites.set_basetemp_provider(None)
+

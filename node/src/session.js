@@ -89,6 +89,9 @@ function prepare(opts, root, runner) {
   const dir = path.join(root, '.detjs', `run-${process.pid}`);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(path.join(dir, 'parts'), { recursive: true });
+  // .detjs holds the engine's run state: a .gitignore of `*` keeps the checkout clean for later CI steps (audit
+  // G-2177), as pytest's and Vitest's caches do
+  try { fs.writeFileSync(path.join(root, '.detjs', '.gitignore'), "# created by fenvix (the engine's run state)\n*\n", { flag: 'wx' }); } catch { /* present or read-only */ }
   const cassette = path.resolve(root, opts.cassette || path.join('.detjs', 'cassette.json'));
   const netMode = opts.record ? 'record' : fs.existsSync(cassette) ? 'replay' : 'block';
   const env = {

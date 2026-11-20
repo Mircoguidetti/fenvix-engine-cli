@@ -45,6 +45,8 @@ import re
 import sys
 import threading
 
+from . import _core
+
 ALL = "@all"
 PTH = "@pth"
 PROJECT = ""  # owner of the files of the project's own (editable) install
@@ -407,20 +409,17 @@ class Tracker:
         # providers, drivers) without a Python event: the maps are read after every test, not only when
         # sys.modules grew or ctypes.dlopen fired; parsed only when they changed
         self._dlopen = False
-        try:
-            with open("/proc/self/maps") as fh:
-                text = fh.read()
-        except OSError:
-            text = ""
-        if len(text) != self._maps_len or text != getattr(self, "_maps_text", None):
-            self._maps_len = len(text)
-            self._maps_text = text
-            lines = text.splitlines()
-            for line in lines:
-                i = line.find("/")
-                if i < 0:
-                    continue
-                p = line[i:]
+        # the loaded images: /proc/self/maps on Linux, the dyld image list on macOS (detpy_core::host; audit
+        # G-0155: on macOS the maps file does not exist and was read as "nothing loaded")
+        images = _core.loaded_images()
+        if images is None:
+            # no list on this OS: what C code loads is unknown; every later test depends on the whole environment
+            self._loaded_key(ALL, index)
+            images = []
+        if len(images) != self._maps_len or images != getattr(self, "_maps_text", None):
+            self._maps_len = len(images)
+            self._maps_text = images
+            for p in images:
                 if p in self._maps_seen:
                     continue
                 self._maps_seen.add(p)

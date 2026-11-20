@@ -731,6 +731,7 @@ def _configure_det(config) -> None:
         S.worker = wid
         config.pluginmanager.register(_xdist.Worker(config, wid), "detpy-xdist-worker")
     elif _xdist.is_controller(config):
+        _xdist.require_version()
         ctl = _xdist.Controller(config, S)
         if getattr(config.option, "testrunuid", None) is None:
             config.option.testrunuid = _xdist.derived_testrunuid(config, _state.STATE.config.seed)

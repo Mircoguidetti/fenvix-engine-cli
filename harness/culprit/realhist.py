@@ -32,7 +32,7 @@ from common import ENGINE, checkout, git, git_bisect, run_det, sh  # noqa: E402
 from finder import EnvBuilder, Finder  # noqa: E402
 
 WORK = Path(os.environ.get("CULPRIT_WORK", "/home/user/work"))
-WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("detpy-*.whl"), "")))
+WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("fenvix-*.whl"), "")))
 CP = "origin/claude/cache-proof-step1:"
 
 

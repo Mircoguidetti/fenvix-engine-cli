@@ -8,7 +8,12 @@ import argparse
 import json
 import sys
 
-from . import _core
+from . import _support
+
+if _support.PROBLEM is not None:  # before the native core is imported (detpy/_support.py)
+    _support.refuse()
+
+from . import _core  # noqa: E402
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -3,9 +3,6 @@
 name: go-tests
 
 on:
-  push:
-    branches: [claude/go-l0]
-    paths: ["go/**", "crates/**", ".github/workflows/go-tests.yml"]
   workflow_dispatch: {}
 
 jobs:

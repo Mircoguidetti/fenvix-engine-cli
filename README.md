@@ -17,10 +17,17 @@ verifier shows the exact event where the runs diverge.
 
 ## Install
 
+The engine ships as one versioned artifact for our machines (Linux x86_64, glibc 2.28+, CPython 3.12-3.14,
+Node 22/24/26), published by every full trunk CI run (nightly or by hand) as a GitHub pre-release with its sha256:
+
 ```bash
-pip install maturin
-maturin develop --release        # or: maturin build --release && pip install target/wheels/*.whl
+tar xzf fenvix-engine-<version>-<build>-linux-x86_64.tar.gz
+PYTHON=python3 ./fenvix-engine-<version>-<build>-linux-x86_64/install.sh /opt/fenvix
+fenvix --version
 ```
+
+Details, requirements, containers, uninstall: [docs/INSTALL.md](docs/INSTALL.md). From a checkout (needs Rust):
+`pip install maturin && maturin develop --release`.
 
 ## Use
 

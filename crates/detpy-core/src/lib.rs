@@ -24,6 +24,7 @@ pub mod distfiles;
 pub mod event;
 pub mod node_session;
 pub mod fingerprint;
+pub mod host;
 pub mod order;
 pub mod proof;
 pub mod record;
