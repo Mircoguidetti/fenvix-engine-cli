@@ -485,7 +485,10 @@ for (const v of VERSIONS) {
     test('plan identical across runs, fingerprints equal serial, cache reused both ways', T, (t) => {
       const base = installed(v);
       if (!base) { t.skip(`${v.pkg} could not be installed (offline?)`); return; }
-      const dir = fixture(v.runner, 'iso', isolatedSuite(4), { base: path.join(base, 'fx') });
+      // plus three concurrent tests (each in its own Level 0 context: G-1449, G-1456; Jest 29 starts them before their
+      // test_start events)
+      const conc = { conc: [0, 1, 2].map((i) => `test.concurrent('c${i}', async () => { const a = Math.random(); await new Promise((r) => setTimeout(r, ${(3 - i) * 50})); expect(Math.random()).not.toBe(a); });`).join('\n') };
+      const dir = fixture(v.runner, 'iso', { ...isolatedSuite(4), ...conc }, { base: path.join(base, 'fx') });
       const s = det(v.runner, dir);
       assert.equal(s.status, 0, show(s));
       const args = v.runner === 'vitest' ? ['--pool=threads', '--maxWorkers=2'] : ['--maxWorkers=2'];
@@ -498,14 +501,15 @@ for (const v of VERSIONS) {
       if (v.runner === 'jest') assert.deepEqual(p1.trace.header.meta.parallel.placement.processes.sort(), plan(p1).lanes.slice().sort());
       const cache = path.join(dir, '.cache');
       const c1 = det(v.runner, dir, [...args, `--det-cache=${cache}`]);
-      assert.equal(c1.summary.recorded, 16, show(c1));
+      assert.equal(c1.summary.recorded, 19, show(c1));
       const serialArgs = v.runner === 'vitest' ? ['--pool=threads'] : [];
       const c2 = det(v.runner, dir, [...serialArgs, `--det-cache=${cache}`]);
-      assert.equal(c2.summary.reused_tests, 16, show(c2));
+      assert.equal(c2.summary.reused_tests, 19, show(c2));
       fs.rmSync(cache, { recursive: true, force: true });
       det(v.runner, dir, [...serialArgs, `--det-cache=${cache}`]);
       const c4 = det(v.runner, dir, [...args, `--det-cache=${cache}`]);
-      assert.equal(c4.summary.reused_tests, 16, show(c4));
+      assert.equal(c4.summary.reused_tests, 19, show(c4));
+      for (const t of s.trace.tests.filter((x) => /::c\d$/.test(x.nodeid))) assert.equal(t.events.filter((e) => e.s === 'random').length, 2, t.nodeid);
     });
   });
 }
