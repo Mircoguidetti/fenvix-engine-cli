@@ -1,0 +1,43 @@
+### 1.1 Overview: language × feature (lead, merged from every agent)
+
+Cell legend: **done** = seen working in a run by the audit (or exercised by a named release-1 gate test);
+**partial** = exists with a hole (the id names it); **missing** = nothing on release-1 (the id is the gap);
+**excluded** = recorded in brain `DECISIONS.md` with a reason (none of the cells qualifies: no exclusion was ever
+recorded for a feature × language). Ids are this report's gap ids (G-/P-). The per-language matrices of the agents
+(sections 1.2 onward) give one row per runner.
+
+| # | feature | Python: pytest | Python: other runners (unittest, Django, nose2, ward, zope, doctest) | Node: Vitest, Jest | Node: Mocha, node:test, AVA, tap, uvu, Jasmine, Bun, Deno | Browser / e2e (Playwright, Cypress, …) | Go: `go test` | JVM: Gradle, Maven |
+|---|---|---|---|---|---|---|---|---|
+| 1 | det: clock | partial: Python APIs virtual; C-level clocks not [[PY3-061]] | partial: same as pytest (unittest run identical; others not run) [[PY1-037]] | partial: Date/timers virtual; `process.uptime`, `performance.timeOrigin`, marks, `AbortSignal.timeout` real [[ND2-001]] [[ND2-002]] [[ND2-003]] [[ND2-009]] | partial (same core as Vitest/Jest; per-runner not re-run) | missing: page clock not controlled on release-1 [[FE-033]] | partial: vDSO/raw clock reads, poller deadlines not [[SWEEP-144]] | partial: JDK-internal clocks, `Clock.tick*`, ScheduledThreadPoolExecutor real [[JVM-028]] [[JVM-036]] |
+| 2 | det: randomness | partial: `os.urandom`/`uuid4` observed, not controlled unless `--det-urandom` [[PY1-044]] | partial: same [[PY1-048]] | partial: `crypto.randomFill` async and `randomInt(cb)` bypass; vm contexts and workers unpatched [[ND2-014]] [[ND2-015]] [[ND2-023]] [[ND2-024]] | partial | missing [[FE-033]] | partial [[GO-048]] | partial: `RandomGenerator.getDefault`, reflective `new Random()` [[JVM-048]] [[JVM-049]] |
+| 3 | det: hash seeds, map/set order | done: PYTHONHASHSEED re-exec (lead run) | done (unittest) | partial | partial | missing | done: map order seeded (GO notes) | partial: `Set.of`/`Map.of` salt, `getDeclaredMethods` order [[JVM-023]] [[JVM-024]] |
+| 4 | det: test ordering | done (lead run, order digest stable) | done: runner order fixed (unittest) | done | done for listed runners | missing [[FE-032]] | partial: Go `-shuffle` silently dropped [[GO-020]] | partial: Gradle + JUnit 4 class order not controlled [[SWEEP-205]] |
+| 5 | det: network closed + record/replay | done (README; PY3 notes) | done (same plugin core) | partial: replay keyed by the opening test [[ND2-036]] | partial | missing | partial: closed, no record/replay [[GO-012]] | partial: closed only, no record/replay [[JVM-044]] |
+| 6 | det: file system order | done (but verifier confuses own trace files, [[LEAD-016]]) | done | done (ND2 notes) | done | missing | done | partial (GO/JVM notes) |
+| 7 | det: environment variables | missing [[PY3-001]] [[PY3-002]] | missing | missing (ND2 notes) | missing | missing | missing [[GO-003]] | missing [[JVM-041]] [[JVM-022]] |
+| 8 | det: locale | missing [[PY3-004]] | missing | missing [[ND2-011]] | missing | missing [[FE-017]] | missing [[GO-005]] | missing [[JVM-039]] |
+| 9 | det: timezone | missing [[PY3-003]] | missing | missing [[ND2-010]] | missing | missing [[FE-071]] | missing [[GO-004]] | missing [[JVM-039]] |
+| 10 | det: scheduling (async, threads, goroutines) | missing on release-1: `--det-threads`, `--det-async` only on branches [[BRANCH-001]] [[BRANCH-002]] | missing | missing [[ND2-056]] [[ND2-057]] | missing | missing (lockstep only on branches [[BRANCH-034]]) | partial: one P, scheduling seed changes little [[GO-071]] [[GO-008]] | missing [[JVM-052]] |
+| 11 | reproducible shuffle + seed | done (`--det-seed`) | partial (unittest only verified) | done (`--det-seed`, files and tests) | partial: per runner (ND1 notes) | missing | partial [[GO-020]] [[GO-022]] | partial (`--det-seed`, JVM notes) |
+| 12 | replay command printed / usable | missing: no replay command on failure [[PY3-031]] | missing [[PY3-034]] | missing [[ND2-073]] | missing | missing | missing (GO notes) | missing [[JVM-057]] |
+| 13 | fingerprints + verifier, first divergent event | done (`detpy verify`, event named; lead run) — partial for order-only causes (outcome-only) [[PY3-014]] | done (shared trace format) | partial: verify says identical while uncontrolled values differ [[ND2-001]] | partial | missing | partial: identical fingerprints for differing inputs [[GO-002]] | partial: covered/identical while interleaving differs [[JVM-025]] |
+| 14 | flaky → reproducible defect (`repro`, bundle, 10/10) | done as CLI (`detpy repro`, `replay`), undocumented, not in `fenvix` [[PY3-034]] | missing (pytest only) [[PY3-034]] | missing [[ND2-072]] | missing | missing [[FE-026]] | missing [[GO-065]] | missing [[JVM-058]] |
+| 15 | nightly exploration with budget + dedup | partial: `detpy explore` exists, no schedule, no memory [[PY3-034]] | missing | missing [[ND2-074]] | missing | missing | missing [[GO-067]] | missing [[JVM-061]] |
+| 16 | exact culprit | missing as a user feature (harness only) [[PY3-045]] | missing | missing [[ND2-075]] | missing | missing | missing [[GO-068]] | missing [[JVM-062]] |
+| 17 | dependency-update verdict | missing as a user feature (harness only) [[PROC2-062]] | missing | missing [[ND2-076]] | missing | missing [[FE-072]] | missing [[GO-069]] | missing [[JVM-063]] |
+| 18 | skip with proof | partial: Python 3.12+ only; known wrong reuses [[LEAD-014]] [[LEAD-015]] [[PROC2-022]] | partial (same session; Django whole-env key) | partial: per test file, not per test [[ND2-080]] | partial (per runner, ND1 notes) | missing | partial: needs strace; less reuse than Go's own cache [[GO-060]] | missing in effect: decision never applied, every test still runs [[JVM-002]] [[PROC3-166]] |
+| 19 | shared cache across machines | partial: `--det-cache-shared=DIR` only; `--det-cache=URL` silently local [[SWEEP-517]] | partial (same) | partial: same work paths required [[SWEEP-134]] | partial | missing | missing [[GO-056]] | missing [[JVM-010]] |
+| 20 | parallel under `--det` with proof | partial: xdist `-n` runs, but outcomes differ from serial [[PY2-004]] [[PY2-007]] | missing: serial only (Django `--parallel` forced to 1) | missing: forced serial [[FE-029]] | missing: forced serial (ND1 notes) [[ND1-034]] [[ND1-035]] | missing | missing: `-p 1` [[GO-063]] [[GO-021]] | missing: `maxParallelForks` 1 [[JVM-064]] |
+| 21 | `--det-isolate` | done on Linux (lead run; pytest 10 deprecation [[LEAD-018]]) | missing | missing [[ND2-077]] | missing | missing | missing [[GO-064]] | missing [[JVM-067]] |
+| 22 | receipts | done (`receipts.jsonl`, lead run) | done (same session) | done (`.detjs/receipts.jsonl`) | partial | missing | missing [[GO-057]] | missing [[JVM-008]] |
+| 23 | overhead measured on real projects | done: `--det` +16.8% to +25.0% (MEASURED, NUMBERS.md; not disclosed to users [[LAND-067]]) | missing (no number per runner) | partial: 3.1% for `--det` vs serial; forced-serial cost unmeasured in docs [[ND1-037]] | missing | missing | partial: +3.9% to +5.5% `--det`; strace cost [[SWEEP-180]] | missing [[JVM-098]] |
+
+### 1.1b Levels: what `ARCHITECTURE.md` promises versus release-1
+
+| level | promised (brain ARCHITECTURE.md, ROADMAP.md) | Python | Node | Go | JVM | Browser |
+|---|---|---|---|---|---|---|
+| L0 hermetic | order, seeds, virtual clock, fs order, closed network with record/replay | done with holes (env, locale, tz missing: rows 7-9) | done with holes (rows 1-2, 7-9) | done with holes (no record/replay) | done with holes (no record/replay, V1-V20) | missing on release-1 |
+| L1 runtime | asyncio event order, thread switches by bytecode count, Node event order | missing on release-1 (built on branches, Block 3 recorded CLOSED) [[PROC1-001]] [[PROC1-005]] | missing [[ND2-056]] | partial: one-P scheduler only | missing [[JVM-052]] | missing |
+| L2 deterministic VM | single-core deterministic VM per shard for native threads, Go and Java; whole stack for browser tests | missing (no code, no prompt) [[PY3-061]] | missing | missing | missing | missing on release-1; lockstep study on branches only [[BRANCH-034]] |
+| syscall backend | Hermit-style ptrace + seccomp-bpf, native extensions and subprocesses | missing: reserved name only [[PY3-061]] | missing | strace capture only (for skip keys) | missing | missing |
+| verifier | names the first divergent event; escalates to the next level | done for Python (no escalation: there is no next level) | partial [[ND2-001]] | partial [[GO-002]] | partial [[JVM-025]] | missing |

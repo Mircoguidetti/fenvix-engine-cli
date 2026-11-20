@@ -1,0 +1,176 @@
+python (3.12)	Python suites and reviewer test files	﻿2026-11-20T08:15:29.5687135Z ##[group]Run python -m pytest -q -p no:randomly --junitxml=py-3.12.xml tests \
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5687709Z [36;1mpython -m pytest -q -p no:randomly --junitxml=py-3.12.xml tests \[0m
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5688257Z [36;1m  --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \[0m
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5688789Z [36;1m  -rfE 2>&1 | tee py-3.12.log | tail -60; rc=${PIPESTATUS[0]}[0m
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5689287Z [36;1mecho "== failures"; grep -E "^(FAILED|ERROR) " py-3.12.log || true[0m
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5689619Z [36;1mexit $rc[0m
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5709005Z shell: /usr/bin/bash -e {0}
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5709318Z env:
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5709625Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/x64
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5710041Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib/pkgconfig
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5710413Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5710825Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5711260Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/x64
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5711648Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/x64/lib
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:15:29.5711950Z ##[endgroup]
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4460317Z platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4461079Z rootdir: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4462423Z configfile: tox.ini
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4462760Z plugins: detpy-0.1.0, xdist-3.8.0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4463371Z detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4464063Z detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4464738Z collected 1 item
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4464955Z 
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4465126Z test_m.py .                                                              [100%]
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4465594Z =============================== detpy (Level 0) ================================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4466282Z 
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4466719Z trace: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.detpy/trace.jsonl  order digest: 5f8a38c2e9e82d75b7dbab830d5eb595  seed: 0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4467302Z ============================ detpy cache with proof ============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4467908Z reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.016s); config 7b728ae7c68e342098c8bc63eb99ec11, runtime d2fe948fcaf9cfc04f6cf928d26cb606
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4468416Z not reused: new 1
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4468696Z not cacheable: subprocess 1
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4469196Z receipts: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir/receipts.jsonl
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4469671Z ============================== 1 passed in 0.04s ===============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4470875Z running: /opt/hostedtoolcache/Python/3.12.16/x64/bin/python -mpytest --basetemp=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/runpytest-1 --det --det-cache=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir --det-outcomes=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/out2.json -p no:cacheprovider
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4472108Z      in: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4472586Z ============================= test session starts ==============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4472955Z platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4473387Z rootdir: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4473784Z configfile: tox.ini
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4474031Z plugins: detpy-0.1.0, xdist-3.8.0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4474658Z detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4475385Z detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4475711Z collected 1 item
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4475892Z 
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4476056Z test_m.py .                                                              [100%]
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4476561Z =============================== detpy (Level 0) ================================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4476798Z 
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4477323Z trace: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.detpy/trace.jsonl  order digest: 5f8a38c2e9e82d75b7dbab830d5eb595  seed: 0
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4478042Z ============================ detpy cache with proof ============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4478862Z reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.015s); config 7b728ae7c68e342098c8bc63eb99ec11, runtime d2fe948fcaf9cfc04f6cf928d26cb606
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4479579Z not reused: new 1
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4479959Z not cacheable: subprocess 1
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4480507Z receipts: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir/receipts.jsonl
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4481137Z ============================== 1 passed in 0.04s ===============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4481567Z =============================== warnings summary ===============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4482098Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4482684Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4483132Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4483572Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4484240Z   /opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/importlib/metadata/__init__.py:467: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4485102Z     return self.metadata['Version']
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4485275Z 
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4485501Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4486007Z =========================== short test summary info ============================
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4486599Z FAILED tests/test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs - AssertionError: assert set() == {'test_m.py::test_tmp'}
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4487099Z   
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4487377Z   Extra items in the right set:
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4487658Z   'test_m.py::test_tmp'
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4487910Z   
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4488240Z   Full diff: (-: missing in left side, +: extra in left side)
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4488562Z   + set()
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4488780Z   - {
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4489047Z   -     'test_m.py::test_tmp',
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4489281Z   - }
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4489641Z 1 failed, 951 passed, 74 skipped, 1 deselected, 1 xfailed, 4 warnings in 1118.04s (0:18:38)
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4490032Z == failures
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4490549Z FAILED tests/test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs - AssertionError: assert set() == {'test_m.py::test_tmp'}
+python (3.12)	Python suites and reviewer test files	2026-11-20T08:34:08.4501086Z ##[error]Process completed with exit code 1.
+python (3.13)	Python suites and reviewer test files	﻿2026-11-20T08:15:33.2348040Z ##[group]Run python -m pytest -q -p no:randomly --junitxml=py-3.13.xml tests \
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2348666Z [36;1mpython -m pytest -q -p no:randomly --junitxml=py-3.13.xml tests \[0m
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2349731Z [36;1m  --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \[0m
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2350452Z [36;1m  -rfE 2>&1 | tee py-3.13.log | tail -60; rc=${PIPESTATUS[0]}[0m
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2350944Z [36;1mecho "== failures"; grep -E "^(FAILED|ERROR) " py-3.13.log || true[0m
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2351427Z [36;1mexit $rc[0m
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2382948Z shell: /usr/bin/bash -e {0}
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2383326Z env:
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2383949Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.18/x64
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2384482Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib/pkgconfig
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2384998Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2385498Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2386085Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2386579Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:15:33.2387013Z ##[endgroup]
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6955019Z platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6956213Z rootdir: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6957109Z configfile: tox.ini
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6957627Z plugins: detpy-0.1.0, xdist-3.8.0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6958556Z detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6959384Z detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6960000Z collected 1 item
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6960297Z 
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6960727Z test_m.py .                                                              [100%]
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6961230Z =============================== detpy (Level 0) ================================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6961642Z 
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6962280Z trace: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.detpy/trace.jsonl  order digest: 5f8a38c2e9e82d75b7dbab830d5eb595  seed: 0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6963357Z ============================ detpy cache with proof ============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6964388Z reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.017s); config 7b728ae7c68e342098c8bc63eb99ec11, runtime e7d1fc68366099bb80fdd32ffc0a944d
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6965067Z not reused: new 1
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6965379Z not cacheable: subprocess 1
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6965995Z receipts: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir/receipts.jsonl
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6966603Z ============================== 1 passed in 0.05s ===============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6967996Z running: /opt/hostedtoolcache/Python/3.13.18/x64/bin/python -mpytest --basetemp=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/runpytest-1 --det --det-cache=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir --det-outcomes=/tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/out2.json -p no:cacheprovider
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6969865Z      in: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6970417Z ============================= test session starts ==============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6970887Z platform linux -- Python 3.13.18, pytest-9.2.0, pluggy-1.7.0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6971471Z rootdir: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6971924Z configfile: tox.ini
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6972277Z plugins: detpy-0.1.0, xdist-3.8.0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6972888Z detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6974289Z detpy: PYTHONHASHSEED=0 (ok); ASLR off; network=block; sleep=virtual
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6974876Z collected 1 item
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6975066Z 
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6975225Z test_m.py .                                                              [100%]
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6975798Z =============================== detpy (Level 0) ================================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6976096Z 
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6976852Z trace: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.detpy/trace.jsonl  order digest: 5f8a38c2e9e82d75b7dbab830d5eb595  seed: 0
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6977928Z ============================ detpy cache with proof ============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6978880Z reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.017s); config 7b728ae7c68e342098c8bc63eb99ec11, runtime e7d1fc68366099bb80fdd32ffc0a944d
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6979586Z not reused: new 1
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6979915Z not cacheable: subprocess 1
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6980500Z receipts: /tmp/pytest-of-runner/pytest-0/test_child_own_temporary_files_are_not_inputs0/.cachedir/receipts.jsonl
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6981129Z ============================== 1 passed in 0.05s ===============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6981587Z =============================== warnings summary ===============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6982135Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6982740Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6983272Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6984195Z tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6985072Z   /opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6985884Z     return self.metadata['Version']
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6986082Z 
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6986358Z -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6986860Z =========================== short test summary info ============================
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6987575Z FAILED tests/test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs - AssertionError: assert set() == {'test_m.py::test_tmp'}
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6988247Z   
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6988566Z   Extra items in the right set:
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6989082Z   'test_m.py::test_tmp'
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6989397Z   
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6989772Z   Full diff: (-: missing in left side, +: extra in left side)
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6990211Z   + set()
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6990522Z   - {
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6990864Z   -     'test_m.py::test_tmp',
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6991184Z   - }
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6991578Z 1 failed, 952 passed, 73 skipped, 1 deselected, 1 xfailed, 4 warnings in 1388.80s (0:23:08)
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6992154Z == failures
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.6992727Z FAILED tests/test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs - AssertionError: assert set() == {'test_m.py::test_tmp'}
+python (3.13)	Python suites and reviewer test files	2026-11-20T08:38:42.7003010Z ##[error]Process completed with exit code 1.
+go	Go shell suites (review R-025/R-025b included)	﻿2026-11-20T08:15:30.9681536Z ##[group]Run go vet ./... && go test -count=1 -v ./... 2>&1 | tee ../go-tests.log | grep -E "^(--- FAIL|ok|FAIL|PASS)" ; exit ${PIPESTATUS[0]}
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9682382Z [36;1mgo vet ./... && go test -count=1 -v ./... 2>&1 | tee ../go-tests.log | grep -E "^(--- FAIL|ok|FAIL|PASS)" ; exit ${PIPESTATUS[0]}[0m
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9698332Z shell: /usr/bin/bash -e {0}
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9698529Z env:
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9698740Z   pythonLocation: /opt/hostedtoolcache/Python/3.13.18/x64
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9699059Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib/pkgconfig
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9699376Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9699661Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9699950Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.13.18/x64
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9700228Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.13.18/x64/lib
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:15:30.9700469Z ##[endgroup]
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9935836Z --- FAIL: TestR025b_D3_UncontrolledEntropy (0.00s)
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9936651Z FAIL
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9937002Z FAIL	github.com/mircoguidetti/fenvix-engine-cli/go/cmd/fenvix-go	168.460s
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9937369Z PASS
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9937686Z ok  	github.com/mircoguidetti/fenvix-engine-cli/go/internal/core	0.005s
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9938010Z PASS
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9938286Z ok  	github.com/mircoguidetti/fenvix-engine-cli/go/internal/overlay	0.180s
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9938663Z FAIL
+go	Go shell suites (review R-025/R-025b included)	2026-11-20T08:18:34.9952074Z ##[error]Process completed with exit code 1.

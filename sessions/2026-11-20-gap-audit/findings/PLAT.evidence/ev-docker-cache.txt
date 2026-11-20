@@ -1,0 +1,32 @@
+=== nostrace
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 3, recorded 2 (check 0.0s, record 0.009s); config d967a8642b5fdc687aeea9c89175e16c, runtime e64f66f8ea479de0d66dc60fb0f294df
+not reused: new 3
+not cacheable: subprocess 1
+receipts: /tmp/c/receipts.jsonl
+3 passed in 0.04s
+---second
+=============================== detpy (Level 0) ================================
+trace: /p/.detpy/trace.jsonl  order digest: 4599f8d069dedb810a0426e83948fcca  seed: 0
+============================ detpy cache with proof ============================
+reused 2 result(s) with proof, ran 1, recorded 0 (check 0.009s, record 0.009s); config d967a8642b5fdc687aeea9c89175e16c, runtime e64f66f8ea479de0d66dc60fb0f294df
+not reused: new 1
+not cacheable: subprocess 1
+receipts: /tmp/c/receipts.jsonl
+3 passed in 0.05s
+=== strace
+============================ detpy cache with proof ============================
+reused 0 result(s) with proof, ran 3, recorded 2 (check 0.0s, record 0.033s); config d967a8642b5fdc687aeea9c89175e16c, runtime e64f66f8ea479de0d66dc60fb0f294df
+not reused: new 3
+not cacheable: subprocess 1
+receipts: /tmp/c/receipts.jsonl
+3 passed in 0.11s
+---second
+=============================== detpy (Level 0) ================================
+trace: /p/.detpy/trace.jsonl  order digest: 4599f8d069dedb810a0426e83948fcca  seed: 0
+============================ detpy cache with proof ============================
+reused 2 result(s) with proof, ran 1, recorded 0 (check 0.012s, record 0.017s); config d967a8642b5fdc687aeea9c89175e16c, runtime e64f66f8ea479de0d66dc60fb0f294df
+not reused: new 1
+not cacheable: subprocess 1
+receipts: /tmp/c/receipts.jsonl
+3 passed in 0.07s

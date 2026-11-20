@@ -1,0 +1,11 @@
+== plain pytest
+1 passed in 0.05s
+== pytest --det
+1 failed in 0.10s
+== pytest --det --det-allow-host=db
+1 failed in 0.12s
+== pytest --det
+E       socket.gaierror: [Errno -2] detpy: DNS lookup of 'db' blocked (Level 0 closes the network)
+== pytest --det --det-allow-host=db
+E               detpy.network.NetworkBlockedError: detpy: network access to 172.18.0.2:8000 blocked (Level 0 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow it
+172.18.0.2      db

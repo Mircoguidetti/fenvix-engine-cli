@@ -1,0 +1,10 @@
+PRETTY_NAME="Ubuntu 26.04.1 LTS"
+./jvm/build.sh: line 8: cargo: command not found
+--- prebuilt jar:
+init-script /tmp/fenvix-jvm/70e96ec8a268f5bc/fenvix.init.gradle
+maven-ext /tmp/fenvix-jvm/70e96ec8a268f5bc/fenvix-maven-ext.jar
+agent /opt/fenvix/jvm/fenvix-agent.jar
+--- fenvix entry:
+env: 'python3': No such file or directory
+env: use -[v]S to pass options in shebang lines
+usage: fenvix-skip decide A_DEPS_DIR B_DEPS_DIR --root-b DIR [--json OUT]

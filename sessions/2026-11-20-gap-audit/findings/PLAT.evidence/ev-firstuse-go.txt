@@ -1,0 +1,17 @@
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+ldd (Debian GLIBC 2.41-12+deb13u1) 2.41
+sh: 1: cargo: not found
+/usr/bin/gcc -m64 -Wl,--build-id=0x9172a070395af8e73a0ef4f1dd6908e356aee938 -o $WORK/b001/exe/a.out -Wl,--export-dynamic-symbol=_cgo_panic -Wl,--export-dynamic-symbol=_cgo_topofstack -Wl,--export-dynamic-symbol=crosscall2 -Wl,--compress-debug-sections=zlib /tmp/go-link-2873151716/go.o /tmp/go-link-2
+/usr/bin/ld: cannot find /e/go/internal/core/../../../target/release/libfenvix_go.a: No such file or directory
+collect2: error: ld returned 1 exit status
+
+--- go install route:
+go: github.com/mircoguidetti/fenvix-engine-cli/go/cmd/fenvix-go@latest: no matching versions for query "latest"
+--- prebuilt binary in this image:
+usage:
+  fenvix-go test [fenvix flags] [go test flags] [packages]
+--- fenvix entry:
+# .
+no Go files in /e/go
+/usr/bin/python3
+/usr/bin/gcc

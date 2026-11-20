@@ -1,0 +1,15 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.16, pytest-9.2.0, pluggy-1.7.0
+rootdir: /p
+configfile: pyproject.toml
+plugins: detpy-0.1.0, xdist-3.8.0
+detpy 0.1.0: Level 0 active; controls=bytecode,fs,hashseed,net,order,seeds,time; order fixed (collection order)
+detpy: PYTHONHASHSEED=0 (hash seed fixed; not applied: aslr (already re-executed)); ASLR on; network=block; sleep=virtual
+collected 3 items
+
+tests/test_a.py ...                                                      [100%]
+=============================== detpy (Level 0) ================================
+
+trace: /p/.detpy/trace.jsonl  order digest: 4599f8d069dedb810a0426e83948fcca  seed: 0
+============================== 3 passed in 0.07s ===============================
+{'aslr_disabled': False, 'platform': 'linux', 'controls': ['bytecode', 'fs', 'hashseed', 'net', 'order', 'seeds', 'time']}
