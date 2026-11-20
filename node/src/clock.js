@@ -147,6 +147,17 @@ function fakeNow(what = 'fakeTimers.now') {
   return Math.floor(CLOCK.wallMs(e));
 }
 
+/** Virtual wall-clock ms / ns for a clock Level 0 reaches in native code (HTTP Date, SQLite, WASI); null when the
+ * clock is not installed. Recorded as a clock read `op` at the caller's site. */
+function virtualNowMs(op) {
+  return CLOCK ? Math.floor(CLOCK.wallMs(readFor(op))) : null;
+}
+function virtualNowNs(op, monotonic = false) {
+  if (!CLOCK) return null;
+  const e = readFor(op);
+  return monotonic ? BigInt(Math.round(MONO_BASE_NS + e)) : BigInt(CLOCK.epochMs) * 1000000n + BigInt(Math.round(e - CLOCK.testStart));
+}
+
 function makeDate(RealDate) {
   function Date(...args) {
     if (callerIsInfra()) {
@@ -911,6 +922,7 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
+  virtualNowMs, virtualNowNs,
   REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow, normDelay, realNowMs,
   get CLOCK() { return CLOCK; },
   setOnRead(f) { onRead = f; },

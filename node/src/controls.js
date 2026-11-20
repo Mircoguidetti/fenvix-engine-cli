@@ -45,6 +45,11 @@ function installProcess() {
   // file times, inode and device numbers, fs.watch events (src/fstime.js); Buffer.allocUnsafe (src/realmx.js)
   if (c.controls.has('time')) require('./fstime').installProcess(PATCHER);
   require('./realmx').installProcess(PATCHER);
+  // SQLite's clock and randomness (node:sqlite, better-sqlite3) and WASI's (src/sqlvirt.js, src/wasi.js)
+  if (c.controls.has('time') && c.controls.has('seeds')) {
+    try { require('./sqlvirt').installProcess(PATCHER); } catch (e) { level0Gap(`sqlite: ${e && e.message}`, false); }
+    try { require('./wasi').installProcess(PATCHER); } catch (e) { level0Gap(`wasi: ${e && e.message}`, false); }
+  }
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
@@ -168,6 +173,7 @@ function openFile(fileId, project) {
   STATE.fileId = fileId;
   STATE.testIndex = 0;
   if (c.controls.has('seeds')) seeds.seedFile(label);
+  if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
     clock.DRIVER.takeBaseline();
     clock.startFile();

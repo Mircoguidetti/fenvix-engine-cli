@@ -283,7 +283,7 @@ class ProofSession {
         engine,
         addon: native.fileDigest(native.__path) || '',
         level0: digest(level0),
-        cassette: this.run.netMode === 'replay' ? (native.fileDigest(this.run.cassette) || 'missing') : '',
+        cassette: this.run.netMode === 'replay' ? (this.run.cassetteKey || native.fileDigest(this.run.cassette) || 'missing') : '',
         cwd: path.relative(this.root, process.cwd()),
         files: digest(configFiles(this.root, scan)),
       });
