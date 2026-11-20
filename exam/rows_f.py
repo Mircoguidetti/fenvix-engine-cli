@@ -647,7 +647,7 @@ def F_09(ctx: Ctx):
         d = ctx.clone(P["itsdangerous"], name="itsdangerous-jobvenv")
         v = d / ".venv"
         ctx.sh("jv-venv", [lib.py_exe(), "-m", "venv", str(v)], cwd=d)
-        ctx.sh("jv-pip", [str(v / "bin/python"), "-m", "pip", "install", "-q", "-e", ".", "pytest"], cwd=d)
+        ctx.sh("jv-pip", [str(v / "bin/python"), "-m", "pip", "install", "-q", "-e", ".", "pytest", "freezegun"], cwd=d)
         env = {"PATH": f"{v / 'bin'}:{os.environ.get('PATH', '')}", "VIRTUAL_ENV": str(v)}
         rc, out = ctx.sh("jv-fenvix", ["fenvix", "python", "-q", "--det", "tests"], cwd=d, env=env)
         return rc == 0 and "unrecognized arguments" not in out, f"`fenvix python --det` in the job's own venv: rc={rc}: {out.strip().splitlines()[-1][:200] if out.strip() else ''}"
