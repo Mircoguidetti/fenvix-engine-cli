@@ -1527,7 +1527,9 @@ def _dist_infos(root: str, memo_path: str | None = None):
             os.replace(tmp, memo_path)
         except OSError:
             pass
-    return sorted(parts), editable
+    # a distribution found twice with the same identity (several sys.path entries naming its directory, or a
+    # dist-info and an egg-info of one version side by side) is one distribution, as in Rust (identity.rs)
+    return sorted(set(parts)), sorted(set(editable))
 
 
 def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
