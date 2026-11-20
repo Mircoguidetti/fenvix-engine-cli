@@ -112,6 +112,15 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
     # left every installed module to be compiled from source at every run
     stamps_path = os.path.join(prefix, "stamps-v3.json")
     libs, project, stamps = _core().reexec_precompile_plan(dirs, rootdir, stamps_path)
+    if libs:
+        # audit G-2202: the first run under a hash seed compiles the libraries (seconds): say so before it starts
+        try:
+            sys.stderr.write(f"fenvix: compiling the standard library and site-packages under PYTHONHASHSEED="
+                             f"{hashseed} into {prefix} (once per environment and hash seed)\n")
+            sys.stderr.flush()
+        except Exception:
+            pass
+        _evict_old_caches(prefix)
     driver = _driver_source()
     for dirs_, extra in ((libs, []), (project, ["-x", _EXCLUDE])):
         if not dirs_:
@@ -129,6 +138,39 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
             return time.perf_counter() - t0
     stamps.write(stamps_path)
     return time.perf_counter() - t0
+
+
+KEEP_ENV = "FENVIX_PYC_KEEP"
+
+
+def _evict_old_caches(current: str) -> None:
+    """Keep the bytecode caches of the most recently used hash seeds only (audit G-1531: every seed explored left
+    one behind, never removed): ``$FENVIX_PYC_KEEP`` (default 16) caches of this interpreter; the others are removed,
+    least recently used first (their stamps file's time)."""
+    import shutil
+
+    try:
+        keep = max(1, int(os.environ.get(KEEP_ENV, "16")))
+    except ValueError:
+        keep = 16
+    parent = os.path.dirname(current)
+    tag = os.path.basename(current).split("-hashseed", 1)[0]
+    try:
+        names = [n for n in os.listdir(parent) if n.split("-hashseed", 1)[0] == tag and "-hashseed" in n]
+    except OSError:
+        return
+
+    def used(n: str) -> float:
+        for f in ("stamps-v3.json", "."):
+            try:
+                return os.stat(os.path.join(parent, n, f)).st_mtime
+            except OSError:
+                continue
+        return 0.0
+
+    others = sorted((n for n in names if os.path.join(parent, n) != current), key=used, reverse=True)
+    for n in others[keep - 1:]:
+        shutil.rmtree(os.path.join(parent, n), ignore_errors=True)
 
 
 def _core():

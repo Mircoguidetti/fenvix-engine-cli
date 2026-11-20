@@ -27,8 +27,10 @@ def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="detpy", description="fenvix engine for Python: deterministic test runs, "
                                 "verification, reproducible defects (the product command is `fenvix`)")
     sub = p.add_subparsers(dest="cmd", required=True)
+    from .runners import DESCRIBE
+
     for name in RUNNERS:
-        sub.add_parser(name, help=f"run {name} tests under --det / --det-cache (detpy {name} --det [args])",
+        sub.add_parser(name, help=f"{DESCRIBE.get(name, name)} (--det, --det-cache; `--help` lists the options)",
                        add_help=False)
     v = sub.add_parser("verify", help="compare the fingerprints of several runs")
     v.add_argument("traces", nargs="+")

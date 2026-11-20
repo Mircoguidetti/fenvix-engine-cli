@@ -823,6 +823,23 @@ pub fn check_compatible(traces: &[Trace], labels: &[String]) -> Result<(), Trace
     Ok(())
 }
 
+/// What to do for each reason (audit G-2210, G-2019): printed once per reason present.
+pub const HINTS: &[(&str, &str)] = &[
+    ("entropy", "the test reads OS entropy (os.urandom, uuid4, secrets), observed but not controlled by --det; add \
+                 --det-urandom to draw it from the seeded stream (not for tests of cryptography)"),
+    ("env", "an environment variable differs between the runs; give both runs the same environment, or declare it \
+             irrelevant with --ignore-env NAME"),
+    ("tz", "the runs used different time zones; keep the default --det-tz=UTC (or the same zone in both runs)"),
+    ("locale", "the runs used different locales; keep the default --det-locale (or the same locale in both runs)"),
+    ("order", "the test ran after different tests: an order dependency; `fenvix repro TEST` names the tests it \
+               depends on"),
+    ("thread", "threads are not scheduled deterministically by this release: the test cannot be proven identical"),
+    ("child", "a child process is not controlled by this release: the test cannot be proven identical"),
+    ("io", "the order of ready I/O is not controlled by this release: the test cannot be proven identical"),
+    ("outcome-only", "same observed events, different outcome: the cause is outside what is observed (C code, \
+                      memory addresses, files or services outside the test); `fenvix repro TEST` searches for it"),
+];
+
 /// Human-readable rendering of a report.
 pub fn render_text(report: &Report, show_stable: bool) -> String {
     use std::fmt::Write;
@@ -879,6 +896,11 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     if !s.reasons.is_empty() {
         let rs: Vec<String> = s.reasons.iter().map(|(k, v)| format!("{k}={v}")).collect();
         let _ = writeln!(out, "reasons: {}", rs.join(" "));
+        for (k, hint) in HINTS {
+            if s.reasons.contains_key(*k) {
+                let _ = writeln!(out, "hint [{k}]: {hint}");
+            }
+        }
     }
     for t in &report.tests {
         match &t.divergence {

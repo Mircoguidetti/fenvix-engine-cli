@@ -17,7 +17,7 @@ import os
 import platform
 import sys
 
-from . import __version__, _core, _sites, _state, clock, envobs, fsorder, network, reexec, seeds, sqlvirt, uncontrolled
+from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, reexec, seeds, sqlvirt, uncontrolled
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale")
@@ -404,6 +404,7 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
     rebound: list = []
     if "time" in controls:
         rebound = clock.install(PATCHER, cfg.epoch_ns, cfg.tick_ns, skip_module, cfg.tick_adapt)
+        fstime.install(PATCHER)
         sqlvirt.install(PATCHER)  # SQLite's 'now', CURRENT_TIMESTAMP, random(), randomblob() per connection
     if "fs" in controls:
         fsorder.install(PATCHER)
@@ -472,9 +473,33 @@ def hash_checked_imports(root: str) -> bool:
     return True
 
 
+GITIGNORE = ("# written by fenvix: run state (traces, plans, repro work files) is not committed;\n"
+             "# the network cassette is meant to be committed (it is reviewed like a fixture)\n"
+             "*\n!.gitignore\n!cassette.json\n")
+
+
+def sleep_label(cfg) -> str:
+    """What ``time.sleep`` does (audit G-2198: "virtual" was printed with the time control off)."""
+    return cfg.sleep if "time" in cfg.controls else "real (time control off)"
+
+
+def ensure_state_dir(root: str) -> None:
+    """``<root>/.detpy`` with a ``.gitignore`` that ignores everything but itself and the cassette (audit G-2207)."""
+    d = os.path.join(root, ".detpy")
+    try:
+        os.makedirs(d, exist_ok=True)
+        gi = os.path.join(d, ".gitignore")
+        if not os.path.exists(gi):
+            with open(gi, "w") as f:
+                f.write(GITIGNORE)
+    except OSError:
+        pass
+
+
 def open_session(root: str, cassette: str | None, record: bool, allow_hosts, max_events: int) -> str | None:
     """The network control (with its cassette) and the recorder. Returns the network mode."""
     cfg = _state.STATE.config
+    ensure_state_dir(root)
     cfg.cassette_path = cassette or os.path.join(root, ".detpy", "cassette.json")
     mode = None
     if "net" in cfg.controls:
@@ -492,6 +517,7 @@ def begin_test(nodeid: str, index: int) -> None:
     uncontrolled.start_test()
     if "time" in controls:
         clock.start_test()
+        fstime.start_test()
     st.nodeid = nodeid
     if "seeds" in controls:
         seeds.start_test(PATCHER, nodeid)
@@ -552,6 +578,7 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
 def uninstall() -> None:
     PATCHER.undo_all()
     envobs.uninstall()
+    fstime.uninstall()
     clock.uninstall()
     sqlvirt.uninstall()
     seeds.uninstall()

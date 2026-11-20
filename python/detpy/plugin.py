@@ -628,6 +628,13 @@ def pytest_configure(config):
     out = config.getoption("det_outcomes", None)
     if config.getoption("det_cache", None) and not config.getoption("det", False):
         raise pytest.UsageError("--det-cache needs --det (the cache relies on Level 0 controls)")
+    if not config.getoption("det", False):
+        # audit G-1532, G-1533: a --det option without --det did nothing, silently
+        for opt, flag in (("det_seed", "--det-seed"), ("det_isolate", "--det-isolate"), ("det_order", "--det-order"),
+                          ("det_record", "--det-record"), ("det_urandom", "--det-urandom")):
+            if config.getoption(opt, None) not in (None, False):
+                raise pytest.UsageError(f"{flag} needs --det (without it the run is not deterministic; add --det, "
+                                        f"or run `fenvix pytest`, which adds it)")
     if _owner(config):
         config.pluginmanager.register(_DetSession(config, out), "detpy-session")
         _configure_det(config)
@@ -835,7 +842,7 @@ class _DetSession(_Outcomes):
         lines = [
             f"detpy {__version__}: Level 0 active; controls={','.join(sorted(cfg.controls))}; order {order}",
             f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({S.reexec_status}); "
-            f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={cfg.sleep}",
+            f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={S.net_mode}; sleep={_level0.sleep_label(cfg)}",
         ]
         if S.disabled_plugins:
             lines.append(f"detpy: disabled conflicting plugins: {', '.join(S.disabled_plugins)}")
