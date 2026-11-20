@@ -579,6 +579,31 @@ def baseline_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     return res
 
 
+def parse_fenvix_explore(out: str) -> dict:
+    """The JSON summary `fenvix explore --json` prints after its text lines (the last top-level object)."""
+    i = out.find("\n{")
+    while i >= 0:
+        try:
+            return json.JSONDecoder().raw_decode(out[i + 1:])[0]
+        except ValueError:
+            i = out.find("\n{", i + 1)
+    return {}
+
+
+def parse_fenvix_defects(out: str) -> dict:
+    """``{test: (cause, "replay: fenvix replay <bundle>")}`` from the ``defect:`` lines `fenvix explore` prints."""
+    printed = {}
+    for ln in out.splitlines():
+        ln = ln.strip()
+        if ln.startswith("defect: "):
+            body = ln[len("defect: "):]
+            cut = body.find(": ", body.find("::") + 2 if "::" in body else 0)  # a test id holds "::", not ": "
+            test, rest = body[:cut], body[cut + 2:]
+            cause, _, replay = rest.rpartition("; replay: ")
+            printed[test] = (cause.strip(), "replay: " + replay.strip() if replay else None)
+    return printed
+
+
 def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
     """Block 2 measurement on one repository (P-010 items 3 and 4).
 
@@ -631,40 +656,36 @@ def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
             runner.drop_traces()
         res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
     elif args.tool == "fenvix":
-        # The product command, as a developer runs it: `fenvix repro <target>` per target (a subprocess of the
-        # project's interpreter, its printed cause line and its JSON bundle recorded), no exploration hint.
+        # The product command for a suite with several flaky tests, as a developer runs it: `fenvix explore
+        # --targets FILE` (a subprocess of the project's interpreter): one search of seeds 1..N over the whole suite,
+        # shared by every target (as the detpy tool's exploration), then minimisation, a bundle and --confirm
+        # replays for each target that failed. Its printed `defect:` lines (cause and replay command) and its JSON
+        # summary are recorded. `fenvix repro TARGET` per target searched the suite again for each target: 16
+        # anyio targets did not fit the budget (Block 2 run 44743585438: 5 targets in 2h15m, MEASURED).
+        tfile = rundir / "targets.txt"
+        tfile.write_text("\n".join(targets) + "\n")
+        out_dir = rundir / "bundles"
+        cmd = [p.python, "-m", "detpy.fenvix", "explore", "--targets", str(tfile),
+               "--budget", str(round(args.repo_budget / 60.0, 2)), "--max-seeds", str(args.seeds),
+               "--confirm", str(args.confirm), "--max-runs", str(args.max_repro_runs),
+               "--timeout", str(args.run_timeout), "--out", str(out_dir), "--json", "--", *p.pytest_args, *serial]
+        try:
+            pr = subprocess.run(cmd, cwd=p.src, env=env, capture_output=True, text=True,
+                                timeout=args.repo_budget + 2 * args.run_timeout + 600)
+            out, code = pr.stdout, pr.returncode
+        except subprocess.TimeoutExpired as e:
+            out, code = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""), -9
+        summary = parse_fenvix_explore(out)
+        printed = parse_fenvix_defects(out)
+        by_test = {b.get("test"): b for b in summary.get("bundles", []) if isinstance(b, dict)}
         bundles = []
         for t in targets:
-            if time.monotonic() - t0 > args.repo_budget:
-                bundles.append({"test": t, "status": "budget"})
-                continue
-            cmd = [p.python, "-m", "detpy.fenvix", "repro", t, "--seeds", str(args.seeds), "--confirm",
-                   str(args.confirm), "--max-runs", str(args.max_repro_runs), "--timeout", str(args.run_timeout),
-                   "--out", str(rundir / "bundles"), "--json", "--", *p.pytest_args, *serial]
-            t1 = time.monotonic()
-            try:
-                pr = subprocess.run(cmd, cwd=p.src, env=env, capture_output=True, text=True,
-                                    timeout=max(60.0, args.repo_budget - (t1 - t0)))
-                out, code = pr.stdout, pr.returncode
-            except subprocess.TimeoutExpired as e:
-                out, code = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""), -9
-            b = {"test": t, "status": "no-output"}
-            i = out.find("\n{")
-            if i >= 0:
-                try:
-                    b = json.JSONDecoder().raw_decode(out[i + 1:])[0]
-                except ValueError:
-                    pass
-            head = out[:i] if i >= 0 else out
-            b["printed"] = head[-3000:]
-            b["cause_line"] = next((ln.split("cause:", 1)[1].strip() for ln in head.splitlines()
-                                    if ln.strip().startswith("cause:")), None)
-            b["replay_line"] = next((ln.strip() for ln in head.splitlines() if ln.strip().startswith("replay:")),
-                                    None)
-            b["exit"] = code
-            b["wall_seconds"] = round(time.monotonic() - t1, 2)
+            b = dict(by_test.get(t) or {"test": t, "status": "not-found"})
+            cause, replay = printed.get(t, (None, None))
+            b["cause_line"], b["replay_line"], b["exit"] = cause, replay, code
             bundles.append(b)
-            log(f"{p.name}: fenvix repro {t}: {b.get('status')} ({b['wall_seconds']} s)")
+            log(f"{p.name}: fenvix explore target {t}: {b.get('status')}")
+        res.update(seeds_log=summary.get("seeds_log", []), explore_exit=code, explore_printed=out[:3000])
         res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
     else:
         seeds_log, first_fail = [], {}

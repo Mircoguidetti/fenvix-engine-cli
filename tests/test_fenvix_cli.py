@@ -16,6 +16,7 @@ from pathlib import Path
 import pytest
 
 FX = [sys.executable, "-m", "detpy.fenvix"]
+ROOT = Path(__file__).resolve().parent.parent
 
 PROJECT = '''
 STATE = {}
@@ -259,3 +260,28 @@ def test_doctor_checks_the_machine():
     for name in ("python", "hash seed re-exec", "ASLR switch", "locale", "strace", "C compiler"):
         assert name in checks, checks
     assert checks["python"]["ok"] and p.returncode in (0, 1)
+
+
+def test_explore_with_targets_reports_each_target_as_block2_reads_it(project):
+    """Block 2 measures the product command `fenvix explore --targets FILE` (one seed search shared by every target;
+    per-target `fenvix repro` searched the whole suite again for each target and 16 anyio targets did not fit the
+    budget). The harness reads each target's bundle from the JSON summary and its cause and replay command from the
+    printed `defect:` lines: both must be there for a reproduced target."""
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("detpy_harness", ROOT / "harness" / "detpy_harness.py")
+    h = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = h  # its dataclasses look their module up
+    spec.loader.exec_module(h)
+    target = "tests/test_o.py::test_victim"
+    (project / "targets.txt").write_text(target + "\n")
+    p = fx("explore", "--targets", "targets.txt", "--budget", "5", "--max-seeds", "3", "--confirm", "2", "--json",
+           cwd=project, timeout=1500)
+    assert p.returncode == 0, p.stdout + p.stderr
+    summary = h.parse_fenvix_explore(p.stdout)
+    bundle = next(b for b in summary["bundles"] if b.get("test") == target)
+    assert bundle["status"] == "reproduced", bundle
+    assert bundle["replay"]["fails"] == bundle["replay"]["runs"] == 2 and bundle["replay"]["identical_fingerprint"]
+    cause, replay = h.parse_fenvix_defects(p.stdout)[target]
+    assert cause.startswith("test order: it fails when run after tests/test_o.py::test_polluter"), cause
+    assert replay.startswith("replay: fenvix replay "), replay
