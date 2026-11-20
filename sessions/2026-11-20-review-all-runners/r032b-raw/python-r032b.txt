@@ -1,0 +1,91 @@
+first = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682
+fresh = <Result code=1 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.p...of-root/pytest-71/test_w1_leaked_mock_patch_by_n0/p-t3.jsonl  order digest: f380e49081d6e9e790dec8ce740472b6  seed: 0
+E        +  where {'test_b.py::Target::test_b'} = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w1_leaked_mock_patch_by_n0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682
+fresh = <Result code=1 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.p...of-root/pytest-71/test_w1_leaked_mock_patch_by_n1/p-t6.jsonl  order digest: f380e49081d6e9e790dec8ce740472b6  seed: 0
+E        +  where {'test_b.py::Target::test_b'} = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w1_leaked_mock_patch_by_n1/p-cache/receipts.jsonl\n.reused
+        assert o1.get(target) == "passed", o1
+        assert o3.get(target) == "failed", o3
+E         2 passed in 0.13s
+first = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682
+fresh = <Result code=1 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.p...of-root/pytest-71/test_w2_module_attribute_set_b0/p-t9.jsonl  order digest: f380e49081d6e9e790dec8ce740472b6  seed: 0
+E        +  where {'test_b.py::Target::test_b'} = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...5682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w2_module_attribute_set_b0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...a5d4925682
+fresh = <Result code=1 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.p...test-of-root/pytest-71/test_w3_builtins_channel0/p-t12.jsonl  order digest: f380e49081d6e9e790dec8ce740472b6  seed: 0
+E        +  where {'test_b.py::Target::test_b'} = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...a5d4925682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w3_builtins_channel0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...0a5d4925682
+fresh = <Result code=1 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.p...ytest-of-root/pytest-71/test_w4_environ_channel0/p-t15.jsonl  order digest: f380e49081d6e9e790dec8ce740472b6  seed: 0
+E        +  where {'test_b.py::Target::test_b'} = <Result code=0 outcomes={'test_a.py::A::test_a': 'passed', 'test_b.py::Target::test_b': 'passed'} reused=['test_b.py::...0a5d4925682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w4_environ_channel0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=['test_t.py::Target::test_t']>
+fresh = <Result code=1 outcomes={'test_t.py::Target::test_t': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reus...f-root/pytest-71/test_w5_scandir_entry_stat_siz0/p-t18.jsonl  order digest: 3be1766f2ee171bf887e9bab0a4bf513  seed: 0
+E        +  where {'test_t.py::Target::test_t'} = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=['test_t.py::Target::test_t']>\n.\n--------------...81d4ff1221790a5d4925682\nreceipts: /tmp/pytest-of-root/pytest-71/test_w5_scandir_entry_stat_siz0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=[]>
+second = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=['test_t.py::Target::test_t']>
+fresh = <Result code=1 outcomes={'test_t.py::Target::test_t': 'failed'} reused=[]>
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reus...f-root/pytest-71/test_w7_libc_access_via_ctypes0/p-t24.jsonl  order digest: 3be1766f2ee171bf887e9bab0a4bf513  seed: 0
+E        +  where {'test_t.py::Target::test_t'} = <Result code=0 outcomes={'test_t.py::Target::test_t': 'passed'} reused=['test_t.py::Target::test_t']>\n.\n--------------...81d4ff1221790a5d4925682\nreceipts: /tmp/pytest-of-root/pytest-71/test_w7_libc_access_via_ctypes0/p-cache/receipts.jsonl\n.reused
+first = <Result code=0 outcomes={'pkg/tests/test_a.py::A::test_a': 'passed', 'pkg/tests/test_b.py::Target::test_b': 'passed'} ...5d4925682
+second = <Result code=0 outcomes={'pkg/tests/test_a.py::A::test_a': 'passed', 'pkg/tests/test_b.py::Target::test_b': 'passed'} ...d4925682
+fresh = <Result code=1 outcomes={'pkg/tests/test_a.py::A::test_a': 'passed', 'pkg/tests/test_b.py::Target::test_b': 'failed'} ...est-of-root/pytest-71/test_w12_zope_leaked_patch0/p-t45.jsonl  order digest: eed2861b897f23ac24462fff166a7e5d  seed: 0
+        assert first.outcomes[t] == "passed", first
+        assert fresh.outcomes.get(t) in ("failed", "error"), ("the change does not flip the test", fresh)
+>       assert t not in second.reused, ("WRONG REUSE: reused 'passed', fresh run fails", second, fresh)
+E       AssertionError: ("WRONG REUSE: reused 'passed', fresh run fails", <Result code=0 outcomes={'pkg/tests/test_a.py::A::test_a': 'passed',...st-of-root/pytest-71/test_w12_zope_leaked_patch0/p-t45.jsonl  order digest: eed2861b897f23ac24462fff166a7e5d  seed: 0
+E        +  where {'pkg/tests/test_b.py::Target::test_b'} = <Result code=0 outcomes={'pkg/tests/test_a.py::A::test_a': 'passed', 'pkg/tests/test_b.py::Target::test_b': 'passed'} ...d4925682\nnot reused: data 1\nreceipts: /tmp/pytest-of-root/pytest-71/test_w12_zope_leaked_patch0/p-cache/receipts.jsonl\n.reused
+        if o1.get(target) != "passed":
+        if o3.get(target) != "failed":
+E         3 passed in 0.91s
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w6_fstat_size_without_read
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w8_pathlib_probe[exists()]
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w8_pathlib_probe[is_file()]
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w8_pathlib_probe[stat().st_size == 0]
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w9_exists_bound_in_default_arg
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w10_glob_absent_dir
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w11_doctest_optional_import
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w13_django_leaked_patch
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w14_ward_leaked_patch
+PASSED tests/review_r032b/test_review_r032b_python.py::test_w15_pytest_xdist[loadfile]
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w1_leaked_mock_patch_by_name[unittest]
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w1_leaked_mock_patch_by_name[nose2]
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w1_pytest_plugin[W1]
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w2_module_attribute_set_by_name
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w3_builtins_channel
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w4_environ_channel
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w5_scandir_entry_stat_size
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w7_libc_access_via_ctypes
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w12_zope_leaked_patch
+FAILED tests/review_r032b/test_review_r032b_python.py::test_w15_pytest_xdist[loadgroup]
+10 failed, 10 passed in 47.09s

@@ -1,0 +1,622 @@
+TAP version 13
+# Subtest: adversarial seeded inputs: Rust policy equals the JavaScript one (3000 inputs)
+ok 1 - adversarial seeded inputs: Rust policy equals the JavaScript one (3000 inputs)
+  ---
+  type: 'test'
+  ...
+# R032B-RESULT node-test tests/c_intl.test.mjs uncached
+# R032B-RESULT node-test tests/c_timeorigin.test.mjs uncached
+# R032B-RESULT node-test tests/le.test.mjs sound
+# R032B-RESULT node-test tests/gs.test.mjs sound
+# R032B-RESULT node-test tests/tz.test.mjs sound
+# R032B-RESULT node-test tests/ch.test.mjs uncached
+# R032B-RESULT mocha test/c_intl.spec.mjs uncached
+# R032B-RESULT mocha test/c_timeorigin.spec.mjs uncached
+# R032B-RESULT mocha test/le.spec.mjs sound
+# R032B-RESULT mocha test/gs.spec.mjs sound
+# R032B-RESULT mocha test/tz.spec.mjs sound
+# R032B-RESULT mocha test/ch.spec.mjs uncached
+# R032B-RESULT bun tests/c_intl.test.ts uncached
+# R032B-RESULT bun tests/c_timeorigin.test.ts uncached
+# R032B-RESULT bun tests/le.test.ts sound
+# R032B-RESULT bun tests/gs.test.ts sound
+# R032B-RESULT bun tests/fp.test.ts held (a fresh --det run still passes)
+# R032B-RESULT bun tests/tz.test.ts sound
+# R032B-RESULT bun tests/ch.test.ts uncached
+# R032B-RESULT deno tests/c_intl_test.ts uncached
+# R032B-RESULT deno tests/c_timeorigin_test.ts uncached
+# R032B-RESULT deno tests/le_test.ts uncached
+# R032B-RESULT deno tests/gs_test.ts sound
+# R032B-RESULT deno tests/tz_test.ts sound
+# R032B-RESULT deno tests/ch_test.ts uncached
+# R032B-RESULT bun tests/sp.test.ts uncached
+# R032B-RESULT bun tests/g.test.ts held (a fresh --det run still passes)
+# R032B-RESULT deno tests/im_test.ts sound
+# R032B-RESULT deno tests/mf_test.ts sound
+# R032B-RESULT deno tests/da_test.ts sound
+# R032B-RESULT deno tests/cm_test.ts uncached
+# R032B-RESULT deno tests/re_test.ts sound
+# Subtest: node-test: R-032b
+    # Subtest: C-intl: a real clock read (deadline passes between runs)
+    ok 1 - C-intl: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: C-timeorigin: a real clock read (deadline passes between runs)
+    ok 2 - C-timeorigin: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E1 process.loadEnvFile (.env parsed in C++)
+    ok 3 - E1 process.loadEnvFile (.env parsed in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E2 fs.globSync: a matching file appears
+    ok 4 - E2 fs.globSync: a matching file appears
+      ---
+      type: 'test'
+      ...
+    # Subtest: E3 module.findPackageJSON: a nested package.json appears
+    not ok 5 - E3 module.findPackageJSON: a nested package.json appears
+      ---
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:80:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        WRONG REUSE: node-test tests/fp.test.mjs
+        status=0
+        reused=["tests/fp.test.mjs"]
+        nc={}
+        stdout=detjs 0.1.0: Level 0 active; runner=node-test v22.23.5; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (node:test isolation=process: each file in its own process, one file at a time); network=block; timers=virtual; node v22.23.5
+        TAP version 13
+        1..0
+        # tests 0
+        # suites 0
+        # pass 0
+        # fail 0
+        # cancelled 0
+        # skipped 0
+        # todo 0
+        detjs cache: reused with proof 1 tests in 1 files (0.02 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.098 s, record 0.001 s
+        detjs cache: receipts .detjs/receipts.jsonl
+        detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+        
+        stderr=
+        --- fresh
+        status=1
+        reused=null
+        nc=null
+        stdout=detjs 0.1.0: Level 0 active; runner=node-test v22.23.5; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (node:test isolation=process: each file in its own process, one file at a time); network=block; timers=virtual; node v22.23.5
+        TAP version 13
+        # Subtest: fp
+        not ok 1 - fp
+          ---
+          type: 'test'
+          location: '/home/user/fenvix-engine-cli/node/test/.tmp/review-r032b/node-test-findpkg/tests/fp.test.mjs:2:32'
+          failureType: 'testCodeFailure'
+          error: |-
+            Expected values to be strictly equal:
+            
+            false !== true
+            
+          code: 'ERR_ASSERTION'
+          name: 'AssertionError'
+          expected: true
+          actual: false
+          operator: 'strictEqual'
+          stack: |-
+            Object.toBe (file:///home/user/fenvix-engine-cli/node/test/.tmp/review-r032b/node-test-findpkg/tests/fp.test.mjs:1:270)
+            TestContext.<anonymous> (file:///home/user/fenvix-engine-cli/node/test/.tmp/review-r032b/node-test-findpkg/tests/fp.test.mjs:2:236)
+            Test.runInAsyncScope (node:async_hooks:214:14)
+            Test.run (node:internal/test_runner/test:1047:25)
+            async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+          ...
+        1..1
+        # tests 1
+        # suites 0
+        # pass 0
+        # fail 1
+        # cancelled 0
+        # skipped 0
+        # todo 0
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest f6395e5a77b3f2b118016367e4fa4e70
+        
+        stderr=
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        attack (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:46:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:83:7)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E4 Intl time zone from TZ (read by ICU in C++)
+    ok 6 - E4 Intl time zone from TZ (read by ICU in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E5 a child process reads a data file
+    ok 7 - E5 a child process reads a data file
+      ---
+      type: 'test'
+      ...
+    1..7
+not ok 2 - node-test: R-032b
+  ---
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:59:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: mocha: R-032b
+    # Subtest: C-intl: a real clock read (deadline passes between runs)
+    ok 1 - C-intl: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: C-timeorigin: a real clock read (deadline passes between runs)
+    ok 2 - C-timeorigin: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E1 process.loadEnvFile (.env parsed in C++)
+    ok 3 - E1 process.loadEnvFile (.env parsed in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E2 fs.globSync: a matching file appears
+    ok 4 - E2 fs.globSync: a matching file appears
+      ---
+      type: 'test'
+      ...
+    # Subtest: E3 module.findPackageJSON: a nested package.json appears
+    not ok 5 - E3 module.findPackageJSON: a nested package.json appears
+      ---
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:80:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        WRONG REUSE: mocha test/fp.spec.mjs
+        status=0
+        reused=["test/fp.spec.mjs"]
+        nc={}
+        stdout=detjs 0.1.0: Level 0 active; runner=mocha 11.8.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (mocha: each spec file in its own process, one at a time, results replayed into the reporter); network=block; timers=virtual; node v22.23.5
+        detjs: --det-cache: every spec file runs in its own process (skipping a file must not change the context of another); `--require` modules, root hooks, global fixtures and `--file` files run in each
+        
+        
+          0 passing (1ms)
+        
+        detjs cache: reused with proof 1 tests in 1 files (0.029 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.111 s, record 0.001 s
+        detjs cache: receipts .detjs/receipts.jsonl
+        detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+        
+        stderr=
+        --- fresh
+        status=1
+        reused=null
+        nc=null
+        stdout=detjs 0.1.0: Level 0 active; runner=mocha 11.8.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (mocha: one process, files and tests one at a time); network=block; timers=virtual; node v22.23.5
+        
+        
+          1) fp
+        
+          0 passing (4ms)
+          1 failing
+        
+          1) fp:
+        
+              AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+        
+        false !== true
+        
+              + expected - actual
+        
+              -false
+              +true
+              
+              at Object.toBe (file:///home/user/fenvix-engine-cli/node/test/.tmp/review-r032b/mocha-findpkg/test/fp.spec.mjs:1:269)
+              at Context.<anonymous> (file:///home/user/fenvix-engine-cli/node/test/.tmp/review-r032b/mocha-findpkg/test/fp.spec.mjs:2:236)
+              at process.processImmediate (node:internal/timers:484:21)
+        
+        
+        
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest 84358b8e6b63eaceceb9eb14788f8cdf
+        
+        stderr=
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        attack (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:46:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:83:7)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E4 Intl time zone from TZ (read by ICU in C++)
+    ok 6 - E4 Intl time zone from TZ (read by ICU in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E5 a child process reads a data file
+    ok 7 - E5 a child process reads a data file
+      ---
+      type: 'test'
+      ...
+    1..7
+not ok 3 - mocha: R-032b
+  ---
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:59:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: bun: R-032b
+    # Subtest: C-intl: a real clock read (deadline passes between runs)
+    ok 1 - C-intl: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: C-timeorigin: a real clock read (deadline passes between runs)
+    ok 2 - C-timeorigin: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E1 process.loadEnvFile (.env parsed in C++)
+    ok 3 - E1 process.loadEnvFile (.env parsed in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E2 fs.globSync: a matching file appears
+    ok 4 - E2 fs.globSync: a matching file appears
+      ---
+      type: 'test'
+      ...
+    # Subtest: E3 module.findPackageJSON: a nested package.json appears
+    ok 5 - E3 module.findPackageJSON: a nested package.json appears
+      ---
+      type: 'test'
+      ...
+    # Subtest: E4 Intl time zone from TZ (read by ICU in C++)
+    ok 6 - E4 Intl time zone from TZ (read by ICU in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E5 a child process reads a data file
+    ok 7 - E5 a child process reads a data file
+      ---
+      type: 'test'
+      ...
+    1..7
+ok 4 - bun: R-032b
+  ---
+  type: 'suite'
+  ...
+# Subtest: deno: R-032b
+    # Subtest: C-intl: a real clock read (deadline passes between runs)
+    ok 1 - C-intl: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: C-timeorigin: a real clock read (deadline passes between runs)
+    ok 2 - C-timeorigin: a real clock read (deadline passes between runs)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E1 process.loadEnvFile (.env parsed in C++)
+    ok 3 - E1 process.loadEnvFile (.env parsed in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E2 fs.globSync: a matching file appears
+    ok 4 - E2 fs.globSync: a matching file appears
+      ---
+      type: 'test'
+      ...
+    # Subtest: E3 module.findPackageJSON: a nested package.json appears
+    not ok 5 - E3 module.findPackageJSON: a nested package.json appears
+      ---
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:80:5'
+      failureType: 'testCodeFailure'
+      error: |-
+        WRONG REUSE: deno tests/fp_test.ts
+        status=0
+        reused=["tests/fp_test.ts"]
+        nc={}
+        stdout=detjs 0.1.0: Level 0 active; runner=deno 2.9.6 (stable, release, x86_64-unknown-linux-gnu); controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        detjs cache: reused with proof 1 tests in 1 files (0.006 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.063 s, record 0.001 s
+        detjs cache: receipts .detjs/receipts.jsonl
+        detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+        detjs deno: 0 files ran (0 failed), 1 reused
+        
+        stderr=
+        --- fresh
+        status=1
+        reused=null
+        nc=null
+        stdout=detjs 0.1.0: Level 0 active; runner=deno 2.9.6 (stable, release, x86_64-unknown-linux-gnu); controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        [0m[38;5;245mrunning 1 test from ./tests/fp_test.ts[0m
+        fp ... [0m[31mFAILED[0m [0m[38;5;245m(1ms)[0m
+        
+        [0m[1m[37m[41m ERRORS [0m
+        
+        fp [0m[38;5;245m=> ./tests/fp_test.ts:2:85[0m
+        [0m[1m[31merror[0m: Error: false !== true
+            at [0m[1m[3mObject.toBe[0m ([0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-findpkg/[0m[0m[36mtests/fp_test.ts[0m:[0m[33m2[0m:[0m[33m156[0m)
+            at [0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-findpkg/[0m[0m[36mtests/fp_test.ts[0m:[0m[33m3[0m:[0m[33m236[0m
+            at [0m[36mfile:///home/user/fenvix-engine-cli/node/src/runners/bracket.js[0m:[0m[33m131[0m:[0m[33m16[0m
+        
+        [0m[1m[37m[41m FAILURES [0m
+        
+        fp [0m[38;5;245m=> ./tests/fp_test.ts:2:85[0m
+        
+        [0m[31mFAILED[0m | 0 passed | 1 failed [0m[38;5;245m(8ms)[0m
+        
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest b6d2ec9b3bfd69ca005c1fb8cf6aa842
+        detjs deno: 1 files ran (1 failed), 0 reused
+        
+        stderr=[0m[1m[31merror[0m: Test failed
+        
+        Stack backtrace:
+           0: <unknown>
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        [0m[1m[3mObject.toBe[0m ([0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-findpkg/[0m[0m[36mtests/fp_test.ts[0m:[0m[33m2[0m:[0m[33m156[0m)
+        [0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-findpkg/[0m[0m[36mtests/fp_test.ts[0m:[0m[33m3[0m:[0m[33m236[0m
+        [0m[36mfile:///home/user/fenvix-engine-cli/node/src/runners/bracket.js[0m:[0m[33m131[0m:[0m[33m16[0m
+        attack (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:46:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:83:7)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: E4 Intl time zone from TZ (read by ICU in C++)
+    ok 6 - E4 Intl time zone from TZ (read by ICU in C++)
+      ---
+      type: 'test'
+      ...
+    # Subtest: E5 a child process reads a data file
+    ok 7 - E5 a child process reads a data file
+      ---
+      type: 'test'
+      ...
+    1..7
+not ok 5 - deno: R-032b
+  ---
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:59:3'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: bun: R-032b specific
+    # Subtest: B1 Bun.spawnSync reads a data file
+    ok 1 - B1 Bun.spawnSync reads a data file
+      ---
+      type: 'test'
+      ...
+    # Subtest: B2 a Worker reads a data file
+    not ok 2 - B2 a Worker reads a data file
+      ---
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:105:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        WRONG REUSE: bun tests/wk.test.ts
+        status=0
+        reused=["tests/wk.test.ts"]
+        nc={}
+        stdout=detjs 0.1.0: Level 0 active; runner=bun 1.4.4+38afee6c8; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        detjs cache: reused with proof 1 tests in 1 files (0.015 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.069 s, record 0.002 s
+        detjs cache: receipts .detjs/receipts.jsonl
+        detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+        detjs bun: 0 files ran (0 failed), 1 reused
+        
+        stderr=
+        --- fresh
+        status=1
+        reused=null
+        nc=null
+        stdout=detjs 0.1.0: Level 0 active; runner=bun 1.4.4+38afee6c8; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        bun test v1.4.4 (38afee6c8)
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest 830a414819de026cd1e3a97211f04b82
+        detjs bun: 1 files ran (1 failed), 0 reused
+        
+        stderr=
+        tests/wk.test.ts:
+        1 | import { test, expect } from 'bun:test'; import fs from 'node:fs'; import path from 'node:path';
+        2 | test('wk', async () => { const w = new Worker(new URL('./w.ts', import.meta.url).href); const v = await new Promise((r) => { w.onmessage = (e) => r(e.data); }); w.terminate(); expect(v).toBe('1'); });
+                                                                                                                                                                                                      ^
+        error: expect(received).toBe(expected)
+        
+        Expected: "1"
+        Received: "2"
+        
+              at <anonymous> (/home/user/fenvix-engine-cli/node/test/.tmp/runner-bun/r032b-worker/tests/wk.test.ts:2:187)
+        (fail) wk [6.40ms]
+        
+         0 pass
+         1 fail
+         1 expect() calls
+        Ran 1 test across 1 file. [47.00ms]
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        attack (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:46:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:108:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Promise.all (index 0)
+        async Suite.run (node:internal/test_runner/test:1442:7)
+        async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: B3 a global ~/.bunfig.toml appears (HOME)
+    ok 3 - B3 a global ~/.bunfig.toml appears (HOME)
+      ---
+      type: 'test'
+      ...
+    # Subtest: B4 Bun.password.hashSync (random salt) is not reused / is deterministic
+    ok 4 - B4 Bun.password.hashSync (random salt) is not reused / is deterministic
+      ---
+      type: 'test'
+      ...
+    1..4
+not ok 6 - bun: R-032b specific
+  ---
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:99:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: deno: R-032b specific
+    # Subtest: D1 deno.json "imports" retargeted (both files exist)
+    ok 1 - D1 deno.json "imports" retargeted (both files exist)
+      ---
+      type: 'test'
+      ...
+    # Subtest: D2 deno.json "importMap" file retargeted
+    ok 2 - D2 deno.json "importMap" file retargeted
+      ---
+      type: 'test'
+      ...
+    # Subtest: D3 a dynamic import of an absent module succeeds later
+    ok 3 - D3 a dynamic import of an absent module succeeds later
+      ---
+      type: 'test'
+      ...
+    # Subtest: D4 Temporal.Now (if present) passes a deadline
+    not ok 4 - D4 Temporal.Now (if present) passes a deadline
+      ---
+      type: 'test'
+      location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:143:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        WRONG REUSE: deno tests/tp_test.ts
+        status=0
+        reused=["tests/tp_test.ts"]
+        nc={}
+        stdout=detjs 0.1.0: Level 0 active; runner=deno 2.9.6 (stable, release, x86_64-unknown-linux-gnu); controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        detjs cache: reused with proof 1 tests in 1 files (0.009 s recorded); ran 0 files; recorded 0 tests; check 0.001 s, identity 0.086 s, record 0.001 s
+        detjs cache: receipts .detjs/receipts.jsonl
+        detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+        detjs deno: 0 files ran (0 failed), 1 reused
+        
+        stderr=
+        --- fresh
+        status=1
+        reused=null
+        nc=null
+        stdout=detjs 0.1.0: Level 0 active; runner=deno 2.9.6 (stable, release, x86_64-unknown-linux-gnu); controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+        detjs: serial execution (process per file); network=block; timers=virtual; node v22.23.5
+        [0m[38;5;245mrunning 1 test from ./tests/tp_test.ts[0m
+        tp ... [0m[31mFAILED[0m [0m[38;5;245m(1ms)[0m
+        
+        [0m[1m[37m[41m ERRORS [0m
+        
+        tp [0m[38;5;245m=> ./tests/tp_test.ts:2:85[0m
+        [0m[1m[31merror[0m: Error: false !== true
+            at [0m[1m[3mObject.toBe[0m ([0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-temporal/[0m[0m[36mtests/tp_test.ts[0m:[0m[33m2[0m:[0m[33m156[0m)
+            at [0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-temporal/[0m[0m[36mtests/tp_test.ts[0m:[0m[33m3[0m:[0m[33m134[0m
+            at [0m[36mfile:///home/user/fenvix-engine-cli/node/src/runners/bracket.js[0m:[0m[33m131[0m:[0m[33m16[0m
+        
+        [0m[1m[37m[41m FAILURES [0m
+        
+        tp [0m[38;5;245m=> ./tests/tp_test.ts:2:85[0m
+        
+        [0m[31mFAILED[0m | 0 passed | 1 failed [0m[38;5;245m(6ms)[0m
+        
+        detjs: trace .detjs/trace.jsonl: 1 tests, order digest 5cb66f473e31547b17af919362678f66
+        detjs deno: 1 files ran (1 failed), 0 reused
+        
+        stderr=[0m[1m[31merror[0m: Test failed
+        
+        Stack backtrace:
+           0: <unknown>
+        
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: true
+      actual: false
+      operator: '=='
+      stack: |-
+        [0m[1m[3mObject.toBe[0m ([0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-temporal/[0m[0m[36mtests/tp_test.ts[0m:[0m[33m2[0m:[0m[33m156[0m)
+        [0m[2m[38;5;245mfile:///home/user/fenvix-engine-cli/node/test/.tmp/runner-deno/r032b-temporal/[0m[0m[36mtests/tp_test.ts[0m:[0m[33m3[0m:[0m[33m134[0m
+        [0m[36mfile:///home/user/fenvix-engine-cli/node/src/runners/bracket.js[0m:[0m[33m131[0m:[0m[33m16[0m
+        attack (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:46:10)
+        TestContext.<anonymous> (/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:146:5)
+        Test.runInAsyncScope (node:async_hooks:214:14)
+        Test.run (node:internal/test_runner/test:1047:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:744:18)
+        Test.postRun (node:internal/test_runner/test:1173:19)
+        Test.run (node:internal/test_runner/test:1101:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:744:7)
+      ...
+    # Subtest: D5 Deno.Command reads a data file
+    ok 5 - D5 Deno.Command reads a data file
+      ---
+      type: 'test'
+      ...
+    # Subtest: D6 a module imported by a .ts file through a "jsr:"-free relative re-export chain where the leaf changes
+    ok 6 - D6 a module imported by a .ts file through a "jsr:"-free relative re-export chain where the leaf changes
+      ---
+      type: 'test'
+      ...
+    1..6
+not ok 7 - deno: R-032b specific
+  ---
+  type: 'suite'
+  location: '/home/user/fenvix-engine-cli/node/test/review-r032b.test.js:127:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..7
+# tests 39
+# suites 6
+# pass 34
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+EXIT 1

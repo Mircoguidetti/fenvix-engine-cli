@@ -1,0 +1,32 @@
+lang   file                                                    trans verified mism wrong missing finished
+py     tracks/all-runners-python/results/ar2-py-1/runner-djang    20     4876    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-docte    60       34    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-docte   100       31    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-hypot    20    19735    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-nose2    60        0    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-nose2     9      381    0     0       - False
+py     tracks/all-runners-python/results/ar2-py-1/runner-unitt    20       98    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-unitt    20     2913    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-ward-    20        0    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-ward-     3        0    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-zope-    20      106    0     0       - True
+py     tracks/all-runners-python/results/ar2-py-1/runner-zope-    20      623    0     0       - True
+node   harness/node_cache/results/ar2-node-a/dependency-cruise    10     7571    0     0       0 -
+node   harness/node_cache/results/ar2-node-a/simple-statistics    30     2632    0     0       0 -
+node   harness/node_cache/results/ar2-node-a/yargs-1.json.gz      15     3899    0     0       0 -
+node   harness/node_cache/results/ar2-node-b/ava-shelljs-0.jso    25      452    0     0       0 -
+node   harness/node_cache/results/ar2-node-b/jasmine-cordova-a    25     5500    0     0       0 -
+node   harness/node_cache/results/ar2-node-b/tap-dotenv-0.json    25      698    0     0       0 -
+node   harness/node_cache/results/ar2-node-b/tap-minimatch-0.j    25      670    0     0       0 -
+node   harness/node_cache/results/ar2-node-b/uvu-autoprefixer-    25     1695    0     0       0 -
+node   harness/node_cache/results/ar2-node-c/json-schema-faker    20     1180    0     0       0 -
+node   harness/node_cache/results/ar2-node-c/oak-0.json.gz        20     1164    0     0       0 -
+node   harness/node_cache/results/ar2-node-c/std-0.json.gz        10     9736    0     0       0 -
+node   harness/node_cache/results/ar2-node-c/std-1.json.gz        10    10930    0     0       0 -
+node   harness/node_cache/results/ar2-node-c/wouter-0.json.gz     20        0    0     0       0 -
+
+TOTAL python: verified 28797, mismatches 0, confirmed wrong 0
+TOTAL node: verified 46127, mismatches 0, confirmed wrong 0
+TOTAL: verified 74924
+
+consistency issues: 0
