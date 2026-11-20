@@ -67,7 +67,7 @@ describe('deno: Level 0 controls', { skip: SKIP }, () => {
     assert.deepEqual(fixed.trace.header.order.filter((x) => x.startsWith('tests/order_test.ts')).map((x) => x.split('::')[1]), ['a', 'b', 'c', 'd', 'e', 'f']);
   });
 
-  test('isolation: state shared through the process (environment) changes outcome under one process per file (counted)', T, () => {
+  test('G-0146: one process for every file under --det and --det-cache (as plain deno test); --det-isolate: one per file (counted)', T, () => {
     const dir = H.fixture(RT, 'isolation', {
       ...tf('a1', "Deno.test('sets', () => { Deno.env.set('FX_SHARED', '1'); });"),
       ...tf('a2', "Deno.test('reads', () => { eq(Deno.env.get('FX_SHARED'), '1'); });"),
@@ -75,8 +75,21 @@ describe('deno: Level 0 controls', { skip: SKIP }, () => {
     const plain = spawnSync(H.BINARY.deno, ['test', '-A', 'tests/'], { cwd: dir, encoding: 'utf8' });
     assert.equal(plain.status, 0, `plain deno test shares one process: passes\n${plain.stderr}`);
     const det = H.crun(RT, dir, { cache: false });
-    assert.notEqual(det.status, 0, 'under detjs each file runs alone: the dependent test fails (reported, never reused)');
-    const changed = Object.entries(H.fingerprints(det)).filter(([, v]) => !v.startsWith('passed'));
+    assert.equal(det.status, 0, `--det keeps Deno's one process: the verdict of plain deno test\n${H.show(det)}`);
+    assert.deepEqual(Object.keys(H.fingerprints(det)).sort(), ['tests/a1_test.ts::sets', 'tests/a2_test.ts::reads']);
+    const c1 = H.crun(RT, dir);
+    assert.equal(c1.status, 0, `--det-cache: no false failure\n${H.show(c1)}`);
+    const c2 = H.crun(RT, dir);
+    assert.deepEqual(H.reused(c2).sort(), [F('a1'), F('a2')], H.show(c2));
+    // a1 changes: a2 read what a1 left in the process environment, so it runs again and fails like plain deno test
+    H.write(dir, tf('a1', "Deno.test('sets', () => { Deno.env.set('FX_SHARED', '2'); });"));
+    const c3 = H.crun(RT, dir);
+    assert.notEqual(c3.status, 0, H.show(c3));
+    assert.ok(!H.reused(c3).includes(F('a2')), H.show(c3));
+    H.write(dir, tf('a1', "Deno.test('sets', () => { Deno.env.set('FX_SHARED', '1'); });"));
+    const iso = H.crun(RT, dir, { cache: false, args: ['--det-isolate'] });
+    assert.notEqual(iso.status, 0, '--det-isolate: each file runs alone: the dependent test fails (reported, never reused)');
+    const changed = Object.entries(H.fingerprints(iso)).filter(([, v]) => !v.startsWith('passed'));
     assert.deepEqual(changed.map(([k]) => k), ['tests/a2_test.ts::reads']);
   });
 });
