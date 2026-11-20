@@ -149,8 +149,8 @@ def node_part(r, a, fx, home):
     cache = os.path.join(r.work, "vitest-cache")
     for i in (1, 2):
         rc, out = r.sh(f"vitest-cache{i}", [fx, "node", "vitest", "run", "--det", f"--det-cache={cache}"], cwd=proj, env=env)
-    m = re.search(r"reused (\d+)", out)
-    r.check("vitest_cache_reused", rc == 0 and m and int(m.group(1)) > 0, m.group(0) if m else out.strip()[-300:])
+    m = re.search(r"reused with proof (\d+) tests", out)  # detjs: "reused with proof N tests in M files"
+    r.check("vitest_cache_reused", rc == 0 and bool(m) and int(m.group(1)) > 0, m.group(0) if m else out.strip()[-300:])
 
 
 def refuse_part(r, a, d):
