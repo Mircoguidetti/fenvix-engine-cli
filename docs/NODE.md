@@ -188,7 +188,9 @@ their fake clock at the virtual clock, not the machine's time, unless the test o
 real time) is a real-clock read for the cache. `process.uptime()` counts from the start of the file on the virtual
 clock (+1 s); `performance.timeOrigin` is the epoch; `performance.mark()` / `measure()` without explicit times use the
 virtual `performance.now()`; the host's `performance` (also `require('perf_hooks').performance` under Jest) is
-virtual for test code; `AbortSignal.timeout(ms)` runs on the virtual timers (G-0135..G-0138, G-0141). If a control
+virtual for test code; `AbortSignal.timeout(ms)` runs on the virtual timers; `Intl.DateTimeFormat#format()` / `formatToParts()` without a
+date format the virtual now (G-0135..G-0138, G-0141). The cache keys these reads by the epoch like any clock read
+(review R-009 had made them never cached while they were real). If a control
 cannot be installed in a realm, detjs prints a warning, records `uncontrolled.level0` in every later test of the
 process and the cache does not reuse them (G-0181).
 
