@@ -251,6 +251,50 @@ async function runFileProcesses(p) {
   return failed ? 1 : 0;
 }
 
+/**
+ * Run the files of a --det session in one runtime process, the runtime's own model (Bun's one global object, Deno's
+ * one process: audit G-0145, G-0146). With the cache the process is the unit (`<runner>`, entries under the project
+ * `process`): every file reused, or every one run in that process. Same parameters as runFileProcesses, with
+ * spawnAll(fileIds, env) -> {status} in place of spawnFile.
+ */
+async function runSharedProcess(p) {
+  const session = require('../session');
+  const controls = require('../controls');
+  const { run, opts, pc } = p;
+  const unit = `<${p.runner}>`;
+  let reused = false;
+  if (pc) {
+    if (!p.fileIds.length) pc.noTestsFound = true;
+    else reused = (await pc.decide([{ fileId: unit, project: UNIT_PROJECT, key: unit, covers: p.fileIds }])).has(unit);
+  }
+  for (const l of session.header(run, opts, { runner: p.runner, runnerVersion: p.runnerVersion, isolation: p.isolationShort || 'one process' })) {
+    process.stdout.write(`${l}\n`);
+  }
+  let status = 0;
+  const executed = [];
+  if (p.fileIds.length && !reused) {
+    const env = { DETJS_FILES: JSON.stringify(p.fileIds) };
+    if (pc) env.DETJS_CACHE_UNIT = `process:${unit}`;
+    const r = p.spawnAll(p.fileIds, env);
+    status = r.status === null || r.status === undefined ? 1 : r.status;
+    for (const f of p.fileIds) executed.push({ fileId: f, part: controls.partName(f, '') });
+    if (pc) settleCapture(run, unit, status, p.extra ? (c) => p.extra(c, unit, r) : null, UNIT_PROJECT);
+  }
+  if (p.afterRun) p.afterRun();
+  let lines = [];
+  if (pc) lines = await pc.finish();
+  const fin = session.finish(run, opts, executed, {
+    runner: p.runner, runner_version: p.runnerVersion, isolation: p.isolation, serial: true, cli_args: p.cliArgs || [], ...(p.meta || {}),
+  });
+  for (const l of [...lines, ...fin.lines]) process.stdout.write(`${l}\n`);
+  if (!p.fileIds.length) {
+    process.stderr.write(`detjs ${p.runner}: no test files found\n`);
+    return 1;
+  }
+  process.stdout.write(`detjs ${p.runner}: ${reused ? 0 : p.fileIds.length} files ran in one process (${status === 0 ? 'passed' : 'failed'}), ${reused ? p.fileIds.length : 0} reused\n`);
+  return status === 0 ? 0 : 1;
+}
+
 /** Digest of a file, or a marker (missing files are configuration too). */
 function fileDigestOr(p) {
   if (!p) return '';
@@ -655,7 +699,7 @@ module.exports = {
   // shared
   PRELOAD, orderFiles, captureFiles, markFailed,
   // 1. non-Node runtimes
-  findBinary, splitArgs, optionValue, dropOptions, fileSeed, settleCapture, mergeJunit, runFileProcesses, fileDigestOr, runInherit,
+  findBinary, splitArgs, optionValue, dropOptions, fileSeed, settleCapture, mergeJunit, runFileProcesses, runSharedProcess, fileDigestOr, runInherit,
   // 2. Node runners with a preload (main side, then child side)
   findPackage, pkgDir, fileIdOf, nodeOptions, childEnv, listChild, runChild, fileParts, runShell, argsPart,
   child, runFiles, quiet, ChildFile, onExit, processUnit, UNIT_PROJECT,

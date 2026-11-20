@@ -501,7 +501,8 @@ function installResolver(cap, bracket) {
     for (const r of roots) visit(r);
     return [...done];
   };
-  roots.add(path.resolve(require('../controls').cfg().root, process.env.DETJS_FILE));
+  const files = process.env.DETJS_FILES ? JSON.parse(process.env.DETJS_FILES) : [process.env.DETJS_FILE];
+  for (const f of files) if (f) roots.add(path.resolve(require('../controls').cfg().root, f));
   for (const p of String(process.env.DETJS_PRELOADS || '').split(path.delimiter).filter(Boolean)) roots.add(p);
   Bun.plugin({
     name: 'detjs-capture',

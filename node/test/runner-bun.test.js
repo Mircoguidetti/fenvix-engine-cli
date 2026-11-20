@@ -72,7 +72,7 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
     assert.deepEqual(fixed.trace.header.order.filter((x) => x.startsWith('tests/order.test.ts')).map((x) => x.split('::')[1]), ['a', 'b', 'c', 'd', 'e', 'f']);
   });
 
-  test('isolation: a test that depends on another file\'s globals changes outcome under one process per file (counted)', T, () => {
+  test('G-0145: one process for every file under --det and --det-cache (as plain bun test); --det-isolate: one per file (counted)', T, () => {
     const dir = H.fixture(RT, 'isolation', {
       ...tf('a1', "test('sets', () => { globalThis.shared = 1; });"),
       ...tf('a2', "test('reads', () => { expect(globalThis.shared).toBe(1); });"),
@@ -80,8 +80,21 @@ describe('bun: Level 0 controls', { skip: SKIP }, () => {
     const plain = spawnSync(H.BINARY.bun, ['test', './tests/a1.test.ts', './tests/a2.test.ts'], { cwd: dir, encoding: 'utf8' });
     assert.equal(plain.status, 0, `plain bun test shares one process: passes\n${plain.stderr}`);
     const det = H.crun(RT, dir, { cache: false });
-    assert.notEqual(det.status, 0, 'under detjs each file runs alone: the dependent test fails (and is reported, never reused)');
-    const changed = Object.entries(H.fingerprints(det)).filter(([, v]) => !v.startsWith('passed'));
+    assert.equal(det.status, 0, `--det keeps Bun's one process: the verdict of plain bun test\n${H.show(det)}`);
+    assert.deepEqual(Object.keys(H.fingerprints(det)).sort(), ['tests/a1.test.ts::sets', 'tests/a2.test.ts::reads']);
+    const c1 = H.crun(RT, dir);
+    assert.equal(c1.status, 0, `--det-cache: no false failure\n${H.show(c1)}`);
+    const c2 = H.crun(RT, dir);
+    assert.deepEqual(H.reused(c2).sort(), [F('a1'), F('a2')], H.show(c2));
+    // a1 changes: a2 ran with a1's state, so it runs again (the process is the unit) and fails like plain bun test
+    H.write(dir, tf('a1', "test('sets', () => { globalThis.shared = 2; });"));
+    const c3 = H.crun(RT, dir);
+    assert.notEqual(c3.status, 0, H.show(c3));
+    assert.ok(!H.reused(c3).includes(F('a2')), H.show(c3));
+    H.write(dir, tf('a1', "test('sets', () => { globalThis.shared = 1; });"));
+    const iso = H.crun(RT, dir, { cache: false, args: ['--det-isolate'] });
+    assert.notEqual(iso.status, 0, '--det-isolate: each file runs alone: the dependent test fails (and is reported, never reused)');
+    const changed = Object.entries(H.fingerprints(iso)).filter(([, v]) => !v.startsWith('passed'));
     assert.deepEqual(changed.map(([k]) => k), ['tests/a2.test.ts::reads']);
   });
 });
@@ -271,7 +284,21 @@ describe('bun: wrong reuse (--det-cache)', { skip: SKIP }, () => {
     const dir = H.fixture(RT, 'written', {
       ...tf('a_writer', "test('w', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/shared.txt', 'x'); });"),
       ...tf('b_reader', "test('r', () => { expect(fs.readFileSync('out/shared.txt', 'utf8')).toBe('x'); });") });
-    H.neverReused(RT, dir, F('b_reader'), null, /another test file/);
+    // --det-isolate (a process per file): the reader is never reused
+    const i1 = H.crun(RT, dir, { args: ['--det-isolate'] });
+    assert.equal(i1.status, 0, H.show(i1));
+    const i2 = H.crun(RT, dir, { args: ['--det-isolate'] });
+    assert.ok(!H.reused(i2).includes(F('b_reader')), H.show(i2));
+    assert.match(JSON.stringify(i2.summary.not_cached_detail), /another test file/, H.show(i2));
+    // one process (the default): writer and reader are one unit, the write is the unit's own; a change of the
+    // writer reruns the reader
+    const u1 = H.crun(RT, dir);
+    assert.equal(u1.status, 0, H.show(u1));
+    assert.deepEqual(H.reused(H.crun(RT, dir)).sort(), [F('a_writer'), F('b_reader')]);
+    H.write(dir, tf('a_writer', "test('w', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/shared.txt', 'y'); });"));
+    const u3 = H.crun(RT, dir);
+    assert.notEqual(u3.status, 0, H.show(u3));
+    assert.ok(!H.reused(u3).includes(F('b_reader')), H.show(u3));
   });
 
   test('snapshot file read natively by toMatchSnapshot', T, () => {

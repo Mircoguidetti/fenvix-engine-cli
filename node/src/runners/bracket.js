@@ -8,8 +8,12 @@ const clock = require('../clock');
 const { STATE } = controls;
 
 class Bracket {
-  /** @param fileId path of the test file relative to the root; @param cap the capture (null without --det-cache) */
-  constructor(fileId, cap) {
+  /**
+   * @param fileId path of the test file relative to the root; @param cap the capture (null without --det-cache);
+   * @param unit a process unit ({id, ok}: every file of one shared process is one capture, see SharedBracket), or null
+   */
+  constructor(fileId, cap, unit = null) {
+    this.unit = unit;
     this.fileId = fileId;
     this.cap = cap;
     this.cfg = controls.cfg();
@@ -24,8 +28,8 @@ class Bracket {
     this.t0 = clock.REAL.perfNow();
     controls.openFile(fileId, '');
     if (cap) {
-      cap.resetFile();
-      cap.setCtx('f', fileId);
+      if (!unit) cap.resetFile();
+      cap.setCtx('f', unit ? unit.id : fileId);
     }
   }
 
@@ -151,24 +155,111 @@ class Bracket {
     if (this.current || this.pending) this.post();
     controls.closeFile();
     const c = this.cfg;
+    if (this.unit) { this.unit.ok = this.unit.ok && !this.anyFailed; this.unit.files++; return; }
     if (!this.cap || !c.dir) return;
+    this.writeCapture({ fileId: this.fileId, project: '', label: this.fileId, ok: !this.anyFailed });
+  }
+
+  writeCapture(base) {
+    const c = this.cfg;
     const cap = this.cap;
     try {
-      const info = { fileId: this.fileId, project: '', label: this.fileId, ok: !this.anyFailed,
+      const info = { ...base,
         duration: (clock.REAL.perfNow() - this.t0) / 1000, runtime: this.runtimeName || null };
       const capture = cap.fileCapture(info, this.modules ? this.modules() : undefined);
       if (this.extraCapture) Object.assign(capture, this.extraCapture());
       cap.busy++;
       try {
         STATE.quiet(() => controls.writeJson(path.join(c.dir, 'cache',
-          `${controls.partName(this.fileId, '').replace(/\.jsonl$/, '')}-${process.pid}.json`), capture));
+          `${controls.partName(base.fileId, base.project).replace(/\.jsonl$/, '')}-${process.pid}.json`), capture));
       } finally {
         cap.busy--;
       }
     } catch (e) {
-      process.stderr.write(`detjs cache: capture of ${this.fileId} not written: ${e && e.stack}\n`);
+      process.stderr.write(`detjs cache: capture of ${base.fileId} not written (counted as not cached): ${e && e.stack}\n`);
     }
   }
 }
 
-module.exports = { Bracket };
+/**
+ * Every test file of one runtime process (`bun test a b c`, `deno test a b c`: the runtime's own model, where the
+ * files share the global object, the environment and the working directory; audit G-0145, G-0146). The runtime
+ * loads a file and runs its tests before it loads the next one: a registration from another file closes the
+ * previous file's bracket and opens that file's. Same interface as Bracket (the preloads wrap through it). With
+ * the cache, the files are one unit (`unitId`): one capture for the process, written when the last file is done.
+ */
+class SharedBracket {
+  constructor(fileIds, cap, unitId) {
+    this.files = fileIds;
+    this.cap = cap;
+    this.cfg = controls.cfg();
+    this.byAbs = new Map(fileIds.map((f) => [path.resolve(this.cfg.root, f), f]));
+    this.unit = cap && unitId ? { id: unitId, ok: true, files: 0 } : null;
+    this.cur = null;
+    this.all = [];
+    this.hooks = false;
+    this.doneStyle = false;
+    this.runtimeName = null;
+    this.modules = null;
+    this.extraCapture = null;
+    this.t0 = clock.REAL.perfNow();
+    this.done = false;
+  }
+
+  get fileId() { return this.cur ? this.cur.fileId : this.files[0]; }
+
+  get anyFailed() { return this.all.some((b) => b.anyFailed); }
+
+  /** The test file on the stack (registration runs inside the file's module), or null. */
+  callerFileId() {
+    const st = String(new Error().stack || '').split('\n');
+    for (const l of st.slice(2)) {
+      const m = /\(?((?:file:\/\/)?\/[^():]+):\d+:\d+\)?\s*$/.exec(l);
+      if (!m) continue;
+      const f = m[1].replace(/^file:\/\//, '');
+      if (this.byAbs.has(f)) return this.byAbs.get(f);
+    }
+    return null;
+  }
+
+  open(fileId) {
+    if (this.cur && this.cur.fileId === fileId) return this.cur;
+    if (this.cur) this.cur.finish();
+    const b = new Bracket(fileId, this.cap, this.unit);
+    b.hooks = this.hooks;
+    b.doneStyle = this.doneStyle;
+    b.runtimeName = this.runtimeName;
+    b.modules = this.modules;
+    b.extraCapture = this.extraCapture;
+    this.cur = b;
+    this.all.push(b);
+    return b;
+  }
+
+  register(parts) {
+    return this.open(this.callerFileId() || this.fileId).register(parts);
+  }
+
+  wrap(id, fn) { return (this.cur || this.open(this.fileId)).wrap(id, fn); }
+
+  pre() { (this.cur || this.open(this.fileId)).pre(); }
+
+  post() { if (this.cur) this.cur.post(); }
+
+  begin(id) { (this.cur || this.open(this.fileId)).begin(id); }
+
+  end(id, outcome, final) { if (this.cur) this.cur.end(id, outcome, final); }
+
+  /** The last file is done (the runtime's global afterAll / unload): close it, write the unit's capture. */
+  finish() {
+    if (this.done) return;
+    this.done = true;
+    if (this.cur) this.cur.finish();
+    if (!this.unit || !this.cap || !this.cfg.dir) return;
+    const b = this.cur || new Bracket(this.fileId, this.cap, this.unit);
+    b.t0 = this.t0;
+    b.writeCapture({ fileId: this.unit.id, project: 'process', label: this.unit.id, ok: this.unit.ok && this.unit.files > 0 });
+  }
+}
+
+module.exports = { Bracket, SharedBracket };
