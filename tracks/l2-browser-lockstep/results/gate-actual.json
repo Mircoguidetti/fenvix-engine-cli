@@ -4,9 +4,9 @@
  "repo": "actualbudget/actual",
  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
  "status": "ok",
- "run_id": "44640516333",
- "engine_commit": "f1fd6c43a9c18cb9a3fefbe85122d1300ba142ed",
- "setup_s": 109,
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 103,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -27,8 +27,8 @@
   "--shard=1/3"
  ],
  "runs": [],
- "epoch": "2026-11-20T00:53:00Z",
- "measured_at": "2026-11-20T00:53:04Z",
+ "epoch": "2026-11-20T17:36:00Z",
+ "measured_at": "2026-11-20T17:36:28Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -65,16 +65,16 @@
     ""
    ],
    "walls": [
-    181.7,
-    169.7,
-    167.5,
-    165.5,
-    190.4,
-    171.5,
-    177.6,
-    170.2,
-    165.6,
-    162.5
+    170.9,
+    168.1,
+    161.8,
+    159.0,
+    162.6,
+    159.4,
+    157.9,
+    159.5,
+    156.7,
+    162.9
    ],
    "stats": [
     null,
@@ -151,16 +151,16 @@
     ""
    ],
    "walls": [
-    91.3,
-    89.0,
-    92.2,
-    91.8,
-    91.8,
-    88.5,
-    89.0,
-    89.0,
-    88.7,
-    90.9
+    95.9,
+    97.8,
+    98.9,
+    96.7,
+    92.5,
+    97.2,
+    97.8,
+    94.8,
+    91.0,
+    97.2
    ],
    "stats": [
     null,
@@ -189,20 +189,62 @@
    "verify_all": [
     {
      "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 6,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 199,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "dom.digest",
+       "at": "",
+       "v": "1b7e2a132fff03ffb60a441291f7222e"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "dom.digest",
+       "at": "",
+       "v": "e35e19fd90ff4789ffd8ea03ed1e857c"
+      },
+      "reason": "other",
+      "description": "event #199: dom.digest @  returned different values: \"1b7e2a132fff03ffb60a441291f7222e\" vs \"e35e19fd90ff4789ffd8ea03ed1e857c\""
+     }
     }
    ],
    "verify": {
     "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 6,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 199,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "dom.digest",
+      "at": "",
+      "v": "1b7e2a132fff03ffb60a441291f7222e"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "dom.digest",
+      "at": "",
+      "v": "e35e19fd90ff4789ffd8ea03ed1e857c"
+     },
+     "reason": "other",
+     "description": "event #199: dom.digest @  returned different values: \"1b7e2a132fff03ffb60a441291f7222e\" vs \"e35e19fd90ff4789ffd8ea03ed1e857c\""
+    }
    }
   }
  ],
- "elapsed_min": 46.1
+ "elapsed_min": 45.1
 }
