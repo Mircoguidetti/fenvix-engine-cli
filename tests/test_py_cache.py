@@ -556,3 +556,21 @@ def test_g1549_a_failure_under_n_prints_its_worker_replay(pytester):
     args = line.split(": pytest ", 1)[1].split(" (")[0].split()
     r, _, _ = run(pytester, "replay", *args, "-rA", "tests", cache=False)
     assert outcome_of(r, "tests/test_b.py::test_b_needs") == "failed", r.stdout
+
+
+def test_stdlib_cache_validators_are_not_time_inputs(pytester):
+    """py-cache (moto walk): importlib.metadata stats every sys.path directory for its st_mtime to know whether to
+    list it again; that time is not the test's input (the listing is, when it is read). A new file in the project root
+    (its mtime moves) does not invalidate a test that looks up a distribution."""
+    _probe(pytester, """
+        import importlib.metadata, sys, os
+        sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
+        def test_version():
+            assert importlib.metadata.version("pytest")
+        """)
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", "tests")
+        assert p.returncode == 0, p.stdout
+    (pytester.path / "new-file.txt").write_text("x")
+    p, c, _ = run(pytester, "r3", "-rA", "tests")
+    assert "tests/test_p.py::test_version" in reused(c), c.get("miss_ids")

@@ -85,6 +85,9 @@ def _kind_check_caller() -> bool:
 
 
 _REWRITE_FILE = os.sep + os.path.join("_pytest", "assertion", "rewrite.py")
+# (module, function) of standard-library caches that stat a path only to know whether to read it again
+_CACHE_VALIDATORS = frozenset({("importlib.metadata", "mtime"), ("linecache", "checkcache"),
+                               ("linecache", "updatecache"), ("linecache", "lazycache")})
 
 
 def _reaches_user(f) -> bool:
@@ -98,6 +101,11 @@ def _reaches_user(f) -> bool:
         if fn.startswith(_DETPY_DIR) or fn.endswith(_REWRITE_FILE):
             return False
         if f.f_code.co_name == "copystat" and f.f_globals.get("__name__") == "shutil":
+            return False
+        if (f.f_globals.get("__name__"), f.f_code.co_name) in _CACHE_VALIDATORS:
+            # the standard library's own caches, validated by a file's time or size: what they serve is read (and
+            # keyed) again when the validator changes (py-cache: importlib.metadata's per-directory lookup keyed every
+            # test by the project root's mtime, which changes between sessions)
             return False
         if fn == "<string>" or fn.startswith("<frozen"):
             # code compiled from a string (execnet's worker bootstrap, a user's exec): its caller decides
