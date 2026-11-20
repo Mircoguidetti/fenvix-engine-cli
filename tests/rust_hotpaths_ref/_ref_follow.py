@@ -99,7 +99,7 @@ _IGNORED_CALLS = {"clone", "clone3", "fork", "vfork", "fchdir", "getcwd", "umask
 # calls that return a path's times (st_mtime, st_atime, st_ctime, stx_btime)
 _STAT_CALLS = {"stat", "lstat", "stat64", "lstat64", "newfstatat", "fstatat64", "statx"}
 # programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes)
-_NO_TIME_PROGRAMS = {"rm", "rmdir", "mkdir", "ln", "chmod", "chown"}
+_NO_TIME_PROGRAMS = {"rm", "rmdir", "mkdir", "ln", "chmod", "chown", "cat", "head", "tail", "wc", "grep", "egrep", "fgrep", "cut", "sort", "uniq", "tr", "cmp", "base64", "md5sum", "sha1sum", "sha256sum", "sha512sum"}
 # a process directory: its times are the process's start
 _PROC_PID_DIR = re.compile(r"^/proc/(\d+|self|thread-self)(/task/(\d+))?$")
 

@@ -586,8 +586,12 @@ struct Parsed {
 
 /// Calls that return a path's times (st_mtime, st_atime, st_ctime, stx_btime).
 const STAT_CALLS: [&[u8]; 7] = [b"stat", b"lstat", b"stat64", b"lstat64", b"newfstatat", b"fstatat64", b"statx"];
-/// Programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes).
-const NO_TIME_PROGRAMS: [&[u8]; 6] = [b"rm", b"rmdir", b"mkdir", b"ln", b"chmod", b"chown"];
+/// Programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes; cat,
+/// head, wc, grep, sort, checksums... stat what they read: on Ubuntu 24.04 `cat` statx's its input by name). Not
+/// `diff` (-u prints the times), `test`/`[` (-nt), `find` (-newer), `ls`, `stat`, `cp`/`tar` (keep the times).
+const NO_TIME_PROGRAMS: [&[u8]; 23] = [
+    b"rm", b"rmdir", b"mkdir", b"ln", b"chmod", b"chown", b"cat", b"head", b"tail", b"wc", b"grep", b"egrep", b"fgrep", b"cut", b"sort", b"uniq", b"tr", b"cmp", b"base64", b"md5sum", b"sha1sum", b"sha256sum", b"sha512sum",
+];
 
 /// `^/proc/(\d+|self|thread-self)(/task/(\d+))?$` (Python's `$` also matches before a final newline).
 fn proc_pid_dir(p: &[u8]) -> bool {
