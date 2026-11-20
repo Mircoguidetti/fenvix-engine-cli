@@ -509,6 +509,15 @@ class ProofCachePlugin:
         self.worker = None
         self.shard_path = None
         self.merge_result: dict | None = None
+        # --det-isolate (isolate.py): tests run in forked children, each records a one-test shard; this process
+        # merges them (serial) or hands them to the controller (worker)
+        self.isolate = False
+        self.iso_child = False
+        self.iso_shards: list[str] = []
+        self.iso_forked: set[str] = set()
+        self.iso_summaries: list = []
+        self.iso_new_facts: list = []
+        self.iso_warm = False
 
     # -- setup ----------------------------------------------------------------
     def configure(self, config) -> None:
@@ -741,7 +750,7 @@ class ProofCachePlugin:
         """The controller's end of session: the workers' summaries, then the cross-worker write rule and one merge of
         their shards into the store (``ProofCache.merge_shards``)."""
         t0 = _perf()
-        paths = []
+        paths = list(self.iso_shards) if self.isolate else []
         for wid in sorted(workeroutput):
             out = workeroutput[wid]
             summ = out.get("detpy_cache_summary")
@@ -753,6 +762,12 @@ class ProofCachePlugin:
                 self.sess.error = out["detpy_cache_error"]
             if out.get("detpy_cache_shard"):
                 paths.append(out["detpy_cache_shard"])
+            paths.extend(out.get("detpy_cache_shards") or ())  # --det-isolate: the worker's children
+            if out.get("detpy_isolate"):
+                from . import isolate as _isolate
+
+                for k, v in out["detpy_isolate"].items():
+                    _isolate.STATS[k] = _isolate.STATS.get(k, 0) + v
         try:
             res = json.loads(self.store.merge_shards(paths, list(self.sess.hit_ids), [tuple(e) for e in edges],
                                                      {w: list(v) for w, v in (lists or {}).items()}))
@@ -770,9 +785,16 @@ class ProofCachePlugin:
 
     # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
     def worker_output(self) -> dict:
+        self.iso_merge_summaries()
         out = {"detpy_cache_summary": list(self.sess.worker_summary())}
         if self.shard_path:
             out["detpy_cache_shard"] = self.shard_path
+        if self.iso_shards:
+            out["detpy_cache_shards"] = list(self.iso_shards)
+        if self.isolate:
+            from . import isolate as _isolate
+
+            out["detpy_isolate"] = dict(_isolate.STATS)
         err = self.sess.summary_data(self.cap).get("error")
         if err:
             out["detpy_cache_error"] = err
@@ -816,9 +838,19 @@ class ProofCachePlugin:
         if self.role == "serial" and self.sess.is_hit(nid):
             # review R-023 F2: a reuse decided before a writer of this session wrote the test's input is withdrawn
             self.sess.recheck_hit(self.store, self.cap, nid)
-        if self.sess.is_hit(nid):
+        if self.sess.is_hit(nid) or (self.isolate and not self.iso_child):
+            # a reused result; or --det-isolate's parent: the child does iso_begin / iso_end
             yield
             return
+        t = self.iso_begin(item)
+        try:
+            yield
+        finally:
+            self.iso_end(item, t)
+
+    def iso_begin(self, item) -> float:
+        """The cache's start of a test that runs (the protocol wrapper's, or a --det-isolate child's)."""
+        nid = item.nodeid
         fx = []
         info = getattr(item, "_fixtureinfo", None)
         if info is not None:
@@ -837,18 +869,72 @@ class ProofCachePlugin:
             self.cap.env_read("PYTEST_XDIST_WORKER")
         if "testrun_uid" in names:
             self.cap.env_read("PYTEST_XDIST_TESTRUNUID")
-        t = _perf()
+        return _perf()
+
+    def iso_end(self, item, t: float) -> None:
+        nid = item.nodeid
+        dur = _perf() - t
+        self.cap.switch("s")
+        index = self.sess.end_test(nid, dur)
+        self.cap.scan_modules(index, self._conftests())
+        if getattr(self.cap, "dists", None) is not None:
+            self.cap.dists.scan(index, self.cap.ctx_index("t|" + nid))
+
+    def iso_record(self) -> tuple:
+        """In a --det-isolate child, after its test: record it as a one-test shard (no placement: the test ran
+        alone from the session's snapshot); returns (shard path or None, the child's summary)."""
+        from . import plugin as _plugin
+
+        self.role = "worker"
+        self.worker = f"iso{os.getpid()}"
+        self.sess.add_fingerprints(_plugin.S.fingerprints)
+        self.cap.switch("s")
+        self.cap.stop()
+        self._record_all()
+        return self.shard_path, list(self.sess.worker_summary())
+
+    def iso_prepare(self) -> None:
+        """--det-isolate's parent, before its first child: the facts of the repository files executed so far
+        (collection, imports) are parsed once here; the children inherit them."""
+        if self.iso_warm:
+            return
+        self.iso_warm = True
         try:
-            yield
-        finally:
-            dur = _perf() - t
-            self.cap.switch("s")
-            index = self.sess.end_test(nid, dur)
-            self.cap.scan_modules(index, self._conftests())
-            if getattr(self.cap, "dists", None) is not None:
-                self.cap.dists.scan(index, self.cap.ctx_index("t|" + nid))
+            needed, whole = self.sess.files_needed(self.cap, self.items)
+            fc: dict = {}
+            self._facts(needed, fc)
+            self._facts(whole, fc)
+        except Exception:
+            pass
+
+    def iso_add_facts(self, facts) -> None:
+        """Facts a child parsed (files first executed by its test): kept, so the next children need not parse them."""
+        for rel, content, f in facts or ():
+            try:
+                if self.store.file_index(rel, content) is None:
+                    self.store.add_file(rel, content, *f)
+            except Exception:
+                pass
+
+    def iso_child_done(self, nodeid: str, shard, summary) -> None:
+        """The parent's side: the child's summary joins this session's at the end (merged now, the next children
+        would inherit it and record those tests again), its shard is merged at the end."""
+        self.iso_forked.add(nodeid)
+        if summary:
+            self.iso_summaries.append(summary)
+        if shard:
+            self.iso_shards.append(shard)
+
+    def iso_merge_summaries(self) -> None:
+        for summary in self.iso_summaries:
+            ran, recorded, not_cached = summary[:3]
+            where = [tuple(x) for x in summary[3]] if len(summary) > 3 else None
+            self.sess.merge_worker(list(ran), int(recorded), [tuple(x) for x in not_cached], where)
+        self.iso_summaries = []
 
     def pytest_runtest_logreport(self, report):
+        if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
+            return  # the child reported it to its own session
         self.sess.report(report)
 
     def _conftests(self):
@@ -902,6 +988,19 @@ class ProofCachePlugin:
         cap.stop()
         if self.role == "controller":
             # no test ran here: the workers recorded, the merge happened in merge_workers
+            sess.t_record = self.sess.phase("merge")
+            sess.compare_verified()
+            sess.write_receipts(self.store)
+            self._shared_push()
+            self._write_quarantine()
+            return
+        if self.isolate and not self.iso_child:
+            # --det-isolate: nothing ran in this process; the children's shards are merged here (serial) or by the
+            # controller (worker)
+            if self.role == "worker":
+                return
+            self.iso_merge_summaries()
+            self.merge_workers({}, {}, (), {})
             sess.t_record = self.sess.phase("merge")
             sess.compare_verified()
             sess.write_receipts(self.store)
@@ -974,6 +1073,8 @@ class ProofCachePlugin:
                                      os.path.join(self.dir, "tmp")) if jobs else ()
         for (rel, content), f in zip(jobs, facts):
             cache[rel] = None if f is None else self.store.add_file(rel, content, *f)
+            if self.iso_child and f is not None:
+                self.iso_new_facts.append((rel, content, tuple(f)))
 
     def _record_all(self) -> None:
         if self.cap.rec is None:
@@ -1004,7 +1105,7 @@ class ProofCachePlugin:
         t = _perf()
         if self.role == "worker":
             self.shard_path = os.path.join(self.dir, "shards", f"{self.run_id}.{self.worker}.json")
-            store.save_shard(self.shard_path, self.worker)
+            store.save_shard(self.shard_path, self.worker, "" if self.iso_child else None)
         else:
             store.save()
         sess.set_phase("save", _perf() - t)

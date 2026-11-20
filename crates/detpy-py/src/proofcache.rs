@@ -463,15 +463,19 @@ impl ProofCache {
 
     /// A worker's end of session: write what it recorded (and removed) as a shard at `path` instead of merging into
     /// the store; the controller merges every worker's shard once (`merge_shards`).
-    fn save_shard(&self, py: Python<'_>, path: PathBuf, worker: String) -> PyResult<usize> {
+    #[pyo3(signature = (path, worker, placement=None))]
+    fn save_shard(&self, py: Python<'_>, path: PathBuf, worker: String, placement: Option<String>) -> PyResult<usize> {
         let g = lock(&self.inner);
         let mut sub = Store::new();
         g.store.merge_into(&mut sub, &g.touched);
         // a worker's results are parallel results: a serial session does not reuse them (review R-023 F1); each
         // carries its in-process predecessors in this worker (review R-023b N7)
-        // (their planned in-process predecessors are set by the controller's merge, which has the plan)
+        // (their planned in-process predecessors are set by the controller's merge, which has the plan).
+        // --det-isolate: a child forked from the session's snapshot ran the test alone ("": no placement; the
+        // isolate mode is in the configuration digest, so only isolated sessions see these entries)
+        let placement = placement.unwrap_or_else(|| proof::PLACEMENT_PARALLEL.to_string());
         for e in sub.tests.values_mut() {
-            e.placement = proof::PLACEMENT_PARALLEL.to_string();
+            e.placement = placement.clone();
         }
         // persisted for the next sessions (as record_session keeps them)
         sub.written = g

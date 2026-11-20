@@ -76,6 +76,10 @@ def pytest_addoption(parser, pluginmanager):
                 help="cache with proof (needs --det, Python 3.12+): reuse a test's previous result from DIR only "
                      "when every input it depended on (code executed, files read, environment variables read, "
                      "runtime, configuration) is unchanged; failures are never reused; prints a receipt")
+    g.addoption("--det-isolate", action="store_true", default=False,
+                help="run each test in a child process forked from the session's snapshot (after collection): no "
+                     "test sees state an earlier test left in memory, so a test's cache key carries no earlier test "
+                     "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
     g.addoption("--det-cache-verify", type=float, default=0.0, metavar="FRACTION",
                 help="run this random fraction of the reusable tests anyway and compare with the cached result")
     g.addoption("--det-cache-dists", action="store_true", default=False,
@@ -240,6 +244,8 @@ class _Session:
         self.saved_cassette = 0
         self.index = 0
         self.rewrite_cache = False
+        # --det-isolate is active (isolate.py): tests run in forked children
+        self.isolate = False
         # pytest-xdist under --det (xdist.py): the controller's state, or this worker's id
         self.controller = None
         self.worker = None
@@ -864,6 +870,16 @@ def _configure_det(config) -> None:
     _state.STATE.recorder = _core.Recorder(max_events=opt.det_max_events)
     if opt.det_cache:
         proofcache.install(config)
+    if getattr(opt, "det_isolate", False) and S.controller is None:
+        from . import isolate as _isolate
+
+        if _isolate.available():
+            S.isolate = True
+            if proofcache.PLUGIN is not None:
+                proofcache.PLUGIN.isolate = True
+            config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
+        else:
+            S.adjustments.append("--det-isolate: fork is not available here; the carried-set rule applies")
     factory = getattr(config, "_tmp_path_factory", None)
     if factory is not None:
         def basetemp():
@@ -886,6 +902,7 @@ def pytest_unconfigure(config):
         proofcache.uninstall()
         S.active = False
         S.config = None
+        S.isolate = False
         if S.controller is not None:
             os.environ.pop(_xdist.CONTROLLER_ENV, None)
         S.controller = None
@@ -1021,6 +1038,11 @@ class _DetSession(_Outcomes):
         if S.controller is not None:
             out["order"] = list(S.order)
             out["plan"] = S.controller.plan
+        if S.isolate or S.controller is not None:
+            from . import isolate as _isolate
+
+            if _isolate.STATS["tests"]:
+                out["isolate"] = dict(_isolate.STATS)
         return out
 
     def pytest_report_header(self, config):
@@ -1119,29 +1141,16 @@ class _DetSession(_Outcomes):
             if fp:
                 S.fingerprints[item.nodeid] = fp
             return
-        controls = st.config.controls
-        rec.begin_test(item.nodeid, S.index)
-        S.index += 1
-        _state.reset_threads()
-        if "time" in controls:
-            clock.start_test()
-        st.nodeid = item.nodeid
-        if "seeds" in controls:
-            seeds.start_test(_PATCHER, item.nodeid)
-        if "net" in controls:
-            network.start_test()
+        if S.isolate:
+            # --det-isolate: the test runs in a forked child, which does Level 0's part (level0_begin/_end) and sends
+            # its fingerprint back (isolate.py)
+            yield
+            return
+        level0_begin(item)
         try:
             yield
         finally:
-            if "seeds" in controls:
-                seeds.end_test()
-            if "net" in controls:
-                network.end_test()
-            st.nodeid = None
-            fp = rec.end_test(self.outcomes.get(item.nodeid, "unknown"))
-            if fp is not None:
-                S.fingerprints[item.nodeid] = fp
-                item.user_properties.append(("detpy_fingerprint", fp))
+            level0_end(item, self.outcomes.get(item.nodeid, "unknown"))
 
     def pytest_sessionfinish(self, session, exitstatus):
         st = _state.STATE
@@ -1209,3 +1218,35 @@ class _DetSession(_Outcomes):
 
 
 _early_rewrite_cache()
+
+
+def level0_begin(item) -> None:
+    """Level 0's start of a test (the protocol wrapper's, or a --det-isolate child's)."""
+    st = _state.STATE
+    controls = st.config.controls
+    st.recorder.begin_test(item.nodeid, S.index)
+    S.index += 1
+    _state.reset_threads()
+    if "time" in controls:
+        clock.start_test()
+    st.nodeid = item.nodeid
+    if "seeds" in controls:
+        seeds.start_test(_PATCHER, item.nodeid)
+    if "net" in controls:
+        network.start_test()
+
+
+def level0_end(item, outcome: str):
+    """Level 0's end of a test: returns the fingerprint (also kept in ``S.fingerprints``)."""
+    st = _state.STATE
+    controls = st.config.controls
+    if "seeds" in controls:
+        seeds.end_test()
+    if "net" in controls:
+        network.end_test()
+    st.nodeid = None
+    fp = st.recorder.end_test(outcome)
+    if fp is not None:
+        S.fingerprints[item.nodeid] = fp
+        item.user_properties.append(("detpy_fingerprint", fp))
+    return fp
