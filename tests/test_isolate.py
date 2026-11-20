@@ -149,3 +149,36 @@ def test_wider_scopes_are_set_up_once_in_the_parent_and_torn_down_there(pytester
     r, o, _, _ = _run(pytester, 0)
     assert o == {"test_m.py::test_one": "passed", "test_m.py::test_two": "passed"}, r.stdout.str()
     assert log.read_text().split() == ["setup_module", "setup", "teardown"]
+
+
+def test_wider_fixtures_set_up_in_the_parent_raise_no_pytest10_deprecation(pytester):
+    """Audit G-1543: the parent sets up a test's wider-scoped fixtures (here unittest's setUpClass fixture of two
+    classes) with getfixturevalue(); pytest 9.1+ warned "getfixturevalue during teardown is deprecated" (an error in
+    pytest 10.1 and under -W error) because the item was not active on the setup stack."""
+    pytester.makepyfile(test_ut="""
+        import unittest
+
+        class A(unittest.TestCase):
+            @classmethod
+            def setUpClass(cls):
+                cls.x = 1
+
+            def test_a(self):
+                assert self.x == 1
+
+            def test_b(self):
+                assert self.x == 1
+
+        class B(unittest.TestCase):
+            @classmethod
+            def setUpClass(cls):
+                cls.y = 2
+
+            def test_c(self):
+                assert self.y == 2
+        """)
+    r, o, _, _ = _run(pytester, 0)
+    out = r.stdout.str() + r.stderr.str()
+    assert o == {"test_ut.py::A::test_a": "passed", "test_ut.py::A::test_b": "passed",
+                 "test_ut.py::B::test_c": "passed"}, out
+    assert "PytestRemovedIn10Warning" not in out and "during teardown is deprecated" not in out, out
