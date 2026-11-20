@@ -776,7 +776,8 @@ class ProofCachePlugin:
             except Exception:
                 cap.basetemp = None
         self.epoch = _state.STATE.config.epoch_ns
-        self.store = _core.ProofCache(self.dir, self.root)
+        # a worker of -n records a shard; the controller decides with the entries (round 4: memory)
+        self.store = _core.ProofCache(self.dir, self.root, self.role != "worker")
         self.store.begin(self.config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
         self.sess.configure(self.config_digest, self.runtime_digest, self.epoch)
 

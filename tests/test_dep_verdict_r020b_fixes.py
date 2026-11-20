@@ -141,9 +141,21 @@ def test_many_existence_checks_in_one_directory_are_one_dependency(pytester, run
     (ex / "3.txt").write_text("changed")
     r, reused, _ = run_cache_plain()
     assert reused == {"test_ex.py::test_count"}, r.stdout.str()
-    entry = json.load(open(pytester.path / ".plaincache" / "proof-cache.json"))["tests"]["test_ex.py::test_count"]
-    assert sum(1 for p, d in entry["data"] if d.startswith("s:") and p.startswith("ex/")) < 8, entry["data"]
+    store = json.load(open(pytester.path / ".plaincache" / "proof-cache.json"))
+    data, _ = _expand(store, store["tests"]["test_ex.py::test_count"])
+    assert sum(1 for p, d in data if d.startswith("s:") and p.startswith("ex/")) < 8, data
     (ex / "22.txt").write_text("x")
     r, reused, _ = run_cache_plain()
     assert reused == set(), r.stdout.str()
     r.assert_outcomes(failed=1)
+
+
+def _expand(store, entry):
+    """(data pairs, flat units) of a stored entry (the store keeps them as chunk ids: harness/rust_hotpaths/canon.py)."""
+    import os
+    import sys
+
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir, "harness", "rust_hotpaths"))
+    import canon
+
+    return canon.expand(store, entry)

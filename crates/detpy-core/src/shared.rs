@@ -35,7 +35,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 pub const ENTRY_FORMAT: &str = "detpy-shared-entry";
-pub const DOC_VERSION: u32 = 1;
+pub const DOC_VERSION: u32 = 2;
 
 /// The address of a document: SHA-256 of its bytes, hex.
 pub fn address(bytes: &[u8]) -> String {
@@ -78,6 +78,9 @@ pub struct EntryDoc {
     pub hooks: Vec<String>,
     /// (file document, unit index) pairs.
     pub units: Vec<(String, u32)>,
+    /// The entry's data dependencies, expanded (the entry's `data` chunk ids are the exporting store's).
+    #[serde(default)]
+    pub data: Vec<(String, String)>,
 }
 
 /// A line of a key log.
@@ -117,16 +120,18 @@ pub fn export_entry(store: &Store, nodeid: &str, config_runtime_lookup: Option<&
     let content = set_docs(e.content)?;
     let skeleton = set_docs(e.skeleton)?;
     let hooks = set_docs(e.hooks)?;
-    let mut units = Vec::with_capacity(e.units.len() / 2);
-    for c in e.units.chunks(2) {
-        units.push((file_doc(c[0])?, c[1]));
+    let mut units = Vec::with_capacity(store.n_units(e));
+    for (fi, ui) in store.units_of(e) {
+        units.push((file_doc(fi)?, ui));
     }
     units.sort();
+    let data: Vec<(String, String)> = store.data_of(e).map(|(k, v)| (k.to_string(), v.to_string())).collect();
     let mut entry = e.clone();
     entry.content = 0;
     entry.skeleton = 0;
     entry.hooks = 0;
     entry.units = Vec::new();
+    entry.data = Vec::new();
     let lookup = config_runtime_lookup.map(|s| s.to_string()).unwrap_or_else(|| lookup_key(nodeid, &e.config, &e.runtime));
     let doc = EntryDoc {
         format: ENTRY_FORMAT.into(),
@@ -138,6 +143,7 @@ pub fn export_entry(store: &Store, nodeid: &str, config_runtime_lookup: Option<&
         skeleton,
         hooks,
         units,
+        data,
     };
     let bytes = serde_json::to_vec(&doc).ok()?;
     Some((bytes, files.into_values().map(|(_, b)| b).collect()))
@@ -238,7 +244,15 @@ pub fn import_entry(
     e.content = store.intern_set(set(&doc.content));
     e.skeleton = store.intern_set(set(&doc.skeleton));
     e.hooks = store.intern_set(set(&doc.hooks));
-    e.units = doc.units.iter().flat_map(|(id, u)| [ix[id.as_str()], *u]).collect();
+    let mut flat: Vec<(u32, u32)> = doc.units.iter().map(|(id, u)| (ix[id.as_str()], *u)).collect();
+    flat.sort_unstable();
+    flat.dedup();
+    e.units = store.chunk_units(flat.into_iter().flat_map(|(f, u)| [f, u]).collect());
+    let mut data: Vec<(crate::proof::Str, crate::proof::Str)> =
+        doc.data.iter().map(|(k, v)| (crate::proof::Str::from(k.as_str()), crate::proof::Str::from(v.as_str()))).collect();
+    data.sort();
+    data.dedup();
+    e.data = store.chunk_data(data);
     let key = store.key_of(nodeid, &e);
     if key != e.key {
         return Err(Reject::KeyMismatch(format!("stored key {} but its inputs give {key}", e.key)));
@@ -598,7 +612,8 @@ mod tests {
         let dir = SharedDir::new(d.path());
         let mut a = store_with("t.py::a", "rt");
         // claims the old key but its data input was changed (a forged pass)
-        a.tests.get_mut("t.py::a").unwrap().data = vec![("data.txt".into(), "f:zzz".into())];
+        let d = a.chunk_data(vec![("data.txt".into(), "f:zzz".into())]);
+        a.tests.get_mut("t.py::a").unwrap().data = d;
         dir.push(&a, &["t.py::a".into()]).unwrap();
         let mut b = Store::new();
         let f = fetch(&dir, &mut b, &["t.py::a".into()], "cfg", "rt", 3);

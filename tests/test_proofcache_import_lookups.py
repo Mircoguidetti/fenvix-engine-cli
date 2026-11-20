@@ -399,9 +399,21 @@ def test_root_conftest_lookups_do_not_key_site_packages(pytester):
     pytester.makepyfile(test_c="def test_c():\n    assert True\n")
     cache = pytester.path / ".c"
     pytester.runpytest_subprocess("--det", f"--det-cache={cache}", "-p", "no:cacheprovider").assert_outcomes(passed=1)
-    entry = json.loads((cache / "proof-cache.json").read_text())["tests"]["test_c.py::test_c"]
+    store = json.loads((cache / "proof-cache.json").read_text())
+    entry = {"data": _expand(store, store["tests"]["test_c.py::test_c"])[0]}
     purelib = sysconfig.get_paths()["purelib"]
     keyed = [k for k, _ in entry["data"] if k.startswith(purelib) or k.startswith(sysconfig.get_paths()["stdlib"])]
     assert not keyed, keyed
     # the repository root is still searched (a module that appears there would shadow the import)
     assert any("importable" in k or "detpy_not_installed_xyz" in k for k, _ in entry["data"]), entry["data"]
+
+
+def _expand(store, entry):
+    """(data pairs, flat units) of a stored entry (the store keeps them as chunk ids: harness/rust_hotpaths/canon.py)."""
+    import os
+    import sys
+
+    sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir, "harness", "rust_hotpaths"))
+    import canon
+
+    return canon.expand(store, entry)

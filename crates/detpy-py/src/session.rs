@@ -412,8 +412,8 @@ impl CacheSession {
         if !lock(&self.st).hits.contains(nid.as_bytes()) {
             return Ok(None);
         }
-        let Some(found) = store.get().with_entry(&nid, |e| {
-            let data: Vec<(String, String)> = e.data.iter().map(|(k, d)| (k.to_string(), d.to_string())).collect();
+        let Some(found) = store.get().with_entry(&nid, |st, e| {
+            let data: Vec<(String, String)> = st.data_of(e).map(|(k, d)| (k.to_string(), d.to_string())).collect();
             cap.get().written_input(&data, |w| detpy_core::proof::foreign_to_entry(w, &nid, e, None))
         }) else {
             return Ok(None);

@@ -551,7 +551,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             let Some(e) = store.tests.get(nid) else { continue };
             let own = format!("t|{nid}");
             let mut stale = None;
-            for (path, _) in &e.data {
+            for (path, _) in store.data_of(e) {
                 if let Some(w) = stale_written.get(&**path) {
                     if !w.iter().all(|x| *x == own || e.fixtures.iter().any(|f| f == x)) {
                         stale = Some(path.to_string());
