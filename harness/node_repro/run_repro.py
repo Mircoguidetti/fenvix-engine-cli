@@ -154,7 +154,11 @@ def main(argv=None) -> int:
             NH.clean_tree(p)
             bundles = out / "bundles" / name
             env = NH.node_env(p, engine_env(args.detjs, args.pythonpath))
-            cmd = [args.python, "-m", "detpy.fenvix_js", "repro", test, "--runner", p.runner, "--seeds", str(args.seeds),
+            # Block 1 ids are relative to the repository; detjs ids to the directory the tests run from (Playwright:
+            # its configuration's directory)
+            prefix = os.path.relpath(test_dir(p), p.src).replace(os.sep, "/")
+            run_id = test[len(prefix) + 1:] if prefix != "." and test.startswith(prefix + "/") else test
+            cmd = [args.python, "-m", "detpy.fenvix_js", "repro", run_id, "--runner", p.runner, "--seeds", str(args.seeds),
                    "--confirm", str(args.confirm), "--max-runs", str(args.max_runs), "--timeout", str(args.timeout),
                    "--out", str(bundles), "--json", "--", *p.pytest_args]
             t0 = time.monotonic()
@@ -168,7 +172,7 @@ def main(argv=None) -> int:
                     b = json.loads(text[i + 1:])
                 except ValueError:
                     b = None
-            row = {"repo": name, "test": test, "engine": args.engine, "runner": p.runner, "runner_version": p.runner_version,
+            row = {"repo": name, "test": test, "test_run": run_id, "engine": args.engine, "runner": p.runner, "runner_version": p.runner_version,
                    "commit": p.commit, "exit": r.returncode, "wall_s": round(dur, 1),
                    "command": " ".join(cmd[:3] + ["repro", "<test>"] + cmd[5:]), "cwd": os.path.relpath(test_dir(p), work),
                    "status": (b or {}).get("status", "crashed"), "bundle": b,
