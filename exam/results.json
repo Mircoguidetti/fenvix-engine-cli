@@ -1,42 +1,42 @@
 {
  "exam": "go-live acceptance exam (exam/PLAN.md)",
- "run_id": "44814691202",
+ "run_id": "44816009535",
  "base_run": null,
  "rows_rerun_in_run_id": null,
- "release_run_requested": "44804076830",
+ "release_run_requested": null,
  "artifacts_tested": [
   {
-   "release_run": "44804076830",
-   "release_commit": "7e36c395b31980dea0b1542ef5aac3f2852e5435",
-   "head_branch": "claude/packages",
-   "event": "workflow_dispatch",
-   "selected": "requested",
+   "release_run": "44811997318",
+   "release_commit": "f84dde74f3a415acc4678b2e0d6f71a03a2c9903",
+   "head_branch": "claude/release-1",
+   "event": "push",
+   "selected": "newest-trunk",
    "install_ok": true,
    "legs": [
-    "F-18@linux-x64/py3.13/node22 (exam run 44814691202)"
+    "F-18@linux-x64/py3.13/node22 (exam run 44816009535)"
    ]
   }
  ],
  "installed": {
-  "44814691202": {
+  "44816009535": {
    "ok": true,
    "source": "ci-artifact",
    "platform": "linux-x64",
    "artifact": "engine-artifact",
-   "artifact_id": "14661813649",
-   "release_run": "44804076830",
-   "release_commit": "7e36c395b31980dea0b1542ef5aac3f2852e5435",
-   "head_branch": "claude/packages",
-   "event": "workflow_dispatch",
-   "selected": "requested",
-   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r91.7e36c39-linux-x86_64",
-   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r91.7e36c39-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+   "artifact_id": "14668186289",
+   "release_run": "44811997318",
+   "release_commit": "f84dde74f3a415acc4678b2e0d6f71a03a2c9903",
+   "head_branch": "claude/release-1",
+   "event": "push",
+   "selected": "newest-trunk",
+   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r94.f84dde7-linux-x86_64",
+   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r94.f84dde7-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
    "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.13.18);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
    "sha256": {
-    "fenvix-engine-0.1.0-r91.7e36c39-linux-x86_64.tar.gz": "1eb3980b27a94e04d63a922815752900ccbcf7c98a7acb16763c5bdb7557ebd8",
-    "fenvix-engine-0.1.0-r91.7e36c39-linux-x86_64.tar.gz.sha256": "2dc412567261b97429cbcedefa616376bbd362c15094124b3d32cbe527aea805",
+    "fenvix-engine-0.1.0-r94.f84dde7-linux-x86_64.tar.gz": "d392d8300772275de7078f19b41ffc8e4c3ea465015dfd04c32753a4974c1464",
+    "fenvix-engine-0.1.0-r94.f84dde7-linux-x86_64.tar.gz.sha256": "821eb4d954d610ccbca3f3dc21bb40d8e9917905424399bec3b6f4862a487d2d",
     "install_test.py": "56e887569766516d6627f2659bab3a3a9a26ebf89c9fda90dbccc42cc527980c",
-    "fenvix-engine-0.1.0-r91.7e36c39-linux-x86_64/VERSION.json": "1cc2a707a36ec86171d27b998bab5e82473b5dde8ecbdcdb444eccb8a22cbfaa"
+    "fenvix-engine-0.1.0-r94.f84dde7-linux-x86_64/VERSION.json": "f27051de298494ccb7a8d293d5fb10c9accb2552ac3675ef503ef005ce3e54d2"
    }
   }
  },
@@ -166,25 +166,25 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "F-18 linux-x64 py3.13 node22",
-     "job_id": 136563014685,
-     "run_id": "44814691202",
-     "seconds": 36,
+     "job_id": 136564526814,
+     "run_id": "44816009535",
+     "seconds": 39,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261116.133.1"
+      "image_version": "20261116.376.1"
      },
      "artifact": {
       "ok": true,
-      "release_run": "44804076830",
-      "release_commit": "7e36c395b31980dea0b1542ef5aac3f2852e5435",
-      "head_branch": "claude/packages",
-      "event": "workflow_dispatch",
-      "selected": "requested",
+      "release_run": "44811997318",
+      "release_commit": "f84dde74f3a415acc4678b2e0d6f71a03a2c9903",
+      "head_branch": "claude/release-1",
+      "event": "push",
+      "selected": "newest-trunk",
       "artifact": "engine-artifact",
-      "artifact_id": "14661813649"
+      "artifact_id": "14668186289"
      }
     }
    },
@@ -195,7 +195,7 @@
      "ok": true,
      "expected": "after the install `fenvix` is on PATH",
      "observed": "fenvix on PATH: /home/runner/work/_temp/fenvix/bin/fenvix",
-     "run_id": "44814691202",
+     "run_id": "44816009535",
      "job": "F-18 linux-x64 py3.13 node22"
     },
     {
@@ -204,7 +204,7 @@
      "ok": false,
      "expected": "`fenvix --help` lists python, node, repro, explore, replay, verify, version",
      "observed": "rc=0; commands missing from --help: ['python', 'node']",
-     "run_id": "44814691202",
+     "run_id": "44816009535",
      "job": "F-18 linux-x64 py3.13 node22"
     },
     {
@@ -213,7 +213,7 @@
      "ok": true,
      "expected": "each subcommand exits 0",
      "observed": "exit codes {'repro': 0, 'explore': 0, 'replay': 0, 'verify': 0, 'version': 0}",
-     "run_id": "44814691202",
+     "run_id": "44816009535",
      "job": "F-18 linux-x64 py3.13 node22"
     },
     {
@@ -222,7 +222,7 @@
      "ok": true,
      "expected": "`fenvix detect` names the language",
      "observed": "python project -> ['.', 'python', 'pytest']; node project -> ['.', 'node', 'vitest']",
-     "run_id": "44814691202",
+     "run_id": "44816009535",
      "job": "F-18 linux-x64 py3.13 node22"
     },
     {
@@ -231,7 +231,7 @@
      "ok": false,
      "expected": "`fenvix verify` reads Python and Node traces",
      "observed": "fenvix verify on Python traces rc=1, on Node traces rc=1",
-     "run_id": "44814691202",
+     "run_id": "44816009535",
      "job": "F-18 linux-x64 py3.13 node22"
     }
    ],
