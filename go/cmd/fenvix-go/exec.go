@@ -159,6 +159,9 @@ func cmdExec(args []string) int {
 		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore, sess.Shim,
 		sess.VProc1Stat, sess.ClockMode)
 	childEnv = append(childEnv, "FENVIX_GO_DET="+cfg, "FENVIX_GO_FDS=3,4,5")
+	if sess.VirtualPid > 0 {
+		childEnv = append(childEnv, "FENVIX_GO_VPID="+strconv.Itoa(sess.VirtualPid))
+	}
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)
 	}

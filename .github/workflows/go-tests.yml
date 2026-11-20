@@ -34,7 +34,7 @@ jobs:
           go test -count=1 -v ./... 2>&1 | tee /tmp/go-test.log | grep -E "^(=== RUN|--- |ok|FAIL|PASS)|native outcomes|failing in some seed"
           code=${PIPESTATUS[0]}
           # the messages of failed tests (the filter above drops them)
-          if [ "$code" != 0 ]; then grep -E -B1 -A12 -- "--- FAIL" /tmp/go-test.log | head -400; fi
+          if [ "$code" != 0 ]; then grep -E -B25 -A3 -- "^\s*--- FAIL" /tmp/go-test.log | head -600; fi
           exit $code
       - name: --det entropy on Go 1.22-1.26 (review-r025b-det fixture, toolchain switching)
         if: matrix.go == '1.26'
