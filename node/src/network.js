@@ -1,20 +1,25 @@
 'use strict';
-// Closed network with optional record/replay.
+// Closed network with optional record/replay, and the bytes of every connection in the fingerprint.
 //
-// * Connections (`net.Socket#connect`, hence `net.connect`, `http`, `https`,
-//   `tls.connect`, global `fetch` and `undici`) and DNS lookups (`dns.lookup`,
-//   `dns.resolve*`, `dns.promises.*`) towards non-local hosts fail with
-//   `NetworkBlockedError` (code ECONNREFUSED; ENOTFOUND for DNS). Loopback,
-//   Unix sockets and hosts given with `--det-allow-host` are allowed. Local
-//   HTTP(S) proxies from the `*_PROXY` variables count as external.
-// * `--det-record`: external connections are allowed and their byte streams
-//   are recorded per test into the cassette (plaintext above TLS, recorded at
-//   the `tls.connect` level), shared format with the Python shell.
-// * When a cassette exists and `--det-record` is not given, recorded
-//   connections are replayed: the socket is transparently connected to a
-//   local Unix socket served by a replay server that plays the recorded
-//   conversation (a TLS server with a throwaway certificate for TLS
-//   connections; certificate checks are disabled for that socket only).
+// * Connections (`net.Socket#connect`, hence `net.connect`, `http`, `https`, `http2`, `tls.connect`, global `fetch`
+//   and `undici`) and DNS lookups (`dns.lookup`, `dns.resolve*`, `dns.promises.*`) towards non-local hosts fail with
+//   `NetworkBlockedError` (code ECONNREFUSED; ENOTFOUND for DNS). Loopback, Unix sockets and hosts given with
+//   `--det-allow-host` are allowed. Local HTTP(S) proxies from the `*_PROXY` variables count as external.
+// * `--det-record`: external connections are allowed and their byte streams are recorded into the cassette
+//   (plaintext above TLS, recorded at the `tls.connect` level), shared format with the Python shell: per test, and
+//   for connections made outside a test body under `<file>::<setup>` (module level, beforeAll, afterAll) or
+//   `<startup>` (globalSetup, in the runner's main process) (audit G-1419). Each recorded connection also carries its
+//   recording time (`recorded_at`) and its negotiated ALPN protocol (`alpn`): extra fields the Rust core ignores.
+// * When a cassette exists and `--det-record` is not given, recorded connections are replayed: the socket is
+//   transparently connected to a local Unix socket served by a replay server that plays the recorded conversation
+//   (a TLS server with a certificate generated per process, negotiating the recorded ALPN protocol, `h2` included;
+//   certificate checks are disabled for that socket only). `--det-cassette-max-age=D` refuses recordings older than D
+//   days (G-1418, G-1420, G-2165).
+// * Every connection of a test that Level 0 lets through (loopback and Unix sockets, allowed hosts, recorded and
+//   replayed ones) is an event: `net.connect` when it opens and, when the test ends, `net.stream` with the length and
+//   digest of each direction of what the test exchanged on it (plaintext above TLS; loopback ports from the
+//   ephemeral range normalised), so a different answer is a different fingerprint (G-1415, G-1416, G-1417).
+//   Connections outside test bodies are summarised in a `net.setup` event at the start of every later test.
 
 const net = require('node:net');
 const tls = require('node:tls');
@@ -22,7 +27,9 @@ const dns = require('node:dns');
 const os = require('node:os');
 const path = require('node:path');
 const fs = require('node:fs');
+const nodeCrypto = require('node:crypto');
 const native = require('./native');
+const sites = require('./sites');
 const { STATE } = require('./state');
 
 const real = {
@@ -30,15 +37,18 @@ const real = {
   tlsConnect: tls.connect,
   lookup: dns.lookup,
   pLookup: dns.promises.lookup,
+  Date: globalThis.Date,
 };
 const RESOLVE_FNS = ['resolve', 'resolve4', 'resolve6', 'resolveAny', 'resolveCname', 'resolveMx', 'resolveNs',
   'resolveTxt', 'resolveSrv', 'resolvePtr', 'resolveNaptr', 'resolveSoa', 'resolveCaa'];
+const DAY_MS = 86400000;
+const PID = process.pid; // read once here: a test's reads of process.pid are events (src/facts.js)
 
 class NetworkBlockedError extends Error {
-  constructor(what, code = 'ECONNREFUSED') {
-    const hint = POLICY && POLICY.mode === 'replay'
+  constructor(what, code = 'ECONNREFUSED', why = null) {
+    const hint = why || (POLICY && POLICY.mode === 'replay'
       ? 'no recording for it in this test: re-run with --det-record'
-      : 'use --det-record to record real responses, or --det-allow-host to allow it';
+      : 'use --det-record to record real responses, or --det-allow-host to allow it');
     super(`detjs: network access to ${what} blocked (Level 0 closes the network; localhost is allowed); ${hint}`);
     this.name = 'NetworkBlockedError';
     this.code = code;
@@ -73,29 +83,60 @@ function proxyEndpoints() {
   return out;
 }
 
+// Cassette file (JSON): the Rust core reads and writes the conversations; detjs adds per connection `recorded_at`
+// (ISO time of the recording) and `alpn` (negotiated ALPN protocol, false when none), which the core ignores.
+function readCassetteJson(file) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return null; }
+}
+
+/** Staleness of a cassette: { total, unknown, oldest: {key, days} | null, stale: [keys] } for `maxAgeDays`. */
+function cassetteAges(file, maxAgeDays = 0, now = real.Date.now()) {
+  const j = readCassetteJson(file);
+  const out = { total: 0, unknown: 0, oldest: null, stale: [] };
+  if (!j || !j.tests) return out;
+  for (const key of Object.keys(j.tests).sort()) {
+    let staleKey = false;
+    for (const c of j.tests[key] || []) {
+      out.total++;
+      const t = c && typeof c.recorded_at === 'string' ? Date.parse(c.recorded_at) : NaN;
+      if (Number.isNaN(t)) { out.unknown++; if (maxAgeDays > 0) staleKey = true; continue; }
+      const days = (now - t) / DAY_MS;
+      if (!out.oldest || days > out.oldest.days) out.oldest = { key, days };
+      if (maxAgeDays > 0 && days > maxAgeDays) staleKey = true;
+    }
+    if (staleKey) out.stale.push(key);
+  }
+  return out;
+}
+
 class Policy {
   constructor(cfg) {
     this.mode = cfg.netMode; // block | record | replay
     this.allow = new Set(cfg.allowHosts);
     this.proxies = proxyEndpoints();
     this.cassettePath = cfg.cassette;
+    this.maxAgeDays = Number(cfg.cassetteMaxAge) || 0;
     this.recording = this.mode === 'record' ? new native.Cassette() : null;
+    this.recMeta = new Map(); // key -> [{recorded_at, alpn}] by connection index (record mode)
     this.source = null;
+    this.srcMeta = null; // tests of the cassette file as JSON (replay mode): recorded_at, alpn
     if (this.mode === 'replay' && this.cassettePath && fs.existsSync(this.cassettePath)) {
       this.source = native.Cassette.load(this.cassettePath);
+      const j = readCassetteJson(this.cassettePath);
+      this.srcMeta = (j && j.tests) || {};
     } else if (this.mode === 'replay') {
       this.mode = 'block';
     }
     this.hostOfIp = new Map();
     this.fakeIpOf = new Map();
     this.hostOfFake = new Map();
-    this.counters = new Map();
+    this.counters = new Map(); // key -> Map(host:port -> n)
     this.recordedTests = new Set();
     this.testSockets = new Set();
   }
 
-  startTest() {
-    this.counters = new Map();
+  startTest(id) {
+    this.counters.delete(id);
   }
 
   /**
@@ -122,17 +163,25 @@ class Policy {
   }
 
   hasRecording(host) {
-    if (!this.source || STATE.testId === null) return false;
-    const n = this.source.count(STATE.testId);
-    for (let i = 0; i < n; i++) if (this.source.info(STATE.testId, i).host === host) return true;
+    if (!this.source) return false;
+    const key = currentKey();
+    const n = this.source.count(key);
+    for (let i = 0; i < n; i++) if (this.source.info(key, i).host === host) return true;
     return false;
   }
 
-  nth(host, port) {
+  nth(key, host, port) {
+    let m = this.counters.get(key);
+    if (!m) { m = new Map(); this.counters.set(key, m); }
     const k = `${host}:${port}`;
-    const n = this.counters.get(k) || 0;
-    this.counters.set(k, n + 1);
+    const n = m.get(k) || 0;
+    m.set(k, n + 1);
     return n;
+  }
+
+  meta(key, idx) {
+    const conns = this.srcMeta && this.srcMeta[key];
+    return (conns && conns[idx]) || {};
   }
 
   fakeIp(host) {
@@ -149,54 +198,261 @@ class Policy {
 
 let POLICY = null;
 let inTlsConnect = 0;
+let MAIN = false; // the runner's main process (globalSetup): only external connections are recorded or replayed
 
-// Recording -------------------------------------------------------------------
+// Where a connection belongs: the running test, else the current test file's set-up, else the start-up.
+let FILE_KEY = null;
+const STARTUP_KEY = '<startup>';
+function currentKey() {
+  if (STATE.testId !== null) return STATE.testId;
+  return FILE_KEY || STARTUP_KEY;
+}
+
+// Byte streams in the fingerprint (G-1415, G-1416, G-1417) ------------------------------------------------------
+// Each tracked connection keeps, per owner (the test, or the set-up / start-up key, running when the bytes flowed),
+// a running SHA-256 of each direction. Loopback ports from the ephemeral range (listen(0)) change from run to run
+// and appear in the bytes (`Host: 127.0.0.1:41234`): they are replaced by `<port>` in what is digested.
+const EPHEMERAL_MIN = 32768;
+const BUCKETS = new Map(); // owner key -> { list: [entry] }
+let STARTUP_FILE = null; // main process: where the start-up summary is published for the test processes
+let STARTUP_SUMMARY = ''; // test processes: the start-up summary read at each file start
+let streamSerial = 0;
+
+function bucketOf(key) {
+  let b = BUCKETS.get(key);
+  if (!b) { b = { list: [] }; BUCKETS.set(key, b); }
+  return b;
+}
+
+function newDir() { return { h: nodeCrypto.createHash('sha256'), n: 0 }; }
+
+class Stream {
+  constructor(label, site, normPort) {
+    this.id = streamSerial++;
+    this.label = label;
+    this.site = site;
+    this.port = normPort ? String(normPort) : null;
+    this.portRe = normPort ? new RegExp(`(?<![0-9])${normPort}(?![0-9])`, 'g') : null;
+    this.tail = { send: '', recv: '' };
+    this.entry = null;
+    this.entryKey = null;
+    this.frozen = false;
+  }
+
+  entryFor(key) {
+    if (this.entry && this.entryKey === key) return this.entry;
+    if (this.entry) this.flushTails(this.entry);
+    const e = { stream: this, send: newDir(), recv: newDir() };
+    bucketOf(key).list.push(e);
+    this.entry = e;
+    this.entryKey = key;
+    return e;
+  }
+
+  norm(text) { return this.portRe ? text.replace(this.portRe, '<port>') : text; }
+
+  add(dir, buf) {
+    if (this.frozen || !buf || !buf.length) return;
+    const e = this.entryFor(currentKey());
+    const d = e[dir];
+    d.n += buf.length;
+    if (!this.portRe) { d.h.update(buf); return; }
+    // hold back a trailing run of digits (a port may continue in the next chunk)
+    const s = this.tail[dir] + buf.toString('latin1');
+    let cut = s.length;
+    while (cut > 0 && cut > s.length - 32 && s.charCodeAt(cut - 1) >= 48 && s.charCodeAt(cut - 1) <= 57) cut--;
+    this.tail[dir] = s.slice(cut);
+    if (cut > 0) d.h.update(this.norm(s.slice(0, cut)), 'latin1');
+  }
+
+  flushTails(e) {
+    for (const dir of ['send', 'recv']) {
+      if (this.tail[dir]) { e[dir].h.update(this.norm(this.tail[dir]), 'latin1'); this.tail[dir] = ''; }
+    }
+  }
+}
+
+function entryValue(e) {
+  if (e.stream.entry === e) e.stream.flushTails(e);
+  const dig = (d) => `${d.n}:${d.h.copy().digest('hex').slice(0, 16)}`;
+  return `${e.stream.label} send=${dig(e.send)} recv=${dig(e.recv)}`;
+}
+
+/** The test ends: one `net.stream` event per connection it used, in the order of first use. */
+function emitTestStreams(id) {
+  const b = BUCKETS.get(id);
+  if (!b) return;
+  BUCKETS.delete(id);
+  for (const e of b.list) {
+    STATE.recordAt('net', 'net.stream', e.stream.site, entryValue(e));
+    if (e.stream.entry === e) { e.stream.entry = null; e.stream.entryKey = null; }
+  }
+}
+
+function bucketSummary(key) {
+  const b = BUCKETS.get(key);
+  if (!b || !b.list.length) return '';
+  const vals = b.list.map(entryValue);
+  return `${vals.length}:${native.digest(Buffer.from(vals.join('\n'))).slice(0, 16)}`;
+}
+
+/** A test starts: what the set-up of its file and the start-up exchanged so far is part of its inputs. */
+function emitSetup() {
+  const file = FILE_KEY ? bucketSummary(FILE_KEY) : '';
+  const startup = STARTUP_SUMMARY || bucketSummary(STARTUP_KEY);
+  if (file || startup) STATE.recordAt('net', 'net.setup', '<setup>', `file=${file || '-'} startup=${startup || '-'}`);
+}
+
+function publishStartup() {
+  if (!STARTUP_FILE) return;
+  try { fs.writeFileSync(STARTUP_FILE, bucketSummary(STARTUP_KEY)); } catch { /* run directory gone */ }
+}
+
+// Socket hooks: one wrapper of `push` (received bytes) and `_writeGeneric` (sent bytes) per socket, shared by the
+// cassette recording and the stream digests.
+const HOOKS = Symbol('detjs.netHooks');
+const TRACKED = Symbol('detjs.netStream');
 function toBuf(chunk, enc) {
   if (Buffer.isBuffer(chunk)) return chunk;
   if (ArrayBuffer.isView(chunk)) return Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
   return Buffer.from(String(chunk), typeof enc === 'string' && enc !== 'buffer' ? enc : 'utf8');
 }
 
-function hookRecording(sock, testId, idx) {
-  const cassette = POLICY.recording;
+function hooks(sock) {
+  if (sock[HOOKS]) return sock[HOOKS];
+  const h = { send: [], recv: [] };
+  Object.defineProperty(sock, HOOKS, { value: h });
   const origPush = sock.push;
   sock.push = function push(chunk, enc) {
-    if (chunk !== null && chunk !== undefined && chunk.length) cassette.append(testId, idx, 'recv', toBuf(chunk, enc));
+    if (chunk !== null && chunk !== undefined && chunk.length) {
+      const b = toBuf(chunk, enc);
+      for (const f of h.recv) f(b);
+    }
     return origPush.call(this, chunk, enc);
   };
   const origWrite = sock._writeGeneric;
   sock._writeGeneric = function _writeGeneric(writev, data, encoding, cb) {
     if (!this.connecting) {
+      const each = (b) => { if (b.length) for (const f of h.send) f(b); };
       if (writev) {
-        for (const c of data) {
-          const chunk = c && c.chunk !== undefined ? c.chunk : c;
-          const b = toBuf(chunk, c && c.encoding);
-          if (b.length) cassette.append(testId, idx, 'send', redact(b));
-        }
+        for (const c of data) each(toBuf(c && c.chunk !== undefined ? c.chunk : c, c && c.encoding));
       } else {
-        const b = toBuf(data, encoding);
-        if (b.length) cassette.append(testId, idx, 'send', redact(b));
+        each(toBuf(data, encoding));
       }
     }
     return origWrite.call(this, writev, data, encoding, cb);
   };
+  // HTTP/2 sessions read and write a stream-base handle natively, below `push` and `_writeGeneric`: for http2 the
+  // handle reports that it is not one, so the session runs over the socket's JavaScript stream instead (G-1420).
+  // Only http2 is told so (TLS asserts the property on the handles it wraps).
+  const handle = sock._handle;
+  if (handle && !Object.prototype.hasOwnProperty.call(handle, 'isStreamBase')) {
+    try {
+      Object.defineProperty(handle, 'isStreamBase', {
+        configurable: true,
+        get() {
+          const lim = Error.stackTraceLimit;
+          Error.stackTraceLimit = 4;
+          let st;
+          try { st = new Error().stack || ''; } finally { Error.stackTraceLimit = lim; }
+          if (!st.includes('internal/http2/core')) return true;
+          patchJsStreamSocket();
+          return false;
+        },
+      });
+    } catch { /* keep the native path */ }
+  }
+  return h;
 }
 
-function startRecording(sock, host, port, isTls) {
-  const testId = STATE.testId;
-  const idx = POLICY.recording.openConnection(testId, host, Number(port));
-  if (isTls) POLICY.recording.setTls(testId, idx);
-  POLICY.recordedTests.add(testId);
-  hookRecording(sock, testId, idx);
-  POLICY.testSockets.add(sock);
+/**
+ * The JavaScript stream http2 then wraps the socket in (`JSStreamSocket`) reports what the socket is: encrypted, its
+ * ALPN protocol, and for a TLS socket still in its handshake a pending connection whose 'connect' is the socket's
+ * 'secureConnect' (so the session is set up once the protocol is negotiated, as over a native TLS handle).
+ */
+let JSS_PATCHED = false;
+function patchJsStreamSocket() {
+  if (JSS_PATCHED) return;
+  JSS_PATCHED = true;
+  let P;
+  try {
+    const { Duplex } = require('node:stream');
+    const d = new Duplex({ read() {}, write(_c, _e, cb) { cb(); } });
+    const t = new tls.TLSSocket(d);
+    P = Object.getPrototypeOf(t._handle._parentWrap);
+    t.destroy();
+    d.destroy();
+  } catch { return; }
+  if (!P || !(P instanceof net.Socket)) return;
+  const ours = (w) => w.stream && w.stream[HOOKS] && w.stream instanceof tls.TLSSocket;
+  const def = (name, get) => {
+    if (Object.prototype.hasOwnProperty.call(P, name)) return;
+    Object.defineProperty(P, name, {
+      configurable: true,
+      get() { return ours(this) ? get(this, this.stream) : undefined; },
+      set(v) { Object.defineProperty(this, name, { value: v, writable: true, configurable: true, enumerable: true }); },
+    });
+  };
+  def('encrypted', () => true);
+  def('alpnProtocol', (_w, s) => s.alpnProtocol);
+  def('secureConnecting', (w, s) => {
+    if (s._secureEstablished || s.destroyed) return false;
+    if (!w.__detjsSecure) {
+      Object.defineProperty(w, '__detjsSecure', { value: true });
+      s.once('secureConnect', () => w.emit('connect'));
+    }
+    return true;
+  });
+}
+
+function siteHere() {
+  if (!STATE.config || !STATE.config.sites) return '';
+  return STATE.quiet(() => sites.resolve());
+}
+
+/** Track the bytes of `sock` under `label` (site: where it was opened). */
+function track(sock, label, site, normPort = null) {
+  if (!sock || sock[TRACKED]) return null;
+  const st = new Stream(label, site === null || site === undefined ? '' : site, normPort);
+  Object.defineProperty(sock, TRACKED, { value: st });
+  const h = hooks(sock);
+  const main = MAIN;
+  h.send.push((b) => { st.add('send', b); if (main) publishStartup(); });
+  h.recv.push((b) => { st.add('recv', b); if (main) publishStartup(); });
+  return st;
+}
+
+function portLabel(port) {
+  const p = Number(port);
+  return p >= EPHEMERAL_MIN ? '<port>' : String(port);
+}
+
+// Recording -------------------------------------------------------------------
+function startRecording(sock, host, port, isTls, site) {
+  const key = currentKey();
+  const idx = POLICY.recording.openConnection(key, host, Number(port));
+  if (isTls) POLICY.recording.setTls(key, idx);
+  POLICY.recordedTests.add(key);
+  let metas = POLICY.recMeta.get(key);
+  if (!metas) { metas = []; POLICY.recMeta.set(key, metas); }
+  const meta = { recorded_at: new real.Date().toISOString(), alpn: false };
+  metas[idx] = meta;
+  if (isTls) sock.once('secureConnect', () => { meta.alpn = sock.alpnProtocol || false; });
+  const cassette = POLICY.recording;
+  const h = hooks(sock);
+  h.recv.push((b) => cassette.append(key, idx, 'recv', b));
+  h.send.push((b) => cassette.append(key, idx, 'send', redact(b)));
+  track(sock, `${host}:${port}`, site);
+  if (key === STATE.testId) POLICY.testSockets.add(sock);
   STATE.record('net', isTls ? 'tls.connect' : 'net.connect', `${host}:${port} record#${idx}`);
 }
 
 // Replay ------------------------------------------------------------------------
 let pipeCounter = 0;
+const REPLAY_PIPES = new Map(); // path of a replay server -> { label, site }
 
 function pipePath() {
-  const name = `detjs-${process.pid}-${pipeCounter++}-${Date.now().toString(36)}`;
+  const name = `detjs-replay-${PID}-${pipeCounter++}-${real.Date.now().toString(36)}`;
   return process.platform === 'win32' ? `\\\\?\\pipe\\${name}` : path.join(os.tmpdir(), `${name}.sock`);
 }
 
@@ -227,7 +483,20 @@ function redact(buf) {
   return Buffer.from(lines.join('\r\n') + (end < 0 ? '' : text.slice(end)), 'latin1');
 }
 
-function startReplayServer(segments, isTls, label) {
+const H2_PREFACE = Buffer.from('PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n', 'latin1');
+
+/**
+ * The ALPN protocol the replay server negotiates: the recorded one; for a recording without it (older cassettes),
+ * `h2` when the recorded client bytes start with the HTTP/2 preface. None: the server ignores the client's offer.
+ */
+function replayAlpn(meta, segments) {
+  if (typeof meta.alpn === 'string' && meta.alpn) return meta.alpn;
+  if (meta.alpn === false) return null;
+  const first = segments.find((s) => s.dir === 'send');
+  return first && first.data.subarray(0, H2_PREFACE.length).equals(H2_PREFACE) ? 'h2' : null;
+}
+
+function startReplayServer(segments, isTls, label, alpn) {
   const p = pipePath();
   const handler = (conn) => {
     let i = 0;
@@ -272,27 +541,46 @@ function startReplayServer(segments, isTls, label) {
     conn.on('error', () => {});
     step();
   };
-  const server = isTls ? tls.createServer(require('./replay-cert'), handler) : net.createServer(handler);
+  let server;
+  if (isTls) {
+    const opts = { ...require('./selfcert').replayCert() };
+    // the recorded protocol when the client offers it (HTTP/2, gRPC); no ALPN when the recording had none
+    if (alpn) opts.ALPNCallback = ({ protocols }) => (protocols.includes(alpn) ? alpn : undefined);
+    server = tls.createServer(opts, handler);
+  } else {
+    server = net.createServer(handler);
+  }
   server.on('error', () => {});
   server.listen(p);
   server.unref();
   return p;
 }
 
+/** The recording to replay for the next connection of the current owner to host:port; 'stale' when too old. */
 function findReplay(host, port, wantTls) {
-  if (!POLICY.source || STATE.testId === null) return null;
-  const nth = POLICY.nth(host, port);
-  const idx = POLICY.source.find(STATE.testId, host, Number(port), nth);
+  if (!POLICY.source) return null;
+  const key = currentKey();
+  const nth = POLICY.nth(key, host, port);
+  const idx = POLICY.source.find(key, host, Number(port), nth);
   if (idx === null || idx === undefined) return null;
-  const info = POLICY.source.info(STATE.testId, idx);
+  const info = POLICY.source.info(key, idx);
   if (info.tls !== wantTls) return null;
-  return { idx, segments: POLICY.source.segments(STATE.testId, idx) };
+  const meta = POLICY.meta(key, idx);
+  if (POLICY.maxAgeDays > 0) {
+    const t = typeof meta.recorded_at === 'string' ? Date.parse(meta.recorded_at) : NaN;
+    const days = Number.isNaN(t) ? null : (real.Date.now() - t) / DAY_MS;
+    if (days === null || days > POLICY.maxAgeDays) {
+      return { stale: true, idx, why: `the recording is ${days === null ? 'of unknown age' : `${Math.floor(days)} days old`} (--det-cassette-max-age=${POLICY.maxAgeDays}): re-record with --det-record` };
+    }
+  }
+  const segments = POLICY.source.segments(key, idx);
+  return { idx, segments, alpn: wantTls ? replayAlpn(meta, segments) : null };
 }
 
 // net.Socket#connect -------------------------------------------------------------
-function blockSocket(sock, host, port) {
-  STATE.record('net', 'net.connect', `${host}:${port} blocked`);
-  const err = new NetworkBlockedError(`${host}:${port}`);
+function blockSocket(sock, host, port, why = null) {
+  STATE.record('net', 'net.connect', `${host}:${port} ${why ? 'stale' : 'blocked'}`);
+  const err = new NetworkBlockedError(`${host}:${port}`, 'ECONNREFUSED', why);
   err.address = host;
   err.port = Number(port);
   sock.connecting = true; // writes issued now are queued, then fail with err
@@ -306,10 +594,31 @@ function connect(...args) {
   const normalized = Array.isArray(args[0]) ? args[0] : net._normalizeArgs(args);
   const options = normalized[0] || {};
   const cb = normalized[1];
-  if (options.path || options.port === undefined) return real.connect.apply(this, args);
+  if (options.path) {
+    const r = real.connect.apply(this, args);
+    const rp = REPLAY_PIPES.get(String(options.path));
+    if (rp) track(this, rp.label, rp.site);
+    else if (!MAIN) localConnect(this, `unix:${sites.normPath(String(options.path))}`, null);
+    return r;
+  }
+  if (options.port === undefined) return real.connect.apply(this, args);
   const rawHost = options.host || 'localhost';
   const port = options.port;
-  if (!POLICY.external(rawHost, port)) return real.connect.apply(this, args);
+  if (!POLICY.external(rawHost, port)) {
+    const r = real.connect.apply(this, args);
+    if (isLocalName(rawHost)) {
+      if (!MAIN) localConnect(this, `${rawHost}:${portLabel(port)}`, Number(port) >= EPHEMERAL_MIN ? Number(port) : null);
+    } else {
+      // a host allowed with --det-allow-host: live, in the fingerprint (G-1416)
+      const host = POLICY.hostname(rawHost);
+      const site = siteHere();
+      if (site !== null) {
+        STATE.record('net', this instanceof tls.TLSSocket ? 'tls.connect' : 'net.connect', `${host}:${port} allowed`);
+        track(this, `${host}:${port}`, site);
+      }
+    }
+    return r;
+  }
   const host = POLICY.hostname(rawHost);
   const isTls = this instanceof tls.TLSSocket;
   // A mocking library that intercepts this socket (nock >= 14 / @mswjs/interceptors: an own `connect` on the
@@ -324,22 +633,36 @@ function connect(...args) {
     return real.connect.apply(this, args);
   }
   if (POLICY.mode === 'record') {
-    if (inTlsConnect || isTls || STATE.testId === null) return real.connect.apply(this, args);
+    if (inTlsConnect || isTls) return real.connect.apply(this, args); // recorded at the TLS level (tls.connect)
+    const site = siteHere();
     const r = real.connect.apply(this, args);
-    startRecording(this, host, port, false);
+    startRecording(this, host, port, false, site);
     return r;
   }
   if (POLICY.mode === 'replay' && !isTls) {
     const rep = findReplay(host, port, false);
+    if (rep && rep.stale) return blockSocket(this, host, port, rep.why);
     if (rep) {
       STATE.record('net', 'net.connect', `${host}:${port} replay#${rep.idx}`);
-      const p = startReplayServer(rep.segments, false, `${host}:${port}#${rep.idx}`);
+      const p = startReplayServer(rep.segments, false, `${host}:${port}#${rep.idx}`, null);
+      const site = siteHere();
       const { host: _h, port: _p, lookup: _l, family: _f, hints: _hi, localAddress: _la, localPort: _lp, autoSelectFamily: _a, ...rest } = options;
-      POLICY.testSockets.add(this);
-      return real.connect.call(this, { ...rest, path: p }, cb);
+      if (currentKey() === STATE.testId) POLICY.testSockets.add(this);
+      const r = real.connect.call(this, { ...rest, path: p }, cb);
+      track(this, `${host}:${port}`, site);
+      return r;
     }
   }
-  return blockSocket(this, host, port);
+  return blockSocket(this, host, port, isTls ? STALE_WHY : null);
+}
+let STALE_WHY = null;
+
+/** A loopback or Unix-socket connection of a test (or of its file's set-up): an event, and its bytes digested. */
+function localConnect(sock, label, normPort) {
+  const site = siteHere();
+  if (site === null) return; // the runner's own connection
+  STATE.record('net', sock instanceof tls.TLSSocket ? 'tls.connect' : 'net.connect', `${label} local`);
+  track(sock, label, site, normPort);
 }
 
 /**
@@ -392,25 +715,43 @@ function tlsArgs(args) {
 function tlsConnect(...args) {
   if (POLICY === null) return real.tlsConnect.apply(this, args);
   const { options, cb } = tlsArgs(args);
-  if (options.socket || options.path || options.port === undefined) return callTls(this, args);
+  if (options.socket) {
+    // TLS over a connection already open (STARTTLS): the plaintext above TLS is tracked from here on
+    const sock = callTls(this, args);
+    const st = options.socket[TRACKED];
+    if (st) {
+      st.frozen = true;
+      track(sock, `${st.label}+tls`, st.site, st.port ? Number(st.port) : null);
+    }
+    return sock;
+  }
+  if (options.path || options.port === undefined) return callTls(this, args);
   const rawHost = options.host || 'localhost';
   const port = options.port;
   if (!POLICY.external(rawHost, port)) return callTls(this, args);
   const host = POLICY.hostname(rawHost);
-  if (POLICY.mode === 'record' && STATE.testId !== null) {
+  if (POLICY.mode === 'record') {
+    const site = siteHere();
     const sock = callTls(this, args);
-    startRecording(sock, host, port, true);
+    startRecording(sock, host, port, true, site);
     return sock;
   }
   if (POLICY.mode === 'replay') {
     const rep = findReplay(host, port, true);
+    if (rep && rep.stale) {
+      // the TLS socket connects through net.Socket#connect, which refuses it with this reason
+      STALE_WHY = rep.why;
+      try { return callTls(this, args); } finally { STALE_WHY = null; }
+    }
     if (rep) {
       STATE.record('net', 'tls.connect', `${host}:${port} replay#${rep.idx}`);
-      const p = startReplayServer(rep.segments, true, `${host}:${port}#${rep.idx}`);
+      const p = startReplayServer(rep.segments, true, `${host}:${port}#${rep.idx}`, rep.alpn);
+      REPLAY_PIPES.set(p, { label: `${host}:${port}`, site: siteHere() });
       const { host: _h, port: _p, lookup: _l, family: _f, ...rest } = options;
       const servername = options.servername || (net.isIP(host) ? undefined : host);
+      // certificate checks are disabled for this replayed socket only (G-2165)
       const sock = callTls(this, [{ ...rest, path: p, servername, rejectUnauthorized: false, checkServerIdentity: () => undefined }, ...(cb ? [cb] : [])]);
-      POLICY.testSockets.add(sock);
+      if (currentKey() === STATE.testId) POLICY.testSockets.add(sock);
       return sock;
     }
   }
@@ -536,11 +877,14 @@ function dnsCheckNoFake(hostname) {
 
 // Installation -------------------------------------------------------------------
 function installProcess(patcher, cfg) {
-  if (POLICY === null) {
-    POLICY = new Policy(cfg);
-    STATE.onTestStart.push(() => POLICY && POLICY.startTest());
-    STATE.onTestEnd.push(() => POLICY && POLICY.endTest());
+  if (POLICY === null) POLICY = new Policy(cfg);
+  if (!STATE.__netHooked) {
+    STATE.__netHooked = true;
+    STATE.onTestStart.push((id) => { if (POLICY) { POLICY.startTest(id); emitSetup(); } });
+    STATE.onTestEnd.push((id) => { emitTestStreams(id); if (POLICY) POLICY.endTest(); });
   }
+  MAIN = false;
+  installHttpDate(patcher);
   patcher.set(net.Socket.prototype, 'connect', connect);
   installDgram(patcher);
   patcher.set(tls, 'connect', tlsConnect);
@@ -607,15 +951,35 @@ function installDgram(patcher) {
   });
 }
 
-/** Merge what this process recorded into the cassette file; returns the number of tests. */
+/**
+ * Merge what this process recorded into the cassette file; returns the number of tests (keys) recorded. The merge
+ * is done on the JSON so that the `recorded_at` and `alpn` fields of the entries kept are preserved.
+ */
 function saveRecordings() {
   if (!POLICY || POLICY.mode !== 'record' || !POLICY.cassettePath || !POLICY.recordedTests.size) return 0;
-  const target = fs.existsSync(POLICY.cassettePath) ? native.Cassette.load(POLICY.cassettePath) : new native.Cassette();
-  for (const t of POLICY.recordedTests) target.clearTest(t);
-  target.merge(POLICY.recording);
-  target.save(POLICY.cassettePath);
+  const tmp = `${POLICY.cassettePath}.part-${PID}-${require('node:worker_threads').threadId}`;
+  POLICY.recording.save(tmp);
+  const fresh = readCassetteJson(tmp) || { tests: {} };
+  try { fs.rmSync(tmp, { force: true }); } catch { /* ignore */ }
+  const target = (fs.existsSync(POLICY.cassettePath) && readCassetteJson(POLICY.cassettePath)) || { format: fresh.format, version: fresh.version, tests: {} };
+  const tests = { ...(target.tests || {}) };
+  for (const key of POLICY.recordedTests) {
+    delete tests[key];
+    const conns = (fresh.tests || {})[key];
+    if (!conns) continue;
+    const metas = POLICY.recMeta.get(key) || [];
+    tests[key] = conns.map((c, i) => ({ ...c, ...(metas[i] || {}) }));
+  }
+  const sorted = {};
+  for (const k of Object.keys(tests).sort()) sorted[k] = tests[k];
+  const out = { ...target, format: fresh.format || target.format, version: Math.max(fresh.version || 0, target.version || 0), tests: sorted };
+  fs.mkdirSync(path.dirname(POLICY.cassettePath), { recursive: true });
+  const tmp2 = `${POLICY.cassettePath}.tmp-${PID}`;
+  fs.writeFileSync(tmp2, JSON.stringify(out, null, 2));
+  fs.renameSync(tmp2, POLICY.cassettePath);
   const n = POLICY.recordedTests.size;
   POLICY.recordedTests.clear();
+  POLICY.recMeta.clear();
   POLICY.recording = new native.Cassette();
   return n;
 }
@@ -627,8 +991,59 @@ function openNetwork() {
   return () => { POLICY = saved; };
 }
 
+/**
+ * The runner's main process (`globalSetup`, start-up code), from session.prepare: external connections are closed,
+ * recorded under `<startup>` or replayed like a test's (G-1419); what they exchange is published for the test
+ * processes (`net-startup` in the run directory), whose tests carry it in their `net.setup` event.
+ */
+function installStartup(patcher, cfg) {
+  if (POLICY !== null) return POLICY.mode;
+  POLICY = new Policy(cfg);
+  MAIN = true;
+  if (cfg.dir) STARTUP_FILE = path.join(cfg.dir, 'net-startup');
+  patcher.set(net.Socket.prototype, 'connect', connect);
+  patcher.set(tls, 'connect', tlsConnect);
+  patcher.set(dns, 'lookup', lookup);
+  patcher.set(dns.promises, 'lookup', pLookup);
+  return POLICY.mode;
+}
+
+/** A test file starts (controls.openFile): its set-up connections are recorded and replayed under its own key. */
+function startFile(label) {
+  if (FILE_KEY) BUCKETS.delete(FILE_KEY);
+  FILE_KEY = `${label}::<setup>`;
+  BUCKETS.delete(FILE_KEY);
+  if (POLICY) POLICY.counters.delete(FILE_KEY);
+  STARTUP_SUMMARY = '';
+  const dir = STATE.config && STATE.config.dir;
+  if (dir) { try { STARTUP_SUMMARY = fs.readFileSync(path.join(dir, 'net-startup'), 'utf8'); } catch { /* no start-up traffic */ } }
+}
+
+/**
+ * Node's HTTP server writes a `Date` header from the real clock (an internal clock Level 0 does not reach): a local
+ * server started by a test would put the machine's time into the bytes the test receives. Under Level 0 a response
+ * without an explicit `Date` gets the virtual clock's (a clock read of the test).
+ */
+function installHttpDate(patcher) {
+  const http = require('node:http');
+  const P = http.ServerResponse && http.ServerResponse.prototype;
+  if (!P || P.writeHead.__detjsDate) return;
+  const realWriteHead = P.writeHead;
+  const w = function writeHead(...a) {
+    try {
+      if (POLICY !== null && this.sendDate && !this._header && !this.hasHeader('date')) {
+        const ms = require('./clock').virtualNowMs('http.Date');
+        if (ms !== null) this.setHeader('Date', new real.Date(ms).toUTCString());
+      }
+    } catch { /* never break the response */ }
+    return realWriteHead.apply(this, a);
+  };
+  Object.defineProperty(w, '__detjsDate', { value: true });
+  patcher.set(P, 'writeHead', w);
+}
+
 module.exports = {
-  openNetwork,
+  openNetwork, installStartup, startFile, cassetteAges, readCassetteJson,
   installProcess, saveRecordings, NetworkBlockedError, isLocalName,
   get mode() { return POLICY ? POLICY.mode : null; },
 };

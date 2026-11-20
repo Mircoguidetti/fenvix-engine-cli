@@ -45,6 +45,7 @@ function fromEnv(env = process.env) {
     cassette: env.DETJS_CASSETTE || null,
     allowHosts: String(env.DETJS_ALLOW_HOSTS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
     urandom: env.DETJS_URANDOM === '1',
+    cassetteMaxAge: Number(env.DETJS_CASSETTE_MAX_AGE) || 0,
     maxEvents: int(env.DETJS_MAX_EVENTS, 10000),
     sites: env.DETJS_SITES !== '0',
     runner: env.DETJS_RUNNER || null,

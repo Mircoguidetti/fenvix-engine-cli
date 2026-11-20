@@ -159,6 +159,7 @@ function openFile(fileId, project) {
   STATE.fileId = fileId;
   STATE.testIndex = 0;
   if (c.controls.has('seeds')) seeds.seedFile(label);
+  if (c.controls.has('net')) network.startFile(label);
   if (c.controls.has('time')) {
     clock.DRIVER.takeBaseline();
     clock.startFile();
