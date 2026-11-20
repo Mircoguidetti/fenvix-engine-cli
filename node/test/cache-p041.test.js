@@ -80,7 +80,7 @@ for (const runner of RUNNERS) {
     test('G-2225: a capture that cannot be written is a counted, visible refusal', T, () => {
       // the test replaces the run's capture directory by a file: the worker cannot write the file's capture
       const dir = proj(runner, 'unwritten', {
-        a: "test('breaks the capture dir', () => { const d = path.join(process.env.DETJS_DIR, 'cache'); fs.rmSync(d, { recursive: true, force: true }); fs.writeFileSync(d, 'x'); });",
+        a: "test('breaks the capture dir', () => { for (const r of fs.readdirSync('.detjs').filter((n) => n.startsWith('run-'))) { const d = path.join('.detjs', r, 'cache'); fs.rmSync(d, { recursive: true, force: true }); fs.writeFileSync(d, 'x'); } });",
       });
       const r1 = run(runner, dir);
       assert.equal(r1.status, 0, show(r1));
