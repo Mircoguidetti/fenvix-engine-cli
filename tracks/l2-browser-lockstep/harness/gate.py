@@ -419,7 +419,9 @@ if JOB == "gate":
         save()
 
 
-if JOB in ("hunt", "huntp"):
+if JOB in ("hunt", "hunt2", "huntp"):
+    # hunt2: a second hunt job on the same project (another runner, its own result file), its targets chosen with
+    # `only` (a long hunt split in two within one workflow run, one engine version).
     # Points 2 + 5 (round 4): for each of the project's round-3 flaky tests (targets55.json), search seeds 1..S for one
     # whose lockstep run fails with the test's real first error line, then replay that seed R times. A target counts
     # as reproduced when all R replays fail with that line and give one fingerprint. The seed space is set per
