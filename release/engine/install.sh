@@ -6,6 +6,8 @@
 #
 # Python: the wheel (pytest plugin, `python -m detpy` runners, `fenvix` command) goes into $PYTHON's environment;
 # its one dependency, pytest>=8.1, comes from the package index unless already installed.
+# The same wheel also goes to PREFIX/python (no dependencies): `PREFIX/bin/fenvix` gives it to a job's own virtual
+# environment that does not have the engine (`fenvix python --det` there).
 # Node: the shells and the native core go to PREFIX/node (no npm install: they have no runtime dependencies);
 # `fenvix node <runner> ...` and `node PREFIX/node/bin/fenvix.js <runner> ...` start them.
 # Exit 4, with one sentence, on an unsupported interpreter or platform (CPython 3.12-3.14, Linux x86_64, glibc 2.28+).
@@ -21,7 +23,7 @@ rc=0
 "$py" - <<'PY' || rc=$?
 import sys, sysconfig
 v = "%d.%d" % sys.version_info[:2]
-if sys.implementation.name != "cpython" or sys.version_info[:2] < (3, 12) or sysconfig.get_config_var("Py_GIL_DISABLED"):
+if sys.implementation.name != "cpython" or not (3, 12) <= tuple(sys.version_info[:2]) <= (3, 14) or sysconfig.get_config_var("Py_GIL_DISABLED"):
     sys.stderr.write("fenvix: needs CPython 3.12, 3.13 or 3.14 (default build); %s is %s %s%s\n"
                      % (sys.executable, sys.implementation.name, v, "t" if sysconfig.get_config_var("Py_GIL_DISABLED") else ""))
     sys.exit(4)
@@ -36,6 +38,11 @@ if ! "$py" -m detpy.fenvix doctor --install >&2; then
   exit 1
 fi
 mkdir -p "$prefix/node" "$prefix/bin"
+# the image's own copy of the engine for jobs that make their own virtual environment (their test tools, not the
+# engine): $PREFIX/bin/fenvix puts it on such a Python's path (release/fenvix; R-050 D3, G-0413). Package and
+# distribution metadata only (the job brings its pytest); replaced on every install
+rm -rf "$prefix/python"
+"$py" -m pip install -q --disable-pip-version-check --no-deps --target "$prefix/python" "$here"/wheels/fenvix-*.whl
 cp -R "$here/node/." "$prefix/node/"
 install -m 755 "$here/bin/fenvix" "$prefix/bin/fenvix"
 cp "$here/VERSION.json" "$prefix/VERSION.json"

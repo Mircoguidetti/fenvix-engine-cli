@@ -13,6 +13,7 @@ import sys
 import sysconfig
 
 MIN = (3, 12)
+MAX = (3, 14)  # the newest CPython the engine is built and tested for (a newer one is refused, not guessed: R-050 D1)
 SUPPORTED = ("3.12", "3.13", "3.14")
 EXIT_USAGE = 4  # pytest's usage-error exit code; the runners use the same
 
@@ -25,6 +26,9 @@ def problem():
         return "fenvix supports CPython only; this is %s %s" % (impl, ver)
     if tuple(sys.version_info[:2]) < MIN:
         return "fenvix needs CPython 3.12 or newer; this is Python %s (%s)" % (ver, sys.executable)
+    if tuple(sys.version_info[:2]) > MAX:
+        return ("fenvix is not built or tested for CPython %s yet (the newest supported is 3.14); this is %s"
+                % (ver, sys.executable))
     if sysconfig.get_config_var("Py_GIL_DISABLED"):
         return ("fenvix does not support the free-threaded build of CPython (%st); use the default build of %s"
                 % (ver, ver))

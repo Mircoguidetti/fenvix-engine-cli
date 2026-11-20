@@ -725,6 +725,21 @@ def cmd_cassette(argv: list) -> int:
 
 # ---------------------------------------------------------------------------------------------------------------
 # runner entries
+def _plugin_args() -> list:
+    """``-p detpy.plugin`` when pytest will not find the plugin through an installed ``fenvix`` distribution (its
+    ``pytest11`` entry point): the engine came on the path, from a checkout or a runner image's copy (release/fenvix,
+    R-050 D3). With the distribution present it stays out, or pytest would register the plugin twice."""
+    from importlib import metadata
+
+    try:
+        eps = metadata.entry_points(group="pytest11")
+    except Exception:  # pragma: no cover - a broken distribution elsewhere
+        eps = ()
+    if any(ep.value == "detpy.plugin" for ep in eps):
+        return []
+    return ["-p", "detpy.plugin"]
+
+
 def _with_det(args: list) -> list:
     if any(a == "--det" or a.startswith("--det=") for a in args) or "--no-det" in args:
         return [a for a in args if a != "--no-det"]
@@ -785,6 +800,21 @@ def detect(d: str) -> list:
     return out
 
 
+def artifact_line() -> str:
+    """The installed engine artifact, from the VERSION.json that release/engine/install.sh copies to $FENVIX_HOME:
+    its version, build (r<run>.<sha7>) and full commit, so that two artifacts are told apart (R-050 D2, G-0251)."""
+    path = os.path.join(HOME, "VERSION.json")
+    try:
+        with open(path) as fh:
+            meta = json.load(fh)
+    except FileNotFoundError:
+        return f"artifact: none installed in {HOME} (no VERSION.json; a wheel or a checkout)"
+    except (OSError, ValueError) as e:
+        return f"artifact: {path} is unreadable ({type(e).__name__})"
+    return (f"artifact fenvix-engine {meta.get('version', '?')} build {meta.get('build', '?')} "
+            f"commit {meta.get('commit', '?')} ({meta.get('platform', '?')}, glibc {meta.get('glibc_min', '?')}+)")
+
+
 def version_lines() -> list:
     def run(cmd):
         try:
@@ -794,11 +824,11 @@ def version_lines() -> list:
             return f"unavailable ({type(e).__name__})"
 
     if _support.PROBLEM is not None:
-        return [f"fenvix {__version__} (unsupported here: {_support.PROBLEM})"]
+        return [f"fenvix {__version__} (unsupported here: {_support.PROBLEM})", artifact_line()]
     from . import _core
 
     lines = [f"fenvix {__version__} (engine: detpy {__version__}, trace encoding {_core.ENCODING_VERSION}; "
-             f"Python {sys.version.split()[0]})"]
+             f"Python {sys.version.split()[0]})", artifact_line()]
     js = _detjs()
     if js:
         pkg = os.path.join(HOME, "node", "package.json")
@@ -849,7 +879,7 @@ def main(argv: list | None = None) -> int:
     if cmd == "doctor":
         return cmd_doctor(rest)
     if cmd in ("pytest", "python"):  # `python`: the release-1 name of the same entry
-        return _exec([sys.executable, "-m", "pytest", *_with_det(rest)])
+        return _exec([sys.executable, "-m", "pytest", *_plugin_args(), *_with_det(rest)])
     if cmd in PY_RUNNERS or cmd == "zope":
         name = "zope-testrunner" if cmd == "zope" else cmd
         return _exec([sys.executable, "-m", "detpy", name, *_with_det(rest)])
