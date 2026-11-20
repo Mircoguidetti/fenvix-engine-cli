@@ -79,7 +79,10 @@ the test modules are covered by the module graph).
   policy over every file's capture, whichever process ran it, so it does not depend on timing. On top of it, a file
   that touched a path or a fixed port that a file of another lane touched is not cached (`cross-worker`), a file
   that ran after a file that left process-wide state changed in its process is not cached (`carried`), and a test
-  that reads its worker or pool id is not cached (`placement`, serially too: the value depends on the plan).
+  that reads its worker or pool id in a parallel run is not cached (`placement`: the value is the lane). Serially
+  the runners give every test `JEST_WORKER_ID=1` / `VITEST_POOL_ID=1`, and the environment the cache keys against
+  holds these values (before, such a read was keyed as an unset variable); `VITEST_WORKER_ID` (the number of files
+  before the test's file) is never cached.
 * Keys are the serial keys: worker counts (`maxWorkers`, `minWorkers`, `fileParallelism`, pool thread/fork counts,
   wherever the resolved configuration repeats them, and the runners' worker options on the command line) are not
   part of the configuration digest, so an entry recorded in parallel is reused serially and the reverse (MEASURED in

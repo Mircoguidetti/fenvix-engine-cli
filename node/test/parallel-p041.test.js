@@ -252,20 +252,35 @@ for (const runner of RUNNERS) {
       assert.deepEqual(plan(r3).together, [[`tests/a_writer${ext}`, `tests/b_reader${ext}`]]);
     });
 
-    test('a read of the worker or pool id is never reused (serial or parallel)', T, () => {
+    test('a read of the worker or pool id: never reused from a parallel run; keyed as the serial value (1) serially', T, () => {
       const v = runner === 'vitest' ? 'VITEST_POOL_ID' : 'JEST_WORKER_ID';
       const dir = fixture(runner, 'wid', {
         a: `test('worker id', () => { expect(Number(process.env.${v})).toBeGreaterThan(0); });`,
         b: "test('b', () => { expect(1).toBe(1); });",
         c: "test('c', () => { expect(1).toBe(1); });",
+        // a copy of the whole environment is keyed as the whole environment, not as a read of the id
+        d: "test('copy', () => { const e = { ...process.env }; expect(Object.keys(e).length).toBeGreaterThan(0); });",
       });
       const cache = path.join(dir, '.cache');
-      for (const args of [['--det-workers=2'], []]) {
-        const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
-        assert.equal(r1.status, 0, show(r1));
-        assert.match(notCached(r1)[`tests/a${EXT[runner]}`] || '', new RegExp(`reads the worker or pool id.*${v}`), show(r1));
-        const r2 = det(runner, dir, [...args, `--det-cache=${cache}`]);
-        assert.ok(!reusedFiles(r2).includes(`tests/a${EXT[runner]}`), show(r2));
+      const a = `tests/a${EXT[runner]}`;
+      const r1 = det(runner, dir, ['--det-workers=2', `--det-cache=${cache}`]);
+      assert.equal(r1.status, 0, show(r1));
+      assert.match(notCached(r1)[a] || '', new RegExp(`reads the worker or pool id.*${v}`), show(r1));
+      assert.ok(!notCached(r1)[`tests/d${EXT[runner]}`], show(r1));
+      const r2 = det(runner, dir, ['--det-workers=2', `--det-cache=${cache}`]);
+      assert.ok(!reusedFiles(r2).includes(a), show(r2));
+      assert.ok(reusedFiles(r2).includes(`tests/d${EXT[runner]}`), show(r2));
+      // serially every test sees 1: the read is keyed with that value, and the entry is reused
+      const s1 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.equal(s1.status, 0, show(s1));
+      assert.ok(!notCached(s1)[a], show(s1));
+      const s2 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.ok(reusedFiles(s2).includes(a), show(s2));
+      if (runner === 'vitest') {
+        // VITEST_WORKER_ID counts the files before it, serially too: never reused
+        write(dir, { [`tests/e${EXT[runner]}`]: `${HEAD[runner]}\ntest('wid', () => { expect(Number(process.env.VITEST_WORKER_ID)).toBeGreaterThan(0); });\n` });
+        const s3 = det(runner, dir, [`--det-cache=${cache}`]);
+        assert.match(notCached(s3)[`tests/e${EXT[runner]}`] || '', /VITEST_WORKER_ID/, show(s3));
       }
     });
 

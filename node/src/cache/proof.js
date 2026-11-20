@@ -129,19 +129,35 @@ function neutral(text) {
 }
 
 /**
- * Flags that depend on placement, added to a capture before the session policy records it (positions: a flag
- * applies to the tests that end after it): a read of a variable that names the process's placement (worker or
- * pool id: its value depends on the plan, or on timing with the runner's own scheduler) right after the read;
- * a file that touched a path or port another lane touched, or that ran after a file that left process-wide state
- * changed (src/parallel.js `collect`), from the start.
+ * The variables that name a test process's placement and whose value is not the serial one (`placementVars`): in a
+ * parallel run the runner's worker / pool id is the lane; serially Jest's `JEST_WORKER_ID` and Vitest's
+ * `VITEST_POOL_ID` are 1 (keyed as such: `SERIAL_PLACEMENT`), while `VITEST_WORKER_ID` counts the files before it.
  */
-function placementFlags(c, fileFlags) {
-  const { PLACEMENT_VARS } = require('../parallel');
+const SERIAL_PLACEMENT = { jest: { JEST_WORKER_ID: '1' }, vitest: { VITEST_POOL_ID: '1' } };
+function placementVars(runner, parallelRun) {
+  if (runner === 'vitest') return new Set(parallelRun ? ['VITEST_POOL_ID', 'VITEST_WORKER_ID'] : ['VITEST_WORKER_ID']);
+  if (runner === 'jest') return new Set(parallelRun ? ['JEST_WORKER_ID'] : []);
+  return new Set();
+}
+
+/**
+ * Flags that depend on placement, added to a capture before the session policy records it (positions: a flag
+ * applies to the tests that end after it): a read of a variable in `vars` right after the read, unless the read is
+ * part of a copy of the whole environment (contiguous reads after an enumeration, keyed as the whole environment:
+ * docs/NODE-CACHE.md); a file that touched a path or port another lane touched, or that ran after a file that left
+ * process-wide state changed (src/parallel.js `collect`), from the start.
+ */
+function placementFlags(c, fileFlags, vars) {
   const items = c.items || [];
   const ins = []; // [position, item]
   const f = fileFlags && fileFlags.get(c.label);
   if (f) ins.push([0, ['flag', f[0], f[1]]]);
-  items.forEach((it, i) => { if (it[0] === 'env' && PLACEMENT_VARS.has(it[1])) ins.push([i + 1, ['flag', 'placement', it[1]]]); });
+  let burst = false; // inside a run of environment reads that started with an enumeration
+  items.forEach((it, i) => {
+    if (it[0] !== 'env') { burst = false; return; }
+    if (it[1] === '*') { burst = true; return; }
+    if (!burst && vars && vars.has(it[1])) ins.push([i + 1, ['flag', 'placement', it[1]]]);
+  });
   if (!ins.length) return;
   const out = [];
   const shift = new Array(items.length + 1).fill(0);
@@ -303,7 +319,8 @@ class ProofSession {
       this.rid = runtimeIdentity(this.root, this.env0, packages);
       this.runtimeDigest = this.rid.digest;
       this.machine = machineFacts();
-      this.curEnv = { ...this.env0, ...this.machine };
+      // the runner's placement variables as a serial run gives them to every test (parallel reads are flagged)
+      this.curEnv = { ...this.env0, ...this.machine, ...(SERIAL_PLACEMENT[this.runner] || {}) };
     });
     this.t.identity += Number(process.hrtime.bigint() - t0) / 1e9;
   }
@@ -399,7 +416,7 @@ class ProofSession {
     for (const n of names) {
       let c;
       try { c = JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8')); } catch { continue; /* truncated: not recorded */ }
-      placementFlags(c, this.parallelFlags);
+      placementFlags(c, this.parallelFlags, placementVars(this.runner, Number(process.env.DETJS_WORKERS || 1) > 1));
       // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
       // processes) corrects `ok` from the runner's own results
       out.push(this.captureFilter ? this.captureFilter(c) : c);
