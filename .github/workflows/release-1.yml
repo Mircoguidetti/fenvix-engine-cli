@@ -3,11 +3,12 @@
 # build      Rust workspace tests (detpy-core, detpy-node, fenvix-go, fenvix-jvm, fenvix-skip) and every binding:
 #            PyO3 wheel (detpy), napi addon (detjs), Go overlay (fenvix-go + libfenvix_go.a), JVM agent + fenvix-skip.
 # python     every Python suite (tests/, reviewer files R-019c, R-020/R-020b, R-023/R-023b, R-032/R-032b,
-#            culprit keys) and test_review_results.py, Python 3.12 and 3.13.
-# node       every detjs suite (node/test, reviewer files R-021/R-021b, R-032/R-032b), Node 22.
-# go         fenvix-go suites (review R-025/R-025b included), Go 1.26.
+#            culprit keys), Python 3.12, 3.13 and 3.14; test_review_results.py informational.
+# node       every detjs suite (node/test, reviewer files R-021/R-021b, R-032/R-032b), Node 22, 24 and 26.
+# go         fenvix-go suites (review R-025/R-025b included), Go 1.26.        NOT BLOCKING (out of go-live scope)
 # jvm        cargo tests of fenvix-jvm/fenvix-skip, control tests (Gradle + Maven, JUnit 5/4) on JDK 8/11/17/21,
-#            skip-key tests and review R-022.
+#            skip-key tests and review R-022.                                  NOT BLOCKING (out of go-live scope)
+# Runs on every push to claude/release-1 (the engine trunk) and on every pull request into it (the gate).
 # smoke      one small real repository per language under --det (x2, traces verified) and skip with proof (x2).
 # other-os   macOS arm64 and Linux arm64: Rust core tests and the wheel (measured status, not a gate).
 name: release-1
@@ -16,6 +17,8 @@ on:
   push:
     branches: [claude/release-1]
     paths-ignore: ["sessions/**", "docs/**", "**/results/**"]
+  pull_request:
+    branches: [claude/release-1]
   workflow_dispatch: {}
 
 concurrency:
@@ -61,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.12", "3.13"]
+        python: ["3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -95,10 +98,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["22", "24", "26"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: {node-version: "22"}
+        with: {node-version: "${{ matrix.node }}"}
       - uses: actions/setup-python@v5
         with: {python-version: "3.13"}
       - uses: actions/download-artifact@v4
@@ -109,16 +116,17 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../node-tests.xml test/*.test.js > ../node-tests.log 2>&1; rc=$?
-          tail -40 ../node-tests.log; echo "== failures"; grep -nE "✖|not ok|Error" ../node-tests.log | head -80 || true
+            --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1; rc=$?
+          tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; grep -nE "✖|not ok|Error" ../node-tests-${{ matrix.node }}.log | head -80 || true
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()
-        with: {name: node-tests, path: "node-tests.*"}
+        with: {name: "node-tests-${{ matrix.node }}", path: "node-tests-${{ matrix.node }}.*"}
 
   go:
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: true  # Go is in the tree but out of go-live scope: reported, not a gate
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -140,6 +148,7 @@ jobs:
   jvm:
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: true  # JVM is in the tree but out of go-live scope: reported, not a gate
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -176,6 +185,7 @@ jobs:
   smoke:
     needs: build
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.lang == 'go' || matrix.lang == 'jvm' }}  # Go/JVM out of go-live scope
     timeout-minutes: 120
     strategy:
       fail-fast: false

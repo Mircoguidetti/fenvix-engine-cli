@@ -77,22 +77,23 @@ to execution (table above).
 
 ## Gates
 
-A release candidate is the branch commit whose `release-1` workflow run has every Linux x86_64 job green:
+`claude/release-1` is the engine trunk: engine sessions branch from it and return by pull request. The workflow runs on
+every push and on every pull request into it. A commit passes the gate when every blocking Linux x86_64 job is green:
 
 1. `build`: `cargo test --workspace --exclude detpy-py` and every artifact built (wheel, addon, `libfenvix_go.a` +
    `fenvix-go`, `fenvix-agent.jar` + `fenvix-skip`).
-2. `python` (3.12, 3.13): the wheel installed and its extension also placed in `python/detpy` (some review tests
+2. `python` (3.12, 3.13, 3.14): the wheel installed and its extension also placed in `python/detpy` (some review tests
    import detpy from the source tree); `pytest tests -p no:randomly`, serial (R-019c E9/E10 change site-packages and break
    concurrent tests: they cannot run under `-n`), with the one pre-existing deselection both parent branches gate with
    (`test_review_r017.py::test_h2_…`, a results-file check). Includes the reviewer files R-019c
    (`test_absent_inputs_r019c.py`), R-020/R-020b (`test_review_r020*_dep_verdict.py`, `test_dep_verdict_r020*_fixes.py`),
    R-023/R-023b (`test_review_r023*.py`, `test_parallel_proof_r023_fixes.py`), R-032/R-032b (`review_r032*/`,
    `test_r032b_engine.py`) and the culprit keys (`test_culprit_keys.py`).
-3. `node`: every `node/test/*.test.js` (reviewer files R-021, R-021b, R-032, R-032b included).
-4. `go`: `go vet ./...` and `go test ./...` (review R-025 and R-025b tests included).
-5. `jvm`: control tests on JDK 8, 11, 17, 21 (Gradle and Maven, JUnit 5 and 4); skip-key tests and review R-022 on
+3. `node` (Node 22, 24, 26): every `node/test/*.test.js` (reviewer files R-021, R-021b, R-032, R-032b included).
+4. `go` (**not blocking**: Go is in the tree, out of go-live scope): `go vet ./...` and `go test ./...` (review R-025 and R-025b tests included).
+5. `jvm` (**not blocking**, out of go-live scope): control tests on JDK 8, 11, 17, 21 (Gradle and Maven, JUnit 5 and 4); skip-key tests and review R-022 on
    JDK 21.
-6. `smoke`: one real repository per language, installed with `release/install-image.sh`, driven through
+6. `smoke` (Go and JVM legs not blocking): one real repository per language, installed with `release/install-image.sh`, driven through
    `release/fenvix`: two `--det` runs whose traces verify identical, two cache runs where the second reuses at least
    one test with proof and no outcome differs (`release/smoke.py`; repositories: pallets/itsdangerous 2.2.0,
    simple-statistics v7.9.3, google/uuid v1.6.0, google/gson 2.11.0).
