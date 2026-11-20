@@ -98,8 +98,6 @@ async function main(argv) {
     pc.installMain({ mainAnyReads: false });
     pc.setConfig(jestConfigParts(shown, jest.pkg.version, rest, pc, customRunners));
     if (par.workers > 1) {
-      // the worker processes start the capture and wrap the environments themselves (src/jest/worker.js)
-      fs.writeFileSync(path.join(run.dir, 'jest-shown.json'), JSON.stringify(shown));
       // preload modules of NODE_OPTIONS run in each worker before the capture: what they read is not observed
       if (/(?:^|\s)(?:-r|--require|--import|--loader|--experimental-loader)(?:=|\s|$)/.test(process.env.NODE_OPTIONS || '')) {
         for (const c of (shown && shown.configs) || []) pc.noteProject(c.displayName ? c.displayName.name : '', 'NODE_OPTIONS preloads run in Jest workers before the capture');
@@ -111,6 +109,8 @@ async function main(argv) {
   // Each project's test environment is wrapped: the controls are installed before setupFiles run (G-1312, G-1436,
   // G-1466), and the file's process.argv is what an in-band `jest <args>` shows (G-2164)
   require('./environment').install(shown, { cache: Boolean(pc), argv: [process.execPath, jest.bin, ...rest] });
+  // parallel lanes: the worker processes wrap the environments themselves, and start the capture (src/jest/worker.js)
+  if (par.workers > 1) fs.writeFileSync(path.join(run.dir, 'jest-shown.json'), JSON.stringify(shown));
   // The test runner is loaded through a shim in a node_modules directory (src/shim.js) that
   // requires the detjs runner only when Jest calls it: Jest loads testRunner
   // with its transform hook active, so detjs would otherwise be compiled with
