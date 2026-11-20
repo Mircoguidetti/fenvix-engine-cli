@@ -128,6 +128,21 @@ def main(argv=None) -> int:
         truth = runs["b"].get("outcomes", {})
         tdur = runs["b"].get("durations", {})  # per-test time of the truth run (setup + call + teardown)
         row["b"]["test_time_s"] = round(sum(tdur.values()), 3)
+        if "--det-isolate" in det_args:
+            # --det-isolate (the truth is an isolated run too): the fork overhead, and at the shard's first commit
+            # the tests whose isolated outcome differs from a run without isolation (order-dependent tests)
+            for mode in ("a_par", "a_ser", "b"):
+                if mode in runs and runs[mode].get("isolate"):
+                    row[mode]["isolate"] = runs[mode]["isolate"]
+            if i == 0:
+                plain_args = [x for x in det_args if x != "--det-isolate"]
+                pm, pdata = pytest(a.repo, a.python, [*a.pytest_args, "--det", *plain_args,
+                                                      f"--det-trace={work}/b_plain.jsonl"], f"{work}/b_plain-{i}.json",
+                                   a.timeout)
+                plain = pdata.get("outcomes", {})
+                row["b_plain"] = pm
+                row["order_dependent"] = sorted([n, plain.get(n), truth[n]] for n in truth
+                                                if n in plain and plain[n] != truth[n])
         for mode in [m for m in ("a_par", "a_ser") if m in runs]:
             c = runs[mode].get("cache", {})
             reused = c.get("reused_ids", [])
