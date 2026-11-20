@@ -1,0 +1,198 @@
+# Subtest: tap: R-032 F7
+# Subtest: ava: R-032 F7
+# Subtest: jasmine: R-032 F7
+# Subtest: uvu: R-032 F7
+# Subtest: bun: R-032 F6/F7
+# Subtest: deno: R-032 F6/F7
+# Subtest: cache with proof: vitest
+# Subtest: cache with proof: jest
+# Subtest: cache with proof: Vitest start-up and resolution
+# Subtest: cache with proof: Jest start-up
+# Subtest: cache with proof: projects
+# Subtest: cache with proof: shared cache service
+# Subtest: vitest
+# Subtest: jest
+# Subtest: jest jsdom environment: controls apply, outcomes unchanged
+# Subtest: real node-test sessions: the Rust policy equals the JavaScript one
+# Subtest: real mocha sessions: the Rust policy equals the JavaScript one
+# Subtest: seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+# Subtest: receipt lines: the Rust lines equal the JavaScript ones
+# Subtest: the uncacheable table is the same
+# Subtest: vitest projects: every project runs under --det, failures set the exit code
+# (node:26756) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: r021 fixes: vitest
+# Subtest: r021 fixes: jest
+# Subtest: r021 fixes: Vitest specific
+# Subtest: r021b fixes: vitest
+# Subtest: r021b fixes: jest
+# Subtest: r021b fixes: vitest only
+# Subtest: r021b fixes: jest only
+# Subtest: regressions
+# (node:1164) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: r021 wrong reuse: vitest
+# Subtest: r021 wrong reuse: jest
+# Subtest: r021 wrong reuse: Vitest specific
+# Subtest: r021 wrong reuse: Vitest transforms and environment
+# Subtest: r021 wrong reuse: Jest specific
+# Subtest: r021b: vitest
+# Subtest: r021b: jest
+# Subtest: r021b: vitest only
+# Subtest: r021b: jest only
+# Subtest: tap: review r032
+# Subtest: ava: review r032
+# Subtest: jasmine: review r032
+# Subtest: uvu: review r032
+# R032-RESULT bun tests/d.test.ts sound
+# R032-RESULT bun tests/t.test.ts sound
+# R032-RESULT bun tests/ff.test.ts sound
+# R032-RESULT bun tests/mm.test.ts sound
+# R032-RESULT bun tests/sl.test.ts sound
+# R032-RESULT bun tests/w.test.ts uncached
+# R032-RESULT bun tests/rs.test.ts sound
+# R032-RESULT bun tests/ffi.test.ts uncached
+# R032-RESULT deno tests/cfg_test.ts uncached
+# R032-RESULT deno tests/p_test.ts uncached
+# R032-RESULT deno tests/rl_test.ts sound
+# R032-RESULT deno tests/ffi_test.ts uncached
+# R032-RESULT deno tests/wk_test.ts uncached
+# R032-RESULT deno tests/nl_test.ts sound
+# Subtest: bun
+# Subtest: deno
+# R032-LATE node-test exitCode set at module level: fresh run fails
+# R032-LATE node-test late uncaught exception: fresh run fails
+# R032-LATE node-test late unhandled rejection: fresh run fails
+# R032-LATE node-test process.exit(2) on beforeExit: fresh run fails
+# R032-LATE mocha exitCode set at module level: runner ignores it
+# R032-LATE mocha late uncaught exception: fresh run fails
+# R032-LATE mocha late unhandled rejection: runner ignores it
+# R032-LATE mocha process.exit(2) on beforeExit: runner ignores it
+# Subtest: node-test: absent inputs resolved by Node in C++ (package.json)
+# Subtest: node-test: environment read in C (libuv), entropy
+# Subtest: mocha: absent inputs resolved by Node in C++ (package.json)
+# Subtest: mocha: environment read in C (libuv), entropy
+# Subtest: mocha: configuration file absent then present
+# Subtest: failure outside a test body
+# (node:18856) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ava: control
+# Subtest: ava: wrong reuse (shared cases)
+# Subtest: ava: wrong reuse (runner specific)
+# Subtest: bun: Level 0 controls
+# Subtest: bun: wrong reuse (--det-cache)
+# Subtest: deno: Level 0 controls
+# Subtest: deno: wrong reuse (--det-cache)
+# (node:305) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: jasmine: control
+# Subtest: jasmine: wrong reuse (shared cases)
+# Subtest: jasmine: wrong reuse (runner specific)
+# (node:4115) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: mocha: control
+# Subtest: mocha: adversarial (review r021 translated)
+# Subtest: mocha: adversarial (environment, processes, R-009 / R-017)
+# Subtest: mocha: adversarial (configuration, --require, --file, root hooks, --grep, loaders)
+# (node:7525) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: node-test: control
+# Subtest: node-test: adversarial (review r021 translated)
+# Subtest: node-test: adversarial (environment, processes, R-009 / R-017)
+# Subtest: node-test: adversarial (runner configuration, loaders, node:test features)
+# (node:16620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: tap: control
+# Subtest: tap: wrong reuse (shared cases)
+# Subtest: tap: wrong reuse (runner specific)
+# (node:16764) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: uvu: control
+# Subtest: uvu: wrong reuse (shared cases)
+# Subtest: uvu: wrong reuse (runner specific)
+# Subtest: vitest
+# Subtest: jest
+# tests 642
+# suites 69
+# pass 641
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 775579.583384
+ok 1 - tap: R-032 F7
+ok 2 - ava: R-032 F7
+ok 3 - jasmine: R-032 F7
+ok 4 - uvu: R-032 F7
+ok 5 - bun: R-032 F6/F7
+ok 6 - deno: R-032 F6/F7
+ok 7 - cache with proof: vitest
+ok 8 - cache with proof: jest
+ok 9 - cache with proof: Vitest start-up and resolution
+ok 10 - cache with proof: Jest start-up
+ok 11 - cache with proof: projects
+ok 12 - cache with proof: shared cache service
+ok 13 - vitest
+ok 14 - jest
+ok 15 - jest jsdom environment: controls apply, outcomes unchanged
+ok 16 - real node-test sessions: the Rust policy equals the JavaScript one
+ok 17 - real mocha sessions: the Rust policy equals the JavaScript one
+ok 18 - seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+ok 19 - receipt lines: the Rust lines equal the JavaScript ones
+ok 20 - the uncacheable table is the same
+ok 21 - vitest projects: every project runs under --det, failures set the exit code
+ok 22 - r021 fixes: vitest
+ok 23 - r021 fixes: jest
+ok 24 - r021 fixes: Vitest specific
+ok 25 - r021b fixes: vitest
+ok 26 - r021b fixes: jest
+ok 27 - r021b fixes: vitest only
+ok 28 - r021b fixes: jest only
+ok 29 - regressions
+ok 30 - r021 wrong reuse: vitest
+ok 31 - r021 wrong reuse: jest
+ok 32 - r021 wrong reuse: Vitest specific
+ok 33 - r021 wrong reuse: Vitest transforms and environment
+ok 34 - r021 wrong reuse: Jest specific
+ok 35 - r021b: vitest
+ok 36 - r021b: jest
+ok 37 - r021b: vitest only
+ok 38 - r021b: jest only
+ok 39 - tap: review r032
+ok 40 - ava: review r032
+ok 41 - jasmine: review r032
+ok 42 - uvu: review r032
+ok 43 - bun
+ok 44 - deno
+ok 45 - node-test: absent inputs resolved by Node in C++ (package.json)
+ok 46 - node-test: environment read in C (libuv), entropy
+ok 47 - mocha: absent inputs resolved by Node in C++ (package.json)
+ok 48 - mocha: environment read in C (libuv), entropy
+ok 49 - mocha: configuration file absent then present
+ok 50 - failure outside a test body
+ok 51 - ava: control
+ok 52 - ava: wrong reuse (shared cases)
+ok 53 - ava: wrong reuse (runner specific)
+ok 54 - bun: Level 0 controls
+ok 55 - bun: wrong reuse (--det-cache)
+ok 56 - deno: Level 0 controls
+ok 57 - deno: wrong reuse (--det-cache)
+ok 58 - jasmine: control
+ok 59 - jasmine: wrong reuse (shared cases)
+ok 60 - jasmine: wrong reuse (runner specific)
+ok 61 - mocha: control
+ok 62 - mocha: adversarial (review r021 translated)
+ok 63 - mocha: adversarial (environment, processes, R-009 / R-017)
+ok 64 - mocha: adversarial (configuration, --require, --file, root hooks, --grep, loaders)
+ok 65 - node-test: control
+ok 66 - node-test: adversarial (review r021 translated)
+ok 67 - node-test: adversarial (environment, processes, R-009 / R-017)
+ok 68 - node-test: adversarial (runner configuration, loaders, node:test features)
+ok 69 - tap: control
+ok 70 - tap: wrong reuse (shared cases)
+ok 71 - tap: wrong reuse (runner specific)
+ok 72 - uvu: control
+ok 73 - uvu: wrong reuse (shared cases)
+ok 74 - uvu: wrong reuse (runner specific)
+ok 75 - vitest
+ok 76 - jest
