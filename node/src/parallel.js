@@ -462,9 +462,15 @@ function snapshotShared() {
   return snap;
 }
 
+/** A function detjs itself installed (its wrappers carry a `__detjs*` marker): wrapping again is not a leak. */
+function ownWrapper(v) {
+  if (typeof v !== 'function') return false;
+  try { return Reflect.ownKeys(v).some((k) => typeof k === 'string' && k.startsWith('__detjs')); } catch { return false; }
+}
+
 function diffShared(a, b) {
   const out = [];
-  for (const [k, v] of b) if (!a.has(k) || !Object.is(a.get(k), v)) out.push(k);
+  for (const [k, v] of b) if (!a.has(k) || !Object.is(a.get(k), v)) { if (!(a.has(k) && ownWrapper(v) && (ownWrapper(a.get(k)) || typeof a.get(k) === 'function'))) out.push(k); }
   for (const k of a.keys()) if (!b.has(k)) out.push(k);
   return out;
 }
@@ -480,7 +486,12 @@ function carriedBefore() {
   const snap = snapshotShared();
   const out = [];
   if (CARRY.base) {
-    for (const k of diffShared(CARRY.base, snap)) if (CARRY.changedBy.has(k)) out.push({ key: k, by: CARRY.changedBy.get(k) });
+    // a value an earlier file changed is carried until it is the baseline's again (detjs re-wrapping a user's
+    // replacement at the next file start does not hide it: compared by identity, not filtered)
+    for (const [k, by] of CARRY.changedBy) {
+      if (!(CARRY.base.has(k) && snap.has(k) && Object.is(CARRY.base.get(k), snap.get(k)))) out.push({ key: k, by });
+    }
+    out.sort((x, y) => (x.key < y.key ? -1 : x.key > y.key ? 1 : 0));
   } else {
     CARRY.base = snap;
   }
@@ -643,7 +654,7 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
         const t0 = Math.min(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.start));
         const t1 = Math.max(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.end));
         meta.timing = { files: durs.length, test_file_seconds: r3(total), lanes_wall_seconds: r3((t1 - t0) / 1000) };
-        lines.push(`detjs: parallel: ${r3(total)} s of test-file time ran in ${r3((t1 - t0) / 1000)} s across ${plan.workers} lanes (MEASURED)`);
+        lines.push(`detjs: parallel: ${r3(total)} s of test-file time ran in ${r3((t1 - t0) / 1000)} s across ${plan.workers} lanes (MEASURED, first file start to last file end, worker start-up included)`);
       }
     }
   } catch { /* report only */ }

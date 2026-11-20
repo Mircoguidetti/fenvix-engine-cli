@@ -282,7 +282,20 @@ describe('mocha: adversarial (environment, processes, R-009 / R-017)', () => {
       ...tf('a', "test('a', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/shared.txt', 'v'); });"),
       ...tf('b', "test('b', () => { assert.equal(fs.readFileSync('out/shared.txt', 'utf8'), 'v'); });"),
     });
-    notCached(R, dir, F('b'), 'written by test/a.spec.mjs');
+    // --det-isolate (a process per spec file): the reader is not cacheable
+    const det = ['--det', '--det-isolate'];
+    const i1 = crun(R, dir, [], { det });
+    assert.equal(i1.status, 0, show(i1));
+    assert.ok(JSON.stringify(i1.summary.not_cached_detail).includes('written by test/a.spec.mjs'), show(i1));
+    assert.ok(!reused(crun(R, dir, [], { det })).includes(F('b')));
+    // one process (the process unit): the write is the unit's own; a change of the writer reruns the reader
+    fs.rmSync(path.join(dir, '.cache'), { recursive: true, force: true });
+    assert.equal(crun(R, dir).status, 0);
+    assert.deepEqual(reused(crun(R, dir)).sort(), [F('a'), F('b')]);
+    write(dir, tf('a', "test('a', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/shared.txt', 'w'); });"));
+    const u3 = crun(R, dir);
+    assert.notEqual(u3.status, 0, show(u3));
+    assert.ok(!reused(u3).includes(F('b')), show(u3));
   });
 
   test('stat().mtimeMs: keyed by its value', T, () => {
@@ -290,7 +303,14 @@ describe('mocha: adversarial (environment, processes, R-009 / R-017)', () => {
     // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
     const dir = proj('mtime', { 'data/a.txt': 'a', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < 1e12); });") });
     fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
-    noWrongReuse(R, dir, F('m'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
+    // claude/node (clock branch): a file time is a clock reading (clock-real), never cached; the change is never missed
+    const r1 = crun(R, dir);
+    assert.equal(r1.status, 0, show(r1));
+    assert.ok(/reads a clock Level 0 does not virtualize|stat/.test(JSON.stringify(r1.summary.not_cached_detail)) || reused(crun(R, dir)).includes(F('m')), show(r1));
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9);
+    const r3 = crun(R, dir);
+    assert.notEqual(r3.status, 0, `WRONG REUSE\n${show(r3)}`);
+    assert.ok(!reused(r3).includes(F('m')), show(r3));
   });
 
   test('R-009 exclusive create (wx)', T, () => {
@@ -394,8 +414,18 @@ describe('mocha: adversarial (configuration, --require, --file, root hooks, --gr
     write(dir, { 'test/deep/b.spec.mjs': `${HEAD}\ntest('b', () => { assert.fail('new'); });\n` });
     const r = crun(R, dir);
     assert.notEqual(r.status, 0, show(r));
-    assert.deepEqual(reused(r), [F('a')]);
-    assert.ok(r.summary.ran_files['test/deep/b.spec.mjs']);
+    // the process unit: the plan changed (a new file), the whole run runs again
+    assert.deepEqual(reused(r), [], show(r));
+    assert.match(r.summary.misses['<mocha>@@process'], /^config: changed .*plan/, show(r));
+    // per-file units (--det-isolate): the new file runs, the old one is reused
+    write(dir, { 'test/deep/b.spec.mjs': null });
+    const det = ['--det', '--det-isolate'];
+    assert.equal(crun(R, dir, [], { det }).status, 0);
+    write(dir, { 'test/deep/b.spec.mjs': `${HEAD}\ntest('b', () => { assert.fail('new'); });\n` });
+    const ri = crun(R, dir, [], { det });
+    assert.notEqual(ri.status, 0, show(ri));
+    assert.deepEqual(reused(ri), [F('a')], show(ri));
+    assert.ok(ri.summary.ran_files['test/deep/b.spec.mjs'], show(ri));
   });
 
   test('--require ts-node/register: tsconfig change (strict null checks fail the compile)', T, () => {

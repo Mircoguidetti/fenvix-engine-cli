@@ -19,6 +19,8 @@ const DEPS = {
   tap: '21.8.1', ava: '8.4.0', jasmine: '7.0.0', uvu: '0.5.6', tsx: '4.23.15', tinyglobby: '0.2.15',
 };
 const ROOT = path.join(TMP, 'runners-b');
+// runners whose files share one process under --det-cache (the process is the cache unit; G-0147, G-0149)
+const SHARED = new Set(['jasmine', 'uvu']);
 
 function depsDir() {
   const dir = process.env.DETJS_RUNNERS_B_DEPS || path.join(TMP, 'runners-b-deps');
@@ -207,7 +209,14 @@ function sharedCases(runner) {
       // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
       const dir = fx('stat-mtime', { 'data/a.txt': 'a', ...tf('mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs < 1e12).toBe(true); });") });
       fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
-      noWrongReuse(runner, dir, F('mtime'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
+      // claude/node (clock branch): a file time may be a clock reading (clock-real, never cached): whichever the
+      // policy, the change is never missed
+      const r1 = crun(runner, dir);
+      assert.equal(r1.status, 0, show(r1));
+      fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9);
+      const r3 = crun(runner, dir);
+      assert.ok(!reused(r3).includes(F('mtime')), `WRONG REUSE\n${show(r3)}`);
+      assert.notEqual(r3.status, 0, show(r3));
     }],
     ['F1b realpath() of a symbolic link: retargeting the link', () => {
       const dir = fx('realpath', { 'data/one.txt': '1', 'data/two.txt': '2', ...tf('real', "test('real', () => { expect(path.basename(fs.realpathSync('data/current'))).toBe('one.txt'); });") });
@@ -327,19 +336,24 @@ function sharedCases(runner) {
         ...tf('a_writer', "test('writer', () => { fs.mkdirSync('shared', { recursive: true }); fs.writeFileSync('shared/x.txt', 'v1'); });"),
         ...tf('b_reader', "test('reader', () => { expect(fs.readFileSync('shared/x.txt', 'utf8')).toBe('v1'); });"),
       });
-      const r1 = crun(runner, dir);
+      // shared-process runners (Jasmine, uvu): the rule is per file under --det-isolate; in their one process the
+      // writer is part of the reader's unit (runner-b-specific G-0147 / G-0149)
+      const det = SHARED.has(runner) ? ['--det-isolate'] : [];
+      const r1 = crun(runner, dir, { det });
       assert.equal(r1.status, 0, show(r1));
-      const r2 = crun(runner, dir);
+      const r2 = crun(runner, dir, { det });
       assert.ok(!reused(r2).includes(F('b_reader')), `the reader must not be reused\n${show(r2)}`);
     }],
     ['a new test file matching the glob runs', () => {
       const dir = fx('newfile', { ...tf('first', "test('first', () => { expect(1).toBe(1); });") });
-      const r1 = crun(runner, dir);
+      // shared-process runners: per-file units under --det-isolate (their one process reruns as a whole)
+      const det = SHARED.has(runner) ? ['--det-isolate'] : [];
+      const r1 = crun(runner, dir, { det });
       assert.equal(r1.status, 0, show(r1));
       write(dir, tf('second', "test('second', () => { expect(1).toBe(2); });"));
-      const fresh = crun(runner, dir, { cache: false });
+      const fresh = crun(runner, dir, { cache: false, det });
       assert.notEqual(fresh.status, 0, show(fresh));
-      const r2 = crun(runner, dir);
+      const r2 = crun(runner, dir, { det });
       assert.equal(r2.status, fresh.status, show(r2));
       assert.ok(reused(r2).includes(F('first')), `the unchanged file is reused\n${show(r2)}`);
       assert.ok(!reused(r2).includes(F('second')), show(r2));
@@ -358,7 +372,7 @@ function sharedCases(runner) {
       const r = crun(runner, dir, { det: ['--det-cache-verify'] });
       assert.equal(r.status, 0, show(r));
       assert.ok(r.summary.verify_mode && r.summary.verified >= 1 && r.summary.verify_mismatches.length === 0, show(r));
-      assert.ok(Object.keys(r.summary.ran_files).includes(F('v')), `verify mode runs the file\n${show(r)}`);
+      assert.ok(Object.keys(r.summary.ran_files).includes(SHARED.has(runner) ? `<${runner}>@@process` : F('v')), `verify mode runs the file\n${show(r)}`);
     }],
   ];
 }

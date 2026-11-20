@@ -597,8 +597,11 @@ mod tests {
     fn outcome_and_flag_rules() {
         assert_eq!(uncacheable(&[], "failed").as_deref(), Some("outcome failed"));
         assert_eq!(uncacheable(&[], "todo"), None);
-        let f = vec![("note".to_string(), "x".to_string()), ("spawn".to_string(), "ls".to_string()), ("connect".into(), "h".into())];
+        let f = vec![("spawn".to_string(), "ls".to_string()), ("connect".into(), "h".into())];
         assert_eq!(uncacheable(&f, "passed").as_deref(), Some("subprocess: ls"));
+        // a flag the table does not know refuses reuse (P-041): it is never ignored
+        let u = vec![("note".to_string(), "x".to_string()), ("spawn".to_string(), "ls".to_string())];
+        assert_eq!(uncacheable(&u, "passed").as_deref(), Some("an input the engine cannot key: x"));
     }
 
     #[test]

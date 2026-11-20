@@ -342,7 +342,7 @@ for (const runner of RUNNERS) {
       assert.match(s.stderr, /detjs: serial run: 3 files, [\d.]+ s of test-file time \(MEASURED\); with --det-workers=\d+ \(this machine's CPUs\) about [\d.]+ s \(ESTIMATED/);
       assert.equal(s.trace.header.meta.parallel.timing.files, 3);
       const p = det(runner, dir, ['--det-workers=3']);
-      assert.match(p.stderr, /detjs: parallel: [\d.]+ s of test-file time ran in [\d.]+ s across 3 lanes \(MEASURED\)/);
+      assert.match(p.stderr, /detjs: parallel: [\d.]+ s of test-file time ran in [\d.]+ s across 3 lanes \(MEASURED/);
     });
 
     if (runner === 'vitest') {
