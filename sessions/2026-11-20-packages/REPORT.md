@@ -165,6 +165,36 @@ True now:
   gate and stay as they are: `workflow_dispatch` works only from the default branch, so they are how those sessions
   start their runs.
 
+### Local verification before the push (founder rule: CI confirms, it does not discover)
+
+All on this container, with the wheel and the napi addon built as CI builds them (`maturin build --release --zig
+--compatibility manylinux_2_28`, `cargo zigbuild -p detpy-node --target x86_64-unknown-linux-gnu.2.28`), each suite
+in a fresh virtual environment holding only what the CI step installs, on the merged tree (MEASURED):
+
+| suite | 3.12 (system 3.12.3) | 3.13 (system 3.13) | 3.14 (uv 3.14.6) |
+|---|---|---|---|
+| main Python suites (`pytest tests`, as the gate) | 1066 passed; the 2 failures fixed after the run (ward stand-in, speed test) and re-run green | 1072 passed; 1 failure fixed after the run (ward stand-in) and re-run green | 1068 passed; 5 failures, all of this interpreter (below) |
+| runner suites (Django, nose2, ward, zope) | 147 passed, 1 skipped | 147 passed, 1 skipped | 114 passed, 2 skipped (ward excluded on 3.14) |
+| numpy + time-machine | 30 passed | 30 passed | 28 passed; 2 of this interpreter |
+| hypothesis + pytest-benchmark | 3 passed | 3 passed | 3 passed |
+
+Node (detjs suites, `node --test --test-concurrency=1`, Python 3.13 with the wheel): Node 22.23.5 630 passed / 0
+failed / 1 skipped; Node 26.13.1 630 / 0 / 1. Node 24 was not run locally (no Node 24 binary here); its suite runs in
+the light gate.
+
+Not reproducible here, judged by CI:
+- The uv-built CPython 3.14.6 (the only 3.14 this container has) has two defects that CI's 3.14 does not show:
+  `unittest.mock.mock_open`'s `__exit__` takes 3 arguments, not 4 (`test_clock_rust::test_traces_match_reference`,
+  `::test_children_alive_and_its_audit_events_match_reference`), and no `os.getrandom`
+  (`test_review_r023b::test_2e_os_getrandom_is_entropy[*]`; the same two pass on the system 3.12.3, which has it).
+- `test_capture_rust::test_capture_sessions_match_reference` differed once per full run on the uv interpreters
+  without `os.getrandom` only (child entropy draws 3 against 2: a child Python without getrandom reads
+  /dev/urandom through ordinary reads), never on the system 3.12.3 / 3.13 (4 full runs) nor on CI; 6 isolated runs
+  on uv 3.14.6 pass. The test now names the first differing entry.
+- `test_level0_rust::test_level0_traces_match_reference` failed on CI's 3.12.16 only; this container cannot run that
+  interpreter (fetching CI's interpreter build was refused by the session's permission policy). Its likely cause, a
+  first run doing more work than later ones, is removed (section 3).
+
 ## 3. Every audit gap of these rows
 
 Legend: FIXED (regression test) · REFUSED (explicit message; out of the supported set) · OUT (founder decision or
