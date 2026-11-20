@@ -104,6 +104,17 @@ def main(argv=None) -> int:
             continue
         print(f"{name}: {p.runner} {p.runner_version} in {p.src}; {len(targets)} tests in shard {args.shard}/{args.nshards}",
               flush=True)
+        # node-final's first baseline run (node_harness.first_run): when the plain run is unusable, the flags and
+        # variables of the project's own test script, then its build (apollo-client: `--config
+        # ./config/jest.config.js`, without which every suite fails to parse); run_repro.py skipped this stage
+        from types import SimpleNamespace
+        first_dir = work / "first" / name
+        shutil.rmtree(first_dir, ignore_errors=True)
+        first_dir.mkdir(parents=True)
+        fr = NH.first_run(p, SimpleNamespace(min_tests=10, run_timeout=args.timeout), first_dir)
+        print(f"{name}: first baseline run: {len(fr.outcomes)} outcomes; runner args {p.pytest_args}; "
+              f"script env {sorted(p.env)}", flush=True)
+        NH.snapshot_tree(p)
         cwd = Path(RR.test_dir(p))
         prefix = os.path.relpath(cwd, p.src).replace(os.sep, "/")
         env = NH.node_env(p, RR.engine_env(None, None))
@@ -120,6 +131,7 @@ def main(argv=None) -> int:
                     f.write(json.dumps({"repo": name, "test": test, "status": "not-collected-suite", "error": str(e)[-1500:],
                                         "engine": args.engine, "wall_s": 0}) + "\n")
             continue
+        print(f"{name}: collected {len(collected)} tests, e.g. {collected[:3]}", flush=True)
         for test in targets:
             if args.budget and time.monotonic() - t_start > args.budget:
                 with res_file.open("a") as f:
@@ -145,6 +157,10 @@ def main(argv=None) -> int:
             except Exception as e:  # one test's failure never stops the others
                 b, status, err = None, "crashed", repr(e)[-1500:]
             dur = time.monotonic() - t0
+            if status == "not-collected":  # what was collected from the same file: the evidence for the verdict
+                f0 = run_id.split("::", 1)[0]
+                b = {**(b or {}), "collected_total": len(collected),
+                     "collected_same_file": [c for c in collected if c.split("::", 1)[0] == f0][:20]}
             row = {"repo": name, "test": test, "test_run": run_id, "stable_id": stable if note else None,
                    "engine": args.engine, "runner": p.runner, "runner_version": p.runner_version, "commit": p.commit,
                    "wall_s": round(dur, 1), "runs_fresh": len(runner.log) - n0, "runs_shared": runner.shared_hits - hits0,
