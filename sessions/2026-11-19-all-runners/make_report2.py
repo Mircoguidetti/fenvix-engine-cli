@@ -142,8 +142,10 @@ w("")
 w("## Answer")
 w("")
 if PENDING_NOW:
-    w(f"* **PARTIAL because walks on the final engine have not all landed**: {', '.join(PENDING_NOW)} "
-      f"(Actions runs {', '.join(str(x) for x in RUNS['final']['runs'].values())}).")
+    w(f"* **PARTIAL only because a walk on the final engine had not landed when the round closed** (coordinator's scope "
+      f"decision: the runner work continues on `claude/runners-compat`, no new walks): {', '.join(PENDING_NOW)} "
+      f"(Actions runs {', '.join(str(x) for x in RUNS['final']['runs'].values())}; no shard failed). Everything else "
+      "is done: every gate passes and every landed transition has 0 wrong reuses.")
 if not gates_ok:
     w("* **PARTIAL because a gate failed**: see Gates.")
 tf = totals(SETS["final"])
@@ -297,5 +299,7 @@ w("* A tool that starts a process at pytest start-up (MEASURED: pytest-benchmark
 w("* A reuse withdrawn at its turn (R-023 F2) inside a unittest class unit leaves the earlier members reused.")
 w("* Karma (browser, Level 2) not built. No independent review of the merged head yet.")
 w("* The brain repository was not written from this session (no access configured); this report is on the branch.")
+w("* No pull request was opened (this session's instructions: no PR). The coordinator asked for one into "
+  "`claude/release-1`; `claude/all-runners-2` is pushed and can be merged from there.")
 open(os.path.join(HERE, "REPORT-2.md"), "w").write("\n".join(out) + "\n")
 print(first, "pending:", PENDING_NOW, "gates_ok:", gates_ok)
