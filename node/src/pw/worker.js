@@ -1287,9 +1287,10 @@ if (LOCKSTEP) {
     };
   };
   LS.extraWaiting = () => NODE_FETCH.inflight;
-  // With one worker too (DETJS_LS_DB_GATE=1): test code that seeds rows concurrently (Promise.all of creates) got
-  // them in the database's real-time order (documenso seedDocuments: list order by createdAt swapped between replays).
-  if ((LS.multi && ENV.DETJS_LS_DB_GATE !== '0') || ENV.DETJS_LS_DB_GATE === '1') {
+  // With one worker too: test code that seeds rows concurrently (Promise.all of creates) got them in the database's
+  // real-time order (MEASURED locally, documenso seedDocuments: list order by createdAt swapped between replays;
+  // with the gate 19 of 19 tests of the seed-1 group identical in 2 replays). DETJS_LS_DB_GATE=0 turns it off.
+  if (ENV.DETJS_LS_DB_GATE !== '0') {
     require('../prisma').setGate(async (p, runIt) => {
       const key = currentKey();
       if (!key) return runIt();
