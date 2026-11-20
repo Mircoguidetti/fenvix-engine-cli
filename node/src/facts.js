@@ -144,9 +144,11 @@ function installProcess(patcher) {
     Object.defineProperty(w, '__detjsFacts', { value: true });
     patcher.set(nodeCrypto, make, w);
   }
+  // on the prototype (as the cache capture's hook): an own property on the instance would shadow it
   const subtle = nodeCrypto.webcrypto && nodeCrypto.webcrypto.subtle;
-  if (subtle && typeof subtle.generateKey === 'function' && !subtle.generateKey.__detjsFacts) {
-    const real = subtle.generateKey;
+  const sproto = subtle && Object.getPrototypeOf(subtle);
+  if (sproto && typeof sproto.generateKey === 'function' && !sproto.generateKey.__detjsFacts) {
+    const real = sproto.generateKey;
     const w = function generateKey(...a) {
       const test = STATE.testId;
       const p = real.apply(this, a);
@@ -158,7 +160,7 @@ function installProcess(patcher) {
       return p;
     };
     Object.defineProperty(w, '__detjsFacts', { value: true });
-    try { Object.defineProperty(subtle, 'generateKey', { value: w, writable: true, configurable: true }); } catch { /* keep */ }
+    patcher.set(sproto, 'generateKey', w);
   }
   installMkdtemp(patcher);
 }
