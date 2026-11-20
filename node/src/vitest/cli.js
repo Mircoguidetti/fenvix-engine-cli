@@ -174,7 +174,7 @@ async function main(argv) {
   const headerLines = () => session.header(run, opts, {
     runner: 'vitest', runnerVersion: pkg.version,
     parallel: par.workers > 1 ? `parallel execution in ${par.workers} lanes with a fixed plan (${par.source})` : null,
-    isolation: par.workers > 1 ? 'one file at a time per lane, each in a fresh worker' : `one worker, files in sequence${par.refused ? `; parallel refused: ${par.refused}` : ''}`,
+    isolation: par.workers > 1 ? 'one file at a time per lane, each in a fresh worker' : `one worker, files in sequence${par.refused ? `; parallel refused: ${par.refused}` : '; --det-workers=N or --maxWorkers=N for parallel lanes'}`,
   });
   // createVitest + start (instead of startVitest) so that the detjs runner and
   // the ordering options can be set on every resolved project: project

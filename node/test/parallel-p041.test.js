@@ -312,7 +312,38 @@ for (const runner of RUNNERS) {
           assert.ok(!reusedFiles(r2).includes('tests/b_victim.test.js'), show(r2));
         }
       });
+
+      test('Jest workerThreads: lanes, the capture in each worker thread, no wrong reuse after a change', T, () => {
+        const dir = fixture(runner, 'wthreads', {
+          a: "test('reads', () => { expect(fs.readFileSync(path.join(process.cwd(), 'value.txt'), 'utf8')).toBe('1'); });",
+          b: "test('b', () => { expect(1).toBe(1); });",
+          c: "test('c', () => { expect(Math.random()).toBeLessThan(1); });",
+        }, { extra: { 'value.txt': '1' } });
+        const cache = path.join(dir, '.cache');
+        const args = ['-w', '2', '--workerThreads', `--det-cache=${cache}`];
+        const r1 = det(runner, dir, args);
+        assert.equal(r1.status, 0, show(r1));
+        assert.ok(plan(r1), show(r1));
+        assert.deepEqual(r1.trace.header.meta.parallel.placement.deviations, [], show(r1));
+        assert.equal(r1.summary.recorded, 3, show(r1));
+        const r2 = det(runner, dir, args);
+        assert.equal(r2.summary.reused_tests, 3, show(r2));
+        write(dir, { 'value.txt': '2' });
+        const r3 = det(runner, dir, args);
+        assert.ok(!reusedFiles(r3).includes('tests/a.test.js'), show(r3));
+        assert.notEqual(r3.status, 0, 'the fresh result fails');
+      });
     }
+
+    test('the cost of serial is shown: test-file time and an estimate for --det-workers', T, () => {
+      const dir = fixture(runner, 'cost', isolatedSuite(3));
+      const s = det(runner, dir);
+      assert.match(s.stdout, /--det-workers=N/);
+      assert.match(s.stderr, /detjs: serial run: 3 files, [\d.]+ s of test-file time \(MEASURED\); with --det-workers=\d+ \(this machine's CPUs\) about [\d.]+ s \(ESTIMATED/);
+      assert.equal(s.trace.header.meta.parallel.timing.files, 3);
+      const p = det(runner, dir, ['--det-workers=3']);
+      assert.match(p.stderr, /detjs: parallel: [\d.]+ s of test-file time ran in [\d.]+ s across 3 lanes \(MEASURED\)/);
+    });
 
     if (runner === 'vitest') {
       test('isolate=false (files share a worker) keeps the run serial and says so', T, () => {

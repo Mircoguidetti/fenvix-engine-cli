@@ -621,6 +621,32 @@ function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}
     for (const h of hz.slice(0, 20)) lines.push(`detjs: CROSS-WORKER ${h.kind} ${h.what}: ${h.a} (lane ${laneOf.get(h.a) + 1}) / ${h.b} (lane ${laneOf.get(h.b) + 1}); the next plan puts them in one lane`);
   }
   if (carried.length) meta.carried = carried;
+  // what serial costs, shown to the user (audit G-1458): the test-file time of this run, and the same files over the
+  // machine's CPUs with a plan over these durations (ESTIMATED); for a parallel run, the lanes' wall time
+  try {
+    const durs = keys.map((k) => markers.get(k)).filter((m) => m && typeof m.start === 'number').map((m) => [m.label, Math.max(0, m.end - m.start) / 1000]);
+    const total = durs.reduce((a, [, d]) => a + d, 0);
+    const r3 = (x) => Math.round(x * 1000) / 1000;
+    if (durs.length) {
+      const cpus = workerCount('auto');
+      if (!plan) {
+        let est = null;
+        if (cpus > 1 && durs.length > 1) {
+          const p = JSON.parse(native().planLanes(durs.map(([k]) => k), durs.map(([k]) => `f:${k}`), durs.map(([, d]) => d), cpus, '', TOLERANCE, SLACK));
+          est = p.makespan;
+        }
+        meta.timing = { files: durs.length, test_file_seconds: r3(total), workers_estimate: cpus, estimated_lanes_seconds: est === null ? null : r3(est) };
+        if (est !== null && total > 0) {
+          lines.push(`detjs: serial run: ${durs.length} files, ${r3(total)} s of test-file time (MEASURED); with --det-workers=${cpus} (this machine's CPUs) about ${r3(est)} s (ESTIMATED: a plan over these durations, worker start-up not counted)`);
+        }
+      } else {
+        const t0 = Math.min(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.start));
+        const t1 = Math.max(...keys.map((k) => markers.get(k)).filter(Boolean).map((m) => m.end));
+        meta.timing = { files: durs.length, test_file_seconds: r3(total), lanes_wall_seconds: r3((t1 - t0) / 1000) };
+        lines.push(`detjs: parallel: ${r3(total)} s of test-file time ran in ${r3((t1 - t0) / 1000)} s across ${plan.workers} lanes (MEASURED)`);
+      }
+    }
+  } catch { /* report only */ }
   for (const c of carried.slice(0, 20)) lines.push(`detjs: CARRIED STATE ${c.file}: ${c.state.slice(0, 3).map((s) => `${s.key} (changed by ${s.by})`).join(', ')}${c.state.length > 3 ? ` +${c.state.length - 3}` : ''}`);
   if (write) saveState(root, state);
   return { meta, lines, flags };

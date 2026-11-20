@@ -74,7 +74,6 @@ async function main(argv) {
     if (run.netMode === 'record') reasons.push('--det-record (one cassette per process)');
     if (customRunners.size) reasons.push(`custom Jest runner ${[...customRunners].join(',')} (it places the tests itself)`);
     if (rest.includes('--detectOpenHandles') || (shown && shown.globalConfig && shown.globalConfig.detectOpenHandles)) reasons.push('--detectOpenHandles runs in band');
-    if (opts.cache && ((shown && shown.globalConfig && shown.globalConfig.workerThreads) || rest.some((a) => /^--workerThreads(=true)?$/.test(a)))) reasons.push('workerThreads with --det-cache (the capture is not started in worker threads)');
     if (reasons.length) {
       par.refused = reasons.join('; ');
       par.workers = 1;
@@ -186,7 +185,8 @@ async function main(argv) {
   };
   process.on('exit', finalize);
   for (const l of session.header(run, opts, {
-    runner: 'jest', runnerVersion: jest.pkg.version, isolation: par.workers > 1 ? `--maxWorkers=${par.workers}, one lane per worker` : 'runInBand',
+    runner: 'jest', runnerVersion: jest.pkg.version,
+    isolation: par.workers > 1 ? `--maxWorkers=${par.workers}, one lane per worker` : `runInBand; Jest alone would use ${Math.max(parallel.workerCount('auto') - 1, 1)} workers: --det-workers=N or -w N for parallel lanes`,
     parallel: par.workers > 1 ? `parallel execution in ${par.workers} lanes with a fixed plan (${par.source})` : null,
   })) {
     process.stdout.write(`${l}\n`);
