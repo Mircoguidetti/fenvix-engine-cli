@@ -41,6 +41,13 @@ function fileOf(config, context) {
 }
 
 function before(f) {
+  // the process-wide controls before the environment is built: an environment that reads a clock while it builds the
+  // test's window (jsdom copies the host's performance.timeOrigin) gets the virtual one, as test code would (found on
+  // mobx: every file's results were refused as a real-clock read)
+  if (f) {
+    const controls = require('../controls');
+    if (controls.cfg().active) controls.installProcess();
+  }
   if (!opts.cache || !f) return;
   const { CAPTURE } = require('../cache/capture');
   CAPTURE.resetFile();

@@ -313,6 +313,23 @@ for (const runner of RUNNERS) {
         }
       });
 
+      // mobx: jsdom reads the host's performance.timeOrigin while it builds the window, before Level 0 was installed in
+      // the process: every result was refused as a real-clock read. The process controls now come first.
+      test('jsdom environment: results are recorded and reused, serially and in lanes', T, () => {
+        const dir = fixture(runner, 'jsdom-env', {
+          a: "test('dom', () => { document.body.innerHTML = '<p>x</p>'; expect(document.querySelectorAll('p').length).toBe(1); });",
+          b: "test('dom2', () => { expect(typeof window.performance.now()).toBe('number'); });",
+        }, { jest: { testEnvironment: 'jsdom' } });
+        for (const args of [[], ['-w', '2']]) {
+          const cache = path.join(dir, `.cache${args.length}`);
+          const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
+          assert.equal(r1.status, 0, show(r1));
+          assert.equal(r1.summary.recorded, 2, show(r1));
+          const r2 = det(runner, dir, [...args, `--det-cache=${cache}`]);
+          assert.equal(r2.summary.reused_tests, 2, show(r2));
+        }
+      });
+
       test('Jest workerThreads: lanes, the capture in each worker thread, no wrong reuse after a change', T, () => {
         const dir = fixture(runner, 'wthreads', {
           a: "test('reads', () => { expect(fs.readFileSync(path.join(process.cwd(), 'value.txt'), 'utf8')).toBe('1'); });",
