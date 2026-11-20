@@ -119,10 +119,12 @@ function pageInit(seedHi, seedLo) {
         if (pre) anchor(pre, 0);
       }
       if (!anc) return null;
-      // Progress inside the slice from Chromium's virtual Date (whole ms): performance.now() is coarsened with a
-      // random per-process jitter, enough to move Math.floor by 1 ms between runs (MEASURED on uptime-kuma's RSS
-      // replays: socket.io's polling id 1 ms apart).
-      var e = rnow() - anc.raw;
+      // Progress inside the slice in whole ms, rounded: Chromium's virtual time carries fractions (the engine's 1 us
+      // micro-slices after a delivery, as many as the renderer needed, decided in real time), so a timer due at k ms
+      // fires at k + up to 0.2 ms; performance.now() adds a random per-process jitter below 0.2 ms. Flooring either
+      // read moved Date.now() by 1 ms between replays (MEASURED on uptime-kuma's RSS seed replays under CPU load:
+      // socket.io's polling id 1 ms apart); rounding the difference does not.
+      var e = Math.round(rperf() - anc.perf);
       if (e < 0) e = 0;
       if (e > anc.allow) e = anc.allow;
       return anc.base + e;
