@@ -109,7 +109,8 @@ def main(argv=None) -> int:
         env = NH.node_env(p, RR.engine_env(None, None))
         bundles = out / "bundles" / name
         runner = SharedRunner(cwd=cwd, workdir=work / "runs" / name, pytest_args=list(p.pytest_args),
-                              timeout=args.timeout, runner=p.runner, env=env)
+                              timeout=args.timeout, runner=p.runner, env=env,
+                              detjs=["node", str(RR.DETJS)])
         NH.clean_tree(p)
         try:
             collected = runner.collect()
