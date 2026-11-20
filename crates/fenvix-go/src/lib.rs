@@ -497,6 +497,26 @@ pub unsafe extern "C" fn fenvix_skip_record(h: *mut FenvixSkip, run_json: *const
     })
 }
 
+/// Tests to run again on the real clock (see `Session::real_clock_rerun`):
+/// `{"results": [...], "pkg_deps": "..."}` -> JSON list of names.
+///
+/// # Safety
+/// Handle from `fenvix_skip_open`, valid string.
+#[no_mangle]
+pub unsafe extern "C" fn fenvix_skip_real_clock_rerun(h: *mut FenvixSkip, run_json: *const c_char) -> *mut c_char {
+    guard(ptr::null_mut(), || {
+        let h = h.as_mut().ok_or("skip handle is NULL")?;
+        #[derive(serde::Deserialize)]
+        struct In {
+            results: Vec<skip::TestResult>,
+            #[serde(default)]
+            pkg_deps: String,
+        }
+        let r: In = serde_json::from_str(arg(run_json, "run_json")?).map_err(|e| format!("run_json: {e}"))?;
+        Ok(out_string(serde_json::to_string(&h.s.real_clock_rerun(&r.results, &r.pkg_deps)).unwrap()))
+    })
+}
+
 /// Release a skip session.
 ///
 /// # Safety

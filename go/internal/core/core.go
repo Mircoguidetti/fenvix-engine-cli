@@ -312,6 +312,26 @@ func (s *Skip) Record(run any) (string, error) {
 	return take(p), nil
 }
 
+// RealClockRerun returns the tests to run again on the real clock: they
+// failed and started a program the virtual clock does not reach.
+func (s *Skip) RealClockRerun(run any) ([]string, error) {
+	j, err := json.Marshal(run)
+	if err != nil {
+		return nil, err
+	}
+	c := cstr(string(j))
+	defer C.free(unsafe.Pointer(c))
+	p := C.fenvix_skip_real_clock_rerun(s.p, c)
+	if p == nil {
+		return nil, lastError("skip real clock rerun")
+	}
+	var names []string
+	if err := json.Unmarshal([]byte(take(p)), &names); err != nil {
+		return nil, err
+	}
+	return names, nil
+}
+
 // Free releases the session.
 func (s *Skip) Free() {
 	if s.p != nil {

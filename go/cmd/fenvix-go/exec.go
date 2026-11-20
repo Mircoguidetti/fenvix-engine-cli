@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/mircoguidetti/fenvix-engine-cli/go/internal/core"
+	"github.com/mircoguidetti/fenvix-engine-cli/go/internal/overlay"
 	"github.com/mircoguidetti/fenvix-engine-cli/go/internal/session"
 )
 
@@ -29,7 +30,8 @@ type decision struct {
 	Cached        string  `json:"cached"`         // cached outcome
 	CachedElapsed float64 `json:"cached_elapsed"` // seconds
 	Fresh         string  `json:"fresh,omitempty"`
-	Elapsed       float64 `json:"elapsed"` // seconds of the fresh run (0 when not run)
+	Elapsed       float64 `json:"elapsed"`                 // seconds of the fresh run (0 when not run)
+	VirtualClock  string  `json:"virtual_clock,omitempty"` // outcome on the virtual day when the reported run was on the real clock
 	Commit        string  `json:"commit,omitempty"`
 }
 
@@ -146,13 +148,6 @@ func cmdExec(args []string) int {
 	stamp := fmt.Sprintf("%020d-%s", time.Now().UnixNano(), sanitize(pkg))
 	partBase := filepath.Join(sess.Dir, "parts", stamp)
 	evPath := partBase + ".events"
-	evf, err := os.Create(evPath)
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
-		return 2
-	}
-	outR, outW, _ := os.Pipe()
-	inR, inW, _ := os.Pipe()
 
 	childEnv := os.Environ()
 	initSeed := core.DeriveSeed(sess.Seed, pkg+"::<init>")
@@ -227,149 +222,198 @@ func cmdExec(args []string) int {
 		defer sk.Free()
 	}
 
-	// control pipe: names -> order, seeds, tests to leave out
-	var names, order, fullOrder []string
-	stdout := &reusePrinter{w: os.Stdout}
-	var ctlWG sync.WaitGroup
-	ctlWG.Add(1)
-	go func() {
-		defer ctlWG.Done()
-		sc := bufio.NewScanner(outR)
-		sc.Buffer(make([]byte, 1<<20), 1<<26)
-		for sc.Scan() {
-			line := sc.Text()
-			if !strings.HasPrefix(line, "L\x1f") {
-				continue
-			}
-			names = strings.Split(line[2:], "\x1f")
-			if len(names) == 1 && names[0] == "" {
-				names = nil
-			}
-			idx := make([]int, len(names))
-			for i := range idx {
-				idx[i] = i
-			}
-			if sess.Det && sess.Seed != 0 {
-				idx = core.ShuffleIndices(len(names), sess.Seed, pkg)
-			}
-			for _, i := range idx {
-				fullOrder = append(fullOrder, names[i])
-			}
-			reuse := map[string]bool{}
-			if sk != nil {
-				r, err := sk.Decide(fullOrder)
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
-				}
-				if !sess.Skip.Verify {
-					for _, n := range r {
-						reuse[n] = true
-					}
-				}
-			}
-			var ord, seeds, reused []string
-			for _, i := range idx {
-				name := names[i]
-				if reuse[name] {
-					reused = append(reused, name)
+	// one run of the binary: the control pipe hands it the order (names ->
+	// order, seeds, tests to leave out); with fixed != nil the reused set
+	// is the one decided before (a second run of the same package)
+	type runOut struct {
+		recs                    []record
+		code                    int
+		names, fullOrder, order []string
+		reused                  map[string]bool
+	}
+	runBinary := func(env []string, withStrace bool, out, errOut io.Writer, ev string, fixed map[string]bool) (*runOut, error) {
+		ro := &runOut{reused: map[string]bool{}}
+		evf, err := os.Create(ev)
+		if err != nil {
+			return nil, err
+		}
+		outR, outW, _ := os.Pipe()
+		inR, inW, _ := os.Pipe()
+		printer := &reusePrinter{w: out}
+		var ctlWG sync.WaitGroup
+		ctlWG.Add(1)
+		go func() {
+			defer ctlWG.Done()
+			sc := bufio.NewScanner(outR)
+			sc.Buffer(make([]byte, 1<<20), 1<<26)
+			for sc.Scan() {
+				line := sc.Text()
+				if !strings.HasPrefix(line, "L\x1f") {
 					continue
 				}
-				ord = append(ord, strconv.Itoa(i))
-				seeds = append(seeds, strconv.FormatUint(core.DeriveSeed(sess.Seed, pkg+"::"+name), 10))
-				order = append(order, name)
+				ro.names = strings.Split(line[2:], "\x1f")
+				if len(ro.names) == 1 && ro.names[0] == "" {
+					ro.names = nil
+				}
+				idx := make([]int, len(ro.names))
+				for i := range idx {
+					idx[i] = i
+				}
+				if sess.Det && sess.Seed != 0 {
+					idx = core.ShuffleIndices(len(ro.names), sess.Seed, pkg)
+				}
+				for _, i := range idx {
+					ro.fullOrder = append(ro.fullOrder, ro.names[i])
+				}
+				switch {
+				case fixed != nil:
+					for n := range fixed {
+						ro.reused[n] = true
+					}
+				case sk != nil:
+					r, err := sk.Decide(ro.fullOrder)
+					if err != nil {
+						fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
+					}
+					if !sess.Skip.Verify {
+						for _, n := range r {
+							ro.reused[n] = true
+						}
+					}
+				}
+				var ord, seeds, reused []string
+				for _, i := range idx {
+					name := ro.names[i]
+					if ro.reused[name] {
+						reused = append(reused, name)
+						continue
+					}
+					ord = append(ord, strconv.Itoa(i))
+					seeds = append(seeds, strconv.FormatUint(core.DeriveSeed(sess.Seed, pkg+"::"+name), 10))
+					ro.order = append(ro.order, name)
+				}
+				printer.setReused(reused)
+				fmt.Fprintf(inW, "O\x1f%s\x1f%s\n", strings.Join(ord, ","), strings.Join(seeds, ","))
 			}
-			stdout.setReused(reused)
-			fmt.Fprintf(inW, "O\x1f%s\x1f%s\n", strings.Join(ord, ","), strings.Join(seeds, ","))
-		}
-	}()
+		}()
 
-	// reused tests are reported before the binary runs the others
-	var cmdArgs []string
-	if useStrace {
-		cmdArgs = append(core.StraceArgs(logPath), bin)
-	} else {
-		cmdArgs = []string{bin}
+		// reused tests are reported before the binary runs the others
+		var cmdArgs []string
+		if withStrace {
+			cmdArgs = append(core.StraceArgs(logPath), bin)
+		} else {
+			cmdArgs = []string{bin}
+		}
+		cmdArgs = append(cmdArgs, runArgs...)
+		if sess.PidNS {
+			// --det: the test binary's pid is the same in every run (its own PID
+			// namespace and /proc; review R-025b D3b)
+			cmdArgs = append([]string{"unshare", "--pid", "--fork", "--mount-proc", "--"}, cmdArgs...)
+		}
+		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
+		cmd.Stdin, cmd.Stderr = os.Stdin, errOut
+		printer.json, printer.verbose = testJSON, verbose
+		cmd.Stdout = printer
+		cmd.Env = env
+		cmd.ExtraFiles = []*os.File{evf, outW, inR}
+		if err := cmd.Start(); err != nil {
+			evf.Close()
+			return nil, err
+		}
+		evf.Close()
+		outW.Close()
+		inR.Close()
+		runErr := cmd.Wait()
+		outR.Close()
+		inW.Close()
+		ctlWG.Wait()
+		printer.flushReused()
+		ro.code = exitCode(runErr)
+		ro.recs, _ = readRecords(ev)
+		os.Remove(ev)
+		return ro, nil
 	}
-	cmdArgs = append(cmdArgs, runArgs...)
-	if sess.PidNS {
-		// --det: the test binary's pid is the same in every run (its own PID
-		// namespace and /proc; review R-025b D3b)
-		cmdArgs = append([]string{"unshare", "--pid", "--fork", "--mount-proc", "--"}, cmdArgs...)
+
+	// skip mode on the virtual day: the output is held until the run is
+	// known not to need the real clock (review R-025b S1)
+	virtualDay := sk != nil && sess.ClockMode == "offset"
+	var held bytesBuffer
+	var out, errOut io.Writer = os.Stdout, os.Stderr
+	if virtualDay {
+		// go test merges a test binary's stdout and stderr: so does the
+		// held output
+		out, errOut = &held, &held
 	}
-	cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
-	cmd.Stdin, cmd.Stderr = os.Stdin, os.Stderr
-	stdout.json, stdout.verbose = testJSON, verbose
-	cmd.Stdout = stdout
-	cmd.Env = childEnv
-	cmd.ExtraFiles = []*os.File{evf, outW, inR}
-	if err := cmd.Start(); err != nil {
+	ro, err := runBinary(childEnv, useStrace, out, errOut, evPath, nil)
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
 		return 2
 	}
-	evf.Close()
-	outW.Close()
-	inR.Close()
-	runErr := cmd.Wait()
-	outR.Close()
-	inW.Close()
-	ctlWG.Wait()
-	stdout.flushReused()
-	code := exitCode(runErr)
+	names, fullOrder := ro.names, ro.fullOrder
+	results, pkgDeps := parseResults(ro.recs)
+	reported := ro
+	if virtualDay {
+		rerun, err := sk.RealClockRerun(map[string]any{"results": results, "pkg_deps": pkgDeps})
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
+		}
+		if len(rerun) == 0 {
+			os.Stdout.Write(held.Bytes())
+		} else {
+			// a test failed after starting a program that reads the real
+			// clock (a Go or static program): the two clocks met. The package
+			// runs again on the real clock, as go test runs it, and that run
+			// is the one reported. Its keys stay those of the virtual-clock
+			// run; such a test is never reused (exec: is unkeyed)
+			fmt.Fprintf(os.Stderr, "fenvix-go: %s: %s failed on the virtual day after starting a program that reads the real clock; the package runs again on the real clock (reported run)\n",
+				pkg, strings.Join(rerun, ", "))
+			realEnv := realClockEnv(childEnv, sess)
+			r2, err := runBinary(realEnv, false, os.Stdout, os.Stderr, evPath+".real", ro.reused)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
+				os.Stdout.Write(held.Bytes())
+			} else {
+				reported = r2
+				res2, _ := parseResults(r2.recs)
+				byName2 := map[string]*result{}
+				for _, r := range res2 {
+					byName2[r.Name] = r
+				}
+				for _, r := range results {
+					if r2r := byName2[r.Name]; r2r != nil && r2r.Outcome != r.Outcome {
+						r.VirtualClock = r.Outcome
+						r.Outcome = r2r.Outcome
+						r.Elapsed = r2r.Elapsed
+					}
+				}
+			}
+		}
+	}
+	code := reported.code
+	order := reported.order
 
 	// events -> fingerprints (Rust core) -> partial trace
-	recs, _ := readRecords(evPath)
 	rec := core.NewRecorder(0, 0)
 	defer rec.Free()
 	if err := rec.Open(partBase+".jsonl", traceMeta(sess, pkg), prefixed(pkg, order)); err != nil {
 		fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
 	}
-	type result struct {
-		Name    string  `json:"name"`
-		Outcome string  `json:"outcome"`
-		Elapsed float64 `json:"elapsed"`
-		Pos     int     `json:"pos"`
-		Deps    string  `json:"deps"`
-	}
-	var results []*result
-	byName := map[string]*result{}
-	var pkgDeps strings.Builder
-	var cur string
-	idx := 0
-	for _, r := range recs {
+	pos := 0
+	for _, r := range reported.recs {
 		switch r.kind {
-		case 'I':
-			pkgDeps.Write(r.payload)
-			pkgDeps.WriteByte(0x1e)
 		case 'B':
-			cur = string(r.payload)
-			rec.BeginTest(pkg+"::"+cur, uint64(idx))
-			res := &result{Name: cur, Outcome: "interrupted", Pos: idx}
-			results = append(results, res)
-			byName[cur] = res
-			idx++
+			rec.BeginTest(pkg+"::"+string(r.payload), uint64(pos))
+			pos++
 		case 'E':
 			if _, err := rec.RecordPacked(r.payload); err != nil {
 				fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
 			}
-		case 'D':
-			if res := byName[cur]; res != nil {
-				res.Deps += string(r.payload) + "\x1e"
-			}
 		case 'X':
 			parts := strings.Split(string(r.payload), "\x1f")
-			if res := byName[cur]; res != nil {
-				res.Outcome = parts[0]
-				if len(parts) > 2 {
-					ns, _ := strconv.ParseInt(parts[2], 10, 64)
-					res.Elapsed = float64(ns) / 1e9
-				}
-			}
 			rec.EndTest(parts[0])
-			cur = ""
 		}
 	}
 	rec.Close()
-	os.Remove(evPath)
 
 	if sk != nil {
 		straceLog := ""
@@ -380,7 +424,7 @@ func cmdExec(args []string) int {
 			results = []*result{}
 		}
 		if _, err := sk.Record(map[string]any{"names": nonNil(names), "order": nonNil(fullOrder), "results": results,
-			"pkg_deps": pkgDeps.String(), "strace_log": straceLog, "cwd": cwd}); err != nil {
+			"pkg_deps": pkgDeps, "strace_log": straceLog, "cwd": cwd}); err != nil {
 			fmt.Fprintln(os.Stderr, "fenvix-go exec:", err)
 		}
 		if useStrace {
@@ -416,6 +460,95 @@ func prefixed(pkg string, names []string) []string {
 		out[i] = pkg + "::" + n
 	}
 	return out
+}
+
+// result is one test's outcome as the events of a run report it.
+type result struct {
+	Name         string  `json:"name"`
+	Outcome      string  `json:"outcome"`
+	Elapsed      float64 `json:"elapsed"`
+	Pos          int     `json:"pos"`
+	Deps         string  `json:"deps"`
+	VirtualClock string  `json:"virtual_clock,omitempty"`
+}
+
+// parseResults reads the test outcomes and packed hook dependencies of a run.
+func parseResults(recs []record) ([]*result, string) {
+	results := []*result{}
+	byName := map[string]*result{}
+	var pkgDeps strings.Builder
+	var cur string
+	idx := 0
+	for _, r := range recs {
+		switch r.kind {
+		case 'I':
+			pkgDeps.Write(r.payload)
+			pkgDeps.WriteByte(0x1e)
+		case 'B':
+			cur = string(r.payload)
+			res := &result{Name: cur, Outcome: "interrupted", Pos: idx}
+			results = append(results, res)
+			byName[cur] = res
+			idx++
+		case 'D':
+			if res := byName[cur]; res != nil {
+				res.Deps += string(r.payload) + "\x1e"
+			}
+		case 'X':
+			parts := strings.Split(string(r.payload), "\x1f")
+			if res := byName[cur]; res != nil {
+				res.Outcome = parts[0]
+				if len(parts) > 2 {
+					ns, _ := strconv.ParseInt(parts[2], 10, 64)
+					res.Elapsed = float64(ns) / 1e9
+				}
+			}
+			cur = ""
+		}
+	}
+	return results, pkgDeps.String()
+}
+
+// realClockEnv is the test binary's environment for a run on the real clock:
+// the time controls are off and the preloaded library adds nothing.
+func realClockEnv(env []string, sess *session.Session) []string {
+	ctl := sess.Ctl &^ (overlay.Bits[overlay.CtlTime] | overlay.Bits[overlay.CtlFastWait])
+	var out []string
+	for _, kv := range env {
+		switch {
+		case strings.HasPrefix(kv, "FENVIX_GO_DET="):
+			_, rest, _ := strings.Cut(kv, ";")
+			rest = strings.Replace(rest, "clockmode="+sess.ClockMode, "clockmode=", 1)
+			kv = fmt.Sprintf("FENVIX_GO_DET=ctl=%d;%s", ctl, rest)
+		case strings.HasPrefix(kv, "FENVIX_GO_CLOCK_OFFSET="):
+			kv = "FENVIX_GO_CLOCK_OFFSET=0"
+		case strings.HasPrefix(kv, "FENVIX_GO_CLOCK_BEGIN="):
+			kv = "FENVIX_GO_CLOCK_BEGIN=0"
+		case strings.HasPrefix(kv, "FENVIX_GO_CLOCK_MARK="):
+			continue
+		}
+		out = append(out, kv)
+	}
+	return out
+}
+
+// bytesBuffer is a goroutine-safe byte buffer.
+type bytesBuffer struct {
+	mu sync.Mutex
+	b  []byte
+}
+
+func (b *bytesBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	b.b = append(b.b, p...)
+	b.mu.Unlock()
+	return len(p), nil
+}
+
+func (b *bytesBuffer) Bytes() []byte {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.b
 }
 
 // reusePrinter passes the binary's output through and, before its first

@@ -477,6 +477,10 @@ pub struct TestResult {
     pub pos: i64,
     /// packed hook dependencies (0x1e between items, 0x1f after the kind)
     pub deps: String,
+    /// the outcome on the virtual clock when the test ran again on the real
+    /// clock (see `Session::real_clock_rerun`); "" otherwise
+    #[serde(default)]
+    pub virtual_clock: String,
 }
 
 /// What the shell hands over after the binary exited.
@@ -510,6 +514,10 @@ pub struct Decision {
     #[serde(skip_serializing_if = "String::is_empty")]
     pub fresh: String,
     pub elapsed: f64,
+    /// outcome on the virtual clock of a test that ran again on the real
+    /// clock (its fresh outcome is the real-clock one)
+    #[serde(skip_serializing_if = "String::is_empty")]
+    pub virtual_clock: String,
     #[serde(skip_serializing_if = "String::is_empty")]
     pub commit: String,
 }
@@ -880,6 +888,24 @@ impl Session {
         e
     }
 
+    /// Tests whose virtual-clock failure may come from the virtual clock
+    /// itself (review R-025b S1): the test failed and it, or the package
+    /// set-up, started a program the clock does not reach (a Go or static
+    /// program reads the real clock, so the two clocks met: a certificate
+    /// made by the program is "not yet valid" on the virtual day). The shell
+    /// runs the package again on the real clock and reports that run. Such a
+    /// test is never reused: the exec is unkeyed.
+    pub fn real_clock_rerun(&self, results: &[TestResult], pkg_deps: &str) -> Vec<String> {
+        let unreached = |raw: &Raw| raw.unkeyed.iter().any(|u| u.starts_with("exec:"));
+        let pkg = unreached(&self.raw_from_hooks(pkg_deps, None));
+        results
+            .iter()
+            .filter(|r| r.outcome != "passed" && r.outcome != "skipped")
+            .filter(|r| pkg || unreached(&self.raw_from_hooks(&r.deps, None)))
+            .map(|r| r.name.clone())
+            .collect()
+    }
+
     /// Record the run: decisions, then new entries for the tests that ran.
     pub fn record(&mut self, run: Run) -> Result<serde_json::Value, String> {
         let mut parsed: Option<Parsed> = None;
@@ -949,6 +975,7 @@ impl Session {
                 cached_elapsed: cached.map(|e| e.elapsed).unwrap_or(0.0),
                 fresh: String::new(),
                 elapsed: 0.0,
+                virtual_clock: String::new(),
                 commit: self.cfg.commit.clone(),
             };
             let Some(res) = results.get(name.as_str()) else {
@@ -961,13 +988,18 @@ impl Session {
             n_run += 1;
             d.fresh = res.outcome.clone();
             d.elapsed = res.elapsed;
+            d.virtual_clock = res.virtual_clock.clone();
             writeln!(out, "{}", serde_json::to_string(&d).unwrap()).map_err(|e| e.to_string())?;
-            let mut e = self.make_entry(&res.outcome, res.elapsed, &closure[name], parsed.as_ref());
+            // the entry keeps the virtual-clock outcome: that is the run its
+            // keys describe (a test that ran again on the real clock started a
+            // program outside the virtual clock: exec: keeps it unkeyed)
+            let outcome = if res.virtual_clock.is_empty() { &res.outcome } else { &res.virtual_clock };
+            let mut e = self.make_entry(outcome, res.elapsed, &closure[name], parsed.as_ref());
             e.capture = capture.clone();
             for prev in &before[name] {
                 absorb(&mut e, prev);
             }
-            let mut o = self.make_entry(&res.outcome, res.elapsed, &own_raw[name], parsed.as_ref());
+            let mut o = self.make_entry(outcome, res.elapsed, &own_raw[name], parsed.as_ref());
             o.capture = capture.clone();
             self.cache.tests.insert(name.clone(), e);
             self.cache.own.insert(name.clone(), o);
@@ -1101,6 +1133,30 @@ mod tests {
         s.cache.save(&s.cfg.cache_dir).unwrap();
         let s2 = Session::open(cfg(dir, vec!["LD_LIBRARY_PATH=/b".into()]));
         assert_eq!(s2.why(s2.cache.tests.get("T")), "env:LD_*");
+    }
+
+    #[test]
+    fn real_clock_rerun_only_for_failures_that_started_an_unreached_program() {
+        let d = tempfile::tempdir().unwrap();
+        let dir = d.path().to_str().unwrap();
+        let s = Session::open(cfg(dir, vec![]));
+        let r = |name: &str, outcome: &str, deps: &str| TestResult {
+            name: name.into(),
+            outcome: outcome.into(),
+            elapsed: 0.0,
+            pos: 0,
+            deps: deps.into(),
+            virtual_clock: String::new(),
+        };
+        let go_prog = "X\x1f/nonexistent/terraform-provider-simple\x1e";
+        let res = vec![
+            r("Meets", "failed", go_prog),
+            r("PassesWithChild", "passed", go_prog),
+            r("FailsAlone", "failed", "E\x1fHOME\x1e"),
+        ];
+        assert_eq!(s.real_clock_rerun(&res, ""), vec!["Meets".to_string()]);
+        // a program started by the package set-up (TestMain) counts for every test
+        assert_eq!(s.real_clock_rerun(&res, go_prog), vec!["Meets".to_string(), "FailsAlone".to_string()]);
     }
 
     #[test]

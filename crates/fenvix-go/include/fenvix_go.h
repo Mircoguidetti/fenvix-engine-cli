@@ -49,6 +49,7 @@ char *fenvix_skip_strace_args(const char *log);
 FenvixSkip *fenvix_skip_open(const char *config_json);
 char *fenvix_skip_decide(FenvixSkip *h, const char *names_json);
 char *fenvix_skip_record(FenvixSkip *h, const char *run_json);
+char *fenvix_skip_real_clock_rerun(FenvixSkip *h, const char *run_json);
 void fenvix_skip_free(FenvixSkip *h);
 char *fenvix_virtual_proc_stat(const char *real);
 int64_t fenvix_skip_day_epoch(void);
