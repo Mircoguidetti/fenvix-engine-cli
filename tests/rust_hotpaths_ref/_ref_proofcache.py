@@ -185,6 +185,19 @@ def _user_stat_caller() -> bool:
     return False
 
 
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time (claude/parallel-proof-3
+# 89971a3: os.path.getmtime / getctime / getatime by user code refuse, test W6e)
+_TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
+
+
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller). Called
+    from the os.stat wrapper (frame 1)."""
+    f = _getframe(2)
+    return (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
+
+
 class _TimedStat:
     """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
     Everything else is the result's own."""
@@ -235,6 +248,78 @@ class _TimedStat:
     def __reduce__(self):
         self._timed()
         return self._r.__reduce__()
+
+
+class _ScandirEntry:
+    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2;
+    ``Capture._patch_scandir``)."""
+
+    __slots__ = ("_e", "_cap")
+
+    def __init__(self, e, cap):
+        self._e = e
+        self._cap = cap
+
+    def _check(self, meta: bool, follow: bool = True) -> None:
+        cap = self._cap
+        if cap._in_stat:
+            return
+        cap._in_stat = True
+        try:
+            cap.stat_check(self._e.path, not follow, meta)
+        except Exception:
+            pass
+        finally:
+            cap._in_stat = False
+
+    def stat(self, *, follow_symlinks=True):
+        self._check(True, follow_symlinks)
+        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path)
+
+    def is_file(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_file(follow_symlinks=follow_symlinks)
+
+    def is_dir(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_dir(follow_symlinks=follow_symlinks)
+
+    def is_symlink(self):
+        self._check(False, False)
+        return self._e.is_symlink()
+
+    def __fspath__(self):
+        return self._e.__fspath__()
+
+    def __getattr__(self, name):
+        return getattr(self._e, name)
+
+    def __repr__(self):
+        return repr(self._e)
+
+
+class _ScandirIter:
+    __slots__ = ("_it", "_cap")
+
+    def __init__(self, it, cap):
+        self._it = it
+        self._cap = cap
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return _ScandirEntry(next(self._it), self._cap)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self._it.close()
+        return False
+
+    def close(self):
+        self._it.close()
 
 
 class Capture:
@@ -441,6 +526,7 @@ class Capture:
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         self._patch_stat()
+        self._patch_scandir()
         self._patch_lookups()
         self._installed_cb = self._installed
         self.active = False
@@ -490,6 +576,32 @@ class Capture:
             self.tool = None
 
     # -- absent inputs (parallel-proof round 3, item 9) ---------------------------------
+    def _patch_scandir(self) -> None:
+        """Review R-032b F2 (claude/parallel-proof-3 c5f0e70): ``os.scandir``'s entries answer ``stat()``,
+        ``is_file()``, ``is_dir()`` and ``is_symlink()`` without ``os.stat``. User code iterating ``os.scandir`` gets
+        entries whose ``stat()`` is an input like ``os.stat`` here (the path's metadata: ``q``, ``Q`` without
+        following a symlink) and whose kind checks are kind checks. Library code's iterations (glob, shutil) keep the
+        plain entries (their callers' own checks are recorded where they look)."""
+        cap = self
+        orig_scandir = os.scandir
+
+        def scandir(path=".", *args, **kwargs):
+            it = orig_scandir(path, *args, **kwargs)
+            if isinstance(path, int) or cap._in_stat:
+                return it
+            try:
+                if cap._caller_kind() != "user":
+                    return it
+            except Exception:
+                return it
+            return _ScandirIter(it, cap)
+
+        scandir.__name__ = "scandir"
+        scandir.__doc__ = orig_scandir.__doc__
+        scandir.__wrapped__ = orig_scandir
+        self._stat_saved.append((os, "scandir", orig_scandir))
+        os.scandir = scandir
+
     def _patch_stat(self) -> None:
         # claude/all-runners-2: as detpy/_proof.py: stat/lstat/access/readlink key the metadata, the os.path.exists
         # family the kind (it calls the unwrapped stat)
@@ -541,6 +653,9 @@ class Capture:
                     if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
                         try:
                             timed = _user_stat_caller() and cap._caller_kind() == "user"
+                            if _time_helper_caller() and cap._caller_kind() == "user":
+                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
                         except Exception:
                             timed = False
                 r = orig(path, *args, **kwargs)

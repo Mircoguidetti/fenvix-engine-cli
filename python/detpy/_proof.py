@@ -86,6 +86,19 @@ def _user_stat_caller() -> bool:
     return False
 
 
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time (claude/parallel-proof-3
+# 89971a3: os.path.getmtime / getctime / getatime by user code refuse, test W6e)
+_TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
+
+
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller). Called
+    from the os.stat wrapper (frame 1)."""
+    f = _getframe(2)
+    return (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
+
+
 class _TimedStat:
     """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
     Everything else is the result's own."""
@@ -357,6 +370,9 @@ class Capture(_core.CaptureCore):
                     if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
                         try:
                             timed = _user_stat_caller() and cap._caller_kind() == "user"
+                            if _time_helper_caller() and cap._caller_kind() == "user":
+                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
                         except Exception:
                             timed = False
                 r = orig(path, *args, **kwargs)

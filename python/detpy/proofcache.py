@@ -44,6 +44,10 @@ from . import _core, _state, follow  # noqa: F401 (kept importable from here: te
 from ._proof import (  # noqa: F401
     _AUDIT_EVENTS,
     _DETPY_DIR,
+    _ScandirEntry,
+    _TimedStat,
+    _time_helper_caller,
+    _user_stat_caller,
     _DETPY_OWN_ENV,
     AVAILABLE,
     Capture,
