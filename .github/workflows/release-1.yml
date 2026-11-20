@@ -229,7 +229,12 @@ jobs:
     container: {image: "${{ matrix.image }}"}
     steps:
       - name: git
-        run: command -v git || (apt-get update -qq && apt-get install -y -qq --no-install-recommends git ca-certificates > /dev/null)
+        # Node 26's own binary needs libatomic.so.1, which slim Debian images do not have (MEASURED: run 44756797015)
+        run: |
+          if command -v apt-get > /dev/null; then
+            apt-get update -qq && apt-get install -y -qq --no-install-recommends git ca-certificates libatomic1 > /dev/null
+          fi
+          command -v git
       - uses: actions/setup-node@v4
         if: matrix.node != ''
         with: {node-version: "${{ matrix.node }}"}

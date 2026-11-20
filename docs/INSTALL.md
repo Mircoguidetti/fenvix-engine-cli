@@ -54,6 +54,7 @@ name: never install it next to the engine; `fenvix doctor` reports it.
 | a C compiler (`cc`, `gcc` or `clang`) at run time | the child-process clock shim of `--det-cache` | tests that start processes run every time |
 | permission for `personality(ADDR_NO_RANDOMIZE)` | ASLR off under `--det` | the run continues with "ASLR on" in the header |
 | `git` | nothing in the engine; the projects' own steps | |
+| `libatomic1` (Debian/Ubuntu slim images) | Node 26 itself (its binary links `libatomic.so.1`) | `node` does not start: `error while loading shared libraries: libatomic.so.1` (MEASURED on `python:3.14-slim`) |
 
 Containers: Docker's default seccomp profile denies the ASLR switch (`--security-opt seccomp=unconfined`, or accept
 "ASLR on"); ptrace must be allowed for strace (default Docker allows it; gVisor does not). Keep the `--det-cache`

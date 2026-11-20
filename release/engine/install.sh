@@ -40,7 +40,10 @@ cp -R "$here/node/." "$prefix/node/"
 install -m 755 "$here/bin/fenvix" "$prefix/bin/fenvix"
 cp "$here/VERSION.json" "$prefix/VERSION.json"
 if command -v node >/dev/null 2>&1; then
-  major="$(node -p 'process.versions.node.split(".")[0]')"
-  case "$major" in 22|24|26) ;; *) echo "fenvix: Node $major found; the Node shells are tested on Node 22, 24 and 26" >&2 ;; esac
+  if major="$(node -p 'process.versions.node.split(".")[0]' 2>/dev/null)"; then
+    case "$major" in 22|24|26) ;; *) echo "fenvix: Node $major found; the Node shells are tested on Node 22, 24 and 26" >&2 ;; esac
+  else
+    echo "fenvix: the node on PATH does not start ($(node --version 2>&1 | head -1)); the Node shells need a working Node 22, 24 or 26" >&2
+  fi
 fi
 echo "installed fenvix $(cat "$here/VERSION") into $prefix (Python: $("$py" -c 'import sys; print(sys.executable)'))"
