@@ -22,6 +22,16 @@ function outcomes(dir, file = 'o.json') {
   return JSON.parse(fs.readFileSync(path.join(dir, file), 'utf8'));
 }
 
+/** The value test `suffix` drew from Math.random in the last run (its trace event): what a seed decides. */
+function drawOf(dir, suffix) {
+  const tests = fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n')
+    .filter((l) => l.startsWith('{"type":"test"')).map((l) => JSON.parse(l));
+  const t = tests.find((x) => x.nodeid.endsWith(suffix));
+  const e = t && t.events.find((x) => x.o === 'Math.random');
+  assert.ok(e, `no Math.random event of ${suffix}`);
+  return e.v;
+}
+
 function writeOrder(dir, ids) {
   fs.writeFileSync(path.join(dir, 'order.txt'), ids.map((i) => `${i}\n`).join(''));
   return 'order.txt';
@@ -142,17 +152,17 @@ for (const runner of RUNNERS.filter((r) => r === 'vitest' || r === 'jest')) {
     });
 
     test('--det-order with a seed: the listed order wins over the shuffle, the seed still seeds Math.random', T, () => {
-      const dir = project(runner, 'p041-seed', { a: "test('r1', () => { fs.writeFileSync(path.join(__dirname, '..', 'r1-' + process.env.DETJS_SEED), String(Math.random())); });\ntest('r2', () => {});" });
+      const dir = project(runner, 'p041-seed', { a: "test('r1', () => { Math.random(); });\ntest('r2', () => {});" });
       const ext = runner === 'vitest' ? '.test.mjs' : '.test.js';
       const order = [`tests/a${ext}::r2`, `tests/a${ext}::r1`];
       det(runner, dir, ['--det-seed=4', `--det-order=${writeOrder(dir, order)}`, '--det-outcomes=o.json']);
       assert.deepEqual(outcomes(dir).order, order);
       det(runner, dir, ['--det-seed=4', '--det-outcomes=full.json']);
-      const v4 = fs.readFileSync(path.join(dir, 'r1-4'), 'utf8');
+      const v4 = drawOf(dir, '::r1');
       det(runner, dir, ['--det-seed=4', `--det-order=${writeOrder(dir, [order[1]])}`, '--det-outcomes=o.json']);
-      assert.equal(fs.readFileSync(path.join(dir, 'r1-4'), 'utf8'), v4, 'r1 alone drew a different value under the same seed');
+      assert.equal(drawOf(dir, '::r1'), v4, 'r1 alone drew a different value under the same seed');
       det(runner, dir, ['--det-seed=5', `--det-order=${writeOrder(dir, [order[1]])}`, '--det-outcomes=o.json']);
-      assert.notEqual(fs.readFileSync(path.join(dir, 'r1-5'), 'utf8'), v4);
+      assert.notEqual(drawOf(dir, '::r1'), v4);
     });
 
     test('a listed test whose file fails to load is an error with the load error, not a missing test', T, () => {
@@ -168,17 +178,18 @@ for (const runner of RUNNERS.filter((r) => r === 'vitest' || r === 'jest')) {
     });
 
     test('--det-order-seed: the order of that seed, the generator values of --det-seed (G-1459)', T, () => {
-      const body = "test('r1', () => { fs.writeFileSync(path.join(__dirname, '..', 'r1-' + process.env.DETJS_SEED + '-' + (process.env.DETJS_ORDER_SEED || '-')), String(Math.random())); });";
+      const body = "test('r1', () => { Math.random(); });";
       const dir = project(runner, 'p041-orderseed', { a: BODY_A, b: BODY_B, c: body });
       det(runner, dir, ['--det-seed=4', '--det-outcomes=s4.json']);
+      const v4 = drawOf(dir, '::r1');
       const r = det(runner, dir, ['--det-seed=4', '--det-order-seed=9', '--det-outcomes=s4o9.json']);
+      const v4o9 = drawOf(dir, '::r1');
       const header = JSON.parse(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n', 1)[0]).meta;
       det(runner, dir, ['--det-seed=9', '--det-collect', '--det-outcomes=c9.json']);
       ran(dir);
       assert.deepEqual(outcomes(dir, 's4o9.json').order, outcomes(dir, 'c9.json').order, 'the order follows --det-order-seed');
       assert.notDeepEqual(outcomes(dir, 's4o9.json').order, outcomes(dir, 's4.json').order);
-      assert.equal(fs.readFileSync(path.join(dir, 'r1-4-9'), 'utf8'), fs.readFileSync(path.join(dir, 'r1-4--'), 'utf8'),
-        'Math.random follows --det-seed, not the order');
+      assert.equal(v4o9, v4, 'Math.random follows --det-seed, not the order');
       assert.match(r.out, /order shuffled with seed 9 \(--det-order-seed; generators: seed 4\)/);
       const cmd = `detjs ${runner}${runner === 'vitest' ? ' run' : ''} --det --det-seed=4 --det-order-seed=9 tests/a.test`;
       assert.ok(r.out.includes(`rerun the failing file with the same seeds and order: ${cmd}`), r.out);

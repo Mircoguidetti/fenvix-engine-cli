@@ -35,7 +35,7 @@ test.describe('g', () => {
   test('polluter', async () => { mark('polluter'); cache.set('k', 1); });
   test('f2', async () => { mark('f2'); });
 });
-test('draw', async () => { mark('draw'); fs.writeFileSync(path.join(__dirname, '..', 'draw-' + process.env.DETJS_SEED + '-' + (process.env.DETJS_ORDER_SEED || '-')), String(Math.random())); });
+test('draw', async () => { mark('draw'); Math.random(); });
 test('fails', async () => { mark('fails'); expect(1).toBe(2); });
 test('after-failure', async () => { mark('after-failure'); });
 `;
@@ -127,14 +127,16 @@ describe('detjs playwright', { skip: HAVE_PW ? false : '@playwright/test not ins
 
   test('--det-order-seed: a new order with the same generator values (G-1459)', T, () => {
     const dir = project('orderseed', { a: A, b: B });
+    const draw = () => trace(dir).find((t) => t.nodeid === 'tests/a.spec.ts::draw').events.find((e) => e.o === 'Math.random').v;
     det(dir, ['--det-seed=4', '--det-outcomes=s4.json']);
+    const v4 = draw();
     det(dir, ['--det-seed=4', '--det-order-seed=9', '--det-outcomes=s4o9.json']);
+    const v4o9 = draw();
     det(dir, ['--det-seed=9', '--det-collect', '--det-outcomes=c9.json']);
     ran(dir);
     assert.deepEqual(read(dir, 's4o9.json').order, read(dir, 'c9.json').order, 'the order follows --det-order-seed');
     assert.notDeepEqual(read(dir, 's4o9.json').order, read(dir, 's4.json').order);
-    assert.equal(fs.readFileSync(path.join(dir, 'draw-4-9'), 'utf8'), fs.readFileSync(path.join(dir, 'draw-4--'), 'utf8'),
-      'Math.random follows --det-seed, not the order');
+    assert.equal(v4o9, v4, 'Math.random follows --det-seed, not the order');
   });
 
   test('a test that opens a page in Chromium is controlled and traced in the test process', { ...T, skip: NO_BROWSER || false }, () => {
