@@ -1,0 +1,463 @@
+{
+ "name": "actual",
+ "job": "hunt",
+ "repo": "actualbudget/actual",
+ "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+ "status": "ok",
+ "run_id": "44659670891",
+ "engine_commit": "9e19927689371c3d7ee5170e2d7ff96581789550",
+ "setup_s": 130,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 600
+ },
+ "pw_dir": "packages/desktop-client",
+ "pw_args": [
+  "--browser=chromium",
+  "--shard=1/3"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T03:17:00Z",
+ "measured_at": "2026-11-20T03:17:27Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "divergence": null
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "divergence": null
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "divergence": null
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "divergence": null
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      2,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      3,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      4,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      5,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      6,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      7,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      8,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      2,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      3,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      4,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      5,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      6,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      7,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      8,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      2,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      3,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      4,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      5,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      6,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      7,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      8,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      2,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      3,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      4,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      5,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      6,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      7,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      8,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+    "real": "Test timeout of 60000ms exceeded.",
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      2,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      3,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      4,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      5,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      6,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      7,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ],
+     [
+      8,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ],
+  "reproduced": 4,
+  "found_seed": 4,
+  "n": 9
+ },
+ "elapsed_min": 300.3
+}
