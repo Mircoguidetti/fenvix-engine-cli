@@ -1105,6 +1105,8 @@ class Capture:
     def _audit(self, event, args):
         if not self.active:
             return
+        if _core.detpy_probe_active():
+            return  # detpy's own probe (py-cache: the clock's /proc/self/task check), as CaptureCore.audit
         if event == "exec":
             # every module body (import, runpy, exec) passes here before it runs; the functions and classes
             # it defines are nested code objects, armed with it

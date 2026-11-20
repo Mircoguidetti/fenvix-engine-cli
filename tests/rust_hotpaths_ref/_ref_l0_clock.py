@@ -251,7 +251,17 @@ def _mark_external(real):
 
 
 def _children_alive() -> bool:
-    """True if this process has live child processes (Linux: /proc children lists)."""
+    """True if this process has live child processes (Linux: /proc children lists). detpy's own probe (py-cache):
+    its reads are not the test's (``_core.detpy_probe_call``, as the engine's clock)."""
+    from detpy import _core
+
+    alive = _core.detpy_probe_call(_children_alive_probe)
+    if alive:  # a live child: the sleep is real, the listing is the test's read (review R-023b N1)
+        sys.audit("os.listdir", "/proc/self/task")
+    return alive
+
+
+def _children_alive_probe() -> bool:
     try:
         for tid in _real_listdir("/proc/self/task"):
             with open(f"/proc/self/task/{tid}/children") as f:

@@ -670,3 +670,91 @@ def test_file_scope_a_test_that_runs_runs_after_the_earlier_tests_of_its_file(py
     assert "tests/test_a.py::test_a1" not in reused(c), p.stdout
     assert "tests/test_b.py::test_b1" in reused(c), (c.get("miss_reasons"), p.stdout)
     assert outcome_of(p, "tests/test_a.py::test_a2") == outcome_of(truth, "tests/test_a.py::test_a2") == "passed"
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+def test_file_scope_a_test_deselected_when_recorded_is_not_a_wrong_reuse_when_it_runs(pytester):
+    """Recorded with -k deselecting test_new (before test_y in the file); then a run that selects it: in a fresh run
+    of the file test_new runs before test_y and fills the list. test_y's entry does not hold test_new (it did not run):
+    the file's earlier tests are part of the check (file-prefix.json), so test_y is not reused."""
+    write(pytester, **{"pkg/__init__.py": "", "pkg/state.py": "L = []\n", "tests/conftest.py": "",
+                       "tests/test_a.py": """
+        from pkg import state
+
+        def test_x():
+            pass
+
+        def test_new():
+            state.L.append(1)
+
+        def test_y():
+            assert state.L == []
+        """})
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, *_FILE_SCOPE, "-k", "not test_new")
+        assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_a.py::test_y" in reused(c)
+    truth, _, _ = run(pytester, "truth", *_FILE_SCOPE, cache=False)
+    p, c, _ = run(pytester, "after", *_FILE_SCOPE)
+    assert "tests/test_a.py::test_y" not in reused(c), ("WRONG REUSE", p.stdout)
+    assert outcome_of(p, "tests/test_a.py::test_y") == outcome_of(truth, "tests/test_a.py::test_y") == "failed"
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+@pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+def test_file_scope_a_test_added_before_a_reused_one_in_its_file_is_not_a_wrong_reuse(pytester, par):
+    """test_y read an empty list after test_x; a new test_new before it in the file appends to the list: a fresh run
+    of the file fails test_y. Its entry does not hold test_new (it did not exist): the file's earlier tests are part
+    of the check (file-prefix.json), so test_y is not reused."""
+    if par:
+        pytest.importorskip("xdist")
+    body = """
+        from pkg import state
+
+        def test_x():
+            pass
+        {new}
+        def test_y():
+            assert state.L == []
+        """
+    write(pytester, **{"pkg/__init__.py": "", "pkg/state.py": "L = []\n", "tests/conftest.py": "",
+                       "tests/test_a.py": body.format(new="")})
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, *_FILE_SCOPE, *par)
+        assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_a.py::test_y" in reused(c)
+    write(pytester, **{"tests/test_a.py": body.format(new="\n        def test_new():\n            state.L.append(1)\n")})
+    truth, _, _ = run(pytester, "truth", *_FILE_SCOPE, *par, cache=False)
+    p, c, _ = run(pytester, "after", *_FILE_SCOPE, *par)
+    assert "tests/test_a.py::test_y" not in reused(c), ("WRONG REUSE", p.stdout)
+    assert outcome_of(p, "tests/test_a.py::test_y") == outcome_of(truth, "tests/test_a.py::test_y") == "failed"
+
+
+@pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+def test_a_test_that_did_not_run_when_a_result_was_recorded_is_not_a_wrong_reuse_when_it_runs(pytester, par):
+    """In-process (no isolation): recorded with -k deselecting test_new, which runs before test_y and fills the list;
+    then a run that selects it. test_y's entry does not hold test_new (it did not run, so the carried set cannot hold
+    it): the tests before it in its session (prefix-session.json; under -n the planned predecessors, preds_check) are
+    part of the check, so test_y is not reused (it was, as passed, while a fresh run fails it)."""
+    if par:
+        pytest.importorskip("xdist")
+    write(pytester, **{"pkg/__init__.py": "", "pkg/state.py": "L = []\n", "tests/conftest.py": "",
+                       "tests/test_a.py": """
+        from pkg import state
+
+        def test_x():
+            pass
+
+        def test_new():
+            state.L.append(1)
+
+        def test_y():
+            assert state.L == []
+        """})
+    for label in ("r1", "r2"):
+        run(pytester, label, "-rA", "tests", *par, "-k", "not test_new")
+    truth, _, _ = run(pytester, "truth", "-rA", "tests", *par, cache=False)
+    p, c, _ = run(pytester, "after", "-rA", "tests", *par)
+    nid = "tests/test_a.py::test_y"
+    assert nid not in reused(c) or outcome_of(truth, nid) == "passed", ("WRONG REUSE", p.stdout)
+    assert outcome_of(p, nid) == outcome_of(truth, nid)

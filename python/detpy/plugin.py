@@ -681,6 +681,9 @@ def _configure_det(config) -> None:
             S.cassette_out = _xdist.worker_path(_state.STATE.config.cassette_path, S.worker)
     if opt.det_cache:
         proofcache.install(config)
+    if (getattr(opt, "det_isolate", False) and getattr(opt, "det_isolate_scope", "test") == "file"
+            and proofcache.PLUGIN is not None):
+        proofcache.PLUGIN.iso_scope = "file"  # the controller too: it decides and plans per file
     if getattr(opt, "det_isolate", False) and S.controller is None:
         from . import isolate as _isolate
 

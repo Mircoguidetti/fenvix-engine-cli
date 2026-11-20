@@ -1065,7 +1065,72 @@ class ProofSession:
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
         self._demote_writers_of_running_readers(nids)
+        self.prefix_check(nids)
         self.demote_for_running([nids])
+
+    # -- the tests a reused result was recorded after (in-process) ---------------------------------------------------
+    PREFIX_FILES = {"file": "prefix-file.json", "session": "prefix-session.json"}
+
+    def _prefix_scope(self):
+        """'file' (--det-isolate-scope=file: a file's tests share one child), 'session' (a serial session without
+        isolation: every earlier test of the process), None (one child per test: no earlier test; the xdist
+        controller: Checker's planned predecessors, preds_check)."""
+        if getattr(self, "iso_scope", "test") == "file":
+            return "file"
+        if getattr(self, "isolate", False) or self.role in ("controller", "worker"):
+            return None
+        return "session"
+
+    @staticmethod
+    def _prefixes(nids, scope) -> dict:
+        """Per test, the digest of the tests collected before it in its file (scope 'file') or in the session."""
+        import hashlib
+
+        seen: dict = {}
+        out = {}
+        for n in nids:
+            lst = seen.setdefault(n.split("::", 1)[0] if scope == "file" else "", [])
+            out[n] = hashlib.blake2b("\0".join(lst).encode(), digest_size=12).hexdigest()
+            lst.append(n)
+        return out
+
+    def prefix_check(self, nids) -> None:
+        """A result recorded in-process is reused only when the tests before it in its process (its file's child, or
+        the serial session) are those it was recorded after: a test that did not run then (added, or deselected by
+        -k) runs before it in a fresh run and may leave state it reads, and the carried set cannot hold it.
+        Unknown: not reused."""
+        scope = self._prefix_scope()
+        self.prefix_scope = scope
+        if scope is None:
+            return
+        now = self._prefixes(nids, scope)
+        self.prefix_now = now
+        try:
+            with open(os.path.join(self.dir, self.PREFIX_FILES[scope])) as fh:
+                stored = json.load(fh)
+        except (OSError, ValueError):
+            stored = {}
+        self.prefix_stored = stored if isinstance(stored, dict) else {}
+        where = "file" if scope == "file" else "session"
+        for n in nids:
+            if self._is_hit(n) and self.prefix_stored.get(n) != now[n]:
+                self._demote(n, f"placement: the tests before it in its {where} are not those it was recorded after")
+
+    def prefix_save(self) -> None:
+        now = getattr(self, "prefix_now", None)
+        scope = getattr(self, "prefix_scope", None)
+        if now is None or scope is None:
+            return
+        stored = dict(getattr(self, "prefix_stored", {}))
+        stored.update({n: d for n, d in now.items() if not self._is_hit(n)})
+        try:
+            path = os.path.join(self.dir, self.PREFIX_FILES[scope])
+            tmp = path + f".tmp{os.getpid()}"
+            with open(tmp, "w") as fh:
+                json.dump(stored, fh)
+            os.replace(tmp, path)
+        except OSError:
+            pass
 
     def demote_for_running(self, lists) -> list:
         """Review R-023c E7: a test that runs in this session runs after the earlier tests of its process whose
@@ -1075,9 +1140,10 @@ class ProofSession:
         it reads (review R-023b N8). ``lists``: the tests of each process, in order. Not under --det-isolate (each test
         in its own child: no in-process state reaches it). Returns the demoted tests."""
         out: list = []
-        if getattr(self, "isolate", False):
-            if getattr(self, "iso_scope", "test") != "file":
-                return out
+        file_scope = getattr(self, "iso_scope", "test") == "file"
+        if getattr(self, "isolate", False) and not file_scope:
+            return out
+        if file_scope:
             # --det-isolate-scope=file: a file's tests share one child, in order; the process is the file
             files: dict = {}
             for lst in lists:
@@ -1086,6 +1152,12 @@ class ProofSession:
             lists = list(files.values())
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
+        if file_scope:
+            # a test with no entry may consume what the earlier tests of its file leave (strict: they run before it;
+            # the cost is bounded by the file)
+            for n, d in zip(ids, self.store.durations(ids)):
+                if d is None:
+                    needs[n] = None
         present = set(ids)
         changed = True
         while changed:
@@ -1430,6 +1502,7 @@ class ProofSession:
             store.save_shard(self.shard_path, self.worker, "" if self.iso_child else None)
         else:
             store.save()
+            self.prefix_save()
         sess.set_phase("save", _perf() - t)
 
     def _dump_keys(self) -> None:
@@ -1504,6 +1577,7 @@ class ProofSession:
             res = {"merged": 0, "dropped": [], "stale": [], "unreadable": list(paths)}
         self.sess.apply_merge([tuple(x) for x in res["dropped"]], [tuple(x) for x in res["stale"]])
         self.merge_result = res
+        self.prefix_save()
         for p in paths:
             try:
                 os.remove(p)

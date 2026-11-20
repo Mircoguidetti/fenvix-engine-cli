@@ -508,12 +508,20 @@ def test_skip_and_xfail_are_reused_with_their_reports(pytester, run_cache):
     r.stdout.fnmatch_lines(["*SKIPPED*not here*", "*SKIPPED*inside*", "*XFAIL*known*"])
 
 
-def test_new_test_in_one_module_keeps_the_other_modules(pytester, run_cache):
+@pytest.mark.parametrize("scope", ["session", "file"])
+def test_new_test_in_one_module_keeps_the_other_modules_only_when_files_are_isolated(pytester, run_cache, scope):
+    # py-cache (a wrong reuse found on 2026-11-20): in one process a new test runs before the later modules' tests
+    # and may leave state they read, which their entries cannot hold (it did not exist): they run again
+    # (prefix-session.json). With one child per file (--det-isolate-scope=file) only the file's own tests are before
+    # them: the other module is kept.
+    if scope == "file" and not sys.platform.startswith("linux"):
+        pytest.skip("fork per file: Linux")
+    args = ("--det-isolate", "--det-isolate-scope=file") if scope == "file" else ()
     project(pytester, **{"test_a.py": "def test_a1():\n    pass\n", "test_b.py": "def test_b1():\n    pass\n"})
-    run_cache()
+    run_cache(*args)
     (pytester.path / "test_a.py").write_text("def test_a1():\n    pass\n\ndef test_a2():\n    pass\n")
-    _, reused, _ = run_cache()
-    assert reused == {"test_b.py::test_b1"}
+    _, reused, _ = run_cache(*args)
+    assert reused == ({"test_b.py::test_b1"} if scope == "file" else set())
 
 
 def test_conftest_fixture_change_reruns_only_its_directory(pytester, run_cache):

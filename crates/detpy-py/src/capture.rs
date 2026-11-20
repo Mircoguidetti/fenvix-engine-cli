@@ -3340,8 +3340,25 @@ pub fn cap_note_env(py: Python<'_>, key: &Bound<'_, PyAny>) -> PyResult<()> {
     }
 }
 
+/// `_core.detpy_probe(fn)`: call `fn()` as one of detpy's own probes (its audit events are not the test's); the
+/// Python references of the clock use it for their `/proc/self/task` reads, as the engine's clock does.
+#[pyfunction]
+pub fn detpy_probe_call(py: Python<'_>, f: Bound<'_, PyAny>) -> PyResult<Py<PyAny>> {
+    let _ = py;
+    detpy_probe(|| f.call0().map(|r| r.unbind()))
+}
+
+/// `_core.detpy_probe_active()`: whether one of detpy's own probes is running on this thread (the Python reference
+/// of the capture skips their audit events, as `CaptureCore.audit` does).
+#[pyfunction]
+pub fn detpy_probe_active() -> bool {
+    PROBE.with(|c| c.get()) > 0
+}
+
 pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<CaptureCore>()?;
+    m.add_function(wrap_pyfunction!(detpy_probe_call, m)?)?;
+    m.add_function(wrap_pyfunction!(detpy_probe_active, m)?)?;
     m.add_function(wrap_pyfunction!(cap_set_env_capture, m)?)?;
     m.add_function(wrap_pyfunction!(cap_note_env, m)?)?;
     Ok(())

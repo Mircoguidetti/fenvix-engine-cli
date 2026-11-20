@@ -222,6 +222,7 @@ class ProofCachePlugin(ProofSession):
             seed = _core.CacheSession.controller_verify_seed(_state.STATE.config.seed, list(nids), self.config_digest)
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
             self._demote_writers_of_running_readers(list(nids))
+            self.prefix_check(list(nids))
             self._expect_serial(list(nids))
             if self.real_clock:
                 for nid in nids:

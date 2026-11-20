@@ -77,7 +77,9 @@ def test_reuse_is_withdrawn_when_a_new_earlier_test_writes_its_input(pytester, t
     shared.write_text("x\n")
     r, c = cache_run(pytester, n, "s3", *args, "tests")
     assert "tests/test_b_reader.py::test_b_reads" not in c["reused_ids"]
-    assert c["miss_ids"]["tests/test_b_reader.py::test_b_reads"].startswith("written:")
+    # serial (py-cache): the tests before the reader in its session are not those it was recorded after (a new one):
+    # it runs, decided before the run ("placement:"); under -n the write is found after the run ("written:")
+    assert c["miss_ids"]["tests/test_b_reader.py::test_b_reads"].startswith(("written:",) if n else ("placement:",))
     r.assert_outcomes(passed=1, failed=1)  # the serial result: A wrote y before B read it
     if n:
         assert "withdrawn after the run" in r.stdout.str()
