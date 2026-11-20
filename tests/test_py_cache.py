@@ -758,3 +758,24 @@ def test_a_test_that_did_not_run_when_a_result_was_recorded_is_not_a_wrong_reuse
     nid = "tests/test_a.py::test_y"
     assert nid not in reused(c) or outcome_of(truth, nid) == "passed", ("WRONG REUSE", p.stdout)
     assert outcome_of(p, nid) == outcome_of(truth, nid)
+
+
+def test_a_directory_on_sys_path_twice_is_not_another_runtime_under_n(pytester):
+    """esphome: tests/unit_tests/conftest.py puts the project root on sys.path; workers import it at collection (the
+    controller does not collect), and pytest-xdist puts the root on a worker's path once more than the controller's.
+    A second copy of a directory resolves no import differently: every result a worker recorded missed on the runtime
+    (0 of 14,446 reused on esphome, CI run py-cache-2026-11-20f)."""
+    pytest.importorskip("xdist")
+    pytester.makeini("[pytest]\npythonpath = .\n")
+    write(pytester, **{"tests/unit/conftest.py": """
+        import sys
+        from pathlib import Path
+
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+        """, "tests/unit/test_u.py": """
+        def test_u():
+            assert True
+        """})
+    run(pytester, "r1", "-n", "2", "tests")
+    _, c, _ = run(pytester, "r2", "-n", "2", "tests")
+    assert "tests/unit/test_u.py::test_u" in reused(c), c.get("miss_reasons")

@@ -797,6 +797,22 @@ def _dist_infos(root: str, memo_path: str | None = None):
     return _core.dist_infos(root, memo_path, *_discovery())
 
 
+def _sys_path_once() -> list:
+    """sys.path with each directory once (its first occurrence, in order): a later copy of a directory resolves no
+    import differently. pytest-xdist puts the project root on a worker's path once more than on the controller's
+    (py-cache: on esphome every result a worker recorded missed on the runtime)."""
+    out, seen = [], set()
+    for e in sys.path:
+        if not isinstance(e, str):
+            continue
+        key = os.path.realpath(e or os.curdir) if os.path.isdir(e or os.curdir) else e
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(e)
+    return out
+
+
 def runtime_identity(root: str, memo_path: str | None = None, per_dist: bool = False) -> tuple[str, dict, list]:
     import sysconfig
 
@@ -1015,7 +1031,7 @@ class ProofSession:
             self.root, os.path.join(self.dir, "distributions.json"), per_dist=getattr(cap, "dists", None) is not None)
         # sys.path and the .pth files of the site directories (Rust; review R-019c E-1/E-9)
         self.runtime_digest, pth, spath = _core.runtime_with_paths(
-            self.runtime_digest, self.root, list(_sites._site_dirs), [e for e in sys.path if isinstance(e, str)])
+            self.runtime_digest, self.root, list(_sites._site_dirs), _sys_path_once())
         self.runtime_info = {**self.runtime_info, "pth": pth, "sys_path": spath}
         cap.dist_info_ok = tuple(editable)
         cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)
