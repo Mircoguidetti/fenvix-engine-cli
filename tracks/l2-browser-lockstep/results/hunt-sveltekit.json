@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44659670891",
- "engine_commit": "9e19927689371c3d7ee5170e2d7ff96581789550",
- "setup_s": 62,
+ "run_id": "44704657024",
+ "engine_commit": "10ee65be9516c5e9315ec66a84a212e711fa473f",
+ "setup_s": 25,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -14,20 +14,20 @@
   "det": 0,
   "freeze": 0,
   "freeze_control": 0,
-  "budget_min": 330,
+  "budget_min": 340,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
   "seeds": 8,
   "replays": 10,
-  "per_run_s": 600
+  "per_run_s": 900
  },
  "pw_dir": "packages/kit/test/apps/basics",
  "pw_args": [
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-20T03:09:00Z",
- "measured_at": "2026-11-20T03:09:38Z",
+ "epoch": "2026-11-20T08:52:00Z",
+ "measured_at": "2026-11-20T08:52:39Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
@@ -36,47 +36,56 @@
    {
     "key": "client.test.js::INP::does not block next paint [chromium-dev]",
     "real": "Error: expect(received).toBeLessThan(expected)",
+    "step": null,
     "mechanism": "latency",
     "tried": [
      [
       1,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       2,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       3,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       4,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       5,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       6,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       7,
       "missing",
-      ""
+      "",
+      null
      ],
      [
       8,
       "missing",
-      ""
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -88,47 +97,56 @@
    {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
     "real": "Error: expect(received).toEqual(expected) // deep equality",
+    "step": null,
     "mechanism": "latency",
     "tried": [
      [
       1,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       2,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       3,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       4,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       5,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       6,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       7,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       8,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -140,47 +158,56 @@
    {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
     "real": "Error: expect(received).toBe(expected) // Object.is equality",
+    "step": null,
     "mechanism": "latency",
     "tried": [
      [
       1,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       2,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       3,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       4,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       5,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       6,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       7,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ],
      [
       8,
-      "passed",
-      ""
+      "missing",
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -194,5 +221,5 @@
   "found_seed": 0,
   "n": 3
  },
- "elapsed_min": 17.7
+ "elapsed_min": 338.0
 }
