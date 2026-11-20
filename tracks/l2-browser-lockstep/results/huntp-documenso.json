@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "ok",
- "run_id": "44685676329",
- "engine_commit": "41ed81c951e1329c727af60e3b0c6ee302724184",
- "setup_s": 463,
+ "run_id": "44704657024",
+ "engine_commit": "10ee65be9516c5e9315ec66a84a212e711fa473f",
+ "setup_s": 320,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -14,13 +14,14 @@
   "det": 0,
   "freeze": 0,
   "freeze_control": 0,
-  "budget_min": 330,
+  "budget_min": 340,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
-  "seeds": 8,
+  "seeds": 6,
+  "seed_from": 0,
   "replays": 10,
   "per_run_s": 900,
-  "workers": 4
+  "workers": 2
  },
  "pw_dir": "packages/app-tests",
  "pw_args": [
@@ -28,11 +29,11 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T06:49:00Z",
- "measured_at": "2026-11-20T06:49:00Z",
+ "epoch": "2026-11-20T08:56:00Z",
+ "measured_at": "2026-11-20T08:56:35Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
-  "seeds": 8,
+  "seeds": 6,
   "replays": 10,
   "targets": [
    {
@@ -42,6 +43,12 @@
     "mechanism": "latency",
     "tried": [
      [
+      0,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
       1,
       "failed",
       "TimeoutError: locator.click: Timeout 15000ms exceeded.",
@@ -49,14 +56,14 @@
      ],
      [
       2,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       3,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
@@ -73,18 +80,6 @@
      ],
      [
       6,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
       "failed",
       "TimeoutError: locator.click: Timeout 15000ms exceeded.",
       null
@@ -103,6 +98,12 @@
     "mechanism": "latency",
     "tried": [
      [
+      0,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
       1,
       "failed",
       "TimeoutError: locator.click: Timeout 15000ms exceeded.",
@@ -116,8 +117,8 @@
      ],
      [
       3,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "passed",
+      "",
       null
      ],
      [
@@ -136,18 +137,6 @@
       6,
       "timedOut",
       "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      8,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
       null
      ]
     ],
@@ -164,6 +153,12 @@
     "mechanism": "latency",
     "tried": [
      [
+      0,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ],
+     [
       1,
       "failed",
       "PrismaClientKnownRequestError:",
@@ -195,18 +190,6 @@
      ],
      [
       6,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
-      null
-     ],
-     [
-      8,
       "failed",
       "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
       null
@@ -225,15 +208,21 @@
     "mechanism": "latency",
     "tried": [
      [
+      0,
+      "passed",
+      "",
+      null
+     ],
+     [
       1,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       2,
-      "failed",
-      "TypeError: Cannot read properties of undefined (reading 'id')",
+      "passed",
+      "",
       null
      ],
      [
@@ -244,32 +233,20 @@
      ],
      [
       4,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       5,
-      "failed",
-      "TypeError: Cannot read properties of undefined (reading 'id')",
+      "passed",
+      "",
       null
      ],
      [
       6,
-      "failed",
-      "PrismaClientKnownRequestError:",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "PrismaClientKnownRequestError:",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       null
      ]
     ],
@@ -286,51 +263,45 @@
     "mechanism": "latency",
     "tried": [
      [
+      0,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      null
+     ],
+     [
       1,
-      "failed",
-      "TypeError: Cannot read properties of undefined (reading 'id')",
+      "passed",
+      "",
       null
      ],
      [
       2,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       3,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       4,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       5,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "passed",
+      "",
       null
      ],
      [
       6,
-      "failed",
-      "PrismaClientKnownRequestError:",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "TypeError: Cannot read properties of undefined (reading 'id')",
-      null
-     ],
-     [
-      8,
-      "failed",
-      "TypeError: Cannot read properties of undefined (reading 'id')",
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       null
      ]
     ],
@@ -345,5 +316,5 @@
   "found_seed": 0,
   "n": 5
  },
- "elapsed_min": 62.2
+ "elapsed_min": 74.9
 }
