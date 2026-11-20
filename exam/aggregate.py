@@ -28,6 +28,10 @@ def leg_key(leg: dict) -> str:
     return "/".join(parts)
 
 
+def run_key(o: dict) -> str:
+    return "+".join(o["rows"]) + "@" + leg_key(o["leg"])
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="inp", required=True)
@@ -53,16 +57,17 @@ def main():
             if isinstance(d, dict) and "results" in d and "leg" in d:
                 res.append(d)
         return res
-    planned = {leg_key(lg) for lg in legs}
-    outs = [o for o in load(a.inp) if leg_key(o["leg"]) in planned]
+    planned = {"+".join(lg["rows"]) + "@" + leg_key(lg) for lg in legs}
+    outs = [o for o in load(a.inp) if run_key(o) in planned]
     rerun = {r for o in outs for r in o["rows"]}
-    base_used = []
+    base_used = {}
     if a.base and os.path.isdir(a.base):
-        for o in load(a.base):
-            if leg_key(o["leg"]) in planned and not set(o["rows"]) & rerun:
-                o.setdefault("run_id", a.base_run)
-                outs.append(o)
-                base_used.append(o.get("job"))
+        for sub in sorted(os.listdir(a.base)):  # NN-<run id>, oldest first
+            for o in load(os.path.join(a.base, sub)):
+                if run_key(o) in planned and not set(o["rows"]) & rerun:
+                    o.setdefault("run_id", sub.split("-", 1)[-1])
+                    base_used[run_key(o)] = o
+        outs.extend(base_used.values())
 
     expected = defaultdict(set)   # row -> leg keys the plan names
     for lg in legs:
@@ -72,7 +77,8 @@ def main():
     rows = {r: {"status": None, "legs": {}, "checks": [], "failed": []} for r in expected}
     for o in outs:
         lk = leg_key(o["leg"])
-        installs[lk] = o.get("install", {})
+        ins = o.get("install", {})
+        installs.setdefault(str(o.get("run_id")), {k: v for k, v in ins.items()})
         for r in o["rows"]:
             rows.setdefault(r, {"status": None, "legs": {}, "checks": [], "failed": []})
             rows[r]["legs"][lk] = {"job": o.get("job"), "job_id": jobs.get(o.get("job") or ""), "run_id": o.get("run_id"),
@@ -96,7 +102,13 @@ def main():
     # gaps: match each gap's check id (with <placeholders> as wildcards) against the check ids that ran
     def matches(pattern, cid):
         pat = re.sub(r"<[^>]+>", "*", pattern).replace(" ", "")
-        return fnmatch.fnmatch(cid, pat) or fnmatch.fnmatch(cid, pat + ".*") or cid == pattern
+        if fnmatch.fnmatch(cid, pat) or fnmatch.fnmatch(cid, pat + ".*") or cid == pattern:
+            return True
+        # a placeholder segment the row implements as one check (PY-03.<runner>.repro -> PY-03.repro)
+        if "<" in pattern:
+            fixed = [s for s in pattern.split(".") if not s.startswith("<")]
+            return cid.split(".") == fixed or fnmatch.fnmatch(cid, ".".join(fixed) + ".*")
+        return False
     gaps_out, unassigned, out_scope, other = {}, {}, {}, {}
     for g, info in gm["gaps"].items():
         if "other_row" in info:

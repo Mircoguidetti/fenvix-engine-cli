@@ -48,7 +48,8 @@ jobs:
           want = [r for r in os.environ.get('ROWS', '').split(',') if r]
           base = ''
           if not want and os.path.exists('exam/rerun.json'):
-              rr = json.load(open('exam/rerun.json')); want, base = rr.get('rows', []), str(rr.get('base_run', ''))
+              rr = json.load(open('exam/rerun.json')); want = rr.get('rows', [])
+              base = ' '.join(str(x) for x in (rr.get('base_runs') or [rr.get('base_run')]) if x)
           if want: legs = [l for l in legs if set(l['rows']) & set(want)]
           print('legs=' + json.dumps(legs)); print('base_run=' + base)" >> "$GITHUB_OUTPUT"
 
@@ -139,14 +140,13 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with: {pattern: "exam-*", path: exam-out-all}
-      - name: base run artifacts (rerun mode)
+      - name: base runs' artifacts (rerun mode; oldest first, later runs override earlier ones)
         if: needs.plan.outputs.base_run != ''
-        uses: actions/download-artifact@v4
-        with:
-          pattern: "exam-*"
-          path: exam-out-base
-          run-id: ${{ needs.plan.outputs.base_run }}
-          github-token: ${{ github.token }}
+        run: |
+          i=0
+          for r in ${{ needs.plan.outputs.base_run }}; do
+            i=$((i+1)); gh run download "$r" -R "${{ github.repository }}" -p 'exam-[0-9]*' -D "exam-out-base/$(printf %02d $i)-$r"
+          done
       - name: job ids
         run: |
           gh api --paginate "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \

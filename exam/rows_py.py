@@ -131,6 +131,8 @@ def PY_03(ctx: Ctx):
                 res.append((rc, out))
             vok, vdesc, rep = lib.verify(ctx, d, env, t[0], t[1], f"{r}-verify")
             c0, c1 = _runner_counts(out0, rc0), _runner_counts(res[0][1], res[0][0])
+            if r == "doctest":  # plain `-v` counts examples, the engine's summary counts docstrings: exit status only
+                c0, c1 = {"rc": rc0}, {"rc": res[0][0]}
             same = c0 == c1
             base = "BASELINE: the plain runner fails on this project/leg; " if rc0 != 0 else ""
             return vok and same and rc0 == 0, f"{base}verify: {vdesc}; plain {c0} vs engine {c1}", {"first_divergence": lib.first_divergence(rep)[:3]}

@@ -26,7 +26,7 @@ P = {
                        tag="main@2026-11-20", install=["-r", "requirements/base.txt"]),
     "django-model-utils": dict(url="https://github.com/jazzband/django-model-utils",
                                sha="aeef1088a1c6d2be9f8ea90fd9f53a64be292ec3", tag="5.0.0",
-                               install=["-e", ".", "pytest", "pytest-django", "django<5.3"], tests=["tests"]),
+                               install=["-e", ".", "pytest", "pytest-django", "django<5.3", "time-machine"], tests=["tests"]),
     "aiosignal": dict(url="https://github.com/aio-libs/aiosignal", sha="f90f6d41891d9982b90ef2d2eddd9b3e41a63526",
                       tag="v1.3.2", install=["-e", ".", "pytest", "pytest-asyncio"],
                       tests=["tests", "-o", "addopts=", "-p", "no:cov"]),

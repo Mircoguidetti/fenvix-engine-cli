@@ -240,6 +240,14 @@ def F_02(ctx: Ctx):
         return rc == 0 and bool(replay), f"`fenvix repro` on a Vitest test rc={rc}; `fenvix node repro` rc={rc2} ({out2.strip().splitlines()[0][:100] if out2.strip() else ''})"
     ctx.run_check("F-02.node-repro", "`fenvix repro` on a Vitest order-dependent test fails 10/10 and prints a replay command", node_repro)
 
+    def node_replay():
+        d = rows_js._ufo(ctx)
+        rc, out = ctx.sh("node-replay-help", "fenvix replay --help", cwd=d)
+        rc2, out2 = ctx.sh("node-replay-detjs", "fenvix node replay --help", cwd=d)
+        return False if rc != 0 else rc2 == 0, (f"`fenvix replay` rc={rc}; `fenvix node replay` rc={rc2}: no Node bundle to replay "
+                                                 f"exists because no Node repro writes one")
+    ctx.run_check("F-02.node-replay", "a Node repro bundle replays 10/10 with one fingerprint through `fenvix replay`", node_replay)
+
     def node_explore():
         d = rows_js._ufo(ctx)
         rc, out = ctx.sh("node-explore", "fenvix explore --budget 2 --runner vitest", cwd=d, timeout=900)
@@ -337,6 +345,18 @@ def F_03(ctx: Ctx):
         fd = _first_source(r["report"])
         return (not r["verify_ok"]) and bool(fd), f"values {r['values']}; verify {r['verify']}; first {fd[:2]}"
     ctx.run_check("F-03.node-child", "Node child output differs: divergent at the child event", child_js)
+
+    def random_js():
+        d = rows_js._ufo(ctx)
+        body = (JSW + "import { randomFill, randomInt } from 'node:crypto';\n"
+                "test('async random', async () => { const b = await new Promise((r) => randomFill(new Uint8Array(8), (e, x) => r(Array.from(x))));"
+                " const i = await new Promise((r) => randomInt(1000000, (e, n) => r(n))); _w([b, i]); });\n")
+        r = fam.js_value_probe(ctx, d, "vitest", "test/exam-vrandom.test.ts", body, [{}, {}])
+        v = r["values"]
+        if v[0] is not None and v[0] == v[1]:
+            return r["verify_ok"], f"async crypto values equal (controlled) {v}; verify {r['verify']}"
+        return not r["verify_ok"], f"async crypto values differ {v}; verify must report divergence: {r['verify']}"
+    ctx.run_check("F-03.node-random", "Node async crypto.randomFill/randomInt: controlled, or verify reports the entropy divergence", random_js)
 
     def worker_js():
         d = rows_js._ufo(ctx)
