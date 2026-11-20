@@ -138,6 +138,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
     CAP.hookJestResolver(runtime && (runtime._resolver || (runtime._resolution && runtime._resolution.resolver)), config);
   }
   controls.installRealm(environment.global, { sameRealm: environment.global === globalThis });
+  // legacy fake timers restore the virtual timers on useRealTimers() (G-1468)
+  if (c.controls.has('timers')) require('../realmx').virtualLegacyTimers(environment.fakeTimers, environment.global);
   if (environment.fakeTimersModern) {
     try {
       environment.fakeTimersModern = new environment.fakeTimersModern.constructor({ config, global: environment.global });

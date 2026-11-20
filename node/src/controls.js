@@ -39,8 +39,12 @@ function installProcess() {
   installEnvRecord(process);
   // machine and process facts, native key generation, mkdtemp names (src/facts.js)
   require('./facts').installProcess(PATCHER);
-  // completion order of a test's concurrent asynchronous I/O (src/ioorder.js)
+  // completion order of a test's concurrent asynchronous I/O (src/ioorder.js); Level 1: timers against I/O
+  require('./sched').installProcess(PATCHER);
   require('./ioorder').installProcess(PATCHER);
+  // file times, inode and device numbers, fs.watch events (src/fstime.js); Buffer.allocUnsafe (src/realmx.js)
+  if (c.controls.has('time')) require('./fstime').installProcess(PATCHER);
+  require('./realmx').installProcess(PATCHER);
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
@@ -108,6 +112,11 @@ function installRealm(g, { sameRealm, vm = false }) {
       level0Gap(`${name}: realm installation failed: ${e && e.message}`, vm);
     }
   }
+  try {
+    require('./realmx').installRealm(PATCHER, g, c); // Temporal.Now, ShadowRealm
+  } catch (e) {
+    level0Gap(`realm: ${e && e.message}`, vm);
+  }
   if (PATCHER.failed.length > failedBefore) level0Gap(`not replaceable: ${[...new Set(PATCHER.failed.slice(failedBefore))].join(',')}`, vm);
 }
 
@@ -162,6 +171,7 @@ function openFile(fileId, project) {
   if (c.controls.has('time')) {
     clock.DRIVER.takeBaseline();
     clock.startFile();
+    require('./fstime').startFile();
   }
 }
 
