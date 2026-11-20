@@ -100,6 +100,11 @@ def install(r, a, d):
     rc, out = r.sh("fenvix-version", [fx, "--version"])
     first = out.strip().splitlines()[0] if out.strip() else ""
     r.check("fenvix_version_python", rc == 0 and first.startswith(f"fenvix {a.version} "), first)
+    # R-050 D2: the installed artifact named by build and commit (from PREFIX/VERSION.json)
+    meta = json.load(open(os.path.join(d, "VERSION.json")))
+    rc, out = r.sh("fenvix-version-artifact", [fx, "version"], env={"FENVIX_HOME": home})
+    r.check("fenvix_version_names_artifact", rc == 0 and meta["build"] in out and meta["commit"] in out,
+            out.strip()[:300])
     rc, out = r.sh("fenvix-doctor-install", [fx, "doctor", "--install"])
     r.check("fenvix_doctor_install", rc == 0, out.strip())
     # every control of a deterministic run on this machine (ASLR switch, locale, strace, ...): what a container of
@@ -142,6 +147,25 @@ def python_part(r, py, fx):
     diff = sorted(k for k in set(outs[0]) & set(outs[1]) if outs[0][k] != outs[1][k])
     r.check("py_cache_reused", reused > 0, f"{reused} reused in the second run")
     r.check("py_cache_same_outcomes", not diff and len(outs[1]) >= len(outs[0]) > 0, f"{len(outs[0])} outcomes; differing {diff[:5]}")
+
+
+def job_venv_part(r, a, home):
+    """R-050 D3 (G-0413): a job that makes its own virtual environment (its test tools, not the engine) runs its tests
+    under the engine through the image's `fenvix` (PREFIX/bin/fenvix with the job's python3 first on PATH)."""
+    jv = os.path.join(r.work, "job-venv")
+    r.sh("job-venv", [a.python, "-m", "venv", jv])
+    rc, _ = r.sh("job-venv-pytest", [os.path.join(jv, "bin", "python"), "-m", "pip", "install", "-q",
+                                     "--disable-pip-version-check", "pytest"])
+    r.check("job_venv_has_pytest_only", rc == 0)
+    proj = os.path.join(r.work, "jobproj")
+    os.makedirs(proj, exist_ok=True)
+    with open(os.path.join(proj, "test_a.py"), "w") as fh:
+        fh.write("import random\n\ndef test_a():\n    assert random.random() >= 0\n")
+    env = {"PATH": os.path.join(jv, "bin") + os.pathsep + os.environ.get("PATH", ""), "VIRTUAL_ENV": jv,
+           "FENVIX_HOME": home}
+    rc, out = r.sh("job-venv-fenvix-det", [os.path.join(home, "bin", "fenvix"), "python", "-q", "-p", "no:cacheprovider",
+                                           "--det", "test_a.py"], cwd=proj, env=env)
+    r.check("job_venv_fenvix_python_det", rc == 0 and "1 passed" in out and "detpy" in out, out.strip()[-300:])
 
 
 def node_part(r, a, fx, home):
@@ -206,6 +230,7 @@ def main(argv=None) -> int:
     else:
         py, fx, home = install(r, a, d)
         python_part(r, py, fx)
+        job_venv_part(r, a, home)
         node_part(r, a, fx, home)
     ok = all(c["ok"] for c in r.checks.values()) and bool(r.checks)
     json.dump({"ok": ok, "python": a.python, "artifact": os.path.basename(a.artifact),

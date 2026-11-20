@@ -16,7 +16,7 @@ owner, mtimes; gzip without name or time): the same commit gives the same sha256
 |---|---|
 | `wheels/fenvix-<v>-cp312-abi3-manylinux_2_28_x86_64.whl` | pytest plugin (`pytest --det`), runners (`python -m detpy unittest\|django\|nose2\|ward\|zope-testrunner\|doctest`), the `fenvix` command |
 | `node/` | Node shells (`fenvix node vitest\|jest\|mocha\|node-test\|ava\|tap\|uvu\|jasmine\|bun-test\|deno-test`) and the native core `detjs.linux-x64.node` |
-| `bin/fenvix` | the `fenvix` command for the image (runs the wheel's `detpy.fenvix` with the image's Python) |
+| `bin/fenvix` | the `fenvix` command for the image (runs `detpy.fenvix` with the `python3` first on PATH; when that Python has no engine, with the image's copy in `PREFIX/python`) |
 | `install.sh` | the installer |
 | `VERSION`, `VERSION.json` | version, build, commit, supported versions, sha256 of every file |
 
@@ -26,20 +26,26 @@ owner, mtimes; gzip without name or time): the same commit gives the same sha256
 sha256sum -c fenvix-engine-<...>-linux-x86_64.tar.gz.sha256
 tar xzf fenvix-engine-<...>-linux-x86_64.tar.gz
 PYTHON=python3 ./fenvix-engine-<...>-linux-x86_64/install.sh /opt/fenvix   # PREFIX, default $FENVIX_HOME or /opt/fenvix
-fenvix --version && fenvix doctor
+fenvix version && fenvix doctor     # version names the installed artifact: build r<run>.<sha7> and commit
 ```
 
 `install.sh` installs the wheel into `$PYTHON`'s environment (its one dependency, pytest>=8.1, from the index unless
-already there) and the Node shells into `PREFIX/node` (no npm install: no runtime dependencies). A job that makes
-its own environment (tox, nox, uv, poetry, another setup-python) installs the wheel from `wheels/` into it the same
-way (`pip install wheels/fenvix-*.whl`).
+already there), the same wheel without dependencies into `PREFIX/python` (`pip install --target`), the Node shells into
+`PREFIX/node` (no npm install: no runtime dependencies) and `VERSION.json` into `PREFIX`.
+
+A job that makes its own environment (tox, nox, uv, poetry, another setup-python) installs nothing: with its
+environment's `python3` first on PATH, `PREFIX/bin/fenvix python --det ...` (and the other `fenvix` commands) run
+there with the image's engine from `PREFIX/python`, put on that Python's path for the command and the processes it
+starts; pytest loads the plugin from it. The environment brings its own test tools (pytest 8.1+), and the engine's
+interpreter check still applies to it (CPython 3.12-3.14). Installing the wheel into the environment instead
+(`pip install wheels/fenvix-*.whl`) also works; the environment's copy is then used.
 
 ## Supported
 
 | | supported | otherwise |
 |---|---|---|
 | machine | Linux x86_64, glibc 2.28+ (tested: AlmaLinux 8 / manylinux_2_28, Debian 12, Debian 13, Ubuntu 24.04) | `install.sh` and the Node loader stop with one sentence (macOS, arm64, musl/Alpine, older glibc) |
-| Python | CPython 3.12, 3.13, 3.14 | `install.sh` exits 4 with one sentence; a copy forced into an older interpreter refuses `pytest --det` and `python -m detpy` (exit 4); free-threaded builds and PyPy likewise |
+| Python | CPython 3.12, 3.13, 3.14 | `install.sh` exits 4 with one sentence; a copy forced into an older or a newer interpreter (3.15+) refuses `pytest --det` and `python -m detpy` (exit 4); free-threaded builds and PyPy likewise |
 | pytest | 8.1+ and 9; pytest-xdist 3.7+ for `-n` under `--det` | older xdist: a usage error naming the version |
 | Node | 22, 24, 26 | other versions: a warning at install, not tested |
 

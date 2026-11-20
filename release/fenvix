@@ -1,15 +1,49 @@
 #!/usr/bin/env python3
 """fenvix: the single CLI entry, as the runner image installs it ($FENVIX_HOME/bin/fenvix).
 
-The command itself lives in the Python package (detpy/fenvix.py, console script `fenvix` of the
-package `fenvix`); this file only runs it with the image's Python, where release/install-image.sh installed it.
+The command itself lives in the Python package (detpy/fenvix.py, console script `fenvix` of the package `fenvix`);
+this file runs it with whichever `python3` the job puts first on PATH. A job that makes its own virtual environment
+(its test tools, not the engine) gets the engine from the image (R-050 D3, G-0413): when that Python cannot import
+detpy, the image's own copy is put on its path, for this command and for the processes it starts (`fenvix python`
+runs that Python's pytest with the engine's plugin):
+
+  $FENVIX_HOME/python   the engine installed by release/engine/install.sh / release/install-image.sh
+                        (`pip install --target`: the package and its distribution metadata, so pytest finds the
+                        plugin through its entry point)
+  <checkout>/python     when this file runs from a checkout (release/fenvix next to python/detpy)
+
+The engine's own guard still decides whether that Python is supported (CPython 3.12-3.14: one sentence, exit 4).
 """
+import os
 import sys
+
+
+def _engine_dirs():
+    home = os.environ.get("FENVIX_HOME", "/opt/fenvix")
+    here = os.path.dirname(os.path.realpath(__file__))
+    for d in (os.path.join(home, "python"), os.path.join(os.path.dirname(here), "python")):
+        if os.path.isfile(os.path.join(d, "detpy", "fenvix.py")):
+            yield d
+
 
 try:
     from detpy.fenvix import main
-except ImportError as e:
-    sys.stderr.write(f"fenvix: the Python package fenvix is not installed in {sys.executable} ({e})\n")
-    sys.exit(127)
+except ImportError as first:
+    main = None
+    for d in _engine_dirs():
+        sys.path.insert(0, d)
+        try:
+            from detpy.fenvix import main
+        except ImportError:
+            sys.path.remove(d)
+            continue
+        # the processes this command starts (pytest, python -m detpy) import the same engine
+        os.environ["PYTHONPATH"] = os.pathsep.join([d] + [p for p in os.environ.get("PYTHONPATH", "").split(os.pathsep)
+                                                          if p])
+        break
+    if main is None:
+        sys.stderr.write(f"fenvix: the engine is not installed for {sys.executable} ({first}), and the runner image "
+                         f"has none in $FENVIX_HOME/python\n")
+        sys.exit(127)
 
 sys.exit(main())
