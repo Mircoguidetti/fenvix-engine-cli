@@ -221,3 +221,110 @@ def test_1d_permission_bits_are_an_input(pytester, n):
     three_sessions(pytester, n, lambda: os.chmod(pytester.path / "tests" / "run.sh", 0o644),
                    "tests/test_x.py::test_script_is_executable", "tests",
                    truth_outcomes={"passed": 1, "failed": 1}, record_outcomes={"passed": 2})
+
+
+# =====================================================================================================================
+# 2. F1 runtime-write connectivity and the carried-set rule
+# =====================================================================================================================
+# A writes state into an object both tests reach only through test infrastructure (INFRA_TOP: the pytest module,
+# the ``request``/``config`` objects); neither file imports a library or holds a DYNAMIC_MARKERS marker, and they share
+# no repository file. reference_closure gives both an empty reach, so A is not carried into B.
+INFRA_STATE = {
+    "pytest_module": {
+        "tests/test_a_writer.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_a_writes():
+                with open(__file__.replace("test_a_writer.py", "value.txt")) as f:
+                    pytest.r023c_value = f.read().strip()
+            """,
+        "tests/test_b_reader.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_b_reads():
+                assert pytest.r023c_value == "x"
+            """,
+    },
+    "builtins_without_the_word": {
+        "tests/test_a_writer.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_a_writes():
+                with open(__file__.replace("test_a_writer.py", "value.txt")) as f:
+                    print.__self__.R023C_VALUE = f.read().strip()  # the builtins module, no marker in the text
+            """,
+        "tests/test_b_reader.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_b_reads():
+                assert R023C_VALUE == "x"  # a builtin name
+            """,
+    },
+    "config_object": {
+        "tests/test_a_writer.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_a_writes(request):
+                with open(str(request.path.parent / "value.txt")) as f:
+                    request.config.r023c_value = f.read().strip()
+            """,
+        "tests/test_b_reader.py": """
+            import pytest
+            pytestmark = pytest.mark.xdist_group("g")
+            def test_b_reads(request):
+                assert request.config.r023c_value == "x"
+            """,
+    },
+}
+
+
+@needs_cache
+@pytest.mark.parametrize("n", NS)
+@pytest.mark.parametrize("via", sorted(INFRA_STATE))
+def test_2a_state_left_in_an_infrastructure_object_is_carried(pytester, n, via):
+    write(pytester, **INFRA_STATE[via], **{"tests/value.txt": "x\n"})
+    args = ("tests", "--dist", "loadgroup") if n else ("tests",)
+    three_sessions(pytester, n, lambda: (pytester.path / "tests" / "value.txt").write_text("y\n"),
+                   "tests/test_b_reader.py::test_b_reads", *args,
+                   truth_outcomes={"passed": 1, "failed": 1}, record_outcomes={"passed": 2})
+
+
+# =====================================================================================================================
+# 3. P4: the shared store
+# =====================================================================================================================
+SPOOL = {
+    "tests/test_a_writer.py": """
+        import os, pathlib
+        def test_a_writes():
+            pathlib.Path(os.environ["R023C_SPOOL"], "job").write_text("payload\\n")
+        """,
+    "tests/test_b_consumer.py": """
+        import os, pathlib
+        def test_b_consumes():
+            p = pathlib.Path(os.environ["R023C_SPOOL"], "job")
+            assert p.read_text() == "payload\\n"
+            p.unlink()
+        """,
+}
+
+
+@needs_cache
+@pytest.mark.parametrize("n", NS)
+def test_3a_shared_writer_is_not_reused_on_a_machine_without_the_edge(pytester, tmp_path_factory, monkeypatch, n):
+    """Review R-023b N8 (a reused writer whose output a later test consumes) is closed locally by demoting the writer
+    while its reader runs (``Store::edges``, ``_demote_writers_of_running_readers``). The edges and the ``written``
+    map are store-level: ``shared.rs`` ships entries only. Machine 2 (empty local store, same shared store) adopts
+    A's entry, skips A, and B finds no spool file; a fresh run of the suite passes both."""
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS",
+              "DETPY_CACHE_SHARED"):
+        monkeypatch.delenv(k, raising=False)
+    spool = tmp_path_factory.mktemp("spool")
+    monkeypatch.setenv("R023C_SPOOL", str(spool))
+    write(pytester, **SPOOL)
+    shared = f"--det-cache-shared={pytester.path / '.shared'}"
+    args = (shared, "tests", "--dist", "loadfile") if n else (shared, "tests")
+    fresh_run(pytester, n, "tests").assert_outcomes(passed=2)  # the truth
+    for label in ("m1a", "m1b"):  # machine 1
+        cache_run(pytester, n, label, *args, store=".job1")[0].assert_outcomes(passed=2)
+    r, c = cache_run(pytester, n, "m2", *args, store=".job2")  # machine 2
+    r.assert_outcomes(passed=2)
