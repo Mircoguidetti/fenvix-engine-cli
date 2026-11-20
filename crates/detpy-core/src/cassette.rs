@@ -62,10 +62,22 @@ pub struct Connection {
     pub port: u16,
     #[serde(default)]
     pub tls: bool,
+    /// A UDP exchange: each segment is one datagram (audit G-1518).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub udp: bool,
     pub segments: Vec<Segment>,
+    /// What TLS negotiated at record time (version, cipher, ALPN, peer certificate), returned by the replay stand-in
+    /// (audit G-1522).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls_info: Option<serde_json::Value>,
 }
 
 impl Connection {
+    /// One datagram: never merged with the previous segment.
+    pub fn append_datagram(&mut self, dir: Direction, data: &[u8]) {
+        self.segments.push(Segment { dir, data: data.to_vec() });
+    }
+
     /// Append bytes, merging with the previous segment when the direction is
     /// the same (so replay does not depend on how the OS split the stream).
     pub fn append(&mut self, dir: Direction, data: &[u8]) {
@@ -179,8 +191,19 @@ impl Cassette {
     /// Start recording a new connection for `nodeid`; returns its index.
     pub fn open(&mut self, nodeid: &str, host: &str, port: u16) -> usize {
         let conns = self.tests.entry(nodeid.to_string()).or_default();
-        conns.push(Connection { host: host.to_string(), port, tls: false, segments: Vec::new() });
+        conns.push(Connection { host: host.to_string(), port, tls: false, udp: false, segments: Vec::new(), tls_info: None });
         conns.len() - 1
+    }
+
+    pub fn open_udp(&mut self, nodeid: &str, host: &str, port: u16) -> usize {
+        let conns = self.tests.entry(nodeid.to_string()).or_default();
+        conns.push(Connection { host: host.to_string(), port, tls: false, udp: true, segments: Vec::new(), tls_info: None });
+        conns.len() - 1
+    }
+
+    /// The UDP exchange of `nodeid` with `host:port`, if recorded.
+    pub fn find_udp(&self, nodeid: &str, host: &str, port: u16) -> Option<usize> {
+        self.tests.get(nodeid)?.iter().position(|c| c.udp && c.host == host && c.port == port)
     }
 
     pub fn connection(&self, nodeid: &str, idx: usize) -> Option<&Connection> {
@@ -197,7 +220,7 @@ impl Cassette {
             .get(nodeid)?
             .iter()
             .enumerate()
-            .filter(|(_, c)| c.host == host && c.port == port)
+            .filter(|(_, c)| !c.udp && c.host == host && c.port == port)
             .nth(nth)
     }
 
@@ -243,7 +266,7 @@ mod tests {
 
     #[test]
     fn append_merges_same_direction() {
-        let mut c = Connection { host: "h".into(), port: 80, tls: false, segments: vec![] };
+        let mut c = Connection { host: "h".into(), port: 80, tls: false, udp: false, segments: vec![], tls_info: None };
         c.append(Direction::Send, b"GET ");
         c.append(Direction::Send, b"/ HTTP/1.0\r\n\r\n");
         c.append(Direction::Recv, b"HTTP/1.0 200 OK\r\n");

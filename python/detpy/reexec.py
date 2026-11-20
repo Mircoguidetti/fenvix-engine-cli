@@ -145,14 +145,15 @@ KEEP_ENV = "FENVIX_PYC_KEEP"
 
 def _evict_old_caches(current: str) -> None:
     """Keep the bytecode caches of the most recently used hash seeds only (audit G-1531: every seed explored left
-    one behind, never removed): ``$FENVIX_PYC_KEEP`` (default 16) caches of this interpreter; the others are removed,
+    one behind, never removed): ``$FENVIX_PYC_KEEP`` (default 8, the hash seeds ``--det-seed`` uses) caches of this
+    interpreter; the others are removed,
     least recently used first (their stamps file's time)."""
     import shutil
 
     try:
-        keep = max(1, int(os.environ.get(KEEP_ENV, "16")))
+        keep = max(1, int(os.environ.get(KEEP_ENV, "8")))
     except ValueError:
-        keep = 16
+        keep = 8
     parent = os.path.dirname(current)
     tag = os.path.basename(current).split("-hashseed", 1)[0]
     try:

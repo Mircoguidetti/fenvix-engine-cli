@@ -344,7 +344,28 @@ def _wrap_socket(self, sock, *args, **kwargs):
     if entry is not None:
         _conns[ssl_sock] = entry
         POLICY.cassette.set_tls(entry[0], entry[1])
+        _record_tls_info(ssl_sock, entry)
     return ssl_sock
+
+
+def _record_tls_info(ssl_sock, entry) -> None:
+    """claude/verifier-cli (audit G-1522): what the handshake negotiated, as detpy.network records it."""
+    import base64
+    import json
+
+    try:
+        der = ssl_sock.getpeercert(binary_form=True)
+        info = {"version": ssl_sock.version(), "cipher": ssl_sock.cipher(),
+                "alpn": ssl_sock.selected_alpn_protocol(), "peercert": ssl_sock.getpeercert(),
+                "der": base64.b64encode(der).decode() if der else None}
+    except (ValueError, OSError, AttributeError):
+        return
+    if info["version"] is None:
+        return
+    try:
+        POLICY.cassette.set_tls_info(entry[0], entry[1], json.dumps(info))
+    except Exception:
+        pass
 
 
 # Replay ---------------------------------------------------------------------

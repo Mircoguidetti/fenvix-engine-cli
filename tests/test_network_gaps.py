@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import http.server
 import json
+import os
+import socket
 import subprocess
 import sys
 import threading
@@ -230,3 +232,136 @@ def test_asyncio_clients_are_recorded_and_replayed(pytester, run_det, upstream):
     upstream.shutdown()
     rep, _ = run_det(f"--det-cassette={cassette}")
     rep.assert_outcomes(passed=1)
+
+
+UDP_ECHO = '''
+import os, socket
+def test_udp():
+    host, port = os.environ["UDP_TARGET"].split(":")
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(5)
+    s.sendto(b"ping-1", (host, int(port)))
+    a, src = s.recvfrom(100)
+    s.sendto(b"ping-2", (host, int(port)))
+    b = bytearray(100)
+    n, src2 = s.recvfrom_into(b)
+    print("UDP", a, bytes(b[:n]), src[1] == int(port), src2[1] == int(port))
+    assert a == b"pong:ping-1" and bytes(b[:n]) == b"pong:ping-2"
+'''
+
+
+def _lan_ip():
+    probe = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        probe.connect(("192.0.2.1", 9))  # no packet is sent: the kernel picks the outbound interface
+        ip = probe.getsockname()[0]
+    except OSError:
+        return None
+    finally:
+        probe.close()
+    return None if ip.startswith("127.") else ip
+
+
+def test_udp_is_recorded_and_replayed(tmp_path):
+    """G-1518: a UDP request/response is recorded datagram by datagram and replayed (source address kept). The
+    "external" host is this machine's own non-loopback address (external for --det, reachable for the test)."""
+    ip = _lan_ip()
+    if ip is None:
+        pytest.skip("no non-loopback interface")
+    srv = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    srv.bind((ip, 0))
+    stop = threading.Event()
+
+    def serve():
+        srv.settimeout(0.2)
+        while not stop.is_set():
+            try:
+                data, addr = srv.recvfrom(100)
+            except OSError:
+                continue
+            srv.sendto(b"pong:" + data, addr)
+
+    threading.Thread(target=serve, daemon=True).start()
+    (tmp_path / "test_u.py").write_text(UDP_ECHO)
+    cassette = tmp_path / "cassette.json"
+    env = dict(os.environ, UDP_TARGET=f"{ip}:{srv.getsockname()[1]}")
+    env.pop("PYTEST_ADDOPTS", None)
+    base = [sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", f"--det-cassette={cassette}"]
+    blocked = subprocess.run(base, cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    assert "1 failed" in blocked.stdout, blocked.stdout  # closed network: blocked before any recording
+    rec = subprocess.run([*base, "--det-record"], cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    stop.set()
+    srv.close()
+    assert "1 passed" in rec.stdout, rec.stdout + rec.stderr
+    conn = json.loads(cassette.read_text())["tests"]["test_u.py::test_udp"][0]
+    assert conn["udp"] and [s["dir"] for s in conn["segments"]] == ["send", "recv", "send", "recv"], conn
+    rep = subprocess.run(base, cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)  # server gone
+    assert "1 passed" in rep.stdout and "UDP b'pong:ping-1' b'pong:ping-2' True True" in rep.stdout, rep.stdout
+
+
+TLS_CLIENT = '''
+import hashlib, os, socket, ssl
+def test_tls():
+    host, port = os.environ["TLS_TARGET"].split(":")
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    ctx.set_alpn_protocols(["h2", "http/1.1"])
+    raw = socket.create_connection((host, int(port)), timeout=5)
+    with ctx.wrap_socket(raw, server_hostname="svc.example") as s:
+        s.sendall(b"hello")
+        data = s.recv(100)
+        der = s.getpeercert(binary_form=True)
+        print("TLS", data, isinstance(s, ssl.SSLSocket), s.selected_alpn_protocol(), s.version(),
+              hashlib.sha256(der).hexdigest()[:16])
+    assert data == b"echo:hello"
+'''
+
+
+def test_tls_replay_answers_what_the_handshake_negotiated(tmp_path):
+    """G-1522: on replay the TLS socket is an ssl.SSLSocket and returns the recorded version, ALPN protocol and peer
+    certificate (DER)."""
+    import shutil
+    import ssl as _ssl
+
+    ip = _lan_ip()
+    if ip is None or shutil.which("openssl") is None:
+        pytest.skip("no non-loopback interface or no openssl")
+    key, cert = tmp_path / "k.pem", tmp_path / "c.pem"
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-subj", "/CN=svc.example",
+                    "-keyout", str(key), "-out", str(cert), "-days", "2"], check=True, capture_output=True)
+    sctx = _ssl.SSLContext(_ssl.PROTOCOL_TLS_SERVER)
+    sctx.load_cert_chain(cert, key)
+    sctx.set_alpn_protocols(["http/1.1"])
+    srv = socket.create_server((ip, 0))
+    stop = threading.Event()
+
+    def serve():
+        srv.settimeout(0.2)
+        while not stop.is_set():
+            try:
+                conn, _ = srv.accept()
+            except OSError:
+                continue
+            try:
+                with sctx.wrap_socket(conn, server_side=True) as s:
+                    s.sendall(b"echo:" + s.recv(100))
+            except (OSError, _ssl.SSLError):
+                pass
+
+    threading.Thread(target=serve, daemon=True).start()
+    (tmp_path / "test_t.py").write_text(TLS_CLIENT)
+    cassette = tmp_path / "cassette.json"
+    env = dict(os.environ, TLS_TARGET=f"{ip}:{srv.getsockname()[1]}")
+    env.pop("PYTEST_ADDOPTS", None)
+    base = [sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", f"--det-cassette={cassette}"]
+    rec = subprocess.run([*base, "--det-record"], cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    stop.set()
+    srv.close()
+    assert "1 passed" in rec.stdout, rec.stdout + rec.stderr
+    line_rec = next(x for x in rec.stdout.splitlines() if "TLS b" in x)
+    rep = subprocess.run(base, cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    assert "1 passed" in rep.stdout, rep.stdout + rep.stderr
+    line_rep = next(x for x in rep.stdout.splitlines() if "TLS b" in x)
+    assert line_rep.split("TLS", 1)[1] == line_rec.split("TLS", 1)[1], (line_rec, line_rep)
+    assert "True http/1.1" in line_rep, line_rep

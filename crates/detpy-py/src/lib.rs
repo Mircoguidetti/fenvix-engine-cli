@@ -208,6 +208,43 @@ impl Cassette {
         lock(&self.inner).merge(o);
     }
 
+    /// A UDP exchange of `nodeid` with `host:port` (audit G-1518); returns its index.
+    fn open_udp(&self, nodeid: &str, host: &str, port: u16) -> usize {
+        lock(&self.inner).open_udp(nodeid, host, port)
+    }
+
+    /// TLS details of a recorded connection (JSON text), set at record time.
+    fn set_tls_info(&self, nodeid: &str, idx: usize, info: &str) -> PyResult<()> {
+        let v: serde_json::Value = serde_json::from_str(info).map_err(|e| PyValueError::new_err(e.to_string()))?;
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.tls_info = Some(v);
+        Ok(())
+    }
+
+    fn tls_info(&self, nodeid: &str, idx: usize) -> Option<String> {
+        let c = lock(&self.inner);
+        c.connection(nodeid, idx).and_then(|k| k.tls_info.as_ref()).map(|v| v.to_string())
+    }
+
+    /// Whether any test has a UDP exchange recorded.
+    fn has_udp(&self) -> bool {
+        lock(&self.inner).tests.values().any(|cs| cs.iter().any(|c| c.udp))
+    }
+
+    fn find_udp(&self, nodeid: &str, host: &str, port: u16) -> Option<usize> {
+        lock(&self.inner).find_udp(nodeid, host, port)
+    }
+
+    /// One datagram of a UDP exchange (never merged with the previous one).
+    fn append_datagram(&self, nodeid: &str, idx: usize, dir: &str, data: &[u8]) -> PyResult<()> {
+        let dir = parse_dir(dir)?;
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.append_datagram(dir, data);
+        Ok(())
+    }
+
     /// Note when `nodeid`'s connections were recorded (UTC, RFC 3339).
     fn set_recorded(&self, nodeid: &str, when: &str) {
         lock(&self.inner).recorded.insert(nodeid.to_string(), when.to_string());

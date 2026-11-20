@@ -263,12 +263,23 @@ def parse_epoch(text: str) -> int:
     return (delta.days * 86400 + delta.seconds) * 1_000_000_000 + delta.microseconds * 1000
 
 
+def hashseed_variants() -> int:
+    """How many hash seeds the ``--det-seed`` values share (audit G-1531): ``--det-seed=N`` runs under
+    ``PYTHONHASHSEED = N mod K`` (K = ``$FENVIX_HASHSEEDS``, default 8). Every seed keeps its own order and generator
+    seeds; an exploration over many seeds precompiles the libraries K times instead of once per seed (MEASURED by
+    the audit: 13 s and 27 MB to 246 MB per new seed)."""
+    try:
+        return max(1, min(4294967296, int(os.environ.get("FENVIX_HASHSEEDS", "8"))))
+    except ValueError:
+        return 8
+
+
 def hashseed(seed: int | None) -> str:
-    return str((seed or 0) % 4294967296)
+    return str((seed or 0) % hashseed_variants())
 
 
 def hashseed_value() -> str:
-    return str(_state.STATE.config.seed % 4294967296)
+    return str(_state.STATE.config.seed % hashseed_variants())
 
 
 def _locale_exists(name: str) -> bool:

@@ -39,11 +39,15 @@ fenvix pytest                         # later runs replay from .detpy/cassette.j
   test sends and compares it with the recording. If the request differs (another path, another body), the recorded
   answer is not served: the test reads end of file, the trace gets a `replay.mismatch` event, and the run ends with
   `network: replay refused for N test(s): the request differs from the recorded one`. Re-record with `--det-record`.
-* **What is covered.** Blocking sockets (`requests`, `urllib`, `urllib3`, `httpx`), `sendmsg`/`recvmsg`, TLS
-  through `ssl` (`SSLContext.wrap_socket`; replay uses a plaintext stand-in that is not an `ssl.SSLSocket`), and
-  asyncio clients (`aiohttp`, `httpx.AsyncClient`, `asyncio.open_connection`).
-* **What is not covered.** UDP datagrams are blocked, not recorded. Native clients are not covered either (see
-  above).
+* **TCP.** Blocking sockets (`requests`, `urllib`, `urllib3`, `httpx`), `sendmsg`/`recvmsg`, TLS
+  through `ssl` (`SSLContext.wrap_socket`: on replay the socket is an `ssl.SSLSocket` over the recorded plaintext that
+  answers the recorded version, cipher, ALPN protocol and peer certificate, in both forms), and asyncio clients (`aiohttp`, `httpx.AsyncClient`, `asyncio.open_connection`).
+* **UDP.** Datagrams sent with `sendto` to an external host are recorded one by one, with the answers received
+  from that host (`recvfrom`, `recvfrom_into`). On replay, a sent datagram that equals the recorded one is answered
+  by the recorded datagrams from a local socket. The answers come back as real datagrams, so `select` and asyncio
+  see them, and their source address is the recorded host's. Another datagram is not answered (refused, as for
+  TCP). DNS over UDP (dnspython), statsd and syslog clients are covered this way.
+* **What is not covered.** Native clients are not covered (see above).
 * **Staleness.** `--det-cassette-max-age=DAYS` refuses to replay recordings older than DAYS, or recordings
   without a date. Those tests meet the closed network until they are recorded again. The cassette's digest is a run
   input, so `fenvix verify` reports runs with different cassettes as divergent (`[net]`).

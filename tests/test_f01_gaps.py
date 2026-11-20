@@ -254,7 +254,7 @@ def test_first_precompile_says_so_and_old_caches_are_evicted(tmp_path):
     """G-2202 (a line before the silent precompile), G-1531 (bytecode caches of old hash seeds are removed)."""
     proj = project(tmp_path, "def test_x():\n    pass\n")
     cache = tmp_path / "pyc"
-    env = _env(DETPY_PYC_CACHE=str(cache), FENVIX_PYC_KEEP="2")
+    env = _env(DETPY_PYC_CACHE=str(cache), FENVIX_PYC_KEEP="2", FENVIX_HASHSEEDS="1000")
     seen = []
     for seed in (101, 102, 103):
         p, _ = det(proj, f"s{seed}", f"--det-seed={seed}", env=env)
@@ -318,3 +318,14 @@ def test_det_turned_on_by_configuration(tmp_path):
     assert values(d, "VAL") == values(e, "VAL") and "seed: 0" in d.stdout
     plain = run()
     assert "detpy (Level 0)" not in plain.stdout
+
+
+def test_seeds_share_a_few_hash_seeds(tmp_path):
+    """G-1531: --det-seed=N runs under PYTHONHASHSEED = N mod 8 (FENVIX_HASHSEEDS): an exploration over many seeds
+    precompiles the libraries 8 times at most; every seed keeps its own order."""
+    proj = project(tmp_path, "import os\n\ndef test_x():\n    print('HS', os.environ['PYTHONHASHSEED'])\n")
+    a, _ = det(proj, "a", "--det-seed=9")
+    b, _ = det(proj, "b", "--det-seed=17")
+    assert values(a, "HS") == ["1"] and values(b, "HS") == ["1"], (a.stdout, b.stdout)
+    c, _ = det(proj, "c", "--det-seed=9", env=_env(FENVIX_HASHSEEDS="1000"))
+    assert values(c, "HS") == ["9"]
