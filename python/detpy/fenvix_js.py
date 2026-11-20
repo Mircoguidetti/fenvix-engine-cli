@@ -29,6 +29,7 @@ Use:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
 import shlex
@@ -43,12 +44,10 @@ from pathlib import Path
 from . import _core
 from . import repro as _repro
 
-try:  # the fenvix command (branch verifier-cli): its Adapter interface
-    from .fenvix import Adapter as _AdapterBase  # type: ignore
-    PROG = "fenvix"
-except ImportError:  # pragma: no cover - before verifier-cli merges
-    _AdapterBase = object
-    PROG = "python -m detpy.fenvix_js"
+# The adapters implement fenvix.py's ``Adapter`` interface by duck typing: fenvix.py imports this module while it is
+# being initialised (``register``), so this module never imports it at import time.
+_AdapterBase = object
+PROG = "fenvix" if importlib.util.find_spec("detpy.fenvix") is not None else "python -m detpy.fenvix_js"
 
 JS_EXT = (".js", ".ts", ".mjs", ".cjs", ".mts", ".cts", ".jsx", ".tsx")
 
@@ -274,6 +273,16 @@ class DetjsAdapter(_AdapterBase):
         why = _detjs_problem(detjs_command())
         if why:
             return f"repro / explore / replay for {self.name} need detjs: {why}"
+        cwd = Path.cwd()
+        try:
+            p = subprocess.run(["node", "-e", f"require('module').createRequire(process.cwd() + '/x.js')"
+                                f".resolve('{self.package}/package.json')"], cwd=cwd, capture_output=True, timeout=120)
+            found = p.returncode == 0
+        except (OSError, subprocess.TimeoutExpired):
+            found = False
+        if not found:
+            return (f"{self.name} is not installed in {cwd}: detjs runs the project's own {self.name} (install the "
+                    f"project's dependencies, and run fenvix from the directory the tests run from)")
         return None
 
     def owns(self, test: str) -> bool:
@@ -297,8 +306,11 @@ class DetjsAdapter(_AdapterBase):
 
     def repro(self, ns) -> dict:
         runner = self._runner(ns, Path(ns.out) / ".work")
-        b = _repro.reproduce(runner, ns.test, seeds=ns.seeds, confirm=ns.confirm, max_runs=ns.max_runs,
-                             out_dir=Path(ns.out), known_fail=ns.seed)
+        try:
+            b = _repro.reproduce(runner, ns.test, seeds=ns.seeds, confirm=ns.confirm, max_runs=ns.max_runs,
+                                 out_dir=Path(ns.out), known_fail=ns.seed)
+        except RuntimeError as e:  # the suite could not be collected: say so, no traceback
+            raise SystemExit(f"fenvix repro: {self.name}: {e}") from None
         return finish_bundle(b, Path(ns.out), runner)
 
     def explore(self, ns) -> dict:
@@ -350,10 +362,11 @@ class PlaywrightAdapter(_AdapterBase):
     REASON = ("repro / explore / replay are not available for playwright in this version: detjs runs Playwright Test "
               "measured only (node/src/register.js loaded with NODE_OPTIONS in the worker processes; docs/NODE.md J11): "
               "the controls are installed in the worker, but there are no per-test brackets, no trace and therefore no "
-              "fingerprints, and no --det-order / --det-outcomes / --det-collect (Playwright Test has no API to run a "
-              "given list of tests in a given order across files), while the browser and the web servers it starts "
-              "are separate processes Level 0 does not control. The repro driver needs per-test outcomes and "
-              "fingerprints of runs in a chosen order, so it cannot bundle a Playwright failure yet.")
+              "fingerprints, and no --det-order / --det-outcomes / --det-collect for Playwright (no detjs shell orders and "
+              "brackets its tests yet), while the browser and the web servers it starts "
+              "are separate processes Level 0 does not control. The repro driver (docs/CLI.md, \"Runner adapters\") needs "
+              "per-test outcomes and fingerprints of runs in a chosen order, so it cannot bundle a Playwright failure "
+              "yet.")
 
     def available(self) -> str | None:
         return self.REASON
