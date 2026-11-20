@@ -1,0 +1,255 @@
+test/ValidationError.ts::ValidationError::formatError::should insert the params into the message
+test/ValidationError.ts::ValidationError::formatError::should auto include any param named 'label' or 'path' as the 'path' param
+test/ValidationError.ts::ValidationError::formatError::should use 'this' if a 'label' or 'path' param is not provided
+test/ValidationError.ts::ValidationError::formatError::should include "undefined" in the message if undefined is provided as a param
+test/ValidationError.ts::ValidationError::formatError::should include "null" in the message if null is provided as a param
+test/ValidationError.ts::ValidationError::formatError::should include "NaN" in the message if null is provided as a param
+test/ValidationError.ts::ValidationError::formatError::should include 0 in the message if 0 is provided as a param
+test/ValidationError.ts::ValidationError::should disable stacks
+test/array.ts::Array types::casting::should parse json strings
+test/array.ts::Array types::casting::should failed casts return input
+test/array.ts::Array types::casting::should recursively cast fields
+test/array.ts::Array types::casting::should pass array options to descendants when casting
+test/array.ts::Array types::should handle DEFAULT
+test/array.ts::Array types::should type check
+test/array.ts::Array types::should cast children
+test/array.ts::Array types::should concat subType correctly
+test/array.ts::Array types::should pass options to children
+test/array.ts::Array types::validation::Basic validations fail: required %p undefined
+test/array.ts::Array types::validation::Basic validations fail: required %p null
+test/array.ts::Array types::validation::Basic validations fail: null %p null
+test/array.ts::Array types::validation::Basic validations fail: length %p [ 1, 2, 3 ]
+test/array.ts::Array types::validation::Basic validations pass: required %p []
+test/array.ts::Array types::validation::Basic validations pass: nullable %p null
+test/array.ts::Array types::validation::Basic validations pass: length %p [ 1, 2, 3 ]
+test/array.ts::Array types::validation::should allow undefined
+test/array.ts::Array types::validation::max should replace earlier tests
+test/array.ts::Array types::validation::min should replace earlier tests
+test/array.ts::Array types::validation::should respect subtype validations
+test/array.ts::Array types::validation::should prevent recursive casting
+test/array.ts::Array types::should respect abortEarly
+test/array.ts::Array types::should respect disableStackTrace
+test/array.ts::Array types::should compact arrays
+test/array.ts::Array types::should ensure arrays
+test/array.ts::Array types::should pass resolved path to descendants
+test/array.ts::Array types::should pass deeply resolved path to descendants
+test/array.ts::Array types::should maintain array sparseness through validation
+test/array.ts::Array types::should validate empty slots in sparse array
+test/bool.ts::Boolean types::should CAST correctly
+test/bool.ts::Boolean types::should handle DEFAULT
+test/bool.ts::Boolean types::should type check
+test/bool.ts::Boolean types::bool should VALIDATE correctly
+test/bool.ts::Boolean types::should check isTrue correctly
+test/bool.ts::Boolean types::should check isFalse correctly
+test/date.ts::Date types::should CAST correctly
+test/date.ts::Date types::should return invalid date for failed non-null casts
+test/date.ts::Date types::should type check
+test/date.ts::Date types::should VALIDATE correctly
+test/date.ts::Date types::should check MIN correctly
+test/date.ts::Date types::should check MAX correctly
+test/lazy.ts::lazy::should throw on a non-schema value
+test/lazy.ts::lazy::mapper::should call with value
+test/lazy.ts::lazy::mapper::should call with context
+test/lazy.ts::lazy::mapper::should call with context when nested: #1799
+test/lazy.ts::lazy::mapper::should allow meta
+test/lazy.ts::lazy::mapper::should allow throwing validation error in builder
+test/mixed.ts::Mixed Types ::is not nullable by default
+test/mixed.ts::Mixed Types ::cast should return a default when undefined
+test/mixed.ts::Mixed Types ::getDefault should return the default value
+test/mixed.ts::Mixed Types ::getDefault should return the default value using context
+test/mixed.ts::Mixed Types ::should use provided check
+test/mixed.ts::Mixed Types ::should allow missing values with the "ignore-optionality" option
+test/mixed.ts::Mixed Types ::should warn about null types
+test/mixed.ts::Mixed Types ::should validateAt
+test/mixed.ts::Mixed Types ::should print the original value
+test/mixed.ts::Mixed Types ::should allow function messages
+test/mixed.ts::Mixed Types ::should check types
+test/mixed.ts::Mixed Types ::should limit values
+test/mixed.ts::Mixed Types ::should limit values with a ref
+test/mixed.ts::Mixed Types ::should not require field when notRequired was set
+test/mixed.ts::Mixed Types ::oneOf::valid:::undefined
+test/mixed.ts::Mixed Types ::oneOf::valid:::hello
+test/mixed.ts::Mixed Types ::oneOf::valid:::null
+test/mixed.ts::Mixed Types ::oneOf::invalid:::YOLO
+test/mixed.ts::Mixed Types ::oneOf::invalid:::undefined  (required)
+test/mixed.ts::Mixed Types ::oneOf::invalid:::null  (required)
+test/mixed.ts::Mixed Types ::oneOf::should work with refs
+test/mixed.ts::Mixed Types ::should exclude values::valid:::6
+test/mixed.ts::Mixed Types ::should exclude values::valid:::hfhfh
+test/mixed.ts::Mixed Types ::should exclude values::valid:::5  (`oneOf` called after)
+test/mixed.ts::Mixed Types ::should exclude values::valid:::null
+test/mixed.ts::Mixed Types ::should exclude values::invalid:::5
+test/mixed.ts::Mixed Types ::should exclude values::invalid:::null  (required schema)
+test/mixed.ts::Mixed Types ::should exclude values::should throw the correct error
+test/mixed.ts::Mixed Types ::should run subset of validations first
+test/mixed.ts::Mixed Types ::should respect strict
+test/mixed.ts::Mixed Types ::should respect abortEarly
+test/mixed.ts::Mixed Types ::should respect disableStackTrace
+test/mixed.ts::Mixed Types ::should overload test()
+test/mixed.ts::Mixed Types ::should fallback to default message
+test/mixed.ts::Mixed Types ::should allow non string messages
+test/mixed.ts::Mixed Types ::should dedupe tests with the same test function
+test/mixed.ts::Mixed Types ::should not dedupe tests with the same test function and different type
+test/mixed.ts::Mixed Types ::should respect exclusive validation
+test/mixed.ts::Mixed Types ::should non-exclusive tests should stack
+test/mixed.ts::Mixed Types ::should replace existing tests, with exclusive test 
+test/mixed.ts::Mixed Types ::should replace existing exclusive tests, with non-exclusive
+test/mixed.ts::Mixed Types ::exclusive tests should throw without a name
+test/mixed.ts::Mixed Types ::exclusive tests should replace previous ones
+test/mixed.ts::Mixed Types ::tests should be called with the correct `this`
+test/mixed.ts::Mixed Types ::tests should be able to access nested parent
+test/mixed.ts::Mixed Types ::tests can return an error
+test/mixed.ts::Mixed Types ::should use returned error path and message
+test/mixed.ts::Mixed Types ::should allow custom validation
+test/mixed.ts::Mixed Types ::should fail when the test function returns a rejected Promise
+test/mixed.ts::Mixed Types ::withMutation::should pass the same instance to a provided function
+test/mixed.ts::Mixed Types ::withMutation::should temporarily make mutable
+test/mixed.ts::Mixed Types ::withMutation::should return immutability
+test/mixed.ts::Mixed Types ::withMutation::should work with nesting
+test/mixed.ts::Mixed Types ::concat::should have the correct number of tests
+test/mixed.ts::Mixed Types ::concat::should have the tests in the correct order
+test/mixed.ts::Mixed Types ::concat::should validate correctly
+test/mixed.ts::Mixed Types ::concat::should throw the correct validation errors
+test/mixed.ts::Mixed Types ::concat should carry over transforms
+test/mixed.ts::Mixed Types ::concat should fail on different types
+test/mixed.ts::Mixed Types ::concat should not overwrite label and meta with undefined
+test/mixed.ts::Mixed Types ::concat should allow mixed and other type
+test/mixed.ts::Mixed Types ::concat should validate with mixed and other type
+test/mixed.ts::Mixed Types ::concat should maintain undefined defaults
+test/mixed.ts::Mixed Types ::concat should preserve oneOf
+test/mixed.ts::Mixed Types ::concat should override presence
+test/mixed.ts::Mixed Types ::gives whitelist precedence to second in concat
+test/mixed.ts::Mixed Types ::gives blacklist precedence to second in concat
+test/mixed.ts::Mixed Types ::concats whitelist with refs
+test/mixed.ts::Mixed Types ::defaults should be validated but not transformed
+test/mixed.ts::Mixed Types ::should handle conditionals
+test/mixed.ts::Mixed Types ::should handle multiple conditionals
+test/mixed.ts::Mixed Types ::should require context when needed
+test/mixed.ts::Mixed Types ::should not use context refs in object calculations
+test/mixed.ts::Mixed Types ::should support self references in conditions
+test/mixed.ts::Mixed Types ::should support conditional single argument as options shortcut
+test/mixed.ts::Mixed Types ::should allow nested conditions and lazies
+test/mixed.ts::Mixed Types ::should use label in error message
+test/mixed.ts::Mixed Types ::should add meta() data
+test/mixed.ts::Mixed Types ::schema.describe()::should describe
+test/mixed.ts::Mixed Types ::schema.describe()::should describe with options
+test/mixed.ts::Mixed Types ::defined::should fail when value is undefined
+test/mixed.ts::Mixed Types ::defined::should pass when value is null
+test/mixed.ts::Mixed Types ::defined::should pass when value is not undefined
+test/mixed.ts::Mixed Types ::description options::should pass options
+test/number.ts::Number types::is extensible
+test/number.ts::Number types::casting::should cast 5 to 5
+test/number.ts::Number types::casting::should cast 3 to 3
+test/number.ts::Number types::casting::should cast  5.656  to 5.656
+test/number.ts::Number types::casting::should not cast 
+test/number.ts::Number types::casting::should not cast false
+test/number.ts::Number types::casting::should not cast true
+test/number.ts::Number types::casting::should not cast 2025-01-01T00:00:00.000Z
+test/number.ts::Number types::casting::should not cast null
+test/number.ts::Number types::casting::should round
+test/number.ts::Number types::casting::should truncate
+test/number.ts::Number types::casting::should return NaN for failed casts
+test/number.ts::Number types::should handle DEFAULT
+test/number.ts::Number types::should type check
+test/number.ts::Number types::should VALIDATE correctly
+test/number.ts::Number types::min::valid:::7
+test/number.ts::Number types::min::valid:::35738787838
+test/number.ts::Number types::min::valid:::null
+test/number.ts::Number types::min::invalid:::2
+test/number.ts::Number types::min::invalid:::null
+test/number.ts::Number types::min::invalid:::14
+test/number.ts::Number types::max::valid:::4
+test/number.ts::Number types::max::valid:::-5222
+test/number.ts::Number types::max::valid:::null
+test/number.ts::Number types::max::invalid:::10
+test/number.ts::Number types::max::invalid:::null
+test/number.ts::Number types::max::invalid:::16
+test/number.ts::Number types::lessThan::valid:::4
+test/number.ts::Number types::lessThan::valid:::-10
+test/number.ts::Number types::lessThan::valid:::null
+test/number.ts::Number types::lessThan::invalid:::5
+test/number.ts::Number types::lessThan::invalid:::7
+test/number.ts::Number types::lessThan::invalid:::null
+test/number.ts::Number types::lessThan::invalid:::14
+test/number.ts::Number types::lessThan::should return default message
+test/number.ts::Number types::moreThan::valid:::6
+test/number.ts::Number types::moreThan::valid:::56445435
+test/number.ts::Number types::moreThan::valid:::null
+test/number.ts::Number types::moreThan::invalid:::5
+test/number.ts::Number types::moreThan::invalid:::-10
+test/number.ts::Number types::moreThan::invalid:::null
+test/number.ts::Number types::moreThan::invalid:::64
+test/number.ts::Number types::moreThan::should return default message
+test/number.ts::Number types::integer::valid:::4
+test/number.ts::Number types::integer::valid:::-5222
+test/number.ts::Number types::integer::valid:::3.12312e+51
+test/number.ts::Number types::integer::invalid:::10.53
+test/number.ts::Number types::integer::invalid:::0.020000000000000004
+test/number.ts::Number types::integer::invalid:::-34512535.626
+test/number.ts::Number types::integer::invalid:::2025-01-01T00:00:00.000Z
+test/number.ts::Number types::integer::should return default message
+test/number.ts::Number types::should check POSITIVE correctly
+test/number.ts::Number types::should check NEGATIVE correctly
+test/number.ts::Number types::should resolve param refs when describing
+test/object.ts::Object types::casting::should parse json strings
+test/object.ts::Object types::casting::should return input for failed casts
+test/object.ts::Object types::casting::should recursively cast fields
+test/object.ts::Object types::casting::should return the same object if all props are already cast
+test/object.ts::Object types::validation::should run validations recursively
+test/object.ts::Object types::validation::should prevent recursive casting
+test/object.ts::Object types::validation::should respect strict for nested values
+test/object.ts::Object types::validation::should respect strict for nested object values
+test/object.ts::Object types::validation::should respect child schema with strict()
+test/object.ts::Object types::validation::should handle custom validation
+test/object.ts::Object types::validation::should not clone during validating
+test/object.ts::Object types::should pass options to children
+test/object.ts::Object types::should call shape with constructed with an arg
+test/object.ts::Object types::stripUnknown::should remove extra fields
+test/object.ts::Object types::stripUnknown::should one undefined extra fields
+test/object.ts::Object types::object defaults::should expand objects by default
+test/object.ts::Object types::object defaults::should accept a user provided default
+test/object.ts::Object types::object defaults::should add empty keys when sub schema has no default
+test/object.ts::Object types::object defaults::should create defaults for missing object fields
+test/object.ts::Object types::object defaults::should propagate context
+test/object.ts::Object types::object defaults::should respect options when casting to default
+test/object.ts::Object types::should handle empty keys
+test/object.ts::Object types::should work with noUnknown
+test/object.ts::Object types::should work with noUnknown override
+test/object.ts::Object types::should work with exact
+test/object.ts::Object types::should strip specific fields
+test/object.ts::Object types::should handle field striping with `when`
+test/object.ts::Object types::should allow refs
+test/object.ts::Object types::should allow refs with abortEarly false
+test/object.ts::Object types::lazy evaluation::should be cast-able
+test/object.ts::Object types::lazy evaluation::should be validatable
+test/object.ts::Object types::lazy evaluation::should resolve to schema
+test/object.ts::Object types::lazy evaluation::should be passed the value
+test/object.ts::Object types::lazy evaluation::should be passed the options
+test/object.ts::Object types::lazy evaluation::should always return a schema
+test/object.ts::Object types::lazy evaluation::should set the correct path
+test/object.ts::Object types::lazy evaluation::should set the correct path with dotted keys
+test/object.ts::Object types::lazy evaluation::should resolve array sub types
+test/object.ts::Object types::lazy evaluation::should resolve for each array item
+test/object.ts::Object types::should respect abortEarly
+test/object.ts::Object types::should flatten validation errors with abortEarly=false
+test/object.ts::Object types::should sort errors by insertion order
+test/object.ts::Object types::should respect recursive
+test/object.ts::Object types::partial() should work
+test/object.ts::Object types::deepPartial() should work
+test/object.ts::Object types::should alias or move keys
+test/object.ts::Object types::should alias nested keys
+test/object.ts::Object types::should not move keys when it does not exist
+test/object.ts::Object types::should handle conditionals
+test/object.ts::Object types::should handle conditionals with unknown dependencies
+test/object.ts::Object types::should handle conditionals synchronously
+test/object.ts::Object types::should allow opt out of topo sort on specific edges
+test/object.ts::Object types::should use correct default when concating
+test/object.ts::Object types::should maintain excluded edges when concating
+test/object.ts::Object types::should handle nested conditionals
+test/object.ts::Object types::should camelCase keys
+test/object.ts::Object types::should CONSTANT_CASE keys
+test/object.ts::Object types::should pick
+test/object.ts::Object types::should omit
+test/object.ts::Object types::should pick and omit with excluded edges
+test/setLocale.ts::Custom locale::should get default locale
+test/setLocale.ts::Custom locale::should set a new locale

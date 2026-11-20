@@ -1,0 +1,76 @@
+{
+  "test": "packages/form-core/tests/DynamicValidation.spec.ts::custom validation::rhf validation should work as-expected with async validators",
+  "configs_searched": 2,
+  "status": "reproduced",
+  "config": "1",
+  "seed": 1,
+  "kind": "order",
+  "prefix_length": 196,
+  "minimal_length": 2,
+  "polluters": [
+    "packages/form-core/tests/DynamicValidation.spec.ts::custom validation::customised field-level validation logic::should support async validation"
+  ],
+  "setters": [],
+  "order": [
+    "packages/form-core/tests/DynamicValidation.spec.ts::custom validation::customised field-level validation logic::should support async validation",
+    "packages/form-core/tests/DynamicValidation.spec.ts::custom validation::rhf validation should work as-expected with async validators"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Error",
+    "call",
+    "Test timed out in 5000ms. / If this is a long-running test, pass a timeout value as the last argument or configure it globally with \"testTimeout\".",
+    "packages/form-core/tests/DynamicValidation.spec.ts:98"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "214284b09894c726bb4150da8040cc9e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "random",
+    "description": "event #0: [random] Math.random @ packages/form-core/src/utils.ts:662 = 0.08134407162416368  <>  [outcome] outcome @  = failed",
+    "event_a": {
+      "t": 0,
+      "s": "random",
+      "o": "Math.random",
+      "at": "packages/form-core/src/utils.ts:662",
+      "v": "0.08134407162416368"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "43cee72b58198e84300de00107c57d9a",
+      "214284b09894c726bb4150da8040cc9e"
+    ]
+  },
+  "runs": 27,
+  "seconds": 199.93,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=1 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/rhf_validation_should_work_as-expected_with_async_validators-0c3b6ebe/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/rhf_validation_should_work_as-expected_with_async_validators-0c3b6ebe",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/tanstack-form/rhf_validation_should_work_as-expected_with_async_validators-0c3b6ebe",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/tanstack-form",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

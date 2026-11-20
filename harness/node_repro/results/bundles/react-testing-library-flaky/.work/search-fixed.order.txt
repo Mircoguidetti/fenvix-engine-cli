@@ -1,0 +1,102 @@
+src/__tests__/act.js::render calls useEffect immediately
+src/__tests__/act.js::findByTestId returns the element
+src/__tests__/act.js::fireEvent triggers useEffect calls
+src/__tests__/act.js::calls to hydrate will run useEffects
+src/__tests__/act.js::cleans up IS_REACT_ACT_ENVIRONMENT if its callback throws
+src/__tests__/act.js::cleans up IS_REACT_ACT_ENVIRONMENT if its async callback throws
+src/__tests__/auto-cleanup-skip.js::first
+src/__tests__/auto-cleanup-skip.js::second
+src/__tests__/auto-cleanup.js::first
+src/__tests__/auto-cleanup.js::second
+src/__tests__/cleanup.js::cleans up the document
+src/__tests__/cleanup.js::cleanup does not error when an element is not a child
+src/__tests__/cleanup.js::cleanup runs effect cleanup functions
+src/__tests__/cleanup.js::fake timers and missing act warnings::cleanup does not flush microtasks
+src/__tests__/cleanup.js::fake timers and missing act warnings::cleanup does not swallow missing act warnings
+src/__tests__/config.js::configuration API::DTL options::configure can set by a plain JS object
+src/__tests__/config.js::configuration API::DTL options::configure can set by a function
+src/__tests__/config.js::configuration API::RTL options::configure can set by a plain JS object
+src/__tests__/config.js::configuration API::RTL options::configure can set by a function
+src/__tests__/config.js::configuration API::configure can set DTL and RTL options at once
+src/__tests__/debug.js::debug pretty prints the container
+src/__tests__/debug.js::debug pretty prints multiple containers
+src/__tests__/debug.js::allows same arguments as prettyDOM
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using real timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using real timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using real timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake legacy timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake legacy timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake legacy timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake modern timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake modern timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a macrotask using fake modern timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using real timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using real timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using real timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake legacy timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake legacy timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake legacy timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake modern timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake modern timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in many microtask using fake modern timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using real timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using real timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using real timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake legacy timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake legacy timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake legacy timers::findBy
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake modern timers::waitForElementToBeRemoved
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake modern timers::waitFor
+src/__tests__/end-to-end.js::it waits for the data to be loaded in a microtask using fake modern timers::findBy
+src/__tests__/error-handlers.js::render errors
+src/__tests__/error-handlers.js::onUncaughtError is not supported in render
+src/__tests__/error-handlers.js::onCaughtError is supported in render
+src/__tests__/error-handlers.js::onRecoverableError is supported in render
+src/__tests__/error-handlers.js::onUncaughtError is not supported in renderHook
+src/__tests__/error-handlers.js::onCaughtError is supported in renderHook
+src/__tests__/error-handlers.js::onRecoverableError is supported in renderHook
+src/__tests__/events.js::Clipboard Events::triggers onCopy
+src/__tests__/events.js::Clipboard Events::triggers onPaste
+src/__tests__/events.js::Composition Events::triggers onCompositionEnd
+src/__tests__/events.js::Composition Events::triggers onCompositionStart
+src/__tests__/events.js::Composition Events::triggers onCompositionUpdate
+src/__tests__/events.js::Keyboard Events::triggers onKeyDown
+src/__tests__/events.js::Keyboard Events::triggers onKeyPress
+src/__tests__/events.js::Keyboard Events::triggers onKeyUp
+src/__tests__/events.js::Focus Events::triggers onFocus
+src/__tests__/events.js::Focus Events::triggers onBlur
+src/__tests__/events.js::Form Events::triggers onFocus
+src/__tests__/events.js::Form Events::triggers onBlur
+src/__tests__/events.js::Focus Events::triggers onInput
+src/__tests__/events.js::Focus Events::triggers onInvalid
+src/__tests__/events.js::Focus Events::triggers onSubmit
+src/__tests__/events.js::Mouse Events::triggers onClick
+src/__tests__/events.js::Mouse Events::triggers onContextMenu
+src/__tests__/events.js::Mouse Events::triggers onDoubleClick
+src/__tests__/events.js::Mouse Events::triggers onDrag
+src/__tests__/events.js::Mouse Events::triggers onDragEnd
+src/__tests__/events.js::Mouse Events::triggers onDragEnter
+src/__tests__/events.js::Mouse Events::triggers onDragExit
+src/__tests__/events.js::Mouse Events::triggers onDragLeave
+src/__tests__/events.js::Mouse Events::triggers onDragOver
+src/__tests__/events.js::Mouse Events::triggers onDragStart
+src/__tests__/events.js::Mouse Events::triggers onDrop
+src/__tests__/events.js::Mouse Events::triggers onMouseDown
+src/__tests__/events.js::Mouse Events::triggers onMouseEnter
+src/__tests__/events.js::Mouse Events::triggers onMouseLeave
+src/__tests__/events.js::Mouse Events::triggers onMouseMove
+src/__tests__/events.js::Mouse Events::triggers onMouseOut
+src/__tests__/events.js::Mouse Events::triggers onMouseOver
+src/__tests__/events.js::Mouse Events::triggers onMouseUp
+src/__tests__/events.js::Pointer Events::triggers onPointerOver
+src/__tests__/events.js::Pointer Events::triggers onPointerEnter
+src/__tests__/events.js::Pointer Events::triggers onPointerDown
+src/__tests__/events.js::Pointer Events::triggers onPointerMove
+src/__tests__/events.js::Pointer Events::triggers onPointerUp
+src/__tests__/events.js::Pointer Events::triggers onPointerCancel
+src/__tests__/events.js::Pointer Events::triggers onPointerOut
+src/__tests__/events.js::Pointer Events::triggers onPointerLeave
+src/__tests__/events.js::Pointer Events::triggers onGotPointerCapture
+src/__tests__/events.js::Pointer Events::triggers onLostPointerCapture
+src/__tests__/events.js::Selection Events::triggers onSelect
+src/__tests__/events.js::Touch Events::triggers onTouchCancel

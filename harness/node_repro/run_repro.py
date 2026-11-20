@@ -72,11 +72,28 @@ def repo_entry(name: str, summary: dict) -> dict:
 INSTALL_HERE = {"yup": "COREPACK_ENABLE_STRICT=0 npx -y @yarnpkg/cli-dist@4.10.3 install --immutable"}
 
 
+def test_dir(p) -> str:
+    """Where the tests run from: Playwright's configuration directory, else the runner's (node_harness)."""
+    return getattr(p, "pw_dir", "") or p.src
+
+
 def prepare(name: str, work: Path) -> NH.Prepared | None:
     summary = json.loads((flaky_set.FINAL / f"{name}.summary.json").read_text())
     NH.ensure_node = lambda major: node_bin(work)
     repo = repo_entry(name, summary)
-    p = NH.prepare(repo, work, None, None, 3600)
+    real_sh = NH.sh
+
+    def sh(cmd, *a, **k):
+        # Playwright: the browsers are installed here already (PLAYWRIGHT_BROWSERS_PATH); `install-deps` would run apt
+        if any("install-deps" in str(x) for x in cmd):
+            return 0, "skipped here: system dependencies of the browsers are installed", 0.0, False
+        return real_sh(cmd, *a, **k)
+
+    NH.sh = sh
+    try:
+        p = NH.prepare(repo, work, None, None, 3600)
+    finally:
+        NH.sh = real_sh
     if p.status != "ok":
         print(f"{name}: preparation failed: {p.status} {p.detail[-500:]}", flush=True)
         return None
@@ -141,7 +158,7 @@ def main(argv=None) -> int:
                    "--confirm", str(args.confirm), "--max-runs", str(args.max_runs), "--timeout", str(args.timeout),
                    "--out", str(bundles), "--json", "--", *p.pytest_args]
             t0 = time.monotonic()
-            r = subprocess.run(cmd, cwd=p.src, env=env, capture_output=True, text=True)
+            r = subprocess.run(cmd, cwd=test_dir(p), env=env, capture_output=True, text=True)
             dur = time.monotonic() - t0
             text = r.stdout
             b = None
@@ -153,7 +170,7 @@ def main(argv=None) -> int:
                     b = None
             row = {"repo": name, "test": test, "engine": args.engine, "runner": p.runner, "runner_version": p.runner_version,
                    "commit": p.commit, "exit": r.returncode, "wall_s": round(dur, 1),
-                   "command": " ".join(cmd[:3] + ["repro", "<test>"] + cmd[5:]), "cwd": os.path.relpath(p.src, work),
+                   "command": " ".join(cmd[:3] + ["repro", "<test>"] + cmd[5:]), "cwd": os.path.relpath(test_dir(p), work),
                    "status": (b or {}).get("status", "crashed"), "bundle": b,
                    "rendered": text[:i] if i >= 0 else text[-3000:], "stderr": r.stderr[-3000:]}
             with res_file.open("a") as f:

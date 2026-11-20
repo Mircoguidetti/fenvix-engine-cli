@@ -1,0 +1,57 @@
+src/__tests__/auto-cleanup-skip.js::second
+src/__tests__/auto-cleanup-skip.js::first
+src/__tests__/multi-base.js::baseElement isolates trees from one another
+src/__tests__/debug.js::debug pretty prints multiple containers
+src/__tests__/debug.js::allows same arguments as prettyDOM
+src/__tests__/debug.js::debug pretty prints the container
+src/__tests__/rerender.js::rerender API::re-renders twice when reactStrictMode is true
+src/__tests__/rerender.js::rerender API::hydrate will not update props until next render
+src/__tests__/rerender.js::rerender API::rerender will re-render the element
+src/__tests__/rerender.js::rerender API::re-renders options.wrapper around node when reactStrictMode is true
+src/__tests__/auto-cleanup.js::second
+src/__tests__/auto-cleanup.js::first
+src/__tests__/error-handlers.js::render errors
+src/__tests__/error-handlers.js::onRecoverableError is supported in render
+src/__tests__/error-handlers.js::onUncaughtError is not supported in renderHook
+src/__tests__/error-handlers.js::onUncaughtError is not supported in render
+src/__tests__/error-handlers.js::onRecoverableError is supported in renderHook
+src/__tests__/error-handlers.js::onCaughtError is supported in render
+src/__tests__/error-handlers.js::onCaughtError is supported in renderHook
+src/__tests__/renderHook.js::reactStrictMode::reactStrictMode in renderOptions has precedence over config when rendering
+src/__tests__/renderHook.js::legacyRoot throws
+src/__tests__/renderHook.js::allows rerendering
+src/__tests__/renderHook.js::gives committed result
+src/__tests__/renderHook.js::allows wrapper components
+src/__tests__/renderHook.js::legacyRoot uses legacy ReactDOM.render
+src/__tests__/config.js::configuration API::configure can set DTL and RTL options at once
+src/__tests__/config.js::configuration API::RTL options::configure can set by a plain JS object
+src/__tests__/config.js::configuration API::RTL options::configure can set by a function
+src/__tests__/config.js::configuration API::DTL options::configure can set by a plain JS object
+src/__tests__/config.js::configuration API::DTL options::configure can set by a function
+src/__tests__/events.js::Composition Events::triggers onCompositionUpdate
+src/__tests__/events.js::Composition Events::triggers onCompositionStart
+src/__tests__/events.js::Composition Events::triggers onCompositionEnd
+src/__tests__/events.js::Form Events::triggers onBlur
+src/__tests__/events.js::Form Events::triggers onFocus
+src/__tests__/events.js::Pointer Events::triggers onGotPointerCapture
+src/__tests__/events.js::Pointer Events::triggers onPointerCancel
+src/__tests__/events.js::Pointer Events::triggers onPointerOut
+src/__tests__/events.js::Pointer Events::triggers onPointerUp
+src/__tests__/events.js::Pointer Events::triggers onPointerMove
+src/__tests__/events.js::Pointer Events::triggers onLostPointerCapture
+src/__tests__/events.js::Pointer Events::triggers onPointerDown
+src/__tests__/events.js::Pointer Events::triggers onPointerEnter
+src/__tests__/events.js::Pointer Events::triggers onPointerLeave
+src/__tests__/events.js::Pointer Events::triggers onPointerOver
+src/__tests__/events.js::calling `fireEvent` directly works too
+src/__tests__/events.js::Native Selection Events::triggers native select
+src/__tests__/events.js::Native Clipboard Events::triggers native paste
+src/__tests__/events.js::Native Clipboard Events::triggers native copy
+src/__tests__/events.js::Focus Events::triggers onFocus
+src/__tests__/events.js::Focus Events::triggers onBlur
+src/__tests__/events.js::Native Form Events::triggers native focus
+src/__tests__/events.js::Native Form Events::triggers native blur
+src/__tests__/events.js::Native Focus Events::triggers native invalid
+src/__tests__/events.js::Native Focus Events::triggers native input
+src/__tests__/events.js::Selection Events::triggers onSelect
+src/__tests__/events.js::Native Composition Events::triggers native compositionend
