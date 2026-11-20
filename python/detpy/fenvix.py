@@ -5,6 +5,9 @@
                                             the other Python runners, deterministically
     fenvix vitest|jest|mocha|node-test|ava|tap|uvu|jasmine|bun|deno|playwright [args]
                                             the JavaScript runners (detjs), deterministically
+    fenvix python [pytest args]             pytest with the detpy plugin, as given (the release-1 name)
+    fenvix python-runner RUNNER [args]      a Python runner shell, as given (the release-1 name)
+    fenvix node RUNNER [args]               detjs RUNNER, as given (the release-1 name)
     fenvix repro TEST [options] [-- runner args]
                                             turn a flaky test into a reproducible defect: cause, seed, order,
                                             replay command, proof (the failure replayed N/N with one fingerprint)
