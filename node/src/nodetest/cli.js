@@ -161,7 +161,7 @@ async function main(argv) {
   const cfg = run.cfg;
   let keyed = files.map((f) => ({ f, fileId: path.relative(root, path.resolve(root, f)).split(path.sep).join('/') }));
   keyed.sort((a, b) => (a.fileId < b.fileId ? -1 : a.fileId > b.fileId ? 1 : 0));
-  if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
+  if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.orderSeed, '').map((i) => keyed[i]);
 
   const nodeOptions = env0.NODE_OPTIONS;
   let pc = null;

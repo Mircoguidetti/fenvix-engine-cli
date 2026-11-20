@@ -189,7 +189,7 @@ function preloadSingle() {
     process.on('exit', (code) => { if (file) { if (code || !hooked.patched) file.fail(); else file.close(ok); } });
   }
   const shuffle = (list, key) => (c.controls.has('order') && c.shuffle && list.length > 1
-    ? native.shuffleIndices(list.length, c.seed, key).map((i) => list[i]) : list);
+    ? native.shuffleIndices(list.length, c.orderSeed, key).map((i) => list[i]) : list);
   globalThis[Symbol.for('detjs.uvu')] = {
     group(name, runners) {
       const f = fileOfGroup(name);

@@ -92,7 +92,7 @@ if (role === 'file' || role === 'shared') {
   const flushRoot = () => {
     if (!rootOpen) return;
     rootOpen = false;
-    const perm = require('../native').shuffleIndices(held.length, c.seed, fp.fileId || '');
+    const perm = require('../native').shuffleIndices(held.length, c.orderSeed, fp.fileId || '');
     const items = held.splice(0);
     for (const i of perm) items[i]();
   };
@@ -106,7 +106,7 @@ if (role === 'file' || role === 'shared') {
       if (!facadeObj) {
         facadeObj = makeFacade(real, {
           shuffle,
-          seed: c.seed,
+          seed: c.orderSeed,
           fileKey: () => fp.fileId || '',
           rootOpen: () => rootOpen,
           holdRoot: (call) => held.push(call),

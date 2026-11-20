@@ -133,7 +133,7 @@ function makeRunner(Base) {
         flat.forEach(([t], i) => this.__det.ids.set(t, unique[i]));
         if (c.controls.has('order') && c.shuffle && file.tasks) {
           const keyOf = (t) => (t === file ? label : `${label}${this.__det.ids.get(t).slice(fileId.length)}`);
-          const shuffled = controls.shuffleTree(file.tasks, c.seed, label, keyOf, (t) => (t.type === 'suite' ? t.tasks : null));
+          const shuffled = controls.shuffleTree(file.tasks, c.orderSeed, label, keyOf, (t) => (t.type === 'suite' ? t.tasks : null));
           file.tasks.splice(0, file.tasks.length, ...shuffled);
         }
         reproCollected(file, this.__det);

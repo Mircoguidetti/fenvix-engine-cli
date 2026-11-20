@@ -75,7 +75,7 @@ async function main(argv) {
       });
       keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
       let ordered = keyed;
-      if (cfg.shuffle && cfg.controls.has('order')) ordered = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
+      if (cfg.shuffle && cfg.controls.has('order')) ordered = native.shuffleIndices(keyed.length, cfg.orderSeed, '').map((i) => keyed[i]);
       ordered = require('../repro').orderFiles(ordered); // --det-order: the listed files, in the listed order
       if (pc) {
         // a file that names a custom environment in a pragma: its project's workers start the capture early

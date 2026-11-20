@@ -50,7 +50,7 @@ const PRELOAD = path.join(__dirname, 'preload.js');
 function orderFiles(items, cfg, { key = (x) => x, sorted = true } = {}) {
   const list = [...items];
   if (sorted) list.sort((a, b) => { const ka = key(a); const kb = key(b); return ka < kb ? -1 : ka > kb ? 1 : 0; });
-  if (cfg.shuffle && cfg.controls.has('order')) return require('../native').shuffleIndices(list.length, cfg.seed, '').map((i) => list[i]);
+  if (cfg.shuffle && cfg.controls.has('order')) return require('../native').shuffleIndices(list.length, cfg.orderSeed, '').map((i) => list[i]);
   return list;
 }
 
@@ -152,7 +152,7 @@ function dropOptions(options, names, valueFlags) {
 
 /** Seed for the runner's own ordering of the tests inside one file (derived by the core from the run's seed). */
 function fileSeed(cfg, fileId) {
-  return BigInt.asUintN(31, BigInt(require('../native').deriveSeed(cfg.seed, `${fileId}\0tests`))).toString();
+  return BigInt.asUintN(31, BigInt(require('../native').deriveSeed(cfg.orderSeed, `${fileId}\0tests`))).toString();
 }
 
 /**

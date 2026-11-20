@@ -160,6 +160,42 @@ function traceTests(file) {
   return out;
 }
 
+// Runners whose failures `fenvix repro` turns into defects (python/detpy/fenvix_js.py adapters); the detjs command of
+// each runner name a shell reports.
+const REPRO_RUNNERS = new Set(['vitest', 'jest', 'playwright']);
+const COMMAND = { vitest: 'vitest run', deno: 'deno-test', bun: 'bun-test', playwright: 'playwright test' };
+
+/**
+ * G-0447, G-1460, G-1554 for Node: a failing --det run ends with the ready-to-paste commands that rerun the failing
+ * file(s) with the same seeds and order, and (Vitest, Jest, Playwright) turn each failing test into a reproducible
+ * defect.
+ */
+function failureLines(run, order, outcomes, runner, opts) {
+  const failed = order.filter((id) => outcomes[id] === 'failed' || outcomes[id] === 'error');
+  if (!failed.length) return [];
+  const c = run.cfg;
+  const own = c.orderSeed !== undefined && c.orderSeed !== c.seed;
+  const seeds = c.shuffle ? ` --det-seed=${c.seed}${own ? ` --det-order-seed=${c.orderSeed}` : ''}` : (c.seed ? ` --det-seed=${c.seed}` : '');
+  const what = c.shuffle ? `seed ${c.seed}${own ? `, order seed ${c.orderSeed}` : ''}, shuffled` : `seed ${c.seed}, fixed order`;
+  const cmd = `detjs ${COMMAND[runner] || runner} --det${seeds}`;
+  const lines = [];
+  if (REPRO_RUNNERS.has(runner)) {
+    // fenvix repro --seed=N: the configuration known to fail (one seed for the order and the generators)
+    const known = c.shuffle && !own ? ` --seed=${c.seed}` : '';
+    lines.push(`${failed.length} test(s) failed under --det (${what}). Turn each into a reproducible defect (cause, seed, order, replay command):`);
+    for (const id of failed.slice(0, 5)) lines.push(`    fenvix repro ${shellQuote(id)} --runner=${runner}${known}`);
+    if (failed.length > 5) lines.push(`    ... and ${failed.length - 5} more`);
+  } else {
+    lines.push(`${failed.length} test(s) failed under --det (${what}).`);
+  }
+  const files = [...new Set(failed.map(fileOfId))];
+  lines.push(`  rerun the failing file${files.length > 1 ? 's' : ''} with the same seeds and order: ${cmd} ${files.slice(0, 5).map(shellQuote).join(' ')}`
+    + `${files.length > 5 ? ` (and ${files.length - 5} more files)` : ''}`);
+  if (opts.order) lines.push(`  this run's exact test list: ${cmd} --det-order=${shellQuote(opts.order)}`);
+  lines.push(`  the same run again: ${cmd} (with the same arguments)`);
+  return lines;
+}
+
 function shellQuote(s) {
   if (s === '') return "''";
   return /^[A-Za-z0-9_@%+=:,./-]+$/.test(s) ? s : `'${s.replace(/'/g, "'\"'\"'")}'`;
@@ -180,7 +216,7 @@ function afterMerge(run, opts, files, runner) {
   const fileErrors = new Map();
   const push = (id) => { if (!seen.has(id)) { seen.add(id); order.push(id); } };
   for (const f of files) {
-    const side = readSide(run.dir, f.part);
+    const side = readSide(run.dir, f.side || f.part);
     if (!side) continue;
     if (side.file_error) fileErrors.set(f.fileId, side.file_error);
     for (const id of side.collected || []) push(wf(id));
@@ -233,19 +269,8 @@ function afterMerge(run, opts, files, runner) {
     fs.mkdirSync(path.dirname(out), { recursive: true });
     fs.writeFileSync(out, JSON.stringify(data));
   }
-  if (!opts.collect) {
-    const failed = order.filter((id) => outcomes[id] === 'failed' || outcomes[id] === 'error');
-    if (failed.length) {
-      // G-1554 for Node: a failure under --det is a defect to reproduce, not a red run to re-run
-      const seed = run.cfg.shuffle ? ` --seed=${run.cfg.seed}` : '';
-      lines.push(`${failed.length} test(s) failed under --det (seed ${run.cfg.seed}${run.cfg.shuffle ? ', shuffled' : ', fixed order'}). `
-        + 'Turn each into a reproducible defect (cause, seed, order, replay command):');
-      for (const id of failed.slice(0, 5)) lines.push(`    fenvix repro ${shellQuote(id)} --runner=${runner}${seed}`);
-      if (failed.length > 5) lines.push(`    ... and ${failed.length - 5} more`);
-      lines.push(`  the same run again: detjs ${runner}${runner === 'vitest' ? ' run' : ''} --det${run.cfg.shuffle ? ` --det-seed=${run.cfg.seed}` : ''} (with the same arguments)`);
-    }
-  }
+  if (!opts.collect) lines.push(...failureLines(run, order, outcomes, runner, opts));
   return lines;
 }
 
-module.exports = { plan, makePlan, readOrder, orderFiles, filterTree, flatIds, exceptionOf, writeSide, readSide, afterMerge, fileOfId, shellQuote };
+module.exports = { wf, plan, makePlan, readOrder, orderFiles, filterTree, flatIds, exceptionOf, writeSide, readSide, afterMerge, fileOfId, shellQuote };

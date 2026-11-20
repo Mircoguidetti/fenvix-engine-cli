@@ -184,13 +184,13 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
           const keyOf = (b) => (b === state.rootDescribeBlock ? label : `${label}${ids.get(b).slice(fileId.length)}`);
           const shuffleBlock = (block) => {
             if (!Array.isArray(block.tests) || childrenOf(block) === block.children) {
-              const out = controls.shuffleTree(block.children, c.seed, keyOf(block), keyOf, (b) => (b.type === 'describeBlock' ? b.children : null));
+              const out = controls.shuffleTree(block.children, c.orderSeed, keyOf(block), keyOf, (b) => (b.type === 'describeBlock' ? b.children : null));
               block.children.splice(0, block.children.length, ...out);
             } else {
               // Jest < 27: tests and describe blocks are separate lists
               for (const k of ['tests', 'children']) {
                 if (!block[k] || !block[k].length) continue;
-                const perm = require('../native').shuffleIndices(block[k].length, c.seed, `${keyOf(block)}\0${k}`);
+                const perm = require('../native').shuffleIndices(block[k].length, c.orderSeed, `${keyOf(block)}\0${k}`);
                 const out = perm.map((i) => block[k][i]);
                 block[k].splice(0, block[k].length, ...out);
               }

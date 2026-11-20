@@ -225,7 +225,7 @@ class ProofSession {
       const ctl = new Set(c.controls);
       if (this.realClock) ctl.add('time');
       const level0 = {
-        seed: String(c.seed), shuffle: c.shuffle, controls: [...ctl].sort(), tick: c.tickNs, tickAdapt: c.tickAdapt,
+        seed: String(c.seed), orderSeed: String(c.orderSeed), shuffle: c.shuffle, controls: [...ctl].sort(), tick: c.tickNs, tickAdapt: c.tickAdapt,
         timerBudget: c.timerBudget, timers: c.timers, net: this.run.netMode, allow: c.allowHosts, urandom: c.urandom, sites: c.sites,
       };
       const engineDir = path.resolve(__dirname, '..', '..');
