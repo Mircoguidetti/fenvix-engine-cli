@@ -18,7 +18,8 @@
 //   per file outside tests), recorded as `random` events.
 //
 // node:sqlite is loaded when Level 0 is installed (its experimental warning, printed by Node 24 on load, is not
-// repeated) and its `prepare` / `exec` install the functions on first use; better-sqlite3 is reached through its
+// repeated) and its `prepare` / `exec` / `function` install the functions on first use (so a function the test
+// defines itself, also `random`, replaces Level 0's); better-sqlite3 is reached through its
 // native addon (`Database` construction), whatever loads it (Vitest's native imports, Jest's registry).
 const Module = require('node:module');
 const native = require('./native');
@@ -142,7 +143,7 @@ function installNodeSqlite(patcher) {
       NODE_VIRT.add(db);
     } catch { /* a closed database: installed at its next use */ }
   };
-  for (const n of ['prepare', 'exec', 'createTagStore', 'iterate']) {
+  for (const n of ['prepare', 'exec', 'createTagStore', 'function', 'aggregate']) {
     const real = P[n];
     if (typeof real !== 'function') continue;
     const w = function (...a) { ensure(this); return real.apply(this, a); };

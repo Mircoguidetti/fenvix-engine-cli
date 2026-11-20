@@ -1,4 +1,5 @@
 'use strict';
+if (process.env.DETJS_DEBUG_UNDICI) require('/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/nodeB/trap.cjs');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.

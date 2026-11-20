@@ -95,6 +95,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   const run = baseRunner(config);
   const c = controls.cfg();
   if (!c.active) return run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);
+  if (process.env.DETJS_DEBUG_UNDICI) { const l = process.moduleLoadList; const i = l.findIndex((m) => m.includes("undici")); process.stderr.write(`UNDICI ${l.slice(Math.max(0, i - 8), i + 2).join(" | ")}\n`); }
   controls.installProcess();
   if (CAP) {
     CAP.reinstall();

@@ -477,6 +477,12 @@ test('better sqlite3', () => {
   db.exec('create table t (id integer primary key, at text default CURRENT_TIMESTAMP, r integer default (random() % 1000))');
   db.prepare('insert into t (id) values (1)').run();
   put('better', JSON.stringify({ ...db.prepare("${SQLQ}").get(), t: db.prepare('select * from t').get() }, big));
+});
+test('a function the test defines replaces Level 0s', () => {
+  const { DatabaseSync } = require('node:sqlite');
+  const db = new DatabaseSync(':memory:');
+  db.function('random', () => 4);
+  put('override', db.prepare('select random() as r').get().r);
 });`;
 for (const runner of RUNNERS) {
   test(`${runner}: G-1427 G-1428 SQLite random(), randomblob(), 'now' and CURRENT_TIMESTAMP are virtual and recorded (node:sqlite, better-sqlite3)`, T, () => {
@@ -496,6 +502,7 @@ for (const runner of RUNNERS) {
       assert.equal(v.t.at, '2025-01-01 00:00:00', `${lib}: column default`);
     }
     assert.notEqual(first.node, 'absent', 'node:sqlite is available on the release Node versions');
+    assert.equal(got(dir, 'override'), '4', 'a user-defined random() wins');
     const ev = events(dir);
     assert.ok(ev.some((e) => e.o === 'sqlite.random') && ev.some((e) => e.o === 'sqlite.randomblob') && ev.some((e) => e.s === 'time' && e.o === 'sqlite.datetime'), JSON.stringify(ev.filter((e) => /sqlite/.test(e.o))));
     save(dir, 'run1.jsonl');
