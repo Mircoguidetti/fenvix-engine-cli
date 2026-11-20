@@ -587,7 +587,14 @@ struct Parsed {
 /// Calls that return a path's times (st_mtime, st_atime, st_ctime, stx_btime).
 const STAT_CALLS: [&[u8]; 7] = [b"stat", b"lstat", b"stat64", b"lstat64", b"newfstatat", b"fstatat64", b"statx"];
 /// Programs whose behaviour does not depend on the times of the paths they stat (rm -r stats what it removes).
-const NO_TIME_PROGRAMS: [&[u8]; 6] = [b"rm", b"rmdir", b"mkdir", b"ln", b"chmod", b"chown"];
+/// Programs whose stats never reach their output or their decisions as a time: they remove, create, link or change
+/// the mode of a path, or they write a file's content (or a count or digest of it) and nothing else. A stat by one of
+/// them of a file the tree wrote is not a read of the real clock (GitHub's runners' `cat` statx-es the file it
+/// copies). Not here: anything that prints, compares or copies times (ls, stat, find, test, make, cp, tar, rsync).
+const NO_TIME_PROGRAMS: [&[u8]; 16] = [
+    b"rm", b"rmdir", b"mkdir", b"ln", b"chmod", b"chown", b"cat", b"head", b"tail", b"wc", b"tr", b"cut",
+    b"md5sum", b"sha1sum", b"sha256sum", b"cmp",
+];
 
 /// `^/proc/(\d+|self|thread-self)(/task/(\d+))?$` (Python's `$` also matches before a final newline).
 fn proc_pid_dir(p: &[u8]) -> bool {
