@@ -106,6 +106,8 @@ async function main(argv) {
     const { CAPTURE } = require('../cache/capture');
     for (const c of (shown && shown.configs) || []) CAPTURE.addSkipDir(c.cacheDirectory);
   }
+  // the worker processes wrap the environments (and start the capture) themselves (src/jest/worker.js)
+  if (par.workers > 1) fs.writeFileSync(path.join(run.dir, 'jest-shown.json'), JSON.stringify(shown));
   // Each project's test environment is wrapped: the controls are installed before setupFiles run (G-1312, G-1436,
   // G-1466), and the file's process.argv is what an in-band `jest <args>` shows (G-2164)
   require('./environment').install(shown, { cache: Boolean(pc), argv: [process.execPath, jest.bin, ...rest] });
@@ -372,50 +374,11 @@ function jestConfigParts(shown, version, rest, pc, customRunners) {
 }
 
 /**
- * Wrap each project's test environment class: its constructor marks the start of a test file for the cache
- * capture (before setupFiles run) and makes the file's own copy of process.env observable.
+ * Wrap each project's test environment class (kept for callers of the former cache-only wrapper): the Level 0 and cache
+ * wrapper of src/jest/environment.js, with the cache capture on.
  */
-function wrapEnvironments(shown, root) {
-  const { CAPTURE, installEnv, installReflection } = require('../cache/capture');
-  const done = new Set();
-  for (const c of (shown && shown.configs) || []) {
-    const file = c.testEnvironment;
-    if (!file || done.has(file) || !path.isAbsolute(file)) continue;
-    done.add(file);
-    let mod;
-    try { mod = require(file); } catch { continue; }
-    const wrap = (Env) => {
-      if (typeof Env !== 'function' || Env.__detjsCache) return Env;
-      class Wrapped extends Env {
-        constructor(config, context) {
-          const testPath = context && context.testPath;
-          if (testPath) {
-            const fileId = path.relative(root, testPath).split(path.sep).join('/');
-            const pc2 = config && config.projectConfig;
-            const project = pc2 && pc2.displayName ? pc2.displayName.name : '';
-            CAPTURE.resetFile();
-            CAPTURE.setCtx('f', project ? `${project}|${fileId}` : fileId);
-          }
-          super(config, context);
-          if (this.global && this.global.process) installEnv(CAPTURE, this.global.process);
-          // the test file's realm has its own Object / Reflect: descriptor reads of recording Stats objects (G1)
-          if (this.global && this.global !== globalThis) installReflection(CAPTURE, this.global);
-        }
-      }
-      Object.defineProperty(Wrapped, '__detjsCache', { value: true });
-      Object.defineProperty(Wrapped, 'name', { value: Env.name });
-      return Wrapped;
-    };
-    let exp;
-    if (typeof mod === 'function') exp = wrap(mod);
-    else {
-      exp = { ...mod };
-      for (const k of Object.keys(mod)) exp[k] = typeof mod[k] === 'function' && /Environment$|^default$/.test(k) ? wrap(mod[k]) : mod[k];
-      if (mod.__esModule) Object.defineProperty(exp, '__esModule', { value: true });
-    }
-    const resolved = require.resolve(file);
-    if (require.cache[resolved]) require.cache[resolved].exports = exp;
-  }
+function wrapEnvironments(shown) {
+  require('./environment').install(shown, { cache: true, argv: null });
 }
 
 module.exports = { main, wrapEnvironments };
