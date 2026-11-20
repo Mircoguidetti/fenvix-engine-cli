@@ -605,3 +605,24 @@ test('G-2185 G-2186 G-2187: detjs verify names itself, refuses one trace and unr
   assert.match(missing.stderr, /cannot read trace/);
   assert.doesNotMatch(missing.stderr, /\n\s+at /);
 });
+
+// G-0181: a control that cannot be installed is never silent: the test gets an `uncontrolled.level0` event (the
+// verifier does not call it identical) and the cache never reuses it.
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0181 a realm whose globals cannot be replaced is marked and never reused`, T, () => {
+    const dir = proj(runner, 'gap0181', {
+      a: `${REQ[runner]}
+test('frozen realm', () => {
+  const sb = {};
+  const own = { getRandomValues: (a) => a, randomUUID: () => 'x' };
+  Object.defineProperty(sb, 'crypto', { value: own, writable: false, configurable: false, enumerable: true });
+  const ctx = vm.createContext(sb);
+  expect(vm.runInContext('typeof crypto.getRandomValues', ctx)).toBe('function');
+});`,
+    });
+    const r = run(runner, dir, [], { cache: false });
+    assert.equal(r.status, 0, show(r));
+    assert.match(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8'), /uncontrolled\.level0/);
+    notReused(runner, dir, fileOf(runner, 'a'), 'a Level 0 control could not be installed');
+  });
+}
