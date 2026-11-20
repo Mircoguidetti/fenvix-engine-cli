@@ -103,6 +103,12 @@ test('values', async () => {
     const r2 = jrun(dir);
     assert.equal(r2.status, 0, show(r2));
     assert.deepEqual(out(dir), a, 'setupFiles draw the same values in every run');
+    // parallel lanes: Jest's worker processes wrap the environments as well
+    write(dir, { 't/b.test.js': fs.readFileSync(path.join(dir, 't/a.test.js'), 'utf8').replace("'out.json'", "'out-b.json'") });
+    const r3 = jrun(dir, [], { det: ['--det', '--det-workers=2'] });
+    assert.equal(r3.status, 0, show(r3));
+    assert.doesNotMatch(r3.stderr, /setupFiles ran before/, show(r3));
+    assert.equal(out(dir, 'out-b').now, EPOCH);
   });
 });
 
