@@ -98,7 +98,7 @@ jobs:
       - name: report and commit
         run: |
           D=harness/node_repro/results-final/${{ needs.config.outputs.label }}
-          mkdir -p $D && cp /tmp/art/*.jsonl $D/ || true
+          rm -rf $D && mkdir -p $D && cp /tmp/art/*.jsonl $D/ || true  # only this run's rows
           python3 harness/node_repro/report_final.py $D --run-id ${{ github.run_id }} --engine ${{ github.sha }}
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
