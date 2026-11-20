@@ -1,0 +1,316 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "tests/unit/llms/vertex_ai",
+  "-p",
+  "no:randomly",
+  "--timeout=120"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "3/5",
+ "commits": [
+  {
+   "i": 30,
+   "sha": "4b12a4051e6cae2bde998aa3c54babc29c3e60d2",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 608.9,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=google/gemma-4-26b-a4b-it-maas model=google/gemma-4-26b-a4b-it-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/google/gemma-4-26b-a4b-it-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 94.3,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 73.5
+   }
+  },
+  {
+   "i": 31,
+   "sha": "ae92c4750772bb954b5543b59af5431d76b56b58",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 659.8,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 97.8,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 76.726
+   }
+  },
+  {
+   "i": 32,
+   "sha": "f5e911afd0e38a5509bcfbea1e9b1d26760ff52b",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 676.3,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 106.7,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 83.404
+   }
+  },
+  {
+   "i": 33,
+   "sha": "fd12cba0b2b9c195fd600a1695c2e4e5ab3ad8fe",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 714.8,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 104.7,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 81.413
+   }
+  },
+  {
+   "i": 34,
+   "sha": "42f901ad6597d19b1661883bb53037bbc9d85bf4",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 838.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 96.3,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 74.349
+   }
+  },
+  {
+   "i": 35,
+   "sha": "78d0a25fcd8ebdfc8854f0a801cea9858b30e49e",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 648.6,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=google/gemma-4-26b-a4b-it-maas model=google/gemma-4-26b-a4b-it-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/google/gemma-4-26b-a4b-it-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 99.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 77.355
+   }
+  },
+  {
+   "i": 36,
+   "sha": "0cc072c999514faefd891efcd1a8b406e5350f04",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 620.6,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 108.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 85.046
+   }
+  },
+  {
+   "i": 37,
+   "sha": "60d05972aeeadc3fb21476f586ce3f4747887c9d",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 689.5,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 98.4,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 76.975
+   }
+  },
+  {
+   "i": 38,
+   "sha": "98a9fc2c3a8986f3f4297b56ebdac0b4fca1b92d",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 694.7,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2677 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 93.4,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 72.942
+   }
+  },
+  {
+   "i": 39,
+   "sha": "7b88d94d615fe2259f6e7a675f8b678137c3f2cd",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 675.5,
+    "rc": 1,
+    "tail": "06:52:42 - LiteLLM:WARNING: litellm_logging.py:2677 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 106.2,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 82.615
+   }
+  }
+ ]
+}

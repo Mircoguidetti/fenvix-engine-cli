@@ -66,6 +66,10 @@ CASES = {
         "f.txt": "abc",
         "test_t.py": "import pathlib\n\ndef test_t():\n    assert pathlib.Path('f.txt').stat()[8] < 2e9\n",
     }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
+    "w6e_getmtime": ({
+        "f.txt": "abc",
+        "test_t.py": "import os\n\ndef test_t():\n    assert os.path.getmtime('f.txt') < 2e9\n",
+    }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
     "w5b_scandir_entry_mtime": ({
         "d/f.txt": "abc",
         "test_t.py": "import os\n\ndef test_t():\n    e = [e for e in os.scandir('d')][0]\n"
@@ -117,3 +121,17 @@ def test_r032b(pytester, monkeypatch, case, mode):
     _, fresh, _ = _run(pytester, 2, "-p", "xdist")
     assert fresh.get(target) == "failed", fresh
     assert target not in reused, ("WRONG REUSE", r1.stdout.str())
+
+
+def test_detpy_own_stat_is_never_a_user_time_read():
+    """all-runners-2's port found it: detpy's (or its reference's) own os.stat must stop the caller walk."""
+    from detpy import proofcache as pc
+
+    def checked():  # stands for the os.stat wrapper (frame 1)
+        return pc._user_stat_caller()
+
+    ns = {"checked": checked}
+    exec(compile("def own():\n    return checked()\n", pc._DETPY_DIR + "fake_own.py", "exec"), ns)
+    assert ns["own"]() is False
+    exec(compile("def user():\n    return checked()\n", "/somewhere/project/test_u.py", "exec"), ns)
+    assert ns["user"]() is True

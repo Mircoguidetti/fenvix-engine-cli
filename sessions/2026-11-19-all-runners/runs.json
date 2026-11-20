@@ -1,7 +1,42 @@
 {
- "first": {"engine": "7510773", "note": "before the parallel-proof-3 quarantine merge; runs cancelled after the landed shards were kept",
-           "runs": {"python": 44656473683, "node-a": 44656473680, "node-b": 44656473679, "node-c": 44656473729}},
- "second": {"engine": "0f969116", "note": "R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept",
-            "runs": {"python": 44674519585, "node-a": 44674519607, "node-b": 44674519657, "node-c": 44674520289}},
- "final": {"engine": "PENDING", "note": "the final engine", "runs": {}}
+ "first": {
+  "engine": "7510773",
+  "note": "before the parallel-proof-3 quarantine merge; runs cancelled after the landed shards were kept",
+  "runs": {
+   "python": 44656473683,
+   "node-a": 44656473680,
+   "node-b": 44656473679,
+   "node-c": 44656473729
+  }
+ },
+ "second": {
+  "engine": "0f969116",
+  "note": "R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept",
+  "runs": {
+   "python": 44674519585,
+   "node-a": 44674519607,
+   "node-b": 44674519657,
+   "node-c": 44674520289
+  }
+ },
+ "final": {
+  "engine": "db0c8c56",
+  "note": "the final engine: head db0c8c56, code identical to ed66b960 (parallel-proof-3 0f45362 merged)",
+  "runs": {
+   "python": 44692179684,
+   "node-a": 44692179670,
+   "node-b": 44692179449,
+   "node-c": 44692179649
+  }
+ },
+ "superseded": {
+  "engine": "8b735a4c",
+  "note": "ar2-*-3, cancelled about 16 minutes after start when parallel-proof-3 0f45362 followed; its few landed shards are not reported",
+  "runs": {
+   "python": 44689487139,
+   "node-a": 44689487097,
+   "node-b": 44689487168,
+   "node-c": 44689487225
+  }
+ }
 }

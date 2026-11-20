@@ -25,7 +25,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 # cancelled once that fix landed, landed shards kept), "final" = the walks on the final engine. --set (default final)
 SETS = {"first": (["ar2-py-1"], ["ar2-node-a", "ar2-node-b", "ar2-node-c"]),
         "second": (["ar2-py-2"], ["ar2-node-a2", "ar2-node-b2", "ar2-node-c2"]),
-        "final": (["ar2-py-3"], ["ar2-node-a3", "ar2-node-b3", "ar2-node-c3"])}
+        "final": (["ar2-py-4"], ["ar2-node-a4", "ar2-node-b4", "ar2-node-c4"])}
 SET = sys.argv[sys.argv.index("--set") + 1] if "--set" in sys.argv else "final"
 PY_RUNS, NODE_RUNS = SETS[SET]
 

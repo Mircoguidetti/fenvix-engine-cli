@@ -60,14 +60,19 @@ _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GE
 
 
 # ---------------------------------------------------------------------------
-# standard-library modules whose own stat calls are helpers (review R-032b F2, claude/parallel-proof-3 6cfae24)
+# review R-032b F2-mtime (claude/parallel-proof-3 6cfae24, 97e61ac): a time field read from a stat result that user
+# code asked for refuses the test ("mtime"). The path's metadata probe (q/Q) keys the mtime where the path is an input;
+# the refusal also covers paths that are not (temporary files, a file the test wrote: its real-clock time against the
+# virtual clock). Standard-library helpers (shutil.copystat, os.path.getmtime: keyed by the probe) are left alone.
 _STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
                                   "pathlib._abc", "glob", "shutil", "os"})
+_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
+_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
 
 
 def _user_stat_caller() -> bool:
     """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
-    library helper: shutil.copystat copies times, it does not decide on them); Path.stat() counts as its caller's."""
+    library helper); Path.stat() counts as its caller's. Called from the os.stat wrapper (frame 1)."""
     f = _getframe(2)
     while f is not None:
         mod = f.f_globals.get("__name__", "")
@@ -75,18 +80,28 @@ def _user_stat_caller() -> bool:
             f = f.f_back
             continue
         fn = f.f_code.co_filename
-        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen"))
+        # detpy's own reads (the capture, Level 0's patches) are not the test's
+        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen")
+                    or fn.startswith(_DETPY_DIR))
     return False
 
 
-_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
-# st_atime, st_mtime, st_ctime (indices 7, 8, 9) and their _ns, birthtime variants
-_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time (claude/parallel-proof-3
+# 89971a3: os.path.getmtime / getctime / getatime by user code refuse, test W6e)
+_TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
+
+
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller). Called
+    from the os.stat wrapper (frame 1)."""
+    f = _getframe(2)
+    return (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
 
 
 class _TimedStat:
-    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached: a time
-    is not an input the cache keys; review R-032b F2). Everything else is the result's own."""
+    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
+    Everything else is the result's own."""
 
     __slots__ = ("_r", "_cap", "_path")
 
@@ -97,8 +112,8 @@ class _TimedStat:
 
     def _timed(self):
         try:
-            self._cap.flag(self._cap._cur(), "mtime", os.fsdecode(os.fspath(self._path)) if not isinstance(
-                self._path, int) else str(self._path))
+            p = self._path
+            self._cap.flag(self._cap._cur(), "mtime", str(p) if isinstance(p, int) else os.fsdecode(os.fspath(p)))
         except Exception:
             pass
 
@@ -348,19 +363,20 @@ class Capture(_core.CaptureCore):
 
             own = name in ("lstat", "readlink")
 
-            timed_ok = name in ("stat", "lstat")
-
             def checked(path, *args, **kwargs):
+                timed = False
                 if not kwargs.get("dir_fd"):
                     note(path, own or kwargs.get("follow_symlinks") is False, True)
-                    # review R-032b F2 (coordinator's correction, claude/parallel-proof-3 6cfae24): a result given to
-                    # repository or library code flags the test when a time field is read (atime and ctime are not
-                    # keyed by the metadata probe; mtime is, the flag refuses all three alike). Only user code's reads
-                    # count: pytest's assertion rewriting compares source mtimes (infrastructure; pp3 97e61ac)
-                    if timed_ok and not isinstance(path, int) and not cap._in_stat and _user_stat_caller() \
-                            and cap._caller_kind() == "user":
-                        return _TimedStat(orig(path, *args, **kwargs), cap, path)
-                return orig(path, *args, **kwargs)
+                    if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
+                        try:
+                            timed = _user_stat_caller() and cap._caller_kind() == "user"
+                            if _time_helper_caller() and cap._caller_kind() == "user":
+                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
+                        except Exception:
+                            timed = False
+                r = orig(path, *args, **kwargs)
+                return _TimedStat(r, cap, path) if timed else r
 
             checked.__name__ = orig.__name__
             checked.__doc__ = orig.__doc__

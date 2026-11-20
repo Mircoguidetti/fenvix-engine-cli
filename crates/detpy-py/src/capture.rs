@@ -593,9 +593,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            // (claude/parallel-proof-3 invalidates its size key `z` here; the engine on this branch keys a stat by the
-            // metadata probe `q`/`Q`, which carries the size)
-            for k in [b'f', b'd', b's', b'l', b'q', b'Q'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'q', b'Q'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
