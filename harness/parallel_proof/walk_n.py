@@ -106,6 +106,9 @@ def main(argv=None) -> int:
     ap.add_argument("--shard", default="",
                     help="K/M: walk only the K-th of M contiguous slices of the commits (0-based); each slice starts "
                          "with an empty cache at its first commit")
+    ap.add_argument("--unchanged", action="store_true",
+                    help="at each shard's first commit, run every cache mode a second time on the same commit (the "
+                         "reuse of an unchanged commit, rows a_par_u / a_ser_u)")
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
     det_args = a.det_args.split()
@@ -139,14 +142,19 @@ def main(argv=None) -> int:
                                *par]),
                     ("a_ser", ["--det", *det_args, f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
                     ("b", ["--det", *det_args, f"--det-trace={work}/b.jsonl"]))
-        for name, extra in [v for v in variants if v[0] in modes or v[0] == "b"]:
-            cf = os.path.join(work, "cache-par" if name == "a_par" else "cache-ser", "carried.jsonl")
+        todo = [v for v in variants if v[0] in modes or v[0] == "b"]
+        if a.unchanged and i == 0:
+            # the same commit again, warm: an unchanged commit's reuse (py-cache item 5)
+            todo = [v for v in todo if v[0] != "b"] + [(v[0] + "_u", v[1]) for v in todo if v[0] != "b"] + \
+                [v for v in todo if v[0] == "b"]
+        for name, extra in todo:
+            cf = os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser", "carried.jsonl")
             off = os.path.getsize(cf) if os.path.exists(cf) else 0
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
             if name != "b":
-                meta["store_mb"] = store_mb(os.path.join(work, "cache-par" if name == "a_par" else "cache-ser"))
+                meta["store_mb"] = store_mb(os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser"))
             if name != "b" and os.path.exists(cf):
                 # the carried-set rule: tests whose key carries earlier contexts of their process (every worker's
                 # recording session appends one line)
@@ -173,7 +181,7 @@ def main(argv=None) -> int:
                 row["b_plain"] = pm
                 row["order_dependent"] = sorted([n, plain.get(n), truth[n]] for n in truth
                                                 if n in plain and plain[n] != truth[n])
-        for mode in [m for m in ("a_par", "a_ser") if m in runs]:
+        for mode in [m for m in ("a_par", "a_ser", "a_par_u", "a_ser_u") if m in runs]:
             c = runs[mode].get("cache", {})
             reused = c.get("reused_ids", [])
             outcomes = runs[mode].get("outcomes", {})

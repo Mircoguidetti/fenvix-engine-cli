@@ -269,3 +269,18 @@ def test_placement_difference_is_a_finding(pytester, mode):
     # a different outcome is never silent: the finding names the test and the session fails
     assert "PLACEMENT FINDINGS" in p.stdout and "tests/test_b.py::test_b_needs" in p.stdout, p.stdout
     assert p.returncode != 0
+
+
+def test_g0174_serial_testrun_uid_is_derived_under_det(pytester):
+    """Audit G-0174: with pytest-xdist installed, a serial --det session's ``testrun_uid`` fixture is the derived
+    value (the same in two runs), not xdist's uuid4() draw."""
+    pytest.importorskip("xdist")
+    _probe(pytester, """
+        def test_uid(testrun_uid):
+            print("UID", testrun_uid)
+        """)
+    uids = []
+    for label in ("u1", "u2"):
+        p, _, _ = run(pytester, label, "-s", "tests", cache=False)
+        uids.append([x for x in p.stdout.splitlines() if x.startswith("UID ")])
+    assert uids[0] and uids[0] == uids[1], uids

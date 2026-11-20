@@ -11,7 +11,7 @@ name: parallel-proof
 
 on:
   push:
-    branches: [claude/parallel-proof, claude/parallel-proof-3]
+    branches: [claude/parallel-proof, claude/parallel-proof-3, claude/py-cache]
     paths: [tracks/parallel-proof/run.json]
 
 permissions:
@@ -34,6 +34,19 @@ jobs:
       - run: maturin build --release --compatibility linux -o dist
       - uses: actions/upload-artifact@v4
         with: {name: wheel, path: dist/*.whl}
+      # run.json "before_ref": a second wheel from that commit (a repository entry with "engine": "before" uses it:
+      # the before/after measurements of py-cache item 4)
+      - name: wheel of before_ref
+        run: |
+          ref=$(python3 -c 'import json; print(json.load(open("tracks/parallel-proof/run.json")).get("before_ref") or "")')
+          mkdir -p dist-before
+          if [ -n "$ref" ]; then
+            git fetch -q --unshallow origin || git fetch -q origin
+            git worktree add -q "$RUNNER_TEMP/before" "$ref"
+            (cd "$RUNNER_TEMP/before" && maturin build --release --compatibility linux -o "$GITHUB_WORKSPACE/dist-before")
+          fi
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel-before, path: dist-before/, if-no-files-found: ignore}
       - id: p
         run: |
           python3 - >> "$GITHUB_OUTPUT" <<'PY'
@@ -57,6 +70,9 @@ jobs:
         with: {python-version: "${{ matrix.repo.python || '3.12' }}"}
       - uses: actions/download-artifact@v4
         with: {name: wheel, path: dist}
+      - uses: actions/download-artifact@v4
+        if: matrix.repo.engine == 'before'
+        with: {name: wheel-before, path: dist-before}
       - name: checkout the repository under test
         run: |
           git init -q "$RUNNER_TEMP/repo" && cd "$RUNNER_TEMP/repo"
@@ -73,7 +89,8 @@ jobs:
           cd "$RUNNER_TEMP/repo"
           if [ -n "$INSTALL_CMD" ]; then bash -c "$INSTALL_CMD"; else "$PY" -m pip install -q $PIP_INSTALL; fi
           uv pip install -q --python "$PY" pytest-xdist==3.8.0 pytest-timeout
-          uv pip install -q --python "$PY" --force-reinstall --no-deps "$GITHUB_WORKSPACE"/dist/*.whl
+          W="$GITHUB_WORKSPACE/dist"; [ "${{ matrix.repo.engine }}" = "before" ] && W="$GITHUB_WORKSPACE/dist-before"
+          uv pip install -q --python "$PY" --force-reinstall --no-deps "$W"/*.whl
       - name: variants or walk
         env:
           ARGS: ${{ matrix.repo.args }}
@@ -91,7 +108,7 @@ jobs:
               --commits "${{ matrix.repo.walk }}" --workers "${{ matrix.repo.workers }}" --dist "${{ matrix.repo.dist }}" \
               --modes "${{ matrix.repo.modes || 'a_par' }}" --deadline-s 18000 --out "$out/walk.json" \
               --det-args="${{ matrix.repo.det_args }}" --shard "${{ matrix.repo.shard }}" \
-              --work "$RUNNER_TEMP/walk" -- "$@" || true
+              --work "$RUNNER_TEMP/walk" ${{ matrix.repo.unchanged && '--unchanged' || '' }} -- "$@" || true
           else
             python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
               --out "$RUNNER_TEMP/out" --label "${{ matrix.repo.name }}" --workers "${{ matrix.repo.workers }}" \

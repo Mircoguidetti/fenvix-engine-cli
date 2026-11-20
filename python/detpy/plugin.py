@@ -635,6 +635,17 @@ def pytest_configure(config):
         config.pluginmanager.register(_Outcomes(out), "detpy-outcomes")
 
 
+class _SerialTestrunUid:
+    """``testrun_uid`` of a serial ``--det`` session (registered after pytest-xdist: this definition wins)."""
+
+    def __init__(self, uid: str):
+        self.uid = uid
+
+    @pytest.fixture(scope="session")
+    def testrun_uid(self) -> str:
+        return self.uid
+
+
 def _configure_det(config) -> None:
     # pytest-xdist: the controller plans and merges, each worker writes its own trace (xdist.py)
     wid = _xdist.worker_id(config)
@@ -649,6 +660,11 @@ def _configure_det(config) -> None:
         _xdist.export_controller_env(ctl.barrier)
         S.controller = ctl
         config.pluginmanager.register(ctl, "detpy-xdist-controller")
+    elif config.pluginmanager.has_plugin("xdist") or config.pluginmanager.has_plugin("xdist.plugin"):
+        # audit G-0174: a serial session with pytest-xdist installed: xdist's testrun_uid fixture draws uuid4() in
+        # infrastructure code (neither controlled nor observed); under --det it is the derived value, as under -n
+        config.pluginmanager.register(_SerialTestrunUid(
+            _xdist.derived_testrunuid(config, _state.STATE.config.seed)), "detpy-serial-testrunuid")
     root = str(config.rootpath)
     _sites.refresh(root)
     opt = config.option
