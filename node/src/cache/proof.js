@@ -43,7 +43,7 @@ function digest(x) {
 }
 
 // detjs' own per-session values inside a runner configuration (runner shim path, sequencer, the run's seed)
-const OWN_STRING = /[\\/]node_modules[\\/]\.detjs[\\/]runner-\d+\.mjs$/;
+const OWN_STRING = /[\\/]node_modules[\\/]\.detjs[\\/]runner-\d+\.mjs$|[\\/]\.detjs[\\/]runner-\d+-\d+\.mjs$/; // (+ a project runner composed with detjs')
 // output and selection settings never change a result; the resolved configuration repeats them at several depths
 const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated', 'outputFile', 'reporters', 'reporter', 'shard', 'changed',
   'passWithNoTests', 'filters', 'cliExclude', 'related',
@@ -300,6 +300,16 @@ class ProofSession {
   addGlobalPart(name, value) {
     this.quiet(() => {
       this.configParts[name] = typeof value === 'string' ? value : digest(value);
+      if (this.configDigest !== undefined) this.digests();
+    });
+  }
+
+  /** A part of one project's configuration known only at the decision (src/cache/groups.js); global if unknown. */
+  addProjectPart(project, name, value) {
+    const k = `project:${project || ''}`;
+    if (!Object.prototype.hasOwnProperty.call(this.configParts, k)) { this.addGlobalPart(`${name}:${project || ''}`, value); return; }
+    this.quiet(() => {
+      this.configParts[k] = digest([this.configParts[k], name, typeof value === 'string' ? value : digest(value)]);
       if (this.configDigest !== undefined) this.digests();
     });
   }

@@ -37,6 +37,8 @@ function installProcess() {
   // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=<digest of the value>`
   // (`env.has`, `env.list` for enumerations); values never reach the trace
   installEnvRecord(process);
+  // detjs' own variables are not shown to test code (src/envview.js, audit G-2162)
+  require('./envview').install();
   // machine and process facts, native key generation, mkdtemp names (src/facts.js)
   require('./facts').installProcess(PATCHER);
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js); Level 1: timers against I/O
