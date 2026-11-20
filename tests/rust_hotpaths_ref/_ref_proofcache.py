@@ -912,6 +912,9 @@ class Capture:
             return True
         if self.basetemp and (p == self.basetemp or p.startswith(self.basetemp + os.sep)):
             return True
+        pc = sys.pycache_prefix  # round 4: detpy's bytecode cache, like __pycache__
+        if pc and (p == pc or p.startswith(pc + os.sep)):
+            return True
         for d in self.site_dirs:
             if p.startswith(d):
                 return not any(p.startswith(x) for x in self.dist_info_ok)

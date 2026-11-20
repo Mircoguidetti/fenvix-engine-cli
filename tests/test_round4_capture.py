@@ -84,3 +84,21 @@ def test_a_boot_id_read_at_import_is_a_content_input_not_a_refusal(pytester):
         pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.c'}", f"--det-outcomes={out}",
                                       "-p", "no:cacheprovider").assert_outcomes(passed=1)
     assert json.loads(out.read_text())["cache"]["reused_ids"] == ["test_a.py::test_a"]
+
+
+def test_the_bytecode_cache_is_not_an_input(pytester):
+    """detpy's bytecode cache (sys.pycache_prefix): the import system writes a .pyc there for a module a test imports
+    from its tmp_path; other workers' kind checks of those directories refused 454 pydantic-ai tests ('a file another
+    test or fixture wrote in another worker'). Like __pycache__, it is not an input."""
+    pytester.makeini("[pytest]\n")
+    pytester.makepyfile(test_p="""
+        import sys
+        from detpy import proofcache as pc
+
+        def test_p():
+            assert sys.pycache_prefix
+            assert pc.CAPTURE._ignored(sys.pycache_prefix + "/tmp/x/y.cpython-313.pyc")
+            assert pc.CAPTURE._ignored(sys.pycache_prefix)
+        """)
+    pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.c'}", "-p", "no:cacheprovider"
+                                  ).assert_outcomes(passed=1)

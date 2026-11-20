@@ -307,6 +307,8 @@ struct State {
     seen_mods: HashSet<W>,
     nmods: usize,
     basetemp: Option<W>,
+    /// `sys.pycache_prefix` + "/" (detpy's bytecode cache): the import system's own files, like `__pycache__`
+    pycache: Option<W>,
     site_dirs: Vec<W>,
     stdlib_dirs: Vec<W>,
     dist_info_ok: Vec<W>,
@@ -346,6 +348,11 @@ impl State {
         }
         if let Some(bt) = &self.basetemp {
             if p == bt.as_slice() || (p.starts_with(bt) && p.get(bt.len()) == Some(&b'/')) {
+                return true;
+            }
+        }
+        if let Some(pc) = &self.pycache {
+            if p.starts_with(pc) || p == &pc[..pc.len() - 1] {
                 return true;
             }
         }
@@ -1828,6 +1835,17 @@ impl CaptureCore {
             timeline: vec![(now(), 0)],
             ..Default::default()
         };
+        let mut st = st;
+        // round 4 (pydantic-ai: 454 tests refused for 'a file another worker wrote' under the bytecode cache)
+        if let Ok(pc) = py.import("sys").and_then(|m| m.getattr("pycache_prefix")) {
+            if let Ok(pc) = pc.cast::<PyString>() {
+                let mut w = w_of(pc)?;
+                if !w.is_empty() {
+                    w.push(b'/');
+                    st.pycache = Some(w);
+                }
+            }
+        }
         let (o_rdonly, o_wronly, o_rdwr, o_creat, o_excl, o_trunc, o_tmpfile) = o_flags;
         Ok(CaptureCore {
             st: Mutex::new(st),
