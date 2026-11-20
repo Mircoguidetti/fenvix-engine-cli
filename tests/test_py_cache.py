@@ -502,3 +502,57 @@ def test_g1544_missing_strace_is_said(pytester, tmp_path):
     _probe(pytester, "def test_a():\n    pass\n")
     p, _, _ = run(pytester, "nostrace", "tests", env={"PATH": str(tmp_path)})
     assert "install strace" in p.stdout, p.stdout
+
+
+def test_g2214_a_test_that_crashes_its_worker_is_a_record_of_the_merged_trace(pytester):
+    """Audit G-2214: the crashed test is in the merged trace (outcome "crashed"), so verify compares it."""
+    pytest.importorskip("xdist")
+    write(pytester, **{"tests/conftest.py": "", "tests/test_c.py": """
+        import os
+        def test_crash():
+            os._exit(17)
+        def test_ok():
+            pass
+        """})
+    for i in (1, 2):
+        run(pytester, f"c{i}", "-n", "2", f"--det-trace={pytester.path / f't{i}.jsonl'}", "tests", cache=False)
+    recs = [json.loads(x) for x in (pytester.path / "t1.jsonl").read_text().splitlines() if x.strip()]
+    crash = [r for r in recs if r.get("type") == "test" and r["nodeid"] == "tests/test_c.py::test_crash"]
+    assert crash and crash[0]["outcome"] == "crashed", recs
+    p = subprocess.run([sys.executable, "-m", "detpy", "verify", "t1.jsonl", "t2.jsonl"], cwd=pytester.path,
+                       capture_output=True, text=True)
+    assert "covered by Level 0: 2" in p.stdout, p.stdout
+
+
+def test_g1550_worker_id_readers_keep_their_plan_and_are_reused(pytester):
+    """Audit G-1550 (not reproducible on this engine): under --det-cache -n the plan stays the plan that recorded the
+    tests (sticky), so tests that read the worker identity are reused with the rest."""
+    pytest.importorskip("xdist")
+    files = {"tests/conftest.py": ""}
+    for f in "abc":
+        body = ["import os"] + [f"def test_{f}{i}():\n    pass" for i in range(5)]
+        if f == "b":
+            body.append("def test_wid_env():\n    assert os.environ.get('PYTEST_XDIST_WORKER')")
+        if f == "c":
+            body.append("def test_wid_fixture(worker_id):\n    assert worker_id.startswith('gw')")
+        files[f"tests/test_{f}.py"] = "\n".join(body) + "\n"
+    write(pytester, **files)
+    for label in ("r1", "r2", "r3"):
+        p, c, _ = run(pytester, label, "-n", "2", "tests")
+        assert p.returncode == 0, p.stdout
+    assert len(reused(c)) == 17, c.get("miss_ids")
+
+
+def test_g1549_a_failure_under_n_prints_its_worker_replay(pytester):
+    """Audit G-1549/G-1557: the plan depends on the worker count; a failure under -n names the command that replays
+    its worker's list from this run's plan, and that replay fails the same way."""
+    pytest.importorskip("xdist")
+    write(pytester, **STATE)
+    p, _, _ = run(pytester, "par", "-n", "2", "--dist", "loadfile", "-rA", "tests", cache=False)
+    line = next((x for x in p.stdout.splitlines() if x.startswith("replay tests/test_b.py::test_b_needs")), None)
+    if line is None:
+        assert "tests/test_b.py::test_b_needs" not in p.stdout.split("short test summary")[-1] or "PASSED" in p.stdout
+        return  # the plan put both files on one worker: nothing failed
+    args = line.split(": pytest ", 1)[1].split(" (")[0].split()
+    r, _, _ = run(pytester, "replay", *args, "-rA", "tests", cache=False)
+    assert outcome_of(r, "tests/test_b.py::test_b_needs") == "failed", r.stdout

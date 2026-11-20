@@ -144,7 +144,9 @@ def test_a_killed_worker_leaves_missing_tests_and_its_replacement_runs_the_rest(
     assert "replacing crashed worker" in out
     r.assert_outcomes(passed=4, failed=1)
     h, tests, footer = load_trace(pytester.path / "trace.jsonl")
-    assert set(tests) == {f"tests/test_k.py::test_{i}" for i in (1, 2, 4, 5)}
+    # audit G-2214 (py-cache): the crashed test is a record of the merged trace (outcome "crashed")
+    assert set(tests) == {f"tests/test_k.py::test_{i}" for i in (1, 2, 4, 5)} | {"tests/test_k.py::test_crash"}
+    assert tests["tests/test_k.py::test_crash"]["outcome"] == "crashed"
     assert footer["missing"] == ["tests/test_k.py::test_crash"]
     # the replacement worker ran the rest of the dead worker's list, in order
     assert tests["tests/test_k.py::test_4"]["worker"] == "gw1"

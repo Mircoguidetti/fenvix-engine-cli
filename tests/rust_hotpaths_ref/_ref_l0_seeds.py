@@ -166,9 +166,14 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     if tempfile is not None and hasattr(tempfile, "_name_sequence"):
         tempfile._name_sequence = None
     np = sys.modules.get("numpy")
-    if np is not None and hasattr(np, "random"):
+    if np is not None:
         try:
-            np.random.seed(s & 0xFFFFFFFF)
+            # py-cache (as detpy/seeds.py, audit G-0510): detpy's own reseed imports numpy.random quietly
+            with _state.quiet():
+                nprandom = getattr(np, "random", None)
+                if nprandom is None:
+                    raise AttributeError("numpy.random")
+                nprandom.seed(s & 0xFFFFFFFF)
             if not _numpy_patched and hasattr(np.random, "default_rng"):
                 patcher.set(np.random, "default_rng", _numpy_default_rng(np.random.default_rng))
                 _numpy_patched.append(True)

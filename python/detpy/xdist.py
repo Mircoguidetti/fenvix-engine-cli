@@ -378,6 +378,8 @@ class Controller:
             self.workeroutput[node.gateway.id] = {k: v for k, v in out.items() if k.startswith("detpy_")}
 
     def pytest_runtest_logreport(self, report):
+        if report.failed:
+            self.__dict__.setdefault("failed", []).append(report.nodeid)
         if any(k == "detpy_cache" and v == "reused" for k, v in getattr(report, "user_properties", ()) or ()):
             self.reused.add(report.nodeid)
             return
@@ -583,6 +585,7 @@ class Controller:
         self.merge_summary = summary
         for nid, fp, _outcome, _w in summary["tests"]:
             self.S.fingerprints[nid] = fp
+        self._record_crashes(trace_path, summary)
         if self.plan is not None:
             write_json(os.path.join(self.dir, "plan.json"), self.plan)
         import shutil
@@ -597,6 +600,37 @@ class Controller:
             # audit G-1551: planned tests that never ran (their worker died with no restart left): the run is not
             # complete, so it does not pass
             session.exitstatus = pytest.ExitCode.TESTS_FAILED
+
+    def _record_crashes(self, trace_path: str, summary: dict) -> None:
+        """Audit G-2214: a test that crashed its worker gets a record in the merged trace (outcome "crashed", a
+        fingerprint of the test id and that outcome), so that `detpy verify` compares it like any other test: crashing
+        in every run is a reproducible defect, crashing in one run only a divergence."""
+        have = {nid for nid, *_ in summary.get("tests", ())}
+        crashed = [(w, t) for w, t in self.crashed if t not in have]
+        if not crashed or not os.path.exists(trace_path):
+            return
+        try:
+            with open(trace_path) as fh:
+                lines = [ln for ln in fh.read().splitlines() if ln.strip()]
+            footer = json.loads(lines[-1]) if lines and '"footer"' in lines[-1] else None
+            body = lines[:-1] if footer is not None else lines
+            n = sum(1 for ln in body if '"type":"test"' in ln)
+            for i, (w, t) in enumerate(crashed):
+                fp = _core.digest(json.dumps(["detpy-crash", t]).encode())[:32]
+                body.append(json.dumps({"type": "test", "nodeid": t, "index": self.ids.index(t) if t in self.ids else n + i,
+                                        "outcome": "crashed", "fingerprint": fp, "n_events": 1, "truncated": False,
+                                        "counts": {"outcome": 1}, "checkpoints": [],
+                                        "events": [{"t": 0, "s": "outcome", "o": "outcome", "at": "", "v": "crashed"}],
+                                        "worker": w}, separators=(",", ":")))
+                self.S.fingerprints[t] = fp
+            if footer is not None:
+                footer["n_tests"] = n + len(crashed)
+                body.append(json.dumps(footer, separators=(",", ":")))
+            with open(trace_path, "w") as fh:
+                fh.write("\n".join(body) + "\n")
+            summary["missing"] = [m for m in summary.get("missing", ()) if m not in {t for _, t in crashed}]
+        except (OSError, ValueError):
+            pass
 
     def _save_durations(self) -> None:
         if not self.durations:
@@ -669,6 +703,16 @@ class Controller:
                          + (f"; unreadable worker traces: {', '.join(s['unreadable'])}" if s["unreadable"] else ""))
         for w, t in self.crashed:
             lines.append(f"worker {w} crashed in {t}; its remaining tests went to its replacement")
+        failed = list(dict.fromkeys(getattr(self, "failed", ())))
+        if failed and self.plan is not None:
+            # audit G-1549 / G-1557: the plan is a function of the worker count; a failure under -n replays on any
+            # machine with this run's plan, one worker's list in one process
+            plan = os.path.join(self.dir, "plan.json")
+            for nid in failed[:5]:
+                w = next((w for w, ids in self.sent.items() if nid in ids), None)
+                if w:
+                    lines.append(f"replay {nid}: pytest --det --det-plan={plan} --det-plan-worker={w} (worker {w}'s "
+                                 f"list, serially; copy the plan file to replay elsewhere)")
         if s is not None and s.get("missing"):
             lines.append(f"NOT RUN: {len(s['missing'])} planned test(s) never ran (a worker died with no restart "
                          f"left): {', '.join(list(s['missing'])[:5])}; the session fails")
