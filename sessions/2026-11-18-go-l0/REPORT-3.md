@@ -146,9 +146,16 @@ Share of test time reused with proof, median / mean over the commits. 05a7dfa is
      - Result: the `--det` trace held 0 tests, and the D1 checks passed only because they had nothing to check.
      - Fix: fenvix-go also sets `GOROOT` to the linked copy. Reproduced with `GOTOOLCHAIN=go1.26.0 go test -run TestR025b_D`: 0 tests in the trace before, 8 after, and D1 and D3 pass.
   2. **The PID was controlled only as root, and GitHub runners do not run as root.**
-     - Without root, the test binary now runs in an unprivileged user namespace. It maps the caller's own uid and gid (the test still runs as that user, not as root) and owns the PID and mount namespaces.
-     - fenvix-go probes for this before use. When the kernel or an AppArmor policy refuses unprivileged user namespaces, the start message says the PID is not controlled.
-     - Side effect: inside that namespace, files owned by other uids (root's, for example) show as owned by the overflow uid (65534). Permission checks are the kernel's own and are unchanged.
+     - **First attempt, not enough on GitHub (MEASURED, run 44705053441):** an unprivileged user namespace that maps the caller's own uid and gid. The runner is ubuntu-26.04 as `runner`, with `kernel.apparmor_restrict_unprivileged_userns = 1`, so the probe fails. `TestPid` then varied on Go 1.24 and 1.26 alike, while the other three entropy tests passed on Go 1.26 there. The user-namespace path stays for machines that allow it. Side effect there: files owned by other uids show as uid 65534.
+     - **Fix:** with no PID namespace available, `os.Getpid` in the test binary fenvix-go started is a fixed virtual pid, 4198546.
+       - It is above the kernel's `PID_MAX_LIMIT` (4194304), so it never names another process.
+       - `os.FindProcess`, `syscall.Kill` and `/proc/<pid>/...` map it back to the test process.
+       - A program the test starts, including a re-executed test binary, has its real pid: the variable is unset together with `FENVIX_GO_FDS`.
+       - Raw system calls and `x/sys/unix` see the real pid. `unix.Kill(os.Getpid(), ...)` therefore fails with ESRCH under `--det` on such machines. That is broken by `--det`, said at start, and never a signal to another process.
+       - Overlay groups: `os-pid`, `sys-pid-amd64`, `sys-pid-arm64`. Their anchors exist in go1.22-go1.26.
+     - **Checks:**
+       - `TestDetVirtualPid` (fixture `vpid`) passes with and without a PID namespace: the same pid in 3 runs, a signal to `os.Getpid()` through `syscall.Kill` and `Process.Signal` is delivered, `/proc/<pid>/status` is this process's, a child sees its own real pid.
+       - The entropy matrix without a PID namespace (`FENVIX_GO_NO_PIDNS=1`, which behaves like the runner): every test has one outcome and one fingerprint on go1.22.12-go1.26.0.
   - **What Go 1.22-1.26 do with entropy, as far as `--det` is concerned:** nothing that escapes the overlay.
     - `hash/maphash` seeds, `sync.Map` iteration (a hash-trie seeded from the runtime since 1.24), and `/dev/urandom` (served from the test's stream) each give one outcome and one fingerprint on every toolchain.
     - Runtime randomness is hooked at `cheaprand` and the raw `getrandom`, which also covers the vDSO `getrandom` of Go 1.24 and later.
