@@ -1,0 +1,1619 @@
+{
+ "spec": {
+  "name": "alertmanager",
+  "repo": "prometheus/alertmanager",
+  "sha": "6ceb38d06d4fd6ecfbbd11510c7bdf591d92a917",
+  "fix_commit": "c3ade988ceda30b1d6263ae52ad7821be00b9a3c",
+  "fix_date": "2025-11-05T23:30:32.000+01:00",
+  "title": "Fix more flaky tests in TestClusterJoinAndReconnect (#4701)",
+  "tests": [
+   "TestClusterJoinAndReconnect"
+  ],
+  "source": "github commit search 'repo:prometheus/alertmanager flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestClusterJoinAndReconnect": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./cluster"
+ ],
+ "imports": [
+  "github.com/prometheus/alertmanager/cluster"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 29.2,
+ "build_det_s": 40.3,
+ "baseline": {
+  "github.com/prometheus/alertmanager/cluster::TestWriteTo": [
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestNormalMessagesGossiped": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect": [
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestOversizedMessagesGossiped": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestWriteStream": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestDialTimeout": [
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed",
+   "failed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestWritePacket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestCalculateAdvertiseAddress": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestFinalAdvertiseAddr": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestRead_Nil": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestTLSConn_Close": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestNewTLSTransport": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {
+  "github.com/prometheus/alertmanager/cluster::TestWriteTo": "=== RUN   TestWriteTo\n    tls_transport_test.go:167: \n        \tError Trace:\t/tmp/work/src/cluster/tls_transport_test.go:167\n        \tError:      \tReceived unexpected error:\n        \t            \tfailed to dial: tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time 2026-11-19T02:57:34Z is after 2026-05-04T16:16:00Z\n        \tTest:       \tTestWriteTo\n--- FAIL: TestWriteTo (0.00s)\n",
+  "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect": "=== RUN   TestClusterJoinAndReconnect\n=== RUN   TestClusterJoinAndReconnect/TestJoinLeave\n--- PASS: TestClusterJoinAndReconnect/TestJoinLeave (0.80s)\n=== RUN   TestClusterJoinAndReconnect/TestReconnect\n--- PASS: TestClusterJoinAndReconnect/TestReconnect (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestRemoveFailedPeers\n--- PASS: TestClusterJoinAndReconnect/TestRemoveFailedPeers (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestInitiallyFailingPeers\n--- PASS: TestClusterJoinAndReconnect/TestInitiallyFailingPeers (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestTLSConnection\n    cluster_test.go:346: \n        \tError Trace:\t/tmp/work/src/cluster/cluster_test.go:346\n        \tError:      \tReceived unexpected error:\n        \t            \t1 error occurred:\n        \t            \t\t* Failed to join 127.0.0.1:43277: failed to dial: tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time 2026-11-19T02:57:35Z is after 2026-05-04T16:16:00Z\n        \t            \t\n        \tTest:       \tTestClusterJoinAndReconnect/TestTLSConnection\n--- FAIL: TestClusterJoinAndReconnect/TestTLSConnection (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestRandomPeerNames\n--- PASS: TestClusterJoinAndReconnect/TestRandomPeerNames (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestSetPeerNames\n--- PASS: TestClusterJoinAndReconnect/TestSetPeerNames (0.00s)\n=== RUN   TestClusterJoinAndReconnect/TestDuplicatePeerNames\n--- PASS: TestClusterJoinAndReconnect/TestDuplicatePeerNames (0.00s)\n--- FAIL: TestClusterJoinAndReconnect (0.82s)\n",
+  "github.com/prometheus/alertmanager/cluster::TestDialTimeout": "=== RUN   TestDialTimeout\n    tls_transport_test.go:208: \n        \tError Trace:\t/tmp/work/src/cluster/tls_transport_test.go:208\n        \tError:      \tReceived unexpected error:\n        \t            \tfailed to dial: tls: failed to verify certificate: x509: certificate has expired or is not yet valid: current time 2026-11-19T02:57:35Z is after 2026-05-04T16:16:00Z\n        \tTest:       \tTestDialTimeout\n--- FAIL: TestDialTimeout (0.00s)\n"
+ },
+ "seconds": 172.6,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "outcome": 13,
+  "time": 1221,
+  "random": 414,
+  "entropy": 53
+ },
+ "det0_top_tests_by_events": [
+  [
+   1293,
+   "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect"
+  ],
+  [
+   272,
+   "github.com/prometheus/alertmanager/cluster::TestShutdown"
+  ],
+  [
+   37,
+   "github.com/prometheus/alertmanager/cluster::TestWriteTo"
+  ],
+  [
+   36,
+   "github.com/prometheus/alertmanager/cluster::TestDialTimeout"
+  ],
+  [
+   27,
+   "github.com/prometheus/alertmanager/cluster::TestFinalAdvertiseAddr"
+  ],
+  [
+   16,
+   "github.com/prometheus/alertmanager/cluster::TestNewTLSTransport"
+  ],
+  [
+   7,
+   "github.com/prometheus/alertmanager/cluster::TestOversizedMessagesGossiped"
+  ],
+  [
+   5,
+   "github.com/prometheus/alertmanager/cluster::TestNormalMessagesGossiped"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 22,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.23.2/prometheus/counter.go:219",
+     "v": "22000"
+    },
+    "event_b": {
+     "t": 3,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "/home/runner/go/pkg/mod/github.com/hashicorp/memberlist@v0.5.3/memberlist.go:789",
+     "v": "30000000000"
+    },
+    "reason": "thread",
+    "description": "event #22: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.23.2/prometheus/counter.go:219 = 22000 (thread 1)  <>  [time] time.NewTimer @ /home/runner/go/pkg/mod/github.com/hashicorp/memberlist@v0.5.3/memberlist.go:789 = 30000000000 (thread 3)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/alertmanager/cluster::TestDialTimeout",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 29,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "24619893"
+    },
+    "event_b": {
+     "t": 2,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "24624893"
+    },
+    "reason": "thread",
+    "description": "event #29: time.timer @ timer returned different values: \"24619893\" vs \"24624893\""
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/alertmanager/cluster::TestShutdown",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 6,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "49624971"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "49620971"
+    },
+    "reason": "thread",
+    "description": "event #6: time.timer @ timer returned different values: \"49624971\" vs \"49620971\""
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 13,
+  "stable": 10,
+  "diverged": 3,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 3
+  }
+ },
+ "det0": {
+  "github.com/prometheus/alertmanager/cluster::TestRead_Nil": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestDialTimeout": [
+   [
+    "passed",
+    "628d705824cfc94d38c908137b20f0df"
+   ],
+   [
+    "passed",
+    "700c373ff8ed2c053222a1ca42b8df5b"
+   ],
+   [
+    "passed",
+    "a082298f53959c9d524966fb787a9309"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect": [
+   [
+    "passed",
+    "902bad02e7a2372a507726fb8c794ee5"
+   ],
+   [
+    "passed",
+    "759c911b593afe085e1a922ea9f06c20"
+   ],
+   [
+    "passed",
+    "385025016a5aece84f7c8546a4d4ad90"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestTLSConn_Close": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestNewTLSTransport": [
+   [
+    "passed",
+    "6f74b1bdfa208e6053699d5367498369"
+   ],
+   [
+    "passed",
+    "6f74b1bdfa208e6053699d5367498369"
+   ],
+   [
+    "passed",
+    "6f74b1bdfa208e6053699d5367498369"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestFinalAdvertiseAddr": [
+   [
+    "passed",
+    "86ff81a90ab889d34f7cb4af9886209c"
+   ],
+   [
+    "passed",
+    "86ff81a90ab889d34f7cb4af9886209c"
+   ],
+   [
+    "passed",
+    "86ff81a90ab889d34f7cb4af9886209c"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestNormalMessagesGossiped": [
+   [
+    "passed",
+    "49bffc3bf2cd75ed2cd28da91d23108b"
+   ],
+   [
+    "passed",
+    "49bffc3bf2cd75ed2cd28da91d23108b"
+   ],
+   [
+    "passed",
+    "49bffc3bf2cd75ed2cd28da91d23108b"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestWriteStream": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestWritePacket": [
+   [
+    "passed",
+    "4b81bed0c802da51400cf6ee19d982ec"
+   ],
+   [
+    "passed",
+    "4b81bed0c802da51400cf6ee19d982ec"
+   ],
+   [
+    "passed",
+    "4b81bed0c802da51400cf6ee19d982ec"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestShutdown": [
+   [
+    "passed",
+    "ce2228244f33c71b49fcb7557bd3ef79"
+   ],
+   [
+    "passed",
+    "eec0a1b869ce8fa8273a4601a5d7ea5c"
+   ],
+   [
+    "passed",
+    "7045db2e582797372ba558603839ed21"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestCalculateAdvertiseAddress": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestOversizedMessagesGossiped": [
+   [
+    "passed",
+    "ac1554de2388e4e127f9d2d99381a12c"
+   ],
+   [
+    "passed",
+    "ac1554de2388e4e127f9d2d99381a12c"
+   ],
+   [
+    "passed",
+    "ac1554de2388e4e127f9d2d99381a12c"
+   ]
+  ],
+  "github.com/prometheus/alertmanager/cluster::TestWriteTo": [
+   [
+    "passed",
+    "d70837f0049b23f500acc670a9eafe19"
+   ],
+   [
+    "passed",
+    "d70837f0049b23f500acc670a9eafe19"
+   ],
+   [
+    "passed",
+    "d70837f0049b23f500acc670a9eafe19"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/prometheus/alertmanager/cluster::TestWriteTo": {
+   "1": [
+    "passed",
+    "ac0cafea61d4025e9919b0d1de92cd14"
+   ],
+   "2": [
+    "passed",
+    "2730a2036264c3568dc559eea4471003"
+   ],
+   "3": [
+    "passed",
+    "4f2fca2718f648f463996f145a3e9d05"
+   ],
+   "4": [
+    "passed",
+    "fed2b2327c5992dea44fc8b4e39f23af"
+   ],
+   "5": [
+    "passed",
+    "e13cf247db4ffb585c3c25ab1ef09cbe"
+   ],
+   "6": [
+    "passed",
+    "086d2d1ed133891f6e41222d15b59acb"
+   ],
+   "7": [
+    "passed",
+    "b94a99fde48fee6ea4889f480950d440"
+   ],
+   "8": [
+    "passed",
+    "fe79cd2c6547531af5114fb486664658"
+   ],
+   "9": [
+    "passed",
+    "fe2e8021141d6ff029d16fea51580487"
+   ],
+   "10": [
+    "passed",
+    "384c72267852bf22cf303065d6b38c0e"
+   ],
+   "11": [
+    "passed",
+    "fec9a2320f4a9e5545bf44885e0e959a"
+   ],
+   "12": [
+    "passed",
+    "77a69bba87a4fdc379910d2e78438618"
+   ],
+   "13": [
+    "passed",
+    "f582032c6502364421aea181b6758c0c"
+   ],
+   "14": [
+    "passed",
+    "83b057ee321f33e0f91cfa20558ab994"
+   ],
+   "15": [
+    "passed",
+    "abbd1162a456b450555f3e1c2781cee7"
+   ],
+   "16": [
+    "passed",
+    "424502b3db39b504e09369add533be08"
+   ],
+   "17": [
+    "passed",
+    "9145220e4f8b2f70ccfc304ac5bf2266"
+   ],
+   "18": [
+    "passed",
+    "d14c6974888870100b0d05519afdb3c3"
+   ],
+   "19": [
+    "passed",
+    "ecbe9c2a43b7db0e08a96918bb21fd27"
+   ],
+   "20": [
+    "passed",
+    "76a0180529c32379c74ef3167c5ee26d"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect": {
+   "1": [
+    "passed",
+    "5e9898e4fb8d9aef5d55872bc581470c"
+   ],
+   "2": [
+    "passed",
+    "a59856deac0666ab1f0ba74d874f539b"
+   ],
+   "3": [
+    "passed",
+    "4f8fba57b9da2403b62415e359d0e260"
+   ],
+   "4": [
+    "passed",
+    "03da6f4ba66b774f28e0b713270e677f"
+   ],
+   "5": [
+    "passed",
+    "6643ba02faae4c9065e430760af7157a"
+   ],
+   "6": [
+    "passed",
+    "1768e72b2184b9d82b68ec30ada01469"
+   ],
+   "7": [
+    "passed",
+    "fc7847323781c11eb99b1ef6fab7f11b"
+   ],
+   "8": [
+    "passed",
+    "6fe59f764a16a4b193a7177f211a543c"
+   ],
+   "9": [
+    "passed",
+    "edfac270cdc1a74ea6394bdeea1285f3"
+   ],
+   "10": [
+    "passed",
+    "3409daf583ef57e446698f0f6594ab6a"
+   ],
+   "11": [
+    "passed",
+    "d7028a535045ef33a1b98282e0882e1c"
+   ],
+   "12": [
+    "passed",
+    "bd368d3815c5f0e85755349e121a4578"
+   ],
+   "13": [
+    "passed",
+    "11d7dfd7aeb7a3e86d27916ce8d21474"
+   ],
+   "14": [
+    "passed",
+    "b2e75fc6c6e04bb920c65ee5323eb7c7"
+   ],
+   "15": [
+    "passed",
+    "7e36d9620477226a1a6c84bd9a8f22f9"
+   ],
+   "16": [
+    "passed",
+    "0b63c913f3591b9d577e7622387585de"
+   ],
+   "17": [
+    "passed",
+    "c7969cd8b7e9fea7512d9b1f5f510e31"
+   ],
+   "18": [
+    "passed",
+    "f2132b2a1a00870e7f712bbfb3ffcd39"
+   ],
+   "19": [
+    "passed",
+    "2f82a22663b9470ce151caafb0033b21"
+   ],
+   "20": [
+    "passed",
+    "76089aa77bc4888bb835a734f29c029a"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestFinalAdvertiseAddr": {
+   "1": [
+    "passed",
+    "a9c1f4cbad27d3f36bae2b1c970cb5a9"
+   ],
+   "2": [
+    "passed",
+    "86f84e966e4589209790c5155a57c0d0"
+   ],
+   "3": [
+    "passed",
+    "94d5f3b8e47ae8a70de211597f97c4a6"
+   ],
+   "4": [
+    "passed",
+    "82141aeb475287f9e6bec522d0049ea7"
+   ],
+   "5": [
+    "passed",
+    "db1a0225cf24f2fe722e314bf4c30684"
+   ],
+   "6": [
+    "passed",
+    "95a6da228175ee45339ad22dba8433f4"
+   ],
+   "7": [
+    "passed",
+    "6bf21949d89523581ab8d887e0df4a42"
+   ],
+   "8": [
+    "passed",
+    "e0fe30afbccf744e29bbf4a327acfa43"
+   ],
+   "9": [
+    "passed",
+    "56d6614188d75bc9ca0ad5fbedef6447"
+   ],
+   "10": [
+    "passed",
+    "023372684be5edf36eed51541ad82954"
+   ],
+   "11": [
+    "passed",
+    "3eccb1781b40ab727f6e6826e790fcf0"
+   ],
+   "12": [
+    "passed",
+    "d39f20cfedda607a7dacb60532239a2c"
+   ],
+   "13": [
+    "passed",
+    "bdfa6aa9797fdd81cbc0e39b1a051ab7"
+   ],
+   "14": [
+    "passed",
+    "36f092e0d20565f436632c19a7bb64c3"
+   ],
+   "15": [
+    "passed",
+    "5c98e1ba2acfa5e5c996444a25fe7174"
+   ],
+   "16": [
+    "passed",
+    "30e7f48d576fb4d29c60aea60ca3abab"
+   ],
+   "17": [
+    "passed",
+    "0dc364c57002592ed53383785181e50f"
+   ],
+   "18": [
+    "passed",
+    "e87a3e75e23447acd1ad1973759054e5"
+   ],
+   "19": [
+    "passed",
+    "c235a3b214043ea6d824db8809204eda"
+   ],
+   "20": [
+    "passed",
+    "1968feb8109af1d135d60de8036d1b30"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestNewTLSTransport": {
+   "1": [
+    "passed",
+    "478cb3209fb9255dbfc6cc46e3ed70c5"
+   ],
+   "2": [
+    "passed",
+    "67d915edee93e91c6851b12879ff39fb"
+   ],
+   "3": [
+    "passed",
+    "fc248b8a2390afb1320bd6b34702fb5e"
+   ],
+   "4": [
+    "passed",
+    "c92d07005fe735426238f1bff1f29961"
+   ],
+   "5": [
+    "passed",
+    "53f9093f055a9a56aeadfc78fd5fdf31"
+   ],
+   "6": [
+    "passed",
+    "a2adda4a83159e8ed6fd3cd78048a918"
+   ],
+   "7": [
+    "passed",
+    "a4dd54c07c306a2d3030be69fc3a452f"
+   ],
+   "8": [
+    "passed",
+    "a3d6d011a2d73d5d80e30aee603652bf"
+   ],
+   "9": [
+    "passed",
+    "d25d695f6c07f18742dfbe88ad400d0c"
+   ],
+   "10": [
+    "passed",
+    "16c80149ad78bacfae802544ea7760a9"
+   ],
+   "11": [
+    "passed",
+    "5ed53c6c456570ac0eb34ff7f6aff887"
+   ],
+   "12": [
+    "passed",
+    "71e27040a049e2976bf3c88d614439a2"
+   ],
+   "13": [
+    "passed",
+    "c09bf4ea02d24b3608ff04eafb0cea08"
+   ],
+   "14": [
+    "passed",
+    "4ac16394aeb4d69688d83e6bc9f9c837"
+   ],
+   "15": [
+    "passed",
+    "e5f26f5483ca75b6bd253fce4335bd10"
+   ],
+   "16": [
+    "passed",
+    "939b1a7320808586c2666391c4cb1531"
+   ],
+   "17": [
+    "passed",
+    "16b92f3326513e351adf4718a3857a6d"
+   ],
+   "18": [
+    "passed",
+    "d23201a85e55ce9cb77f34ae60d6f9de"
+   ],
+   "19": [
+    "passed",
+    "dbe488da32a6aa5fd09d7e092eec643c"
+   ],
+   "20": [
+    "passed",
+    "42901500de0cf5f7740b1a8f098106d3"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestWritePacket": {
+   "1": [
+    "passed",
+    "1d205a191ad2e8ce2209b8de9f0b9309"
+   ],
+   "2": [
+    "passed",
+    "cf4b1c8f5a13c99ee3c79b76f9c4ce84"
+   ],
+   "3": [
+    "passed",
+    "44009709e27fba9fd290f12a374d38da"
+   ],
+   "4": [
+    "passed",
+    "31245f4f2b758793342026e57e664aec"
+   ],
+   "5": [
+    "passed",
+    "fb43aacc4d083e2ccd8c294f89570bf7"
+   ],
+   "6": [
+    "passed",
+    "6144ed0ec0f568697eb09d31b9cb6c92"
+   ],
+   "7": [
+    "passed",
+    "004ef4300a99cc81a88cde292b9ddf2a"
+   ],
+   "8": [
+    "passed",
+    "e97476d6ee94ba3c969cbd621c4d3c8a"
+   ],
+   "9": [
+    "passed",
+    "d7fd5baff6f3bfe9aa72608ff058ca39"
+   ],
+   "10": [
+    "passed",
+    "238b36717ba687c0ef55b03876791a57"
+   ],
+   "11": [
+    "passed",
+    "06634d8a4886a6b58c3af8612d179772"
+   ],
+   "12": [
+    "passed",
+    "e992a3ae219a460914cd250b6b04c0a4"
+   ],
+   "13": [
+    "passed",
+    "19c7246444e5866cfa77c93ccfdc0f44"
+   ],
+   "14": [
+    "passed",
+    "281960a1840ab9b14d8cc861152ca9ed"
+   ],
+   "15": [
+    "passed",
+    "bcf71d5297c1c516705a98f0d39ccc03"
+   ],
+   "16": [
+    "passed",
+    "cc6f1f86d2226f3d003147fb15747aae"
+   ],
+   "17": [
+    "passed",
+    "19ab02cceed54af6d37d31178c974af4"
+   ],
+   "18": [
+    "passed",
+    "6469a5899b91d39be0327ab72f1dbe4d"
+   ],
+   "19": [
+    "passed",
+    "cf0e43e938bbd91aeb9fcb25fc22f49b"
+   ],
+   "20": [
+    "passed",
+    "754be343907a4c23346451d382b86c90"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestShutdown": {
+   "1": [
+    "passed",
+    "007ffa48cbb89b92c5237b05970011bb"
+   ],
+   "2": [
+    "passed",
+    "1edbbb6070aa9f4a2067a6750854898e"
+   ],
+   "3": [
+    "passed",
+    "cc0e24d2257cbb0350bb959d05956dd3"
+   ],
+   "4": [
+    "passed",
+    "a56c1fbbceceb8d3869a41e2b7258690"
+   ],
+   "5": [
+    "passed",
+    "8f87d5818534d96fd1720b1873abd8bb"
+   ],
+   "6": [
+    "passed",
+    "10717d8277acb9206f62bf5d3b93aaea"
+   ],
+   "7": [
+    "passed",
+    "b7399b2bcb9df6521e29a15cb03ffc6c"
+   ],
+   "8": [
+    "passed",
+    "a1fd55f3633c80232ae4638d9c539c48"
+   ],
+   "9": [
+    "passed",
+    "a07fee917f26b23c48528ff20b583fb5"
+   ],
+   "10": [
+    "passed",
+    "0359c7743ba476e6aac86cf0f8b4d695"
+   ],
+   "11": [
+    "passed",
+    "5467fd5c2ac851e309a9b193e6f1d4d1"
+   ],
+   "12": [
+    "passed",
+    "3b95d8856ba822f65cace9d24d3823d7"
+   ],
+   "13": [
+    "passed",
+    "e70f2d57efdad54ee0942ee453af2806"
+   ],
+   "14": [
+    "passed",
+    "c1531c1236365da59d5733c7ced5b40e"
+   ],
+   "15": [
+    "passed",
+    "2014d60b027a7793e7fd41a256de176f"
+   ],
+   "16": [
+    "passed",
+    "ee72fbb1ed68e78e7c76d11e77f2a851"
+   ],
+   "17": [
+    "passed",
+    "f692d5dbeb0b6944675bbc90e7ebd332"
+   ],
+   "18": [
+    "passed",
+    "0434bb7de900491eb39aedab13973a3a"
+   ],
+   "19": [
+    "passed",
+    "154d33b720f429f402637328930beb13"
+   ],
+   "20": [
+    "passed",
+    "aa59ba8f7f31c269ac0e5ec0eb1aacf7"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestCalculateAdvertiseAddress": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestOversizedMessagesGossiped": {
+   "1": [
+    "passed",
+    "4fdd461c0179d5cbc1a5f99f0ea9c8af"
+   ],
+   "2": [
+    "passed",
+    "5eaf68b7cc436fcc0a8cadce34523972"
+   ],
+   "3": [
+    "passed",
+    "1baa745db935af147c979f1df289c8aa"
+   ],
+   "4": [
+    "passed",
+    "a0ac64d41f84a97a9068bcefaa8126c2"
+   ],
+   "5": [
+    "passed",
+    "6a89f0d3181c0fdca7b08552a10a8442"
+   ],
+   "6": [
+    "passed",
+    "797acd1b7fe1b9e3c349446409606490"
+   ],
+   "7": [
+    "passed",
+    "9718ab29d1f91e4f90229d43dca20b27"
+   ],
+   "8": [
+    "passed",
+    "6a718a0ef8a260be82385b141ca7488e"
+   ],
+   "9": [
+    "passed",
+    "b04e2882045e503c6a4cc74dbe0fc695"
+   ],
+   "10": [
+    "passed",
+    "88ffcdd155e301bac04f32157473ae22"
+   ],
+   "11": [
+    "passed",
+    "264cc3c181df5cb56194d5ab7e072561"
+   ],
+   "12": [
+    "passed",
+    "a52640284034b6f129210fe3169d50d6"
+   ],
+   "13": [
+    "passed",
+    "97f375d0871f109cffac8830d549876a"
+   ],
+   "14": [
+    "passed",
+    "94402c6c722769cf00989d61e10d551a"
+   ],
+   "15": [
+    "passed",
+    "cbca08eea299d091e67e25fbceace8ea"
+   ],
+   "16": [
+    "passed",
+    "b739e2b739186c93e7b5987530a8ca97"
+   ],
+   "17": [
+    "passed",
+    "6dae01eaca56e6b178e033ee5b479841"
+   ],
+   "18": [
+    "passed",
+    "e027871b5190211df867018682bc60f6"
+   ],
+   "19": [
+    "passed",
+    "8c156620105e6f47f6a7ba32a440f7f6"
+   ],
+   "20": [
+    "passed",
+    "5f0ae87ee48546d1fc637d17ffa29f90"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestNormalMessagesGossiped": {
+   "1": [
+    "passed",
+    "ed4344185ad1f659e348bcb37ead9a96"
+   ],
+   "2": [
+    "passed",
+    "df0c27c2779e4feb712f691e2ea902ed"
+   ],
+   "3": [
+    "passed",
+    "5d12af3759fbf6b80ceee464052a3ede"
+   ],
+   "4": [
+    "passed",
+    "37db5ee385948deaff6a953c45e69930"
+   ],
+   "5": [
+    "passed",
+    "3c9ac8e2e51fa6b7f86e35e46398e6e2"
+   ],
+   "6": [
+    "passed",
+    "bc70ef9ffc5056ce969d52b3e9e0f78b"
+   ],
+   "7": [
+    "passed",
+    "b36f75ba8599b40c7b0a77e4698603c6"
+   ],
+   "8": [
+    "passed",
+    "8c1d9f35050d8a95152723cbe9b782b0"
+   ],
+   "9": [
+    "passed",
+    "24194f614d39e65e6cec990c8a316c53"
+   ],
+   "10": [
+    "passed",
+    "f7e03af87f4a425d8bcc4732d7039eff"
+   ],
+   "11": [
+    "passed",
+    "8b391f5b03ea98eb20ec86b4f3978880"
+   ],
+   "12": [
+    "passed",
+    "d8a4217b1bd32666886a8a7698c852de"
+   ],
+   "13": [
+    "passed",
+    "7e3f134f4d1af77b255b40263fa2d8cd"
+   ],
+   "14": [
+    "passed",
+    "32a0e7eb127a7b420f1477f7b115ced9"
+   ],
+   "15": [
+    "passed",
+    "93d667340ec4f9ec97062196168eb248"
+   ],
+   "16": [
+    "passed",
+    "541079791b964910cc3a6c1800c30ffc"
+   ],
+   "17": [
+    "passed",
+    "64e98e36906aa998d4b7e356b9657d1a"
+   ],
+   "18": [
+    "passed",
+    "24237b5263647d05e048ea28669eeeaf"
+   ],
+   "19": [
+    "passed",
+    "668ea537c78b2032c9c3d767209ac1d7"
+   ],
+   "20": [
+    "passed",
+    "eff14bb74b26cc1a9f0d310f54656d20"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestDialTimeout": {
+   "1": [
+    "passed",
+    "a2371aa13a76a44533c3654a6e996939"
+   ],
+   "2": [
+    "passed",
+    "871d46d2cf6a262c355855aebf8ccb29"
+   ],
+   "3": [
+    "passed",
+    "d05e89d98b5cdf6a0b4a446bf5161551"
+   ],
+   "4": [
+    "passed",
+    "2f3e3afec166a44ca968e2b4bde501b4"
+   ],
+   "5": [
+    "passed",
+    "4b331e902c1a8764006b492ac8d7139c"
+   ],
+   "6": [
+    "passed",
+    "6cda18e358a1e89197355f35d9f31539"
+   ],
+   "7": [
+    "passed",
+    "e272f7e3244f4b89864558a4443d57db"
+   ],
+   "8": [
+    "passed",
+    "ba7bd65b02bbf579b0a0c3c9de6d51d0"
+   ],
+   "9": [
+    "passed",
+    "2e313bbc602dad8c4460456e26b6cf12"
+   ],
+   "10": [
+    "passed",
+    "34d93c45d70675452040830ff83979d5"
+   ],
+   "11": [
+    "passed",
+    "66169cc30b7a610c9f120a7227633400"
+   ],
+   "12": [
+    "passed",
+    "627354b5df90b1cbf744afbe884a713f"
+   ],
+   "13": [
+    "passed",
+    "ec89648120347a26b4c9a32e6fbadd70"
+   ],
+   "14": [
+    "passed",
+    "91ca3bb79a4246047e9a9f9f1141bcdb"
+   ],
+   "15": [
+    "passed",
+    "240e1d3d15fceb95b4f0f49d0089b5b9"
+   ],
+   "16": [
+    "passed",
+    "bf566df5df1d884ef051366ce1a1c1f2"
+   ],
+   "17": [
+    "passed",
+    "4bf3caa8202f020b7a819e61f9937610"
+   ],
+   "18": [
+    "passed",
+    "75475b2a9b9b01c5696831c1a13ed9a7"
+   ],
+   "19": [
+    "passed",
+    "0dc08a8896b9d4a255ecc291e137e51b"
+   ],
+   "20": [
+    "passed",
+    "33b5a5bc65333c5495e701ce68162ca1"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestRead_Nil": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestTLSConn_Close": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/alertmanager/cluster::TestWriteStream": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/prometheus/alertmanager/cluster::TestClusterJoinAndReconnect": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  10,
+  13
+ ],
+ "timing": {
+  "plain": [
+   1.342,
+   1.3439999999999999,
+   1.3439999999999999
+  ],
+  "det": [
+   2.157,
+   2.157,
+   2.156
+  ]
+ },
+ "slowdown": 0.6049107142857145
+}

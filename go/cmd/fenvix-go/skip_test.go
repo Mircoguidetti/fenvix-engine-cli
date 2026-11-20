@@ -1,0 +1,289 @@
+package main
+
+// Integration tests of the skip key (testdata/fixtures/skipkey): after a first
+// run fills the cache, an unchanged second run reuses every passing test
+// that did not touch the network; each change of one input makes the tests
+// that depend on it run again, and only those (plus, by the prefix rule, the
+// tests that ran after them in the same process).
+
+import (
+	"bufio"
+	"encoding/json"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"strings"
+	"testing"
+	"time"
+)
+
+type skipRun struct {
+	t     *testing.T
+	dir   string
+	cache string
+	n     int
+	env   []string
+	extra []string
+}
+
+func (r *skipRun) run(env ...string) map[string]decision {
+	r.t.Helper()
+	r.n++
+	report := filepath.Join(r.dir, "..", "report.jsonl")
+	args := append([]string{"test", "--skip-cache=" + r.cache, "--skip-report=" + report}, r.extra...)
+	args = append(args, "./...")
+	out, code := runFenvix(r.t, r.dir, append(append([]string{}, r.env...), env...), args...)
+	if code != 0 && !strings.Contains(out, "asked to fail") {
+		r.t.Fatalf("run %d: exit %d\n%s", r.n, code, out)
+	}
+	f, err := os.Open(report)
+	if err != nil {
+		r.t.Fatalf("run %d: no report: %v\n%s", r.n, err, out)
+	}
+	defer f.Close()
+	res := map[string]decision{}
+	sc := bufio.NewScanner(f)
+	for sc.Scan() {
+		var d decision
+		if json.Unmarshal(sc.Bytes(), &d) == nil {
+			res[d.Test] = d
+		}
+	}
+	return res
+}
+
+func expectReuse(t *testing.T, step string, got map[string]decision, reused, reran []string) {
+	t.Helper()
+	for _, n := range reused {
+		if d, ok := got[n]; !ok || !d.Reuse {
+			t.Errorf("%s: %s should be reused, got %+v", step, n, d)
+		}
+	}
+	for _, n := range reran {
+		if d, ok := got[n]; !ok || d.Reuse {
+			t.Errorf("%s: %s should run again, got %+v", step, n, d)
+		}
+	}
+}
+
+func newSkipRun(t *testing.T, extra ...string) *skipRun {
+	if _, err := exec.LookPath("strace"); err != nil {
+		t.Log("strace not found: capture falls back to the hooks")
+	}
+	dir := copyFixture(t, "skipkey")
+	// a file outside the module, in the user's home (temp directories are
+	// outputs, never inputs)
+	home, _ := os.UserHomeDir()
+	extDir, err := os.MkdirTemp(home, ".fenvix-skipkey-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { os.RemoveAll(extDir) })
+	ext := filepath.Join(extDir, "external.txt")
+	os.WriteFile(ext, []byte("ext v1"), 0o644)
+	r := &skipRun{t: t, dir: dir, cache: filepath.Join(t.TempDir(), "cache"),
+		env: []string{"SKIPKEY_EXTERNAL=" + ext, "SKIPKEY_ENV=one", "TZ=UTC"}, extra: extra}
+	first := r.run()
+	for n, d := range first {
+		if d.Reuse {
+			t.Fatalf("first run reused %s", n)
+		}
+	}
+	return r
+}
+
+// source order of the fixture tests (the order they run in)
+var fixtureOrder = []string{"TestIndependent", "TestOwnCode", "TestDependency", "TestDataFile", "TestExternalFile",
+	"TestEnv", "TestTimeZone", "TestMissingPath", "TestListing", "TestShortFlag", "TestFailsOnDemand", "TestSubprocess",
+	"TestNetwork"}
+
+var allPassing = fixtureOrder[:len(fixtureOrder)-1]
+
+// reusable: every passing test. TestSubprocess starts cat, a dynamically
+// linked program: its clock follows the virtual one (preloaded library) and
+// everything it reads is keyed through strace. Without a C compiler (no
+// library) or for a static program it would not be reusable (REPORT-2).
+var reusable = allPassing
+
+func TestSkipUnchangedReusesAllButNetwork(t *testing.T) {
+	r := newSkipRun(t)
+	got := r.run()
+	expectReuse(t, "unchanged", got, reusable, []string{"TestNetwork"})
+	if got["TestNetwork"].Why != "network" {
+		t.Errorf("TestNetwork reason %q, want network", got["TestNetwork"].Why)
+	}
+}
+
+func TestSkipKeyInputs(t *testing.T) {
+	r := newSkipRun(t)
+	r.run()
+	write := func(rel, content string) {
+		if err := os.WriteFile(filepath.Join(r.dir, rel), []byte(content), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	// tests before the changed one are reused; the changed one runs again
+	// (and, by the prefix rule, those after it in the same process)
+	before := func(name string) []string {
+		for i, n := range fixtureOrder {
+			if n == name {
+				return fixtureOrder[:i]
+			}
+		}
+		t.Fatalf("unknown test %s", name)
+		return nil
+	}
+	step := func(what, test string, env ...string) {
+		t.Helper()
+		expectReuse(t, what, r.run(env...), before(test), []string{test})
+		expectReuse(t, what+" (again)", r.run(env...), append(before(test), test), nil)
+	}
+
+	write("testdata/data.txt", "data v2") // file read through package os
+	step("data.txt changed", "TestDataFile")
+	ext := strings.TrimPrefix(r.env[0], "SKIPKEY_EXTERNAL=")
+	os.WriteFile(ext, []byte("ext v2"), 0o644) // file outside the module
+	step("external file changed", "TestExternalFile")
+	r.env[1] = "SKIPKEY_ENV=two" // environment variable read by the test
+	step("SKIPKEY_ENV changed", "TestEnv")
+	expectReuse(t, "unrelated variable", r.run("UNRELATED_VARIABLE=x"), before("TestSubprocess"), nil)
+	write("testdata/optional.txt", "now here") // a path probed missing appears
+	step("optional.txt created", "TestMissingPath")
+	write("testdata/dir/b.txt", "b") // a listed directory gets a new entry
+	step("dir listing changed", "TestListing")
+	write("testdata/sub.txt", "sub v2") // file read by a child process (cat): only strace sees it
+	step("sub.txt changed", "TestSubprocess")
+
+	// TZ is read by package time below package os: always in the key
+	r.env[2] = "TZ=Europe/Rome"
+	expectReuse(t, "TZ changed", r.run(), nil, []string{"TestTimeZone", "TestIndependent"})
+
+	// code of the package, code of a dependency
+	write("skipkey.go", "package skipkey\n\n// Answer is used by TestOwnCode.\n//go:noinline\nfunc Answer() int { return 43 }\n")
+	expectReuse(t, "package code changed", r.run(), nil, []string{"TestOwnCode", "TestIndependent"})
+	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 2 }\n")
+	expectReuse(t, "dependency code changed", r.run(), nil, []string{"TestDependency", "TestIndependent"})
+	expectReuse(t, "after code changes", r.run(), reusable, nil)
+	// a change that compiles to the same machine code is reused, as go's own cache does
+	write("lib/lib.go", "package lib\n\n// Value is used by TestDependency.\n//go:noinline\nfunc Value() int { return 1 + 1 }\n")
+	expectReuse(t, "same machine code", r.run(), reusable, nil)
+}
+
+func TestSkipFlagsFailuresAndDet(t *testing.T) {
+	r := newSkipRun(t)
+	r.run()
+	// a test flag that changes behaviour
+	r.extra = []string{"-short"}
+	expectReuse(t, "-short", r.run(), nil, []string{"TestShortFlag", "TestIndependent"})
+	expectReuse(t, "-short again", r.run(), reusable, nil)
+	// a failure is never reused
+	got := r.run("SKIPKEY_FAIL=1")
+	if got["TestFailsOnDemand"].Reuse {
+		t.Fatalf("SKIPKEY_FAIL=1: the test was reused: %+v", got["TestFailsOnDemand"])
+	}
+	got = r.run()
+	if d := got["TestFailsOnDemand"]; d.Reuse || d.Why != "last-failed" {
+		t.Errorf("after a failure: %+v, want a rerun with reason last-failed", d)
+	}
+	// --det and its seed are part of the key
+	r.extra = []string{"-short", "--det"}
+	expectReuse(t, "--det on", r.run(), nil, []string{"TestIndependent"})
+	expectReuse(t, "--det again", r.run(), []string{"TestIndependent", "TestEnv"}, nil)
+	r.extra = []string{"-short", "--det", "--det-seed=5"}
+	expectReuse(t, "--det-seed changed", r.run(), nil, []string{"TestIndependent"})
+}
+
+func TestSkipVerifyRunsEverything(t *testing.T) {
+	r := newSkipRun(t, "--skip-verify")
+	got := r.run()
+	for _, n := range reusable {
+		d := got[n]
+		if !d.Reuse || d.Fresh != "passed" || d.Cached != "passed" {
+			t.Errorf("verify mode: %s %+v: want a reusable test that also ran", n, d)
+		}
+	}
+}
+
+// Go's own test cache, for comparison: it does not see TZ (read by package
+// time below package os) nor a file read by a child process.
+func TestGoTestCacheMissesWhatTheKeySees(t *testing.T) {
+	dir := copyFixture(t, "skipkey")
+	cache := t.TempDir()
+	goTest := func(env ...string) string {
+		cmd := exec.Command("go", "test", "-run", "^(TestTimeZone|TestSubprocess)$", "-v", ".")
+		cmd.Dir = dir
+		cmd.Env = append(append(os.Environ(), "GOCACHE="+cache, "GOFLAGS="), env...)
+		out, _ := cmd.CombinedOutput()
+		return string(out)
+	}
+	goTest("TZ=UTC")
+	os.WriteFile(filepath.Join(dir, "testdata", "sub.txt"), []byte("sub v9"), 0o644)
+	out := goTest("TZ=Asia/Tokyo")
+	if !strings.Contains(out, "(cached)") {
+		t.Logf("go test reran after TZ and a child-read file changed (Go version behaviour changed?):\n%s", out)
+	} else {
+		t.Logf("go test reused its cached result although TZ and a file read by a child process changed (as documented)")
+	}
+}
+
+// The F6 trade-off, labelled (REPORT-2): skip mode's clock is virtual and
+// starts at today 00:00 UTC, so a fixture that expires later today still
+// passes under fenvix (reused, and fresh) until the next UTC day. The nightly
+// real-clock check (--skip-real-clock) runs every test on the real clock,
+// leaves the cache alone and names the test.
+func TestSkipRealClockReportsExpiry(t *testing.T) {
+	r := newR025(t, "clock")
+	expiry := filepath.Join(r.dir, "clock", "testdata", "notafter.txt")
+	at := time.Now().Add(6 * time.Second)
+	if at.UTC().Day() != time.Now().UTC().Day() {
+		t.Skip("too close to midnight UTC")
+	}
+	os.WriteFile(expiry, []byte(strconv.FormatInt(at.Unix(), 10)+"\n"), 0o644)
+	r.record([]string{"TestFixtureNotExpired"})
+	time.Sleep(time.Until(at) + 1500*time.Millisecond)
+	d := r.run()["TestFixtureNotExpired"]
+	t.Logf("virtual day after the real expiry: reuse=%v fresh=%s (the trade-off: hidden until the next UTC day)", d.Reuse, d.Fresh)
+	if d.Reuse && d.Fresh != "passed" {
+		t.Fatalf("wrong reuse: %+v", d)
+	}
+	out, code := runFenvix(t, r.dir, r.env, "test", "--skip-cache="+r.cache, "--skip-real-clock", "./clock")
+	if code == 0 || !strings.Contains(out, "fail on the real clock") || !strings.Contains(out, "TestFixtureNotExpired") {
+		t.Fatalf("real-clock check did not report the expired fixture (exit %d):\n%s", code, out)
+	}
+	if d2 := r.run()["TestFixtureNotExpired"]; !d2.Reuse {
+		t.Errorf("the real-clock check changed the cache: %+v", d2)
+	}
+}
+
+// Virtual /proc/1/stat (coordinator request after R-025; telegraf reads it
+// through a dependency's init): two runs see the same content, the reader
+// still parses it, the tests are reused, and a test that depends on a
+// changing field (utime) sees the virtual constant in the recorded and in
+// every later run, so its reuse agrees with the fresh run.
+func TestSkipVirtualProcStat(t *testing.T) {
+	if _, err := os.ReadFile("/proc/1/stat"); err != nil {
+		t.Skip(err)
+	}
+	r := newR025(t, "procstat")
+	r.record([]string{"TestInitStat", "TestRealCPUTime"})
+	r.mustReuse("TestInitStat")
+	r.mustReuse("TestRealCPUTime")
+	var stats []string
+	for i := 0; i < 2; i++ {
+		out, _ := runFenvix(t, r.dir, r.env, "test", "--skip-cache="+t.TempDir(), "-v", "-run", "TestInitStat", "./procstat")
+		for _, l := range strings.Split(out, "\n") {
+			if i := strings.Index(l, "stat: "); i >= 0 {
+				stats = append(stats, l[i:])
+			}
+		}
+	}
+	if len(stats) != 2 || stats[0] != stats[1] {
+		t.Fatalf("virtual /proc/1/stat differs between runs: %q", stats)
+	}
+	// plain go test sees the real file (the virtual copy is fenvix's only)
+	cmd := exec.Command("go", "test", "-count=1", "-run", "TestRealCPUTime", "./procstat")
+	cmd.Dir = r.dir
+	out, _ := cmd.CombinedOutput()
+	t.Logf("plain go test (real /proc/1/stat):\n%s", out)
+}

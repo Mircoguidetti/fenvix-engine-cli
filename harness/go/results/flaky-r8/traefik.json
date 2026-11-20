@@ -1,0 +1,927 @@
+{
+ "spec": {
+  "name": "traefik",
+  "repo": "traefik/traefik",
+  "sha": "5e2b393ceb77528263ad19f914c4979e1188e8a6",
+  "fix_commit": "f3ecfa82bca823397059b99bc55c351e43c595b4",
+  "fix_date": "2025-10-23T14:30:05.000+02:00",
+  "title": "Mitigate TestShutdown flakyness",
+  "tests": [
+   "TestShutdown"
+  ],
+  "source": "github commit search 'repo:traefik/traefik flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestShutdown": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./pkg/udp"
+ ],
+ "imports": [
+  "github.com/traefik/traefik/v3/pkg/udp"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 12.8,
+ "build_det_s": 15.8,
+ "baseline": {
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithoutRead": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenNotBlocking": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithRead": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestConsecutiveWrites": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP_MaxDataSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenWithZeroTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 513.2,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 489,
+  "outcome": 8,
+  "entropy": 1
+ },
+ "det0_top_tests_by_events": [
+  [
+   305,
+   "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithRead"
+  ],
+  [
+   69,
+   "github.com/traefik/traefik/v3/pkg/udp::TestShutdown"
+  ],
+  [
+   49,
+   "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithoutRead"
+  ],
+  [
+   30,
+   "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP_MaxDataSize"
+  ],
+  [
+   18,
+   "github.com/traefik/traefik/v3/pkg/udp::TestListenNotBlocking"
+  ],
+  [
+   16,
+   "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP"
+  ],
+  [
+   10,
+   "github.com/traefik/traefik/v3/pkg/udp::TestConsecutiveWrites"
+  ],
+  [
+   1,
+   "github.com/traefik/traefik/v3/pkg/udp::TestListenWithZeroTimeout"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithRead",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 86,
+    "window": null,
+    "event_a": {
+     "t": 42,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "900019000"
+    },
+    "event_b": {
+     "t": 42,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "900017000"
+    },
+    "reason": "thread",
+    "description": "event #86: time.tick @ timer returned different values: \"900019000\" vs \"900017000\""
+   }
+  },
+  {
+   "nodeid": "github.com/traefik/traefik/v3/pkg/udp::TestShutdown",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 28,
+    "window": null,
+    "event_a": {
+     "t": 9,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "1000008000"
+    },
+    "event_b": {
+     "t": 9,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "1000003000"
+    },
+    "reason": "thread",
+    "description": "event #28: time.tick @ timer returned different values: \"1000008000\" vs \"1000003000\""
+   }
+  },
+  {
+   "nodeid": "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 1,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "479955000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "479957000"
+    },
+    "reason": "thread",
+    "description": "event #1: time.tick @ timer returned different values: \"479955000\" vs \"479957000\""
+   }
+  },
+  {
+   "nodeid": "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP_MaxDataSize",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 6,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "499982000"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "time",
+     "o": "time.tick",
+     "at": "timer",
+     "v": "499980000"
+    },
+    "reason": "thread",
+    "description": "event #6: time.tick @ timer returned different values: \"499982000\" vs \"499980000\""
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 8,
+  "stable": 4,
+  "diverged": 4,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 4
+  }
+ },
+ "det0": {
+  "github.com/traefik/traefik/v3/pkg/udp::TestConsecutiveWrites": [
+   [
+    "passed",
+    "2768d6e180adbc6aeed192e988c9d6bb"
+   ],
+   [
+    "passed",
+    "2768d6e180adbc6aeed192e988c9d6bb"
+   ],
+   [
+    "passed",
+    "2768d6e180adbc6aeed192e988c9d6bb"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenWithZeroTimeout": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestShutdown": [
+   [
+    "passed",
+    "64c714a781ccf4dd1f2cb9c73d740663"
+   ],
+   [
+    "passed",
+    "7e330c6e9a88b8735016ca5d13904136"
+   ],
+   [
+    "passed",
+    "a7ab2db4ed62527d7a453808deca37f2"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP_MaxDataSize": [
+   [
+    "passed",
+    "6d28e6805b3f47cf569e83a6d18f69ee"
+   ],
+   [
+    "passed",
+    "d3867ca98c0f8afc57acd4d6a77f98d3"
+   ],
+   [
+    "passed",
+    "d60bc882588ace93c1ddfba767b70593"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithRead": [
+   [
+    "passed",
+    "64b2e1c819f5119f26733b38ac42dfe4"
+   ],
+   [
+    "passed",
+    "a9d23ff16b851036db605db56a5a3d22"
+   ],
+   [
+    "passed",
+    "4dee1d7fabbf74f80ecb3d6acf9ae1f9"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP": [
+   [
+    "passed",
+    "da1b69538d03329084a445a59cada39a"
+   ],
+   [
+    "passed",
+    "da1b69538d03329084a445a59cada39a"
+   ],
+   [
+    "passed",
+    "c3853aa343d5bc8b1fd3805b938aa459"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenNotBlocking": [
+   [
+    "passed",
+    "e404e6e7a1d4c51672c503b322db0dae"
+   ],
+   [
+    "passed",
+    "e404e6e7a1d4c51672c503b322db0dae"
+   ],
+   [
+    "passed",
+    "e404e6e7a1d4c51672c503b322db0dae"
+   ]
+  ],
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithoutRead": [
+   [
+    "passed",
+    "fd66fd9363a9d50e828a6b1b7ba35439"
+   ],
+   [
+    "passed",
+    "fd66fd9363a9d50e828a6b1b7ba35439"
+   ],
+   [
+    "passed",
+    "fd66fd9363a9d50e828a6b1b7ba35439"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenWithZeroTimeout": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP_MaxDataSize": {
+   "1": [
+    "passed",
+    "a9b4e0649c801dcaa0bbf0a165583187"
+   ],
+   "2": [
+    "passed",
+    "97a510ed0a26fbfaadde9033993c77e4"
+   ],
+   "3": [
+    "passed",
+    "4feb6dac6c6fcd3c787ad806018b4393"
+   ],
+   "4": [
+    "passed",
+    "5cbd4666f59c91550e5744fdb95ddd21"
+   ],
+   "5": [
+    "passed",
+    "bc414a7f0234b03c3c258dc813f29a4d"
+   ],
+   "6": [
+    "passed",
+    "aeb35d229d975c092fcfea27492c419f"
+   ],
+   "8": [
+    "passed",
+    "296ea9dd9a04bb94a9162f1698c0be3b"
+   ],
+   "10": [
+    "passed",
+    "d6df644fd8e98f02b1e558b73a9fcd16"
+   ],
+   "13": [
+    "passed",
+    "9666cc554f28d665eb206e9d2e97090b"
+   ],
+   "14": [
+    "passed",
+    "c3d46d9fc9000e1c7ee5609c600723bb"
+   ],
+   "15": [
+    "passed",
+    "8b2bda20a72ee37a0054dacc5728a9df"
+   ],
+   "16": [
+    "passed",
+    "a7f997dd5e82ce792a89676439dc1581"
+   ],
+   "17": [
+    "passed",
+    "7ef10c6ed46863568ef03b1a8834bb8d"
+   ],
+   "18": [
+    "passed",
+    "c32c8e9cdbe74db8ac4fe6663aa9258e"
+   ],
+   "19": [
+    "passed",
+    "8740fc89480c8a8df7f1152196a0aa5a"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestConsecutiveWrites": {
+   "1": [
+    "passed",
+    "0ee73c0219dfd9b59bd9e8e55dce8c40"
+   ],
+   "3": [
+    "passed",
+    "d502b8672e1bc6570f47e1db91080996"
+   ],
+   "4": [
+    "passed",
+    "473eee2cad5dd2723a112c9dabce3bf8"
+   ],
+   "5": [
+    "passed",
+    "4f035b9ea05c297a85ce6d4ba09aac89"
+   ],
+   "6": [
+    "passed",
+    "1e2cfce4328c4ba97626b2af87b35eef"
+   ],
+   "8": [
+    "passed",
+    "122238b6626bb3c7d53295c5fc788b0a"
+   ],
+   "10": [
+    "passed",
+    "ecfe3b80d12464a0a04b7a3de3d3ceb1"
+   ],
+   "12": [
+    "passed",
+    "187ebc4d86fa2c730f8d59dc9a967617"
+   ],
+   "14": [
+    "passed",
+    "d929aec4b10d7bcf8de71e63c2c145c4"
+   ],
+   "15": [
+    "passed",
+    "857b635efa2fd07d6e0a2a011e5506ae"
+   ],
+   "18": [
+    "passed",
+    "b7dde38ea88b1b1e0a242f92fadce223"
+   ],
+   "19": [
+    "passed",
+    "27177c9aaad6d86ee0d46fce70fde84e"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestShutdown": {
+   "1": [
+    "passed",
+    "83f49c85c4f1fc8c97b39125a2e3f07e"
+   ],
+   "3": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "4": [
+    "passed",
+    "9d57ae2aafcd4e7437202b39a4cf7175"
+   ],
+   "5": [
+    "passed",
+    "e93a3eb05b922fd6f3c38675b2547f85"
+   ],
+   "6": [
+    "passed",
+    "f5640c74413434ace837ccfdf3280c9a"
+   ],
+   "8": [
+    "passed",
+    "095bc52c7ad45a57e77258b66ef01713"
+   ],
+   "10": [
+    "passed",
+    "e5ad9ac4687b8afe3fa9300d534b8af8"
+   ],
+   "11": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "12": [
+    "passed",
+    "6677c6d1de6a868345ecbe019e96b2b7"
+   ],
+   "13": [
+    "passed",
+    "78472763f428694b627be002386832f7"
+   ],
+   "15": [
+    "passed",
+    "44b78d39ae2c474b4f008ecb745e3588"
+   ],
+   "18": [
+    "passed",
+    "27245c93c0893c39dae16f02f8c09d24"
+   ],
+   "19": [
+    "passed",
+    "fa6a94ed6f30d8d4978379d40bff55a7"
+   ],
+   "20": [
+    "passed",
+    "9e12c1e17178bcc57e9d45062a60caaf"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithoutRead": {
+   "1": [
+    "passed",
+    "46ea2d3b23608fd1db3153a77d6209db"
+   ],
+   "3": [
+    "passed",
+    "1eb26d2da1d7b1521cef934b37ed0f0a"
+   ],
+   "4": [
+    "passed",
+    "ee7e53335c8a5f5df18c9f0bbc6d9089"
+   ],
+   "5": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "6": [
+    "passed",
+    "7ba563ece0c5fd277b5cd803c2ef63a8"
+   ],
+   "7": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "8": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "9": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "10": [
+    "passed",
+    "b05114d453901365bd2038cfd0bc347f"
+   ],
+   "11": [
+    "passed",
+    "72130855e1c8bf7c4776e099bf46f7c8"
+   ],
+   "12": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "13": [
+    "passed",
+    "0857a3c56420e3e65c7f7556a778d67d"
+   ],
+   "14": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "15": [
+    "passed",
+    "ad61cf42334f1e972d0f7ae2c2095e35"
+   ],
+   "16": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "18": [
+    "passed",
+    "74616539ab050cabe43299a1e69fcaf1"
+   ],
+   "19": [
+    "passed",
+    "bc612a0777928d24636f77e2bf64d23e"
+   ],
+   "20": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestProxy_ServeUDP": {
+   "1": [
+    "passed",
+    "fe95487329473a4a6ecd2deef9199c09"
+   ],
+   "2": [
+    "passed",
+    "87175bd288ef171adb7cdf3248841061"
+   ],
+   "3": [
+    "passed",
+    "7d0b5ed2356de5ccd444ff3a451e37e2"
+   ],
+   "4": [
+    "passed",
+    "5ddc68d07326f5fd0535cab2f181f9ae"
+   ],
+   "5": [
+    "passed",
+    "1fd87acf16d8539045baed9ce40b6681"
+   ],
+   "6": [
+    "passed",
+    "16dbb3a1a63660b218a91d7c86c21569"
+   ],
+   "7": [
+    "passed",
+    "e4a4f937c6984962c8e5ae869c9ba563"
+   ],
+   "8": [
+    "passed",
+    "f864a3cdb763a3e6de684e07f8a5cc27"
+   ],
+   "9": [
+    "passed",
+    "bacccc4cfd2d5fc3688eaecbbd5c0ed3"
+   ],
+   "10": [
+    "passed",
+    "88450daba0d799aec100cf318b3155ca"
+   ],
+   "11": [
+    "passed",
+    "7c7e8e3f2eb40d226927f836d7621ffb"
+   ],
+   "12": [
+    "passed",
+    "d5fde58eabb4e895e52eda4575d5d73a"
+   ],
+   "13": [
+    "passed",
+    "853bf072de7620da7de6d445be23b05d"
+   ],
+   "14": [
+    "passed",
+    "1e7dfd4efb180bf1666fe0233c236761"
+   ],
+   "15": [
+    "passed",
+    "566a02581730c596fd42441c61a2a9ef"
+   ],
+   "16": [
+    "passed",
+    "1be023f1438fa7214d0e2c883bde3dd7"
+   ],
+   "17": [
+    "passed",
+    "592a923201bc55a060698cbf8d5e56aa"
+   ],
+   "18": [
+    "passed",
+    "51b543018ceedae4d0e4d9f99086a493"
+   ],
+   "19": [
+    "passed",
+    "a6a6884af9f2922b8d424780c429bba1"
+   ],
+   "20": [
+    "passed",
+    "add3a28bcea0e71df69a07140634759c"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestTimeoutWithRead": {
+   "1": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "2": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "3": [
+    "passed",
+    "4287c6ddd8ca139534bea22ba528650a"
+   ],
+   "4": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "6": [
+    "passed",
+    "52f5fdfe7ba5fa01cef9c0b7b055569f"
+   ],
+   "8": [
+    "passed",
+    "00f76df729a717e680aef51a80d74dab"
+   ],
+   "10": [
+    "passed",
+    "9f8a6766c807e8df65830ddf7c66bf09"
+   ],
+   "11": [
+    "passed",
+    "a72ac43a67abc3fd26be66c001eec774"
+   ],
+   "12": [
+    "passed",
+    "74b83be710baf3dc94731249b9f6ae7c"
+   ],
+   "13": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "15": [
+    "passed",
+    "ba662c79acf3ac0d63ada3442a3c2f19"
+   ],
+   "17": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "18": [
+    "passed",
+    "900553145bcc2501628b9c74d396718f"
+   ],
+   "19": [
+    "passed",
+    "75bda2c1899ec5cb6de6b377fd357586"
+   ],
+   "20": [
+    "passed",
+    "839d4816af4629d2f1ddd1f2673c7072"
+   ]
+  },
+  "github.com/traefik/traefik/v3/pkg/udp::TestListenNotBlocking": {
+   "2": [
+    "passed",
+    "79ef9d2b02cc3a023b60b52b9bc32ba4"
+   ],
+   "3": [
+    "passed",
+    "40e582e45e3d225b740d4bdb5937a364"
+   ],
+   "4": [
+    "passed",
+    "22b04d1c2a461353db55106e57f65473"
+   ],
+   "5": [
+    "passed",
+    "135f5f10025cd4a5af7846464aca8765"
+   ],
+   "6": [
+    "passed",
+    "3fa7b122110bfbf5af7378918895541b"
+   ],
+   "10": [
+    "passed",
+    "0724b319f2dfd50e8e6846680dbd520c"
+   ],
+   "11": [
+    "passed",
+    "5c619c70c16ea53b1c3f0aeaf1a666ce"
+   ],
+   "14": [
+    "passed",
+    "b6898533e6f76097b15880745d6028e3"
+   ],
+   "15": [
+    "passed",
+    "1bb571c1dde85ae8530f0f0cda848b99"
+   ],
+   "17": [
+    "passed",
+    "01788711ce5da8fad63f9fd8e47ac5f6"
+   ],
+   "18": [
+    "passed",
+    "be654de0d260e7bd2ba8978fabc1c5ac"
+   ],
+   "19": [
+    "passed",
+    "4fd2e99d1edbfb4f8bd763c3b615d469"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/traefik/traefik/v3/pkg/udp::TestShutdown": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  4,
+  8
+ ],
+ "timing_keep_parallel": [
+  13.55,
+  13.55,
+  13.551
+ ],
+ "timing": {
+  "plain": [
+   13.549,
+   13.548,
+   13.549
+  ],
+  "det": [
+   13.55,
+   13.549,
+   13.549
+  ]
+ },
+ "slowdown": 0.0
+}

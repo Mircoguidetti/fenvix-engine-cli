@@ -1,0 +1,1786 @@
+{
+ "spec": {
+  "name": "opentelemetry-go",
+  "repo": "open-telemetry/opentelemetry-go",
+  "sha": "a54721cc8052fcd497d6f637a463d1aba787012c",
+  "fix_commit": "61765e78a620994b5922e34e776e029da1a2b983",
+  "fix_date": "2025-12-07T07:16:23.000-08:00",
+  "title": "Fix flaky `TestClientInstrumentation` (#7677)",
+  "tests": [
+   "TestClientInstrumentation"
+  ],
+  "source": "github commit search 'repo:open-telemetry/opentelemetry-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestClientInstrumentation": "function"
+ },
+ "module_dir": "exporters/otlp/otlplog/otlploghttp",
+ "packages": [
+  "."
+ ],
+ "imports": [
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 29.4,
+ "build_det_s": 38.7,
+ "baseline": {
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestVersionSemver": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExport": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConvHeaders": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClient": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewWithInvalidEndpoint": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientWithHTTPCollectorRespondingPlainText": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConfig": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestWithProxy": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterForceFlush": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExportErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterConcurrentSafe": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewConfig": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 143.5,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 792,
+  "net": 44,
+  "outcome": 14,
+  "random": 45,
+  "entropy": 13
+ },
+ "det0_top_tests_by_events": [
+  [
+   524,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConfig"
+  ],
+  [
+   166,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterConcurrentSafe"
+  ],
+  [
+   113,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClient"
+  ],
+  [
+   63,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation"
+  ],
+  [
+   31,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientWithHTTPCollectorRespondingPlainText"
+  ],
+  [
+   2,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestVersionSemver"
+  ],
+  [
+   2,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewConfig"
+  ],
+  [
+   1,
+   "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestWithProxy"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConfig",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 32,
+    "window": null,
+    "event_a": {
+     "t": 5,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*conn).setState",
+     "v": "26000"
+    },
+    "event_b": {
+     "t": 7,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std",
+     "v": "26000"
+    },
+    "reason": "thread",
+    "description": "event #32: [time] time.Now @ std:net/http.(*conn).setState = 26000 (thread 5)  <>  [time] time.Now @ std = 26000 (thread 7)"
+   }
+  },
+  {
+   "nodeid": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 35,
+    "window": null,
+    "event_a": {
+     "t": 5,
+     "s": "time",
+     "o": "time.AfterFunc",
+     "at": "std:net/http.(*Transport).tryPutIdleConn",
+     "v": "90000000000"
+    },
+    "event_b": {
+     "t": 4,
+     "s": "time",
+     "o": "time.Until",
+     "at": "std:net/http.(*conn).serve",
+     "v": "29000"
+    },
+    "reason": "thread",
+    "description": "event #35: [time] time.AfterFunc @ std:net/http.(*Transport).tryPutIdleConn = 90000000000 (thread 5)  <>  [time] time.Until @ std:net/http.(*conn).serve = 29000 (thread 4)"
+   }
+  },
+  {
+   "nodeid": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewConfig",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "std:net/http.(*conn).setState",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Now @ std:net/http.(*conn).setState = 1000 (thread 1)  <>  [outcome] outcome @  = passed"
+   }
+  },
+  {
+   "nodeid": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterConcurrentSafe",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.Now",
+     "at": "exporters/otlp/otlplog/otlploghttp/internal/retry/retry.go:84",
+     "v": "4000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.AfterFunc",
+     "at": "exporters/otlp/otlplog/otlploghttp/client.go:168",
+     "v": "9999999000"
+    },
+    "reason": "thread",
+    "description": "event #3: [time] time.Now @ exporters/otlp/otlplog/otlploghttp/internal/retry/retry.go:84 = 4000 (thread 2)  <>  [time] time.AfterFunc @ exporters/otlp/otlplog/otlploghttp/client.go:168 = 9999999000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestVersionSemver",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 0,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Until",
+     "at": "std",
+     "v": "1000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "reason": "thread",
+    "description": "event #0: [time] time.Until @ std = 1000 (thread 1)  <>  [outcome] outcome @  = passed"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 14,
+  "stable": 9,
+  "diverged": 5,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 5
+  }
+ },
+ "det0": {
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConfig": [
+   [
+    "passed",
+    "dbab192d069c7cd1aa8d3c95e9ae3df0"
+   ],
+   [
+    "passed",
+    "f73c3499852c27b1fb644adac419e04b"
+   ],
+   [
+    "passed",
+    "4f372f5642025bed78dfe559bd9f2b50"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExportErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExport": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewWithInvalidEndpoint": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterConcurrentSafe": [
+   [
+    "passed",
+    "2eb6f6dbc125e086e8c166d9cdbcc21a"
+   ],
+   [
+    "passed",
+    "b5a4f9747cb414fd2776d3510ba6015b"
+   ],
+   [
+    "passed",
+    "0888aa6119a9ab9e7ba69aa46ba2424e"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterForceFlush": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation": [
+   [
+    "passed",
+    "394f9cbe1c05f1502cb4b05d6c431761"
+   ],
+   [
+    "passed",
+    "3c4fb8f3db6c08e23b9b923eab4ac79f"
+   ],
+   [
+    "passed",
+    "3c4fb8f3db6c08e23b9b923eab4ac79f"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewConfig": [
+   [
+    "passed",
+    "4715f07774ba5d0681fa7557b79fa273"
+   ],
+   [
+    "passed",
+    "4715f07774ba5d0681fa7557b79fa273"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConvHeaders": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterShutdown": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestWithProxy": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestVersionSemver": [
+   [
+    "passed",
+    "1f262aaba1eae3b769e2a46f1e411a61"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientWithHTTPCollectorRespondingPlainText": [
+   [
+    "passed",
+    "664713830c1cad85ca4164d79007913e"
+   ],
+   [
+    "passed",
+    "664713830c1cad85ca4164d79007913e"
+   ],
+   [
+    "passed",
+    "664713830c1cad85ca4164d79007913e"
+   ]
+  ],
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClient": [
+   [
+    "passed",
+    "1e815b27e7671403b51f68f9226e327e"
+   ],
+   [
+    "passed",
+    "1e815b27e7671403b51f68f9226e327e"
+   ],
+   [
+    "passed",
+    "1e815b27e7671403b51f68f9226e327e"
+   ]
+  ]
+ },
+ "explore": {
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterConcurrentSafe": {
+   "1": [
+    "passed",
+    "445e32dc9b0367ff99d79fa301889e0a"
+   ],
+   "2": [
+    "passed",
+    "cb19fbf803626dcd53ed73909e3001e6"
+   ],
+   "3": [
+    "passed",
+    "d7b72d17cce4cf80e209f36683dd6323"
+   ],
+   "4": [
+    "passed",
+    "345e3f11ab1419a2c1f176dbcbfebd91"
+   ],
+   "5": [
+    "passed",
+    "5600024e013fb73564b3e7927b102fa4"
+   ],
+   "6": [
+    "passed",
+    "f759194ccae2daaf599e65393c02d4fd"
+   ],
+   "7": [
+    "passed",
+    "c57344da66303ab65b2f4ea45de5a228"
+   ],
+   "8": [
+    "passed",
+    "a296131a62bf5233dfa2e8165048631a"
+   ],
+   "9": [
+    "passed",
+    "7e66ad9452d8c7d3ea007ede25b8afe1"
+   ],
+   "10": [
+    "passed",
+    "bb0d561caef5e63818a6338076f8a72b"
+   ],
+   "11": [
+    "passed",
+    "13e3e6af4350140028ae10339dbc4c14"
+   ],
+   "12": [
+    "passed",
+    "e85e942a46cb17ca0d61309f94cb67fa"
+   ],
+   "13": [
+    "passed",
+    "2a98b3bd56f8b587a13801add48a9d30"
+   ],
+   "14": [
+    "passed",
+    "6b3fa0254917116aada36a58aa61fd1e"
+   ],
+   "15": [
+    "passed",
+    "5175673882f3957944799c0f863e0113"
+   ],
+   "16": [
+    "passed",
+    "b4518168539fbf5942699f910e7e0ccb"
+   ],
+   "17": [
+    "passed",
+    "1954a471dcf17c7684978ee3d29d7d0f"
+   ],
+   "18": [
+    "passed",
+    "1b1a3cb859d92c59e22b53cd0f16d55e"
+   ],
+   "19": [
+    "passed",
+    "68fddf66b36160bad5e3448dd9334d05"
+   ],
+   "20": [
+    "passed",
+    "01f53076a030503b06c476479b6bd202"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClient": {
+   "1": [
+    "passed",
+    "aed42cd885d1eedeb39ea1afbf4853fb"
+   ],
+   "2": [
+    "passed",
+    "85afd049a77c5876d2bdb53ed5ab1baa"
+   ],
+   "3": [
+    "passed",
+    "6b9fb85ba199b96339987e5b94d48423"
+   ],
+   "4": [
+    "passed",
+    "e9fb9dc19483166016ff7926b2533770"
+   ],
+   "5": [
+    "passed",
+    "6e1d33256262df746ee227ef5e731255"
+   ],
+   "6": [
+    "passed",
+    "db812cb92d5a5fb33be47f563be2dc1e"
+   ],
+   "7": [
+    "passed",
+    "55d6e693eedce69f5cdcb9abd1492141"
+   ],
+   "8": [
+    "passed",
+    "93d1b8da4abdfec7ca54fb8801713ffe"
+   ],
+   "9": [
+    "passed",
+    "7178d1d081b2b7b2ad047a7e30fd0cea"
+   ],
+   "10": [
+    "passed",
+    "b7b0705adb3c73984e4e5d972c21c4da"
+   ],
+   "11": [
+    "passed",
+    "67b4e8f4471b340e0f2432a3d628a856"
+   ],
+   "12": [
+    "passed",
+    "57fee5c405c27f84f5f63f27711786e5"
+   ],
+   "13": [
+    "passed",
+    "32ae798c8685446576940fecd669203e"
+   ],
+   "14": [
+    "passed",
+    "d417e1766cafa2eb128a763f2b899ce0"
+   ],
+   "15": [
+    "passed",
+    "bc5981b466d105dd7528f154ba73bbc2"
+   ],
+   "16": [
+    "passed",
+    "11d81f9a60fa2563b8631a66182f8631"
+   ],
+   "17": [
+    "passed",
+    "3e8306ffd79a520ca45eda62177969b1"
+   ],
+   "18": [
+    "passed",
+    "404971642223b4b61df9c42ef42d8898"
+   ],
+   "19": [
+    "passed",
+    "ee482f127d14f4ee93c3fbf4b9bd45d8"
+   ],
+   "20": [
+    "passed",
+    "bc0da48339a97403104431724355c859"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConvHeaders": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "c3580363d905f3fe6b98b3a5fa15694f"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "a155fcf8306a7921e1b077e65648f8db"
+   ],
+   "7": [
+    "passed",
+    "b483b55bcddcda45c327b273b9ce9dca"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "48737504f90257fcac56087dfa72b323"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "de8c66796a5aefaecd9e157e5cadea72"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExport": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "98f23ec85f27075fdb7363fea04e981c"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterExportErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewConfig": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "e67f0fceb72b872892078abb3b392078"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientWithHTTPCollectorRespondingPlainText": {
+   "1": [
+    "passed",
+    "2242e1ab554344f065f58727db6edae6"
+   ],
+   "2": [
+    "passed",
+    "0d3088acc9908c83543742a84b5ccad9"
+   ],
+   "3": [
+    "passed",
+    "97d7a842676460f6025c8f03e783ef0b"
+   ],
+   "4": [
+    "passed",
+    "1e1a450fed9cee4cf7fa23d16cb7d23d"
+   ],
+   "5": [
+    "passed",
+    "0bb1fc0f8de036ab9597b7e803926cb8"
+   ],
+   "6": [
+    "passed",
+    "28d582e643cba02db3f28ef069dad072"
+   ],
+   "7": [
+    "passed",
+    "5ea42bf41832db3c2c3f5ca3c7ebf59e"
+   ],
+   "8": [
+    "passed",
+    "36d45764e104f5d04a60b5e4c27df115"
+   ],
+   "9": [
+    "passed",
+    "35c3d0f42c7ac45149601caaa917d0de"
+   ],
+   "10": [
+    "passed",
+    "00b21c5a382574dea12eefb9b5ca2dcd"
+   ],
+   "11": [
+    "passed",
+    "9417b170ddf9a2efc97d11b4c23f3a27"
+   ],
+   "12": [
+    "passed",
+    "06e1d692165344cf2fe531336a2ca26d"
+   ],
+   "13": [
+    "passed",
+    "62467d5d7d6b911bc1bd05a4b689d344"
+   ],
+   "14": [
+    "passed",
+    "376bc96823ae324cfeb255dd25abe23c"
+   ],
+   "15": [
+    "passed",
+    "39d21ccd3ec0ce790d0c7859078ecc1b"
+   ],
+   "16": [
+    "passed",
+    "b2d28690401696ae602343bbccc7c7ce"
+   ],
+   "17": [
+    "passed",
+    "c13b5d6a624a85e68f8f7ddc39c58c64"
+   ],
+   "18": [
+    "passed",
+    "843a1a31d36ea29436e78cfd20e7c599"
+   ],
+   "19": [
+    "passed",
+    "ecd95c5ef9e0fed11af83204fd981b09"
+   ],
+   "20": [
+    "passed",
+    "5bf5a8efc4bc86ca7b6e4bbb9596e02e"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestConfig": {
+   "1": [
+    "passed",
+    "7908e63e92a2c099a0c3970fd1bec11c"
+   ],
+   "2": [
+    "passed",
+    "ffe319516398212126b5ac98effed10f"
+   ],
+   "3": [
+    "passed",
+    "fae5101913511a05d5bdd1e74e5552c7"
+   ],
+   "4": [
+    "passed",
+    "945b0b0b02b510a2645b71e49a66cef9"
+   ],
+   "5": [
+    "passed",
+    "1eb084d7045f258046df1c78078557f0"
+   ],
+   "6": [
+    "passed",
+    "687862243dec56fc332fdf5a876d392f"
+   ],
+   "7": [
+    "passed",
+    "fd65dd453d1f6ba77187b810ff4152df"
+   ],
+   "8": [
+    "passed",
+    "8b99006bfb603cedae987a9e84b3eed3"
+   ],
+   "9": [
+    "passed",
+    "27fc3bbde2e15d2399127ea5fb7b7b0c"
+   ],
+   "10": [
+    "passed",
+    "1c59f0558c7a90e3d7d1bb82231f0df5"
+   ],
+   "11": [
+    "passed",
+    "7ea0d9febfc1af9901c3c18f6b0ece85"
+   ],
+   "12": [
+    "passed",
+    "7612a0a84f4e5b6152d2d573f69622e7"
+   ],
+   "13": [
+    "passed",
+    "3bbcb7fa3e950bcdf582c5ff180404bf"
+   ],
+   "14": [
+    "passed",
+    "b5da778e79ed3b8e9d8b5904c4b8a246"
+   ],
+   "15": [
+    "passed",
+    "861605c772ff15975ff50bcf9b85b098"
+   ],
+   "16": [
+    "passed",
+    "0bfe6b79bf020748c928e74fa65f1e33"
+   ],
+   "17": [
+    "passed",
+    "08b5db6a95ea704df2fa26ae321d16a6"
+   ],
+   "18": [
+    "passed",
+    "4c8a54225dbbfc192df002282d5409ef"
+   ],
+   "19": [
+    "passed",
+    "69209c6263408a255ce4504533b54bd3"
+   ],
+   "20": [
+    "passed",
+    "978641cca1edcd219a0e5d911f425915"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterShutdown": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestVersionSemver": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "e3a39e33c55b9652448dc2ce0fd813fd"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "22b59fd6d8ca067d0c354e769cd21e8e"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "15c905d6780d9510b1decb9a8748591a"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestNewWithInvalidEndpoint": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "e599671f4757c3c24bca84d27021a2ce"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestWithProxy": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "b28df29b5a0f7a9aa95d742bb9dda4b3"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestExporterForceFlush": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "a6a2b3d60c6a308cdb7ae55f64522b19"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation": {
+   "1": [
+    "passed",
+    "ed8192ab98c6d2a3be1452eab75c92d9"
+   ],
+   "2": [
+    "passed",
+    "671f287e800fd92c8b6a23e9068f042c"
+   ],
+   "3": [
+    "passed",
+    "9774a994358e0985e3d2a015f5a05f6f"
+   ],
+   "4": [
+    "passed",
+    "125b1aa74268b76dd4f6041b7b0b3509"
+   ],
+   "5": [
+    "passed",
+    "02e41cabd5fbb6272a29d14d15b46b58"
+   ],
+   "6": [
+    "passed",
+    "349f5fa502929f63587f9ffa0e8c2ecb"
+   ],
+   "7": [
+    "passed",
+    "7a5473aea1ff2a054344aa78978332af"
+   ],
+   "8": [
+    "passed",
+    "f5c33d343416d041d33fe4180107b2af"
+   ],
+   "9": [
+    "passed",
+    "a3743b75f0d1606a2d7bdeda56697a8c"
+   ],
+   "10": [
+    "passed",
+    "7131da98e935b5084b79d5cca4322444"
+   ],
+   "11": [
+    "passed",
+    "2368b6276a644a836285f1edd58dd71d"
+   ],
+   "12": [
+    "passed",
+    "d70ed2cf3e23a4c9a2193b2d47430d84"
+   ],
+   "13": [
+    "passed",
+    "b271f7e4d3060c2101675d4fc4f64222"
+   ],
+   "14": [
+    "passed",
+    "f2687b8db46464c4cca65cc017225e0d"
+   ],
+   "15": [
+    "passed",
+    "7915bc2bc0e73e1bad743aa02b996028"
+   ],
+   "16": [
+    "passed",
+    "803668bb1be4870b1721e184861d30cb"
+   ],
+   "17": [
+    "passed",
+    "3d38fbba3af7473009759af07cdac3f3"
+   ],
+   "18": [
+    "passed",
+    "dda28e9ceb94ff79192e4c5a4f3e301a"
+   ],
+   "19": [
+    "passed",
+    "3cb49e957e6ac59f9f5cd8f5d000336b"
+   ],
+   "20": [
+    "passed",
+    "c3b9dac6f944fb4d610a88b10ddb37ca"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp::TestClientInstrumentation": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  9,
+  14
+ ],
+ "timing": {
+  "plain": [
+   1.095,
+   1.096,
+   1.111
+  ],
+  "det": [
+   1.1400000000000001,
+   1.114,
+   1.139
+  ]
+ },
+ "slowdown": 0.0392335766423357
+}

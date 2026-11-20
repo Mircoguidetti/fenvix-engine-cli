@@ -1,0 +1,4760 @@
+{
+ "spec": {
+  "name": "quic-go",
+  "repo": "quic-go/quic-go",
+  "sha": "82b5d81b06a99b63c1a435b84bbf43b1eb2d67d5",
+  "fix_commit": "42cba33383fe63011ebf846643421e4a7512bacc",
+  "fix_date": "2026-11-07T13:17:11.000+01:00",
+  "title": "fix flaky TestHTTP3ListenerGracefulShutdown (#6164)",
+  "tests": [
+   "TestHTTP3ListenerGracefulShutdown"
+  ],
+  "source": "github commit search 'repo:quic-go/quic-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [
+  "exploration stopped at seed 8 (budget)"
+ ],
+ "located": {
+  "TestHTTP3ListenerGracefulShutdown": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./integrationtests/self"
+ ],
+ "imports": [
+  "github.com/quic-go/quic-go/integrationtests/self"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 22.9,
+ "build_det_s": 29.2,
+ "baseline": {
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestAfterGracefulShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServeQUICConn": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogIPRedaction": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRemoteAddrContextKey": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnDataBlocked": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagramClose": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPResponseTrailers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamCreditRelease": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPHeaderSizeLimitServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestInitialPacketSize": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextRejection": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDeadlines": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeServerMismatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3ListenerGracefulShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeIdleTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDownloadWithFixedRTT": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestRetryAfterIdleTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagramStreamReset": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPHeaderSizeLimitClient": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingNonQUICPackets": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteDeadlineSync": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedInitialPacket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestClosedConnectionsInAcceptQueue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamPriority": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPGzip": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsRandomLengths": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPClientTrace": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPConnContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTimeoutAfterSendingPacket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestServerTransportClose": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionCloseRetransmission": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestPacketDrops": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDisabledOnDial": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestFaultyPacketConn": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP1xxResponse": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimit": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestECNValidation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestACKBundling": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP1xxTerminalResponse": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestNoPacketsSentWhenClientHelloFails": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPReestablishConnectionAfterDialError": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestIdleTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteCancellation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestInvalidToken": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPGet": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPErrAbortHandler": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestNATRebindingRepeated": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestPathMTUDiscovery": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnALPNChanged": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestContentLengthForSmallResponse": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakePacketSizeFallback": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3Qlog": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSConfigGetConfigForClientAddresses": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGenerator": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteDeadlineAsync": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDifferentOrigins": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStatelessResets": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagrams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestContextOnClientSide": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestUnidirectionalStreams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineSync": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTransportClose": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGetConfigForClient": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServerRequestParsing": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeConnectionStates": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeAddrResolutionHelpers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingConnectToSelf": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHeavyStreamCancellation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTPacketQueueing": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownLongLivedRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPSettings": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogDirEnvironmentVariable": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingToDifferentServers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCancellationError": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingServerAndClientOnSameConn": [
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPHeaders": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGetConfigForClientErrorsConnectionRejection": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamCreditRelease": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMDuplicatePackets": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRetransmitOnRetry": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadCancellation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPClientRequestContextCancellation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMInjectRandomPackets": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsZeroLength": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGeneratorZeroValue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPResponseContentLength": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDrainServerAcceptQueue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnConnectionWindowDecrease": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogHandshakeFailed": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamDataBlocked": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteWithLimitStreamFlowControl": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimitWithMTUDiscovery": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3ListenerClosing": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestBidirectionalStreamMultiplexing": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWithSessionTicketData": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownShortRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTTransfer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeRTTHelloRetryRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDatagrams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSSessionResumption": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestTrailers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownPendingStreams": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownIdleConnection": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestNATRebinding": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWaitForHandshakeCompletion": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionMigration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPPost": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRawConn": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteAfterClose": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestKeepAlive": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedWhenDisabled": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedInitialPacketWithAck": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamedRequests": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelOpenStreamSync": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakePacketBuffering": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP0RTT": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeContextTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogHandshake": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITCorruptPackets": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelAcceptStream": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCipherSuites": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextFreshContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextOnServerSide": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshake05RTT": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3QlogHeaderRedaction": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramLoss": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteWithLimitConnectionFlowControl": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3StreamPriority": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPContextFromQUIC": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP0RTTWithChangedServerSettings": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServerIdleTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnStreamLimitDecrease": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3ServerHotswap": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexesConnectionsToSameServer": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestServerAcceptQueueOverflow": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeFailsWithoutClientCert": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTimeoutAfterInactivity": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDownloadWithReordering": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestEarlyData": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadWriteCancellation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWithIncreasedStreamLimit": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTokensFromNewTokenFrames": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestKeyUpdates": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSGetConfigForClientError": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCloseListener": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDataLoss": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshake": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedRetryPacket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramNegotiation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineAsync": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestALPN": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeWithPacketLoss": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeRTTRetry": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPMultipleRequests": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnDatagramsDisabled": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedVersionNegotiationPacket": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 9784.3,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 248797,
+  "random": 5563,
+  "entropy": 1797,
+  "outcome": 20,
+  "net": 2
+ },
+ "det0_top_tests_by_events": [
+  [
+   50001,
+   "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteCancellation"
+  ],
+  [
+   50001,
+   "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadCancellation"
+  ],
+  [
+   50001,
+   "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineSync"
+  ],
+  [
+   39268,
+   "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadWriteCancellation"
+  ],
+  [
+   17387,
+   "github.com/quic-go/quic-go/integrationtests/self::TestConnectionMigration"
+  ],
+  [
+   13796,
+   "github.com/quic-go/quic-go/integrationtests/self::TestHeavyStreamCancellation"
+  ],
+  [
+   12891,
+   "github.com/quic-go/quic-go/integrationtests/self::TestCancelAcceptStream"
+  ],
+  [
+   7178,
+   "github.com/quic-go/quic-go/integrationtests/self::TestCancelOpenStreamSync"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadCancellation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": null,
+    "window": [
+     18432,
+     18688
+    ],
+    "event_a": null,
+    "event_b": null,
+    "reason": "beyond-trace",
+    "description": "stored events are identical; first difference in events [18432, 18688) (raise --det-max-events to capture it exactly)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteCancellation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 42,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "entropy",
+     "o": "crypto/rand.Read",
+     "at": "internal/wire/transport_parameters.go:365",
+     "v": "18"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3073000"
+    },
+    "reason": "thread",
+    "description": "event #42: [entropy] crypto/rand.Read @ internal/wire/transport_parameters.go:365 = 18 (thread 6)  <>  [time] time.afterfunc @ timer = 3073000 (thread 8)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadWriteCancellation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 80,
+    "window": null,
+    "event_a": {
+     "t": 9,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3100000"
+    },
+    "event_b": {
+     "t": 9,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3082000"
+    },
+    "reason": "thread",
+    "description": "event #80: time.afterfunc @ timer returned different values: \"3100000\" vs \"3082000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestCancelAcceptStream",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 142,
+    "window": null,
+    "event_a": {
+     "t": 9,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3223000"
+    },
+    "event_b": {
+     "t": 9,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3262000"
+    },
+    "reason": "thread",
+    "description": "event #142: time.afterfunc @ timer returned different values: \"3223000\" vs \"3262000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestCancelOpenStreamSync",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 209,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "173000"
+    },
+    "event_b": {
+     "t": 9,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3040000"
+    },
+    "reason": "thread",
+    "description": "event #209: [time] time.Since @ internal/monotime/time.go:24 = 173000 (thread 1)  <>  [time] time.afterfunc @ timer = 3040000 (thread 9)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestHeavyStreamCancellation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 583,
+    "window": null,
+    "event_a": {
+     "t": 8,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "1051000"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3043000"
+    },
+    "reason": "thread",
+    "description": "event #583: [time] time.timer @ timer = 1051000 (thread 8)  <>  [time] time.afterfunc @ timer = 3043000 (thread 8)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestDrainServerAcceptQueue",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 479,
+    "window": null,
+    "event_a": {
+     "t": 32,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "5189000"
+    },
+    "event_b": {
+     "t": 28,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "4211000"
+    },
+    "reason": "thread",
+    "description": "event #479: [time] time.timer @ timer = 5189000 (thread 32)  <>  [time] time.Since @ internal/monotime/time.go:24 = 4211000 (thread 28)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestTransportClose",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 21,
+    "window": null,
+    "event_a": {
+     "t": 5,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3139000"
+    },
+    "event_b": {
+     "t": 5,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "15947000"
+    },
+    "reason": "thread",
+    "description": "event #21: time.afterfunc @ timer returned different values: \"3139000\" vs \"15947000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsZeroLength",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 591,
+    "window": null,
+    "event_a": {
+     "t": 5,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "558000"
+    },
+    "event_b": {
+     "t": 5,
+     "s": "time",
+     "o": "time.Now",
+     "at": "testutils/events/event_recorder.go:43",
+     "v": "558000"
+    },
+    "reason": "thread",
+    "description": "event #591: [time] time.Since @ internal/monotime/time.go:24 = 558000 (thread 5)  <>  [time] time.Now @ testutils/events/event_recorder.go:43 = 558000 (thread 5)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsRandomLengths",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 449,
+    "window": null,
+    "event_a": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3335000"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3547000"
+    },
+    "reason": "thread",
+    "description": "event #449: time.afterfunc @ timer returned different values: \"3335000\" vs \"3547000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGenerator",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 104,
+    "window": null,
+    "event_a": {
+     "t": 3,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "75000"
+    },
+    "event_b": {
+     "t": 7,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "75000"
+    },
+    "reason": "thread",
+    "description": "event #104: [time] time.Since @ internal/monotime/time.go:24 = 75000 (thread 3)  <>  [time] time.Since @ internal/monotime/time.go:24 = 75000 (thread 7)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGeneratorZeroValue",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 104,
+    "window": null,
+    "event_a": {
+     "t": 8,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "1113000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "testutils/events/event_recorder.go:43",
+     "v": "77000"
+    },
+    "reason": "thread",
+    "description": "event #104: [time] time.timer @ timer = 1113000 (thread 8)  <>  [time] time.Now @ testutils/events/event_recorder.go:43 = 77000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestConnectionMigration",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 50,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "2529000"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "6439000"
+    },
+    "reason": "thread",
+    "description": "event #50: [time] time.timer @ timer = 2529000 (thread 6)  <>  [time] time.afterfunc @ timer = 6439000 (thread 6)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestDatagramNegotiation",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 341,
+    "window": null,
+    "event_a": {
+     "t": 35,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3170000"
+    },
+    "event_b": {
+     "t": 35,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "3173000"
+    },
+    "reason": "thread",
+    "description": "event #341: time.afterfunc @ timer returned different values: \"3170000\" vs \"3173000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimit",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 54,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "27000"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "2998000"
+    },
+    "reason": "thread",
+    "description": "event #54: [time] time.Since @ internal/monotime/time.go:24 = 27000 (thread 1)  <>  [time] time.afterfunc @ timer = 2998000 (thread 8)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimitWithMTUDiscovery",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 71,
+    "window": null,
+    "event_a": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "25000"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "39000"
+    },
+    "reason": "thread",
+    "description": "event #71: time.afterfunc @ timer returned different values: \"25000\" vs \"39000\""
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestDatagramLoss",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 25,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "2684000"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "entropy",
+     "o": "crypto/rand.Read",
+     "at": "internal/utils/rand.go:14",
+     "v": "4"
+    },
+    "reason": "thread",
+    "description": "event #25: [time] time.afterfunc @ timer = 2684000 (thread 6)  <>  [entropy] crypto/rand.Read @ internal/utils/rand.go:14 = 4 (thread 6)"
+   }
+  },
+  {
+   "nodeid": "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineSync",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 80,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Since",
+     "at": "internal/monotime/time.go:24",
+     "v": "48000"
+    },
+    "event_b": {
+     "t": 8,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "7766000"
+    },
+    "reason": "thread",
+    "description": "event #80: [time] time.Since @ internal/monotime/time.go:24 = 48000 (thread 1)  <>  [time] time.afterfunc @ timer = 7766000 (thread 8)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 20,
+  "stable": 2,
+  "diverged": 18,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "beyond-trace": 1,
+   "thread": 17
+  }
+ },
+ "det0": {
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadWriteCancellation": [
+   [
+    "passed",
+    "85030a61527d424d10733670ee23412d"
+   ],
+   [
+    "passed",
+    "841bd8da5f81dd96c0a649d169df1e0f"
+   ],
+   [
+    "passed",
+    "b00ef372d52518c45b8e8b49b0ca9bbf"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsRandomLengths": [
+   [
+    "passed",
+    "93873605a6f8f0f4bf2788b1233f9d19"
+   ],
+   [
+    "passed",
+    "242e5c28796cdea31476db8012fa1bd6"
+   ],
+   [
+    "passed",
+    "026b210f624449ff252f9cc68e484c1b"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDrainServerAcceptQueue": [
+   [
+    "passed",
+    "b0c8f984c0a986393bac273498a39469"
+   ],
+   [
+    "passed",
+    "6ac16068adf0610246ef540e9719356c"
+   ],
+   [
+    "passed",
+    "7d73c7c59f2348f5d28f1429ba24665b"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelAcceptStream": [
+   [
+    "passed",
+    "69132a4b87d61692ab6c9b4f931d7f44"
+   ],
+   [
+    "passed",
+    "f9bf21082d4922e469a34e4636ef5f76"
+   ],
+   [
+    "passed",
+    "c6de3d8a048f6859a3b42d76977991c5"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionCloseRetransmission": [
+   [
+    "passed",
+    "20c46e96d6b2f080393ba417cb881931"
+   ],
+   [
+    "passed",
+    "20c46e96d6b2f080393ba417cb881931"
+   ],
+   [
+    "passed",
+    "20c46e96d6b2f080393ba417cb881931"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestTransportClose": [
+   [
+    "passed",
+    "fa9f2023d9a29e8691dc885e743c1d7a"
+   ],
+   [
+    "passed",
+    "4b4dbe23ec1210860054e33f721a32a8"
+   ],
+   [
+    "passed",
+    "260e6048d83877bee2e60ffbf2e5a9f5"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimit": [
+   [
+    "passed",
+    "fbb7cf9de5843aa24eb229ea674d3a99"
+   ],
+   [
+    "passed",
+    "5573c1cd674899a62048a7a0673ceff8"
+   ],
+   [
+    "passed",
+    "fe87e0873bd6524b68af800e12b5bd7e"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGenerator": [
+   [
+    "passed",
+    "014a5956d15295a1661ed925ffa01d7d"
+   ],
+   [
+    "passed",
+    "0ebdb599eaf3fb2e9e0c6b16df632f70"
+   ],
+   [
+    "passed",
+    "9312e7d74f1d39d5b312093572e73318"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineSync": [
+   [
+    "passed",
+    "d72e80987c5071105e3b1018d0809ef9"
+   ],
+   [
+    "passed",
+    "2fbede7622903ccf4d55d8cff729902c"
+   ],
+   [
+    "passed",
+    "b9a88faf5b3d71b9a4cba7501340b51c"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteCancellation": [
+   [
+    "passed",
+    "cb3907cf4a99d6a2843cff5bcb250ca3"
+   ],
+   [
+    "passed",
+    "0e8f525dca687b9633f028d6fe360283"
+   ],
+   [
+    "passed",
+    "61c057331e8f59b7c19a1f93fc3cb2e6"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGeneratorZeroValue": [
+   [
+    "passed",
+    "fed6a48537574e2b08978e39b8123fcf"
+   ],
+   [
+    "passed",
+    "9bd3a3104d280fc21f6ac6754f299193"
+   ],
+   [
+    "passed",
+    "7f7db96f38b7e9a9e9e26a6768544d18"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelOpenStreamSync": [
+   [
+    "passed",
+    "c70f80dad2a7e20d5a8375ea1fabf601"
+   ],
+   [
+    "passed",
+    "2085adeecda6b35b25bd433cf69c8598"
+   ],
+   [
+    "passed",
+    "5b958ce4ff28d8c46d18ca3022dafb7b"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineAsync": [
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadCancellation": [
+   [
+    "passed",
+    "4859db7778362c03f336698bfca0bb62"
+   ],
+   [
+    "passed",
+    "f1b8b4e893d18e22d26c1601fc92f728"
+   ],
+   [
+    "passed",
+    "7185b0438713ac740f107456eb721d23"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionMigration": [
+   [
+    "passed",
+    "ded3c34e184f9b59107c96f24982c98e"
+   ],
+   [
+    "passed",
+    "3ed09b816671bd31df04e8598f3bb923"
+   ],
+   [
+    "passed",
+    "7ef3573bfb36b6d58e3c665667f0e0cf"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramLoss": [
+   [
+    "passed",
+    "5ee39810be3df1d0a993f81ce97afe00"
+   ],
+   [
+    "passed",
+    "7ee01b65a67ac49fd7043287f1406fe9"
+   ],
+   [
+    "passed",
+    "83ef8ec75a0f3f03168b0c07066fc812"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramNegotiation": [
+   [
+    "passed",
+    "15a6bbbd8d38ecfcd7c03a7a2034a13a"
+   ],
+   [
+    "passed",
+    "6d71ee16bfb2f35451601d8d60c1f820"
+   ],
+   [
+    "passed",
+    "15a6bbbd8d38ecfcd7c03a7a2034a13a"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsZeroLength": [
+   [
+    "passed",
+    "ed69c144dc77c6530e14534000a6c502"
+   ],
+   [
+    "passed",
+    "08b44d6715cc997bdcad419faaa7fde9"
+   ],
+   [
+    "passed",
+    "34a08640b460f9c3cc7486d32df3547f"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestHeavyStreamCancellation": [
+   [
+    "passed",
+    "930053e67991973d580da6173ffd8bf7"
+   ],
+   [
+    "passed",
+    "a86bad4df4e30dc985ba6eaad2d94d20"
+   ],
+   [
+    "passed",
+    "c21450d886d05525d0f756245a042b41"
+   ]
+  ],
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimitWithMTUDiscovery": [
+   [
+    "passed",
+    "a272a2d7cb6dbd5cc128c9ff2cb62510"
+   ],
+   [
+    "passed",
+    "b3358b33cd7ef78acd647e28e9349918"
+   ],
+   [
+    "passed",
+    "efca85a5816bc5e1199063847784d661"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestTrailers": {
+   "1": [
+    "passed",
+    "a643b97165772caea5ee59e4fbfdab25"
+   ],
+   "2": [
+    "passed",
+    "fd6dfb3892c33047fb3e08fd949b1d1e"
+   ],
+   "4": [
+    "passed",
+    "5216a8272a61b8490a536ba887076b85"
+   ],
+   "6": [
+    "passed",
+    "10bdeb192d3e79a9d96f87062d593ae5"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPSettings": {
+   "1": [
+    "passed",
+    "dc232b64abac9abc7eff9c47b5b5d7f7"
+   ],
+   "2": [
+    "passed",
+    "d625623d58e30f2bbac935c1273caaf7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTPacketQueueing": {
+   "1": [
+    "passed",
+    "ac6e29a8b7b076d35d42fa7e273d6758"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnDatagramsDisabled": {
+   "1": [
+    "passed",
+    "eadb8ce43bbd6f5984512bec61743550"
+   ],
+   "4": [
+    "passed",
+    "f421302d29ca8bbea21e016eb8735e00"
+   ],
+   "6": [
+    "passed",
+    "416b4cd250cbb5ecc8b76fe04a1d4c21"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDisabledOnDial": {
+   "1": [
+    "passed",
+    "76c77114b0b920ca02129be2524facee"
+   ],
+   "5": [
+    "passed",
+    "909258bf3d745383879c0b9e8f5cb1ed"
+   ],
+   "6": [
+    "passed",
+    "1edcaca39e4a33b14a0243739232369a"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTTransfer": {
+   "1": [
+    "passed",
+    "455524cd4cde559ff778ca7806ec1cc3"
+   ],
+   "2": [
+    "passed",
+    "1f40f6dabba84f132f3079ddc587689e"
+   ],
+   "4": [
+    "passed",
+    "446c3895d8f1bb066e691f9f6faebd32"
+   ],
+   "6": [
+    "passed",
+    "90db16dee4d5afdff41c19b7f1d02c29"
+   ],
+   "7": [
+    "passed",
+    "92ed6a8ee0a9d7521bf293e753027ba6"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestContentLengthForSmallResponse": {
+   "1": [
+    "passed",
+    "90617b8065dc7ad9ba92f44ae1f41482"
+   ],
+   "5": [
+    "passed",
+    "1e0fb549a738cbf1c38abf343be28e6d"
+   ],
+   "6": [
+    "passed",
+    "0f4e710cb1e3418ce0365fa870fd8e7a"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeWithPacketLoss": {
+   "1": [
+    "passed",
+    "c9be39abb51a09fa9f8927601d130169"
+   ],
+   "7": [
+    "passed",
+    "fabc91a1b67fdd77139f76c92fda63ba"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPGet": {
+   "1": [
+    "passed",
+    "80030a4d803e2cbbf5d8611a14a35615"
+   ],
+   "4": [
+    "passed",
+    "7b91aefedaaa9ee404228702e6a8e9df"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteWithLimitStreamFlowControl": {
+   "1": [
+    "passed",
+    "ac800cc4b911a9dba7573d66aec6aa4b"
+   ],
+   "2": [
+    "passed",
+    "435b5602030a28c01850517ed62bfd6e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDifferentOrigins": {
+   "1": [
+    "passed",
+    "295aac6b6ebc45c41ade435d69e9ad9a"
+   ],
+   "3": [
+    "passed",
+    "bac827c71c7581d16948d7f7e88826f3"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelOpenStreamSync": {
+   "1": [
+    "passed",
+    "811cff157f4abd4bc71b25abac294d5f"
+   ],
+   "4": [
+    "passed",
+    "50f32441b73828f9e5f98e1fbf7c4da5"
+   ],
+   "5": [
+    "passed",
+    "4ac837320afad933368e2123741ba414"
+   ],
+   "6": [
+    "passed",
+    "889d76a3beeb26c130cb441e406856e3"
+   ],
+   "7": [
+    "passed",
+    "c55b431ada547ccda736685a6d28880c"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedVersionNegotiationPacket": {
+   "1": [
+    "passed",
+    "32bf75ffa8d97cb6b8fc035ec0c53f5c"
+   ],
+   "2": [
+    "passed",
+    "efd9179e86b0205e295e830bbbf49964"
+   ],
+   "6": [
+    "passed",
+    "aab91914e70a6643b72697dd69ed80d1"
+   ],
+   "7": [
+    "passed",
+    "4e868c3335a09de7d154a1a0fd514820"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3ServerHotswap": {
+   "1": [
+    "passed",
+    "65695cfcfd47b00e1e49dc78c35abecc"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshake": {
+   "1": [
+    "passed",
+    "111f60154a2fd74ec2a28e9325ff8e51"
+   ],
+   "2": [
+    "passed",
+    "740cd54e72d58dad4fa1bc874f71a026"
+   ],
+   "4": [
+    "passed",
+    "9209d7c2f1ce7efa42f0a7c510cc6811"
+   ],
+   "6": [
+    "passed",
+    "41de56e75c8eb02eafef8c796ea4c0e3"
+   ],
+   "7": [
+    "passed",
+    "d4dad213325589d75cc749d37f1e5d97"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagrams": {
+   "1": [
+    "passed",
+    "c8b440c96ea10f6a0b60af7cf1e54e30"
+   ],
+   "2": [
+    "passed",
+    "9713976ee34449af30f68b76b40c7181"
+   ],
+   "7": [
+    "passed",
+    "17f823a38bc43383116847e78325a2c5"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsRandomLengths": {
+   "1": [
+    "passed",
+    "6ce41f5b0655831e7767c1cb970916ff"
+   ],
+   "4": [
+    "passed",
+    "5cb9b613197d05b1cdd62fc42721da29"
+   ],
+   "5": [
+    "passed",
+    "1782a12a68e228d1d5dd36da6f0672bd"
+   ],
+   "6": [
+    "passed",
+    "5c900eda04bf05ab12ae268ce051b2d6"
+   ],
+   "7": [
+    "passed",
+    "46581fb3eb8a4e333c29a3fb6e9ebd84"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeIdleTimeout": {
+   "1": [
+    "passed",
+    "fea78f02280d81de9330117d324ffc7d"
+   ],
+   "2": [
+    "passed",
+    "21c2e06169b92bcd3190713b5d717b6d"
+   ],
+   "4": [
+    "passed",
+    "14cbb3b8209694fe40585c82053d67b9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingConnectToSelf": {
+   "1": [
+    "passed",
+    "311b8554771fc7d80994bf2f1a6fe0e7"
+   ],
+   "2": [
+    "passed",
+    "07025a14fa379c57d86c2b7953d37f6c"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPContextFromQUIC": {
+   "1": [
+    "passed",
+    "e9863c76213e141cd43ba989c3177321"
+   ],
+   "2": [
+    "passed",
+    "e96c3112117f4311be734b977b5b045a"
+   ],
+   "5": [
+    "passed",
+    "2608fa800d0820bd996d1b7d340d3dfc"
+   ],
+   "7": [
+    "passed",
+    "0914620f53c155a083ee553b8cc31e53"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnStreamLimitDecrease": {
+   "1": [
+    "passed",
+    "c3358e1a7157c105ddc0f14c583d2fb6"
+   ],
+   "2": [
+    "passed",
+    "4d9a6afc46214904a35d816d06bd80e9"
+   ],
+   "4": [
+    "passed",
+    "00b5bae021bad3813d31fbf454bf7b95"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPClientRequestContextCancellation": {
+   "1": [
+    "passed",
+    "40e8d5085a856e233ab970b6625ad574"
+   ],
+   "4": [
+    "passed",
+    "12b40d916638773d4c7844b7d97197d7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteAfterClose": {
+   "1": [
+    "passed",
+    "3aecd0ba2a4cb4c1f3186d7bb6f00739"
+   ],
+   "2": [
+    "passed",
+    "6b776962402dede14183b7d07b17089a"
+   ],
+   "5": [
+    "passed",
+    "7c025dc2cc3e63042136b511cb884b8c"
+   ],
+   "6": [
+    "passed",
+    "08e836ca85ad0c29d9301f411165afcd"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServerRequestParsing": {
+   "1": [
+    "passed",
+    "5842c2a54910f0d957fa1c0b71c26d7d"
+   ],
+   "4": [
+    "passed",
+    "c907f1257879f5c0ce30261f27928744"
+   ],
+   "6": [
+    "passed",
+    "a34cf3a14890a4144b9c9c1ace475d1e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSSessionResumption": {
+   "1": [
+    "passed",
+    "20cd0389d79d76985c8c53baf4a387e6"
+   ],
+   "2": [
+    "passed",
+    "a127d31f7909e0fd22cccd2d1b61fa00"
+   ],
+   "6": [
+    "passed",
+    "c0156df6f7f4e6bfa0bcf2ac59209303"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGenerator": {
+   "1": [
+    "passed",
+    "20104996ef0958d75ff42f213242ff9e"
+   ],
+   "7": [
+    "passed",
+    "d873ad60ffcc889131d553e9132c4e92"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStatelessResets": {
+   "1": [
+    "passed",
+    "62fd1071f176b6a75f0021fcc5765e13"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTimeoutAfterInactivity": {
+   "1": [
+    "passed",
+    "c67af2e560cf745c3293a96d96587d1b"
+   ],
+   "2": [
+    "passed",
+    "c67af2e560cf745c3293a96d96587d1b"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeRTTRetry": {
+   "1": [
+    "passed",
+    "86cc92b0553767429ff41f57e80dcf45"
+   ],
+   "7": [
+    "passed",
+    "066fe213fd0cdd97ba7adcc35582a573"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedWhenDisabled": {
+   "1": [
+    "passed",
+    "92e3885794d215b16d5d0b42a4ddcb95"
+   ],
+   "2": [
+    "passed",
+    "bfbb6568009a410c95a0082af24ff418"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP1xxResponse": {
+   "1": [
+    "passed",
+    "1d5db01c9de1871a4e71863d94dad5e4"
+   ],
+   "4": [
+    "passed",
+    "be0684e3a460b23153bd5ee1f365fefd"
+   ],
+   "6": [
+    "passed",
+    "9fba01d512975d670d6322698cbf1e23"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakePacketBuffering": {
+   "1": [
+    "passed",
+    "e8b7258d6a3924f3deca383dd3fdf4eb"
+   ],
+   "5": [
+    "passed",
+    "fe522888cf0ec1a90d75f66104e08adc"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestUnidirectionalStreams": {
+   "1": [
+    "passed",
+    "1de899b7b953088d9859e567d07833aa"
+   ],
+   "2": [
+    "passed",
+    "81a1900b5fceccf4bd8bf510db8520f0"
+   ],
+   "4": [
+    "passed",
+    "606f0afb816a7252c38fc53021ace115"
+   ],
+   "6": [
+    "passed",
+    "1eef3218a51d1379a21f1401c36fcf53"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteDeadlineSync": {
+   "1": [
+    "passed",
+    "b04f90d17f9e15ca710d2205c1fbbadf"
+   ],
+   "2": [
+    "passed",
+    "f9dc62149f02833a292d1575c0767c47"
+   ],
+   "4": [
+    "passed",
+    "59e402a2de31e7f38c7402b7806ff818"
+   ],
+   "6": [
+    "passed",
+    "3776a3d6dd4b1472233a5d5fadebf072"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTransportClose": {
+   "1": [
+    "passed",
+    "c59f60838229b995eef8aff9fa7bd011"
+   ],
+   "2": [
+    "passed",
+    "9f15e34b00b0ed94c1eee40d86672add"
+   ],
+   "4": [
+    "passed",
+    "05d489662eeb12bf68db88b5f871d850"
+   ],
+   "6": [
+    "passed",
+    "dab0859cab888819fcc526526a1b8e79"
+   ],
+   "7": [
+    "passed",
+    "209496557d17feee75e599061baef7ca"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestALPN": {
+   "1": [
+    "passed",
+    "194f78d3fb44c4fba0ac532aa605ce61"
+   ],
+   "4": [
+    "passed",
+    "c817af56ea7ac43a4eaff414e4660475"
+   ],
+   "5": [
+    "passed",
+    "b0cedb6fb80a2fd2ec39ada366d25765"
+   ],
+   "7": [
+    "passed",
+    "95924f704d501b3fa28a509cf630e031"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestCancelAcceptStream": {
+   "1": [
+    "passed",
+    "b0bc2eb936eaba8fae1cf009659ed4a1"
+   ],
+   "2": [
+    "passed",
+    "3d894c0232599ea7012732d3000a989b"
+   ],
+   "3": [
+    "passed",
+    "16ad16cd4e39f5d8a9222e2d485d7780"
+   ],
+   "6": [
+    "passed",
+    "948bf4e087d7338136b8e00abdf3c24c"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRemoteAddrContextKey": {
+   "1": [
+    "passed",
+    "f810b4bf7322c33aa28187ae25fc54fa"
+   ],
+   "2": [
+    "passed",
+    "5decf9b770bec9f328dbd902969288bd"
+   ],
+   "4": [
+    "passed",
+    "7d65405f54104a8df20f3113bbf0d6c4"
+   ],
+   "6": [
+    "passed",
+    "e88eda9890f28abd8ad2fb73e834ea3a"
+   ],
+   "7": [
+    "passed",
+    "00fe6581eb68acbf0b3127c5631b38b1"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPHeaders": {
+   "1": [
+    "passed",
+    "e2c8422098a6f6ec0a0159772ddb0d23"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestKeyUpdates": {
+   "1": [
+    "passed",
+    "299befee903a9d458562595e92338b1c"
+   ],
+   "2": [
+    "passed",
+    "68ebec881b551ae852641033a44014ff"
+   ],
+   "4": [
+    "passed",
+    "d31be3f53fb93e15857cc99d71e94529"
+   ],
+   "7": [
+    "passed",
+    "a3733a26fc928e081681c29c1060592d"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPConnContext": {
+   "1": [
+    "passed",
+    "bb87721005b250972c69c437ec9739cb"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPHeaderSizeLimitClient": {
+   "1": [
+    "passed",
+    "83fc856532ca718c688ccf21ee5d6719"
+   ],
+   "2": [
+    "passed",
+    "c6a20d1534352e8be7e8402250113f45"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakePacketSizeFallback": {
+   "1": [
+    "passed",
+    "ec77108d2d94dd316834fcfa553d8c06"
+   ],
+   "2": [
+    "passed",
+    "0baf667150b8935efc592fd520c5625b"
+   ],
+   "4": [
+    "passed",
+    "6c5278f72c01b35ceb0f694fbd7360c2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamer": {
+   "1": [
+    "passed",
+    "6ea73700f287f362db656143fa80d3e2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPMultipleRequests": {
+   "1": [
+    "passed",
+    "902b28f8ff3c104b303121b1c729d098"
+   ],
+   "6": [
+    "passed",
+    "6fdfc7248ddf58ccbc996e8c1f335796"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimitWithMTUDiscovery": {
+   "1": [
+    "passed",
+    "5f5abc40c83f588eb00394f66acaf702"
+   ],
+   "2": [
+    "passed",
+    "5592aca267e436ccfe576b7cdb2679df"
+   ],
+   "4": [
+    "passed",
+    "fbb55e7c00122d878cba7b2bf95eb226"
+   ],
+   "5": [
+    "passed",
+    "bb716355ddbaa8f2f98f3c683487d494"
+   ],
+   "7": [
+    "passed",
+    "34497ffa13becc010713329799bf9d55"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagramClose": {
+   "1": [
+    "passed",
+    "8f65e8ad0d522034a44450b2452cf7b1"
+   ],
+   "2": [
+    "passed",
+    "42e888fc0154a8af26f18e3a1f558ccb"
+   ],
+   "4": [
+    "passed",
+    "0d5b7178d0de14365156ae27bdd61f8e"
+   ],
+   "6": [
+    "passed",
+    "98db5b1bbc76ad19d043058ed1306033"
+   ],
+   "7": [
+    "passed",
+    "c6006a3098cff882e0715cfa00adcb92"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramNegotiation": {
+   "1": [
+    "passed",
+    "c5aa5175b58d5ca4fb4f87b24ceb112f"
+   ],
+   "2": [
+    "passed",
+    "e3cf4d114ee07dafddec65820767a681"
+   ],
+   "3": [
+    "passed",
+    "bdb922721f809e8f6deca548c6bb2b73"
+   ],
+   "7": [
+    "passed",
+    "22f43f81f7bdfb6b548e6d7afc88e545"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMInjectRandomPackets": {
+   "1": [
+    "passed",
+    "a9eb728be49305e04034ab88f42b36d6"
+   ],
+   "4": [
+    "passed",
+    "139d9e41428258357e98c2d0b83ad6f8"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPGzip": {
+   "1": [
+    "passed",
+    "3765ffd22900a1822c375f135dfedcf2"
+   ],
+   "2": [
+    "passed",
+    "2c9083065f11b6e24e9abf440a37e499"
+   ],
+   "4": [
+    "passed",
+    "20be74255c5755f7bfc849569c44aa1f"
+   ],
+   "6": [
+    "passed",
+    "4bd5229990cb5fa0d44766d66827070b"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeConnectionStates": {
+   "1": [
+    "passed",
+    "5eabc31bf97ee34c4e2041ab250804db"
+   ],
+   "2": [
+    "passed",
+    "76dee414ef497641b7ce074635b3564d"
+   ],
+   "7": [
+    "passed",
+    "2ae9727a0f7acd0112488ea23d0396a8"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamCreditRelease": {
+   "1": [
+    "passed",
+    "e60929ef01047b03986bf06f27f08fe0"
+   ],
+   "4": [
+    "passed",
+    "ccf3bfffddeb43eb185386abef769cdd"
+   ],
+   "7": [
+    "passed",
+    "376bb57fe229e44d16923de53d145270"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCloseListener": {
+   "1": [
+    "passed",
+    "90935d41b87ea4639aa818aec209dca0"
+   ],
+   "2": [
+    "passed",
+    "4977a9fc1f51d114751c15a1c4b067c9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamDataBlocked": {
+   "1": [
+    "passed",
+    "fe522888cf0ec1a90d75f66104e08adc"
+   ],
+   "2": [
+    "passed",
+    "ad64be23e8eac5eb0c70a012f72538b5"
+   ],
+   "4": [
+    "passed",
+    "5c722e1a35037854bf5f2eeb9c682d5c"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionMigration": {
+   "1": [
+    "passed",
+    "f33d30b3d2cf1cff71b37138800507d2"
+   ],
+   "2": [
+    "passed",
+    "da85f6589e72a570625381a5af07495a"
+   ],
+   "3": [
+    "passed",
+    "450eb433f6390b2f4ab3641b9e8ecd0c"
+   ],
+   "7": [
+    "passed",
+    "508f1e0b36bab0593766146d95716990"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDeadlines": {
+   "1": [
+    "passed",
+    "2fbf029657502ea5828746732a58b3e9"
+   ],
+   "2": [
+    "passed",
+    "d69e46bb31c8ccf2ba574ed877e3c32e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineSync": {
+   "1": [
+    "passed",
+    "1345a0c5946832d38a4cc2099f865458"
+   ],
+   "2": [
+    "passed",
+    "51365654943bc8443a75c36971a4f6cb"
+   ],
+   "4": [
+    "passed",
+    "036edfdf8fcd647ef369c68e450ac37f"
+   ],
+   "7": [
+    "passed",
+    "cfd6d31e356d0b10e1732d09d90b9ee3"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownLongLivedRequest": {
+   "1": [
+    "passed",
+    "d75b12897bed055192c89ac219b20cf8"
+   ],
+   "2": [
+    "passed",
+    "c10d3b3ea4cbcc081f4eb3507117e603"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestECNValidation": {
+   "1": [
+    "passed",
+    "70e0775cfe0c2a1819b99989c7c33408"
+   ],
+   "4": [
+    "passed",
+    "ca1008ea4fec01706e74dca02b379a1f"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingServerAndClientOnSameConn": {
+   "1": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "2": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "5": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "6": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestNATRebinding": {
+   "1": [
+    "passed",
+    "adff4e3869badf2a1fb277af3183f0d3"
+   ],
+   "5": [
+    "passed",
+    "c6006c9b9fc1d86b03d2bc6cdfa41103"
+   ],
+   "7": [
+    "passed",
+    "b3b1a44d6e91bdd674b775b065d623ca"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMDuplicatePackets": {
+   "1": [
+    "passed",
+    "95a96f38d58e9d354532869024d0a1ca"
+   ],
+   "2": [
+    "passed",
+    "ad916faf0a33815cd805b33014ace80e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP1xxTerminalResponse": {
+   "1": [
+    "passed",
+    "28fbdb7e741202362f34eae3acf8719c"
+   ],
+   "3": [
+    "passed",
+    "7f94827a2212e9b3986ef1d963f192e0"
+   ],
+   "4": [
+    "passed",
+    "80359b0a4af2bb09ea02a749b8f137ff"
+   ],
+   "7": [
+    "passed",
+    "8c8f2949cbf108dc0b3bfefb4f4493ac"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITCorruptPackets": {
+   "1": [
+    "passed",
+    "a4ce8820eaff6afa75ac9602ed84b94f"
+   ],
+   "2": [
+    "passed",
+    "afb5da72204dc5cb2e30200db81e5c05"
+   ],
+   "7": [
+    "passed",
+    "090671921b26ed9a858c1fc356b95253"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnDataBlocked": {
+   "1": [
+    "passed",
+    "edd2aed6448654b8b71918f523551319"
+   ],
+   "2": [
+    "passed",
+    "d25b37809b2f0197338a51abcfad10a2"
+   ],
+   "4": [
+    "passed",
+    "f37442b6e1f7c3e51acf6d6c061e9141"
+   ],
+   "5": [
+    "passed",
+    "63ba665c1ba70834b438c70ddefa65cd"
+   ],
+   "7": [
+    "passed",
+    "f37442b6e1f7c3e51acf6d6c061e9141"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamCreditRelease": {
+   "1": [
+    "passed",
+    "c8c4594420eed27dd84dfd4681c519bf"
+   ],
+   "7": [
+    "passed",
+    "faa147ca3352313afddd2e3eee9ae8a5"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestAfterGracefulShutdown": {
+   "1": [
+    "passed",
+    "4943fd24eefade4f1b6515d2b2ce2ddf"
+   ],
+   "2": [
+    "passed",
+    "e3177706714405d669a84c37f7c3eb10"
+   ],
+   "4": [
+    "passed",
+    "df44ba02293b17ed2635e4558b3cf6ac"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramSizeLimit": {
+   "1": [
+    "passed",
+    "d0eee859d862505ac54ac2961cf87c35"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestInvalidToken": {
+   "1": [
+    "passed",
+    "7bc163da930a2f229941f8044c04fbf2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestKeepAlive": {
+   "1": [
+    "passed",
+    "94472e6a3cfeac78199ae2db548efc33"
+   ],
+   "4": [
+    "passed",
+    "5eabc31bf97ee34c4e2041ab250804db"
+   ],
+   "6": [
+    "passed",
+    "a95f9e562358fe6463432b2547c6083c"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPErrAbortHandler": {
+   "1": [
+    "passed",
+    "a2dd2459f488deddaccdc2d8f97c0af1"
+   ],
+   "2": [
+    "passed",
+    "99708da3a40756c48bd58f999502edd2"
+   ],
+   "5": [
+    "passed",
+    "dc6dd4f8c46f956c89cab9175a429df6"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRawConn": {
+   "1": [
+    "passed",
+    "8fc929478b7c1f8ddba6fd59bc6cc867"
+   ],
+   "5": [
+    "passed",
+    "f10d858beeffe65b869fc40eaac3eec9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRetransmitOnRetry": {
+   "1": [
+    "passed",
+    "0477c43cfd82d6892dcd678fa80d1aed"
+   ],
+   "2": [
+    "passed",
+    "066faf02d7fe7b3a24949e50f194a427"
+   ],
+   "4": [
+    "passed",
+    "2d32229a7235e8e8037a52b0dcf795c0"
+   ],
+   "5": [
+    "passed",
+    "e8c4c89a28d6b84dc1135ae336e944b6"
+   ],
+   "6": [
+    "passed",
+    "bdfd1e4f990704867b2cff274647b243"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWaitForHandshakeCompletion": {
+   "1": [
+    "passed",
+    "fc91eea3acbcbde2c405849dc90ca8f7"
+   ],
+   "2": [
+    "passed",
+    "189fd7a2a33e249360c916477ff1b0fb"
+   ],
+   "4": [
+    "passed",
+    "05d588048f4dfb55c2c140f0e30ee14b"
+   ],
+   "5": [
+    "passed",
+    "e9249c3c419c5ca2e695e050b2a5a263"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3Qlog": {
+   "1": [
+    "passed",
+    "a590a8c580c31439c988731aa5665313"
+   ],
+   "2": [
+    "passed",
+    "9f2a197e6d2180f1c122b87cb63d6f35"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshake05RTT": {
+   "1": [
+    "passed",
+    "a71d451a0047d77b33e5ef040cc8a712"
+   ],
+   "4": [
+    "passed",
+    "ad0065f4dcd0123d5d75018d7ce8592d"
+   ],
+   "5": [
+    "passed",
+    "122f428ba56b470ca9b79f0f6ef414c1"
+   ],
+   "6": [
+    "passed",
+    "aeb2426b8ab1fe137d237afbe0cad348"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPResponseContentLength": {
+   "1": [
+    "passed",
+    "27b63693616f8144525cc3172a5196a5"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamPriority": {
+   "1": [
+    "passed",
+    "88a0f611a6d1af4ab0cad9fbabfae61a"
+   ],
+   "4": [
+    "passed",
+    "9898fb7716074dcd42c7bd8f68062f10"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTimeoutAfterSendingPacket": {
+   "1": [
+    "passed",
+    "e8b7258d6a3924f3deca383dd3fdf4eb"
+   ],
+   "4": [
+    "passed",
+    "e8b7258d6a3924f3deca383dd3fdf4eb"
+   ],
+   "6": [
+    "passed",
+    "9c79861d33e271269ae4da861aab511d"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWithSessionTicketData": {
+   "1": [
+    "passed",
+    "2becd6e7f35250b003373c58b1b0ff31"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamWriteCancellation": {
+   "1": [
+    "passed",
+    "6b61770682d1dc417035242e9710fec1"
+   ],
+   "6": [
+    "passed",
+    "af399bfb0ffde08b2a0164f536894366"
+   ],
+   "7": [
+    "passed",
+    "964ae58d9c6dd505f8ec2bee3148ab98"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPResponseTrailers": {
+   "1": [
+    "passed",
+    "fc8cb04b5f52dfa045e3b4c91adc1014"
+   ],
+   "2": [
+    "passed",
+    "667005abb77e9f82521b71b6fb4d91a5"
+   ],
+   "6": [
+    "passed",
+    "a8f0ffe7231e8299f554cd046bf69730"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPShutdown": {
+   "1": [
+    "passed",
+    "7dcc71fad2f383a16e93523ea918201a"
+   ],
+   "2": [
+    "passed",
+    "7a051c853eaf5133d3b70d61824fcc1c"
+   ],
+   "7": [
+    "passed",
+    "3492fbb5d90d167ee6431e6106fbf18e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedRetryPacket": {
+   "1": [
+    "passed",
+    "ddd6ef799aaad2817cd7dc1f68c48a04"
+   ],
+   "7": [
+    "passed",
+    "6a64d731b30d6d57b43533da29ab61b9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestFaultyPacketConn": {
+   "1": [
+    "passed",
+    "c3856cb0fa1ec74eb94ee40387c0cc11"
+   ],
+   "4": [
+    "passed",
+    "95a182784719f8872947916152918f09"
+   ],
+   "6": [
+    "passed",
+    "c5b87399e06a35f1d61bbd50cc2fb3ec"
+   ],
+   "7": [
+    "passed",
+    "c573f98048a24b75d505f992e039d4cd"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnALPNChanged": {
+   "1": [
+    "passed",
+    "4b4575059752cc7c4955095a0fdf9d77"
+   ],
+   "2": [
+    "passed",
+    "f298236c00129056ea0d1d254121bfc0"
+   ],
+   "7": [
+    "passed",
+    "9a1415878dfaf6845bc9067acfd914d7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestServerTransportClose": {
+   "1": [
+    "passed",
+    "3005bf8e4083e40c8efc5994a40e11bf"
+   ],
+   "4": [
+    "passed",
+    "572fffe9457557e26d253cc375855171"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownIdleConnection": {
+   "1": [
+    "passed",
+    "fe0e78f70509a1c9bf9fff847b64cf43"
+   ],
+   "2": [
+    "passed",
+    "a4a8715b50388343f3a97f483cf4b8f7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingToDifferentServers": {
+   "1": [
+    "passed",
+    "4497548614f19039d2b9272222d5ce40"
+   ],
+   "4": [
+    "passed",
+    "b4cdd3b46b1992b75b108b9093cc07b1"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestWriteDeadlineAsync": {
+   "1": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "4": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "5": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServeQUICConn": {
+   "2": [
+    "passed",
+    "41f5c153a4b0a96e108d42c213fb6951"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeAddrResolutionHelpers": {
+   "2": [
+    "passed",
+    "929882314ee1b60a9269c07272ea1d73"
+   ],
+   "4": [
+    "passed",
+    "19673f5f837b1a2fc61db317abcec803"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestPacketDrops": {
+   "2": [
+    "passed",
+    "002bbb98359ee620f4c6e2d42fe24172"
+   ],
+   "3": [
+    "passed",
+    "d1ef4bbdde5aa6af29dfcaeaa5ec499d"
+   ],
+   "7": [
+    "passed",
+    "fb8f6a2d1d73902cd69f73a9913d1623"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestNATRebindingRepeated": {
+   "2": [
+    "passed",
+    "22c166a210d3b0e3003aeb47024161af"
+   ],
+   "4": [
+    "passed",
+    "6717c2d928cea6b0444a9f15e0e134bf"
+   ],
+   "6": [
+    "passed",
+    "c7a24d9645fccd1c251122827b3926f2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadWriteCancellation": {
+   "2": [
+    "passed",
+    "43b40ae94bc9c4b6440dcd2c89eb3651"
+   ],
+   "6": [
+    "passed",
+    "2c0b76491dad5f14fa512903b63213a4"
+   ],
+   "7": [
+    "passed",
+    "4ab9be8e995425f35dcb60b2df80b061"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestIdleTimeout": {
+   "2": [
+    "passed",
+    "c67af2e560cf745c3293a96d96587d1b"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogDirEnvironmentVariable": {
+   "2": [
+    "passed",
+    "52aa811af7a9bdcec3befec83f0c9d84"
+   ],
+   "4": [
+    "passed",
+    "57db4e2d97d738c675ee4c60dc5f5493"
+   ],
+   "6": [
+    "passed",
+    "122585110567e2f48965610a0ff6b551"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPClientTrace": {
+   "2": [
+    "passed",
+    "c218139453c22854dc30ec6202ed426a"
+   ],
+   "6": [
+    "passed",
+    "b8924e9d3a3a96c476981367fb1708a7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionCloseRetransmission": {
+   "2": [
+    "passed",
+    "5eabc31bf97ee34c4e2041ab250804db"
+   ],
+   "4": [
+    "passed",
+    "a08acdf9c8078d3fa856fb7d07aa186c"
+   ],
+   "6": [
+    "passed",
+    "0a78d1d9dd79a6c070550350833ecbb7"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPServerIdleTimeout": {
+   "2": [
+    "passed",
+    "1ce275d484445153498a69d0dc7937bd"
+   ],
+   "4": [
+    "passed",
+    "8e92e68ae2da151bf46b661d8f58da43"
+   ],
+   "5": [
+    "passed",
+    "b28ab79807fd89e49e801a49bf5796ee"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestServerAcceptQueueOverflow": {
+   "2": [
+    "passed",
+    "a5f381c36e6b12fd628cc6d6ad8f991d"
+   ],
+   "4": [
+    "passed",
+    "2684de0e108190d0d9a77b1ec4b8a00f"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDatagrams": {
+   "2": [
+    "passed",
+    "971b7ee7b015b64a7aaa10810924d263"
+   ],
+   "4": [
+    "passed",
+    "96ff66a812e26833c84e25be1aac8890"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDatagramLoss": {
+   "2": [
+    "passed",
+    "3a611b80678a0bf1ca39ff8bfc9b1e1e"
+   ],
+   "3": [
+    "passed",
+    "deffa616a8092465966f8848ea2a06d4"
+   ],
+   "6": [
+    "passed",
+    "1edc5bbf8f014e825135b44de9b12406"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamedRequests": {
+   "2": [
+    "passed",
+    "629c2cb09bdac94f92aca2e2fbedc234"
+   ],
+   "5": [
+    "passed",
+    "e7c07223125a73e88ba7b1591f53dfd3"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogHandshakeFailed": {
+   "2": [
+    "passed",
+    "e605b90ee88d476aff597080c11805d4"
+   ],
+   "4": [
+    "passed",
+    "3c95a3aca99603ee719d7c0629376e18"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestContextOnClientSide": {
+   "2": [
+    "passed",
+    "6343b9244d5bdaf5410981ce54ac2b66"
+   ],
+   "3": [
+    "passed",
+    "2e05f7085ba5e9bc3fc495fcb962717d"
+   ],
+   "4": [
+    "passed",
+    "8490e16395ca57c63b3aec32c6526a12"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPRequestRetryAfterIdleTimeout": {
+   "2": [
+    "passed",
+    "f75811c2369bd59759288b7a8a0a5645"
+   ],
+   "6": [
+    "passed",
+    "5672f36037f5a516ab060d18cb1878f5"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownPendingStreams": {
+   "2": [
+    "passed",
+    "d9db95ae418473239953c6cbe4abfb8d"
+   ],
+   "5": [
+    "passed",
+    "039e8b5982e859afd37e4b877c86f8f2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTokensFromNewTokenFrames": {
+   "2": [
+    "passed",
+    "951af22fc1abffef8b3944601a29bc36"
+   ],
+   "4": [
+    "passed",
+    "b6a37fdc6c5c8f23b2598cd0c8d840f7"
+   ],
+   "7": [
+    "passed",
+    "37b735ccb815cffe0a3f4c893813af78"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexingNonQUICPackets": {
+   "2": [
+    "passed",
+    "2610e0616e5ea2457f5be3987d69bd3e"
+   ],
+   "4": [
+    "passed",
+    "cb449f9b9278d33c0dd31d6f0fa46ff9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestInitialPacketSize": {
+   "2": [
+    "passed",
+    "3a4c3f18d1da539507e017e1ce03910a"
+   ],
+   "4": [
+    "passed",
+    "639c33bba9d88860f1a95b948c1ece8a"
+   ],
+   "6": [
+    "passed",
+    "69cea83da43f4883614ee66ab316457a"
+   ],
+   "7": [
+    "passed",
+    "26f5682a3ab540cb08d7423032bb2797"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMultiplexesConnectionsToSameServer": {
+   "2": [
+    "passed",
+    "71f7a846bfe6c8d18f7d07f63e1ecedc"
+   ],
+   "4": [
+    "passed",
+    "dd27f80c2a7a7dfc1cf8278a8010582d"
+   ],
+   "6": [
+    "passed",
+    "2be6f4c4a28cf27347cde04c4c125a2c"
+   ],
+   "7": [
+    "passed",
+    "5d61c618c337a65ce9e7053a9ede2bcb"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPPost": {
+   "2": [
+    "passed",
+    "240685a63da3b521ad68d52fb1f082d0"
+   ],
+   "7": [
+    "passed",
+    "613f3bf57477e8a5bcfa17e63d420359"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPStreamErrors": {
+   "2": [
+    "passed",
+    "77b13b8020f46f79b4888491db00ea0d"
+   ],
+   "5": [
+    "passed",
+    "34200b97eb7b4c36c78b581bbf52d82d"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsCustomGeneratorZeroValue": {
+   "2": [
+    "passed",
+    "f65656186028da747c58f6cee5c1227b"
+   ],
+   "4": [
+    "passed",
+    "6cfbdd64f869f31ece665a841c2d6dfe"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeFailsWithoutClientCert": {
+   "2": [
+    "passed",
+    "1189a1a987158bd6c59a4c5892c2d396"
+   ],
+   "6": [
+    "passed",
+    "8bb7dfb4083059f89672366e09ebd3c9"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTDataLoss": {
+   "2": [
+    "passed",
+    "7388d9da65827759f5a2920fa597af33"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGetConfigForClient": {
+   "2": [
+    "passed",
+    "d732e095ba07651c5e759d965cdc1525"
+   ],
+   "4": [
+    "passed",
+    "1fda40671b75510a5a5bcfc03184fa40"
+   ],
+   "7": [
+    "passed",
+    "fb1a851dcfad06150b5bd5a63913706d"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHeavyStreamCancellation": {
+   "2": [
+    "passed",
+    "dd9b9dba7e5a25cef08e71c2ffbe92b8"
+   ],
+   "4": [
+    "passed",
+    "e095dbc98a8718794381c23eeed116e6"
+   ],
+   "5": [
+    "passed",
+    "5966f3cf04f2af74f2e39f5d1c91f4de"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedInitialPacketWithAck": {
+   "2": [
+    "passed",
+    "35f6b87681d6c5c9582bc22020a7747d"
+   ],
+   "7": [
+    "passed",
+    "0f1c3a6f32407ccad302959e44920ed1"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextFreshContext": {
+   "2": [
+    "passed",
+    "c971439f8a9b4ba8e4a1affbe335eede"
+   ],
+   "5": [
+    "passed",
+    "90f123a13dcaf90b62e1c2e236f1eb35"
+   ],
+   "7": [
+    "passed",
+    "4a88ed193f6279caec91a9a34b541b60"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestEarlyData": {
+   "2": [
+    "passed",
+    "0f87fffb5c79ab84a51e1533f4e2f5b5"
+   ],
+   "4": [
+    "passed",
+    "843365e6dce0c9a54532cee71f8d7cd4"
+   ],
+   "5": [
+    "passed",
+    "87fb1811060b75593841c2e5e9b48f30"
+   ],
+   "6": [
+    "passed",
+    "b84f3cdbaffba31eaf0a967757556230"
+   ],
+   "7": [
+    "passed",
+    "df175d4aa1f0c7e8497cb4f86f94ca85"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDrainServerAcceptQueue": {
+   "2": [
+    "passed",
+    "d1e42d90062cb9246fb916e7e4c2a5da"
+   ],
+   "3": [
+    "passed",
+    "4c04123ea163298c92f4e146835c5abe"
+   ],
+   "4": [
+    "passed",
+    "4f6004dabcaa52cf20cd83e7afde1965"
+   ],
+   "5": [
+    "passed",
+    "2ccf81ee29057307ddd526b1e7307f94"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextOnServerSide": {
+   "2": [
+    "passed",
+    "f8431d7827de9d002fce82733c741738"
+   ],
+   "4": [
+    "passed",
+    "adbe4afdc8df147b0827b9b47e3fb754"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestStreamReadCancellation": {
+   "2": [
+    "passed",
+    "d4d614872b96c7b84f11ebff9eba3267"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3StreamPriority": {
+   "2": [
+    "passed",
+    "e91f139a726c74db53272fed465030ee"
+   ],
+   "4": [
+    "passed",
+    "16ddbb55c8274133fb96453eae4225cd"
+   ],
+   "5": [
+    "passed",
+    "e214fd3d13c10651b6eba97a9da293c6"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTRejectedOnConnectionWindowDecrease": {
+   "2": [
+    "passed",
+    "34ec56449b367075e9ba18d64cf24feb"
+   ],
+   "6": [
+    "passed",
+    "34ad803c7e7d6960b0738c61f3e98b1f"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGetConfigForClientErrorsConnectionRejection": {
+   "2": [
+    "passed",
+    "0d5697440c0778607d3628ad5738f824"
+   ],
+   "4": [
+    "passed",
+    "e898965293985ec4a0d9727eb8c8d640"
+   ],
+   "6": [
+    "passed",
+    "7d9b1119feaf9743bab684991e665fad"
+   ],
+   "7": [
+    "passed",
+    "5e18d7fe4edc9c5505ab95c1dd840514"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestMITMForgedInitialPacket": {
+   "2": [
+    "passed",
+    "db8f7016b1e15d41d824e8366af92fad"
+   ],
+   "5": [
+    "passed",
+    "597e990f52c1298d9151cd4006686efb"
+   ],
+   "6": [
+    "passed",
+    "2e5ec5320b33bb7a9db670a1d451f359"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3QlogHeaderRedaction": {
+   "2": [
+    "passed",
+    "d8de6a0f5eb39c6a66c0623aaa4cc7ed"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestClosedConnectionsInAcceptQueue": {
+   "2": [
+    "passed",
+    "110051092095c693b100a302c9b6c38e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestReadDeadlineAsync": {
+   "2": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "3": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "6": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ],
+   "7": [
+    "interrupted",
+    "56bd79e287e6c2019201ca7396acd076"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnContextRejection": {
+   "4": [
+    "passed",
+    "bc89660f92849a733e0943c6a7d2ea5d"
+   ],
+   "7": [
+    "passed",
+    "ab36afcb4c3ad9590019c53bff12533e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestPathMTUDiscovery": {
+   "4": [
+    "passed",
+    "f8590cd87b9c56dd72c46d4da7fdf70b"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogIPRedaction": {
+   "4": [
+    "passed",
+    "2b8b4af1c8080e29755d0a3e2c53f890"
+   ],
+   "5": [
+    "passed",
+    "703ae15251767d26c5332c5696406e2f"
+   ],
+   "6": [
+    "passed",
+    "e8ec1e25aff2dea024ea8e5e33ec812f"
+   ],
+   "7": [
+    "passed",
+    "08de9814185acc68da7652b20a6bfbb3"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSGetConfigForClientError": {
+   "4": [
+    "passed",
+    "fb74f8454d98fe97d79ae9c7010d0bc7"
+   ],
+   "6": [
+    "passed",
+    "fd9e56f2ee283bcf7271b2ba1474778e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestQlogHandshake": {
+   "4": [
+    "passed",
+    "c5b07f7ac16008771d0822eae79c0d7f"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestGracefulShutdownShortRequest": {
+   "4": [
+    "passed",
+    "d78d6a04669d86d38d87e74f4299a532"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestBidirectionalStreamMultiplexing": {
+   "4": [
+    "passed",
+    "eac342d7773a9ad80cc8805f9d36e09e"
+   ],
+   "6": [
+    "passed",
+    "2006376515236757751210e3c4152bce"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP0RTT": {
+   "4": [
+    "passed",
+    "664b812fac87b808d4813e4edd424ba2"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPReestablishConnectionAfterDialError": {
+   "4": [
+    "passed",
+    "dd6f8989f9535a6873ae35e724d6c085"
+   ],
+   "6": [
+    "passed",
+    "2943fe0b82ba7b415291c483bcf3e552"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestACKBundling": {
+   "4": [
+    "passed",
+    "9965be8c6f52060a7e555a1cfee6d11e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTPDatagramStreamReset": {
+   "4": [
+    "passed",
+    "613677c305e355a2cab0b0d5b606300b"
+   ],
+   "5": [
+    "passed",
+    "f149b5f1add2dff369b13026dd81b4d4"
+   ],
+   "7": [
+    "passed",
+    "c6a27eb49265d5fb2fa901cfadb751be"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::Test0RTTWithIncreasedStreamLimit": {
+   "4": [
+    "passed",
+    "c01d1d66f12e2be0d0743e982e691f7f"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestNoPacketsSentWhenClientHelloFails": {
+   "4": [
+    "passed",
+    "be7664de54a5df043bb0802312a720e4"
+   ],
+   "6": [
+    "passed",
+    "33a8024b0010bb731b17b3666bc21409"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeContextTimeout": {
+   "4": [
+    "passed",
+    "37390f9668621b46396c90d851fabaf1"
+   ],
+   "7": [
+    "passed",
+    "29982d3b59c9b403677c8149b4d52505"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCancellationError": {
+   "5": [
+    "passed",
+    "ceb7c6f3789335f24d8751ec2a34c4c3"
+   ],
+   "6": [
+    "passed",
+    "6c844ab47f34f883c45154c2698b02f6"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestConnectionIDsZeroLength": {
+   "6": [
+    "passed",
+    "55a83bcef77b0d3f9448bf754df95813"
+   ],
+   "7": [
+    "passed",
+    "f23e9ff9d3caadcc837acaccadc17306"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeCipherSuites": {
+   "6": [
+    "passed",
+    "9ed36489e865ef340d50c1ff176d743e"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestHandshakeRTTHelloRetryRequest": {
+   "7": [
+    "passed",
+    "451b33eec0931579c9a9899eb2799fec"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestDownloadWithFixedRTT": {
+   "7": [
+    "passed",
+    "1922ae4154be93015ae6a82045227da8"
+   ]
+  },
+  "github.com/quic-go/quic-go/integrationtests/self::TestTLSConfigGetConfigForClientAddresses": {
+   "7": [
+    "passed",
+    "3f57e1895dbf83b375608bcf5bf4f94e"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/quic-go/quic-go/integrationtests/self::TestHTTP3ListenerGracefulShutdown": {
+   "fail_seeds": [],
+   "passes_in_some_seed": false,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  2,
+  20
+ ],
+ "timing_keep_parallel": [
+  601.355,
+  600.441,
+  600.431
+ ],
+ "timing": {
+  "plain": [
+   7.675,
+   7.58,
+   7.68
+  ],
+  "det": [
+   600.717,
+   600.896,
+   601.466
+  ]
+ },
+ "slowdown": 77.2926384364821
+}

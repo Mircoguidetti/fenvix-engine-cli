@@ -1,0 +1,44 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// Listeners on port 0 (review R-025 D3): with the net control on, the port
+// comes from the test's deterministic stream (10000-29999, below the
+// kernel's ephemeral range) instead of the kernel; a port in use is skipped
+// (the next one from the stream), and after 32 tries the kernel chooses.
+
+package net
+
+import (
+	"context"
+	"runtime"
+	"syscall"
+)
+
+func fenvixPortsOn() bool {
+	return runtime.Fenvix_On(runtime.FenvixNet) && runtime.Fenvix_UserG() && !syscall.Fenvix_IsRunnerCall()
+}
+
+func (sl *sysListener) listenTCP(ctx context.Context, laddr *TCPAddr) (*TCPListener, error) {
+	if laddr != nil && laddr.Port == 0 && fenvixPortsOn() {
+		for i := 0; i < 32; i++ {
+			a := *laddr
+			a.Port = syscall.Fenvix_Port()
+			if l, err := sl.fenvixOrigListenTCP(ctx, &a); err == nil {
+				return l, nil
+			}
+		}
+	}
+	return sl.fenvixOrigListenTCP(ctx, laddr)
+}
+
+func (sl *sysListener) listenUDP(ctx context.Context, laddr *UDPAddr) (*UDPConn, error) {
+	if laddr != nil && laddr.Port == 0 && fenvixPortsOn() {
+		for i := 0; i < 32; i++ {
+			a := *laddr
+			a.Port = syscall.Fenvix_Port()
+			if c, err := sl.fenvixOrigListenUDP(ctx, &a); err == nil {
+				return c, nil
+			}
+		}
+	}
+	return sl.fenvixOrigListenUDP(ctx, laddr)
+}

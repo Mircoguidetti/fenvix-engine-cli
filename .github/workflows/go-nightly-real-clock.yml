@@ -1,0 +1,62 @@
+# Nightly real-clock check of skip mode (review R-025b NC, decision
+# 2026-11-19): skip mode runs tests on the real clock moved to today 00:00
+# UTC (the day is in the key), so a fixture that expires during the day is
+# hidden until the next UTC day. This job records a skip cache on a real
+# repository, then runs `fenvix-go test --skip-real-clock` on it: every test
+# on the real clock, the cache read but not written, and the tests that pass
+# on the virtual day and fail on the real clock listed (non-zero exit when
+# there are any). The output is committed to harness/go/results/nightly/.
+#
+# Scheduled runs fire only from the default branch; on this branch the job
+# runs on workflow_dispatch and on a push that changes harness/go/NIGHTLY.
+name: go-nightly-real-clock
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch: {}
+  push:
+    branches: [claude/go-l0]
+    paths: [harness/go/NIGHTLY]
+
+permissions:
+  contents: write
+
+jobs:
+  real-clock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace
+      - name: Build fenvix-go
+        run: cargo build -q -p fenvix-go --release && cd go && go build -o /tmp/fenvix-go ./cmd/fenvix-go
+      - name: Record on the virtual day, then check on the real clock
+        run: |
+          set -o pipefail
+          repo=prometheus/prometheus
+          pkgs="./model/... ./tsdb/... ./promql/... ./config/..."
+          git init -q /tmp/p && cd /tmp/p
+          git fetch -q --depth 1 https://github.com/$repo HEAD && git checkout -q FETCH_HEAD
+          sha=$(git rev-parse HEAD)
+          out=$GITHUB_WORKSPACE/harness/go/results/nightly/$(date -u +%Y-%m-%d)-prometheus.txt
+          mkdir -p $(dirname $out)
+          { echo "repository $repo at $sha; packages $pkgs; run $GITHUB_RUN_ID"; echo "== record (skip mode, virtual day)"; } > $out
+          GOFLAGS= /tmp/fenvix-go test --skip-cache=/tmp/skc -short $pkgs > /tmp/rec.log 2>&1; echo "exit $?" >> $out
+          grep "fenvix-go:" /tmp/rec.log >> $out || true
+          echo "== check (--skip-real-clock)" >> $out
+          GOFLAGS= /tmp/fenvix-go test --skip-cache=/tmp/skc --skip-real-clock -short $pkgs > /tmp/real.log 2>&1; echo "exit $?" >> $out
+          grep -A50 "fenvix-go: real clock" /tmp/real.log >> $out || true
+          grep -E "^(--- FAIL|FAIL)" /tmp/real.log | head -40 >> $out || true
+          cat $out
+      - name: Commit
+        if: always()
+        run: |
+          d=harness/go/results/nightly
+          [ -d "$d" ] || exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$d" && git commit -qm "Go nightly real-clock check from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done
