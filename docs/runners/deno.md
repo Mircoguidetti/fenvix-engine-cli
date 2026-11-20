@@ -19,13 +19,15 @@ with `deno test --preload`), `deno-runtime.js` (the `Deno` namespace), `bracket.
 
 ## Process model and order
 
-* One `deno test` process per file, in detjs' order (sorted, or the core's shuffle with `--det-seed`); inside a file,
-  declaration order or Deno's own `--shuffle=S` with `S = deriveSeed(seed, file)`. Deno already gives each file its
-  own isolate (MEASURED: globals do not leak, the preload runs again per file), but one process: the environment
-  (`Deno.env.set`), the working directory and written files are shared. The change is counted:
-  `isolation: ... (counted)` in runner-deno.test.js (a test that passes under plain `deno test` because an earlier
-  file set a variable fails alone). Deno also sorts the files of one process itself, so detjs' order needs one
-  process per file anyway.
+* One `deno test` process for every file (audit G-0146), Deno's own model: an isolate per file (MEASURED on Deno
+  2.9.6: globals do not leak, the preload runs again per file, `Deno.mainModule` is the file, the files run in
+  command-line order), one process (the environment, the working directory and written files are shared). `--det`
+  and `--det-cache` keep it, so the verdict is plain `deno test`'s; with `--det-seed`, Deno's own `--shuffle=S`
+  with `S = deriveSeed(seed, "<deno>")`. With the cache the process is the unit (`<deno>`): the isolates' captures
+  are merged in run order (src/runners/deno.js `mergeUnit`), every file's module graph is added, and the one
+  permission audit log of the process is checked with each isolate's detjs set-up left out (from
+  `DETJS_AUDIT_SETUP` to `DETJS_AUDIT_START`). `--det-isolate`: one `deno test` process per file, in detjs' order,
+  the file is the unit (test "G-0146" in runner-deno.test.js).
 * Discovery: Deno has no listing command; detjs applies Deno's rules (file arguments as given; directories walked for
   `{*_,*.,}test.{js,mjs,ts,mts,jsx,tsx}`; `deno.json` `test.include/exclude`, top-level `exclude`, `--ignore=`).
   MEASURED identical to `deno test`'s list on oak (21 files).

@@ -24,11 +24,13 @@ node:fs, process.env, os, child_process, net, dgram, dlopen); the main process (
 * One `bun test` process per test file, in detjs' order: sorted paths, or the core's reproducible shuffle
   (`shuffleIndices`) with `--det-seed`. Inside a file: declaration order, or Bun's own `--randomize --seed=S` with
   `S = deriveSeed(seed, file)` from the core. `--max-concurrency=1`.
-* Why one process per file, also under `--det` without cache: `bun test` runs every file in one process with one
-  global object (MEASURED: a global set by file A is visible in file B). A file reused from the cache would leave the
-  next file in a context the reference run never had (docs/ALL-RUNNERS.md). The change is counted:
-  `isolation: ... (counted)` in runner-bun.test.js shows a test that passes under plain `bun test` and fails alone; on
-  the walk repositories the plain run's outcomes are recorded next to detjs' per commit (`plain.outcomes`).
+* One process for every file (audit G-0145): `bun test` runs every file in one process with one global object
+  (MEASURED: a global set by file A is visible in file B; files run in command-line order, each loaded and run before
+  the next). `--det` and `--det-cache` keep that model (`bun test <files in detjs' order>`; the preload brackets each
+  file through `SharedBracket`, src/runners/bracket.js), so the verdict is plain `bun test`'s. With the cache the
+  process is the unit (`<bun>`, entries `<file>@@process::<test>`): every file reused or every one run.
+  `--det-isolate`: one `bun test` process per file (the earlier model), the file is the unit; a test that needs
+  another file's globals then fails, counted (test "G-0145" in runner-bun.test.js).
 * Discovery is Bun's own: a `bun test` with the same filters and a preload whose loader hook returns an empty module
   for every file and records its path (no test code runs). The file list is exactly what `bun test` would run.
 * bunfig.toml: Bun loads bunfig's preloads before any `--preload` (MEASURED), so their reads would escape the capture.
