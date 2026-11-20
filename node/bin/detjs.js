@@ -16,6 +16,9 @@ const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test|tap|a
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
+  // --det-isolate for Vitest and Jest: one runner session per test (src/isolate.js), which run without it
+  if ((cmd === 'vitest' || cmd === 'jest') && !process.env.DETJS_ISOLATE_CHILD
+    && rest.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true')) return require('../src/isolate').main(cmd, rest);
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'bun-test') return require('../src/runners/bun').main(rest);

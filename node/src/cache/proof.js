@@ -224,6 +224,10 @@ class ProofSession {
     this.realClock = Boolean(opts.cacheRealClock);
     // the runner calls the reuse decision after its start-up code (Vitest: globalSetup runs before the sequencer)
     this.decidesAfterStartup = runner === 'vitest';
+    // --det-isolate (src/isolate.js): each test runs in a runner session of its own, whose entries live under a
+    // scope of their own (`<file>@@<project>~<scope>`), so that the sessions of the tests of one file never share
+    // (or overwrite) a file entry
+    this.scope = process.env.DETJS_CACHE_SCOPE || '';
     this.maxAgeDays = opts.cacheMaxAge === undefined || opts.cacheMaxAge === null ? 30 : Number(opts.cacheMaxAge);
     this.expiries = [];
     // A Level 0 control switched off makes its source real and unrecorded (the real clock, real randomness, the open
@@ -397,6 +401,15 @@ class ProofSession {
     return s.length ? digest(s) : '';
   }
 
+  scoped(project) {
+    return this.scope ? `${project || ''}~${this.scope}` : (project || '');
+  }
+
+  unscoped(project) {
+    const p = project || '';
+    return this.scope && p.endsWith(`~${this.scope}`) ? p.slice(0, -(this.scope.length + 1)) : p;
+  }
+
   noteProject(name, reason) {
     if (reason) this.uncacheableProjects.set(name || '', reason);
   }
@@ -437,12 +450,13 @@ class ProofSession {
     }
     this.quiet(() => {
       for (const f of files) {
-        const proj = f.project || '';
-        if (this.uncacheableProjects.has(proj)) {
-          this.misses.set(this.idOf(f.fileId, proj), `uncacheable-project: ${this.uncacheableProjects.get(proj)}`);
+        const proj0 = f.project || '';
+        const proj = this.scoped(proj0);
+        if (this.uncacheableProjects.has(proj0)) {
+          this.misses.set(this.idOf(f.fileId, proj), `uncacheable-project: ${this.uncacheableProjects.get(proj0)}`);
           continue;
         }
-        this.store.setConfig(this.configFor(proj));
+        this.store.setConfig(this.configFor(proj0));
         const r = this.checkFile(f.fileId, proj);
         if (r.ok) {
           this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration, receipts: r.receipts, covers: f.covers || null });
@@ -504,7 +518,9 @@ class ProofSession {
       try { c = JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8')); } catch { continue; /* truncated: not recorded */ }
       // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
       // processes) corrects `ok` from the runner's own results
-      out.push(this.captureFilter ? this.captureFilter(c) : c);
+      const x = this.captureFilter ? this.captureFilter(c) : c;
+      if (this.scope) x.project = this.scoped(x.project);
+      out.push(x);
     }
     return out;
   }
@@ -584,14 +600,14 @@ class ProofSession {
     for (const k of Object.keys(this.curEnv)) if (typeof this.curEnv[k] === 'string') curEnv[k] = this.curEnv[k];
     const projects = new Set(['', ...captures.map((c) => c.project || '')]);
     const configFor = {};
-    for (const p of projects) configFor[p] = this.configFor(p);
+    for (const p of projects) configFor[p] = this.configFor(this.unscoped(p));
     const hits = {};
     for (const [nid, rc] of this.hits) hits[nid] = rc.outcome;
     const input = {
       global: this.globalItems(), spec_keys: [...this.specKeys], captures, cur_env: curEnv,
       urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
-      uncacheable_projects: [...this.uncacheableProjects.keys()], verify: Boolean(this.verify), hits,
+      uncacheable_projects: [...this.uncacheableProjects.keys()].map((p) => this.scoped(p)), verify: Boolean(this.verify), hits,
     };
     const text = JSON.stringify(input);
     if (process.env.DETJS_POLICY_DUMP) {
