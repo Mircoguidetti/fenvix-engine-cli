@@ -2504,6 +2504,8 @@ def start(early_config, ns) -> None:
     # detpy's own variables (set by its re-exec, e.g. the precompile time) are configuration, not inputs
     env0 = {_safe(k): _safe(v) for k, v in os.environ.items() if k not in _DETPY_OWN_ENV}
     cap = Capture(root, env0)
+    cap.stdlib_dirs = tuple(d + os.sep for d in _sites._stdlib_dirs)  # before the first lookup (root conftest)
+    cap.site_dirs = tuple(d + os.sep for d in _sites._site_dirs)
     CAPTURE = cap
     _ENV_CAPTURE = cap
     _patch_environ()

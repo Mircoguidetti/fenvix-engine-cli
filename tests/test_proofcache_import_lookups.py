@@ -381,3 +381,27 @@ def test_dangling_symlink_that_goes_away(pytester, cycle):
     assert p.get("test_l.py::test_link_present") == "passed", rs[0].stdout.str()
     assert fresh.get("test_l.py::test_link_present") == "failed", rs[2].stdout.str()
     assert wrong == {}, rs[1].stdout.str()
+
+
+def test_root_conftest_lookups_do_not_key_site_packages(pytester):
+    # a root conftest is imported between the capture's start and pytest_configure: its module lookups must already
+    # leave site-packages and the standard library out (covered by the runtime identity); keyed, every bump that adds
+    # or removes a module there reran every test (dependency verdict REPORT-3, dv18: community.general, moto)
+    import sysconfig
+
+    pytester.makeini("[pytest]\n")
+    pytester.makeconftest("""
+        try:
+            import detpy_not_installed_xyz  # noqa: F401
+        except ImportError:
+            pass
+        """)
+    pytester.makepyfile(test_c="def test_c():\n    assert True\n")
+    cache = pytester.path / ".c"
+    pytester.runpytest_subprocess("--det", f"--det-cache={cache}", "-p", "no:cacheprovider").assert_outcomes(passed=1)
+    entry = json.loads((cache / "proof-cache.json").read_text())["tests"]["test_c.py::test_c"]
+    purelib = sysconfig.get_paths()["purelib"]
+    keyed = [k for k, _ in entry["data"] if k.startswith(purelib) or k.startswith(sysconfig.get_paths()["stdlib"])]
+    assert not keyed, keyed
+    # the repository root is still searched (a module that appears there would shadow the import)
+    assert any("importable" in k or "detpy_not_installed_xyz" in k for k, _ in entry["data"]), entry["data"]
