@@ -25,6 +25,10 @@ import pytest
 pytest.importorskip("xdist")
 needs_cache = pytest.mark.skipif(sys.version_info < (3, 12), reason="--det-cache needs sys.monitoring")
 needs_root = pytest.mark.skipif(os.geteuid() != 0, reason="changes host files")
+# Scenarios made of a Linux-only facility: they cannot happen where it does not exist (macOS has no /dev/shm
+# directory, no /proc, no os.getrandom, no sched_getaffinity)
+def linux_only(what):
+    return pytest.mark.skipif(not sys.platform.startswith("linux"), reason=f"{what} exists on Linux only")
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -327,6 +331,7 @@ def shm_file(text):
         p.unlink(missing_ok=True)
 
 
+@linux_only("/dev/shm")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2a_conftest_import_reads_dev_shm(pytester, monkeypatch, n):
@@ -349,6 +354,7 @@ def test_2a_conftest_import_reads_dev_shm(pytester, monkeypatch, n):
                        truth_outcomes=dict(passed=1, failed=1), record_outcomes=dict(passed=2))
 
 
+@linux_only("/proc/self/root")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2a_any_file_read_through_proc_self_root(pytester, tmp_path_factory, monkeypatch, n):
@@ -372,6 +378,7 @@ def test_2a_any_file_read_through_proc_self_root(pytester, tmp_path_factory, mon
                    truth_outcomes=dict(passed=1, failed=1), record_outcomes=dict(passed=2))
 
 
+@linux_only("/proc/self/status and sched_getaffinity")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2a_pool_size_from_proc_self_status(pytester, n):
@@ -402,6 +409,7 @@ def test_2a_pool_size_from_proc_self_status(pytester, n):
         os.sched_setaffinity(0, before)
 
 
+@linux_only("/dev/shm")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2a_between_tests_hook_reads_dev_shm_into_the_environment(pytester, monkeypatch, n):
@@ -749,6 +757,7 @@ def test_2d_variable_set_by_a_worker_only_hook_from_a_recorded_file(pytester, tm
 # =====================================================================================================================
 # 2e. --det-urandom
 # =====================================================================================================================
+@linux_only("os.getrandom")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2e_os_getrandom_is_entropy(pytester, n):
@@ -1151,6 +1160,7 @@ SAME_PORT = {
 }
 
 
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="the own-listener match reads /proc/self/net/tcp; elsewhere every loopback connect counts as a connection, so the wrong match cannot happen")
 @needs_cache
 @pytest.mark.parametrize("n", NS)
 def test_2c_listener_match_ignores_the_address(pytester, monkeypatch, n):

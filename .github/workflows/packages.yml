@@ -189,6 +189,8 @@ jobs:
             --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does \
             -rfE 2>&1 | tee py.log | tail -60; rc=${PIPESTATUS[0]}
           echo "== failures"; grep -E "^(FAILED|ERROR) " py.log || true
+          # the tracebacks, in the job log (artifacts are not readable from every place the results are read)
+          echo "== tracebacks"; sed -n '/^=* FAILURES =*$/,/^=* short test summary/p; /^=* ERRORS =*$/,/^=* FAILURES =*$/p' py.log | cut -c1-400 | head -6000
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()
