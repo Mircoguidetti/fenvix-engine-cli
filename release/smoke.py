@@ -23,7 +23,7 @@ import time
 # One small real repository per language, pinned to a tag (DECLARED choice; docs/RELEASE-1.md).
 REPOS = {
     "python": {"url": "https://github.com/pallets/itsdangerous", "ref": "2.2.0"},
-    "node": {"url": "https://github.com/simple-statistics/simple-statistics", "ref": "v7.8.8"},
+    "node": {"url": "https://github.com/simple-statistics/simple-statistics", "ref": "v7.9.3"},
     "go": {"url": "https://github.com/google/uuid", "ref": "v1.6.0"},
     "jvm": {"url": "https://github.com/google/gson", "ref": "gson-parent-2.11.0"},
 }
@@ -98,7 +98,8 @@ class Smoke:
             o = os.path.join(self.work, f"outcomes{i}.json")
             _, out = self.sh(f"cache{i}", self.fx + ["python", "-q", "-p", "no:cacheprovider", "--det",
                                            f"--det-cache={cache}", f"--det-outcomes={o}", "tests"])
-            outs.append(json.load(open(o)) if os.path.exists(o) else {})
+            # --det-outcomes: {"outcomes": {nodeid: outcome}, "durations": ..., "cache": ...}
+            outs.append((json.load(open(o)).get("outcomes") or {}) if os.path.exists(o) else {})
             m = re.search(r"reused (\d+) result", out)
             reused = int(m.group(1)) if m else 0
         self.same_outcomes(outs[0], outs[1], reused)

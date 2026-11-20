@@ -94,7 +94,7 @@ A release candidate is the branch commit whose `release-1` workflow run has ever
 6. `smoke`: one real repository per language, installed with `release/install-image.sh`, driven through
    `release/fenvix`: two `--det` runs whose traces verify identical, two cache runs where the second reuses at least
    one test with proof and no outcome differs (`release/smoke.py`; repositories: pallets/itsdangerous 2.2.0,
-   simple-statistics v7.8.8, google/uuid v1.6.0, google/gson 2.11.0).
+   simple-statistics v7.9.3, google/uuid v1.6.0, google/gson 2.11.0).
 
 Not gates (reported): `other-os`, R-001 results checks (`test_review_results.py`), the walks of each branch's harness
 (their numbers stay in their own reports; they were measured on the branch engines, not re-run on release-1).
