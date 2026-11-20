@@ -8,7 +8,7 @@ on:
       seeds: {description: "seeds per repository", default: "50"}
       confirm: {description: "replays per reproduced test", default: "10"}
       result_set: {description: "results directory under harness/results", default: "block2"}
-      tools: {description: "JSON list of tools: detpy, randomly, standalone", default: '["detpy", "randomly"]'}
+      tools: {description: "JSON list of tools: detpy, randomly, standalone, fenvix", default: '["detpy", "randomly"]'}
 
 permissions:
   contents: write
@@ -86,6 +86,7 @@ jobs:
           find art -type d -name '*.bundles' -prune -exec cp -r {} "$dest/" \;
           find art -name 'skipped.json' -size +3c -exec sh -c 'cp "$1" "'"$dest"'/skipped-$(basename $(dirname "$1")).json"' _ {} \;
           python -c "import json; json.dump({'run': '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}', 'seeds': ${{ inputs.seeds }}, 'confirm': ${{ inputs.confirm }}}, open('$dest/meta.json', 'w'), indent=2)"
+          if ls "$dest"/*.fenvix.block2.json > /dev/null 2>&1; then python harness/block2_fenvix_report.py "$dest" harness/results/block2-final; fi
           cp -r "$dest" /tmp/results-out
       - name: commit results to the branch tip
         run: |

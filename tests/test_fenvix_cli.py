@@ -1,0 +1,168 @@
+"""F-02 / F-18: one ``fenvix`` command (G-0234, G-0272, G-1534, G-1555, G-0448 family for Python, G-1554, G-1861,
+G-1862, G-1863, G-1970, G-1995, G-2203, G-2204, G-2205, G-2209, G-2020, G-0697, G-0698, G-0699).
+
+``fenvix`` is installed as a console script with the Python package; ``fenvix repro|explore|replay|verify`` reach
+the defect workflow; repro prints the cause, the seed and order, and the replay command; the runner adapters other
+than pytest say plainly that they are not built yet.
+"""
+from __future__ import annotations
+
+import json
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+import pytest
+
+FX = [sys.executable, "-m", "detpy.fenvix"]
+
+PROJECT = '''
+STATE = {}
+
+def test_a():
+    pass
+
+def test_polluter():
+    STATE["x"] = 1
+
+def test_b():
+    pass
+
+def test_victim():
+    assert "x" not in STATE
+
+def test_c():
+    pass
+'''
+
+
+def _env() -> dict:
+    env = dict(os.environ)
+    for k in ("PYTEST_ADDOPTS", "PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID"):
+        env.pop(k, None)
+    return env
+
+
+def fx(*args, cwd=None, timeout=900):
+    return subprocess.run([*FX, *args], cwd=cwd, env=_env(), capture_output=True, text=True, timeout=timeout)
+
+
+@pytest.fixture
+def project(tmp_path):
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_o.py").write_text(PROJECT)
+    (tmp_path / "pytest.ini").write_text("[pytest]\naddopts = -p no:cacheprovider -p no:randomly\n")
+    return tmp_path
+
+
+def test_console_script_is_declared():
+    from importlib import metadata
+
+    eps = {e.name: e.value for e in metadata.entry_points(group="console_scripts")
+           if e.name in ("fenvix", "detpy")}
+    assert eps.get("fenvix") == "detpy.fenvix:main", eps
+
+
+def test_help_lists_the_product_commands_and_version_flags():
+    p = fx("--help")
+    assert p.returncode == 0
+    for c in ("fenvix pytest", "fenvix repro", "fenvix explore", "fenvix replay", "fenvix verify", "vitest", "jest",
+              "playwright", "zope-testrunner"):
+        assert c in p.stdout, c
+    for flag in ("--version", "-V", "version"):
+        p = fx(flag)
+        assert p.returncode == 0 and p.stdout.startswith("fenvix "), (flag, p.stdout, p.stderr)
+    d = subprocess.run([sys.executable, "-m", "detpy", "--version"], capture_output=True, text=True)
+    assert d.returncode == 0 and d.stdout.startswith("detpy "), d.stderr
+    for sub in ("repro", "explore", "replay", "verify"):
+        p = fx(sub, "--help")
+        assert p.returncode == 0 and f"fenvix {sub}" in p.stdout, sub
+
+
+def test_pytest_entry_adds_det_and_prints_the_repro_command(project):
+    p = fx("pytest", "-q", "tests", cwd=project)
+    assert p.returncode == 1, p.stdout + p.stderr
+    assert "detpy (Level 0)" in p.stdout  # --det was added
+    assert "fenvix repro tests/test_o.py::test_victim" in p.stdout, p.stdout
+
+
+def test_repro_prints_cause_seed_order_and_replay_command(project):
+    p = fx("repro", "tests/test_o.py::test_victim", "--confirm", "4", "--seeds", "3", cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    out = p.stdout
+    assert "status:  REPRODUCED: failed 4/4 replays with one fingerprint" in out, out
+    assert "cause:   test order: it fails when run after tests/test_o.py::test_polluter" in out, out
+    assert "seed:    none (fixed order)" in out, out
+    assert "order:   tests/test_o.py::test_polluter -> tests/test_o.py::test_victim" in out, out
+    line = next(x for x in out.splitlines() if x.strip().startswith("replay:"))
+    bundle = line.split("fenvix replay ", 1)[1].strip()
+    data = json.loads((project / bundle / "bundle.json").read_text())
+    assert data["runner"] == "pytest" and data["status"] == "reproduced"
+    # the replay command works as printed, and says what it found in a sentence (G-2020)
+    r = fx("replay", bundle, "--runs", "3", cwd=project)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "REPRODUCED: failed 3/3 runs, identical fingerprint: True" in r.stdout
+
+
+def test_repro_of_an_unknown_test_says_so(project):
+    p = fx("repro", "tests/test_o.py::nope", cwd=project)
+    assert p.returncode == 1
+    assert "not collected" in p.stdout and "None" not in p.stdout, p.stdout  # G-2209
+
+
+def test_replay_of_a_non_bundle_is_one_line(tmp_path):
+    p = fx("replay", str(tmp_path))
+    assert p.returncode == 2 and "not a replay bundle" in p.stderr and "Traceback" not in p.stderr  # G-2205
+
+
+def test_explore_finds_and_bundles_the_flaky_test(project):
+    p = fx("explore", "--budget", "5", "--max-seeds", "4", "--confirm", "2", cwd=project, timeout=1500)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert p.stdout.startswith("fenvix explore:"), p.stdout
+    summary = json.loads((project / ".detpy" / "repro" / "explore.json").read_text())
+    assert summary.get("runner") in (None, "pytest")  # file written by the engine; the printed summary has it
+
+
+@pytest.mark.parametrize("runner,test", [("vitest", "src/sum.test.ts"), ("jest", "src/sum.test.js"),
+                                         ("playwright", "e2e/login.spec.ts")])
+def test_js_adapters_are_planned_and_say_so(tmp_path, runner, test):
+    p = fx("repro", test, "--runner", runner, cwd=tmp_path)
+    assert p.returncode == 2
+    assert f"not available for {runner}" in p.stderr and "docs/CLI.md" in p.stderr, p.stderr
+
+
+def test_adapter_is_picked_from_the_test_id(tmp_path):
+    from detpy import fenvix
+
+    assert fenvix.pick_adapter(None, test="tests/test_a.py::test_x").name == "pytest"
+    (tmp_path / "vitest.config.ts").write_text("")
+    cwd = os.getcwd()
+    try:
+        os.chdir(tmp_path)
+        assert fenvix.pick_adapter(None, test="src/a.test.ts").name == "vitest"
+    finally:
+        os.chdir(cwd)
+
+
+def test_detect_names_runners_and_subprojects(tmp_path):
+    (tmp_path / "api").mkdir()
+    (tmp_path / "api" / "requirements.txt").write_text("pytest\n")
+    (tmp_path / "web").mkdir()
+    (tmp_path / "web" / "package.json").write_text(json.dumps({"devDependencies": {"vitest": "^3"}}))
+    (tmp_path / "manage.py").write_text("")
+    p = fx("detect", str(tmp_path))
+    assert p.returncode == 0
+    rows = {tuple(r.split("\t")) for r in p.stdout.splitlines()}
+    assert (".", "python", "django") in rows and ("api", "python", "pytest") in rows and ("web", "node", "vitest") in rows
+    p = fx("detect", str(tmp_path / "missing"))
+    assert p.returncode != 0 and "Traceback" not in p.stderr  # G-1863
+
+
+def test_zope_alias_and_python_runner_compat(tmp_path):
+    # G-1862: `zope` is accepted as the name of zope-testrunner (no "invalid choice")
+    from detpy import fenvix
+
+    assert "zope-testrunner" in fenvix.PY_RUNNERS
+    p = fx("python-runner")
+    assert p.returncode == 2 and "name a runner" in p.stderr

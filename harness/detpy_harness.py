@@ -630,6 +630,42 @@ def block2_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
             bundles.append(b)
             runner.drop_traces()
         res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
+    elif args.tool == "fenvix":
+        # The product command, as a developer runs it: `fenvix repro <target>` per target (a subprocess of the
+        # project's interpreter, its printed cause line and its JSON bundle recorded), no exploration hint.
+        bundles = []
+        for t in targets:
+            if time.monotonic() - t0 > args.repo_budget:
+                bundles.append({"test": t, "status": "budget"})
+                continue
+            cmd = [p.python, "-m", "detpy.fenvix", "repro", t, "--seeds", str(args.seeds), "--confirm",
+                   str(args.confirm), "--max-runs", str(args.max_repro_runs), "--timeout", str(args.run_timeout),
+                   "--out", str(rundir / "bundles"), "--json", "--", *p.pytest_args, *serial]
+            t1 = time.monotonic()
+            try:
+                pr = subprocess.run(cmd, cwd=p.src, env=env, capture_output=True, text=True,
+                                    timeout=max(60.0, args.repo_budget - (t1 - t0)))
+                out, code = pr.stdout, pr.returncode
+            except subprocess.TimeoutExpired as e:
+                out, code = (e.stdout or b"").decode() if isinstance(e.stdout, bytes) else (e.stdout or ""), -9
+            b = {"test": t, "status": "no-output"}
+            i = out.find("\n{")
+            if i >= 0:
+                try:
+                    b = json.JSONDecoder().raw_decode(out[i + 1:])[0]
+                except ValueError:
+                    pass
+            head = out[:i] if i >= 0 else out
+            b["printed"] = head[-3000:]
+            b["cause_line"] = next((ln.split("cause:", 1)[1].strip() for ln in head.splitlines()
+                                    if ln.strip().startswith("cause:")), None)
+            b["replay_line"] = next((ln.strip() for ln in head.splitlines() if ln.strip().startswith("replay:")),
+                                    None)
+            b["exit"] = code
+            b["wall_seconds"] = round(time.monotonic() - t1, 2)
+            bundles.append(b)
+            log(f"{p.name}: fenvix repro {t}: {b.get('status')} ({b['wall_seconds']} s)")
+        res.update(bundles=bundles, seconds=round(time.monotonic() - t0, 2))
     else:
         seeds_log, first_fail = [], {}
         for s in range(1, args.seeds + 1):
@@ -1313,7 +1349,7 @@ def main(argv=None) -> int:
                          "timing: quiet timing pass; orderonly: re-run reproduced tests with every Level 0 "
                          "control disabled except the order (--targets); baseline: --runs baseline runs only, "
                          "with the installed package versions")
-    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone"), default="detpy",
+    ap.add_argument("--tool", choices=("detpy", "randomly", "standalone", "fenvix"), default="detpy",
                     help="block2: which seed search to measure")
     ap.add_argument("--block2-targets", default=str(HERE / "block2_targets.json"))
     ap.add_argument("--targets", default=str(HERE / "order_only_targets.json"),

@@ -221,6 +221,15 @@ fn verify(paths: Vec<PathBuf>) -> PyResult<String> {
     serde_json::to_string(&report).map_err(|e| PyRuntimeError::new_err(e.to_string()))
 }
 
+/// `fenvix verify`: (report JSON, text) with `--ignore-env` names left out of the run inputs.
+#[pyfunction]
+#[pyo3(signature = (paths, ignore_env = Vec::new(), show_stable = false))]
+fn verify_with(paths: Vec<PathBuf>, ignore_env: Vec<String>, show_stable: bool) -> PyResult<(String, String)> {
+    let report = v::verify_paths_ignoring(&paths, &ignore_env).map_err(trace_err)?;
+    let json = serde_json::to_string(&report).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
+    Ok((json, v::render_text(&report, show_stable)))
+}
+
 /// Verify traces and render a human-readable report.
 #[pyfunction]
 #[pyo3(signature = (paths, show_stable = false))]
@@ -274,6 +283,7 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Cassette>()?;
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
+    m.add_function(wrap_pyfunction!(verify_with, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
     m.add_function(wrap_pyfunction!(shuffle_order, m)?)?;
     m.add_function(wrap_pyfunction!(order_digest, m)?)?;

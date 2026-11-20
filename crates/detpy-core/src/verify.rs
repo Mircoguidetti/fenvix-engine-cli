@@ -7,7 +7,7 @@
 //! diverge and a classification of the cause.
 
 use crate::event::{Event, Source};
-use crate::fingerprint::TestRecord;
+use crate::fingerprint::{TestRecord, UNCONTROLLED_PREFIX};
 use crate::trace::{order_digest, read_trace, Trace, TraceError};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -40,6 +40,27 @@ pub enum Reason {
     BeyondTrace,
     /// The test did not run in every trace.
     Missing,
+    /// A run input recorded in the trace header (`meta.inputs`) differs between the runs: an environment variable.
+    Env,
+    /// The time zone the runs used differs (pinned value, or the machine's when not pinned).
+    Tz,
+    /// The locale the runs used differs.
+    Locale,
+    /// The seed of the generators and of the shuffle differs.
+    Seed,
+    /// `PYTHONHASHSEED` (string hashing, set and dict order of str keys) differs.
+    Hashseed,
+    /// The test ran after different tests (serial runs: its in-process predecessors differ).
+    Order,
+    /// The interpreter, its version, the platform or the test runner differs.
+    Runtime,
+    /// Another recorded run input differs (a control switched on in one run only, bytecode mode, ...), or one run
+    /// recorded no inputs.
+    Config,
+    /// The test started a child process: what the child does is not controlled by Level 0.
+    Child,
+    /// The test waited on I/O readiness (selectors): the order in which ready I/O is delivered is not controlled.
+    Io,
     /// One run is a parallel run under a plan (merged trace), the other serial, and the test ran in its worker
     /// without some of its serial in-process predecessors (`lost_predecessors`): it observed process state that
     /// depends on where it ran (docs/PARALLEL-PROOF-DESIGN.md 2.4). Entropy and thread divergences keep their class.
@@ -62,6 +83,71 @@ impl Reason {
             Reason::BeyondTrace => "beyond-trace",
             Reason::Missing => "missing",
             Reason::Placement => "placement",
+            Reason::Env => "env",
+            Reason::Tz => "tz",
+            Reason::Locale => "locale",
+            Reason::Seed => "seed",
+            Reason::Hashseed => "hashseed",
+            Reason::Order => "order",
+            Reason::Runtime => "runtime",
+            Reason::Config => "config",
+            Reason::Child => "child",
+            Reason::Io => "io",
+        }
+    }
+
+    /// The reason an event names by its operation, before its source: environment reads (`env.*`), time zone and
+    /// locale reads (`tz.*`, `locale.*`) and the markers of uncontrolled sources (`uncontrolled.thread|child|io`).
+    fn from_op(op: &str) -> Option<Reason> {
+        if op.starts_with("env.") {
+            return Some(Reason::Env);
+        }
+        if op.starts_with("tz.") {
+            return Some(Reason::Tz);
+        }
+        if op.starts_with("locale.") {
+            return Some(Reason::Locale);
+        }
+        match op.strip_prefix(UNCONTROLLED_PREFIX) {
+            Some("thread") => Some(Reason::Thread),
+            Some("child") => Some(Reason::Child),
+            Some("io") => Some(Reason::Io),
+            Some(_) => Some(Reason::Other),
+            None => None,
+        }
+    }
+
+    fn of_event(e: &Event) -> Reason {
+        Reason::from_op(&e.op).unwrap_or_else(|| Reason::from_source(e.source))
+    }
+
+    fn of_uncontrolled(kind: &str) -> Reason {
+        match kind {
+            "thread" => Reason::Thread,
+            "child" => Reason::Child,
+            "io" => Reason::Io,
+            _ => Reason::Other,
+        }
+    }
+
+    /// The reason a differing run input names (`meta.inputs` key).
+    pub fn of_input(name: &str) -> Reason {
+        if name.starts_with("env:") {
+            return Reason::Env;
+        }
+        match name {
+            "tz" => Reason::Tz,
+            "locale" => Reason::Locale,
+            "seed" | "shuffle" => Reason::Seed,
+            "hashseed" => Reason::Hashseed,
+            "clock" => Reason::Time,
+            "network" => Reason::Net,
+            "fs" => Reason::Fs,
+            "urandom" => Reason::Entropy,
+            "order" => Reason::Order,
+            "runtime" | "runner" => Reason::Runtime,
+            "env" => Reason::Env,
+            _ => Reason::Config,
         }
     }
 
@@ -138,6 +224,14 @@ pub struct Summary {
     pub outcome_unstable: usize,
     pub order_identical: bool,
     pub reasons: BTreeMap<String, usize>,
+    /// Every run recorded its inputs (`meta.inputs` in the trace header): without them identical fingerprints do
+    /// not show that the runs had the same time zone, locale, environment, seed, ...
+    #[serde(default)]
+    pub inputs_recorded: bool,
+    /// Tests with no uncontrolled source, the same inputs and the same events in every run (the only ones
+    /// reported identical). Equal to `stable`.
+    #[serde(default)]
+    pub identical: usize,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -147,6 +241,199 @@ pub struct Report {
     pub complete: Vec<bool>,
     pub summary: Summary,
     pub tests: Vec<TestVerdict>,
+    /// Run inputs that differ between run `run_a` (always 0) and the first run `run_b` that differs, in the order
+    /// the verifier names them (the first one is the first divergent event of every test).
+    #[serde(default)]
+    pub input_differences: Vec<InputDifference>,
+    /// Run inputs left out of the comparison at the user's request (`--ignore-env`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub ignored_inputs: Vec<String>,
+}
+
+/// One run input (a key of the trace header's `meta.inputs`) that differs between two runs.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct InputDifference {
+    pub name: String,
+    pub run_a: usize,
+    pub run_b: usize,
+    pub value_a: Option<String>,
+    pub value_b: Option<String>,
+    pub reason: Reason,
+}
+
+/// Key under which a producer records its run inputs in the trace header's `meta`.
+pub const INPUTS_KEY: &str = "inputs";
+
+/// The run inputs of a trace (`meta.inputs`), values as strings; None when the producer recorded none.
+pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
+    let obj = t.header.meta.get(INPUTS_KEY)?.as_object()?;
+    Some(
+        obj.iter()
+            .map(|(k, v)| (k.clone(), v.as_str().map(str::to_string).unwrap_or_else(|| v.to_string())))
+            .collect(),
+    )
+}
+
+/// The order in which differing inputs are named: what decides the most first (the interpreter and the runner,
+/// the hash seed, the seed, the clock, the time zone, the locale, the environment, then the other controls).
+fn input_rank(name: &str) -> (usize, &str) {
+    const ORDER: [&str; 13] = [
+        "runtime", "runner", "seed", "shuffle", "hashseed", "clock", "tz", "locale", "env", "network", "fs",
+        "urandom", "bytecode",
+    ];
+    let base = name.split(':').next().unwrap_or(name);
+    (ORDER.iter().position(|o| *o == base).unwrap_or(ORDER.len()), name)
+}
+
+/// Differing inputs between two runs (empty when equal, or when neither run recorded inputs).
+pub fn diff_inputs(
+    a: Option<&BTreeMap<String, String>>,
+    b: Option<&BTreeMap<String, String>>,
+    run_a: usize,
+    run_b: usize,
+) -> Vec<InputDifference> {
+    let (a, b) = match (a, b) {
+        (None, None) => return Vec::new(),
+        (Some(a), Some(b)) => (a, b),
+        (a, b) => {
+            return vec![InputDifference {
+                name: "inputs".into(),
+                run_a,
+                run_b,
+                value_a: a.map(|_| "recorded".into()),
+                value_b: b.map(|_| "recorded".into()),
+                reason: Reason::Config,
+            }]
+        }
+    };
+    let names: BTreeSet<&String> = a.keys().chain(b.keys()).collect();
+    let mut out: Vec<InputDifference> = names
+        .into_iter()
+        .filter(|k| a.get(*k) != b.get(*k))
+        .map(|k| InputDifference {
+            name: k.clone(),
+            run_a,
+            run_b,
+            value_a: a.get(k).cloned(),
+            value_b: b.get(k).cloned(),
+            reason: Reason::of_input(k),
+        })
+        .collect();
+    out.sort_by(|x, y| input_rank(&x.name).cmp(&input_rank(&y.name)));
+    out
+}
+
+fn show_input(v: &Option<String>) -> String {
+    match v {
+        Some(v) => format!("{v:?}"),
+        None => "<not recorded>".into(),
+    }
+}
+
+fn describe_input(d: &InputDifference) -> String {
+    match d.name.strip_prefix("env:") {
+        Some(var) => format!(
+            "environment variable {var} differs between the runs ({} vs {}; value digests): every test may read it \
+             (C code and child processes read the environment without an event)",
+            show_input(&d.value_a),
+            show_input(&d.value_b)
+        ),
+        None => format!("run input {} differs: {} vs {}", d.name, show_input(&d.value_a), show_input(&d.value_b)),
+    }
+}
+
+/// The divergence every test of two runs with different inputs gets: the first differing input, as an event that
+/// happened before the test started (`input.<name>` @ `<run>`), the others listed in the description.
+fn input_divergence(diffs: &[InputDifference]) -> Divergence {
+    let d = &diffs[0];
+    let mut description = format!("before the test started: {}", describe_input(d));
+    if diffs.len() > 1 {
+        let rest: Vec<&str> = diffs[1..].iter().map(|x| x.name.as_str()).collect();
+        description.push_str(&format!("; also differ: {}", rest.join(", ")));
+    }
+    let ev = |v: &Option<String>| v.as_ref().map(|v| Event::new(Source::Other, format!("input.{}", d.name), "<run>", v.clone()));
+    Divergence {
+        run_a: d.run_a,
+        run_b: d.run_b,
+        index: None,
+        window: None,
+        event_a: ev(&d.value_a),
+        event_b: ev(&d.value_b),
+        reason: d.reason,
+        description,
+        lost_predecessors: Vec::new(),
+    }
+}
+
+/// Serial runs only: the test ran after different tests (its in-process predecessors differ).
+fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, run_b: usize) -> Option<Divergence> {
+    if a.parallel || b.parallel {
+        return None; // a parallel run is compared by placement (docs/PARALLEL-PROOF-DESIGN.md 2.4)
+    }
+    let (pa, pb) = (a.before(id), b.before(id));
+    if pa == pb {
+        return None;
+    }
+    let k = pa.iter().zip(pb.iter()).position(|(x, y)| x != y).unwrap_or(pa.len().min(pb.len()));
+    let at = |p: &[&str]| p.get(k).map(|s| s.to_string()).unwrap_or_else(|| "<none>".into());
+    let list = |p: &[&str]| {
+        let shown: Vec<&str> = p.iter().rev().take(5).rev().copied().collect();
+        let more = if p.len() > 5 { format!("{} earlier, then ", p.len() - 5) } else { String::new() };
+        format!("[{more}{}]", shown.join(", "))
+    };
+    Some(Divergence {
+        run_a,
+        run_b,
+        index: None,
+        window: None,
+        event_a: Some(Event::new(Source::Other, "order.predecessor", "<run>", at(pa))),
+        event_b: Some(Event::new(Source::Other, "order.predecessor", "<run>", at(pb))),
+        reason: Reason::Order,
+        description: format!(
+            "before the test started: it ran after different tests in its process: {} vs {} (first difference at \
+             position {k}: {} vs {})",
+            list(pa),
+            list(pb),
+            at(pa),
+            at(pb)
+        ),
+        lost_predecessors: Vec::new(),
+    })
+}
+
+/// A test with identical fingerprints that used a source Level 0 does not control: never reported covered.
+fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
+    r.uncontrolled.first()?;
+    // the first one the test used (event order), else (past the stored events) the first by name
+    let pos = r.events.iter().position(|e| e.op.starts_with(UNCONTROLLED_PREFIX));
+    let ev = pos.map(|i| r.events[i].clone());
+    let kind = ev
+        .as_ref()
+        .and_then(|e| e.op.strip_prefix(UNCONTROLLED_PREFIX))
+        .map(str::to_string)
+        .unwrap_or_else(|| r.uncontrolled[0].clone());
+    let what = match kind.as_str() {
+        "thread" => "started a thread: thread scheduling",
+        "child" => "started a child process: what the child does",
+        "io" => "waited for I/O readiness: the order in which ready I/O is delivered",
+        _ => "used an uncontrolled source: it",
+    };
+    let at = ev.as_ref().map(|e| format!(" ({} @ {})", e.op, e.site)).unwrap_or_default();
+    Some(Divergence {
+        run_a: run,
+        run_b: run,
+        index: pos.map(|i| i as u64),
+        window: None,
+        event_a: ev.clone(),
+        event_b: ev,
+        reason: Reason::of_uncontrolled(&kind),
+        description: format!(
+            "the test {what}{at} is not controlled by this release, so identical fingerprints are no evidence of \
+             an identical execution (uncontrolled: {})",
+            r.uncontrolled.join(", ")
+        ),
+        lost_predecessors: Vec::new(),
+    })
 }
 
 /// In-process predecessors of every test of one trace: the tests before it in the trace (serial run), or before it
@@ -162,9 +449,11 @@ impl<'a> Predecessors<'a> {
     fn of(t: &'a Trace) -> Self {
         let parallel = t.tests.iter().any(|r| r.worker.is_some());
         let mut lists: BTreeMap<&str, Vec<(u64, &str)>> = BTreeMap::new();
-        for r in &t.tests {
+        for (pos, r) in t.tests.iter().enumerate() {
             let w = r.worker.as_deref().unwrap_or("");
-            lists.entry(w).or_default().push((r.worker_index.unwrap_or(r.index), r.nodeid.as_str()));
+            // serial: the executed order is the order of the trace lines
+            let at = if parallel { r.worker_index.unwrap_or(r.index) } else { pos as u64 };
+            lists.entry(w).or_default().push((at, r.nodeid.as_str()));
         }
         let mut out = Predecessors { parallel, lists: BTreeMap::new(), at: BTreeMap::new() };
         for (w, mut l) in lists {
@@ -300,16 +589,16 @@ fn classify(a: Option<&Event>, b: Option<&Event>) -> Reason {
                 Reason::OutcomeOnly
             } else if is_terminal(ea) && !is_terminal(eb) {
                 // Run A already ended: run B performed an extra interaction.
-                Reason::from_source(eb.source)
+                Reason::of_event(eb)
             } else {
-                Reason::from_source(ea.source)
+                Reason::of_event(ea)
             }
         }
         (Some(e), None) | (None, Some(e)) => {
             if e.thread != 0 {
                 Reason::Thread
             } else {
-                Reason::from_source(e.source)
+                Reason::of_event(e)
             }
         }
         (None, None) => Reason::Other,
@@ -327,6 +616,10 @@ fn describe(i: u64, a: Option<&Event>, b: Option<&Event>) -> String {
         (Some(ea), Some(eb)) if ea.source == Source::Sched && eb.source == Source::Sched => format!(
             "event #{i}: first diverging scheduling choice: {} {} @ {}  <>  {} {} @ {}",
             ea.op, ea.value, ea.site, eb.op, eb.value, eb.site
+        ),
+        (Some(ea), Some(eb)) if ea.op.starts_with("env.") && ea.op == eb.op && ea.site == eb.site => format!(
+            "event #{i}: {} @ {} read the environment differently: {} vs {} (name=value digest)",
+            ea.op, ea.site, ea.value, eb.value
         ),
         (Some(ea), Some(eb)) if ea.op == eb.op && ea.site == eb.site && ea.thread == eb.thread => format!(
             "event #{i}: {} @ {} returned different values: {:?} vs {:?}",
@@ -350,6 +643,10 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         .collect();
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
+    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(run_inputs).collect();
+    // the first run whose inputs differ from run 0's: its differences are every test's first divergent event
+    let input_differences: Vec<InputDifference> =
+        (1..n).map(|j| diff_inputs(inputs[0].as_ref(), inputs[j].as_ref(), 0, j)).find(|d| !d.is_empty()).unwrap_or_default();
     // Report tests in the executed order of the first run, then the rest.
     let mut ordered: Vec<&str> = Vec::new();
     let mut seen = BTreeSet::new();
@@ -361,7 +658,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         }
     }
 
-    let mut summary = Summary { runs: n, ..Default::default() };
+    let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
         let recs: Vec<Option<&TestRecord>> = indexes.iter().map(|m| m.get(id).copied()).collect();
@@ -389,14 +686,44 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                     lost_predecessors: Vec::new(),
                 }),
             )
+        } else if !input_differences.is_empty() {
+            // the runs did not have the same inputs: no test is identical, whatever its fingerprint. When the test
+            // itself read a differing environment variable, that read (an event with its site) is named instead.
+            let j = input_differences[0].run_b;
+            let read = match (recs[0], recs[j]) {
+                (Some(a), Some(b)) if a.fingerprint != b.fingerprint => diff_records(a, b, 0, j)
+                    .filter(|d| d.reason == Reason::Env && input_differences.iter().all(|x| x.reason == Reason::Env)),
+                _ => None,
+            };
+            match read {
+                Some(mut d) => {
+                    let names: Vec<&str> = input_differences.iter().map(|x| x.name.as_str()).collect();
+                    d.description = format!("{} (run inputs that differ: {})", d.description, names.join(", "));
+                    (Status::Diverged, Some(d))
+                }
+                None => (Status::Diverged, Some(input_divergence(&input_differences))),
+            }
+        } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
+            (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
-            (Status::Stable, None)
+            match recs.iter().flatten().find(|r| !r.uncontrolled.is_empty()) {
+                Some(r) => (Status::Diverged, uncontrolled_divergence(r, 0)),
+                None => (Status::Stable, None),
+            }
         } else {
             let a = recs[0].unwrap();
             let j = recs.iter().position(|r| r.unwrap().fingerprint != a.fingerprint).unwrap();
             let mut d = diff_records(a, recs[j].unwrap(), 0, j);
             if let Some(d) = d.as_mut() {
                 placement(d, id, &preds[0], &preds[j]);
+                // same observed events, different outcome, and the test used an uncontrolled source: that source
+                // is the named cause, not "a source Level 0 does not observe"
+                if d.reason == Reason::OutcomeOnly {
+                    if let Some(k) = recs.iter().flatten().find_map(|r| r.uncontrolled.first()) {
+                        d.reason = Reason::of_uncontrolled(k);
+                        d.description = format!("{} (the test used an uncontrolled source: {k})", d.description);
+                    }
+                }
             }
             (Status::Diverged, d)
         };
@@ -423,6 +750,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         });
     }
     summary.tests = tests.len();
+    summary.identical = summary.stable;
     let order_digests: Vec<String> = traces.iter().map(|t| order_digest(&t.executed_order())).collect();
     summary.order_identical = order_digests.windows(2).all(|w| w[0] == w[1]);
     Report {
@@ -431,7 +759,41 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         complete: traces.iter().map(|t| t.is_complete()).collect(),
         summary,
         tests,
+        input_differences,
+        ignored_inputs: Vec::new(),
     }
+}
+
+/// `verify_paths` with run inputs the user declared irrelevant removed before the comparison: `ignore_env` holds
+/// environment variable names, or prefixes ending in `*`. The report lists what was ignored.
+pub fn verify_paths_ignoring<P: AsRef<Path>>(paths: &[P], ignore_env: &[String]) -> Result<Report, TraceError> {
+    let mut traces = Vec::new();
+    let mut labels = Vec::new();
+    for p in paths {
+        traces.push(read_trace(p.as_ref())?);
+        labels.push(p.as_ref().display().to_string());
+    }
+    check_compatible(&traces, &labels)?;
+    let matches = |var: &str| {
+        ignore_env.iter().any(|g| match g.strip_suffix('*') {
+            Some(prefix) => var.starts_with(prefix),
+            None => var == g,
+        })
+    };
+    let mut ignored: BTreeSet<String> = BTreeSet::new();
+    for t in traces.iter_mut() {
+        if let Some(obj) = t.header.meta.get_mut(INPUTS_KEY).and_then(|v| v.as_object_mut()) {
+            let drop: Vec<String> =
+                obj.keys().filter(|k| k.strip_prefix("env:").is_some_and(&matches)).cloned().collect();
+            for k in drop {
+                obj.remove(&k);
+                ignored.insert(k);
+            }
+        }
+    }
+    let mut r = verify(&traces, &labels);
+    r.ignored_inputs = ignored.into_iter().collect();
+    Ok(r)
 }
 
 pub fn verify_paths<P: AsRef<Path>>(paths: &[P]) -> Result<Report, TraceError> {
@@ -471,6 +833,39 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
         let partial = if report.complete.get(i).copied().unwrap_or(true) { "" } else { " (partial)" };
         let _ = writeln!(out, "  run {i}: {l}{partial}");
     }
+    let verdict = if s.tests == 0 {
+        "NOTHING VERIFIED: no test ran in these runs".to_string()
+    } else if s.diverged == 0 && s.missing == 0 {
+        format!("IDENTICAL: all {} tests ran with the same inputs and observed the same events", s.tests)
+    } else {
+        format!(
+            "DIVERGENT: {} of {} tests are not identical (the first divergent event of each is named below)",
+            s.diverged + s.missing,
+            s.tests
+        )
+    };
+    let _ = writeln!(out, "verdict: {verdict}");
+    if !s.inputs_recorded {
+        let _ = writeln!(
+            out,
+            "run inputs: NOT RECORDED in every trace (time zone, locale, environment, seed, ... cannot be compared; \
+             fingerprints alone do not prove the runs had the same inputs)"
+        );
+    } else if report.input_differences.is_empty() {
+        let _ = writeln!(out, "run inputs: identical in every run");
+    } else {
+        let d = &report.input_differences;
+        let _ = writeln!(out, "run inputs: DIFFER between run {} and run {}:", d[0].run_a, d[0].run_b);
+        for x in d.iter().take(20) {
+            let _ = writeln!(out, "    {}: {} vs {}", x.name, show_input(&x.value_a), show_input(&x.value_b));
+        }
+        if d.len() > 20 {
+            let _ = writeln!(out, "    ... and {} more", d.len() - 20);
+        }
+    }
+    if !report.ignored_inputs.is_empty() {
+        let _ = writeln!(out, "ignored at your request (--ignore-env): {}", report.ignored_inputs.join(", "));
+    }
     let _ = writeln!(
         out,
         "order: {}",
@@ -495,7 +890,11 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
                 let tag = if t.status == Status::Missing { "MISSING " } else { "NOT-COVERED" };
                 let outcomes: Vec<&str> = t.outcomes.iter().map(|o| o.as_deref().unwrap_or("-")).collect();
                 let _ = writeln!(out, "{tag} {}  [{}] outcomes={}", t.nodeid, d.reason.as_str(), outcomes.join(","));
-                let _ = writeln!(out, "    runs {} vs {}: {}", d.run_a, d.run_b, d.description);
+                if d.run_a == d.run_b && t.status != Status::Missing {
+                    let _ = writeln!(out, "    every run: {}", d.description);
+                } else {
+                    let _ = writeln!(out, "    runs {} vs {}: {}", d.run_a, d.run_b, d.description);
+                }
             }
         }
     }
@@ -637,11 +1036,156 @@ mod tests {
         let b = trace(vec![rec("y", &[], "passed", 10)]);
         let r = verify(&[a, b], &[]);
         assert_eq!(r.summary.missing, 1);
-        assert_eq!(r.summary.stable, 1);
+        // y ran after x in run 0 and first in run 1: not identical, the order is its first divergent event
+        assert_eq!(r.summary.stable, 0);
+        assert_eq!(r.tests[1].divergence.as_ref().unwrap().reason, Reason::Order);
         assert!(!r.summary.order_identical);
         let text = render_text(&r, true);
         assert!(text.contains("MISSING"), "{text}");
-        assert!(text.contains("STABLE   y"), "{text}");
+        assert!(text.contains("NOT-COVERED y  [order]"), "{text}");
+        assert!(text.contains("verdict: DIVERGENT"), "{text}");
+    }
+
+    fn with_inputs(mut t: Trace, inputs: &[(&str, &str)]) -> Trace {
+        let m: serde_json::Map<String, serde_json::Value> =
+            inputs.iter().map(|(k, v)| (k.to_string(), serde_json::Value::String(v.to_string()))).collect();
+        t.header.meta = serde_json::json!({ "inputs": m });
+        t
+    }
+
+    const BASE: [(&str, &str); 10] = [
+        ("runtime", "CPython 3.13.0 linux x86_64"),
+        ("runner", "pytest 9.0"),
+        ("hashseed", "0"),
+        ("seed", "0"),
+        ("clock", "virtual epoch=1 tick=1000"),
+        ("tz", "UTC (pinned)"),
+        ("locale", "C.UTF-8 (pinned)"),
+        ("env:HOME", "aaaa"),
+        ("network", "closed"),
+        ("fs", "sorted"),
+    ];
+
+    /// The family of G-0139 / G-0180 / G-0041 / G-0054: two runs that differ only in one recorded input are
+    /// divergent, with that input named as the first divergent event, whatever the fingerprints say.
+    #[test]
+    fn every_recorded_input_is_compared_and_named() {
+        let cases: [(&str, &str, Reason); 11] = [
+            ("runtime", "CPython 3.12.0 linux x86_64", Reason::Runtime),
+            ("hashseed", "7", Reason::Hashseed),
+            ("seed", "3", Reason::Seed),
+            ("clock", "virtual epoch=2 tick=1000", Reason::Time),
+            ("tz", "Asia/Tokyo (not pinned)", Reason::Tz),
+            ("locale", "de_DE.UTF-8 (pinned)", Reason::Locale),
+            ("env:HOME", "bbbb", Reason::Env),
+            ("env:MY_FLAG", "cccc", Reason::Env),
+            ("network", "record", Reason::Net),
+            ("fs", "real", Reason::Fs),
+            ("urandom", "controlled", Reason::Entropy),
+        ];
+        for (name, value, reason) in cases {
+            let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
+            let mut changed: Vec<(&str, &str)> = BASE.iter().filter(|(k, _)| *k != name).copied().collect();
+            changed.push((name, value));
+            let b = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &changed);
+            let r = verify(&[a, b], &["a".into(), "b".into()]);
+            assert_eq!(r.summary.stable, 0, "{name}: identical although {name} differs");
+            assert_eq!(r.summary.diverged, 1, "{name}");
+            let d = r.tests[0].divergence.as_ref().unwrap();
+            assert_eq!(d.reason, reason, "{name}");
+            assert_eq!(d.event_a.as_ref().map(|e| e.op.clone()).or(d.event_b.as_ref().map(|e| e.op.clone())),
+                       Some(format!("input.{name}")), "{name}");
+            assert_eq!(r.input_differences[0].name, name);
+            let text = render_text(&r, false);
+            assert!(text.contains("run inputs: DIFFER"), "{text}");
+            assert!(text.contains(&format!("[{}]", reason.as_str())), "{text}");
+        }
+        // same inputs: identical
+        let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
+        let b = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
+        let r = verify(&[a, b], &[]);
+        assert_eq!((r.summary.stable, r.summary.identical), (1, 1));
+        assert!(r.summary.inputs_recorded);
+        assert!(render_text(&r, false).contains("verdict: IDENTICAL"));
+    }
+
+    #[test]
+    fn first_named_input_follows_the_rank_and_lists_the_others() {
+        let a = with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &[("tz", "UTC"), ("env:A", "1"), ("seed", "0")]);
+        let b = with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &[("tz", "Asia/Tokyo"), ("env:A", "2"), ("seed", "1")]);
+        let r = verify(&[a, b], &[]);
+        let d = r.tests[0].divergence.as_ref().unwrap();
+        assert_eq!(d.reason, Reason::Seed);
+        assert!(d.description.contains("also differ: tz, env:A"), "{}", d.description);
+    }
+
+    #[test]
+    fn inputs_missing_in_one_run_is_a_divergence_and_in_both_is_reported() {
+        let a = with_inputs(trace(vec![rec("x", &[], "passed", 10)]), &BASE);
+        let b = trace(vec![rec("x", &[], "passed", 10)]);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Config);
+        let r = verify(&[trace(vec![rec("x", &[], "passed", 10)]), trace(vec![rec("x", &[], "passed", 10)])], &[]);
+        assert!(!r.summary.inputs_recorded);
+        assert!(render_text(&r, false).contains("run inputs: NOT RECORDED"));
+    }
+
+    #[test]
+    fn uncontrolled_sources_are_never_identical() {
+        for (kind, reason) in [("thread", Reason::Thread), ("child", Reason::Child), ("io", Reason::Io)] {
+            let marker = Event::new(Source::Other, format!("uncontrolled.{kind}"), "t.py:3", "x");
+            let a = trace(vec![rec("x", &[t("1"), marker.clone()], "passed", 10)]);
+            let b = trace(vec![rec("x", &[t("1"), marker.clone()], "passed", 10)]);
+            assert_eq!(a.tests[0].uncontrolled, vec![kind.to_string()]);
+            let r = verify(&[a, b], &[]);
+            assert_eq!(r.summary.stable, 0, "{kind}");
+            let d = r.tests[0].divergence.as_ref().unwrap();
+            assert_eq!((d.reason, d.index), (reason, Some(1)), "{kind}");
+            assert!(d.description.contains("not controlled"), "{}", d.description);
+            // a marker past the stored events still counts
+            let mut evs: Vec<Event> = (0..10).map(|i| t(&i.to_string())).collect();
+            evs.push(marker);
+            let a = trace(vec![rec("x", &evs, "passed", 3)]);
+            let b = trace(vec![rec("x", &evs, "passed", 3)]);
+            assert!(a.tests[0].truncated);
+            assert_eq!(verify(&[a, b], &[]).tests[0].divergence.as_ref().unwrap().reason, reason);
+        }
+        // different outcomes with a thread: the thread is named, not "a source Level 0 does not observe"
+        let m = Event::new(Source::Other, "uncontrolled.thread", "t.py:3", "x");
+        let a = trace(vec![rec("x", &[m.clone()], "passed", 10)]);
+        let b = trace(vec![rec("x", &[m], "failed", 10)]);
+        assert_eq!(verify(&[a, b], &[]).tests[0].divergence.as_ref().unwrap().reason, Reason::Thread);
+    }
+
+    #[test]
+    fn env_tz_locale_reads_are_named_by_their_op() {
+        let e = |v: &str| Event::new(Source::Other, "env.get", "t.py:2", v);
+        let a = trace(vec![rec("x", &[e("MY_FLAG=aa")], "passed", 10)]);
+        let b = trace(vec![rec("x", &[e("MY_FLAG=bb")], "failed", 10)]);
+        let d = verify(&[a, b], &[]).tests[0].divergence.clone().unwrap();
+        assert_eq!(d.reason, Reason::Env);
+        assert!(d.description.contains("MY_FLAG=aa vs MY_FLAG=bb"), "{}", d.description);
+        assert_eq!(Reason::from_op("tz.localtime"), Some(Reason::Tz));
+        assert_eq!(Reason::from_op("locale.setlocale"), Some(Reason::Locale));
+    }
+
+    #[test]
+    fn empty_runs_verify_nothing() {
+        let r = verify(&[trace(vec![]), trace(vec![])], &[]);
+        assert!(render_text(&r, false).contains("verdict: NOTHING VERIFIED"));
+    }
+
+    #[test]
+    fn same_order_same_events_is_identical_and_order_change_is_named() {
+        let a = trace(vec![rec("p", &[], "passed", 10), rec("v", &[], "passed", 10)]);
+        let b = trace(vec![rec("v", &[], "passed", 10), rec("p", &[], "passed", 10)]);
+        let r = verify(&[a.clone(), a.clone()], &[]);
+        assert_eq!(r.summary.stable, 2);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.summary.stable, 0);
+        for v in &r.tests {
+            assert_eq!(v.divergence.as_ref().unwrap().reason, Reason::Order);
+        }
     }
 
     #[test]

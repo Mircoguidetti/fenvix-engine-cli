@@ -943,6 +943,10 @@ class _DetSession(_Outcomes):
             "python": platform.python_version(), "implementation": platform.python_implementation(),
             "platform": sys.platform, "pytest": pytest.__version__, "disabled_plugins": S.disabled_plugins,
             "adjustments": S.adjustments, "order_digest": S.order_digest, "merged": True,
+            "runtime": platform.python_implementation(), "runtime_version": platform.python_version(),
+            # the run inputs the verifier compares (the workers inherit the controller's environment; their own
+            # PYTEST_XDIST_* variables are engine-internal)
+            "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
@@ -956,6 +960,21 @@ class _DetSession(_Outcomes):
                 tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        failed = [getattr(r, "nodeid", None) for r in tr.stats.get("failed", [])]
+        failed = list(dict.fromkeys(n for n in failed if n))
+        if failed:
+            # G-1554: a failure under --det is a defect to reproduce, not a red run to re-run
+            seed = f" --det-seed={cfg.seed}" if cfg.shuffle else ""
+            tr.write_line(f"{len(failed)} test(s) failed under --det (seed {cfg.seed}"
+                          f"{', shuffled' if cfg.shuffle else ', fixed order'}). Turn each into a reproducible "
+                          f"defect (cause, seed, order, replay command):")
+            import shlex
+
+            for n in failed[:5]:
+                tr.write_line(f"    fenvix repro {shlex.quote(n)}{' --seed=' + str(cfg.seed) if cfg.shuffle else ''}")
+            if len(failed) > 5:
+                tr.write_line(f"    ... and {len(failed) - 5} more")
+            tr.write_line(f"  the same run again: pytest --det{seed} (with the same arguments)")
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.terminal_summary(tr)
         rep = S.compare_report
