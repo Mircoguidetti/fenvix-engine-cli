@@ -24,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.m.outputs.matrix }}
+      n: ${{ steps.m.outputs.n }}
+      suites: ${{ steps.m.outputs.suites }}
     steps:
       - uses: actions/checkout@v4
       - id: m
@@ -40,6 +42,13 @@ jobs:
                   "os": repos[j["name"]].get("os", "ubuntu-latest"), "free_disk": bool(repos[j["name"]].get("free_disk"))}
                  for j in run["jobs"]]
           print("matrix=" + json.dumps({"include": inc}))
+          print(f"n={len(inc)}")
+          # "suites": the engine's node suites that touch the Level 2 code (beside lockstep.test.js), with the pinned
+          # Chromium: list of test files, or true for the default four
+          su = run.get("suites")
+          if su is True:
+              su = ["test/playwright.test.js", "test/l2r2.test.js", "test/l2r3.test.js", "test/review-r011.test.js"]
+          print("suites=" + (" ".join(su) if su else ""))
           PY
 
   build:
@@ -63,8 +72,44 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: {name: detjs, path: detjs.tgz}
 
+  suites:
+    needs: plan
+    if: needs.plan.outputs.suites != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with: {path: engine}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - run: cd engine && cargo build -p detpy-node --release && cp target/release/libdetpy_node.so node/detjs.linux-x64.node
+      - name: node suites
+        run: |
+          cd engine/node && npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+          node --test --test-concurrency=1 --test-reporter=spec ${{ needs.plan.outputs.suites }} 2>&1 | tee "$RUNNER_TEMP/suites.log"
+      - name: commit result
+        if: always()
+        run: |
+          N="suites-${GITHUB_RUN_ID}.txt"
+          R=engine/tracks/l2-browser-lockstep/results
+          mkdir -p /tmp/pub && { echo "engine ${{ github.sha }} run ${GITHUB_RUN_ID}"; grep -E "^(✔|✖|ℹ) " "$RUNNER_TEMP/suites.log" || true; echo; echo "---- failures (tail)"; tail -c 60000 "$RUNNER_TEMP/suites.log"; } > "/tmp/pub/$N"
+          cd engine
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in $(seq 1 40); do
+            git fetch -q --depth=1 origin "$GITHUB_REF_NAME" && git checkout -q -f -B pub FETCH_HEAD || { sleep 5; continue; }
+            mkdir -p tracks/l2-browser-lockstep/results && cp "/tmp/pub/$N" tracks/l2-browser-lockstep/results/
+            git add tracks/l2-browser-lockstep/results
+            git commit -q -m "l2-browser-lockstep: node suites (run ${GITHUB_RUN_ID})" || exit 0
+            git push -q origin "pub:$GITHUB_REF_NAME" && exit 0
+            sleep $(( (RANDOM % 20) + 5 ))
+          done
+          exit 1
+
   exp:
     needs: [plan, build]
+    if: needs.plan.outputs.n != '0'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 350
     strategy:
