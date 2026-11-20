@@ -162,11 +162,19 @@ function resolveDepth(depth) {
  * map while Jest formats a stack) is then the runner's; a library a test calls is the test's.
  */
 function runnerInitiated() {
+  // a shallow capture first; a library's recursion (source-map's quick-sort) can fill it with library frames before
+  // the runner's: then the whole stack decides (dom-testing-library: such draws were taken as the test's)
+  const r = runnerInitiatedAt(40);
+  return r === null ? runnerInitiatedAt(Infinity) === true : r;
+}
+
+/** true / false as decided by the first `limit` frames; null when they hold only library and Node frames. */
+function runnerInitiatedAt(limit) {
   const E = Error;
   const prevPrepare = E.prepareStackTrace;
   const prevLimit = E.stackTraceLimit;
   E.prepareStackTrace = structured;
-  E.stackTraceLimit = 40;
+  E.stackTraceLimit = limit;
   const holder = {};
   try {
     E.captureStackTrace(holder, runnerInitiated);
@@ -176,17 +184,21 @@ function runnerInitiated() {
     E.prepareStackTrace = prevPrepare;
     E.stackTraceLimit = prevLimit;
   }
-  const frames = holder.stack;
-  if (!Array.isArray(frames)) return false;
-  for (const cs of frames) {
-    const f = rawFile(cs);
+  // inside an Error.prepareStackTrace hook (source-map-support formatting a stack for Jest) V8 does not call the hook
+  // again: the nested capture is the default text, read line by line
+  const st = holder.stack;
+  const files = Array.isArray(st) ? st.map(rawFile)
+    : typeof st === 'string' ? st.split('\n').slice(1).map((l) => { const m = FRAME.exec(l); return m ? rawFile({ getFileName: () => m[1] }) : (/^\s*at (?:.*? \()?(node:[^)]*|native|<anonymous>)\)?$/.test(l) ? 'node:' : ''); })
+      : null;
+  if (!files) return false;
+  for (const f of files) {
     if (RUNNER_INTERNAL.test(f)) return true;
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
     if (INFRA.test(f)) return true;
     if (f.includes(`${path.sep}node_modules${path.sep}`)) continue;
     return false;
   }
-  return false;
+  return files.length >= limit ? null : false;
 }
 
 module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };

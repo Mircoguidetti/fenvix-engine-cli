@@ -108,9 +108,15 @@ require('./concur').register({
   restore: (x) => { STREAMS.forEach((g, i) => g.s.set(x[i])); },
 });
 
-/** A draw made for the runner (src/sites.js runnerInitiated): only inside a test, where the streams are the test's. */
+/**
+ * A draw not made for the test, inside a test (where the streams are the test's): made for the runner (src/sites.js
+ * runnerInitiated), or by detjs' own work (quiet: a site lookup formats a stack, and the runner's source-map hook
+ * draws). Such draws use their own streams, so they never shift the test's values.
+ */
 function forRunner() {
-  return STATE.testId !== null && STATE.quietDepth === 0 && STATE.config && STATE.config.sites && sites.runnerInitiated();
+  if (STATE.testId === null) return false;
+  if (STATE.quietDepth > 0) return true;
+  return !!(STATE.config && STATE.config.sites && sites.runnerInitiated());
 }
 
 // A draw made by a WebSocket implementation for its handshake key or frame masks (Node's bundled undici:

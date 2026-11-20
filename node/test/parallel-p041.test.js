@@ -319,15 +319,21 @@ for (const runner of RUNNERS) {
         const dir = fixture(runner, 'jsdom-env', {
           a: "test('dom', () => { document.body.innerHTML = '<p>x</p>'; expect(document.querySelectorAll('p').length).toBe(1); });",
           b: "test('dom2', () => { expect(typeof window.performance.now()).toBe('number'); });",
+          // the clock jsdom copies into the window (the read that refused mobx): virtual, the same value in every run
+          c: "test('origin', () => { const o = window.performance.timeOrigin; expect(o).toBe(performance.timeOrigin); require('node:fs').writeFileSync(require('node:path').join(process.cwd(), 'origin.txt'), String(o)); });",
         }, { jest: { testEnvironment: 'jsdom' } });
+        const origins = [];
         for (const args of [[], ['-w', '2']]) {
           const cache = path.join(dir, `.cache${args.length}`);
+          fs.rmSync(path.join(dir, 'origin.txt'), { force: true });
           const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
           assert.equal(r1.status, 0, show(r1));
-          assert.equal(r1.summary.recorded, 2, show(r1));
+          assert.equal(r1.summary.recorded, 3, show(r1));
+          origins.push(fs.readFileSync(path.join(dir, 'origin.txt'), 'utf8'));
           const r2 = det(runner, dir, [...args, `--det-cache=${cache}`]);
-          assert.equal(r2.summary.reused_tests, 2, show(r2));
+          assert.equal(r2.summary.reused_tests, 3, show(r2));
         }
+        assert.equal(origins[0], origins[1], 'performance.timeOrigin in the jsdom window is the same in every run');
       });
 
       test('Jest workerThreads: lanes, the capture in each worker thread, no wrong reuse after a change', T, () => {
@@ -399,6 +405,34 @@ for (const runner of RUNNERS) {
       assert.equal(randomEvents(on).length, 1);
     });
 
+    // dom-testing-library again (5 of 666 fingerprints differed parallel vs serial): the same draws, made while the
+    // runner's Error.prepareStackTrace hook (source-map-support) maps a stack the test's code reads, inside a deep
+    // recursion (source-map's quick-sort). Two causes: inside the hook V8 gives a nested capture the default text, not
+    // call sites; the recursion filled the 40 frames looked at with library frames. Both were taken as the test's.
+    // Also: draws made while detjs itself formats a stack (a site lookup) never use the test's streams.
+    test('a draw inside the runner\'s stack-trace hook, deep in a recursion, is not the test\'s', T, () => {
+      const req = runner === 'vitest' ? "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" : '';
+      const dir = fixture(runner, 'hook-draw', {
+        a: `${req}\nif (fs.existsSync('probe.on')) require('source-map-support').install();\ntest('own', () => { const a = Math.random(); const e = new Error('x'); expect(typeof e.stack).toBe('string'); expect(Math.random()).not.toBe(a); });`,
+      }, {
+        extra: {
+          // a runner package (INFRA by name) whose hook calls an ordinary library that recurses and draws
+          'node_modules/source-map-support/package.json': '{"name":"source-map-support","main":"index.js"}',
+          'node_modules/source-map-support/index.js': "exports.install = () => { const sort = require('deep-sort'); const prev = Error.prepareStackTrace; Error.prepareStackTrace = (e, cs) => { sort(60); return String(e) + cs.map((c) => '\\n    at ' + c).join(''); }; };\n",
+          'node_modules/deep-sort/package.json': '{"name":"deep-sort","main":"index.js"}',
+          'node_modules/deep-sort/index.js': 'module.exports = function sort(n) { if (n > 0) return sort(n - 1); return Math.random(); };\n',
+        },
+      });
+      const randomEvents = (r) => r.trace.tests[0].events.filter((e) => e.s === 'random').map((e) => `${e.o}=${e.v}`);
+      const off = det(runner, dir);
+      assert.equal(off.status, 0, show(off));
+      write(dir, { 'probe.on': '1' });
+      const on = det(runner, dir);
+      assert.equal(on.status, 0, show(on));
+      assert.deepEqual(randomEvents(on), randomEvents(off), 'the hook\'s draws neither move the test\'s values nor appear in its events');
+      assert.equal(randomEvents(on).length, 2);
+    });
+
     // audit G-1449 / G-1456: concurrent tests ran one at a time under --det. They now run interleaved, each in its own
     // Level 0 context (src/concur.js): its events, clock and generators are its own, so its fingerprint is the same in
     // every run, serially or in lanes, whatever the interleaving.
@@ -436,6 +470,22 @@ for (const runner of RUNNERS) {
         assert.equal(p.status, 0, show(p));
         assert.deepEqual(fps(r2), fps(r1));
         assert.deepEqual(fps(p), fps(r1));
+        // serial vs concurrent: the same concurrent tests run one at a time (maxConcurrency=1) have the same
+        // fingerprints; written as plain serial tests, every event but the `sched.concurrent` marker is the same
+        const one = det(runner, dir, ['--maxConcurrency=1']);
+        assert.equal(one.status, 0, show(one));
+        assert.deepEqual(fps(one), fps(r1), 'maxConcurrency=1 vs concurrent');
+        const evs = (r) => Object.fromEntries(r.trace.tests.map((t) => [t.nodeid,
+          [t.outcome, ...t.events.filter((e) => e.o !== 'sched.concurrent').map((e) => `${e.s}|${e.o}|${e.v}`)]]));
+        const conc1 = evs(r1);
+        let plain = fs.readFileSync(path.join(dir, 'tests', `c${EXT[runner]}`), 'utf8').split(`${fnName}(`).join('test(');
+        if (how.wrap) plain = plain.replace(`${how.wrap}(`, 'describe(');
+        write(dir, { [`tests/c${EXT[runner]}`]: plain });
+        if (how.config) write(dir, { 'vitest.config.mjs': `export default { test: ${JSON.stringify({ include: ['tests/**/*.test.mjs'] })} };\n` });
+        const ser = det(runner, dir);
+        assert.equal(ser.status, 0, show(ser));
+        assert.ok(ser.trace.tests.every((t) => !t.events.some((e) => e.o === 'sched.concurrent')), 'the plain tests ran serially');
+        assert.deepEqual(evs(ser), conc1, 'serial vs concurrent: same events per test');
       });
     }
 
