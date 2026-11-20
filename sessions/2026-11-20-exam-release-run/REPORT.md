@@ -1,4 +1,4 @@
-PARTIAL — P-051 items 1–6 done and proven; coordinator add-ons H1 and H2 done; H3 not applied (it edits a check frozen at 36397ec8; needs a founder decision).
+DONE — P-051 items 1–6 done and proven; coordinator add-ons H1 and H2 done here; H3 applied by the coordinator session in f5a9a4d (not by this session).
 
 # P-051: examining a PR's own artifact (X-01)
 
@@ -49,7 +49,12 @@ Local checks before pushing (stubbed `gh`): run not found, wrong workflow, artif
 non-numeric id, no trunk artifact, checksum mismatch → each `ok=false` with its reason; requested and trunk paths
 install with the real `fetch.sh` of f84dde7.
 
-## H3 not applied
+## H3
+
+Applied by the coordinator session (session_01YAF6DhnJz9UzmjRRPv2uqs) in `f5a9a4d`, under the founder delegation the
+coordinator cited. The change is one line: the F-09.job-venv venv now installs `-e . pytest freezegun`. This session
+did not make it: its permission guard blocked the edit, because the check is founder-frozen and the approval came
+from a peer message. No proof run covers it, since F-18 does not run F-09. Below is this section as it stood before:
 
 R-050 H3 (add `freezegun` to the `F-09.job-venv` venv) means editing the body of check `F-09.job-venv` in
 `exam/rows_f.py`. The P-051 brief says checks are frozen at 36397ec8 by the founder and only the install source may
