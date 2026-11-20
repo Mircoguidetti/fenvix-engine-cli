@@ -379,6 +379,10 @@ class DetjsAdapter(_AdapterBase):
         (Path(ns.out) / "explore.json").write_text(json.dumps(s, indent=1))
         return s
 
+    def render_repro(self, b: dict, out: Path) -> str:
+        """What `fenvix repro` prints for this runner's bundle (fenvix.py uses it when present)."""
+        return render_repro(b, out)
+
     def replay(self, bundle: Path, runs: int, python: str = sys.executable) -> dict:
         bundle = Path(bundle)
         data = json.loads((bundle / "bundle.json").read_text())

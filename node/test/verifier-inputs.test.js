@@ -50,3 +50,26 @@ for (const [name, envA, envB, reason] of [
     for (const t of rep.tests) assert.equal(t.divergence.reason, reason, t.nodeid);
   });
 }
+
+// HANDOFF P-041 "verifier: constant uncontrolled.* values": a test that runs a child process records a constant
+// `uncontrolled.child` event (no per-run nonce, so its replays keep one fingerprint); the verifier never reports it
+// identical and names the source; a test without such a source is stable.
+test('a constant uncontrolled source: same fingerprint in both runs, never identical, the source named', T, () => {
+  const body = "import { test } from 'node:test'; import assert from 'node:assert/strict'; import cp from 'node:child_process';\n"
+    + "test('child', () => { assert.equal(cp.execFileSync(process.execPath, ['-e', 'process.stdout.write(\"1\")']).toString(), '1'); });\n"
+    + "test('plain', () => { assert.ok(true); });\n";
+  const dir = fixture('verifier-inputs', 'uncontrolled', { 'tests/a.test.mjs': body });
+  const a = runTo(dir, 'a', { TZ: 'UTC' });
+  const b = runTo(dir, 'b', { TZ: 'UTC' });
+  const tests = (f) => Object.fromEntries(fs.readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l))
+    .filter((j) => j.type === 'test').map((j) => [j.nodeid.split('::').pop(), j]));
+  const ta = tests(a);
+  const tb = tests(b);
+  assert.ok(ta.child.events.some((e) => e.o === 'uncontrolled.child'), JSON.stringify(ta.child.events));
+  assert.equal(ta.child.fingerprint, tb.child.fingerprint, 'no per-run value in the event');
+  const rep = JSON.parse(native.verify([a, b]));
+  const by = Object.fromEntries(rep.tests.map((t) => [t.nodeid.split('::').pop(), t]));
+  assert.equal(by.plain.status, 'stable', JSON.stringify(by.plain));
+  assert.notEqual(by.child.status, 'stable', JSON.stringify(by.child));
+  assert.equal(by.child.divergence.reason, 'child', JSON.stringify(by.child));
+});

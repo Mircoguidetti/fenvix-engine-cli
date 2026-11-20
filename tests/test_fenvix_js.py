@@ -316,3 +316,16 @@ def test_run_dependent_id_is_reproduced_by_its_stable_id(runner, env, monkeypatc
     assert "2 tests match it" in fenvix_js.render_repro(b2, d / "out2")
     # an id without run-dependent values is unchanged
     assert fenvix_js.stable_id(f"tests/a{ext}::nope", ids) == (f"tests/a{ext}::nope", None)
+
+
+def test_fenvix_command_runs_the_js_adapter(env):
+    """`fenvix repro` (python/detpy/fenvix.py, which registers these adapters) on a Jest test: the same verdict and
+    output as the standalone command, the runner picked from the project."""
+    d = make_project("jest", "fenvix-cmd")
+    p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "repro", "tests/a.test.js::victim", "--seeds", "10",
+                        "--confirm", "3", "--out", "o"], cwd=d, capture_output=True, text=True, timeout=1200)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert p.stdout.startswith("fenvix repro: tests/a.test.js::victim\n  status:  REPRODUCED: failed 3/3 replays"), p.stdout
+    assert "cause:   test order: it fails when run after tests/a.test.js::g::polluter" in p.stdout
+    data = json.loads((d / "o" / _repro._slug("tests/a.test.js::victim") / "bundle.json").read_text())
+    assert data["runner"] == "jest" and data["command"].startswith("detjs jest --det")
