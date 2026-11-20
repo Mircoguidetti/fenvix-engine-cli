@@ -159,6 +159,184 @@ _CO_OPTIMIZED = 0x1
 
 
 # ---------------------------------------------------------------------------
+# review R-032b F2: verbatim from detpy/proofcache.py (the reference replaces that module in its sessions)
+# existence and kind checks that ask os.stat (their answer is the kind, not the size): genericpath, posixpath, pathlib,
+# glob, shutil
+_KIND_FUNCS = frozenset({"exists", "lexists", "isfile", "isdir", "islink", "ismount", "isjunction", "is_file", "is_dir",
+                         "is_symlink", "is_mount", "is_junction", "is_socket", "is_fifo", "is_block_device",
+                         "is_char_device", "samefile", "_lexists", "_isdir", "which", "_access_check", "isdevdrive"})
+_STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
+                                  "pathlib._abc", "glob", "shutil", "os"})
+
+
+def _kind_check_caller() -> bool:
+    """True when os.stat was called by an existence or kind check of the standard library."""
+    f = _getframe(2)
+    while f is not None:
+        mod = f.f_globals.get("__name__", "")
+        if mod not in _STDLIB_PATH_MODULES:
+            return False
+        if f.f_code.co_name in _KIND_FUNCS:
+            return True
+        f = f.f_back
+    return False
+
+
+def _user_stat_caller() -> bool:
+    """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
+    library helper: shutil.copystat copies times, it does not decide on them); Path.stat() counts as its caller's."""
+    f = _getframe(2)
+    while f is not None:
+        mod = f.f_globals.get("__name__", "")
+        if mod in ("pathlib", "pathlib._local", "pathlib._abc") and f.f_code.co_name in ("stat", "lstat"):
+            f = f.f_back
+            continue
+        fn = f.f_code.co_filename
+        if fn.startswith(_DETPY_DIR):
+            return False  # detpy's own stat (its digests, its reference implementations): never the test's
+        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen"))
+    return False
+
+
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time
+_TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
+
+
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller)."""
+    f = _getframe(2)
+    return (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
+
+
+_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
+# st_atime, st_mtime, st_ctime (indices 7, 8, 9) and their _ns, birthtime variants
+_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
+
+
+class _TimedStat:
+    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached: a time
+    is not an input the cache keys; review R-032b F2). Everything else is the result's own."""
+
+    __slots__ = ("_r", "_cap", "_path")
+
+    def __init__(self, r, cap, path):
+        self._r = r
+        self._cap = cap
+        self._path = path
+
+    def _timed(self):
+        try:
+            self._cap.flag(self._cap._cur(), "mtime", os.fsdecode(os.fspath(self._path)) if not isinstance(
+                self._path, int) else str(self._path))
+        except Exception:
+            pass
+
+    def __getattr__(self, name):
+        if name.startswith(_TIME_FIELDS):
+            self._timed()
+        return getattr(self._r, name)
+
+    def __getitem__(self, i):
+        idx = range(len(self._r))[i]
+        if (7 in idx or 8 in idx or 9 in idx) if isinstance(idx, range) else idx in (7, 8, 9):
+            self._timed()
+        return self._r[i]
+
+    def __iter__(self):
+        self._timed()  # unpacking gives every field
+        return iter(self._r)
+
+    def __len__(self):
+        return len(self._r)
+
+    def __eq__(self, other):
+        self._timed()
+        return self._r == (other._r if isinstance(other, _TimedStat) else other)
+
+    def __hash__(self):
+        self._timed()
+        return hash(self._r)
+
+    def __repr__(self):
+        return repr(self._r)
+
+    def __reduce__(self):
+        self._timed()
+        return self._r.__reduce__()
+
+
+class _ScandirEntry:
+    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2)."""
+
+    __slots__ = ("_e", "_cap")
+
+    def __init__(self, e, cap):
+        self._e = e
+        self._cap = cap
+
+    def _check(self, sized, follow=True):
+        cap = self._cap
+        if cap._in_stat:
+            return
+        cap._in_stat = True
+        try:
+            cap.stat_check(self._e.path, not follow, sized and follow)
+        except Exception:
+            pass
+        finally:
+            cap._in_stat = False
+
+    def stat(self, *, follow_symlinks=True):
+        self._check(True, follow_symlinks)
+        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path)
+
+    def is_file(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_file(follow_symlinks=follow_symlinks)
+
+    def is_dir(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_dir(follow_symlinks=follow_symlinks)
+
+    def is_symlink(self):
+        self._check(False, False)
+        return self._e.is_symlink()
+
+    def __fspath__(self):
+        return self._e.__fspath__()
+
+    def __getattr__(self, name):
+        return getattr(self._e, name)
+
+    def __repr__(self):
+        return repr(self._e)
+
+
+class _ScandirIter:
+    __slots__ = ("_it", "_cap")
+
+    def __init__(self, it, cap):
+        self._it = it
+        self._cap = cap
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return _ScandirEntry(next(self._it), self._cap)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self._it.close()
+        return False
+
+    def close(self):
+        self._it.close()
+
+
 class Capture:
     """Records, per context, executed code, data reads, environment reads and events."""
 
@@ -425,26 +603,25 @@ class Capture:
             link = name == "lstat"
 
             def checked(path, *args, **kwargs):
-                from detpy import proofcache as _pc  # review R-032b F2: the same rules as detpy's capture
 
                 timed = False
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
                         nolink = link or kwargs.get("follow_symlinks") is False
-                        sized = name == "stat" and not nolink and not _pc._kind_check_caller()
+                        sized = name == "stat" and not nolink and not _kind_check_caller()
                         cap.stat_check(path, nolink, sized)
                         own = _getframe(1).f_code.co_filename.startswith(_DETPY_DIR)  # this reference's own stat
                         user = not own and cap._caller_kind() == "user"
-                        timed = name in ("stat", "lstat") and user and _pc._user_stat_caller()
-                        if user and _pc._time_helper_caller():
+                        timed = name in ("stat", "lstat") and user and _user_stat_caller()
+                        if user and _time_helper_caller():
                             cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
                     except Exception:
                         pass
                     finally:
                         cap._in_stat = False
                     if timed:
-                        return _pc._TimedStat(orig(path, *args, **kwargs), cap, path)
+                        return _TimedStat(orig(path, *args, **kwargs), cap, path)
                 return orig(path, *args, **kwargs)
 
             checked.__name__ = orig.__name__
@@ -471,8 +648,6 @@ class Capture:
         orig_scandir = os.scandir
 
         def scandir(path=".", *args, **kwargs):
-            from detpy import proofcache as _pc
-
             it = orig_scandir(path, *args, **kwargs)
             if isinstance(path, int) or cap._in_stat or _getframe(1).f_code.co_filename.startswith(_DETPY_DIR):
                 return it
@@ -481,7 +656,7 @@ class Capture:
                     return it
             except Exception:
                 return it
-            return _pc._ScandirIter(it, cap)
+            return _ScandirIter(it, cap)
 
         self._stat_saved.append((os, "scandir", orig_scandir))
         os.scandir = scandir
