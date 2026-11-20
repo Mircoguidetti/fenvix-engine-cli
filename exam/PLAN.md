@@ -27,6 +27,7 @@ Labels: **MEASURED** (an Actions run id), **ESTIMATED**, **DECLARED** (with the 
 * **Reference result:** "outcome equals" always means: the per-test outcome map of the engine run equals the map of a
   plain run of the same runner on the same checkout (pytest `--junitxml`, Vitest/Jest JSON reporters, TAP/exit status
   and counts for other runners), with the same tests collected.
+* **Calibration:** the harness was run locally against a locally built release-1 engine before the Actions rounds; harness bugs found there were fixed, engine behaviour was never "fixed" in the exam.
 * **Gap checks:** every in-scope WRONG-RESULT and BLOCKS-USE gap of the audit (2026-11-20, `gaps.jsonl`) is assigned
   to one row in `exam/gap_map.json` and covered by at least one check named there. Gap checks that need a specific
   behaviour (a TZ difference, a changed host name) are *probe tests*: a small test file written into a pinned real
@@ -64,8 +65,8 @@ Projects: `pallets/itsdangerous@096c8d42` (2.2.0), `python-attrs/attrs@3dca08ce`
 ### PY-02 pytest 8 and 9 (unittest via pytest)
 
 Legs: linux-x64 x Python 3.13 x {pytest 8.4.x, pytest 9.0.x}.
-Projects: `pallets/click@934813e4` (8.1.8, pytest), `more-itertools/more-itertools@28ab7367` (v10.7.0,
-`unittest.TestCase` suites collected by pytest).
+Projects: `python-attrs/attrs@3dca08ce` (25.3.0, pytest), `more-itertools/more-itertools@28ab7367` (v10.7.0,
+`unittest.TestCase` suites collected by pytest). (click 8.1.8 was the first choice; it does not collect under pytest 9, plain or not.)
 
 | check | expected |
 |---|---|
@@ -206,7 +207,7 @@ Legs: linux-x64 x Node 22 (Bun latest 1.x, Deno 2.x).
 | AVA | `sindresorhus/p-map@2ba3a002` (v7.0.3) |
 | tap | `isaacs/minimatch@0569cd33` (v10.0.1) |
 | uvu | `lukeed/dequal@37d4f27d` (v2.0.3) |
-| Jasmine | `jasmine/jasmine-npm@2cd62ca5` (v5.5.0) |
+| Jasmine | `jasmine/jasmine-npm@2cd62ca5` (v5.5.0, with `jasmine@5` installed as a customer would) |
 | Bun | `elysiajs/elysia@353efd2a` (1.2.10) |
 | Deno | `oakserver/oak@08a7eb1c` (v17.1.4) |
 
@@ -242,7 +243,7 @@ TS: class-validator@adffae38 (Jest + ts-jest).
 ### JS-06 jsdom and happy-dom
 
 Legs: linux-x64 x Node 22. Projects: zustand@3f9127f4 (Vitest + jsdom; and the same suite with
-`--environment happy-dom`), `testing-library/dom-testing-library@a86c54cc` (v10.4.0, Jest + jsdom).
+`--environment happy-dom`), `focus-trap/tabbable@8e8df70b` (master 2026-11-20, Jest 30 + jsdom; dom-testing-library v10.4.0 was the first choice and no longer installs without a lockfile).
 
 | check | expected |
 |---|---|
@@ -315,7 +316,7 @@ and the Node flaky set of harness/node (Block 2 Node) where it installs.
 |---|---|
 | F-02.cli | `fenvix repro`, `fenvix explore`, `fenvix replay` exist (`--help` exit 0) |
 | F-02.py-repro | for each Python target: `fenvix repro <test>` fails 10/10 with one fingerprint, names the polluter, prints a replay command |
-| F-02.py-replay | the printed replay command, run as printed in a fresh checkout, fails 10/10 with the same fingerprint |
+| F-02.py-replay | the printed replay command (printed by `fenvix repro`, or else by the engine's internal `python -m detpy repro`, recorded as such), run 10 times through `fenvix python`, fails 10/10 and the 10 traces verify identical |
 | F-02.py-explore | `fenvix explore --budget 5` on the project finds the target and writes a bundle |
 | F-02.node-repro / node-replay / node-explore | the same for the Node pairs |
 | F-02.mac-replay | the Linux bundle replays on macOS with the same fingerprint (or the engine says why not) |
@@ -409,3 +410,10 @@ Legs: linux-x64 x Python 3.13 x Node 22.
 * `exam/gap_map.json`: every WRONG-RESULT / BLOCKS-USE gap: `{row, check}` or `{out_of_scope: reason}` or
   `{unassignable: reason}`.
 * Report: `sessions/2026-11-20-exam/REPORT.md` on `claude/exam`.
+
+## 5. Gap probes
+
+`exam/gap_map.json` names 62 probe checks (`<ROW>.probe.<slug>`, spec in the file). `exam/probes.py` implements most
+of them; a probe that is not implemented is recorded as FAIL with the observation "NOT IMPLEMENTED", so the gaps it
+covers stay open. The virtual-day probes (F-05.probe.real-clock, F-06.probe.virtual-day) move the clock one day with
+`faketime` (installed on the Linux legs).
