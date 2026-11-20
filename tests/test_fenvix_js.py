@@ -329,3 +329,23 @@ def test_fenvix_command_runs_the_js_adapter(env):
     assert "cause:   test order: it fails when run after tests/a.test.js::g::polluter" in p.stdout
     data = json.loads((d / "o" / _repro._slug("tests/a.test.js::victim") / "bundle.json").read_text())
     assert data["runner"] == "jest" and data["command"].startswith("detjs jest --det")
+
+
+def test_detjs_found_from_the_working_directory(monkeypatch, tmp_path):
+    """An installed wheel does not know where detjs is: without FENVIX_DETJS / FENVIX_HOME / PATH it is found from the
+    working directory upwards, the project's node_modules/.bin/detjs first, else an engine checkout."""
+    monkeypatch.delenv("FENVIX_DETJS", raising=False)
+    monkeypatch.setenv("FENVIX_HOME", str(tmp_path / "no-home"))
+    monkeypatch.setenv("PATH", "/usr/bin:/bin")
+    monkeypatch.setattr(fenvix_js, "__file__", str(tmp_path / "site" / "detpy" / "fenvix_js.py"))
+    proj = tmp_path / "eng" / "node" / "test" / "proj"
+    proj.mkdir(parents=True)
+    (tmp_path / "eng" / "node" / "bin").mkdir(parents=True)
+    (tmp_path / "eng" / "node" / "bin" / "detjs.js").write_text("")
+    monkeypatch.chdir(proj)
+    assert fenvix_js.detjs_command() is None  # no crates/detpy-core next to it: not an engine checkout
+    (tmp_path / "eng" / "crates" / "detpy-core").mkdir(parents=True)
+    assert fenvix_js.detjs_command() == ["node", str(tmp_path / "eng" / "node" / "bin" / "detjs.js")]
+    (proj / "node_modules" / ".bin").mkdir(parents=True)
+    (proj / "node_modules" / ".bin" / "detjs").write_text("")
+    assert fenvix_js.detjs_command() == [str(proj / "node_modules" / ".bin" / "detjs")]

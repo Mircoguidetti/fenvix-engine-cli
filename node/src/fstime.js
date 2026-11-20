@@ -202,8 +202,13 @@ function installInspect() {
   Object.defineProperty(proto, custom, {
     value: function inspectStats(depth, options, inspect) {
       if (!MAPPED.has(this)) return prev && typeof prev.value === 'function' ? prev.value.call(this, depth, options, inspect) : this;
+      // every own key with its enumerability, symbols included (Node 26 Stats carry enumerable Symbol(partial*Ns)
+      // data fields: a plain copy has them, so the inspection must too)
       const out = Object.create(Object.getPrototypeOf(this));
-      for (const k of Object.keys(this)) Object.defineProperty(out, k, { value: this[k], writable: true, enumerable: true, configurable: true });
+      for (const k of Reflect.ownKeys(this)) {
+        const d = Object.getOwnPropertyDescriptor(this, k);
+        Object.defineProperty(out, k, { value: 'value' in d ? d.value : this[k], writable: true, enumerable: d.enumerable, configurable: true });
+      }
       return out;
     },
     writable: true, enumerable: false, configurable: true,

@@ -14,7 +14,8 @@ minimisation produce is of that shape, so a bundle replays exactly the order it 
 
 detjs is found through ``FENVIX_DETJS`` (a command, e.g. ``node /opt/fenvix/node/bin/detjs.js``), then
 ``$FENVIX_HOME/node/bin/detjs.js`` (default ``/opt/fenvix``), then the repository this package was installed from
-(``<repo>/node/bin/detjs.js``), then ``detjs`` on the PATH.
+(``<repo>/node/bin/detjs.js``), then ``detjs`` on the PATH, then, from the working directory upwards, the project's
+``node_modules/.bin/detjs`` or an engine checkout's ``node/bin/detjs.js``.
 
 Use:
 
@@ -65,7 +66,17 @@ def detjs_command() -> list | None:
         if cand.is_file():
             return ["node", str(cand)]
     w = shutil.which("detjs")
-    return [w] if w else None
+    if w:
+        return [w]
+    # from the directory the tests run from, upwards: the project's own detjs (node_modules/.bin/detjs), then an
+    # engine checkout holding it (node/bin/detjs.js next to crates/detpy-core: an installed wheel does not know it)
+    here = Path.cwd().resolve()
+    for d in (here, *here.parents):
+        if (d / "node_modules" / ".bin" / "detjs").is_file():
+            return [str(d / "node_modules" / ".bin" / "detjs")]
+        if (d / "node" / "bin" / "detjs.js").is_file() and (d / "crates" / "detpy-core").is_dir():
+            return ["node", str(d / "node" / "bin" / "detjs.js")]
+    return None
 
 
 def _detjs_problem(cmd: list | None) -> str | None:
