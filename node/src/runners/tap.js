@@ -211,15 +211,26 @@ function preloadChild() {
     // environment, against which reads are keyed: a test that reads them is not cached
     const cap = file.cap;
     const realEnv = cap.env.bind(cap);
-    cap.env = (name) => {
+    // the code that reads: the first frame above this wrapper outside Node and detjs (cap.directCaller() would
+    // stop at this file, a detjs driver frame, and call every read tap's own: the flag never fired)
+    const envRead = function envRead(name) {
       if (typeof name === 'string' && RUNNER_ENV.test(name) && cap.active && !cap.busy) {
         cap.busy++;
-        let user;
-        try { user = cap.directCaller() === 'user'; } finally { cap.busy--; }
+        let user = true;
+        try {
+          for (const cs of cap.stackFiles(30, envRead)) {
+            const raw = cs.getFileName && cs.getFileName();
+            if (!raw) continue;
+            const d = cap.frameClass(raw) >> 4;
+            if (d === 1) { user = false; break; }
+            if (d === 2) { user = true; break; }
+          }
+        } finally { cap.busy--; }
         if (user) cap.add(['flag', 'env-unobserved', `${name} (set by tap for each test process)`], false);
       }
       return realEnv(name);
     };
+    cap.env = envRead;
   }
   let rootOk = null;
   onTapRoot((t) => {

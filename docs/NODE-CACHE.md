@@ -17,7 +17,7 @@ Output: one summary line per session, `.detjs/receipts.jsonl` (same rows as Pyth
 `run`, `outcome`, `fingerprint`, `duration`, `config`, `runtime`, `epoch`, `n_*`; or `reused: false` with `why`),
 `.detjs/cache-summary.json` and `.detjs/cache-identity.json` (every part of the runtime and configuration digests).
 
-## Unit of reuse: the test file
+## Unit of reuse: the test file, the process, or the test (`--det-isolate`)
 
 Every test gets its own entry (per-test receipts), but a file is reused only when **all** of its tests and its
 file entry (*manifest*: the list of its tests and the inputs of its collection, `nodeid` = file path, with
@@ -26,6 +26,32 @@ share module state (Vitest: one worker per file; Jest: one module registry per f
 file would change the state the others run in. The inputs of a test are **cumulative**: everything logged in its
 process up to the end of the test (collection, `beforeAll`, earlier tests). Where state is shared *between* files
 (Vitest `isolate: false`, `vmThreads`/`vmForks`, browser mode, a custom Jest `runner`), the project is not cached.
+
+Why the file and not the test (audit G-1397): without isolation the tests of a file share module state that no
+capture observes (a module variable, a library's registry). Skipping a reused test would change what the next one
+runs with: `node/test/cache-p041.test.js` "G-1397" has a file whose second test passes after the first and fails
+alone (`-t`), so a per-test unit there would report a false failure (or, the other way round, a false pass). A
+change of an input only one test reads therefore reruns its whole file, whose verdict is then a fresh run's.
+
+**Shared-process runners** (Mocha, Jasmine, uvu, Bun, Deno; audit G-0145..G-0149). These runners run every test
+file in one process (Bun: one global object; Deno: one OS process, an isolate per file, with the environment, the
+working directory and the files shared; Mocha, Jasmine, uvu: one Node process). detjs keeps that model under `--det`
+and `--det-cache`, so the verdict is the plain runner's: a suite whose files share state passes as it does plain.
+With the cache the **process is the unit** (`<mocha>`, `<jasmine>`, `<uvu>`, `<bun>`, `<deno>`; entries under the
+project `process`: `<file>@@process::<test>`): one capture for the whole process (Deno: the isolates' captures
+merged in run order), whose inputs are every file's, so every file is reused or every file runs, and a file that
+read what an earlier file left is never reused with that earlier file changed (the carried-set rule at its widest).
+The configuration of the unit includes the plan (the list of files in run order). `--det-isolate` gives each file a
+fresh process of its own (the per-file model of earlier versions): the file is then the unit, and a test that needs
+another file's state fails there, which is the isolation the user asked for.
+
+**`--det-isolate` for Vitest and Jest** (audit G-1394; `src/isolate.js`): every test runs in a runner session of its
+own (a fresh worker process after its file's collection, a name filter that matches only that test; Vitest's tests
+are listed with `vitest list`, Jest's from a collection session whose name filter matches nothing). With the cache,
+each per-test session keeps its entries under a scope of its own (`DETJS_CACHE_SCOPE`: `<file>@@~iso.<digest>`):
+its key is the file's collection and the test itself, nothing of another test, so **a test is reused or run on its
+own inputs** (G-1397). Tests whose full names are equal run together. The trace lists every test
+(`meta.isolate_tests`), the summary `reused_tests_list` / `ran_tests_list`. Cost: one runner start-up per test.
 
 ## What is an input (recorded while the tests run: `node/src/cache/capture.js`)
 
@@ -43,7 +69,8 @@ process up to the end of the test (collection, `beforeAll`, earlier tests). Wher
 | machine facts | `os.hostname/userInfo/homedir/tmpdir/networkInterfaces/cpus/availableParallelism/totalmem/release/version/machine/getPriority` (`homedir` also records `HOME`, `tmpdir` `TMPDIR/TMP/TEMP`) | `~os.<name>` digests; `freemem/loadavg/uptime` make the test not cached |
 | clock | any Level 0 clock event, including the start of a runner's fake clock (`useFakeTimers` without `now`) | the epoch, only for tests that read the clock. With `--det-cache` and no `--det-epoch`, the epoch is **today 00:00 UTC** (the virtual day, DECISIONS 2026-11-19): a test that reads the clock is reused only on the UTC day it was recorded (audit G-0120, G-0122) |
 | runtime identity | `node/src/cache/runtime-id.js` | node version + every component version, build flags, `execArgv`, `NODE_OPTIONS`; node binary bytes; every mapped shared library by bytes (+`LD_PRELOAD`, `/etc/ld.so.preload`); glibc; `TZ`, zone file, `/etc/localtime` bytes and link, `/etc/timezone`, Intl zone, tzdata; `LANG/LANGUAGE/LC_*`, Intl locale, `NODE_ICU_DATA`; visible CPUs and instruction-set level (`FENVIX_RUNTIME_ISA=off`); lockfiles; **every installed file** under every `node_modules` of the project and of its ancestors and `NODE_PATH` (Rust tree hasher, memoised by device/inode/size/mtime/ctime, multithreaded; links leaving the project followed) minus per-machine bookkeeping (`.modules.yaml`, `.pnpm-workspace-state*.json`, `.package-lock.json`, `.yarn-state.yml`, `.yarn-integrity`, `.cache`, `.vite*`, `.vitest*`) |
-| configuration | `node/src/cache/proof.js` `setConfig` | detjs version, its source tree and addon; Level 0 options (seed, controls, ticks, timers, network mode, allowed hosts, urandom); the cassette in replay mode (its bytes and, with `--det-cassette-max-age`, the limit and which recorded tests are stale today: a recording that becomes stale changes the configuration, G-1418); Vitest: each resolved project configuration (minus selection/output keys and detjs' own values), the Vite settings (define, resolve, plugins by name, esbuild/oxc, ssr, env), config file + `configFileDependencies` by bytes; Jest: `--showConfig` (global + every project, minus selection/output keys); command-line options that are not selection or output; every configuration file of the repository by bytes (`tsconfig*`, `jsconfig*`, babel, swc, postcss, browserslist, vite/vitest/jest configs and workspaces, `.env*`, `.nvmrc`, root `package.json`; with Vitest, `vite.config.*`/`vitest.config.*` below the root are left to the project that loads them, and the root configuration file and every file it imports are keyed instead). **Per project**: a file is keyed by the global parts plus its own project's part only, so a change to one package's configuration (or a file it imports, such as its `package.json`) reruns that package's files; a project name shared by two projects (Jest projects without `displayName`) keeps the whole digest |
+| configuration | `node/src/cache/proof.js` `setConfig` | detjs version, its source tree and addon; Level 0 options (seed, controls, ticks, timers, network mode, allowed hosts, urandom); the cassette in replay mode (its bytes and, with `--det-cassette-max-age`, the limit and which recorded tests are stale today: a recording that becomes stale changes the configuration, G-1418); Vitest: each resolved project configuration (minus selection/output keys and detjs' own values), the Vite settings (define, resolve, plugins by name, esbuild/oxc, ssr, env), config file + `configFileDependencies` by bytes; Jest: `--showConfig` (global + every project, minus selection/output keys); command-line options that are not selection or output; every configuration file of the repository the runner can load, by bytes (another runner's own configuration is left out: Vitest does not key `jest.config.*`/`jest.preset.*`, Jest does not key `vite.config.*`/`vitest.config.*`/`vitest.workspace|projects.*`, the other shells neither: audit G-1399; `tsconfig*`, `jsconfig*`, babel, swc, postcss, browserslist, vite/vitest/jest configs and workspaces, `.env*`, `.nvmrc`, root `package.json`; with Vitest, `vite.config.*`/`vitest.config.*` below the root are left to the project that loads them, and the root configuration file and every file it imports are keyed instead). **Per project**: a file is keyed by the global parts plus its own project's part only, so a change to one package's configuration (or a file it imports, such as its `package.json`) reruns that package's files; a project name shared by two projects (Jest projects without `displayName`) keeps the whole digest |
+| start-up outputs | Vitest decides after `globalSetup`: a file the start-up wrote before the decision is on disk as this session's start-up left it, so a test that read it is keyed by its content (`f:`), not refused (audit G-1401). A write of the main process after the decision (teardown, during the tests; marked `run` by the capture) or by another test file stays a writer (refused). Jest decides before `globalSetup`: there a file the start-up wrote is never reused (kept; `cache-p041` "G-1401 (kept for Jest)") | `f:` |
 | start-up | main process before the tests (Vitest: until its sequencer runs, which is after `globalSetup`; Jest: everything outside test files) | content of every project file read by anyone at start-up (configuration modules, globalSetup and what it imports) and every missing path probed; user code's reads, environment reads, writes at any time; `execSync/spawnSync/execFileSync` by user code at start-up: argv, cwd, exit code and output digests make the **start-up digest** (as Python R-008d); any other process, worker thread or socket started by user code in the main process taints every test |
 
 A session with a Level 0 control switched off (`--det-disable=time`, `seeds`, `net` or `fs`) neither reuses nor
@@ -67,6 +94,35 @@ Not inputs (by design): files under `node_modules` (runtime identity), detjs its
 caches whose content is a function of their key (Jest `cacheDirectory`, Vite `cacheDir`, `$TMPDIR/jiti`; more with
 `DETJS_CACHE_SKIP_DIRS`), and, in the main process, what the runner itself reads during the run (Vite's transforms of
 the test modules are covered by the module graph).
+
+## Receipts, refusals, trace
+
+* A reused row says why (`why`: "reused: every input unchanged since run R; same configuration and runtime digests;
+  N code file(s) by content; M file/listing/metadata key(s); K environment variable(s); reads the clock: same
+  virtual day D | does not read the clock; ...", audit G-2161). A miss on the configuration names what changed
+  (`config: changed jest.config.js`, `config: changed resolved configuration of project web`): the parts of every
+  configuration digest are kept in `<cache>/config-parts/<digest>.json`.
+* A file that was to run but whose capture never reached detjs (a write that failed, a process that died before it)
+  is a refusal like any other: `not cached: capture not written N` in the summary line and `not_cached_detail`
+  (audit G-2225).
+* The trace of a `--det-cache` run lists the reused tests too, with the outcome and fingerprint recorded with the
+  reused result (`events: []`, header `meta.reused_tests`), at their file's place in the plan (audit G-1402):
+  `detjs verify` of a cached run against a full run compares them.
+
+## Refusals kept (each with the test that shows it never gives a wrong result)
+
+| flag | why it cannot be keyed | proof |
+|---|---|---|
+| `clock-real` (process.uptime/cpuUsage/resourceUsage, performance.timeOrigin, Intl format of now, Temporal.Now) | the real clock, not controlled | cache-p041 "G-1582" |
+| `dynamic-import` (Bun, Deno: `import(x)` with a non-literal specifier in project code) | the target is not known before the run | cache-p041 "G-1583" (Bun) |
+| `keygen` (key generation, randomized encryption or signatures) | OS randomness drawn in native code, not controlled by `--det-urandom` | cache-p041 "G-1584" |
+| `loader` (`--loader`, `module.register`) | the loader thread's reads are not observed | cache-p041 "G-1585"; r021b-fixes "G4" |
+| `preload` (a preload read the clock or OS entropy before Level 0) | the value is not controlled | cache-p041 "G-1586" |
+| `proc` (`/proc`, `/sys`, `/dev`) | process and kernel state, not files (reading some at the decision would block or never end) | cache-p041 "G-2220" |
+| `env-unobserved` (tap's per-process variables read by the test's own code) | set per test process, different every run | cache-p041 "G-2221" (tap) |
+| `net-record` (`--det-record`) | the live network is the input | cache-p041 "G-2222" |
+| `udp` | real datagrams, not recorded | cache-p041 "G-2223" |
+| `unobserved` (Deno's permission audit saw an access the capture did not) | not observed | runner-deno "the audit cross-check alone catches reads the wrappers miss" |
 
 ## Where the decision happens
 

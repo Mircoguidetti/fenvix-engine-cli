@@ -1,6 +1,6 @@
 'use strict';
-// Preload of every `bun test` process that `detjs bun-test --det` starts (one test file per process; the main side
-// is src/runners/bun.js). Loaded first (detjs replaces bunfig's preloads by its own `--config` and passes them after
+// Preload of every `bun test` process that `detjs bun-test --det` starts (every test file in one process, Bun's own
+// model; one file per process with --det-isolate; the main side is src/runners/bun.js). Loaded first (detjs replaces bunfig's preloads by its own `--config` and passes them after
 // this one), before any module of the project:
 //
 // 1. Level 0: the shared controls (seeds, clock, timers, fs order, closed network) and Bun's own APIs
@@ -15,7 +15,9 @@ const path = require('node:path');
 const controls = require('../controls');
 
 const c = controls.cfg();
-const fileId = process.env.DETJS_FILE;
+// one file per process (--det-isolate), or every file of the run in one process (Bun's own model: DETJS_FILES)
+const shared = process.env.DETJS_FILES ? JSON.parse(process.env.DETJS_FILES) : null;
+const fileId = process.env.DETJS_FILE || (shared && shared[0]);
 if (c.active && fileId) {
   const notes = [];
   controls.installProcess();
@@ -27,15 +29,16 @@ if (c.active && fileId) {
     cap = require('../cache/capture').CAPTURE;
     cap.install({ role: 'worker', root: c.root, mainAnyReads: false });
   }
-  const { Bracket } = require('./bracket');
-  const bracket = new Bracket(fileId, cap);
+  const { Bracket, SharedBracket } = require('./bracket');
+  const unit = process.env.DETJS_CACHE_UNIT ? process.env.DETJS_CACHE_UNIT.replace(/^process:/, '') : null;
+  const bracket = shared ? new SharedBracket(shared, cap, unit) : new Bracket(fileId, cap);
   bracket.doneStyle = true;
   bracket.runtimeName = `bun ${Bun.version}`;
   // DETJS_RUNTIME_NAIVE=1 (tests only): the shared Node capture alone, to measure what Bun's own capture adds
   if (cap && process.env.DETJS_RUNTIME_NAIVE !== '1') {
     runtime.installCapture(cap, bracket, notes);
     // toMatchSnapshot reads the file's snapshot file natively
-    cap.read(runtime.snapshotPath(path.resolve(c.root, fileId)), 'f');
+    for (const f of shared || [fileId]) cap.read(runtime.snapshotPath(path.resolve(c.root, f)), 'f');
     for (const n of notes) cap.notes.add(n);
   }
   for (const n of notes) controls.STATE.notes.push(n);

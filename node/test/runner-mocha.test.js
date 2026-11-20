@@ -38,13 +38,18 @@ describe('mocha: control', () => {
     for (const id of s1.order) assert.equal(s1.tests[id].fingerprint, s1b.tests[id].fingerprint, `seeded fingerprint of ${id}`);
     assert.notDeepEqual(s1.order, s2.order, 'another seed, another order');
     assert.deepEqual([...s1.order].sort(), [...a.order].sort());
-    // one process per file (--det-cache) gives the same tests and fingerprints (the order differs: in one process
+    // --det-cache keeps Mocha's one process: the same order and fingerprints as --det (G-0148)
+    fs.rmSync(path.join(dir, '.cache'), { recursive: true, force: true });
+    const c = run(['--det'], true);
+    assert.deepEqual(c.order, a.order, '--det-cache: one process, the order of --det');
+    for (const id of a.order) assert.equal(c.tests[id].fingerprint, a.tests[id].fingerprint, `cached-run fingerprint of ${id}`);
+    // one process per file (--det-isolate) gives the same tests and fingerprints (the order differs: in one process
     // Mocha runs the top-level tests of every file before the suites)
     fs.rmSync(path.join(dir, '.cache'), { recursive: true, force: true });
-    const p = run(['--det'], true);
+    const p = run(['--det', '--det-isolate'], true);
     assert.deepEqual([...p.order].sort(), [...a.order].sort());
     fs.rmSync(path.join(dir, '.cache'), { recursive: true, force: true });
-    assert.deepEqual(run(['--det'], true).order, p.order, 'per-file order is reproducible');
+    assert.deepEqual(run(['--det', '--det-isolate'], true).order, p.order, 'per-file order is reproducible');
     for (const id of a.order) assert.equal(p.tests[id].fingerprint, a.tests[id].fingerprint, `per-file fingerprint of ${id}`);
   });
 
@@ -63,7 +68,7 @@ describe('mocha: control', () => {
     assert.notEqual(plain.status, 0, 'without --det the clock test fails');
   });
 
-  test('one process under --det; one process per file under --det-cache (outcome changes counted)', T, () => {
+  test('G-0148: one process under --det and --det-cache (the process is the cache unit); one process per file under --det-isolate (outcome changes counted)', T, () => {
     const dir = proj('isolation', {
       ...tf('a', "globalThis.sharedByA = 1; test('a', () => {});"),
       ...tf('b', "test('b sees a', () => { assert.equal(globalThis.sharedByA, 1); });"),
@@ -71,7 +76,20 @@ describe('mocha: control', () => {
     const single = crun(R, dir, [], { cache: false });
     assert.equal(single.status, 0, show(single));
     const t1 = trace(dir);
-    const per = crun(R, dir);
+    // --det-cache: the verdict of Mocha's own model, never a false failure
+    const c1 = crun(R, dir);
+    assert.equal(c1.status, 0, `--det-cache keeps one process\n${show(c1)}`);
+    const c2 = crun(R, dir);
+    assert.deepEqual(reused(c2).sort(), [F('a'), F('b')], show(c2));
+    // a change of a reruns b (b ran with a's state): the cached run agrees with a fresh run
+    write(dir, tf('a', "globalThis.sharedByA = 2; test('a', () => {});"));
+    const fresh = crun(R, dir, [], { cache: false });
+    assert.notEqual(fresh.status, 0, show(fresh));
+    const c3 = crun(R, dir);
+    assert.notEqual(c3.status, 0, `b runs again with a's new state\n${show(c3)}`);
+    assert.ok(!reused(c3).includes(F('b')), show(c3));
+    write(dir, tf('a', "globalThis.sharedByA = 1; test('a', () => {});"));
+    const per = crun(R, dir, [], { det: ['--det', '--det-isolate'] });
     assert.match(per.stdout, /every spec file runs in its own process/);
     const t2 = trace(dir);
     const changed = t1.order.filter((id) => t2.tests[id] && t2.tests[id].outcome !== t1.tests[id].outcome);
@@ -93,19 +111,29 @@ describe('mocha: control', () => {
       ...tf('bad', "test('bad', () => { assert.fail('always'); });"),
       'data/v.txt': '1',
     });
-    assert.notEqual(crun(R, dir).status, 0);
-    const v = crun(R, dir, [], { verify: true });
+    // per-file units (--det-isolate): the failing file never blocks the passing one
+    const det = ['--det', '--det-isolate'];
+    assert.notEqual(crun(R, dir, [], { det }).status, 0);
+    const v = crun(R, dir, [], { verify: true, det });
     assert.ok(v.summary.verified >= 2, show(v));
     assert.equal(v.summary.verify_mismatches.length, 0);
-    const r3 = crun(R, dir);
+    const r3 = crun(R, dir, [], { det });
     assert.deepEqual(reused(r3), [F('ok')]);
+    // the process unit (--det-cache alone): a failure in the run is never reused, nothing of it
+    const u1 = crun(R, dir);
+    assert.notEqual(u1.status, 0);
+    assert.deepEqual(reused(crun(R, dir)), [], 'a run with a failure is never reused');
     write(dir, { [F('bad')]: null });
-    const r4 = crun(R, dir, ['--fail-zero']);
+    assert.equal(crun(R, dir).status, 0);
+    const u2 = crun(R, dir, ['--fail-zero']);
+    assert.equal(u2.status, 0, `the whole run reused is a pass, even with --fail-zero\n${show(u2)}`);
+    assert.deepEqual(reused(u2), [F('ok')], show(u2));
+    const r4 = crun(R, dir, ['--fail-zero'], { det });
     assert.equal(r4.status, 0, `every file reused is a pass, even with --fail-zero\n${show(r4)}`);
     assert.deepEqual(reused(r4), [F('ok')]);
   });
 
-  test('mochaGlobalSetup runs in each file process under --det-cache: what it reads is an input', T, () => {
+  test('mochaGlobalSetup runs in the captured process under --det-cache: what it reads is an input', T, () => {
     const dir = proj('global-setup', {
       'fixtures.cjs': "const fs = require('node:fs'); exports.mochaGlobalSetup = () => { process.env.FIXTURE_FROM_SETUP = fs.readFileSync('data/s.txt', 'utf8'); };\n",
       'data/s.txt': 'a',

@@ -87,8 +87,23 @@ function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {
 // Vite / Vitest configuration files below the root: with Vitest, keyed through the project that loads them (its
 // configuration file, the files it imports and its resolved configuration), not as a configuration of every file.
 const NESTED_VITE_CONFIG = /^(vite|vitest)\.config\.[cm]?[jt]s$/;
+// Configuration files a runner never loads itself (audit G-1399): another runner's own configuration. Vitest does
+// not read Jest's configuration, Jest does not read Vite's or Vitest's, and the other shells read neither (their own
+// configuration files are keyed by their adapters). A test that imports or reads such a file keys it as code or
+// data like any other file.
+const OTHER_RUNNERS_CONFIG = {
+  vitest: /^jest\.(config\.[cm]?[jt]s(on)?|preset\.[cm]?js)$/,
+  jest: /^(vite\.config\.[cm]?[jt]s|vitest\.config\.[cm]?[jt]s|vitest\.(workspace|projects)\.[cm]?[jt]s(on)?)$/,
+  other: /^(jest\.(config\.[cm]?[jt]s(on)?|preset\.[cm]?js)|vite\.config\.[cm]?[jt]s|vitest\.config\.[cm]?[jt]s|vitest\.(workspace|projects)\.[cm]?[jt]s(on)?)$/,
+};
 
-function configFiles(root, { nestedViteConfigs = true, extra = null } = {}, limit = 200000) {
+/** The other runners' configuration files, for `runner` (null: none left out). */
+function otherRunnersConfig(runner) {
+  if (!runner) return null;
+  return OTHER_RUNNERS_CONFIG[runner] || OTHER_RUNNERS_CONFIG.other;
+}
+
+function configFiles(root, { nestedViteConfigs = true, extra = null, exclude = null } = {}, limit = 200000) {
   const out = [];
   let n = 0;
   const walk = (dir, rel) => {
@@ -101,6 +116,8 @@ function configFiles(root, { nestedViteConfigs = true, extra = null } = {}, limi
         if (SKIP_DIRS.has(e.name) || (e.name.startsWith('.') && e.name !== '.config' && e.name !== '.storybook')) continue;
         walk(path.join(dir, e.name), r);
       } else if (!nestedViteConfigs && rel && NESTED_VITE_CONFIG.test(e.name)) {
+        continue;
+      } else if (exclude && exclude.test(e.name)) {
         continue;
       } else if (CONFIG_FILES.test(e.name) || (r === 'package.json') || (extra && extra.test(e.name))) {
         out.push([r, native.fileDigest(path.join(dir, e.name)) || 'unreadable']);
@@ -193,6 +210,40 @@ function staleness(run, days) {
 // controls whose source is an input no key can hold when it is off
 const CONTROLS_KEYED = ['time', 'seeds', 'net', 'fs'];
 
+/** [[path, digest]] of the preload modules named in NODE_OPTIONS and `execArgv` that are files. */
+function preloadFiles(nodeOptions, execArgv, root) {
+  const args = [...String(nodeOptions || '').split(/\s+/).filter(Boolean), ...(execArgv || [])];
+  const out = [];
+  for (let i = 0; i < args.length; i++) {
+    const m = /^(?:-r|--require|--import)(?:=(.*))?$/.exec(args[i]);
+    if (!m) continue;
+    let v = m[1] !== undefined ? m[1] : args[++i];
+    if (!v) continue;
+    v = v.replace(/^"|"$/g, '');
+    if (/[\\/]cache[\\/]early\.js$/.test(v)) continue;
+    if (v.startsWith('file:')) { try { v = require('node:url').fileURLToPath(v); } catch { continue; } }
+    const d = native.fileDigest(path.resolve(root, v));
+    if (d) out.push([v, d]);
+  }
+  return out;
+}
+
+/**
+ * The human reason a result is reused (audit G-2161): what was compared and found unchanged, from the receipt's own
+ * counters (`n_content` code files, `n_data` file keys, `n_env` environment variables), and the clock's part.
+ */
+function reuseReason(rc, epochMs, nTests) {
+  const parts = [`every input unchanged since run ${rc.run}`];
+  parts.push('same configuration and runtime digests');
+  parts.push(`${rc.n_content || 0} code file(s) by content`);
+  parts.push(`${rc.n_data || 0} file/listing/metadata key(s)`);
+  parts.push(`${rc.n_env || 0} environment variable(s)`);
+  if (rc.epoch !== null && rc.epoch !== undefined) parts.push(`reads the clock: same virtual day ${new Date(Number(rc.epoch)).toISOString().slice(0, 10)}`);
+  else parts.push('does not read the clock');
+  if (rc.kind === 'file') parts.push(`all ${nTests} test(s) of the file proved reuse`);
+  return `reused: ${parts.join('; ')}; recorded outcome ${rc.outcome}`;
+}
+
 class ProofSession {
   /**
    * @param opts parsed detjs options (opts.cache = directory or service URL)
@@ -236,6 +287,12 @@ class ProofSession {
     // --det-cache-real-clock: the decision is the virtual day's (as if the clock control were on), the tests run on
     // the real clock, nothing is recorded, and a test whose result differs from its cached one is an expiry
     this.realClock = Boolean(opts.cacheRealClock);
+    // the runner calls the reuse decision after its start-up code (Vitest: globalSetup runs before the sequencer)
+    this.decidesAfterStartup = runner === 'vitest';
+    // --det-isolate (src/isolate.js): each test runs in a runner session of its own, whose entries live under a
+    // scope of their own (`<file>@@<project>~<scope>`), so that the sessions of the tests of one file never share
+    // (or overwrite) a file entry
+    this.scope = process.env.DETJS_CACHE_SCOPE || '';
     this.maxAgeDays = opts.cacheMaxAge === undefined || opts.cacheMaxAge === null ? 30 : Number(opts.cacheMaxAge);
     this.expiries = [];
     // A Level 0 control switched off makes its source real and unrecorded (the real clock, real randomness, the open
@@ -285,22 +342,76 @@ class ProofSession {
         level0: digest(level0),
         cassette: this.run.netMode === 'replay' ? (this.run.cassetteKey || native.fileDigest(this.run.cassette) || 'missing') : '',
         cwd: path.relative(this.root, process.cwd()),
-        files: digest(configFiles(this.root, scan)),
+        // the user's preload modules (`--require`, `--import`, `-r` in NODE_OPTIONS or the command line) by content:
+        // in a process whose preloads are ES modules the capture's module hooks start after them (early.js)
+        preloads: digest(preloadFiles(this.env0.NODE_OPTIONS, process.execArgv, this.root)),
       });
+      this.configFilesList = configFiles(this.root, { ...scan, exclude: otherRunnersConfig(this.runner) });
+      this.configParts.files = digest(this.configFilesList);
       for (const [k, v] of Object.entries(parts)) this.configParts[k] = typeof v === 'string' ? v : digest(v);
       if (process.env.DETJS_CACHE_DEBUG) {
         fs.mkdirSync(path.join(this.root, '.detjs'), { recursive: true });
         fs.writeFileSync(path.join(this.root, '.detjs', `cache-config-${process.env.DETJS_CACHE_DEBUG}.json`), JSON.stringify(parts, null, 1));
       }
       this.digests();
+      this.saveConfigParts();
     });
+  }
+
+  /**
+   * The parts behind every configuration digest of this session, kept next to the store (`config-parts/<digest>.json`)
+   * so that a later miss on `config` can name what changed (a configuration file, a project's configuration, a
+   * detjs option) instead of "configuration changed".
+   */
+  saveConfigParts() {
+    try {
+      const dir = path.join(this.dir, 'config-parts');
+      fs.mkdirSync(dir, { recursive: true });
+      const files = Object.fromEntries(this.configFilesList || []);
+      const write = (d, parts) => {
+        const p = path.join(dir, `${d}.json`);
+        if (!fs.existsSync(p)) fs.writeFileSync(p, JSON.stringify({ parts, files }));
+      };
+      write(this.configDigest, this.configParts);
+      for (const [name, d] of this.projectConfig || []) {
+        const parts = {};
+        for (const [k, v] of Object.entries(this.configParts)) if (!k.startsWith('project:') || k === `project:${name}`) parts[k] = v;
+        write(d, parts);
+      }
+      // bounded: the 200 most recent digests
+      const names = fs.readdirSync(dir).filter((n) => n.endsWith('.json'));
+      if (names.length > 200) {
+        const byTime = names.map((n) => [n, fs.statSync(path.join(dir, n)).mtimeMs]).sort((a, b) => a[1] - b[1]);
+        for (const [n] of byTime.slice(0, names.length - 200)) fs.rmSync(path.join(dir, n), { force: true });
+      }
+    } catch { /* naming only */ }
+  }
+
+  /** What differs between the configuration an entry was recorded with (`old` digest) and this session's for `project`. */
+  configChange(old, project) {
+    let prev;
+    try { prev = JSON.parse(fs.readFileSync(path.join(this.dir, 'config-parts', `${old}.json`), 'utf8')); } catch { return null; }
+    const curParts = {};
+    for (const [k, v] of Object.entries(this.configParts)) if (!k.startsWith('project:') || !project || k === `project:${project}` || !this.projectConfig || !this.projectConfig.has(project)) curParts[k] = v;
+    const names = [];
+    if (prev.files && curParts.files !== prev.parts.files) {
+      const cur = Object.fromEntries(this.configFilesList || []);
+      for (const f of new Set([...Object.keys(cur), ...Object.keys(prev.files)])) {
+        if (cur[f] !== prev.files[f]) names.push(`${f}${!(f in prev.files) ? ' (new)' : !(f in cur) ? ' (removed)' : ''}`);
+      }
+    }
+    for (const k of new Set([...Object.keys(curParts), ...Object.keys(prev.parts || {})])) {
+      if (k === 'files' || curParts[k] === (prev.parts || {})[k]) continue;
+      names.push(k.startsWith('project:') ? `resolved configuration of project ${k.slice(8) || '(root)'}` : k === 'level0' ? 'Level 0 options' : k);
+    }
+    return names.length ? names.slice(0, 12).join(', ') : null;
   }
 
   /** A configuration part every file is keyed by, known only once the runner found its files (Jest's mocks). */
   addGlobalPart(name, value) {
     this.quiet(() => {
       this.configParts[name] = typeof value === 'string' ? value : digest(value);
-      if (this.configDigest !== undefined) this.digests();
+      if (this.configDigest !== undefined) { this.digests(); this.saveConfigParts(); }
     });
   }
 
@@ -369,6 +480,15 @@ class ProofSession {
     return s.length ? digest(s) : '';
   }
 
+  scoped(project) {
+    return this.scope ? `${project || ''}~${this.scope}` : (project || '');
+  }
+
+  unscoped(project) {
+    const p = project || '';
+    return this.scope && p.endsWith(`~${this.scope}`) ? p.slice(0, -(this.scope.length + 1)) : p;
+  }
+
   noteProject(name, reason) {
     if (reason) this.uncacheableProjects.set(name || '', reason);
   }
@@ -394,7 +514,7 @@ class ProofSession {
       return this.verify ? new Set() : skip;
     }
     this.decided = true;
-    for (const f of files) this.specKeys.add(f.fileId);
+    for (const f of files) { this.specKeys.add(f.fileId); for (const c of f.covers || []) this.specKeys.add(c); }
     CAPTURE.scanModules();
     CAPTURE.phase = 'run';
     await this.identityAsync();
@@ -409,15 +529,16 @@ class ProofSession {
     }
     this.quiet(() => {
       for (const f of files) {
-        const proj = f.project || '';
-        if (this.uncacheableProjects.has(proj)) {
-          this.misses.set(this.idOf(f.fileId, proj), `uncacheable-project: ${this.uncacheableProjects.get(proj)}`);
+        const proj0 = f.project || '';
+        const proj = this.scoped(proj0);
+        if (this.uncacheableProjects.has(proj0)) {
+          this.misses.set(this.idOf(f.fileId, proj), `uncacheable-project: ${this.uncacheableProjects.get(proj0)}`);
           continue;
         }
-        this.store.setConfig(this.configFor(proj));
+        this.store.setConfig(this.configFor(proj0));
         const r = this.checkFile(f.fileId, proj);
         if (r.ok) {
-          this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration });
+          this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration, receipts: r.receipts, covers: f.covers || null });
           for (const [nid, rc] of r.receipts) this.hits.set(nid, rc);
           skip.add(f.key);
         } else {
@@ -426,6 +547,8 @@ class ProofSession {
       }
     });
     this.t.check += Number(process.hrtime.bigint() - t0) / 1e9;
+    // the trace of this session lists the reused tests too (audit G-1402): src/cache/trace-reused.js
+    if (!this.verify) this.run.cacheTrace = { plan: files.map((f) => f.fileId), reused: [...this.reusedFiles.values()] };
     return this.verify ? new Set() : skip;
   }
 
@@ -433,7 +556,7 @@ class ProofSession {
   checkFile(fileId, project) {
     const mid = this.idOf(fileId, project);
     const m = this.store.check(mid);
-    if (!m.ok) return { ok: false, why: neutral(m.text) };
+    if (!m.ok) return { ok: false, why: this.missText(m.text, mid, project) };
     const entry = JSON.parse(this.store.entry(mid));
     const tests = (entry.report && entry.report.tests) || [];
     const receipts = [[mid, { ...JSON.parse(m.text), kind: 'file' }]];
@@ -442,13 +565,25 @@ class ProofSession {
     for (const t of tests) {
       const nid = this.testKey(t, project);
       const r = this.store.check(nid);
-      if (!r.ok) return { ok: false, why: `${neutral(r.text)} [${t}]` };
+      if (!r.ok) return { ok: false, why: `${this.missText(r.text, nid, project)} [${t}]` };
       const rc = JSON.parse(r.text);
       const st = staleness(rc.run, this.maxAgeDays);
       if (st) return { ok: false, why: `${st} [${t}]` };
       receipts.push([nid, rc]);
     }
+    for (const [, rc] of receipts) rc.why = reuseReason(rc, this.epochMs, tests.length);
     return { ok: true, receipts, tests, duration: entry.duration || 0 };
+  }
+
+  /** The miss text, with the configuration parts that changed named (audit G-1399). */
+  missText(text, nodeid, project) {
+    if (text.startsWith('config:')) {
+      let old = null;
+      try { old = JSON.parse(this.store.entry(nodeid) || 'null'); } catch { old = null; }
+      const what = old && old.config ? this.configChange(old.config, project) : null;
+      if (what) return `config: changed ${what}`;
+    }
+    return neutral(text);
   }
 
   // -- end of session ---------------------------------------------------------------------------------------------
@@ -463,7 +598,9 @@ class ProofSession {
       placementFlags(c, this.parallelFlags, placementVars(this.runner, Number(process.env.DETJS_WORKERS || 1) > 1));
       // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
       // processes) corrects `ok` from the runner's own results
-      out.push(this.captureFilter ? this.captureFilter(c) : c);
+      const x = this.captureFilter ? this.captureFilter(c) : c;
+      if (this.scope) x.project = this.scoped(x.project);
+      out.push(x);
     }
     return out;
   }
@@ -480,6 +617,7 @@ class ProofSession {
     });
     if (!this.disabled && this.runtimeDigest && this.configDigest) {
       this.quiet(() => (this.realClock ? this.checkRealClock(captures) : this.recordAll(captures)));
+      this.noteMissingCaptures(captures);
     }
     this.t.record += Number(process.hrtime.bigint() - t0) / 1e9;
     this.quiet(() => {
@@ -492,6 +630,20 @@ class ProofSession {
       this.quiet(() => require('./remote').pushSync(this.remote));
     }
     return this.writeSummary();
+  }
+
+  /**
+   * A file that was to run but left no capture (its process could not write it, died before, or never started it):
+   * nothing of it is recorded. That is a refusal like any other, so it is counted and named (audit G-2225), never
+   * only a note on the standard error.
+   */
+  noteMissingCaptures(captures) {
+    const have = new Set(captures.map((c) => this.idOf(c.fileId, c.project || '')));
+    for (const [mid, why] of this.misses) {
+      if (have.has(mid) || String(why).startsWith('uncacheable-project')) continue;
+      if (this.notCached.has(mid)) continue;
+      this.notCached.set(mid, 'capture not written: the file was to run but no capture of its inputs reached detjs (not recorded)');
+    }
   }
 
   writeSummary() {
@@ -528,11 +680,11 @@ class ProofSession {
     for (const k of Object.keys(this.curEnv)) if (typeof this.curEnv[k] === 'string') curEnv[k] = this.curEnv[k];
     const projects = new Set(['', ...captures.map((c) => c.project || '')]);
     const configFor = {};
-    for (const p of projects) configFor[p] = this.configFor(p);
+    for (const p of projects) configFor[p] = this.configFor(this.unscoped(p));
     const hits = {};
     for (const [nid, rc] of this.hits) hits[nid] = rc.outcome;
     // Jest workers' own items outside any file (src/jest/worker.js): global inputs of every file, as in band
-    const global = CAPTURE.global.slice();
+    const global = this.globalItems().slice();
     const seen = new Set(global.map((it) => JSON.stringify(it)));
     for (const c of captures) {
       for (const it of c.worker_global || []) { const k = JSON.stringify(it); if (!seen.has(k)) { seen.add(k); global.push(it); } }
@@ -542,7 +694,7 @@ class ProofSession {
       global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
       urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
-      uncacheable_projects: [...this.uncacheableProjects.keys()], verify: Boolean(this.verify), hits,
+      uncacheable_projects: [...this.uncacheableProjects.keys()].map((p) => this.scoped(p)), verify: Boolean(this.verify), hits,
     };
     const text = JSON.stringify(input);
     if (process.env.DETJS_POLICY_DUMP) {
@@ -557,6 +709,21 @@ class ProofSession {
     for (const [nid, why] of out.not_cached) this.notCached.set(nid, why);
     this.verified = [...(this.verified || []), ...out.verified];
     this.ranFiles = out.ran_files;
+  }
+
+  /**
+   * The main process's items for the policy. Start-up outputs as inputs (audit G-1401): where the reuse decision
+   * is taken after the start-up code ran (Vitest: its sequencer runs after globalSetup), a file the start-up wrote
+   * is on disk, as this session's start-up left it, when the decision reads it: a test that read it is keyed by its
+   * content like any other file, and the start-up is not a writer of it. A write of the main process after the
+   * decision (a teardown, a write while the tests run: marked `run` by the capture) stays a writer, so does every
+   * test file that wrote it. Jest decides before globalSetup: there the start-up stays a writer (never reused).
+   */
+  globalItems() {
+    const g = CAPTURE.global;
+    if (!this.decidesAfterStartup) return g;
+    const late = new Set(g.filter((it) => it[0] === 'write' && it[2] === 'run').map((it) => it[1]));
+    return g.filter((it) => it[0] !== 'write' || it[2] === 'run' || late.has(it[1]));
   }
 
   /**
@@ -617,7 +784,8 @@ class ProofSession {
       reused_files: this.reusedFiles.size,
       reused_tests: reusedTests,
       ran_files: this.ranFiles || {},
-      reused_files_list: [...this.reusedFiles.values()].map((f) => (f.project ? `${f.fileId}@@${f.project}` : f.fileId)),
+      // a process unit (a shared-process runner's whole run) lists the test files it covers
+      reused_files_list: [...this.reusedFiles.values()].flatMap((f) => (f.covers ? f.covers : [f.project ? `${f.fileId}@@${f.project}` : f.fileId])),
       reused_recorded_seconds: Math.round(reusedSeconds * 1000) / 1000,
       missed_files: this.misses.size,
       miss_reasons: kinds,

@@ -5,9 +5,11 @@
 // * discovery: Deno has no listing command, so detjs applies Deno's rules (`discover` below: file arguments as given,
 //   directories walked for `{*_,*.,}test.{js,mjs,ts,mts,jsx,tsx}`, deno.json `test.include/exclude`, `exclude`,
 //   `--ignore=`);
-// * one `deno test` process per file (Deno already gives every file its own isolate, but the process, its
-//   environment, working directory and files are shared), in detjs' order; inside a file, declaration order, or
-//   Deno's own `--shuffle=<seed derived by the core>` with --det-seed;
+// * one `deno test` process for every file, Deno's own model (an isolate per file; the process, its environment,
+//   working directory and files shared: audit G-0146), in detjs' order; with --det-isolate one process per file;
+//   inside a file, declaration order, or Deno's own `--shuffle=<seed derived by the core>` with --det-seed;
+// * --det-cache: the process is the unit (the isolates' captures merged, src/runners/deno.js mergeUnit), or with
+//   --det-isolate the file;
 // * `--preload` of detjs' setup; the permissions detjs itself needs (read its own files and the run directory,
 //   write the run directory, its DETJS_* variables, FFI for the native core) are added to the ones given;
 // * --det-cache: inputs as for the other shells, plus (a) the module graph of each test file after its run
@@ -26,7 +28,7 @@ const native = require('../native');
 const VALUE_FLAGS = new Set(['--filter', '--config', '-c', '--import-map', '--lock', '--seed', '--shuffle', '--reporter', '--junit-path',
   '--coverage', '--location', '--v8-flags', '--cert', '--node-modules-dir', '--env-file', '--preload', '--ext', '--trace-leaks',
   '--frozen', '--minimum-dependency-age', '--conditions', '--tunnel']);
-const REFUSED = { '--watch': 'watch mode', '--parallel': 'files run one per process, in detjs\' order', '--shuffle': 'use --det-seed',
+const REFUSED = { '--watch': 'watch mode', '--parallel': 'files run one at a time, in detjs\' order', '--shuffle': 'use --det-seed',
   '--seed': 'use --det-seed (Math.random is seeded by detjs)' };
 const DROPPED = new Set(['--reporter', '--junit-path', '--preload', '--parallel']);
 const VOLATILE = /^--(reporter|junit-path|quiet|q|fail-fast|coverage|clean|hide-stacktraces|permit-no-files|no-prompt)(=|$)/;
@@ -230,6 +232,8 @@ function auditCheck(file, capture, root, skipDirs) {
     if (!l) continue;
     let j;
     try { j = JSON.parse(l); } catch { continue; }
+    // detjs' own set-up of an isolate (one per file in a shared process): from DETJS_AUDIT_SETUP to DETJS_AUDIT_START
+    if (j.permission === 'env' && j.value === 'DETJS_AUDIT_SETUP') { if (started) started = false; continue; }
     if (!started) { if (j.permission === 'env' && j.value === 'DETJS_AUDIT_START') started = true; continue; }
     const v = j.value;
     switch (j.permission) {
@@ -256,6 +260,40 @@ function auditCheck(file, capture, root, skipDirs) {
   }
   if (!started) out.push(['flag', 'unobserved', 'audit log without detjs\' marker']);
   return out;
+}
+
+/**
+ * The process unit of a shared `deno test` run: the captures of its isolates (one per file, in the order they ran)
+ * become one capture, `<deno>` under the project `process`, whose items are every file's and whose tests keep their
+ * place (a later file's inputs include the earlier files': what they left in the environment, the working directory
+ * or the files is carried). ok only when every file and the process passed.
+ */
+function mergeUnit(run, ids, status) {
+  const dir = path.join(run.dir, 'cache');
+  const parts = [];
+  for (const f of ids) {
+    for (const p of common.captureFiles(run, f)) {
+      try { parts.push({ p, c: JSON.parse(fs.readFileSync(p, 'utf8')), t: fs.statSync(p).mtimeMs }); } catch { parts.push({ p, c: null, t: 0 }); }
+    }
+  }
+  parts.sort((a, b) => a.t - b.t);
+  const unit = { fileId: '<deno>', project: 'process', label: '<deno>', ok: status === 0 && parts.length === ids.length, duration: 0, items: [], tests: [],
+    notes: [], explained: { paths: [], env: [], sys: [] }, pid: process.pid };
+  for (const { p, c } of parts) {
+    fs.rmSync(p, { force: true });
+    if (!c) { unit.ok = false; continue; }
+    const base = unit.items.length;
+    unit.items.push(...(c.items || []));
+    for (const t of c.tests || []) unit.tests.push({ ...t, upto: base + (t.upto || 0) });
+    unit.ok = unit.ok && Boolean(c.ok);
+    unit.duration += c.duration || 0;
+    for (const n of c.notes || []) if (!unit.notes.includes(n)) unit.notes.push(n);
+    for (const k of ['paths', 'env', 'sys']) unit.explained[k].push(...((c.explained && c.explained[k]) || []));
+    if (c.runtime) unit.runtime = c.runtime;
+  }
+  unit.upto = unit.items.length;
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, `${require('../controls').partName('<deno>', 'process').replace(/\.jsonl$/, '')}-${process.pid}.json`), JSON.stringify(unit));
 }
 
 async function main(argv) {
@@ -354,10 +392,43 @@ async function main(argv) {
     capture.graph_modules = g.modules || 0;
     capture.items.push(...auditCheck(auditOf(r.index), capture, root, skipDirs()));
   };
+  if (!opts.isolate) {
+    // Deno's own model: every file in one `deno test` process (an isolate per file, the process's environment,
+    // working directory and files shared: audit G-0146), files in detjs' order; with --det-seed, Deno's own shuffle
+    // with the run's derived seed
+    const spawnAll = (ids, extraEnv) => {
+      const args = ['test', '--preload', preload];
+      for (const p of userPreloads) args.push('--preload', p);
+      if (run.cfg.shuffle && run.cfg.controls.has('order')) args.push(`--shuffle=${common.fileSeed(run.cfg, '<deno>')}`);
+      if (junitPath) args.push(`--junit-path=${path.resolve(root, junitPath)}`);
+      if (reporter) args.push(`--reporter=${reporter}`);
+      args.push(...options, ...ids.map((f) => path.resolve(root, f)));
+      const env = { ...process.env, ...extraEnv };
+      if (pc) env.DENO_AUDIT_PERMISSIONS = auditOf(0);
+      // the per-file captures of the isolates are merged into the process unit's below
+      delete env.DETJS_CACHE_UNIT;
+      const r = common.runInherit(bin, args, { cwd: root, env });
+      if (pc) mergeUnit(run, ids, r.status);
+      r.index = 0;
+      return r;
+    };
+    return common.runSharedProcess({
+      runner: 'deno', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnAll,
+      extra: pc && process.env.DETJS_RUNTIME_NAIVE !== '1' ? (capture, unit, r) => {
+        for (const f of order) {
+          const g = graphItems(bin, root, f, infoArgs, process.env);
+          capture.items.push(...g.items);
+          capture.graph_modules = (capture.graph_modules || 0) + (g.modules || 0);
+        }
+        capture.items.push(...auditCheck(auditOf(r.index), capture, root, skipDirs()));
+      } : null,
+      isolation: 'deno test: one process for every test file (Deno\'s model, an isolate per file, detjs order)', isolationShort: 'one process', cliArgs: rest,
+    });
+  }
   const code = await common.runFileProcesses({
     runner: 'deno', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile,
     extra: pc && process.env.DETJS_RUNTIME_NAIVE !== '1' ? extra : null,
-    isolation: 'deno test: one process per test file (detjs order)', isolationShort: 'process per file', cliArgs: rest,
+    isolation: 'deno test: one process per test file (--det-isolate, detjs order)', isolationShort: 'process per file', cliArgs: rest,
     afterRun: () => { if (junitPath) common.mergeJunit(junitParts, path.resolve(root, junitPath), 'deno test'); },
   });
   return code;

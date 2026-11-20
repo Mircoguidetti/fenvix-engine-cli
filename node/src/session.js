@@ -47,6 +47,9 @@ const HELP = `detjs options (all others are passed to the test runner):
                            each test whose cached result differs (an expiry); its cache entries are removed
                            With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
                            test that reads the clock is reused only on the UTC day it was recorded
+  --det-isolate            a fresh process per test (Vitest, Jest) or per test file (Mocha, Jasmine, uvu, Bun, Deno):
+                           no in-memory state crosses that boundary; with --det-cache, a test (file) is reused or run
+                           on its own inputs only (docs/NODE-CACHE.md)
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
   --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: serial, or the
@@ -64,6 +67,7 @@ function parseArgs(argv, env = process.env) {
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
     workers: null, plan: null,
     order: null, outcomes: null, collect: false, orderSeed: null,
+    isolate: env.DETJS_ISOLATE === '1',
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
@@ -106,6 +110,7 @@ function parseArgs(argv, env = process.env) {
       case '--det-cache': opts.cache = value; break;
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
       case '--det-cache-real-clock': opts.cacheRealClock = true; break;
+      case '--det-isolate': opts.isolate = value === undefined || value === '1' || value === 'true'; break;
       case '--det-cache-max-age': opts.cacheMaxAge = Number(value); if (!(opts.cacheMaxAge >= 0)) throw new Error(`detjs: --det-cache-max-age: not a number of days: ${value}`); break;
       case '--det-tz': case '--det-locale': break; // applied by bin/detjs.js before the runner starts
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
@@ -251,7 +256,9 @@ function partIds(file) {
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
   try { require('./network').saveRecordings(); } catch (e) { process.stderr.write(`detjs: could not save the start-up recordings: ${e && e.message}\n`); }
-  const parts = files.map((f) => path.join(run.dir, 'parts', f.part)).filter((p) => fs.existsSync(p));
+  const executed = files.map((f) => ({ fileId: f.fileId, path: path.join(run.dir, 'parts', f.part) })).filter((p) => fs.existsSync(p.path));
+  // --det-cache: the reused tests are in the trace too, with their recorded fingerprints (G-1402)
+  const { paths: parts, reusedTests } = require('./cache/trace-reused').withReused(run, executed);
   // Parts not claimed by the sequencer order (should not happen) go last, sorted.
   const known = new Set(parts);
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
@@ -278,6 +285,7 @@ function finish(run, opts, files, meta) {
     node: process.version,
     platform: process.platform,
     files: files.map((f) => f.fileId),
+    ...(reusedTests.length ? { reused_tests: reusedTests } : {}),
     unordered_parts: extra.length,
     notes: [...new Set(all.flatMap(partNotes))],
     // time zone and locale of the run: pinned by bin/detjs.js unless --det-tz/--det-locale=keep (G-0139, G-0140)

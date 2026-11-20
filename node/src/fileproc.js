@@ -95,12 +95,14 @@ class FileProcess {
     this.fileId = null;
     if (this.cap && this.c.dir) {
       try {
-        const capture = this.cap.fileCapture({ fileId, project: '', label: fileId, ok: Boolean(ok), duration: (realNow() - this.t0) / 1000 });
+        // a process unit (Mocha's one process under --det-cache): its entries under the project `process`
+        const project = process.env.DETJS_CACHE_UNIT ? 'process' : '';
+        const capture = this.cap.fileCapture({ fileId, project, label: fileId, ok: Boolean(ok), duration: (realNow() - this.t0) / 1000 });
         const dir = path.join(this.c.dir, 'cache');
         fs.mkdirSync(dir, { recursive: true });
-        fs.writeFileSync(path.join(dir, `${controls.partName(fileId, '').replace(/\.jsonl$/, '')}-${process.pid}.json`), JSON.stringify(capture));
+        fs.writeFileSync(path.join(dir, `${controls.partName(fileId, project).replace(/\.jsonl$/, '')}-${process.pid}.json`), JSON.stringify(capture));
       } catch (e) {
-        process.stderr.write(`detjs cache: capture of ${fileId} not written: ${e && e.stack}\n`);
+        process.stderr.write(`detjs cache: capture of ${fileId} not written (counted as not cached): ${e && e.stack}\n`);
       }
       this.cap.resetFile();
       this.cap.setCtx('', '');

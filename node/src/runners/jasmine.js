@@ -8,8 +8,10 @@
 //   * --det: one process, the spec files in detjs' order (sorted by path; --det-seed: shared shuffle), `random:
 //     false` (Jasmine's default `random: true` draws a seed per run); with --det-seed the children of every suite
 //     are shuffled with the shared shuffle (keys file -> suite path), through Jasmine's `orderChildren` hook;
-//   * --det-cache: every spec file in its own fresh process (helpers, requires and globalSetup run in each), because
-//     in one process a reused file A would change the context file B runs in (docs/ALL-RUNNERS.md);
+//   * --det-cache: Jasmine's own model, one process for every spec file (audit G-0147: a fresh process per file
+//     turned a suite whose files share state into a false failure); the cache unit is that process (all spec
+//     files reused, or all run). --det-isolate: every spec file in its own fresh process (helpers, requires and
+//     globalSetup run in each), and the cache unit is the file;
 //   * every spec is a test: Jasmine's reporter events (specStarted: before its beforeEach functions; specDone:
 //     after its afterEach functions); a failure outside specs (beforeAll / afterAll, load errors) fails the file.
 // Not supported under --det: `--parallel` (removed, noted).
@@ -32,7 +34,7 @@ function userOptions(rest, notes) {
     // positionals are spec files (detjs passes its own list); `NAME=value` arguments are Jasmine's environment-style
     // options (`JASMINE_CONFIG_PATH=tests/jasmine.json`) and stay
     if (!a.startsWith('-') && !/^[A-Z_][A-Z0-9_]*=/.test(a)) continue;
-    if (/^--parallel=/.test(a)) { if (notes) notes.push(`${a} ignored: one process per file under --det-cache, serial under --det`); continue; }
+    if (/^--parallel=/.test(a)) { if (notes) notes.push(`${a} ignored: serial under --det (one process per file with --det-isolate)`); continue; }
     if (/^--(random|seed)=/.test(a)) continue;
     out.push(a);
   }
@@ -56,7 +58,7 @@ async function discover(ctx) {
     helpers: (doc.helperFiles || []).map((f) => common.fileIdOf(ctx.root, path.resolve(ctx.root, f))),
     requires: doc.requires || [],
     args: userOptions(rest).sort(),
-    mode: ctx.pc ? 'process per file' : 'one process',
+    mode: ctx.opts.isolate ? 'process per file' : 'one process',
   };
   userOptions(rest, notes);
   return { files, config, uncacheable: null, notes, order: 'path' };
@@ -66,8 +68,8 @@ function launch(ctx, files) {
   const { runner, rest } = ctx;
   const opts = [...userOptions(rest), '--random=false'];
   const env = { DETJS_JASMINE_DIR: runner.dir, DETJS_JASMINE_CORE: runner.coreDir };
-  if (!ctx.pc) return common.runChild(ctx, [runner.binPath, ...opts, ...files], { role: 'single', env });
-  // --det-cache: a fresh process per spec file
+  if (!ctx.opts.isolate) return common.runChild(ctx, [runner.binPath, ...opts, ...files], { role: 'single', env });
+  // --det-isolate: a fresh process per spec file
   let status = 0;
   for (const f of files) {
     const s = common.runChild(ctx, [runner.binPath, ...opts, f], { role: 'single', env: { ...env, DETJS_RUNNER_FILE: f } });
@@ -83,7 +85,8 @@ function main(argv) {
     plain: (rest, r) => [r.binPath, ...rest],
     discover,
     launch,
-    isolation: (ctx) => (ctx.pc ? 'jasmine: one process per spec file (--det-cache), specs in sequence' : 'jasmine: one process, spec files in sequence, random=false'),
+    isolation: (ctx) => (ctx.opts.isolate ? 'jasmine: one process per spec file (--det-isolate), specs in sequence' : 'jasmine: one process, spec files in sequence, random=false'),
+    sharedProcess: true,
   }, argv);
 }
 
@@ -138,7 +141,8 @@ function hookOrder() {
     load(u, context, next) {
       const r = next(u, context);
       if (typeof u === 'string' && u.startsWith('file:') && require('node:url').fileURLToPath(u) === core && r && r.source) {
-        const src = String(r.source);
+        // another load hook in the chain (the cache capture's) may hand the source on as bytes
+        const src = typeof r.source === 'string' ? r.source : Buffer.from(r.source.buffer ? new Uint8Array(r.source.buffer, r.source.byteOffset, r.source.byteLength) : r.source).toString('utf8');
         if (src.includes(ORDER_SRC)) {
           found = true;
           return { ...r, source: src.replace(ORDER_SRC, `return (globalThis[Symbol.for('detjs.jasmine.orderChildren')] || ((n, s) => s(n.children)))(node, (c) => order.sort(c));`) };

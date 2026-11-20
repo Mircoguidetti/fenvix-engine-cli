@@ -18,7 +18,10 @@ release line).
 ## Not cached / limits
 
 * uvu test files run directly with `node test/x.js` (no CLI) are not covered: use `detjs uvu`;
-* cross-file state, as for Jasmine: reported as a failure under `--det-cache`, never reused;
+* process model (audit G-0149), as for Jasmine: `--det-cache` keeps uvu's one process, the process is the cache
+  unit (`<uvu>`); `--det-isolate` runs one process per file, the file is the unit (test "G-0149" in
+  runner-b-specific.js). The runner source hook reads the source as bytes when the cache's loader hook hands it on
+  that way (it used to miss the hook in one process with the cache);
 * `-r esm` (the `esm` package) does not work on Node 22 with or without detjs.
 
 Tests: `node/test/runner-uvu.test.js`.

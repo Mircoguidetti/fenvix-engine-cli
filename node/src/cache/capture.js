@@ -613,7 +613,9 @@ class Capture {
       if (!s) this.written.set(abs, (s = new Set()));
       s.add(global ? '' : this.label);
       if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
-      this.add(['write', this.key(abs)], global);
+      // a write of the main process after the reuse decision (the tests are running, a teardown) is marked: only
+      // what the start-up wrote before the decision can be keyed by content (src/cache/proof.js, G-1401)
+      this.add(global && this.phase === 'run' ? ['write', this.key(abs), 'run'] : ['write', this.key(abs)], global);
       for (const k of ['f', 'd', 's', 'l', 'm', 'e']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
       this.memo.delete(`e${path.dirname(abs)}`);
@@ -2198,6 +2200,9 @@ function offThreadLoader() {
 // (`module.register`, `--loader`), so they are removed when such hooks are registered (the tests are then not
 // cacheable: flag `loader`)
 const SYNC_HOOKS = [];
+// off-thread hooks were registered in this thread (module.register): in-thread hooks registered after them make
+// Node fail every resolution (ERR_METHOD_NOT_IMPLEMENTED), so none is registered any more
+const OFF_THREAD = { registered: false };
 
 function dropSyncHooks() {
   CAPTURE.loadHooked = false; // module loads are no longer seen: scan the registries every time
@@ -2218,6 +2223,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
         if (user) cap.add(['flag', 'loader', `module.register(${String(spec).slice(0, 200)})`], cap.isGlobal);
       }
       dropSyncHooks();
+      OFF_THREAD.registered = true;
       return realRegister.call(this, spec, ...rest);
     };
     realDefine(reg, '__detjsCache', { value: true });
@@ -2234,7 +2240,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;
   }
-  if (offThreadLoader()) return;
+  if (offThreadLoader() || OFF_THREAD.registered) return;
   try {
     const hooks = {
       resolve(spec, context, next) {
