@@ -8,6 +8,7 @@ cache run must not reuse the test and must give the truth's outcome."""
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -282,5 +283,5 @@ def test_g0174_serial_testrun_uid_is_derived_under_det(pytester):
     uids = []
     for label in ("u1", "u2"):
         p, _, _ = run(pytester, label, "-s", "tests", cache=False)
-        uids.append([x for x in p.stdout.splitlines() if x.startswith("UID ")])
+        uids.append(re.findall(r"UID ([0-9a-f]+)", p.stdout))
     assert uids[0] and uids[0] == uids[1], uids

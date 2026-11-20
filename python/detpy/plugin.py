@@ -660,7 +660,8 @@ def _configure_det(config) -> None:
         _xdist.export_controller_env(ctl.barrier)
         S.controller = ctl
         config.pluginmanager.register(ctl, "detpy-xdist-controller")
-    elif config.pluginmanager.has_plugin("xdist") or config.pluginmanager.has_plugin("xdist.plugin"):
+    elif (config.pluginmanager.has_plugin("xdist") or config.pluginmanager.has_plugin("xdist.plugin")) \
+            and not getattr(config.option, "det_plan_worker", None):  # a replayed worker has the plan's uid
         # audit G-0174: a serial session with pytest-xdist installed: xdist's testrun_uid fixture draws uuid4() in
         # infrastructure code (neither controlled nor observed); under --det it is the derived value, as under -n
         config.pluginmanager.register(_SerialTestrunUid(

@@ -809,6 +809,8 @@ ENV_ALLOWLIST: dict[str, str] = {
           "detpy itself for its own processes, never an input of the project's code"
        for k in ("DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS", "DETPY_XDIST_ENV",
                  "DETPY_REWRITE_CACHE", "DETPY_REWRITE_OWN")},
+    "DETPY_L0_REF": "detpy's own equivalence tests: selects the Python reference of Level 0 (tests/rust_hotpaths_ref) "
+                    "whose results must be identical to the engine's; never set in a project",
     "PYTEST_XDIST_*": "pytest-xdist's per-worker identity: differs between the controller and each worker of one "
                       "session; a test that reads it is keyed per test and pinned to its worker (placement)",
     "PYTEST_CURRENT_TEST": "set by pytest around each test (the running test's id)",
