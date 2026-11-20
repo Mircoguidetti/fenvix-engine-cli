@@ -771,6 +771,11 @@ class Coordinator {
     } catch { /* navigating */ } finally { ACT.ownDepth--; }
   }
 
+  /** Engine time as the pages' clocks read it (epoch + T, ms). */
+  pageClockMs() {
+    return this.o.epochMs + this.sched.now() / NS;
+  }
+
   async readPageClock(p) {
     if (this.pageClock) { await this.anchor(p, p.pageT, 0); return; }
     if (p.closed || p.navs > 0) return;

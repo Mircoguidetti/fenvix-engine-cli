@@ -106,8 +106,18 @@ function pageInit(seedHi, seedLo) {
     // inside the slice, capped at the slice's length; between slices they read the engine time exactly.
     var RD = Date, rnow = RD.now.bind(RD);
     var PERF = G.performance, rperf = PERF && PERF.now ? PERF.now.bind(PERF) : function () { return rnow(); };
-    var anc = null, tOrigin = null;
+    var anc = null, tOrigin = null, pre; // pre: the delivery time of this document (Server-Timing detjs)
     function eng() {
+      // A new document starts at the engine time of its delivery (worker.js lsFetch: Server-Timing), until the first anchor.
+      if (!anc && pre === undefined) {
+        pre = null;
+        try {
+          var nav = G.performance && G.performance.getEntriesByType && G.performance.getEntriesByType('navigation')[0];
+          var st = nav && nav.serverTiming ? nav.serverTiming.filter(function (e) { return e.name === 'detjs'; })[0] : null;
+          if (st && Number(st.description) > 0) pre = Number(st.description);
+        } catch (e) { pre = null; }
+        if (pre) anchor(pre, 0);
+      }
       if (!anc) return null;
       var e = rperf() - anc.perf;
       if (e < 0) e = 0;

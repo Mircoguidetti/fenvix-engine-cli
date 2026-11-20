@@ -112,7 +112,8 @@ pub struct Focus {
 
 impl Focus {
     fn covers(&self, test: &str, decision: u64, key: &str) -> bool {
-        if !self.test.is_empty() && !test.contains(&self.test) {
+        // `test`: one text, or several separated by `||` (any of them may be contained in the test id).
+        if !self.test.is_empty() && !self.test.split("||").filter(|t| !t.is_empty()).any(|t| test.contains(t)) {
             return false;
         }
         if self.from > 0 && decision < self.from {
@@ -383,6 +384,14 @@ mod tests {
                 a => panic!("{a:?}"),
             }
         }
+    }
+
+    #[test]
+    fn focus_on_several_tests() {
+        let f = Focus { test: "a.spec::one||b.spec::two".into(), ..Focus::default() };
+        assert!(f.covers("x/a.spec::one [p]", 1, "k"));
+        assert!(f.covers("b.spec::two", 1, "k"));
+        assert!(!f.covers("a.spec::three", 1, "k"));
     }
 
     #[test]

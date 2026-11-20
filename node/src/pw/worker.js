@@ -556,7 +556,15 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
   // A main-frame document keeps its page "navigating" until the page has it (Chromium suspends the page meanwhile).
   const nav = item.nav ? LS.navHold(page) : null;
   release();
-  LS.respond(page, item, async () => { try { await route.fulfill({ status: resp.status(), headers: out, body }); } finally { if (nav) nav(); } }, request);
+  // A document carries the engine time of its delivery (Server-Timing, read by page-init.js from the navigation
+  // entry): its scripts may read Date.now() before the engine first anchors the page, and Chromium's own clock is not
+  // the engine's (MEASURED on uptime-kuma's RSS replays: socket.io's polling id, Date.now() of a reloaded page, 262 s
+  // apart in two replays). A CDP new-document script cannot do it: Chromium answers it only after the navigation.
+  const isDoc = (() => { try { return request.resourceType() === 'document'; } catch { return false; } })();
+  LS.respond(page, item, async () => {
+    const h = isDoc ? { ...out, 'server-timing': `${out['server-timing'] ? `${out['server-timing']}, ` : ''}detjs;desc="${LS.pageClockMs()}"` } : out;
+    try { await route.fulfill({ status: resp.status(), headers: h, body }); } finally { if (nav) nav(); }
+  }, request);
   if (opt.noMsg) LS.longPollArrived(item.lsId);
 }
 

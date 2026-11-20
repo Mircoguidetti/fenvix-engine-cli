@@ -35,7 +35,7 @@ WORK = Path(os.environ["L2_WORK"])
 RESULT = Path(os.environ["L2_RESULT"])
 DETJS = os.environ["DETJS_BIN"]
 T0 = time.time()
-RUN = json.loads((H4.parent / "RUN").read_text())
+RUN = json.loads(Path(os.environ.get("L2_RUN_FILE") or (H4.parent / "RUN")).read_text())  # L2_RUN_FILE: local dry runs
 REPOS = json.loads((H2 / "repos.json").read_text())
 for _f in (H3 / "repos.json", H4 / "repos.json"):
     for _n, _c in json.loads(_f.read_text()).items():
@@ -417,6 +417,119 @@ if JOB == "gate":
         if isinstance(vv, dict) and "error" in vv:
             T["verify_error"] = vv["error"]
         save()
+
+
+if JOB == "hunt":
+    # Points 2 + 5 (round 4): for each of the project's round-3 flaky tests (targets55.json), search seeds 1..S for one
+    # whose lockstep run fails with the test's real first error line, then replay that seed R times. A target counts
+    # as reproduced when all R replays fail with that line and give one fingerprint. The seed space is set per
+    # mechanism (from the real message): socket faults on runner API requests for ECONNRESET, deadline-scale holds for
+    # test timeouts, ordinary latency choices for the rest. All targets of one mechanism run in one invocation per seed.
+    os.environ["DETJS_LS_STATS"] = "1"
+    T55 = json.loads((H4 / "targets55.json").read_text()).get(NAME, {}).get("targets", [])
+    only = P.get("only")
+    if only:
+        T55 = [t for t in T55 if any(o in t["key"] for o in only)]
+    SEEDS = int(P.get("seeds", 8))
+    REPLAYS = int(P.get("replays", 10))
+
+    def first_line(e):
+        for ln in re.sub(r"\x1b\[[0-9;]*m", "", e or "").splitlines():
+            if ln.strip():
+                return re.sub(r"\s+", " ", ln.strip())[:200]
+        return ""
+
+    def mech(t):
+        m = (t["messages"][0][0] if t["messages"] else "")
+        if "ECONNRESET" in m:
+            return "reset", {"DETJS_LS_FAULTS": "reset-request,reset-response", "DETJS_LS_FAULT_KINDS": "api",
+                             "DETJS_LS_FAULT_PERMILLE": str(P.get("fault_permille", 60))}
+        if m.startswith("Test timeout of"):
+            ms = re.search(r"of (\d+)ms", m)
+            return "timeout", {"DETJS_LS_LATENCIES": P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5"),
+                               "DETJS_PW_DEADLINE_MS": ms.group(1) if ms else "30000"}
+        return "latency", {"DETJS_LS_LATENCIES": P.get("latencies", "1,1,1,5,20,50,200,1000")}
+
+    def project_of(key):
+        m = re.search(r" \[([^\]]+)\]$", key)
+        return m.group(1) if m else None
+
+    def title_of(key):
+        return re.sub(r" \[[^\]]+\]$", "", key.split("::")[-1])
+
+    def args_for(ts):
+        files = sorted({t["file"] for t in ts})
+        grep = "|".join(js_escape(title_of(t["key"])) for t in ts)
+        args = [js_escape(f) for f in files] + ["--grep", f"({grep})"]
+        base = [a for a in PW_ARGS if not a.startswith("--shard") and not a.startswith("--project")]
+        projs = sorted({project_of(t["key"]) for t in ts} - {None})
+        return args + base + [f"--project={p}" for p in projs]
+
+    def outcome(t, run):
+        for k, o in (run.get("outcomes") or {}).items():
+            if k == t["key"]:
+                return o, first_line((run.get("errors") or {}).get(k, ""))
+        return "missing", ""
+
+    R["hunt"] = {"seeds": SEEDS, "replays": REPLAYS, "targets": []}
+    rows = {t["key"]: {"key": t["key"], "real": t["messages"][0][0] if t["messages"] else "", "mechanism": mech(t)[0],
+                       "tried": [], "seed": None, "replays": [], "replay_errors": [], "fingerprints": None, "reproduced": False}
+            for t in T55}
+    R["hunt"]["targets"] = list(rows.values())
+    groups = {}
+    for t in T55:
+        groups.setdefault(mech(t)[0], []).append(t)
+    for g, ts in groups.items():
+        # Only the targets are perturbed (setup tests and the rest run the default schedule).
+        env = {**mech(ts[0])[1], "DETJS_LS_FOCUS_TEST": "||".join(t["key"] for t in ts)}
+        for seed in range(1, SEEDS + 1):
+            open_ts = [t for t in ts if rows[t["key"]]["seed"] is None]
+            if not open_ts or not budget_for(P.get("per_run_s", 600)):
+                break
+            r = run_pw(f"h-{g}-s{seed}", "det", seed=seed, args=args_for(open_ts), env_extra=env,
+                       timeout_s=P["run_timeout_min"] * 60)
+            for t in open_ts:
+                o, line = outcome(t, r)
+                row = rows[t["key"]]
+                row["tried"].append([seed, o, line[:160]])
+                if o in FAIL and line == first_line(row["real"]):
+                    row["seed"] = seed
+            save()
+        # Replays: the targets that found a seed, grouped by seed.
+        by_seed = {}
+        for t in ts:
+            if rows[t["key"]]["seed"] is not None:
+                by_seed.setdefault(rows[t["key"]]["seed"], []).append(t)
+        for seed, sts in sorted(by_seed.items()):
+            traces = []
+            for i in range(REPLAYS):
+                if not budget_for(P.get("per_run_s", 600)):
+                    break
+                label = f"h-{g}-s{seed}-r{i + 1}"
+                r = run_pw(label, "det", seed=seed, args=args_for(sts), env_extra=env, timeout_s=P["run_timeout_min"] * 60)
+                for t in sts:
+                    o, line = outcome(t, r)
+                    rows[t["key"]]["replays"].append(o)
+                    rows[t["key"]]["replay_errors"].append(line[:160])
+                traces.append(r.get("trace"))
+                if i < 2:
+                    keep_trace(r.get("trace"), label)
+                save()
+            vv = verify(traces)
+            for tv in (vv or {}).get("tests", []) if isinstance(vv, dict) else []:
+                k = trace_key(tv["nodeid"])
+                if k in rows and rows[k]["seed"] == seed:
+                    rows[k]["fingerprints"] = tv["distinct_fingerprints"]
+                    rows[k]["divergence"] = tv.get("divergence")
+            for t in sts:
+                row = rows[t["key"]]
+                row["reproduced"] = (len(row["replays"]) == REPLAYS and all(o in FAIL for o in row["replays"])
+                                     and all(e == first_line(row["real"]) for e in row["replay_errors"]) and row["fingerprints"] == 1)
+            save()
+    R["hunt"]["reproduced"] = sum(1 for r_ in rows.values() if r_["reproduced"])
+    R["hunt"]["found_seed"] = sum(1 for r_ in rows.values() if r_["seed"] is not None)
+    R["hunt"]["n"] = len(rows)
+    save()
 
 for x in R["runs"]:
     x.pop("trace", None)
