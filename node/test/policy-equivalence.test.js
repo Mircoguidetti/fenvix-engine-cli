@@ -81,7 +81,10 @@ function project(runner) {
 function session(runner, dir, dump, extra = []) {
   const env = { ...process.env, DETJS_POLICY_DUMP: dump, POLICY_EQ_X: 'x' };
   for (const k of Object.keys(env)) if (k.startsWith('DETJS_') && k !== 'DETJS_POLICY_DUMP') delete env[k];
-  return spawnSync(process.execPath, [BIN, runner, '--det', `--det-cache=${path.join(dir, '.cache')}`, ...extra],
+  // Mocha keeps one process for every spec file under --det-cache (the process is the cache unit, G-0148): with
+  // --det-isolate each spec file gets its own process and capture, the shape this comparison needs
+  const isolate = runner === 'mocha' ? ['--det-isolate'] : [];
+  return spawnSync(process.execPath, [BIN, runner, '--det', ...isolate, `--det-cache=${path.join(dir, '.cache')}`, ...extra],
     { cwd: dir, encoding: 'utf8', env, timeout: 600000 });
 }
 

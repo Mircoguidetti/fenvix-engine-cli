@@ -77,9 +77,33 @@ function progressed(op, kind) {
   clock.DRIVER.rearm();
 }
 
+const STRUCTURED = (_e, cs) => cs;
+const SRC_DIR = require('node:path').resolve(__dirname) + require('node:path').sep;
+/**
+ * Whether the operation is started by Node's own file system code (the steps of `fs.cp`, which loads `fs/promises`
+ * after detjs wrapped it): part of the operation that started it, not an operation of the test to order (ordering
+ * them behind their own parent deadlocked `fs.promises.cp` until the hold timer released each step).
+ */
+function nodeInternal() {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = STRUCTURED;
+  E.stackTraceLimit = 12;
+  try { E.captureStackTrace(h, nodeInternal); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    const f = (cs.getFileName && cs.getFileName()) || '';
+    if (!f || f.startsWith(SRC_DIR)) continue;
+    return f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
+  }
+  return false;
+}
+
 /** A new operation of the running test (null when outside tests or started by the runner). */
 function begin(kind) {
   if (STATE.testId === null || STATE.quietDepth > 0) return null;
+  if (nodeInternal()) return null;
   let site = '';
   if (STATE.config && STATE.config.sites) {
     site = STATE.quiet(() => sites.resolve());
