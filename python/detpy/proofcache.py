@@ -91,8 +91,15 @@ def config_identity(config) -> tuple[str, dict]:
         ini = {}
     ini_items = sorted((str(k), repr(getattr(v, "value", v))) for k, v in dict(ini).items())
     opts = []
+    # options of a plugin detpy blocks under --det (pytest-randomly: plugin.py keeps its options valid and inert):
+    # they change nothing, and only some processes of a session define them (the xdist controller does, its workers
+    # do not), so a result recorded by a worker had another configuration than the controller's (MEASURED: never
+    # reused under -n with pytest-randomly installed)
+    pm = config.pluginmanager
+    inert = tuple(prefix for name, prefix in (("randomly", "randomly_"), ("random_order", "random_order"))
+                  if pm.is_blocked(name))
     for k, v in sorted(vars(config.option).items()):
-        if k in _VOLATILE_OPTIONS:
+        if k in _VOLATILE_OPTIONS or (inert and k.startswith(inert)):
             continue
         r = repr(v)
         if " at 0x" in r:

@@ -1045,6 +1045,24 @@ pub fn importable_dep(dir: PathBuf) -> String {
     proof::importable_digest(&dir).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
 }
 
+/// Dependency on the importable entries of one name, `path` = "<dir>/<name>" ("j:<digest>" or "j:missing").
+#[pyfunction]
+pub fn importable_name_dep(path: PathBuf) -> String {
+    proof::importable_name_digest(&path).map(|d| format!("j:{d}")).unwrap_or_else(|| "j:missing".into())
+}
+
+/// A metadata probe's dependency (`proof::probe_now`; `mode` "q" following symlinks, "Q" not).
+#[pyfunction]
+pub fn probe_dep(path: PathBuf, mode: &str) -> String {
+    proof::probe_now(&path, mode.as_bytes().first().copied().unwrap_or(b'q'))
+}
+
+/// The data key of a probe of `key` (`proof::probe_key`).
+#[pyfunction]
+pub fn probe_key(mode: &str, key: &str) -> String {
+    proof::probe_key(mode.as_bytes().first().copied().unwrap_or(b'q'), key)
+}
+
 /// (a regular module or package found, the package directory exists) for module `name` in `dir`.
 #[pyfunction]
 pub fn import_probe(dir: &str, name: &str, suffixes: Vec<String>) -> (bool, bool) {

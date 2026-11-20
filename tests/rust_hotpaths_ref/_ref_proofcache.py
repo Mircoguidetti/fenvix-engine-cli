@@ -413,50 +413,96 @@ class Capture:
 
     # -- absent inputs (parallel-proof round 3, item 9) ---------------------------------
     def _patch_stat(self) -> None:
+        # claude/all-runners-2: as detpy/_proof.py: stat/lstat/access/readlink key the metadata, the os.path.exists
+        # family the kind (it calls the unwrapped stat)
+        import posixpath
+        import stat as _st
+
         cap = self
         self._stat_saved = []
         self._in_stat = False
 
-        def wrap(name):
-            orig = getattr(os, name, None)
-            if orig is None:
-                return
-
-            link = name == "lstat"
-
-            def checked(path, *args, **kwargs):
-                if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
-                    cap._in_stat = True
-                    try:
-                        cap.stat_check(path, link or kwargs.get("follow_symlinks") is False)
-                    except Exception:
-                        pass
-                    finally:
-                        cap._in_stat = False
-                return orig(path, *args, **kwargs)
-
-            checked.__name__ = orig.__name__
-            checked.__wrapped__ = orig
-            self._stat_saved.append((os, name, orig))
-            setattr(os, name, checked)
+        def rebind(owner, name, orig, new):
+            self._stat_saved.append((owner, name, orig))
+            setattr(owner, name, new)
             # LIMITS A3: references bound before the session
             for mod in list(sys.modules.values()):
                 d = getattr(mod, "__dict__", None)
-                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                if not isinstance(d, dict) or mod is owner or getattr(mod, "__name__", "") in ("posix", "nt") \
                         or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
                     continue
                 for k, v in list(d.items()):
                     if v is orig:
                         self._stat_saved.append((mod, k, orig))
                         try:
-                            setattr(mod, k, checked)
+                            setattr(mod, k, new)
                         except Exception:
                             pass
 
-        for name in ("stat", "lstat", "access"):
-            wrap(name)
+        def note(path, link, meta):
+            if cap._in_stat or isinstance(path, int):
+                return
+            cap._in_stat = True
+            try:
+                cap.stat_check(path, link, meta)
+            except Exception:
+                pass
+            finally:
+                cap._in_stat = False
 
-    def stat_check(self, path, link=False) -> None:
+        def wrap(name):
+            orig = getattr(os, name, None)
+            if orig is None:
+                return
+            own = name in ("lstat", "readlink")
+
+            def checked(path, *args, **kwargs):
+                if not kwargs.get("dir_fd"):
+                    note(path, own or kwargs.get("follow_symlinks") is False, True)
+                return orig(path, *args, **kwargs)
+
+            checked.__name__ = orig.__name__
+            checked.__wrapped__ = orig
+            rebind(os, name, orig, checked)
+
+        real_stat, real_lstat = os.stat, os.lstat
+        for name in ("stat", "lstat", "access", "readlink"):
+            wrap(name)
+        if os.path is not posixpath:
+            return
+
+        def kind_of(path, link):
+            note(path, link, False)
+            try:
+                return (real_lstat if link else real_stat)(path)
+            except (OSError, ValueError):
+                return None
+
+        def exists(path):
+            return kind_of(path, False) is not None
+
+        def lexists(path):
+            return kind_of(path, True) is not None
+
+        def isfile(path):
+            st = kind_of(path, False)
+            return st is not None and _st.S_ISREG(st.st_mode)
+
+        def isdir(s):
+            st = kind_of(s, False)
+            return st is not None and _st.S_ISDIR(st.st_mode)
+
+        def islink(path):
+            st = kind_of(path, True)
+            return st is not None and _st.S_ISLNK(st.st_mode)
+
+        for name, fn in (("exists", exists), ("lexists", lexists), ("isfile", isfile), ("isdir", isdir),
+                         ("islink", islink)):
+            orig = getattr(posixpath, name, None)
+            if orig is not None:
+                rebind(posixpath, name, orig, fn)
+
+    def stat_check(self, path, link=False, meta=False) -> None:  # noqa: D401
         if not self.active:
             return
         p = self._abs(path)
@@ -466,13 +512,17 @@ class Capture:
             f = _getframe(1)
         except ValueError:
             f = None
+        while f is not None and f.f_code.co_filename == __file__ and f.f_code.co_name in _PROBE_WRAPPERS:
+            f = f.f_back  # the probe's own wrappers; a frame of this file further out is the capture's own call
         if self._kind_from(f) != "user":
             return
-        self.read(self._cur(), p, "l" if link else "s")
+        self.read(self._cur(), p, ("Q" if link else "q") if meta else ("l" if link else "s"))
 
     def _kind_from(self, f) -> str:
         while f is not None:
             fn = f.f_code.co_filename
+            if fn == __file__:
+                return "infra"  # the capture's own calls (realpath of a code file, ...): Rust's INTERNAL
             if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
                 return "import"
             if fn.startswith(_DETPY_DIR):
@@ -536,8 +586,8 @@ class Capture:
             if d is None or not os.path.isdir(d) or self._ignored(d + os.sep):
                 continue
             if whole:
-                # one dependency on the directory's importable entries (proof::importable_digest)
-                self.read(ctx, d, "i")
+                # one dependency on the directory's entries of this name (proof::importable_name_digest)
+                self.read(ctx, d + "/" + tail, "j")
                 regular, pkg_dir = _core.import_probe(d, tail, suffixes)
                 if pkg_dir:
                     for c in _core.import_candidates(d, tail, suffixes)[1:1 + n]:
@@ -707,6 +757,13 @@ class Capture:
                 dep = self._hashed[hk] = _core.importable_dep(p)
             self.data.setdefault(ctx, {}).setdefault(self._key(p) + "/\x01importable", dep)
             return
+        if kind == "j":
+            hk = "j" + p
+            dep = self._hashed.get(hk)
+            if dep is None:
+                dep = self._hashed[hk] = _core.importable_name_dep(p)
+            self.data.setdefault(ctx, {}).setdefault(self._key(p) + "\x01imp", dep)
+            return
         if kind in ("s", "l"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
@@ -746,6 +803,14 @@ class Capture:
             # reads what code of this session wrote: allowed only if every writer is credited to the reader
             self.flags.setdefault(ctx, set()).add("rw:" + p)
             return
+        if kind in ("q", "Q"):
+            # claude/all-runners-2: a metadata probe, its own key (proof::probe_key) apart from the content's
+            hk = kind + p
+            dep = self._hashed.get(hk)
+            if dep is None:
+                dep = self._hashed[hk] = _core.probe_dep(p, kind)
+            self.data.setdefault(ctx, {}).setdefault(_core.probe_key(kind, self._key(p)), dep)
+            return
         hk = kind + p
         dep = self._hashed.get(hk)
         if dep is None:
@@ -761,7 +826,9 @@ class Capture:
 
     def wrote(self, ctx: int, p: str) -> None:
         self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "l" + p, "i" + os.path.dirname(p)):
+        base = os.path.basename(p)
+        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "l" + p, "q" + p, "Q" + p,
+                  "i" + os.path.dirname(p), "j" + p[:len(p) - len(base)] + base.split(".")[0]):
             self._hashed.pop(k, None)
 
     def _audit(self, event, args):
@@ -1497,6 +1564,9 @@ def tz_locale_identity() -> dict:
     return d
 
 
+_PROBE_WRAPPERS = frozenset({"note", "checked", "kind_of", "exists", "lexists", "isfile", "isdir", "islink"})
+
+
 def config_identity(config) -> tuple[str, dict]:
     cfg = _state.STATE.config
     plugins = sorted({f"{dist.project_name}=={dist.version}"
@@ -1506,8 +1576,11 @@ def config_identity(config) -> tuple[str, dict]:
         ini = {}
     ini_items = sorted((str(k), repr(getattr(v, "value", v))) for k, v in dict(ini).items())
     opts = []
+    pm = config.pluginmanager
+    inert = tuple(prefix for name, prefix in (("randomly", "randomly_"), ("random_order", "random_order"))
+                  if pm.is_blocked(name))  # claude/all-runners-2: as detpy/proofcache.py
     for k, v in sorted(vars(config.option).items()):
-        if k in _VOLATILE_OPTIONS:
+        if k in _VOLATILE_OPTIONS or (inert and k.startswith(inert)):
             continue
         r = repr(v)
         if " at 0x" in r:

@@ -338,6 +338,8 @@ def test_capture_sessions_match_reference(pytester, ref_env, monkeypatch):
         out.append(_session(pytester, mode, cache, "1"))           # everything new
         out.append(_session(pytester, mode, cache, "2"))           # unchanged: reused
         _write(root, {"pkg/mod.py": FILES["pkg/mod.py"].replace("x * 2", "2 * x"), "write_data.flag": "1\n"})
+        # its metadata is a probe input (os.path.getsize / stat: claude/all-runners-2): the same time on both copies
+        os.utime(root / "write_data.flag", (1_700_000_000, 1_700_000_000))
         monkeypatch.setenv("EQ_MODE", "b")
         out.append(_session(pytester, mode, cache, "3"))           # code + env change, stale reuse
         out.append(_session(pytester, mode, cache, "4"))           # after the writes

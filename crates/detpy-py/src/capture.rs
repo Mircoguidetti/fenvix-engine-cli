@@ -601,6 +601,14 @@ fn process_state(p: &[u8]) -> bool {
             hk.extend_from_slice(dirname(p));
             self.hashed.remove(&hk);
         }
+        // the one-name lookup dependency ("j") of the written entry's module name: "<dir>/<name>" for
+        // "<dir>/<name>.<suffix>" or a directory "<dir>/<name>"
+        let base = p.rsplit(|&c| c == b'/').next().unwrap_or(p);
+        let stem = base.split(|&c| c == b'.').next().unwrap_or(base);
+        let mut hk = vec![b'j'];
+        hk.extend_from_slice(&p[..p.len() - base.len()]);
+        hk.extend_from_slice(stem);
+        self.hashed.remove(&hk);
     }
 
 }
