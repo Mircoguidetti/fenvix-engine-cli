@@ -106,7 +106,11 @@ class DetjsReporter {
       if (!r || (r.status !== 'failed' && r.status !== 'timedOut')) continue;
       const file = path.relative(cwd, t.location.file).split(path.sep).join('/');
       const project = t.parent && t.parent.project ? t.parent.project().name : '';
-      const cmd = ['npx', 'detjs', 'playwright', ...base, 'test', `${file}:${t.location.line}`];
+      // The seed space and the lockstep settings decide the schedule a seed gives (round 4, point 5): they travel
+      // with the command (traces, statistics and diagnosis switches do not).
+      const env = Object.keys(process.env).filter((k) => (/^DETJS_LS_/.test(k) && !/^DETJS_LS_(TRACE|STATS|QDEBUG)/.test(k)) || k === 'DETJS_PW_DEADLINE_MS')
+        .sort().map((k) => `${k}=${process.env[k]}`);
+      const cmd = [...(env.length ? ['env', ...env] : []), 'npx', 'detjs', 'playwright', ...base, 'test', `${file}:${t.location.line}`];
       if (project) cmd.push(`--project=${project}`);
       cmd.push(...extra);
       lines.push(`detjs: replay ${this.idOf(t)}:\n  ${cmd.map((a) => (/^[\w@%+=:,./-]+$/.test(a) ? a : `'${a.replace(/'/g, "'\\''")}'`)).join(' ')}`);
