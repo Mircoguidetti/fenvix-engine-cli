@@ -21,7 +21,7 @@ def test_index_maps_files_and_writes_identity(tmp_path):
     assert ix.dist_of(os.path.realpath(pytest.__file__)) == "pytest"
     assert ix.dist_of(os.path.realpath(pluggy.__file__)) == "pluggy"
     assert "pytest" in ix.tops.get("_pytest", set())
-    assert any(line.startswith("detpy:") for line in ix.groups.get("pytest11", []))
+    assert any(line.startswith("fenvix:detpy=") for line in ix.groups.get("pytest11", []))
     out = tmp_path / "ident"
     ix.write(str(out))
     assert (out / "d" / "pytest").read_text().startswith("pytest==")

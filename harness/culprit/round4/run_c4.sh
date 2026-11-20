@@ -7,7 +7,7 @@ export CULPRIT_RED_BUDGET=${CULPRIT_RED_BUDGET:-64} CULPRIT_D_BUDGET=${CULPRIT_D
 export CULPRIT_WORK=/home/user/work
 export CULPRIT_ROUND=4
 E=/home/user/fenvix-engine-cli/harness/culprit
-W=$(ls /home/user/work/wheels/detpy-*.whl)
+W=$(ls /home/user/work/wheels/fenvix-*.whl)
 mkdir -p ${LOCKS:-r4/locks-c} r4/results r4/logs
 for lane in ${LANES:-anyio flask httpx humanize markupsafe packaging pluggy pytest rich werkzeug \
             flask-dep structlog-dep sqlparse-env boltons-env pygments-env toolz-env click-env \

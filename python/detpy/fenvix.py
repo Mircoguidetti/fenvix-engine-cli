@@ -15,9 +15,12 @@
                                             compare runs: identical only when the inputs and every event match
     fenvix cassette list|rename OLD NEW|drop TEST...
                                             the network recordings, per test
-    fenvix doctor                           what this machine can give: every control, checked
+    fenvix doctor [--install]               what this machine can give: every control, checked (--install: only what
+                                            an installation needs: interpreter, native core, no foreign `detpy`)
     fenvix detect [DIR]                     languages and runners of DIR (one per line)
     fenvix version | --version | -V         versions of the installed components
+    fenvix go test [args]                   fenvix-go test ...  (runner image only: $FENVIX_HOME/bin)
+    fenvix jvm run|decide ...               the JVM agent / fenvix-skip (runner image only: $FENVIX_HOME/jvm, /bin)
 
 Every subcommand takes --help. The interface of repro / explore / replay / verify does not depend on the runner:
 a runner adapter (``ADAPTERS`` below) does the runner-specific work; see docs/CLI.md.
@@ -33,7 +36,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from . import __version__
+from . import __version__, _support
 
 PROG = "fenvix"
 PY_RUNNERS = ("unittest", "django", "nose2", "ward", "zope-testrunner", "doctest")
@@ -557,13 +560,60 @@ def cmd_verify(argv: list) -> int:
     return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
 
 
+def foreign_detpy_owners() -> list:
+    """Installed distributions other than ``fenvix`` that also write the import package ``detpy/``.
+
+    The PyPI project ``detpy`` (an unrelated toolbox) installs a top-level ``detpy/`` too; installing it after
+    fenvix replaces the engine's files (audit G-0170, G-0737). pip cannot declare the conflict, so it is checked
+    here and by ``fenvix doctor``."""
+    from importlib import metadata
+
+    out = []
+    for dist in metadata.distributions():
+        name = (dist.metadata.get("Name") or "").lower()
+        if name == "fenvix":
+            continue
+        top = (dist.read_text("top_level.txt") or "").split()
+        files = dist.files or ()
+        if "detpy" in top or any(str(f).startswith("detpy/") for f in files):
+            out.append(f"{dist.metadata.get('Name')} {dist.version}")
+    return sorted(set(out))
+
+
+def install_checks() -> list:
+    """(name, ok, detail, what it affects) of the installation itself: the interpreter is supported, the native
+    core loads, no other distribution writes ``detpy/``. ``release/engine/install.sh`` refuses on any failure."""
+    out = []
+    prob = _support.PROBLEM
+    out.append(("interpreter", prob is None, prob or f"CPython {sys.version.split()[0]} ({sys.executable})",
+                "everything: fenvix supports CPython 3.12-3.14 on Linux x86_64 (glibc 2.28+)"))
+    if prob is None:
+        try:
+            from . import _core
+
+            out.append(("native core", True, os.path.basename(_core.__file__), "everything"))
+        except Exception as e:  # reported, not hidden
+            out.append(("native core", False, f"{type(e).__name__}: {e}", "everything"))
+    foreign = foreign_detpy_owners()
+    out.append(("import package detpy", not foreign,
+                "owned by fenvix only" if not foreign else
+                "also written by " + ", ".join(foreign) + " (an unrelated project with the same import name: "
+                "uninstall it and reinstall fenvix)", "everything: its files replace the engine's"))
+    return out
+
+
 def doctor_checks() -> list:
-    """(name, ok, detail, what it affects) for every control this machine must give (audit G-0700)."""
+    """(name, ok, detail, what it affects) for every control this machine must give (audit G-0700), after the
+    checks of the installation itself."""
     import platform
+
+    first = install_checks()
+    if not all(ok for _, ok, _, _ in first):
+        return first  # the controls cannot be asked of an interpreter or a core that does not work
 
     from . import _level0, reexec
 
-    out = []
+    out = list(first)
 
     def run(cmd):
         try:
@@ -611,8 +661,10 @@ def cmd_doctor(argv: list) -> int:
                                 "of a deterministic run and of the cache with proof. Exit 1 when a required check "
                                 "fails.")
     p.add_argument("--json", action="store_true")
-    p.parse_args(argv)
-    checks = doctor_checks()
+    p.add_argument("--install", action="store_true", help="only the checks of the installation itself (interpreter, "
+                   "native core, no foreign detpy): what release/engine/install.sh requires")
+    ns = p.parse_args(argv)
+    checks = install_checks() if ns.install else doctor_checks()
     optional = {"detjs (JavaScript runners)", "strace", "C compiler", "time zone database"}
     if "--json" in argv:
         print(json.dumps([{"check": n, "ok": ok, "detail": d, "affects": a} for n, ok, d, a in checks], indent=2))
@@ -741,6 +793,8 @@ def version_lines() -> list:
         except Exception as e:
             return f"unavailable ({type(e).__name__})"
 
+    if _support.PROBLEM is not None:
+        return [f"fenvix {__version__} (unsupported here: {_support.PROBLEM})"]
     from . import _core
 
     lines = [f"fenvix {__version__} (engine: detpy {__version__}, trace encoding {_core.ENCODING_VERSION}; "
@@ -752,7 +806,20 @@ def version_lines() -> list:
     for b in ("fenvix-go", "fenvix-skip"):
         path = os.path.join(HOME, "bin", b)
         lines.append(f"{b} {'present' if os.path.exists(path) else 'absent'}")
+    jar = os.path.join(HOME, "jvm", "fenvix-agent.jar")
+    lines.append(f"fenvix-agent.jar {'present' if os.path.exists(jar) else 'absent'}")
     return lines
+
+
+def _image_tool(name: str) -> str:
+    p = os.path.join(HOME, "bin", name)
+    return p if os.path.exists(p) else (shutil.which(name) or p)
+
+
+# commands that run the engine: refused with one sentence (exit 4) on an interpreter outside the supported set,
+# before anything imports the native core (G-0547, G-0549)
+_ENGINE_COMMANDS = {"repro", "explore", "replay", "verify", "cassette", "pytest", "python", "python-runner", "zope",
+                    *PY_RUNNERS}
 
 
 USAGE = __doc__
@@ -764,6 +831,8 @@ def main(argv: list | None = None) -> int:
         print(USAGE)
         return 0
     cmd, rest = argv[0], argv[1:]
+    if cmd in _ENGINE_COMMANDS and _support.PROBLEM is not None:
+        _support.refuse()
     if cmd in ("--version", "-V", "version"):
         print("\n".join(version_lines()))
         return 0
@@ -800,6 +869,12 @@ def main(argv: list | None = None) -> int:
         for line in detect(rest[0] if rest else "."):
             print(line)
         return 0
+    if cmd == "go":
+        return _exec([_image_tool("fenvix-go"), *rest])
+    if cmd == "jvm":
+        if rest and rest[0] == "decide":
+            return _exec([_image_tool("fenvix-skip"), *rest])
+        return _exec(["java", "-jar", os.path.join(HOME, "jvm", "fenvix-agent.jar"), *rest])
     print(f"{PROG}: unknown command {cmd!r} (`{PROG} --help` lists them)", file=sys.stderr)
     return 2
 

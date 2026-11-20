@@ -5,8 +5,20 @@ the fingerprinting, verification, trace and cassette formats are implemented
 in Rust (:mod:`detpy._core`).
 """
 
-__version__ = "0.1.0"
+import sys as _sys
 
-from .network import NetworkBlockedError  # noqa: E402
+from . import _support
 
-__all__ = ["NetworkBlockedError", "__version__"]
+from ._version import __version__
+
+if _support.PROBLEM is None:
+    from .network import NetworkBlockedError  # noqa: E402
+
+    __all__ = ["NetworkBlockedError", "__version__"]
+else:
+    # Unsupported interpreter: nothing below may import the native core. `import detpy.plugin` (the pytest11 entry
+    # point) gets the inactive plugin instead of the real one (detpy/_unsupported_plugin.py).
+    from . import _unsupported_plugin as _up
+
+    _sys.modules[__name__ + ".plugin"] = _up
+    __all__ = ["__version__"]

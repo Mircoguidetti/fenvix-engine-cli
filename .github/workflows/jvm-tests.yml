@@ -7,9 +7,6 @@ name: jvm-tests
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/jvm-l0]
-    paths: [jvm/**, crates/fenvix-jvm/**, crates/detpy-core/**, .github/workflows/jvm-tests.yml, '!jvm/harness/**', '!jvm/test/results/**']
 
 permissions:
   contents: write
@@ -115,5 +112,5 @@ jobs:
           echo "run ${{ github.run_id }} sha ${{ github.sha }}" > jvm/test/results/ci/RUN.txt
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/test/results/ci
-          git commit -m "JVM tests: results of run ${{ github.run_id }}" || exit 0
+          git commit -m "JVM tests: results of run ${{ github.run_id }} [skip ci]" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -q origin ${{ github.ref_name }} && git push -q origin HEAD:${{ github.ref_name }} && break; sleep $((i*5)); done

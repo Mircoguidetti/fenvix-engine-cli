@@ -1,0 +1,38 @@
+# PyPI publishing of the wheel `fenvix` — DISABLED. The go-live runs only on our machines (founder decision,
+# 2026-11-20): the engine ships as one versioned artifact attached to a GitHub release by release-1.yml
+# (job publish-engine). The PyPI name `fenvix` is reserved by a pending trusted publisher (project `fenvix`, owner
+# Mircoguidetti, repository fenvix-engine-cli, workflow `release.yml`, environment `pypi`): this file keeps exactly
+# those names, so that switching the job on later is one line (`if: false` -> a condition) and needs no token.
+name: release
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: |
+          pip install "maturin>=1.5,<2" ziglang twine
+          maturin build --release --zig --compatibility manylinux_2_28 -o dist && maturin sdist -o dist
+          twine check --strict dist/*
+      - uses: actions/upload-artifact@v4
+        with: {name: wheels, path: dist/}
+
+  pypi:
+    needs: wheel
+    if: false   # disabled: no PyPI publishing for the go-live (see the header)
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # trusted publishing (OIDC)
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: wheels, path: dist}
+      - uses: pypa/gh-action-pypi-publish@release/v1

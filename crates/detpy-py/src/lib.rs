@@ -330,6 +330,19 @@ fn digest(data: &[u8]) -> String {
     digest_bytes(data).short()
 }
 
+/// Paths of the shared objects mapped into this process (`/proc/self/maps` on Linux, dyld on macOS); None
+/// where the OS gives no list (detpy_core::host).
+#[pyfunction]
+fn loaded_images() -> Option<Vec<String>> {
+    detpy_core::host::loaded_images()
+}
+
+/// The CPU's feature description where /proc/cpuinfo does not exist (macOS); None elsewhere.
+#[pyfunction]
+fn cpu_features() -> Option<String> {
+    detpy_core::host::cpu_features()
+}
+
 /// JSON description of the interception backends and their capabilities.
 #[pyfunction]
 fn backends() -> String {
@@ -361,6 +374,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(order_digest, m)?)?;
     m.add_function(wrap_pyfunction!(digest, m)?)?;
     m.add_function(wrap_pyfunction!(backends, m)?)?;
+    m.add_function(wrap_pyfunction!(loaded_images, m)?)?;
+    m.add_function(wrap_pyfunction!(cpu_features, m)?)?;
     m.add_class::<sysmon::LineRecorder>()?;
     m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
     m.add_class::<sysmon::SocketScan>()?;

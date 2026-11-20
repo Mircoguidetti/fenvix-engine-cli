@@ -208,9 +208,14 @@ def test_level0_traces_match_reference(pytester, ref_env):
         # the header's precompile duration is the only wall-clock value in a trace
         traces.setdefault(mode, []).append(re.sub(rb'"precompile_s":[0-9.]+,', b"", t.read_bytes()))
         vals.setdefault(mode, []).append(_vals(r))
-    # each path reproduces itself, and the two paths write the same bytes
-    assert traces["ref"][0] == traces["ref"][1]
-    assert traces["new"][0] == traces["new"][1]
+    # each path reproduces itself, and the two paths write the same bytes (a difference names its first line)
+    for mode in ("ref", "new"):
+        a, b = (t.decode().splitlines() for t in traces[mode])
+        first = next((i for i, (x, y) in enumerate(zip(a, b)) if x != y), None)
+        assert first is None and len(a) == len(b), (mode, first, len(a), len(b),
+                                                     a[first] if first is not None else None,
+                                                     b[first] if first is not None else None)
+        assert traces[mode][0] == traces[mode][1]
     lines_ref = traces["ref"][0].decode().splitlines()
     lines_new = traces["new"][0].decode().splitlines()
     assert len(lines_ref) == len(lines_new)
