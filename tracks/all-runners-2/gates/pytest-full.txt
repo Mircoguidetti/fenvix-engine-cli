@@ -1,0 +1,31 @@
+......s................................................................. [  6%]
+......s.s...........................................................ssss [ 13%]
+........................................................................ [ 19%]
+........................................................................ [ 26%]
+........................................................................ [ 33%]
+....................................s................................... [ 39%]
+........................................................................ [ 46%]
+.......................................s................................ [ 53%]
+...........................................................
+repro python: wall 7.641 s, pytest subprocesses 7.636 s (99.9 %), 10 runs
+
+repro rust: wall 7.732 s, pytest subprocesses 7.726 s (99.9 %), 10 runs
+............. [ 59%]
+..ssss..s..ssssssssss................................................... [ 66%]
+..................................ss..........ss........................ [ 72%]
+.........s......................s....................................... [ 79%]
+........................................................................ [ 86%]
+........................................................................ [ 92%]
+......s..................s..........ssssss.sss.s...............sssssssss [ 99%]
+ssss..                                                                   [100%]
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/local/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1031 passed, 55 skipped, 1 deselected, 4 warnings in 1677.33s (0:27:57)
+EXIT 0
