@@ -264,3 +264,42 @@ def test_pypi_publishing_is_off_and_keeps_the_reserved_publisher_names():
     assert not os.path.exists(os.path.join(ROOT, ".github", "workflows", "packages.yml"))
     meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))
     assert meta["project"]["name"] == "fenvix"
+
+
+def _tarball(path, members):
+    import io
+    import tarfile
+
+    with tarfile.open(path, "w:gz") as t:
+        for name, data in members.items():
+            info = tarfile.TarInfo(name)
+            info.size = len(data)
+            t.addfile(info, io.BytesIO(data))
+    import hashlib
+
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
+
+
+def test_runner_image_fetch_is_pinned_and_fails_closed(tmp_path):
+    """F-09: the runner image installs the engine only from a pinned URL whose content has the pinned sha256;
+    another checksum, no checksum, or an archive with unsafe paths installs nothing."""
+    fetch = os.path.join(ROOT, "release", "engine", "fetch.sh")
+    good = tmp_path / "fenvix-engine-0.1.0-r1.abcdef0-linux-x86_64.tar.gz"
+    sha = _tarball(good, {"fenvix-engine-0.1.0-r1.abcdef0-linux-x86_64/VERSION": b"0.1.0-r1.abcdef0\n"})
+
+    def run(url, s, dest):
+        return subprocess.run(["bash", fetch, url, s, str(dest)], capture_output=True, text=True)
+
+    r = run(f"file://{good}", sha, tmp_path / "ok")
+    assert r.returncode == 0, r.stderr
+    assert (tmp_path / "ok" / "fenvix-engine-0.1.0-r1.abcdef0-linux-x86_64" / "VERSION").read_text() == "0.1.0-r1.abcdef0\n"
+    r = run(f"file://{good}", "0" * 64, tmp_path / "bad")
+    assert r.returncode != 0 and "checksum mismatch" in r.stderr and not (tmp_path / "bad").exists()
+    r = run(f"file://{good}", "", tmp_path / "none")
+    assert r.returncode != 0 and "pinned sha256" in r.stderr and not (tmp_path / "none").exists()
+    evil = tmp_path / "evil.tar.gz"
+    esha = _tarball(evil, {"fenvix-engine-x/../../escape": b"x"})
+    r = run(f"file://{evil}", esha, tmp_path / "evil")
+    assert r.returncode != 0 and not (tmp_path / "evil").exists() and not (tmp_path.parent / "escape").exists()
+    r = run(f"file://{tmp_path}/missing.tar.gz", sha, tmp_path / "missing")
+    assert r.returncode != 0 and "download failed" in r.stderr

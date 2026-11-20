@@ -295,8 +295,10 @@ jobs:
             /tmp/it/logs/
 
   # Every merge into the trunk publishes its engine artifact as a GitHub pre-release with a stable URL, for the
-  # runner image to pin by version and sha256:
+  # runner image to pin by URL and sha256 and fetch with release/engine/fetch.sh (fail closed on any other checksum):
   #   https://github.com/<owner>/<repo>/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<...>.tar.gz
+  # On a pull request the same script runs with --dry-run: every check, the fetch accepted with the pinned sha256
+  # and refused with another one, the tag, URL and notes; only the release itself is not created.
   publish-engine:
     if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-1'
     needs: [build, python, node, smoke, install]
@@ -304,17 +306,19 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with: {name: engine-artifact, path: engine}
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          f="$(cd engine && ls fenvix-engine-*.tar.gz)"
-          tag="engine-${f#fenvix-engine-}"; tag="${tag%-linux-x86_64.tar.gz}"
-          cat > notes.md <<NOTES
-          Engine artifact of claude/release-1 at ${GITHUB_SHA} (run ${GITHUB_RUN_ID}): Linux x86_64, glibc 2.28+,
-          CPython 3.12-3.14, Node 22/24/26. Pin: \`$f\`, sha256 \`$(cut -d' ' -f1 engine/$f.sha256)\`.
-          Install: \`tar xzf $f && PYTHON=python3 ./${f%.tar.gz}/install.sh /opt/fenvix\`.
-          NOTES
-          gh release create "$tag" "engine/$f" "engine/$f.sha256" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
-            --prerelease --title "fenvix engine $tag" --notes-file notes.md
+        run: release/engine/publish.sh engine
+
+  publish-engine-dry-run:
+    if: github.event_name == 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: engine-artifact, path: engine}
+      - run: release/engine/publish.sh --dry-run engine

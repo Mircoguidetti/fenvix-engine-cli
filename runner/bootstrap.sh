@@ -18,6 +18,9 @@
 #   FENVIX_EPHEMERAL      1 = the runner takes one job, then deregisters (needs one token per job; default 0)
 #   FENVIX_PYTHON         Python version for jobs         (default 3.13)
 #   RUNNER_VERSION        GitHub Actions runner version   (default below; checksum verified)
+#   FENVIX_ENGINE_URL     the engine artifact to install (a release URL of release-1.yml's publish-engine) and
+#   FENVIX_ENGINE_SHA256  its pinned sha256: fetched with release/engine/fetch.sh, refused on any other checksum.
+#                         Both or neither; with neither (development), the wheel is built from this checkout.
 #
 # The registration token (valid one hour, from `POST /repos/{owner}/{repo}/actions/runners/registration-token`, which
 # needs admin rights on the repository, or from Settings -> Actions -> Runners -> New self-hosted runner) is read from,
@@ -72,13 +75,26 @@ install_tools() {
 }
 
 build_engine() {
+  if [ -n "${FENVIX_ENGINE_URL:-}${FENVIX_ENGINE_SHA256:-}" ]; then
+    [ -n "${FENVIX_ENGINE_URL:-}" ] && [ -n "${FENVIX_ENGINE_SHA256:-}" ] || die "FENVIX_ENGINE_URL and FENVIX_ENGINE_SHA256 go together"
+    log "engine: pinned artifact $FENVIX_ENGINE_URL (sha256 $FENVIX_ENGINE_SHA256)"
+    mkdir -p "$FENVIX_HOME/wheels" "$FENVIX_HOME/bin" "$FENVIX_HOME/cache"
+    local d
+    d="$("$ENGINE_SRC/release/engine/fetch.sh" "$FENVIX_ENGINE_URL" "$FENVIX_ENGINE_SHA256" "$FENVIX_HOME/engine")" \
+      || die "engine artifact refused (download or checksum): nothing installed"
+    rm -f "$FENVIX_HOME"/wheels/fenvix-*.whl
+    cp "$d"/wheels/fenvix-*.whl "$FENVIX_HOME/wheels/"
+    install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
+    log "engine: $(cat "$d/VERSION") -> $(ls "$FENVIX_HOME"/wheels/fenvix-*.whl)"
+    return
+  fi
   log "engine: building the detpy wheel from $ENGINE_SRC"
   mkdir -p "$FENVIX_HOME/wheels" "$FENVIX_HOME/bin" "$FENVIX_HOME/cache"
   local venv="$FENVIX_HOME/build-venv"
   [ -x "$venv/bin/python" ] || uv venv -q --python "$FENVIX_PYTHON" "$venv"
   uv pip install -q --python "$venv/bin/python" "maturin>=1.5,<2"
   rm -f "$FENVIX_HOME"/wheels/fenvix-*.whl
-  (cd "$ENGINE_SRC" && "$venv/bin/maturin" build --release --compatibility linux -o "$FENVIX_HOME/wheels" >&2)
+  (cd "$ENGINE_SRC" && "$venv/bin/maturin" build --release -o "$FENVIX_HOME/wheels" >&2)
   ls "$FENVIX_HOME"/wheels/fenvix-*.whl >/dev/null || die "wheel not built"
   install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
   log "engine: $(ls "$FENVIX_HOME"/wheels/fenvix-*.whl)"
