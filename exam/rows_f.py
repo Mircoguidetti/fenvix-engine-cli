@@ -401,7 +401,7 @@ WRONG_REUSE = {
 }
 
 
-def _wrap_cmd(e: dict, args: list) -> tuple:
+def _wrap_cmd(e: dict, args: list, path: str = "") -> tuple:
     """Turn special env markers into the command wrapper that sets that machine property."""
     e = dict(e)
     pre = []
@@ -414,7 +414,7 @@ def _wrap_cmd(e: dict, args: list) -> tuple:
     if "EXAM_UNSHARE_HOST" in e:
         h = e.pop("EXAM_UNSHARE_HOST")
         if shutil.which("unshare"):
-            pre = ["sudo", "-E", "env", f"PATH={os.environ.get('PATH', '')}", "unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
+            pre = ["sudo", "-E", "env", f"PATH={path or os.environ.get('PATH', '')}", "unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
     return e, pre + args
 
 
@@ -440,11 +440,11 @@ def F_05(ctx: Ctx):
     def dep():
         d, env = fam.py_setup(ctx, "itsdangerous")
         lib.write(d / "tests/test_exam_dep.py", "import importlib.metadata as m\n\ndef test_dep():\n    assert m.version('six') == '1.16.0'\n")
-        fam.pip(ctx, d, env, ["six==1.16.0"])
+        lib.pip(ctx, d, env, ["six==1.16.0"])
         cache = ctx.work / "f05-dep"
         shutil.rmtree(cache, ignore_errors=True)
         lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", "tests/test_exam_dep.py"], "dep-1")
-        fam.pip(ctx, d, env, ["six==1.17.0"])
+        lib.pip(ctx, d, env, ["six==1.17.0"])
         rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", f"--det-cache={cache}", "tests/test_exam_dep.py"], "dep-2")
         _, _, plain = lib.pytest_plain(ctx, d, env, ["tests/test_exam_dep.py"], "dep-plain")
         (d / "tests/test_exam_dep.py").unlink()
@@ -473,11 +473,11 @@ def F_05(ctx: Ctx):
                     ctx.sh("cc-preload", ["cc", "-shared", "-fPIC", "-o", str(so), str(src)])
                     e["LD_PRELOAD"] = str(so)
                 e, cmd = _wrap_cmd(e, ["fenvix", "python", "-q", "-p", "no:cacheprovider", "--det", f"--det-cache={cache}",
-                                       f"--det-outcomes={ctx.work / f'wr-{probe}-{i}.json'}", rel])
+                                       f"--det-outcomes={ctx.work / f'wr-{probe}-{i}.json'}", rel], env["PATH"])
                 rc, out = ctx.sh(f"wr-{probe}-{i}", cmd, cwd=d, env=dict(env, **e))
                 res.append((rc, out, lib.load_json(ctx.work / f"wr-{probe}-{i}.json").get("outcomes", {})))
             e, cmd = _wrap_cmd(e if False else dict(e2) | ({"PYTHONPATH": f"{outside}:{lib.PLUGINS}"} if "EXAM_PP" in e2 else {}),
-                               ["python", "-m", "pytest", "-q", "-p", "no:detpy", "-p", "exam_outcomes", "-p", "no:cacheprovider", rel])
+                               ["python", "-m", "pytest", "-q", "-p", "no:detpy", "-p", "exam_outcomes", "-p", "no:cacheprovider", rel], env["PATH"])
             e.pop("EXAM_PP", None)
             if "EXAM_LD_PRELOAD" in e2:
                 e["LD_PRELOAD"] = str(ctx.work / "libexampre.so")

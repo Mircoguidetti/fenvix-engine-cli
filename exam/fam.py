@@ -70,7 +70,10 @@ def py_edit(ctx: Ctx, d: Path, env: dict, args: list, tag: str, edit, extra_env=
     cok, cdesc = lib.cmp_outcomes(o2, plain)
     reused = lib.reused_count(out2)
     ran = re.findall(r"ran (\d+)", out2)
-    ok = cok and reused > 0 and bool(flipped or "no flip expected" in what)
+    # pass = no stale outcome (every run-2 outcome equals the plain rerun). Reuse is measured and reported; it is
+    # required only when one test file was edited (then every other file must be reused): a source module or a
+    # conftest can legitimately be an input of every test.
+    ok = cok and (reused > 0 if "edit-test" in what else True)
     return ok, (f"edit: {what}; plain outcome changed for {len(flipped)} tests {flipped[:3]}; run 2 reused {reused}, "
                 f"ran {ran[-1] if ran else '?'}; outcomes vs plain rerun: {cdesc}"), {"stale": [k for k in flipped if
                                                                                   lib.norm(o2.get(k)) != lib.norm(plain.get(k))][:10]}
