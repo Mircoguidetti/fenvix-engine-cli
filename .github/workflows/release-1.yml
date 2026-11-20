@@ -1,16 +1,27 @@
-# Release 1: one engine for every launch language, built and tested together.
+# Release 1: the engine of the go-live (Python and Node on our machines), built and tested together.
 #
-# build      Rust workspace tests (detpy-core, detpy-node, fenvix-go, fenvix-jvm, fenvix-skip) and every binding:
-#            PyO3 wheel (detpy), napi addon (detjs), Go overlay (fenvix-go + libfenvix_go.a), JVM agent + fenvix-skip.
-# python     every Python suite (tests/, reviewer files R-019c, R-020/R-020b, R-023/R-023b, R-032/R-032b,
-#            culprit keys), Python 3.12, 3.13 and 3.14; test_review_results.py informational.
-# node       every detjs suite (node/test, reviewer files R-021/R-021b, R-032/R-032b), Node 22, 24 and 26.
-# go         fenvix-go suites (review R-025/R-025b included), Go 1.26.        NOT BLOCKING (out of go-live scope)
-# jvm        cargo tests of fenvix-jvm/fenvix-skip, control tests (Gradle + Maven, JUnit 5/4) on JDK 8/11/17/21,
-#            skip-key tests and review R-022.                                  NOT BLOCKING (out of go-live scope)
-# Runs on every push to claude/release-1 (the engine trunk) and on every pull request into it (the gate).
-# smoke      one small real repository per language under --det (x2, traces verified) and skip with proof (x2).
-# other-os   macOS arm64 and Linux arm64: Rust core tests and the wheel (measured status, not a gate).
+# Two depths of the same jobs (CI rule of 2026-11-20, founder decision):
+#   LIGHT  every pull request into claude/release-1 (the required check before merge) and every merge into it:
+#          build, Python 3.13 full suite, Node 24 full suite, smoke python/node.
+#   FULL   by hand (workflow_dispatch, depth "full", the default) and nightly (schedule): Python 3.12, 3.13, 3.14 and
+#          Node 22, 24, 26, each the full suite, the smoke jobs, the install test of the engine artifact in clean
+#          containers and, on claude/release-1, the publication of the artifact (publish-engine). A step of work ends
+#          with a full run.
+# Pushes to session branches run nothing. On a pull request a new head cancels that pull request's older run (only
+# the newest head is tested); a run on the trunk or a scheduled/manual run is never cancelled by another.
+# Go, the JVM, macOS and Linux arm64 are outside the go-live scope and are not built or tested here.
+#
+# build      Rust tests of the go-live crates (detpy-core, detpy-node), the wheel fenvix (manylinux_2_28) and the napi
+#            addon (glibc 2.28) every other job tests, the platform floor check, the engine artifact (tarball + sha256)
+#            and, on a pull request, the publication dry run (release/engine/publish.sh --dry-run).
+# python     every Python suite (tests/, reviewer files), one job per version; test_review_results.py informational.
+# node       every detjs suite (node/test, reviewer files), one job per version.
+# smoke      one small real repository per language (Python, Node) under --det (x2, traces verified) and skip with
+#            proof (x2), installed as the runner image does.
+# install    FULL only: the engine artifact alone in clean containers (glibc 2.28 / CPython 3.12 / pytest 8.1 / Node 22,
+#            Debian 12 / 3.13 / Node 24, Debian 13 / 3.14 / Node 26; CPython 3.11 refused).
+# publish-engine  FULL runs of claude/release-1: the artifact as a GitHub pre-release (pinned URL + sha256).
+# Note: GitHub runs `schedule` and offers "Run workflow" only for workflows on the repository's default branch.
 name: release-1
 
 on:
@@ -19,11 +30,19 @@ on:
     paths-ignore: ["sessions/**", "docs/**", "**/results/**"]
   pull_request:
     branches: [claude/release-1]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      depth:
+        description: "full: Python 3.12/3.13/3.14 and Node 22/24/26; light: Python 3.13 and Node 24"
+        type: choice
+        options: [full, light]
+        default: full
+  schedule:
+    - cron: "37 2 * * *"   # nightly full run
 
 concurrency:
-  group: release-1-${{ github.ref }}
-  cancel-in-progress: false
+  group: release-1-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
@@ -33,23 +52,33 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.13"}
-      - uses: actions/setup-java@v4
-        with: {distribution: temurin, java-version: "21"}
-      - uses: actions/setup-go@v5
-        with: {go-version: "1.26", cache: false}
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
-      - name: Rust workspace tests
-        run: cargo test --workspace --exclude detpy-py 2>&1 | tee cargo-test.log | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
-      - name: PyO3 wheel (detpy)
-        run: pip install "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist
-      - name: napi addon (detjs)
-        run: cargo build -p detpy-node --release && cp target/release/libdetpy_node.so dist/detjs.linux-x64.node
-      - name: Go overlay core (libfenvix_go.a)
+      - name: Rust tests of the go-live crates
+        run: cargo test -p detpy-core -p detpy-node 2>&1 | tee cargo-test.log | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
+      # the binaries every job below tests are the ones the engine artifact ships: manylinux_2_28 (glibc 2.28 floor,
+      # through zig), checked by release/check_floor.py (audit G-0479, G-0488, G-0489, G-0250)
+      - name: wheel fenvix (cp312-abi3, manylinux_2_28 x86_64)
         run: |
-          cargo build -p fenvix-go --release && cp target/release/libfenvix_go.a dist/
-          (cd go && CGO_ENABLED=1 go build -o ../dist/fenvix-go ./cmd/fenvix-go)
-      - name: JVM agent and fenvix-skip
-        run: ./jvm/build.sh && cp jvm/dist/fenvix-agent.jar target/release/fenvix-skip dist/
+          pip install "maturin>=1.5,<2" ziglang cargo-zigbuild twine
+          python3 release/version.py
+          maturin build --release --zig --compatibility manylinux_2_28 -o dist && twine check --strict dist/*.whl
+      - name: napi addon (detjs, glibc 2.28)
+        run: |
+          rustup target add x86_64-unknown-linux-gnu
+          cargo zigbuild -p detpy-node --release --target x86_64-unknown-linux-gnu.2.28
+          cp target/x86_64-unknown-linux-gnu/release/libdetpy_node.so dist/detjs.linux-x64.node
+      - name: platform floor (glibc 2.28)
+        run: python3 release/check_floor.py dist/fenvix-*.whl dist/detjs.linux-x64.node
+      - name: engine artifact (one versioned tarball + sha256)
+        run: |
+          export ENGINE_BUILD="r${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
+          release/engine/assemble.sh dist engine-artifact
+          cp release/install_test.py engine-artifact/
+      - name: publication dry run (what publish-engine does, without creating the release)
+        if: github.event_name == 'pull_request'
+        run: release/engine/publish.sh --dry-run engine-artifact
+      - uses: actions/upload-artifact@v4
+        with: {name: engine-artifact, path: engine-artifact/}
       - uses: actions/upload-artifact@v4
         with: {name: engine-linux-x64, path: dist/}
       - uses: actions/upload-artifact@v4
@@ -64,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.12", "3.13", "3.14"]
+        python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -76,7 +105,7 @@ jobs:
       # R-008/R-008b start interpreters that import detpy from python/
       - name: install the wheel (and its extension in python/detpy)
         run: |
-          pip install pytest pytest-xdist && pip install --no-deps dist/detpy-*.whl
+          pip install pytest pytest-xdist && pip install --no-deps dist/fenvix-*.whl
           cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
       - name: Python suites and reviewer test files
         # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
@@ -87,6 +116,31 @@ jobs:
             -rfE 2>&1 | tee py-${{ matrix.python }}.log | tail -60; rc=${PIPESTATUS[0]}
           echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}.log || true
           exit $rc
+      - name: runner suites with their runners installed (audit G-0010; own environment, so that pytest-django does not load into the main suites)
+        if: success() || failure()  # independent of the main suites' result
+        run: |
+          python -m venv .venv-runners && . .venv-runners/bin/activate
+          pip install -q pytest pytest-xdist django pytest-django nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
+          python -m pytest -q -p no:randomly -rfE tests/test_runners_django.py tests/test_runners_nose2.py \
+            tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py \
+            2>&1 | tee py-${{ matrix.python }}.runners.log | tail -30; exit ${PIPESTATUS[0]}
+      - name: suites that need numpy and time-machine (no pytest plugin of their own)
+        if: success() || failure()  # independent of the main suites' result
+        run: |
+          python -m venv .venv-numpy && . .venv-numpy/bin/activate
+          pip install -q pytest pytest-xdist numpy time-machine && pip install -q --no-deps dist/fenvix-*.whl
+          python -m pytest -q -p no:randomly -rfEs tests/test_clock.py::test_time_machine_travel_is_honoured \
+            tests/test_clock_rust.py tests/test_level0_seeds_fsorder_rust.py \
+            2>&1 | tee py-${{ matrix.python }}.numpy.log | tail -30; exit ${PIPESTATUS[0]}
+      - name: tests that need hypothesis and pytest-benchmark (auto-loaded plugins, so in their own environment)
+        if: success() || failure()  # independent of the main suites' result
+        run: |
+          python -m venv .venv-hyp && . .venv-hyp/bin/activate
+          pip install -q pytest pytest-xdist hypothesis pytest-benchmark && pip install -q --no-deps dist/fenvix-*.whl
+          python -m pytest -q -p no:randomly -rfEs tests/test_clock.py::test_real_pytest_benchmark \
+            tests/review_r032/test_review_r032_python.py::test_p12_hypothesis_profile_env \
+            tests/test_runners_unittest.py::test_hypothesis_is_seeded_per_test_and_has_no_database \
+            2>&1 | tee py-${{ matrix.python }}.hyp.log | tail -30; exit ${PIPESTATUS[0]}
       - name: R-001 results checks (test_review_results.py; informational, not a gate)
         continue-on-error: true
         run: python -m pytest -q -p no:randomly test_review_results.py 2>&1 | tee py-r001-${{ matrix.python }}.log | tail -20; exit ${PIPESTATUS[0]}
@@ -101,7 +155,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["22", "24", "26"]
+        node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -110,97 +164,34 @@ jobs:
         with: {python-version: "3.13"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
-      - run: cp dist/detjs.linux-x64.node node/ && pip install --no-deps dist/detpy-*.whl
+      - run: cp dist/detjs.linux-x64.node node/ && pip install --no-deps dist/fenvix-*.whl
       - name: detjs suites and reviewer test files
         working-directory: node
         run: |
-          npm ci --no-audit --no-fund
+          set +e  # print the log and the failures before failing (bash -e would stop at the test command)
+          npm ci --no-audit --no-fund || exit 1
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1 && rc=0 || rc=$?
-          tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; grep -nE "✖|not ok|Error" ../node-tests-${{ matrix.node }}.log | head -80 || true
+            --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1; rc=$?
+          tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; sed -n '/^✖ failing tests:/,$p' ../node-tests-${{ matrix.node }}.log | grep -vE "^\s+at " | head -400
           exit $rc
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: "node-tests-${{ matrix.node }}", path: "node-tests-${{ matrix.node }}.*"}
 
-  go:
-    needs: build
-    runs-on: ubuntu-latest
-    continue-on-error: true  # Go is in the tree but out of go-live scope: reported, not a gate
-    timeout-minutes: 60
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
-        with: {go-version: "1.26", cache: false}
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.13"}
-      - uses: actions/download-artifact@v4
-        with: {name: engine-linux-x64, path: dist}
-      - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
-      - run: mkdir -p target/release && cp dist/libfenvix_go.a target/release/
-      - name: Go shell suites (review R-025/R-025b included)
-        working-directory: go
-        run: go vet ./... && go test -count=1 -v ./... 2>&1 | tee ../go-tests.log | grep -E "^(--- FAIL|ok|FAIL|PASS)" ; exit ${PIPESTATUS[0]}
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with: {name: go-tests, path: go-tests.log}
-
-  jvm:
-    needs: build
-    runs-on: ubuntu-latest
-    continue-on-error: true  # JVM is in the tree but out of go-live scope: reported, not a gate
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        java: ["8", "11", "17", "21"]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: |
-            21
-            ${{ matrix.java }}
-      - uses: gradle/actions/setup-gradle@v4
-        with: {gradle-version: "8.14.3"}
-      - uses: actions/download-artifact@v4
-        with: {name: engine-linux-x64, path: dist}
-      - run: mkdir -p jvm/dist target/release && cp dist/fenvix-agent.jar jvm/dist/ && cp dist/fenvix-skip target/release/ && chmod +x target/release/fenvix-skip && pip install blake3
-      - name: control tests (Gradle, Maven; JUnit 5, JUnit 4)
-        run: |
-          export JAVA_HOME=$JAVA_HOME_${{ matrix.java }}_X64; export PATH=$JAVA_HOME/bin:$PATH
-          mkdir -p out && python3 jvm/test/run_controls.py --out out/controls-java${{ matrix.java }}.json | tee out/controls-java${{ matrix.java }}.txt
-          exit ${PIPESTATUS[0]}
-      - name: skip-key tests and review R-022
-        if: matrix.java == '21'
-        run: |
-          python3 jvm/test/run_skipkeys.py --out out/skipkeys.json | tee out/skipkeys.txt; a=${PIPESTATUS[0]}
-          python3 jvm/test/run_review_r022.py --out out/review-r022.json | tee out/review-r022.txt; b=${PIPESTATUS[0]}
-          exit $((a|b))
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with: {name: "jvm-${{ matrix.java }}", path: out/}
-
   smoke:
     needs: build
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.lang == 'go' || matrix.lang == 'jvm' }}  # Go/JVM out of go-live scope
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
-        lang: [python, node, go, jvm]
+        lang: [python, node]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.13"}
       - uses: actions/setup-node@v4
         with: {node-version: "22"}
-      - uses: actions/setup-go@v5
-        with: {go-version: "1.26", cache: false}
-      - uses: actions/setup-java@v4
-        with: {distribution: temurin, java-version: "17"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
       - name: install the engine as the runner image does (release/install-image.sh)
@@ -219,22 +210,62 @@ jobs:
             smoke-${{ matrix.lang }}.json
             /tmp/smoke/logs/
 
-  other-os:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    continue-on-error: true
+  # The engine artifact, installed alone (no checkout) in clean containers: the glibc 2.28 floor (manylinux_2_28,
+  # AlmaLinux 8) and current Debian images, each CPython 3.12/3.13/3.14 with Node 22/24/26; CPython 3.11 is refused.
+  install:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-14, ubuntu-24.04-arm]
+        include:
+          - {name: "glibc 2.28, CPython 3.12, pytest 8.1, Node 22", image: "quay.io/pypa/manylinux_2_28_x86_64", python: "/opt/python/cp312-cp312/bin/python3.12", node: "22", mode: "--pytest pytest==8.1.*"}
+          - {name: "Debian 12, CPython 3.13, Node 24", image: "python:3.13-slim-bookworm", python: "python3", node: "24", mode: ""}
+          - {name: "Debian, CPython 3.14, Node 26", image: "python:3.14-slim", python: "python3", node: "26", mode: ""}
+          - {name: "CPython 3.11 refused", image: "python:3.11-slim", python: "python3", node: "", mode: "--refuse"}
+    name: install (${{ matrix.name }})
+    container: {image: "${{ matrix.image }}"}
+    steps:
+      - name: git
+        # Node 26's own binary needs libatomic.so.1, which slim Debian images do not have (MEASURED: run 44756797015)
+        run: |
+          if command -v apt-get > /dev/null; then
+            apt-get update -qq && apt-get install -y -qq --no-install-recommends git ca-certificates libatomic1 > /dev/null
+          fi
+          command -v git
+      - uses: actions/setup-node@v4
+        if: matrix.node != ''
+        with: {node-version: "${{ matrix.node }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: engine-artifact, path: engine}
+      - name: install only the engine artifact; real Python and Vitest projects (or the refusal)
+        run: |
+          ${{ matrix.python }} engine/install_test.py --artifact "$(ls engine/fenvix-engine-*.tar.gz)" \
+            --python ${{ matrix.python }} ${{ matrix.mode }} --work /tmp/it --out install-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: "install-${{ strategy.job-index }}"
+          path: |
+            install-result.json
+            /tmp/it/logs/
+
+  # Full runs of the trunk (nightly, or by hand at the end of a step) publish their engine artifact as a GitHub
+  # pre-release with a stable URL, for the runner image to pin by URL and sha256 and fetch with
+  # release/engine/fetch.sh (fail closed on any other checksum):
+  #   https://github.com/<owner>/<repo>/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<...>.tar.gz
+  publish-engine:
+    if: github.ref == 'refs/heads/claude/release-1' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light'))
+    needs: [build, python, node, smoke, install]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.13"}
-      - name: Rust core and decider tests
-        run: cargo test -p detpy-core -p fenvix-skip 2>&1 | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
-      - name: wheel and a Python subset
-        run: |
-          pip install "maturin>=1.5,<2" pytest && maturin build --release -o dist && pip install --no-deps dist/detpy-*.whl
-          python -m pytest -q -p no:randomly tests/test_core_bindings.py tests/test_order.py tests/test_fingerprint.py tests/test_proofcache.py 2>&1 | tail -15
-          exit ${PIPESTATUS[0]}
+      - uses: actions/download-artifact@v4
+        with: {name: engine-artifact, path: engine}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: release/engine/publish.sh engine

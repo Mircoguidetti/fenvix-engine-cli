@@ -5,7 +5,7 @@
 cd /home/user/work; WD=/home/user/work
 export CULPRIT_WORK=/home/user/work
 E=/home/user/fenvix-engine-cli/harness/culprit
-W=$(ls /home/user/work/wheels2/detpy-*.whl)
+W=$(ls /home/user/work/wheels2/fenvix-*.whl)
 mkdir -p locks3c results3 logs3
 for lane in anyio flask httpx humanize markupsafe packaging pluggy pytest rich werkzeug \
             flask-dep structlog-dep sqlparse-env boltons-env pygments-env toolz-env click-env \

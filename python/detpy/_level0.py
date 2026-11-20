@@ -360,7 +360,13 @@ def env_inputs() -> dict:
     """One run input per environment variable (``env:NAME``: a digest of NAME=value, so secrets never reach the
     trace), engine-internal variables excepted."""
     out = {}
-    for k, v in os.environ.items():
+    # the engine's own read (os.environ._data, decoded as os.environ does): not an enumeration by the code under
+    # test, which the cache's and the env control's wrappers of os.environ would record (a runner shell writes its
+    # trace header while the capture is active: every test then depended on the whole environment)
+    e = os.environ
+    data = getattr(e, "_data", None)
+    items = list(e.items()) if data is None else [(e.decodekey(k), e.decodevalue(v)) for k, v in dict.items(data)]
+    for k, v in items:
         if k.startswith(ENGINE_ENV_PREFIXES):
             continue
         # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
@@ -665,3 +671,4 @@ def uninstall() -> None:
     _state.STATE.recorder = None
     _state.STATE.nodeid = None
     _sites.set_basetemp_provider(None)
+

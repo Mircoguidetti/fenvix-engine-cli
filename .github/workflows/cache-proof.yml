@@ -8,9 +8,7 @@ name: cache-proof
 #            tracks/cache-proof/results/<run_id>/
 
 on:
-  push:
-    branches: [claude/cache-proof-step1]
-    paths: [tracks/cache-proof/run.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

@@ -1325,14 +1325,14 @@ def write_report(outdir: Path, meta: dict) -> Path:
 # ---------------------------------------------------------------------------
 def build_wheel(work: Path) -> str:
     dist = work / "dist"
-    existing = sorted(glob.glob(str(dist / "detpy-*.whl")))
+    existing = sorted(glob.glob(str(dist / "fenvix-*.whl")))
     if existing:
         return existing[-1]
     code, out, _, _ = sh(["maturin", "build", "--release", "--compatibility", "linux", "-o", str(dist)],
                          cwd=ROOT, timeout=1800)
     if code != 0:
         sys.exit("wheel build failed:\n" + out[-3000:])
-    return sorted(glob.glob(str(dist / "detpy-*.whl")))[-1]
+    return sorted(glob.glob(str(dist / "fenvix-*.whl")))[-1]
 
 
 def load_pools(cfg: dict) -> tuple[list[dict], list[dict]]:

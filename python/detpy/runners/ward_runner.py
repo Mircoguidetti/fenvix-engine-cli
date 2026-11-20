@@ -16,7 +16,9 @@ start-up: an input of every test).
 from __future__ import annotations
 
 import os
+import sys
 
+from .._level0 import UsageError
 from .driver import DetRun, TestItem
 
 _VOLATILE = {"--progress-style", "--hide-captured-output", "--show-slowest", "--show-diff-symbols", "--fail-limit",
@@ -292,7 +294,30 @@ class WardShell:
         return TestResult(g, o)
 
 
+def ward_cannot_run() -> str | None:
+    """Why ward cannot run on this interpreter, or None. ward (0.68.0b0, its newest release) rewrites assertions with
+    ``textwrap._leading_whitespace_re``, a private name CPython 3.14 removed: ``ward`` itself then stops with an
+    AttributeError before any test runs. Checked as a capability, not a version, so a ward release that drops the
+    name runs again."""
+    import textwrap
+
+    if hasattr(textwrap, "_leading_whitespace_re"):
+        return None
+    try:
+        from importlib.metadata import version
+
+        v = version("ward")
+    except Exception:
+        v = "?"
+    py = ".".join(map(str, sys.version_info[:3]))
+    return (f"ward {v} does not run on Python {py}: it uses textwrap._leading_whitespace_re, which this Python no "
+            "longer has (plain `ward` stops the same way). Run ward suites on CPython 3.12 or 3.13")
+
+
 def main(ns, argv: list[str]) -> int:
+    why = ward_cannot_run()
+    if why is not None:
+        raise UsageError(why)
     run = DetRun("ward", ns, os.getcwd())
     run.start()
     from importlib.metadata import version

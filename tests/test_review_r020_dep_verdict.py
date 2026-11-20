@@ -210,7 +210,14 @@ def _cc(src_dir, out, src, *flags):
     c = os.path.join(src_dir, os.path.basename(out) + ".c")
     with open(c, "w") as fh:
         fh.write(textwrap.dedent(src))
-    subprocess.run(["cc", "-shared", "-fPIC", "-O0", "-o", out, c, *flags,
+    extra = []
+    if sys.platform == "darwin":
+        # macOS: an extension leaves the interpreter's symbols to the loader, and a library is found through the
+        # rpath of what links it (its install name), as on Linux through the soname search
+        extra = ["-undefined", "dynamic_lookup"]
+        if os.path.basename(out).startswith("libb"):
+            extra += [f"-Wl,-install_name,@rpath/libb.so"]
+    subprocess.run(["cc", "-shared", "-fPIC", "-O0", "-o", out, c, *flags, *extra,
                     f"-I{sysconfig.get_paths()['include']}"], check=True)
 
 

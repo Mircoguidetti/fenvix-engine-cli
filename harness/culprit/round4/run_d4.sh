@@ -5,7 +5,7 @@
 cd /home/user/work
 export CULPRIT_RED_BUDGET=${CULPRIT_RED_BUDGET:-64} CULPRIT_D_BUDGET=${CULPRIT_D_BUDGET:-64} CULPRIT_WORKERS=${CULPRIT_WORKERS:-4}
 export CULPRIT_WORK=/home/user/work
-export CULPRIT_WHEEL=$(ls /home/user/work/wheels/detpy-*.whl)
+export CULPRIT_WHEEL=$(ls /home/user/work/wheels/fenvix-*.whl)
 mkdir -p r4/locks-d r4/logs r4/results
 for r in $(python3 -c "import json;print(' '.join(json.load(open('d-victims4.json'))))"); do
   mkdir r4/locks-d/$r 2>/dev/null || continue

@@ -160,7 +160,7 @@ CASES = [
          'c = sqlite3.connect("file:r17.db?mode=ro", uri=True)\nassert c.execute("select v from t").fetchone()[0] == 1',
          lambda r, m: _sqlite(r / "r17.db", 2), setup=lambda r: _sqlite(r / "r17.db", 1)),
     case("file_written_by_child_timestamp",
-         'out = subprocess.run(["sh", "-c", "echo > stamp && stat -c %Y stamp"], capture_output=True, text=True,\n'
+         'out = subprocess.run(["sh", "-c", "echo > stamp && date -r stamp +%s"], capture_output=True, text=True,\n'
          '                     check=True).stdout\nassert int(out) > 0',
          lambda r, m: None, expect="rerun"),
 ]
@@ -170,11 +170,11 @@ def needs_ok(c, request_env: dict) -> str | None:
     """None when the case can run here, else why not."""
     import shutil
 
+    if c["needs"] == "shm" and not os.path.isdir("/dev/shm"):
+        return "no /dev/shm"  # macOS: the scenario does not exist
     if c["name"].startswith("child") or c["name"].startswith("file_written_by_child"):
         if shutil.which("strace") is None:
             return None  # without strace a test that starts a process is never cached: the assertions hold too
-    if c["needs"] == "shm" and not os.path.isdir("/dev/shm"):
-        return "no /dev/shm"
     return None
 
 
