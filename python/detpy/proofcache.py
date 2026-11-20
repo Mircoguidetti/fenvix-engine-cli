@@ -127,6 +127,77 @@ def _kind_check_caller() -> bool:
     return False
 
 
+def _user_stat_caller() -> bool:
+    """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
+    library helper: shutil.copystat copies times, it does not decide on them); Path.stat() counts as its caller's."""
+    f = _getframe(2)
+    while f is not None:
+        mod = f.f_globals.get("__name__", "")
+        if mod in ("pathlib", "pathlib._local", "pathlib._abc") and f.f_code.co_name in ("stat", "lstat"):
+            f = f.f_back
+            continue
+        fn = f.f_code.co_filename
+        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen"))
+    return False
+
+
+_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
+# st_atime, st_mtime, st_ctime (indices 7, 8, 9) and their _ns, birthtime variants
+_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
+
+
+class _TimedStat:
+    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached: a time
+    is not an input the cache keys; review R-032b F2). Everything else is the result's own."""
+
+    __slots__ = ("_r", "_cap", "_path")
+
+    def __init__(self, r, cap, path):
+        self._r = r
+        self._cap = cap
+        self._path = path
+
+    def _timed(self):
+        try:
+            self._cap.flag(self._cap._cur(), "mtime", os.fsdecode(os.fspath(self._path)) if not isinstance(
+                self._path, int) else str(self._path))
+        except Exception:
+            pass
+
+    def __getattr__(self, name):
+        if name.startswith(_TIME_FIELDS):
+            self._timed()
+        return getattr(self._r, name)
+
+    def __getitem__(self, i):
+        idx = range(len(self._r))[i]
+        if (7 in idx or 8 in idx or 9 in idx) if isinstance(idx, range) else idx in (7, 8, 9):
+            self._timed()
+        return self._r[i]
+
+    def __iter__(self):
+        self._timed()  # unpacking gives every field
+        return iter(self._r)
+
+    def __len__(self):
+        return len(self._r)
+
+    def __eq__(self, other):
+        self._timed()
+        return self._r == (other._r if isinstance(other, _TimedStat) else other)
+
+    def __hash__(self):
+        self._timed()
+        return hash(self._r)
+
+    def __repr__(self):
+        return repr(self._r)
+
+    def __reduce__(self):
+        self._timed()
+        return self._r.__reduce__()
+
+
 class _ScandirEntry:
     """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2)."""
 
@@ -150,7 +221,7 @@ class _ScandirEntry:
 
     def stat(self, *, follow_symlinks=True):
         self._check(True, follow_symlinks)
-        return self._e.stat(follow_symlinks=follow_symlinks)
+        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path)
 
     def is_file(self, *, follow_symlinks=True):
         self._check(False, follow_symlinks)
@@ -300,6 +371,7 @@ class Capture(_core.CaptureCore):
             link = name == "lstat"
 
             def checked(path, *args, **kwargs):
+                timed = False
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
@@ -308,10 +380,13 @@ class Capture(_core.CaptureCore):
                         # by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by the kind
                         sized = name == "stat" and not nolink and not _kind_check_caller()
                         cap.stat_check(path, nolink, sized)
+                        timed = name in ("stat", "lstat") and _user_stat_caller()
                     except Exception:
                         pass
                     finally:
                         cap._in_stat = False
+                    if timed:
+                        return _TimedStat(orig(path, *args, **kwargs), cap, path)
                 return orig(path, *args, **kwargs)
 
             checked.__name__ = orig.__name__

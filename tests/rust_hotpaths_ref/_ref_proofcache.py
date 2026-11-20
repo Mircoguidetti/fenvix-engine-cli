@@ -2280,6 +2280,7 @@ def _process_state(p):
 
 
 _FLAG_OF = {"native code from the repository": "native",
+            "reads a file's modification, change or access time (not an input the cache keys)": "mtime",
             "calls a C library through ctypes (its file, clock and environment reads are not observed)": "cdll", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
@@ -2486,6 +2487,8 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "reads this process's state under /proc (descriptors, status counters, threads)"
     if "native" in flags:
         return "native code from the repository"
+    if "mtime" in flags:
+        return "reads a file's modification, change or access time (not an input the cache keys)"
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None

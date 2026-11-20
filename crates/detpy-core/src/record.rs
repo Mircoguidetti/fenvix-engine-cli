@@ -169,6 +169,9 @@ pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'st
     if has("native") {
         return Some("native code from the repository");
     }
+    if has("mtime") {
+        return Some("reads a file's modification, change or access time (not an input the cache keys)");
+    }
     if has("cdll") {
         return Some("calls a C library through ctypes (its file, clock and environment reads are not observed)");
     }
