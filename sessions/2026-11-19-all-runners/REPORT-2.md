@@ -1,4 +1,4 @@
-PARTIAL
+DONE
 
 # All runners, round 2: the runner drivers on the Rust engine, R-032 and R-032b fixes, Node policy in Rust — report
 
@@ -6,8 +6,7 @@ Branch `claude/all-runners-2` (fenvix-engine-cli). Final engine: code **ed66b960
 
 ## Answer
 
-* **PARTIAL only because a walk on the final engine had not landed when the round closed** (coordinator's scope decision: the runner work continues on `claude/runners-compat`, no new walks): ink (Actions runs 44692179684, 44692179670, 44692179449, 44692179649; no shard failed). Everything else is done: every gate passes and every landed transition has 0 wrong reuses.
-* **Final engine (code ed66b960, head db0c8c56): 0 wrong reuses in 134,211 tests verified** (Python 30,968, Node 103,243; 0 mismatches before recheck; MEASURED, `aggregate2.py --set final`). Counted per TEST, never per file entry (R-032 F8), and re-derived test by test from the committed pairs `[id, reused outcome, fresh outcome]` (R-032b F7d).
+* **Final engine (code ed66b960, head db0c8c56): 0 wrong reuses in 141,079 tests verified** (Python 30,968, Node 110,111; 0 mismatches before recheck; MEASURED, `aggregate2.py --set final`). Counted per TEST, never per file entry (R-032 F8), and re-derived test by test from the committed pairs `[id, reused outcome, fresh outcome]` (R-032b F7d).
 * **What "fresh" means** (R-032b F7e): Python, run B = the runner under `--det` without cache on the same commit; Node, a separate run `detjs <runner> --det` without cache. Both are the engine under Level 0 without the cache, **not** the plain runner. The Node walks also keep the engine's own `--det-cache-verify` sample.
 * Earlier, separate measurements (first set, engine **7510773**, before the parallel-proof-3 quarantine merge; runs cancelled after the landed shards were kept): 92,016 tests verified (Python 29,468, Node 62,548), 0 wrong (MEASURED, `aggregate2.py --set first`). They do not cover the final tree.
 * Earlier, separate measurements (second set, engine **0f969116**, R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept): 92,654 tests verified (Python 30,313, Node 62,341), 0 wrong (MEASURED, `aggregate2.py --set second`). They do not cover the final tree.
@@ -163,7 +162,7 @@ Shared Node tests (every runner): the cache/r021/r021b/controls suites, R-032 fi
 
 | support | tests | walks (MEASURED, final set, runs 44692179670, 44692179449, 44692179649) | not covered |
 |---|---|---|---|
-| det + skip | through the runners above | ink: 15 transitions, reuse by tests 25% / 28%, **7756** tests verified against a fresh run, 0 mismatches, **0 wrong** (engine --det-cache-verify: 7756 tests, 0 differ), PARTIAL (1 of 2 shards finished)<br>hexo: 30 transitions, reuse by tests 9% / 9%, **3584** tests verified against a fresh run, 0 mismatches, **0 wrong** (engine --det-cache-verify: 3584 tests, 0 differ) | — |
+| det + skip | through the runners above | ink: 30 transitions, reuse by tests 25% / 27%, **14624** tests verified against a fresh run, 0 mismatches, **0 wrong** (engine --det-cache-verify: 14624 tests, 0 differ)<br>hexo: 30 transitions, reuse by tests 9% / 9%, **3584** tests verified against a fresh run, 0 mismatches, **0 wrong** (engine --det-cache-verify: 3584 tests, 0 differ) | — |
 
 ## Reuse share, final engine vs the second set (0f969116, before the R-032b F1-F3 engine rules)
 
@@ -187,7 +186,7 @@ Median / mean share of tests reused per transition (MEASURED, aggregate2.py). Th
 | commander | 97% / 57% | 98% / 59% |
 | dependency-cruiser | 63% / 39% | 64% / 44% |
 | hexo | — | 9% / 9% |
-| ink | — | 25% / 28% |
+| ink | — | 25% / 27% |
 | simple-statistics | 0% / 23% | 0% / 23% |
 | yargs | 3% / 27% | 29% / 29% |
 | ava-globby | — | 0% / 4% |
@@ -223,7 +222,7 @@ Median / mean share of tests reused per transition (MEASURED, aggregate2.py). Th
 | node | commander | ar2-node-a4 | 30 | 98 / 59 | — | 20623 | 0 | 0 | 20623 (0 differ); re-derived from pairs: 20623, 0 differ |
 | node | dependency-cruiser | ar2-node-a4 | 30 | 64 / 44 | — | 26004 | 0 | 0 | 26004 (0 differ); re-derived from pairs: 26004, 0 differ |
 | node | hexo | ar2-node-a4 | 30 | 9 / 9 | — | 3584 | 0 | 0 | 3584 (0 differ); re-derived from pairs: 3584, 0 differ |
-| node | ink | ar2-node-a4 | 15 | 25 / 28 | — | 7756 | 0 | 0 | 7756 (0 differ); re-derived from pairs: 7756, 0 differ |
+| node | ink | ar2-node-a4 | 30 | 25 / 27 | — | 14624 | 0 | 0 | 14624 (0 differ); re-derived from pairs: 14624, 0 differ |
 | node | simple-statistics | ar2-node-a4 | 30 | 0 / 23 | — | 2632 | 0 | 0 | 2632 (0 differ); re-derived from pairs: 2632, 0 differ |
 | node | yargs | ar2-node-a4 | 30 | 29 / 29 | — | 7207 | 0 | 0 | 7207 (0 differ); re-derived from pairs: 7207, 0 differ |
 | node | ava-globby | ar2-node-b4 | 25 | 0 / 4 | — | 227 | 0 | 0 | 227 (0 differ); re-derived from pairs: 227, 0 differ |
@@ -241,9 +240,9 @@ Median / mean share of tests reused per transition (MEASURED, aggregate2.py). Th
 
 TOTAL python: tests verified 30968, mismatches 0, confirmed wrong 0
 
-TOTAL node: tests verified 103243, mismatches 0, confirmed wrong 0
+TOTAL node: tests verified 110111, mismatches 0, confirmed wrong 0
 
-TOTAL: tests verified 134211, confirmed wrong 0
+TOTAL: tests verified 141079, confirmed wrong 0
 
 ## Earlier measurement: second set, engine 0f969116 (R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept)
 
