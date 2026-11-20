@@ -1,0 +1,691 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "tests/unit/llms/vertex_ai",
+  "-p",
+  "no:randomly",
+  "--timeout=120"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "69438c1e3f9fc40682599abf9503e8cd3c224a85",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 391.6,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 239 warnings in 309.09s (0:05:09)",
+    "peak_rss_mb": 4105.9,
+    "store_mb": 15.48,
+    "carried": 7001,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 7003,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 212.5,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 188.10s (0:03:08)",
+    "peak_rss_mb": 4329.2,
+    "store_mb": 6.92,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 90.3,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 190 warnings in 78.29s (0:01:18)",
+    "peak_rss_mb": 1002.6
+   },
+   "a_par_u": {
+    "wall_s": 235.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 232 warnings in 220.40s (0:03:40)",
+    "peak_rss_mb": 4069.2,
+    "store_mb": 18.36,
+    "carried": 4502,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4503,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser_u": {
+    "wall_s": 211.1,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 187.96s (0:03:07)",
+    "peak_rss_mb": 4320.0,
+    "store_mb": 9.25,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b": {
+    "wall_s": 134.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1192.6,
+    "test_time_s": 107.987
+   }
+  },
+  {
+   "i": 1,
+   "sha": "6a8d259f27b165579f13b3ab92f0e09fc8fb4eb9",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 221.8,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 228 warnings in 206.75s (0:03:26)",
+    "peak_rss_mb": 4042.4,
+    "store_mb": 21.05,
+    "carried": 4621,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4622,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 205.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 183.29s (0:03:03)",
+    "peak_rss_mb": 4303.6,
+    "store_mb": 11.59,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 88.7,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 190 warnings in 77.28s (0:01:17)",
+    "peak_rss_mb": 950.3
+   },
+   "b": {
+    "wall_s": 131.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1192.2,
+    "test_time_s": 105.199
+   }
+  },
+  {
+   "i": 2,
+   "sha": "bf7bcfca7853eb7aee1bb83f879a346976fe758c",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 212.8,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 221 warnings in 197.84s (0:03:17)",
+    "peak_rss_mb": 3998.1,
+    "store_mb": 26.34,
+    "carried": 4190,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4191,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 207.5,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 184.50s (0:03:04)",
+    "peak_rss_mb": 4318.3,
+    "store_mb": 13.92,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 87.1,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 188 warnings in 75.43s (0:01:15)",
+    "peak_rss_mb": 871.6
+   },
+   "b": {
+    "wall_s": 131.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1193.0,
+    "test_time_s": 105.353
+   }
+  },
+  {
+   "i": 3,
+   "sha": "bcb1f486a65ac86b98904bb36b768593be91b3c4",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 223.2,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 217 warnings in 206.59s (0:03:26)",
+    "peak_rss_mb": 4071.5,
+    "store_mb": 28.67,
+    "carried": 4190,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4191,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 210.1,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 186.31s (0:03:06)",
+    "peak_rss_mb": 4317.6,
+    "store_mb": 16.25,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 90.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 190 warnings in 79.10s (0:01:19)",
+    "peak_rss_mb": 895.6
+   },
+   "b": {
+    "wall_s": 134.5,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1191.3,
+    "test_time_s": 107.86
+   }
+  },
+  {
+   "i": 4,
+   "sha": "20b2f02297d5c78e38772743fd22d26324f3e9fc",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 210.0,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 221 warnings in 194.56s (0:03:14)",
+    "peak_rss_mb": 4038.6,
+    "store_mb": 31.01,
+    "carried": 4189,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4190,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 221.2,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 196.56s (0:03:16)",
+    "peak_rss_mb": 4321.4,
+    "store_mb": 18.58,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 95.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 188 warnings in 83.27s (0:01:23)",
+    "peak_rss_mb": 914.9
+   },
+   "b": {
+    "wall_s": 144.3,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1193.0,
+    "test_time_s": 116.172
+   }
+  },
+  {
+   "i": 5,
+   "sha": "c38b3c3747e84b45c9800fa30c442394c60e32d9",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 182.8,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 180 warnings in 167.54s (0:02:47)",
+    "peak_rss_mb": 4071.5,
+    "store_mb": 33.34,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 205.3,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 182.65s (0:03:02)",
+    "peak_rss_mb": 4332.9,
+    "store_mb": 20.92,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 88.3,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 186 warnings in 76.21s (0:01:16)",
+    "peak_rss_mb": 1013.1
+   },
+   "b": {
+    "wall_s": 144.3,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1199.8,
+    "test_time_s": 115.68
+   }
+  },
+  {
+   "i": 6,
+   "sha": "d7ab7255e2926ac1724da74ad3e43ec3ec7aa0dc",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 188.4,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 182 warnings in 172.28s (0:02:52)",
+    "peak_rss_mb": 4079.0,
+    "store_mb": 35.68,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 237.8,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 212.36s (0:03:32)",
+    "peak_rss_mb": 4336.5,
+    "store_mb": 23.25,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 95.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 186 warnings in 82.85s (0:01:22)",
+    "peak_rss_mb": 832.7
+   },
+   "b": {
+    "wall_s": 140.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1195.2,
+    "test_time_s": 112.317
+   }
+  },
+  {
+   "i": 7,
+   "sha": "830051f0556b184ac7a6d263dab27a9cfb7d4406",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 184.8,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 186 warnings in 168.76s (0:02:48)",
+    "peak_rss_mb": 4065.7,
+    "store_mb": 38.01,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 209.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 186.83s (0:03:06)",
+    "peak_rss_mb": 4323.9,
+    "store_mb": 25.58,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 97.7,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 189 warnings in 85.46s (0:01:25)",
+    "peak_rss_mb": 961.5
+   },
+   "b": {
+    "wall_s": 155.7,
+    "rc": 1,
+    "tail": "failed to send, dropping 3 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1200.4,
+    "test_time_s": 122.843
+   }
+  },
+  {
+   "i": 8,
+   "sha": "540a62ba4887b6321e098fdb33e79a8c434af053",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 196.4,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 185 warnings in 179.91s (0:02:59)",
+    "peak_rss_mb": 3986.8,
+    "store_mb": 40.34,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 214.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 190.57s (0:03:10)",
+    "peak_rss_mb": 4329.8,
+    "store_mb": 27.92,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 85.5,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 189 warnings in 74.09s (0:01:14)",
+    "peak_rss_mb": 823.5
+   },
+   "b": {
+    "wall_s": 130.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1191.3,
+    "test_time_s": 105.262
+   }
+  },
+  {
+   "i": 9,
+   "sha": "17e6ea8cb7d4bf1c090e2aaa35d94116ef5ecd6c",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 186.0,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 186 warnings in 171.04s (0:02:51)",
+    "peak_rss_mb": 3996.0,
+    "store_mb": 42.67,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4181
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "a_ser": {
+    "wall_s": 204.7,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 66 warnings in 182.07s (0:03:02)",
+    "peak_rss_mb": 4332.4,
+    "store_mb": 30.25,
+    "carried": 4180,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4181,
+    "recorded": 0,
+    "tests": 4181,
+    "miss_reasons": {
+     "new": 4179,
+     "unit": 2
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": [],
+    "ran_differ": []
+   },
+   "b_par": {
+    "wall_s": 86.9,
+    "rc": 1,
+    "tail": "1 failed, 4180 passed, 190 warnings in 75.52s (0:01:15)",
+    "peak_rss_mb": 983.4
+   },
+   "b": {
+    "wall_s": 129.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "peak_rss_mb": 1192.5,
+    "test_time_s": 104.184
+   }
+  }
+ ]
+}
