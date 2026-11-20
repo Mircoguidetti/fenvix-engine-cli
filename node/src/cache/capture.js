@@ -1243,10 +1243,19 @@ function wrapStat(cap, o, name, kind, style, pathOf = (a) => a[0]) {
 }
 
 /**
+ * Whether recursive `fs.promises.readdir` with `withFileTypes` descends into links to directories. MEASURED: not on
+ * Node 22 and 24 (2 entries for a tree holding a file and a link to a directory of one file), yes from Node 26
+ * (3 entries, as `readdirSync` and callback `readdir` always did). Keyed as `u:` where it does not follow, `t:` where
+ * it does: reading it as `u:` on Node 26 reused a result after a file was added behind a link (review r021b G3,
+ * test/r021b-fixes.test.js). Recursive `opendir` does not follow on any of them (MEASURED, Node 22 and 26).
+ */
+const PROMISES_TYPED_FOLLOWS = Number(process.versions.node.split('.')[0]) >= 26;
+
+/**
  * Kind of a listing call from its options: names (`d:`), with entry types (`e:`), recursive (G3 of review r021b:
  * `t:` where Node descends into links to directories, as `readdirSync` and callback `readdir` always do and
- * `fs.promises.readdir` does without `withFileTypes`; `u:` where it does not: `fs.promises.readdir` with
- * `withFileTypes`, recursive `opendir`).
+ * `fs.promises.readdir` does without `withFileTypes`, and with it from Node 26; `u:` where it does not:
+ * `fs.promises.readdir` with `withFileTypes` before Node 26, recursive `opendir`).
  */
 function listKind(dflt, followTyped = true) {
   return (a) => {
@@ -1381,7 +1390,7 @@ function installFs(cap) {
   // listings (F2): names (`d:`), with entry types (`e:`), recursive (`t:`); a Dir yields typed entries
   wrapFn(cap, fs, 'readdirSync', (a) => cap.read(a[0], listKind('d')(a)));
   wrapFn(cap, fs, 'readdir', (a) => cap.read(a[0], listKind('d')(a)));
-  wrapFn(cap, P, 'readdir', (a) => cap.read(a[0], listKind('d', false)(a)));
+  wrapFn(cap, P, 'readdir', (a) => cap.read(a[0], listKind('d', PROMISES_TYPED_FOLLOWS)(a)));
   for (const [o, n] of [[fs, 'opendirSync'], [fs, 'opendir'], [P, 'opendir']]) {
     wrapFn(cap, o, n, (a) => cap.read(a[0], (a[1] && typeof a[1] === 'object' && a[1].recursive) ? 'u' : 'e'));
   }
