@@ -20,7 +20,7 @@ py="$RUNNER_TEMP/venv/bin/python"
 grp=""
 grep -q '^tests = ' target/pyproject.toml 2>/dev/null && grp="--group tests"
 (cd target && uv pip install -q --python "$py" -e . $grp pytest $EXTRA)
-uv pip install -q --python "$py" "$(ls "$RUNNER_TEMP"/wheels/detpy-*.whl | head -1)"
+uv pip install -q --python "$py" "$(ls "$RUNNER_TEMP"/wheels/fenvix-*.whl | head -1)"
 "$py" -c "import detpy, sys; print('detpy', detpy.__version__, 'python', sys.version.split()[0])"
 echo "FENVIX_PY=$py" >>"$GITHUB_ENV"
 grep -q '^FENVIX_CACHE_ROOT=' "$GITHUB_ENV" 2>/dev/null || echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >>"$GITHUB_ENV"

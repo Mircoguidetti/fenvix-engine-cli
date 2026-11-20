@@ -36,7 +36,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from common import ENGINE, base_env, checkout, git, sh, worktrees  # noqa: E402
 
 WORK = Path(os.environ.get("CULPRIT_WORK", "/home/user/work"))
-WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("detpy-*.whl"), "")))
+WHEEL = os.environ.get("CULPRIT_WHEEL", str(next((WORK / "wheels2").glob("fenvix-*.whl"), "")))
 DISABLE = "seeds,time,fs,net,hashseed,bytecode"
 
 

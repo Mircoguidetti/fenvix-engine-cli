@@ -10,7 +10,7 @@
 #            skip-key tests and review R-022.                                  NOT BLOCKING (out of go-live scope)
 # Runs on every push to claude/release-1 (the engine trunk) and on every pull request into it (the gate).
 # smoke      one small real repository per language under --det (x2, traces verified) and skip with proof (x2).
-# other-os   macOS arm64 and Linux arm64: Rust core tests and the wheel (measured status, not a gate).
+# Linux arm64 and macOS arm64 (build, full Python and Node suites, install test): .github/workflows/packages.yml.
 name: release-1
 
 on:
@@ -76,7 +76,10 @@ jobs:
       # R-008/R-008b start interpreters that import detpy from python/
       - name: install the wheel (and its extension in python/detpy)
         run: |
-          pip install pytest pytest-xdist && pip install --no-deps dist/detpy-*.whl
+          pip install pytest pytest-xdist && pip install --no-deps dist/fenvix-*.whl
+          # the optional runners and plugins the suites importorskip, so that none of them is skipped (audit G-0010)
+          pip install django pytest-django nose2 ward zope.testrunner hypothesis numpy time-machine pytest-benchmark \
+            freezegun pytest-asyncio pytest-mock pytest-cov
           cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
       - name: Python suites and reviewer test files
         # the gate of claude/parallel-proof-3 REPORT-3 and claude/all-runners-2 REPORT-2: serial, one deselected
@@ -110,7 +113,7 @@ jobs:
         with: {python-version: "3.13"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
-      - run: cp dist/detjs.linux-x64.node node/ && pip install --no-deps dist/detpy-*.whl
+      - run: cp dist/detjs.linux-x64.node node/ && pip install --no-deps dist/fenvix-*.whl
       - name: detjs suites and reviewer test files
         working-directory: node
         run: |
@@ -218,23 +221,3 @@ jobs:
           path: |
             smoke-${{ matrix.lang }}.json
             /tmp/smoke/logs/
-
-  other-os:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 60
-    continue-on-error: true
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-14, ubuntu-24.04-arm]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: {python-version: "3.13"}
-      - name: Rust core and decider tests
-        run: cargo test -p detpy-core -p fenvix-skip 2>&1 | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
-      - name: wheel and a Python subset
-        run: |
-          pip install "maturin>=1.5,<2" pytest && maturin build --release -o dist && pip install --no-deps dist/detpy-*.whl
-          python -m pytest -q -p no:randomly tests/test_core_bindings.py tests/test_order.py tests/test_fingerprint.py tests/test_proofcache.py 2>&1 | tail -15
-          exit ${PIPESTATUS[0]}

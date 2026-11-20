@@ -1228,7 +1228,9 @@ impl CaptureCore {
     /// inputs of `ctx` by content; those mapped before the capture started (the baseline scan) or before the first
     /// context are inputs of every test, through the import context.
     fn scan_maps_impl(&self, py: Python<'_>, ctx: Option<usize>) -> PyResult<()> {
-        let Ok(text) = std::fs::read("/proc/self/maps") else { return Ok(()) };
+        // /proc/self/maps on Linux, the dyld image list on macOS (audit G-0155: no maps file there)
+        let Some(images) = detpy_core::host::loaded_images() else { return Ok(()) };
+        let text: Vec<u8> = images.join("\n").into_bytes();
         let (new, ctx) = {
             let mut st = lock(&self.st);
             if st.maps_text == text {

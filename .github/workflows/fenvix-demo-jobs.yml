@@ -68,7 +68,7 @@ jobs:
           cd target
           if grep -q '^tests = ' pyproject.toml 2>/dev/null; then grp="--group tests"; else grp=""; fi
           uv pip install -q --python "$py" -e . $grp pytest ${{ inputs.extra_pip }}
-          uv pip install -q --python "$py" "$(ls "$wheels"/detpy-*.whl | head -1)"
+          uv pip install -q --python "$py" "$(ls "$wheels"/fenvix-*.whl | head -1)"
           "$py" -c "import detpy, sys; print('detpy', detpy.__version__, 'python', sys.version.split()[0])"
           echo "FENVIX_PY=$py" >> "$GITHUB_ENV"
           if [ -z "${FENVIX_CACHE_ROOT:-}" ]; then echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"; fi
@@ -117,7 +117,7 @@ jobs:
           cd target
           if grep -q '^tests = ' pyproject.toml 2>/dev/null; then grp="--group tests"; else grp=""; fi
           uv pip install -q --python "$py" -e . $grp pytest ${{ inputs.extra_pip }}
-          uv pip install -q --python "$py" "$(ls "$wheels"/detpy-*.whl | head -1)"
+          uv pip install -q --python "$py" "$(ls "$wheels"/fenvix-*.whl | head -1)"
           "$py" -c "import detpy, sys; print('detpy', detpy.__version__, 'python', sys.version.split()[0])"
           echo "FENVIX_PY=$py" >> "$GITHUB_ENV"
           if [ -z "${FENVIX_CACHE_ROOT:-}" ]; then echo "FENVIX_CACHE_ROOT=$RUNNER_TEMP/fenvix-cache" >> "$GITHUB_ENV"; fi

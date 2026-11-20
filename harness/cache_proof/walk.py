@@ -22,7 +22,7 @@ spec changed, and runs:
 every 10th commit and a random sample of the units with reused results at the other commits.
 
     python harness/cache_proof/walk.py --spec harness/cache_proof/specs/sqlparse.json --work /tmp/w \\
-        --out /tmp/sqlparse.json --wheel dist/detpy-*.whl --commits 5
+        --out /tmp/sqlparse.json --wheel dist/fenvix-*.whl --commits 5
 """
 
 from __future__ import annotations

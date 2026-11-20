@@ -2,7 +2,7 @@
 # fix round 3: one library at a time (lock = mkdir): clone, environment, re-run the fixed finder on its a2 cases
 cd /home/user/work; WD=/home/user/work
 E=/home/user/fenvix-engine-cli/harness/culprit
-W=$(ls /home/user/work/wheels2/detpy-*.whl)
+W=$(ls /home/user/work/wheels2/fenvix-*.whl)
 for n in attrs boltons cachetools click jinja marshmallow more-itertools sqlparse structlog toolz; do
   mkdir -p locks3; mkdir locks3/$n 2>/dev/null || continue
   url=$(python3 -c "import json;print(json.load(open('$E/round3/a2-repos.json'))['$n'])")

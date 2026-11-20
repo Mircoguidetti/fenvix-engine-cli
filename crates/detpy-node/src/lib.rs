@@ -609,6 +609,19 @@ pub fn uncacheable_table() -> HashMap<String, String> {
     detpy_core::node_session::UNCACHEABLE.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect()
 }
 
+/// Paths of the shared objects mapped into this process (`/proc/self/maps` on Linux, dyld on macOS); null where
+/// the OS gives no list (detpy_core::host).
+#[napi]
+pub fn loaded_images() -> Option<Vec<String>> {
+    detpy_core::host::loaded_images()
+}
+
+/// The CPU's feature description where /proc/cpuinfo does not exist (macOS); null elsewhere.
+#[napi]
+pub fn cpu_features() -> Option<String> {
+    detpy_core::host::cpu_features()
+}
+
 #[napi]
 pub fn file_digest(path: String) -> Option<String> {
     pf::file_digest(std::path::Path::new(&path))

@@ -1,0 +1,113 @@
+# Release: build and test every package (packages.yml), then publish with trusted publishing (OIDC). No token or
+# password is stored in this repository or its secrets: PyPI/TestPyPI and npm trust this workflow file.
+#
+#   push a tag vX.Y.Z (equal to release/version.py)        -> TestPyPI upload, npm publish --dry-run, GitHub Release
+#   workflow_dispatch (version e.g. 0.1.0-rc.3)            -> TestPyPI upload of that pre-release, npm --dry-run
+#
+# Real PyPI and real npm publishing are switched off until the founder sets the repository variables
+# FENVIX_PUBLISH_PYPI=true and FENVIX_PUBLISH_NPM=true after configuring the trusted publishers
+# (sessions/2026-11-20-packages/REPORT.md, section "Per il fondatore").
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "pre-release version to build and upload to TestPyPI (semver, e.g. 0.1.0-rc.3)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check-tag:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.v.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: v
+        run: |
+          if [ "${{ github.event_name }}" = push ]; then
+            v="$(python3 release/version.py)"
+            [ "${GITHUB_REF_NAME}" = "v$v" ] || { echo "tag ${GITHUB_REF_NAME} is not v$v (release/version.py)"; exit 1; }
+          else
+            v="${{ inputs.version }}"
+          fi
+          grep -q "^## \[$v\]\|^## $v\|^## \[Unreleased\]" CHANGELOG.md || { echo "CHANGELOG.md has no section for $v"; exit 1; }
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: check-tag
+    uses: ./.github/workflows/packages.yml
+    with:
+      version: ${{ github.event_name == 'workflow_dispatch' && inputs.version || '' }}
+
+  testpypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: testpypi
+    permissions:
+      id-token: write   # trusted publishing (OIDC)
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: wheels, path: dist}
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+
+  pypi:
+    needs: [build, testpypi]
+    if: github.event_name == 'push' && vars.FENVIX_PUBLISH_PYPI == 'true'
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with: {name: wheels, path: dist}
+      - uses: pypa/gh-action-pypi-publish@release/v1
+
+  npm:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write   # npm trusted publishing (OIDC) and provenance
+    steps:
+      - uses: actions/setup-node@v4
+        with: {node-version: "24", registry-url: "https://registry.npmjs.org"}
+      - uses: actions/download-artifact@v4
+        with: {name: npm-tarballs, path: tarballs}
+      - name: publish the platform packages first, then fenvix (dry run unless FENVIX_PUBLISH_NPM=true on a tag)
+        env:
+          REAL: ${{ github.event_name == 'push' && vars.FENVIX_PUBLISH_NPM == 'true' }}
+        run: |
+          npm install -g npm@latest
+          flag="--dry-run"; [ "$REAL" = true ] && flag="--provenance"
+          for t in tarballs/fenvix-linux-*.tgz tarballs/fenvix-darwin-*.tgz tarballs/fenvix-[0-9]*.tgz; do
+            npm publish "$t" --access public $flag
+          done
+
+  github-release:
+    needs: [check-tag, build, testpypi, npm]
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {name: wheels, path: dist}
+      - uses: actions/download-artifact@v4
+        with: {name: npm-tarballs, path: dist}
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          V: ${{ needs.check-tag.outputs.version }}
+        run: |
+          awk -v v="$V" '$0 ~ "^## \\[?"v"\\]?" {on=1; next} on && /^## / {exit} on' CHANGELOG.md > notes.md
+          gh release create "v$V" dist/* --title "fenvix $V" --notes-file notes.md --verify-tag

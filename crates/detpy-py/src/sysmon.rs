@@ -343,6 +343,7 @@ pub fn set_audit_hook(callable: &Bound<'_, PyAny>, names: &Bound<'_, PyTuple>) -
 // capture compares this process's socket descriptors with the previous scan; a new one that is an internet
 // socket (listed in /proc/self/net/{tcp,tcp6,udp,udp6}) makes the context that is ending uncacheable.
 
+#[cfg(target_os = "linux")]
 fn socket_fds() -> Option<HashMap<String, String>> {
     use std::os::unix::fs::{FileTypeExt, MetadataExt};
     use std::os::unix::io::FromRawFd;
@@ -363,7 +364,44 @@ fn socket_fds() -> Option<HashMap<String, String>> {
     Some(cur)
 }
 
+/// macOS (no /proc, audit G-0158): the descriptors are listed in /dev/fd, and a socket's family is asked with
+/// getsockname(2); the value is `<inode>/inet` for an internet socket, `<inode>` otherwise.
+#[cfg(not(target_os = "linux"))]
+fn socket_fds() -> Option<HashMap<String, String>> {
+    use std::os::unix::fs::{FileTypeExt, MetadataExt};
+    use std::os::unix::io::FromRawFd;
+    extern "C" {
+        fn getsockname(fd: i32, addr: *mut u8, len: *mut u32) -> i32;
+    }
+    const AF_INET: u8 = 2;
+    const AF_INET6: u8 = 30;
+    let rd = std::fs::read_dir("/dev/fd").ok()?;
+    let mut cur = HashMap::new();
+    for e in rd.flatten() {
+        let name = e.file_name();
+        let Some(fd) = name.to_str() else { continue };
+        let Ok(n) = fd.parse::<i32>() else { continue };
+        let f = std::mem::ManuallyDrop::new(unsafe { std::fs::File::from_raw_fd(n) });
+        let Ok(m) = f.metadata() else { continue };
+        if !m.file_type().is_socket() {
+            continue;
+        }
+        let mut buf = [0u8; 128];
+        let mut len = buf.len() as u32;
+        let fam = if unsafe { getsockname(n, buf.as_mut_ptr(), &mut len) } == 0 && len >= 2 { buf[1] } else { 0 };
+        let inet = fam == AF_INET || fam == AF_INET6;
+        cur.insert(fd.to_string(), format!("{}{}", m.ino(), if inet { "/inet" } else { "" }));
+    }
+    Some(cur)
+}
+
+#[cfg(not(target_os = "linux"))]
+fn inet_inodes() -> std::collections::HashSet<String> {
+    socket_fds().unwrap_or_default().into_values().filter(|v| v.ends_with("/inet")).collect()
+}
+
 /// Inodes of this process's internet sockets (column 10 of /proc/self/net/{tcp,tcp6,udp,udp6}).
+#[cfg(target_os = "linux")]
 fn inet_inodes() -> std::collections::HashSet<String> {
     let mut out = std::collections::HashSet::new();
     for t in ["tcp", "tcp6", "udp", "udp6"] {

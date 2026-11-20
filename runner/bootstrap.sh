@@ -77,11 +77,11 @@ build_engine() {
   local venv="$FENVIX_HOME/build-venv"
   [ -x "$venv/bin/python" ] || uv venv -q --python "$FENVIX_PYTHON" "$venv"
   uv pip install -q --python "$venv/bin/python" "maturin>=1.5,<2"
-  rm -f "$FENVIX_HOME"/wheels/detpy-*.whl
+  rm -f "$FENVIX_HOME"/wheels/fenvix-*.whl
   (cd "$ENGINE_SRC" && "$venv/bin/maturin" build --release --compatibility linux -o "$FENVIX_HOME/wheels" >&2)
-  ls "$FENVIX_HOME"/wheels/detpy-*.whl >/dev/null || die "wheel not built"
+  ls "$FENVIX_HOME"/wheels/fenvix-*.whl >/dev/null || die "wheel not built"
   install -m 755 "$HERE/fenvix-run" "$FENVIX_HOME/bin/fenvix-run"
-  log "engine: $(ls "$FENVIX_HOME"/wheels/detpy-*.whl)"
+  log "engine: $(ls "$FENVIX_HOME"/wheels/fenvix-*.whl)"
 }
 
 download_runner() {

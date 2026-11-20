@@ -9,10 +9,14 @@
 //   detjs mocha  [--det ...] [mocha args]
 //   detjs tap|ava|jasmine|uvu [--det ...] [runner args]  (src/runners/<name>.js)
 //   detjs verify TRACE TRACE [...] [--json] [--show-stable]
+// Installed by the npm package `fenvix` as both `fenvix` (bin/fenvix.js) and `detjs`.
 const RUNNER_SHELLS = new Set(['tap', 'ava', 'jasmine', 'uvu']);
+const RUNNERS = ['vitest', 'jest', 'node-test', 'mocha', 'bun-test', 'deno-test', 'tap', 'ava', 'jasmine', 'uvu'];
+const PROG = require('node:path').basename(process.argv[1] || 'detjs').replace(/\.js$/, '');
+const VERSION = require('../package.json').version;
 const USAGE = `usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [runner args]
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
-       detjs --det-help`;
+       detjs --det-help | --version | --help`;
 
 async function main(argv) {
   const [cmd, ...rest] = argv;
@@ -33,6 +37,9 @@ async function main(argv) {
     return rep.summary.diverged || rep.summary.missing ? 1 : 0;
   }
   if (cmd === '--det-help') { process.stdout.write(require('../src/session').HELP); return 0; }
+  if (cmd === '--version' || cmd === '-v' || cmd === 'version') { process.stdout.write(`fenvix ${VERSION}\n`); return 0; }
+  if (cmd === '--help' || cmd === '-h' || cmd === 'help') { process.stdout.write(`${USAGE}\n`); return 0; }
+  if (cmd !== undefined) console.error(`${PROG}: unknown runner or command '${cmd}'; supported runners: ${RUNNERS.join(', ')}`);
   console.error(USAGE);
   return 2;
 }
@@ -59,6 +66,10 @@ if (needsEarly(process.argv.slice(2))) {
 } else main(process.argv.slice(2)).then((code) => {
   process.exitCode = code;
 }, (err) => {
-  console.error(err && err.stack ? err.stack : err);
+  // A user error the shell raised itself (message `detjs: ...`) is printed without the JavaScript stack;
+  // DETJS_DEBUG=1 prints the stack of every error (audit G-2176).
+  const msg = err && err.message ? err.message : String(err);
+  const own = /^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1';
+  console.error(own ? msg : (err && err.stack ? err.stack : err));
   process.exitCode = 2;
 });

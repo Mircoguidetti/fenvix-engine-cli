@@ -5,7 +5,8 @@
 //   node        version and every component version (V8, ICU, tz data, OpenSSL, ...), build flags, execArgv,
 //               NODE_OPTIONS
 //   executable  bytes of the node binary (not its path)
-//   native      bytes of every shared library mapped into this process (libc, libstdc++, libm, the loader, ...),
+//   native      bytes of every shared library mapped into this process (Linux: /proc/self/maps; macOS: dyld images;
+//               libc, libstdc++, libm, the loader, ...),
 //               LD_PRELOAD and /etc/ld.so.preload libraries; named by file name, not directory
 //   libc        glibc version
 //   tz          TZ, the zone file it names, /etc/localtime (bytes and link target), /etc/timezone, Intl's zone
@@ -36,7 +37,12 @@ function d(x) {
 function isaLevel() {
   if (process.env.FENVIX_RUNTIME_ISA === 'off') return 'off';
   let info = '';
-  try { info = fs.readFileSync('/proc/cpuinfo', 'utf8'); } catch { return `${process.arch}:unknown`; }
+  try { info = fs.readFileSync('/proc/cpuinfo', 'utf8'); } catch {
+    // macOS: the CPU brand and the hw.optional feature flags (detpy_core::host); an OS that gives neither is
+    // keyed by its platform and release, never by a constant (audit G-0157)
+    const feats = typeof native.cpuFeatures === 'function' ? native.cpuFeatures() : null;
+    return feats ? `${process.arch}:${native.digest(feats)}` : `${process.arch}:${process.platform}:${os.release()}`;
+  }
   const line = info.split('\n').find((l) => /^(flags|Features)\s*:/.test(l)) || '';
   const flags = new Set(line.split(':').slice(1).join(':').trim().split(/\s+/));
   if (process.arch !== 'x64') return `${process.arch}:${native.digest([...flags].sort().join(' '))}`;
@@ -49,15 +55,17 @@ function isaLevel() {
 
 function mappedLibraries() {
   const out = new Map();
-  let maps = '';
-  try { maps = fs.readFileSync('/proc/self/maps', 'utf8'); } catch { return []; }
-  for (const line of maps.split('\n')) {
-    const i = line.indexOf('/');
-    if (i < 0) continue;
-    const p = line.slice(i).trim();
-    if (!/\.so(\.|$)/.test(path.basename(p)) || out.has(path.basename(p))) continue;
-    out.set(path.basename(p), native.fileDigest(p) || 'unreadable');
+  // /proc/self/maps on Linux, the dyld image list on macOS (detpy_core::host; audit G-0157: on macOS the maps
+  // file does not exist and the list was empty). Images that live only in the dyld shared cache (the system
+  // libraries) have no file: the OS release and build stand for them.
+  const images = typeof native.loadedImages === 'function' ? native.loadedImages() : null;
+  if (images == null) out.set('images', `unobservable:${process.platform}:${os.release()}:${os.version ? os.version() : ''}`);
+  for (const p of images || []) {
+    const b = path.basename(p);
+    if (!/\.so(\.|$)|\.dylib$/.test(b) || out.has(b)) continue;
+    out.set(b, native.fileDigest(p) || (process.platform === 'darwin' ? 'shared-cache' : 'unreadable'));
   }
+  if (process.platform !== 'linux') out.set('os', `${process.platform}:${os.release()}:${os.version ? os.version() : ''}`);
   const pre = [];
   for (const x of String(process.env.LD_PRELOAD || '').split(/[\s:]+/).filter(Boolean)) pre.push(x);
   try { for (const x of fs.readFileSync('/etc/ld.so.preload', 'utf8').split(/\s+/).filter(Boolean)) pre.push(x); } catch { /* none */ }
