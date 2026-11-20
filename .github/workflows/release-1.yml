@@ -105,6 +105,7 @@ jobs:
           echo "== failures"; grep -E "^(FAILED|ERROR) " py-${{ matrix.python }}.log || true
           exit $rc
       - name: runner suites with their runners installed (audit G-0010; own environment, so that pytest-django does not load into the main suites)
+        if: success() || failure()  # independent of the main suites' result
         run: |
           python -m venv .venv-runners && . .venv-runners/bin/activate
           pip install -q pytest pytest-xdist django pytest-django nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
@@ -112,6 +113,7 @@ jobs:
             tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py \
             2>&1 | tee py-${{ matrix.python }}.runners.log | tail -30; exit ${PIPESTATUS[0]}
       - name: suites that need numpy and time-machine (no pytest plugin of their own)
+        if: success() || failure()  # independent of the main suites' result
         run: |
           python -m venv .venv-numpy && . .venv-numpy/bin/activate
           pip install -q pytest pytest-xdist numpy time-machine && pip install -q --no-deps dist/fenvix-*.whl
@@ -119,6 +121,7 @@ jobs:
             tests/test_clock_rust.py tests/test_level0_seeds_fsorder_rust.py \
             2>&1 | tee py-${{ matrix.python }}.numpy.log | tail -30; exit ${PIPESTATUS[0]}
       - name: tests that need hypothesis and pytest-benchmark (auto-loaded plugins, so in their own environment)
+        if: success() || failure()  # independent of the main suites' result
         run: |
           python -m venv .venv-hyp && . .venv-hyp/bin/activate
           pip install -q pytest pytest-xdist hypothesis pytest-benchmark && pip install -q --no-deps dist/fenvix-*.whl
