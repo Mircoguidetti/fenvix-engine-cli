@@ -152,7 +152,7 @@ function annotate(text, ex) {
   for (let i = 0; i < lines.length; i++) {
     out.push(lines[i]);
     if (ex.head.length && i > 0 && lines[i].startsWith('  run ') && !(lines[i + 1] || '').startsWith('  run ')) out.push(...ex.head);
-    const m = /^NOT-COVERED (\S+)/.exec(lines[i]);
+    const m = /^NOT-COVERED (.+?) {2}\[/.exec(lines[i]);
     if (m && ex.notes[m[1]]) {
       while (i + 1 < lines.length && lines[i + 1].startsWith('    ')) out.push(lines[++i]);
       out.push(...ex.notes[m[1]]);

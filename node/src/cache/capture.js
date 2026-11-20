@@ -2165,6 +2165,9 @@ function offThreadLoader() {
 // (`module.register`, `--loader`), so they are removed when such hooks are registered (the tests are then not
 // cacheable: flag `loader`)
 const SYNC_HOOKS = [];
+// off-thread hooks were registered in this thread (module.register): in-thread hooks registered after them make
+// Node fail every resolution (ERR_METHOD_NOT_IMPLEMENTED), so none is registered any more
+const OFF_THREAD = { registered: false };
 
 function dropSyncHooks() {
   CAPTURE.loadHooked = false; // module loads are no longer seen: scan the registries every time
@@ -2185,6 +2188,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
         if (user) cap.add(['flag', 'loader', `module.register(${String(spec).slice(0, 200)})`], cap.isGlobal);
       }
       dropSyncHooks();
+      OFF_THREAD.registered = true;
       return realRegister.call(this, spec, ...rest);
     };
     realDefine(reg, '__detjsCache', { value: true });
@@ -2201,7 +2205,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;
   }
-  if (offThreadLoader()) return;
+  if (offThreadLoader() || OFF_THREAD.registered) return;
   try {
     const hooks = {
       resolve(spec, context, next) {

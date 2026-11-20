@@ -343,7 +343,7 @@ class ProofSession {
   addGlobalPart(name, value) {
     this.quiet(() => {
       this.configParts[name] = typeof value === 'string' ? value : digest(value);
-      if (this.configDigest !== undefined) this.digests();
+      if (this.configDigest !== undefined) { this.digests(); this.saveConfigParts(); }
     });
   }
 
