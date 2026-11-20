@@ -6,6 +6,7 @@ child process removes the name first, so every interpreter of the gate proves th
 
 from __future__ import annotations
 
+import importlib.util
 import subprocess
 import sys
 import textwrap
@@ -16,6 +17,7 @@ pytestmark = pytest.mark.skipif(sys.version_info < (3, 12), reason="detpy needs 
 
 CHILD = """
 import runpy, sys, textwrap
+sys.path[:0] = {path!r}
 if {remove} and hasattr(textwrap, "_leading_whitespace_re"):
     del textwrap._leading_whitespace_re
 sys.argv = ["detpy", "ward", "--det", "--det-cache", "c", "test", "--path", "tests"]
@@ -35,8 +37,16 @@ def test_ward_refused_with_one_sentence_where_ward_cannot_run(tmp_path, remove):
         return
     (tmp_path / "tests").mkdir()
     (tmp_path / "tests" / "test_a.py").write_text("from ward import test\n\n@test('a')\ndef _():\n    assert 1\n")
-    r = subprocess.run([sys.executable, "-c", CHILD.format(remove=remove)], cwd=tmp_path, capture_output=True,
-                       text=True, timeout=120)
+    # the runner entry first checks that ward is installed (fenvix ward: "not installed" otherwise); where it is not
+    # (the main suite's environment), an empty stand-in package satisfies that check: the refusal comes before
+    # anything of ward is imported
+    path = []
+    if importlib.util.find_spec("ward") is None:
+        (tmp_path / "standin" / "ward").mkdir(parents=True)
+        (tmp_path / "standin" / "ward" / "__init__.py").write_text("")
+        path = [str(tmp_path / "standin")]
+    r = subprocess.run([sys.executable, "-c", CHILD.format(remove=remove, path=path)], cwd=tmp_path,
+                       capture_output=True, text=True, timeout=120)
     assert r.returncode == 4, (r.stdout, r.stderr)
     assert "Traceback" not in r.stderr, r.stderr
     line = r.stderr.strip()
