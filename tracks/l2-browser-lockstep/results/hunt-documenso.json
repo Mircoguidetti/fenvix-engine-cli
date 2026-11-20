@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "ok",
- "run_id": "44704690282",
- "engine_commit": "a843e0c05429c3c5f3cf4ffb7f2d43d59e97f235",
- "setup_s": 333,
+ "run_id": "44761272887",
+ "engine_commit": "07a4899f7518fa5fc65bce7d30ef9c99d58816f0",
+ "setup_s": 237,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -14,12 +14,32 @@
   "det": 0,
   "freeze": 0,
   "freeze_control": 0,
-  "budget_min": 345,
+  "budget_min": 200,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
-  "seeds": 8,
-  "replays": 10,
-  "per_run_s": 900
+  "replays": 3,
+  "diag_replays": 3,
+  "per_run_s": 900,
+  "seed_map": {
+   "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]": 1,
+   "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]": 1,
+   "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]": 1,
+   "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]": 1,
+   "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]": 1,
+   "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]": 1,
+   "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]": 1,
+   "find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]": 1,
+   "find-inbox.spec.ts::Inbox Find - Search Hardening::should keep wildcard searches scoped to the recipient inbox [api]": 1,
+   "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject draft and virtual status values [api]": 1,
+   "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]": 1,
+   "search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]": 1,
+   "search-documents.spec.ts::Document Search - Token Masking::should not expose signing token in value field [api]": 1,
+   "search-documents.spec.ts::Document Search - Visibility::should respect team document visibility per role [api]": 1,
+   "set-envelope-contents-audit-logs.spec.ts::logs a created content [api]": 1,
+   "set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]": 1,
+   "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a team manager who is an organisation member on every procedure [api]": 1,
+   "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]": 1
+  }
  },
  "pw_dir": "packages/app-tests",
  "pw_args": [
@@ -27,35 +47,21 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T08:59:00Z",
- "measured_at": "2026-11-20T08:59:59Z",
+ "epoch": "2026-11-20T15:28:00Z",
+ "measured_at": "2026-11-20T15:28:57Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
   "seeds": 8,
-  "replays": 10,
+  "replays": 3,
   "targets": [
    {
     "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/admin.document.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/admin.document.find"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -63,25 +69,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
     "fingerprints": 1,
     "reproduced": true,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -93,625 +86,22 @@
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.organisation.delete"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
      "failed",
      "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed"
     ],
     "replay_errors": [
      "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET"
     ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.organisation.delete"
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.organisation.delete"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 7,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
-   },
-   {
-    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]",
-    "real": "Error: apiRequestContext.post: read ECONNRESET",
-    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
-    "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/admin.recipient.delete"
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 3,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -726,17 +116,305 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 1bfd14604c4211f70e0e3628a193798c"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 24652653b550963e620abead4857767c"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 624085a5682fb0cfc11206d72792e0f8"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 c9fead3573d229677681b0b5a20001fb"
      },
      "reason": "net",
-     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 1bfd14604c4211f70e0e3628a193798c\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 624085a5682fb0cfc11206d72792e0f8\""
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 24652653b550963e620abead4857767c\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 c9fead3573d229677681b0b5a20001fb\""
+    }
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "seed_given": true,
+    "replay_match": [
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 c4fc31f6741773ac2fa80ce8b85d0d2f"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 9a290dab80b213c25f914ee18561afea"
+     },
+     "reason": "net",
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 c4fc31f6741773ac2fa80ce8b85d0d2f\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 9a290dab80b213c25f914ee18561afea\""
+    }
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "seed_given": true,
+    "replay_match": [
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 eff0a50429625820a30df04b10b9004a"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 00045bfce64dcadff8bc6f771d486aec"
+     },
+     "reason": "net",
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 eff0a50429625820a30df04b10b9004a\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 00045bfce64dcadff8bc6f771d486aec\""
+    }
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "seed_given": true,
+    "replay_match": [
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 f1bca6aa251e8efdd9c8ed9a8641bd7b"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 13a41db808e2d8ba33d02a7a020688f7"
+     },
+     "reason": "net",
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 f1bca6aa251e8efdd9c8ed9a8641bd7b\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 13a41db808e2d8ba33d02a7a020688f7\""
+    }
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "seed_given": true,
+    "replay_match": [
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 143543bc7296a1df7cbf926309db7989"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 e86b0d4b35afdcab64b93ba0e23bdcc5"
+     },
+     "reason": "net",
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 143543bc7296a1df7cbf926309db7989\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 e86b0d4b35afdcab64b93ba0e23bdcc5\""
+    }
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]",
+    "real": "Error: apiRequestContext.post: read ECONNRESET",
+    "step": "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+    "mechanism": "reset",
+    "tried": [],
+    "seed": 1,
+    "replays": [
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET",
+     "Error: apiRequestContext.post: read ECONNRESET"
+    ],
+    "fingerprints": 2,
+    "reproduced": false,
+    "seed_given": true,
+    "replay_match": [
+     true,
+     true,
+     true
+    ],
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 44,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 ce63eff31f52ec758a260f602de6d5ce"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "net",
+      "o": "browser.done",
+      "at": "",
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 0e147ce9c45222ba62c3a4761a63b54c"
+     },
+     "reason": "net",
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 ce63eff31f52ec758a260f602de6d5ce\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 0e147ce9c45222ba62c3a4761a63b54c\""
     }
    },
    {
@@ -744,56 +422,7 @@
     "real": "Error: locator.click: Element is outside of the viewport",
     "step": null,
     "mechanism": "latency",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      3,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      5,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      6,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -805,56 +434,7 @@
     "real": "Error: locator.click: Element is outside of the viewport",
     "step": null,
     "mechanism": "latency",
-    "tried": [
-     [
-      1,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      2,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      3,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      4,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      8,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -866,23 +446,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.inbox.find"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -890,25 +456,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 3,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -923,17 +476,17 @@
       "s": "net",
       "o": "api.done",
       "at": "",
-      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 81e53918b43f295199ea1f5855c18bd2"
+      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 f274434b11b2596885687dab549a2d8c"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "api.done",
       "at": "",
-      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 bd55a6e86405b4a3937f3013b5cf0804"
+      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 49a7579521377ff9e3e97ce7e8d76fb7"
      },
      "reason": "net",
-     "description": "event #37: api.done @  returned different values: \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 81e53918b43f295199ea1f5855c18bd2\" vs \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 bd55a6e86405b4a3937f3013b5cf0804\""
+     "description": "event #37: api.done @  returned different values: \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 f274434b11b2596885687dab549a2d8c\" vs \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22Confidential%22%2C%22status%22%3A%22PENDING%22%7D%7D 200 49a7579521377ff9e3e97ce7e8d76fb7\""
     }
    },
    {
@@ -941,23 +494,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.inbox.find"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -965,25 +504,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 3,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -998,17 +524,17 @@
       "s": "net",
       "o": "api.done",
       "at": "",
-      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 de37ae4b6935bd1df46e343e25392d13"
+      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 9df485f5e75ef735cefa0a3562a50cc1"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "api.done",
       "at": "",
-      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 9a98544fcf41f99a2494610cef04b285"
+      "v": "GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 8f46812e05b50d25e927293dc9444aae"
      },
      "reason": "net",
-     "description": "event #37: api.done @  returned different values: \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 de37ae4b6935bd1df46e343e25392d13\" vs \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 9a98544fcf41f99a2494610cef04b285\""
+     "description": "event #37: api.done @  returned different values: \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 9df485f5e75ef735cefa0a3562a50cc1\" vs \"GET http://localhost:3000/api/trpc/document.inbox.find?input=%7B%22json%22%3A%7B%22query%22%3A%22%25%22%7D%7D 200 8f46812e05b50d25e927293dc9444aae\""
     }
    },
    {
@@ -1016,23 +542,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.inbox.find"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1040,25 +552,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 4,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1073,17 +572,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 ef4a19c8c0e722e76f817f1249cdd104"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 778097a07841f525b3d6a08ffcc746d4"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 e519632a9f0c9e71308529581c8036df"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 f9f3ba948d2c15b873bfff22508d1fbf"
      },
      "reason": "net",
-     "description": "event #52: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 ef4a19c8c0e722e76f817f1249cdd104\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 e519632a9f0c9e71308529581c8036df\""
+     "description": "event #52: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 778097a07841f525b3d6a08ffcc746d4\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 f9f3ba948d2c15b873bfff22508d1fbf\""
     }
    },
    {
@@ -1091,89 +590,21 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.inbox.find"
-     ]
-    ],
-    "seed": 3,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.inbox.find",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.inbox.find"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1181,25 +612,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 4,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1214,17 +632,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 8f186895c8a8a54a57d6bcc1bfc56b88"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 47215b5651725c5f896b94db5e2b7219"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 765f1bc23a3478e88e1c7a3d094383e7"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 c9a9048fede5d3fe62d652357b197edf"
      },
      "reason": "net",
-     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 8f186895c8a8a54a57d6bcc1bfc56b88\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 765f1bc23a3478e88e1c7a3d094383e7\""
+     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 47215b5651725c5f896b94db5e2b7219\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 c9a9048fede5d3fe62d652357b197edf\""
     }
    },
    {
@@ -1232,233 +650,45 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
-    "seed": 5,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "search-documents.spec.ts::Document Search - Cross-Team Isolation::should not reveal documents from other teams [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "search-documents.spec.ts::Document Search - Filtering::should find documents by externalId [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
-    "seed": 2,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1466,25 +696,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 5,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1499,17 +716,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 36e25b1736223072c6aa21f59eec6cc0"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 843e632f390a702939730e2017716dbd"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 3cfb501861a2e2baf688bc846ca8da61"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 efbc958d374b0ca7326ec36313b47ea2"
      },
      "reason": "net",
-     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 36e25b1736223072c6aa21f59eec6cc0\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 3cfb501861a2e2baf688bc846ca8da61\""
+     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 843e632f390a702939730e2017716dbd\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 efbc958d374b0ca7326ec36313b47ea2\""
     }
    },
    {
@@ -1517,23 +734,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1541,25 +744,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 4,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1574,17 +764,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 152395d27a13b58b212a1e4cb691758f"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 7a3971f3045b34020ed5d9b812fab61b"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 5ca6930fdb102106b40ba2550c0af0d6"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 26b227c107279c9358126671a4f88ce1"
      },
      "reason": "net",
-     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 152395d27a13b58b212a1e4cb691758f\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 5ca6930fdb102106b40ba2550c0af0d6\""
+     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 7a3971f3045b34020ed5d9b812fab61b\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 26b227c107279c9358126671a4f88ce1\""
     }
    },
    {
@@ -1592,23 +782,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/document.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/document.search"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1616,25 +792,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 6,
+    "fingerprints": 3,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1649,17 +812,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 8da7bb8d90090b9ec5ff78860d0053be"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 59365f48536a4693d048467ac0bffd83"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 9a3fd963bff01b5fb6fdbd26e6fe83db"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 0adc462a5397ffea17177ee42e24ebc2"
      },
      "reason": "net",
-     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 8da7bb8d90090b9ec5ff78860d0053be\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 9a3fd963bff01b5fb6fdbd26e6fe83db\""
+     "description": "event #47: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 59365f48536a4693d048467ac0bffd83\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 0adc462a5397ffea17177ee42e24ebc2\""
     }
    },
    {
@@ -1667,278 +830,45 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/template.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/template.search"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 2,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 3,
-     "index": 44,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 32151089f0aa83d7faf1eb2fde5d3bd0"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 1954852deaa9a7735f1b56aa28f21318"
-     },
-     "reason": "net",
-     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 32151089f0aa83d7faf1eb2fde5d3bd0\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 1954852deaa9a7735f1b56aa28f21318\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "search-templates.spec.ts::Template Search - Visibility::should respect team template visibility per role [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/template.search",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/template.search"
-     ]
-    ],
-    "seed": 2,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 2,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 3,
-     "index": 44,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 55476091349e2a7e0e68d70838b17b90"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 52cc381a84afd941523e2e57e116d379"
-     },
-     "reason": "net",
-     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 55476091349e2a7e0e68d70838b17b90\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 52cc381a84afd941523e2e57e116d379\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-audit-logs.spec.ts::does not log a save which changed nothing [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 2,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 3,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 2,
-     "index": 45,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_umvkmibulxidrlku/documents 200 a20679d6afaea22b02080753433892d1"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_umvkmibulxidrlku/documents 200 8adc103e9e8c4b49d471c6b22ad3be42"
-     },
-     "reason": "net",
-     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_umvkmibulxidrlku/documents 200 a20679d6afaea22b02080753433892d1\" vs \"3 GET http://localhost:3000/t/personal_umvkmibulxidrlku/documents 200 8adc103e9e8c4b49d471c6b22ad3be42\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-audit-logs.spec.ts::logs a created content [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -1946,25 +876,12 @@
     "replay_errors": [
      "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET"
     ],
-    "fingerprints": 6,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -1979,17 +896,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 2b28baba96a6234a669df412d61010ad"
+      "v": "3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 c547278182697164e7d67c19dad88cb3"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 d8f7365d8f044ac8a860a7b2eeb1dd11"
+      "v": "3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 b6fdedaee668eb09984eb58ed7345eca"
      },
      "reason": "net",
-     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 2b28baba96a6234a669df412d61010ad\" vs \"3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 d8f7365d8f044ac8a860a7b2eeb1dd11\""
+     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 c547278182697164e7d67c19dad88cb3\" vs \"3 GET http://localhost:3000/t/personal_tlrwbseyustxaahk/documents 200 b6fdedaee668eb09984eb58ed7345eca\""
     }
    },
    {
@@ -1997,104 +914,21 @@
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 2,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 2,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 3,
-     "index": 45,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_kvzwkumalxrcheta/documents 200 a5d5093d5c715a2d08112078e0928dc5"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_kvzwkumalxrcheta/documents 200 5d34741553d4f1b17b3b71f7e2d5fa60"
-     },
-     "reason": "net",
-     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_kvzwkumalxrcheta/documents 200 a5d5093d5c715a2d08112078e0928dc5\" vs \"3 GET http://localhost:3000/t/personal_kvzwkumalxrcheta/documents 200 5d34741553d4f1b17b3b71f7e2d5fa60\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -2102,25 +936,12 @@
     "replay_errors": [
      "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
      "Error: apiRequestContext.post: read ECONNRESET"
     ],
-    "fingerprints": 8,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -2135,17 +956,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 fc7fdda4ffad33bfb9586dc588390483"
+      "v": "3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 f28ff10c4f612b58e4a795d3705b5a5c"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 5b8443d1a3b89cbc8ec15845fdc8df60"
+      "v": "3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 2b2f35cbab4b7ac36326ae7171584b21"
      },
      "reason": "net",
-     "description": "event #49: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 fc7fdda4ffad33bfb9586dc588390483\" vs \"3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 5b8443d1a3b89cbc8ec15845fdc8df60\""
+     "description": "event #49: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 f28ff10c4f612b58e4a795d3705b5a5c\" vs \"3 GET http://localhost:3000/t/personal_mswfhscfzlifswxn/documents 200 2b2f35cbab4b7ac36326ae7171584b21\""
     }
    },
    {
@@ -2153,512 +974,81 @@
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 4,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 2,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 3,
-     "index": 45,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_snfkhrvaitvacncy/documents 200 910d21e88e557df514b5c85808009ad6"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_snfkhrvaitvacncy/documents 200 ecca27a8364270040246d00a959a04a8"
-     },
-     "reason": "net",
-     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_snfkhrvaitvacncy/documents 200 910d21e88e557df514b5c85808009ad6\" vs \"3 GET http://localhost:3000/t/personal_snfkhrvaitvacncy/documents 200 ecca27a8364270040246d00a959a04a8\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-ids.spec.ts::rejects a content listed twice without changing it [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 3,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-limits.spec.ts::allows an over limit envelope to be trimmed back down [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      2,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      3,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 3,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 3,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 45,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_icihorxduyimikks/documents 200 33a7146c9afcaedcd3eb12d9c9e7c891"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "3 GET http://localhost:3000/t/personal_icihorxduyimikks/documents 200 8b07c0f5b5decab5f2801d53a068b75b"
-     },
-     "reason": "net",
-     "description": "event #45: browser.done @  returned different values: \"3 GET http://localhost:3000/t/personal_icihorxduyimikks/documents 200 33a7146c9afcaedcd3eb12d9c9e7c891\" vs \"3 GET http://localhost:3000/t/personal_icihorxduyimikks/documents 200 8b07c0f5b5decab5f2801d53a068b75b\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "set-envelope-contents-limits.spec.ts::rejects a save which exceeds the image content limit [api]",
     "real": "Error: apiRequestContext.post: read ECONNRESET",
     "step": "POST http://localhost:3000/api/trpc/envelope.content.set",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "failed",
-      "Error: apiRequestContext.post: read ECONNRESET",
-      "POST http://localhost:3000/api/trpc/envelope.content.set"
-     ]
-    ],
-    "seed": 7,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET",
-     "Error: apiRequestContext.post: read ECONNRESET"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template with prefilled fields [api]",
     "real": "Error: expect(locator).toBeVisible() failed",
     "step": null,
     "mechanism": "latency",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: expect(locator).toBeVisible() failed",
-      null
-     ]
-    ],
-    "seed": 1,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed",
-     "Error: expect(locator).toBeVisible() failed"
-    ],
-    "fingerprints": 1,
-    "reproduced": true,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": null
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a recipient of an organisation document on every procedure [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      5,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview"
-     ]
-    ],
-    "seed": 5,
-    "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed"
-    ],
-    "replay_errors": [
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET"
-    ],
-    "fingerprints": 2,
-    "reproduced": false,
-    "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true
-    ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 44,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 ab9f3cf605974532872a0103fffadb1e"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "net",
-      "o": "browser.done",
-      "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 60dbc78ab1861224b4598c6df7a9b3d7"
-     },
-     "reason": "net",
-     "description": "event #44: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 ab9f3cf605974532872a0103fffadb1e\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 60dbc78ab1861224b4598c6df7a9b3d7\""
-    }
+    "tried": [],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
    },
    {
     "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a team manager who is an organisation member on every procedure [api]",
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -2666,25 +1056,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 8,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -2699,17 +1076,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 e72363bfbbfd65feff0f7a27efb71cf6"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 0bab123c411fcc93d6394df59fad5aeb"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 f40a3c9384e17147cf8d070aa7bd08d8"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 5280cffe4d5e0267bc6f6d01095185c9"
      },
      "reason": "net",
-     "description": "event #32: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 e72363bfbbfd65feff0f7a27efb71cf6\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 f40a3c9384e17147cf8d070aa7bd08d8\""
+     "description": "event #32: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 0bab123c411fcc93d6394df59fad5aeb\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 5280cffe4d5e0267bc6f6d01095185c9\""
     }
    },
    {
@@ -2717,56 +1094,7 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -2778,23 +1106,9 @@
     "real": "Error: apiRequestContext.get: read ECONNRESET",
     "step": "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
     "mechanism": "reset",
-    "tried": [
-     [
-      1,
-      "failed",
-      "Error: apiRequestContext.get: read ECONNRESET",
-      "GET http://localhost:3000/api/trpc/team.analytics.getOverview"
-     ]
-    ],
+    "tried": [],
     "seed": 1,
     "replays": [
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
-     "failed",
      "failed",
      "failed",
      "failed"
@@ -2802,25 +1116,12 @@
     "replay_errors": [
      "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
-     "Error: apiRequestContext.get: read ECONNRESET",
      "Error: apiRequestContext.get: read ECONNRESET"
     ],
-    "fingerprints": 7,
+    "fingerprints": 2,
     "reproduced": false,
+    "seed_given": true,
     "replay_match": [
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
-     true,
      true,
      true,
      true
@@ -2835,17 +1136,17 @@
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 90f3792cab003a30b1801b1fe13ba03f"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 a60515a643fb053851f0fa8a36168c1d"
      },
      "event_b": {
       "t": 0,
       "s": "net",
       "o": "browser.done",
       "at": "",
-      "v": "5 GET http://localhost:3000/api/auth/session-json 200 558764ad1ad81b516a326efe68f10326"
+      "v": "5 GET http://localhost:3000/api/auth/session-json 200 b64828cee3e836160545cafc1f642469"
      },
      "reason": "net",
-     "description": "event #48: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 90f3792cab003a30b1801b1fe13ba03f\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 558764ad1ad81b516a326efe68f10326\""
+     "description": "event #48: browser.done @  returned different values: \"5 GET http://localhost:3000/api/auth/session-json 200 a60515a643fb053851f0fa8a36168c1d\" vs \"5 GET http://localhost:3000/api/auth/session-json 200 b64828cee3e836160545cafc1f642469\""
     }
    },
    {
@@ -2853,56 +1154,7 @@
     "real": "Error: expect(received).toBeFalsy()",
     "step": null,
     "mechanism": "latency",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -2914,56 +1166,7 @@
     "real": "Error: expect(received).toBeFalsy()",
     "step": null,
     "mechanism": "latency",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -2971,9 +1174,9 @@
     "reproduced": false
    }
   ],
-  "reproduced": 17,
-  "found_seed": 36,
+  "reproduced": 1,
+  "found_seed": 18,
   "n": 41
  },
- "elapsed_min": 301.8
+ "elapsed_min": 16.9
 }
