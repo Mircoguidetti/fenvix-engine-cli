@@ -29,6 +29,54 @@ LOCALE_FALLBACKS = ("C.UTF-8", "C.utf8", "en_US.UTF-8", "C")
 LOCALE_VARS = ("LC_ALL", "LANG")
 # engine-internal variables: not inputs of the code under test (their effects are recorded as their own inputs)
 ENGINE_ENV_PREFIXES = ("DETPY_", "PYTEST_XDIST_")
+
+# CI-volatile environment (design A, 2026-11-20): variables whose values change from run to run of the same job by
+# construction, never because the project changed.
+# * pinned: under --det (env control) they are set to these values before the tests run, in this process and in the
+#   re-executed one (their children inherit them): run and attempt ids, job and runner names, the host name.
+VOLATILE_PINNED = {
+    "GITHUB_RUN_ID": "0", "GITHUB_RUN_NUMBER": "0", "GITHUB_RUN_ATTEMPT": "1", "GITHUB_JOB": "fenvix",
+    "RUNNER_NAME": "fenvix-runner", "RUNNER_TRACKING_ID": "fenvix", "HOSTNAME": "localhost",
+}
+# * volatile: their values stay (they name paths that must exist, or tokens a tool needs), but they are never run
+#   inputs and reads of them record no value: temp and workspace paths, per-step files, CI tokens and endpoints,
+#   session plumbing. FENVIX_VOLATILE_ENV=NAME,PREFIX*,... adds a project's own (a per-run output path).
+VOLATILE_KEPT = (
+    "RUNNER_TEMP", "RUNNER_WORKSPACE", "RUNNER_TOOL_CACHE", "GITHUB_WORKSPACE", "GITHUB_ENV", "GITHUB_PATH",
+    "GITHUB_OUTPUT", "GITHUB_STATE", "GITHUB_STEP_SUMMARY", "GITHUB_EVENT_PATH", "GITHUB_ACTION",
+    "GITHUB_ACTION_PATH", "GITHUB_ACTIONS_STEP_DEBUG", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_RUNTIME_URL",
+    "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_URL", "ACTIONS_RESULTS_URL", "ACTIONS_CACHE_URL",
+    "ACTIONS_ORCHESTRATION_ID", "TMPDIR", "TEMP", "TMP", "PWD", "OLDPWD", "_", "SHLVL", "INVOCATION_ID",
+    "JOURNAL_STREAM", "SSH_AUTH_SOCK", "SSH_CLIENT", "SSH_CONNECTION", "SSH_TTY", "TERM_SESSION_ID",
+    "WINDOWID", "XDG_SESSION_ID", "XDG_RUNTIME_DIR", "SYSTEMD_EXEC_PID", "FENVIX_VOLATILE_ENV",
+)
+PINNED_HOSTNAME = "localhost"  # socket.gethostname / platform.node / os.uname().nodename under --det (resolvable)
+
+
+def volatile_env_patterns() -> tuple:
+    """The volatile variables: the built-in ones and FENVIX_VOLATILE_ENV's (NAME or PREFIX*), as (exact, prefixes)."""
+    extra = [x.strip() for x in os.environ.get("FENVIX_VOLATILE_ENV", "").split(",") if x.strip()]
+    exact = set(VOLATILE_PINNED) | set(VOLATILE_KEPT) | {x for x in extra if not x.endswith("*")}
+    prefixes = tuple(x[:-1] for x in extra if x.endswith("*"))
+    return frozenset(exact), prefixes
+
+
+def is_volatile_env(name: str, patterns=None) -> bool:
+    exact, prefixes = patterns or volatile_env_patterns()
+    return name in exact or (bool(prefixes) and name.startswith(prefixes)) or name.startswith(ENGINE_ENV_PREFIXES)
+
+
+def pin_volatile_env(controls) -> list:
+    """Design A: set the pinned CI-volatile variables that are present (``VOLATILE_PINNED``) to their fixed values,
+    before the hash-seed re-exec (the new process starts with them) and in this process. Returns their names."""
+    if "env" not in controls:
+        return []
+    done = []
+    for k, v in VOLATILE_PINNED.items():
+        if k in os.environ and os.environ.get(k) != v:
+            os.environ[k] = v
+            done.append(k)
+    return done
 PATCHER = Patcher()
 INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
 # top-level packages of the running shell's plugins (pytest plugins): test infrastructure, never rebound to the
@@ -358,10 +406,12 @@ def _digest_text(t: str) -> str:
 
 def env_inputs() -> dict:
     """One run input per environment variable (``env:NAME``: a digest of NAME=value, so secrets never reach the
-    trace), engine-internal variables excepted."""
+    trace), engine-internal and CI-volatile variables excepted (``VOLATILE_PINNED``, ``VOLATILE_KEPT``,
+    ``FENVIX_VOLATILE_ENV``). The verifier reports a test that read one whose value differs as ``input-differs``."""
     out = {}
+    patterns = volatile_env_patterns()
     for k, v in os.environ.items():
-        if k.startswith(ENGINE_ENV_PREFIXES):
+        if is_volatile_env(k, patterns):  # CI-volatile (design A): never a run input
             continue
         # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
         # is JSON, and its digest still covers the exact bytes
@@ -424,6 +474,7 @@ def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -
     deterministic bytecode) when needed and possible; does not return then. Returns the status line otherwise.
     ``before_exec`` runs just before the exec (pytest restores its captured file descriptors)."""
     pin_tz_locale(ns, controls)
+    pin_volatile_env(controls)
     if "hashseed" not in controls:
         return "not-needed"
     want_bytecode = "bytecode" in controls
@@ -477,9 +528,34 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
     if "fs" in controls:
         fsorder.install(PATCHER)
     if "env" in controls:
+        pin_volatile_env(controls)  # no re-exec (or a shell that installs here): pin in this process
         envobs.install()
+        pin_hostname(PATCHER)
     uncontrolled.install(PATCHER)
     return rebound
+
+
+def pin_hostname(patcher) -> None:
+    """Design A: the host name is CI-volatile (each runner has its own): socket.gethostname, platform.node and
+    os.uname().nodename answer ``PINNED_HOSTNAME`` under --det (``localhost``: it still resolves, to loopback)."""
+    import platform
+    import socket
+
+    patcher.set(socket, "gethostname", lambda: PINNED_HOSTNAME)
+    patcher.set(platform, "node", lambda: PINNED_HOSTNAME)
+    real_uname = getattr(os, "uname", None)
+    if real_uname is not None:
+        def uname():
+            r = real_uname()
+            return os.uname_result((r.sysname, PINNED_HOSTNAME, r.release, r.version, r.machine))
+
+        patcher.set(os, "uname", uname)
+    try:  # platform.uname() caches the node it saw first
+        cached = getattr(platform, "_uname_cache", None)
+        if cached is not None:
+            patcher.set(platform, "_uname_cache", cached._replace(node=PINNED_HOSTNAME))
+    except Exception:
+        pass
 
 
 def hash_checked_imports(root: str) -> bool:
@@ -644,6 +720,9 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     meta["runtime"] = platform.python_implementation()
     meta["runtime_version"] = platform.python_version()
     meta["inputs"] = run_inputs(net_mode, runner, runner_version)
+    # every os.environ read by a test is an event (envobs): the verifier then reports a differing variable only for
+    # the tests that read it (design A)
+    meta["env_reads_recorded"] = "env" in cfg.controls
     return meta
 
 

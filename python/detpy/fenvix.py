@@ -545,7 +545,9 @@ def cmd_verify(argv: list) -> int:
         "IDENTICAL only when every run had the same inputs (time zone, locale, environment, seed, hash seed, clock, "
         "network, ...), ran it after the same tests, it used no source this release does not control (threads, "
         "child processes, I/O readiness) and it observed the same events with the same outcome. Otherwise the "
-        "first divergent event is named. Exit 0 when every test is identical.")
+        "first divergent event is named. A test that read an environment variable whose value differs between the "
+        "runs, and is otherwise identical, is reported INPUT DIFFERS, naming the variable. Exit 0 when every test "
+        "is identical, 3 when the only differences are such inputs, 1 otherwise, 2 on unreadable traces.")
     p.add_argument("traces", nargs="+", help="trace files (.detpy/trace.jsonl, --det-trace=PATH)")
     p.add_argument("--json", action="store_true", help="print the full report as JSON")
     p.add_argument("--show-stable", action="store_true", help="also list the identical tests")
@@ -566,8 +568,15 @@ def cmd_verify(argv: list) -> int:
         return 2
     report = json.loads(report_json)
     print(report_json if ns.json else text.replace("detpy verify", f"{PROG} verify", 1), end="" if not ns.json else "\n")
-    s = report["summary"]
-    return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
+    return verify_exit_code(report["summary"])
+
+
+def verify_exit_code(s: dict) -> int:
+    """0: every test identical. 1: a test diverged or is missing, or no test ran. 3: the only differences are
+    environment variables tests read (input differs, design A). 2: unreadable or incompatible traces."""
+    if s["tests"] == 0 or s["diverged"] or s["missing"]:
+        return 1
+    return 3 if s.get("input_differs") else 0
 
 
 def doctor_checks() -> list:

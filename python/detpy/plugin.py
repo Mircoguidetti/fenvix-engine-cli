@@ -480,6 +480,21 @@ def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
         patterns = ["test_*.py", "*_test.py"]
     root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
     out: list[str] = []
+    # the modules of installed pytest plugins (distributions with a pytest11 entry point): pytest rewrites all of
+    # them on import, in the main process and in each -n worker (which imports more of them, xdist's own included)
+    try:
+        from importlib.metadata import distributions
+
+        for dist in distributions():
+            if not any(ep.group == "pytest11" for ep in dist.entry_points):
+                continue
+            for f in dist.files or ():
+                if str(f).endswith(".py"):
+                    path = str(dist.locate_file(f))
+                    if os.path.isfile(path):
+                        out.append(path)
+    except Exception:
+        pass
     for d, dirs, files in os.walk(root):
         dirs[:] = sorted(x for x in dirs if not x.startswith(".") and x not in _SKIP_DIRS
                          and not os.path.exists(os.path.join(d, x, "pyvenv.cfg")))
@@ -1024,6 +1039,7 @@ class _DetSession(_Outcomes):
             # the run inputs the verifier compares (the workers inherit the controller's environment; their own
             # PYTEST_XDIST_* variables are engine-internal)
             "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
+            "env_reads_recorded": "env" in cfg.controls,
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):

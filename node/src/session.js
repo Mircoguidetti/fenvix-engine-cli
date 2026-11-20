@@ -1,4 +1,5 @@
 'use strict';
+const volatile = require('./volatile');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.
@@ -175,8 +176,12 @@ function runInputs(run, meta) {
     network: has('net') ? String(run.netMode) : 'open (net control off)',
     urandom: cfg.urandom ? 'controlled' : 'observed',
   };
+  // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; the
+  // Node shell does not record which variables a test read, so the verifier reports a differing one as
+  // `input-differs` for every test of the run
+  const vp = volatile.patterns();
   for (const [k, v] of Object.entries(process.env)) {
-    if (k.startsWith('DETJS_') || k.startsWith('DETPY_') || k.startsWith('VITEST_') || k.startsWith('JEST_WORKER')) continue;
+    if (volatile.isVolatile(k, vp)) continue;
     inputs[`env:${k}`] = dig(`${k}=${v}`);
   }
   return inputs;

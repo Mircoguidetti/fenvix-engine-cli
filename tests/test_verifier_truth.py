@@ -131,8 +131,6 @@ FAMILY = [
      (["--det-disable=hashseed"], {"PYTHONHASHSEED": "2"}), "hashseed"),
     ("network", ([], {}), (["--det-allow-host=example.invalid"], {}), "net"),
     ("fs", ([], {}), (["--det-disable=fs"], {}), "fs"),
-    ("env", ([], {"TRUTH_FLAG": "a"}), ([], {"TRUTH_FLAG": "b"}), "env"),
-    ("env-unread", ([], {"TRUTH_OTHER": "1"}), ([], {"TRUTH_OTHER": "2"}), "env"),
     ("tz-pinned", (["--det-tz=UTC"], {}), (["--det-tz=Asia/Tokyo"], {}), "tz"),
     ("tz-kept", (["--det-tz=keep"], {"TZ": "UTC"}), (["--det-tz=keep"], {"TZ": "Asia/Tokyo"}), "tz"),
     ("locale-pinned", (["--det-locale=C.UTF-8"], {}), (["--det-locale=C"], {}), "locale"),
@@ -173,17 +171,58 @@ def test_order_differing_only_in_order_is_divergent(project):
     assert "it ran after different tests" in text
 
 
-def test_env_read_names_the_variable_and_the_site(project):
+def test_env_read_is_input_differs_naming_the_variable_and_the_site(project):
+    """Design A (2026-11-20): two runs that differ only in a variable a test reads: that test is INPUT DIFFERS (exit 3),
+    naming the variable and the read's site; the tests that did not read it are identical; nothing diverged."""
     ta = run_det(project, "a", env=_env(TRUTH_FLAG="a"))
     tb = run_det(project, "b", env=_env(TRUTH_FLAG="b"))
-    _, rep, text = verify(ta, tb)
-    t = next(t for t in rep["tests"] if t["nodeid"].endswith("test_reads_flag"))
-    d = t["divergence"]
-    assert d["reason"] == "env" and d["index"] == 0, d
-    ev = d["event_a"]  # trace encoding: o = op, at = site, v = value
-    assert ev["o"] == "env.get" and ev["at"].startswith("tests/test_t.py:"), d
-    assert ev["v"].startswith("TRUTH_FLAG=") and ev["v"] != "TRUTH_FLAG=a", d  # a digest, never the value
-    assert "TRUTH_FLAG" in d["description"]
+    rc, rep, text = verify(ta, tb)
+    assert rc == 3, text
+    by = {t["nodeid"].split("::")[1]: t for t in rep["tests"]}
+    t = by["test_reads_flag"]
+    assert t["status"] == "input-differs", t
+    assert t["divergence"]["description"].startswith("input differs: TRUTH_FLAG (read at tests/test_t.py:"), t
+    assert by["test_plain"]["status"] == "stable"
+    s = rep["summary"]
+    assert (s["diverged"], s["input_differs"], s["missing"]) == (0, 1, 0), s
+    assert "verdict: INPUT DIFFERS: TRUTH_FLAG: 1 of 4 tests" in text, text
+    # the read event says which variable, never its value
+    events = [json.loads(line) for line in ta.read_text().splitlines()[1:]]
+    reads = [e for rec in events for e in rec.get("events", []) if e.get("o") == "env.get"]
+    assert reads and all(e["v"] in ("TRUTH_FLAG=set", "TRUTH_FLAG=<unset>") for e in reads), reads
+
+
+def test_env_difference_no_test_read_is_identical_and_listed(project):
+    ta = run_det(project, "a", env=_env(TRUTH_OTHER="1"))
+    tb = run_det(project, "b", env=_env(TRUTH_OTHER="2"))
+    rc, rep, text = verify(ta, tb)
+    assert rc == 0, text
+    assert rep["env_not_read"] == ["env:TRUTH_OTHER"]
+    assert "not compared: environment variables that differ but no test read: TRUTH_OTHER" in text
+
+
+@pytest.mark.parametrize("var", ["GITHUB_RUN_ID", "RUNNER_TEMP", "EXAM_OUT"])
+def test_ci_volatile_variables_are_pinned_or_never_inputs(project, var):
+    """Design A: run and attempt ids, runner and host names are pinned under --det; temp and workspace paths keep
+    their values but are never inputs; FENVIX_VOLATILE_ENV adds a project's own (here a per-run output path)."""
+    extra = {"FENVIX_VOLATILE_ENV": "EXAM_*"} if var == "EXAM_OUT" else {}
+    ta = run_det(project, "a", env=_env(**{var: "/run/1", **extra}))
+    tb = run_det(project, "b", env=_env(**{var: "/run/2", **extra}))
+    rc, rep, text = verify(ta, tb)
+    assert rc == 0, text
+    hdr = json.loads(ta.read_text().splitlines()[0])["meta"]["inputs"]
+    assert f"env:{var}" not in hdr, hdr
+
+
+def test_host_name_is_pinned(tmp_path):
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_h.py").write_text(
+        "import os, platform, socket\n"
+        "def test_h():\n"
+        "    print('HOST', socket.gethostname(), platform.node(), os.uname().nodename)\n")
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", "tests"],
+                       cwd=tmp_path, env=_env(GITHUB_RUN_ID="12345"), capture_output=True, text=True, timeout=300)
+    assert "HOST localhost localhost localhost" in p.stdout, p.stdout + p.stderr
 
 
 def test_declared_irrelevant_env_is_listed_and_ignored(project):
@@ -216,7 +255,7 @@ def test_detpy_verify_agrees_and_empty_runs_verify_nothing(tmp_path, project):
     a = run_det(project, "a")
     b = run_det(project, "b", env=_env(TRUTH_FLAG="b"))
     p = subprocess.run([sys.executable, "-m", "detpy", "verify", str(a), str(b)], capture_output=True, text=True)
-    assert p.returncode == 1 and "[env]" in p.stdout, p.stdout
+    assert p.returncode == 3 and "[env]" in p.stdout and "INPUT DIFFERS" in p.stdout, p.stdout  # design A
     # G-1538: two runs where nothing was collected
     (tmp_path / "empty").mkdir()
     e1 = run_det(tmp_path / "empty", "e1")

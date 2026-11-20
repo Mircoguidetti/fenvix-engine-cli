@@ -1,4 +1,5 @@
 'use strict';
+const volatile = require('./volatile');
 // Installation of the Level 0 controls and per-file / per-test lifecycle,
 // shared by the Vitest and Jest shells.
 const fs = require('node:fs');
@@ -34,6 +35,9 @@ function installProcess() {
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
+  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
+  volatile.pinEnv();
+  PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
   // are separate bindings: bring them in line with the patched objects.
   require('node:module').syncBuiltinESMExports();

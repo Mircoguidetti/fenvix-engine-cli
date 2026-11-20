@@ -199,6 +199,9 @@ pub enum Status {
     Diverged,
     /// Not executed in every run.
     Missing,
+    /// The runs differed only in an environment variable the test read (design A, 2026-11-20): the test is not
+    /// identical, and not unstable either; the variable is named.
+    InputDiffers,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -238,6 +241,9 @@ pub struct Summary {
     /// reported identical). Equal to `stable`.
     #[serde(default)]
     pub identical: usize,
+    /// Tests that read an environment variable whose value differs between the runs, and are otherwise identical.
+    #[serde(default)]
+    pub input_differs: usize,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -251,6 +257,10 @@ pub struct Report {
     /// the verifier names them (the first one is the first divergent event of every test).
     #[serde(default)]
     pub input_differences: Vec<InputDifference>,
+    /// Environment variables whose values differ between the runs but that no test read: not compared (a test that
+    /// reads one of them is reported `input-differs`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub env_not_read: Vec<String>,
     /// Run inputs left out of the comparison at the user's request (`--ignore-env`).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub ignored_inputs: Vec<String>,
@@ -665,6 +675,14 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         }
     }
 
+    // Design A (2026-11-20): environment variables are inputs only for the tests that read them; any other run
+    // input that differs makes every test diverge.
+    let (env_diffs, other_diffs): (Vec<InputDifference>, Vec<InputDifference>) =
+        input_differences.iter().cloned().partition(|d| d.name.starts_with("env:"));
+    let mut env_read_anywhere: BTreeSet<String> = BTreeSet::new();
+    // a shell that does not record environment reads (meta.env_reads_recorded is not true: the Node shell, a
+    // Python run without the env control) cannot say which test read a variable: every test counts as reading it
+    let reads_recorded = traces.iter().all(|t| t.header.meta.get("env_reads_recorded").and_then(|v| v.as_bool()) == Some(true));
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
@@ -693,23 +711,11 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                     lost_predecessors: Vec::new(),
                 }),
             )
-        } else if !input_differences.is_empty() {
-            // the runs did not have the same inputs: no test is identical, whatever its fingerprint. When the test
-            // itself read a differing environment variable, that read (an event with its site) is named instead.
-            let j = input_differences[0].run_b;
-            let read = match (recs[0], recs[j]) {
-                (Some(a), Some(b)) if a.fingerprint != b.fingerprint => diff_records(a, b, 0, j)
-                    .filter(|d| d.reason == Reason::Env && input_differences.iter().all(|x| x.reason == Reason::Env)),
-                _ => None,
-            };
-            match read {
-                Some(mut d) => {
-                    let names: Vec<&str> = input_differences.iter().map(|x| x.name.as_str()).collect();
-                    d.description = format!("{} (run inputs that differ: {})", d.description, names.join(", "));
-                    (Status::Diverged, Some(d))
-                }
-                None => (Status::Diverged, Some(input_divergence(&input_differences))),
-            }
+        } else if !other_diffs.is_empty() {
+            // the runs did not have the same inputs: no test is identical, whatever its fingerprint
+            let mut all = other_diffs.clone();
+            all.extend(env_diffs.iter().cloned());
+            (Status::Diverged, Some(input_divergence(&all)))
         } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
@@ -735,15 +741,39 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
             (Status::Diverged, d)
         };
 
+        // an environment variable the test read differs between the runs: `input-differs`, unless the test also
+        // diverged for another reason (order, uncontrolled source, an event other than an environment read)
+        let (status, divergence) = match status {
+            Status::Stable | Status::Diverged if !env_diffs.is_empty() => {
+                let mut read = env_reads(&recs);
+                read.all |= !reads_recorded;
+                let hit: Vec<&InputDifference> = env_diffs
+                    .iter()
+                    .filter(|d| read.all || read.names.contains(d.name.trim_start_matches("env:")))
+                    .collect();
+                let env_only = status == Status::Stable
+                    || divergence.as_ref().is_some_and(|d| d.reason == Reason::Env);
+                if !hit.is_empty() && env_only {
+                    for h in &hit {
+                        env_read_anywhere.insert(h.name.clone());
+                    }
+                    (Status::InputDiffers, Some(input_differs(&hit, &read)))
+                } else {
+                    (status, divergence)
+                }
+            }
+            _ => (status, divergence),
+        };
         match status {
             Status::Stable => summary.stable += 1,
             Status::Diverged => summary.diverged += 1,
             Status::Missing => summary.missing += 1,
+            Status::InputDiffers => summary.input_differs += 1,
         }
         if !outcome_stable {
             summary.outcome_unstable += 1;
         }
-        if let Some(d) = &divergence {
+        if let (Some(d), true) = (&divergence, status != Status::InputDiffers) {
             *summary.reasons.entry(d.reason.as_str().to_string()).or_insert(0) += 1;
         }
         tests.push(TestVerdict {
@@ -766,8 +796,58 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         complete: traces.iter().map(|t| t.is_complete()).collect(),
         summary,
         tests,
+        env_not_read: env_diffs.iter().filter(|d| !env_read_anywhere.contains(&d.name)).map(|d| d.name.clone()).collect(),
         input_differences,
         ignored_inputs: Vec::new(),
+    }
+}
+
+/// The environment variables a test read in any run (`env.get` / `env.has` events: `NAME=...`), or all of them
+/// (`env.list`: it enumerated the environment).
+struct EnvReads {
+    names: BTreeSet<String>,
+    all: bool,
+    site: Option<String>,
+}
+
+fn env_reads(recs: &[Option<&TestRecord>]) -> EnvReads {
+    let mut r = EnvReads { names: BTreeSet::new(), all: false, site: None };
+    for rec in recs.iter().flatten() {
+        for e in &rec.events {
+            match e.op.as_str() {
+                "env.get" | "env.has" => {
+                    let name = e.value.split_once('=').map(|(n, _)| n).unwrap_or(e.value.as_str());
+                    r.names.insert(name.to_string());
+                    r.site.get_or_insert_with(|| e.site.clone());
+                }
+                "env.list" => {
+                    r.all = true;
+                    r.site.get_or_insert_with(|| e.site.clone());
+                }
+                _ => {}
+            }
+        }
+    }
+    r
+}
+
+/// `input-differs`: the variables the test read whose values differ between the runs.
+fn input_differs(hit: &[&InputDifference], read: &EnvReads) -> Divergence {
+    let names: Vec<&str> = hit.iter().map(|d| d.name.trim_start_matches("env:")).collect();
+    let d = hit[0];
+    let at = read.site.as_deref().map(|s| format!(" (read at {s})")).unwrap_or_default();
+    let ev = |v: &Option<String>| v.as_ref().map(|v| Event::new(Source::Other, format!("input.{}", d.name), "<run>", v.clone()));
+    Divergence {
+        run_a: d.run_a,
+        run_b: d.run_b,
+        index: None,
+        window: None,
+        event_a: ev(&d.value_a),
+        event_b: ev(&d.value_b),
+        reason: Reason::Env,
+        description: format!("input differs: {}{at}: the test read an environment variable whose value differs \
+                              between the runs; otherwise identical", names.join(", ")),
+        lost_predecessors: Vec::new(),
     }
 }
 
@@ -861,8 +941,21 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     }
     let verdict = if s.tests == 0 {
         "NOTHING VERIFIED: no test ran in these runs".to_string()
-    } else if s.diverged == 0 && s.missing == 0 {
+    } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 {
         format!("IDENTICAL: all {} tests ran with the same inputs and observed the same events", s.tests)
+    } else if s.diverged == 0 && s.missing == 0 {
+        let names: Vec<&str> = report
+            .input_differences
+            .iter()
+            .filter(|d| d.name.starts_with("env:") && !report.env_not_read.contains(&d.name))
+            .map(|d| d.name.trim_start_matches("env:"))
+            .collect();
+        format!(
+            "INPUT DIFFERS: {}: {} of {} tests read it with a different value and are otherwise identical",
+            names.join(", "),
+            s.input_differs,
+            s.tests
+        )
     } else {
         format!(
             "DIVERGENT: {} of {} tests are not identical (the first divergent event of each is named below)",
@@ -889,6 +982,13 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
             let _ = writeln!(out, "    ... and {} more", d.len() - 20);
         }
     }
+    if !report.env_not_read.is_empty() {
+        let _ = writeln!(
+            out,
+            "not compared: environment variables that differ but no test read: {}",
+            report.env_not_read.iter().map(|n| n.trim_start_matches("env:")).collect::<Vec<_>>().join(", ")
+        );
+    }
     if !report.ignored_inputs.is_empty() {
         let _ = writeln!(out, "ignored at your request (--ignore-env): {}", report.ignored_inputs.join(", "));
     }
@@ -899,8 +999,8 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     );
     let _ = writeln!(
         out,
-        "covered by Level 0: {}  not covered: {}  missing: {}  outcome-unstable: {}",
-        s.stable, s.diverged, s.missing, s.outcome_unstable
+        "covered by Level 0: {}  not covered: {}  missing: {}  input differs: {}  outcome-unstable: {}",
+        s.stable, s.diverged, s.missing, s.input_differs, s.outcome_unstable
     );
     if !s.reasons.is_empty() {
         let rs: Vec<String> = s.reasons.iter().map(|(k, v)| format!("{k}={v}")).collect();
@@ -918,7 +1018,11 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
             }
             None => {}
             Some(d) => {
-                let tag = if t.status == Status::Missing { "MISSING " } else { "NOT-COVERED" };
+                let tag = match t.status {
+                    Status::Missing => "MISSING ",
+                    Status::InputDiffers => "INPUT-DIFFERS",
+                    _ => "NOT-COVERED",
+                };
                 let outcomes: Vec<&str> = t.outcomes.iter().map(|o| o.as_deref().unwrap_or("-")).collect();
                 let _ = writeln!(out, "{tag} {}  [{}] outcomes={}", t.nodeid, d.reason.as_str(), outcomes.join(","));
                 if d.run_a == d.run_b && t.status != Status::Missing {
@@ -1080,7 +1184,7 @@ mod tests {
     fn with_inputs(mut t: Trace, inputs: &[(&str, &str)]) -> Trace {
         let m: serde_json::Map<String, serde_json::Value> =
             inputs.iter().map(|(k, v)| (k.to_string(), serde_json::Value::String(v.to_string()))).collect();
-        t.header.meta = serde_json::json!({ "inputs": m });
+        t.header.meta = serde_json::json!({ "inputs": m, "env_reads_recorded": true });
         t
     }
 
@@ -1101,15 +1205,14 @@ mod tests {
     /// divergent, with that input named as the first divergent event, whatever the fingerprints say.
     #[test]
     fn every_recorded_input_is_compared_and_named() {
-        let cases: [(&str, &str, Reason); 11] = [
+        // environment variables: design A (input-differs for the tests that read them), see env_* tests below
+        let cases: [(&str, &str, Reason); 9] = [
             ("runtime", "CPython 3.12.0 linux x86_64", Reason::Runtime),
             ("hashseed", "7", Reason::Hashseed),
             ("seed", "3", Reason::Seed),
             ("clock", "virtual epoch=2 tick=1000", Reason::Time),
             ("tz", "Asia/Tokyo (not pinned)", Reason::Tz),
             ("locale", "de_DE.UTF-8 (pinned)", Reason::Locale),
-            ("env:HOME", "bbbb", Reason::Env),
-            ("env:MY_FLAG", "cccc", Reason::Env),
             ("network", "record", Reason::Net),
             ("fs", "real", Reason::Fs),
             ("urandom", "controlled", Reason::Entropy),
@@ -1138,6 +1241,65 @@ mod tests {
         assert_eq!((r.summary.stable, r.summary.identical), (1, 1));
         assert!(r.summary.inputs_recorded);
         assert!(render_text(&r, false).contains("verdict: IDENTICAL"));
+    }
+
+    fn env_ev(op: &str, v: &str) -> Event {
+        Event::new(Source::Other, op, "t.py:3", v)
+    }
+
+    /// Design A (2026-11-20): a differing environment variable that no test read is not compared (listed); a test
+    /// that read it is `input-differs` (named, not unstable, not identical); with another difference it diverges.
+    #[test]
+    fn env_differences_are_input_differs_for_the_tests_that_read_them() {
+        let base: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "aaaa"), ("env:OTHER", "1111")];
+        let changed: Vec<(&str, &str)> = vec![("tz", "UTC"), ("env:MY_FLAG", "bbbb"), ("env:OTHER", "1111")];
+        let reads = [env_ev("env.get", "MY_FLAG=set"), t("1")];
+        let a = with_inputs(trace(vec![rec("reads", &reads, "passed", 10), rec("plain", &[t("1")], "passed", 10)]), &base);
+        let b = with_inputs(trace(vec![rec("reads", &reads, "passed", 10), rec("plain", &[t("1")], "passed", 10)]), &changed);
+        let r = verify(&[a, b], &[]);
+        let by: BTreeMap<&str, &TestVerdict> = r.tests.iter().map(|t| (t.nodeid.as_str(), t)).collect();
+        assert_eq!(by["reads"].status, Status::InputDiffers);
+        assert_eq!(by["plain"].status, Status::Stable);
+        assert_eq!((r.summary.input_differs, r.summary.stable, r.summary.diverged), (1, 1, 0));
+        assert!(r.summary.reasons.is_empty(), "{:?}", r.summary.reasons);
+        let d = by["reads"].divergence.as_ref().unwrap();
+        assert!(d.description.starts_with("input differs: MY_FLAG (read at t.py:3)"), "{}", d.description);
+        let text = render_text(&r, false);
+        assert!(text.contains("verdict: INPUT DIFFERS: MY_FLAG: 1 of 2 tests"), "{text}");
+        assert!(text.contains("INPUT-DIFFERS reads"), "{text}");
+        // nobody read it: identical, and listed as not compared
+        let a = with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base);
+        let b = with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &changed);
+        let r = verify(&[a, b], &[]);
+        assert_eq!((r.summary.stable, r.summary.input_differs), (1, 0));
+        assert_eq!(r.env_not_read, vec!["env:MY_FLAG".to_string()]);
+        assert!(render_text(&r, false).contains("not compared: environment variables that differ but no test read: MY_FLAG"));
+        // a trace that does not record environment reads (Node): every test counts as reading it
+        let unrec = |t: Trace| {
+            let mut t = t;
+            t.header.meta.as_object_mut().unwrap().remove("env_reads_recorded");
+            t
+        };
+        let a = unrec(with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base));
+        let b = unrec(with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &changed));
+        assert_eq!(verify(&[a, b], &[]).tests[0].status, Status::InputDiffers);
+        // an enumeration of the environment reads every variable
+        let a = with_inputs(trace(vec![rec("lists", &[env_ev("env.list", "3:abc")], "passed", 10)]), &base);
+        let b = with_inputs(trace(vec![rec("lists", &[env_ev("env.list", "3:abc")], "passed", 10)]), &changed);
+        assert_eq!(verify(&[a, b], &[]).tests[0].status, Status::InputDiffers);
+        // read, and another event differs too: diverged
+        let a = with_inputs(trace(vec![rec("x", &[env_ev("env.get", "MY_FLAG=set"), t("1")], "passed", 10)]), &base);
+        let b = with_inputs(trace(vec![rec("x", &[env_ev("env.get", "MY_FLAG=set"), t("2")], "passed", 10)]), &changed);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.tests[0].status, Status::Diverged);
+        assert_eq!(r.summary.diverged, 1);
+        // another input differs too: every test diverges, the other input named first
+        let other: Vec<(&str, &str)> = vec![("tz", "Asia/Tokyo"), ("env:MY_FLAG", "bbbb"), ("env:OTHER", "1111")];
+        let a = with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &base);
+        let b = with_inputs(trace(vec![rec("plain", &[t("1")], "passed", 10)]), &other);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.tests[0].status, Status::Diverged);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Tz);
     }
 
     #[test]

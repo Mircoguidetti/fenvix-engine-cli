@@ -51,8 +51,8 @@ A failing test under `--det` ends the run with the command that turns it into a 
 
 Compares two or more traces of the same suite. A test is **identical** only when:
 
-1. every run had the same inputs (header `inputs`: runtime, runner, seed, hash seed, clock, time zone, locale, every
-   environment variable, network, file-system order, entropy control, bytecode, ASLR);
+1. every run had the same inputs (header `inputs`: runtime, runner, seed, hash seed, clock, time zone, locale,
+   network, file-system order, entropy control, bytecode, ASLR, and the environment variables it read);
 2. it ran after the same tests (serial runs; a parallel run is compared by placement);
 3. it used no source this release does not control (threads, child processes, I/O readiness);
 4. it observed the same events with the same outcome (same fingerprint).
@@ -60,8 +60,22 @@ Compares two or more traces of the same suite. A test is **identical** only when
 Otherwise it is **divergent** and the first divergent event is named: the first differing input (`[tz]`, `[locale]`,
 `[env]`, `[seed]`, `[hashseed]`, `[time]`, `[net]`, `[fs]`, `[entropy]`, `[runtime]`, `[config]`), the order
 (`[order]`), the uncontrolled source (`[thread]`, `[child]`, `[io]`), or the first differing event of the test
-(`[time]`, `[random]`, `[fs]`, `[net]`, `[env]`, ...). When the test itself read a differing environment variable,
-that read (with its site) is named. Two runs where no test ran verify nothing (exit 1).
+(`[time]`, `[random]`, `[fs]`, `[net]`, `[env]`, ...). Two runs where no test ran verify nothing (exit 1).
+
+**Environment (design A).** A test that read an environment variable whose value differs between the runs, and is
+otherwise identical, is **input differs** (`INPUT-DIFFERS`, `verdict: INPUT DIFFERS: NAME`), not divergent and not
+unstable: the variable is named, with the read's site. Variables no test read are listed as `not compared`. The Node
+shell does not record which test read a variable: every test of its runs counts as reading it. CI-volatile variables
+are never inputs: under `--det` the run and attempt ids, the job and runner names and the host name are pinned
+(`GITHUB_RUN_ID=0`, `GITHUB_RUN_NUMBER=0`, `GITHUB_RUN_ATTEMPT=1`, `GITHUB_JOB=fenvix`, `RUNNER_NAME=fenvix-runner`,
+`RUNNER_TRACKING_ID=fenvix`, `HOSTNAME=localhost`; `socket.gethostname()` / `os.hostname()` answer `localhost`), and
+temp and workspace paths, per-step files, CI tokens and session variables (`RUNNER_TEMP`, `GITHUB_WORKSPACE`,
+`GITHUB_ENV`, `GITHUB_OUTPUT`, `TMPDIR`, `PWD`, `ACTIONS_RUNTIME_TOKEN`, ...: `VOLATILE_KEPT` in
+`python/detpy/_level0.py`, `node/src/volatile.js`) keep their values but are not compared. Add a project's own with
+`FENVIX_VOLATILE_ENV=NAME,PREFIX*` (a per-run output path, say).
+
+Exit codes: 0 every test identical; 3 the only differences are environment variables tests read (input differs);
+1 a test diverged or is missing, or no test ran; 2 a trace is missing or unreadable.
 
 ```
 fenvix verify: 2 runs, 5 tests
