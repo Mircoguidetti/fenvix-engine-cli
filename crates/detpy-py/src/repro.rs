@@ -46,9 +46,17 @@ fn repro_outcome<'py>(outcomes: &Bound<'py, PyAny>, nodeid: &Bound<'py, PyAny>) 
     outcomes.call_method1("get", (nodeid, "missing"))
 }
 
+/// The ValueError `list.index` raises for a missing `target`, as this interpreter words it (CPython 3.12/3.13:
+/// "'x' is not in list"; 3.14: "list.index(x): x not in list"): the interpreter's own error, so the message is the
+/// reference's (`order.index(target)`) on every version.
 fn not_in_list(py: Python<'_>, target: &str) -> PyErr {
-    let r = PyString::new(py, target).repr().map(|r| r.to_string()).unwrap_or_else(|_| format!("{target:?}"));
-    PyValueError::new_err(format!("{r} is not in list"))
+    match PyList::empty(py).call_method1("index", (target,)) {
+        Err(e) => e,
+        Ok(_) => {
+            let r = PyString::new(py, target).repr().map(|r| r.to_string()).unwrap_or_else(|_| format!("{target:?}"));
+            PyValueError::new_err(format!("{r} is not in list"))
+        }
+    }
 }
 
 #[pyfunction]
