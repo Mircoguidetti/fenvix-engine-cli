@@ -72,6 +72,28 @@ function resolveFormatted() {
 }
 
 const structured = (_e, cs) => cs;
+
+// Jest words a "module not found" error by listing the siblings of the missing file with `glob` (jest-resolve's
+// findSiblingsWithFileExtension): a package's optional `require` (ws -> bufferutil) then makes glob stat files in the
+// test window. That is the runner's own work (the cache capture already says so), not the test's.
+const GLOB_DEPS = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:glob|minimatch|path-scurry)[\\/]/;
+function runnerLookup() {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = 40;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, runnerLookup);
+    return Array.isArray(holder.stack) && holder.stack.some((cs) => (cs.getFunctionName && cs.getFunctionName()) === 'findSiblingsWithFileExtension');
+  } catch {
+    return false;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+}
 const CACHE = new Map(); // raw "file:line:column" of the first relevant frame -> site (or null)
 const CACHE_MAX = 200000;
 
@@ -122,6 +144,7 @@ function resolveDepth(depth) {
     if (RUNNER_INTERNAL.test(f)) return null; // node:test's own machinery (durations, timeouts)
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
     if (INFRA.test(f)) return null;
+    if (GLOB_DEPS.test(f) && runnerLookup()) return null;
     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
     let site = CACHE.get(key);
     if (site === undefined) {
