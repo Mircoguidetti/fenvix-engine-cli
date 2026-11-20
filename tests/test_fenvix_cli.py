@@ -129,6 +129,41 @@ def test_repro_of_an_unknown_test_says_so(project):
     assert "not collected" in p.stdout and "None" not in p.stdout, p.stdout  # G-2209
 
 
+@pytest.fixture
+def broken(tmp_path):
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_broken.py").write_text("def test_ok(:\n    pass\n")
+    return tmp_path
+
+
+def test_explore_does_not_exit_0_when_the_suite_cannot_run(broken):
+    # reviewer p1-verifier #10: an exploration where nothing ran is not a stable suite
+    p = fx("explore", "--budget", "0.3", "--max-seeds", "2", "--out", str(broken / "ex"), cwd=broken)
+    assert p.returncode == 2, p.stdout + p.stderr
+    assert "the suite did not run" in p.stderr and "SyntaxError" in p.stderr, p.stderr
+    assert "Traceback" not in p.stderr
+    p = fx("explore", "--budget", "0.3", "--max-seeds", "1", "--out", str(broken / "ex"), "--", "--bogus-flag",
+           cwd=broken)
+    assert p.returncode == 2 and "the suite cannot run" in p.stderr and "--bogus-flag" in p.stderr, p.stderr
+    assert "Traceback" not in p.stderr
+
+
+def test_repro_on_a_suite_that_does_not_collect_shows_the_collection_error(broken):
+    # reviewer p1-verifier #12: not "no test has this id" when the file itself does not import
+    p = fx("repro", "tests/test_broken.py::test_ok", "--seeds", "1", "--confirm", "1", cwd=broken)
+    assert p.returncode == 1
+    assert "did not collect cleanly" in p.stdout and "SyntaxError" in p.stdout, p.stdout
+    assert "no test has this id" not in p.stdout
+
+
+@pytest.mark.parametrize("cmd", [("explore", "--budget", "0.1"), ("repro", "tests/test_o.py::test_victim")])
+def test_a_missing_python_is_one_line_not_a_traceback(project, cmd):
+    # reviewer p1-verifier #12
+    p = fx(*cmd, "--python", "/nonexistent/python", cwd=project)
+    assert p.returncode == 2
+    assert p.stderr.strip() == "fenvix: --python /nonexistent/python: no such executable interpreter", p.stderr
+
+
 def test_replay_of_a_non_bundle_is_one_line(tmp_path):
     p = fx("replay", str(tmp_path))
     assert p.returncode == 2 and "not a replay bundle" in p.stderr and "Traceback" not in p.stderr  # G-2205

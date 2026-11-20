@@ -303,6 +303,11 @@ def render_repro(b: dict, out: Path) -> str:
     test = b.get("test", "?")
     status = b.get("status", "?")
     lines = [f"{PROG} repro: {test}"]
+    if status == "not-collected" and b.get("suite_error"):
+        lines.append(f"  not collected: the suite did not collect cleanly, so the test was not found "
+                     f"({b['suite_error'].splitlines()[0]}). The runner said:")
+        lines += ["    " + ln for ln in b["suite_error"].splitlines()[1:]]
+        return "\n".join(lines)
     if status == "not-collected":
         lines.append(f"  not collected: no test has this id. Use an id as the runner prints it (`{PROG} pytest "
                      f"--collect-only -q`, or the nodeid lines of .detpy/trace.jsonl); for unittest, Django, nose2, "
@@ -419,13 +424,13 @@ def cmd_repro(argv: list) -> int:
     ns = p.parse_args(argv)
     ns.runner_args = extra
     a = pick_adapter(ns.runner, test=ns.test)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
     try:
         b = a.repro(ns)
-    except ValueError as e:  # an unusable --plan
+    except (ValueError, RuntimeError, OSError) as e:  # an unusable --plan, a suite that cannot be collected
         print(f"{PROG} repro: {e}", file=sys.stderr)
         return 2
     if not ns.keep_work:  # audit G-2021: the runs' work files (outcomes, traces, orders) are not left behind
@@ -489,11 +494,15 @@ def cmd_explore(argv: list) -> int:
         ns.runner_args = [*ns.runner_args, *selected]
         print(f"{PROG} explore: {len(selected)} test file(s) selected: {', '.join(selected[:10])}", file=sys.stderr)
     a = pick_adapter(ns.runner)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
-    s = a.explore(ns)
+    try:
+        s = a.explore(ns)
+    except (RuntimeError, OSError) as e:  # a suite that cannot be collected
+        print(f"{PROG} explore: the suite cannot run: {e}", file=sys.stderr)
+        return 2
     ran = [x.get("seed") for x in s.get("seeds_log", []) if isinstance(x, dict) and x.get("seed") is not None]
     st = {"first_seed": ns.first_seed, "last_seed": max(ran) if ran else ns.first_seed - 1,
           "previous_last_seed": state.get("last_seed")}
@@ -509,7 +518,24 @@ def cmd_explore(argv: list) -> int:
                   f"{_q(Path(ns.out) / 'bundles' / _slug(bdl.get('test', '')))}")
     if ns.json:
         print(json.dumps(s, indent=2))
+    if not s.get("collected") and not any(isinstance(x, dict) and x.get("tests") for x in s.get("seeds_log", [])):
+        # reviewer #10: an exploration where no test ran found nothing because nothing ran, not because the suite
+        # is stable: exit 2 and say why
+        err = s.get("suite_error") or "no test was collected"
+        print(f"{PROG} explore: the suite did not run: no test ran under {len(ran)} seed(s) "
+              f"({err.splitlines()[0]}). Nothing was explored.", file=sys.stderr)
+        for ln in err.splitlines()[1:]:
+            print("    " + ln, file=sys.stderr)
+        return 2
     return 0
+
+
+def _python_problem(python: str) -> str | None:
+    """The sentence for a --python that cannot run (reviewer #12: not a traceback)."""
+    path = shutil.which(python) if os.sep not in python else python
+    if path and os.path.isfile(path) and os.access(path, os.X_OK):
+        return None
+    return f"--python {python}: no such executable interpreter"
 
 
 def cmd_replay(argv: list) -> int:
@@ -528,7 +554,7 @@ def cmd_replay(argv: list) -> int:
               f".detpy/repro/ by `{PROG} repro`)", file=sys.stderr)
         return 2
     a = pick_adapter(ns.runner, bundle=bundle)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2

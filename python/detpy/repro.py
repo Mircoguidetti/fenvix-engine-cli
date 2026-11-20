@@ -82,6 +82,7 @@ class Runner:
     orders: dict = field(default_factory=dict)
     runs: int = 0
     seconds: float = 0.0
+    problem: str = ""  # the runner's output when a run ran no test and failed: why the suite cannot run
     log: list = field(default_factory=list)
 
     def _cmd(self, config: str, extra: list) -> list:
@@ -108,7 +109,7 @@ class Runner:
                                timeout=self.timeout, env=self.env)
             code = p.returncode
         except subprocess.TimeoutExpired:
-            code, timed_out = -9, True
+            code, timed_out, p = -9, True, None
         dur = time.monotonic() - t0
         self.runs += 1
         self.seconds += dur
@@ -123,7 +124,17 @@ class Runner:
                 {k: data.get(k) for k in ("controls", "seed", "order_missing")})
         self.log.append({"tag": tag, "config": config, "tests": len(r.order), "seconds": round(dur, 3),
                          "exit": code})
+        if p is not None and code != 0 and not r.order:
+            self.note_problem(p, code)
         return r
+
+    def note_problem(self, p, code: int) -> None:
+        """Keep why the suite cannot run (collection errors, a missing plugin, a bad argument): the end of the
+        runner's output, shown by repro and explore instead of "not collected" or an empty exploration."""
+        lines = [ln.rstrip() for ln in ((p.stdout or "") + (p.stderr or "")).splitlines() if ln.strip()]
+        # pytest: the error lines (`E ...`), the short summary (`ERROR path`) and the last line; else the tail
+        key = [ln for ln in lines if ln.startswith(("E ", "ERROR ", "error:", "usage:")) or "Error" in ln[:40]]
+        self.problem = f"runner exit {code}\n" + "\n".join((key[-20:] + lines[-1:]) if key else lines[-25:])
 
     def drop_traces(self) -> None:
         """Delete the traces of finished runs (large suites: one trace per run adds up)."""
@@ -147,6 +158,8 @@ class Runner:
         t0 = time.monotonic()
         p = subprocess.run(cmd, cwd=self.cwd, capture_output=True, text=True, timeout=self.timeout, env=self.env)
         self.seconds += time.monotonic() - t0
+        if p.returncode != 0:
+            self.note_problem(p, p.returncode)
         if not out.exists():
             raise RuntimeError("collection failed:\n" + (p.stdout + p.stderr)[-2000:])
         order = json.loads(out.read_text())["order"]
@@ -259,6 +272,8 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
                                                            confirm, max_runs)
     if fail_trace is None:  # not collected, not found or not minimised: no bundle
+        if result.get("status") == "not-collected" and runner.problem:
+            result["suite_error"] = runner.problem
         return result
     if out_dir is not None:
         b = Path(out_dir) / _slug(target)
@@ -377,6 +392,8 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
         if not runner.keep_traces:
             runner.drop_traces()
     summary = book.summary(runner.runs, len(collected), runner.log)
+    if not collected and runner.problem:  # the suite cannot run: say why (reviewer #10)
+        summary["suite_error"] = runner.problem
     (out_dir / "explore.json").write_text(json.dumps(summary, indent=1))
     return summary
 

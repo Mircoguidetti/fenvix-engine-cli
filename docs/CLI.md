@@ -132,6 +132,10 @@ Runs the whole suite under seeds 1, 2, ... until the budget or `--max-seeds` is 
 under one seed and pass under another, and runs `repro` on each (`--no-repro`: exploration only; `--targets FILE`:
 bundles only for those ids). Summary in `<out>/explore.json`, bundles in `<out>/bundles/`.
 
+Exit 0 when the suite ran; 2 when it cannot run (collection errors, an unknown runner argument, an interpreter that
+does not exist): no test ran under any seed, so nothing was explored, and the runner's error lines are printed.
+`fenvix repro` on such a suite reports `not collected: the suite did not collect cleanly` with the same lines.
+
 ### `fenvix replay BUNDLE`
 
 Replays the bundle `--runs` times (default 10). Exit 0 when it failed every time with one fingerprint. The bundle's
