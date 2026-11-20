@@ -105,6 +105,9 @@ function keepsReuse(runner, dir, file, change) {
 }
 
 before(() => fs.mkdirSync(path.join(TMP, 'r021b-fixes'), { recursive: true }));
+
+/** Whether this Node's fs.promises.readdir (recursive, withFileTypes) follows a link to a directory (Node >= 26). */
+const PROMISES_READDIR_FOLLOWS = Number(process.versions.node.split('.')[0]) >= 26;
 const t = (name, opts, fn) => test(name, ONLY && !ONLY.test(name) ? { ...opts, skip: 'R021BF_ONLY' } : opts, fn);
 
 for (const runner of RUNNERS) {
@@ -149,10 +152,9 @@ for (const runner of RUNNERS) {
   expect(util.inspect(st, { showHidden: true })).toBe(util.inspect(plain, { showHidden: true }));
   expect(Object.keys(st)).toEqual(Object.keys(plain));
   expect(Object.getOwnPropertyDescriptor(st, 'size')).toEqual({ value: 3, writable: true, enumerable: true, configurable: true });
-  // compared with the clone of the plain copy: from Node 26 a Stats object has own symbol-keyed fields
-  // (Symbol(partialAtimeNs), ...) that {...st} copies and structuredClone / v8.serialize drop
-  expect(structuredClone(st)).toEqual(structuredClone({ ...plain }));
-  expect(v8.deserialize(v8.serialize(st))).toEqual(v8.deserialize(v8.serialize({ ...plain })));
+  // a clone keeps the string-keyed fields only (Node 26 Stats also carry own symbol fields: partialAtimeNs, ...)
+  expect(structuredClone(st)).toEqual(Object.fromEntries(Object.entries(plain)));
+  expect(v8.deserialize(v8.serialize(st))).toEqual(Object.fromEntries(Object.entries(plain)));
   st.size = 99;
   expect(st.size).toBe(99);
   expect(Object.getOwnPropertyDescriptor(st, 'size').value).toBe(99);
@@ -284,27 +286,15 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('rcy'), { 'tree/a/g.txt': '' });
     });
 
-    // Node 22 and 24: fs.promises.readdir({ recursive, withFileTypes }) does not enter a linked directory, so a file
-    // added behind the link cannot change the result (reuse kept). Node 26 enters it (MEASURED: 3 entries instead of
-    // 2): the file added behind the link is an input, and the cache must not reuse the old result.
-    const readdirFollows = (() => {
-      const d = fs.mkdtempSync(path.join(require('node:os').tmpdir(), 'rnf-'));
-      fs.mkdirSync(path.join(d, 'o')); fs.writeFileSync(path.join(d, 'o', 'x'), ''); fs.mkdirSync(path.join(d, 't'));
-      fs.symlinkSync('../o', path.join(d, 't', 'l'));
-      const r = require('node:child_process').spawnSync(process.execPath, ['-e',
-        "require('node:fs').promises.readdir(process.argv[1], { recursive: true, withFileTypes: true }).then((a) => console.log(a.length))",
-        path.join(d, 't')], { encoding: 'utf8' });
-      fs.rmSync(d, { recursive: true, force: true });
-      return Number(r.stdout.trim()) > 1;
-    })();
-    t(`${readdirFollows ? 'no wrong reuse' : 'keeps'}: fs.promises.readdir withFileTypes${readdirFollows ? ' follows' : ' does not follow'} links: a file added behind one`, T, () => {
-      const n = readdirFollows ? 3 : 2;
+    // Node 26 made fs.promises.readdir (recursive, withFileTypes) follow links like readdirSync: there a file added
+    // behind the link changes the result and must not be reused; before 26 it cannot change it and stays reused
+    t(`${PROMISES_READDIR_FOLLOWS ? 'G3' : 'keeps'}: fs.promises.readdir withFileTypes ${PROMISES_READDIR_FOLLOWS ? 'follows' : 'does not follow'} links: a file added behind one`, T, () => {
       const dir = fixture(runner, 'rnofollow', {
         'other/x.json': '{}', 'tree/keep.txt': '',
-        ...tfile(runner, 'rnf', `test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(${n}); });`),
+        ...tfile(runner, 'rnf', `test('rnf', async () => { expect((await fs.promises.readdir('tree', { recursive: true, withFileTypes: true })).length).toBe(${PROMISES_READDIR_FOLLOWS ? 3 : 2}); });`),
       });
       fs.symlinkSync('../other', path.join(dir, 'tree', 'link'));
-      if (readdirFollows) noWrongReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
+      if (PROMISES_READDIR_FOLLOWS) noWrongReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
       else keepsReuse(runner, dir, F('rnf'), { 'other/y.json': '{}' });
     });
 

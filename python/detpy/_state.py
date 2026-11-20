@@ -25,6 +25,7 @@ class Config:
     allow_hosts: tuple = ()
     control_urandom: bool = False
     max_events: int = 10_000
+    cassette_max_age: float = 0.0
 
 
 @dataclass

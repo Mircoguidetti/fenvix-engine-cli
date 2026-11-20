@@ -489,7 +489,8 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
     # asyncio's event loop must keep real time: its selector waits for real.
     import asyncio.base_events
 
-    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: real_monotonic())
+    # claude/verifier-cli (audit G-1514): the loop runs on the virtual monotonic clock (no event), as detpy.clock does
+    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: (_MONO_BASE_NS + CLOCK.read()) / NS)
     return rebind_module_references(patcher, replacements, skip_module)
 
 

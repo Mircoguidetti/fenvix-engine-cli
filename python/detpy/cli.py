@@ -24,15 +24,25 @@ def main(argv: list[str] | None = None) -> int:
         from . import runners
 
         return runners.main(args0[0], args0[1:])
-    p = argparse.ArgumentParser(prog="detpy", description="deterministic Python test execution (Level 0)")
+    if args0 and args0[0] in ("--version", "-V", "version"):
+        from . import __version__
+
+        print(f"detpy {__version__} (trace encoding {_core.ENCODING_VERSION})")
+        return 0
+    p = argparse.ArgumentParser(prog="detpy", description="fenvix engine for Python: deterministic test runs, "
+                                "verification, reproducible defects (the product command is `fenvix`)")
     sub = p.add_subparsers(dest="cmd", required=True)
+    from .runners import DESCRIBE
+
     for name in RUNNERS:
-        sub.add_parser(name, help=f"run {name} tests under --det / --det-cache (detpy {name} --det [args])",
+        sub.add_parser(name, help=f"{DESCRIBE.get(name, name)} (--det, --det-cache; `--help` lists the options)",
                        add_help=False)
     v = sub.add_parser("verify", help="compare the fingerprints of several runs")
     v.add_argument("traces", nargs="+")
     v.add_argument("--json", action="store_true", help="print the full report as JSON")
-    v.add_argument("--show-stable", action="store_true")
+    v.add_argument("--show-stable", action="store_true", help="also list the identical tests")
+    v.add_argument("--ignore-env", action="append", default=[], metavar="NAME",
+                   help="environment variable whose difference you declare irrelevant (NAME or PREFIX*)")
     sub.add_parser("backends", help="list interception backends and their capabilities")
 
     def common(sp):
@@ -77,6 +87,9 @@ def main(argv: list[str] | None = None) -> int:
             return _repro.main_repro(args)
         if args.cmd == "explore":
             return _repro.main_explore(args)
+        if not (Path(args.bundle) / "bundle.json").is_file():
+            print(f"detpy replay: not a replay bundle: {args.bundle} (no bundle.json)", file=sys.stderr)
+            return 2
         res = _repro.replay(Path(args.bundle), args.runs, args.python)
         print(json.dumps(res, indent=2))
         return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
@@ -86,14 +99,21 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if len(args.traces) < 2:
         p.error("verify needs at least two traces")
-    if args.json:
-        print(_core.verify(args.traces))
-        report = json.loads(_core.verify(args.traces))
-    else:
-        print(_core.verify_text(args.traces, args.show_stable), end="")
-        report = json.loads(_core.verify(args.traces))
-    s = report["summary"]
-    return 0 if s["diverged"] == 0 and s["missing"] == 0 else 1
+    import os
+
+    missing = [t for t in args.traces if not os.path.isfile(t)]
+    if missing:
+        print(f"detpy verify: trace not found: {', '.join(missing)}", file=sys.stderr)
+        return 2
+    try:
+        report_json, text = _core.verify_with(args.traces, args.ignore_env, args.show_stable)
+    except Exception as e:  # unreadable or incompatible traces: one line, no traceback
+        print(f"detpy verify: {e}", file=sys.stderr)
+        return 2
+    print(report_json if args.json else text, end="\n" if args.json else "")
+    s = json.loads(report_json)["summary"]
+    # an empty run (collection failed) verifies nothing (G-1538)
+    return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
 
 
 if __name__ == "__main__":  # pragma: no cover

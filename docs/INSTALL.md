@@ -16,7 +16,7 @@ owner, mtimes; gzip without name or time): the same commit gives the same sha256
 |---|---|
 | `wheels/fenvix-<v>-cp312-abi3-manylinux_2_28_x86_64.whl` | pytest plugin (`pytest --det`), runners (`python -m detpy unittest\|django\|nose2\|ward\|zope-testrunner\|doctest`), the `fenvix` command |
 | `node/` | Node shells (`fenvix node vitest\|jest\|mocha\|node-test\|ava\|tap\|uvu\|jasmine\|bun-test\|deno-test`) and the native core `detjs.linux-x64.node` |
-| `bin/fenvix` | the `fenvix` command for the image (runs the wheel's `detpy.fenvix_cli` with the image's Python) |
+| `bin/fenvix` | the `fenvix` command for the image (runs the wheel's `detpy.fenvix` with the image's Python) |
 | `install.sh` | the installer |
 | `VERSION`, `VERSION.json` | version, build, commit, supported versions, sha256 of every file |
 

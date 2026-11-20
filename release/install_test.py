@@ -6,7 +6,7 @@
     python3 install_test.py --artifact ... --refuse --python PY311 --work DIR --out result.json
 
 Default mode: checks the artifact against its .sha256, unpacks it, runs its install.sh into a fresh virtual
-environment of PY and a fresh prefix, checks `fenvix --version` (Python command and Node shell) and `fenvix doctor`,
+environment of PY and a fresh prefix, checks `fenvix --version` (Python command and Node shell) `fenvix doctor --install` (and records the full `fenvix doctor`),
 then on small real projects pinned to a tag:
   * Python: `pytest --det` twice (traces verified identical by `fenvix verify`) and `--det-cache` twice (the second
     run reuses tests with proof and no outcome differs);
@@ -39,7 +39,7 @@ class Run:
         self.work = os.path.abspath(work)
         self.logs = os.path.join(self.work, "logs")
         os.makedirs(self.logs, exist_ok=True)
-        self.steps, self.checks = [], {}
+        self.steps, self.checks, self.doctor = [], {}, None
 
     def sh(self, name, cmd, cwd=None, env=None, timeout=1800):
         t = time.time()
@@ -98,9 +98,17 @@ def install(r, a, d):
     r.check("install_sh", rc == 0, last(out))
     fx = os.path.join(venv, "bin", "fenvix")
     rc, out = r.sh("fenvix-version", [fx, "--version"])
-    r.check("fenvix_version_python", rc == 0 and out.strip() == f"fenvix {a.version}", out.strip())
-    rc, out = r.sh("fenvix-doctor", [fx, "doctor"])
-    r.check("fenvix_doctor", rc == 0, out.strip())
+    first = out.strip().splitlines()[0] if out.strip() else ""
+    r.check("fenvix_version_python", rc == 0 and first.startswith(f"fenvix {a.version} "), first)
+    rc, out = r.sh("fenvix-doctor-install", [fx, "doctor", "--install"])
+    r.check("fenvix_doctor_install", rc == 0, out.strip())
+    # every control of a deterministic run on this machine (ASLR switch, locale, strace, ...): what a container of
+    # this image gives, recorded in the report; the installation itself is the check above
+    rc, out = r.sh("fenvix-doctor", [fx, "doctor", "--json"])
+    try:
+        r.doctor = json.loads(out)
+    except ValueError:
+        r.doctor = out.strip()[-500:]
     rc, out = r.sh("pytest-version", [py, "-m", "pytest", "--version"])
     r.check("pytest_version", rc == 0 and (not a.pytest or out.split()[-1].startswith(a.pytest.split("==")[1].rstrip("*"))),
             out.strip())
@@ -202,7 +210,7 @@ def main(argv=None) -> int:
     ok = all(c["ok"] for c in r.checks.values()) and bool(r.checks)
     json.dump({"ok": ok, "python": a.python, "artifact": os.path.basename(a.artifact),
                "projects": {"python": PY_PROJECT, "vitest": VITEST_PROJECT},
-               "checks": r.checks, "steps": r.steps}, open(a.out, "w"), indent=2)
+               "checks": r.checks, "doctor": r.doctor, "steps": r.steps}, open(a.out, "w"), indent=2)
     print("install test:", "PASSED" if ok else "FAILED", flush=True)
     return 0 if ok else 1
 

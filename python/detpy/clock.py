@@ -372,11 +372,64 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         cls = getattr(selectors, name, None)
         if cls is not None and "select" in vars(cls):
             patcher.set(cls, "select", _wrap_selector_select(vars(cls)["select"]))
-    # asyncio's event loop must keep real time: its selector waits for real.
+    # asyncio's event loop runs on the virtual monotonic clock (audit G-1514: loop.time(), call_later/call_at and
+    # asyncio.timeout used to follow the real clock while time.time() in the same coroutine was virtual). Its
+    # selector still waits for real for ready I/O; a wait that times out advances the virtual clock by the timeout
+    # (``_select`` above), so a deadline is reached on the virtual clock. Reading the loop's clock is no event.
     import asyncio.base_events
 
-    patcher.set(asyncio.base_events.BaseEventLoop, "time", lambda self: real_monotonic())
+    patcher.set(asyncio.base_events.BaseEventLoop, "time", _loop_time)
+    # CPU-time clocks (audit G-1515): process and thread CPU time follow the virtual monotonic counter (they never
+    # go back; the values are the same in every run); os.times() is virtual too. resource.getrusage keeps its real
+    # memory and I/O counters with virtual CPU times.
+    for name, fn in (("process_time", process_time), ("process_time_ns", process_time_ns),
+                     ("thread_time", process_time), ("thread_time_ns", process_time_ns)):
+        if hasattr(_time, name):
+            patcher.set(_time, name, nonbinding(fn, "time", name))
+    if hasattr(os, "times"):
+        patcher.set(os, "times", _os_times)
+    try:
+        import resource
+
+        real_getrusage = resource.getrusage
+
+        def getrusage(who):
+            r = real_getrusage(who)
+            secs = process_time()
+            vals = list(r)
+            vals[0], vals[1] = secs, 0.0
+            return type(r)(vals)
+
+        getrusage.__doc__ = real_getrusage.__doc__
+        patcher.set(resource, "getrusage", getrusage)
+    except ImportError:  # pragma: no cover - not on POSIX
+        pass
     return rebind_module_references(patcher, replacements, skip_module)
+
+
+def _loop_time(self):
+    """``BaseEventLoop.time``: the virtual monotonic clock, without an event (the loop reads it at every
+    iteration)."""
+    return (_MONO_BASE_NS + _core.clock_read()) / NS
+
+
+def process_time_ns() -> int:
+    """``time.process_time_ns`` / ``thread_time_ns`` under --det: the virtual counter (recorded as a clock read)."""
+    e = _core.clock_read()
+    _state.record("time", "time.process_time", str(e), 1)
+    return int(e)
+
+
+def process_time() -> float:
+    e = _core.clock_read()
+    _state.record("time", "time.process_time", str(e), 1)
+    return e / NS
+
+
+def _os_times():
+    e = _core.clock_read()
+    _state.record("time", "os.times", str(e), 1)
+    return os.times_result((e / NS, 0.0, 0.0, 0.0, (_MONO_BASE_NS + e) / NS))
 
 
 def uninstall() -> None:

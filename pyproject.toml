@@ -42,8 +42,8 @@ Changelog = "https://github.com/Mircoguidetti/fenvix-engine-cli/blob/claude/rele
 detpy = "detpy.plugin"
 
 [project.scripts]
-fenvix = "detpy.fenvix_cli:main"
 detpy = "detpy.cli:main"
+fenvix = "detpy.fenvix:main"
 
 [tool.maturin]
 manifest-path = "crates/detpy-py/Cargo.toml"

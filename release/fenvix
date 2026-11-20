@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """fenvix: the single CLI entry, as the runner image installs it ($FENVIX_HOME/bin/fenvix).
 
-The command itself lives in the Python package (detpy/fenvix_cli.py, console script `fenvix` of the PyPI
+The command itself lives in the Python package (detpy/fenvix.py, console script `fenvix` of the
 package `fenvix`); this file only runs it with the image's Python, where release/install-image.sh installed it.
 """
 import sys
 
 try:
-    from detpy.fenvix_cli import main
+    from detpy.fenvix import main
 except ImportError as e:
     sys.stderr.write(f"fenvix: the Python package fenvix is not installed in {sys.executable} ({e})\n")
     sys.exit(127)

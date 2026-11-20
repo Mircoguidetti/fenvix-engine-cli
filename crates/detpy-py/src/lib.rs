@@ -161,7 +161,9 @@ impl Cassette {
     }
 
     fn clear_test(&self, nodeid: &str) {
-        lock(&self.inner).clear_test(nodeid)
+        let mut c = lock(&self.inner);
+        c.clear_test(nodeid);
+        c.recorded.remove(nodeid);
     }
 
     fn open_connection(&self, nodeid: &str, host: &str, port: u16) -> usize {
@@ -205,6 +207,75 @@ impl Cassette {
         let o = lock(&other.inner).clone();
         lock(&self.inner).merge(o);
     }
+
+    /// A UDP exchange of `nodeid` with `host:port` (audit G-1518); returns its index.
+    fn open_udp(&self, nodeid: &str, host: &str, port: u16) -> usize {
+        lock(&self.inner).open_udp(nodeid, host, port)
+    }
+
+    /// TLS details of a recorded connection (JSON text), set at record time.
+    fn set_tls_info(&self, nodeid: &str, idx: usize, info: &str) -> PyResult<()> {
+        let v: serde_json::Value = serde_json::from_str(info).map_err(|e| PyValueError::new_err(e.to_string()))?;
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.tls_info = Some(v);
+        Ok(())
+    }
+
+    fn tls_info(&self, nodeid: &str, idx: usize) -> Option<String> {
+        let c = lock(&self.inner);
+        c.connection(nodeid, idx).and_then(|k| k.tls_info.as_ref()).map(|v| v.to_string())
+    }
+
+    /// Whether any test has a UDP exchange recorded.
+    fn has_udp(&self) -> bool {
+        lock(&self.inner).tests.values().any(|cs| cs.iter().any(|c| c.udp))
+    }
+
+    fn find_udp(&self, nodeid: &str, host: &str, port: u16) -> Option<usize> {
+        lock(&self.inner).find_udp(nodeid, host, port)
+    }
+
+    /// One datagram of a UDP exchange (never merged with the previous one).
+    fn append_datagram(&self, nodeid: &str, idx: usize, dir: &str, data: &[u8]) -> PyResult<()> {
+        let dir = parse_dir(dir)?;
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.append_datagram(dir, data);
+        Ok(())
+    }
+
+    /// Note when `nodeid`'s connections were recorded (UTC, RFC 3339).
+    fn set_recorded(&self, nodeid: &str, when: &str) {
+        lock(&self.inner).recorded.insert(nodeid.to_string(), when.to_string());
+    }
+
+    /// When `nodeid`'s connections were recorded, if the cassette says.
+    fn recorded(&self, nodeid: &str) -> Option<String> {
+        lock(&self.inner).recorded.get(nodeid).cloned()
+    }
+
+    /// Rename a test's recordings (`fenvix cassette rename`); False when the old one has none.
+    fn rename_test(&self, old: &str, new: &str) -> bool {
+        let mut c = lock(&self.inner);
+        match c.tests.remove(old) {
+            Some(conns) => {
+                c.tests.insert(new.to_string(), conns);
+                if let Some(w) = c.recorded.remove(old) {
+                    c.recorded.insert(new.to_string(), w);
+                }
+                true
+            }
+            None => false,
+        }
+    }
+}
+
+/// The bytes with the values of secret HTTP headers masked (same length): what a cassette stores and what replay
+/// compares (detpy_core::cassette::redact).
+#[pyfunction]
+fn net_redact<'py>(py: Python<'py>, data: &[u8]) -> Bound<'py, PyBytes> {
+    PyBytes::new(py, &detpy_core::cassette::redact(data))
 }
 
 pub(crate) fn trace_err(e: trace::TraceError) -> PyErr {
@@ -219,6 +290,15 @@ pub(crate) fn trace_err(e: trace::TraceError) -> PyErr {
 fn verify(paths: Vec<PathBuf>) -> PyResult<String> {
     let report = v::verify_paths(&paths).map_err(trace_err)?;
     serde_json::to_string(&report).map_err(|e| PyRuntimeError::new_err(e.to_string()))
+}
+
+/// `fenvix verify`: (report JSON, text) with `--ignore-env` names left out of the run inputs.
+#[pyfunction]
+#[pyo3(signature = (paths, ignore_env = Vec::new(), show_stable = false))]
+fn verify_with(paths: Vec<PathBuf>, ignore_env: Vec<String>, show_stable: bool) -> PyResult<(String, String)> {
+    let report = v::verify_paths_ignoring(&paths, &ignore_env).map_err(trace_err)?;
+    let json = serde_json::to_string(&report).map_err(|e| PyRuntimeError::new_err(e.to_string()))?;
+    Ok((json, v::render_text(&report, show_stable)))
 }
 
 /// Verify traces and render a human-readable report.
@@ -287,6 +367,8 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<Cassette>()?;
     m.add_function(wrap_pyfunction!(verify, m)?)?;
     m.add_function(wrap_pyfunction!(verify_text, m)?)?;
+    m.add_function(wrap_pyfunction!(verify_with, m)?)?;
+    m.add_function(wrap_pyfunction!(net_redact, m)?)?;
     m.add_function(wrap_pyfunction!(derive_seed, m)?)?;
     m.add_function(wrap_pyfunction!(shuffle_order, m)?)?;
     m.add_function(wrap_pyfunction!(order_digest, m)?)?;

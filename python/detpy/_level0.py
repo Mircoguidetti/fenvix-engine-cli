@@ -12,14 +12,23 @@ or kept, its own bytecode (pytest's assertion rewrite), its hooks.
 from __future__ import annotations
 
 import datetime as _dt
+import json
 import os
 import platform
 import sys
 
-from . import __version__, _core, _sites, _state, clock, fsorder, network, reexec, seeds, sqlvirt
+from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, reexec, seeds, sqlvirt, uncontrolled
 from ._patch import Patcher
 
-CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net")
+CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale")
+DEFAULT_TZ = "UTC"
+DEFAULT_LOCALE = "C.UTF-8"
+# fallbacks when the default locale does not exist on the machine (macOS has no C.UTF-8 before 13)
+LOCALE_FALLBACKS = ("C.UTF-8", "C.utf8", "en_US.UTF-8", "C")
+# the locale variables the pin sets (LC_ALL wins over every LC_* and LANG; LANGUAGE is gettext's own list)
+LOCALE_VARS = ("LC_ALL", "LANG")
+# engine-internal variables: not inputs of the code under test (their effects are recorded as their own inputs)
+ENGINE_ENV_PREFIXES = ("DETPY_", "PYTEST_XDIST_")
 PATCHER = Patcher()
 INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
 # top-level packages of the running shell's plugins (pytest plugins): test infrastructure, never rebound to the
@@ -53,6 +62,10 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
     (("--det-cassette",), dict(default=None, metavar="PATH",
                                help="network cassette (default: <rootdir>/.detpy/cassette.json); replayed when "
                                     "present")),
+    (("--det-cassette-max-age",), dict(type=float, default=0.0, metavar="DAYS",
+                                       help="do not replay recordings older than DAYS (or without a recording date): "
+                                            "those tests meet the closed network and must be re-recorded with "
+                                            "--det-record (default 0: no limit)")),
     (("--det-allow-host",), dict(action="append", default=[], metavar="HOST",
                                  help="external host that may be reached (repeatable)")),
     (("--det-epoch",), dict(default="auto", metavar="ISO",
@@ -67,6 +80,15 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                             help="virtual: time.sleep only advances the clock; real: it also waits")),
     (("--det-disable",), dict(default="", metavar="LIST",
                               help=f"comma separated controls to turn off: {','.join(CONTROLS)}")),
+    (("--det-tz",), dict(default=os.environ.get("FENVIX_TZ") or DEFAULT_TZ, metavar="ZONE",
+                         help=f"time zone every test runs in (TZ, applied before the interpreter re-executes; default "
+                              f"$FENVIX_TZ, else {DEFAULT_TZ}). 'keep' keeps the machine's: it is then recorded as a "
+                              f"run input, and `fenvix verify` reports runs with different zones as divergent")),
+    (("--det-locale",), dict(default=os.environ.get("FENVIX_LOCALE") or DEFAULT_LOCALE, metavar="NAME",
+                             help=f"locale every test runs in (LC_ALL and LANG; LANGUAGE removed; default "
+                                  f"$FENVIX_LOCALE, else {DEFAULT_LOCALE}, else the first of "
+                                  f"{', '.join(LOCALE_FALLBACKS[1:])} that exists). 'keep' keeps the machine's "
+                                  "(recorded as a run input)")),
     (("--det-urandom",), dict(action="store_true", default=False,
                               help="also make os.urandom/uuid4/secrets deterministic (beyond Level 0; NOT for crypto "
                                    "tests)")),
@@ -115,6 +137,44 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                      help="where to write the per-test receipts (JSON lines; default "
                                           "DIR/receipts.jsonl)")),
 ]
+
+
+CONFIG_KEYS = {"seed": "--det-seed", "tz": "--det-tz", "locale": "--det-locale", "epoch": "--det-epoch",
+               "tick": "--det-tick", "cassette": "--det-cassette", "cassette_max_age": "--det-cassette-max-age",
+               "disable": "--det-disable", "trace": "--det-trace"}
+CONFIG_FLAGS = {"urandom": "--det-urandom", "keep_aslr": "--det-keep-aslr"}
+
+
+def config_args(root: str | None, given: list) -> list:
+    """``--det`` options from the project's configuration (audit G-1536): ``FENVIX_DET=1`` in the environment, or a
+    ``[tool.fenvix]`` table in ``pyproject.toml`` (``det = true``, ``seed``, ``tz``, ``locale``, ``epoch``, ``tick``,
+    ``cassette``, ``cassette_max_age``, ``disable``, ``trace``, ``urandom``, ``keep_aslr``, ``allow_hosts``). Returns
+    the arguments to add in front of ``given`` (nothing when neither turns ``--det`` on, and never an option
+    ``given`` already has: the command line wins)."""
+    table: dict = {}
+    path = os.path.join(root or os.getcwd(), "pyproject.toml")
+    if os.path.isfile(path):
+        try:
+            import tomllib
+
+            with open(path, "rb") as f:
+                table = (tomllib.load(f).get("tool") or {}).get("fenvix") or {}
+        except Exception:  # an unreadable pyproject: no configuration from it
+            table = {}
+    env_on = os.environ.get("FENVIX_DET", "").strip().lower() in ("1", "true", "yes", "on")
+    if not (env_on or table.get("det") is True or "--det" in given):
+        return []
+    have = {a.split("=", 1)[0] for a in given}
+    out = [] if "--det" in have else ["--det"]
+    for key, flag in CONFIG_KEYS.items():
+        if key in table and flag not in have:
+            out.append(f"{flag}={table[key]}")
+    for key, flag in CONFIG_FLAGS.items():
+        if table.get(key) is True and flag not in have:
+            out.append(flag)
+    if "--det-allow-host" not in have:
+        out += [f"--det-allow-host={h}" for h in table.get("allow_hosts") or []]
+    return out
 
 
 def controls_of(disable: str) -> frozenset:
@@ -203,18 +263,167 @@ def parse_epoch(text: str) -> int:
     return (delta.days * 86400 + delta.seconds) * 1_000_000_000 + delta.microseconds * 1000
 
 
+def hashseed_variants() -> int:
+    """How many hash seeds the ``--det-seed`` values share (audit G-1531): ``--det-seed=N`` runs under
+    ``PYTHONHASHSEED = N mod K`` (K = ``$FENVIX_HASHSEEDS``, default 8). Every seed keeps its own order and generator
+    seeds; an exploration over many seeds precompiles the libraries K times instead of once per seed (MEASURED by
+    the audit: 13 s and 27 MB to 246 MB per new seed)."""
+    try:
+        return max(1, min(4294967296, int(os.environ.get("FENVIX_HASHSEEDS", "8"))))
+    except ValueError:
+        return 8
+
+
 def hashseed(seed: int | None) -> str:
-    return str((seed or 0) % 4294967296)
+    return str((seed or 0) % hashseed_variants())
 
 
 def hashseed_value() -> str:
-    return str(_state.STATE.config.seed % 4294967296)
+    return str(_state.STATE.config.seed % hashseed_variants())
+
+
+def _locale_exists(name: str) -> bool:
+    import locale
+
+    try:
+        prev = locale.setlocale(locale.LC_CTYPE)
+        try:
+            locale.setlocale(locale.LC_CTYPE, name)
+        finally:
+            locale.setlocale(locale.LC_CTYPE, prev)
+        return True
+    except locale.Error:
+        return False
+
+
+PINNED: dict = {}
+
+
+def pin_tz_locale(ns, controls) -> None:
+    """The time zone and locale controls: set TZ, LC_ALL and LANG (and remove LANGUAGE) in this process's environment
+    before the hash-seed re-exec, so the re-executed interpreter starts in them (its C library reads them at start
+    up), and apply them in this process too (``time.tzset``, ``setlocale(LC_CTYPE)``) when there is no re-exec.
+    With 'keep' (or ``--det-disable=tz|locale``) the machine's values stay and are recorded as run inputs."""
+    tz = getattr(ns, "det_tz", None) or DEFAULT_TZ
+    if "tz" in controls and tz != "keep":
+        os.environ["TZ"] = tz
+        try:
+            import time
+
+            time.tzset()
+        except AttributeError:  # pragma: no cover - not on POSIX
+            pass
+        PINNED["tz"] = tz
+    loc = getattr(ns, "det_locale", None) or DEFAULT_LOCALE
+    if "locale" in controls and loc != "keep":
+        # the same choice in the re-executed process (same machine, same candidates)
+        cands = (loc,) + (LOCALE_FALLBACKS if loc == DEFAULT_LOCALE else ())
+        chosen = next((c for c in cands if _locale_exists(c)), None)
+        if chosen is None:
+            raise UsageError(f"--det-locale: locale {loc!r} does not exist on this machine")
+        for v in LOCALE_VARS:
+            os.environ[v] = chosen
+        os.environ.pop("LANGUAGE", None)
+        try:
+            import locale
+
+            locale.setlocale(locale.LC_CTYPE, chosen)
+        except Exception:  # pragma: no cover - checked above
+            pass
+        PINNED["locale"] = chosen
+
+
+def _tz_input() -> str:
+    if "tz" in PINNED:
+        return f"{PINNED['tz']} (pinned)"
+    import time
+
+    ident = _core.tz_locale_identity(os.environ)
+    return f"TZ={os.environ.get('TZ', '<unset>')} tzname={','.join(time.tzname)} zone={_digest_text(json.dumps(ident, sort_keys=True, default=str))} (not pinned)"
+
+
+def _locale_input() -> str:
+    if "locale" in PINNED:
+        return f"{PINNED['locale']} (pinned)"
+    import locale
+
+    vals = {k: os.environ.get(k) for k in ("LC_ALL", "LC_CTYPE", "LC_TIME", "LC_NUMERIC", "LC_COLLATE",
+                                          "LC_MONETARY", "LC_MESSAGES", "LANG", "LANGUAGE") if k in os.environ}
+    return f"{sorted(vals.items())} ctype={locale.setlocale(locale.LC_CTYPE)} (not pinned)"
+
+
+def _digest_text(t: str) -> str:
+    return _core.digest(t.encode("utf-8", "surrogateescape"))[:16]
+
+
+def env_inputs() -> dict:
+    """One run input per environment variable (``env:NAME``: a digest of NAME=value, so secrets never reach the
+    trace), engine-internal variables excepted."""
+    out = {}
+    for k, v in os.environ.items():
+        if k.startswith(ENGINE_ENV_PREFIXES):
+            continue
+        # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
+        # is JSON, and its digest still covers the exact bytes
+        name = os.fsencode(k).decode("utf-8", "backslashreplace")
+        out[f"env:{name}"] = _core.digest(os.fsencode(k) + b"=" + os.fsencode(v))[:16]
+    return out
+
+
+# G-0168: test modules pytest's assertion rewrite compiled from source in this process because its cache missed. A
+# process that compiles them allocates what one that loads them does not, so id()-dependent behaviour (the order of a
+# set of plain objects) can differ between such a run and a later one, even with ASLR off. The process that starts a
+# --det run writes them into the cache before the re-exec (plugin.prewarm_rewrite_cache); what is still compiled here
+# (a module the walk did not find, a rewriter patched by a plugin, a run without re-exec) is a run input, so the
+# verifier never calls such a run identical to a warm one. "workers": the sum the xdist controller received.
+REWRITE = {"cold": 0, "workers": 0}
+
+
+def _rewrite_input() -> str:
+    n = REWRITE["cold"] + REWRITE["workers"]
+    return f"; test modules rewritten from source in this run (cold rewrite cache: {n})" if n else ""
+
+
+def run_inputs(net_mode, runner: str, runner_version) -> dict:
+    """Every input of the run Level 0 controls or observes, as text: written in the trace header (``inputs``) and
+    compared by the verifier (``crates/detpy-core/src/verify.rs``), which reports two runs whose inputs differ as
+    divergent with the first differing input named. A control that is off is recorded as off, never left out."""
+    cfg = _state.STATE.config
+    c = cfg.controls
+    cassette = cfg.cassette_path
+    try:
+        cas = _digest_text(open(cassette, "rb").read().decode("latin-1")) if cassette and os.path.exists(cassette) else "none"
+    except OSError:
+        cas = "unreadable"
+    inputs = {
+        "runtime": f"{platform.python_implementation()} {platform.python_version()} {sys.platform} "
+                   f"{platform.machine()}",
+        "runner": f"{runner} {runner_version or ''}".strip(),
+        "hashseed": os.environ.get("PYTHONHASHSEED") or "<random>",
+        "seed": str(cfg.seed) if "seeds" in c else f"{cfg.seed} (seeds control off)",
+        "shuffle": "yes" if cfg.shuffle else "no",
+        "clock": (f"virtual epoch_ns={cfg.epoch_ns} tick_ns={cfg.tick_ns} adapt={cfg.tick_adapt} sleep={cfg.sleep}"
+                  if "time" in c else "real (time control off)"),
+        "tz": _tz_input(),
+        "locale": _locale_input(),
+        "env": "recorded (every os.environ read is an event)" if "env" in c else "reads not recorded (env control off)",
+        "network": (f"{net_mode} allow={','.join(sorted(cfg.allow_hosts))} cassette={cas}" if "net" in c
+                    else "open (net control off)"),
+        "fs": "sorted" if "fs" in c else "real (fs control off)",
+        "urandom": "controlled" if cfg.control_urandom else "observed",
+        "bytecode": ("precompiled" if reexec.bytecode_active(hashseed_value()) else "default") + _rewrite_input(),
+        "aslr": {True: "off", False: "on", None: "unknown"}[reexec.aslr_disabled()],
+        "order": "fixed" if "order" in c else "runner order (order control off)",
+    }
+    inputs.update(env_inputs())
+    return inputs
 
 
 def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -> str:
     """The hash-seed re-exec (``reexec``): exec the same command line again under the fixed hash seed (and ASLR off,
     deterministic bytecode) when needed and possible; does not return then. Returns the status line otherwise.
     ``before_exec`` runs just before the exec (pytest restores its captured file descriptors)."""
+    pin_tz_locale(ns, controls)
     if "hashseed" not in controls:
         return "not-needed"
     want_bytecode = "bytecode" in controls
@@ -248,6 +457,7 @@ def make_config(ns, root: str, controls) -> _state.Config:
         control_urandom=ns.det_urandom,
         max_events=ns.det_max_events,
     )
+    cfg.cassette_max_age = getattr(ns, "det_cassette_max_age", 0.0) or 0.0
     _state.STATE.config = cfg
     return cfg
 
@@ -262,9 +472,13 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
     rebound: list = []
     if "time" in controls:
         rebound = clock.install(PATCHER, cfg.epoch_ns, cfg.tick_ns, skip_module, cfg.tick_adapt)
+        fstime.install(PATCHER)
         sqlvirt.install(PATCHER)  # SQLite's 'now', CURRENT_TIMESTAMP, random(), randomblob() per connection
     if "fs" in controls:
         fsorder.install(PATCHER)
+    if "env" in controls:
+        envobs.install()
+    uncontrolled.install(PATCHER)
     return rebound
 
 
@@ -327,13 +541,41 @@ def hash_checked_imports(root: str) -> bool:
     return True
 
 
+GITIGNORE = ("# written by fenvix: run state (traces, plans, repro work files) is not committed;\n"
+             "# the network cassette is meant to be committed (it is reviewed like a fixture)\n"
+             "*\n!.gitignore\n!cassette.json\n")
+
+
+def sleep_label(cfg) -> str:
+    """What ``time.sleep`` does (audit G-2198: "virtual" was printed with the time control off)."""
+    return cfg.sleep if "time" in cfg.controls else "real (time control off)"
+
+
+def ensure_state_dir(root: str) -> None:
+    """``<root>/.detpy`` with a ``.gitignore`` that ignores everything but itself and the cassette (audit G-2207)."""
+    d = os.path.join(root, ".detpy")
+    # the same work in every run, whether the directory existed or not: what the engine allocates before the first
+    # test decides the addresses the tests see (audit G-0168: a set of plain objects iterated in another order in
+    # the first run of a fresh checkout than in every later run)
+    try:
+        if not os.path.isdir(d):
+            os.mkdir(d)
+        with open(os.path.join(d, ".gitignore"), "w") as f:
+            f.write(GITIGNORE)
+    except OSError:
+        pass
+
+
 def open_session(root: str, cassette: str | None, record: bool, allow_hosts, max_events: int) -> str | None:
     """The network control (with its cassette) and the recorder. Returns the network mode."""
     cfg = _state.STATE.config
+    ensure_state_dir(root)
     cfg.cassette_path = cassette or os.path.join(root, ".detpy", "cassette.json")
     mode = None
     if "net" in cfg.controls:
-        mode = network.install(PATCHER, record, cfg.cassette_path, allow_hosts)
+        age = getattr(cfg, "cassette_max_age", 0.0)
+        extra = {"max_age_days": age} if age else {}
+        mode = network.install(PATCHER, record, cfg.cassette_path, allow_hosts, **extra)
     _state.STATE.recorder = _core.Recorder(max_events=max_events)
     return mode
 
@@ -344,8 +586,10 @@ def begin_test(nodeid: str, index: int) -> None:
     controls = st.config.controls
     st.recorder.begin_test(nodeid, index)
     _state.reset_threads()
+    uncontrolled.start_test()
     if "time" in controls:
         clock.start_test()
+        fstime.start_test()
     st.nodeid = nodeid
     if "seeds" in controls:
         seeds.start_test(PATCHER, nodeid)
@@ -396,11 +640,17 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
         meta[runner] = runner_version
     meta.update({"disabled_plugins": list(disabled_plugins), "adjustments": list(adjustments),
                  "rebound_references": rebound, "order_digest": order_digest})
+    # the shared vocabulary's required header fields (G-2218) and the run inputs the verifier compares
+    meta["runtime"] = platform.python_implementation()
+    meta["runtime_version"] = platform.python_version()
+    meta["inputs"] = run_inputs(net_mode, runner, runner_version)
     return meta
 
 
 def uninstall() -> None:
     PATCHER.undo_all()
+    envobs.uninstall()
+    fstime.uninstall()
     clock.uninstall()
     sqlvirt.uninstall()
     seeds.uninstall()

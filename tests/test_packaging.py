@@ -95,11 +95,11 @@ def test_unsupported_interpreter_det_from_addopts_refused(project):
 @pytest.mark.parametrize("entry", [
     "import runpy; runpy.run_module('detpy', run_name='__main__')",          # python -m detpy unittest --det
     "from detpy.cli import main; main()",                                     # the `detpy` console script
-    "import sys; from detpy.fenvix_cli import main; sys.exit(main())",        # `fenvix python --det`
+    "import sys; from detpy.fenvix import main; sys.exit(main())",            # `fenvix python --det`
 ])
 def test_unsupported_interpreter_commands_refused(entry, project):
     """G-0549, G-0471: `python -m detpy <runner> --det` and the console scripts: message and exit 4."""
-    argv = "['x', 'python', '--det']" if "fenvix_cli" in entry else "['x', 'unittest', '--det']"
+    argv = "['x', 'python', '--det']" if "detpy.fenvix " in entry else "['x', 'unittest', '--det']"
     code = FAKE["3.9"] + f"\nimport sys; sys.argv = {argv}\n" + entry
     r = _run(code, project)
     out = r.stdout + r.stderr
@@ -138,12 +138,21 @@ def test_one_version_everywhere():
 
 
 def test_fenvix_command_version_and_doctor(capsys):
-    from detpy import fenvix_cli
+    """One entry point (`fenvix` = detpy.fenvix:main): its version line, and the installation checks that
+    release/engine/install.sh requires (`fenvix doctor --install`), first rows of the full `fenvix doctor` too."""
+    from detpy import fenvix
     import detpy
 
-    assert fenvix_cli.main(["--version"]) == 0
-    assert capsys.readouterr().out.strip() == f"fenvix {detpy.__version__}"
-    assert fenvix_cli.main(["doctor"]) == 0, capsys.readouterr().out
+    meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))["project"]["scripts"]
+    assert meta["fenvix"] == "detpy.fenvix:main"
+    assert not os.path.exists(os.path.join(ROOT, "python", "detpy", "fenvix_cli.py"))
+    assert fenvix.main(["--version"]) == 0
+    assert capsys.readouterr().out.splitlines()[0].startswith(f"fenvix {detpy.__version__} ")
+    assert fenvix.main(["doctor", "--install"]) == 0, capsys.readouterr().out
+    out = capsys.readouterr().out
+    assert [line.split(":")[0].split(None, 1)[1] for line in out.splitlines()] == [
+        "interpreter", "native core", "import package detpy"], out
+    assert [c[0] for c in fenvix.doctor_checks()[:3]] == ["interpreter", "native core", "import package detpy"]
 
 
 def test_foreign_detpy_distribution_reported(tmp_path, monkeypatch):
@@ -154,11 +163,14 @@ def test_foreign_detpy_distribution_reported(tmp_path, monkeypatch):
     (di / "top_level.txt").write_text("detpy\n")
     (di / "RECORD").write_text("detpy/DETAlgs/__init__.py,,\n")
     monkeypatch.syspath_prepend(str(tmp_path))
-    from detpy import fenvix_cli
+    from detpy import fenvix
 
-    assert fenvix_cli.foreign_detpy_owners() == ["detpy 2.0.0"]
-    rows = dict((n, (ok, d)) for n, ok, d in fenvix_cli.doctor())
+    assert fenvix.foreign_detpy_owners() == ["detpy 2.0.0"]
+    rows = dict((n, (ok, d)) for n, ok, d, _ in fenvix.install_checks())
     assert rows["import package detpy"][0] is False and "detpy 2.0.0" in rows["import package detpy"][1]
+    # the full doctor stops at the installation checks and fails
+    assert [c[0] for c in fenvix.doctor_checks()] == ["interpreter", "native core", "import package detpy"]
+    assert fenvix.main(["doctor"]) == 1
 
 
 def test_host_loaded_images_and_children_observed():

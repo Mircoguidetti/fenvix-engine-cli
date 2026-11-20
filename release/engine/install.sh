@@ -31,7 +31,7 @@ PY
 "$py" -m pip install -q --disable-pip-version-check "$here"/wheels/fenvix-*.whl
 # the installed engine loads, and no other distribution writes its import package `detpy/` (the unrelated PyPI
 # project of that name; audit G-0170, G-0737): otherwise the installation is refused
-if ! "$py" -m detpy.fenvix_cli doctor >&2; then
+if ! "$py" -m detpy.fenvix doctor --install >&2; then
   echo "fenvix: the installation in $("$py" -c 'import sys; print(sys.prefix)') does not pass fenvix doctor (above)" >&2
   exit 1
 fi

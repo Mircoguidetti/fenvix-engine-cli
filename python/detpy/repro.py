@@ -155,6 +155,74 @@ class Runner:
 
 
 
+@dataclass
+class ShellRunner(Runner):
+    """``Runner`` for the runner shells (``python -m detpy unittest|django|nose2|ward|zope-testrunner|doctest``):
+    the same search, minimisation and replay as for pytest (audit G-0532, G-0540). ``runner_name`` is the shell;
+    ``pytest_args`` hold the runner's own arguments. Collection is a whole run (the shells have no collect-only):
+    its outcomes file holds the order."""
+
+    runner_name: str = "unittest"
+
+    def _cmd(self, config: str, extra: list) -> list:
+        cmd = [self.python, "-m", "detpy", self.runner_name, "--det", *extra, *self.pytest_args]
+        if config != FIXED:
+            cmd.insert(5, f"--det-seed={int(config)}")
+        return cmd
+
+    def collect(self, config: str = FIXED) -> list:
+        r = self.run(config, None, f"collect-{config}")
+        if not r.order:
+            raise RuntimeError(f"collection failed: no test ran under `python -m detpy {self.runner_name}`")
+        self.orders.setdefault(config, list(r.order))
+        return list(r.order)
+
+
+@dataclass
+class PlanRunner(Runner):
+    """``fenvix repro TEST --plan PLAN`` (audit G-1557): a failure seen under pytest-xdist, searched in the list of
+    the worker that ran the test (``plan.json`` of the -n run), serially: every configuration's order is that list."""
+
+    plan_list: list = field(default_factory=list)
+
+    def order_of(self, config: str) -> list:
+        return list(self.plan_list)
+
+    def collect(self, config: str = FIXED) -> list:
+        return list(self.plan_list)
+
+
+def plan_worker(plan_path: str, test: str) -> tuple[str, list, str]:
+    """(worker, its list, the run's configuration: 'fixed' or the seed) of the worker that ran ``test``."""
+    with open(plan_path) as f:
+        plan = json.load(f)
+    if plan.get("format") != "detpy-plan":
+        raise ValueError(f"{plan_path} is not a plan written by a `--det -n N` run")
+    for wid, ids in sorted((plan.get("lists") or {}).items()):
+        if test in ids:
+            config = FIXED
+            trace = os.path.join(os.path.dirname(plan_path), "trace.jsonl")
+            try:
+                with open(trace) as t:
+                    meta = json.loads(t.readline()).get("meta") or {}
+                if meta.get("shuffle"):
+                    config = str(meta.get("seed"))
+            except (OSError, ValueError):
+                pass
+            return wid, list(ids), config
+    raise ValueError(f"{test} is in no worker list of {plan_path}")
+
+
+def shell_command(runner_name: str, config: str, order_path: str, args: list) -> str:
+    import shlex
+
+    words = ["python", "-m", "detpy", runner_name, "--det"]
+    if config != FIXED:
+        words.append(f"--det-seed={config}")
+    words.append(f"--det-order={order_path}")
+    return " ".join(shlex.quote(w) for w in [*words, *args])
+
+
 def order_for(collected: list, config: str) -> list:
     """The shuffle alone (no plugin adjustments such as pytest-django's groups);
     ``Runner.order_of`` gives the order a run really uses."""
@@ -209,17 +277,80 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     return result
 
 
+def provenance(cwd: Path, fail_trace: Path, python: str) -> dict:
+    """What a bundle needs to be replayed elsewhere (audit G-1556): the commit (and whether the checkout had local
+    changes), the interpreter, the installed distributions, the run inputs of the failing run (time zone, locale,
+    environment digests, seed, ...)."""
+    def git(*args):
+        try:
+            p = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, timeout=30)
+            return p.stdout.strip() if p.returncode == 0 else None
+        except (OSError, subprocess.SubprocessError):
+            return None
+
+    out: dict = {"commit": git("rev-parse", "HEAD"), "dirty": None, "python": None, "platform": sys.platform,
+                 "distributions": [], "inputs": {}}
+    status = git("status", "--porcelain", "--untracked-files=no")
+    out["dirty"] = None if status is None else bool(status)
+    try:
+        code = ("import sys, json, importlib.metadata as m; print(json.dumps([sys.version.split()[0], sorted("
+                "f\"{d.metadata['Name']}=={d.version}\" for d in m.distributions() if d.metadata['Name'])]))")
+        p = subprocess.run([python, "-c", code], capture_output=True, text=True, timeout=60)
+        out["python"], out["distributions"] = json.loads(p.stdout)
+    except Exception:
+        pass
+    try:
+        with open(fail_trace) as f:
+            out["inputs"] = (json.loads(f.readline()).get("meta") or {}).get("inputs") or {}
+    except (OSError, ValueError):
+        pass
+    return out
+
+
+def finish_bundle(b: dict, out_dir: Path, cwd: Path, python: str, runner_name: str) -> dict:
+    """The product's additions to a bundle written by ``reproduce`` (``fenvix repro``): the runner, the replay
+    command of the product, the provenance and a failure location relative to the project (audit G-1556)."""
+    b["runner"] = runner_name
+    bdir = Path(out_dir) / _slug(b.get("test", ""))
+    f = bdir / "bundle.json"
+    if not f.exists():
+        return b
+    data = json.loads(f.read_text())
+    data["runner"] = runner_name
+    data["replay_command"] = f"fenvix replay {data.get('bundle', bdir)}"
+    data["provenance"] = provenance(cwd, bdir / "fail.trace.jsonl", python)
+    _relative_exception(data, cwd)
+    f.write_text(json.dumps(data, indent=2))
+    b.update({k: data[k] for k in ("replay_command", "provenance", "exception") if k in data})
+    return b
+
+
+def _relative_exception(result: dict, cwd: Path) -> None:
+    """The failure's location relative to the project (an absolute local path does not travel)."""
+    exc = result.get("exception")
+    if isinstance(exc, list) and len(exc) > 3 and isinstance(exc[3], str) and os.path.isabs(exc[3]):
+        try:
+            exc[3] = os.path.relpath(exc[3], cwd)
+        except ValueError:
+            pass
+
+
 def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
     data = json.loads((bundle / "bundle.json").read_text())
-    runner = Runner(cwd=Path.cwd(), workdir=bundle / "replay", python=python, pytest_args=data.get("pytest_args", []))
+    shell = data.get("runner") not in (None, "pytest")
+    cls = ShellRunner if shell else Runner
+    kw = {"runner_name": data["runner"]} if shell else {}
+    runner = cls(cwd=Path.cwd(), workdir=bundle / "replay", python=python, pytest_args=data.get("pytest_args", []),
+                 **kw)
     rs = [runner.run(data["config"], data["order"], f"replay-{i}") for i in range(runs)]
     return _core.repro_replay_verdict(data, rs, runs)
 
 
 def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, confirm: int = 10,
-            targets: set | None = None, repro: bool = True, max_runs: int = 400, fallback_seeds: int = 5) -> dict:
-    """Seeds 1..N within the budget; one bundle per failing test (flaky only)."""
-    book = _core.ExploreBook(budget_s, max_seeds)
+            targets: set | None = None, repro: bool = True, max_runs: int = 400, fallback_seeds: int = 5,
+            first_seed: int = 1) -> dict:
+    """Seeds first_seed.. within the budget; one bundle per failing test (flaky only)."""
+    book = _core.ExploreBook(budget_s, max_seeds, first_seed)
     out_dir.mkdir(parents=True, exist_ok=True)
     collected = runner.order_of(FIXED)
     while (s := book.next_seed()) is not None:

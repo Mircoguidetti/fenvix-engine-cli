@@ -1159,13 +1159,20 @@ fn connect_common<'py>(
         if nodeid.is_none() {
             return real.call1((sock, address));
         }
-        let result = real.call1((sock, address))?;
+        // a non-blocking connect (asyncio, selectors) raises BlockingIOError while the connection is under way: the
+        // connection is recorded all the same (audit G-0516: asyncio clients left no recording)
+        let result = real.call1((sock, address));
+        if let Err(e) = &result {
+            if !e.is_instance_of::<pyo3::exceptions::PyBlockingIOError>(py) {
+                return result;
+            }
+        }
         let p = to_int(&port)?;
         let conn = cassette_open(py, pol, &nodeid, &host, &p)?;
         let idx = conn.idx;
         weak_set(&CONNS, sock, conn)?;
         record(py, "socket.connect", join3(&host, &fmt_bytes(py, &port)?, &format!(" record#{idx}")))?;
-        return Ok(result);
+        return result;
     }
     if mode == Mode::Replay && !nodeid.is_none() && start_replay(py, &n, pol, sock, &host, &to_int(&port)?, &nodeid)? {
         return Ok(if real.is(&n.g(py, intern!(py, "_real_connect_ex"))?) {
