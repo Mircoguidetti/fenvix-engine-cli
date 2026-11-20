@@ -328,3 +328,75 @@ def test_3a_shared_writer_is_not_reused_on_a_machine_without_the_edge(pytester, 
         cache_run(pytester, n, label, *args, store=".job1")[0].assert_outcomes(passed=2)
     r, c = cache_run(pytester, n, "m2", *args, store=".job2")  # machine 2
     r.assert_outcomes(passed=2)
+
+
+# =====================================================================================================================
+# 4. P5 / N7: placement and predecessors
+# =====================================================================================================================
+PRED_STATE = {
+    "tests/test_a_pred.py": """
+        import json, pytest
+        pytestmark = pytest.mark.xdist_group("g")
+        def test_a_sets_state():
+            json.r023c_ready = True
+        """,
+    "tests/test_b_dep.py": """
+        import json, os, pytest
+        pytestmark = pytest.mark.xdist_group("g")
+        def test_b_needs_state():
+            with open(os.path.join(os.path.dirname(__file__), "b.txt")) as f:
+                assert f.read().strip() in ("1", "2")
+            assert json.r023c_ready
+        """,
+    "tests/b.txt": "1\n",
+}
+
+
+@needs_cache
+@pytest.mark.parametrize("n", NS)
+def test_4a_predecessor_whose_state_a_running_test_needs_runs_too(pytester, n):
+    """Control for the prefix/carried rule from the other side: B depends on state A leaves in a library module (an
+    order-dependent pass, as the serial and the -n loadgroup orders give it). B's own input changes, so B runs; A is
+    unchanged. Skipping A would fail B where a fresh run passes it."""
+    write(pytester, **PRED_STATE)
+    args = ("tests", "--dist", "loadgroup") if n else ("tests",)
+    fresh_run(pytester, n, *args).assert_outcomes(passed=2)
+    for label in ("s1", "s2"):
+        cache_run(pytester, n, label, *args)[0].assert_outcomes(passed=2)
+    (pytester.path / "tests" / "b.txt").write_text("2\n")
+    fresh_run(pytester, n, *args).assert_outcomes(passed=2)
+    r, c = cache_run(pytester, n, "s3", *args)
+    r.assert_outcomes(passed=2)
+
+
+# =====================================================================================================================
+# 5. Verdicts of the tests --det-cache runs (r3-p4 pydantic-ai: 2,856 failures under --det-cache -n, 1 under --det -n)
+# =====================================================================================================================
+@needs_cache
+@pytest.mark.parametrize("n", NS)
+def test_5a_capture_does_not_call_a_guarded_os_path_abspath(pytester, n):
+    """blockbuster wraps os.path.abspath in an event loop (pydantic-ai's conftest). The capture's ``want`` (capture.rs)
+    looks os.path.abspath up at each use and lets any exception but OSError/ValueError through, into the test. r3-p4
+    pydantic-ai cache-n-* outcomes: 2,812 of 2,856 failures are ``BlockingError: Blocking call to os.path.abspath``;
+    det-n-a has 1 failure. A test must give the same verdict with --det-cache as with --det."""
+    write(pytester, **{
+        "tests/helper_mod.py": "V = 1\n",
+        "tests/test_guard.py": """
+            import os, sys
+            sys.path.insert(0, os.path.dirname(__file__))
+            class Blocking(Exception):
+                pass
+            def test_new_code_under_a_guard():
+                real = os.path.abspath
+                def guard(p):
+                    raise Blocking("Blocking call to os.path.abspath")
+                os.path.abspath = guard
+                try:
+                    import helper_mod
+                    assert helper_mod.V == 1
+                finally:
+                    os.path.abspath = real
+            """})
+    fresh_run(pytester, n, "tests").assert_outcomes(passed=1)
+    r, _ = cache_run(pytester, n, "s1", "tests")
+    r.assert_outcomes(passed=1)
