@@ -486,7 +486,12 @@ function carriedBefore() {
   const snap = snapshotShared();
   const out = [];
   if (CARRY.base) {
-    for (const k of diffShared(CARRY.base, snap)) if (CARRY.changedBy.has(k)) out.push({ key: k, by: CARRY.changedBy.get(k) });
+    // a value an earlier file changed is carried until it is the baseline's again (detjs re-wrapping a user's
+    // replacement at the next file start does not hide it: compared by identity, not filtered)
+    for (const [k, by] of CARRY.changedBy) {
+      if (!(CARRY.base.has(k) && snap.has(k) && Object.is(CARRY.base.get(k), snap.get(k)))) out.push({ key: k, by });
+    }
+    out.sort((x, y) => (x.key < y.key ? -1 : x.key > y.key ? 1 : 0));
   } else {
     CARRY.base = snap;
   }
