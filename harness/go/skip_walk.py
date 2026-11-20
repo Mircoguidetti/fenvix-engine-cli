@@ -168,11 +168,23 @@ def main():
         if code not in (0, 1) and not fresh:
             row["fenvix_tail"] = (out + err)[-2500:]
         decisions = []
+        bad = 0
         try:
             with open(report) as f:
-                decisions = [json.loads(l) for l in f if l.strip()]
+                for l in f:
+                    if not l.strip():
+                        continue
+                    try:
+                        decisions.append(json.loads(l))
+                    except ValueError:
+                        bad += 1
         except OSError:
             row["notes"] = "no decisions file"
+        if bad:
+            # a decisions file that does not parse: this commit's rows are not
+            # trusted (status "error" is left out of every table); the walk goes on
+            row["notes"] = f"{bad} malformed decision lines"
+            row["status"] = "error"
         # 2. go's own test cache (it does not cache results that read files modified in the last 2 s)
         time.sleep(max(0.0, 2.1 - (time.time() - t_commit)))
         t = time.time()
@@ -219,7 +231,7 @@ def main():
                 verdict = "flaky" if plain_ok and fenvix_ok else ("broken-by-skip" if plain_ok else "wrong")
                 checks.append({"rule": rule, "pkg": tr["pkg"], "test": tr["test"], "cached": cached_outcome,
                                "fresh": tr["fresh"], "reruns": outs, "fenvix_reruns": fouts, "verdict": verdict})
-        row.update({"status": "ok", "tests": tests, "go_cached_packages": go_cached, "checks": checks,
+        row.update({"status": row.get("status", "ok"), "tests": tests, "go_cached_packages": go_cached, "checks": checks,
                     "seconds": round(time.time() - t_commit, 1)})
         n = len(tests)
         reused = sum(1 for x in tests if x["reuse"])
