@@ -10,7 +10,11 @@ profile="${FENVIX_PROFILE:-release}"
 stage="$here/target/stage"
 rm -rf "$stage" && mkdir -p "$stage/fenvix" "$here/dist"
 cp "$here/rt/target/fenvix-rt-0.1.0.jar" "$stage/fenvix/fenvix-rt.jar"
-cp "$root/target/release/libfenvix_jvm.so" "$stage/fenvix/libfenvix_jvm.so"
+# the host's library (.so on Linux, .dylib on macOS; audit G-0497), stored under the one name the agent extracts
+# and System.load()s (the loader reads the file format, not the extension)
+lib="$root/target/release/libfenvix_jvm.so"
+[ -f "$lib" ] || lib="$root/target/release/libfenvix_jvm.dylib"
+cp "$lib" "$stage/fenvix/libfenvix_jvm.so"
 cp "$here/gradle/fenvix.init.gradle" "$stage/fenvix/fenvix.init.gradle"
 cp "$here/maven-ext/target/fenvix-maven-ext.jar" "$stage/fenvix/fenvix-maven-ext.jar"
 cp "$here/agent/target/fenvix-agent.jar" "$here/dist/fenvix-agent.jar"

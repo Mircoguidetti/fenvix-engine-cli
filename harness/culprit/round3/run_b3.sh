@@ -1,7 +1,7 @@
 #!/bin/sh
 # fix round 3: kind b re-run with the fixed finder, one project at a time (lock = mkdir)
 cd /home/user/work; WD=/home/user/work
-export CULPRIT_WHEEL=$(ls /home/user/work/wheels2/detpy-*.whl)
+export CULPRIT_WHEEL=$(ls /home/user/work/wheels2/fenvix-*.whl)
 E=/home/user/fenvix-engine-cli/harness/culprit
 mkdir -p locks3b results3 logs3
 for n in pytest pyparsing filelock attrs click faker markdown jsonschema; do

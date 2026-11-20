@@ -6,9 +6,6 @@ name: jvm-harness
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/jvm-l0]
-    paths: [jvm/harness/RUN]
 
 permissions:
   contents: write
@@ -89,7 +86,7 @@ jobs:
         run: |
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/harness/results/idoft/prepare.json
-          git commit -m "JVM harness: prepare results (run ${{ github.run_id }})" || exit 0
+          git commit -m "JVM harness: prepare results (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5 6; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*7)); done
 
   round:
@@ -128,7 +125,7 @@ jobs:
           gzip -f jvm/harness/results/idoft/${{ matrix.name }}/*.log || true
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/harness/results/idoft/${{ matrix.name }}
-          git commit -m "JVM harness: ${{ matrix.name }} (run ${{ github.run_id }})" || exit 0
+          git commit -m "JVM harness: ${{ matrix.name }} (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*9)); done
 
   aggregate:
@@ -142,5 +139,5 @@ jobs:
       - run: |
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/harness/results/idoft/REPORT.md jvm/harness/results/idoft/summary.json
-          git commit -m "JVM harness: report (run ${{ github.run_id }})" || exit 0
+          git commit -m "JVM harness: report (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5 6; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*7)); done

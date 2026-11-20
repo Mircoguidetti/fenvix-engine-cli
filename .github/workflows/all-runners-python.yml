@@ -11,9 +11,7 @@ name: all-runners-python
 #            tracks/all-runners-python/results/<run_id>/
 
 on:
-  push:
-    branches: [claude/all-runners-2]
-    paths: [tracks/all-runners-python/run.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

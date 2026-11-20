@@ -182,7 +182,17 @@ for (const runner of RUNNERS) {
       });
       fs.symlinkSync('a.txt', path.join(dir, 'data/cur'));
       fs.writeFileSync(path.join(dir, 'ino.txt'), String(fs.lstatSync(path.join(dir, 'data/cur')).ino));
-      noWrongReuse(runner, dir, F('lino'), () => { fs.rmSync(path.join(dir, 'data/cur')); fs.writeFileSync(path.join(dir, 'data/tmp'), ''); fs.symlinkSync('b.txt', path.join(dir, 'data/cur')); });
+      noWrongReuse(runner, dir, F('lino'), () => {
+        // a new link with another inode (a filesystem may hand the freed inode straight back: retry until it differs)
+        const cur = path.join(dir, 'data/cur');
+        const old = fs.lstatSync(cur).ino;
+        fs.rmSync(cur);
+        for (let i = 0; ; i++) {
+          fs.symlinkSync('b.txt', cur);
+          if (fs.lstatSync(cur).ino !== old) break;
+          fs.renameSync(cur, path.join(dir, `data/held${i}`));
+        }
+      });
     });
 
     t('keeps: isFile() of a Stats object does not make its size an input', T, () => {

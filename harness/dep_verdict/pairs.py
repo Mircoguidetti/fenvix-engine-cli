@@ -15,7 +15,7 @@ For every dependency-only commit C (``commits.json``, from ``find_commits.py``) 
    (files read outside the identity files, environment variables read, refusal reasons such as a connection).
 
     python3 harness/dep_verdict/pairs.py --spec harness/dep_verdict/specs/prefect.json \\
-        --commits harness/dep_verdict/commits.json --work /tmp/w --out /tmp/prefect.json --wheel dist/detpy-*.whl
+        --commits harness/dep_verdict/commits.json --work /tmp/w --out /tmp/prefect.json --wheel dist/fenvix-*.whl
 """
 
 from __future__ import annotations

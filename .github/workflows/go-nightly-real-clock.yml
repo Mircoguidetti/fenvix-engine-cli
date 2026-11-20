@@ -12,12 +12,7 @@
 name: go-nightly-real-clock
 
 on:
-  schedule:
-    - cron: "17 3 * * *"
   workflow_dispatch: {}
-  push:
-    branches: [claude/go-l0]
-    paths: [harness/go/NIGHTLY]
 
 permissions:
   contents: write
@@ -58,5 +53,5 @@ jobs:
           [ -d "$d" ] || exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$d" && git commit -qm "Go nightly real-clock check from run ${{ github.run_id }}" || exit 0
+          git add "$d" && git commit -qm "Go nightly real-clock check from run ${{ github.run_id }} [skip ci]" || exit 0
           for i in 1 2 3 4 5; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done

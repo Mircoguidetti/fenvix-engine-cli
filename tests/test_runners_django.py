@@ -142,6 +142,10 @@ def test_wrong_reuse(tmp_path, c):
         c = dict(c, control=False)
     root = tmp_path / "p"
     project(root, "")
+    if c["name"] == "timezone_pinned":
+        # Django sets TZ from settings.TIME_ZONE (time.tzset) at start-up, over the tz control: the project pins it
+        # (UTC), and a machine TZ change still cannot change the result (reuse kept)
+        (root / "site" / "proj" / "settings.py").write_text(SETTINGS + 'TIME_ZONE = "UTC"\n')
     first, second = run_case(c, lambda r, env: dj(r, env=env), root,
                              lambda r, c: (r / "site" / "app" / "tests.py").write_text(_tests(c)), root / "site")
     check_case(c, first, second, "site/app/tests.py::T::test_x", "site/app/tests.py::C::test_control")

@@ -779,16 +779,20 @@ def test_children_alive_and_its_audit_events_match_reference(ref, monkeypatch):
         assert seen[n:m] == seen[m:], (seen[n:m], seen[m:])
         return a, seen[n:m]
 
-    _, events = both()
+    alive, events = both()
     if sys.platform == "linux":
         assert events[0] == ("os.listdir", ("/proc/self/task",))
         assert events[1][0] == "open" and events[1][1][1:] == ("r", os.O_RDONLY | os.O_CLOEXEC)
+    else:
+        assert events == [] and alive is False  # the OS's list (macOS: proc_listchildpids), no /proc reads
     p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
-        assert both()[0] is (sys.platform == "linux")
+        assert both()[0] is True  # a live child is seen on every supported OS (audit G-0158)
     finally:
         p.kill()
         p.wait()
+    if not sys.platform.startswith("linux"):
+        return  # what follows replaces the /proc reader's open and listdir, which only Linux uses
     # open replaced (a test's mock_open), reads that fail, a listing replaced
     with mock.patch("builtins.open", mock.mock_open(read_data="12 ")):
         assert both()[0] is (sys.platform == "linux")
@@ -823,14 +827,16 @@ def test_wall_derived_and_gettime_match_reference(ref, capture):
         cases += [("clock_gettime", (i,)), ("clock_gettime_ns", (i,))]
     cases += [("clock_gettime", ()), ("clock_gettime_ns", (0, 1))]
     real_ids = {getattr(time, n) for n in ("CLOCK_PROCESS_CPUTIME_ID", "CLOCK_THREAD_CPUTIME_ID") if hasattr(time, n)}
-    real_ids.add(-7)  # a negative id is a CPU-time clock of a process or thread (Linux): its value moves too
 
     def kind_only(r):  # the real CPU clocks: the type of the value, the clock's state
         (res, st) = r
         return (res[0], type(res[1])) if res[0] == "ok" else res, st
 
     for name, args in cases:
-        view = kind_only if args and type(args[0]) is int and args[0] in real_ids else (lambda r: r)
+        # a negative id is a CPU-time clock of a process or thread on Linux (-7: this process's user time,
+        # (~0 << 3) | CPUCLOCK_VIRT), real like the named ones: two readings agree only until its tick advances
+        view = (kind_only if args and type(args[0]) is int and (args[0] in real_ids or args[0] < 0)
+                else (lambda r: r))
         _both(ref, getattr(clock, name), getattr(ref, name), *args, _view=view)
     for kw in ({"secs": 5}, {"t": time.gmtime(0)}, {"fmt": "%Y"}, {"clk_id": 0}, {"x": 1}):
         for name in ("localtime", "asctime", "strftime", "clock_gettime"):
@@ -1076,10 +1082,14 @@ def test_t():
          "localtime": per_call(time.localtime, 20000), "event_wait": per_call(lambda: ev.wait(0.001), 200)}
     print("NSPERCALL", r)
 ''')
+    # interleaved runs, the fastest of each path compared: one run per path compared two samples taken at different
+    # moments, and the load of the machine in between (other suites, CI neighbours) decided the outcome
     res = {}
-    for mode in ("ref", "new"):
-        r = _run(pytester, mode, f"--det-trace={pytester.path / f'trace-{mode}.jsonl'}")
-        line = [x for x in r.stdout.lines if "NSPERCALL" in x][0]
-        res[mode] = eval(line.split("NSPERCALL", 1)[1])  # noqa: S307 - our own printed dict
-    print("ns per call in a recorded test:", res)
+    for i in range(3):
+        for mode in ("ref", "new"):
+            r = _run(pytester, mode, f"--det-trace={pytester.path / f'trace-{mode}-{i}.jsonl'}")
+            line = [x for x in r.stdout.lines if "NSPERCALL" in x][0]
+            got = eval(line.split("NSPERCALL", 1)[1])  # noqa: S307 - our own printed dict
+            res[mode] = {k: min(v, res.get(mode, {}).get(k, v)) for k, v in got.items()}
+    print("ns per call in a recorded test (fastest of 3):", res)
     assert res["new"]["now"] < res["ref"]["now"] and res["new"]["localtime"] < res["ref"]["localtime"]
