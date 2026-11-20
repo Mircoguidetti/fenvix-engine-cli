@@ -1797,6 +1797,8 @@ function installNet(cap) {
 function installRealClock(cap) {
   const real = (what) => {
     if (!cap.active || cap.busy || cap.isGlobal) return;
+    // a clock Level 0 virtualizes in this process (src/clock.js): a clock read keyed by the epoch, not a real one
+    if (STATE.virtualClocks && STATE.virtualClocks.some((v) => String(what).startsWith(v))) return;
     cap.busy++;
     let infra;
     try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
