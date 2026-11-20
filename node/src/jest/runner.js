@@ -10,9 +10,12 @@
 // (jest-circus).
 const path = require('node:path');
 const controls = require('../controls');
+const parallel = require('../parallel');
 
 const { STATE } = controls;
-const CAP = globalThis[Symbol.for('detjs.cache.session')] ? require('../cache/capture').CAPTURE : null;
+// the session's capture (in band: the main process) or a worker's (parallel lanes: src/jest/worker.js)
+const IN_WORKER = Boolean(globalThis[Symbol.for('detjs.cache.worker')]);
+const CAP = globalThis[Symbol.for('detjs.cache.session')] || IN_WORKER ? require('../cache/capture').CAPTURE : null;
 
 /** Modules Jest's runtime loaded for the current file (sources it read and its module registries). */
 function runtimeModules(runtime) {
@@ -86,6 +89,11 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   const fileId = path.relative(root, testPath).split(path.sep).join('/');
   const project = config.displayName ? config.displayName.name : '';
   const label = project ? `${project}|${fileId}` : fileId;
+  if (Number(process.env.DETJS_WORKERS || 1) > 1) parallel.installFootprint(root);
+  // a lane runs one file at a time, in plan order (src/parallel.js); then the process-wide state that earlier files
+  // of this process left changed (a worker, or the in-band process, runs many files): reported, and not cached
+  parallel.enter(label, { runner: 'jest' });
+  const carried = parallel.carriedBefore();
   controls.openFile(fileId, project);
 
   let ids = new Map();
@@ -171,6 +179,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   if (CAP) {
     CAP.beginFileTests();
     if (CAP.label !== label) { CAP.resetFile(); CAP.setCtx('f', label); }
+    if (carried.length) CAP.add(['flag', 'carried', carried.slice(0, 3).map((x) => `${x.key} changed by ${x.by}`).join('; ')], false);
   }
   const t0 = Date.now();
   let result;
@@ -180,6 +189,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
   } finally {
     endPending();
     controls.closeFile();
+    parallel.carriedAfter(label);
+    parallel.leave(label, carried.length ? { carried } : {});
     if (CAP && c.dir) {
       try {
         const ok = Boolean(result) && !result.testExecError && !(result.numFailingTests > 0);
@@ -187,6 +198,8 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
         const ended = new Set(CAP.tests.map((t) => t.id));
         for (const [t, id] of ids) if (t && t.type === 'test' && !ended.has(id)) CAP.tests.push({ id, outcome: 'skipped', duration: 0, fingerprint: '', upto: CAP.log.length });
         const capture = CAP.fileCapture({ fileId, project, label, ok, duration: (Date.now() - t0) / 1000 }, runtimeModules(runtime));
+        // a worker's own items outside any file (src/jest/worker.js): global inputs, as the main process's in band
+        if (IN_WORKER) capture.worker_global = CAP.global;
         controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(fileId, project).replace(/\.jsonl$/, '')}-${process.pid}.json`), capture);
       } catch (e) {
         process.stderr.write(`detjs cache: capture of ${fileId} not written: ${e && e.stack}\n`);

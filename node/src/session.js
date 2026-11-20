@@ -32,6 +32,9 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
+  --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: serial, or the
+                           runner's own --maxWorkers / -w / --fileParallelism when given on the command line)
+  --det-plan=TRACE|JSON    replay the lane plan of an earlier parallel run (its trace's meta.parallel.plan)
 `;
 
 /** Split argv into detjs options and runner arguments. */
@@ -42,13 +45,14 @@ function parseArgs(argv, env = process.env) {
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null,
+    workers: null, plan: null,
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
   const takes = new Set(['--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
-    '--det-cache', '--det-cache-receipts', '--det-cache-summary']);
+    '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-workers', '--det-plan']);
   for (let i = 0; i < argv.length; i++) {
     let a = argv[i];
     if (!a.startsWith('--det')) { rest.push(a); continue; }
@@ -76,6 +80,8 @@ function parseArgs(argv, env = process.env) {
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;
+      case '--det-workers': opts.workers = value; break;
+      case '--det-plan': opts.plan = value; break;
       case '--det-help': process.stdout.write(HELP); process.exit(0); break;
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
@@ -123,7 +129,7 @@ function header(run, opts, extra) {
   const order = opts.seed !== null ? `shuffled with seed ${opts.seed}` : 'fixed (sorted files, declaration order)';
   return [
     `detjs ${VERSION}: Level 0 active; runner=${extra.runner} ${extra.runnerVersion}; controls=${[...c.controls].sort().join(',')}; order ${order}`,
-    `detjs: serial execution (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; node ${process.version}`,
+    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; node ${process.version}`,
   ];
 }
 

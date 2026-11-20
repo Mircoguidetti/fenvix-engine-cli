@@ -361,6 +361,34 @@ pub fn merge_traces(parts: Vec<String>, out: String, meta_json: String, order: V
     Ok(MergeResult { n_tests: footer.n_tests as u32, order_digest: footer.order_digest, skipped })
 }
 
+/// Fixed plan of a parallel `--det` run (detjs `--det-workers`): `detpy_core::schedule::plan` over test files (the
+/// unit of placement), the same planner as the Python xdist path. `previous_json`: atom key -> worker of the last
+/// plan (stickiness). Returns the plan as JSON: lists (positions per worker, serial order), atom_worker, loads,
+/// makespan, lpt_makespan, sticky, kept, digest.
+#[napi]
+pub fn plan_lanes(
+    ids: Vec<String>,
+    atoms: Vec<String>,
+    costs: Vec<Option<f64>>,
+    workers: u32,
+    previous_json: String,
+    tolerance: f64,
+    slack: f64,
+) -> Result<String> {
+    let previous: std::collections::BTreeMap<String, usize> = if previous_json.is_empty() {
+        Default::default()
+    } else {
+        serde_json::from_str(&previous_json).map_err(|e| bad(format!("bad previous plan json: {e}")))?
+    };
+    let input = detpy_core::schedule::PlanInput { ids, atoms, costs, workers: workers as usize, previous, tolerance, slack };
+    let p = detpy_core::schedule::plan(&input).map_err(bad)?;
+    Ok(serde_json::json!({
+        "lists": p.lists, "atom_worker": p.atom_worker, "loads": p.loads, "makespan": p.makespan,
+        "lpt_makespan": p.lpt_makespan, "sticky": p.sticky, "kept": p.kept, "digest": p.digest,
+    })
+    .to_string())
+}
+
 /// JSON description of the interception backends and their capabilities.
 #[napi]
 pub fn backends() -> String {

@@ -48,8 +48,21 @@ class DetSequencer extends Base {
       ordered = ordered.filter((k) => !skip.has(k.key));
     }
     if (c.dir) {
+      // the trace is merged in the serial order, whatever the lanes
       controls.writeJson(path.join(c.dir, 'order.json'),
-        ordered.map((k) => ({ fileId: k.fileId, part: controls.partName(k.fileId, k.project) })));
+        ordered.map((k) => ({ fileId: k.fileId, part: controls.partName(k.fileId, k.project), key: k.key })));
+    }
+    const workers = Number(process.env.DETJS_WORKERS || 1);
+    if (workers > 1 && c.dir && ordered.length > 1) {
+      // the fixed plan (src/parallel.js): lanes over the files that run, handed to Jest in planned start order; the
+      // worker binding (src/jest/cli.js) sends each file to its lane's worker
+      const parallel = require('../parallel');
+      const plan = parallel.makePlan(root, ordered.map((k) => k.key), workers, { replay: process.env.DETJS_PLAN ? parallel.readReplay(process.env.DETJS_PLAN) : null });
+      parallel.writeRunPlan(c.dir, plan, 'jest-workers');
+      controls.writeJson(path.join(c.dir, 'plan-full.json'), plan);
+      const byKey = new Map(ordered.map((k) => [k.key, k]));
+      // Jest runs small suites in band when it has fast timings for them: none are given
+      return plan.dispatch.map((key) => { const t = byKey.get(key).t; t.duration = undefined; return t; });
     }
     return ordered.map((k) => k.t);
   }

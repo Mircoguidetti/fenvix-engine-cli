@@ -17,6 +17,7 @@ const { spawnSync } = require('node:child_process');
 const session = require('../session');
 const native = require('../native');
 const controls = require('../controls');
+const parallel = require('../parallel');
 const { exportFile } = require('./shell');
 
 function findVitest(root) {
@@ -55,6 +56,20 @@ async function main(argv) {
   const parsed = nodeApi.parseCLI(['vitest', 'run', ...args]);
   const filters = parsed.filter || [];
   const options = parsed.options || {};
+  // parallel lanes: --det-workers, or Vitest's own --maxWorkers / --fileParallelism on the command line
+  if (opts.plan) {
+    // --det-plan: the replayed plan's lanes (src/parallel.js)
+    opts.plan = path.resolve(opts.plan);
+    process.env.DETJS_PLAN = opts.plan;
+    if (opts.workers == null) opts.workers = String(parallel.readReplay(opts.plan).lanes.length);
+  }
+  const want = parallel.resolveWorkers(opts, {
+    workers: options.maxWorkers !== undefined ? parallel.workerCount(options.maxWorkers) : options.fileParallelism === true ? -1 : null,
+    source: options.maxWorkers !== undefined ? '--maxWorkers' : '--fileParallelism',
+    serial: options.fileParallelism === false, serialSource: '--no-file-parallelism',
+  });
+  if (options.fileParallelism === true && options.maxWorkers === undefined && opts.workers == null) want.workers = -1; // Vitest's own default, below
+  const par = { workers: want.workers, source: want.source, refused: null, plan: null, keyOf: new Map(), result: null };
 
   const executed = [];
   let projectsRef = [];
@@ -76,6 +91,7 @@ async function main(argv) {
       keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
       let ordered = keyed;
       if (cfg.shuffle && cfg.controls.has('order')) ordered = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
+      for (const k of keyed) par.keyOf.set(Array.isArray(k.f) ? k.f[1] : (k.f.moduleId ?? k.f.filepath), k.key);
       if (pc) {
         // a file that names a custom environment in a pragma: its project's workers start the capture early
         pc.quiet(() => {
@@ -95,7 +111,14 @@ async function main(argv) {
         }
       }
       executed.length = 0;
-      for (const k of ordered) executed.push({ fileId: k.fileId, part: controls.partName(k.fileId, k.project) });
+      for (const k of ordered) executed.push({ fileId: k.fileId, part: controls.partName(k.fileId, k.project), key: k.key });
+      if (par.workers > 1 && ordered.length) {
+        // the fixed plan: lanes over the files that run (serial order), handed to Vitest in planned start order
+        par.plan = parallel.makePlan(root, ordered.map((k) => k.key), par.workers, { replay: opts.plan ? parallel.readReplay(path.resolve(opts.plan)) : null });
+        parallel.writeRunPlan(run.dir, par.plan, 'vitest');
+        const byKey = new Map(ordered.map((k) => [k.key, k]));
+        return par.plan.dispatch.map((key) => byKey.get(key).f);
+      }
       return ordered.map((k) => k.f);
     }
   }
@@ -111,30 +134,46 @@ async function main(argv) {
   Object.assign(options, {
     run: true,
     watch: false,
-    fileParallelism: false,
-    maxWorkers: 1,
+    fileParallelism: par.workers !== 1,
+    maxWorkers: par.workers > 1 ? par.workers : par.workers === -1 ? undefined : 1,
     maxConcurrency: 1,
     runner: runnerShim,
     sequence: { ...(options.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer },
   });
-  if (major < 4) options.minWorkers = 1;
+  if (major < 4) options.minWorkers = par.workers > 1 ? par.workers : 1;
+  if (options.maxWorkers === undefined) delete options.maxWorkers;
 
   let finished = false;
+  // after the run, before the cache records: placement against the plan, hazards, carried state (src/parallel.js)
+  const collectParallel = () => {
+    if (par.result) return par.result;
+    if (par.poll) clearInterval(par.poll);
+    par.result = parallel.collect(root, run.dir, executed.map((e) => e.key), par.plan, {
+      shared: false, planned: { workers: par.workers, source: par.source, refused: par.refused },
+    });
+    if (pc) pc.parallelFlags = par.result.flags;
+    for (const l of par.result.lines) fs.writeSync(2, `${l}\n`);
+    return par.result;
+  };
   const finalize = () => {
     if (finished) return;
     finished = true;
+    collectParallel();
     if (pc) for (const l of pc.finishSync()) fs.writeSync(1, `${l}\n`);
-    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; maxWorkers=1, fileParallelism=false, maxConcurrency=1`;
+    const lanes = par.plan ? `${par.plan.workers} lanes (fixed plan ${par.plan.digest}), fileParallelism=true` : 'maxWorkers=1, fileParallelism=false';
+    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; ${lanes}, maxConcurrency=1${par.refused ? `; parallel refused: ${par.refused}` : ''}`;
     const { lines } = session.finish(run, opts, executed, {
-      runner: 'vitest', runner_version: pkg.version, isolation, serial: true,
-      pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args,
+      runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
+      pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
     });
     for (const l of lines) fs.writeSync(1, `${l}\n`); // sync: the runner may be exiting
   };
   process.on('exit', finalize);
-  for (const l of session.header(run, opts, { runner: 'vitest', runnerVersion: pkg.version, isolation: 'one worker, files in sequence' })) {
-    process.stdout.write(`${l}\n`);
-  }
+  const headerLines = () => session.header(run, opts, {
+    runner: 'vitest', runnerVersion: pkg.version,
+    parallel: par.workers > 1 ? `parallel execution in ${par.workers} lanes with a fixed plan (${par.source})` : null,
+    isolation: par.workers > 1 ? 'one file at a time per lane, each in a fresh worker' : `one worker, files in sequence${par.refused ? `; parallel refused: ${par.refused}` : ''}`,
+  });
   // createVitest + start (instead of startVitest) so that the detjs runner and
   // the ordering options can be set on every resolved project: project
   // configs (Vitest workspaces / `projects`) do not inherit them from the CLI.
@@ -174,6 +213,59 @@ async function main(argv) {
   // custom environment named by a file's pragma: in the sequencer); added after the configuration digest, which
   // covers the project's own execArgv (the preload modules and what they read are recorded as inputs of the tests)
   if (pc) for (const pr of projects) { const c = pr.config || pr.getConfig?.(); if (needsEarly(c)) addEarlyCapture(c); }
+  // parallel lanes need one file per fresh worker: a worker shared by several files (isolate=false, vm pools),
+  // browser mode, the typecheck pool or network recording (one cassette file per process) keep the run serial
+  if (par.workers !== 1) {
+    const reasons = new Set();
+    for (const pr of projects) {
+      const c = pr.config || pr.getConfig?.();
+      if (!c) continue;
+      const po = (c.poolOptions && c.poolOptions[c.pool]) || {};
+      if (c.browser && c.browser.enabled) reasons.add('browser mode');
+      else if (c.pool === 'vmThreads' || c.pool === 'vmForks') reasons.add(`pool ${c.pool} (files share a worker)`);
+      else if (c.pool === 'typescript') reasons.add('typecheck pool');
+      else if (c.isolate === false || po.isolate === false) reasons.add('isolate=false (files share a worker: placement would decide what state a file inherits)');
+      if (po.singleThread || po.singleFork) reasons.add('singleThread/singleFork');
+    }
+    if (run.netMode === 'record') reasons.add('--det-record (one cassette per process)');
+    if (par.workers === -1) {
+      par.workers = Math.max(1, Number((ctx.config && ctx.config.maxWorkers) || 1));
+      if (par.workers === 1) reasons.add('Vitest resolved maxWorkers=1');
+    }
+    if (reasons.size) { par.refused = [...reasons].join('; '); par.workers = 1; }
+    const n = par.workers;
+    process.env.DETJS_WORKERS = String(n);
+    for (const c of [ctx.config, ...projects.map((pr) => pr.config || pr.getConfig?.())]) {
+      if (!c) continue;
+      c.maxWorkers = n;
+      c.fileParallelism = n > 1;
+      if (major < 4) c.minWorkers = n;
+      if (c.poolOptions && typeof c.poolOptions === 'object') {
+        for (const [k, po] of Object.entries(c.poolOptions)) {
+          if (!po || typeof po !== 'object') continue;
+          if (k === 'threads' || k === 'vmThreads') { po.maxThreads = n; po.minThreads = n; }
+          if (k === 'forks' || k === 'vmForks') { po.maxForks = n; po.minForks = n; }
+        }
+      }
+    }
+    if (par.refused) process.stderr.write(`detjs: parallel refused, running serially: ${par.refused}\n`);
+  }
+  for (const l of headerLines()) process.stdout.write(`${l}\n`);
+  if (par.workers > 1) {
+    // a file whose worker died never marks itself finished: the main process marks every file Vitest reports final
+    par.poll = setInterval(() => {
+      try {
+        for (const f of (ctx.state && ctx.state.getFiles ? ctx.state.getFiles() : [])) {
+          const st = f.result && f.result.state;
+          if (st === 'pass' || st === 'fail' || st === 'skip' || st === 'todo') {
+            const key = par.keyOf.get(f.filepath);
+            if (key) parallel.markDone(run.dir, key);
+          }
+        }
+      } catch { /* report only */ }
+    }, 250);
+    par.poll.unref();
+  }
   try {
     await ctx.start(filters);
   } catch (e) {
@@ -245,7 +337,7 @@ function addEarlyCapture(c) {
 }
 
 // Options and configuration keys that never change a test's result (selection, output, detjs' own settings).
-const VOLATILE_ARGS = new Set(['reporter', 'reporters', 'outputFile', 'silent', 'watch', 'run', 'ui', 'open', 'api', 'project',
+const VOLATILE_ARGS = new Set(['maxWorkers', 'max-workers', 'minWorkers', 'min-workers', 'fileParallelism', 'file-parallelism', 'no-file-parallelism', 'reporter', 'reporters', 'outputFile', 'silent', 'watch', 'run', 'ui', 'open', 'api', 'project',
   'shard', 'changed', 'passWithNoTests', 'clearScreen', 'logHeapUsage', 'color', 'hideSkippedTests', 'dir', 'includeTaskLocation',
   'standalone', 'printConsoleTrace', 'mergeReports', 'json', 'filter', '_', '--']);
 const VOLATILE_CONFIG = new Set(['reporters', 'outputFile', 'watch', 'ui', 'api', 'open', 'runner', 'maxWorkers', 'minWorkers',

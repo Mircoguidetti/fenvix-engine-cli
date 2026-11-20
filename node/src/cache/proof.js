@@ -46,7 +46,10 @@ function digest(x) {
 const OWN_STRING = /[\\/]node_modules[\\/]\.detjs[\\/]runner-\d+\.mjs$/;
 // output and selection settings never change a result; the resolved configuration repeats them at several depths
 const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated', 'outputFile', 'reporters', 'reporter', 'shard', 'changed',
-  'passWithNoTests', 'filters', 'cliExclude', 'related']);
+  'passWithNoTests', 'filters', 'cliExclude', 'related',
+  // worker counts, wherever Vitest repeats them (resolved projects, CLI options): serial and parallel lanes give the
+  // same results (a placement that could change one is refused or not cached: src/parallel.js)
+  'maxWorkers', 'minWorkers', 'fileParallelism', 'maxThreads', 'minThreads', 'maxForks', 'minForks']);
 const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
 
 /** Deterministic, cycle-safe digestable form of a configuration value (`volatile`: top-level keys left out). */
@@ -123,6 +126,34 @@ function neutral(text) {
   if (text.startsWith('config:')) return 'config: runner configuration, detjs options or configuration files changed';
   if (text.startsWith('runtime:')) return 'runtime: node, native libraries, time zone, locale, CPU level or installed packages changed';
   return text;
+}
+
+/**
+ * Flags that depend on placement, added to a capture before the session policy records it (positions: a flag
+ * applies to the tests that end after it): a read of a variable that names the process's placement (worker or
+ * pool id: its value depends on the plan, or on timing with the runner's own scheduler) right after the read;
+ * a file that touched a path or port another lane touched, or that ran after a file that left process-wide state
+ * changed (src/parallel.js `collect`), from the start.
+ */
+function placementFlags(c, fileFlags) {
+  const { PLACEMENT_VARS } = require('../parallel');
+  const items = c.items || [];
+  const ins = []; // [position, item]
+  const f = fileFlags && fileFlags.get(c.label);
+  if (f) ins.push([0, ['flag', f[0], f[1]]]);
+  items.forEach((it, i) => { if (it[0] === 'env' && PLACEMENT_VARS.has(it[1])) ins.push([i + 1, ['flag', 'placement', it[1]]]); });
+  if (!ins.length) return;
+  const out = [];
+  const shift = new Array(items.length + 1).fill(0);
+  let k = 0;
+  for (let i = 0; i <= items.length; i++) {
+    while (k < ins.length && ins[k][0] === i) { out.push(ins[k][1]); k++; }
+    shift[i] = k;
+    if (i < items.length) out.push(items[i]);
+  }
+  c.items = out;
+  // a test's inputs are the first `upto` items: the items inserted at or before that position are its own too
+  for (const t of c.tests || []) t.upto = (t.upto || 0) + shift[Math.min(t.upto || 0, items.length)];
 }
 
 function ownFile(nodeid) {
@@ -368,6 +399,7 @@ class ProofSession {
     for (const n of names) {
       let c;
       try { c = JSON.parse(fs.readFileSync(path.join(dir, n), 'utf8')); } catch { continue; /* truncated: not recorded */ }
+      placementFlags(c, this.parallelFlags);
       // a shell whose test processes cannot see the runner's verdict on the file (node:test, Mocha per-file
       // processes) corrects `ok` from the runner's own results
       out.push(this.captureFilter ? this.captureFilter(c) : c);
@@ -438,8 +470,15 @@ class ProofSession {
     for (const p of projects) configFor[p] = this.configFor(p);
     const hits = {};
     for (const [nid, rc] of this.hits) hits[nid] = rc.outcome;
+    // Jest workers' own items outside any file (src/jest/worker.js): global inputs of every file, as in band
+    const global = CAPTURE.global.slice();
+    const seen = new Set(global.map((it) => JSON.stringify(it)));
+    for (const c of captures) {
+      for (const it of c.worker_global || []) { const k = JSON.stringify(it); if (!seen.has(k)) { seen.add(k); global.push(it); } }
+      delete c.worker_global;
+    }
     const input = {
-      global: CAPTURE.global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
+      global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
       urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
       uncacheable_projects: [...this.uncacheableProjects.keys()], verify: Boolean(this.verify), hits,

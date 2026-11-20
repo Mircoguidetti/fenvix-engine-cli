@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const controls = require('../controls');
+const parallel = require('../parallel');
 
 const { STATE } = controls;
 const CACHE = process.env.DETJS_CACHE === '1';
@@ -82,6 +83,8 @@ function makeRunner(Base) {
         controls.installProcess();
         controls.installRealm(globalThis, { sameRealm: true });
         if (CAP) CAP.install({ role: 'worker', root: this.__det.root });
+        // parallel lanes: the paths and ports each file touches (cross-worker hazards, src/parallel.js)
+        if (Number(process.env.DETJS_WORKERS || 1) > 1) parallel.installFootprint(this.__det.root);
       }
     }
 
@@ -89,6 +92,8 @@ function makeRunner(Base) {
       const fileId = path.relative(this.__det.root, filepath).split(path.sep).join('/');
       if (this.__det.opened === fileId) return;
       this.__det.opened = fileId;
+      // a lane runs one file at a time, in plan order (waits for the lane's previous file); pool id = lane
+      parallel.enter(project ? `${project}|${fileId}` : fileId, { runner: 'vitest' });
       controls.openFile(fileId, project);
       if (CAP) CAP.setCtx('f', project ? `${project}|${fileId}` : fileId);
     }
@@ -173,6 +178,10 @@ function makeRunner(Base) {
       if (this.__det.active) {
         controls.closeFile();
         this.__det.opened = null;
+        for (const f of files || []) {
+          const fileId = fileIdOf(f, this.__det.root);
+          parallel.leave(this.config.name ? `${this.config.name}|${fileId}` : fileId);
+        }
         if (CAP && process.env.DETJS_DIR) {
           for (const f of files || []) {
             try { writeCapture(f, this.__det, this.config.name); } catch (e) { process.stderr.write(`detjs cache: capture of ${f.filepath} not written: ${e && e.stack}\n`); }

@@ -43,6 +43,10 @@ pub const UNCACHEABLE: &[(&str, &str)] = &[
     ("keygen", "OS randomness drawn in native crypto (key generation, randomized encryption or signatures)"),
     ("preload", "a preload module read the clock or OS entropy before Level 0 was installed"),
     ("loader", "an off-thread module loader (--loader, module.register): what it reads is not observable"),
+    // parallel runs (detjs --det-workers): placement-dependent results
+    ("placement", "reads the worker or pool id the runner gives its process (depends on placement)"),
+    ("carried", "ran after a test file that left process-wide state changed in the same process"),
+    ("cross-worker", "touched a path or port another test file running in parallel also touched"),
 ];
 
 /// The description of an uncacheable flag (None: the flag does not refuse caching).
