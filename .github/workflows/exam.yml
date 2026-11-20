@@ -92,7 +92,7 @@ jobs:
       - name: machine prerequisites the install docs name (strace, locales)
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq strace locales > /dev/null
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace locales faketime > /dev/null
           sudo locale-gen de_DE.UTF-8 C.UTF-8 > /dev/null || true
           corepack enable || true
       - name: leg env

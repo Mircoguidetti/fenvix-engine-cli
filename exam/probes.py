@@ -128,7 +128,7 @@ def _(ctx):
 @probe("F-02.probe.numpy-repro")
 def _(ctx):
     d, env = fam.probe_host(ctx)
-    fam.pip(ctx, d, env, ["numpy"])
+    lib.pip(ctx, d, env, ["numpy"])
     rel = fam.write_probe(d, "np_od", "import numpy\nSTATE = {}\n\ndef test_a():\n    STATE['x'] = 1\n\n\ndef test_b():\n    assert 'x' not in STATE\n")
     rc, out = ctx.sh("np-repro", ["fenvix", "repro", f"{rel}::test_b", "--json"], cwd=d, env=env, timeout=1800)
     (d / rel).unlink(missing_ok=True)
@@ -138,14 +138,14 @@ def _(ctx):
 @probe("F-03.probe.numpy")
 def _(ctx):
     d, env = fam.probe_host(ctx)
-    fam.pip(ctx, d, env, ["numpy"])
+    lib.pip(ctx, d, env, ["numpy"])
     return _py_det_same(ctx, "npverify", W + "import numpy as np\n\ndef test_np():\n    _w(float(np.random.random()))\n")
 
 
 @probe("F-05.probe.numpy")
 def _(ctx):
     d, env = fam.probe_host(ctx)
-    fam.pip(ctx, d, env, ["numpy"])
+    lib.pip(ctx, d, env, ["numpy"])
     rel = fam.write_probe(d, "np_cache", "import numpy as np\n\ndef test_np1():\n    assert np.arange(3).sum() == 3\n\ndef test_np2():\n    np.random.random()\n")
     cache = ctx.work / "np-cache"
     shutil.rmtree(cache, ignore_errors=True)
@@ -199,10 +199,22 @@ def _(ctx):
 
 @probe("F-05.probe.real-clock")
 def _(ctx):
-    dl = int(time.time()) + 4
-    body = f"import datetime\n\ndef test_deadline():\n    assert datetime.datetime.now().timestamp() < {dl}\n"
-    # under --det the virtual clock makes this pass forever; the promise (virtual-day rule) is: not reused across days.
-    return fam.py_cache_probe(ctx, "realclock", body, {}, {}, between=lambda d: time.sleep(6))
+    """Virtual-day rule (DECISIONS 2026-11-19): a result recorded today is not reused on the next UTC day."""
+    if not shutil.which("faketime"):
+        raise Skip("faketime not installed on this machine (the workflow installs it on Linux)")
+    d, env = fam.probe_host(ctx)
+    rel = fam.write_probe(d, "vday", "import datetime, os\n\ndef test_day():\n"
+                          "    assert datetime.datetime.now(datetime.timezone.utc).day == int(os.environ['EXAM_DAY'])\n")
+    import datetime
+    day = str(datetime.datetime.now(datetime.timezone.utc).day)
+    cache = ctx.work / "pvday"
+    shutil.rmtree(cache, ignore_errors=True)
+    base = ["fenvix", "python", "-q", "-p", "no:cacheprovider", "--det", f"--det-cache={cache}", "-W", "ignore", rel]
+    ctx.sh("pvday-1", base, cwd=d, env=dict(env, EXAM_DAY=day))
+    rc2, out2 = ctx.sh("pvday-2", ["faketime", "-f", "+1d"] + base, cwd=d, env=dict(env, EXAM_DAY=day))
+    (d / rel).unlink(missing_ok=True)
+    n = lib.reused_count(out2)
+    return n == 0, f"next UTC day (faketime +1d): reused {n} (expected 0); rc={rc2}"
 
 
 @probe("PY-02.probe.modifyitems")
@@ -238,7 +250,7 @@ def _(ctx):
 @probe("PY-05.probe.testrun-uid")
 def _(ctx):
     d, env = fam.probe_host(ctx)
-    fam.pip(ctx, d, env, ["pytest-xdist"])
+    lib.pip(ctx, d, env, ["pytest-xdist"])
     return _py_det_same(ctx, "uid", W + "def test_uid(testrun_uid):\n    _w(testrun_uid)\n")
 
 
@@ -548,3 +560,78 @@ def _(ctx):
 @probe("JS-04.probe.webserver")
 def _(ctx):
     return _pw_two(ctx, "server", PW_HEAD + "import http from 'node:http';\ntest('server', async ({ page }) => { const s = http.createServer((q, r) => r.end(String(Date.now()) + ' ' + Math.random())).listen(0); const port = s.address().port; await page.goto('http://127.0.0.1:' + port); writeFileSync(process.env.EXAM_OUT, await page.textContent('body')); s.close(); });\n")
+
+
+# ------------------------------------------------------------------------------------------------ added in round 2
+@probe("F-05.probe.audit-rerun")
+def _(ctx):
+    ctx.need_install()
+    rc, out = ctx.sh("pytest-help-audit", "fenvix python --help")
+    have = "--det-cache-audit" in out
+    return have, f"--det-cache-audit in `fenvix python --help`: {have}"
+
+
+@probe("F-06.probe.virtual-day")
+def _(ctx):
+    if not shutil.which("faketime"):
+        raise Skip("faketime not installed on this machine (the workflow installs it on Linux)")
+    d = rows_js._ufo(ctx)
+    rel = "test/exam-vday.test.ts"
+    lib.write(d / rel, "import { test, expect } from 'vitest';\ntest('vday', () => { expect(new Date().getUTCDate()).toBe(Number(process.env.EXAM_DAY)); });\n")
+    import datetime
+    today = datetime.datetime.now(datetime.timezone.utc).day
+    cache = ctx.work / "vday-cache"
+    shutil.rmtree(cache, ignore_errors=True)
+    shutil.rmtree(d / ".detjs", ignore_errors=True)
+    ctx.sh("vday-1", f"fenvix node vitest run --det --det-cache={cache} {rel}", cwd=d, env={"EXAM_DAY": str(today)})
+    shutil.rmtree(d / ".detjs", ignore_errors=True)
+    rc2, out2 = ctx.sh("vday-2", f"faketime -f '+1d' fenvix node vitest run --det --det-cache={cache} {rel}", cwd=d,
+                       env={"EXAM_DAY": str(today)})
+    (d / rel).unlink(missing_ok=True)
+    import re
+    m = re.findall(r"reused with proof (\d+) tests", out2)
+    n = int(m[-1]) if m else 0
+    return n == 0, f"next UTC day (faketime +1d): reused {n} (expected 0: the virtual day changed); rc={rc2}"
+
+
+@probe("JS-02.probe.config-variants")
+def _(ctx):
+    d = rows_js._ufo(ctx)
+    res = {}
+    for pool in ("vmThreads", "vmForks"):
+        r = fam.js_value_probe(ctx, d, "vitest", f"test/exam-pool-{pool}.test.ts",
+                               NW + "test('pool', () => _w([Date.now(), Math.random()]));\n", [{}, {}], args=f"--pool={pool}")
+        v = r["values"]
+        res[pool] = (v[0] is not None and v[0] == v[1] and r["verify_ok"], v)
+    return all(x[0] for x in res.values()), f"per pool (controlled, values): {res}"
+
+
+@probe("F-01.probe.http-mock")
+def _(ctx):
+    d = rows_js.setup(ctx, "ufo", [f"vitest@{rows_js.VITEST}", "nock@14"], key="ufo-nock")
+    rel = "test/exam-nock.test.ts"
+    lib.write(d / rel, "import { test, expect } from 'vitest';\nimport nock from 'nock';\nimport https from 'node:https';\n"
+                       "test('nock', async () => { nock('https://api.example.com').get('/user').reply(200, 'mocked');\n"
+                       "  const body = await new Promise((r, j) => https.get('https://api.example.com/user', (res) => { let b = ''; res.on('data', (c) => b += c); res.on('end', () => r(b)); }).on('error', j));\n"
+                       "  expect(body).toBe('mocked'); });\n")
+    _, _, plain = fam.js_run(ctx, d, "vitest", rel, "nock-plain", False)
+    _, _, det = fam.js_run(ctx, d, "vitest", rel, "nock-det", True, "--det")
+    (d / rel).unlink(missing_ok=True)
+    return fam.js_cmp(det, plain)
+
+
+@probe("JS-03.probe.file-only-failure")
+def _(ctx):
+    d, runner, args = rows_js.proj(ctx, "elysia")
+    rel = "test/exam-after.test.ts"
+    lib.write(d / rel, "import { test, expect, afterEach } from 'bun:test';\nafterEach(() => { throw new Error('exam afterEach'); });\n"
+                       "test('x', () => { expect(1).toBe(1); });\n")
+    t = ctx.work / "bunafter.jsonl"
+    t.unlink(missing_ok=True)
+    rcp, outp = ctx.sh("bun-after-plain", f"bun test {rel}", cwd=d)
+    ctx.sh("bun-after-det", f"fenvix node bun-test --det --det-trace={t} {rel}", cwd=d)
+    ok, desc, rep = lib.verify(ctx, d, {}, t, t, "bun-after-verify")
+    (d / rel).unlink(missing_ok=True)
+    outs = [x.get("outcomes") for x in rep.get("tests", [])]
+    failed = any(o and o[0] == "failed" for o in outs)
+    return failed and rcp != 0, f"plain bun rc={rcp}; trace outcomes {outs}"

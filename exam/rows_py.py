@@ -55,16 +55,16 @@ def PY_01(ctx: Ctx):
 def PY_02(ctx: Ctx):
     major = os.environ.get("EXAM_PYTEST", "8")
     pin = {"8": "pytest>=8,<9", "9": "pytest>=9,<10"}[major]
-    for name in ("click", "more-itertools"):
+    for name in ("attrs", "more-itertools"):
         py_project_det2(ctx, f"PY-02.det2.pytest{major}", name, extra=[pin])
         py_project_cache2(ctx, f"PY-02.cache2.pytest{major}", name, extra=[pin])
 
     def seed():
-        d, env = fam.py_setup(ctx, "click", [pin])
+        d, env = fam.py_setup(ctx, "attrs", [pin])
         outs = []
         for i in (1, 2):
             t = ctx.work / f"seed{i}.jsonl"
-            rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-seed=7", f"--det-trace={t}"] + _args("click"), f"seed{i}")
+            rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-seed=7", f"--det-trace={t}"] + _args("attrs"), f"seed{i}")
             m = re.findall(r"order digest: ([0-9a-f]+)", out)
             outs.append((m[-1] if m else None, o))
         ok = outs[0][0] is not None and outs[0][0] == outs[1][0] and outs[0][1] == outs[1][1] and bool(outs[0][1])
@@ -425,11 +425,9 @@ def PY_08(ctx: Ctx):
 
     def cclock():
         import time
-        now = int(time.time())
-        return fam.py_cache_probe(ctx, "cclock", CTYPES_CLOCK, {"EXAM_DEADLINE": str(now + 3600)},
-                                  {"EXAM_DEADLINE": str(now + 3600)}, between=lambda d: None) if False else \
-            fam.py_cache_probe(ctx, "cclock", CTYPES_CLOCK.replace('int(__import__("os").environ.get("EXAM_DEADLINE", "0"))',
-                                                                   str(now + 1)), {}, {}, between=lambda d: time.sleep(3))
+        deadline = int(time.time()) + 20
+        body = CTYPES_CLOCK.replace('int(__import__("os").environ.get("EXAM_DEADLINE", "0"))', str(deadline))
+        return fam.py_cache_probe(ctx, "cclock", body, {}, {}, between=lambda d: time.sleep(max(0, deadline + 2 - time.time())))
     ctx.run_check("PY-08.ctypes-clock", "a test reading the C clock is never reused with a stale outcome", cclock)
 
     def native():

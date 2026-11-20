@@ -3,13 +3,13 @@
 P = {
     # -- Python ---------------------------------------------------------------------------------------------------
     "itsdangerous": dict(url="https://github.com/pallets/itsdangerous", sha="096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
-                         tag="2.2.0", install=["-e", ".", "pytest", "freezegun"], tests=["tests"]),
+                         tag="2.2.0", install=["-e", ".", "pytest", "freezegun", "pytest-xdist"], tests=["tests"]),
     "attrs": dict(url="https://github.com/python-attrs/attrs", sha="3dca08ce5bbe673d7df25f44f3dda92505d1043d",
                   tag="25.3.0", install=["-e", ".", "pytest", "hypothesis", "pytest-xdist"],
                   tests=["tests", "-p", "no:randomly", "--ignore=tests/test_mypy.yml",
                          "--ignore=tests/test_pyright.py", "--ignore=tests/test_hooks.py"]),
     "click": dict(url="https://github.com/pallets/click", sha="934813e4d421071a1b3db3973c02fe2721359a6e",
-                  tag="8.1.8", install=["-e", ".", "pytest"], tests=["tests"]),
+                  tag="8.1.8", install=["-e", ".", "pytest<9"], tests=["tests"]),
     "more-itertools": dict(url="https://github.com/more-itertools/more-itertools",
                            sha="28ab73678adc39eacc2610bd67c1c4a37def6c28", tag="v10.7.0",
                            install=["-e", ".", "pytest"], tests=["tests"]),
@@ -39,7 +39,7 @@ P = {
                          tests=["tests"]),
     "anyio": dict(url="https://github.com/agronholm/anyio", sha="a6e9ebb75f0e1492ab5d0740b2ca76d0137f95e3",
                   tag="4.9.0", install=["-e", ".", "pytest", "trustme", "exceptiongroup", "hypothesis", "psutil",
-                                        "trio"],
+                                        "trio", "blockbuster", "uvloop", "truststore"],
                   tests=["tests/test_taskgroups.py", "tests/test_synchronization.py", "-k", "asyncio", "-p", "no:cacheprovider"]),
     # Block 2 flaky sets (harness/flaky_candidates.json pins; targets from harness/block2_targets.json)
     "idoft-accessify": dict(url="https://github.com/dmytrostriletskyi/accessify",

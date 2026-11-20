@@ -365,7 +365,7 @@ WRONG_REUSE = {
                {"EXAM_ULIMIT": "8192"}, {"EXAM_ULIMIT": "1024"}),
     "hostname": ("import socket\n\ndef test_host():\n    assert socket.gethostname() != 'exam-other-host'\n", {}, {"EXAM_UNSHARE_HOST": "exam-other-host"}),
     "pythonpath": ("import exam_outside\n\ndef test_outside():\n    assert exam_outside.VALUE == 1\n", {"EXAM_PP": "1"}, {"EXAM_PP": "22"}),
-    "pythonwarnings": ("import warnings\n\ndef test_warn():\n    warnings.warn('x', DeprecationWarning)\n", {}, {"PYTHONWARNINGS": "error"}),
+    "pythonwarnings": ("import sys\n\ndef test_warn():\n    assert not any(o.startswith('error') for o in sys.warnoptions)\n", {}, {"PYTHONWARNINGS": "error::DeprecationWarning"}),
     "ld-preload": ("import os, ctypes, ctypes.util\n\ndef test_preload():\n    libc = ctypes.CDLL(None)\n    assert not hasattr(libc, 'exam_preloaded_symbol')\n",
                    {}, {"EXAM_LD_PRELOAD": "1"}),
 }
@@ -384,7 +384,7 @@ def _wrap_cmd(e: dict, args: list) -> tuple:
     if "EXAM_UNSHARE_HOST" in e:
         h = e.pop("EXAM_UNSHARE_HOST")
         if shutil.which("unshare"):
-            pre = ["sudo", "-E", "unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
+            pre = ["sudo", "-E", "env", f"PATH={os.environ.get('PATH', '')}", "unshare", "--uts", "sh", "-c", f"hostname {h} && exec \"$@\"", "sh"] + pre
     return e, pre + args
 
 
@@ -512,7 +512,7 @@ def F_06(ctx: Ctx):
     ctx.run_check("F-06.edit-src-flip.ufo", "EDIT that flips tests: no stale reuse",
                   edit("ufo", "src/utils.ts", "export function hasProtocol(", "export function hasProtocolExamOrig("))
     ctx.run_check("F-06.edit-src.luxon", "EDIT on src (Jest): no stale reuse",
-                  edit("luxon", "src/impl/util.js", "export function isUndefined(o) {", "export function isUndefined(o) {\n  if (o === 'exam') return 'x';"))
+                  edit("luxon", "src/impl/english.js", "export function meridiemForDateTime(", "export function meridiemForDateTimeExamOrig("))
     ctx.run_check("F-06.edit-test.class-validator", "EDIT on a test file (Jest + ts-jest)",
                   edit("class-validator", "test/functional/validation-options.spec.ts", "describe(", "test('exam', () => { expect(1).toBe(2); });\ndescribe("))
 

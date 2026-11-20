@@ -321,6 +321,13 @@ def detjs_receipts(d: Path, reused_only=False) -> tuple:
 def counts(out: str) -> dict:
     """Pass/fail counts from a runner's summary (Vitest, Jest, Mocha, node:test, AVA, tap, uvu, Jasmine, Bun, Deno)."""
     c = {}
+    m = re.findall(r"# \{ total: (\d+), pass: (\d+)(?:, fail: (\d+))?", out)  # tap 18+
+    if m:
+        return {"passed": int(m[-1][1]), "failed": int(m[-1][2] or 0)}
+    bp = re.findall(r"^\s*(\d+) pass$", out, re.M)  # bun: one summary per process
+    if bp:
+        bf = re.findall(r"^\s*(\d+) fail$", out, re.M)
+        return {"passed": sum(map(int, bp)), "failed": sum(map(int, bf))}
     pats = {
         "passed": [r"Tests?\s+(\d+) passed", r"Tests:.*?(\d+) passed", r"(\d+) passing", r"# pass\s+(\d+)",
                    r"(\d+) tests? passed", r"Passed:\s+(\d+)", r"(\d+) pass\b", r"ok \| (\d+) passed",
