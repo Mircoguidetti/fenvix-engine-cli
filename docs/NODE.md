@@ -96,8 +96,8 @@ Playwright Test: the reporter detjs adds (`node/src/playwright/reporter.js`, Pla
 and filters the tests before Playwright groups them; the worker (`node/src/playwright/worker.js`) runs a file's tests
 in that order (Playwright reloads the file in declaration order) and brackets each with Playwright's own `testBegin` /
 `testEnd`. Playwright starts a new worker after a failure: the file's remaining tests go to a second trace part,
-merged in run order. Test ids are the detjs ids (`<file>::<describe>::<title>`, ` [<project>]` when more than one
-project has tests).
+merged in run order. Test ids are the detjs ids (`<file>::<describe>::<title>`, ` [<project>]` appended for a named
+project, as Playwright and the Block 1 harness name them).
 
 ## Layout
 

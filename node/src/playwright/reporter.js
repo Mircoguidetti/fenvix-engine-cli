@@ -3,7 +3,8 @@
 //
 // preprocess (Playwright >= 1.56, before the tests are grouped and sent to the worker):
 //   * test ids: `<file relative to the root>::<describe>::...::<title>` (` #2` for a duplicate in a file;
-//     ` [<project>]` appended when more than one project has tests), the ids of the other detjs shells;
+//     ` [<project>]` appended for a named project, as Playwright and the Block 1 harness name them), the ids of the
+//     other detjs shells;
 //   * order: files sorted by path, tests in declaration order; with a seed (--det-seed / --det-order-seed) the
 //     hierarchical shuffle of the other shells (files -> describe blocks -> tests, native shuffleIndices);
 //   * --det-order: the listed tests only, files and describe blocks in the order of their first listed test
@@ -77,7 +78,7 @@ class DetjsReporter {
         walk(f, []);
         const unique = uniqueIds(flat.map(([, id]) => id));
         flat.forEach(([t], i) => {
-          const id = repro.wf(multi && p.title ? `${unique[i]} [${p.title}]` : unique[i]);
+          const id = repro.wf(p.title ? `${unique[i]} [${p.title}]` : unique[i]);
           this.ids.set(t, id);
           this.fileOf.set(id, fileId);
         });
