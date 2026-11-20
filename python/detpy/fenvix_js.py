@@ -207,18 +207,16 @@ def uncontrolled_of(trace: Path, test: str) -> list:
             header = r.get("meta") or {}
         if r.get("type") != "test" or r.get("nodeid") != test:
             continue
-        for k in r.get("uncontrolled") or []:
-            if k not in out:
-                out.append(k)
-        for e in r.get("events") or []:
+        kinds = lambda: {x.split(" ")[0] for x in out}  # noqa: E731
+        for e in r.get("events") or []:  # the events carry what was used (the program, the worker)
             op = str(e.get("o", ""))
-            if op.startswith("uncontrolled."):
-                k = f"{op.split('.', 1)[1]} ({e.get('v')})"
-                if not any(x.split(" ")[0] == op.split(".", 1)[1] for x in out):
-                    out.append(k)
-            elif e.get("s") == "entropy" and not header.get("urandom_controlled"):
-                if not any(x.startswith("entropy") for x in out):
-                    out.append(f"entropy ({op}; controlled only with --det-urandom)")
+            if op.startswith("uncontrolled.") and op.split(".", 1)[1] not in kinds():
+                out.append(f"{op.split('.', 1)[1]} ({str(e.get('v'))[:80]})")
+            elif e.get("s") == "entropy" and not header.get("urandom_controlled") and "entropy" not in kinds():
+                out.append(f"entropy ({op}; controlled only with --det-urandom)")
+        for k in r.get("uncontrolled") or []:  # verifier-cli's recorder: kinds kept even when events are truncated
+            if k not in kinds():
+                out.append(k)
         if r.get("truncated") and not out:
             out.append("unknown (events truncated)")
         break

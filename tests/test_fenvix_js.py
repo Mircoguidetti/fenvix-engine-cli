@@ -157,12 +157,12 @@ def test_uncontrolled_source_is_not_reproducible_and_named(runner, env, monkeypa
     # the child draws a real random number: half the runs fail; a seed found failing first, then 10 replays
     b = fenvix_js.ADAPTERS[runner].repro(ns(test, d / "out", seeds=30, confirm=10))
     assert b["status"] == "replay-unstable", b  # 10/10 by chance: 2**-10
-    assert b["uncontrolled"] == ["child (node)"]
+    assert len(b["uncontrolled"]) == 1 and b["uncontrolled"][0].startswith("child (execSync node -e"), b["uncontrolled"]
     assert b["kind"] == "uncontrolled" and b["polluters"] == [] and b["setters"] == []
     text = fenvix_js.render_repro(b, d / "out")
     assert "NOT REPRODUCIBLE under fenvix" in text
-    assert "the test uses a source this release does not control: child (node)" in text
-    assert "cause:   uncontrolled source: the test used child (node)" in text
+    assert f"the test uses a source this release does not control: {b['uncontrolled'][0]}" in text
+    assert f"cause:   uncontrolled source: the test used {b['uncontrolled'][0]}" in text
 
 
 @pytest.mark.parametrize("runner", RUNNERS)
