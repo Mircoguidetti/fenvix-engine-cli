@@ -1,13 +1,14 @@
 PARTIAL
 
+Status: all four findings (G1-G4) and R-032 F6/F7 are fixed and tested. 0 wrong in 568,879 verified reuses. The overhead A/B of the final engine (r7c, run 44644365780) is still running.
+
 # Skip with proof for JS/TS (`detjs --det-cache`): fixes of review r021b (report 3)
 
 Branch `claude/node-cache-proof`. Review: `sessions/2026-11-19-review-node-cache/REPORT-2.md` (verdict FIX 4), merged
-from `claude/review-r021b` (7aa8540) with `node/test/review-r021b.test.js` unchanged. Fix commit a27d565, measurement
-launch d299d5f (Actions run 44580359261). Labels: **MEASURED** (command or run id), **ESTIMATED**, **DECLARED**,
-**UNKNOWN**.
-
-STATUS: r7 is still running (R7_PENDING below). This file is rewritten when its shards land.
+from `claude/review-r021b` (7aa8540) with `node/test/review-r021b.test.js` unchanged. Commits: a27d565 (G1-G4 and
+overhead work; measured as r7, Actions run 44580359261), 3781872 (early capture only where needed; measured as r7b,
+run 44615968050), de10518 (review R-032 F6/F7, added by the coordinator to this round; r7c, run 44644365780,
+pending). Labels: **MEASURED** (command or run id), **ESTIMATED**, **DECLARED**, **UNKNOWN**.
 
 ## Findings G1-G4
 
@@ -21,13 +22,15 @@ review-r021b, r021b-fixes, both runners).
 | G1 | No more Stats Proxy. `stat*`, `lstat*`, `fstat*` and `FileHandle.stat` return the **real** `fs.Stats` / BigIntStats object. It has the same prototype and keeps the key order. Its own data fields become accessors that record the read (`capture.js` `recordingStats`). `Object.getOwnPropertyDescriptor(s)` and `Reflect.getOwnPropertyDescriptor` are patched in every realm tests run in: the main realm, and each Jest test context through `installReflection`. They count as a read and return the same data descriptor as without the cache. `util.inspect` and `console.log` go through a custom inspection on the Stats prototype. It reads every field and formats a plain copy, so the output is byte-identical. `is*()` methods read the kind from a private view: it is keyed by `s:`/`L:`, not as a `mode` read. **Volatile fields** (times, inode, device, owner, nlink, blocks) are now keyed by their exact value with a new kind `V:<follow>:<field>` in the Rust core (`deps.rs` `stat_field_digest`; `data_now` memo keyed per field). Before, they were "not cacheable". This is what G1b requires: run 2 must reuse `util.inspect(st)`, and keying the values is sound. Runner and transpiler reads are still ignored. | review G1a, G1b; r021b-fixes: `getOwnPropertyDescriptors`, `Reflect.getOwnPropertyDescriptor`, `util.format('%o')`+`console.log`, mtime set by `utimes`, `lstat` inode of a link, keeps: `isFile()` | G1a/G1b wrong reuse → pass, both runners |
 | G2 | The same change: not a Proxy, so `structuredClone`, `v8.serialize` and `postMessage` read the fields through the getters (counted as reads) and succeed as without the cache. `util.types.isProxy` is false. Every other proxied object in the capture had the same class of hole. There was one: **`process.env`**. It stays a Proxy (a missing variable must be recordable), but its target is now a stand-in that only holds a custom inspection. `util.inspect`/`console.log` record `*` and format the real environment. `structuredClone`, `v8.serialize`, `Serializer#writeValue` and `MessagePort`/`BroadcastChannel#postMessage` are retried with the real environment in place of the Proxy (deep replacement; it records `*`), so they succeed or fail exactly as without the cache. `util.types.isProxy(process.env)` answers for the real object. | review G2; r021b-fixes: "same:" Stats test (prototype, instanceof, isProxy, inspect incl. `showHidden`, keys, descriptor, clone, serialize, write-then-read, BigInt), env inspect / clone / isProxy / descriptor (Vitest; Jest's own env copy is not cloneable with or without the cache) | G2 outcome differed → same outcome |
 | G3 | `t:` (`deps.rs` `tree_listing_digest`) descends into links to directories exactly where Node does (`readdirSync`, callback `readdir`, `fs.promises.readdir` without `withFileTypes`). Links are tagged (`l>d`, `l>f`, `l>dangling`). Cycles are cut by device+inode against the ancestor chain, and the cycle records which ancestor it closes on. A tree with a cycle also keys its absolute path, because Node's `ELOOP` cut-off depends on it. A new kind `u:` (`tree_listing_nofollow_digest`) covers the two APIs that do not follow links: `fs.promises.readdir` with `withFileTypes`, and recursive `opendir` (MEASURED: 245 vs 4 entries on a loop fixture). | review G3a, G3b; r021b-fixes: callback readdir, readdirSync withFileTypes, link retargeted, cycle with a new entry, keeps: promises+withFileTypes does not follow; `cargo test` `tree_listing_follows_directory_links_like_node` | G3a/G3b wrong reuse → pass |
-| G4 | `node/src/cache/early.js` starts the capture **before any user code of a test process**. It is put first in every Vitest project's `execArgv` (and `poolOptions.*.execArgv` on Vitest < 4) after the configuration digest, so its absolute path is not keyed. When `NODE_OPTIONS` or the command line has preloads, `bin/detjs.js` restarts itself with early.js first in `NODE_OPTIONS`, which covers the main process (Jest runs in band there), forks and worker threads. Everything the preloads, Vitest's start-up and the test environment's `setup` read is recorded like any read of the process, and preload modules are code inputs. A custom Vitest `environment` is evaluated without file names in its frames, so in the worker start-up every read counts, as in the rest of the worker. A preload that reads the clock or OS entropy (before Level 0) makes the tests not cacheable. An off-thread loader (`--loader`, `--experimental-loader`, `module.register`) makes them not cacheable: its reads happen in another thread. Detjs' in-thread hooks are then removed, because Node refuses to mix them ("resolveSync not implemented", MEASURED). Other ways user code runs early, checked: Vitest `setupFiles` and `globalSetup`, and Jest `setupFiles`, `testEnvironment` and `globalSetup` held already (tests). The custom Vitest environment's `setup` **leaked** (found here, wrong reuse) and is now covered. | review G4; r021b-fixes: execArgv `--require`, `--import` importing a changed module, threads pool, custom environment `setup`, `NODE_OPTIONS --require` (both runners), preload clock read (both), `--experimental-loader`, Jest `setupFiles` | G4 wrong reuse → pass; custom environment wrong reuse → pass |
+| G4 | `node/src/cache/early.js` starts the capture **before any user code of a test process**. It is put first in a Vitest project's `execArgv` (and `poolOptions.*.execArgv` on Vitest < 4), after the configuration digest so its absolute path is not keyed, wherever user code can run before the runner: project preloads, a custom environment in the configuration, or a test file's `@vitest-environment` pragma naming one (the sequencer scans file heads). Elsewhere only Vitest runs before the runner. An early start there cost every worker ~40 ms (MEASURED on Node 24: r7 vue-core, then locally with `--cpu-prof`), so commit 3781872 limits it as just described. When `NODE_OPTIONS` or the command line has preloads, `bin/detjs.js` restarts itself with early.js first in `NODE_OPTIONS`, which covers the main process (Jest runs in band there), forks and worker threads. Everything the preloads, Vitest's start-up and the test environment's `setup` read is recorded like any read of the process, and preload modules are code inputs. A custom Vitest `environment` is evaluated without file names in its frames, so in the worker start-up every read counts, as in the rest of the worker. A preload that reads the clock or OS entropy (before Level 0) makes the tests not cacheable. An off-thread loader (`--loader`, `--experimental-loader`, `module.register`) makes them not cacheable: its reads happen in another thread. Detjs' in-thread hooks are then removed, because Node refuses to mix them ("resolveSync not implemented", MEASURED). Other ways user code runs early, checked: Vitest `setupFiles` and `globalSetup`, and Jest `setupFiles`, `testEnvironment` and `globalSetup` held already (tests). The custom Vitest environment's `setup` **leaked** (found here, wrong reuse) and is now covered. | review G4; r021b-fixes: execArgv `--require`, `--import` importing a changed module, threads pool, custom environment `setup` (configuration, and a package named by a pragma), `NODE_OPTIONS --require` (both runners), preload clock read (both), `--experimental-loader`, Jest `setupFiles` | G4 wrong reuse → pass; custom environment wrong reuse → pass |
+| R-032 F6 (coordinator) | `nearestPackageJson` keys every `package.json` probed and **absent** on the way up from a loaded module to the first one found, past the project root if need be (Node's walk). Before, only the one found was keyed, so a nested `{"type": "module"}` appearing in `lib/` went unseen. | r021b-fixes R032-F6: Vitest (Node's loader through `createRequire`); Jest (its registry, `createRequire` included, does not apply `type` outside its ESM mode: the change does not alter the result, and the cached run agrees with a fresh one) | Vitest wrong reuse → pass; Jest held |
+| R-032 F7 (coordinator) | OS randomness drawn inside OpenSSL. Level 0 cannot seed it, and `--det-urandom` does not control it. Covered: `crypto.generateKey*`, `generateKeyPair*`, `generatePrime*`, ECDH/DH `generateKeys`, `publicEncrypt`, randomized `sign` / `Sign#sign` (ec, dsa, rsa-pss, unknown key types), `subtle.generateKey`, RSA-OAEP `subtle.encrypt` / `wrapKey`, and ECDSA / RSA-PSS `subtle.sign`. They record the new flag `keygen`, so the test is not cacheable. Not seeded: two `--det` runs still differ there, which Level 0's trace shows as a divergence. | r021b-fixes R032-F7 × 3 (subtle.generateKey, generateKeyPairSync, createECDH().generateKeys), both runners | reused → not cacheable |
 
-Totals (MEASURED, this container): `review-r021b.test.js` **45 passed, 0 failed** (Vitest and Jest).
-`r021b-fixes.test.js` 38 passed. `review-r021.test.js` 32 passed, 1 skipped (F3b Jest, skipped by the reviewer).
+Totals (MEASURED, this container, final code de10518): `review-r021b.test.js` **45 passed, 0 failed** (Vitest and
+Jest). `r021b-fixes.test.js` 47 passed. `review-r021.test.js` 32 passed, 1 skipped (F3b Jest, skipped by the reviewer).
 `r021-fixes.test.js` 24 passed: one test was updated, because "mtime is not cacheable" became "mtime keyed by value,
 a touch reruns". Other suites: cache 45, controls 16, jsdom 1, projects 1, regressions 7, unchanged 2. **Node total:
-211 passed, 1 skipped, 0 failed.** `cargo test --workspace --exclude detpy-py`: **65 passed** (63 + 2 new). Python
+220 passed, 1 skipped, 0 failed.** The `tests` job of run 44580359261 (a27d565) gave 184 passed, 1 skipped, 0 failed. `cargo test --workspace --exclude detpy-py`: **65 passed** (63 + 2 new). Python
 (`pytest tests harness/node_cache/test_review_r021_labels.py`, editable build of this branch): **178 passed,
 9 skipped, 1 failed**. The failure is the pre-existing
 `test_review_r008d.py::test_finished_startup_process_that_left_a_daemon_is_not_ignored` (the same as on ea5bba6 and
@@ -68,18 +71,61 @@ trade):
 5. Workers rescan module registries only after a load. The counter comes from the loader's load hook and from
    counted `set`s on Vite's module map. `where()` results are memoised.
 
-Local A/B on TanStack `query-core`, 3 runs each, alternating (MEASURED, this container): `detjs --det` 18.6 / 19.7 /
-19.8 s; ea5bba6 cold capture 25.2 / 25.8 / 24.6 s (**+30%**); this branch 22.9 / 23.1 / 23.3 s (**+19%**). With 40
-trivial files: det 6.2 s, both captures +0.6 s (15 ms per file of fixed cost).
+Local A/B on TanStack `query-core` (Node 22), 3 runs each, alternating (MEASURED, this container, a27d565):
+`detjs --det` 18.6 / 19.7 / 19.8 s; ea5bba6 cold capture 25.2 / 25.8 / 24.6 s (+30%); this branch 22.9 / 23.1 /
+23.3 s (+19%). Local timings in this container vary by up to ±10% between runs, so the Actions A/B below is the
+measurement of record.
 
-On GitHub Actions (run 44580359261, same harness, repositories and commits; at each overhead commit, cold captures of
-ea5bba6 and of this branch on the same machine, alternating, 2 runs each, with `detjs --det` runs in between):
+Same harness, repositories and commits as r6 (run 44485937741). At each overhead commit, the walk now also runs cold
+captures of **ea5bba6 (before)** and of this branch (after) on the **same machine and commit**, alternating, 2 runs
+each, with `detjs --det` runs in between (`walk.py --engine-before`, `aggregate.py`). Overhead = cold capture /
+`detjs --det` − 1, median of the runs. All MEASURED.
 
-R7_PENDING
+| repository | r6 (run 44485937741), cross-run | r7 a27d565 (run 44580359261): before → after, same machine | r7b 3781872 (run 44615968050): before → after, same machine |
+|---|---|---|---|
+| docusaurus | +12.5% to +23.2% | +12.5% → +12.5% (median of 5 commits; ranges +11.4..+12.8 → +11.7..+13.6) | **+12.7% → +10.6%** (3 commits; +12.4..+14.1 → +10.5..+12.6) |
+| TanStack Query | +9.5% to +15.7% | +10.9% → +13.0% (4 commits) | **+9.7% → +7.3%** (3 commits; +9.7..+9.7 → +7.1..+7.4) |
+| vue-core | +7.6% to +9.8% | +6.7% → +10.6% (5 commits) | **+7.3% → +5.4%** (3 commits; +7.0..+7.5 → +5.2..+5.6) |
 
-## Measurement r7 (0 wrong reuses)
+How to read it:
+* r6's 12.5-23.2% on docusaurus was cross-run, one capture per commit. On the same machine, ea5bba6 measures
+  +11.4% to +14.1% on docusaurus. Most of r6's spread was run-to-run noise.
+* In r7, the early capture added to every Vitest worker (needed for G4) cancelled the gains: +2-4 points on vue-core
+  and TanStack. Commit 3781872 starts it early only where user code can run before the runner (G4 soundness
+  unchanged: same tests pass). r7b then gives the net result: **−2.1 points on docusaurus, −2.4 on TanStack Query,
+  −1.9 on vue-core**. That is roughly a fifth to a quarter of the capture's cost.
+* Where the time went (`--cpu-prof`, TanStack `query-core`): the runtime identity left the critical path (decision
+  time 2.4 s → 0.04-0.06 s; `identity s` column of r7/r7b). Record time went from 0.73 s to 0.44-0.50 s
+  (docusaurus, r7 A/B summaries). The main process's stack classification and the workers' registry rescans were
+  cut.
+* Not A/B-measured: React Native and Lexical (Jest; 2,100 s and 1,700 s per run, so an A/B there costs hours per
+  point). r7 cross-run (one point per commit, r7 engine): React Native +0.2% to +0.7%; Lexical +7.0% (1790.29 /
+  1672.48, one commit; r6 had +2.3% on a different machine). UNKNOWN whether that Lexical difference is the engine or
+  the machine.
+* r7c (run 44644365780): the same A/B for the final engine (de10518, R-032 F6/F7 added). PENDING. F6 adds a few
+  absent-file entries per module directory and F7 adds wrappers only on crypto key generation, so ESTIMATED: no
+  measurable change from r7b.
 
-R7_PENDING
+## Measurement r7 / r7b (0 wrong reuses)
+
+Every would-be reuse was checked by a fresh run at the same commit (verify mode), as in r6. All MEASURED.
+
+| run | repository | transitions | skip with proof (test time) median / mean | verified reuses | wrong | flaky |
+|---|---|---:|---:|---:|---:|---:|
+| r7 (44580359261) | docusaurus | 50 | 88% / 72% | 131,721 | 0 | 0 |
+| r7 | TanStack Query | 50 | 91% / 61% | 158,515 | 0 | 0 |
+| r7 | vue-core | 50 | 25% / 31% | 85,112 | 0 | 0 |
+| r7 | React Native | 9 | 0% / 1% | 22,330 | 0 | 0 |
+| r7 | Lexical | 10 | 0% / 0% | 1,528 | 0 | 0 |
+| r7b (44615968050) | docusaurus | 20 | 89% / 89% | 64,522 | 0 | 0 |
+| r7b | TanStack Query | 20 | 86% / 60% | 61,653 | 0 | 0 |
+| r7b | vue-core | 20 | 27% / 36% | 43,498 | 0 | 0 |
+
+**0 wrong in 568,879 verified reuses** (r7: 399,206; r7b: 169,673). Reuse vs r6: docusaurus rises from 85% / 70% to
+88% / 72%. The mtime reads that were "not cacheable" in r6 are now keyed by value, and the harness keeps the
+working tree between commits, so unchanged files keep their times. TanStack Query and vue-core are unchanged within
+a point. Tables: `harness/node_cache/results/r7/TABLES.md`, `results/r7b/TABLES.md`
+(`python3 harness/node_cache/aggregate.py r7 --md`).
 
 ## Not done / limits
 
