@@ -1,0 +1,16 @@
+== junit5 gradle: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
+== junit5 gradle: 40/40 checks hold; fingerprints identical across --det runs: True
+== junit5 maven: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
+== junit5 maven: 40/40 checks hold; fingerprints identical across --det runs: True
+== junit4 gradle: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
+== junit4 gradle: 6/10 checks hold; fingerprints identical across --det runs: True
+  BAD unchanged fx4.Junit4UnchangedTest::a()  without=missing,passed  det=passed,passed
+  BAD unchanged fx4.Junit4UnchangedTest::b()  without=missing,passed  det=passed,passed
+  BAD unchanged fx4.Junit4UnchangedTest::c()  without=missing,passed  det=passed,passed
+  BAD unchanged fx4.Junit4UnchangedTest::d()  without=missing,passed  det=passed,passed
+== junit4 maven: seed exploration {'same_order_same_seed': True, 'seed5_differs_from_seed0': True, 'same_tests': True, 'ok': True}
+== junit4 maven: 10/10 checks hold; fingerprints identical across --det runs: True
+
+real	2m54.722s
+user	5m20.746s
+sys	0m17.430s

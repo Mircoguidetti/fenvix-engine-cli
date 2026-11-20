@@ -1,0 +1,14 @@
+
+38 tests completed, 9 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///home/runner/work/fenvix-engine-cli/fenvix-engine-cli/jvm/fixtures/controls/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights.
+
+BUILD FAILED in 6s
+fenvix-jvm: trace /home/runner/work/fenvix-engine-cli/fenvix-engine-cli/jvm/fixtures/controls/.fenvix/trace.jsonl {"n_tests":38,"order_digest":"e3c77a83b8dbed256b96e37ffe2fa22c","skipped":[]}

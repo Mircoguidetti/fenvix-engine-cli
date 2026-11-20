@@ -1,0 +1,30 @@
+{
+  "name": "immer",
+  "kind": "popular",
+  "status": "ok",
+  "node": "node v22.23.5",
+  "runner": "vitest 3.2.6",
+  "serial_s": [
+    9.408048872999998,
+    9.315766382999996,
+    9.330539935000004
+  ],
+  "det_s": [
+    10.274930935,
+    9.998491926,
+    10.012186684
+  ],
+  "tests": 4192,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009531",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 7763 64-Core Processor"
+  },
+  "slowdown_pct": 7.305544520988061
+}

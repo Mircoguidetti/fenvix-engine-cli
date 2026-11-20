@@ -1,0 +1,12 @@
+{
+  "name": "pw-zag",
+  "kind": "playwright",
+  "status": "baseline-broken",
+  "node": "node v22.23.5",
+  "runner": "playwright",
+  "runner_version": "1.65.0",
+  "tests": 0,
+  "first_run_s": 1.3978578300000208,
+  "commit": "f6f33ea8dc5017baec830f71c2b835a36db196ed",
+  "detail": "0 test outcomes (exit 1): \nError: http://localhost:3000 is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.\n\n\n"
+}

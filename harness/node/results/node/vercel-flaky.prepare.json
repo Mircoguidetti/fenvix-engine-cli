@@ -1,0 +1,12 @@
+{
+  "name": "vercel-flaky",
+  "kind": "flaky",
+  "status": "too-few-tests",
+  "node": "node v22.23.5",
+  "runner": "vitest",
+  "runner_version": "2.0.3",
+  "tests": 30,
+  "first_run_s": 1.1211605870000199,
+  "commit": "17d9ebaf8e9b335d550dea1a243743a74edc772e",
+  "detail": "30 test outcomes (exit 0): JSON report written to /tmp/work/runs/vercel-flaky/normal_0.json\n"
+}

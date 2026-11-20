@@ -1,0 +1,533 @@
+{
+ "meta": {
+  "set": "node-rerun2",
+  "runs": 10,
+  "seeds": 20,
+  "confirm": 10,
+  "timing_runs": 3,
+  "executor": "GitHub Actions (ubuntu-latest)",
+  "run_url": "https://github.com/Mircoguidetti/fenvix-engine-cli/actions/runs/44040787847",
+  "detjs": "0.1.0",
+  "date": "2026-11-17 08:20 UTC",
+  "selection": {
+   "selected": [
+    "immutable-js",
+    "babel-flaky",
+    "prettier-flaky"
+   ],
+   "discarded": [],
+   "prepare": {},
+   "only": true,
+   "prior_selected": []
+  },
+  "rounds": [
+   {
+    "name": "babel-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/babel/babel",
+    "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+    "commit_date": "2023-11-03T12:39:46Z",
+    "python": "node v20.20.2",
+    "install": "yarn install --immutable && npm run build",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 43.57668948620001,
+    "det_mean_s": 4.937538621900018,
+    "slowdown_pct": -88.6693122398303,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 25792,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "outcome_changed_by_det": 25792,
+    "covered": 0,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 238,
+    "broken_always": 238,
+    "broken_causes": {
+     "fixed-order (fails without --det too) | unknown": 238
+    },
+    "broken_examples": {
+     "fixed-order (fails without --det too) | unknown": [
+      "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "codemods/babel-plugin-codemod-optional-catch-binding/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "eslint/babel-eslint-parser/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+     ]
+    },
+    "ablation_runs": 6,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:None->error": [
+      "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::<file>",
+      "codemods/babel-plugin-codemod-optional-catch-binding/test/index.js::<file>"
+     ],
+     "changed:passed->None": [
+      "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::babel-plugin-codemod-object-assign-to-object-spread/object assign to object spread::multiple",
+      "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::babel-plugin-codemod-object-assign-to-object-spread/object assign to object spread::multiple objects"
+     ],
+     "changed:skipped->None": [
+      "eslint/babel-eslint-tests/test/integration/eslint/verify.js::verify::visits excluded properties left of spread #210",
+      "eslint/babel-eslint-tests/test/integration/eslint/verify.js::verify::visits excluded properties left of spread #95"
+     ]
+    },
+    "runner": "jest 29.6.2",
+    "node": "node v20.20.2",
+    "documented_source": "https://github.com/babel/babel/issues/16083",
+    "documented_hints": [
+     "Flaky Node.js 6 and 8 tests"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": " your config. (While processing: \"/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/lib/index.js\")\n\n      144 |   };\n      145 |   try {\n    > 146 |     return await run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);\n          |            ^\n      147 |   } finally {\n      148 |     endPending();\n      149 |     controls.closeFile();\n\n      at OptionValidator.invariant (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/node_modules/@babel/helper-validator-option/src/validator.ts:73:13)\n      at invariant (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/src/normalize-options.ts:41:7)\n      at normalizeOptions (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/src/index.ts:23:7)\n      at builder (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/node_modules/@babel/helper-plugin-utils/src/index.ts:62:12)\n      at sync (node_modules/gensync/index.js:182:19)\n      at node_modules/gensync/index.js:210:24\n      at evaluateSync (node_modules/gensync/index.js:251:28)\n      at Function.sync (node_modules/gensync/index.js:89:14)\n      at sync (node_modules/gensync/index.js:182:19)\n      at onFirstPause (node_modules/gensync/index.js:210:24)\n          at cachedFunction.next (<anonymous>)\n          at loadPresetDescriptor.next (<anonymous>)\n          at recursePresetDescriptors.next (<anonymous>)\n          at loadFullConfig.next (<anonymous>)\n          at transform.next (<anonymous>)\n      at evaluateSync (node_modules/gensync/index.js:251:28)\n      at sync (node_modules/gensync/index.js:89:14)\n      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:542:31)\n      at ScriptTransformer._transformAndBuildScript (node_modules/@jest/transform/build/ScriptTransformer.js:671:40)\n      at ScriptTransformer.transform (node_modules/@jest/transform/build/ScriptTransformer.js:723:19)\n      at detjsJestRunner (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n\n\nTest Suites: 238 failed, 238 total\nTests:       0 total\nSnapshots:   0 total\nTime:        4.346 s\nRan all test suites.\nTest results written to: ../../runs/babel-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/babel-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T07:54:20.759767+00:00"
+   },
+   {
+    "name": "immutable-js",
+    "kind": "popular",
+    "status": "ok",
+    "url": "https://github.com/immutable-js/immutable-js",
+    "commit": "abfaef3c08905918e9fa05d0595e7e220fd36dbf",
+    "commit_date": "2026-11-13T01:15:19+01:00",
+    "python": "node v22.23.5",
+    "install": "npm ci --no-audit --no-fund && npm run build",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 56.97400586139998,
+    "det_mean_s": 103.54065665739996,
+    "slowdown_pct": 81.73315197334404,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 899,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "outcome_changed_by_det": 0,
+    "covered": 899,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 0,
+    "broken_always": 0,
+    "broken_causes": {},
+    "broken_examples": {},
+    "ablation_runs": 0,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {},
+    "runner": "jest 29.7.0",
+    "node": "node v22.23.5",
+    "documented_source": "",
+    "documented_hints": [],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5\nPASS __tests__/ArraySeq.ts (9.439 s)\nPASS __tests__/Comparator.ts\nPASS __tests__/Conversion.ts\nPASS __tests__/Equality.ts\nPASS __tests__/IndexedSeq.ts\nPASS __tests__/KeyedSeq.ts\nPASS __tests__/List.ts (8.087 s)\nPASS __tests__/ListJS.js (8.523 s)\nPASS __tests__/Map.collision.ts\nPASS __tests__/Map.ts\nPASS __tests__/MultiRequire.js (18.321 s)\nPASS __tests__/ObjectSeq.ts\nPASS __tests__/OrderedMap.ts\nPASS __tests__/OrderedSet.ts\nPASS __tests__/Predicates.ts\nPASS __tests__/Range.ts\nPASS __tests__/Record.ts\nPASS __tests__/RecordJS.js (11.121 s)\nPASS __tests__/Repeat.ts\nPASS __tests__/Seq.ts\nPASS __tests__/Set.ts\nPASS __tests__/Stack.ts\nPASS __tests__/concat.ts\nPASS __tests__/count.ts\nPASS __tests__/find.ts\nPASS __tests__/flatten.ts\nPASS __tests__/fromJS.ts\nPASS __tests__/functional/get.ts\nPASS __tests__/functional/has.ts\nPASS __tests__/functional/remove.ts\nPASS __tests__/functional/set.ts\nPASS __tests__/functional/update.ts\nPASS __tests__/get.ts\nPASS __tests__/getIn.ts\nPASS __tests__/groupBy.ts\nPASS __tests__/hasIn.ts\nPASS __tests__/hash.ts\nPASS __tests__/interpose.ts\nPASS __tests__/issues.ts\nPASS __tests__/join.ts\nPASS __tests__/merge.ts\nPASS __tests__/minmax.ts\nPASS __tests__/partition.ts\nPASS __tests__/skipWhile.ts\nPASS __tests__/slice.ts\nPASS __tests__/sort.ts\nPASS __tests__/splice.ts\nPASS __tests__/toSeq.ts\nPASS __tests__/transformerProtocol.ts\nPASS __tests__/updateIn.ts\nPASS __tests__/utils.js (8.748 s)\nPASS __tests__/utils/arrCopy.ts\nPASS __tests__/utils/shallowCopy.ts\nPASS __tests__/zip.ts\nPASS website/src/worker/jsonml-types.test.ts\nPASS website/src/worker/normalizeResult.test.ts\n\nTest Suites: 56 passed, 56 total\nTests:       900 passed, 900 total\nSnapshots:   3 passed, 3 total\nTime:        102.562 s\nRan all test suites.\nTest results written to: ../../runs/immutable-js/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/immutable-js/det_0.jsonl: 900 tests, order digest cd7c3b836421a7053dfccb844bdb1700\n"
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T08:12:32.481092+00:00"
+   },
+   {
+    "name": "prettier-flaky",
+    "kind": "flaky",
+    "status": "ok",
+    "url": "https://github.com/prettier/prettier",
+    "commit": "e51ff9ad41b0c8e22aaad2d7d6b99710ccebfd3d",
+    "commit_date": "2025-10-29T23:56:19+08:00",
+    "python": "node v20.20.2",
+    "install": "yarn install --immutable",
+    "pytest_args": [],
+    "xdist": true,
+    "runs": 10,
+    "baseline_mean_s": 127.4215039598,
+    "det_mean_s": 6.347700777499995,
+    "slowdown_pct": -95.0183441725012,
+    "precompile_first_s": null,
+    "precompile_rest_median_s": null,
+    "tests": 27053,
+    "unstable_baseline": 0,
+    "unstable_det": 0,
+    "became_stable": 0,
+    "outcome_changed_by_det": 27053,
+    "covered": 0,
+    "not_covered": 0,
+    "reproduced": 0,
+    "never_fails_under_det": 0,
+    "always_fails_under_det": 0,
+    "fails_sometimes_under_det": 0,
+    "seeds_needed": [],
+    "seeds_explored": 0,
+    "exploration_runs": 0,
+    "exploration_budget_hit": false,
+    "reasons": {},
+    "pass_fail_reasons": {},
+    "broken_by_det": 1429,
+    "broken_always": 1429,
+    "broken_causes": {
+     "fixed-order (fails without --det too) | unknown": 1429
+    },
+    "broken_examples": {
+     "fixed-order (fails without --det too) | unknown": [
+      "tests/dts/unit/run.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "tests/format/angular/angular/format.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "tests/format/angular/assignment-operator/format.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+     ]
+    },
+    "ablation_runs": 6,
+    "known_flaky": 0,
+    "known_present": 0,
+    "known_unstable_baseline": 0,
+    "known_reproduced": 0,
+    "known_categories": {},
+    "examples": {
+     "changed:None->error": [
+      "tests/dts/unit/run.js::<file>",
+      "tests/format/angular/angular/format.test.js::<file>"
+     ],
+     "changed:passed->None": [
+      "tests/dts/unit/run.js::Unit tests for dts files::no errors",
+      "tests/format/angular/angular/format.test.js::angularjs.html - {\"bracketSpacing\":false}::format"
+     ],
+     "changed:skipped->None": [
+      "tests/integration/__tests__/plugin-resolution.js::loads --plugin by bespoke plugin name (assuming it is installed in cwd)::",
+      "tests/integration/__tests__/plugin-resolution.js::loads --plugin by filename without leading ./, should resolve to file, not package::"
+     ]
+    },
+    "runner": "jest 30.2.0",
+    "node": "node v20.20.2",
+    "documented_source": "https://github.com/prettier/prettier/issues/18150",
+    "documented_hints": [
+     "Fix flaky test"
+    ],
+    "random_order_baseline": true,
+    "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+    "diagnostics": {
+     "first_det_log_tail": "s:\n    https://jestjs.io/docs/configuration\n    For information about custom transformations, see:\n    https://jestjs.io/docs/code-transformation\n\n    Details:\n\n    /tmp/work/src/prettier-flaky/tests/config/format-test-setup.js:1\n    import runFormatTest from \"./run-format-test.js\";\n    ^^^^^^\n\n    SyntaxError: Cannot use import statement outside a module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1318:40)\n\nFAIL tests/unit/whitespace-utils.js\n  \u25cf Test suite failed to run\n\n    Jest encountered an unexpected token\n\n    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.\n\n    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.\n\n    By default \"node_modules\" folder is ignored by transformers.\n\n    Here's what you can do:\n     \u2022 If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.\n     \u2022 If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript\n     \u2022 To have some of your \"node_modules\" files transformed, you can specify a custom \"transformIgnorePatterns\" in your config.\n     \u2022 If you need a custom transformation, specify a \"transform\" option in your config.\n     \u2022 If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the \"moduleNameMapper\" config option.\n\n    You'll find more details and examples of these config options in the docs:\n    https://jestjs.io/docs/configuration\n    For information about custom transformations, see:\n    https://jestjs.io/docs/code-transformation\n\n    Details:\n\n    /tmp/work/src/prettier-flaky/tests/config/format-test-setup.js:1\n    import runFormatTest from \"./run-format-test.js\";\n    ^^^^^^\n\n    SyntaxError: Cannot use import statement outside a module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1318:40)\n\n\nTest Suites: 1429 failed, 1429 total\nTests:       0 total\nSnapshots:   0 total\nTime:        5.463 s\nRan all test suites.\nTest results written to: ../../runs/prettier-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/prettier-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+    },
+    "not_reproduced_causes": {},
+    "executor": "GitHub Actions",
+    "date": "2026-11-17T08:09:07.351239+00:00"
+   }
+  ],
+  "notes": [
+   "Flaky pool: the dataset of Hashemi, Tahir, Rasheed, 'An Empirical Study of Flaky Tests in JavaScript' (ICSME 2022, Zenodo 10.5281/zenodo.6673741) is the public dataset of JavaScript flaky tests used first: each project is pinned at the parent of a commit that fixes a flaky test. It covers only 18 projects, most of which do not run their suites with Jest or Vitest (Node core, Atom, Electron, Meteor, jQuery/QUnit, Karma suites), so it cannot supply 25 projects; the pool is completed with popular projects that have GitHub issues documenting flaky Jest/Vitest tests, each pinned at the last commit before the issue was opened.",
+   "The JS-TOD (order-dependent Jest tests) and environmental-flakiness replication packages were not fetched.",
+   "Only GitHub-hosted runners were used; numbers labelled NOISY come from shared virtual machines."
+  ]
+ },
+ "totals": {
+  "all": {
+   "tests": 53744,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 52845,
+   "covered": 899,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 1667,
+   "broken_always": 1667
+  },
+  "flaky": {
+   "tests": 52845,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 52845,
+   "covered": 0,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 1667,
+   "broken_always": 1667
+  },
+  "popular": {
+   "tests": 899,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 0,
+   "covered": 899,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "broken_by_det": 0,
+   "broken_always": 0
+  }
+ },
+ "reasons": {},
+ "pass_fail_reasons": {},
+ "broken_causes": {
+  "fixed-order (fails without --det too) | unknown": 1667
+ },
+ "not_reproduced_causes": {},
+ "timings": [],
+ "repos": [
+  {
+   "name": "babel-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/babel/babel",
+   "commit": "ddf20013bdfd960308090865777bf4cf3c8d1f8d",
+   "commit_date": "2023-11-03T12:39:46Z",
+   "python": "node v20.20.2",
+   "install": "yarn install --immutable && npm run build",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 43.57668948620001,
+   "det_mean_s": 4.937538621900018,
+   "slowdown_pct": -88.6693122398303,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 25792,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 25792,
+   "covered": 0,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 238,
+   "broken_always": 238,
+   "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 238
+   },
+   "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+     "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+     "codemods/babel-plugin-codemod-optional-catch-binding/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+     "eslint/babel-eslint-parser/test/index.js::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+   },
+   "ablation_runs": 6,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:None->error": [
+     "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::<file>",
+     "codemods/babel-plugin-codemod-optional-catch-binding/test/index.js::<file>"
+    ],
+    "changed:passed->None": [
+     "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::babel-plugin-codemod-object-assign-to-object-spread/object assign to object spread::multiple",
+     "codemods/babel-plugin-codemod-object-assign-to-object-spread/test/index.js::babel-plugin-codemod-object-assign-to-object-spread/object assign to object spread::multiple objects"
+    ],
+    "changed:skipped->None": [
+     "eslint/babel-eslint-tests/test/integration/eslint/verify.js::verify::visits excluded properties left of spread #210",
+     "eslint/babel-eslint-tests/test/integration/eslint/verify.js::verify::visits excluded properties left of spread #95"
+    ]
+   },
+   "runner": "jest 29.6.2",
+   "node": "node v20.20.2",
+   "documented_source": "https://github.com/babel/babel/issues/16083",
+   "documented_hints": [
+    "Flaky Node.js 6 and 8 tests"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": " your config. (While processing: \"/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/lib/index.js\")\n\n      144 |   };\n      145 |   try {\n    > 146 |     return await run(globalConfig, config, environment, runtime, testPath, sendMessageToJest);\n          |            ^\n      147 |   } finally {\n      148 |     endPending();\n      149 |     controls.closeFile();\n\n      at OptionValidator.invariant (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/node_modules/@babel/helper-validator-option/src/validator.ts:73:13)\n      at invariant (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/src/normalize-options.ts:41:7)\n      at normalizeOptions (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/src/index.ts:23:7)\n      at builder (file:/tmp/work/src/babel-flaky/node_modules/@babel/preset-typescript/node_modules/@babel/helper-plugin-utils/src/index.ts:62:12)\n      at sync (node_modules/gensync/index.js:182:19)\n      at node_modules/gensync/index.js:210:24\n      at evaluateSync (node_modules/gensync/index.js:251:28)\n      at Function.sync (node_modules/gensync/index.js:89:14)\n      at sync (node_modules/gensync/index.js:182:19)\n      at onFirstPause (node_modules/gensync/index.js:210:24)\n          at cachedFunction.next (<anonymous>)\n          at loadPresetDescriptor.next (<anonymous>)\n          at recursePresetDescriptors.next (<anonymous>)\n          at loadFullConfig.next (<anonymous>)\n          at transform.next (<anonymous>)\n      at evaluateSync (node_modules/gensync/index.js:251:28)\n      at sync (node_modules/gensync/index.js:89:14)\n      at ScriptTransformer.transformSource (node_modules/@jest/transform/build/ScriptTransformer.js:542:31)\n      at ScriptTransformer._transformAndBuildScript (node_modules/@jest/transform/build/ScriptTransformer.js:671:40)\n      at ScriptTransformer.transform (node_modules/@jest/transform/build/ScriptTransformer.js:723:19)\n      at detjsJestRunner (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n\n\nTest Suites: 238 failed, 238 total\nTests:       0 total\nSnapshots:   0 total\nTime:        4.346 s\nRan all test suites.\nTest results written to: ../../runs/babel-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/babel-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+   },
+   "not_reproduced_causes": {}
+  },
+  {
+   "name": "prettier-flaky",
+   "kind": "flaky",
+   "status": "ok",
+   "url": "https://github.com/prettier/prettier",
+   "commit": "e51ff9ad41b0c8e22aaad2d7d6b99710ccebfd3d",
+   "commit_date": "2025-10-29T23:56:19+08:00",
+   "python": "node v20.20.2",
+   "install": "yarn install --immutable",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 127.4215039598,
+   "det_mean_s": 6.347700777499995,
+   "slowdown_pct": -95.0183441725012,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 27053,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 27053,
+   "covered": 0,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 1429,
+   "broken_always": 1429,
+   "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 1429
+   },
+   "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+     "tests/dts/unit/run.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+     "tests/format/angular/angular/format.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+     "tests/format/angular/assignment-operator/format.test.js::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+   },
+   "ablation_runs": 6,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {
+    "changed:None->error": [
+     "tests/dts/unit/run.js::<file>",
+     "tests/format/angular/angular/format.test.js::<file>"
+    ],
+    "changed:passed->None": [
+     "tests/dts/unit/run.js::Unit tests for dts files::no errors",
+     "tests/format/angular/angular/format.test.js::angularjs.html - {\"bracketSpacing\":false}::format"
+    ],
+    "changed:skipped->None": [
+     "tests/integration/__tests__/plugin-resolution.js::loads --plugin by bespoke plugin name (assuming it is installed in cwd)::",
+     "tests/integration/__tests__/plugin-resolution.js::loads --plugin by filename without leading ./, should resolve to file, not package::"
+    ]
+   },
+   "runner": "jest 30.2.0",
+   "node": "node v20.20.2",
+   "documented_source": "https://github.com/prettier/prettier/issues/18150",
+   "documented_hints": [
+    "Fix flaky test"
+   ],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "s:\n    https://jestjs.io/docs/configuration\n    For information about custom transformations, see:\n    https://jestjs.io/docs/code-transformation\n\n    Details:\n\n    /tmp/work/src/prettier-flaky/tests/config/format-test-setup.js:1\n    import runFormatTest from \"./run-format-test.js\";\n    ^^^^^^\n\n    SyntaxError: Cannot use import statement outside a module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1318:40)\n\nFAIL tests/unit/whitespace-utils.js\n  \u25cf Test suite failed to run\n\n    Jest encountered an unexpected token\n\n    Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.\n\n    Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.\n\n    By default \"node_modules\" folder is ignored by transformers.\n\n    Here's what you can do:\n     \u2022 If you are trying to use ECMAScript Modules, see https://jestjs.io/docs/ecmascript-modules for how to enable it.\n     \u2022 If you are trying to use TypeScript, see https://jestjs.io/docs/getting-started#using-typescript\n     \u2022 To have some of your \"node_modules\" files transformed, you can specify a custom \"transformIgnorePatterns\" in your config.\n     \u2022 If you need a custom transformation, specify a \"transform\" option in your config.\n     \u2022 If you simply want to mock your non-JS modules (e.g. binary assets) you can stub them out with the \"moduleNameMapper\" config option.\n\n    You'll find more details and examples of these config options in the docs:\n    https://jestjs.io/docs/configuration\n    For information about custom transformations, see:\n    https://jestjs.io/docs/code-transformation\n\n    Details:\n\n    /tmp/work/src/prettier-flaky/tests/config/format-test-setup.js:1\n    import runFormatTest from \"./run-format-test.js\";\n    ^^^^^^\n\n    SyntaxError: Cannot use import statement outside a module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1318:40)\n\n\nTest Suites: 1429 failed, 1429 total\nTests:       0 total\nSnapshots:   0 total\nTime:        5.463 s\nRan all test suites.\nTest results written to: ../../runs/prettier-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/prettier-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+   },
+   "not_reproduced_causes": {}
+  },
+  {
+   "name": "immutable-js",
+   "kind": "popular",
+   "status": "ok",
+   "url": "https://github.com/immutable-js/immutable-js",
+   "commit": "abfaef3c08905918e9fa05d0595e7e220fd36dbf",
+   "commit_date": "2026-11-13T01:15:19+01:00",
+   "python": "node v22.23.5",
+   "install": "npm ci --no-audit --no-fund && npm run build",
+   "pytest_args": [],
+   "xdist": true,
+   "runs": 10,
+   "baseline_mean_s": 56.97400586139998,
+   "det_mean_s": 103.54065665739996,
+   "slowdown_pct": 81.73315197334404,
+   "precompile_first_s": null,
+   "precompile_rest_median_s": null,
+   "tests": 899,
+   "unstable_baseline": 0,
+   "unstable_det": 0,
+   "became_stable": 0,
+   "outcome_changed_by_det": 0,
+   "covered": 899,
+   "not_covered": 0,
+   "reproduced": 0,
+   "never_fails_under_det": 0,
+   "always_fails_under_det": 0,
+   "fails_sometimes_under_det": 0,
+   "seeds_needed": [],
+   "seeds_explored": 0,
+   "exploration_runs": 0,
+   "exploration_budget_hit": false,
+   "reasons": {},
+   "pass_fail_reasons": {},
+   "broken_by_det": 0,
+   "broken_always": 0,
+   "broken_causes": {},
+   "broken_examples": {},
+   "ablation_runs": 0,
+   "known_flaky": 0,
+   "known_present": 0,
+   "known_unstable_baseline": 0,
+   "known_reproduced": 0,
+   "known_categories": {},
+   "examples": {},
+   "runner": "jest 29.7.0",
+   "node": "node v22.23.5",
+   "documented_source": "",
+   "documented_hints": [],
+   "random_order_baseline": true,
+   "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+   "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (runInBand); network=block; timers=virtual; node v22.23.5\nPASS __tests__/ArraySeq.ts (9.439 s)\nPASS __tests__/Comparator.ts\nPASS __tests__/Conversion.ts\nPASS __tests__/Equality.ts\nPASS __tests__/IndexedSeq.ts\nPASS __tests__/KeyedSeq.ts\nPASS __tests__/List.ts (8.087 s)\nPASS __tests__/ListJS.js (8.523 s)\nPASS __tests__/Map.collision.ts\nPASS __tests__/Map.ts\nPASS __tests__/MultiRequire.js (18.321 s)\nPASS __tests__/ObjectSeq.ts\nPASS __tests__/OrderedMap.ts\nPASS __tests__/OrderedSet.ts\nPASS __tests__/Predicates.ts\nPASS __tests__/Range.ts\nPASS __tests__/Record.ts\nPASS __tests__/RecordJS.js (11.121 s)\nPASS __tests__/Repeat.ts\nPASS __tests__/Seq.ts\nPASS __tests__/Set.ts\nPASS __tests__/Stack.ts\nPASS __tests__/concat.ts\nPASS __tests__/count.ts\nPASS __tests__/find.ts\nPASS __tests__/flatten.ts\nPASS __tests__/fromJS.ts\nPASS __tests__/functional/get.ts\nPASS __tests__/functional/has.ts\nPASS __tests__/functional/remove.ts\nPASS __tests__/functional/set.ts\nPASS __tests__/functional/update.ts\nPASS __tests__/get.ts\nPASS __tests__/getIn.ts\nPASS __tests__/groupBy.ts\nPASS __tests__/hasIn.ts\nPASS __tests__/hash.ts\nPASS __tests__/interpose.ts\nPASS __tests__/issues.ts\nPASS __tests__/join.ts\nPASS __tests__/merge.ts\nPASS __tests__/minmax.ts\nPASS __tests__/partition.ts\nPASS __tests__/skipWhile.ts\nPASS __tests__/slice.ts\nPASS __tests__/sort.ts\nPASS __tests__/splice.ts\nPASS __tests__/toSeq.ts\nPASS __tests__/transformerProtocol.ts\nPASS __tests__/updateIn.ts\nPASS __tests__/utils.js (8.748 s)\nPASS __tests__/utils/arrCopy.ts\nPASS __tests__/utils/shallowCopy.ts\nPASS __tests__/zip.ts\nPASS website/src/worker/jsonml-types.test.ts\nPASS website/src/worker/normalizeResult.test.ts\n\nTest Suites: 56 passed, 56 total\nTests:       900 passed, 900 total\nSnapshots:   3 passed, 3 total\nTime:        102.562 s\nRan all test suites.\nTest results written to: ../../runs/immutable-js/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/immutable-js/det_0.jsonl: 900 tests, order digest cd7c3b836421a7053dfccb844bdb1700\n"
+   },
+   "not_reproduced_causes": {}
+  }
+ ]
+}

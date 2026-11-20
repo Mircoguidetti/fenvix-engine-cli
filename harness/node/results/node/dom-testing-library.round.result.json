@@ -1,0 +1,71 @@
+{
+  "name": "dom-testing-library",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/testing-library/dom-testing-library",
+  "commit": "6049cc0bc7cf2201625c476c95fa6299d0e2fa8b",
+  "commit_date": "2026-09-13T20:04:38+02:00",
+  "python": "node v18.20.8",
+  "install": "npm install --no-audit --no-fund --legacy-peer-deps",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 6.934153013000001,
+  "det_mean_s": 9.606813697999996,
+  "slowdown_pct": 38.54343392753734,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 664,
+  "unstable_baseline": 4,
+  "unstable_det": 0,
+  "became_stable": 4,
+  "outcome_changed_by_det": 0,
+  "covered": 664,
+  "not_covered": 0,
+  "reproduced": 4,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 4
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "src/__tests__/element-queries.js::can filter results of label query based on selector (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "src/__tests__/element-queries.js::can find the correct element when there are multiple matching labels (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "src/__tests__/element-queries.js::can get form controls by label text (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "jest 29.7.0",
+  "node": "node v18.20.8",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=jest 29.7.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (runInBand); network=block; timers=virtual; node v18.20.8\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nPASS dom src/__tests__/ariaAttributes.js\nPASS dom src/__tests__/base-queries-warn-on-invalid-container.js\nPASS dom src/__tests__/config.js\nPASS dom src/__tests__/element-queries.js\nPASS dom src/__tests__/event-wrapper.js\nPASS dom src/__tests__/events.js\nPASS dom src/__tests__/fake-timers.js\nPASS dom src/__tests__/get-by-errors.js\nPASS dom src/__tests__/get-node-text.js\nPASS dom src/__tests__/get-queries-for-element.js\nPASS dom src/__tests__/get-user-code-frame.js\nPASS dom src/__tests__/helpers.js\nPASS dom src/__tests__/label-helpers.js\nPASS dom src/__tests__/log-dom.js\nPASS dom src/__tests__/matches.js\nPASS dom src/__tests__/misc.js\nPASS dom src/__tests__/pretty-dom.js\nPASS dom src/__tests__/queries.find.js\nPASS dom src/__tests__/query-helper.js\nPASS dom src/__tests__/role-helpers.js\nPASS dom src/__tests__/role.js\nPASS dom src/__tests__/screen.js\nPASS dom src/__tests__/suggestions.js\nPASS dom src/__tests__/text-matchers.js\nPASS dom src/__tests__/wait-for-element-to-be-removed.js\nPASS dom src/__tests__/wait-for.js\nPASS node src/__node_tests__/index.js\nPASS node src/__node_tests__/pretty-dom.js\nPASS node src/__node_tests__/screen.js\n\nTest Suites: 29 passed, 29 total\nTests:       666 passed, 666 total\nSnapshots:   125 passed, 125 total\nTime:        9.855 s\nRan all test suites in 2 projects.\nTest results written to: ../../runs/dom-testing-library/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/dom-testing-library/det_0.jsonl: 666 tests, order digest fb13b593b77934cf613b30633eb66bb6\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T06:42:25.464396+00:00"
+}

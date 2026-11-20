@@ -1,0 +1,66 @@
+{
+  "name": "react-redux",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/reduxjs/react-redux",
+  "commit": "8e54f5b9dbbdcc972c120ad3ce3c1c57fc2e89fd",
+  "commit_date": "2026-10-27T18:01:52-04:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 9.340027117400002,
+  "det_mean_s": 35.670092632199975,
+  "slowdown_pct": 281.9056645536755,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 140,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 1,
+  "covered": 140,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 1,
+  "broken_always": 1,
+  "broken_causes": {
+    "time | AssertionError": 1
+  },
+  "broken_examples": {
+    "time | AssertionError": [
+      "test/hooks/useSelector.spec.tsx::React::hooks::useSelector::edge cases::should have linear or better unsubscribe time, not quadratic: AssertionError: expected 400049000 to be less than 500 (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "test/hooks/useSelector.spec.tsx::React::hooks::useSelector::edge cases::should have linear or better unsubscribe time, not quadratic"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/react-redux/det_0.json\ndetjs: trace ../../runs/react-redux/det_0.jsonl: 141 tests, order digest d024652449b308c0a77f4db702a0881e\n"
+  },
+  "not_reproduced_causes": {}
+}

@@ -1,0 +1,39 @@
+{
+ "name": "incubator-seata-common",
+ "url": "https://github.com/apache/incubator-seata",
+ "sha": "4959cfb49009d3e4c349fd2c95e590184bd5a9a8",
+ "module": "common",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 552,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "OD": 2
+ },
+ "documented_reproduced": 2,
+ "documented_unstable_in_baseline": 2,
+ "unstable_baseline": 10,
+ "unstable_reproduced": 10,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "551/552",
+ "fingerprint_covered": 551,
+ "fingerprinted": 552,
+ "timing_base_s": [
+  9.243999999999996,
+  9.357999999999995,
+  9.686
+ ],
+ "timing_det_s": [
+  6.286999999999997,
+  5.611999999999993,
+  13.395999999999997
+ ],
+ "slowdown": -0.3282,
+ "seconds": 1309.6
+}

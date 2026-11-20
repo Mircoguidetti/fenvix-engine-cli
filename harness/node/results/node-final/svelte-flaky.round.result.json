@@ -1,0 +1,92 @@
+{
+  "name": "svelte-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/sveltejs/svelte",
+  "commit": "7a2435471c96c43d6f00144cdb5889772703d786",
+  "commit_date": "2025-11-03T20:53:51-05:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 60.235029074100005,
+  "det_mean_s": 62.8911203074,
+  "slowdown_pct": 4.409545864139153,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 6969,
+  "unstable_baseline": 20,
+  "unstable_det": 0,
+  "became_stable": 20,
+  "outcome_changed_by_det": 2,
+  "covered": 6796,
+  "not_covered": 88,
+  "reproduced": 8,
+  "never_fails_under_det": 11,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 1,
+  "seeds_needed": [
+    1,
+    1,
+    11,
+    11,
+    1,
+    8,
+    11,
+    6
+  ],
+  "seeds_explored": 15,
+  "exploration_runs": 53,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "fs": 31,
+    "time": 57
+  },
+  "pass_fail_reasons": {
+    "fs": 5,
+    "time": 1,
+    "outcome-only": 2
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "packages/svelte/tests/runtime-legacy/test.ts::window-bind-scroll-update-2 (dom) (seed 1): event #0: [fs] fs.readdirSync @ packages/svelte/tests/helpers.js:72 = packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|2|",
+      "packages/svelte/tests/runtime-legacy/test.ts::window-bind-scroll-update-2 (hydrate) (seed 1): event #0: [fs] fs.readdirSync @ <deps>/fdir/dist/index.mjs:244 = packages/svelte/tests/runtime-legacy/samples/window-bind-scroll-update-2/_output/client|2|277e1",
+      "packages/svelte/tests/runtime-runes/test.ts::async-block-resolve (hydrate) (seed 11): event #15: [time] Date.now @ <deps>/jsdom/lib/jsdom/living/events/Event-impl.js:39 = 3004000  <>  [outcome] outcome @  = failed"
+    ],
+    "changed:failed->passed": [
+      "packages/svelte/tests/runtime-runes/test.ts::1000-reading-derived-effects (dom)",
+      "packages/svelte/tests/runtime-runes/test.ts::error-boundary-20 (hydrate)"
+    ],
+    "not-reproduced": [
+      "packages/svelte/tests/runtime-runes/test.ts::async-effect-pending-nested (hydrate) (seed 15:3/3) event #0: [fs] fs.readdirSync @ <deps>/fdir/dist/index.mjs:244 = packages/svelte/tests/runtime-runes/samples/async-effec"
+    ]
+  },
+  "runner": "vitest 2.1.9",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/sveltejs/svelte/issues/17110",
+  "documented_hints": [
+    "$effect.pending flaky behaviour"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 2.1.9; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/svelte-flaky/det_0.json\ndetjs: trace ../../runs/svelte-flaky/det_0.jsonl: 6890 tests, order digest 3d98bdfdb5341baba93f6cbe034c5443\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 11,
+    "l0-gap": 1
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T14:03:45.904655+00:00"
+}

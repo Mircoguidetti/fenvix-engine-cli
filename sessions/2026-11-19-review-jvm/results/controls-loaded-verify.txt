@@ -1,0 +1,11 @@
+detpy verify: 2 runs, 40 tests
+  run 0: /tmp/claude-0/ctl2/logs/gradle-det-1.jsonl
+  run 1: /tmp/claude-0/ctl2/logs/gradle-det-2.jsonl
+order: identical in every run
+covered by Level 0: 38  not covered: 2  missing: 0  outcome-unstable: 0
+reasons: thread=2
+NOT-COVERED fx.SchedControlTest::fixedRateTicksWithoutWaiting()  [thread] outcomes=passed,passed
+    runs 0 vs 1: event #5: [outcome] outcome @  = passed  <>  [sched] sched.timer @ src/test/java/fx/SchedControlTest.java:34 = 0/1:fx/SchedControlTest.java:34#0 (thread 1)
+NOT-COVERED fx.SleepControlTest::busyWaitOnTheClockEnds()  [thread] outcomes=passed,passed
+    runs 0 vs 1: event #1000: System.currentTimeMillis @ src/test/java/fx/SleepControlTest.java:32 returned different values: "1004105" vs "1001000"
+

@@ -1,0 +1,14 @@
+[
+ {
+  "repo": "tiptap-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/markdown/__tests__/manager.spec.ts::MarkdownManager Direct Tests::does not reopen marks after inline atom that does not carry them",
+  "class": "external",
+  "evidence": "test source uses https://",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=3;passed=7",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]

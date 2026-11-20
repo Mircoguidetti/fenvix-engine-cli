@@ -1,0 +1,11 @@
+ok  classify fresh=failed alone=['passed', 'failed'] suite=None -> flaky (want flaky)
+ok  classify fresh=failed alone=['failed', 'failed'] suite=None -> wrong (want wrong)
+ok  classify fresh=failed alone=[None, None] suite=None -> wrong (want wrong)
+ok  classify fresh=failed alone=['passed', 'passed'] suite=failed -> wrong (want wrong)
+ok  classify fresh=failed alone=['passed', 'passed'] suite=passed -> flaky (want flaky)
+{"sha": "78957b2c8c782bc842bd71fd92161e6f8f165a81", "status": "ok", "rc": 1, "seconds": 5.8, "tests": 18, "test_ms": 75, "failed": 1}
+{"sha": "63b7e11c33cb6291439b0006206e109e748dad99", "status": "ok", "rc": 1, "seconds": 6.1, "tests": 19, "test_ms": 71, "failed": 2, "prev": "78957b2c8c782bc842bd71fd92161e6f8f165a81", "reused": 18, "verified": 18, "unverifiable": 0, "share_time_skipped": 0.9886, "share_tests_skipped": 0.9474, "rerun_reasons": {}, "rerun_details": {}, "module_cache_hits": 0, "modules": 1, "module_cache_share_time": 0.0}
+ok  adversarial walk: VictimTest wrong=[{'test': 'rv.VictimTest::flagIsOff()', 'module': '', 'fresh': 'failed', 'reruns': ['passed', 'passed'], 'suite_rerun': 'failed'}] flaky=[]
+{"sha": "78957b2c8c782bc842bd71fd92161e6f8f165a81", "status": "ok", "rc": 1, "seconds": 5.7, "tests": 18, "test_ms": 61, "failed": 1}
+{"sha": "63b7e11c33cb6291439b0006206e109e748dad99", "status": "ok", "rc": 1, "seconds": 6.2, "tests": 19, "test_ms": 66, "failed": 2, "prev": "78957b2c8c782bc842bd71fd92161e6f8f165a81", "reused": 14, "verified": 14, "unverifiable": 0, "share_time_skipped": 0.6215, "share_tests_skipped": 0.7368, "rerun_reasons": {"native": 1, "process": 1, "after-new": 2}, "rerun_details": {"after-new: rv.PolluterTest::pollute()": 2, "native: lib:/tmp/fenvix-w1-verifier/walk-w1-real/w1-real/build/native/librvnative.so": 1, "process: cat": 1}, "module_cache_hits": 0, "modules": 1, "module_cache_share_time": 0.0}
+ok  real decider walk: reused=14 wrong=[] flaky=[]

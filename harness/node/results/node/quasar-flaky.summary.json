@@ -1,0 +1,89 @@
+{
+  "name": "quasar-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/quasarframework/quasar",
+  "commit": "6d531cf190aa6c2fa0c5990ecbe1349bc801c718",
+  "commit_date": "2026-06-17T18:49:06+03:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile && npm run build",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 122.88645931239998,
+  "det_mean_s": 198.39312229120011,
+  "slowdown_pct": 61.444249758102565,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1041,
+  "unstable_baseline": 17,
+  "unstable_det": 0,
+  "became_stable": 17,
+  "outcome_changed_by_det": 0,
+  "covered": 1025,
+  "not_covered": 16,
+  "reproduced": 14,
+  "never_fails_under_det": 2,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 1,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 12,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 16
+  },
+  "pass_fail_reasons": {
+    "outcome-only": 14
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "not-reproduced": [
+      "../src/plugins/app-visibility/AppVisibility.test.js::[AppVisibility API]::[Props]::[(prop)appVisible]::is correct type (seed 2:2/2) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "reproduced": [
+      "../src/plugins/icon-set/IconSet.test.js::[IconSet API]::[Props]::[(prop)props]::is correct type (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "../src/plugins/lang/Lang.test.js::[Lang API]::[Props]::[(prop)props]::is correct type (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "../src/plugins/screen/Screen.test.js::[Screen API]::[Props]::[(prop)gt]::is reactive (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.8",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/quasarframework/quasar/issues/18333",
+  "documented_hints": [
+    "update to 2.20.1 makes cypress tests flaky for q-inputs"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.8; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/quasar-flaky/det_0.json\ndetjs: trace ../../../../runs/quasar-flaky/det_0.jsonl: 1060 tests, order digest 2fc9388d40ac6be9962e425987290a7a\n"
+  },
+  "not_reproduced_causes": {
+    "l0-gap": 2,
+    "unknown": 1
+  }
+}

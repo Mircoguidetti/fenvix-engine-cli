@@ -1,0 +1,14 @@
+plugins { id 'java' }
+repositories { mavenCentral() }
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+test {
+    useJUnitPlatform()
+    systemProperty 'rv.root', rootDir.absolutePath
+    // a JUnit configuration parameter set by the build (scenario junit-config-parameter)
+    def timeout = System.getProperty('rv.junit.timeout')
+    if (timeout) systemProperty 'junit.jupiter.execution.timeout.default', timeout
+}

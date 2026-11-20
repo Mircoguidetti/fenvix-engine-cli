@@ -1,0 +1,967 @@
+[
+ {
+  "test": "Test mechanism::Test mechanism",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "10F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   0,
+   1,
+   2,
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": true
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testCloseMethodWithWrongParameter",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testEndpointWithCorrectMessageReturnParameter1",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testEndpointWithCorrectMessageReturnParameter2",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testEndpointWithTwoSessionMessageParameters",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testEndpointWithTwoStringMessageParameters",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testEndpointWithWrongMessageReturnParameter",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testErrorMethodWithWrongParameter",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testErrorMethodWithoutThrowable",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testMultipleWrongMethods",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testMultipleWrongMethodsOnClient",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.AnnotatedClassModelcheckingTest::testOpenMethodWithWrongParameter",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.DefaultPortTest::testDefaultWsPort",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "0F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.EphemeralPortTest::testEphemeralPort",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.EphemeralPortTest::testEphemeralPortParallel",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.ExtendedExtensionTest::extendedExtensionTest",
+  "documented": "NIO",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GetEndpointInstanceTest::testAnnotated",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GetEndpointInstanceTest::testProgrammatic",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyClientThreadPoolConfigPropertiesTest::testGrizzlyThreadPoolConfigClientProperties",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyClientThreadPoolConfigPropertiesTest::testGrizzlyThreadPoolConfigGrizzlyProperties",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyClientThreadPoolConfigPropertiesTest::testTyrusThreadPoolConfigClientProperties",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyClientThreadPoolConfigsTest::testCustomThreadFactories",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyContextPathTest::testEmptyContextPath",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyContextPathTest::testSlashContextPath",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.GrizzlyServerThreadPoolConfigsTest::testCustomThreadFactories",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.IPv6EchoTest::testIPv6",
+  "documented": "",
+  "baseline": "0F/0P",
+  "det": "0F/0P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.MaxMessageSizeDeploymentTest::clientMaxMessageSizeOkTest",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.MaxMessageSizeDeploymentTest::clientMaxMessageSizeTooLargeTest",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.MaxMessageSizeDeploymentTest::serverMaxMessageSizeOkTest",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.MaxMessageSizeDeploymentTest::serverMaxMessageSizeTooLargeTest",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.OnCloseTest::testOnClose1006",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParam",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParamError",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParamErrorNotPrimitive",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParamParalel",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParamPrimitives",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.PathParamTest::testPathParamPrimitivesBoxing",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testMaxRedirectionConfig",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testMaxRedirectionConfigNeg",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testMaxRedirectionExceed",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirect",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectEmptyLocation",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectLoop",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectMissingLocation",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectNotAllowed",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectNotAllowedByDefault",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRedirectUnsupported3xx",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RedirectTest::testRelativePath",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableDisabled",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableEmptyValue",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableInvalidValue",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableNotSet",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableNullValue",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableThreshold",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableTooLongValue",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableTwice",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableUserDefinedHandler",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableWithDate",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.RetryAfterTest::testServiceUnavailableWithSeconds",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.SameHeadersOnClientTest::testSameHeaderNamesInHandshakeResponse",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.ServerEndpointPathTest::testEquivalentPaths",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.ServerEndpointPathTest::testExactMatching",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5,
+   7
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.ServerExecutorsManagementTest::testExecutorServicesGetClosed",
+  "documented": "NOD;UD",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.ServerExecutorsManagementTest::testInMemoryContainerExecutorServicesGetClosed",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.StandaloneServerStaticContentTest::testStaticContent",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ },
+ {
+  "test": "org.glassfish.tyrus.test.e2e.non_deployable.WsadlTest::testWsadl",
+  "documented": "",
+  "baseline": "0F/10P",
+  "det": "0F/10P",
+  "baseline_unstable": false,
+  "seeds_failing": [
+   3,
+   5
+  ],
+  "reproduced": false,
+  "confirm": "",
+  "fingerprint_covered": false,
+  "broken_by_det": false
+ }
+]

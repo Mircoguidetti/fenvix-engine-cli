@@ -1,0 +1,9 @@
+ok  none                     wrong reuses=0 
+BAD jul-root-level           wrong reuses=1 [rv.JulBTest::read()=failed] expected RUN but reused: ['rv.JulBTest::read()']
+BAD locale-default           wrong reuses=1 [rv.LocaleBTest::read()=failed] expected RUN but reused: ['rv.LocaleBTest::read()'] (documented residual, REPORT-2 §6)
+BAD context-class-loader     wrong reuses=1 [rv.TcclBTest::read()=failed] expected RUN but reused: ['rv.TcclBTest::read()']
+ok  clinit-null-read         wrong reuses=0 
+BAD resource-bundle-cache    wrong reuses=1 [rv.MsgBTest::read()=failed] expected RUN but reused: ['rv.MsgBTest::read()']
+BAD introspector-cache       wrong reuses=1 [rv.BeanBTest::read()=failed] expected RUN but reused: ['rv.BeanBTest::read()']
+ok  property-via-jdk         wrong reuses=0 
+exit 1

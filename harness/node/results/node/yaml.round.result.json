@@ -1,0 +1,66 @@
+{
+  "name": "yaml",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/eemeli/yaml",
+  "commit": "528ef30d6ded4bd9f2c3521b670eb2b29d503c5c",
+  "commit_date": "2026-09-23T03:29:02+03:00",
+  "python": "node v20.20.2",
+  "install": "npm ci --no-audit --no-fund",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 3.5193468972000006,
+  "det_mean_s": 6.116816926700002,
+  "slowdown_pct": 73.80545610796577,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 988,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 0,
+  "covered": 982,
+  "not_covered": 0,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    1
+  ],
+  "seeds_explored": 1,
+  "exploration_runs": 10,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {
+    "outcome-only": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "tests/doc/errors.ts::logLevel::by default, warn for tag fallback (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v20.20.2",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v20.20.2\nJSON report written to /tmp/work/runs/yaml/det_0.json\ndetjs: trace ../../runs/yaml/det_0.jsonl: 987 tests, order digest 38db82cd8947c272b19bd6696843c6b7\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T06:52:10.552313+00:00"
+}

@@ -1,0 +1,72 @@
+{
+  "name": "zod-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/colinhacks/zod",
+  "commit": "ead9fcb310bf65a70427f92ca76545efe954037e",
+  "commit_date": "2026-08-09T11:01:43-07:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 20.8940643548,
+  "det_mean_s": 45.10511597530001,
+  "slowdown_pct": 115.87526107594282,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 3817,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 0,
+  "covered": 1969,
+  "not_covered": 1,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    2
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 11,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "entropy": 1
+  },
+  "pass_fail_reasons": {
+    "outcome-only": 1
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 4,
+  "known_present": 4,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {
+    "issue": 4
+  },
+  "examples": {
+    "reproduced": [
+      "packages/zod/src/v4/mini/tests/prototypes.test.ts::prototype extension (seed 2): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.5",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/colinhacks/zod/issues/6359",
+  "documented_hints": [
+    "redos.test.ts"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.5; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\nJSON report written to /tmp/work/runs/zod-flaky/det_0.json\ndetjs: trace ../../runs/zod-flaky/det_0.jsonl: 3983 tests, order digest 3a26ee7fbe7579600bf9291b91fd0fc5\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T13:45:00.581198+00:00"
+}

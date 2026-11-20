@@ -1,0 +1,19 @@
+{
+ "name": "tyrus-non-deployable",
+ "url": "https://github.com/eclipse-ee4j/tyrus",
+ "sha": "d86e0cb0a4f26ba89daf8668137c156e57fea565",
+ "module": "tests/e2e/non-deployable",
+ "status": "ok",
+ "build_jdk8_install": {
+  "rc": 0,
+  "seconds": 26.4
+ },
+ "jdk": "8",
+ "first_run": {
+  "wall": 24.9,
+  "test_seconds": 17.9,
+  "tests": 65,
+  "failed": 0
+ },
+ "documented_present": 2
+}

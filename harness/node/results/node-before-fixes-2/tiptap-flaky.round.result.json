@@ -1,0 +1,67 @@
+{
+  "name": "tiptap-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/ueberdosis/tiptap",
+  "commit": "1ecf81434f0fa7a40c1b7815719836e82a77d4b9",
+  "commit_date": "2026-07-15T21:38:05+02:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 38.453854478899984,
+  "det_mean_s": 37.06968141519998,
+  "slowdown_pct": -3.5995691003082975,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 1420,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 1396,
+  "covered": 23,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 1,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "packages/ai-toolkit/src/server-ai-toolkit.spec.ts::ServerAiToolkit::does not synthesize hashes when the AI Toolkit extension is present",
+      "packages/ai-toolkit/src/server-ai-toolkit.spec.ts::ServerAiToolkit::preserves provided hashes through a JSON round-trip"
+    ]
+  },
+  "runner": "vitest 4.1.2",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/ueberdosis/tiptap/issues/8080",
+  "documented_hints": [
+    "Flaky tests in CI verify test stability across the suite"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.2; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/tiptap-flaky/det_0.json\ndetjs: trace ../../runs/tiptap-flaky/det_0.jsonl: 23 tests, order digest eb5cbe34a4333a2ed6a0d2d314ed649d\n"
+  },
+  "not_reproduced_causes": {
+    "external": 1
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T19:24:53.522246+00:00"
+}

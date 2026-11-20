@@ -1,0 +1,92 @@
+{
+  "name": "happy-dom-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/capricorn86/happy-dom",
+  "commit": "875ef5c647b336cc933c82426c9d780a5aab84f9",
+  "commit_date": "2026-10-16T01:25:41+02:00",
+  "python": "node v20.20.2",
+  "install": "npm ci --no-audit --no-fund",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 115.70189171960001,
+  "det_mean_s": 206.96450220079996,
+  "slowdown_pct": 78.87737108255072,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 8106,
+  "unstable_baseline": 21,
+  "unstable_det": 0,
+  "became_stable": 21,
+  "outcome_changed_by_det": 3,
+  "covered": 8045,
+  "not_covered": 27,
+  "reproduced": 2,
+  "never_fails_under_det": 12,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 7,
+  "seeds_needed": [
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 11,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 27
+  },
+  "pass_fail_reasons": {
+    "outcome-only": 2
+  },
+  "broken_by_det": 2,
+  "broken_always": 2,
+  "broken_causes": {
+    "time+timers | AssertionError": 2
+  },
+  "broken_examples": {
+    "time+timers | AssertionError": [
+      "packages/happy-dom/test/browser/BrowserFrame.test.ts::BrowserFrame::goto()::Aborts request if it times out.: AssertionError: expected NetworkError: Failed to execute \"fetch()\"\u2026 to deeply equal TimeoutError: The operation was aborted. \u2026 (first diverging source: time)",
+      "packages/happy-dom/test/browser/detached-browser/DetachedBrowserFrame.test.ts::DetachedBrowserFrame::goto()::Aborts request if it times out.: AssertionError: expected NetworkError: Failed to execute \"fetch()\"\u2026 to deeply equal TimeoutError: The operation was aborted. \u2026 (first diverging source: time)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "packages/happy-dom/test/browser/BrowserFrame.test.ts::BrowserFrame::goto()::Aborts request if it times out.",
+      "packages/happy-dom/test/browser/detached-browser/DetachedBrowserFrame.test.ts::DetachedBrowserFrame::goto()::Aborts request if it times out."
+    ],
+    "changed:None->passed": [
+      "packages/happy-dom/test/fetch/cache/response/ResponseCache.test.ts::ResponseCache::add()::Adds response to cache with \"Expires\" header set to \"Wed, 01 Jan 2025 00:01:00 GMT\"."
+    ],
+    "reproduced": [
+      "packages/happy-dom/test/storage/Storage.test.ts::Storage::Object.entries()::Returns an array of storage's own enumerable string-keyed property key-value pairs. (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/happy-dom/test/storage/Storage.test.ts::Storage::vi.spyOn()::Should be able to mock implementation once. (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "not-reproduced": [
+      "packages/happy-dom/test/storage/Storage.test.ts::Storage::Object.keys()::Returns an array of storage's own enumerable string-keyed property names. (seed 2:1/1) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/happy-dom/test/storage/Storage.test.ts::Storage::clear()::Clears storage. (seed 2:1/1) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ]
+  },
+  "runner": "vitest 4.1.8",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/capricorn86/happy-dom/issues/2526",
+  "documented_hints": [
+    "Handles debug error caused while waiting for the page to complete."
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.8; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v20.20.2\nTAP version 13\n# Subtest: CommonJS\n    # Subtest: Tests CommonJS integration.\n    not ok 1 - Tests CommonJS integration.\n      ---\n      duration_ms: 0.001\n      location: '/tmp/work/src/happy-dom-flaky/integration-test/test/CommonJS.test.cjs:5:2'\n      failureType: 'testCodeFailure'\n      error: `Cannot find module '/tmp/work/src/happy-dom-flaky/node_modules/happy-dom/lib/index.js'. Please verify that the package.json has a valid \"main\" entry`\n      code: 'MODULE_NOT_FOUND'\n      stack: |-\n        tryPackage (node:internal/modules/cjs/loader:491:19)\n        Function.Module._findPath (node:internal/modules/cjs/loader:758:18)\n        Function.Module._resolveFilename (node:internal/modules/cjs/loader:1193:27)\n        Function.Module._load (node:internal/modules/cjs/loader:1038:27)\n        Module.require (node:internal/modules/cjs/loader:1289:19)\n        require (node:internal/modules/helpers:182:18)\n        TestContext.<anonymous> (/tmp/work/src/happy-dom-flaky/integration-test/test/CommonJS.test.cjs:6:22)\n        Test.runInAsyncScope (node:async_hooks:206:9)\n        Test.run (node:internal/test_runner/test:796:25)\n        Test.start (node:internal/test_runner/test:702:17)\n      ...\n    1..1\nnot ok 1 - CommonJS\n  ---\n  duration_ms: 0.003\n  type: 'suite'\n  location: '/tmp/work/src/happy-dom-flaky/integration-test/test/CommonJS.test.cjs:4:1'\n  failureType: 'subtestsFailed'\n  error: '1 subtest failed'\n  code: 'ERR_TEST_FAILURE'\n  ...\n1..1\n# tests 1\n# suites 1\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms -601312.502622\nJSON report written to /tmp/work/runs/happy-dom-flaky/det_0.json\ndetjs: trace ../../runs/happy-dom-flaky/det_0.jsonl: 8111 tests, order digest 5ec1be4ad1e7b01a30979c2d45b9a244\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 14,
+    "concurrency/event-order": 1,
+    "l0-gap": 4
+  }
+}

@@ -1,0 +1,66 @@
+{
+ "repos": {
+  "commons-lang": {
+   "transitions": 43,
+   "median": 0.9758,
+   "mean": 0.9161558139534883,
+   "verified": 4287287,
+   "wrong": 4,
+   "flaky": 59,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.3488372093023256,
+   "reasons": {
+    "prop": 17232,
+    "code": 822040,
+    "not-passed": 1572,
+    "after": 3649
+   }
+  },
+  "gson": {
+   "transitions": 50,
+   "median": 0.84165,
+   "mean": 0.64675,
+   "verified": 171571,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.22,
+   "reasons": {
+    "runtime": 23177,
+    "not-passed": 980,
+    "code": 27311,
+    "prop": 27,
+    "after": 74,
+    "config": 9325
+   }
+  },
+  "jsoup": {
+   "transitions": 50,
+   "median": 0.76595,
+   "mean": 0.565048,
+   "verified": 71952,
+   "wrong": 0,
+   "flaky": 0,
+   "not_verifiable": 0,
+   "module_cache_median": 0.0,
+   "module_cache_mean": 0.0,
+   "reasons": {
+    "code": 19517,
+    "network": 184,
+    "prop": 3128,
+    "config": 4112,
+    "after": 77,
+    "runtime": 4074,
+    "resource": 1
+   }
+  }
+ },
+ "totals": {
+  "verified": 4530810,
+  "wrong": 4,
+  "flaky": 59,
+  "incomplete": 0
+ }
+}

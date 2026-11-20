@@ -1,0 +1,13 @@
+ok  none                     rerun=2/13 network()[network], writesItsInput()[writes]
+ok  code                     rerun=3/13 code()[code], network()[network], writesItsInput()[writes]
+ok  file-content             rerun=3/13 fileRead()[file], network()[network], writesItsInput()[writes]
+ok  file-created             rerun=3/13 fileProbe()[file], network()[network], writesItsInput()[writes]
+ok  dir-listing              rerun=3/13 dirList()[file], network()[network], writesItsInput()[writes]
+ok  resource                 rerun=3/13 resource()[file], network()[network], writesItsInput()[writes]
+ok  env-var                  rerun=3/13 env()[env], network()[network], writesItsInput()[writes]
+ok  system-property          rerun=3/13 prop()[prop], network()[network], writesItsInput()[writes]
+ok  static-writer            rerun=4/13 network()[network], writesItsInput()[writes], writer()[code], reader()[after]
+ok  runtime-jvm-flag         rerun=13/13 library()[runtime], code()[runtime], dirList()[runtime], env()[runtime], fileProbe()[runtime], fileRead()[runtime] ...
+ok  dependency-version       rerun=13/13 library()[config], code()[config], dirList()[config], env()[config], fileProbe()[config], fileRead()[config] ...
+ok  config-junit-properties  rerun=13/13 library()[config], code()[config], dirList()[config], env()[config], fileProbe()[config], fileRead()[config] ...
+EXIT 0

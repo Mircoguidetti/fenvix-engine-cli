@@ -1,0 +1,34 @@
+{
+ "name": "tyrus-non-deployable",
+ "url": "https://github.com/eclipse-ee4j/tyrus",
+ "sha": "d86e0cb0a4f26ba89daf8668137c156e57fea565",
+ "module": "tests/e2e/non-deployable",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 7,
+ "seed_budget_hit": true,
+ "confirm": 10,
+ "tests": 66,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NIO": 1,
+  "NOD;UD": 1
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "Test mechanism::Test mechanism"
+ ],
+ "fingerprint_coverage": "0/0",
+ "fingerprint_covered": 0,
+ "fingerprinted": 0,
+ "timing_base_s": [],
+ "timing_det_s": [],
+ "slowdown": null,
+ "seconds": 3200.6
+}

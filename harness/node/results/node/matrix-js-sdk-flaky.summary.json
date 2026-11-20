@@ -1,0 +1,90 @@
+{
+  "name": "matrix-js-sdk-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/matrix-org/matrix-js-sdk",
+  "commit": "dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe",
+  "commit_date": "2024-07-29T12:11:37Z",
+  "python": "node v20.20.2",
+  "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 95.49010300840001,
+  "det_mean_s": 3.342967026699995,
+  "slowdown_pct": -96.49914816155773,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 2847,
+  "unstable_baseline": 138,
+  "unstable_det": 0,
+  "became_stable": 138,
+  "outcome_changed_by_det": 2709,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 137,
+  "always_fails_under_det": 1,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 140,
+  "broken_always": 140,
+  "broken_causes": {
+    "fixed-order (fails without --det too) | unknown": 140
+  },
+  "broken_examples": {
+    "fixed-order (fails without --det too) | unknown": [
+      "spec/integ/crypto/cross-signing.spec.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "spec/integ/crypto/crypto.spec.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)",
+      "spec/integ/crypto/device-dehydration.spec.ts::<file>: \u25cf Test suite failed to run (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:None->error": [
+      "spec/integ/crypto/cross-signing.spec.ts::<file>",
+      "spec/integ/crypto/crypto.spec.ts::<file>"
+    ],
+    "changed:passed->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::can bootstrapCrossSigning twice",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::publishes keys if none were yet published"
+    ],
+    "changed:skipped->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::get cross signing keys from secret storage and import them",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::will upload existing cross-signing keys to an established secret storage"
+    ],
+    "always-fails-under-det": [
+      "spec/integ/matrix-client-methods.spec.ts::<file> (fixed:10/10)"
+    ],
+    "changed:failed->None": [
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to add an extra list",
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to adjust list ranges"
+    ]
+  },
+  "runner": "jest 29.7.0",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+  "documented_hints": [
+    "Room \u203a recalculate \u203a recalculates in acceptable time without heroes"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "ndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)\n\nFAIL spec/unit/webrtc/stats/valueFormatter.spec.ts\n  \u25cf Test suite failed to run\n\n    Cannot find module '@babel/runtime/helpers/interopRequireDefault'\n    Require stack:\n    - /home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-util/build/requireOrImportModule.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-util/build/index.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/@jest/core/build/FailedTestsInteractiveMode.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/@jest/core/build/plugins/FailedTestsInteractive.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/@jest/core/build/watch.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/@jest/core/build/cli/index.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/@jest/core/build/index.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-cli/build/run.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-cli/build/index.js\n    - /tmp/work/src/matrix-js-sdk-flaky/node_modules/jest/bin/jest.js\n\n      10 | // (jest-circus).\n      11 | const path = require('node:path');\n    > 12 | const controls = require('../controls');\n         |                              ^\n      13 |\n      14 | const { STATE } = controls;\n      15 |\n\n      at Function.Module._resolveFilename.sharedData.moduleResolveFilenameHook.installedValue [as _resolveFilename] (node_modules/@cspotcode/source-map-support/source-map-support.js:811:30)\n      at Object.<anonymous> (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:12:30)\n      at Module._compile (node_modules/pirates/lib/index.js:117:24)\n      at require.extensions.<computed> (node_modules/ts-node/src/index.ts:1608:43)\n      at Object.newLoader (node_modules/pirates/lib/index.js:121:7)\n      at ScriptTransformer.requireAndTranspileModule (node_modules/@jest/transform/build/ScriptTransformer.js:798:66)\n\n\nTest Suites: 141 failed, 141 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.895 s\nRan all test suites.\nTest results written to: ../../runs/matrix-js-sdk-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/matrix-js-sdk-flaky/det_0.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 117,
+    "unknown": 19,
+    "l0-gap": 2
+  }
+}

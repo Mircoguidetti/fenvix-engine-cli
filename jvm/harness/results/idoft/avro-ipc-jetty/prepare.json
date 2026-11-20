@@ -1,0 +1,19 @@
+{
+ "name": "avro-ipc-jetty",
+ "url": "https://github.com/apache/avro",
+ "sha": "efe9aa7fbe457805dc894a9186e1267603d82dd2",
+ "module": "lang/java/ipc-jetty",
+ "status": "ok",
+ "build_jdk8_install": {
+  "rc": 0,
+  "seconds": 44.5
+ },
+ "jdk": "8",
+ "first_run": {
+  "wall": 11.7,
+  "test_seconds": 3.9,
+  "tests": 35,
+  "failed": 0
+ },
+ "documented_present": 20
+}

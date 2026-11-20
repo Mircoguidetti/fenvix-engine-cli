@@ -1,0 +1,6 @@
+ok  decider is crates/fenvix-skip (not fenvix_skip.py)
+ok  shared-state rule (mutable static reads, order in B)
+ok  child processes / project native code: not reusable
+ok  class lookups (Class.forName) and getResources in the key
+ok  D5: virtual scheduler real-time fallback under load (limit)
+ok  inputs still not keyed (Locale/TimeZone defaults, JDK global state)

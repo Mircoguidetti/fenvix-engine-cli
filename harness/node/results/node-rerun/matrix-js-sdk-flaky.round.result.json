@@ -1,0 +1,77 @@
+{
+  "name": "matrix-js-sdk-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/matrix-org/matrix-js-sdk",
+  "commit": "dc1cccfeccb0a34dce3f2d7249aef44dbbb92cbe",
+  "commit_date": "2024-07-29T12:11:37Z",
+  "python": "node v20.20.2",
+  "install": "npx -y yarn@1 install --frozen-lockfile --ignore-engines",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 95.9896511276,
+  "det_mean_s": NaN,
+  "slowdown_pct": NaN,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 2707,
+  "unstable_baseline": 137,
+  "unstable_det": 0,
+  "became_stable": 137,
+  "outcome_changed_by_det": 2570,
+  "covered": 0,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 137,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::can bootstrapCrossSigning twice",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::publishes keys if none were yet published"
+    ],
+    "changed:skipped->None": [
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::get cross signing keys from secret storage and import them",
+      "spec/integ/crypto/cross-signing.spec.ts::cross-signing (libolm)::bootstrapCrossSigning (before initialsync completes)::will upload existing cross-signing keys to an established secret storage"
+    ],
+    "changed:failed->None": [
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to add an extra list",
+      "spec/integ/sliding-sync.spec.ts::SlidingSync::lists::should be possible to adjust list ranges"
+    ]
+  },
+  "runner": "jest 29.7.0",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/matrix-org/matrix-js-sdk/issues/4331",
+  "documented_hints": [
+    "Room \u203a recalculate \u203a recalculates in acceptable time without heroes"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "de_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:7:8)\n    at Proxy.FetchMock.<computed> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/fetch-mock-jest/node_modules/fetch-mock/cjs/lib/set-up-and-tear-down.js:80:32)\n    at /tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:57:30\n    at new Promise (<anonymous>)\n    at new E2EKeyReceiver (/tmp/work/src/matrix-js-sdk-flaky/spec/test-utils/E2EKeyReceiver.ts:55:31)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/spec/integ/crypto/crypto.spec.ts:380:27)\n    at Generator.next (<anonymous>)\n    at asyncGeneratorStep (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)\n    at _next (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)\n    at /tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7\n    at new Promise (<anonymous>)\n    at Object.<anonymous> (/tmp/work/src/matrix-js-sdk-flaky/node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)\n    at Promise.then.completed (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:298:28)\n    at new Promise (<anonymous>)\n    at callAsyncCircusFn (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/utils.js:231:10)\n    at _callCircusHook (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:281:40)\n    at async _runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:246:5)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:126:9)\n    at async _runTestsForDescribeBlock (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:121:9)\n    at async run (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/run.js:71:3)\n    at async runAndTransformResultsToJestFormat (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapterInit.js:122:21)\n    at async jestAdapter (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-circus/build/legacy-code-todo-rewrite/jestAdapter.js:79:19)\n    at async detjsJestRunner (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n    at async runTestInternal (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:367:16)\n    at async runTest (/tmp/work/src/matrix-js-sdk-flaky/node_modules/jest-runner/build/runTest.js:444:34)\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 116,
+    "unknown": 19,
+    "l0-gap": 2
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:57:59.372983+00:00"
+}

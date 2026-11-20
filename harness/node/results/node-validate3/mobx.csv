@@ -1,0 +1,1323 @@
+nodeid,documented_flaky,baseline_outcomes,baseline_unstable,det_outcomes,det_stable,became_stable,outcome_changed_by_det,reproduced,repro_seed,seeds_needed,best_attempt,pass_fail_reason,pass_fail_divergence,fingerprint_covered,distinct_fingerprints,det_reason,det_divergence,baseline_exception,det_exception,det_exception_message,broken_by_det,broken_cause
+packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  @observable accessor o = 5
+
+  constructor() {
+    makeObservable(this)
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  @observableRef accessor ref = []
+  count = 0
+
+  constructor() {
+    makeObservable(this, {})
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this)
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this, {
+      a: true,
+      c: true,
+      f: true,
+    })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this, {
+      o: true,
+      a: true,
+      c: true,
+    })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this, {
+      o: true,
+      a: true,
+      f: true,
+    })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::
+class C {
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this, {
+      o: true,
+      c: true,
+      f: true,
+    })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::invalid::makeObservable({}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @action a() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @actionBound ab() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @computed get c() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @computed({ equals }) get co() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @computedStruct get cs() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @flow *f() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @flowBound *fb() {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @observable accessor o = 5
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @observableDeep accessor od = {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @observableRef accessor or = []
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @observableShallow accessor os = []
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {
+  @observableStruct accessor ost = {}
+  plain = 1
+
+  constructor() {
+    makeObservable(this, { plain: true })
+  }
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {     
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable(this, {
+      o: true,
+      a: true,
+      c: true,
+      f: true,
+    }) 
+  }  
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/exhaustive-make-observable.js::exhaustive-make-observable::valid::
+class C {     
+  o = 5
+  get c() {}
+  a() {}
+  *f() {}
+  
+  constructor() {
+    makeObservable({}, {})
+  }  
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::class Cmp extends Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::class Cmp extends React.Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::class extends Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::class extends React.Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const Anonym = function () { };,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const Arrow = () => { };,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const Cmp = () => { }; observer(Cmp); { const Cmp = () => { } },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const Cmp = class extends Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const Cmp = class extends React.Component { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::const foo = function Named() { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::invalid::function Named() { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::class Cmp extends React.Component { }; export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::class NotCmp extends Foo { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::class NotCmp extends React.Foo { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::class NotCmp { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Anonym = observer(function () { });,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Arrow = observer(() => { });,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = () => { }; export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = class Named extends React.Component { }; export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = forwardRef(() => { }); export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = function Named() { }; export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = observer(class Cmp extends Component { }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = observer(class Cmp extends React.Component { }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = observer(class extends Component { }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const Cmp = observer(class extends React.Component { }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const foo = observer(function Named() { }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const notCmp = () => { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const notCmp = function () { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::const notCmp = function notCmp() { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::export default observer(Cmp); function Cmp() { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::function Cmp() { }; export default observer(Cmp),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::function notCmp() { },,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/missing-observer.js::missing-observer::valid::observer(function Named() { });,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+"packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(() => """")",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(() => expr()),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(() => literal),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(() => {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(class {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::const Cmp = observer(function () {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::observer(() => {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::observer(class {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::invalid::observer(function () {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::valid::observer(class Name {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/no-anonymous-observer.js::no-anonymous-observer::valid::observer(function Name() {}),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/eslint-plugin-mobx/__tests__/unconditional-make-observable.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+"packages/eslint-plugin-mobx/__tests__/unconditional-make-observable.js::unconditional-make-observable::invalid::
+class C {
+  constructor() {    
+    if (true) {
+      makeObservable(this, {});
+      makeAutoObservable(this, {});
+    }
+    for (let i = 0; i < 1; i++) {
+      makeObservable(this, {});
+      makeAutoObservable(this, {});
+    }
+    while (Math.random() > 1) {
+      makeObservable(this, {});
+      makeAutoObservable(this, {});
+    }
+    const a = () => {
+      makeObservable(this, {});
+    }
+  }    
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/eslint-plugin-mobx/__tests__/unconditional-make-observable.js::unconditional-make-observable::valid::
+class C {
+  constructor() {
+    makeObservable()
+    makeObservable({})
+    makeObservable(this)
+    function f() {
+      makeObservable(this, {});
+    }
+    const ff = function () {
+      makeObservable(this, {});
+    }
+  }    
+}
+",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-react-lite/__tests__/ObserverComponent.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/UniversalFinalizationRegistry.test.ts::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/api.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/assertEnvironment.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/enforceActions.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/observer.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/strictAndConcurrentMode.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/strictAndConcurrentModeUsingFinalizationRegistry.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/strictAndConcurrentModeUsingTimers.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/suspenseCleanup.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/transactions.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/useLocalObservable.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-lite/__tests__/useObserverRetention.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::classes without a MobX call in the constructor are left alone,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::decorators without makeObservable,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::makeAutoObservable,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::makeAutoObservable overrides are respected, `action` on an async method becomes `flow`",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::makeObservable: members annotated with flow or action (rewritten to flow),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::methods that cannot become flows are left alone,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::only the method's own awaits are replaced, with the right precedence",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable classes become flows::the flow import is added when it is missing, under a unique name if needed",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable object literals become flows::function expressions are converted, arrow functions are not (they would rebind this)",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable object literals become flows::makeAutoObservable(),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::async methods of observable object literals become flows::overrides and explicit annotations,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::options::flow: false,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/flow.test.ts::options::observer: false keeps the flow transform,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/react-compiler.test.ts::React Compiler listed after the plugin skips observed components and compiles the rest,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::components that are already observed::aliased observer import,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::components that are already observed::inline observer: only the directive is added,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::components that are already observed::observer applied by reference elsewhere in the file,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::directives::""use memo"" inside an observer is an error",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::directives::""use memo"" means React Compiler owns the component: it is not wrapped",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::directives::existing opt-out directives are respected and not duplicated,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::directives::module level ""use no memo"" disables the function level directives",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::directives::useNoMemo: false,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::file filtering::exclude globs are matched relative to the root,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::file filtering::include restricts the transform,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::file filtering::node_modules are never transformed,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::file filtering::predicates,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::files are only analyzed when they can contain components or hooks::.ts files with hook calls,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::files are only analyzed when they can contain components or hooks::JSX with whitespace after the angle bracket,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::React.memo / React.forwardRef,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::forwardRef applied by reference: the call sites are wrapped,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::forwardRef result that is observed by reference is not wrapped again,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::inline forwardRef is wrapped on the outside (forwardRef needs a plain render function),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::memo with a custom comparator keeps memo,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::memo(Component) becomes observer(Component), which already memoizes",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::forwardRef and memo::memo(forwardRef(...)),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::functions that are not components::are left alone,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::functions that are not components::components React Compiler would compile but that cannot be wrapped only get the directive,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::hooks::custom hooks only get the directive,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::hooks::useNoMemoHooks: false,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::observer import::CommonJS modules use require,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::observer import::adds observer to an existing mobx-react-lite import,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::observer import::reuses an existing import, also from mobx-react and under an alias",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::observer import::survives TypeScript import elision,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::observer import::uses a unique name when `observer` is taken,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::options::unknown options are rejected,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::scope information stays correct for later plugins::observer applied to a shadowing binding does not count for the module level component,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::scope information stays correct for later plugins::the flow import,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::scope information stays correct for later plugins::the observer import and the wrapped component,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references of components that are already observed (mobxjs/mobx#3836)::arrow function and function expression observed by reference,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references of components that are already observed (mobxjs/mobx#3836)::function declaration observed by reference,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references of components that are already observed (mobxjs/mobx#3836)::observer(function Name() {}) as default export,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references of components that are already observed (mobxjs/mobx#3836)::observer(function Name() {}) assigned to a variable,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references::recursive arrow function,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::self references::recursive default export,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::self references::recursive function declaration renders the observed component, not the raw function",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::TypeScript annotations and generics are preserved,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::anonymous default export gets its name from the file name,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::anonymous default export stays anonymous when the inferred name is taken,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::arrow function components become named function expressions (keeps the DevTools name),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+"packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::arrow functions using `arguments` are kept, unless it is a property or in a nested function",,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::arrow functions using `this` are kept as arrow functions,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::default exported function declaration,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::default exported function declaration that is referenced elsewhere keeps its binding,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::function declarations,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/transform.test.ts::wrapping components in observer::function expressions,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::.ts files are parsed without JSX (angle bracket assertions keep working),,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::decorators parse,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::extra babel plugins run even when the MobX transform changes nothing,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::files that cannot contain components or flows are skipped without being parsed,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::generator options from the babel option are applied,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::include / exclude are resolved against the Vite root,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::is a pre-transform,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::node_modules and non-JS files are left alone,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::nothing is returned when the file does not change,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::parser options from the babel option are applied,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugin options are forwarded,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::plugins from babel overrides and env count as extra transforms,,passed=3,False,failed=3,True,False,True,False,,,,,,True,1,,,,Error,Error: expect(received).toContain(expected) // indexOf,True,fixed-order (fails without --det too)
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::pre-bundles mobx-react-lite unless observer is off or the user excludes it,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react-plugin/__tests__/vite.test.ts::Vite plugin::transforms tsx and jsx files and provides a source map,,passed=3,False,passed=3,True,False,False,False,,,,,,True,1,,,,,,False,
+packages/mobx-react/__tests__/ObserverComponent.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/api.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/enforceActions.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/finalizationRegistry.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/issue21.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/issue806.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/misc.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/observer.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/reactBatching.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/reactContext.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/stateless.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/timerBasedFinalizationRegistry.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-react/__tests__/transactions.test.tsx::<file>,,error=3,False,error=3,True,False,False,False,,,,,,False,0,,,unknown,unknown,● Test suite failed to run,False,
+packages/mobx-undecorate/__tests__/cli.spec.tsx::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx-undecorate/__tests__/cli.spec.tsx::run cli #2506 #3142,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/cli.spec.tsx::run cli with --parseTsAsNonJsx #2754,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with export after,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with export before,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with inject,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with inject and observer,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with local fields - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::class comp with local fields preserves Props generic,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::@observer::makeObservable gets added to the non-type import #2415,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::field - bound - named,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::field - named,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::field - unnamed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - bound - named,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - bound - named - generator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - bound - unnamed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - override,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - override - keepDecorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - unbound - computed name,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - unbound - named,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::action::method - unbound - unnamed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::class comp with observer and decorator from another package,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx-undecorate/__tests__/undecorate.spec.ts::class comp with observer, inject and decorator from another package",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::class default export comp with observer and inject,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::computed::computed ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::computed::computed - setter,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::computed::computed - setter - options,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::computed::computed - setter - struct,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::decorate::basic,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::decorate::handle non-classes - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::decorate::handle non-classes - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::decorate::handle undeclared observable members,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::decorate::multiple targets,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::basic observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::basic observable - skip imports,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::basic observable - skip imports - keepDecorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::class with constructor,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::class with method and extends,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::general::extended class with constructor,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::makeObservable not added to imports #2540,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::non-null assertion operator is preserved,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::observable::observable ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::observable::observable - shallow ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::observable::observable - shallow - computed name ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::privates::create generic arguments for makeObservable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::privates::do not create generic arguments for makeObservable - keepDecorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx-undecorate/__tests__/undecorate.spec.ts::weird syntaxes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::#286 exceptions in actions should not affect global state,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/action.js::Fix #1367,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action forwards toString of underlying function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action in autorun does not keep / make computed values alive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action in autorun should be untracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action modifications should be picked up 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action modifications should be picked up 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action should not be converted to computed when using (extend)observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::action should wrap in transaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::auto action can be used in a derivation and is tracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::auto action can be used to update and is batched,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::auto action should not update state from inside a derivation,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/action.js::bound actions bind,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::computed values and actions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/action.js::error logging, #1836 - 1",,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+"packages/mobx/__tests__/base/action.js::error logging, #1836 - 2",,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/action.js::expect warning for invalid decorator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::extendObservable respects action decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/action.js::given actionName, the action function name should be defined as the actionName",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/action.js::given anonymous action, the action name should be <unnamed action>",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/action.js::given function declaration, the action name should be as the function name",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::out of order startAction / endAction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::runInAction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::should be possible to change observed state in an action called from computed,,failed=2;passed=1,True,missing=3,True,True,False,False,,,fixed:0/3,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/action.js::should be possible to change unobserved state in an action called from computed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::should be possible to create autorun in action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/action.js::test action should be untracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/api.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/api.js::correct api should be exposed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/api.js::mobx has no dependencies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::#2044 non-symbol key on array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::#2044 symbol key on array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/array.js::accessing out of bound indices is supported,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::array exposes correct keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/array.js::array is concat spreadable, #1395",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/array.js::array is spreadable, #1395",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::array modification functions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::array modification1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::array modifications,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::array should support iterall / iterable ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/array.js::array supports toStringTag, #1490",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::autoextend buffer length,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::can define properties on arrays,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::can iterate arrays,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::cannot reverse or sort an array in a derivation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/array.js::concat should automatically slice observable arrays, #260",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::concats correctly #1667,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::correct array should be passed to callbacks #2326,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances last value on shift/pop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::at,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::concat,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::entries,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::every,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::filter,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::find,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::flat/flatMap,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::forEach,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::includes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::indexOf,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::join,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::lastIndexOf,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::pop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::reduce,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::reduceRight,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::reverse,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::shift,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::slice,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::some,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::sort,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::splice,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::toReversed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::toSorted,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::toSorted with args,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::toSpliced,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::dehances::with,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::extended array prototype::creating an observable should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::extended array prototype::extending an observable should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::find(findIndex) and remove,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::findLast(findLastIndex) and remove,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::is array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::observe,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::observes when stringified,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::observes when stringified to locale,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::react to sort changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::reduce without initial value #2432,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::replace can handle large arrays,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::reproduce #2021,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::serialize,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::slice is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::slice works,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::stringifies same as ecma array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::test1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::toString,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/array.js::very long arrays can be safely passed to nativeArray.concat #2379,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/autorun.js::autorun batches automatically,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun can be disposed on first run,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun can be disposed using AbortSignal,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun opts requiresObservable::Don't warn when observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun opts requiresObservable::warn when no observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun passes Reaction as an argument to view function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun should not run first time when passing already aborted AbortSignal,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun tracks invalidation of unbound dependencies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::autorun warns when passed an action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorun.js::when effect is an action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/autorunAsync.ts::autorun 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::autorun should not result in loop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::autorunAsync accepts a scheduling function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::autorunAsync passes Reaction as an argument to view function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::autorunAsync warns when passed an action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::reaction accepts a scheduling function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::when opts requiresObservable::Don't warn when observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::when opts requiresObservable::warn when no observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::whenWithTimeout should dispose,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::whenWithTimeout should operate normally,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/autorunAsync.ts::whenWithTimeout should timeout,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/babel-tests.js::#1740, combining extendObservable & decorators",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::267 (babel) should be possible to declare properties observable outside strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::288 atom not detected for object property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/babel-tests.js::379, inheritable actions (babel)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/babel-tests.js::505, don't throw when accessing subclass fields in super constructor (babel)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::705 - setter undoing caching (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/babel-tests.js::@computed.equals (Babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::@observableDeep (Babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::@observableRef (Babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::@observableShallow (Babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::action decorator (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::action decorator on field (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::actionBound binds (Babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::actions are reassignable,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::babel,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::babel: parameterized computed decorator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed comparer works with decorate (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed comparer works with decorate (babel) - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed comparer works with decorate (babel) - 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed getter / setter for plan objects should succeed (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed setter problem,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed setter should succeed (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::computed value should be the same around changing which was considered equivalent,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::custom action decorator (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::custom action decorator on field (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::enumerability,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::enumerability - workaround,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::inheritance,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::inheritance - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::issue #701,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::issue 191 - shared initializers (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::issue 285 (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::it should support asyncAction (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::observable performance - babel,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::observable performance - babel - decorators,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::reusing initializers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::should not be possible to use @action with getters,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::toJS bug #1413 (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::unbound methods,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/babel-tests.js::verify object assign (babel),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 don't trigger oBO for computeds that aren't subscribed to,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseA,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseB,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseC,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseD,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseE,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseE - base,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2309 onBecomeObserved inconsistencies::caseF,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2667,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2686 - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#2686 - 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#3954 - disposing a chain of reactions from onBecomeUnobserved doesn't overflow the stack,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::#3954 followup - isRunningUnobservations is released even if an onBecomeUnobserved handler throws,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/become-observed.ts::become-observed::work on map with number as key,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::conditional dependencies that come and go keep tracking correctly,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::observers can be removed and re-added repeatedly (lazy observers_ Set),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::onBecomeObserved cascades through a chain of cached computeds #4547,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::onBecomeObserved fires for a dependency gained by an observed computed in an action #3674,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::onBecomeObserved fires when a computed becomes observed while serving a cached value #4547,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::temporary computed observers do not activate lifecycle hooks,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::the observers_ Set is released once the last observer leaves,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/become-observed.ts::works with ObservableSet #3595,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/cycles.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/cycles.js::cascading active state (form 1),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/cycles.js::cascading active state (form 2),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/cycles.js::efficient selection,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/cycles.js::emulate rendering,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/decorate.js::decorate a property with two decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorate should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorate should work with Object.create,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorate should work with constructor function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorate should work with inheritance through Object.create,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorate should work with plain object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::decorator requires correct types,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::expect warning for missing decorated getter,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/decorate.js::throws on undeclared prop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::236 - cycles,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/errorhandling.js::allow array change in autorun,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::allow state changes in autorun,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::cycle1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::cycle2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::cycle3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::cycle4,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::deny array change in view,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::deny state changes in views,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::error handling assistence ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::error in effect of when is properly cleaned up,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::exception in autorun can be recovered from,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::exception when starting autorun can be recovered from,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::exception1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::exceptions in computed values can be recovered from,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::global error handling will be skipped when using disableErrorBoundaries - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::global error handling will be skipped when using disableErrorBoundaries - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/errorhandling.js::issue 86, converging cycles",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::it should be possible to handle exceptions in reaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::it should be possible to handle global errors in reactions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::it should be possible to handle global errors in reactions - 2 - #1480,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::multiple autoruns with exceptions are handled correctly,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should clean up correctly,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should not break internal consistency when exception occurred,,failed=1;passed=2,True,missing=3,True,True,False,False,,,fixed:0/3,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should recover from errors,,failed=2;passed=1,True,missing=3,True,True,False,False,,,fixed:0/3,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should update correctly initially,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/errorhandling.js::peeking inside erroring computed value doesn't bork (global) state,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::slow converging cycle,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::throw error if modification loop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/errorhandling.js::throws when the max iterations over reactions are done,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extendObservable.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/extendObservable.js::extendObservable notifies about added keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extendObservable.js::extendObservable should apply specified decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extendObservable.js::extendObservable should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extendObservable.js::extendObservable should work with plain object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/extras.js::Default debug names - development,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::Default debug names - production,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/extras.js::User provided debug names are always respected,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/extras.js::compareShallow should require types to be equal,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::compareShallow should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::deepEquals should yield correct results for complex objects #1118 - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::deepEquals should yield correct results for complex objects #1118 - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::get administration,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::get atom,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::get atom of an observable object does not subscribe the running derivation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::get debug name,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::getDebugName(action),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::names,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::onBecome(Un)Observed - less simple,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::onBecome(Un)Observed simple,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::onBecomeObserved correctly disposes second listener #1537,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::onBecomeUnobserved correctly disposes second listener #1537,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/extras.js::spy 1,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/extras.js::treeD,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/flow.js::FlowCancellationError sanity check,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::cancelled flow should not result in runaway reject,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flow is called with correct context,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows are cancelled with an instance of FlowCancellationError,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 1 - uncaught cancellation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 2 - finally clauses are run,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 3 - throw in finally should be caught,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 4 - pending Promise will be ignored,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 5 - flows cancel recursively,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows can be cancelled - 5 - return before cancel,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::flows yield anything,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::isFlowCancellationError returns true iff the argument is a FlowCancellationError,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support async generator actions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support asyncAction in classes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support flow as annotation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support flow in makeAutoObservable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support logging,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/flow.js::it should support throw from async generator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support throw from yielded promise generator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::it should support try catch in async generator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/flow.js::verify #2519,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/intercept.js::intercept array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept array length assignment,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept disposer only removes one registration of the same handler,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/intercept.js::intercept disposers unregister the right handler, in any order",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept observable value,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept prevent dispose from breaking current execution,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/intercept.js::intercept property additions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::#2457,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/make-observable.ts::Extending builtins is not support #2765,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::class - annotations,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/make-observable.ts::default annotation from options::autoBind binds functions, with and without deep",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/make-observable.ts::default annotation from options::deep: false keeps values as refs, also for later extensions",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::default annotation from options::defaultDecorator still takes precedence,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::default annotation from options::is shared between objects created with equivalent options,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::default annotation from options::makeObservable with explicit annotations and options,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::extendObservable can be used late and support non-enumerable getters #2386,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::flowBound #2941,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::flowBound #3271,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::inherited fields are assignable before makeObservable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable + Object.create #3197,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable + override + annotation cache #2832,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable + overrides + toString,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable + production build #2751,,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable + symbolic keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable actions can be used for state updaters and state readers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable allows overrides,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable can be used late and support non-enumerable getters,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable cannot be used on observable objects,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable cannot be used on subclasses,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable has sane defaults,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable respects options.deep #2542',,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeAutoObservable supports autoBind,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable can be used late and support non-enumerable getters,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable doesn't trigger in always mode',,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable has sane defaults,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable picks up annotations,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable respects options.name #2614',,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable supports autoBind,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::makeObservable supports private fields,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::observable actions can be used for state updaters and state readers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::override,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::override must override,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::subclass - annotation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::subclass - annotation - override,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::subclass - cannot re-annotate,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/make-observable.ts::subclass - cannot redefine property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/makereactive.js::#1650, toString is not treated correctly",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::540 - extendobservable should not report cycles,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::761 - deeply nested modifiers work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/makereactive.js::All non-enumerables should be treated equally!,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::as structure,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::as structure view,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::boxed value json,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/makereactive.js::compare structurally, ref",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::computed value,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::computed value scope,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::deep enhancer passes primitives through unchanged,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::deep enhancer still wraps functions assigned after creation into autoActions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::double declare property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::flat array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::flat object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::isBoxedObservable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::isObservable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::jest array equals issue,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::jest is behaving correctly,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::jest object equals issue,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::jest object equals issue - reference,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::mobx 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::observable1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::observable3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::observable4,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::observable5,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::shallow array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/makereactive.js::structural collections,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1258 cannot replace maps anymore,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1583 map.size not reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1858 Map should not be inherited,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1980 .replace should invoke autorun,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1980 .replace should not breaks entities order!,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#1980 .replace should not report changed unnecessarily,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#2112 - iterators should be resilient to concurrent delete operation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::#2274,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.entries() subscribes for key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.entries() subscribes for value changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.forEach() subscribes for key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.forEach() subscribes for value changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.keys() does NOT subscribe for value changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.keys() subscribes for key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.replace() calls and respects interceptors,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.replace() should reportChanged on key order change,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.toJSON() subscribes for key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.toJSON() subscribes for value changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.values() subscribes for key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::.values() subscribes for value changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::2346 - subscribe to not yet existing map keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::256, map.clear should not be tracked",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::256, map.merge should be not be tracked for target",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::308, map keys should be coerced to strings correctly",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::798, cannot return observable map from computed prop",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::869, deeply observable map should make added items observables as well",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/map.js::NaN as map key,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::can iterate map - entries,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::can iterate map - keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::can iterate map - values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::can iterate maps,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::cleanup,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::deepEqual map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::esnext iterator helpers support,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::getAtom encapsulation leak test,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::initialization should not violate `enforceActions: ""always""` - discussion #3255",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::initialize with empty value,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::initialize with entries,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::issue 100,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::issue 116 - has should not throw on invalid keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::issue 119 - unobserve before delete,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::issue 1243, .replace should not trigger change on unchanged values",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::issue 893,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::issue 940, should not be possible to change maps outside strict mode",,failed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,Error,,,False,
+packages/mobx/__tests__/base/map.js::map crud,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map getOrInsert,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map getOrInsertComputed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map merge,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map modifier,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map modifier with modifier,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::map should support iterall / iterable ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/map.js::maps.values, keys and maps.entries are iterables",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::noop mutations do NOT reportChanges,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::observe collections,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::observe value,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::strict,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::support for ES6 Map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::toStringTag,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::using deep map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::using deep map - toJS,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/map.js::work with 'toString' key,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/nested.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/nested.js::fix #1535: stale observables,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/nested.js::nested computeds should not run unnecessary,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::#1739 - delete and undelete should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/object-api-proxy.js::computed props are considered part of collections,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::defineProperty - configurable: false,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::defineProperty - redefine observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::defineProperty - writable: false,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::defineProperty notifies keys observers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::dynamically adding properties should preserve the original modifiers of an object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::has and get are reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::keys should be observable when extending,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/object-api-proxy.js::keys(object), values(object), entries(object)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api-proxy.js::toJS respects key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::#1739 - delete and undelete should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/object-api.js::computed props are considered part of collections,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::defineProperty - configurable: false,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::defineProperty - redefine observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::defineProperty - writable: false,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::defineProperty notifies keys observers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::dynamically adding properties should preserve the original modifiers of an object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::entries(array),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::entries(map),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::entries(map) - symbols,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::has and get are reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::keys should be observable when extending,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::keys(array),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::keys(map),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::keys(map) - symbols,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/object-api.js::keys(object), values(object), entries(object)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::keys(set),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::observe & intercept,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::observe & intercept set called multiple times,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::pending keys are cleaned up once they become unobserved,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::toJS respects key changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::values(array),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::values(map),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/object-api.js::values(map) - symbols,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#328 atom throwing exception if observing stuff in onObserved,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#3563 reportObserved in batch,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#3747,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#502 extendObservable throws on objects created with Object.create(null),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#558 boxed observables stay boxed observables,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::#561 test toPrimitive() of observable objects,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::(for objects) keeping computed properties alive does not run before access,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::(for objects) keeping computed properties alive recalculates when accessing it dirty,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::603 - transaction should not kill reactions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/observables.js::Issue 1092 - Should not access attributes of siblings in the prot. chain,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::Issue 1092 - We should be able to define observable on all siblings,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::Issue 1120 - isComputed should return false for a non existing property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::ObservableArray.replace,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::ObservableArray.splice,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/observables.js::Observables initialization does not violate `enforceActions: ""always""`",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresObservable` takes precedence over global `reactionRequiresObservable`::`false` over `true`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresObservable` takes precedence over global `reactionRequiresObservable`::`true` over `false`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresObservable` takes precedence over global `reactionRequiresObservable`::`undefined`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresReaction` takes precedence over global `computedRequiresReaction`::`false` over `true`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresReaction` takes precedence over global `computedRequiresReaction`::`true` over `false`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::`requiresReaction` takes precedence over global `computedRequiresReaction`::`undefined`,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::argumentless observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::atom events #427,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::autoruns created in autoruns should kick off,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::basic,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::basic2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::batch,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::box uses equals,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::box uses equals2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::can create computed with setter,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::can make non-extenible objects observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::change count optimization,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed comparer works with decorate (plain),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed comparer works with decorate (plain) - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed comparer works with decorate (plain) - 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed equals function only invoked when necessary,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed getter / setter for plan objects should succeed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed values believe NaN === NaN,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed values believe deep NaN === deep NaN when using compareStructural,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::computed with asStructure modifier,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::configure({ safeDescriptors: false }),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::delay autorun until end of transaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::dynamic,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::dynamic2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::enforceAction is respected when changing keys of observable object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::eval in transaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::extendObservable should not accept complex objects as second argument,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::forcefully tracked reaction should still yield valid results,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::function props are observable auto actions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::generator props are observable flows,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::helpful error for self referencing setter,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::iscomputed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::issue 50,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/observables.js::issue 71, transacting running transformation",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::keeping computed properties alive caches values on subsequent accesses,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::keeping computed properties alive does not recalculate when dirty,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::keeping computed properties alive does not run before access,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::keeping computed properties alive recalculates when accessing it dirty,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::keeping computed properties alive runs on first access,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::lazy evaluation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::mobx.observe,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::multiple view dependencies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::nested observable2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::object enumerable props,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::observable ignores class instances #2579,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::observables removed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::observe,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::observe object,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::observe property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::options can be provided only once,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::prematurely end autorun,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::prematurely ended autoruns are cleaned up properly,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::props1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::props2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::props4,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::readme1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::scope,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::state version does not update on observable creation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::support computed property getters / setters,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::transaction with inspection,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::transaction with inspection 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::tuples,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::unoptimizable subscriptions are diffed correctly,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::verify array in transaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::verify calculation count,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::verify transaction events,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::when,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observables.js::when 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observe.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/observe.ts::observe computed values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observe.ts::observe disposer can be called from within a listener,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/observe.ts::observe disposers unregister the right listener, in any order",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observe.ts::observe object and map properties,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/observe.ts::observe value changes report observableKind and debugObjectName,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::1796 - delete -> recreate computed prop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::1796 - delete -> recreate observable prop,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/proxies.js::adding a different key doesn't trigger a pending key,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::correct keys are reported,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::decorate proxies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::extend proxies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::for-in operator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::in operator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::ownKeys invariant not broken - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::ownKeys invariant not broken - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::predictable 'this' - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::predictable 'this' - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::should react to future key additions - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::should react to future key additions - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::should react to key removal (unless reconfiguraing to empty) - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::should react to key removal (unless reconfiguraing to empty) - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/proxies.js::type coercion doesn't break,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::#278 do not rerun if expr output doesn't change,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::#278 do not rerun if expr output doesn't change structurally,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - autorun - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - autorun - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - reaction - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - reaction - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - reaction - 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - when - 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::Introduce custom onError for - when - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::abort listener is removed when a reaction disposes itself,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::basic,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::can dispose reaction on first run,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::can dispose reaction with AbortSignal,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::do not rerun if prev & next expr output is NaN,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::effect debounce + fire immediately is honored,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::effect debounce is honored,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::effect fireImmediately is honored,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::effect is untracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::explicit resource management::reaction has [Symbol.dispose] and calling it disposes of reaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::fireImmediately should not be honored when passed already aborted AbortSignal,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::issue #1148,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::passes Reaction as an argument to effect function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::passes Reaction as an argument to expression function,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::reaction equals function only invoked when necessary,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::reaction opts requiresObservable::Don't warn when observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::reaction opts requiresObservable::warn when no observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/reaction.js::reaction uses equals,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace only emits delete/add for removed/added values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace still honors interceptors,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace with an ES6 Set only emits events for actual changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace with an observable Set only emits events for actual changes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace with identical content does not report a change,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::#3761 replace only fires events for actual changes::replace with identical content emits no events,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/set.js::Observable Set interceptors::Add does not add value if interceptor returned no change,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set interceptors::Add respects newValue from interceptor,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::Difference method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::Intersection method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::Union method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::isDisjointFrom method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::isSubsetOf method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::isSupersetOf method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::Observable Set methods are reactive::symmetricDifference method is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::The Set object methods do what they are supposed to do::set methods preserve receiver order (matches native Set),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::The Set object methods do what they are supposed to do::with ObservableSet #3919,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::The Set object methods do what they are supposed to do::with Set-like,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::The Set object methods do what they are supposed to do::with native Set,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::cleanup,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::deepEqual set,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::esnext iterator helpers support,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::getAtom,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::mutations are not tracked::add,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::mutations are not tracked::clear,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::mutations are not tracked::delete,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::mutations are not tracked::has is still tracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::mutations are not tracked::replace,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::observe,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::observe add reports the value that was stored in the set,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::observe collections,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::observe value,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::set crud,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::set modifier,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::set should support iterall / iterable ,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::set.clear should not be tracked,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::set.forEach is reactive,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::support for ES6 Set,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::toJS,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/set.js::toStringTag,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/spy.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/spy.js::bound actions report correct object (discussions/3140),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/spy.js::computed shouldn't report update unless the value changed #3109,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/spy.js::spy error,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/spy.js::spy output,,failed=2;passed=1,True,missing=3,True,True,False,False,,,fixed:0/3,,,False,0,,,Error,,,False,
+"packages/mobx/__tests__/base/spy.js::spy stop listen from handler, #1459",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::action override can call parent action with super,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::actionBound override can be called after extraction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::computed override can delegate through multiple parent computeds,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::computed override can delegate to parent computed with super,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::computed override wins when parent constructor reads the same key first,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::computed sibling can read parent computed with super before child computed is read,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::flow override can wait for parent flow before child updates,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::inherited observable accessor remains reactive in subclass,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::manually wrapped action field can be overridden as an ordinary field,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::private computed getters with the same name in parent and subclass are separate getters,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::private observable accessor and private computed getter with the same name do not collide,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::private observable accessors with the same name in parent and subclass are separate fields,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::subclass can add new observable, computed, and action members",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::toJS includes observable accessors of a subclass of a makeObservable class #4248,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators-inheritance.ts::toJS includes observable accessors of parent and subclass #4248,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::#2159 - computed property keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::#4248 toJS handles cycles through @observable accessor fields,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::#4248 toJS includes @observable accessor fields,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::#4248 toJS includes @observable accessor fields after all of them were read,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::#4248 toJS tracks @observable accessor fields,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::1072 - @observable accessor without initial value and observe before first access,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::267 (2022.3) should be possible to declare properties observable outside strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::288 atom not detected for object property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::373 - fix isObservable for unused computed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - @computed decorator should be lazy,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - @observable accessor should be lazy,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - autorun reacts to @observable accessor that is lazy on entry,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - isComputedProp reports lazy @computed before first read,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - observe on @computed before first read materialises it,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - observe on @observable accessor before first read materialises it,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::4616 - set on @observable accessor before first read materialises it,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::705 - setter undoing caching (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/stage3-decorators.ts::@computed.equals (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::@observableDeep (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::@observableRef (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::@observableShallow (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::@observableShallow - 2 (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::ClassFieldDecorators should NOT work without accessor without legacy compilation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::Reasonable error for decorator kind mismatch,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::action decorator (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::action decorator on field (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::actionBound binds (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::actionBound binds property function (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::actions are reassignable,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::annotations,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::box,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::computed setter should succeed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::custom action decorator (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::custom action decorator on field (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/stage3-decorators.ts::decorated field can be inherited, but doesn't inherite the effect of decorator",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::enumerability,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::inheritance,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::inheritance overrides observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::issue 165,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::issue 191 - shared initializers (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::issue 285 (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::it should support asyncAction as decorator (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::it should support flow as decorator (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::modern computed setters require an enclosing action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::multiple inheritance should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::observable performance - ts - decorators,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::observable private accessors,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::reusing initializers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::toJS bug #1413 (2022.3),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::typescript: parameterized computed decorator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::unbound methods,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::unobserved computed reads should warn with requiresReaction enabled,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/stage3-decorators.ts::verify object assign (2022.3) (legacy/field decorator),,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::#1869,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/strict-mode.js::action inside reaction in strict mode can modify state,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::actions can modify non-observed state in strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::actions can modify observed state in strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::adding or deleting an observed observable map key outside an action warns in strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::can create objects in strict mode with action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::cannot create or modify objects in strict mode without action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::deleting observable set entries outside an action warns in strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::enforceActions 'strict' does not allow changing unobserved observables,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::enforceActions 'strict' should not throw exception while observable array initialization,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::don't warn on autorun tracks invalidation of unbound dependencies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::don't warn on autorun tracks invalidation of unbound dependencies - also with action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::don't warn on reads inside a computed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::don't warn on reads inside an action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::don't warn when creating a boxed array while a spy is active - #3835,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::warn on reads inside a transaction,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::warn on unsafe reads of observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::warn on unsafe reads of observable also when there are other subscriptions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::observableRequiresReaction::warn on unsafe reads of observable array,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::reactionRequiresObservable::warn on reaction creation without dependencies,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::reactions cannot modify state in strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::strict mode checks,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::strict mode should not allow changes outside action,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/strict-mode.js::warn on unsafe reads of computed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::#285 class instances with toJS,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::#285 non-mobx class instances with toJS,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/tojs.js::Correctly converts observable objects with computed values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::json cycles,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::json cycles when exporting maps as maps,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::json1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::json2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::map to JS,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::recurseEverything set to true::recurseEverything is no longer supported,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::toJS handles dates,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::toJS handles symbol keys in objects and maps,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::verify #566 solution,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/tojs.js::verify already seen,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::#2159 - computed property keys,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::#2485,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::1072 - @observable without initial value and observe before first access,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::267 (typescript) should be possible to declare properties observable outside strict mode,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::288 atom not detected for object property,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::373 - fix isObservable for unused computed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/typescript-tests.ts::379, inheritable actions (typescript)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::484 - isObservableObject type guard includes type T,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::484 - observable objects are still type T,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+"packages/mobx/__tests__/base/typescript-tests.ts::505, don't throw when accessing subclass fields in super constructor (typescript)",,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::705 - setter undoing caching (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::803 - actionBound and action preserve type info,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/typescript-tests.ts::@computed.equals (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::@observableDeep (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::@observableRef (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::@observableShallow (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::TS - it should support flow as annotation,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::TS - it should support flow as function wrapper,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::TS - type inference of Set,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::TS - type inference of observe & intercept functions,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::TS - type inference of reaction opts.equals,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::action decorator (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::action decorator on field (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::actionBound binds (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::actions are reassignable,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::allow 'as const' for creating tuples for map.replace(),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::allow 'as const' for creating tuples for observable.map(),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::annotations,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::argumentless observable adds undefined to the output type,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::atom clock example,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::box,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed .set is only typed when a setter is provided,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed comparer works with decorate (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed comparer works with decorate (TS) - 2,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed comparer works with decorate (TS) - 3,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed getter / setter for plan objects should succeed (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::computed setter should succeed,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::custom action decorator (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::custom action decorator on field (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::decorators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::enumerability,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::flow support async generators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::flow support throwing async generators,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::infers tuple type for observable.map() when using array.map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::inheritance,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::inheritance overrides observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::issue #1122,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::issue 165,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::issue 191 - shared initializers (ts),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::issue 285 (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::it should support asyncAction as decorator (ts),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::map should structurally match ES6 Map,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::multiple inheritance should work,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable performance - ts,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable performance - ts - decorators,,skipped=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable.box should keep track of undefined and null in type,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable.map() accepts an undefined value with or without options,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::observable.map() accepts optional initial values,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::promised when can be aborted,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::promised when can be cancelled,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::reusing initializers,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::scope,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::single arg when returns a can timeout,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::single arg when returns a promise,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::sync when can be aborted,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::toJS bug #1413 (TS),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::type inference of the action callback,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::type of flows that return promises,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::typescript - decorate works with Object.create,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::typescript - decorate works with classes,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::typescript - decorate works with objects,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::typescript: parameterized computed decorator,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::unbound methods,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::unobserved computed reads should warn with requiresReaction enabled,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::verify #1528,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::verify object assign (typescript),,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/typescript-tests.ts::with initial value observable does not adds undefined to the output type,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,
+packages/mobx/__tests__/base/untracked.ts::<file>,,missing=3,False,error=3,True,False,True,False,,,,,,False,0,,,,unknown,● Test suite failed to run,True,unexplained
+packages/mobx/__tests__/base/untracked.ts::untracked 1,,passed=3,False,missing=3,True,False,True,False,,,,,,False,0,,,,,,False,

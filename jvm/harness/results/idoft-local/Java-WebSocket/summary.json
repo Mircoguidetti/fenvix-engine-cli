@@ -1,0 +1,40 @@
+{
+ "name": "Java-WebSocket",
+ "url": "https://github.com/TooTallNate/Java-WebSocket",
+ "sha": "fa3909c391195178ccf5a92d4ac342a30ae247c8",
+ "module": ".",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 146,
+ "documented": 54,
+ "documented_present": 54,
+ "documented_categories": {
+  "NDOD": 2,
+  "NDOD;OD-Vic;TD": 1,
+  "NDOD;TD": 29,
+  "TD": 22
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 26,
+ "unstable_baseline": 26,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 22,
+ "broken_by_det": 5,
+ "broken_tests": [
+  "org.java_websocket.issues.Issue256Test::runReconnectBlockingScenario2",
+  "org.java_websocket.issues.Issue256Test::runReconnectBlockingScenario6",
+  "org.java_websocket.issues.Issue256Test::runReconnectScenario9",
+  "org.java_websocket.issues.Issue580Test::runNoCloseBlockingTestScenario2",
+  "org.java_websocket.protocols.ProtoclHandshakeRejectionTest::testHandshakeRejectionTestCase11"
+ ],
+ "fingerprint_coverage": "55/146",
+ "fingerprint_covered": 55,
+ "fingerprinted": 146,
+ "timing_base_s": [],
+ "timing_det_s": [],
+ "slowdown": null,
+ "seconds": 3007.8
+}

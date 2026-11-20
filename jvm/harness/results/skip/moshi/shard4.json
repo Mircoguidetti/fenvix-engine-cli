@@ -1,0 +1,269 @@
+{
+ "repo": "moshi",
+ "spec": {
+  "url": "https://github.com/square/moshi",
+  "tool": "gradle",
+  "jdk": "21",
+  "before": "2026-11-15"
+ },
+ "shard": 4,
+ "shards": 5,
+ "rows": [
+  {
+   "sha": "a78c207cd2ebe2a999a4ab948cb281874251442d",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 160.9,
+   "tests": 1521,
+   "test_ms": 28845,
+   "failed": 0
+  },
+  {
+   "sha": "c1852490404c31ddb1cf22cbb13f7c4b0732479b",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 99.3,
+   "tests": 1521,
+   "test_ms": 29679,
+   "failed": 0,
+   "prev": "a78c207cd2ebe2a999a4ab948cb281874251442d",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1895,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "prop": 1,
+    "after": 26
+   },
+   "module_cache_hits": 7,
+   "modules": 7,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "03ba14a09c1505f715a2087c267eeebb9aac3477",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 82.0,
+   "tests": 1521,
+   "test_ms": 31379,
+   "failed": 0,
+   "prev": "c1852490404c31ddb1cf22cbb13f7c4b0732479b",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [
+    {
+     "test": "moshi::com.squareup.moshi.JsonAdapterTest::nonNull[Value]",
+     "module": ":moshi",
+     "fresh": null,
+     "reruns": [
+      "passed",
+      "passed"
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.201,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "config": 27
+   },
+   "module_cache_hits": 6,
+   "modules": 7,
+   "module_cache_share_time": 0.2018
+  },
+  {
+   "sha": "e28c015b0d3b10481190669b9987cb228da8a514",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 81.8,
+   "tests": 1521,
+   "test_ms": 29550,
+   "failed": 0,
+   "prev": "03ba14a09c1505f715a2087c267eeebb9aac3477",
+   "reused": 1463,
+   "verified": 1463,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1899,
+   "share_tests_skipped": 0.9619,
+   "rerun_reasons": {
+    "not-passed": 31,
+    "config": 27
+   },
+   "module_cache_hits": 6,
+   "modules": 7,
+   "module_cache_share_time": 0.1908
+  },
+  {
+   "sha": "a5851351aa686c72ec4e6226712c981227c7736a",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 92.4,
+   "tests": 1521,
+   "test_ms": 29804,
+   "failed": 0,
+   "prev": "e28c015b0d3b10481190669b9987cb228da8a514",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.211,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "config": 27
+   },
+   "module_cache_hits": 6,
+   "modules": 7,
+   "module_cache_share_time": 0.2115
+  },
+  {
+   "sha": "2798cb399c70b23efa6b4b7cb24c51f8cef07b08",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 102.3,
+   "tests": 1521,
+   "test_ms": 29910,
+   "failed": 0,
+   "prev": "a5851351aa686c72ec4e6226712c981227c7736a",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1956,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "prop": 1,
+    "after": 26
+   },
+   "module_cache_hits": 7,
+   "modules": 7,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "4dbe31de54516d80069da1b36f66072477634eb1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 82.0,
+   "tests": 1521,
+   "test_ms": 30882,
+   "failed": 0,
+   "prev": "2798cb399c70b23efa6b4b7cb24c51f8cef07b08",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1879,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "prop": 1,
+    "after": 26
+   },
+   "module_cache_hits": 7,
+   "modules": 7,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "110c863d80d0ace192389c0289789d958ac6c59b",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 93.6,
+   "tests": 1521,
+   "test_ms": 27367,
+   "failed": 0,
+   "prev": "4dbe31de54516d80069da1b36f66072477634eb1",
+   "reused": 1464,
+   "verified": 1464,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.1935,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "config": 27
+   },
+   "module_cache_hits": 6,
+   "modules": 7,
+   "module_cache_share_time": 0.1946
+  },
+  {
+   "sha": "1d855c7843a4fc221f79256c9d5bc6348e052b7c",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 75.3,
+   "tests": 1522,
+   "test_ms": 26091,
+   "failed": 0,
+   "prev": "110c863d80d0ace192389c0289789d958ac6c59b",
+   "reused": 602,
+   "verified": 602,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0582,
+   "share_tests_skipped": 0.3955,
+   "rerun_reasons": {
+    "code": 862,
+    "not-passed": 30,
+    "file": 6,
+    "after": 21
+   },
+   "module_cache_hits": 6,
+   "modules": 7,
+   "module_cache_share_time": 0.9296
+  },
+  {
+   "sha": "c4c9bbe10d28567125bcff7142f6cf03cc75ab39",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 101.3,
+   "tests": 1522,
+   "test_ms": 28298,
+   "failed": 0,
+   "prev": "1d855c7843a4fc221f79256c9d5bc6348e052b7c",
+   "reused": 1465,
+   "verified": 1465,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.2046,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "prop": 1,
+    "after": 26
+   },
+   "module_cache_hits": 7,
+   "modules": 7,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "889013ec2edb8d8034902662a1dc8c4f3b3f8111",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 77.9,
+   "tests": 1522,
+   "test_ms": 28238,
+   "failed": 0,
+   "prev": "c4c9bbe10d28567125bcff7142f6cf03cc75ab39",
+   "reused": 1465,
+   "verified": 1465,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.2246,
+   "share_tests_skipped": 0.9625,
+   "rerun_reasons": {
+    "not-passed": 30,
+    "prop": 1,
+    "after": 26
+   },
+   "module_cache_hits": 7,
+   "modules": 7,
+   "module_cache_share_time": 1.0
+  }
+ ]
+}

@@ -1,0 +1,1518 @@
+{
+ "repo": "gson",
+ "spec": {
+  "url": "https://github.com/google/gson",
+  "tool": "maven",
+  "jdk": "17",
+  "before": "2026-11-15",
+  "args": [
+   "-pl",
+   "gson",
+   "-am"
+  ],
+  "shas": [
+   "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "aebc51a56ca0793c13b841c29f73433b82446695",
+   "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "169bb7a34b30611996d893b7c6a779180109cf78",
+   "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "804f21918e093b28615e72d043b160c05ab40803",
+   "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "15ca7360379cf3c1502b59981569050489f2d73e",
+   "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "630771b770ea7dc938f3e5e456f913895bddee27",
+   "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "7c6a3152b293b2ba1175dfff659fb08c33721f30"
+  ]
+ },
+ "shard": 0,
+ "shards": 1,
+ "rows": [
+  {
+   "sha": "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.9,
+   "tests": 4612,
+   "test_ms": 1987,
+   "failed": 0
+  },
+  {
+   "sha": "aebc51a56ca0793c13b841c29f73433b82446695",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.4,
+   "tests": 4612,
+   "test_ms": 1941,
+   "failed": 0,
+   "prev": "b9c70acc46c0b950bba2571406b94d00bca4d208",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4612
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4612
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.3,
+   "tests": 4615,
+   "test_ms": 1806,
+   "failed": 0,
+   "prev": "aebc51a56ca0793c13b841c29f73433b82446695",
+   "reused": 376,
+   "verified": 376,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.2317,
+   "share_tests_skipped": 0.0815,
+   "rerun_reasons": {
+    "after": 4134,
+    "not-passed": 20,
+    "code": 82
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.GsonTypeAdapterTest::testTypeAdapterThrowsException": 3901,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 117,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 100,
+    "code: com/google/gson/internal/bind/JsonTreeReader": 82,
+    "not-passed: skipped": 20,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testBigIntegerFieldDeserialization [timezone]": 13
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.9,
+   "tests": 4616,
+   "test_ms": 1865,
+   "failed": 0,
+   "prev": "138377c6b6c724dc1e0579f7c62337f85d9ee836",
+   "reused": 377,
+   "verified": 377,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.195,
+   "share_tests_skipped": 0.0817,
+   "rerun_reasons": {
+    "after": 4057,
+    "not-passed": 20,
+    "code": 161
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.GsonTypeAdapterTest::testTypeAdapterThrowsException": 3830,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 114,
+    "code: com/google/gson/functional/PrimitiveTest": 106,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 94,
+    "code: com/google/gson/internal/LazilyParsedNumber": 55,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "169bb7a34b30611996d893b7c6a779180109cf78",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.8,
+   "tests": 4619,
+   "test_ms": 1939,
+   "failed": 0,
+   "prev": "4b46b6ce6c175d0742a6f9f813219053fb5e36c3",
+   "reused": 332,
+   "verified": 332,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0974,
+   "share_tests_skipped": 0.0719,
+   "rerun_reasons": {
+    "after": 3381,
+    "code": 883,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3292,
+    "code: com/google/gson/internal/bind/TypeAdapters": 882,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/DefaultInetAddressTypeAdapterTest": 1,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.8,
+   "tests": 4619,
+   "test_ms": 1952,
+   "failed": 0,
+   "prev": "169bb7a34b30611996d893b7c6a779180109cf78",
+   "reused": 4595,
+   "verified": 4595,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.996,
+   "share_tests_skipped": 0.9948,
+   "rerun_reasons": {
+    "not-passed": 20,
+    "code": 4
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20,
+    "code: com/google/gson/internal/LazilyParsedNumberTest": 4
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.8,
+   "tests": 4619,
+   "test_ms": 1806,
+   "failed": 0,
+   "prev": "0482d5cadc7e9018d3b4ccb3145f62c2fba2f9bd",
+   "reused": 241,
+   "verified": 241,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0541,
+   "share_tests_skipped": 0.0522,
+   "rerun_reasons": {
+    "after": 2890,
+    "code": 1468,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 2887,
+    "code: com/google/gson/Gson": 877,
+    "code: com/google/gson/FormattingStyle": 468,
+    "code: com/google/gson/internal/TroubleshootingGuide": 75,
+    "not-passed: skipped": 20,
+    "code: com/google/gson/internal/Excluder": 13
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.2,
+   "tests": 4619,
+   "test_ms": 1808,
+   "failed": 0,
+   "prev": "ff521d70b2ecf2ed85dd1012081493ad7d8c0ba6",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9986,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.8,
+   "tests": 4619,
+   "test_ms": 1910,
+   "failed": 0,
+   "prev": "1ec0234b4006a0abcf456e7f9e3ba7f115f9b242",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9985,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.1,
+   "tests": 4619,
+   "test_ms": 1798,
+   "failed": 0,
+   "prev": "aa68d97199050fd410d6e853780aa1d0af23a179",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9983,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.1,
+   "tests": 4619,
+   "test_ms": 1901,
+   "failed": 0,
+   "prev": "8b8628c65699bc4421696183c62ae0c1b9b281dc",
+   "reused": 316,
+   "verified": 316,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0827,
+   "share_tests_skipped": 0.0684,
+   "rerun_reasons": {
+    "code": 1307,
+    "after": 2976,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 2887,
+    "code: com/google/gson/internal/bind/TypeAdapters": 886,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 421,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 20,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.9,
+   "tests": 4619,
+   "test_ms": 1899,
+   "failed": 0,
+   "prev": "9d5d6a8f457f3e60f2e84bf39b904c9a774d2365",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.0,
+   "tests": 4619,
+   "test_ms": 1917,
+   "failed": 0,
+   "prev": "fcbd61cdc9fbcd8bfc944fbba45e167b3f3ae18a",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9986,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.9,
+   "tests": 4619,
+   "test_ms": 1912,
+   "failed": 0,
+   "prev": "0f6506f632f5c7ceac4474245ad5c79c61c62ba7",
+   "reused": 1823,
+   "verified": 1823,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.5278,
+   "share_tests_skipped": 0.3947,
+   "rerun_reasons": {
+    "after": 2579,
+    "not-passed": 20,
+    "code": 197
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.functional.CollectionTest::testWildcardCollectionField": 2479,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 82,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 58,
+    "code: com/google/gson/stream/JsonWriterTest": 55,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 41,
+    "code: com/google/gson/functional/CollectionTest": 30
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.3,
+   "tests": 4619,
+   "test_ms": 1859,
+   "failed": 0,
+   "prev": "9835b6f90192f79cdf5300c528fc6212455fb6c1",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4619
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4619
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.9,
+   "tests": 4619,
+   "test_ms": 1934,
+   "failed": 0,
+   "prev": "310ac341f2f92a454b229bf21f70d2d18b2b6db7",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.2,
+   "tests": 4619,
+   "test_ms": 1983,
+   "failed": 0,
+   "prev": "b73771d2f3eaad90a3eec960d2db574137a6851c",
+   "reused": 4599,
+   "verified": 4599,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9957,
+   "rerun_reasons": {
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.4,
+   "tests": 4622,
+   "test_ms": 1953,
+   "failed": 0,
+   "prev": "119818bc666d3b9f897d6c0ca7546ce28e9bbcac",
+   "reused": 332,
+   "verified": 332,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0904,
+   "share_tests_skipped": 0.0718,
+   "rerun_reasons": {
+    "after": 3381,
+    "code": 886,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3292,
+    "code: com/google/gson/internal/bind/TypeAdapters": 731,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 82,
+    "code: com/google/gson/functional/MapTest": 53,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.0,
+   "tests": 4622,
+   "test_ms": 1989,
+   "failed": 0,
+   "prev": "dae37cf0fe12235b76fb09f01118a0a8c8823f42",
+   "reused": 153,
+   "verified": 153,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0607,
+   "share_tests_skipped": 0.0331,
+   "rerun_reasons": {
+    "after": 3687,
+    "code": 762,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3543,
+    "code: com/google/gson/stream/JsonReader": 762,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 91,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 53,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.3,
+   "tests": 4630,
+   "test_ms": 1973,
+   "failed": 0,
+   "prev": "a3b9f1f7377d7ce308221b44eacd5571701174fb",
+   "reused": 153,
+   "verified": 153,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0632,
+   "share_tests_skipped": 0.033,
+   "rerun_reasons": {
+    "after": 3687,
+    "code": 762,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3543,
+    "code: com/google/gson/stream/JsonReader": 762,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 91,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 53,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.7,
+   "tests": 4633,
+   "test_ms": 1880,
+   "failed": 0,
+   "prev": "61f2c646066e959f65cb99a826a2a759be42dbdd",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4630
+   },
+   "rerun_details": {
+    "code: com/google/gson/stream/JsonReaderPathTest": 3838,
+    "code: com/google/gson/stream/JsonReader": 770,
+    "code: com/google/gson/functional/MapTest": 22
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.3,
+   "tests": 4635,
+   "test_ms": 1989,
+   "failed": 0,
+   "prev": "b3f4ca20087f9066de4c340522ff84e0558e1ad1",
+   "reused": 153,
+   "verified": 153,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0811,
+   "share_tests_skipped": 0.033,
+   "rerun_reasons": {
+    "after": 3687,
+    "code": 773,
+    "not-passed": 20
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3543,
+    "code: com/google/gson/stream/JsonReader": 773,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 91,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 53,
+    "not-passed: skipped": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.1,
+   "tests": 4641,
+   "test_ms": 1892,
+   "failed": 0,
+   "prev": "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4635
+   },
+   "rerun_details": {
+    "code: com/google/gson/stream/JsonReaderPathTest": 3860,
+    "code: com/google/gson/stream/JsonReader": 775
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.5,
+   "tests": 4641,
+   "test_ms": 1890,
+   "failed": 0,
+   "prev": "ed99017a3b7ff41a08b96f3b972e7599743abe99",
+   "reused": 4620,
+   "verified": 4620,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4641,
+   "test_ms": 1959,
+   "failed": 0,
+   "prev": "7ce9b523a3be6efb31a6904dc75a25ad51beb8cc",
+   "reused": 4620,
+   "verified": 4620,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "804f21918e093b28615e72d043b160c05ab40803",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.8,
+   "tests": 4641,
+   "test_ms": 1891,
+   "failed": 0,
+   "prev": "a7b4b483345cb12aefa61ee71ca5dcc5e6423ff9",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4641
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4641
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.9,
+   "tests": 4641,
+   "test_ms": 1799,
+   "failed": 0,
+   "prev": "804f21918e093b28615e72d043b160c05ab40803",
+   "reused": 4620,
+   "verified": 4620,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.4,
+   "tests": 4641,
+   "test_ms": 1865,
+   "failed": 0,
+   "prev": "3f3a1abac6b38f529a07b024c27c5e951b6723bc",
+   "reused": 340,
+   "verified": 340,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.1018,
+   "share_tests_skipped": 0.0733,
+   "rerun_reasons": {
+    "after": 3390,
+    "code": 890,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3301,
+    "code: com/google/gson/internal/bind/ReflectiveTypeAdapterFactory": 890,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 21,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "15ca7360379cf3c1502b59981569050489f2d73e",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4641,
+   "test_ms": 2155,
+   "failed": 0,
+   "prev": "455ca70ab72bac69ccdb87d960ee0dc9f29b48c9",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "code": 4641
+   },
+   "rerun_details": {
+    "code: com/google/gson/JsonPrimitive": 4641
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.5,
+   "tests": 4667,
+   "test_ms": 1962,
+   "failed": 0,
+   "prev": "15ca7360379cf3c1502b59981569050489f2d73e",
+   "reused": 797,
+   "verified": 797,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.3914,
+   "share_tests_skipped": 0.1708,
+   "rerun_reasons": {
+    "after": 3805,
+    "not-passed": 21,
+    "code": 18
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.JsonArrayTest::testToString": 3569,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 119,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 100,
+    "not-passed: skipped": 21,
+    "code: com/google/gson/JsonArrayTest": 18,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testBigIntegerFieldDeserialization [timezone]": 14
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.9,
+   "tests": 4669,
+   "test_ms": 1942,
+   "failed": 0,
+   "prev": "8fe077819b2c92a1cbe17557c4655e2c33967711",
+   "reused": 414,
+   "verified": 414,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.2384,
+   "share_tests_skipped": 0.0887,
+   "rerun_reasons": {
+    "code": 421,
+    "after": 3811,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.common.collect.testing.testers.CollectionAddAllTester::testAddAll_supportedNothing[JsonArray#asList [collection size: zero]]": 3575,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 405,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 119,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 100,
+    "not-passed: skipped": 21,
+    "code: com/google/gson/JsonArrayAsListTest": 16
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.0,
+   "tests": 4673,
+   "test_ms": 1894,
+   "failed": 0,
+   "prev": "115bcc7e1136f50eb89c9f7ae579e340fd27d117",
+   "reused": 368,
+   "verified": 368,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0891,
+   "share_tests_skipped": 0.0788,
+   "rerun_reasons": {
+    "after": 3772,
+    "code": 508,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3589,
+    "code: com/google/gson/internal/bind/TypeAdapterRuntimeTypeWrapper": 502,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 99,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 71,
+    "not-passed: skipped": 21,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testBigIntegerFieldDeserialization [timezone]": 12
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.6,
+   "tests": 4673,
+   "test_ms": 2049,
+   "failed": 0,
+   "prev": "698ba9ebfdbf629ca4ccc393d9cecd69c1e7115f",
+   "reused": 4652,
+   "verified": 4652,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9983,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4673,
+   "test_ms": 2051,
+   "failed": 0,
+   "prev": "854c8255b625cf1e13c701a83ea9ccb4caaa576a",
+   "reused": 4652,
+   "verified": 4652,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.1,
+   "tests": 4674,
+   "test_ms": 1784,
+   "failed": 0,
+   "prev": "216c41b6e70dc04e6856418dd76bb00c854eb6b4",
+   "reused": 181,
+   "verified": 181,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0478,
+   "share_tests_skipped": 0.0387,
+   "rerun_reasons": {
+    "after": 3691,
+    "code": 780,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3547,
+    "code: com/google/gson/stream/JsonReader": 780,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 91,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 53,
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.8,
+   "tests": 4674,
+   "test_ms": 1828,
+   "failed": 0,
+   "prev": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+   "reused": 4653,
+   "verified": 4653,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9985,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.0,
+   "tests": 4677,
+   "test_ms": 2201,
+   "failed": 0,
+   "prev": "67427c40f7306276e63e09c8bb66fefb90429d86",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 4674
+   },
+   "rerun_details": {
+    "config: classpath": 4674
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4677,
+   "test_ms": 2167,
+   "failed": 0,
+   "prev": "e2292f9c9f2e07a4791827e8eea34aa7d80545d6",
+   "reused": 209,
+   "verified": 209,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0711,
+   "share_tests_skipped": 0.0447,
+   "rerun_reasons": {
+    "after": 3562,
+    "code": 885,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3473,
+    "code: com/google/gson/Gson": 885,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 21,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.5,
+   "tests": 4677,
+   "test_ms": 2160,
+   "failed": 0,
+   "prev": "881d2b55de74dd6c2fded7b2cb307b048117af97",
+   "reused": 4656,
+   "verified": 4656,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9977,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.5,
+   "tests": 4677,
+   "test_ms": 2020,
+   "failed": 0,
+   "prev": "094f5003ce5f6d2fb65457bee9c78b9d53d25308",
+   "reused": 4656,
+   "verified": 4656,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9983,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 23.7,
+   "tests": 4677,
+   "test_ms": 1906,
+   "failed": 0,
+   "prev": "66dd98a425c87067d90b92caeaa52c98797fac12",
+   "reused": 4656,
+   "verified": 4656,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9984,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.7,
+   "tests": 4677,
+   "test_ms": 2001,
+   "failed": 0,
+   "prev": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "reused": 208,
+   "verified": 208,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.064,
+   "share_tests_skipped": 0.0445,
+   "rerun_reasons": {
+    "after": 3549,
+    "code": 899,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3460,
+    "code: com/google/gson/Gson": 885,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 21,
+    "code: com/google/gson/internal/reflect/ReflectionHelper": 13,
+    "code: com/google/gson/internal/GsonBuildConfigTest": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.3,
+   "tests": 4691,
+   "test_ms": 1858,
+   "failed": 0,
+   "prev": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "reused": 209,
+   "verified": 209,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0716,
+   "share_tests_skipped": 0.0446,
+   "rerun_reasons": {
+    "after": 3553,
+    "code": 894,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3464,
+    "code: com/google/gson/GsonBuilder": 894,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "not-passed: skipped": 21,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 24.5,
+   "tests": 4691,
+   "test_ms": 2160,
+   "failed": 0,
+   "prev": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 4691
+   },
+   "rerun_details": {
+    "config: classpath": 4691
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.9,
+   "tests": 4693,
+   "test_ms": 1895,
+   "failed": 0,
+   "prev": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "reused": 255,
+   "verified": 255,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.2034,
+   "share_tests_skipped": 0.0543,
+   "rerun_reasons": {
+    "code": 423,
+    "after": 3992,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.common.collect.testing.testers.CollectionAddAllTester::testAddAll_supportedNothing[JsonArray#asList [collection size: zero]]": 3756,
+    "code: com/google/gson/internal/NonNullElementWrapperList": 405,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 119,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 100,
+    "not-passed: skipped": 21,
+    "code: com/google/gson/JsonArrayAsListTest": 18
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 25.7,
+   "tests": 4693,
+   "test_ms": 2795,
+   "failed": 0,
+   "prev": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4693
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4693
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.8,
+   "tests": 4693,
+   "test_ms": 3179,
+   "failed": 0,
+   "prev": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "reused": 4672,
+   "verified": 4672,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9942,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 27.4,
+   "tests": 4693,
+   "test_ms": 3302,
+   "failed": 0,
+   "prev": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4693
+   },
+   "rerun_details": {
+    "runtime: tool:plugins": 4693
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 26.7,
+   "tests": 4693,
+   "test_ms": 2965,
+   "failed": 0,
+   "prev": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "reused": 4672,
+   "verified": 4672,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9978,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "not-passed: skipped": 21
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 28.6,
+   "tests": 4722,
+   "test_ms": 3202,
+   "failed": 0,
+   "prev": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "reused": 211,
+   "verified": 211,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.0636,
+   "share_tests_skipped": 0.0447,
+   "rerun_reasons": {
+    "code": 908,
+    "after": 3553,
+    "not-passed": 21
+   },
+   "rerun_details": {
+    "after: gson::com.google.gson.CommentsTest::testParseComments": 3464,
+    "code: com/google/gson/GsonBuilder": 824,
+    "after: gson::com.google.gson.internal.bind.DefaultDateTypeAdapterTest::testParsingDatesFormattedWithSystemLocale [locale]": 88,
+    "code: com/google/gson/functional/DefaultTypeAdaptersTest": 84,
+    "not-passed: skipped": 21,
+    "after: gson::com.google.gson.functional.DefaultTypeAdaptersTest::testDefaultDateDeserialization [timezone]": 1
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7c6a3152b293b2ba1175dfff659fb08c33721f30",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 28.0,
+   "tests": 4722,
+   "test_ms": 3397,
+   "failed": 0,
+   "prev": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "reused": 4699,
+   "verified": 4699,
+   "wrong": [],
+   "flaky": [],
+   "unverifiable": 0,
+   "share_time_skipped": 0.9973,
+   "share_tests_skipped": 0.9951,
+   "rerun_reasons": {
+    "not-passed": 23
+   },
+   "rerun_details": {
+    "not-passed: skipped": 23
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  }
+ ]
+}

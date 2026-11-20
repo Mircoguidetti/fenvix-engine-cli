@@ -1,0 +1,8 @@
+ok  iso-maven                {"without_det": {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, "det": [{"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}]}
+ok  iso-gradle               {"without_det": {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, "det": [{"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}, {"rd.IsoATest::strict()": "passed", "rd.IsoBTest::lenient()": "passed"}]}
+ok  method-ref-clock         {"det_outcomes": ["passed", "passed"]}
+ok  method-ref-random        {"values_in_two_det_runs": ["8218845724713499133", "8218845724713499133"]}
+ok  sleep-past-timer         {"det_outcomes": ["passed", "passed"]}
+ok  junit4-surefire-2.17     {"not_passed": {}, "tests_in_trace": 2, "expected_in_trace": 2}
+BAD fingerprints-under-load  {"pairs": [["covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0"], ["covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0"], ["covered by Level 0: 39  not covered: 1  missing: 0  outcome-unstable: 0", "NOT-COVERED fx.SchedControlTest::fixedRateTicksWithoutWait
+exit 1

@@ -1,0 +1,41 @@
+{
+ "name": "cat-cat-client",
+ "url": "https://github.com/dianping/cat",
+ "sha": "c4715a6aa6403af4c017b9180f9a3322afda9434",
+ "module": "cat-client",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 67,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NOD": 2
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 3,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 3,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "com.dianping.cat.support.servlet.CatFilterTest::testMode1"
+ ],
+ "fingerprint_coverage": "29/67",
+ "fingerprint_covered": 29,
+ "fingerprinted": 67,
+ "timing_base_s": [
+  0.017,
+  0.060000000000000005,
+  0.075
+ ],
+ "timing_det_s": [
+  0.07500000000000001,
+  0.10700000000000001,
+  0.041
+ ],
+ "slowdown": 0.25,
+ "seconds": 716.4
+}

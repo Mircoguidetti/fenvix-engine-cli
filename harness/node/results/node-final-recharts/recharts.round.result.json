@@ -1,0 +1,76 @@
+{
+  "name": "recharts",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/recharts/recharts",
+  "commit": "f27aeba6293c66c0e8b602e4351faf6d2de42875",
+  "commit_date": "2026-11-16T22:46:48+09:00",
+  "python": "node v22.23.5",
+  "install": "npm ci --no-audit --no-fund",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 7,
+  "baseline_mean_s": 184.45958688442855,
+  "det_mean_s": 295.4926367451429,
+  "slowdown_pct": 60.19369973450124,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 9348,
+  "unstable_baseline": 67,
+  "unstable_det": 0,
+  "became_stable": 67,
+  "outcome_changed_by_det": 4,
+  "covered": 9206,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 18,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 49,
+  "seeds_needed": [],
+  "seeds_explored": 1,
+  "exploration_runs": 7,
+  "exploration_budget_hit": true,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "not-reproduced": [
+      "test/cartesian/YAxis/YAxis.label.spec.tsx::<YAxis /> Label::label prop::should render label if label prop is a React element (seed 1:7/7) event #106: [time] Date.now @ <deps>/@reduxjs/toolkit/dist/redux-toolkit.cjs.development.js:285 = 107000  <>  [time] per",
+      "test/cartesian/YAxis/YAxis.spec.tsx::<YAxis />::Render ticks reversed (seed 1:7/7) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "changed:failed->passed": [
+      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the brush moves but doesn't change start/end indices",
+      "test/chart/LineChart.spec.tsx::<LineChart /> - Pure Rendering::should only render Line once when the mouse enters and moves"
+    ],
+    "changed:None->passed": [
+      "test/util/isWellBehavedNumber.spec.ts::isPositiveNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)",
+      "test/util/isWellBehavedNumber.spec.ts::isWellBehavedNumber::should return false when the input is Wed Jan 01 2025 00:00:00 GMT+0000 (Coordinated Universal Time)"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "e canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nNot implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package\nJSON report written to /tmp/work/runs/recharts/det_0.json\nerror during close browserType.launch: Executable doesn't exist at /home/runner/.cache/ms-playwright/firefox-1538/firefox/firefox\n\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557\n\u2551 Looks like Playwright was just installed or updated.       \u2551\n\u2551 Please run the following command to download new browsers: \u2551\n\u2551                                                            \u2551\n\u2551     npx playwright install                                 \u2551\n\u2551                                                            \u2551\n\u2551 <3 Playwright Team                                         \u2551\n\u255a\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255d\n    at /tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:941:55\n    at PlaywrightBrowserProvider.createContext (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1077:19)\n    at PlaywrightBrowserProvider.openBrowserPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1147:19)\n    at PlaywrightBrowserProvider.openPage (/tmp/work/src/recharts/node_modules/@vitest/browser-playwright/dist/index.js:1161:23)\n    at TestProject._openBrowserPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:11040:3)\n    at BrowserPool.openPage (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2578:3)\n    at BrowserPool.runTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2573:3)\n    at runWorkspaceTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:2473:3)\n    at executeTests (/tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:3779:25)\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13657:7\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13684:11\n    at /tmp/work/src/recharts/node_modules/vitest/dist/chunks/cli-api.CnMVyzaz.js:13546:19\n    at Object.main (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/vitest/cli.js:132:5) {\n  log: [],\n  name: 'Error',\n  type: 'Unhandled Error'\n}\ndetjs: trace ../../runs/recharts/det_0.jsonl: 9278 tests, order digest 76a7fd11ecd376d63d706a8fca7d06d9\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 56,
+    "concurrency/event-order": 1,
+    "l0-gap": 9,
+    "external": 1
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T16:26:00.925741+00:00"
+}

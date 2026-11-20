@@ -1,0 +1,86 @@
+{
+  "name": "unstorage",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/unjs/unstorage",
+  "commit": "5781aae96f7f34820a99e447df29ceead97e9210",
+  "commit_date": "2026-10-20T23:04:52+09:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 11.917880550100005,
+  "det_mean_s": 21.994790054200003,
+  "slowdown_pct": 84.55286543390838,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 885,
+  "unstable_baseline": 1,
+  "unstable_det": 0,
+  "became_stable": 1,
+  "outcome_changed_by_det": 5,
+  "covered": 615,
+  "not_covered": 40,
+  "reproduced": 1,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [
+    2
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 11,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "time": 27,
+    "entropy": 1,
+    "fs": 12
+  },
+  "pass_fail_reasons": {
+    "time": 1
+  },
+  "broken_by_det": 5,
+  "broken_always": 5,
+  "broken_causes": {
+    "net | Error": 4,
+    "time+timers | TypeError": 1
+  },
+  "broken_examples": {
+    "net | Error": [
+      "test/drivers/github.test.ts::drivers: github::can check for a file presence: Error: [unstorage] [github] Failed to fetch git tree (first diverging source: -)",
+      "test/drivers/github.test.ts::drivers: github::can read a json file content: Error: [unstorage] [github] Failed to fetch git tree (first diverging source: -)",
+      "test/drivers/github.test.ts::drivers: github::can read a repository files: Error: [unstorage] [github] Failed to fetch git tree (first diverging source: -)"
+    ],
+    "time+timers | TypeError": [
+      "test/drivers/mongodb.test.ts::drivers: mongodb::should have different dates when an entry was updated: TypeError: The \"callback\" argument must be of type function. Received type number (100) (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "test/drivers/github.test.ts::drivers: github::can check for a file presence",
+      "test/drivers/github.test.ts::drivers: github::can read a json file content"
+    ],
+    "reproduced": [
+      "test/drivers/indexedb.test.ts::drivers: indexeddb::can use a customStore (seed 2): event #1: [time] setImmediate @ <deps>/fake-indexeddb/build/esm/lib/scheduling.js:38 =   <>  [time] Date.now @ <deps>/fake-indexeddb/build/esm/lib/FakeEvent.js:"
+    ]
+  },
+  "runner": "vitest 5.0.5",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 5.0.5; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\nTAP version 13\n(node:3559) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nJSON report written to /tmp/work/runs/unstorage/det_0.json\ndetjs: trace ../../runs/unstorage/det_0.jsonl: 693 tests, order digest a088e7d2fcb83a9f9e67512fbafa9541\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T06:34:17.909762+00:00"
+}

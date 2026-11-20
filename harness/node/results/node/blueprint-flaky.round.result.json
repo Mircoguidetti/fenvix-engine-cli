@@ -1,0 +1,14 @@
+{
+  "name": "blueprint-flaky",
+  "kind": "flaky",
+  "status": "too-few-tests",
+  "node": "node v20.20.2",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 11,
+  "first_run_s": 0.863577669999998,
+  "commit": "3457fa91d323486a4c69a38fbb99c1dd6e1e3d83",
+  "detail": "11 test outcomes (exit 1):  module\n\n      at Runtime.createScriptFromCode (node_modules/jest-runtime/build/index.js:1505:14)\n\nSeed:        1000\nTest Suites: 11 failed, 11 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.505 s\nRan all test suites.\nTest results written to: ../../runs/blueprint-flaky/normal_0.json\n",
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T07:13:48.853526+00:00"
+}

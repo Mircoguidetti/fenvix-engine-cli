@@ -1,0 +1,71 @@
+{
+  "name": "pinia",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/vuejs/pinia",
+  "commit": "4817135a25431172d363bd928476db7cdbf875c4",
+  "commit_date": "2026-11-10T20:34:09+01:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 13.753502868099998,
+  "det_mean_s": 15.132774908900007,
+  "slowdown_pct": 10.028514582994742,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 276,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 251,
+  "covered": 14,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "packages/pinia/__tests__/actions.spec.ts::Actions::can call other actions",
+      "packages/pinia/__tests__/actions.spec.ts::Actions::can catch async errors"
+    ],
+    "changed:todo->None": [
+      "packages/pinia/__tests__/hmr.spec.ts::HMR::both::$onAction subscriptions",
+      "packages/pinia/__tests__/hmr.spec.ts::HMR::both::keeps $subscribe subscriptions"
+    ],
+    "changed:skipped->None": [
+      "packages/pinia/__tests__/state.spec.ts::State::custom refs::hydrates custom nested refs setup",
+      "packages/pinia/__tests__/storeSetup.spec.ts::store with setup syntax::injects level app injections even within components"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v22.23.5",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/pinia/det_0.json\ndetjs: trace ../../runs/pinia/det_0.jsonl: 14 tests, order digest 71048ba2cb5d4fcf9012eba06995032d\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n\u001b[33mTesting types with tsc and vue-tsc is an experimental feature.\nBreaking changes might not follow SemVer, please pin Vitest's version when using it.\u001b[39m\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T19:08:19.224310+00:00"
+}
