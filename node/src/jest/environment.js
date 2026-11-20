@@ -93,6 +93,8 @@ function recreateFakeTimers(env, config, c) {
       });
     } catch { /* keep Jest's instance: its useRealTimers() then restores the realm's original timers */ }
   }
+  // whichever instance is kept restores the virtual timers (G-1468)
+  if (c.controls.has('timers')) require('../realmx').virtualLegacyTimers(env.fakeTimers, g);
 }
 
 function wrapClass(Env) {
