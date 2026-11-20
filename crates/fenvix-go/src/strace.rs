@@ -389,6 +389,21 @@ impl State {
 
 /// Parse a strace log written with [`args`]; `cwd` is the test binary's
 /// working directory.
+/// Position of the closing parenthesis of the arguments and of the return
+/// value: the last " = " (or "= " after padding) that follows a ")" with only
+/// blanks between them.
+fn return_at(rest: &str) -> Option<(usize, usize)> {
+    let mut end = rest.len();
+    while let Some(p) = rest[..end].rfind("= ") {
+        let before = rest[..p].trim_end_matches([' ', '\t']);
+        if p > 0 && before.len() < p && before.ends_with(')') {
+            return Some((before.len() - 1, p + 2));
+        }
+        end = p;
+    }
+    None
+}
+
 pub fn parse(log: &Path, cwd: &str) -> std::io::Result<Parsed> {
     let f = std::fs::File::open(log)?;
     let mut st = State { res: Parsed::default(), cur: -1, first: HashMap::new(), missing_seen: BTreeSet::new() };
@@ -431,12 +446,15 @@ pub fn parse(log: &Path, cwd: &str) -> std::io::Result<Parsed> {
         if name.is_empty() || !name.bytes().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'_') {
             continue;
         }
-        let Some(eq) = rest.rfind(") = ") else { continue };
+        // strace pads the return value to a column (short calls, resumed
+        // calls: "<... connect resumed>)            = 0"): any blanks may
+        // stand between the closing parenthesis and "="
+        let Some((eq, ret_at)) = return_at(&rest) else { continue };
         if eq < open {
             continue;
         }
         let args = rest[open + 1..eq].to_owned();
-        let after_eq = rest[eq + 4..].trim_start();
+        let after_eq = rest[ret_at..].trim_start();
         let ret_end = after_eq.find(|c: char| c.is_whitespace() || c == '<').unwrap_or(after_eq.len());
         let ret = &after_eq[..ret_end];
         let tail = &after_eq[ret_end..];
@@ -797,7 +815,7 @@ mod tests {
             "10 getsockname(3<socket:[1]>, {sa_family=AF_INET, sin_port=htons(39187), sin_addr=inet_addr(\"127.0.0.1\")}, [112 => 16]) = 0\n",
             "10 connect(4<socket:[2]>, {sa_family=AF_INET, sin_port=htons(39187), sin_addr=inet_addr(\"127.0.0.1\")}, 16) = -1 EINPROGRESS (Operation now in progress)\n",
             "10 sendto(4<socket:[3]>, \"x\", 1, 0, {sa_family=AF_INET, sin_port=htons(9), sin_addr=inet_addr(\"192.0.2.1\")}, 16 <unfinished ...>\n",
-            "10 <... sendto resumed>) = 1\n",
+            "10 <... sendto resumed>)              = 1\n",
             "10 connect(7<socket:[4]>, {sa_family=AF_INET6, sin6_port=htons(443), sin6_flowinfo=htonl(0), inet_pton(AF_INET6, \"::1\", &sin6_addr), sin6_scope_id=0}, 28) = 0\n",
             "10 connect(7<socket:[5]>, {sa_family=AF_UNIX, sun_path=\"/var/run/docker.sock\"}, 24) = 0\n",
             "10 connect(7<socket:[6]>, {sa_family=AF_UNIX, sun_path=\"/var/run/none.sock\"}, 24) = -1 ENOENT (No such file or directory)\n",
@@ -816,4 +834,21 @@ mod tests {
         assert_eq!(unescape(r#"a\"b\\c\x41\101\n"#), "a\"b\\cAA\n");
         assert_eq!(clean("/a/./b/../c"), "/a/c");
     }
+
+    #[test]
+    fn padded_return_values_are_parsed() {
+        // real lines (R-025b F4b intermittent wrong reuse): strace pads the
+        // return value of resumed and short calls to a column
+        let p = log(concat!(
+            "12185 connect(8<socket:[230505]>, {sa_family=AF_UNIX, sun_path=@\"r25b-service\"}, 15 <unfinished ...>\n",
+            "12186 futex(0x1, FUTEX_WAKE_PRIVATE, 1) = 1\n",
+            "12185 <... connect resumed>)            = 0\n",
+            "12185 fchdir(3</srv/data>)              = 0\n",
+            "12185 openat(AT_FDCWD</srv/data>, \"a = b\", O_RDONLY) = 4</srv/data/a = b>\n",
+        ));
+        assert!(p.segments[&-1].net.contains(&Addr::Unix("@r25b-service".into())));
+        assert!(p.segments[&-1].content.contains("/srv/data/a = b"));
+        assert_eq!(p.lines, 4);
+    }
+
 }
