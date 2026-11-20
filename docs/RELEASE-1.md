@@ -13,7 +13,7 @@ report, not re-measured here), **UNKNOWN**.
 | component | source | crate / path | artifact |
 |---|---|---|---|
 | engine core (events, fingerprints, traces, verifier, shuffle, proof store, record plan, carried-set rule, parallel schedule, culprit keys) | `claude/parallel-proof-3` lineage | `crates/detpy-core` | linked into every binding |
-| Python: pytest plugin, `python -m detpy` runners (unittest, Django, nose2, ward, zope, doctest), xdist under `--det`, `--det-isolate`, `--det-cache`, `--det-cache-keys` | `claude/parallel-proof-3`, `claude/all-runners-2`, `claude/exact-culprit` | `crates/detpy-py`, `python/detpy` | PyO3 wheel `detpy-0.1.0-cp39-abi3-manylinux_*_x86_64.whl` |
+| Python: pytest plugin, `python -m detpy` runners (unittest, Django, nose2, ward, zope, doctest), xdist under `--det`, `--det-isolate`, `--det-cache`, `--det-cache-keys` | `claude/parallel-proof-3`, `claude/all-runners-2`, `claude/exact-culprit` | `crates/detpy-py`, `python/detpy` | wheel `fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl` inside the engine artifact (docs/INSTALL.md) |
 | Node/JS/TS: `detjs` for Vitest, Jest, Mocha, node:test, AVA, tap, uvu, Jasmine, Bun, Deno; `--det-cache` | `claude/all-runners-2` (with `claude/node-cache-proof`) | `crates/detpy-node`, `node/` | napi addon `detjs.linux-x64.node` + `node/` |
 | Go: `fenvix-go test` (toolchain overlay), `--skip-cache` | `claude/go-l0` | `crates/fenvix-go` (C ABI, static), `go/` | `fenvix-go` (self-contained binary: overlay embedded, core linked) |
 | JVM (Java, Kotlin; Gradle, Maven; JUnit 5, JUnit 4): agent, `--deps` capture, skip decider | `claude/jvm-l0` | `crates/fenvix-jvm` (JNI), `crates/fenvix-skip`, `jvm/` | `fenvix-agent.jar` (agent, runtime, JNI library, Gradle init script, Maven extension), `fenvix-skip` |
@@ -46,8 +46,8 @@ writes the same trace format), `fenvix detect`, `fenvix version`.
 | platform | status |
 |---|---|
 | Linux x86_64 | gated: every job of `release-1.yml`. Run 44710687525: build, Go, JVM ×4 and the four smoke tests green; Python fails 1 test on GitHub runners only (REPORT 0.1) (MEASURED) |
-| Linux arm64 | Rust core + decider tests, wheel, a Python subset: green in runs 44689328374, 44691940543, 44700422692, 44710687525 (MEASURED); not a gate; Node, Go and JVM on arm64 UNKNOWN |
-| macOS arm64 | UNKNOWN: the `macos-14` job never got a runner (cancelled at queue in every run). Go is Linux only by design (docs/GO.md); `--det-isolate` is Linux only; following child processes in the Python capture needs strace (Linux) |
+| Linux arm64 | not shipped: the go-live runs on our machines only (Linux x86_64; founder decision 2026-11-20) |
+| macOS arm64 | not shipped: the go-live runs on our machines only (Linux x86_64; founder decision 2026-11-20) |
 | Windows | UNKNOWN (never built) |
 
 ## Known limits (from each branch's limits doc; the full tables are there)
@@ -55,7 +55,7 @@ writes the same trace format), `fenvix detect`, `fenvix version`.
 **Python** (docs/LIMITS.md): Level 0 works at the Python API level: C extensions, native libraries and subprocesses
 are not controlled (S1, S2); references bound before installation keep real objects (S3); the cache needs Python 3.12+;
 inputs the recorder cannot see (section 9: C-level reads; a test reading a file time is refused, R-032b F2) and the
-real-clock bound `--det-cache-max-age` (section 8); xdist plan limits (O1). Python 3.9-3.11: Level 0 only.
+real-clock bound `--det-cache-max-age` (section 8); xdist plan limits (O1). Python 3.11 and older: refused with one message and exit code 4 (CPython 3.12, 3.13, 3.14 only).
 
 **Node** (docs/NODE.md J1-J17, docs/NODE-CACHE.md): native addons, child processes and user worker threads are not
 controlled (J1); Vitest `vmThreads`/`vmForks` and browser mode are out of reach (J2); Jest `setupFiles` run before the
@@ -115,8 +115,8 @@ Open gates (state of 2026-11-20, REPORT section 0):
 
 | piece | installed as | needs in the image |
 |---|---|---|
-| `detpy-*.whl` | `pip install` into the job's Python (pytest plugin entry point `detpy`, `python -m detpy`) | Python 3.12+ for the cache (3.9+ for `--det`), pytest 7+, strace |
-| detjs (`node/bin`, `node/src`, addon) | `$FENVIX_HOME/node` (no runtime npm dependencies) | Node 22 (the suites run on 22; other versions DECLARED by docs/NODE.md) |
+| `fenvix-*.whl` (engine artifact `wheels/`) | `install.sh` into the job's Python (pytest plugin entry point `detpy`, `python -m detpy`, `fenvix`) | CPython 3.12, 3.13, 3.14; pytest 8.1+; strace |
+| detjs (`node/bin`, `node/src`, addon) | `$FENVIX_HOME/node` (no runtime npm dependencies) | Node 22, 24, 26 (suites and install test on each) |
 | `fenvix-go` | `$FENVIX_HOME/bin/fenvix-go` | the project's Go toolchain (1.22+; the overlay builds per toolchain), strace |
 | `fenvix-agent.jar`, `fenvix-skip` | `$FENVIX_HOME/jvm/`, `$FENVIX_HOME/bin/` | JDK 8+ for the test JVM (agent built with JDK 21), the project's Gradle or Maven |
 | `release/fenvix` | `$FENVIX_HOME/bin/fenvix` | Python 3 (stdlib only) |

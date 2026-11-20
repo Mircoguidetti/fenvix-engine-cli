@@ -90,6 +90,9 @@ def install(r, a, d):
     venv = os.path.join(r.work, "venv")
     r.sh("venv", [a.python, "-m", "venv", venv])
     py = os.path.join(venv, "bin", "python")
+    if a.pytest:  # a pinned pytest before the engine: install.sh keeps it when it satisfies pytest>=8.1
+        rc, _ = r.sh("pytest-pin", [py, "-m", "pip", "install", "-q", "--disable-pip-version-check", a.pytest])
+        r.check("pytest_pinned", rc == 0, a.pytest)
     home = os.path.join(r.work, "fenvix-home")
     rc, out = r.sh("install-sh", ["bash", os.path.join(d, "install.sh"), home], env={"PYTHON": py})
     r.check("install_sh", rc == 0, last(out))
@@ -98,6 +101,9 @@ def install(r, a, d):
     r.check("fenvix_version_python", rc == 0 and out.strip() == f"fenvix {a.version}", out.strip())
     rc, out = r.sh("fenvix-doctor", [fx, "doctor"])
     r.check("fenvix_doctor", rc == 0, out.strip())
+    rc, out = r.sh("pytest-version", [py, "-m", "pytest", "--version"])
+    r.check("pytest_version", rc == 0 and (not a.pytest or out.split()[-1].startswith(a.pytest.split("==")[1].rstrip("*"))),
+            out.strip())
     return py, fx, home
 
 
@@ -181,6 +187,7 @@ def main(argv=None) -> int:
     ap.add_argument("--python", default=sys.executable)
     ap.add_argument("--work", required=True)
     ap.add_argument("--refuse", action="store_true", help="the interpreter is unsupported: check the refusals only")
+    ap.add_argument("--pytest", default=None, help="a pytest requirement installed first (e.g. pytest==8.1.*)")
     ap.add_argument("--out", required=True)
     a = ap.parse_args(argv)
     a.artifact = os.path.abspath(a.artifact)
