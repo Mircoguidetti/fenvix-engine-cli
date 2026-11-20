@@ -93,14 +93,21 @@ class PytestAdapter(Adapter):
     def repro(self, ns) -> dict:
         from . import repro as _repro
 
-        runner = _repro.Runner(cwd=Path.cwd(), workdir=Path(ns.out) / ".work", python=ns.python,
-                               pytest_args=ns.runner_args, timeout=ns.timeout)
+        known = ns.seed
+        if getattr(ns, "plan", None):
+            # a failure seen under -n: the worker's own list, serially (audit G-1557)
+            wid, ids, config = _repro.plan_worker(ns.plan, ns.test)
+            runner = _repro.PlanRunner(cwd=Path.cwd(), workdir=Path(ns.out) / ".work", python=ns.python,
+                                       pytest_args=ns.runner_args, timeout=ns.timeout, plan_list=ids)
+            known = known or config
+            print(f"{PROG} repro: {ns.test} ran in worker {wid} ({len(ids)} tests, configuration {config}); "
+                  f"searching its list", file=sys.stderr)
+        else:
+            runner = _repro.Runner(cwd=Path.cwd(), workdir=Path(ns.out) / ".work", python=ns.python,
+                                   pytest_args=ns.runner_args, timeout=ns.timeout)
         b = _repro.reproduce(runner, ns.test, seeds=ns.seeds, confirm=ns.confirm, max_runs=ns.max_runs,
-                             out_dir=Path(ns.out), known_fail=ns.seed)
-        b["runner"] = self.name
-        if b.get("status") in ("reproduced", "replay-unstable"):
-            _write_runner(Path(ns.out) / _repro._slug(ns.test), self.name)
-        return b
+                             out_dir=Path(ns.out), known_fail=known)
+        return _repro.finish_bundle(b, Path(ns.out), Path.cwd(), ns.python, self.name)
 
     def explore(self, ns) -> dict:
         from . import repro as _repro
@@ -111,14 +118,65 @@ class PytestAdapter(Adapter):
         if ns.targets:
             targets = {line.strip() for line in open(ns.targets) if line.strip()}
         s = _repro.explore(runner, budget_s=ns.budget * 60, max_seeds=ns.max_seeds, out_dir=Path(ns.out),
-                           confirm=ns.confirm, targets=targets, repro=not ns.no_repro, max_runs=ns.max_runs)
+                           confirm=ns.confirm, targets=targets, repro=not ns.no_repro, max_runs=ns.max_runs,
+                           first_seed=ns.first_seed)
         s["runner"] = self.name
+        _finish_explore(s, ns, self.name)
         return s
 
     def replay(self, bundle: Path, runs: int, python: str) -> dict:
         from . import repro as _repro
 
         return _repro.replay(bundle, runs, python)
+
+
+class ShellAdapter(PytestAdapter):
+    """The other Python runners (unittest, Django, nose2, ward, zope.testrunner, doctest) through their shells
+    (``python -m detpy <runner> --det``): the same search, minimisation and replay (audit G-0532, G-0540). Test ids
+    are the shell's (``fenvix <runner> --det`` prints them in its trace); pick the adapter with ``--runner``."""
+
+    def __init__(self, name: str, markers: tuple = ()):
+        self.name, self.markers = name, markers
+
+    def owns(self, test: str) -> bool:
+        return False  # ids of the shells look like other runners' ids: --runner chooses
+
+    def detect(self, d: Path) -> bool:
+        return any((d / m).exists() for m in self.markers)
+
+    def _runner(self, ns):
+        from . import repro as _repro
+
+        return _repro.ShellRunner(cwd=Path.cwd(), workdir=Path(ns.out) / ".work", python=ns.python,
+                                  pytest_args=ns.runner_args, timeout=ns.timeout, runner_name=self.name)
+
+    def repro(self, ns) -> dict:
+        from . import repro as _repro
+
+        runner = self._runner(ns)
+        b = _repro.reproduce(runner, ns.test, seeds=ns.seeds, confirm=ns.confirm, max_runs=ns.max_runs,
+                             out_dir=Path(ns.out), known_fail=ns.seed, command_args=ns.runner_args)
+        bdir = Path(ns.out) / _repro._slug(ns.test)
+        if (bdir / "bundle.json").exists():
+            b["command"] = _repro.shell_command(self.name, b["config"], str(bdir / "order.txt"), ns.runner_args)
+            data = json.loads((bdir / "bundle.json").read_text())
+            data.update(command=b["command"], pytest_args=list(ns.runner_args))
+            (bdir / "bundle.json").write_text(json.dumps(data, indent=2))
+        return _repro.finish_bundle(b, Path(ns.out), Path.cwd(), ns.python, self.name)
+
+    def explore(self, ns) -> dict:
+        from . import repro as _repro
+
+        runner = self._runner(ns)
+        targets = None
+        if ns.targets:
+            targets = {line.strip() for line in open(ns.targets) if line.strip()}
+        s = _repro.explore(runner, budget_s=ns.budget * 60, max_seeds=ns.max_seeds, out_dir=Path(ns.out),
+                           confirm=ns.confirm, targets=targets, repro=not ns.no_repro, max_runs=ns.max_runs,
+                           first_seed=ns.first_seed)
+        s["runner"] = self.name
+        _finish_explore(s, ns, self.name)
+        return s
 
 
 class PlannedAdapter(Adapter):
@@ -142,6 +200,12 @@ class PlannedAdapter(Adapter):
 
 ADAPTERS: dict[str, Adapter] = {
     "pytest": PytestAdapter(),
+    "unittest": ShellAdapter("unittest"),
+    "django": ShellAdapter("django", ("manage.py",)),
+    "nose2": ShellAdapter("nose2", ("nose2.cfg", "unittest.cfg")),
+    "ward": ShellAdapter("ward"),
+    "zope-testrunner": ShellAdapter("zope-testrunner"),
+    "doctest": ShellAdapter("doctest"),
     "vitest": PlannedAdapter("vitest", (".test.ts", ".test.js", ".spec.ts", ".spec.js", ".test.mts", ".test.tsx"),
                              ("vitest.config.ts", "vitest.config.js", "vitest.config.mts", "vitest.config.mjs")),
     "jest": PlannedAdapter("jest", (".test.ts", ".test.js", ".spec.ts", ".spec.js", ".test.tsx", ".test.jsx"),
@@ -149,6 +213,14 @@ ADAPTERS: dict[str, Adapter] = {
     "playwright": PlannedAdapter("playwright", (".spec.ts", ".e2e.ts"),
                                  ("playwright.config.ts", "playwright.config.js")),
 }
+
+
+def _finish_explore(s: dict, ns, runner: str) -> None:
+    from . import repro as _repro
+
+    for b in s.get("bundles", []) if isinstance(s.get("bundles"), list) else []:
+        if isinstance(b, dict) and b.get("test"):
+            _repro.finish_bundle(b, Path(ns.out) / "bundles", Path.cwd(), ns.python, runner)
 
 
 def _write_runner(bundle: Path, runner: str) -> None:
@@ -232,8 +304,9 @@ def render_repro(b: dict, out: Path) -> str:
     status = b.get("status", "?")
     lines = [f"{PROG} repro: {test}"]
     if status == "not-collected":
-        lines.append(f"  not collected: no test has this id. Use an id as the runner prints it, e.g. "
-                     f"`{PROG} pytest --collect-only -q`.")
+        lines.append(f"  not collected: no test has this id. Use an id as the runner prints it (`{PROG} pytest "
+                     f"--collect-only -q`, or the nodeid lines of .detpy/trace.jsonl); for unittest, Django, nose2, "
+                     f"ward, zope or doctest suites add --runner NAME.")
         return "\n".join(lines)
     if status == "not-found":
         lines.append(f"  not reproduced: it passed in the fixed order and under {b.get('configs_searched', '?')} "
@@ -320,6 +393,10 @@ def cmd_repro(argv: list) -> int:
     p.add_argument("test", help="test id as the runner prints it (pytest: path::name)")
     p.add_argument("--seeds", type=int, default=50, help="seeds searched after the fixed order (default 50)")
     p.add_argument("--seed", default=None, help="skip the search: the configuration known to fail ('fixed' or N)")
+    p.add_argument("--plan", default=None, metavar="PLAN",
+                   help="the test failed under pytest-xdist (-n): search the list of the worker that ran it, from the "
+                        "run's plan (.detpy/plan.json)")
+    p.add_argument("--keep-work", action="store_true", help="keep the runs' work files (<out>/.work)")
     _search_options(p)
     ns = p.parse_args(argv)
     ns.runner_args = extra
@@ -328,11 +405,20 @@ def cmd_repro(argv: list) -> int:
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
-    b = a.repro(ns)
+    try:
+        b = a.repro(ns)
+    except ValueError as e:  # an unusable --plan
+        print(f"{PROG} repro: {e}", file=sys.stderr)
+        return 2
+    if not ns.keep_work:  # audit G-2021: the runs' work files (outcomes, traces, orders) are not left behind
+        shutil.rmtree(Path(ns.out) / ".work", ignore_errors=True)
     print(render_repro(b, Path(ns.out)))
     if ns.json:
         print(json.dumps(b, indent=2))
     return 0 if b.get("status") == "reproduced" else 1
+
+
+STATE_FILE = "explore-state.json"  # the seeds explored so far: --resume starts after them (audit G-1529)
 
 
 def cmd_explore(argv: list) -> int:
@@ -345,15 +431,57 @@ def cmd_explore(argv: list) -> int:
     p.add_argument("--max-seeds", type=int, default=1000, help="stop after this many seeds (default 1000)")
     p.add_argument("--targets", default=None, help="file of test ids: write bundles only for these")
     p.add_argument("--no-repro", action="store_true", help="explore only: no minimisation, no bundles")
+    p.add_argument("--keep-work", action="store_true", help="keep the runs' work files (<out>/.work)")
+    p.add_argument("--resume", action="store_true",
+                   help="continue after the last seed of the previous exploration in --out (explore.json): every "
+                        "night explores new seeds")
+    p.add_argument("--first-seed", type=int, default=1, help="first seed to explore (default 1, or --resume)")
+    p.add_argument("--changed-since", default=None, metavar="REF",
+                   help="explore only the test files changed since the git revision REF")
+    p.add_argument("--only-unstable", action="store_true",
+                   help="explore only the test files of the tests found flaky by the previous exploration in --out")
     _search_options(p)
     ns = p.parse_args(argv)
     ns.runner_args = extra
+    previous, state = {}, {}
+    for name, into in (("explore.json", previous), (STATE_FILE, state)):
+        f = Path(ns.out) / name
+        if f.exists():
+            try:
+                into.update(json.loads(f.read_text()))
+            except ValueError:
+                pass
+    if ns.resume and state.get("last_seed"):
+        ns.first_seed = int(state["last_seed"]) + 1
+    selected = []
+    if ns.changed_since:
+        r = subprocess.run(["git", "diff", "--name-only", ns.changed_since, "--"], capture_output=True, text=True)
+        if r.returncode != 0:
+            print(f"{PROG} explore: git diff {ns.changed_since} failed: {r.stderr.strip()}", file=sys.stderr)
+            return 2
+        selected += [f for f in r.stdout.split() if os.path.basename(f).startswith("test") and f.endswith(".py")
+                     or f.endswith("_test.py")]
+    if ns.only_unstable:
+        selected += sorted({n.split("::", 1)[0] for n in previous.get("flaky_failing", [])})
+    if ns.changed_since or ns.only_unstable:
+        selected = [f for f in dict.fromkeys(selected) if os.path.exists(f)]
+        if not selected:
+            print(f"{PROG} explore: nothing selected (no changed or previously unstable test file)")
+            return 0
+        ns.runner_args = [*ns.runner_args, *selected]
+        print(f"{PROG} explore: {len(selected)} test file(s) selected: {', '.join(selected[:10])}", file=sys.stderr)
     a = pick_adapter(ns.runner)
     why = a.available()
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
     s = a.explore(ns)
+    ran = [x.get("seed") for x in s.get("seeds_log", []) if isinstance(x, dict) and x.get("seed") is not None]
+    st = {"first_seed": ns.first_seed, "last_seed": max(ran) if ran else ns.first_seed - 1,
+          "previous_last_seed": state.get("last_seed")}
+    (Path(ns.out) / STATE_FILE).write_text(json.dumps(st, indent=1))
+    if not getattr(ns, "keep_work", False):
+        shutil.rmtree(Path(ns.out) / ".work", ignore_errors=True)
     from . import _core
 
     print(_core.repro_render_explore(s).replace("detpy explore", f"{PROG} explore", 1))

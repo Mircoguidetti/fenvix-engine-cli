@@ -298,3 +298,23 @@ def test_detpy_help_describes_the_runners():
     """G-1994, G-2005."""
     p = subprocess.run([sys.executable, "-m", "detpy", "--help"], capture_output=True, text=True)
     assert "fenvix engine for Python" in p.stdout and "deterministically" in p.stdout, p.stdout
+
+
+def test_det_turned_on_by_configuration(tmp_path):
+    """G-1536: [tool.fenvix] in pyproject.toml (det, seed, tz, ...) or FENVIX_DET=1 turn --det on for a plain
+    `pytest` (and the runner shells); the command line wins over the table."""
+    proj = project(tmp_path, "import random, time\n\ndef test_x():\n    print('VAL', random.random(), time.time(), time.tzname)\n")
+    (proj / "pyproject.toml").write_text('[tool.fenvix]\ndet = true\nseed = 7\ntz = "Asia/Tokyo"\n')
+    run = lambda *a, **e: subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", *a],
+                                         cwd=proj, env=_env(**e), capture_output=True, text=True, timeout=600)
+    a, b = run(), run()
+    va, vb = values(a, "VAL"), values(b, "VAL")
+    assert va and va == vb and "Asia/Tokyo" not in va[0] and "JST" in va[0], (a.stdout, a.stderr)
+    assert "seed: 7 (shuffled)" in a.stdout
+    c = run("--det-seed=8")
+    assert "seed: 8 (shuffled)" in c.stdout, c.stdout
+    (proj / "pyproject.toml").unlink()
+    d, e = run(FENVIX_DET="1"), run(FENVIX_DET="1")
+    assert values(d, "VAL") == values(e, "VAL") and "seed: 0" in d.stdout
+    plain = run()
+    assert "detpy (Level 0)" not in plain.stdout

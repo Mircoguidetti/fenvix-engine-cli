@@ -236,6 +236,14 @@ def pytest_load_initial_conftests(early_config, parser, args):
     if os.environ.get(_xdist.CONTROLLER_ENV) is not None:
         _xdist.restore_controller_env()  # an xdist worker of a --det controller
     ns = early_config.known_args_namespace
+    # FENVIX_DET=1 / [tool.fenvix] (audit G-1536): the options join the command line (pytest parses this list); also
+    # in the re-executed process, which runs the original command line again
+    root0 = str(early_config.rootpath) if hasattr(early_config, "rootpath") else os.getcwd()
+    extra = _level0.config_args(root0, list(args))
+    if extra:
+        args[:0] = extra
+        ns = parser.parse_known_args(args)
+        early_config.known_args_namespace = ns
     if not getattr(ns, "det", False):
         return
     if S.active:
@@ -989,6 +997,11 @@ class _DetSession(_Outcomes):
             if len(failed) > 5:
                 tr.write_line(f"    ... and {len(failed) - 5} more")
             tr.write_line(f"  the same run again: pytest --det{seed} (with the same arguments)")
+            if S.controller is not None:
+                # audit G-1557: under -n a test ran in its worker's list; repro and replay start from that list
+                plan = os.path.join(S.controller.dir, "plan.json")
+                tr.write_line(f"  under -n each worker ran its own list: fenvix repro TEST --plan {plan}; one worker's "
+                              f"list again: pytest --det{seed} --det-plan={plan} --det-plan-worker=gwN")
         if proofcache.PLUGIN is not None:
             proofcache.PLUGIN.terminal_summary(tr)
         rep = S.compare_report

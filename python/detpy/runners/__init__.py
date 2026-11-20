@@ -54,6 +54,9 @@ def main(name: str, argv: list[str]) -> int:
     if any(a in ("-h", "--help", "--det-help") for a in argv) and "--" not in argv:
         print(det_help(name))
         return 0
+    from .._level0 import config_args
+
+    argv = [*config_args(None, list(argv)), *argv]  # FENVIX_DET=1 / [tool.fenvix] (audit G-1536)
     need = NEEDS.get(name)
     if need is not None:
         from importlib.util import find_spec

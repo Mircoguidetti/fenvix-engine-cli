@@ -139,6 +139,44 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
 ]
 
 
+CONFIG_KEYS = {"seed": "--det-seed", "tz": "--det-tz", "locale": "--det-locale", "epoch": "--det-epoch",
+               "tick": "--det-tick", "cassette": "--det-cassette", "cassette_max_age": "--det-cassette-max-age",
+               "disable": "--det-disable", "trace": "--det-trace"}
+CONFIG_FLAGS = {"urandom": "--det-urandom", "keep_aslr": "--det-keep-aslr"}
+
+
+def config_args(root: str | None, given: list) -> list:
+    """``--det`` options from the project's configuration (audit G-1536): ``FENVIX_DET=1`` in the environment, or a
+    ``[tool.fenvix]`` table in ``pyproject.toml`` (``det = true``, ``seed``, ``tz``, ``locale``, ``epoch``, ``tick``,
+    ``cassette``, ``cassette_max_age``, ``disable``, ``trace``, ``urandom``, ``keep_aslr``, ``allow_hosts``). Returns
+    the arguments to add in front of ``given`` (nothing when neither turns ``--det`` on, and never an option
+    ``given`` already has: the command line wins)."""
+    table: dict = {}
+    path = os.path.join(root or os.getcwd(), "pyproject.toml")
+    if os.path.isfile(path):
+        try:
+            import tomllib
+
+            with open(path, "rb") as f:
+                table = (tomllib.load(f).get("tool") or {}).get("fenvix") or {}
+        except Exception:  # an unreadable pyproject: no configuration from it
+            table = {}
+    env_on = os.environ.get("FENVIX_DET", "").strip().lower() in ("1", "true", "yes", "on")
+    if not (env_on or table.get("det") is True or "--det" in given):
+        return []
+    have = {a.split("=", 1)[0] for a in given}
+    out = [] if "--det" in have else ["--det"]
+    for key, flag in CONFIG_KEYS.items():
+        if key in table and flag not in have:
+            out.append(f"{flag}={table[key]}")
+    for key, flag in CONFIG_FLAGS.items():
+        if table.get(key) is True and flag not in have:
+            out.append(flag)
+    if "--det-allow-host" not in have:
+        out += [f"--det-allow-host={h}" for h in table.get("allow_hosts") or []]
+    return out
+
+
 def controls_of(disable: str) -> frozenset:
     """The active controls: every control but the ``--det-disable`` ones."""
     off = {c.strip() for c in (disable or "").split(",") if c.strip()}
@@ -491,12 +529,14 @@ def sleep_label(cfg) -> str:
 def ensure_state_dir(root: str) -> None:
     """``<root>/.detpy`` with a ``.gitignore`` that ignores everything but itself and the cassette (audit G-2207)."""
     d = os.path.join(root, ".detpy")
+    # the same work in every run, whether the directory existed or not: what the engine allocates before the first
+    # test decides the addresses the tests see (audit G-0168: a set of plain objects iterated in another order in
+    # the first run of a fresh checkout than in every later run)
     try:
-        os.makedirs(d, exist_ok=True)
-        gi = os.path.join(d, ".gitignore")
-        if not os.path.exists(gi):
-            with open(gi, "w") as f:
-                f.write(GITIGNORE)
+        if not os.path.isdir(d):
+            os.mkdir(d)
+        with open(os.path.join(d, ".gitignore"), "w") as f:
+            f.write(GITIGNORE)
     except OSError:
         pass
 

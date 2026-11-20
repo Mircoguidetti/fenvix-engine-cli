@@ -169,3 +169,93 @@ def test_zope_alias_and_python_runner_compat(tmp_path):
     assert "zope-testrunner" in fenvix.PY_RUNNERS
     p = fx("python-runner")
     assert p.returncode == 2 and "name a runner" in p.stderr
+
+
+UNITTEST = '''
+import unittest
+STATE = {}
+class T(unittest.TestCase):
+    def test_a(self):
+        pass
+    def test_b_polluter(self):
+        STATE["x"] = 1
+    def test_c(self):
+        pass
+    def test_d_victim(self):
+        self.assertNotIn("x", STATE)
+'''
+
+
+def test_repro_and_replay_work_for_the_unittest_shell(tmp_path):
+    """G-0532, G-0540: repro, bundle and replay for a suite run by `python -m detpy unittest` (the other shells use
+    the same adapter)."""
+    (tmp_path / "test_u.py").write_text(UNITTEST)
+    p = fx("repro", "test_u.py::T::test_d_victim", "--runner", "unittest", "--confirm", "3", "--seeds", "2", "--",
+           "discover", "-p", "test_*.py", cwd=tmp_path)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert "cause:   test order: it fails when run after test_u.py::T::test_b_polluter" in p.stdout, p.stdout
+    assert "rerun:   python -m detpy unittest --det --det-order=" in p.stdout, p.stdout
+    bundle = next((tmp_path / ".detpy" / "repro").glob("test_d_victim-*"))
+    assert json.loads((bundle / "bundle.json").read_text())["runner"] == "unittest"
+    r = fx("replay", str(bundle), "--runs", "2", cwd=tmp_path)
+    assert r.returncode == 0 and "REPRODUCED" in r.stdout, r.stdout + r.stderr
+
+
+def test_bundle_is_self_contained_and_work_files_are_removed(project):
+    """G-1556 (commit, interpreter, distributions, run inputs, relative failure location), G-2021 (no work files
+    left), replay_command names the product command."""
+    subprocess.run(["git", "init", "-q"], cwd=project, check=True)
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-q", "--allow-empty", "-m", "x"],
+                   cwd=project, check=True)
+    p = fx("repro", "tests/test_o.py::test_victim", "--confirm", "2", "--seeds", "1", cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    bundle = next((project / ".detpy" / "repro").glob("test_victim-*"))
+    data = json.loads((bundle / "bundle.json").read_text())
+    prov = data["provenance"]
+    assert len(prov["commit"]) == 40 and prov["python"] and any(d.startswith("pytest==") for d in prov["distributions"])
+    assert prov["inputs"]["tz"].startswith("UTC") and any(k.startswith("env:") for k in prov["inputs"])
+    assert data["exception"][3] == "tests/test_o.py:14", data["exception"]
+    assert data["replay_command"].startswith("fenvix replay ")
+    assert not (project / ".detpy" / "repro" / ".work").exists()
+
+
+def test_repro_from_a_parallel_plan_searches_the_workers_list(project):
+    """G-1557: a failure seen under -n is searched in the list of the worker that ran it."""
+    pytest.importorskip("xdist")
+    run = subprocess.run([sys.executable, "-m", "pytest", "-q", "--det", "--det-seed=3", "-n", "2", "tests"],
+                         cwd=project, env=_env(), capture_output=True, text=True, timeout=600)
+    if " failed" in run.stdout:  # the failure is printed with the command that starts from the worker's list
+        assert "--plan " in run.stdout, run.stdout
+    p = fx("repro", "tests/test_o.py::test_victim", "--plan", ".detpy/plan.json", "--confirm", "2", cwd=project)
+    assert "ran in worker gw" in p.stderr, p.stderr
+    plan = json.loads((project / ".detpy" / "plan.json").read_text())
+    worker = next(ids for ids in plan["lists"].values() if "tests/test_o.py::test_victim" in ids)
+    if "tests/test_o.py::test_polluter" in worker[:worker.index("tests/test_o.py::test_victim")]:
+        assert p.returncode == 0 and "test_o.py::test_polluter" in p.stdout, p.stdout
+    else:  # the plan separated them: the worker's list does not fail, which repro reports
+        assert "not reproduced" in p.stdout, p.stdout
+
+
+def test_explore_resumes_and_selects(project):
+    """G-1529 (each night explores new seeds), G-1530 (only previously unstable test files)."""
+    p = fx("explore", "--budget", "5", "--max-seeds", "2", "--no-repro", cwd=project, timeout=1500)
+    assert p.returncode == 0, p.stdout + p.stderr
+    first = json.loads((project / ".detpy" / "repro" / "explore-state.json").read_text())
+    assert (first["first_seed"], first["last_seed"]) == (1, 2)
+    p = fx("explore", "--budget", "5", "--max-seeds", "2", "--no-repro", "--resume", cwd=project, timeout=1500)
+    second = json.loads((project / ".detpy" / "repro" / "explore.json").read_text())
+    assert [x["seed"] for x in second["seeds_log"]] == [3, 4], second["seeds_log"]
+    assert not (project / ".detpy" / "repro" / ".work").exists()
+    if second.get("flaky_failing"):
+        p = fx("explore", "--budget", "5", "--max-seeds", "1", "--no-repro", "--only-unstable", cwd=project,
+               timeout=1500)
+        assert "1 test file(s) selected: tests/test_o.py" in p.stderr, p.stderr
+
+
+def test_doctor_checks_the_machine():
+    """G-0700."""
+    p = fx("doctor", "--json")
+    checks = {c["check"]: c for c in json.loads(p.stdout)}
+    for name in ("python", "hash seed re-exec", "ASLR switch", "locale", "strace", "C compiler"):
+        assert name in checks, checks
+    assert checks["python"]["ok"] and p.returncode in (0, 1)

@@ -417,12 +417,16 @@ struct ExploreBook {
 #[pymethods]
 impl ExploreBook {
     #[new]
-    fn new(py: Python<'_>, budget_s: f64, max_seeds: i64) -> Self {
+    #[pyo3(signature = (budget_s, max_seeds, first_seed = 1))]
+    fn new(py: Python<'_>, budget_s: f64, max_seeds: i64, first_seed: i64) -> Self {
+        // first_seed > 1: a nightly exploration that resumes after the seeds of the previous nights (audit G-1529);
+        // max_seeds counts the seeds of this run
+        let first = first_seed.max(1);
         ExploreBook {
             start: Instant::now(),
             budget_s,
-            max_seeds,
-            next: 1,
+            max_seeds: max_seeds.saturating_add(first - 1),
+            next: first,
             log: core::ExploreLog::default(),
             seeds_log: PyList::empty(py).unbind(),
             bundles: PyList::empty(py).unbind(),
