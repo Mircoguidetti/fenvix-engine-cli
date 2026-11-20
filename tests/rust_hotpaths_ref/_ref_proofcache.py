@@ -2493,9 +2493,13 @@ def _sqlite_file(db, uri: bool) -> str | None:
 def _hosts_file_answers(name: str) -> bool:
     """review R-023b N2: nsswitch names `files` first for hosts and /etc/hosts lists the name."""
     n = name.rstrip(".").lower()
+    from detpy import _state
+
     try:
-        ns = open("/etc/nsswitch.conf", "rb").read().decode("latin-1")
-        hosts = open("/etc/hosts", "rb").read().decode("latin-1")
+        # quiet: the engine's own read (the Rust path reads with std::fs, which the os control's open hook never sees)
+        with _state.quiet():
+            ns = open("/etc/nsswitch.conf", "rb").read().decode("latin-1")
+            hosts = open("/etc/hosts", "rb").read().decode("latin-1")
     except OSError:
         return False
     if not any(line.split("#")[0].split()[:2] == ["hosts:", "files"] for line in ns.splitlines()):

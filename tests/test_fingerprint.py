@@ -89,7 +89,8 @@ def test_control_flow_divergence(pytester, run_det):
 
 
 def test_outcome_only_divergence(pytester, run_det):
-    # State the controls do not observe (file contents) flips the outcome.
+    # A state left by the previous run (a file's content) flips the outcome. Review P1 finding 4: the read is an
+    # event (``fs.read`` with the content's digest), so the verifier names it instead of only the outcome.
     pytester.makepyfile(
         test_o="""
         import os
@@ -105,7 +106,10 @@ def test_outcome_only_divergence(pytester, run_det):
     _, rep = verify(p1, p2)
     t = rep["tests"][0]
     assert not t["outcome_stable"] and t["outcomes"] == ["passed", "failed"]
-    assert t["divergence"]["reason"] == "outcome-only"
+    assert t["divergence"]["reason"] == "fs", t["divergence"]
+    # run 1 finds no file (os.path.exists) and reads nothing; run 2 reads the file run 1 wrote: the first difference
+    ev = t["divergence"]["event_b"]
+    assert ev["o"] == "fs.read" and ev["v"].startswith("count "), t["divergence"]
     assert rep["summary"]["outcome_unstable"] == 1
 
 

@@ -29,11 +29,13 @@ real. What it covers:
   files are files: their content is digested, so ``/proc/self/stat`` or ``/proc/loadavg`` make the verifier name the
   read. A device, FIFO or socket opened that way (other than ``/dev/null``, ``/dev/zero``, terminals and the
   standard streams) marks the test ``uncontrolled.device``: what it delivers cannot be digested.
-* **OS measurements (recorded).** ``os.getloadavg``, ``os.statvfs`` / ``os.fstatvfs`` (``shutil.disk_usage``) and the
-  memory and I/O counters of ``resource.getrusage``: one event with a digest of the value.
+* **OS measurements (recorded).** ``os.getloadavg``, ``os.statvfs`` / ``os.fstatvfs`` (``shutil.disk_usage``): one
+  event with a digest of the value.
 
 Not covered (DECLARED): reads done in C without Python's I/O (an extension calling ``fopen``), ``Thread.native_id``
-attributes, ``multiprocessing.current_process().pid`` (standard library: real PID).
+attributes, ``multiprocessing.current_process().pid`` (standard library: real PID), the memory, page-fault, I/O and
+context-switch counters of ``resource.getrusage`` (its CPU times are virtual; a call cannot be recorded only when
+those fields are read, and recording every call made tests that read only the CPU times never identical: G-1515).
 """
 
 from __future__ import annotations
@@ -235,6 +237,13 @@ def open_(file, mode="r", *args, **kwargs):
         if fn is not None and _real_getpid() == _SESSION_PID:
             v = fn(p, mode, args, kwargs)
             if v is not None:
+                # the audit event the real open raises: other observers (the cache with proof's rule for /proc,
+                # /sys and /dev reads) see the read as they did; this module's own hook skips it
+                _tls.busy = True
+                try:
+                    sys.audit("open", p, mode, os.O_RDONLY | getattr(os, "O_CLOEXEC", 0))
+                finally:
+                    _tls.busy = False
                 return v
     return _prev_open(file, mode, *args, **kwargs)
 
@@ -256,6 +265,24 @@ def _user_depth(depth: int) -> int:
     except ValueError:  # pragma: no cover
         pass
     return depth
+
+
+def _plugin_site(depth: int) -> bool:
+    """The first frame past the standard library is a pytest plugin's (``_level0.INFRA_PACKAGES``, ``pytest_*``):
+    the runner's machinery read the file, not the test."""
+    from . import _level0
+
+    try:
+        f = _getframe(depth + 1)
+    except ValueError:  # pragma: no cover
+        return False
+    while f is not None:
+        kind = _sites._classify(f.f_code.co_filename)[0]
+        if kind != _sites._STDLIB:
+            top = str(f.f_globals.get("__name__") or "").split(".", 1)[0]
+            return kind == _sites._INFRA or top in _level0.INFRA_PACKAGES or top.startswith("pytest_")
+        f = f.f_back
+    return False
 
 
 def _under(p: str, d: str) -> bool:
@@ -327,6 +354,12 @@ def _digest_file(p: str):
 
 
 _O_ACC = getattr(os, "O_ACCMODE", 3)
+
+
+def _engine_probe(p: str) -> bool:
+    """The virtual ``time.sleep`` (Rust, ``clock_children_alive``) reads ``/proc/self/task/<tid>/children`` from the
+    sleeping test's frame, with the audit event of ``open``: the engine's own read, not the test's."""
+    return p.startswith("/proc/self/task/") and p.endswith("/children")
 _IMPORTED = (".py", ".pyc", ".pyo", ".pyi", ".pth", ".so", ".pyd")
 
 
@@ -354,13 +387,15 @@ def _audit(event, args):
         if not os.path.isabs(p):
             p = os.path.join(_sites._real_getcwd(), p)
         p = os.path.normpath(p)
-        if p in _QUIET_DEVICES or p.startswith(_QUIET_PREFIXES) or _excluded(p):
+        if p in _QUIET_DEVICES or p.startswith(_QUIET_PREFIXES) or _excluded(p) or _engine_probe(p):
             return
         got = _digest_file(p)
         if got is None:
             return
         kind, value = got
         depth = _user_depth(1)
+        if _plugin_site(depth):
+            return
         if kind == "absent":
             if isinstance(flags, int) and flags & os.O_CREAT:
                 return  # created by the opener
@@ -432,14 +467,6 @@ def install(patcher, cfg) -> None:
     for name in ("statvfs", "fstatvfs"):
         if hasattr(os, name):
             patcher.set(os, name, _observed(getattr(os, name), f"os.{name}"))
-    try:
-        import resource
-
-        # the CPU fields are virtual (clock); the memory, page-fault, I/O and context-switch counters are real
-        patcher.set(resource, "getrusage", _observed(resource.getrusage, "resource.getrusage",
-                                                     lambda r: tuple(r)[2:]))
-    except ImportError:  # pragma: no cover - not on POSIX
-        pass
     if not _HOOKED[0]:
         sys.addaudithook(_audit)  # cannot be removed: inert while the control is off (_ACTIVE)
         _HOOKED[0] = True
