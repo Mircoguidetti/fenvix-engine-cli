@@ -517,13 +517,19 @@ if JOB in ("hunt", "huntp"):
     groups = {}
     for t in T55:
         groups.setdefault(mech(t)[0], []).append(t)
+    # seed_map {key: seed}: replay only (no search), each target with the seed an earlier hunt found for it.
+    SEED_MAP = P.get("seed_map") or {}
+    for k, s in SEED_MAP.items():
+        if k in rows:
+            rows[k]["seed"] = int(s)
+            rows[k]["seed_given"] = True
     for g, ts in groups.items():
         # Only the targets are perturbed (setup tests and the rest run the default schedule).
         env = {**mech(ts[0])[1], **PAR, "DETJS_LS_FOCUS_TEST": "||".join(t["key"] for t in ts)}
         keys = sorted({f"api {real_step(t)}" for t in ts if real_step(t)})
         if g == "reset" and keys:
             env["DETJS_LS_FOCUS_KEYS"] = "|".join(keys)
-        for seed in range(int(P.get("seed_from", 1)), SEEDS + 1):
+        for seed in range(int(P.get("seed_from", 1)), 0 if SEED_MAP else SEEDS + 1):
             open_ts = [t for t in ts if rows[t["key"]]["seed"] is None]
             if not open_ts or not budget_for(P.get("per_run_s", 600)):
                 break
@@ -548,7 +554,23 @@ if JOB in ("hunt", "huntp"):
                 if not budget_for(P.get("per_run_s", 600)):
                     break
                 label = f"h-{g}-s{seed}-r{i + 1}"
-                r = run_pw(label, "det", seed=seed or None, args=args_for(sts), env_extra={**env, **seed_env(g, seed)}, timeout_s=P["run_timeout_min"] * 60)
+                dd = None
+                if i < int(P.get("diag_replays", 2)):
+                    # the texts behind the digests (response bodies, DOM, server messages) of the first replays
+                    dd = OUT / "diag" / label
+                    shutil.rmtree(dd, ignore_errors=True)
+                    os.environ["DETJS_PW_DIAG_DIR"] = str(dd / "server")  # the app server (server_start) inherits it
+                ex = {**env, **seed_env(g, seed), **({"DETJS_PW_DIAG_DIR": str(dd / "pages")} if dd else {})}
+                r = run_pw(label, "det", seed=seed or None, args=args_for(sts), env_extra=ex, timeout_s=P["run_timeout_min"] * 60)
+                os.environ.pop("DETJS_PW_DIAG_DIR", None)
+                if dd and dd.exists():
+                    total = 0
+                    for f in sorted(dd.rglob("*")):
+                        if f.is_file() and f.stat().st_size < 6_000_000 and total < 40_000_000:
+                            dst = RESULT.parent / f"{JOB}-{NAME}" / "diag" / label / f.relative_to(dd)
+                            dst.parent.mkdir(parents=True, exist_ok=True)
+                            dst.write_bytes(gzip.compress(f.read_bytes()))
+                            total += f.stat().st_size
                 for t in sts:
                     o, line, step = outcome(t, r)
                     rows[t["key"]]["replays"].append(o)

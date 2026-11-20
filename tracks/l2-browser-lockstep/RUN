@@ -1,3 +1,40 @@
-{"nonce": 15, "jobs": [{"job": "hunt", "name": "actual"}],
- "params": {"hunt": {"seeds": 8, "replays": 10, "budget_min": 340, "run_timeout_min": 45, "per_run_s": 900},
-            "hunt:actual": {"only": ["extends after budgeting", "keeps every displayed column", "applies budget template"], "from_step": 20}}}
+{
+ "nonce": 16,
+ "jobs": [
+  {
+   "job": "hunt",
+   "name": "documenso"
+  }
+ ],
+ "params": {
+  "hunt": {
+   "replays": 3,
+   "diag_replays": 3,
+   "budget_min": 200,
+   "run_timeout_min": 45,
+   "per_run_s": 900
+  },
+  "hunt:documenso": {
+   "seed_map": {
+    "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]": 1,
+    "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]": 1,
+    "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]": 1,
+    "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]": 1,
+    "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]": 1,
+    "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]": 1,
+    "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]": 1,
+    "find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]": 1,
+    "find-inbox.spec.ts::Inbox Find - Search Hardening::should keep wildcard searches scoped to the recipient inbox [api]": 1,
+    "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject draft and virtual status values [api]": 1,
+    "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]": 1,
+    "search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]": 1,
+    "search-documents.spec.ts::Document Search - Token Masking::should not expose signing token in value field [api]": 1,
+    "search-documents.spec.ts::Document Search - Visibility::should respect team document visibility per role [api]": 1,
+    "set-envelope-contents-audit-logs.spec.ts::logs a created content [api]": 1,
+    "set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]": 1,
+    "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a team manager who is an organisation member on every procedure [api]": 1,
+    "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]": 1
+   }
+  }
+ }
+}
