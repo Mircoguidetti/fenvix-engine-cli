@@ -14,6 +14,10 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-seed=N             reproducible shuffle of files and tests, seed of every generator
                            (default: fixed order, seed 0)
   --det-trace=PATH         trace file (default: <root>/.detjs/trace.jsonl)
+  --det-order=FILE         run exactly the test ids listed in FILE (one per line), in that order; files run in the
+                           order of their first listed test, describe blocks likewise (docs/NODE.md, "Repro")
+  --det-outcomes=PATH      write order, outcomes, fingerprints and exceptions of the run as JSON (repro drivers)
+  --det-collect            collection only: write the order this run would use to --det-outcomes; run no test
   --det-compare=TRACE      compare fingerprints with a previous trace
   --det-record             allow external network access and record it into the cassette
   --det-cassette=PATH      network cassette (default: <root>/.detjs/cassette.json); replayed when present
@@ -48,13 +52,14 @@ function parseArgs(argv, env = process.env) {
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
     cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
+    order: null, outcomes: null, collect: false,
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
   const takes = new Set(['--det-tz', '--det-locale', '--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
-    '--det-cache', '--det-cache-receipts', '--det-cache-summary']);
+    '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-order', '--det-outcomes']);
   for (let i = 0; i < argv.length; i++) {
     let a = argv[i];
     if (!a.startsWith('--det')) { rest.push(a); continue; }
@@ -84,6 +89,9 @@ function parseArgs(argv, env = process.env) {
       case '--det-tz': case '--det-locale': break; // applied by bin/detjs.js before the runner starts
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;
+      case '--det-order': opts.order = value; break;
+      case '--det-outcomes': opts.outcomes = value; break;
+      case '--det-collect': opts.collect = value === undefined || value === '1' || value === 'true'; break;
       case '--det-help': process.stdout.write(HELP); process.exit(0); break;
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
@@ -132,7 +140,10 @@ function prepare(opts, root, runner) {
     DETJS_MAX_EVENTS: String(opts.maxEvents),
     DETJS_SITES: opts.sites ? '1' : '0',
     DETJS_RUNNER: runner,
+    DETJS_ORDER: opts.order ? path.resolve(opts.order) : '',
+    DETJS_COLLECT: opts.collect ? '1' : '',
   };
+  if (opts.order && !fs.existsSync(env.DETJS_ORDER)) throw new Error(`detjs: --det-order: no such file ${opts.order}`);
   Object.assign(process.env, env);
   // the capture's loader mode is chosen per shell for its own test processes (runners/common.js childEnv sets
   // `register` for the tap, AVA, Jasmine and uvu shells): never inherited from an outer process
@@ -204,6 +215,8 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  let reproLines = [];
+  try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
   const lines = [`detjs: trace ${path.relative(process.cwd(), run.tracePath) || run.tracePath}: ${res.nTests} tests, order digest ${res.orderDigest}`];
   if (res.skipped.length) lines.push(`detjs: unreadable trace parts: ${res.skipped.join('; ')}`);
@@ -222,6 +235,7 @@ function finish(run, opts, files, meta) {
       lines.push(`detjs: compare failed: ${e.message}`);
     }
   }
+  lines.push(...reproLines);
   return { lines, result: res };
 }
 

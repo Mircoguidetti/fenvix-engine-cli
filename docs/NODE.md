@@ -13,6 +13,7 @@ detjs jest --det --det-seed=7                # reproducible shuffle (exploration
 detjs vitest run --det --det-record          # allow the network once, record it
 detjs vitest run --det                       # later runs replay .detjs/cassette.json
 detjs verify .detjs/run1.jsonl .detjs/trace.jsonl
+detjs vitest run --det --det-order=order.txt --det-outcomes=o.json   # exactly these tests, in this order
 detjs --det-help                             # every option
 ```
 
@@ -21,6 +22,66 @@ own CLI unchanged.
 
 `--det-cache=DIR|URL` adds the cache with proof (skip test files whose every recorded input is unchanged, with a
 receipt per reused result): [NODE-CACHE.md](NODE-CACHE.md).
+
+A failing test under `--det` ends the run with the command that turns it into a defect (as the pytest plugin does):
+
+```
+1 test(s) failed under --det (seed 7, shuffled). Turn each into a reproducible defect (cause, seed, order, replay command):
+    fenvix repro tests/a.test.ts::cache::evicts --runner=vitest --seed=7
+  the same run again: detjs vitest run --det --det-seed=7 (with the same arguments)
+```
+
+## Repro: flaky test to reproducible defect (Vitest, Jest)
+
+`fenvix repro TEST`, `fenvix explore --budget MIN` and `fenvix replay BUNDLE` work for Vitest and Jest with the same
+options, output and bundle as for pytest (docs/CLI.md on branch verifier-cli; before that branch merges:
+`python -m detpy.fenvix_js repro|explore|replay`, same options). The search, the minimisation, the replay verdict and
+the bundle are the runner-neutral Rust ones (`crates/detpy-core/src/repro.rs`); `python/detpy/fenvix_js.py` drives
+detjs (`DetjsRunner`, the `vitest` / `jest` / `playwright` adapters). The bundle's `runner` field picks the runner at
+replay; `command` is the detjs command line that reruns the bundle.
+
+```
+fenvix repro: tests/doc/errors.ts::logLevel::by default, warn for tag fallback
+  status:  REPRODUCED: failed 10/10 replays with one fingerprint 214284b09894c726bb4150da8040cc9e
+  cause:   test order: it fails when run after tests/doc/errors.ts::logLevel::silence warnings with logLevel: 'silent' (state left behind by that test)
+  seed:    1
+  order:   tests/doc/errors.ts::logLevel::silence warnings with logLevel: 'silent' -> tests/doc/errors.ts::logLevel::by default, warn for tag fallback
+  error:   expected [] to match object [ Array(1) ] (tests/doc/errors.ts:458)
+  replay:  fenvix replay .detpy/repro/by_default_warn_for_tag_fallback-9c19e945
+  rerun:   detjs vitest run --det --det-seed=1 --det-order=.detpy/repro/by_default_warn_for_tag_fallback-9c19e945/order.txt
+```
+
+What the driver uses from detjs (`node/src/repro.js`):
+
+| option | what it does |
+|---|---|
+| `--det-order=FILE` | runs exactly the test ids listed in FILE (one per line, `#` comments), in the listed order; a test outside the list does not run, a listed id no test has is reported in `order_missing` |
+| `--det-outcomes=PATH` | JSON of the run: `order` (the tests in run order), `outcomes` {id: `passed`/`failed`/`skipped`/`error`}, `fingerprints` {id: hex}, `exceptions` {id: [type, phase, message, `file:line`]}, `controls`, `seed`, `shuffle`, `order_missing`, `order_regrouped`, `file_errors` |
+| `--det-collect` | collection only: writes to `--det-outcomes` the order a run with the same options (seed, filters) would use; the test files are imported (as collection does), no test body and no hook runs |
+| `--det-seed=N` | with `--det-order` the listed order wins; the seed still seeds `Math.random` & co. (per test id: a test draws the same values whatever ran before it) |
+
+How an order is honoured. Vitest and Jest run one test file at a time, each file in its own module registry, and the
+tests of a file in its describe tree. An order is run as: files in the order of their first listed test; inside a
+file, at every level of the describe tree, children in the order of their first listed test; unlisted tests, and
+describe blocks left without a listed test, are removed before the file runs (their `beforeAll`/`afterAll` hooks do
+not run; the hooks of the blocks that keep a test do). Every order a whole-suite run produces (fixed or shuffled:
+files → describe blocks → tests) and every sublist of it (what the minimisation tries) is contiguous per file and per
+describe block, so it is run exactly as listed and a bundle replays exactly. A hand-written order that interleaves
+two files or two describe blocks is run grouped as above; the run says so (`order_regrouped`, a line in the output)
+and `order` holds the order really run. The minimisation therefore works at test granularity, and a polluter in
+another file is found when state crosses files (Jest in band: `process.env`, the file system, Node's module
+cache for native modules; Vitest with `isolate: false`).
+
+A listed test whose file fails to load (import error, a throw at module level) is reported `error` with the load error
+(phase `collect`), not missing. When a failure does not replay N/N with one fingerprint and the test used a source
+Level 0 does not control (its `uncontrolled.child|thread|io|level0` events, control 7c/7d below; OS entropy:
+`crypto.randomBytes` & co. without `--det-urandom`), `fenvix repro` reports it `NOT REPRODUCIBLE under fenvix` and
+names the source (e.g. `child (execSync node -e ...)`); the polluters / setters its minimisation found on those
+unstable outcomes are kept in the bundle's `minimised` field, not reported as the cause.
+
+Playwright Test: no repro driver yet. `fenvix repro` says why (`PlaywrightAdapter.available`): detjs runs Playwright
+measured only (J11: no per-test brackets, no trace, no fingerprints, no `--det-order`, and the browser is not
+controlled).
 
 ## Layout
 
@@ -39,6 +100,7 @@ node/src/fsorder.js   sorted readdir / readdirSync / promises.readdir / opendir
 node/src/network.js   closed network, record/replay (net, tls, dns => http, https, fetch, undici)
 node/src/controls.js  installation (process-wide and per realm), per-file trace parts
 node/src/session.js   main process: options, DETJS_* environment, merge of parts, compare
+node/src/repro.js     --det-order / --det-outcomes / --det-collect, the `fenvix repro` line of a failing run
 node/src/vitest/      cli.js (Node API + sequencer), runner.mjs/shell.js (custom runner in the worker)
 node/src/jest/        cli.js (in-process jest-cli), sequencer.js, runner.js (wraps jest-circus)
 ```
@@ -139,6 +201,7 @@ Found by the shell tests (**T**), by the harness (**H**) or by design (**D**).
 | J15 | CPU time is not virtual time: a loop bounded by a virtual deadline (apollo-client: `setInterval(…, 1)` calling `gc()` for 1000 virtual ms) runs every iteration that the virtual deadline allows (1000 `gc()` calls instead of ~50 in real time) and can exceed the runner's *real* test timeout. The runners' timeouts are not virtualised. | H |
 | J16 | A custom Jest `runner` (jest-light-runner, used by babel and prettier) runs the tests without jest-circus's `testRunner`, out of detjs's reach: Level 0 does not apply to them (0 of ~25 000 tests traced); detjs warns and records it in `meta.isolation`. `DETJS_JEST_RUNNER=replace` uses Jest's default `jest-runner` instead, but the suites written for the custom runner (native ESM) then fail (measured: babel 238/238 suites, prettier 1429/1429, under `--det` and the serial reference alike). | H |
 | J17 | Each patched call (clock, random, fs) runs a few extra JavaScript frames (the wrapper, event recording, call-site capture): code that recurses close to V8's stack limit can overflow under `--det` only (assistant-ui: a JavaScript bash emulator reported `Maximum call stack size exceeded` in 4 tests). | H |
+| J18 | `--det-order` cannot interleave test files or describe blocks (the runners run one file, and one describe block, at a time): such an order is run grouped by first listed test and reported (`order_regrouped`). Orders produced by a run or by the repro minimisation never interleave. | D |
 | J10 | With Vitest `isolate: false`, several files can be collected before the first runs: the module-level seed of later files is approximate. | D |
 
 The harness results (`harness/node/results/`) add the limits found on real

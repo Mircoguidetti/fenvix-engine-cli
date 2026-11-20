@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const controls = require('../controls');
+const repro = require('../repro');
 
 const { STATE } = controls;
 const CACHE = process.env.DETJS_CACHE === '1';
@@ -135,6 +136,7 @@ function makeRunner(Base) {
           const shuffled = controls.shuffleTree(file.tasks, c.seed, label, keyOf, (t) => (t.type === 'suite' ? t.tasks : null));
           file.tasks.splice(0, file.tasks.length, ...shuffled);
         }
+        reproCollected(file, this.__det);
       }
     }
 
@@ -173,6 +175,7 @@ function makeRunner(Base) {
       if (this.__det.active) {
         controls.closeFile();
         this.__det.opened = null;
+        for (const f of files || []) reproSide(f, this.__det, this.config.name);
         if (CAP && process.env.DETJS_DIR) {
           for (const f of files || []) {
             try { writeCapture(f, this.__det, this.config.name); } catch (e) { process.stderr.write(`detjs cache: capture of ${f.filepath} not written: ${e && e.stack}\n`); }
@@ -182,6 +185,44 @@ function makeRunner(Base) {
       if (super.onAfterRunFiles) await super.onAfterRunFiles(files);
     }
   };
+}
+
+// --det-order / --det-collect / --det-outcomes (src/repro.js): the file's tree reduced and ordered to the plan, the
+// ids it will run, and (collection only) nothing run at all.
+function reproCollected(file, det) {
+  const p = repro.plan();
+  const idOf = (t) => (t.type === 'suite' ? null : det.ids.get(t) || null);
+  const kidsOf = (t) => (t.type === 'suite' ? t.tasks || [] : null);
+  if (p && file.tasks && repro.filterTree(file.tasks, idOf, kidsOf, p) === 0) file.mode = 'skip';
+  det.collected = det.collected || new Map();
+  det.collected.set(file, file.mode === 'skip' && p ? [] : repro.flatIds(file.tasks || [], idOf, kidsOf));
+  if (process.env.DETJS_COLLECT === '1') file.mode = 'skip';
+}
+
+function reproSide(file, det, project) {
+  const c = controls.cfg();
+  const fileId = fileIdOf(file, det.root);
+  const states = {};
+  const exceptions = {};
+  const walk = (suite, inherited) => {
+    const err = suite.result && suite.result.errors && suite.result.errors.length && suite !== file ? suite.result.errors[0] : inherited;
+    for (const t of suite.tasks || []) {
+      if (t.type === 'suite') { walk(t, err); continue; }
+      const id = det.ids.get(t);
+      if (!id) continue;
+      let o = outcomeOf(t);
+      const own = t.result && t.result.errors && t.result.errors[0];
+      if (own) exceptions[id] = repro.exceptionOf(own, 'call', det.root);
+      else if (err && o !== 'passed') { exceptions[id] = repro.exceptionOf(err, 'setup', det.root); o = 'error'; }
+      states[id] = o;
+    }
+  };
+  const fileErr = file.result && file.result.errors && file.result.errors.length ? file.result.errors[0] : null;
+  walk(file, fileErr);
+  repro.writeSide(c.dir, controls.partName(fileId, project), {
+    file: fileId, project: project || '', collected: (det.collected && det.collected.get(file)) || [],
+    states, exceptions, file_error: fileErr ? repro.exceptionOf(fileErr, 'collect', det.root) : null,
+  });
 }
 
 module.exports = { makeRunner, loadBaseRunner, exportFile, fileIdOf };

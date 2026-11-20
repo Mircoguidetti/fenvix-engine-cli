@@ -26,6 +26,7 @@ class DetSequencer extends Base {
     keyed.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
     let ordered = keyed;
     if (c.shuffle && c.controls.has('order')) ordered = native.shuffleIndices(keyed.length, c.seed, '').map((i) => keyed[i]);
+    ordered = require('../repro').orderFiles(ordered); // --det-order: the listed files, in the listed order
     const pc = globalThis[Symbol.for('detjs.cache.session')];
     if (pc) {
       if (!tests.length) pc.noTestsFound = true;
