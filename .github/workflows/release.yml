@@ -1,12 +1,15 @@
-# Release: build and test every package (packages.yml), then publish with trusted publishing (OIDC). No token or
-# password is stored in this repository or its secrets: PyPI/TestPyPI and npm trust this workflow file.
+# Release: build and test every package (packages.yml: per-platform builds, platform floor, `twine check --strict`,
+# `npm publish --dry-run`, the clean-install test on Linux x86_64/arm64 and macOS arm64), then publish with trusted
+# publishing (OIDC). No token or password is stored in this repository or in its secrets.
 #
-#   push a tag vX.Y.Z (equal to release/version.py)        -> TestPyPI upload, npm publish --dry-run, GitHub Release
-#   workflow_dispatch (version e.g. 0.1.0-rc.3)            -> TestPyPI upload of that pre-release, npm --dry-run
+#   push a tag vX.Y.Z (equal to release/version.py)       -> PyPI, npm (dry run until enabled), GitHub Release
+#   workflow_dispatch, version X.Y.Z-rc.N                  -> PyPI pre-release X.Y.ZrcN (maturin maps the semver
+#                                                             pre-release to PEP 440), npm dry run
 #
-# Real PyPI and real npm publishing are switched off until the founder sets the repository variables
-# FENVIX_PUBLISH_PYPI=true and FENVIX_PUBLISH_NPM=true after configuring the trusted publishers
-# (sessions/2026-11-20-packages/REPORT.md, section "Per il fondatore").
+# PyPI trusted publisher (configured by the founder): project `fenvix`, owner Mircoguidetti, repository
+# fenvix-engine-cli, workflow `release.yml`, environment `pypi`. These names must not change.
+# npm: dry run until the founder sets the repository variable FENVIX_PUBLISH_NPM=true after the first publish and the
+# trusted publisher of each package (sessions/2026-11-20-packages/REPORT.md, "Per il fondatore").
 name: release
 
 on:
@@ -15,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "pre-release version to build and upload to TestPyPI (semver, e.g. 0.1.0-rc.3)"
+        description: "pre-release version to build and publish to PyPI (semver, e.g. 0.1.0-rc.1 -> 0.1.0rc1)"
         required: true
         type: string
 
@@ -34,10 +37,11 @@ jobs:
           if [ "${{ github.event_name }}" = push ]; then
             v="$(python3 release/version.py)"
             [ "${GITHUB_REF_NAME}" = "v$v" ] || { echo "tag ${GITHUB_REF_NAME} is not v$v (release/version.py)"; exit 1; }
+            grep -qE "^## \[$v\]" CHANGELOG.md || { echo "CHANGELOG.md has no section [$v]"; exit 1; }
           else
             v="${{ inputs.version }}"
+            echo "$v" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$' || { echo "a manual release is a pre-release X.Y.Z-rc.N"; exit 1; }
           fi
-          grep -q "^## \[$v\]\|^## $v\|^## \[Unreleased\]" CHANGELOG.md || { echo "CHANGELOG.md has no section for $v"; exit 1; }
           echo "version=$v" >> "$GITHUB_OUTPUT"
 
   build:
@@ -46,30 +50,16 @@ jobs:
     with:
       version: ${{ github.event_name == 'workflow_dispatch' && inputs.version || '' }}
 
-  testpypi:
+  pypi:
     needs: build
     runs-on: ubuntu-latest
-    environment: testpypi
+    environment: pypi
     permissions:
       id-token: write   # trusted publishing (OIDC)
     steps:
       - uses: actions/download-artifact@v4
         with: {name: wheels, path: dist}
-      - uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          skip-existing: true
-
-  pypi:
-    needs: [build, testpypi]
-    if: github.event_name == 'push' && vars.FENVIX_PUBLISH_PYPI == 'true'
-    runs-on: ubuntu-latest
-    environment: pypi
-    permissions:
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with: {name: wheels, path: dist}
+      - run: pip install twine && twine check --strict dist/*
       - uses: pypa/gh-action-pypi-publish@release/v1
 
   npm:
@@ -94,7 +84,7 @@ jobs:
           done
 
   github-release:
-    needs: [check-tag, build, testpypi, npm]
+    needs: [check-tag, build, pypi, npm]
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
@@ -109,5 +99,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           V: ${{ needs.check-tag.outputs.version }}
         run: |
-          awk -v v="$V" '$0 ~ "^## \\[?"v"\\]?" {on=1; next} on && /^## / {exit} on' CHANGELOG.md > notes.md
+          awk -v v="$V" '$0 ~ "^## \\["v"\\]" {on=1; next} on && /^## / {exit} on' CHANGELOG.md > notes.md
           gh release create "v$V" dist/* --title "fenvix $V" --notes-file notes.md --verify-tag

@@ -212,3 +212,17 @@ def test_old_xdist_refused_with_usage_error(monkeypatch):
         dx.require_version()
     monkeypatch.setattr(md, "version", lambda n: "3.8.0" if n == "pytest-xdist" else real(n))
     dx.require_version()
+
+
+def test_release_workflow_uses_trusted_publishing_with_the_configured_names():
+    """F-10: the PyPI trusted publisher the founder configured (project fenvix, workflow release.yml, environment
+    pypi) must keep matching; publishing uses OIDC only: no stored token, no TestPyPI."""
+    path = os.path.join(ROOT, ".github", "workflows", "release.yml")
+    text = open(path).read()
+    assert os.path.basename(path) == "release.yml"
+    assert re.search(r"(?m)^  pypi:\n(?:    .*\n)*?    environment: pypi\n", text), "pypi job must use environment pypi"
+    assert text.count("id-token: write") >= 2 and "pypa/gh-action-pypi-publish" in text
+    assert "${{ secrets." not in text and "password" not in text.lower() and "NPM_TOKEN" not in text
+    assert "test.pypi.org" not in text and "testpypi" not in text.lower()
+    meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))
+    assert meta["project"]["name"] == "fenvix"
