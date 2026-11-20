@@ -1,23 +1,24 @@
+# head ed66b960 (final engine), Python 3.13.18, pytest 9.2.0; serial, -p no:randomly
 ......s................................................................. [  6%]
-......s.s...........................................................ssss [ 13%]
-........................................................................ [ 19%]
-........................................................................ [ 26%]
-........................................................................ [ 33%]
-....................................s................................... [ 39%]
-........................................................................ [ 46%]
-.......................................s................................ [ 53%]
-...........................................................
-repro python: wall 7.641 s, pytest subprocesses 7.636 s (99.9 %), 10 runs
+..........................s............................................. [ 12%]
+................ssss.................................................... [ 18%]
+........................................................................ [ 25%]
+........................................................................ [ 31%]
+........................................................................ [ 37%]
+........................................................................ [ 43%]
+........................................................................ [ 50%]
+....s................................................................... [ 56%]
+...................................................
+repro python: wall 10.241 s, pytest subprocesses 10.235 s (99.9 %), 10 runs
 
-repro rust: wall 7.732 s, pytest subprocesses 7.726 s (99.9 %), 10 runs
-............. [ 59%]
-..ssss..s..ssssssssss................................................... [ 66%]
-..................................ss..........ss........................ [ 72%]
-.........s......................s....................................... [ 79%]
-........................................................................ [ 86%]
-........................................................................ [ 92%]
-......s..................s..........ssssss.sss.s...............sssssssss [ 99%]
-ssss..                                                                   [100%]
+repro rust: wall 10.614 s, pytest subprocesses 10.603 s (99.9 %), 10 runs
+...............ssss.. [ 62%]
+s..ssssssssss........................................................... [ 68%]
+..........................ss..........ss................................ [ 75%]
+.s......................s............................................... [ 81%]
+........................................................................ [ 87%]
+......................................................................s. [ 93%]
+............................ssssss.sss.s...............sssssssssssss..   [100%]
 =============================== warnings summary ===============================
 tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
 tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
@@ -27,5 +28,40 @@ tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
     return self.metadata['Version']
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-1031 passed, 55 skipped, 1 deselected, 4 warnings in 1677.33s (0:27:57)
+=========================== short test summary info ============================
+SKIPPED [1] tests/review_r032/test_review_r032_python.py:157: de_DE.UTF-8 locale not installed
+SKIPPED [1] tests/test_clock.py:216: could not import 'pytest_benchmark': No module named 'pytest_benchmark'
+SKIPPED [3] tests/test_django_order.py:129: could not import 'pytest_django': No module named 'pytest_django'
+SKIPPED [1] tests/test_django_pytest_cache.py:43: could not import 'pytest_django': No module named 'pytest_django'
+SKIPPED [1] tests/test_proofcache_follow.py:767: needs ip, sysfs
+SKIPPED [1] tests/test_review_r008.py:223: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_review_r008.py:240: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_review_r008.py:260: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_review_r008.py:278: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_review_r008b.py:73: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [9] tests/test_review_r008d.py: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_review_r008d.py:118: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [2] tests/test_review_r023b.py:566: HOSTALIASES not honoured for this name here
+SKIPPED [2] tests/test_review_r023b.py:847: the first requester does not change the value here
+SKIPPED [1] tests/test_runner_wrapper.py:37: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_runners_django.py:138: Django sets TZ from settings.TIME_ZONE (time.tzset) at start-up: the settings test covers it
+SKIPPED [1] tests/test_runtime_id.py:201: needs two CPython interpreters of one minor version (e.g. `uv python install 3.13.14`)
+SKIPPED [1] tests/test_shared_cache.py:171: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:205: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:219: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:230: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:250: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:267: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:298: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:352: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:381: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_shared_cache.py:413: shared-cache Python client not yet ported onto the Rust proof cache (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_startup_digest.py:81: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_startup_digest.py:113: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [3] tests/test_startup_digest.py: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_startup_digest.py:205: pytest-benchmark not installed
+SKIPPED [2] tests/test_startup_spawn.py:51: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [4] tests/test_startup_spawn.py: R-008c/R-008d start-up process rule (claude/shared-cache Python capture) not yet ported onto the Rust capture (claude/rust-hotpaths-2)
+SKIPPED [1] tests/test_startup_spawn.py:119: needs pytest-benchmark
+1098 passed, 52 skipped, 1 deselected, 4 warnings in 2469.46s (0:41:09)
 EXIT 0

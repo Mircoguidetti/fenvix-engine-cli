@@ -129,10 +129,12 @@ w(first)
 w("")
 w("# All runners, round 2: the runner drivers on the Rust engine, R-032 and R-032b fixes, Node policy in Rust — report")
 w("")
-w(f"Branch `claude/all-runners-2` (fenvix-engine-cli) at the final engine **{RUNS['final']['engine']}** (the walks' "
-  "head), started from `claude/parallel-proof-3` 74721a4. Merged: `claude/parallel-proof-3` 3471d45 and **72100d3** "
-  "(its R-032b F1-F3 engine fix c5f0e70 and `--det-isolate`), `claude/node-cache-proof` 8cd01e6, the R-032b tests of "
-  "`claude/review-r032b`. Labels: **MEASURED** (Actions run id, raw file or local command), **ESTIMATED**, "
+w(f"Branch `claude/all-runners-2` (fenvix-engine-cli). Final engine: code **ed66b960**, walked at head "
+  f"**{RUNS['final']['engine']}** (the same code plus run configuration). Started from `claude/parallel-proof-3` 74721a4. "
+  "Merged: `claude/parallel-proof-3` 3471d45, 72100d3 (its R-032b F1-F3 engine fix c5f0e70 and `--det-isolate`), "
+  "19ba798 (F2-mtime, F3 for repository callers, temporary roots) and 0f45362 (time helpers); "
+  "`claude/node-cache-proof` 8cd01e6; the R-032b tests of `claude/review-r032b`. Labels: **MEASURED** (Actions run "
+  "id, raw file or local command), **ESTIMATED**, "
   "**DECLARED**, **UNKNOWN**. Every walk number is regenerated from the committed raw files by "
   "`sessions/2026-11-19-all-runners/aggregate2.py` (this report by `make_report2.py`; gate numbers from "
   "`tracks/all-runners-2/gates/summary.json` and the outputs next to it).")
@@ -145,7 +147,7 @@ if PENDING_NOW:
 if not gates_ok:
     w("* **PARTIAL because a gate failed**: see Gates.")
 tf = totals(SETS["final"])
-w(f"* **Final engine {RUNS['final']['engine']}: 0 wrong reuses in {tf['python'][0] + tf['node'][0]:,} tests verified** "
+w(f"* **Final engine (code ed66b960, head {RUNS['final']['engine']}): {tf['python'][1] + tf['node'][1]} wrong reuses in {tf['python'][0] + tf['node'][0]:,} tests verified** "
   f"(Python {tf['python'][0]:,}, Node {tf['node'][0]:,}; {tf['python'][2] + tf['node'][2]} mismatches before recheck; "
   "MEASURED, `aggregate2.py --set final`). Counted per TEST, never per file entry (R-032 F8), and re-derived test by "
   "test from the committed pairs `[id, reused outcome, fresh outcome]` (R-032b F7d).")
@@ -175,7 +177,7 @@ w(f"| Node `node --test test/*.test.js` (MEASURED local; Node 22, Bun 1.4.4, Den
   f"{G['node']['skipped']} skipped, {G['node']['failed']} failed** | gates/node-suite-summary.txt |")
 w(f"| Bun/Deno runner + R-032 + R-032b + F6/F7 files on Actions (Bun 1.4.4, **Deno 2.9.8**; MEASURED, run {G['ci_runtimes']['run']}) | "
   f"**{G['ci_runtimes']['passed']} passed, {G['ci_runtimes']['failed']} failed** | job log |")
-w(f"| R-032b Python, every runner (tests/review_r032b, MEASURED local) | **{G['r032b_py']['passed']} passed, {G['r032b_py']['failed']} failed** | in pytest-full.txt |")
+w(f"| R-032b Python, every runner (tests/review_r032b, MEASURED local) | **{G['r032b_py']['passed']} passed, {G['r032b_py']['failed']} failed** | gates/r032b-python.txt (also in pytest-full.txt) |")
 w("")
 w("## R-032 findings")
 w("")
@@ -196,7 +198,7 @@ w("")
 w("| # | finding | fix | test | result |")
 w("|---|---|---|---|---|")
 w("| F1 | state left by an earlier test with no static-import edge (leaked `mock.patch('consts.V')`, `importlib`/`__import__` + setattr, `builtins`, `os.environ`) | parallel-proof-3 c5f0e70 (merged): a repository file whose text reaches modules by name is connected to the library node; a context reaching it is carried into every later test of its process, a test reaching it carries every earlier context. Combined here with the runner infrastructure list (`reference_closure_with(.., dynamic, infra)`) | tests/review_r032b W1 (unittest, nose2, pytest plugin), W2, W3, W4, W12 (zope), W13 (Django), W14 (ward), W15 (xdist loadgroup/loadfile); tests/test_r032b_engine.py | pass (MEASURED local) |")
-w("| F2 | `os.DirEntry.stat()` (scandir) size unkeyed | parallel-proof-3 c5f0e70: `z:` size kind in Rust (merged, kept in the API). On this branch `os.stat` already keys the path's metadata (`q`/`Q`, the `_statcap.py` probe set), so user code's `os.scandir` entries are wrapped here (`_proof.Capture._patch_scandir`): `stat()` keys metadata like `os.stat`, `is_file`/`is_dir`/`is_symlink` keys the kind, under every runner | W5 (and W6 fstat, held) | pass |")
+w("| F2 | `os.DirEntry.stat()` (scandir) size unkeyed; then (coordinator) time reads | parallel-proof-3 c5f0e70 / 6cfae24 / 97e61ac / 89971a3 (merged). On this branch: `os.stat`, `os.lstat`, `os.access`, `os.readlink` key the path's metadata (`q`/`Q`: size, mode, kind; the `_statcap.py` probe set); user code's `os.scandir` entries are wrapped (`stat()` like `os.stat`, `is_file`/`is_dir`/`is_symlink` kinds); **one rule for times, as parallel-proof-3**: a time read by user code (a stat result's `st_mtime`/`st_ctime`/`st_atime`, indices 7-9, unpacking; `os.path.getmtime`/`getctime`/`getatime`) refuses the test (`mtime`). detpy's own stats never count (a detpy frame stops the caller walk: found by this port, the reference flagged its own reads) | W5, W6 (fstat, held); test_r032b_engine W5b, W6c, W6d, W6e and the detpy-frame test | pass |")
 w("| F3 | libc called through ctypes unobserved | parallel-proof-3 c5f0e70 (merged): a C library from outside the repository (or `CDLL(None)`) loaded by user code flags `cdll`: not cached | W7 | pass |")
 w("| F4 | `module.findPackageJSON` absent probes unkeyed (Node ≥ 22.14) | capture.js wraps `findPackageJSON`: every probed `package.json` is keyed (absent ones too), a non-path specifier flags `runtime-api` | review-r032b E3 (node --test, Mocha, Deno) | pass (local; Deno 2.9.8 on Actions) |")
 w("| F5 | Deno `Temporal.Now` real clock | capture.js wraps `Temporal.Now.*` (not `timeZoneId`) as `clock-real` in any runtime that has it. **Bun checked**: Bun 1.4.4 has `Temporal` (MEASURED), same wrap; new test all-runners-2-f6f7 \"R-032b F5 Temporal.Now\" fails with the wrap removed (MEASURED) and passes with it | review-r032b D4; all-runners-2-f6f7 (Bun) | pass |")
@@ -208,7 +210,7 @@ w("## `_statcap.py` probes, against the Rust capture")
 w("")
 w("| probe (`_statcap.py`) | on parallel-proof-3 | on this branch |")
 w("|---|---|---|")
-w("| `os.stat` metadata (size, mtime, mode) | size only since c5f0e70 (`z:`, R-032b F2) | **ported into Rust**: `stat_check(meta=True)` → `proof::probe_now` under probe keys (mode `q`): size, mtime, mode |")
+w("| `os.stat` metadata (size, mtime, mode) | size (`z:`); a time read refuses | **ported into Rust**: `stat_check(meta=True)` → `proof::probe_now` under probe keys (mode `q`); a time read by user code refuses (as parallel-proof-3) |")
 w("| `os.lstat`, `os.readlink` (link target) | lstat kind | **ported**: mode `Q` (target in the digest); `readlink` wrapped |")
 w("| `os.access` | kind | **ported**: metadata (mode bits) |")
 w("| `os.scandir` entries | `stat()` size, kind checks (c5f0e70) | `stat()` metadata (`q`/`Q`), kind checks |")
@@ -242,6 +244,21 @@ for name, tests, ws in NODE_RUNNERS:
         nc = "the capture's load hook is off under Deno (it changed Deno's CommonJS detection; MEASURED): Deno's graph comes from `deno info`"
     w(f"| det + skip | {tests} | " + "<br>".join(walk(x) for x in ws) + f" | {nc} |")
     w("")
+w("## Reuse share, final engine vs the second set (0f969116, before the R-032b F1-F3 engine rules)")
+w("")
+w("Median / mean share of tests reused per transition (MEASURED, aggregate2.py). The final engine refuses more: a "
+  "context that reaches a library or a by-name marker is carried into every later test of its process (F1), a C "
+  "library called through ctypes and a time read refuse (F3, F2). Where the second set has no row, its run was "
+  "cancelled before that walk landed. The F1-F3 rules are Python's: the Node capture did not change between the two "
+  "sets, and the Node rows differ only where the second set has fewer shards (yargs: 1 of 2).")
+w("")
+w("| repository | second set | final |")
+w("|---|---|---|")
+_sec = {r["repo"]: r for r in SETS["second"]}
+for r in SETS["final"]:
+    o2 = _sec.get(r["repo"])
+    w(f"| {r['repo'].removeprefix('runner-')} | {mm(o2['share_tests']) if o2 else '—'} | {mm(r['share_tests'])} |")
+w("")
 w("## All walks, final engine (aggregate2.py --set final)")
 w("")
 w(agg("final", False))
@@ -259,12 +276,14 @@ w("* **Test expectations changed** (each commented in the test): `sqlite_real_cl
 w("* **Engine fixes found by the port**: pytest-randomly's inert options were configuration (no xdist worker result "
   "reused with it installed, MEASURED); the runner shells' own lazy imports were taken as test lookups; Hypothesis's "
   "GC timer and ward's display timer broke determinism; Deno's load hook.")
-w("* **Merge of parallel-proof-3 72100d3**: `--det-isolate`'s session bookkeeping (`iso_*`, the shard merge) lives "
+w("* **Merges of parallel-proof-3 72100d3, 19ba798, 0f45362**: `--det-isolate`'s session bookkeeping (`iso_*`, the shard merge) lives "
   "in the runner-neutral `ProofSession`, the pytest begin/end in the shell, Level 0's bracket in `_level0` "
   "(`plugin.level0_begin/_end` over it): a runner driver can insert a per-test fork at `DetRun.begin` / `end`. "
   "`tests/review_r032b/conftest.py` is not taken: it only skips the runner cases where the drivers are absent, and "
   "as a second module named `conftest` it broke the import of `tests/test_parallel_proof.py` in a full-suite run "
-  "(MEASURED).")
+  "(MEASURED; parallel-proof-3 later moved that skip to tests/conftest.py). The reference capture "
+  "(tests/rust_hotpaths_ref) follows this branch's stat rules and now deduplicates identical distribution parts as "
+  "identity.rs does (this image has cryptography's dist-info and egg-info side by side: MEASURED).")
 w("* **Data kinds**: the Node capture's link dependency is `k:`/`K:`, its recursive listing `w:` (the Python "
   "capture's `l:` and `t:` mean other things in the same Rust checker).")
 w("")
