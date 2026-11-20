@@ -202,36 +202,56 @@ OTHER ROW (belongs to another row's area; not changed here).
 
 ## 4. Per il fondatore (passi da fare a mano)
 
-Nessun pacchetto è stato pubblicato. Per pubblicare servono questi passi, in quest'ordine:
+Nessun pacchetto è stato pubblicato. TestPyPI non si usa (decisione del coordinatore): i pacchetti si validano con
+`twine check --strict`, `npm publish --dry-run` e il test di installazione pulita in CI; le pre-release vanno su
+PyPI vero come `X.Y.ZrcN`.
 
-1. **Nomi** (liberi il 2026-11-20, ma chiunque può prenderli): crea un account su **pypi.org** e su
-   **test.pypi.org** (con 2FA), e un account **npmjs.com** con 2FA; su npm crea l'organizzazione gratuita
-   **`fenvix`** (Profile → Add Organization): così lo scope `@fenvix` è tuo. Non usare mai il nome PyPI `detpy`:
-   appartiene a un altro progetto.
-2. **GitHub → Settings → Environments** del repository: crea gli ambienti `testpypi`, `pypi`, `npm` (consiglio:
-   "required reviewers" = te per `pypi` e `npm`).
-3. **Trusted publisher su TestPyPI e PyPI** (nessun token): su test.pypi.org e poi su pypi.org →
-   Account → Publishing → "Add a new pending publisher": PyPI project name `fenvix`, owner `Mircoguidetti`,
-   repository `fenvix-engine-cli`, workflow `release.yml`, environment `testpypi` (su TestPyPI) / `pypi` (su PyPI).
-4. **Primo caricamento su TestPyPI**: dopo il merge del PR, crea il tag `v0.1.0` sul commit di merge
-   (`git tag v0.1.0 <commit> && git push origin v0.1.0`). Il workflow `release` costruisce, testa e carica su
-   TestPyPI; npm resta `--dry-run`. Verifica con `pip install -i https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ fenvix`.
-   Nota: il pulsante "Run workflow" (pre-release su TestPyPI) compare solo quando `release.yml` è sul branch di
-   default (punto 7).
-5. **npm con trusted publishing**: npm permette di configurare il trusted publisher solo per un pacchetto che
-   esiste già. La prima volta: scarica l'artefatto `npm-tarballs` del run del tag, `npm login`, poi
-   `npm publish fenvix-linux-x64-gnu-0.1.0.tgz --access public`, lo stesso per `fenvix-linux-arm64-gnu-…`,
-   `fenvix-darwin-arm64-…` e per ultimo `fenvix-0.1.0.tgz`. Poi su npmjs.com, per ognuno dei 4 pacchetti:
-   Settings → Trusted Publisher → GitHub Actions: owner `Mircoguidetti`, repository `fenvix-engine-cli`, workflow
-   `release.yml`, environment `npm`; e "Require two-factor authentication and disallow tokens".
-6. **Accendere la pubblicazione vera**: Settings → Secrets and variables → Actions → Variables: `FENVIX_PUBLISH_PYPI`
-   = `true` e `FENVIX_PUBLISH_NPM` = `true`. Da quel momento ogni tag `vX.Y.Z` pubblica su PyPI e npm (con
-   provenance). Per una nuova versione: `python3 release/version.py X.Y.Z`, sezione in `CHANGELOG.md`, PR, tag.
-7. **Branch di default** (G-0561): oggi è `claude/gracious-rubin-eyswxd`, una punta del Block 2 (solo Python, 3.034
-   commit dietro). Chi clona o apre il repository vede il motore vecchio, i workflow pianificati (`schedule`) e il
-   pulsante "Run workflow" funzionano solo dal branch di default. Consiglio: dopo il merge di questo PR crea
-   **`main`** da `claude/release-1` (Settings → Branches → rename o nuovo branch), impostalo come default, proteggilo
-   (PR obbligatoria, CI verde: `release-1` e `packages`) e fai puntare lì i PR futuri; finché `main` non esiste,
-   imposta come default `claude/release-1`. I tag di rilascio vanno creati su `main`.
-8. **Licenza**: `LICENSE` è MIT con titolare "fenvix" (segnaposto): sostituiscilo con il nome tuo o della società.
-9. **macOS**: i job `macos-14` vengono annullati in coda su questo account; la CI usa `macos-15` (Apple silicon).
+**PyPI** (il trusted publisher "pending" è già configurato: progetto `fenvix`, owner `Mircoguidetti`, repository
+`fenvix-engine-cli`, workflow `release.yml`, environment `pypi`; questi nomi non vanno cambiati).
+1. GitHub → Settings → Environments → crea l'ambiente **`pypi`** (se non c'è già); consigliato: "Required
+   reviewers" = te, così ogni pubblicazione aspetta la tua approvazione.
+2. Dopo il merge del PR, crea il tag sul commit di merge: `git tag v0.1.0 <commit> && git push origin v0.1.0`.
+   Il workflow `release` ricostruisce e ritesta tutto e pubblica `fenvix 0.1.0` su PyPI senza alcun token (OIDC).
+   Il primo upload trasforma il publisher "pending" in quello definitivo del progetto.
+3. Pre-release: Actions → release → "Run workflow" con versione `0.1.0-rc.1` → su PyPI diventa `0.1.0rc1`
+   (`pip install --pre fenvix`). Il pulsante compare solo se `release.yml` è sul branch di default (punto 9).
+
+**npm** (scope `@fenvix` e nome `fenvix` liberi il 2026-11-20).
+4. Crea un account su **npmjs.com** con 2FA attiva (meglio una passkey o un'app TOTP).
+5. Crea l'organizzazione gratuita **`fenvix`**: avatar → "Add Organization" → nome `fenvix`, piano gratuito
+   (solo pacchetti pubblici). Così lo scope `@fenvix` è tuo e nessun altro può pubblicare `@fenvix/...`.
+6. **Primo rilascio**: npm permette di configurare il trusted publisher solo nelle impostazioni di un pacchetto che
+   esiste già; se al momento sul sito trovi l'opzione per configurarlo prima della prima pubblicazione, usala e salta
+   questo punto. Altrimenti la prima pubblicazione la fai tu, una volta, dal tuo computer, **senza nessun token nel
+   repository**:
+   - scarica dall'esecuzione del workflow `release` del tag (o di `packages` sul PR) l'artefatto `npm-tarballs`
+     e scompattalo;
+   - `npm login` (apre il browser e usa la tua 2FA; la sessione resta solo nel `~/.npmrc` del tuo computer);
+   - pubblica prima i tre pacchetti nativi, poi quello principale:
+     `npm publish fenvix-linux-x64-gnu-0.1.0.tgz --access public`,
+     `npm publish fenvix-linux-arm64-gnu-0.1.0.tgz --access public`,
+     `npm publish fenvix-darwin-arm64-0.1.0.tgz --access public`,
+     `npm publish fenvix-0.1.0.tgz --access public`;
+   - `npm logout`.
+   Non serve creare token. Se preferisci non pubblicare dal tuo computer: crea un "granular access token" con
+   scadenza di 1 giorno, permesso "Read and write" solo sui pacchetti/sull'org `fenvix`, usalo solo nel terminale
+   (`NPM_TOKEN=... npm publish ...` con un `.npmrc` temporaneo fuori dal repository) e revocalo subito dopo; non
+   va mai messo nei secrets di GitHub né in un file del repository.
+7. Per ognuno dei 4 pacchetti (`fenvix`, `@fenvix/linux-x64-gnu`, `@fenvix/linux-arm64-gnu`, `@fenvix/darwin-arm64`):
+   npmjs.com → pacchetto → Settings → **Trusted Publisher** → GitHub Actions: organization/user `Mircoguidetti`,
+   repository `fenvix-engine-cli`, workflow filename `release.yml`, environment `npm`. Nella stessa pagina scegli
+   "Require two-factor authentication and disallow tokens", così da quel momento si pubblica solo dalla CI.
+8. GitHub → Settings → Environments → crea l'ambiente **`npm`**; poi Settings → Secrets and variables → Actions →
+   Variables → `FENVIX_PUBLISH_NPM` = `true`. Dai tag successivi il workflow pubblica i 4 pacchetti con provenance;
+   finché la variabile non c'è, npm resta `--dry-run`.
+
+**Repository**
+9. **Branch di default** (G-0561): oggi è `claude/gracious-rubin-eyswxd`, una punta del Block 2 (solo Python, 3.034
+   commit dietro `claude/release-1`). Chi clona o apre il repository vede il motore vecchio; i workflow pianificati
+   (`schedule`) e il pulsante "Run workflow" funzionano solo dal branch di default. Consiglio: dopo il merge di
+   questo PR crea **`main`** da `claude/release-1`, impostalo come default (Settings → General → Default branch),
+   proteggilo (PR obbligatoria, CI `release-1` e `packages` verdi) e crea lì i tag di rilascio; finché `main` non
+   esiste, imposta come default `claude/release-1`.
+10. **Licenza**: `LICENSE` è MIT con titolare "fenvix" (segnaposto): sostituiscilo con il tuo nome o quello della
+    società prima del primo rilascio.
+11. **macOS**: su questo account i job `macos-14` vengono annullati in coda; la CI usa `macos-15` (Apple silicon).
