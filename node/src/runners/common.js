@@ -55,9 +55,9 @@ function orderFiles(items, cfg, { key = (x) => x, sorted = true } = {}) {
 }
 
 /** Capture files written for one test file (by its test processes) in the run directory. */
-function captureFiles(run, fileId) {
+function captureFiles(run, fileId, project = '') {
   const dir = path.join(run.dir, 'cache');
-  const prefix = require('../controls').partName(fileId, '').replace(/\.jsonl$/, '');
+  const prefix = require('../controls').partName(fileId, project).replace(/\.jsonl$/, '');
   let names = [];
   try { names = fs.readdirSync(dir); } catch { return []; }
   return names.filter((n) => n.startsWith(`${prefix}-`) && n.endsWith('.json')).map((n) => path.join(dir, n));
@@ -161,8 +161,8 @@ function fileSeed(cfg, fileId) {
  * found, an unhandled error between tests) makes the whole file a failure, which is never reused. `extra(capture)`
  * may add items (Deno: the module graph and the audit of the runtime's permission checks).
  */
-function settleCapture(run, fileId, status, extra) {
-  const files = captureFiles(run, fileId);
+function settleCapture(run, fileId, status, extra, project = '') {
+  const files = captureFiles(run, fileId, project);
   for (const f of files) {
     let c;
     try { c = JSON.parse(fs.readFileSync(f, 'utf8')); } catch { fs.rmSync(f, { force: true }); continue; }
@@ -401,7 +401,7 @@ async function runShell(spec, argv) {
     ctx.pc.setConfig(parts);
     if (found.uncacheable) ctx.pc.noteProject('', found.uncacheable);
     if (unit) {
-      const s = await ctx.pc.decide([{ fileId: unit, project: '', key: unit, covers: ordered.map((k) => k.fileId) }]);
+      const s = await ctx.pc.decide([{ fileId: unit, project: UNIT_PROJECT, key: unit, covers: ordered.map((k) => k.fileId) }]);
       if (s.has(unit)) for (const k of ordered) skip.add(k.key);
     } else {
       skip = await ctx.pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: '', key: k.key })));
@@ -414,7 +414,7 @@ async function runShell(spec, argv) {
   if (!keyed.length) status = spec.noFiles ? spec.noFiles(ctx) : 1;
   else if (!toRun.length) status = 0; // every file reused with proof
   else status = await spec.launch(ctx, toRun.map((k) => k.abs), toRun);
-  if (unit && toRun.length) settleCapture(run, unit, status);
+  if (unit && toRun.length) settleCapture(run, unit, status, null, UNIT_PROJECT);
   if (ctx.pc) {
     if (found.uncacheable) { /* recorded as misses by the project note */ }
     ctx.pc.finishSync();
@@ -447,6 +447,9 @@ function processUnit() {
   return u.startsWith('process:') ? u.slice('process:'.length) : null;
 }
 const UNIT = { ok: true, files: 0, t0: 0 };
+// the entries of a process unit live under their own project name (`<file>@@process::<test>`), apart from the
+// per-file entries of --det-isolate sessions of the same suite
+const UNIT_PROJECT = 'process';
 
 function installUnitWriter(c) {
   const unit = processUnit();
@@ -464,8 +467,8 @@ function installUnitWriter(c) {
       const controls = require('../controls');
       quiet(() => {
         try {
-          const capture = CAPTURE.fileCapture({ fileId: unit, project: '', label: unit, ok: UNIT.ok && code === 0 && UNIT.files > 0, duration: (realNow() - UNIT.t0) / 1000 });
-          controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(unit, '').replace(/\.jsonl$/, '')}-${process.pid}-0.json`), capture);
+          const capture = CAPTURE.fileCapture({ fileId: unit, project: UNIT_PROJECT, label: unit, ok: UNIT.ok && code === 0 && UNIT.files > 0, duration: (realNow() - UNIT.t0) / 1000 });
+          controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(unit, UNIT_PROJECT).replace(/\.jsonl$/, '')}-${process.pid}-0.json`), capture);
         } catch (e) {
           process.stderr.write(`detjs cache: capture of ${unit} not written (counted as not cached): ${e && e.stack}\n`);
         }
@@ -655,5 +658,5 @@ module.exports = {
   findBinary, splitArgs, optionValue, dropOptions, fileSeed, settleCapture, mergeJunit, runFileProcesses, fileDigestOr, runInherit,
   // 2. Node runners with a preload (main side, then child side)
   findPackage, pkgDir, fileIdOf, nodeOptions, childEnv, listChild, runChild, fileParts, runShell, argsPart,
-  child, runFiles, quiet, ChildFile, onExit, processUnit,
+  child, runFiles, quiet, ChildFile, onExit, processUnit, UNIT_PROJECT,
 };

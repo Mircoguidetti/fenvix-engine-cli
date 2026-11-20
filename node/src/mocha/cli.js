@@ -5,12 +5,13 @@
 // With --det, the main process (this file):
 //   * merges Mocha's options as Mocha does (lib/cli/options loadOptions: command line, MOCHA_OPTIONS, .mocharc.*,
 //     package.json `mocha`), finds the spec files with Mocha's own collect-files, orders them (sorted, or shuffled
-//     with --det-seed; `--file` files always first), and, with --det-cache, decides which spec files are reused
-//     with proof before any of them runs;
+//     with --det-seed; `--file` files always first), and, with --det-cache, decides whether the run (or, with
+//     --det-isolate, which spec files) is reused with proof before any of them runs;
 //   * runs Mocha's command line in a driver process started like Mocha's bin does (node flags split from Mocha's
-//     options, `--node-option`), after detjs' preload (src/mocha/preload.js). --det: Mocha's usual single process,
-//     `--parallel` off. --det-cache: every spec file in its own fresh process, one at a time, the results replayed
-//     into the user's reporter (skipping file A must not change the context file B runs in);
+//     options, `--node-option`), after detjs' preload (src/mocha/preload.js). --det and --det-cache: Mocha's usual
+//     single process, `--parallel` off; with the cache the process is the unit of reuse (G-0148). --det-isolate:
+//     every spec file in its own fresh process, one at a time, the results replayed into the user's reporter, and
+//     the file is the unit of reuse;
 //   * records the cache entries, writes receipts, summary and trace.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -105,25 +106,41 @@ async function main(argv) {
   keyed.sort((a, b) => (a.fileId < b.fileId ? -1 : a.fileId > b.fileId ? 1 : 0));
   if (cfg.shuffle && cfg.controls.has('order')) keyed = native.shuffleIndices(keyed.length, cfg.seed, '').map((i) => keyed[i]);
 
-  const mode = det.cache ? 'perfile' : 'single';
+  // Mocha's own model is one process for every spec file: kept under --det and --det-cache (audit G-0148: a fresh
+  // process per file turned suites whose files share state into false failures). The cache unit is then that
+  // process (`<mocha>`: every spec file reused, or every one run). --det-isolate: a fresh process per spec file, and
+  // the file is the unit.
+  const mode = det.isolate ? 'perfile' : 'single';
+  const UNIT = '<mocha>';
   const nodeOptions = env0.NODE_OPTIONS;
   let pc = null;
   let reusedAny = false;
+  let unitReused = false;
   if (det.cache) {
     const { ProofSession } = require('../cache/proof');
     pc = new ProofSession(det, root, 'mocha', run, env0);
     pc.installMain({ mainAnyReads: false });
-    pc.setConfig(mochaConfigParts(root, opts, mocha, nodeArgv, nodeOptions));
-    const skip = await pc.decide(keyed.map((k) => ({ fileId: k.fileId, project: '', key: k.fileId })));
-    reusedAny = keyed.some((k) => skip.has(k.fileId)) || (pc.verify && pc.reusedFiles.size > 0);
-    keyed = keyed.filter((k) => !skip.has(k.fileId));
+    const parts = mochaConfigParts(root, opts, mocha, nodeArgv, nodeOptions);
+    parts.mode = mode;
+    if (mode === 'single') parts.plan = keyed.map((k) => k.fileId);
+    pc.setConfig(parts);
+    if (mode === 'single') {
+      const skip = await pc.decide([{ fileId: UNIT, project: 'process', key: UNIT, covers: keyed.map((k) => k.fileId) }]);
+      unitReused = skip.has(UNIT);
+      reusedAny = unitReused || (pc.verify && pc.reusedFiles.size > 0);
+      if (unitReused) keyed = [];
+    } else {
+      const skip = await pc.decide(keyed.map((k) => ({ fileId: k.fileId, project: '', key: k.fileId })));
+      reusedAny = keyed.some((k) => skip.has(k.fileId)) || (pc.verify && pc.reusedFiles.size > 0);
+      keyed = keyed.filter((k) => !skip.has(k.fileId));
+    }
   }
   // Mocha's own process model is replaced by the plan: serial, files in the plan's order
   for (const k of ['parallel', 'p', 'jobs', 'j', 'sort', 'S']) delete mochaArgs[k];
   if (reusedAny && !keyed.length) { mochaArgs['fail-zero'] = false; mochaArgs.failZero = false; } // every file reused: a pass
   const notes = [];
   if (opts.parallel || opts.p) notes.push('--parallel is off under --det (files run one at a time)');
-  if (mode === 'perfile') notes.push('--det-cache: every spec file runs in its own process (skipping a file must not change the context of another); `--require` modules, root hooks, global fixtures and `--file` files run in each');
+  if (mode === 'perfile') notes.push('--det-isolate: every spec file runs in its own process; `--require` modules, root hooks, global fixtures and `--file` files run in each');
   const iso = mode === 'perfile'
     ? 'mocha: each spec file in its own process, one at a time, results replayed into the reporter'
     : 'mocha: one process, files and tests one at a time';
@@ -138,6 +155,8 @@ async function main(argv) {
   const planPath = path.join(run.dir, 'mocha-plan.json');
   fs.writeFileSync(planPath, JSON.stringify(plan));
   const driverEnv = { ...process.env, DETJS_MO_DRIVER: '1', DETJS_MO_PLAN: planPath };
+  if (pc && mode === 'single') driverEnv.DETJS_CACHE_UNIT = `process:${UNIT}`;
+  else delete driverEnv.DETJS_CACHE_UNIT;
   delete driverEnv.DETJS_MO_INNER;
   delete driverEnv.DETJS_MO_CHILD;
   const early = [];
@@ -148,14 +167,20 @@ async function main(argv) {
     driverEnv.NODE_OPTIONS = keep;
   }
   const preload = path.join(__dirname, 'preload.js');
-  const r = spawnSync(process.execPath, ['--require', preload, ...early, ...nodeArgv, path.join(__dirname, 'driver.js')],
+  // the whole run reused with proof: nothing to run
+  const r = unitReused ? { status: 0 } : spawnSync(process.execPath, ['--require', preload, ...early, ...nodeArgv, path.join(__dirname, 'driver.js')],
     { stdio: 'inherit', env: driverEnv, cwd: root });
   const status = r.status ?? 1;
   let results = null;
   try { results = JSON.parse(fs.readFileSync(path.join(run.dir, 'mocha-results.json'), 'utf8')); } catch { /* none */ }
   if (pc) {
-    if (results && results.globalFixtures) pc.noteProject('', 'mochaGlobalSetup/mochaGlobalTeardown run in the runner process, outside the capture');
+    if (mode === 'perfile' && results && results.globalFixtures) pc.noteProject('', 'mochaGlobalSetup/mochaGlobalTeardown run in the runner process, outside the capture');
     pc.captureFilter = (cap) => {
+      if (cap.fileId === UNIT) {
+        // the process unit: Mocha's own verdict on the whole run
+        const failed = results && Object.values(results.files).some((x) => x.failed);
+        return { ...cap, ok: Boolean(cap.ok && status === 0 && !failed) };
+      }
       const fr = results && results.files[cap.fileId];
       const ok = Boolean(cap.ok && fr && fr.status === 0 && fr.failures === 0 && !fr.failed);
       return { ...cap, ok };
@@ -165,7 +190,7 @@ async function main(argv) {
   }
   const executed = mode === 'perfile'
     ? keyed.map((k) => ({ fileId: k.fileId, part: controls.partName(k.fileId, '') }))
-    : [{ fileId: '<mocha>', part: controls.partName('<mocha>', '') }];
+    : unitReused ? [] : [{ fileId: UNIT, part: controls.partName(UNIT, '') }];
   const { lines } = session.finish(run, det, executed, {
     runner: 'mocha', runner_version: mocha.pkg.version, isolation: iso, serial: true, cli_args: rest, files_planned: keyed.map((k) => k.fileId),
   });
