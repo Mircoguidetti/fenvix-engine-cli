@@ -1376,19 +1376,32 @@ pub struct Shard {
 
 impl Shard {
     pub fn load(path: &Path) -> io::Result<Shard> {
-        let s: Shard = serde_json::from_slice(&fs::read(path)?).map_err(io::Error::other)?;
+        let mut s: Shard = serde_json::from_slice(&fs::read(path)?).map_err(io::Error::other)?;
         if s.format != SHARD_FORMAT || s.version != SHARD_VERSION {
             return Err(io::Error::other(format!("not a detpy cache shard: {}", path.display())));
         }
+        s.store.resolve_chunks();
         Ok(s)
     }
 
-    pub fn save(&self, path: &Path) -> io::Result<()> {
+    /// Written like a store: each data chunk once, entries by address (py-cache item 4: on esphome a worker's 220
+    /// entries carried ~4,400 pairs each, written in full; the four shards reached 1.7 GB and the controller, reading
+    /// them at the end of the session, ran a 16 GB runner out of memory).
+    pub fn save(&mut self, path: &Path) -> io::Result<()> {
         if let Some(d) = path.parent() {
             fs::create_dir_all(d)?;
         }
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        fs::write(&tmp, serde_json::to_vec(self).map_err(io::Error::other)?)?;
+        let mut chunks = BTreeMap::new();
+        for e in self.store.tests.values() {
+            for c in e.data.chunks().iter().chain(e.env.chunks()) {
+                chunks.entry(crate::datachunks::address(c)).or_insert_with(|| c.clone());
+            }
+        }
+        self.store.chunks = chunks;
+        let bytes = crate::datachunks::by_address(|| serde_json::to_vec(self));
+        self.store.chunks.clear();
+        fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
     }
 }
@@ -2540,6 +2553,36 @@ mod tests {
             written: written.iter().map(|(k, w)| (k.to_string(), w.iter().map(|s| s.to_string()).collect())).collect(),
             reads: BTreeMap::new(),
         }
+    }
+
+    #[test]
+    fn shard_is_written_by_chunk_and_loads_the_same_entries() {
+        // py-cache: shards were written pair by pair (esphome: 1.7 GB for one session, a runner out of memory)
+        let d = tempfile::tempdir().unwrap();
+        let common: Vec<(String, String)> = (0..3000).map(|i| (format!("lib/m{i}.py"), format!("f:{i}"))).collect();
+        let mut entries: Vec<(String, Vec<(String, String)>)> = Vec::new();
+        for t in 0..40 {
+            let mut v = common.clone();
+            v.push((format!("own{t}.txt"), format!("f:own{t}")));
+            entries.push((format!("t.py::t{t}"), v));
+        }
+        let refs: Vec<Vec<(&str, &str)>> =
+            entries.iter().map(|(_, v)| v.iter().map(|(a, b)| (a.as_str(), b.as_str())).collect()).collect();
+        let es: Vec<(&str, &[(&str, &str)])> =
+            entries.iter().zip(&refs).map(|((n, _), r)| (n.as_str(), r.as_slice())).collect();
+        let mut s = shard("gw0", &es, &[]);
+        let plain = serde_json::to_vec(&s).unwrap().len();
+        let path = d.path().join("s.gw0.json");
+        s.save(&path).unwrap();
+        let size = fs::metadata(&path).unwrap().len() as usize;
+        assert!(size * 5 < plain, "{size} vs {plain}");
+        let back = Shard::load(&path).unwrap();
+        assert_eq!(back.store.tests.len(), 40);
+        for (nid, e) in &s.store.tests {
+            assert_eq!(back.store.tests[nid].data, e.data, "{nid}");
+            assert_eq!(back.store.tests[nid].env, e.env, "{nid}");
+        }
+        assert!(back.store.chunks.is_empty());
     }
 
     #[test]

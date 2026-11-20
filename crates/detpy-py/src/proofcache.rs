@@ -505,7 +505,7 @@ impl ProofCache {
             .map(|(k, v)| (k.clone(), v.iter().cloned().collect()))
             .collect();
         let n = sub.tests.len();
-        let shard = proof::Shard {
+        let mut shard = proof::Shard {
             format: proof::SHARD_FORMAT.into(),
             version: proof::SHARD_VERSION,
             worker,
