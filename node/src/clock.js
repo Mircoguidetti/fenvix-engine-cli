@@ -28,11 +28,15 @@
 
 const { STATE } = require('./state');
 const sites = require('./sites');
+const sched = require('./sched');
 
 const NS_PER_MS = 1e6;
 const MAX_TICK_NS = 1e9;
 const MONO_BASE_NS = 1000 * 1e9; // arbitrary, positive, process independent
 const TIMEOUT_MAX = 2 ** 31 - 1;
+
+// The process' own clock functions, saved by the runner-deadline preload (src/deadline-preload.js) when it ran first.
+const NATIVE = globalThis[Symbol.for('detjs.deadlineClock')] || null;
 
 // Real functions, captured when this module is first loaded.
 const REAL = {
@@ -46,7 +50,8 @@ const REAL = {
   hrtime: process.hrtime,
   uptime: process.uptime,
   hrtimeBigint: process.hrtime.bigint,
-  perfNow: globalThis.performance.now.bind(globalThis.performance),
+  perfNow: NATIVE ? NATIVE.perfNow : globalThis.performance.now.bind(globalThis.performance),
+  dateNow: NATIVE ? NATIVE.dateNow : globalThis.Date.now,
   timeOrigin: globalThis.performance.timeOrigin,
 };
 const realNowMs = () => REAL.perfNow();
@@ -59,11 +64,13 @@ class VirtualClock {
     this.adaptAfter = adaptAfter;
     this.streak = 0;
     this.elapsed = 0; // ns since installation
+    this.surplus = 0; // ns the adaptive tick added beyond the base tick (not charged to the runners' deadlines)
     this.testStart = 0;
   }
 
   read() {
     this.elapsed += this.tick;
+    if (this.tick > this.baseTick) this.surplus += this.tick - this.baseTick;
     if (this.adaptAfter) {
       this.streak += 1;
       if (this.streak >= this.adaptAfter) this.tick = Math.min(Math.max(1, this.tick) * 2, MAX_TICK_NS);
@@ -80,6 +87,11 @@ class VirtualClock {
 
   advanceTo(ns) {
     if (ns > this.elapsed) this.elapsed = ns;
+  }
+
+  /** Virtual time charged to the runners' deadlines: the elapsed time without the adaptive tick's surplus. */
+  charged() {
+    return this.elapsed - this.surplus;
   }
 
   startTest() {
@@ -106,9 +118,11 @@ function callerIsInfra() {
 }
 
 // Clock reads ------------------------------------------------------------------
+let onRead = null; // set by src/fstime.js: the virtual clock advanced (real -> virtual checkpoints)
 function readFor(op) {
   const e = CLOCK.read();
   STATE.record('time', op, CLOCK.rel(e));
+  if (onRead !== null) onRead(e);
   return e;
 }
 
@@ -149,7 +163,7 @@ function makeDate(RealDate) {
   Date.prototype = RealDate.prototype;
   Object.defineProperty(Date, 'length', { value: 7 });
   Date.now = function now() {
-    if (callerIsInfra()) return fakeClockCaller() ? fakeNow('Date.now') : RealDate.now();
+    if (callerIsInfra()) return fakeClockCaller() ? fakeNow('Date.now') : (RealDate === REAL.Date ? REAL.dateNow() : RealDate.now());
     return Math.floor(CLOCK.wallMs(readFor('Date.now')));
   };
   Date.parse = RealDate.parse;
@@ -267,10 +281,14 @@ class Timeout {
     this._active = false;
     this._destroyed = false;
   }
-  ref() { this._ref = true; if (this._handle && this._handle.ref) this._handle.ref(); DRIVER.rearm(); return this; }
-  unref() { this._ref = false; if (this._handle && this._handle.unref) this._handle.unref(); DRIVER.rearm(); return this; }
+  ref() { this._ref = true; if (this._handle && this._handle.ref) this._handle.ref(); if (this._watch && this._watch.ref) this._watch.ref(); DRIVER.rearm(); return this; }
+  unref() { this._ref = false; if (this._handle && this._handle.unref) this._handle.unref(); if (this._watch && this._watch.unref) this._watch.unref(); DRIVER.rearm(); return this; }
   hasRef() { return this._ref; }
-  refresh() { if (this._active) { DRIVER.remove(this); DRIVER.schedule(this); } return this; }
+  refresh() {
+    if (this._deadline) { if (this._active) DRIVER.armDeadline(this); return this; }
+    if (this._active) { DRIVER.remove(this); DRIVER.schedule(this); }
+    return this;
+  }
   close() { DRIVER.clear(this); return this; }
   [Symbol.toPrimitive]() { return this.id; }
   [Symbol.dispose]() { DRIVER.clear(this); }
@@ -295,6 +313,8 @@ class Driver {
     this.mode = 'virtual';
     this.deferrals = 0;
     this.released = new Set(); // timers a finished test left pending, now real timers (releaseTest)
+    this.deadlines = new Set(); // the runners' test and hook timeouts of the running test (runner deadlines)
+    this.progress = 0; // virtual timers fired so far (a runner deadline's real watchdog waits while it grows)
   }
 
   /** A released timer is due in real time and has not run yet: the event loop must run it first. */
@@ -309,19 +329,88 @@ class Driver {
   }
 
   takeBaseline() {
-    this.baseline = countResources();
+    sched.takeBaseline();
   }
 
   ioPending() {
-    const now = countResources();
-    for (const [k, n] of now) if (n > (this.baseline.get(k) || 0)) return true;
-    return false;
+    return sched.isPending();
+  }
+
+  // Runner deadlines -----------------------------------------------------------------------------------------
+  // The runners' own test and hook timeouts (Vitest's withTimeout / TaskDeadline, jest-circus' callAsyncCircusFn)
+  // run on the virtual timers (audit G-0144, NODE.md J15): a test whose virtual time stays within its timeout passes
+  // however long it takes in real time (CPU time is not virtual time), a test whose virtual time passes it fails with
+  // the runner's own timeout error at that virtual instant. A deadline is never what makes virtual time jump: it
+  // fires virtually only when a timer of the test due later would fire. A test that truly hangs (no timer left, or
+  // waiting for I/O that never comes) is caught by the deadline's real watchdog: the runner's timeout in real time
+  // with no virtual timer fired meanwhile. Which of the two decided is recorded (`runner.timeout virtual|real`).
+  // Deadlines are charged the virtual time without the adaptive tick's surplus (a render loop reading the clock
+  // thousands of times does not use up a test's timeout).
+
+  deadline(fn, ms, realm) {
+    const t = new Timeout(fn, [], ms, false, '<runner>', realm || REAL);
+    t._deadline = true;
+    t._active = true;
+    this.deadlines.add(t);
+    BY_ID.set(t.id, t);
+    this.armDeadline(t);
+    return t;
+  }
+
+  armDeadline(t) {
+    t._dueCharged = CLOCK.charged() + t._delayMs * NS_PER_MS;
+    t._progress = this.progress;
+    if (t._watch) REAL.clearTimeout(t._watch);
+    t._watch = REAL.setTimeout(() => this.watchdog(t), t._delayMs);
+    if (!t._ref && t._watch.unref) t._watch.unref();
+  }
+
+  watchdog(t) {
+    t._watch = null;
+    if (t._destroyed || !t._active) return;
+    if (this.progress !== t._progress) {
+      // virtual time moved on meanwhile: the test is not hanging
+      t._progress = this.progress;
+      t._watch = REAL.setTimeout(() => this.watchdog(t), t._delayMs);
+      if (!t._ref && t._watch.unref) t._watch.unref();
+      return;
+    }
+    this.fireDeadline(t, 'real');
+  }
+
+  /** Virtual instant (elapsed ns) at which deadline t is due. */
+  deadlineDue(t) {
+    return t._dueCharged + CLOCK.surplus;
+  }
+
+  nextDeadline() {
+    let best = null;
+    for (const d of this.deadlines) if (best === null || d._dueCharged < best._dueCharged || (d._dueCharged === best._dueCharged && d.id < best.id)) best = d;
+    return best;
+  }
+
+  /** Whether deadline t has passed on the virtual clock (Vitest's check after a test or hook returned). */
+  deadlinePassed(t) {
+    return t._destroyed || CLOCK.charged() >= t._dueCharged;
+  }
+
+  fireDeadline(t, how) {
+    if (t._destroyed) return;
+    this.deadlines.delete(t);
+    if (t._watch) { REAL.clearTimeout(t._watch); t._watch = null; }
+    t._active = false;
+    t._destroyed = true;
+    BY_ID.delete(t.id);
+    if (how === 'virtual') CLOCK.advanceTo(this.deadlineDue(t));
+    STATE.recordAt('time', 'runner.timeout', '<runner>', `${how}:${t._delayMs}`);
+    t._fn.apply(undefined, t._args);
   }
 
   schedule(t) {
     t._due = CLOCK.elapsed + t._delayMs * NS_PER_MS;
     t._seq = this.seq++;
     t._realDeadline = realNowMs() + t._delayMs;
+    t._graced = false;
     t._active = true;
     BY_ID.set(t.id, t);
     // binary insertion by (due, seq)
@@ -345,6 +434,14 @@ class Driver {
 
   clear(t) {
     if (!t || t._destroyed) return;
+    if (t._deadline) {
+      this.deadlines.delete(t);
+      if (t._watch) { REAL.clearTimeout(t._watch); t._watch = null; }
+      t._active = false;
+      t._destroyed = true;
+      BY_ID.delete(t.id);
+      return;
+    }
     if (t._handle) {
       t._realm.clearTimeout(t._handle);
       t._realm.clearInterval(t._handle);
@@ -373,11 +470,30 @@ class Driver {
       if (!anyRef) h.unref();
       this.armed = { kind: 'immediate', handle: h };
     } else {
+      // pending I/O: wait for the real delay, but look again every few ms: once the I/O has completed the timers
+      // go back to fast time (local I/O first, then timers)
       const wait = Math.max(0, this.queue[0]._realDeadline - realNowMs());
-      const h = REAL.setTimeout(() => this.fire(false), wait);
+      const h = REAL.setTimeout(() => this.fireSlow(), Math.min(wait, SLOW_POLL_MS));
       if (!anyRef) h.unref();
       this.armed = { kind: 'timeout', handle: h };
     }
+  }
+
+  /** A slow-mode wake-up: fire the first timer once its real delay (plus a grace for just-started I/O) passed. */
+  fireSlow() {
+    this.armed = null;
+    const t = this.queue[0];
+    if (!t) return;
+    if (this.fast()) { this.rearm(); return; }
+    const now = realNowMs();
+    if (t._realDeadline > now) { this.rearm(); return; }
+    if (this.mode === 'virtual' && !t._graced && freshIO !== null && freshIO()) {
+      t._graced = true;
+      t._realDeadline = now + sched.graceFor(t._delayMs);
+      this.rearm();
+      return;
+    }
+    this.fire(false);
   }
 
   fire(fastMode) {
@@ -397,8 +513,23 @@ class Driver {
       return;
     }
     this.deferrals = 0;
+    const head = this.queue[0];
+    if (!head) return;
+    // a runner deadline due no later than the next timer fires first (on the virtual clock)
+    if (this.deadlines.size) {
+      const d = this.nextDeadline();
+      if (this.deadlineDue(d) <= head._due) {
+        try { this.fireDeadline(d, 'virtual'); } finally { this.rearm(); }
+        return;
+      }
+    }
     const t = this.queue.shift();
-    if (!t) return;
+    this.progress += 1;
+    if (!fastMode && this.mode === 'virtual' && t._test === STATE.testId && STATE.testId !== null) {
+      // chosen before I/O that is still pending: a decision real time made (Level 1, recorded)
+      const p = sched.pending();
+      if (p.length) sched.timerChosen(t._site, p.length);
+    }
     if (fastMode) {
       this.fastFired += 1;
       if (this.fastFired > this.budget && !this.budgetHit) {
@@ -411,6 +542,7 @@ class Driver {
     CLOCK.otherEvent();
     STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
     if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
+    if (onRead !== null) onRead(CLOCK.elapsed);
     try {
       t._fn.apply(undefined, t._args);
     } finally {
@@ -419,6 +551,7 @@ class Driver {
         t._seq = this.seq++;
         t._due = due;
         t._realDeadline = realNowMs() + t._delayMs;
+        t._graced = false;
         t._active = true;
         const q = this.queue;
         let i = 0;
@@ -436,6 +569,7 @@ class Driver {
    * instead of later or never: jsdom clears its timers at teardown).
    */
   releaseTest(testId) {
+    for (const d of [...this.deadlines]) if (d._test === testId) this.clear(d); // a runner leaves none behind
     const leaked = this.queue.filter((t) => t._test === testId);
     if (!leaked.length) return 0;
     this.queue = this.queue.filter((t) => t._test !== testId);
@@ -483,9 +617,11 @@ class Driver {
   }
 }
 
-const IGNORED_RESOURCES = new Set(['Timeout', 'Immediate', 'TTYWrap']);
-
 const MAX_DEFERRALS = 1000;
+const SLOW_POLL_MS = 25;
+// set by src/ioorder.js: whether an operation of the running test that just started (a file operation, a connection
+// waiting for its first data) is still pending (the grace of the slow mode)
+let freshIO = null;
 
 function pendingImmediates() {
   let n = 0;
@@ -493,14 +629,6 @@ function pendingImmediates() {
   return n;
 }
 
-function countResources() {
-  const m = new Map();
-  for (const r of process.getActiveResourcesInfo()) {
-    if (IGNORED_RESOURCES.has(r)) continue;
-    m.set(r, (m.get(r) || 0) + 1);
-  }
-  return m;
-}
 
 const DRIVER = new Driver();
 
@@ -513,7 +641,12 @@ function makeSetTimeout(repeat, R) {
     let site = '';
     if (STATE.config.sites) {
       site = STATE.quiet(() => sites.resolve());
-      if (site === null) return real(fn, ms, ...args);
+      if (site === null) {
+        // the runner's own timer: its test or hook timeout runs on the virtual clock (jest-circus' callAsyncCircusFn
+        // captures the realm's setTimeout; G-0144)
+        if (!repeat && CLOCK && DRIVER.mode === 'virtual' && require('./deadline').isDeadlineCaller()) return DRIVER.deadline(() => fn(...args), normDelay(ms), R);
+        return real(fn, ms, ...args);
+      }
     }
     const delay = normDelay(ms);
     const t = new Timeout(fn, args, delay, repeat, site, R);
@@ -650,7 +783,8 @@ function installProcess(patcher, cfg) {
     if (cfg.tickAdapt) STATE.onOtherEvent = () => CLOCK.otherEvent();
     DRIVER.budget = cfg.timerBudget;
     DRIVER.mode = cfg.timers;
-    STATE.onTestStart.push(() => { CLOCK.startTest(); DRIVER.startTest(); });
+    STATE.onTestStart.push(() => { CLOCK.startTest(); DRIVER.startTest(); sched.startTest(); });
+    require('./deadline').installClockHook();
     STATE.onTestEnd.push((id) => { DRIVER.releaseTest(id); });
   }
   patcher.set(process, 'hrtime', hrtime);
@@ -725,6 +859,7 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
     Object.defineProperty(f, '__detjs', { value: true });
     patcher.set(g.AbortSignal, 'timeout', f);
   }
+  if (cfg.controls.has('timers') && sameRealm) require('./deadline').installVitest(g);
   if (cfg.controls.has('timers')) {
     // The realm's own timers (jsdom's window timers in a Jest jsdom environment)
     // serve the timers created outside tests and the ones released at test end.
@@ -742,6 +877,8 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow, normDelay, realNowMs,
   get CLOCK() { return CLOCK; },
+  setOnRead(f) { onRead = f; },
+  setFreshIO(f) { freshIO = f; },
 };

@@ -41,7 +41,9 @@ if (!globalThis[KEY]) {
     // user preloads after this one (command line after it, or NODE_OPTIONS without it)
     const PRE = /^(?:-r|--require|--import|--loader|--experimental-loader)(?:=|$)/;
     const mine = process.execArgv.findIndex((a) => a === SELF || a.endsWith(`=${SELF}`));
-    const later = process.execArgv.slice(mine + 1).some((a) => PRE.test(a));
+    // (detjs' own runner-deadline preload, src/deadline-preload.js, is not user code)
+    const OWN = /[\\/]src[\\/]deadline-preload\.js$/;
+    const later = process.execArgv.slice(mine + 1).some((a, i, l) => PRE.test(a) && !OWN.test(a) && !OWN.test(String(l[i + 1])));
     const nodeOpts = String(process.env.NODE_OPTIONS || '').split(/\s+/).filter((a) => a && !a.includes(SELF));
     const userPreloads = r === 'main' || later || nodeOpts.some((a) => PRE.test(a));
     if (!userPreloads) {

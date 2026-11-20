@@ -154,6 +154,8 @@ async function main(argv) {
     if (!c) continue;
     c.runner = options.runner;
     c.maxConcurrency = 1;
+    // the runner's test and hook timeouts on the virtual clock: its clock functions are captured first (G-0144)
+    if (cfg.controls.has('timers')) addEarlyCapture(c, DEADLINE_PRELOAD);
     c.sequence = { ...(c.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer };
     pools.add(`${c.name || 'root'}:${c.browser && c.browser.enabled ? 'browser' : c.pool}`);
     if (pc) {
@@ -195,6 +197,7 @@ async function main(argv) {
 }
 
 const EARLY = path.join(__dirname, '..', 'cache', 'early.js');
+const DEADLINE_PRELOAD = path.join(__dirname, '..', 'deadline-preload.js');
 const PRELOAD_ARG = /^(?:-r|--require|--import|--loader|--experimental-loader)(?:=|$)/;
 // Vitest's own test environments: their set-up reads no project file
 const BUILTIN_ENVS = new Set(['node', 'jsdom', 'happy-dom', 'edge-runtime']);
@@ -209,7 +212,7 @@ function needsEarly(c) {
   if (!c) return false;
   const argv = [...(Array.isArray(c.execArgv) ? c.execArgv : [])];
   for (const po of Object.values(c.poolOptions || {})) if (po && Array.isArray(po.execArgv)) argv.push(...po.execArgv);
-  if (argv.some((a) => PRELOAD_ARG.test(String(a)))) return true;
+  if (argv.some((a, i) => PRELOAD_ARG.test(String(a)) && argv[i + 1] !== DEADLINE_PRELOAD && a !== `--require=${DEADLINE_PRELOAD}`)) return true;
   if (process.env.DETJS_EARLY === '1') return true;
   const env = typeof c.environment === 'string' ? c.environment : 'node';
   if (!BUILTIN_ENVS.has(env)) return true;
@@ -232,9 +235,9 @@ function customEnvPragma(file) {
 }
 
 /** Put the early capture first among a project's worker preloads (Vitest >= 4: `execArgv`; older: `poolOptions`). */
-function addEarlyCapture(c) {
+function addEarlyCapture(c, file = EARLY) {
   if (!c) return;
-  const add = (list) => (Array.isArray(list) && !list.includes(EARLY) ? ['--require', EARLY, ...list] : list);
+  const add = (list) => (Array.isArray(list) && !list.includes(file) ? ['--require', file, ...list] : list);
   if (Array.isArray(c.execArgv) || !c.poolOptions) c.execArgv = add(c.execArgv || []);
   if (c.poolOptions && typeof c.poolOptions === 'object') {
     for (const k of Object.keys(c.poolOptions)) {
