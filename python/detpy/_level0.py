@@ -370,6 +370,20 @@ def env_inputs() -> dict:
     return out
 
 
+# G-0168: test modules pytest's assertion rewrite compiled from source in this process because its cache missed (the
+# first run after a checkout or an edit). Such a run allocates what a warm run does not, so id()-dependent behaviour
+# (the order of a set of plain objects) can differ from every later run even with ASLR off. A serial run that missed
+# re-executes itself once, warm, before any test runs (plugin.warm_rewrite_reexec); what remains cold (the workers of
+# a parallel run, a re-exec that is not possible) is a run input, so the verifier never calls it identical to a
+# warm run. "workers": the sum the xdist controller received.
+REWRITE = {"cold": 0, "workers": 0}
+
+
+def _rewrite_input() -> str:
+    n = REWRITE["cold"] + REWRITE["workers"]
+    return f"; test modules rewritten from source in this run (cold rewrite cache: {n})" if n else ""
+
+
 def run_inputs(net_mode, runner: str, runner_version) -> dict:
     """Every input of the run Level 0 controls or observes, as text: written in the trace header (``inputs``) and
     compared by the verifier (``crates/detpy-core/src/verify.rs``), which reports two runs whose inputs differ as
@@ -397,7 +411,7 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
                     else "open (net control off)"),
         "fs": "sorted" if "fs" in c else "real (fs control off)",
         "urandom": "controlled" if cfg.control_urandom else "observed",
-        "bytecode": "precompiled" if reexec.bytecode_active(hashseed_value()) else "default",
+        "bytecode": ("precompiled" if reexec.bytecode_active(hashseed_value()) else "default") + _rewrite_input(),
         "aslr": {True: "off", False: "on", None: "unknown"}[reexec.aslr_disabled()],
         "order": "fixed" if "order" in c else "runner order (order control off)",
     }

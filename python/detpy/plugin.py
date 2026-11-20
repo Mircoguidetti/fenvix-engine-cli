@@ -426,6 +426,7 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
         t = keyed_tail(config)
         if t is None:
             return stamp, co
+        _level0.REWRITE["cold"] += 1  # a miss: G-0168 (warm_rewrite_reexec)
         cache_dir = cache_dir_of(fn)
         target = cache_dir / (fn.name[:-3] + t)
         try:
@@ -460,6 +461,69 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
 
 _REWRITE_CONFIG: list = [None]
 _EARLY_REWRITE_CACHE = [False]
+
+
+WARM_ENV = "DETPY_REWRITE_WARM"
+# this process is the warm re-exec. The variable stays where reexec.reexec put it, with a value of the same length
+# ("0" otherwise): the environment of the process that runs the tests is then laid out the same way in both (its
+# order and size decide addresses too); a child pytest --det re-executes with "0" again
+_WARMED = [os.environ.get(WARM_ENV) == "1"]
+_START_ENV = dict(os.environ)  # the environment this process started with (before --det pins TZ, the locale, ...)
+
+
+def _initial_environ() -> dict:
+    """The environment this process was started with, in its order: the warm re-exec must give the new process the
+    environment a normal re-exec gives it (the order and size of the environment decide addresses too), not this
+    process's modified one (TZ and the locale pinned)."""
+    try:
+        with open("/proc/self/environ", "rb") as fh:
+            raw = fh.read()
+        env = {}
+        for item in raw.split(b"\0"):
+            if b"=" in item:
+                k, v = item.split(b"=", 1)
+                env[os.fsdecode(k)] = os.fsdecode(v)
+        if env:
+            return env
+    except OSError:
+        pass
+    return dict(_START_ENV)
+
+
+def warm_rewrite_reexec(session) -> None:
+    """Audit G-0168: a serial ``--det`` run whose assertion-rewrite cache missed (the first run after a checkout or an
+    edit of a test module or conftest) compiled those modules from source, allocating what a later run does not:
+    id()-dependent behaviour (the order of a set of plain objects, ``id()`` itself) then differed between the first
+    run and every later one, with ASLR off. Now the rewritten code is in the cache by the end of collection, and the
+    run executes itself again, once, before any test has run: every run that executes tests loads the same cached
+    code. Not when it cannot (no re-exec possible, already re-executed, collect-only, an xdist worker or controller):
+    the cold state then stays a run input (``_level0.REWRITE``)."""
+    if not _level0.REWRITE["cold"] or _WARMED[0] or S.worker is not None or S.controller is not None:
+        return
+    config = session.config
+    if config.getoption("collectonly", False) or os.environ.get("DETPY_REEXEC") != "1":
+        return
+    try:
+        argv = reexec._argv()
+    except Exception:
+        argv = None
+    if not argv:
+        return
+    tr = config.pluginmanager.get_plugin("terminalreporter")
+    msg = (f"detpy: {_level0.REWRITE['cold']} test module(s) compiled from source (first run after a checkout or "
+           "an edit); running again from the cache, so this run is laid out like every later one")
+    if tr is not None:
+        tr.write_line(msg)
+    else:
+        print(msg, file=sys.stderr)
+    for stream in (sys.stdout, sys.stderr, sys.__stdout__, sys.__stderr__):
+        try:
+            stream.flush()
+        except Exception:
+            pass
+    env = _initial_environ()
+    env[WARM_ENV] = "1"  # in place: reexec.reexec set it to "0"
+    os.execve(sys.executable, argv, env)
 
 
 def _early_rewrite_cache() -> None:
@@ -889,6 +953,7 @@ class _DetSession(_Outcomes):
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
+        warm_rewrite_reexec(session)
         S.order = [i.nodeid for i in session.items]
         S.order_digest = _core.order_digest(S.order)
         meta = _level0.trace_meta(S.reexec_status, S.net_mode, len(S.rebound), S.order_digest, "pytest",
@@ -949,6 +1014,9 @@ class _DetSession(_Outcomes):
     def _controller_meta(self) -> dict:
         """Header metadata of the merged trace (the controller's view; the workers' headers stay in their traces)."""
         cfg = _state.STATE.config
+        if S.controller is not None:  # G-0168: workers that rewrote test modules from source
+            _level0.REWRITE["workers"] = sum(int(o.get("detpy_rewrite_cold") or 0)
+                                             for o in S.controller.workeroutput.values())
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,

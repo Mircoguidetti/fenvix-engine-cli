@@ -329,3 +329,65 @@ def test_seeds_share_a_few_hash_seeds(tmp_path):
     assert values(a, "HS") == ["1"] and values(b, "HS") == ["1"], (a.stdout, b.stdout)
     c, _ = det(proj, "c", "--det-seed=9", env=_env(FENVIX_HASHSEEDS="1000"))
     assert values(c, "HS") == ["9"]
+
+
+# -- G-0168: the first run after a checkout or an edit is laid out like every later run -------------------------------
+ADDR = '''
+class O:
+    pass
+
+
+def test_addr():
+    objs = [O() for _ in range(64)]
+    print("ORDER", ",".join(str(objs.index(o)) for o in set(objs)))  # iteration order follows the addresses
+'''
+
+
+def _addr_run(proj: Path, traces: Path, tag: str, *args):
+    # traces outside the project: a new file in the project directory is a real input change (G-1573)
+    trace = traces / f"{tag}.jsonl"
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "-p", "no:randomly",
+                        "--det", f"--det-trace={trace}", *args], cwd=proj, env=_env(), capture_output=True, text=True,
+                       timeout=900)
+    assert p.returncode == 0, p.stdout[-3000:] + p.stderr[-3000:]
+    return p, trace
+
+
+def test_first_run_after_a_checkout_or_an_edit_is_laid_out_like_later_runs(tmp_path):
+    """G-0168: a fresh checkout (no .detpy, the test module never rewritten: its source is unique to this test) and an
+    edit of the test module. The first run compiles the module from source and runs again from the cache before any
+    test runs, so the order of a set of plain objects is the one every later run sees, and verify says IDENTICAL."""
+    proj = tmp_path / "p"
+    proj.mkdir()
+    traces = tmp_path / "traces"
+    traces.mkdir()
+    src = ADDR + f"# {tmp_path.name}\n"
+    project(proj, src)
+    runs = [_addr_run(proj, traces, str(i)) for i in range(3)]
+    assert "compiled from source" in runs[0][0].stdout, runs[0][0].stdout[-2000:]
+    assert "compiled from source" not in runs[1][0].stdout
+    orders = [values(p, "ORDER") for p, _ in runs]
+    assert orders[0] and orders[0] == orders[1] == orders[2], orders
+    identical(runs[0][1], runs[1][1])
+    (proj / "tests" / "test_p.py").write_text(src + "# edited\n")
+    edited = [_addr_run(proj, traces, f"e{i}") for i in range(2)]
+    assert "compiled from source" in edited[0][0].stdout
+    assert values(edited[0][0], "ORDER") == values(edited[1][0], "ORDER") == orders[0]
+    identical(edited[0][1], edited[1][1])
+
+
+def test_cold_workers_of_a_parallel_run_are_a_run_input(tmp_path):
+    """G-0168 under -n: the workers cannot run again; a run whose workers compiled test modules from source says so in
+    its inputs, so verify never calls it identical to a warm run (the input named is bytecode)."""
+    pytest.importorskip("xdist")
+    proj = tmp_path / "p"
+    proj.mkdir()
+    traces = tmp_path / "traces"
+    traces.mkdir()
+    project(proj, ADDR + f"# {tmp_path.name} parallel\n")
+    (_, cold), (_, warm) = (_addr_run(proj, traces, t, "-n", "2") for t in ("cold", "warm"))
+    inputs = [json.loads(t.read_text().splitlines()[0])["meta"]["inputs"]["bytecode"] for t in (cold, warm)]
+    assert "cold rewrite cache" in inputs[0] and "cold" not in inputs[1], inputs
+    p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(cold), str(warm)], capture_output=True,
+                       text=True, timeout=120)
+    assert p.returncode == 1 and "bytecode" in p.stdout, p.stdout

@@ -232,8 +232,17 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
     loads them (unregistering an already loaded plugin leaves its fixtures).
     """
     need = plan(want_hashseed, want_no_aslr, want_bytecode)
+    if rootdir:
+        # audit G-0168: the state directory exists before the process that runs the tests starts, in the first run
+        # of a fresh checkout as in every later one (creating it there changed the addresses the tests see)
+        from ._level0 import ensure_state_dir
+
+        ensure_state_dir(rootdir)
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = want_hashseed
+    # G-0168: the warm re-exec's marker (plugin.WARM_ENV), present in every re-executed process with a value of the
+    # same length, so the process that runs the tests does the same work with it whichever exec started it
+    env["DETPY_REWRITE_WARM"] = "0"
     env[MARKER] = "1"
     if want_bytecode:
         env[PRECOMPILE_ENV] = f"{precompile(want_hashseed, rootdir):.3f}"
