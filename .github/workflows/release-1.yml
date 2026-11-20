@@ -1,16 +1,27 @@
-# Release 1: the engine of the go-live (Python and Node on our machines, Linux x86_64), built and tested together.
+# Release 1: the engine of the go-live (Python and Node on our machines), built and tested together.
 #
-# build      Rust tests of the go-live crates (detpy-core, detpy-node), the wheel fenvix (manylinux_2_28) and the
-#            napi addon (glibc 2.28), the platform floor check, the engine artifact (tarball + sha256).
-# python     every Python suite (tests/, reviewer files), CPython 3.12, 3.13 and 3.14, one job per version; the
-#            runner suites and the numpy / time-machine / hypothesis / pytest-benchmark tests in their own environments.
-# node       every detjs suite (node/test, reviewer files), Node 22, 24 and 26, one job per version.
+# Two depths of the same jobs (CI rule of 2026-11-20, founder decision):
+#   LIGHT  every pull request into claude/release-1 (the required check before merge) and every merge into it:
+#          build, Python 3.13 full suite, Node 24 full suite, smoke python/node.
+#   FULL   by hand (workflow_dispatch, depth "full", the default) and nightly (schedule): Python 3.12, 3.13, 3.14 and
+#          Node 22, 24, 26, each the full suite, the smoke jobs, the install test of the engine artifact in clean
+#          containers and, on claude/release-1, the publication of the artifact (publish-engine). A step of work ends
+#          with a full run.
+# Pushes to session branches run nothing. On a pull request a new head cancels that pull request's older run (only
+# the newest head is tested); a run on the trunk or a scheduled/manual run is never cancelled by another.
+# Go, the JVM, macOS and Linux arm64 are outside the go-live scope and are not built or tested here.
+#
+# build      Rust tests of the go-live crates (detpy-core, detpy-node), the wheel fenvix (manylinux_2_28) and the napi
+#            addon (glibc 2.28) every other job tests, the platform floor check, the engine artifact (tarball + sha256)
+#            and, on a pull request, the publication dry run (release/engine/publish.sh --dry-run).
+# python     every Python suite (tests/, reviewer files), one job per version; test_review_results.py informational.
+# node       every detjs suite (node/test, reviewer files), one job per version.
 # smoke      one small real repository per language (Python, Node) under --det (x2, traces verified) and skip with
 #            proof (x2), installed as the runner image does.
-# install    the engine artifact alone in clean containers (glibc 2.28 / CPython 3.12 / pytest 8.1 / Node 22,
+# install    FULL only: the engine artifact alone in clean containers (glibc 2.28 / CPython 3.12 / pytest 8.1 / Node 22,
 #            Debian 12 / 3.13 / Node 24, Debian 13 / 3.14 / Node 26; CPython 3.11 refused).
-# publish-engine           a GitHub pre-release per merge into claude/release-1 (dry run on pull requests).
-# Go and the JVM are outside the go-live scope: their own workflows (go-tests.yml, jvm-tests.yml) run them by hand.
+# publish-engine  FULL runs of claude/release-1: the artifact as a GitHub pre-release (pinned URL + sha256).
+# Note: GitHub runs `schedule` and offers "Run workflow" only for workflows on the repository's default branch.
 name: release-1
 
 on:
@@ -19,13 +30,16 @@ on:
     paths-ignore: ["sessions/**", "docs/**", "**/results/**"]
   pull_request:
     branches: [claude/release-1]
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      depth:
+        description: "full: Python 3.12/3.13/3.14 and Node 22/24/26; light: Python 3.13 and Node 24"
+        type: choice
+        options: [full, light]
+        default: full
+  schedule:
+    - cron: "37 2 * * *"   # nightly full run
 
-# Fewer runs (founder decision 2026-11-20: 20 concurrent jobs, no sharding): the gate runs on pull requests into
-# claude/release-1 (the required check before merge), on merges into it (each merge publishes its engine artifact),
-# and by hand (workflow_dispatch, for a session that needs a run before opening its pull request); pushes to
-# session branches run nothing. On a pull request a new head cancels the older gate run of that pull request: only
-# the latest head is tested, and its run is never cancelled by anything else. A run on the trunk is never cancelled.
 concurrency:
   group: release-1-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -60,6 +74,9 @@ jobs:
           export ENGINE_BUILD="r${GITHUB_RUN_NUMBER}.${GITHUB_SHA::7}"
           release/engine/assemble.sh dist engine-artifact
           cp release/install_test.py engine-artifact/
+      - name: publication dry run (what publish-engine does, without creating the release)
+        if: github.event_name == 'pull_request'
+        run: release/engine/publish.sh --dry-run engine-artifact
       - uses: actions/upload-artifact@v4
         with: {name: engine-artifact, path: engine-artifact/}
       - uses: actions/upload-artifact@v4
@@ -76,7 +93,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python: ["3.12", "3.13", "3.14"]
+        python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -138,7 +155,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["22", "24", "26"]
+        node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -196,6 +213,7 @@ jobs:
   # The engine artifact, installed alone (no checkout) in clean containers: the glibc 2.28 floor (manylinux_2_28,
   # AlmaLinux 8) and current Debian images, each CPython 3.12/3.13/3.14 with Node 22/24/26; CPython 3.11 is refused.
   install:
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -229,13 +247,12 @@ jobs:
             install-result.json
             /tmp/it/logs/
 
-  # Every merge into the trunk publishes its engine artifact as a GitHub pre-release with a stable URL, for the
-  # runner image to pin by URL and sha256 and fetch with release/engine/fetch.sh (fail closed on any other checksum):
+  # Full runs of the trunk (nightly, or by hand at the end of a step) publish their engine artifact as a GitHub
+  # pre-release with a stable URL, for the runner image to pin by URL and sha256 and fetch with
+  # release/engine/fetch.sh (fail closed on any other checksum):
   #   https://github.com/<owner>/<repo>/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<...>.tar.gz
-  # On a pull request the same script runs with --dry-run: every check, the fetch accepted with the pinned sha256
-  # and refused with another one, the tag, URL and notes; only the release itself is not created.
   publish-engine:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/claude/release-1'
+    if: github.ref == 'refs/heads/claude/release-1' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light'))
     needs: [build, python, node, smoke, install]
     runs-on: ubuntu-latest
     permissions:
@@ -247,13 +264,3 @@ jobs:
       - env:
           GH_TOKEN: ${{ github.token }}
         run: release/engine/publish.sh engine
-
-  publish-engine-dry-run:
-    if: github.event_name == 'pull_request'
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with: {name: engine-artifact, path: engine}
-      - run: release/engine/publish.sh --dry-run engine

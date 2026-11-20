@@ -9,6 +9,7 @@ name: fenvix-demo-jobs
 # share a machine). Never triggered by pull requests: see docs/RUNNER-PROTOTYPE.md, "Security".
 
 on:
+  workflow_dispatch: {}
   workflow_call:
     inputs:
       runs_on: {type: string, required: true, description: "JSON for runs-on, e.g. '[\"self-hosted\",\"fenvix\"]'"}

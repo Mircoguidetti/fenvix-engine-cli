@@ -10,9 +10,7 @@ name: parallel-proof
 #            "dist": "", "variants": "...", "walk": K (walk_n over K commits instead of the variants), "modes"}]}
 
 on:
-  push:
-    branches: [claude/parallel-proof, claude/parallel-proof-3]
-    paths: [tracks/parallel-proof/run.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

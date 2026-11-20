@@ -25,7 +25,7 @@ if [ -f "$dist/detjs.$plat.node" ]; then cp "$dist/detjs.$plat.node" "$home/node
 elif [ -f "$dist/fenvix.$triple.node" ]; then cp "$dist/fenvix.$triple.node" "$home/node/detjs.$plat.node"
 else echo "install-image: no Node addon for $plat ($triple) in $dist" >&2; exit 1; fi
 (cd "$home/node" && npm ci --omit=dev --no-audit --no-fund --silent)
-# Go and JVM are outside the go-live scope: installed when the artifact has them
+# Go and the JVM are outside the go-live scope: installed only when the artifact has them
 for f in fenvix-go fenvix-skip; do if [ -f "$dist/$f" ]; then install -m 755 "$dist/$f" "$home/bin/"; fi; done
 if [ -f "$dist/fenvix-agent.jar" ]; then install -m 644 "$dist/fenvix-agent.jar" "$home/jvm/"; fi
 install -m 755 "$here/release/fenvix" "$home/bin/fenvix"

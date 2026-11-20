@@ -13,9 +13,6 @@ on:
   workflow_dispatch:
     inputs:
       config: {description: "JSON parameters (see harness/node_cache/RUN-all-runners)", default: "{}"}
-  push:
-    branches: [claude/all-runners-2]
-    paths: [harness/node_cache/RUN-all-runners]
 
 permissions:
   contents: write

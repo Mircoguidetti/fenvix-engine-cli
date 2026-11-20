@@ -318,17 +318,28 @@ def test_state_directory_keeps_the_checkout_clean(pytester):
 
 
 def test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs():
-    """CI load (founder decision 2026-11-20): no run on session-branch pushes; the full gate on pull requests into the
-    trunk (latest head only), on trunk merges (never cancelled) and by hand; one job per Python and Node version."""
+    """CI rule of 2026-11-20 (founder decision): a light gate on pull requests into the trunk and on merges (Python
+    3.13, Node 24, build, smoke; newest PR head only), the full matrix (3.12/3.13/3.14, 22/24/26, install tests,
+    publication) by hand and nightly, nothing on session-branch pushes, no Go/JVM/macOS/arm64 in the gate."""
     wfdir = os.path.join(ROOT, ".github", "workflows")
     text = open(os.path.join(wfdir, "release-1.yml")).read()
     on = text[text.index("\non:\n"):text.index("\nconcurrency:")]
     assert re.search(r"push:\n    branches: \[claude/release-1\]", on)
-    assert re.search(r"pull_request:\n    branches: \[claude/release-1\]", on) and "workflow_dispatch" in on
+    assert re.search(r"pull_request:\n    branches: \[claude/release-1\]", on)
+    assert "workflow_dispatch:" in on and "schedule:" in on
     assert "group: release-1-${{ github.event_name }}-${{ github.ref }}" in text
     assert "cancel-in-progress: ${{ github.event_name == 'pull_request' }}" in text
-    assert 'python: ["3.12", "3.13", "3.14"]' in text and 'node: ["22", "24", "26"]' in text
-    assert "python-shard" not in text and "shard-proof" not in text
-    # no workflow of the gate runs on session-branch pushes (the harness launchers of other sessions, which start on a
-    # committed RUN file under a path filter, are not the gate and stay as they are)
-    assert not os.path.exists(os.path.join(wfdir, "targeted.yml"))
+    full = "github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')"
+    assert f"""({full}) && '["3.12", "3.13", "3.14"]' || '["3.13"]'""" in text
+    assert f"""({full}) && '["22", "24", "26"]' || '["24"]'""" in text
+    assert "lang: [python, node]" in text
+    for job in ("\n  go:", "\n  jvm:", "other-os", "macos", "ubuntu-24.04-arm", "setup-go", "setup-java"):
+        assert job not in text, job
+    # no other workflow starts on a push (session branches run nothing; long measurements are started by hand)
+    for f in os.listdir(wfdir):
+        if f != "release-1.yml":
+            w = open(os.path.join(wfdir, f)).read()
+            assert not re.search(r"(?m)^  push:", w), f
+            for line in w.splitlines():
+                if "git commit" in line:
+                    assert "[skip ci]" in line, (f, line)

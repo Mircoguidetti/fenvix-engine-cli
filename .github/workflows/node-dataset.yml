@@ -8,9 +8,6 @@ name: node-dataset
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/node-l0]
-    paths: [harness/node/dataset/REQUEST]
 
 permissions:
   contents: write

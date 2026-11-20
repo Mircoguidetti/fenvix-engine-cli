@@ -5,9 +5,6 @@
 name: go-harness
 
 on:
-  push:
-    branches: [claude/go-l0]
-    paths: [harness/go/RUN]
   workflow_dispatch: {}
 
 permissions:

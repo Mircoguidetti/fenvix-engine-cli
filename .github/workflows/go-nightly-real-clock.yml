@@ -12,12 +12,7 @@
 name: go-nightly-real-clock
 
 on:
-  schedule:
-    - cron: "17 3 * * *"
   workflow_dispatch: {}
-  push:
-    branches: [claude/go-l0]
-    paths: [harness/go/NIGHTLY]
 
 permissions:
   contents: write

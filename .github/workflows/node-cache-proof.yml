@@ -11,9 +11,6 @@ on:
   workflow_dispatch:
     inputs:
       config: {description: "JSON parameters (see harness/node_cache/RUN)", default: "{}"}
-  push:
-    branches: [claude/node-cache-proof]
-    paths: [harness/node_cache/RUN]
 
 permissions:
   contents: write

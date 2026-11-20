@@ -8,9 +8,7 @@ name: dep-verdict
 #            harness/dep_verdict/results/<run_id>/
 
 on:
-  push:
-    branches: [claude/dep-verdict-abjcfw]
-    paths: [harness/dep_verdict/run.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

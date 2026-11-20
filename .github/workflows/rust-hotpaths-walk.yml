@@ -10,9 +10,7 @@ name: rust-hotpaths-walk
 #            tracks/rust-hotpaths/walk/<run_id>/
 
 on:
-  push:
-    branches: [claude/rust-hotpaths, claude/rust-hotpaths-2]
-    paths: [tracks/rust-hotpaths/walk.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

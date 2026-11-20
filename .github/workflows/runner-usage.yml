@@ -6,9 +6,6 @@ name: runner-usage
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/all-runners]
-    paths: [harness/runner_usage/RUN]
 
 permissions:
   contents: write

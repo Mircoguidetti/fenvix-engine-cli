@@ -2,9 +2,7 @@ name: dep-verdict-annotations
 
 # Step 4 helper: check-run annotations and outputs of the upstream CI failures after dependency-only commits.
 on:
-  push:
-    branches: [claude/dep-verdict-abjcfw]
-    paths: [harness/dep_verdict/annotations.py]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

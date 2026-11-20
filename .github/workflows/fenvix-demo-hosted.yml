@@ -7,9 +7,6 @@ name: fenvix-demo-hosted
 # Never runs on pull requests (see docs/RUNNER-PROTOTYPE.md, "Security").
 
 on:
-  push:
-    branches: [claude/runner-prototype-ee21he]
-    paths: [".github/workflows/fenvix-demo*.yml", "runner/**"]
   workflow_dispatch:
 
 permissions:

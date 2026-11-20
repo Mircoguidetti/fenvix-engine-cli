@@ -6,9 +6,6 @@ name: jvm-harness
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/jvm-l0]
-    paths: [jvm/harness/RUN]
 
 permissions:
   contents: write

@@ -7,9 +7,6 @@ name: jvm-tests
 
 on:
   workflow_dispatch:
-  push:
-    branches: [claude/jvm-l0]
-    paths: [jvm/**, crates/fenvix-jvm/**, crates/detpy-core/**, .github/workflows/jvm-tests.yml, '!jvm/harness/**', '!jvm/test/results/**']
 
 permissions:
   contents: write

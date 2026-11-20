@@ -8,9 +8,7 @@ name: rust-hotpaths
 # "base" (if set) and this commit.
 
 on:
-  push:
-    branches: [claude/rust-hotpaths, claude/rust-hotpaths-2]
-    paths: [tracks/rust-hotpaths/run.json]
+  workflow_dispatch: {}
 
 permissions:
   contents: write

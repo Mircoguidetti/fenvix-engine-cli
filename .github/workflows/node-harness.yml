@@ -16,9 +16,6 @@ on:
   workflow_dispatch:
     inputs:
       config: {description: "JSON parameters (see harness/node/RUN)", default: "{}"}
-  push:
-    branches: [claude/node-l0]
-    paths: [harness/node/RUN]
 
 permissions:
   contents: write
