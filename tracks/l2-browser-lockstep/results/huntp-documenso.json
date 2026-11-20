@@ -3,10 +3,10 @@
  "job": "huntp",
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
- "status": "ok",
- "run_id": "44717542771",
- "engine_commit": "588ce5cf4ed0cb6c60e125e1be9b88abe903b0d2",
- "setup_s": 293,
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 336,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -17,7 +17,7 @@
   "budget_min": 340,
   "run_timeout_min": 45,
   "target_timeout_min": 8,
-  "seeds": 6,
+  "seeds": 7,
   "seed_from": 0,
   "replays": 10,
   "per_run_s": 900,
@@ -29,11 +29,11 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T10:33:00Z",
- "measured_at": "2026-11-20T10:33:48Z",
+ "epoch": "2026-11-20T17:43:00Z",
+ "measured_at": "2026-11-20T17:43:17Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
-  "seeds": 6,
+  "seeds": 7,
   "replays": 10,
   "targets": [
    {
@@ -44,43 +44,25 @@
     "tried": [
      [
       0,
-      "missing",
-      "",
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
       null
      ],
      [
       1,
-      "missing",
-      "",
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
       null
      ],
      [
       2,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
+      "passed",
       "",
       null
      ]
@@ -99,43 +81,25 @@
     "tried": [
      [
       0,
-      "missing",
-      "",
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
       null
      ],
      [
       1,
-      "missing",
-      "",
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
       null
      ],
      [
       2,
-      "missing",
-      "",
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
       null
      ],
      [
       3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
+      "passed",
       "",
       null
      ]
@@ -154,44 +118,26 @@
     "tried": [
      [
       0,
-      "missing",
-      "",
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
       null
      ],
      [
       1,
-      "missing",
-      "",
+      "failed",
+      "PrismaClientKnownRequestError:",
       null
      ],
      [
       2,
-      "missing",
-      "",
+      "failed",
+      "PrismaClientKnownRequestError:",
       null
      ],
      [
       3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
-      "",
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
       null
      ]
     ],
@@ -209,43 +155,25 @@
     "tried": [
      [
       0,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       1,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       2,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
+      "passed",
       "",
       null
      ]
@@ -264,43 +192,25 @@
     "tried": [
      [
       0,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       1,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       2,
-      "missing",
+      "passed",
       "",
       null
      ],
      [
       3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
+      "passed",
       "",
       null
      ]
@@ -311,10 +221,6 @@
     "fingerprints": null,
     "reproduced": false
    }
-  ],
-  "reproduced": 0,
-  "found_seed": 0,
-  "n": 5
- },
- "elapsed_min": 315.8
+  ]
+ }
 }
