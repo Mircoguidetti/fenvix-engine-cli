@@ -4,13 +4,14 @@ name: node-repro
 # engine of this commit. One job per (repository, shard): harness/node_repro/run_shared.py (the verdict of `fenvix
 # repro TEST` for each test, the full-suite search runs shared per repository, 10 separate replays of each
 # REPRODUCED bundle). The aggregate job writes harness/node_repro/results-final/ (rows, REPORT.md, summary.json) and
-# commits it to the branch. Started by a push that changes harness/node_repro/RUN (JSON: {"label": "...",
-# "repos": [...] (default: every repository with unstable Vitest/Jest tests), "budget_s": N}).
+# commits it to the branch. Started by hand (CI rule of 2026-11-20: only release-1.yml starts on a push), with
+# harness/node_repro/RUN or the `run` input (JSON: {"label": "...", "repos": [...] (default: every repository with
+# unstable Vitest/Jest tests), "budget_s": N}).
 
 on:
-  push:
-    branches: [claude/node]
-    paths: [harness/node_repro/RUN]
+  workflow_dispatch:
+    inputs:
+      run: {description: "JSON parameters (as harness/node_repro/RUN)", default: ""}
 
 permissions:
   contents: write
@@ -32,7 +33,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: c
-        run: python3 harness/node_repro/shards.py --run harness/node_repro/RUN --github-output "$GITHUB_OUTPUT"
+        env:
+          RUN_INPUT: ${{ inputs.run }}
+        run: |
+          if [ -n "$RUN_INPUT" ]; then printf '%s' "$RUN_INPUT" > harness/node_repro/RUN; fi
+          python3 harness/node_repro/shards.py --run harness/node_repro/RUN --github-output "$GITHUB_OUTPUT"
 
   build:
     runs-on: ubuntu-latest
@@ -103,5 +108,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $D
-          git commit -m "F-02 Node: fenvix repro on the Node Block 1 flaky set, run ${{ github.run_id }} (${{ needs.config.outputs.label }})" || exit 0
+          git commit -m "F-02 Node: fenvix repro on the Node Block 1 flaky set, run ${{ github.run_id }} (${{ needs.config.outputs.label }}) [skip ci]" || exit 0
           for i in 1 2 3 4; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && break; sleep $((i*10)); done
