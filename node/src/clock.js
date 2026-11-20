@@ -44,8 +44,10 @@ const REAL = {
   setImmediate: globalThis.setImmediate,
   clearImmediate: globalThis.clearImmediate,
   hrtime: process.hrtime,
+  uptime: process.uptime,
   hrtimeBigint: process.hrtime.bigint,
   perfNow: globalThis.performance.now.bind(globalThis.performance),
+  timeOrigin: globalThis.performance.timeOrigin,
 };
 const realNowMs = () => REAL.perfNow();
 
@@ -110,9 +112,34 @@ function readFor(op) {
   return e;
 }
 
+// Fake timers of the runners (Vitest's and Jest's `useFakeTimers`, `getRealSystemTime`) read "now" from the runner's
+// own code, which gets the real clock: their fake clock would then start from the machine's time, a value that changes
+// with every run and that the cache cannot key (audit G-0122, G-0142). Such reads get the virtual clock instead, and
+// are recorded (the epoch becomes an input of the test).
+const FAKE_CLOCK_FRAME = /\b(?:useFakeTimers|_toSinonFakeTimersConfig|getRealSystemTime|setSystemTime)\b/;
+function fakeClockCaller() {
+  if (!CLOCK) return false;
+  const lim = Error.stackTraceLimit;
+  Error.stackTraceLimit = 6;
+  let st;
+  try { st = new Error().stack || ''; } finally { Error.stackTraceLimit = lim; }
+  return FAKE_CLOCK_FRAME.test(st);
+}
+
+/** Virtual wall-clock milliseconds for a fake clock's start, recorded as a clock read. */
+function fakeNow(what = 'fakeTimers.now') {
+  const e = CLOCK.read();
+  STATE.recordAt('time', what, '<fake-timers>', CLOCK.rel(e));
+  return Math.floor(CLOCK.wallMs(e));
+}
+
 function makeDate(RealDate) {
   function Date(...args) {
     if (callerIsInfra()) {
+      if (fakeClockCaller()) {
+        if (!new.target) return new RealDate(fakeNow('Date')).toString();
+        if (args.length === 0) return Reflect.construct(RealDate, [fakeNow('Date')], new.target);
+      }
       return new.target ? Reflect.construct(RealDate, args, new.target) : RealDate();
     }
     if (!new.target) return new RealDate(CLOCK.wallMs(readFor('Date'))).toString();
@@ -122,7 +149,7 @@ function makeDate(RealDate) {
   Date.prototype = RealDate.prototype;
   Object.defineProperty(Date, 'length', { value: 7 });
   Date.now = function now() {
-    if (callerIsInfra()) return RealDate.now();
+    if (callerIsInfra()) return fakeClockCaller() ? fakeNow('Date.now') : RealDate.now();
     return Math.floor(CLOCK.wallMs(readFor('Date.now')));
   };
   Date.parse = RealDate.parse;
@@ -150,6 +177,55 @@ function startFile() {
 function performanceNow() {
   if (callerIsInfra()) return realNowMs();
   return (monoNs('performance.now') - MONO_BASE_NS - FILE_ORIGIN_NS) / NS_PER_MS + 1000;
+}
+
+// process.uptime(): seconds since the start of the test file on the virtual clock (as performance.now), plus one
+// second, so that it is positive and grows (audit G-0135: it was the real uptime, unrecorded).
+function uptime() {
+  if (callerIsInfra()) return REAL.uptime.call(process);
+  return (monoNs('process.uptime') - MONO_BASE_NS - FILE_ORIGIN_NS) / 1e9 + 1;
+}
+
+// performance.timeOrigin: the epoch (a constant of the run, like the clock it belongs to; G-0136)
+function timeOrigin() {
+  if (CLOCK) STATE.record('time', 'performance.timeOrigin', '0');
+  return CLOCK ? CLOCK.epochMs : 0;
+}
+
+// performance.mark()/measure() without explicit times read the host's real clock: give them the virtual one (G-0137).
+function wrapMark(realMark) {
+  return function mark(name, opts) {
+    if (callerIsInfra()) return realMark(name, opts);
+    if (!opts || typeof opts !== 'object') return realMark(name, { startTime: performanceNow() });
+    if (opts.startTime === undefined) return realMark(name, { ...opts, startTime: performanceNow() });
+    return realMark(name, opts);
+  };
+}
+function wrapMeasure(realMeasure) {
+  return function measure(name, a, b) {
+    if (callerIsInfra()) return realMeasure(name, a, b);
+    if (a && typeof a === 'object') {
+      if (a.end === undefined && a.duration === undefined) return realMeasure(name, { ...a, end: performanceNow() });
+      return realMeasure(name, a);
+    }
+    if (b === undefined) return realMeasure(name, a === undefined ? { start: 0, end: performanceNow() } : { start: a, end: performanceNow() });
+    return realMeasure(name, a, b);
+  };
+}
+
+// AbortSignal.timeout(ms) on the virtual timers, so that it keeps its order relative to setTimeout (G-0138).
+function makeAbortTimeout(realTimeout, AC, DOMEx, timers) {
+  return function timeout(ms) {
+    if (STATE.testId === null || callerIsInfra()) return realTimeout(ms);
+    const c = new AC();
+    const t = timers.setTimeout(() => {
+      let reason;
+      try { reason = new DOMEx('The operation was aborted due to timeout', 'TimeoutError'); } catch { reason = new Error('The operation was aborted due to timeout'); reason.name = 'TimeoutError'; }
+      c.abort(reason);
+    }, ms);
+    if (t && typeof t.unref === 'function') t.unref();
+    return c.signal;
+  };
 }
 
 function hrtime(prev) {
@@ -512,10 +588,9 @@ function wrapPerformance(hostPerf) {
       Object.defineProperty(out, k, { value: hostPerf[k].bind(hostPerf), writable: true, configurable: true });
     }
   }
-  Object.defineProperty(out, 'timeOrigin', {
-    get: () => { if (STATE.onRealClock) STATE.onRealClock('performance.timeOrigin'); return hostPerf.timeOrigin; },
-    enumerable: true,
-  });
+  out.mark = wrapMark(out.mark);
+  out.measure = wrapMeasure(out.measure);
+  Object.defineProperty(out, 'timeOrigin', { get: timeOrigin, enumerable: true });
   Object.defineProperty(out, 'nodeTiming', { get: () => hostPerf.nodeTiming });
   Object.defineProperty(out, 'now', { value: performanceNow, writable: true, configurable: true, enumerable: true });
   return out;
@@ -532,6 +607,24 @@ function installProcess(patcher, cfg) {
     STATE.onTestEnd.push((id) => { DRIVER.releaseTest(id); });
   }
   patcher.set(process, 'hrtime', hrtime);
+  patcher.set(process, 'uptime', uptime);
+  // The host's performance object is also `require('perf_hooks').performance` (Jest: a test file that imports it
+  // gets the host object, not its context's wrapper; G-0141). Runner frames keep the real clock (callerIsInfra).
+  const hp = globalThis.performance;
+  if (hp && !hp.__detjsPerf) {
+    patcher.define(hp, 'now', performanceNow);
+    if (typeof hp.mark === 'function') patcher.define(hp, 'mark', wrapMark(hp.mark.bind(hp)));
+    if (typeof hp.measure === 'function') patcher.define(hp, 'measure', wrapMeasure(hp.measure.bind(hp)));
+    try {
+      Object.defineProperty(hp, 'timeOrigin', { get() { return callerIsInfra() ? REAL.timeOrigin : timeOrigin(); }, configurable: true, enumerable: true });
+    } catch { /* not configurable */ }
+    Object.defineProperty(hp, '__detjsPerf', { value: true, configurable: true });
+  }
+  if (cfg.controls.has('timers') && typeof AbortSignal === 'function' && typeof AbortSignal.timeout === 'function' && !AbortSignal.timeout.__detjs) {
+    const f = makeAbortTimeout(AbortSignal.timeout.bind(AbortSignal), AbortController, globalThis.DOMException, TIMERS);
+    Object.defineProperty(f, '__detjs', { value: true });
+    patcher.set(AbortSignal, 'timeout', f);
+  }
   if (cfg.controls.has('timers')) {
     const timers = require('node:timers');
     const tp = require('node:timers/promises');
@@ -549,6 +642,12 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
   }
   if (g.process && g.process !== process && typeof g.process.hrtime === 'function') {
     patcher.set(g.process, 'hrtime', hrtime); // Jest gives every context its own process object
+    if (typeof g.process.uptime === 'function') patcher.set(g.process, 'uptime', uptime);
+  }
+  if (cfg.controls.has('timers') && g.AbortSignal && typeof g.AbortSignal.timeout === 'function' && !g.AbortSignal.timeout.__detjs) {
+    const f = makeAbortTimeout(g.AbortSignal.timeout.bind(g.AbortSignal), g.AbortController || AbortController, g.DOMException || globalThis.DOMException, TIMERS);
+    Object.defineProperty(f, '__detjs', { value: true });
+    patcher.set(g.AbortSignal, 'timeout', f);
   }
   if (cfg.controls.has('timers')) {
     // The realm's own timers (jsdom's window timers in a Jest jsdom environment)
@@ -566,6 +665,6 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
 }
 
 module.exports = {
-  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile,
+  REAL, VirtualClock, installProcess, installRealm, TIMERS, DRIVER, Timeout, startFile, fakeNow,
   get CLOCK() { return CLOCK; },
 };

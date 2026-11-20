@@ -30,6 +30,10 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
                            (a directory, or a shared cache service https://host/<namespace>)
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
+  --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
+                           each test whose cached result differs (an expiry); its cache entries are removed
+                           With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
+                           test that reads the clock is reused only on the UTC day it was recorded
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
 `;
@@ -41,7 +45,7 @@ function parseArgs(argv, env = process.env) {
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
-    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null,
+    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
@@ -63,7 +67,7 @@ function parseArgs(argv, env = process.env) {
       case '--det-record': opts.record = true; break;
       case '--det-cassette': opts.cassette = value; break;
       case '--det-allow-host': opts.allowHosts.push(value); break;
-      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; break;
+      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; opts.epochExplicit = true; break;
       case '--det-tick': opts.tick = config.int(value, 1000); break;
       case '--det-tick-adapt': opts.tickAdapt = config.int(value, 1000); break;
       case '--det-timers': opts.timers = value === 'real' ? 'real' : 'virtual'; break;
@@ -74,13 +78,29 @@ function parseArgs(argv, env = process.env) {
       case '--det-sites': opts.sites = value !== 'off' && value !== '0'; break;
       case '--det-cache': opts.cache = value; break;
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
+      case '--det-cache-real-clock': opts.cacheRealClock = true; break;
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;
       case '--det-help': process.stdout.write(HELP); process.exit(0); break;
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
   }
+  if (opts.cache && !opts.epochExplicit) opts.epoch = virtualDay();
+  if (opts.cacheRealClock) {
+    if (!opts.cache) throw new Error('detjs: --det-cache-real-clock needs --det-cache=DIR|URL');
+    // run on the real clock; the reuse decision is still the one of the virtual day (src/cache/proof.js)
+    opts.cacheVerify = true;
+    const off = new Set(String(opts.disable || '').split(',').filter(Boolean));
+    off.add('time');
+    opts.disable = [...off].join(',');
+  }
   return { opts, rest };
+}
+
+/** Today 00:00 UTC on the real clock (DECISIONS 2026-11-19: the virtual day of skip with proof). */
+function virtualDay(now = Date.now()) {
+  const d = new Date(now);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString().replace('.000Z', 'Z');
 }
 
 /** Prepare the run directory and the DETJS_* environment inherited by the workers. */

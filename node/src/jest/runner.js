@@ -66,6 +66,31 @@ function outcomeOf(test) {
   return test.errors && test.errors.length ? 'failed' : 'passed';
 }
 
+/**
+ * Jest's modern fake timers start their clock at `Date.now()` of Jest's own realm (the real clock): start it at the
+ * virtual clock instead (recorded: the epoch becomes an input of the test), unless the test or the configuration
+ * gives `now` (audit G-0122, G-0142). `getRealSystemTime()` returns the virtual clock as well. `advanceTimers` lets
+ * the fake clock follow real time: that is a real-clock read (never cached).
+ */
+function virtualFakeClock(ft, config) {
+  const clock = require('../clock');
+  if (!ft || ft.__detjsVirtual || typeof ft.useFakeTimers !== 'function') return;
+  const use = ft.useFakeTimers;
+  ft.useFakeTimers = function useFakeTimers(cfg) {
+    const merged = { ...((config && config.fakeTimers) || {}), ...(cfg || {}) };
+    if (merged.advanceTimers && STATE.onRealClock) STATE.onRealClock('fake timers with advanceTimers (real time)');
+    if (merged.now === undefined && clock.CLOCK) cfg = { ...(cfg || {}), now: clock.fakeNow() };
+    return use.call(this, cfg);
+  };
+  if (typeof ft.getRealSystemTime === 'function') {
+    const real = ft.getRealSystemTime;
+    ft.getRealSystemTime = function getRealSystemTime() {
+      return clock.CLOCK ? clock.fakeNow('getRealSystemTime') : real.call(this);
+    };
+  }
+  Object.defineProperty(ft, '__detjsVirtual', { value: true });
+}
+
 module.exports = async function detjsJestRunner(globalConfig, config, environment, runtime, testPath, sendMessageToJest) {
   const run = baseRunner(config);
   const c = controls.cfg();
@@ -81,6 +106,7 @@ module.exports = async function detjsJestRunner(globalConfig, config, environmen
     try {
       environment.fakeTimersModern = new environment.fakeTimersModern.constructor({ config, global: environment.global });
     } catch { /* keep Jest's instance */ }
+    if (c.controls.has('time')) virtualFakeClock(environment.fakeTimersModern, config);
   }
   const root = process.env.DETJS_ROOT || process.cwd();
   const fileId = path.relative(root, testPath).split(path.sep).join('/');

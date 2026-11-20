@@ -64,6 +64,10 @@ function installTimersBridge() {
         if (k === 'useFakeTimers') { f(); globalThis.Date = oursDate.__detjsReal || globalThis.Date; }
         const r = real.apply(this, a);
         if (k === 'useRealTimers') f();
+        // Bun's fake clock starts from the machine's time: start it from the virtual clock instead (audit G-0142)
+        if (k === 'useFakeTimers' && !(a[0] && a[0].now !== undefined) && typeof bt.setSystemTime === 'function' && clock.CLOCK && controls.STATE.testId !== null) {
+          try { bt.setSystemTime(new (clock.REAL.Date)(clock.fakeNow())); } catch { /* older Bun */ }
+        }
         return r;
       };
     }
