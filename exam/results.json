@@ -1,21 +1,33 @@
 {
  "exam": "go-live acceptance exam (exam/PLAN.md)",
- "run_id": "44736459205",
- "base_run": "44724576354",
+ "run_id": "44744172110",
+ "base_run": "44724576354 44736459205",
  "rows_rerun_in_run_id": [
-  "F-09",
-  "JS-01",
-  "JS-02",
-  "JS-03",
-  "JS-04",
-  "JS-05",
-  "JS-08",
+  "F-02",
+  "F-03",
   "PY-03",
-  "PY-04",
-  "PY-07"
+  "PY-04"
  ],
  "installed": {
-  "linux-x64/py3.12/node22": {
+  "44744172110": {
+   "ok": true,
+   "source": "ci-artifact",
+   "platform": "linux-x64",
+   "artifact": "engine-linux-x64",
+   "artifact_id": "14618872581",
+   "release_run": "44714888645",
+   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
+   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
+   "sha256": {
+    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
+    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
+    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
+    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
+    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
+    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
+   }
+  },
+  "44724576354": {
    "ok": true,
    "source": "ci-artifact",
    "platform": "linux-x64",
@@ -23,7 +35,7 @@
    "release_run": "44714888645",
    "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
   },
-  "linux-x64/py3.13/node22/vitest4": {
+  "44736459205": {
    "ok": true,
    "source": "ci-artifact",
    "platform": "linux-x64",
@@ -40,190 +52,6 @@
     "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
     "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
    }
-  },
-  "linux-x64/py3.13/node22/jest29": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/jest30": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
-  },
-  "linux-x64/py3.13/node24": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/npm": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/pnpm": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/yarn-classic": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/yarn-berry": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.14/node22": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
-  },
-  "linux-x64/py3.13/node26": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
-  },
-  "linux-x64/py3.13/node22/vitest3": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "artifact_id": "14618872581",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0",
-   "version": "fenvix release-1;detpy 0.1.0;detjs 0.1.0;fenvix-go present;fenvix-skip present;fenvix-agent.jar present;",
-   "sha256": {
-    "detjs.linux-x64.node": "051e1e7aff71a4cb7e98ad7c8cbca186eb8bcf3f1858bad1242ca74cc9eb5e45",
-    "detpy-0.1.0-cp39-abi3-linux_x86_64.whl": "846247d74f42beeff4aa343fcb1c624bd5065c875b98fa174146722eada03d57",
-    "fenvix-agent.jar": "736d7a58c5ec9e89e6c57dad37a9f1d3121b39b39e3f101a7534403662ab3c89",
-    "fenvix-go": "1d7a207c4aec5df0f7da95e0eec03cbed6cf9294c3d66b5217a93e9c9d305494",
-    "fenvix-skip": "821e8864cb65fb608c689fe22583476ec2eb8837ab733e855c15d6ec543dc1a0",
-    "libfenvix_go.a": "719cdd02525572904404ec608c16abfcba1d48932b26fbc529b091f0d7accc66"
-   }
-  },
-  "linux-x64/py3.13/node22/pytest9": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
-  },
-  "linux-x64/py3.13/node22/pytest8": {
-   "ok": true,
-   "source": "ci-artifact",
-   "platform": "linux-x64",
-   "artifact": "engine-linux-x64",
-   "release_run": "44714888645",
-   "release_commit": "644a455bd19a8bc7149e43c05b1fc2c77059fde0"
   }
  },
  "decisions": [
@@ -231,11 +59,11 @@
   "MCP gaps belong to F-14 (remote MCP server), not examined here"
  ],
  "summary": {
-  "rows": 25,
+  "rows": 24,
   "pass": 5,
-  "fail": 20,
-  "checks": 424,
-  "checks_passed": 227,
+  "fail": 19,
+  "checks": 423,
+  "checks_passed": 233,
   "gaps_in_scope": 207,
   "gaps_closed": 41,
   "gaps_out_of_scope": 410,
@@ -657,15 +485,15 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "F-02 linux-x64 py3.12 node22",
-     "job_id": null,
-     "run_id": "44724576354",
-     "seconds": 533,
+     "job_id": 136319219947,
+     "run_id": "44744172110",
+     "seconds": 337,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261111.370.1"
+      "image_version": "20261116.133.1"
      }
     }
    },
@@ -676,7 +504,7 @@
      "ok": false,
      "expected": "`fenvix repro|explore|replay --help` exit 0",
      "observed": "`fenvix <cmd> --help` exit codes {'repro': 2, 'explore': 2, 'replay': 2}",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -685,7 +513,7 @@
      "ok": false,
      "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
      "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt'], tail:   first diverging event vs a passing run: outcome-only: identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe |   replay: pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt |   25 py)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -694,7 +522,7 @@
      "ok": true,
      "expected": "the printed replay command fails 10/10 with the same fingerprint",
      "observed": "replay command printed by detpy (`pytest --det --det-seed=5 --det-order=.detpy/repro/test_implements_no_implementation_getter-8f379f06/order.txt`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -703,7 +531,7 @@
      "ok": false,
      "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
      "observed": "`fenvix explore --budget 5` rc=2; target named: False",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -711,8 +539,8 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
-     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt'], tail:   first diverging event vs a passing run: outcome-only: identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe |   replay: pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt |   14 pytest runs, 11.57 s)",
-     "run_id": "44724576354",
+     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt'], tail:   first diverging event vs a passing run: outcome-only: identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe |   replay: pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt |   14 pytest runs, 7.7 s)",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -721,7 +549,7 @@
      "ok": true,
      "expected": "the printed replay command fails 10/10 with the same fingerprint",
      "observed": "replay command printed by detpy (`pytest --det --det-order=.detpy/repro/test_create_md_file-f87fe7e0/order.txt`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -730,7 +558,7 @@
      "ok": false,
      "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
      "observed": "`fenvix explore --budget 5` rc=2; target named: False",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -738,8 +566,8 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
-     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt'], tail:   first diverging event vs a passing run: outcome-only: identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe |   replay: pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt |   41 pytest runs, 121.01 )",
-     "run_id": "44724576354",
+     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=0, replay printed: ['pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt'], tail:   first diverging event vs a passing run: outcome-only: identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe |   replay: pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt |   41 pytest runs, 74.36 s)",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -748,7 +576,7 @@
      "ok": true,
      "expected": "the printed replay command fails 10/10 with the same fingerprint",
      "observed": "replay command printed by detpy (`pytest --det --det-seed=21 --det-order=.detpy/repro/test_rule_without_fix-7173b585/order.txt`), run 10x through fenvix: 10/10 failed; verify of the 10 traces rc=0 (0 = one fingerprint)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -757,7 +585,7 @@
      "ok": false,
      "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
      "observed": "`fenvix explore --budget 5` rc=2; target named: False",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -765,8 +593,8 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "`fenvix repro <test>` fails 10/10 with one fingerprint and prints a replay command",
-     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=1, replay printed: [], tail: detpy repro: examples/test_gen_each_case.py::TestUnittest::test_foo_bar: not-found |   51 pytest runs, 255.88 s)",
-     "run_id": "44724576354",
+     "observed": "`fenvix repro` rc=2 replay command printed: []; (evidence only: `python -m detpy repro` rc=1, replay printed: [], tail: detpy repro: examples/test_gen_each_case.py::TestUnittest::test_foo_bar: not-found |   51 pytest runs, 156.42 s)",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -775,7 +603,7 @@
      "ok": false,
      "expected": "the printed replay command fails 10/10 with the same fingerprint",
      "observed": "not run: neither `fenvix repro` nor the engine's own repro printed a replay command",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -784,7 +612,7 @@
      "ok": false,
      "expected": "`fenvix explore --budget 5` finds the target and writes a bundle",
      "observed": "`fenvix explore --budget 5` rc=2; target named: False",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -793,7 +621,16 @@
      "ok": false,
      "expected": "`fenvix repro` on a Vitest order-dependent test fails 10/10 and prints a replay command",
      "observed": "`fenvix repro` on a Vitest test rc=2; `fenvix node repro` rc=2 (usage: detjs vitest|jest|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [run)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
+     "job": "F-02 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-02.node-replay",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "a Node repro bundle replays 10/10 with one fingerprint through `fenvix replay`",
+     "observed": "`fenvix replay` rc=2; `fenvix node replay` rc=2: no Node bundle to replay exists because no Node repro writes one",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -802,7 +639,7 @@
      "ok": false,
      "expected": "`fenvix explore` runs on a Vitest project",
      "observed": "rc=2: fenvix: unknown command 'explore' (fenvix --help)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22"
     },
     {
@@ -811,7 +648,7 @@
      "ok": false,
      "expected": "order-dependent pair (polluter writes a shared dict) in a test module importing numpy: fenvix repro proves 10/10 with one fingerprint, names the polluter, and the reported first divergent event is not a numpy os.urandom import event",
      "observed": "`fenvix repro` rc=2: fenvix: unknown command 'repro' (fenvix --help)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-02 linux-x64 py3.12 node22",
      "gaps": [
       "G-0177",
@@ -822,6 +659,7 @@
    "failed": [
     "F-02.cli @ linux-x64/py3.12/node22",
     "F-02.node-explore @ linux-x64/py3.12/node22",
+    "F-02.node-replay @ linux-x64/py3.12/node22",
     "F-02.node-repro @ linux-x64/py3.12/node22",
     "F-02.probe.numpy-repro @ linux-x64/py3.12/node22",
     "F-02.py-explore.idoft-accessify @ linux-x64/py3.12/node22",
@@ -835,13 +673,13 @@
     "F-02.py-repro.idoft-py-autodoc @ linux-x64/py3.12/node22"
    ],
    "missing_legs": [],
-   "n_checks": 16,
+   "n_checks": 17,
    "n_passed": 3,
    "gaps": {
     "total": 16,
     "closed": 0,
-    "open": 13,
-    "no_check_ran": 3
+    "open": 16,
+    "no_check_ran": 0
    }
   },
   "F-03": {
@@ -849,15 +687,15 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "F-03 linux-x64 py3.13 node22",
-     "job_id": null,
-     "run_id": "44724576354",
-     "seconds": 60,
+     "job_id": 136319220479,
+     "run_id": "44744172110",
+     "seconds": 59,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261111.127.1"
+      "image_version": "20261116.133.1"
      }
     }
    },
@@ -868,7 +706,7 @@
      "ok": true,
      "expected": "two identical --det runs: verify identical, exit 0",
      "observed": "python: rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; node: rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -877,7 +715,7 @@
      "ok": false,
      "expected": "runs differing only in tz: divergent, first divergent event names tz",
      "observed": "values [\"['2024-04-16T21:19:20.000001+00:00', '00 UTC']\", \"['2024-04-17T06:19:20.000001+09:00', '09 JST']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -886,7 +724,7 @@
      "ok": false,
      "expected": "Node runs differing only in tz: divergent at the tz event",
      "observed": "values ['[\"Thu Jan 01 1970 00:00:00 GMT+0000 (Coordinated Universal Time)\",0,\"UTC\"]', '[\"Thu Jan 01 1970 09:00:00 GMT+0900 (Japan Standard Time)\",9,\"Asia/Tokyo\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -895,7 +733,7 @@
      "ok": false,
      "expected": "runs differing only in locale: divergent, first divergent event names locale",
      "observed": "values [\"[('C', 'UTF-8'), '1234.5']\", \"[('de_DE', 'UTF-8'), '1.234,5']\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -904,7 +742,7 @@
      "ok": false,
      "expected": "Node runs differing only in locale: divergent at the locale event",
      "observed": "values ['[\"1,234.5\",\"en-US\"]', '[\"1.234,5\",\"de-DE\"]']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -913,7 +751,7 @@
      "ok": false,
      "expected": "runs differing only in env: divergent, first divergent event names env",
      "observed": "values [\"'a'\", \"'b'\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -922,7 +760,7 @@
      "ok": false,
      "expected": "Node runs differing only in env: divergent at the env event",
      "observed": "values ['\"a\"', '\"b\"']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent events []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -931,7 +769,7 @@
      "ok": false,
      "expected": "a child whose output differs: divergent, first event is the child's",
      "observed": "values ['a\\n', 'b\\n']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first divergent []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -939,8 +777,8 @@
      "leg": "linux-x64/py3.13/node22",
      "ok": true,
      "expected": "os.urandom (beyond L0) in two runs: divergent at the entropy event",
-     "observed": "values differ: True; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 1}}; first ['{\"run_a\": 0, \"run_b\": 1, \"index\": 0, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"entropy\", \"o\": \"os.urandom\", \"at\": \"tests/test_exam_vurandom.py:4\", \"v\": \"8:425e8a00c46e8d999d3e1cf8e43bf5c0\"}, \"event_b\": {\"t\": 0, \"s\": \"entropy\", \"o\": \"os.urandom\", \"at\": \"tests/test_exam_vurandom.py:4\", \"v\": \"8:67a2a9b']",
-     "run_id": "44724576354",
+     "observed": "values differ: True; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 1}}; first ['{\"run_a\": 0, \"run_b\": 1, \"index\": 0, \"window\": null, \"event_a\": {\"t\": 0, \"s\": \"entropy\", \"o\": \"os.urandom\", \"at\": \"tests/test_exam_vurandom.py:4\", \"v\": \"8:04e1a575044fbf777d6e69b88628ba85\"}, \"event_b\": {\"t\": 0, \"s\": \"entropy\", \"o\": \"os.urandom\", \"at\": \"tests/test_exam_vurandom.py:4\", \"v\": \"8:bb48f6b']",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -949,7 +787,7 @@
      "ok": true,
      "expected": "runs whose thread order differed are never 'identical'",
      "observed": "one outcome over 6 runs; verify rc=0",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -958,7 +796,16 @@
      "ok": false,
      "expected": "Node child output differs: divergent at the child event",
      "observed": "values ['\"a\\\\n\"', '\"b\\\\n\"']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; first []",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
+     "job": "F-03 linux-x64 py3.13 node22"
+    },
+    {
+     "id": "F-03.node-random",
+     "leg": "linux-x64/py3.13/node22",
+     "ok": false,
+     "expected": "Node async crypto.randomFill/randomInt: controlled, or verify reports the entropy divergence",
+     "observed": "async crypto values differ ['[[53,228,145,139,15,23,14,96],939880]', '[[158,122,228,81,120,33,117,6],838449]']; verify must report divergence: rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -966,8 +813,8 @@
      "leg": "linux-x64/py3.13/node22",
      "ok": false,
      "expected": "Node worker_threads randomness differs: never 'identical'",
-     "observed": "worker values ['0.6252559515572578', '0.29293742483159746']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}",
-     "run_id": "44724576354",
+     "observed": "worker values ['0.8403850099270183', '0.3540111937377335']; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22"
     },
     {
@@ -976,7 +823,7 @@
      "ok": false,
      "expected": "Vitest workspace with two projects running the same file (jsdom and node env), one printing a project-dependent value: the trace keeps both parts (2x tests) and verify compares both; a divergence in either project is reported",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22",
      "gaps": [
       "G-0100"
@@ -988,7 +835,7 @@
      "ok": false,
      "expected": "Node test starts 20 concurrent fs.readFile calls and two concurrent local HTTP requests (Promise.race) and records completion order; 20 --det runs: if the orders differ, fenvix verify reports divergence (never 'covered by Level 0' / identical)",
      "observed": "10 completion orders over 10 runs; verify rc=0 (must not be 0)",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22",
      "gaps": [
       "G-0150",
@@ -1001,7 +848,7 @@
      "ok": false,
      "expected": "two identical --det runs of a test module importing numpy (and of an xdist -n 2 run): fenvix verify identical, no NOT-COVERED [entropy] on the first test of the process/worker",
      "observed": "values ['0.12916905879044205', '0.12916905879044205']; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 1}}",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22",
      "gaps": [
       "G-0179"
@@ -1013,7 +860,7 @@
      "ok": false,
      "expected": "Node setup file makes globalThis.Date non-configurable before detjs installs its controls; a test prints Date.now(): the run must say on the console (not only in the trace header) that the time control is missing, and verify of two runs with different values must not say identical",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22",
      "gaps": [
       "G-0181"
@@ -1025,7 +872,7 @@
      "ok": false,
      "expected": "Vitest browser-mode project (Chromium) with 2 tests: two --det traces; fenvix verify must not exit 0 'identical/covered' for traces that observed 0 of the tests that ran",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44724576354",
+     "run_id": "44744172110",
      "job": "F-03 linux-x64 py3.13 node22",
      "gaps": [
       "G-0037"
@@ -1039,6 +886,7 @@
     "F-03.node-child @ linux-x64/py3.13/node22",
     "F-03.node-env @ linux-x64/py3.13/node22",
     "F-03.node-locale @ linux-x64/py3.13/node22",
+    "F-03.node-random @ linux-x64/py3.13/node22",
     "F-03.node-thread @ linux-x64/py3.13/node22",
     "F-03.node-tz @ linux-x64/py3.13/node22",
     "F-03.probe.multi-project @ linux-x64/py3.13/node22",
@@ -1049,13 +897,13 @@
     "F-03.tz.python @ linux-x64/py3.13/node22"
    ],
    "missing_legs": [],
-   "n_checks": 17,
+   "n_checks": 18,
    "n_passed": 3,
    "gaps": {
     "total": 11,
     "closed": 0,
-    "open": 9,
-    "no_check_ran": 2
+    "open": 11,
+    "no_check_ran": 0
    }
   },
   "F-05": {
@@ -2017,7 +1865,7 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "F-09 linux-x64 py3.13 node22",
-     "job_id": 136290127516,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 55,
      "install_ok": true,
@@ -2123,71 +1971,6 @@
     "no_check_ran": 0
    }
   },
-  "F-10": {
-   "status": "FAIL",
-   "legs": {
-    "linux-x64/py3.12/node22": {
-     "job": "F-10 linux-x64 py3.12 node22",
-     "job_id": null,
-     "run_id": "44724576354",
-     "seconds": 7,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.133.1"
-     }
-    }
-   },
-   "checks": [
-    {
-     "id": "F-10.pip",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "`pip install fenvix` succeeds; `fenvix version` prints the engine; `pytest --det` works",
-     "observed": "pip install fenvix rc=1 (ERROR: No matching distribution found for fenvix); fenvix version rc=None; --det in pytest: False",
-     "run_id": "44724576354",
-     "job": "F-10 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "F-10.npm",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "`npm install -D fenvix` succeeds; `npx fenvix version` prints the engine",
-     "observed": "npm install -D fenvix rc=1 (npm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-20T12_05_42_491Z-debug-0.log); npx fenvix version rc=None: ",
-     "run_id": "44724576354",
-     "job": "F-10 linux-x64 py3.12 node22"
-    },
-    {
-     "id": "F-10.not-foreign",
-     "leg": "linux-x64/py3.12/node22",
-     "ok": false,
-     "expected": "after `pip install fenvix`, the PyPI `detpy` does not shadow the engine",
-     "observed": "pip install fenvix detpy rc=1; `import detpy` is ours: False (Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'detpy')",
-     "run_id": "44724576354",
-     "job": "F-10 linux-x64 py3.12 node22",
-     "gaps": [
-      "G-0170",
-      "G-0521"
-     ]
-    }
-   ],
-   "failed": [
-    "F-10.not-foreign @ linux-x64/py3.12/node22",
-    "F-10.npm @ linux-x64/py3.12/node22",
-    "F-10.pip @ linux-x64/py3.12/node22"
-   ],
-   "missing_legs": [],
-   "n_checks": 3,
-   "n_passed": 0,
-   "gaps": {
-    "total": 0,
-    "closed": 0,
-    "open": 0,
-    "no_check_ran": 0
-   }
-  },
   "F-18": {
    "status": "FAIL",
    "legs": {
@@ -2271,7 +2054,7 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "JS-01 linux-x64 py3.13 node22",
-     "job_id": 136290127558,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 54,
      "install_ok": true,
@@ -2284,7 +2067,7 @@
     },
     "linux-x64/py3.13/node24": {
      "job": "JS-01 linux-x64 py3.13 node24",
-     "job_id": 136290127519,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 44,
      "install_ok": true,
@@ -2297,7 +2080,7 @@
     },
     "linux-x64/py3.13/node26": {
      "job": "JS-01 linux-x64 py3.13 node26",
-     "job_id": 136290127675,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 40,
      "install_ok": true,
@@ -2460,9 +2243,22 @@
   "JS-02": {
    "status": "FAIL",
    "legs": {
+    "linux-x64/py3.13/node22/vitest3": {
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
+     "job_id": null,
+     "run_id": "44736459205",
+     "seconds": 81,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261111.370.1"
+     }
+    },
     "linux-x64/py3.13/node22/vitest4": {
      "job": "JS-02 linux-x64 py3.13 node22 vitest4",
-     "job_id": 136290127468,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 106,
      "install_ok": true,
@@ -2475,7 +2271,7 @@
     },
     "linux-x64/py3.13/node22/jest29": {
      "job": "JS-02 linux-x64 py3.13 node22 jest29",
-     "job_id": 136290127564,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 124,
      "install_ok": true,
@@ -2488,7 +2284,7 @@
     },
     "linux-x64/py3.13/node22/jest30": {
      "job": "JS-02 linux-x64 py3.13 node22 jest30",
-     "job_id": 136290127535,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 144,
      "install_ok": true,
@@ -2498,22 +2294,111 @@
       "image": "ubuntu24",
       "image_version": "20261116.376.1"
      }
-    },
-    "linux-x64/py3.13/node22/vitest3": {
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
-     "job_id": 136290127849,
-     "run_id": "44736459205",
-     "seconds": 81,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261111.370.1"
-     }
     }
    },
    "checks": [
+    {
+     "id": "JS-02.det2.vitest3.ufo",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
+    },
+    {
+     "id": "JS-02.cache2.vitest3.ufo",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
+     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
+    },
+    {
+     "id": "JS-02.det2.vitest3.zustand",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 135, \"stable\": 135, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
+    },
+    {
+     "id": "JS-02.cache2.vitest3.zustand",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": false,
+     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
+     "observed": "run 2 reused 0 (needed >= 67 of 135 passing); outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
+    },
+    {
+     "id": "JS-02.seed.vitest3",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "--det --det-seed=5 twice: same order digest, outcomes equal",
+     "observed": "order digests ['f065bcc24b620d8bbf909a75824950bc', 'f065bcc24b620d8bbf909a75824950bc']; outcomes equal True",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
+    },
+    {
+     "id": "JS-02.probe.browser-mode",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": false,
+     "expected": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)",
+     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
+     "gaps": [
+      "G-0036",
+      "G-0308",
+      "G-0407"
+     ]
+    },
+    {
+     "id": "JS-02.probe.config-variants",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain",
+     "observed": "per pool (controlled, values): {'vmThreads': (True, ['[1735689600000,0.6719827893616545]', '[1735689600000,0.6719827893616545]']), 'vmForks': (True, ['[1735689600000,0.6703883246449374]', '[1735689600000,0.6703883246449374]'])}",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
+     "gaps": [
+      "G-0309",
+      "G-0310",
+      "G-0401",
+      "G-0402",
+      "G-0403",
+      "G-0404",
+      "G-0453",
+      "G-0461"
+     ]
+    },
+    {
+     "id": "JS-02.probe.jasmine2",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": false,
+     "expected": "Jest 29 project with testRunner 'jest-jasmine2': DET2 gives per-test brackets (trace lists every test, per-test fingerprints) and --det-seed runs reproduce",
+     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
+     "gaps": [
+      "G-0408"
+     ]
+    },
+    {
+     "id": "JS-02.probe.stack-depth",
+     "leg": "linux-x64/py3.13/node22/vitest3",
+     "ok": true,
+     "expected": "Vitest and Jest test recursing to a depth that passes in plain (e.g. 90% of the measured plain limit) passes under --det",
+     "observed": "1 files / 1 tests in plain; differing files 0 []",
+     "run_id": "44736459205",
+     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
+     "gaps": [
+      "G-0098"
+     ]
+    },
     {
      "id": "JS-02.det2.vitest4.ufo",
      "leg": "linux-x64/py3.13/node22/vitest4",
@@ -2819,108 +2704,6 @@
      "gaps": [
       "G-0098"
      ]
-    },
-    {
-     "id": "JS-02.det2.vitest3.ufo",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 471, \"stable\": 471, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
-    },
-    {
-     "id": "JS-02.cache2.vitest3.ufo",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests in plain; differing files 0 []",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
-    },
-    {
-     "id": "JS-02.det2.vitest3.zustand",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "two --det runs verify identical (0 divergent, 0 missing) and outcomes equal a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 135, \"stable\": 135, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
-    },
-    {
-     "id": "JS-02.cache2.vitest3.zustand",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": false,
-     "expected": "second --det-cache run reuses >= 50% of passing tests with proof; outcomes equal the plain run's",
-     "observed": "run 2 reused 0 (needed >= 67 of 135 passing); outcomes vs plain: 12 files / 139 tests in plain; differing files 0 []",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
-    },
-    {
-     "id": "JS-02.seed.vitest3",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "--det --det-seed=5 twice: same order digest, outcomes equal",
-     "observed": "order digests ['f065bcc24b620d8bbf909a75824950bc', 'f065bcc24b620d8bbf909a75824950bc']; outcomes equal True",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3"
-    },
-    {
-     "id": "JS-02.probe.browser-mode",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": false,
-     "expected": "Vitest 3/4 browser-mode project (Chromium) test prints Date.now() and Math.random() and depends on --det-seed order: two --det runs give equal values and a traced test count equal to the tests run, or the engine refuses browser mode with a named reason (no 'Level 0 active' banner without control)",
-     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
-     "gaps": [
-      "G-0036",
-      "G-0308",
-      "G-0407"
-     ]
-    },
-    {
-     "id": "JS-02.probe.config-variants",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "Vitest with pool vmThreads, pool vmForks, isolate:false, browser mode, and Jest with a custom runner (jest-light-runner): under --det the realm values (Date.now, Math.random) are controlled or the engine refuses with a named reason; --det-cache reuses with proof or prints the refusal reason on the console; outcomes equal plain",
-     "observed": "per pool (controlled, values): {'vmThreads': (True, ['[1735689600000,0.6719827893616545]', '[1735689600000,0.6719827893616545]']), 'vmForks': (True, ['[1735689600000,0.6703883246449374]', '[1735689600000,0.6703883246449374]'])}",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
-     "gaps": [
-      "G-0309",
-      "G-0310",
-      "G-0401",
-      "G-0402",
-      "G-0403",
-      "G-0404",
-      "G-0453",
-      "G-0461"
-     ]
-    },
-    {
-     "id": "JS-02.probe.jasmine2",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": false,
-     "expected": "Jest 29 project with testRunner 'jest-jasmine2': DET2 gives per-test brackets (trace lists every test, per-test fingerprints) and --det-seed runs reproduce",
-     "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
-     "gaps": [
-      "G-0408"
-     ]
-    },
-    {
-     "id": "JS-02.probe.stack-depth",
-     "leg": "linux-x64/py3.13/node22/vitest3",
-     "ok": true,
-     "expected": "Vitest and Jest test recursing to a depth that passes in plain (e.g. 90% of the measured plain limit) passes under --det",
-     "observed": "1 files / 1 tests in plain; differing files 0 []",
-     "run_id": "44736459205",
-     "job": "JS-02 linux-x64 py3.13 node22 vitest3",
-     "gaps": [
-      "G-0098"
-     ]
     }
    ],
    "failed": [
@@ -2949,7 +2732,7 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "JS-03 linux-x64 py3.13 node22",
-     "job_id": 136290127579,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 245,
      "install_ok": true,
@@ -3160,7 +2943,7 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "JS-04 linux-x64 py3.13 node22",
-     "job_id": 136290127552,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 23,
      "install_ok": true,
@@ -3320,7 +3103,7 @@
    "legs": {
     "linux-x64/py3.13/node22": {
      "job": "JS-05 linux-x64 py3.13 node22",
-     "job_id": 136290127565,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 182,
      "install_ok": true,
@@ -3333,7 +3116,7 @@
     },
     "linux-x64/py3.13/node24": {
      "job": "JS-05 linux-x64 py3.13 node24",
-     "job_id": 136290127545,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 131,
      "install_ok": true,
@@ -3828,7 +3611,7 @@
    "legs": {
     "linux-x64/py3.13/node22/npm": {
      "job": "JS-08 linux-x64 py3.13 node22 npm",
-     "job_id": 136290127554,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 24,
      "install_ok": true,
@@ -3841,7 +3624,7 @@
     },
     "linux-x64/py3.13/node22/pnpm": {
      "job": "JS-08 linux-x64 py3.13 node22 pnpm",
-     "job_id": 136290127482,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 21,
      "install_ok": true,
@@ -3854,7 +3637,7 @@
     },
     "linux-x64/py3.13/node22/yarn-classic": {
      "job": "JS-08 linux-x64 py3.13 node22 yarn-classic",
-     "job_id": 136290127623,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 34,
      "install_ok": true,
@@ -3867,7 +3650,7 @@
     },
     "linux-x64/py3.13/node22/yarn-berry": {
      "job": "JS-08 linux-x64 py3.13 node22 yarn-berry",
-     "job_id": 136290127568,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 26,
      "install_ok": true,
@@ -4431,28 +4214,28 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "PY-03 linux-x64 py3.12 node22",
-     "job_id": 136290127561,
-     "run_id": "44736459205",
-     "seconds": 329,
+     "job_id": 136319220077,
+     "run_id": "44744172110",
+     "seconds": 455,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.376.1"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "PY-03 linux-x64 py3.14 node22",
+     "job_id": 136319219994,
+     "run_id": "44744172110",
+     "seconds": 285,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
       "image_version": "20261116.133.1"
-     }
-    },
-    "linux-x64/py3.14/node22": {
-     "job": "PY-03 linux-x64 py3.14 node22",
-     "job_id": 136290127521,
-     "run_id": "44736459205",
-     "seconds": 295,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261111.127.1"
      }
     }
    },
@@ -4463,7 +4246,7 @@
      "ok": true,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 828, \"stable\": 828, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'ran': 828} vs engine {'rc': 0, 'ran': 828}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4472,7 +4255,7 @@
      "ok": true,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 495; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4481,7 +4264,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 7, \"stable\": 2, \"diverged\": 5, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 4, \"thread\": 1}}; plain {'rc': 0, 'ran': 7} vs engine {'rc': 0, 'ran': 7}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4490,7 +4273,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4498,8 +4281,8 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
-     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 331, \"stable\": 329, \"diverged\": 2, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 2}}; plain {'rc': 0, 'ran': 331} vs engine {'rc': 0, 'ran': 331}",
-     "run_id": "44736459205",
+     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 331, \"stable\": 327, \"diverged\": 4, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 2, \"time\": 2}}; plain {'rc': 0, 'ran': 331} vs engine {'rc': 0, 'ran': 331}",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4508,7 +4291,7 @@
      "ok": true,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 91; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4517,7 +4300,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 389, \"stable\": 275, \"diverged\": 114, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 114}}; plain {'rc': 0} vs engine {'rc': 0}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4526,7 +4309,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4535,7 +4318,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1365, \"stable\": 1365, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'ran': 1361} vs engine {'rc': 0, 'ran': 1365}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4544,16 +4327,16 @@
      "ok": true,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 1365; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
      "id": "PY-03.doctest.det2",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 35, \"stable\": 35, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'passed': 98, 'failed': 0} vs engine {'rc': 0, 'ran': 35}",
-     "run_id": "44736459205",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 35, \"stable\": 35, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0} vs engine {'rc': 0}",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4562,7 +4345,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4571,7 +4354,7 @@
      "ok": false,
      "expected": "`fenvix repro <test> --runner <unittest|django|nose2|ward|zope|doctest>` exists",
      "observed": "`fenvix repro --help` rc=2 (fenvix: unknown command 'repro' (fenvix --help)); engine `python -m detpy repro` has a --runner option: False (pytest only otherwise)",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22"
     },
     {
@@ -4580,7 +4363,7 @@
      "ok": false,
      "expected": "Django (manage.py test and pytest-django) test reads a static file through staticfiles finders after an earlier test warmed the storage; change the file: --det-cache run 2 does not reuse it, outcome equals plain",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22",
      "gaps": [
       "G-0110"
@@ -4592,7 +4375,7 @@
      "ok": false,
      "expected": "ward module-scoped fixture mutated by test A, test B asserts on it; edit A: --det-cache run 2 does not reuse B, outcome equals plain",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.12 node22",
      "gaps": [
       "G-0112"
@@ -4604,7 +4387,7 @@
      "ok": true,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 828, \"stable\": 828, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'ran': 828} vs engine {'rc': 0, 'ran': 828}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4613,7 +4396,7 @@
      "ok": true,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 495; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4622,7 +4405,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 7, \"stable\": 2, \"diverged\": 5, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 4, \"thread\": 1}}; plain {'rc': 0, 'ran': 7} vs engine {'rc': 0, 'ran': 7}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4631,7 +4414,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4640,7 +4423,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 331, \"stable\": 306, \"diverged\": 25, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 25}}; plain {'rc': 0, 'ran': 331} vs engine {'rc': 0, 'ran': 331}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4649,7 +4432,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 91; rc plain=0 run1=1 run2=1",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4658,7 +4441,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "BASELINE: the plain runner fails on this project/leg; verify: rc=0 summary={\"runs\": 2, \"tests\": 0, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 1} vs engine {'rc': 1}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4667,7 +4450,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=1 run1=1 run2=1",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4676,7 +4459,7 @@
      "ok": false,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
      "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1365, \"stable\": 1365, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'ran': 1361} vs engine {'rc': 0, 'ran': 1365}",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4685,16 +4468,16 @@
      "ok": true,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 1365; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
      "id": "PY-03.doctest.det2",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "two --det runs verify identical; exit status and counts equal the plain runner's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 35, \"stable\": 35, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0, 'passed': 113} vs engine {'rc': 0, 'ran': 35}",
-     "run_id": "44736459205",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 35, \"stable\": 35, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; plain {'rc': 0} vs engine {'rc': 0}",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4703,7 +4486,7 @@
      "ok": false,
      "expected": "second --det-cache run reuses >= 1 test with proof; exit status equals plain",
      "observed": "run 2 reused 0; rc plain=0 run1=0 run2=0",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4712,7 +4495,7 @@
      "ok": false,
      "expected": "`fenvix repro <test> --runner <unittest|django|nose2|ward|zope|doctest>` exists",
      "observed": "`fenvix repro --help` rc=2 (fenvix: unknown command 'repro' (fenvix --help)); engine `python -m detpy repro` has a --runner option: False (pytest only otherwise)",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22"
     },
     {
@@ -4721,7 +4504,7 @@
      "ok": false,
      "expected": "Django (manage.py test and pytest-django) test reads a static file through staticfiles finders after an earlier test warmed the storage; change the file: --det-cache run 2 does not reuse it, outcome equals plain",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22",
      "gaps": [
       "G-0110"
@@ -4733,7 +4516,7 @@
      "ok": false,
      "expected": "ward module-scoped fixture mutated by test A, test B asserts on it; edit A: --det-cache run 2 does not reuse B, outcome equals plain",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44736459205",
+     "run_id": "44744172110",
      "job": "PY-03 linux-x64 py3.14 node22",
      "gaps": [
       "G-0112"
@@ -4747,8 +4530,6 @@
     "PY-03.django.det2 @ linux-x64/py3.14/node22",
     "PY-03.doctest.cache2 @ linux-x64/py3.12/node22",
     "PY-03.doctest.cache2 @ linux-x64/py3.14/node22",
-    "PY-03.doctest.det2 @ linux-x64/py3.12/node22",
-    "PY-03.doctest.det2 @ linux-x64/py3.14/node22",
     "PY-03.nose2.cache2 @ linux-x64/py3.14/node22",
     "PY-03.nose2.det2 @ linux-x64/py3.12/node22",
     "PY-03.nose2.det2 @ linux-x64/py3.14/node22",
@@ -4767,12 +4548,12 @@
    ],
    "missing_legs": [],
    "n_checks": 30,
-   "n_passed": 7,
+   "n_passed": 9,
    "gaps": {
     "total": 8,
     "closed": 0,
-    "open": 3,
-    "no_check_ran": 5
+    "open": 8,
+    "no_check_ran": 0
    }
   },
   "PY-04": {
@@ -4780,28 +4561,28 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "PY-04 linux-x64 py3.12 node22",
-     "job_id": 136290127633,
-     "run_id": "44736459205",
-     "seconds": 41,
+     "job_id": 136319219981,
+     "run_id": "44744172110",
+     "seconds": 47,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261116.376.1"
+      "image_version": "20261116.133.1"
      }
     },
     "linux-x64/py3.14/node22": {
      "job": "PY-04 linux-x64 py3.14 node22",
-     "job_id": 136290127530,
-     "run_id": "44736459205",
-     "seconds": 43,
+     "job_id": 136319220075,
+     "run_id": "44744172110",
+     "seconds": 53,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261111.127.1"
+      "image_version": "20261116.133.1"
      }
     }
    },
@@ -4811,17 +4592,17 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 0, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 350, \"stable\": 346, \"diverged\": 4, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 4}}; outcomes vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.12 node22"
     },
     {
      "id": "PY-04.cache2.django-model-utils",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "run 2 reused 0 of 0 passing (needed >= 1); outcomes vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "run 2 reused 219 of 346 passing (needed >= 173); outcomes vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.12 node22"
     },
     {
@@ -4829,17 +4610,17 @@
      "leg": "linux-x64/py3.12/node22",
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, outcomes equal a plain rerun",
-     "observed": "edit: tests/models.py: first STATUS choice 'draft' -> 'drafted'; plain outcome changed for 0 tests []; run 2 reused 0, ran 0; outcomes vs plain rerun: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "edit: tests/models.py: first STATUS choice 'draft' -> 'drafted'; plain outcome changed for 0 tests []; run 2 reused 219, ran 131; outcomes vs plain rerun: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.12 node22"
     },
     {
      "id": "PY-04.order",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "--det-seed=3 keeps pytest-django's groups; outcomes equal plain",
-     "observed": "--det-seed=3 vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "--det-seed=3 vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.12 node22"
     },
     {
@@ -4847,17 +4628,17 @@
      "leg": "linux-x64/py3.14/node22",
      "ok": false,
      "expected": "two --det runs verify identical (0 divergent, 0 missing) and the outcome map equals a plain run's",
-     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 0, \"stable\": 0, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}}; outcomes vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 350, \"stable\": 346, \"diverged\": 4, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"entropy\": 4}}; outcomes vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.14 node22"
     },
     {
      "id": "PY-04.cache2.django-model-utils",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "second --det-cache run reuses >= 50% of passing tests with proof; every outcome equals the plain run's",
-     "observed": "run 2 reused 0 of 0 passing (needed >= 1); outcomes vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "run 2 reused 219 of 346 passing (needed >= 173); outcomes vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.14 node22"
     },
     {
@@ -4865,33 +4646,29 @@
      "leg": "linux-x64/py3.14/node22",
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, outcomes equal a plain rerun",
-     "observed": "edit: tests/models.py: first STATUS choice 'draft' -> 'drafted'; plain outcome changed for 0 tests []; run 2 reused 0, ran 0; outcomes vs plain rerun: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "edit: tests/models.py: first STATUS choice 'draft' -> 'drafted'; plain outcome changed for 0 tests []; run 2 reused 219, ran 131; outcomes vs plain rerun: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.14 node22"
     },
     {
      "id": "PY-04.order",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "--det-seed=3 keeps pytest-django's groups; outcomes equal plain",
-     "observed": "--det-seed=3 vs plain: plain run produced no outcomes",
-     "run_id": "44736459205",
+     "observed": "--det-seed=3 vs plain: 350 engine / 350 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44744172110",
      "job": "PY-04 linux-x64 py3.14 node22"
     }
    ],
    "failed": [
-    "PY-04.cache2.django-model-utils @ linux-x64/py3.12/node22",
-    "PY-04.cache2.django-model-utils @ linux-x64/py3.14/node22",
     "PY-04.det2.django-model-utils @ linux-x64/py3.12/node22",
     "PY-04.det2.django-model-utils @ linux-x64/py3.14/node22",
     "PY-04.edit @ linux-x64/py3.12/node22",
-    "PY-04.edit @ linux-x64/py3.14/node22",
-    "PY-04.order @ linux-x64/py3.12/node22",
-    "PY-04.order @ linux-x64/py3.14/node22"
+    "PY-04.edit @ linux-x64/py3.14/node22"
    ],
    "missing_legs": [],
    "n_checks": 8,
-   "n_passed": 0,
+   "n_passed": 4,
    "gaps": {
     "total": 0,
     "closed": 0,
@@ -5386,7 +5163,7 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "PY-07 linux-x64 py3.12 node22",
-     "job_id": 136290127455,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 74,
      "install_ok": true,
@@ -5399,7 +5176,7 @@
     },
     "linux-x64/py3.14/node22": {
      "job": "PY-07 linux-x64 py3.14 node22",
-     "job_id": 136290127499,
+     "job_id": null,
      "run_id": "44736459205",
      "seconds": 48,
      "install_ok": true,
@@ -6585,16 +6362,20 @@
   "G-0132": {
    "row": "F-03",
    "check": "F-03.node-random",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "WRONG-RESULT",
-   "checks": []
+   "checks": [
+    "F-03.node-random @ linux-x64/py3.13/node22"
+   ]
   },
   "G-0133": {
    "row": "F-03",
    "check": "F-03.node-random",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "WRONG-RESULT",
-   "checks": []
+   "checks": [
+    "F-03.node-random @ linux-x64/py3.13/node22"
+   ]
   },
   "G-0134": {
    "row": "F-01",
@@ -7321,9 +7102,11 @@
   "G-0288": {
    "row": "F-02",
    "check": "F-02.node-replay",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
   },
   "G-0289": {
    "row": "JS-04",
@@ -7700,9 +7483,11 @@
   "G-0447": {
    "row": "F-02",
    "check": "F-02.node-replay",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
   },
   "G-0448": {
    "row": "F-02",
@@ -7716,9 +7501,11 @@
   "G-0449": {
    "row": "F-02",
    "check": "F-02.node-replay",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "F-02.node-replay @ linux-x64/py3.12/node22"
+   ]
   },
   "G-0453": {
    "row": "JS-02",
@@ -7855,9 +7642,12 @@
   "G-0532": {
    "row": "PY-03",
    "check": "PY-03.<runner>.repro",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "PY-03.repro @ linux-x64/py3.12/node22",
+    "PY-03.repro @ linux-x64/py3.14/node22"
+   ]
   },
   "G-0533": {
    "row": "PY-07",
@@ -7872,30 +7662,42 @@
   "G-0534": {
    "row": "PY-03",
    "check": "PY-03.<runner>.repro",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "PY-03.repro @ linux-x64/py3.12/node22",
+    "PY-03.repro @ linux-x64/py3.14/node22"
+   ]
   },
   "G-0536": {
    "row": "PY-03",
    "check": "PY-03.<runner>.repro",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "PY-03.repro @ linux-x64/py3.12/node22",
+    "PY-03.repro @ linux-x64/py3.14/node22"
+   ]
   },
   "G-0540": {
    "row": "PY-03",
    "check": "PY-03.<runner>.repro",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "PY-03.repro @ linux-x64/py3.12/node22",
+    "PY-03.repro @ linux-x64/py3.14/node22"
+   ]
   },
   "G-0542": {
    "row": "PY-03",
    "check": "PY-03.<runner>.repro",
-   "status": "NO-CHECK-RAN",
+   "status": "OPEN",
    "severity": "BLOCKS-USE",
-   "checks": []
+   "checks": [
+    "PY-03.repro @ linux-x64/py3.12/node22",
+    "PY-03.repro @ linux-x64/py3.14/node22"
+   ]
   },
   "G-0546": {
    "row": "PY-07",
