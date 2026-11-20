@@ -3,10 +3,10 @@
  "job": "hunt",
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
- "status": "ok",
- "run_id": "44704657024",
- "engine_commit": "10ee65be9516c5e9315ec66a84a212e711fa473f",
- "setup_s": 25,
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 58,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-20T08:52:00Z",
- "measured_at": "2026-11-20T08:52:39Z",
+ "epoch": "2026-11-20T17:35:00Z",
+ "measured_at": "2026-11-20T17:35:39Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
@@ -47,42 +47,6 @@
      ],
      [
       2,
-      "missing",
-      "",
-      null
-     ],
-     [
-      3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
-      "",
-      null
-     ],
-     [
-      7,
-      "missing",
-      "",
-      null
-     ],
-     [
-      8,
       "missing",
       "",
       null
@@ -111,42 +75,6 @@
       "missing",
       "",
       null
-     ],
-     [
-      3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
-      "",
-      null
-     ],
-     [
-      7,
-      "missing",
-      "",
-      null
-     ],
-     [
-      8,
-      "missing",
-      "",
-      null
      ]
     ],
     "seed": null,
@@ -172,42 +100,6 @@
       "missing",
       "",
       null
-     ],
-     [
-      3,
-      "missing",
-      "",
-      null
-     ],
-     [
-      4,
-      "missing",
-      "",
-      null
-     ],
-     [
-      5,
-      "missing",
-      "",
-      null
-     ],
-     [
-      6,
-      "missing",
-      "",
-      null
-     ],
-     [
-      7,
-      "missing",
-      "",
-      null
-     ],
-     [
-      8,
-      "missing",
-      "",
-      null
      ]
     ],
     "seed": null,
@@ -216,10 +108,6 @@
     "fingerprints": null,
     "reproduced": false
    }
-  ],
-  "reproduced": 0,
-  "found_seed": 0,
-  "n": 3
- },
- "elapsed_min": 338.0
+  ]
+ }
 }
