@@ -710,7 +710,8 @@ class Capture:
         if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
-            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
+            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep or \
+                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", (os.environ.get("TMPDIR") or "\0").rstrip(os.sep)):
                 return
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)

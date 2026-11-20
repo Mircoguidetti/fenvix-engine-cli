@@ -405,7 +405,7 @@ fn process_state(p: &[u8]) -> bool {
             // its ancestors are directories for the whole session.
             let mut ps = p.to_vec();
             ps.push(b'/');
-            if self.root_sep.starts_with(&ps) || p == b"/" {
+            if self.root_sep.starts_with(&ps) || p == b"/" || is_temp_root(p) {
                 return None;
             }
             if self.writers.contains_key(p) {
@@ -529,7 +529,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l'] {
+            for k in [b'f', b'd', b's', b'l', b'z'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -544,6 +544,22 @@ fn process_state(p: &[u8]) -> bool {
         }
     }
 
+}
+
+/// The system's temporary roots (`/tmp`, `/var/tmp`, `$TMPDIR`): directories for the whole session, like the
+/// project root and its ancestors. A kind check of one is no input; a failed `os.mkdir` of one (makedirs with
+/// exist_ok) is recorded as a write, which made every later kind check a read of a file another test wrote.
+fn is_temp_root(p: &[u8]) -> bool {
+    let p = if p.len() > 1 { p.strip_suffix(b"/").unwrap_or(p) } else { p };
+    if p == b"/tmp" || p == b"/var/tmp" {
+        return true;
+    }
+    std::env::var_os("TMPDIR").is_some_and(|t| {
+        use std::os::unix::ffi::OsStrExt;
+        let t = t.as_bytes();
+        let t = if t.len() > 1 { t.strip_suffix(b"/").unwrap_or(t) } else { t };
+        !t.is_empty() && t == p
+    })
 }
 
 /// Python objects and constants of the capture.
