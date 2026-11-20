@@ -4,9 +4,9 @@
  "repo": "actualbudget/actual",
  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
  "status": "ok",
- "run_id": "44612327770",
- "engine_commit": "85a82cd7b6763524f10947136ccea0285513395a",
- "setup_s": 100,
+ "run_id": "44640516333",
+ "engine_commit": "f1fd6c43a9c18cb9a3fefbe85122d1300ba142ed",
+ "setup_s": 109,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -27,8 +27,8 @@
   "--shard=1/3"
  ],
  "runs": [],
- "epoch": "2026-11-19T22:41:00Z",
- "measured_at": "2026-11-19T22:41:49Z",
+ "epoch": "2026-11-20T00:53:00Z",
+ "measured_at": "2026-11-20T00:53:04Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -65,16 +65,16 @@
     ""
    ],
    "walls": [
-    151.8,
-    152.2,
-    151.6,
-    147.9,
-    149.3,
-    151.2,
-    152.0,
-    151.4,
-    152.4,
-    151.5
+    181.7,
+    169.7,
+    167.5,
+    165.5,
+    190.4,
+    171.5,
+    177.6,
+    170.2,
+    165.6,
+    162.5
    ],
    "stats": [
     null,
@@ -129,14 +129,14 @@
    "runs": [
     "passed",
     "passed",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing"
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
    ],
    "errors": [
     "",
@@ -151,16 +151,16 @@
     ""
    ],
    "walls": [
-    86.9,
-    87.8,
-    600.0,
-    0.6,
-    0.6,
-    0.6,
-    0.6,
-    0.6,
-    0.6,
-    0.6
+    91.3,
+    89.0,
+    92.2,
+    91.8,
+    91.8,
+    88.5,
+    89.0,
+    89.0,
+    88.7,
+    90.9
    ],
    "stats": [
     null,
@@ -177,7 +177,7 @@
    "traces": [
     "gate-actual/g2-det-1.jsonl.gz",
     "gate-actual/g2-det-2.jsonl.gz",
-    null,
+    "gate-actual/g2-det-3.jsonl.gz",
     "gate-actual/g2-det-4.jsonl.gz",
     "gate-actual/g2-det-5.jsonl.gz",
     "gate-actual/g2-det-6.jsonl.gz",
@@ -189,38 +189,20 @@
    "verify_all": [
     {
      "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
-     "status": "missing",
+     "status": "stable",
      "distinct_fingerprints": 1,
-     "runs": 9,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 0,
-      "index": null,
-      "window": null,
-      "event_a": null,
-      "event_b": null,
-      "reason": "missing",
-      "description": "not executed in run(s) 2, 3, 4, 5, 6, 7, 8"
-     }
+     "runs": 10,
+     "divergence": null
     }
    ],
    "verify": {
     "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
-    "status": "missing",
+    "status": "stable",
     "distinct_fingerprints": 1,
-    "runs": 9,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 0,
-     "index": null,
-     "window": null,
-     "event_a": null,
-     "event_b": null,
-     "reason": "missing",
-     "description": "not executed in run(s) 2, 3, 4, 5, 6, 7, 8"
-    }
+    "runs": 10,
+    "divergence": null
    }
   }
  ],
- "elapsed_min": 40.4
+ "elapsed_min": 46.1
 }
