@@ -41,84 +41,6 @@
   },
   {
    "rows": [
-    "PY-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "PY-01 linux-arm64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "PY-01 linux-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.14",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "PY-01 linux-arm64 py3.14 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "PY-01 macos-arm64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "PY-01 macos-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.14",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "PY-01 macos-arm64 py3.14 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
     "PY-02"
    ],
    "platform": "linux-x64",
@@ -305,32 +227,6 @@
   },
   {
    "rows": [
-    "PY-05"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "PY-05 linux-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "PY-08"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "PY-08 macos-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
     "JS-01"
    ],
    "platform": "linux-x64",
@@ -366,84 +262,6 @@
    "env": {},
    "runs_on": "ubuntu-24.04",
    "name": "JS-01 linux-x64 py3.13 node26",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "JS-01 linux-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "24",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "JS-01 linux-arm64 py3.13 node24",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "26",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "JS-01 linux-arm64 py3.13 node26",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "JS-01 macos-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "24",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "JS-01 macos-arm64 py3.13 node24",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "JS-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "26",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "JS-01 macos-arm64 py3.13 node26",
    "env_json": "{}"
   },
   {
@@ -729,32 +547,6 @@
   },
   {
    "rows": [
-    "F-01"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "F-01 macos-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-02"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "F-02 macos-arm64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
     "F-03"
    ],
    "platform": "linux-x64",
@@ -816,110 +608,6 @@
    "env": {},
    "runs_on": "ubuntu-24.04",
    "name": "F-09 linux-x64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-09"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "F-09 linux-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-09"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.13",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "F-09 macos-arm64 py3.13 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "linux-x64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04",
-   "name": "F-10 linux-x64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "linux-x64",
-   "python": "3.14",
-   "node": "26",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04",
-   "name": "F-10 linux-x64 py3.14 node26",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "F-10 linux-arm64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "linux-arm64",
-   "python": "3.14",
-   "node": "26",
-   "variant": "",
-   "env": {},
-   "runs_on": "ubuntu-24.04-arm",
-   "name": "F-10 linux-arm64 py3.14 node26",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.12",
-   "node": "22",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "F-10 macos-arm64 py3.12 node22",
-   "env_json": "{}"
-  },
-  {
-   "rows": [
-    "F-10"
-   ],
-   "platform": "macos-arm64",
-   "python": "3.14",
-   "node": "26",
-   "variant": "",
-   "env": {},
-   "runs_on": "macos-15",
-   "name": "F-10 macos-arm64 py3.14 node26",
    "env_json": "{}"
   }
  ]

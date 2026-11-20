@@ -58,9 +58,8 @@
   "G-0011": {
    "severity": "WRONG-RESULT",
    "area": "Code marker / detpy runtime_id non-ELF",
-   "row": "PY-08",
-   "check": "PY-08.probe.dlopen-lib",
-   "probe": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
   },
   "G-0012": {
    "severity": "WRONG-RESULT",
@@ -944,29 +943,26 @@
   "G-0155": {
    "severity": "WRONG-RESULT",
    "area": "Platform / macOS arm64",
-   "row": "PY-08",
-   "check": "PY-08.probe.dlopen-lib",
-   "probe": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
   },
   "G-0156": {
    "severity": "WRONG-RESULT",
    "area": "Platform / macOS arm64",
-   "row": "PY-08",
-   "check": "PY-08.probe.dlopen-lib",
-   "probe": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.dlopen-lib"
   },
   "G-0157": {
    "severity": "WRONG-RESULT",
    "area": "Platform / macOS arm64",
-   "row": "JS-09",
-   "check": "JS-09.native"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "JS-09 JS-09.native"
   },
   "G-0158": {
    "severity": "WRONG-RESULT",
    "area": "Platform / macOS arm64",
-   "row": "PY-08",
-   "check": "PY-08.probe.mac-children",
-   "probe": "on macOS arm64 a test leaves a listening socket and a live child process: --det-cache must refuse to reuse it exactly as on Linux (same receipt reason)"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "PY-08 PY-08.probe.mac-children"
   },
   "G-0159": {
    "severity": "WRONG-RESULT",
@@ -1043,8 +1039,8 @@
   "G-0170": {
    "severity": "WRONG-RESULT",
    "area": "Python / packaging",
-   "row": "F-10",
-   "check": "F-10.not-foreign"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
   },
   "G-0171": {
    "severity": "WRONG-RESULT",
@@ -1296,8 +1292,9 @@
   "G-0215": {
    "severity": "BLOCKS-USE",
    "area": "Branches / Engine / no GitHub Action, MCP server or publish workflow on any branch",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)"
   },
   "G-0216": {
    "severity": "BLOCKS-USE",
@@ -1399,7 +1396,9 @@
   "G-0235": {
    "severity": "BLOCKS-USE",
    "area": "Code marker / app API keys page",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0236": {
    "severity": "BLOCKS-USE",
@@ -1424,14 +1423,14 @@
   "G-0240": {
    "severity": "BLOCKS-USE",
    "area": "Code marker / detjs build platforms",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0241": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / all",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0242": {
    "severity": "BLOCKS-USE",
@@ -1441,8 +1440,8 @@
   "G-0243": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / docs",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0244": {
    "severity": "BLOCKS-USE",
@@ -1462,32 +1461,32 @@
   "G-0247": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / Node",
-   "row": "F-10",
-   "check": "F-10.npm"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
   },
   "G-0248": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / Python",
-   "row": "F-10",
-   "check": "F-10.not-foreign"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
   },
   "G-0249": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / Python",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0250": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / Python wheel tag",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0251": {
    "severity": "BLOCKS-USE",
    "area": "Distribution / releases",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "row": "F-09",
+   "check": "F-09.artifact-identity"
   },
   "G-0252": {
    "severity": "BLOCKS-USE",
@@ -1502,14 +1501,14 @@
   "G-0254": {
    "severity": "BLOCKS-USE",
    "area": "Docs missing / installation: Linux",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0255": {
    "severity": "BLOCKS-USE",
    "area": "Docs missing / installation: macOS",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0256": {
    "severity": "BLOCKS-USE",
@@ -1519,7 +1518,9 @@
   "G-0257": {
    "severity": "BLOCKS-USE",
    "area": "Docs missing / MCP server for agents",
-   "out_of_scope": "GitHub Action / MCP: service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "GitHub Action / MCP: service/app, not an engine go-live row"
   },
   "G-0258": {
    "severity": "BLOCKS-USE",
@@ -1549,8 +1550,8 @@
   "G-0263": {
    "severity": "BLOCKS-USE",
    "area": "Docs site / draft in fenvix-landing content/commands.md",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0264": {
    "severity": "BLOCKS-USE",
@@ -1561,8 +1562,8 @@
   "G-0265": {
    "severity": "BLOCKS-USE",
    "area": "Docs site / draft in fenvix-landing content/quickstart.md",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0266": {
    "severity": "BLOCKS-USE",
@@ -1610,8 +1611,8 @@
   "G-0274": {
    "severity": "BLOCKS-USE",
    "area": "Engine docs / README.md",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0275": {
    "severity": "BLOCKS-USE",
@@ -1871,8 +1872,8 @@
   "G-0317": {
    "severity": "BLOCKS-USE",
    "area": "GitHub Action",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0318": {
    "severity": "BLOCKS-USE",
@@ -2128,8 +2129,8 @@
   "G-0368": {
    "severity": "BLOCKS-USE",
    "area": "Landing / developers / home (free CLI and pytest plugin: install)",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0369": {
    "severity": "BLOCKS-USE",
@@ -2184,7 +2185,9 @@
   "G-0379": {
    "severity": "BLOCKS-USE",
    "area": "Landing / integrations / use cases (MCP server)",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0380": {
    "severity": "BLOCKS-USE",
@@ -2377,8 +2380,8 @@
   "G-0413": {
    "severity": "BLOCKS-USE",
    "area": "Limits / RELEASE-1 install into system Python",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "row": "F-09",
+   "check": "F-09.job-venv"
   },
   "G-0414": {
    "severity": "BLOCKS-USE",
@@ -2388,20 +2391,21 @@
   "G-0415": {
    "severity": "BLOCKS-USE",
    "area": "Limits / RELEASE-1.md Linux arm64",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0416": {
    "severity": "BLOCKS-USE",
    "area": "Limits / RELEASE-1.md macOS",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0417": {
    "severity": "BLOCKS-USE",
    "area": "Limits / RELEASE-1.md no packaging",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)"
   },
   "G-0418": {
    "severity": "BLOCKS-USE",
@@ -2466,39 +2470,51 @@
   "G-0429": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0430": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0431": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0432": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "row": "F-02",
-   "check": "F-02.node-repro"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "F-02 F-02.node-repro"
   },
   "G-0433": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "row": "F-02",
-   "check": "F-02.node-explore"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "F-02 F-02.node-explore"
   },
   "G-0434": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0435": {
    "severity": "BLOCKS-USE",
    "area": "MCP / agents",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0436": {
    "severity": "BLOCKS-USE",
@@ -2519,32 +2535,32 @@
   "G-0439": {
    "severity": "BLOCKS-USE",
    "area": "Node / packaging",
-   "row": "F-10",
-   "check": "F-10.npm"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
   },
   "G-0440": {
    "severity": "BLOCKS-USE",
    "area": "Node / packaging",
-   "row": "F-10",
-   "check": "F-10.npm"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
   },
   "G-0441": {
    "severity": "BLOCKS-USE",
    "area": "Node / packaging",
-   "row": "F-10",
-   "check": "F-10.npm"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
   },
   "G-0442": {
    "severity": "BLOCKS-USE",
    "area": "Node / packaging",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0443": {
    "severity": "BLOCKS-USE",
    "area": "Node / packaging",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0444": {
    "severity": "BLOCKS-USE",
@@ -2672,20 +2688,20 @@
   "G-0467": {
    "severity": "BLOCKS-USE",
    "area": "Pins / Cargo workspace targets",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0468": {
    "severity": "BLOCKS-USE",
    "area": "Pins / detjs private package",
-   "row": "F-10",
-   "check": "F-10.npm"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.npm"
   },
   "G-0469": {
    "severity": "BLOCKS-USE",
    "area": "Pins / detpy classifiers",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0470": {
    "severity": "BLOCKS-USE",
@@ -2700,14 +2716,14 @@
   "G-0472": {
    "severity": "BLOCKS-USE",
    "area": "Platform / Linux arm64",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0473": {
    "severity": "BLOCKS-USE",
    "area": "Platform / Linux arm64",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0474": {
    "severity": "BLOCKS-USE",
@@ -2727,14 +2743,14 @@
   "G-0477": {
    "severity": "BLOCKS-USE",
    "area": "Platform / Linux arm64",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0478": {
    "severity": "BLOCKS-USE",
    "area": "Platform / Linux arm64 / install",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0479": {
    "severity": "BLOCKS-USE",
@@ -2784,8 +2800,8 @@
   "G-0488": {
    "severity": "BLOCKS-USE",
    "area": "Platform / Linux x86_64 glibc",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0489": {
    "severity": "BLOCKS-USE",
@@ -2805,8 +2821,8 @@
   "G-0492": {
    "severity": "BLOCKS-USE",
    "area": "Platform / macOS arm64",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0493": {
    "severity": "BLOCKS-USE",
@@ -2826,8 +2842,8 @@
   "G-0496": {
    "severity": "BLOCKS-USE",
    "area": "Platform / macOS arm64 / install",
-   "row": "F-09",
-   "check": "F-09.install-node"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-node"
   },
   "G-0497": {
    "severity": "BLOCKS-USE",
@@ -2963,26 +2979,26 @@
   "G-0521": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-10",
-   "check": "F-10.not-foreign"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.not-foreign"
   },
   "G-0522": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0523": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0524": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-10",
-   "check": "F-10.pip"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-10 F-10.pip"
   },
   "G-0525": {
    "severity": "BLOCKS-USE",
@@ -2992,14 +3008,14 @@
   "G-0526": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0527": {
    "severity": "BLOCKS-USE",
    "area": "Python / packaging",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0528": {
    "severity": "BLOCKS-USE",
@@ -3184,8 +3200,8 @@
   "G-0562": {
    "severity": "BLOCKS-USE",
    "area": "Runner vendors / ARM runners",
-   "row": "F-09",
-   "check": "F-09.install-py"
+   "out_of_scope": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+   "previously": "F-09 F-09.install-py"
   },
   "G-0563": {
    "severity": "BLOCKS-USE",
@@ -3220,7 +3236,9 @@
   "G-0569": {
    "severity": "BLOCKS-USE",
    "area": "Service / API",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0570": {
    "severity": "BLOCKS-USE",
@@ -3280,7 +3298,9 @@
   "G-0581": {
    "severity": "BLOCKS-USE",
    "area": "Service / Dashboard / API keys",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0582": {
    "severity": "BLOCKS-USE",
@@ -3515,7 +3535,9 @@
   "G-0628": {
    "severity": "BLOCKS-USE",
    "area": "Service / Supabase",
-   "out_of_scope": "service/app, not an engine go-live row"
+   "other_row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined",
+   "previously": "service/app, not an engine go-live row"
   },
   "G-0629": {
    "severity": "BLOCKS-USE",
@@ -4047,17 +4069,7 @@
    "row": "PY-08",
    "spec": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
    "gaps": [
-    "G-0011",
-    "G-0079",
-    "G-0155",
-    "G-0156"
-   ]
-  },
-  "PY-08.probe.mac-children": {
-   "row": "PY-08",
-   "spec": "on macOS arm64 a test leaves a listening socket and a live child process: --det-cache must refuse to reuse it exactly as on Linux (same receipt reason)",
-   "gaps": [
-    "G-0158"
+    "G-0079"
    ]
   },
   "PY-08.probe.native-file": {
@@ -4067,5 +4079,9 @@
     "G-0078"
    ]
   }
- }
+ },
+ "decisions": [
+  "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "MCP gaps belong to F-14 (remote MCP server), not examined here"
+ ]
 }

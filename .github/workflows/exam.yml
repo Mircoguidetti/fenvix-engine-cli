@@ -1,6 +1,6 @@
 # Go-live acceptance exam (exam/PLAN.md). One job per leg of exam/legs.json (row x platform x versions); the
 # aggregate job merges every leg into exam/results.json and commits it to claude/exam.
-# The engine is installed as a customer would (exam/install.sh; EXAM_INSTALL=ci-artifact today, packages later).
+# The engine is installed as our runner machines do: the single Linux x86_64 artifact of the release-1 CI (exam/install.sh).
 name: exam
 
 on:
@@ -9,9 +9,6 @@ on:
     paths: ["exam/**", ".github/workflows/exam.yml", "!exam/results.json"]
   workflow_dispatch:
     inputs:
-      install:
-        description: "install source: ci-artifact | packages"
-        default: ci-artifact
       rows:
         description: "comma list of rows to run (empty = all)"
         default: ""
@@ -66,7 +63,7 @@ jobs:
       matrix:
         include: ${{ fromJSON(needs.plan.outputs.legs) }}
     env:
-      EXAM_INSTALL: ${{ github.event.inputs.install || 'ci-artifact' }}
+      EXAM_INSTALL: ci-artifact  # the only source (founder decision 2026-11-20)
       EXAM_PLATFORM: ${{ matrix.platform }}
       EXAM_PYTHON: ${{ matrix.python }}
       EXAM_NODE: ${{ matrix.node }}

@@ -29,7 +29,7 @@ ROWS = {
     "JS-05": rows_js.JS_05, "JS-06": rows_js.JS_06, "JS-07": rows_js.JS_07, "JS-08": rows_js.JS_08,
     "JS-09": rows_js.JS_09,
     "F-01": rows_f.F_01, "F-02": rows_f.F_02, "F-03": rows_f.F_03, "F-05": rows_f.F_05, "F-06": rows_f.F_06,
-    "F-09": rows_f.F_09, "F-10": rows_f.F_10, "F-18": rows_f.F_18,
+    "F-09": rows_f.F_09, "F-18": rows_f.F_18,
 }
 
 

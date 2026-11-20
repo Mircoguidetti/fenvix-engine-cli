@@ -8,12 +8,13 @@ Labels: **MEASURED** (an Actions run id), **ESTIMATED**, **DECLARED** (with the 
 
 ## 0. How the exam runs
 
-* **Install source: one switch.** `EXAM_INSTALL=ci-artifact` (today, default): download the artifact
-  `engine-linux-x64` of the newest `release-1.yml` run on `claude/release-1` whose `build` job succeeded, check out
-  `release/` and `node/` at that run's commit, and run `release/install-image.sh` (the documented runner-image
-  install). `EXAM_INSTALL=packages` (later): `pip install fenvix` and `npm install -D fenvix`, nothing else. The
-  exam records the release-1 commit and run id it installed. If no artifact exists for the job's platform (today:
-  only Linux x86_64 is built), the install fails and every check of that leg is FAIL with reason `install`.
+* **Founder decision (2026-11-20): go-live runs only on our machines.** No PyPI/npm packages, no GitHub Action, no
+  macOS/arm64. Rows F-10 and F-11 are out of scope; F-09 means the artifact installs and works on Linux x86_64; F-02
+  replay runs on our machines; F-14 is a remote MCP server (not in this exam's row list).
+* **Install source: one.** The artifact `engine-linux-x64` of the newest `release-1.yml` run on `claude/release-1`
+  that has it; `release/` and `node/` are taken from that run's commit and `release/install-image.sh` installs it, as
+  our runner machines do. The exam records the artifact id, release run, release commit, the version `fenvix
+  version` prints and the sha256 of every artifact file (`install.json` per leg, `installed` in results.json).
 * **Driver:** `exam/run.py --rows ROW[,ROW] --leg LEG --out FILE` runs the checks of the rows on one leg
   (platform x Python x Node x runner version). Each check writes `{id, row, leg, ok, expected, observed, evidence,
   gaps}`; logs are uploaded as artifacts. `exam/aggregate.py` merges every leg into `exam/results.json`:
@@ -35,7 +36,7 @@ Labels: **MEASURED** (an Actions run id), **ESTIMATED**, **DECLARED** (with the 
   JVM, service, landing, Windows, Python <= 3.11, other CIs, ...) and gaps that fit no row are listed in
   `exam/gap_map.json` with the reason.
 
-Platforms (F-09): `linux-x64` = `ubuntu-24.04`, `linux-arm64` = `ubuntu-24.04-arm`, `macos-arm64` = `macos-15`.
+Platform: `linux-x64` = `ubuntu-24.04` only (the arm64 and macOS legs of the first version of this plan were dropped by the founder decision).
 Versions: Python 3.12, 3.13, 3.14; Node 22, 24, 26.
 
 Standard check families used below (each is one check per project and leg):
@@ -52,7 +53,7 @@ Standard check families used below (each is one check per project and leg):
 
 ### PY-01 Python versions (CPython 3.12, 3.13, 3.14)
 
-Legs: {linux-x64, linux-arm64, macos-arm64} x {3.12, 3.13, 3.14}.
+Legs: linux-x64 x {3.12, 3.13, 3.14}.
 Projects: `pallets/itsdangerous@096c8d42` (2.2.0), `python-attrs/attrs@3dca08ce` (25.3.0).
 
 | check | expected |
@@ -109,7 +110,7 @@ Legs: linux-x64 x {3.12, 3.14}. Project: `jazzband/django-model-utils@aeef1088` 
 
 ### PY-05 pytest-xdist parallel
 
-Legs: linux-x64 x {3.12, 3.14}, linux-arm64 x 3.13. Project: attrs@3dca08ce and an injected order-dependent pair
+Legs: linux-x64 x {3.12, 3.14}. Project: attrs@3dca08ce and an injected order-dependent pair
 (probe `odpair`: `test_a` sets a module global, `test_b` asserts it; in collection order b passes).
 
 | check | expected |
@@ -155,7 +156,7 @@ Legs: linux-x64 x {3.12, 3.14}. Projects: `agronholm/anyio@a6e9ebb7` (4.9.0, Blo
 
 ### PY-08 native code and subprocesses are never reused
 
-Legs: linux-x64 x {3.12, 3.14}, macos-arm64 x 3.13. Probes injected into itsdangerous@096c8d42:
+Legs: linux-x64 x {3.12, 3.14}. Probes injected into itsdangerous@096c8d42:
 `child_reads_file` (a test asserts the output of `subprocess.run(["cat", F])`), `ctypes_clock` (`libc.time()`
 compared with a fixed date), `ctypes_getenv` (`libc.getenv("X")`), `native_ext` (a C extension, `_testcapi`/`zlib`
 with an input file outside the root).
@@ -171,7 +172,7 @@ with an input file outside the root).
 
 ### JS-01 Node versions (22, 24, 26)
 
-Legs: {linux-x64, linux-arm64, macos-arm64} x {22, 24, 26}.
+Legs: linux-x64 x {22, 24, 26}.
 Projects: `simple-statistics/simple-statistics@f9d368f4` (v7.9.3, node:test-compatible), `unjs/ufo@0f15ddc6`
 (v1.5.4, Vitest).
 
@@ -269,7 +270,6 @@ Legs: linux-x64 x Node 22 x {npm, pnpm, yarn classic, yarn berry `nodeLinker: no
 
 | check | expected |
 |---|---|
-| JS-08.<pm>.add | `<pm> add -D fenvix` succeeds and `<pm> exec fenvix version` runs (packages; fails today: nothing published) |
 | JS-08.<pm>.det2 | with the project installed by that manager, DET2 through `fenvix node vitest` |
 | JS-08.<pm>.cache2 | CACHE2 |
 | JS-08.gaps | assigned gap probes |
@@ -291,7 +291,7 @@ Legs: linux-x64 x {22, 26}. Probes injected into ufo (Vitest): `child_random` (a
 
 ### F-01 deterministic run: clock, randomness, order, network, files, env, TZ, locale
 
-Legs: linux-x64 x Python 3.13 x Node 22, plus macos-arm64. Probes, each written into itsdangerous (Python) and ufo
+Legs: linux-x64 x Python 3.13 x Node 22. Probes, each written into itsdangerous (Python) and ufo
 (Vitest) and luxon (Jest): `clock` (prints `time.time()` / `Date.now()`), `random` (`random.random()` /
 `Math.random()`, `uuid4` / `crypto.randomUUID`), `order` (asserts collection order; seed run), `network` (connects to
 an external host), `files` (`os.listdir` / `fs.readdirSync` of a directory created in reverse order), `env` (reads an
@@ -306,7 +306,7 @@ env var `EXAM_X`), `tz` (`datetime.now().astimezone()`, `new Date().toString()`)
 
 ### F-02 flaky test to reproducible defect (`fenvix repro`, `fenvix explore`, `fenvix replay`)
 
-Legs: linux-x64 x Python 3.12 x Node 22, plus macos-arm64 (replay of a Linux bundle on a Mac). Python: the Block 2
+Legs: linux-x64 x Python 3.12 x Node 22 (replay on our machines). Python: the Block 2
 sets (harness/flaky_candidates.json, pins from Block 1): `dmytrostriletskyi/accessify@6b7cf865`,
 `didix21/mdutils@2ef859ec`, `d4nuu8/krllint@2f9376cd`, `heavenshell/py-autodoc@001d5ff0` with their Block 2
 targets (harness/block2_targets.json). Node: an order-dependent pair injected into ufo (Vitest) and luxon (Jest),
@@ -319,7 +319,6 @@ and the Node flaky set of harness/node (Block 2 Node) where it installs.
 | F-02.py-replay | the printed replay command (printed by `fenvix repro`, or else by the engine's internal `python -m detpy repro`, recorded as such), run 10 times through `fenvix python`, fails 10/10 and the 10 traces verify identical |
 | F-02.py-explore | `fenvix explore --budget 5` on the project finds the target and writes a bundle |
 | F-02.node-repro / node-replay / node-explore | the same for the Node pairs |
-| F-02.mac-replay | the Linux bundle replays on macOS with the same fingerprint (or the engine says why not) |
 | F-02.gaps | assigned gap probes |
 
 ### F-03 verifier: first divergent event
@@ -366,29 +365,20 @@ Legs: linux-x64 x {22, 26}. Projects: ufo (Vitest), zustand (Vitest), luxon (Jes
 | F-06.wrong-reuse probes | env var, host name, cpu count, child process output, worker output |
 | F-06.gaps | assigned gap probes |
 
-### F-09 platforms (Linux x86_64 and arm64, macOS Apple Silicon)
+### F-09 the artifact installs and works on Linux x86_64
 
-Legs: {linux-x64, linux-arm64, macos-arm64} x Python 3.13 x Node 22.
+Legs: linux-x64 x Python 3.13 x Node 22.
 
 | check | expected |
 |---|---|
-| F-09.install-py / install-node | the install source provides the platform's engine and it installs |
+| F-09.install | the `engine-linux-x64` artifact of the newest release-1 run installs with `release/install-image.sh`; artifact id, release run and commit, version and sha256 of every file recorded |
+| F-09.artifact-identity | the artifact carries its own version and sha256 manifest, and `fenvix version` names the release commit (G-0251) |
+| F-09.job-venv | a job that creates its own venv gets the engine from the runner image: `fenvix python --det` works there (G-0413) |
+| F-09.node-addon | the detjs native addon of the artifact loads |
 | F-09.py-det2 / py-cache2 | DET2 / CACHE2 on itsdangerous |
 | F-09.node-det2 / node-cache2 | DET2 / CACHE2 on ufo |
-| F-09.cross-replay | a trace from linux-x64 verifies identical against the same run on the other platform (or the engine names the platform difference) |
-| F-09.gaps | assigned gap probes |
 
-### F-10 install (`pip install fenvix`, `npm install -D fenvix`)
-
-Legs: every platform x {Python 3.12, 3.14} x {Node 22, 26}. Always from the public registries, regardless of the
-switch.
-
-| check | expected |
-|---|---|
-| F-10.pip | `pip install fenvix` in a fresh venv succeeds; the installed package is ours (`fenvix version` prints the engine) and `pytest --det` works |
-| F-10.npm | `npm install -D fenvix` in a fresh project succeeds; `npx fenvix version` prints the engine |
-| F-10.not-foreign | `pip install detpy` does not shadow ours (G-0170): after `pip install fenvix`, `import detpy` is our module |
-| F-10.gaps | assigned gap probes |
+### F-10 install from registries: OUT OF SCOPE (founder decision 2026-11-20)
 
 ### F-18 one `fenvix` CLI
 
@@ -408,7 +398,9 @@ Legs: linux-x64 x Python 3.13 x Node 22.
 * `exam/results.json`: `{installed: {source, release_commit, release_run}, rows: {ROW: {status: PASS|FAIL, legs, checks:
   [{id, leg, ok, expected, observed, run_id, job}], gaps: [G-xxxx]}}, unassigned_gaps: [...]}`.
 * `exam/gap_map.json`: every WRONG-RESULT / BLOCKS-USE gap: `{row, check}` or `{out_of_scope: reason}` or
-  `{unassignable: reason}`.
+  `{unassignable: reason}` or `{other_row: F-14}` (MCP gaps: listed, not examined).
+* Rerun mode: `exam/rerun.json` `{base_run, rows}` reruns only those rows; the aggregate takes every other planned
+  leg from the base run's artifacts and records both run ids.
 * Report: `sessions/2026-11-20-exam/REPORT.md` on `claude/exam`.
 
 ## 5. Gap probes

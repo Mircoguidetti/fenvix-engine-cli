@@ -322,21 +322,6 @@ def JS_07(ctx: Ctx):
 def JS_08(ctx: Ctx):
     pm = os.environ.get("EXAM_VARIANT") or "npm"
 
-    def add():
-        from projects import P
-        d = ctx.clone(P["ufo"], name=f"ufo-add-{pm}", fresh=True)
-        if pm.startswith("yarn"):
-            lib.drop_package_manager(d)
-        cmd = {"npm": "npm install --no-audit --no-fund --legacy-peer-deps -D fenvix && npx --no-install fenvix version",
-               "pnpm": "pnpm add -D fenvix && pnpm exec fenvix version",
-               "yarn-classic": "yarn add -D fenvix && yarn fenvix version",
-               "yarn-berry": "corepack enable && yarn set version stable && yarn config set nodeLinker node-modules && "
-                             "YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn add -D fenvix && yarn fenvix version"}[pm]
-        rc, out = ctx.sh(f"add-{pm}", cmd, cwd=d, timeout=1200)
-        ok = rc == 0 and "detjs" in out
-        return ok, f"rc={rc}: {' | '.join(out.strip().splitlines()[-3:])[:400]}"
-    ctx.run_check(f"JS-08.{pm}.add", f"`{pm} add -D fenvix` succeeds and `fenvix version` runs from the project", add)
-
     def ufo_pm():
         from projects import P
         d = ctx.clone(P["ufo"], name=f"ufo-pm-{pm}")

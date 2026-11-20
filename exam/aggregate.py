@@ -53,12 +53,13 @@ def main():
             if isinstance(d, dict) and "results" in d and "leg" in d:
                 res.append(d)
         return res
-    outs = load(a.inp)
+    planned = {leg_key(lg) for lg in legs}
+    outs = [o for o in load(a.inp) if leg_key(o["leg"]) in planned]
     rerun = {r for o in outs for r in o["rows"]}
     base_used = []
     if a.base and os.path.isdir(a.base):
         for o in load(a.base):
-            if not set(o["rows"]) & rerun:
+            if leg_key(o["leg"]) in planned and not set(o["rows"]) & rerun:
                 o.setdefault("run_id", a.base_run)
                 outs.append(o)
                 base_used.append(o.get("job"))
@@ -96,8 +97,11 @@ def main():
     def matches(pattern, cid):
         pat = re.sub(r"<[^>]+>", "*", pattern).replace(" ", "")
         return fnmatch.fnmatch(cid, pat) or fnmatch.fnmatch(cid, pat + ".*") or cid == pattern
-    gaps_out, unassigned, out_scope = {}, {}, {}
+    gaps_out, unassigned, out_scope, other = {}, {}, {}, {}
     for g, info in gm["gaps"].items():
+        if "other_row" in info:
+            other[g] = {"row": info["other_row"], "note": info.get("note")}
+            continue
         if "out_of_scope" in info:
             out_scope[g] = info["out_of_scope"]
             continue
@@ -123,16 +127,19 @@ def main():
         "base_run": a.base_run or None,
         "rows_rerun_in_run_id": sorted(rerun) if a.base_run else None,
         "installed": installs,
+        "decisions": gm.get("decisions", []),
         "summary": {"rows": len(rows), "pass": sum(v["status"] == "PASS" for v in rows.values()),
                     "fail": sum(v["status"] == "FAIL" for v in rows.values()),
                     "checks": sum(v["n_checks"] for v in rows.values()),
                     "checks_passed": sum(v["n_passed"] for v in rows.values()),
                     "gaps_in_scope": len(gaps_out), "gaps_closed": sum(x["status"] == "CLOSED" for x in gaps_out.values()),
-                    "gaps_out_of_scope": len(out_scope), "gaps_unassignable": len(unassigned)},
+                    "gaps_out_of_scope": len(out_scope), "gaps_unassignable": len(unassigned),
+                    "gaps_other_row_F14": len(other)},
         "rows": {r: rows[r] for r in sorted(rows)},
         "gaps": gaps_out,
         "unassigned_gaps": unassigned,
         "out_of_scope_gaps": out_scope,
+        "other_row_gaps": other,
     }
     with open(a.out, "w") as fh:
         json.dump(res, fh, indent=1)

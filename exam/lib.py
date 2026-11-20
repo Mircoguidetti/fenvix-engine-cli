@@ -163,11 +163,10 @@ def venv(ctx: Ctx, d: Path, install: list[str], engine=True, key=None) -> dict:
                 raise Skip(f"project install failed: {out[-500:]}")
         if engine:
             ctx.need_install()
-            if os.environ.get("EXAM_INSTALL", "ci-artifact") == "packages":
-                rc, out = ctx.sh("pip-engine", pip + ["fenvix"], cwd=d)
-            else:
-                whl = os.environ.get("EXAM_WHEEL", "")
-                rc, out = ctx.sh("pip-engine", pip + ["--no-deps", whl], cwd=d) if whl else (1, "EXAM_WHEEL unset")
+            # the artifact's own wheel into the project's venv: what a runner image must do for a job that makes its
+            # own environment (install-image.sh alone does not: check F-09.job-venv, gap G-0413)
+            whl = os.environ.get("EXAM_WHEEL", "")
+            rc, out = ctx.sh("pip-engine", pip + ["--no-deps", whl], cwd=d) if whl else (1, "EXAM_WHEEL unset")
             if rc != 0:
                 raise Skip(f"engine install into the venv failed: {out[-300:]}")
         ctx._venvs[k] = v

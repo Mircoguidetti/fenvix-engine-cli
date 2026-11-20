@@ -583,18 +583,44 @@ def F_06(ctx: Ctx):
 # ---------------------------------------------------------------------------------------------------------------------
 
 def F_09(ctx: Ctx):
-    plat = ctx.leg["platform"]
+    """Founder decision 2026-11-20: go-live runs only on our machines. F-09 = the single Linux x86_64 artifact of the
+    claude/release-1 CI installs (as the runner image does) and works on Linux x86_64."""
 
-    def inst_py():
-        ok = bool(ctx.install.get("ok"))
-        return ok, f"{plat}: install {'ok' if ok else 'failed'}: {ctx.install.get('reason', '')} (source {ctx.install.get('source')}, artifact {ctx.install.get('artifact')})"
-    ctx.run_check("F-09.install-py", f"the install source provides the {plat} engine (detpy) and it installs", inst_py)
+    def inst():
+        i = ctx.install
+        ok = bool(i.get("ok")) and bool(i.get("sha256")) and bool(i.get("release_commit"))
+        return ok, (f"install {'ok' if i.get('ok') else 'FAILED: ' + str(i.get('reason'))}; artifact {i.get('artifact')} from "
+                    f"release run {i.get('release_run')} at {i.get('release_commit')}; version {i.get('version')}; "
+                    f"files {len(i.get('sha256') or {})}"), {"sha256": i.get("sha256")}
+    ctx.run_check("F-09.install", "the engine-linux-x64 artifact of the newest release-1 run installs with release/install-image.sh; version and sha256 recorded", inst)
 
-    def inst_node():
+    def identity():
+        i = ctx.install
+        ctx.need_install()
+        man = [f for f in (i.get("sha256") or {}) if re.search(r"(SHA256SUMS|sha256|manifest|VERSION)", f, re.I)]
+        rc, out = ctx.sh("fenvix-version", ["fenvix", "version"])
+        names_commit = bool(i.get("release_commit")) and i["release_commit"][:8] in out
+        return bool(man) and names_commit, (f"checksum/version manifest shipped in the artifact: {man or 'none'}; "
+                                            f"`fenvix version` names the release commit: {names_commit} ({' | '.join(out.split(chr(10))[:3])})")
+    ctx.run_check("F-09.artifact-identity", "the artifact carries its own version and sha256 manifest, and `fenvix version` names the release commit it came from", identity, gaps=["G-0251"])
+
+    def addon():
         ctx.need_install()
         rc, out = ctx.sh("node-addon", "node -e \"require(process.env.FENVIX_HOME + '/node/src/native')\"")
-        return rc == 0, f"{plat}: native addon loads: rc={rc} {out.strip()[-200:]}"
-    ctx.run_check("F-09.install-node", f"the {plat} detjs native addon loads", inst_node)
+        return rc == 0, f"native addon loads: rc={rc} {out.strip()[-200:]}"
+    ctx.run_check("F-09.node-addon", "the detjs native addon of the artifact loads on Linux x86_64", addon)
+
+    def job_venv():
+        """The customer's job makes its own environment (venv); the engine comes only from the runner image."""
+        ctx.need_install()
+        d = ctx.clone(P["itsdangerous"], name="itsdangerous-jobvenv")
+        v = d / ".venv"
+        ctx.sh("jv-venv", [lib.py_exe(), "-m", "venv", str(v)], cwd=d)
+        ctx.sh("jv-pip", [str(v / "bin/python"), "-m", "pip", "install", "-q", "-e", ".", "pytest"], cwd=d)
+        env = {"PATH": f"{v / 'bin'}:{os.environ.get('PATH', '')}", "VIRTUAL_ENV": str(v)}
+        rc, out = ctx.sh("jv-fenvix", ["fenvix", "python", "-q", "--det", "tests"], cwd=d, env=env)
+        return rc == 0 and "unrecognized arguments" not in out, f"`fenvix python --det` in the job's own venv: rc={rc}: {out.strip().splitlines()[-1][:200] if out.strip() else ''}"
+    ctx.run_check("F-09.job-venv", "a job that creates its own venv gets the engine from the runner image (`fenvix python --det` works there)", job_venv, gaps=["G-0413"])
 
     def py_d2():
         d, env = fam.py_setup(ctx, "itsdangerous")
@@ -613,45 +639,6 @@ def F_09(ctx: Ctx):
     def js_c2():
         return fam.js_cache2(ctx, rows_js._ufo(ctx), "vitest", "", "f09-jsc")
     ctx.run_check("F-09.node-cache2", "CACHE2 on ufo", js_c2)
-
-
-# ---------------------------------------------------------------------------------------------------------------------
-# F-10 install from the registries
-# ---------------------------------------------------------------------------------------------------------------------
-
-def F_10(ctx: Ctx):
-    def pipi():
-        v = ctx.work / "f10-venv"
-        shutil.rmtree(v, ignore_errors=True)
-        ctx.sh("f10-venv", [lib.py_exe(), "-m", "venv", str(v)])
-        rc, out = ctx.sh("pip-install-fenvix", [str(v / "bin/python"), "-m", "pip", "install", "fenvix"], timeout=900)
-        rc2, out2 = ctx.sh("fenvix-version-pip", [str(v / "bin/fenvix"), "version"]) if rc == 0 else (None, "")
-        rc3, out3 = ctx.sh("pytest-det-pip", [str(v / "bin/python"), "-m", "pytest", "--help"]) if rc == 0 else (None, "")
-        ok = rc == 0 and rc2 == 0 and "detpy" in out2 and "--det" in out3
-        return ok, f"pip install fenvix rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''}); fenvix version rc={rc2}; --det in pytest: {'--det' in out3}"
-    ctx.run_check("F-10.pip", "`pip install fenvix` succeeds; `fenvix version` prints the engine; `pytest --det` works", pipi)
-
-    def npmi():
-        d = ctx.work / "f10-npm"
-        shutil.rmtree(d, ignore_errors=True)
-        d.mkdir()
-        ctx.sh("npm-init", "npm init -y", cwd=d)
-        rc, out = ctx.sh("npm-install-fenvix", "npm install -D fenvix", cwd=d, timeout=900)
-        rc2, out2 = ctx.sh("npx-fenvix-version", "npx --no-install fenvix version", cwd=d) if rc == 0 else (None, "")
-        ok = rc == 0 and rc2 == 0 and "detjs" in out2
-        return ok, f"npm install -D fenvix rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''}); npx fenvix version rc={rc2}: {out2.strip()[:200]}"
-    ctx.run_check("F-10.npm", "`npm install -D fenvix` succeeds; `npx fenvix version` prints the engine", npmi)
-
-    def foreign():
-        v = ctx.work / "f10-venv2"
-        shutil.rmtree(v, ignore_errors=True)
-        ctx.sh("f10-venv2", [lib.py_exe(), "-m", "venv", str(v)])
-        rc, out = ctx.sh("pip-install-both", [str(v / "bin/python"), "-m", "pip", "install", "fenvix", "detpy"], timeout=900)
-        rc2, out2 = ctx.sh("which-detpy", [str(v / "bin/python"), "-c", "import detpy, importlib.metadata as m; print(detpy.__file__); print(hasattr(detpy, 'plugin') or __import__('importlib').util.find_spec('detpy.plugin') is not None); print(m.version('detpy'))"])
-        ours = rc2 == 0 and "True" in out2
-        return rc == 0 and ours, f"pip install fenvix detpy rc={rc}; `import detpy` is ours: {ours} ({out2.strip()[-200:]})"
-    ctx.run_check("F-10.not-foreign", "after `pip install fenvix`, the PyPI `detpy` does not shadow the engine", foreign,
-                  gaps=["G-0170", "G-0521"])
 
 
 # ---------------------------------------------------------------------------------------------------------------------
