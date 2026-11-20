@@ -106,7 +106,28 @@ True now:
 
 ## 2. CI evidence
 
-(filled with the final run ids)
+(final run ids below)
+
+### CI load (coordinator tasks of 2026-11-20, founder decisions)
+
+- The gate (`release-1.yml`) runs on pull requests into `claude/release-1` (required before merge), on merges into
+  it (each publishes its engine artifact) and by hand (`workflow_dispatch`); pushes to session branches run no gate.
+  One job per Python version (3.12, 3.13, 3.14) and per Node version (22, 24, 26), each the complete suite: no
+  sharding (founder decision: 20, then 40 concurrent jobs; more jobs would queue more). A sharded variant with a
+  coverage check and a serial-vs-sharded proof was built (commit 3483da1) and withdrawn by that decision before its
+  run finished (run 44743656144, cancelled); nothing of it remains.
+- Concurrency: one group per event and ref; on a pull request a new head cancels that pull request's older gate run,
+  never the latest head's; a trunk run is never cancelled (test
+  `test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs`).
+- Jobs outside the go-live scope are gone from the gate: `go`, every `jvm (*)`, `smoke (go)`, `smoke (jvm)`, the
+  Go/JVM build steps, `other-os (macos-14)`, `other-os (ubuntu-24.04-arm)`; Rust tests limited to `detpy-core` and
+  `detpy-node`.
+- Results commits of the harness workflows (24 commit messages in 18 workflow files, e.g. `parallel-proof.yml`, which
+  pushes to `claude/py-cache` as "parallel-proof bot") carry `[skip ci]`, so a bot commit on a session branch starts
+  no pull-request gate run. A branch runs its own copy of a workflow: `claude/py-cache` gets this when it merges the
+  trunk. The harness launchers that start on a committed RUN file on a session branch (path filters) are not the
+  gate and stay as they are: `workflow_dispatch` works only from the default branch, so they are how those sessions
+  start their runs.
 
 ## 3. Every audit gap of these rows
 
