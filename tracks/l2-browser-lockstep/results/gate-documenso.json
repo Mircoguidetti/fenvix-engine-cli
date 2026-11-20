@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "ok",
- "run_id": "44509820700",
- "engine_commit": "ca39b7683576dbd99a735e562452439c60460d18",
- "setup_s": 289,
+ "run_id": "44612327770",
+ "engine_commit": "85a82cd7b6763524f10947136ccea0285513395a",
+ "setup_s": 239,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -27,8 +27,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-19T11:33:00Z",
- "measured_at": "2026-11-19T11:33:39Z",
+ "epoch": "2026-11-19T22:46:00Z",
+ "measured_at": "2026-11-19T22:46:19Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "gate": [
   {
@@ -41,7 +41,7 @@
     "passed"
    ],
    "runs": [
-    "failed",
+    "missing",
     "missing",
     "missing",
     "missing",
@@ -53,7 +53,7 @@
     "missing"
    ],
    "errors": [
-    "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 400\nReceived: 500",
+    "",
     "",
     "",
     "",
@@ -65,16 +65,16 @@
     ""
    ],
    "walls": [
-    19.5,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0
    ],
    "stats": [
     null,
@@ -89,7 +89,7 @@
     null
    ],
    "traces": [
-    "gate-documenso/g1-det-1.jsonl.gz",
+    null,
     null,
     null,
     null,
@@ -108,8 +108,8 @@
    "grep": "recipient prefix matches by recipient name case-insensitively",
    "project": "api",
    "plain": [
-    "missing",
-    "missing"
+    "passed",
+    "passed"
    ],
    "runs": [
     "missing",
@@ -136,16 +136,16 @@
     ""
    ],
    "walls": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0,
+    600.0
    ],
    "stats": [
     null,
@@ -174,5 +174,5 @@
    "verify_all": []
   }
  ],
- "elapsed_min": 106.5
+ "elapsed_min": 202.1
 }
