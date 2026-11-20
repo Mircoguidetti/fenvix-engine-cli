@@ -20,8 +20,18 @@
   }
  },
  "final": {
+  "engine": "db0c8c56",
+  "note": "the final engine: head db0c8c56, code identical to ed66b960 (parallel-proof-3 0f45362 merged)",
+  "runs": {
+   "python": 44692179684,
+   "node-a": 44692179670,
+   "node-b": 44692179449,
+   "node-c": 44692179649
+  }
+ },
+ "superseded": {
   "engine": "8b735a4c",
-  "note": "the final engine: head 8b735a4c, code identical to a6e9cba1 (parallel-proof-3 19ba798 merged)",
+  "note": "ar2-*-3, cancelled about 16 minutes after start when parallel-proof-3 0f45362 followed; its few landed shards are not reported",
   "runs": {
    "python": 44689487139,
    "node-a": 44689487097,
