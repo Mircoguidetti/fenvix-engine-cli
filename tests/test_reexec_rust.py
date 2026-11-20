@@ -292,7 +292,7 @@ def test_precompile_stamps_and_todo_match_reference(seed, monkeypatch, tmp_path)
             mod.precompile("0", root)
             seq.append(([(c, d, hs, p.replace(str(base), "<base>")) for c, d, hs, p in
                          [(_rel(c, base), _rel_data(d, base), hs, p) for c, d, hs, p in spy.calls]],
-                        stamps.read_bytes().replace(os.fsencode(str(base)), b"<base>") if stamps.exists() else None))
+                        _rel_data(stamps.read_bytes(), base) if stamps.exists() else None))
             # change things between the runs: a new library entry, an edited project file, a stale stamp
             what = r2.choice(["lib", "proj", "none", "stamp"])
             if what == "lib":
@@ -321,12 +321,27 @@ def _canonical_digests(seq):
     return [(calls, None if st is None else re.sub(rb"[0-9a-f]{64}", sub, st)) for calls, st in seq]
 
 
+def _bases(base):
+    # the test adds a directory relative to the working directory (os.path.relpath): its spelling of the base too,
+    # longest first (a working directory near the temporary directory gives "../../pytest-of-.../<module>")
+    return sorted({str(base), os.path.relpath(base)}, key=len, reverse=True)
+
+
 def _rel(cmd, base):
-    return [c.replace(str(base), "<base>") for c in cmd]
+    out = []
+    for c in cmd:
+        for b in _bases(base):
+            c = c.replace(b, "<base>")
+        out.append(c)
+    return out
 
 
 def _rel_data(data, base):
-    return None if data is None else data.replace(os.fsencode(str(base)), b"<base>")
+    if data is None:
+        return None
+    for b in _bases(base):
+        data = data.replace(os.fsencode(b), b"<base>")
+    return data
 
 
 def test_precompile_stamps_file_that_is_not_an_object(monkeypatch, tmp_path):
