@@ -136,6 +136,17 @@ var patches = []patch{
 		{kind: "insert", anchor: "func Fstat(fd int, stat *Stat_t) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
 		{kind: "insert", anchor: "func fstatat(dirfd int, path string, stat *Stat_t, flags int) (err error) {", text: "\tdefer func() {\n\t\tif err == nil {\n\t\t\tfenvixShiftStat(stat)\n\t\t}\n\t}()"},
 	}},
+	{group: "sys-pid-amd64", file: "syscall/zsyscall_linux_amd64.go", ops: []op{
+		// the virtual pid (--det without a PID namespace) names this process
+		{kind: "insert", anchor: "func Kill(pid int, sig Signal) (err error) {", text: "\tpid = fenvixRealPid(pid)"},
+	}},
+	{group: "sys-pid-arm64", file: "syscall/zsyscall_linux_arm64.go", ops: []op{
+		{kind: "insert", anchor: "func Kill(pid int, sig Signal) (err error) {", text: "\tpid = fenvixRealPid(pid)"},
+	}},
+	{group: "os-pid", file: "os/exec.go", ops: []op{
+		{kind: "replace", anchor: "func Getpid() int { return syscall.Getpid() }", text: "func Getpid() int { return syscall.Fenvix_Getpid() }"},
+		{kind: "insert", anchor: "func FindProcess(pid int) (*Process, error) {", text: "\tpid = syscall.Fenvix_RealPid(pid)"},
+	}},
 	{group: "sys-time-set", file: "syscall/syscall_linux.go", ops: []op{
 		{kind: "insert", anchor: "func UtimesNano(path string, ts []Timespec) (err error) {", text: "\tts = fenvixUnshiftTimes(ts)"},
 	}},
@@ -252,6 +263,9 @@ var optionalGroups = map[string]string{
 	"sys-time-arm64": "file timestamps keep real time (stat not shifted on this architecture)",
 	"sys-time-set":   "times set with Chtimes/UtimesNano are not moved back to the real timeline",
 	"os-virtual":     "/proc/1/stat is read as is (a test that reads it is not reusable)",
+	"os-pid":         "without a PID namespace the pid is not controlled",
+	"sys-pid-amd64":  "syscall.Kill of the virtual pid is not mapped to the real one",
+	"sys-pid-arm64":  "syscall.Kill of the virtual pid is not mapped to the real one",
 }
 
 // Has reports whether a control is available.

@@ -52,6 +52,7 @@ var fenvix struct {
 	offsetMode bool // skip mode: real clock + a constant offset (no ticks)
 	devCtr    uint64
 	vproc1    string // virtual copy of /proc/1/stat
+	vpid      int    // --det without a PID namespace: the pid package os reports
 	portCtr   uint64
 	inTest    bool
 	testGoid  uint64
@@ -79,10 +80,23 @@ func fenvixAtoi(s string) (int64, bool) {
 func fenvixInit() {
 	fenvix.once.Do(func() {
 		cfg := ""
+		vpid, started := "", false
 		for _, kv := range runtime_envs() {
 			if len(kv) > 14 && kv[:14] == "FENVIX_GO_DET=" {
 				cfg = kv[14:]
 			}
+			if len(kv) > 15 && kv[:15] == "FENVIX_GO_VPID=" {
+				vpid = kv[15:]
+			}
+			if len(kv) > 14 && kv[:14] == "FENVIX_GO_FDS=" {
+				started = true
+			}
+		}
+		// the virtual pid is the test binary's own (fenvix-go hands it the
+		// FDS variable; package testing unsets both, so programs it starts,
+		// a re-executed test binary included, have their real pids)
+		if n, ok := fenvixAtoi(vpid); ok && started {
+			fenvix.vpid = int(n)
 		}
 		fenvix.epoch = 1735689600 * 1_000_000_000 // 2025-01-01T00:00:00Z
 		fenvix.baseTick = 1000
@@ -789,6 +803,36 @@ func fenvixRawGetrandom(p, n uintptr) uintptr {
 	}
 	return n
 }
+
+// Fenvix_Getpid is the pid package os reports: under --det without a PID
+// namespace (no root, no unprivileged user namespaces) a fixed virtual pid
+// above the kernel's PID_MAX_LIMIT, so it never names another process
+// (review R-025b D3b on CI); the real one otherwise.
+func Fenvix_Getpid() int {
+	fenvixInit()
+	if fenvix.vpid > 0 {
+		return fenvix.vpid
+	}
+	return Getpid()
+}
+
+// Fenvix_VirtualPid is the virtual pid (0: none).
+func Fenvix_VirtualPid() int {
+	fenvixInit()
+	return fenvix.vpid
+}
+
+// fenvixRealPid maps the virtual pid back to the real one (kill, pidfd).
+func fenvixRealPid(pid int) int {
+	fenvixInit()
+	if fenvix.vpid > 0 && pid == fenvix.vpid {
+		return Getpid()
+	}
+	return pid
+}
+
+// Fenvix_RealPid is fenvixRealPid for package os.
+func Fenvix_RealPid(pid int) int { return fenvixRealPid(pid) }
 
 // Fenvix_VirtualProc1Stat is the path of the virtual /proc/1/stat ("" none).
 func Fenvix_VirtualProc1Stat() string {

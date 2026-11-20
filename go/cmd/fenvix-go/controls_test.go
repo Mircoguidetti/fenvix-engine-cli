@@ -308,3 +308,32 @@ func TestRegressionsFromRealProjects(t *testing.T) {
 		t.Fatalf("exit %d\n%s", code, out)
 	}
 }
+
+// TestDetVirtualPid: on a runner without PID namespaces (GitHub runners: not
+// root, unprivileged user namespaces restricted by AppArmor) --det serves a
+// virtual pid; it is the same in every run and still names this process for
+// signals, process lookups and /proc, and a child keeps its real pid
+// (R-025b D3b on CI). With a PID namespace (root here) the same tests pass.
+func TestDetVirtualPid(t *testing.T) {
+	for _, env := range [][]string{{"FENVIX_GO_NO_PIDNS=1"}, nil} {
+		dir := copyFixture(t, "vpid")
+		var pids []string
+		for run := 0; run < 3; run++ {
+			trace := filepath.Join(dir, fmt.Sprintf("v%d.jsonl", run))
+			out, code := runFenvix(t, dir, append([]string{"GOFLAGS="}, env...), "test", "--det", "--det-trace="+trace, "-v", ".")
+			tr, _, _ := readTrace(t, trace)
+			if code != 0 || len(tr) != 4 {
+				t.Fatalf("%v run %d: exit %d, %d tests in the trace\n%s", env, run, code, len(tr), out)
+			}
+			i := strings.Index(out, "pid=")
+			if i < 0 {
+				t.Fatalf("%v run %d: no pid in the output\n%s", env, run, out)
+			}
+			pids = append(pids, strings.Fields(out[i:])[0])
+		}
+		t.Logf("%v: %v", env, pids)
+		if pids[0] != pids[1] || pids[1] != pids[2] {
+			t.Errorf("%v: os.Getpid differs between --det runs: %v", env, pids)
+		}
+	}
+}

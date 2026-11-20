@@ -275,7 +275,10 @@ func cmdTest(args []string) int {
 		return 2
 	} else if root != env["GOROOT"] {
 		goBin = filepath.Join(root, "bin", "go")
-		goExtraEnv = []string{"GOTOOLCHAIN=local"}
+		// GOROOT too: the go command that switched toolchains exports the
+		// downloaded one's GOROOT (under GOMODCACHE, where -overlay is
+		// refused), and an inherited GOROOT wins over the binary's own
+		goExtraEnv = []string{"GOTOOLCHAIN=local", "GOROOT=" + root}
 		env["GOROOT"] = root
 	}
 	if env["GOOS"] != "linux" {
@@ -386,8 +389,14 @@ func cmdTest(args []string) int {
 		// what --det does not control, said at start (review R-025 D2, D4;
 		// R-025b D2b, D3b)
 		pid := "the pid (each test binary runs in its own PID namespace)"
-		if !pidNamespace() {
-			pid = "NOT the pid (needs root and util-linux unshare for a PID namespace)"
+		if len(pidNamespace()) == 0 {
+			if ov.Partial["os-pid"] == "" {
+				pid = "the pid as package os reports it (no PID namespace here: os.Getpid is a virtual pid, " +
+					"mapped back in os.FindProcess, syscall.Kill and /proc/<pid>; raw system calls and x/sys/unix " +
+					"see the real one)"
+			} else {
+				pid = "NOT the pid (no PID namespace here, and package os could not be hooked)"
+			}
 		}
 		fmt.Fprintln(os.Stderr, "fenvix-go: --det controls "+pid+"; it does not control (Level 1 and outside "+
 			"the process): goroutine interleaving at timers, real timer delays, testing/synctest bubbles, "+
@@ -497,7 +506,7 @@ func cmdTest(args []string) int {
 
 	sess := &session.Session{
 		Dir: dir, Self: self, Det: o.det, Seed: o.seed, Controls: controls, Ctl: ctl, Unavailable: ov.Unavailable,
-		Epoch: epoch, Shim: shim, ClockMode: clockMode(o), PidNS: o.det && pidNamespace(), VProc1Stat: virtualProc1Stat(ov, o.skipRealClock), Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
+		Epoch: epoch, Shim: shim, ClockMode: clockMode(o), PidNS: pidNSArgs(o.det), VirtualPid: virtualPid(o.det, ov), VProc1Stat: virtualProc1Stat(ov, o.skipRealClock), Sched: schedOn, Tick: o.tick, Adapt: o.adapt, MaxEvents: o.maxEvents, Root: repoRoot(cwd, env["GOMOD"]),
 		Goroot: env["GOROOT"], GoVersion: env["GOVERSION"], GOOS: env["GOOS"], GOARCH: env["GOARCH"],
 		CgoEnabled: env["CGO_ENABLED"], GoMaxProcs: gomaxprocs, Pkgs: pkgMap, OverlayHash: ov.Digest,
 		BuildFlags: keyFlags,
@@ -771,16 +780,54 @@ func virtualProc1Stat(ov *overlay.Result, realMachine bool) string {
 	return p
 }
 
-// pidNamespace: whether test binaries can run in their own PID namespace
-// with their own /proc (root and util-linux unshare). Said at start when not.
-func pidNamespace() bool {
-	if os.Geteuid() != 0 {
-		return false
+// pidNSArgs: under --det, the command prefix that runs each test binary in
+// its own PID namespace with its own /proc, or nil when none works (said at
+// start).
+func pidNSArgs(det bool) []string {
+	if !det {
+		return nil
+	}
+	return pidNamespace()
+}
+
+// virtualPid: under --det without a PID namespace, the pid package os
+// reports (above PID_MAX_LIMIT, 4194304: never another process's pid).
+func virtualPid(det bool, ov *overlay.Result) int {
+	if !det || len(pidNamespace()) > 0 || ov.Partial["os-pid"] != "" {
+		return 0
+	}
+	return 4194304 + 4242
+}
+
+func pidNamespace() []string {
+	if os.Getenv("FENVIX_GO_NO_PIDNS") != "" {
+		// tests: behave as a runner that refuses PID namespaces
+		return nil
 	}
 	if _, err := exec.LookPath("unshare"); err != nil {
-		return false
+		return nil
 	}
-	return exec.Command("unshare", "--pid", "--fork", "--mount-proc", "true").Run() == nil
+	cands := [][]string{{"unshare", "--pid", "--fork", "--mount-proc"}}
+	if os.Geteuid() != 0 {
+		// without root: an unprivileged user namespace that maps the
+		// caller's own uid and gid (the test still runs as that user, not
+		// as root), owning the PID and mount namespaces. Kernels or
+		// AppArmor policies that refuse unprivileged user namespaces make
+		// the probe fail, and the start message says the pid is not
+		// controlled. (CI runners do not run as root: R-025b D3b on CI.)
+		uid, gid := strconv.Itoa(os.Getuid()), strconv.Itoa(os.Getgid())
+		cands = [][]string{
+			{"unshare", "--user", "--map-user=" + uid, "--map-group=" + gid, "--pid", "--fork", "--mount-proc"},
+			{"unshare", "--user", "--map-current-user", "--pid", "--fork", "--mount-proc"},
+		}
+	}
+	for _, c := range cands {
+		probe := exec.Command(c[0], append(append(c[1:], "--"), "sh", "-c", "test $$ = 1 && test \"$(id -u)\" = "+strconv.Itoa(os.Getuid()))...)
+		if probe.Run() == nil {
+			return append(c, "--")
+		}
+	}
+	return nil
 }
 
 // clockMode: skip mode without --det runs the real clock moved to the keyed

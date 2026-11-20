@@ -352,10 +352,30 @@ func fenvixDevRandom(name string, flag int) *File {
 	return NewFile(uintptr(fd), name)
 }
 
+func fenvixItoa(v int) string {
+	var b [20]byte
+	i := len(b)
+	for {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+		if v == 0 {
+			return string(b[i:])
+		}
+	}
+}
+
 // fenvixVirtualPath: /proc/1/stat is served from its virtual copy (fixed
 // fields from the real file, changing fields constant; built by the Rust
 // core) when fenvix runs with a copy configured.
 func fenvixVirtualPath(name string) string {
+	if v := syscall.Fenvix_VirtualPid(); v > 0 {
+		// the virtual pid's /proc directory is this process's
+		p := "/proc/" + fenvixItoa(v)
+		if name == p || (len(name) > len(p) && name[:len(p)] == p && name[len(p)] == '/') {
+			name = "/proc/self" + name[len(p):]
+		}
+	}
 	if name == "/proc/1/stat" && runtime.Fenvix_Ctl() != 0 {
 		if p := syscall.Fenvix_VirtualProc1Stat(); p != "" {
 			return p

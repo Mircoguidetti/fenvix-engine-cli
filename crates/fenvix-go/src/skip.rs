@@ -961,6 +961,11 @@ impl Session {
             .append(true)
             .open(&self.cfg.decisions)
             .map_err(|e| format!("{}: {e}", self.cfg.decisions))?;
+        // the decisions of this binary go out in one write: test binaries of
+        // several packages append to the same file at once, and writeln! on
+        // an unbuffered file is several writes that can interleave (a walk
+        // read "{...}{...}" on one line)
+        let mut lines = String::new();
         let (mut n_run, mut n_reused) = (0, 0);
         for name in &run.names {
             let cached = self.cache.tests.get(name);
@@ -982,14 +987,16 @@ impl Session {
                 if d.reuse {
                     n_reused += 1;
                 }
-                writeln!(out, "{}", serde_json::to_string(&d).unwrap()).map_err(|e| e.to_string())?;
+                lines.push_str(&serde_json::to_string(&d).unwrap());
+                lines.push('\n');
                 continue;
             };
             n_run += 1;
             d.fresh = res.outcome.clone();
             d.elapsed = res.elapsed;
             d.virtual_clock = res.virtual_clock.clone();
-            writeln!(out, "{}", serde_json::to_string(&d).unwrap()).map_err(|e| e.to_string())?;
+            lines.push_str(&serde_json::to_string(&d).unwrap());
+            lines.push('\n');
             // the entry keeps the virtual-clock outcome: that is the run its
             // keys describe (a test that ran again on the real clock started a
             // program outside the virtual clock: exec: keeps it unkeyed)
@@ -1004,6 +1011,7 @@ impl Session {
             self.cache.tests.insert(name.clone(), e);
             self.cache.own.insert(name.clone(), o);
         }
+        out.write_all(lines.as_bytes()).map_err(|e| e.to_string())?;
         self.cache.version = VERSION;
         if !self.cfg.read_only {
             self.cache.save(&self.cfg.cache_dir).map_err(|e| format!("skip cache: {e}"))?;

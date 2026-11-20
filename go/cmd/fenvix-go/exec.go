@@ -159,6 +159,9 @@ func cmdExec(args []string) int {
 		sess.Ctl, sess.Epoch, sess.Tick, sess.Adapt, initSeed, sess.Root, sess.Goroot, sess.MaxEvents, explore, sess.Shim,
 		sess.VProc1Stat, sess.ClockMode)
 	childEnv = append(childEnv, "FENVIX_GO_DET="+cfg, "FENVIX_GO_FDS=3,4,5")
+	if sess.VirtualPid > 0 {
+		childEnv = append(childEnv, "FENVIX_GO_VPID="+strconv.Itoa(sess.VirtualPid))
+	}
 	if sess.GoMaxProcs != "" {
 		childEnv = append(childEnv, "GOMAXPROCS="+sess.GoMaxProcs)
 	}
@@ -305,10 +308,10 @@ func cmdExec(args []string) int {
 			cmdArgs = []string{bin}
 		}
 		cmdArgs = append(cmdArgs, runArgs...)
-		if sess.PidNS {
+		if len(sess.PidNS) > 0 {
 			// --det: the test binary's pid is the same in every run (its own PID
 			// namespace and /proc; review R-025b D3b)
-			cmdArgs = append([]string{"unshare", "--pid", "--fork", "--mount-proc", "--"}, cmdArgs...)
+			cmdArgs = append(append([]string{}, sess.PidNS...), cmdArgs...)
 		}
 		cmd := exec.Command(cmdArgs[0], cmdArgs[1:]...)
 		cmd.Stdin, cmd.Stderr = os.Stdin, errOut
