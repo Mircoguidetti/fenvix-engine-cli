@@ -1,0 +1,124 @@
+{
+ "name": "idoft-odinweb",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+  "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012274",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware_raises_exception",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_with_debug_enabled",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[ValueError-500]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error0-HTTPStatus.NOT_MODIFIED]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error1-400]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[error5-500]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__http_response",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r1-406-URI not available in preferred format]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__invalid_headers[r2-405-Specified method is invalid for this resource]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__with_middleware",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 2.03
+}

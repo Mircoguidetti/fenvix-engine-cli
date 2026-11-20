@@ -1,0 +1,132 @@
+{
+ "name": "idoft-crom",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+  "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+  "tests/test_model.py::TestBaseResource::test_allows_multiple",
+  "tests/test_model.py::TestBaseResource::test_check_reference",
+  "tests/test_model.py::TestBaseResource::test_init_params",
+  "tests/test_model.py::TestBaseResource::test_list_my_props",
+  "tests/test_model.py::TestBaseResource::test_multiplicity",
+  "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+  "tests/test_model.py::TestFactorySerialization::test_toFile",
+  "tests/test_model.py::TestFactorySerialization::test_toJSON",
+  "tests/test_model.py::TestFactorySerialization::test_toString",
+  "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+  "tests/test_vocab.py::TestClassBuilder::test_multitype"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012263",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_allows_multiple",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_check_reference",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_init_params",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_list_my_props",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_multiplicity",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toFile",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toJSON",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toString",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/test_vocab.py::TestClassBuilder::test_multitype",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 1.78
+}

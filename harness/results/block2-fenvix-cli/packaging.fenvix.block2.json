@@ -1,0 +1,709 @@
+{
+ "name": "packaging",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012288",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 51.17,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 51.482,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 51.834,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 52.698,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 51.622,
+   "tests": 64196,
+   "failing": [
+    "tests/test_manylinux.py::test_module_declaration[1-glibc0-False]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 51.748,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 52.145,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 45.798,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 46.015,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 45.526,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 45.693,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 47.198,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 46.331,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 45.298,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 45.448,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 45.659,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2010"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 45.73,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 45.601,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 45.611,
+   "tests": 64196,
+   "failing": [
+    "tests/test_manylinux.py::test_module_declaration[2010-glibc1-False]"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 45.198,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 45.569,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 45.161,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 45.204,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 44.88,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 44.923,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 45.31,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 45.601,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 46.168,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 46.769,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 45.466,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 47.011,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 45.586,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 45.425,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 45.735,
+   "tests": 64196,
+   "failing": [
+    "tests/test_manylinux.py::test_glibc_version_string_fail"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 45.667,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 45.622,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 45.295,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 45.017,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 44.866,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 45.385,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 45.382,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 45.922,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 45.577,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 45.689,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 45.399,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 45.626,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 45.583,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 45.734,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 45.695,
+   "tests": 64196,
+   "failing": [
+    "tests/test_tags.py::TestSysTags::test_linux_use_manylinux_compatible_none"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 45.488,
+   "tests": 64196,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 2647.49 s; 8 flaky failing tests (0 always failing, not flaky); 1 replay bundles; 1 distinct first diverging events, 1 distinct polluter sets\ndetpy repro: tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi: reproduced\n  found with --det-seed=10; order minimised from 61436 to 2 test(s)\n  polluter(s): tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag\n  replay: 10/10 failed, identical fingerprint: True\n  first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag] (first difference at position 0: <none> vs tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag)\n  replay: pytest --det --det-seed=10 --det-order=/tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f/order.txt -n 0\n  40 pytest runs, 301.28 s\n  defect: tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi: test order: it fails when run after tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag (state left behind by that test); replay: fenvix replay /tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f\n{\n  \"seeds\": 50,\n  \"seconds\": 2647.49,\n  \"runs\": 90,\n  \"collected\": 64196,\n  \"failing_tests\": 8,\n  \"always_failing\": [],\n  \"flaky_failing\": [\n    \"tests/test_manylinux.py::test_glibc_version_string_fail\",\n    \"tests/test_manylinux.py::test_module_declaration[1-glibc0-False]\",\n    \"tests/test_manylinux.py::test_module_declaration[2010-glibc1-False]\",\n    \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2010\",\n    \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014\",\n    \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi\",\n    \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux_glibc3\",\n    \"tests/test_tags.py::TestSysTags::test_linux_use_manylinux_compatible_none\"\n  ],\n  \"bundles\": [\n    {\n      \"test\": \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi\",\n      \"configs_searched\": 1,\n      \"status\": \"reproduced\",\n      \"config\": \"10\",\n      \"seed\": 10,\n      \"kind\": \"order\",\n      \"prefix_length\": 61436,\n      \"minimal_length\": 2,\n      \"polluters\": [\n        \"tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag\"\n      ],\n      \"setters\": [],\n      \"order\": [\n        \"tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag\",\n        \"tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi\"\n      ],\n      \"outcome\": \"failed\",\n      \"exception\": [\n        \"AssertionError\",\n        \"call\",\n        \"AssertionError: assert ['linux_i686'...39_i686', ...] == ['linux_i686'...14_i686', ...]\",\n        \"tests/test_tags.py:852\"\n      ],\n      \"replay\": ",
+ "bundles": [
+  {
+   "test": "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "10",
+   "seed": 10,
+   "kind": "order",
+   "prefix_length": 61436,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag",
+    "tests/test_tags.py::TestManylinuxPlatform::test_linux_platforms_manylinux2014_i386_abi"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert ['linux_i686'...39_i686', ...] == ['linux_i686'...14_i686', ...]",
+    "tests/test_tags.py:852"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1d6d4cabe2a39c32173892496ab168dd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": null,
+    "reason": "order",
+    "description": "before the test started: it ran after different tests in its process: [] vs [tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag] (first difference at position 0: <none> vs tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag)",
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "<none>"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag"
+    },
+    "fingerprints": [
+     "4c28e7c919091318df5e3b7996e0026a",
+     "1d6d4cabe2a39c32173892496ab168dd"
+    ]
+   },
+   "runs": 40,
+   "seconds": 301.28,
+   "controls": [
+    "bytecode",
+    "env",
+    "fs",
+    "hashseed",
+    "locale",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "tz"
+   ],
+   "detpy": "0.1.0",
+   "python": "3.13.18",
+   "command": "pytest --det --det-seed=10 --det-order=/tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f/order.txt -n 0",
+   "replay_command": "fenvix replay /tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f",
+   "first_failing_seed": 10,
+   "runner": "pytest",
+   "provenance": {
+    "commit": "cf2cdf099375f7e208168cd2d8880699aeef0583",
+    "dirty": false,
+    "python": "3.13.18",
+    "platform": "linux",
+    "distributions": [
+     "Pygments==2.21.0",
+     "coverage==7.17.3",
+     "detpy==0.1.0",
+     "execnet==2.1.2",
+     "hypothesis==6.170.17",
+     "iniconfig==2.3.1",
+     "packaging==26.4.dev0",
+     "pip==26.3",
+     "pluggy==1.7.0",
+     "pretend==1.0.9",
+     "pytest-randomly==5.1.0",
+     "pytest-xdist==3.8.0",
+     "pytest==9.2.0",
+     "sortedcontainers==2.4.0",
+     "tomli_w==1.2.0"
+    ],
+    "inputs": {
+     "aslr": "off",
+     "bytecode": "precompiled",
+     "clock": "virtual epoch_ns=1795123954000000000 tick_ns=1000 adapt=8 sleep=virtual",
+     "env": "recorded (every os.environ read is an event)",
+     "env:ACCEPT_EULA": "182d0a62f4fde27d",
+     "env:ACTIONS_ORCHESTRATION_ID": "9789407d3e8b7a0a",
+     "env:ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE": "3817efca84f700ed",
+     "env:ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED": "d9f239164986909d",
+     "env:AGENT_TOOLSDIRECTORY": "681db81b209d9214",
+     "env:ANDROID_HOME": "6c452a0d181bf924",
+     "env:ANDROID_NDK": "13c9a21bdcd910ea",
+     "env:ANDROID_NDK_HOME": "9443ff1c4545a4dd",
+     "env:ANDROID_NDK_LATEST_HOME": "b449c7922ec604ca",
+     "env:ANDROID_NDK_ROOT": "8e7a2cd92ce0c225",
+     "env:ANDROID_SDK_ROOT": "2af2cb1101093b77",
+     "env:ANT_HOME": "38cfcf7c004d6214",
+     "env:AZURE_EXTENSION_DIR": "2159b49579c67580",
+     "env:BOOTSTRAP_HASKELL_NONINTERACTIVE": "780dec3aacce4885",
+     "env:CHROMEWEBDRIVER": "26b1d7846b125fba",
+     "env:CHROME_BIN": "bbe2ec81badb26e3",
+     "env:CI": "b1efec8a5a05ac69",
+     "env:COLUMNS": "85282d0618c5904c",
+     "env:DEBIAN_FRONTEND": "27aec16ed36f5e7f",
+     "env:DOTNET_MULTILEVEL_LOOKUP": "89bfbd5d816261ef",
+     "env:DOTNET_NOLOGO": "3540f515b71a6df4",
+     "env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "3a4874cb6c653e4d",
+     "env:EDGEWEBDRIVER": "d089132ac1f18f1b",
+     "env:ENABLE_RUNNER_TRACING": "f2f2b54c9dd22250",
+     "env:GECKOWEBDRIVER": "57a62dbfdd685bd8",
+     "env:GHCUP_INSTALL_BASE_PREFIX": "7389ae6f098f9f3c",
+     "env:GITHUB_ACTION": "c19161ac8b493f69",
+     "env:GITHUB_ACTIONS": "c44b85ca6019e2db",
+     "env:GITHUB_ACTION_REF": "3cddfa0262ff5f6a",
+     "env:GITHUB_ACTION_REPOSITORY": "83af35af73dd9503",
+     "env:GITHUB_ACTOR": "6ad4bf975871895a",
+     "env:GITHUB_ACTOR_ID": "7ed44d7d3d2a08a9",
+     "env:GITHUB_API_URL": "43a055384c8ee30c",
+     "env:GITHUB_ARTIFACTS": "fcc1fff1ef729253",
+     "env:GITHUB_ARTIFACTS_LIST": "580d312440a77584",
+     "env:GITHUB_BASE_REF": "36ea8bcd27955dab",
+     "env:GITHUB_ENV": "5c84ca662574c458",
+     "env:GITHUB_EVENT_NAME": "fa7a96b0a221af88",
+     "env:GITHUB_EVENT_PATH": "417c413edfef940e",
+     "env:GITHUB_GRAPHQL_URL": "e0e9b1b7ce267fe1",
+     "env:GITHUB_HEAD_REF": "3e58f9d4f9aa6b33",
+     "env:GITHUB_JOB": "7b6fab157d7d3cc0",
+     "env:GITHUB_OUTPUT": "77436d929fdfbd59",
+     "env:GITHUB_PATH": "c1a2e4d84df3c655",
+     "env:GITHUB_REF": "61e5933d0afe18ca",
+     "env:GITHUB_REF_NAME": "fe244bdd1f4650c0",
+     "env:GITHUB_REF_PROTECTED": "32c5d85da0ae1f0c",
+     "env:GITHUB_REF_TYPE": "171cd17c3f4d6017",
+     "env:GITHUB_REPOSITORY": "2f64c204ccf34f7e",
+     "env:GITHUB_REPOSITORY_ID": "0b6e7bb6bc74ec4e",
+     "env:GITHUB_REPOSITORY_OWNER": "cf646ea515a3997a",
+     "env:GITHUB_REPOSITORY_OWNER_ID": "f4951112f4bbb5c9",
+     "env:GITHUB_RETENTION_DAYS": "971dcb0e5dad0f2f",
+     "env:GITHUB_RUN_ATTEMPT": "b2dcd211709fef69",
+     "env:GITHUB_RUN_ID": "56418d55df93cca5",
+     "env:GITHUB_RUN_NUMBER": "1dc04dd079e50fc6",
+     "env:GITHUB_SERVER_URL": "c50bd2479aa52911",
+     "env:GITHUB_SHA": "6ac479ac05b36b28",
+     "env:GITHUB_STATE": "49411582752fcdaf",
+     "env:GITHUB_STEP_SUMMARY": "2d2de544829b16f6",
+     "env:GITHUB_TRIGGERING_ACTOR": "898c72bfedd19214",
+     "env:GITHUB_WORKFLOW": "628bab0cb1899c95",
+     "env:GITHUB_WORKFLOW_REF": "81959f3dd413bf13",
+     "env:GITHUB_WORKFLOW_SHA": "9d4f4f06f412f2fe",
+     "env:GITHUB_WORKSPACE": "789f34d13fa4936e",
+     "env:GOROOT_1_25_X64": "fa7c4ec287d57b9f",
+     "env:GOROOT_1_26_X64": "201ca86d6b29fd1e",
+     "env:GOROOT_1_27_X64": "1ea4ce7c443050f2",
+     "env:GRADLE_HOME": "b530acf488e53c6f",
+     "env:HCA_CLOUD_PROVIDER": "53e48cb538078553",
+     "env:HOME": "85c350014407f59f",
+     "env:HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS": "1a5f460566fbf3f8",
+     "env:HOMEBREW_NO_AUTO_UPDATE": "3bcebb319419e1b3",
+     "env:INVOCATION_ID": "f20c5c848e1a2798",
+     "env:ImageOS": "b30184772249a8d0",
+     "env:ImageVersion": "d6d4b8daafe18766",
+     "env:JAVA_HOME": "e0fe90e802e5cdd2",
+     "env:JAVA_HOME_11_X64": "ff4a954f5c22e7d5",
+     "env:JAVA_HOME_17_X64": "d39a6d2e33f1b224",
+     "env:JAVA_HOME_21_X64": "a933373ec7e963c6",
+     "env:JAVA_HOME_25_X64": "2947bc67d2b1428d",
+     "env:JOURNAL_STREAM": "ce2597f5870ba9f2",
+     "env:LANG": "aeefb95e8953c950",
+     "env:LC_ALL": "2a27cc871e6df502",
+     "env:LD_LIBRARY_PATH": "d423c0ae8ccc0804",
+     "env:LOGNAME": "2747607f229d426c",
+     "env:MEMORY_PRESSURE_WATCH": "73faf3830b45241a",
+     "env:MEMORY_PRESSURE_WRITE": "7aded114e20b3a54",
+     "env:NVM_DIR": "f50d5fa74ec9d1fc",
+     "env:PATH": "27aed53013e81ba1",
+     "env:PIPX_BIN_DIR": "c0af67eb00e8a110",
+     "env:PIPX_HOME": "fcf3c3c2086cdc24",
+     "env:PKG_CONFIG_PATH": "7bc241f651af4862",
+     "env:POWERSHELL_DISTRIBUTION_CHANNEL": "fabc98d43b69d11e",
+     "env:PSModulePath": "a5d18c7ab9c63fb3",
+     "env:PWD": "a971d54ee14bda81",
+     "env:PYTEST_VERSION": "60da7eae2c76ff24",
+     "env:PYTHONDONTWRITEBYTECODE": "9cd66641cafe0368",
+     "env:PYTHONHASHSEED": "71e1bda1aca8f11b",
+     "env:PYTHONPYCACHEPREFIX": "88e045a7bd45da93",
+     "env:PYTHONUNBUFFERED": "3418ad26d15b6bca",
+     "env:Python2_ROOT_DIR": "0e6dfa739327a86b",
+     "env:Python3_ROOT_DIR": "ed5ee891efbfedc1",
+     "env:Python_ROOT_DIR": "492be005f070df00",
+     "env:RUNNER_ARCH": "d44571bdde1373e8",
+     "env:RUNNER_ENVIRONMENT": "0b5eac3a378d54ec",
+     "env:RUNNER_NAME": "5d318007af29ba55",
+     "env:RUNNER_OS": "8abead566bda766e",
+     "env:RUNNER_TEMP": "1e0cc05c794bf974",
+     "env:RUNNER_TOOL_CACHE": "d44df44136d9d17d",
+     "env:RUNNER_TRACKING_ID": "6462747bc4d560dc",
+     "env:RUNNER_WORKSPACE": "1bae29b9f0b0cbde",
+     "env:SELENIUM_JAR_PATH": "4aa10ab371ad593c",
+     "env:SGX_AESM_ADDR": "5af2398115839293",
+     "env:SHELL": "e0967e19dba5186d",
+     "env:SHLVL": "f64e54d0db2c8a15",
+     "env:SWIFT_PATH": "6c960c1d10e160f0",
+     "env:SYSTEMD_EXEC_PID": "70fa6013ff8491f2",
+     "env:TZ": "5cb1eccfbfb87fdf",
+     "env:USER": "f1263236a8c1c1aa",
+     "env:USE_BAZEL_FALLBACK_VERSION": "2193f7e26afcd30d",
+     "env:UV_CACHE_DIR": "99dc8e37094a1958",
+     "env:UV_PYTHON_PREFERENCE": "bb261975476c0b69",
+     "env:VCPKG_INSTALLATION_ROOT": "097342195b689f58",
+     "env:VIRTUAL_ENV": "f6b79777687bdcc5",
+     "env:XDG_CONFIG_HOME": "0b89a8c10ed4499b",
+     "env:XDG_RUNTIME_DIR": "541daeb8f9196077",
+     "env:_": "4cd50b3bf249f30a",
+     "env:pythonLocation": "88f7d672a5963f27",
+     "fs": "sorted",
+     "hashseed": "2",
+     "locale": "C.UTF-8 (pinned)",
+     "network": "block allow= cassette=none",
+     "order": "fixed",
+     "runner": "pytest 9.2.0",
+     "runtime": "CPython 3.13.18 linux x86_64",
+     "seed": "10",
+     "shuffle": "no",
+     "tz": "UTC (pinned)",
+     "urandom": "observed"
+    }
+   },
+   "cause_line": "test order: it fails when run after tests/test_tags.py::TestSysTags::test_cpython_first_none_any_tag (state left behind by that test)",
+   "replay_line": "replay: fenvix replay /tmp/work/block2/packaging/fenvix/bundles/bundles/test_linux_platforms_manylinux2014_i386_abi-2460d58f",
+   "exit": 0
+  }
+ ],
+ "seconds": 2648.83
+}
