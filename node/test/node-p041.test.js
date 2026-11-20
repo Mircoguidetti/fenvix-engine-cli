@@ -446,3 +446,28 @@ for (const runner of RUNNERS) {
     assert.ok(bad.length >= 1);
   });
 }
+
+// G-0139 G-0140: the machine's default time zone and locale never decide a --det run: unset, they are pinned (UTC,
+// C.UTF-8); set by the job, they are its configuration (kept); --det-tz / --det-locale choose explicitly. The header
+// records what the run used.
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0139 G-0140 time zone and locale pinned and recorded`, T, () => {
+    const dir = proj(runner, 'tz', { a: `${PUT}\ntest('local time', () => { put('tz', new Date(0).getTimezoneOffset() + '|' + (1234.5).toLocaleString() + '|' + Intl.DateTimeFormat().resolvedOptions().timeZone); });` });
+    const clean = {};
+    for (const k of ['TZ', 'LANG', 'LC_ALL', 'LANGUAGE']) clean[k] = undefined;
+    const cases = [
+      [{}, [], '0|1,234.5|UTC'],
+      [{ TZ: 'Asia/Tokyo' }, [], '-540|1,234.5|Asia/Tokyo'],
+      [{ LANG: 'de_DE.UTF-8' }, [], '0|1.234,5|UTC'],
+      [{ TZ: 'Asia/Tokyo' }, ['--det-tz=UTC'], '0|1,234.5|UTC'],
+    ];
+    for (const [env, extra, want] of cases) {
+      const e = { ...clean, ...env };
+      const r = crun(runner, dir, args(runner), { cache: false, det: ['--det', ...extra], env: e });
+      assert.equal(r.status, 0, show(r));
+      assert.equal(got(dir, 'tz'), want, JSON.stringify(env) + extra.join(' '));
+      const meta = JSON.parse(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n')[0]).meta;
+      assert.ok(meta.tz && meta.locale && meta.pinned, JSON.stringify(meta));
+    }
+  });
+}
