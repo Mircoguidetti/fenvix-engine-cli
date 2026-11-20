@@ -500,7 +500,7 @@ def _pw_two(ctx, name, spec, envs=None, extra=""):
     for i, e in enumerate(envs or [{}, {}]):
         o = ctx.work / f"pw-{name}-{i}.out"
         o.unlink(missing_ok=True)
-        ctx.sh(f"pw-{name}-{i}", f"fenvix node playwright test --det --project=chromium {extra} {rel}", cwd=d,
+        ctx.sh(f"pw-{name}-{i}", f"fenvix node playwright test --det --project=Chrome {extra} {rel}", cwd=d,
                env=dict(e, EXAM_OUT=str(o)), timeout=1800)
         vals.append(o.read_text() if o.exists() else None)
     (d / rel).unlink(missing_ok=True)
@@ -527,7 +527,7 @@ def _(ctx):
     cache = ctx.work / "pw-cache"
     rcs = []
     for i in (1, 2):
-        rc, out = ctx.sh(f"pw-cache{i}", f"fenvix node playwright test --det --det-cache={cache} --project=chromium", cwd=d, timeout=1800)
+        rc, out = ctx.sh(f"pw-cache{i}", f"fenvix node playwright test --det --det-cache={cache} --project=Chrome", cwd=d, timeout=1800)
         rcs.append((rc, lib.reused_count(out), "refus" in out.lower()))
     return rcs[1][0] == 0 and (rcs[1][1] > 0 or rcs[1][2]), f"runs (rc, reused, refusal named): {rcs}"
 
@@ -537,7 +537,7 @@ def _(ctx):
     d = rows_js._pw(ctx)
     t = [ctx.work / "pww1.jsonl", ctx.work / "pww2.jsonl"]
     for i in (0, 1):
-        ctx.sh(f"pw-workers{i}", f"fenvix node playwright test --det --det-trace={t[i]} --workers=2 --project=chromium", cwd=d, timeout=1800)
+        ctx.sh(f"pw-workers{i}", f"fenvix node playwright test --det --det-trace={t[i]} --workers=2 --project=Chrome", cwd=d, timeout=1800)
     ok, desc, _ = lib.verify(ctx, d, {}, t[0], t[1], "pww-verify")
     return ok, desc
 
@@ -546,7 +546,7 @@ def _(ctx):
 def _(ctx):
     d = rows_js._pw(ctx)
     t = ctx.work / "pwv.jsonl"
-    ctx.sh("pw-version", f"fenvix node playwright test --det --det-trace={t} --project=chromium", cwd=d, timeout=1800)
+    ctx.sh("pw-version", f"fenvix node playwright test --det --det-trace={t} --project=Chrome", cwd=d, timeout=1800)
     head = t.read_text().splitlines()[0] if t.exists() else ""
     return "chrom" in head.lower(), f"trace header: {head[:200]!r}"
 

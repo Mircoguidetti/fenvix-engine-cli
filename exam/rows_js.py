@@ -183,10 +183,10 @@ def JS_04(ctx: Ctx):
 
     def det():
         d = _pw(ctx)
-        rc0, out0 = ctx.sh("pw-plain", "npx playwright test --project=chromium --reporter=line", cwd=d, timeout=1800)
+        rc0, out0 = ctx.sh("pw-plain", "npx playwright test --project=Chrome --reporter=line", cwd=d, timeout=1800)
         t = [ctx.work / "pw1.jsonl", ctx.work / "pw2.jsonl"]
         for i in (0, 1):
-            ctx.sh(f"pw-det{i}", f"fenvix node playwright test --det --det-trace={t[i]} --project=chromium --reporter=line", cwd=d, timeout=1800)
+            ctx.sh(f"pw-det{i}", f"fenvix node playwright test --det --det-trace={t[i]} --project=Chrome --reporter=line", cwd=d, timeout=1800)
         vok, vdesc, _ = lib.verify(ctx, d, {}, t[0], t[1], "pw-verify")
         return vok, f"plain rc={rc0}; verify: {vdesc}"
     ctx.run_check("JS-04.det2", DET2, det)
@@ -197,7 +197,7 @@ def JS_04(ctx: Ctx):
         vals = []
         for i in (0, 1):
             o = ctx.work / f"pwc{i}.out"
-            ctx.sh(f"pw-clock{i}", f"fenvix node playwright test --det --project=chromium tests/exam-clock.spec.ts", cwd=d,
+            ctx.sh(f"pw-clock{i}", f"fenvix node playwright test --det --project=Chrome tests/exam-clock.spec.ts", cwd=d,
                    env={"EXAM_OUT": str(o)}, timeout=1800)
             vals.append(o.read_text() if o.exists() else None)
         (d / "tests/exam-clock.spec.ts").unlink(missing_ok=True)

@@ -36,19 +36,32 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--run-id", default=os.environ.get("GITHUB_RUN_ID"))
     ap.add_argument("--jobs", default="", help="JSON file: job name -> job id (from the Actions API)")
+    ap.add_argument("--base", default="", help="outputs of a base run: rows not rerun here are taken from it")
+    ap.add_argument("--base-run", default="")
     a = ap.parse_args()
 
     legs = json.load(open(a.legs))["legs"]
     gm = json.load(open(a.gaps))
     jobs = json.load(open(a.jobs)) if a.jobs and os.path.exists(a.jobs) else {}
-    outs = []
-    for p in sorted(glob.glob(os.path.join(a.inp, "**", "*.json"), recursive=True)):
-        try:
-            d = json.load(open(p))
-        except ValueError:
-            continue
-        if isinstance(d, dict) and "results" in d and "leg" in d:
-            outs.append(d)
+    def load(dirn):
+        res = []
+        for p in sorted(glob.glob(os.path.join(dirn, "**", "*.json"), recursive=True)):
+            try:
+                d = json.load(open(p))
+            except ValueError:
+                continue
+            if isinstance(d, dict) and "results" in d and "leg" in d:
+                res.append(d)
+        return res
+    outs = load(a.inp)
+    rerun = {r for o in outs for r in o["rows"]}
+    base_used = []
+    if a.base and os.path.isdir(a.base):
+        for o in load(a.base):
+            if not set(o["rows"]) & rerun:
+                o.setdefault("run_id", a.base_run)
+                outs.append(o)
+                base_used.append(o.get("job"))
 
     expected = defaultdict(set)   # row -> leg keys the plan names
     for lg in legs:
@@ -107,6 +120,8 @@ def main():
     res = {
         "exam": "go-live acceptance exam (exam/PLAN.md)",
         "run_id": a.run_id,
+        "base_run": a.base_run or None,
+        "rows_rerun_in_run_id": sorted(rerun) if a.base_run else None,
         "installed": installs,
         "summary": {"rows": len(rows), "pass": sum(v["status"] == "PASS" for v in rows.values()),
                     "fail": sum(v["status"] == "FAIL" for v in rows.values()),

@@ -29,6 +29,7 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       legs: ${{ steps.p.outputs.legs }}
+      base_run: ${{ steps.p.outputs.base_run }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,12 +43,17 @@ jobs:
       - id: p
         env: {ROWS: "${{ github.event.inputs.rows }}"}
         run: |
+          # exam/rerun.json {"base_run": ID, "rows": [...]}: rerun only those rows; the aggregate takes every other
+          # row from the base run's artifacts
           python3 -c "
           import json, os
           legs = json.load(open('exam/legs.json'))['legs']
           want = [r for r in os.environ.get('ROWS', '').split(',') if r]
+          base = ''
+          if not want and os.path.exists('exam/rerun.json'):
+              rr = json.load(open('exam/rerun.json')); want, base = rr.get('rows', []), str(rr.get('base_run', ''))
           if want: legs = [l for l in legs if set(l['rows']) & set(want)]
-          print('legs=' + json.dumps(legs))" >> "$GITHUB_OUTPUT"
+          print('legs=' + json.dumps(legs)); print('base_run=' + base)" >> "$GITHUB_OUTPUT"
 
   leg:
     needs: plan
@@ -136,12 +142,20 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with: {pattern: "exam-*", path: exam-out-all}
+      - name: base run artifacts (rerun mode)
+        if: needs.plan.outputs.base_run != ''
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "exam-*"
+          path: exam-out-base
+          run-id: ${{ needs.plan.outputs.base_run }}
+          github-token: ${{ github.token }}
       - name: job ids
         run: |
           gh api --paginate "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \
             --jq '.jobs[] | {(.name): .id}' | python3 -c "import sys,json; d={}; [d.update(json.loads(l)) for l in sys.stdin if l.strip()]; json.dump(d, open('jobs.json','w'))"
       - name: aggregate
-        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json
+        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json --base exam-out-base --base-run "${{ needs.plan.outputs.base_run }}"
       - name: commit exam/results.json to claude/exam
         if: github.ref == 'refs/heads/claude/exam'
         run: |

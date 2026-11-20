@@ -19,7 +19,7 @@ P = {
                  tag="release/0.68.0b0", install=["-e", "."]),
     "zope.interface": dict(url="https://github.com/zopefoundation/zope.interface",
                            sha="d860f651c966bbc600faea9c9fb3885b1a183bc4", tag="7.2",
-                           install=["-e", ".[test]", "zope.testrunner"]),
+                           install=[".[test]", "zope.testrunner"]),  # editable install shadows the zope namespace
     "toolz": dict(url="https://github.com/pytoolz/toolz", sha="07f30a9c75e07a4b7095d0ec93ba4e963504f259",
                   tag="1.0.0", install=["-e", "."]),
     "bakerydemo": dict(url="https://github.com/wagtail/bakerydemo", sha="890285b95dcf980215ab9e9942d64ed2b47c48c3",

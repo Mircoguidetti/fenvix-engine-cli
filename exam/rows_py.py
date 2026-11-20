@@ -84,13 +84,17 @@ RUNNERS = {
     "ward": ("ward", ["python", "-m", "ward", "test"], ["ward", "--det", "test"], []),
     "zope": ("zope.interface", ["python", "-m", "zope.testrunner", "--test-path=src"],
              ["zope-testrunner", "--det", "--test-path=src"], []),
-    "doctest": ("toolz", ["python", "-m", "doctest", "toolz/itertoolz.py", "toolz/functoolz.py", "toolz/dicttoolz.py"],
-                ["doctest", "--det", "toolz/itertoolz.py", "toolz/functoolz.py", "toolz/dicttoolz.py"], []),
+    # functoolz/dicttoolz use relative imports, which `python -m doctest FILE` cannot import
+    "doctest": ("toolz", ["python", "-m", "doctest", "-v", "toolz/itertoolz.py"],
+                ["doctest", "--det", "-v", "toolz/itertoolz.py"], []),
 }
 
 
 def _runner_counts(out: str, rc) -> dict:
     c = {"rc": rc}
+    m = re.search(r"(\d+) passed and (\d+) failed", out)  # doctest -v
+    if m:
+        c["passed"], c["failed"] = int(m.group(1)), int(m.group(2))
     m = re.search(r"Ran (\d+) tests?", out)
     if m:
         c["ran"] = int(m.group(1))
@@ -128,7 +132,8 @@ def PY_03(ctx: Ctx):
             vok, vdesc, rep = lib.verify(ctx, d, env, t[0], t[1], f"{r}-verify")
             c0, c1 = _runner_counts(out0, rc0), _runner_counts(res[0][1], res[0][0])
             same = c0 == c1
-            return vok and same, f"verify: {vdesc}; plain {c0} vs engine {c1}", {"first_divergence": lib.first_divergence(rep)[:3]}
+            base = "BASELINE: the plain runner fails on this project/leg; " if rc0 != 0 else ""
+            return vok and same and rc0 == 0, f"{base}verify: {vdesc}; plain {c0} vs engine {c1}", {"first_divergence": lib.first_divergence(rep)[:3]}
         ctx.run_check(f"PY-03.{r}.det2", "two --det runs verify identical; exit status and counts equal the plain runner's", det2)
 
         def cache2(r=r, name=name, plain=plain, eng=eng, extra=extra):
@@ -158,10 +163,13 @@ def PY_03(ctx: Ctx):
 
 # -- PY-04 -------------------------------------------------------------------------------------------------------------
 
+SQLITE = {"SQLITE": "1"}  # django-model-utils' own switch to its sqlite settings (tests/settings.py)
+
+
 def PY_04(ctx: Ctx):
     name = "django-model-utils"
-    py_project_det2(ctx, "PY-04.det2", name)
-    py_project_cache2(ctx, "PY-04.cache2", name)
+    py_project_det2(ctx, "PY-04.det2", name, extra_env=SQLITE)
+    py_project_cache2(ctx, "PY-04.cache2", name, extra_env=SQLITE)
 
     def edit():
         d, env = fam.py_setup(ctx, name)
@@ -176,13 +184,13 @@ def PY_04(ctx: Ctx):
                 raise Skip("anchor STATUS = Choices(...) not found")
             p.write_text(s.replace(m.group(0), m.group(0).replace("'draft'", "'drafted'", 1).replace('"draft"', '"drafted"', 1), 1))
             return "tests/models.py: first STATUS choice 'draft' -> 'drafted'"
-        return fam.py_edit(ctx, d, env, _args(name), "PY-04-edit", ed)
+        return fam.py_edit(ctx, d, env, _args(name), "PY-04-edit", ed, extra_env=SQLITE)
     ctx.run_check("PY-04.edit", "EDIT: dependent tests rerun, the others are reused, outcomes equal a plain rerun", edit)
 
     def order():
         d, env = fam.py_setup(ctx, name)
-        rc0, _, plain = lib.pytest_plain(ctx, d, env, _args(name), "pd-plain")
-        rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-seed=3"] + _args(name), "pd-seed3")
+        rc0, _, plain = lib.pytest_plain(ctx, d, env, _args(name), "pd-plain", SQLITE)
+        rc, out, o = lib.pytest_engine(ctx, d, env, ["--det", "--det-seed=3"] + _args(name), "pd-seed3", SQLITE)
         ok, desc = lib.cmp_outcomes(o, plain)
         return ok, f"--det-seed=3 vs plain: {desc}"
     ctx.run_check("PY-04.order", "--det-seed=3 keeps pytest-django's groups; outcomes equal plain", order)
