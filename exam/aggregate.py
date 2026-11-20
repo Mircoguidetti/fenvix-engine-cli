@@ -42,6 +42,7 @@ def main():
     ap.add_argument("--jobs", default="", help="JSON file: job name -> job id (from the Actions API)")
     ap.add_argument("--base", default="", help="outputs of a base run: rows not rerun here are taken from it")
     ap.add_argument("--base-run", default="")
+    ap.add_argument("--release-run", default="", help="release-1.yml run id the legs were asked to install (empty = trunk)")
     a = ap.parse_args()
 
     legs = json.load(open(a.legs))["legs"]
@@ -74,16 +75,25 @@ def main():
         for r in lg["rows"]:
             expected[r].add(leg_key(lg))
     installs = {}
+    tested = {}   # (release_run, release_commit, head_branch) -> legs that installed and tested that artifact
     rows = {r: {"status": None, "legs": {}, "checks": [], "failed": []} for r in expected}
     for o in outs:
         lk = leg_key(o["leg"])
         ins = o.get("install", {})
         installs.setdefault(str(o.get("run_id")), {k: v for k, v in ins.items()})
+        art = {k: ins.get(k) for k in ("ok", "release_run", "release_commit", "head_branch", "event", "selected",
+                                        "artifact", "artifact_id", "requested_run", "reason") if ins.get(k) is not None}
+        akey = (str(ins.get("release_run")), str(ins.get("release_commit")), str(ins.get("head_branch")))
+        t = tested.setdefault(akey, {"release_run": ins.get("release_run"), "release_commit": ins.get("release_commit"),
+                                     "head_branch": ins.get("head_branch"), "event": ins.get("event"),
+                                     "selected": ins.get("selected"), "install_ok": True, "legs": []})
+        t["install_ok"] = t["install_ok"] and bool(ins.get("ok"))
+        t["legs"].append(f'{"+".join(o["rows"])}@{lk} (exam run {o.get("run_id")})')
         for r in o["rows"]:
             rows.setdefault(r, {"status": None, "legs": {}, "checks": [], "failed": []})
             rows[r]["legs"][lk] = {"job": o.get("job"), "job_id": jobs.get(o.get("job") or ""), "run_id": o.get("run_id"),
                                    "seconds": o.get("seconds"), "install_ok": o.get("install", {}).get("ok"),
-                                   "runner": o.get("runner")}
+                                   "runner": o.get("runner"), "artifact": art}
         for c in o["results"]:
             rec = {"id": c["id"], "leg": lk, "ok": c["ok"], "expected": c["expected"], "observed": c["observed"],
                    "run_id": o.get("run_id"), "job": o.get("job")}
@@ -138,6 +148,8 @@ def main():
         "run_id": a.run_id,
         "base_run": a.base_run or None,
         "rows_rerun_in_run_id": sorted(rerun) if a.base_run else None,
+        "release_run_requested": a.release_run or None,
+        "artifacts_tested": sorted(tested.values(), key=lambda t: str(t["release_run"])),
         "installed": installs,
         "decisions": gm.get("decisions", []),
         "summary": {"rows": len(rows), "pass": sum(v["status"] == "PASS" for v in rows.values()),
@@ -156,6 +168,9 @@ def main():
     with open(a.out, "w") as fh:
         json.dump(res, fh, indent=1)
     print(json.dumps(res["summary"], indent=1))
+    for t in res["artifacts_tested"]:
+        print(f"artifact tested: release run {t['release_run']} commit {t['release_commit']} branch {t['head_branch']} "
+              f"({t['selected']}, install ok {t['install_ok']}) by {len(t['legs'])} leg(s)")
     for r in sorted(rows):
         v = rows[r]
         print(f"{r}: {v['status']}  {v['n_passed']}/{v['n_checks']} checks, legs {len(v['legs'])} (missing {len(v['missing_legs'])}), gaps {v['gaps']}")

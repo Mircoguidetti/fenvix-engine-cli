@@ -1,6 +1,8 @@
 # Go-live acceptance exam (exam/PLAN.md). One job per leg of exam/legs.json (row x platform x versions); the
 # aggregate job merges every leg into exam/results.json and commits it to claude/exam.
-# The engine is installed as our runner machines do: the single Linux x86_64 artifact of the release-1 CI (exam/install.sh).
+# The engine is installed as our runner machines do: the single Linux x86_64 artifact of the release-1 CI (exam/install.sh),
+# by default the newest claude/release-1 one; with input release_run, the artifact of that release-1.yml run (e.g. a PR head),
+# so a row is examined before its merge. results.json names the artifact (run, commit, branch) every leg tested.
 name: exam
 
 on:
@@ -12,6 +14,10 @@ on:
       rows:
         description: "comma list of rows to run (empty = all)"
         default: ""
+      release_run:
+        description: "release-1.yml run id whose engine-linux-x64 artifact to examine (any branch, e.g. a PR head run); empty = newest claude/release-1 artifact"
+        default: ""
+        required: false
 
 permissions:
   contents: write
@@ -65,6 +71,7 @@ jobs:
         include: ${{ fromJSON(needs.plan.outputs.legs) }}
     env:
       EXAM_INSTALL: ci-artifact  # the only source (founder decision 2026-11-20)
+      EXAM_RELEASE_RUN: ${{ github.event.inputs.release_run }}  # empty = newest trunk artifact (exam/install.sh)
       EXAM_PLATFORM: ${{ matrix.platform }}
       EXAM_PYTHON: ${{ matrix.python }}
       EXAM_NODE: ${{ matrix.node }}
@@ -152,7 +159,7 @@ jobs:
           gh api --paginate "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \
             --jq '.jobs[] | {(.name): .id}' | python3 -c "import sys,json; d={}; [d.update(json.loads(l)) for l in sys.stdin if l.strip()]; json.dump(d, open('jobs.json','w'))"
       - name: aggregate
-        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json --base exam-out-base --base-run "${{ needs.plan.outputs.base_run }}"
+        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json --base exam-out-base --base-run "${{ needs.plan.outputs.base_run }}" --release-run "${{ github.event.inputs.release_run }}"
       - name: commit exam/results.json to claude/exam
         if: github.ref == 'refs/heads/claude/exam'
         run: |
