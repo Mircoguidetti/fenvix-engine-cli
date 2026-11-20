@@ -671,6 +671,7 @@ class ProofSession:
             sess.compare_verified()
             sess.write_receipts(self.store)
             self._shared_push()
+            self._after_session()
             return
         t0 = _perf()
         try:
@@ -688,6 +689,10 @@ class ProofSession:
         sess.compare_verified()
         sess.write_receipts(self.store)
         self._shared_push()
+        self._after_session()
+
+    def _after_session(self) -> None:
+        """A shell's own bookkeeping once the receipts are written (pytest: the quarantine of the next -n plan)."""
 
     def _facts(self, rels, cache: dict) -> None:
         """Store index of the facts of the current version of every file in ``rels`` not in ``cache`` (new versions

@@ -388,7 +388,10 @@ class Controller:
         inp = {
             "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": self.dist,
             "groups": self._groups(nodes) if self.dist == "loadgroup" else {}, "workers": wids,
-            "chunk_div": CHUNK_DIV, "tolerance": STICKY_TOLERANCE, "slack": 1.0,
+            # under the cache, a test's carried inputs are those of the tests before it on its worker: the placement
+            # is kept whatever the balance (new atoms by LPT), so that keys do not churn with timing noise
+            "chunk_div": CHUNK_DIV, "tolerance": STICKY_TOLERANCE if pc is None else 1e9, "slack": 1.0,
+            "quarantine": pc.quarantine() if pc is not None else [],
             "history": {k: v for k, v in hist.items() if isinstance(v, list)},
             "cached": pc.durations(self.ids) if pc is not None else {},
             "previous": load_json(os.path.join(self.dir, "plan.json")), "replay": replay,
@@ -429,6 +432,7 @@ class Controller:
             "mode": p["mode"], "testrunuid": self.testrunuid, "digest": p["digest"],
             "makespan": round(p["makespan"], 6), "lpt_makespan": round(p["lpt_makespan"], 6), "sticky": p["sticky"],
             "kept": p["kept"], "replayed": p["replayed"], "previous_ignored": p["previous_ignored"],
+            "quarantine_workers": p.get("quarantine_workers", 0),
             "hits": len(self.pending_hits), "withdrawn_worker": len(withdrawn), "order_digest": self.S.order_digest,
             "loads": [round(x, 6) for x in p["loads"]], "lists": p["lists"], "atoms": p["atoms"],
             "assign": p["assign"], "waits": p["waits"],

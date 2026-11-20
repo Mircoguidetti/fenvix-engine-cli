@@ -229,3 +229,29 @@ def test_a_file_outside_the_repository_an_earlier_test_wrote_from_a_repository_i
     wrong = {n: (o1.get(n), truth.get(n)) for n in reused if o1.get(n) != truth.get(n)}
     assert wrong == {}, r1.stdout.str()
     assert "test_b.py::test_b" not in reused, r1.stdout.str()
+
+
+# -- quarantine (parallel-proof round 3): a refused test does not refuse the tests after it on other workers ---------
+def test_a_test_refused_for_its_own_inputs_runs_on_a_worker_of_its_own_next_time(pytester, monkeypatch):
+    for k in ("PYTEST_XDIST_WORKER", "PYTEST_XDIST_WORKER_COUNT", "PYTEST_XDIST_TESTRUNUID", "PYTEST_ADDOPTS"):
+        monkeypatch.delenv(k, raising=False)
+    pytester.makeini("[pytest]\n")
+    files = {"test_a": "import os\n\ndef test_proc():\n    assert os.listdir('/proc/self/task')\n"}
+    for i in range(1, 6):
+        files[f"test_{chr(97 + i)}"] = f"import os\n\ndef test_{i}():\n    assert os.sep\n"
+    pytester.makepyfile(**files)
+    cache = f"--det-cache={pytester.path / '.c'}"
+    par = ("-n", "2", "-p", "xdist", "--dist", "loadfile")
+    _, o0, _ = _run(pytester, 0, cache, *par)
+    assert set(o0.values()) == {"passed"}
+    q = json.loads((pytester.path / ".c" / "quarantine.json").read_text())["tests"]
+    assert q == ["test_a.py::test_proc"]
+    _run(pytester, 1, cache, *par)
+    plan = json.loads((pytester.path / ".detpy" / "plan.json").read_text())
+    assert plan["quarantine_workers"] == 1
+    assert plan["lists"]["gw1"] == ["test_a.py::test_proc"]
+    r2, o2, reused = _run(pytester, 2, cache, *par)
+    # every test but the refused one is reused; each reuse equals a fresh serial run
+    assert reused == {n for n in o2 if n != "test_a.py::test_proc"}, r2.stdout.str()
+    _, truth, _ = _run(pytester, 3)
+    assert {n: o2[n] for n in reused} == {n: truth[n] for n in reused}
