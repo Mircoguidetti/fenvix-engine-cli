@@ -1,0 +1,316 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "tests/unit/llms/vertex_ai",
+  "-p",
+  "no:randomly",
+  "--timeout=120"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "1/5",
+ "commits": [
+  {
+   "i": 10,
+   "sha": "c37bd7532f393aed42da726398f18fc47ccb141f",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 746.4,
+    "rc": 1,
+    "tail": "03:56:16 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=google/gemma-4-26b-a4b-it-maas model=google/gemma-4-26b-a4b-it-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/google/gemma-4-26b-a4b-it-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4172,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4173,
+    "recorded": 0,
+    "tests": 4173,
+    "miss_reasons": {
+     "new": 4173
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 96.2,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 78.892
+   }
+  },
+  {
+   "i": 11,
+   "sha": "8b0bb6ae424cf0518a5e8d155d91876153eda270",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 840.5,
+    "rc": 1,
+    "tail": "03:56:16 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=qwen/qwen3-next-80b-a3b-instruct-maas model=qwen/qwen3-next-80b-a3b-instruct-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/qwen/qwen3-next-80b-a3b-instruct-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4172,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4173,
+    "recorded": 0,
+    "tests": 4173,
+    "miss_reasons": {
+     "new": 4173
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 99.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 81.137
+   }
+  },
+  {
+   "i": 12,
+   "sha": "adaa460566af6fbca0d7dedacfcf25d1a695ef9c",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 799.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4172,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4173,
+    "recorded": 0,
+    "tests": 4173,
+    "miss_reasons": {
+     "new": 4173
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 107.0,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 85.952
+   }
+  },
+  {
+   "i": 13,
+   "sha": "fea939843d5608581cc4f6f8168cfb3776713dae",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 852.2,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 99.5,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 80.793
+   }
+  },
+  {
+   "i": 14,
+   "sha": "ea96ea3db5941c21f990e4c3dfbc3fde173df58b",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 755.5,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 100.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 81.193
+   }
+  },
+  {
+   "i": 15,
+   "sha": "55e4ec14ab1238d470afcf3969240fd2eefcf207",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 819.5,
+    "rc": 1,
+    "tail": "03:56:16 - LiteLLM:WARNING: litellm_logging.py:2655 - Billable request priced at $0 and logged as such (model_group=google/gemma-4-26b-a4b-it-maas model=google/gemma-4-26b-a4b-it-maas provider=vertex_ai prompt_tokens=10 completion_tokens=8): pricing entry 'vertex_ai/google/gemma-4-26b-a4b-it-maas' declares non-zero rates for this usage, but the cost calculator returned $0. Counted in litellm_zero_cost_requests_total{reason=\"pricing_not_applied\"}",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 99.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 80.806
+   }
+  },
+  {
+   "i": 16,
+   "sha": "c25c669167436ca2ab5b1d204cbcf22f09d999fd",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 752.8,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 97.7,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 79.575
+   }
+  },
+  {
+   "i": 17,
+   "sha": "e46fa61681afac165945abc888b48e2ea079c615",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 782.4,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 101.3,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 81.893
+   }
+  },
+  {
+   "i": 18,
+   "sha": "adcaa4d3743948e7ac19f77c5cd182a77e7114a2",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 988.5,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 105.1,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 84.455
+   }
+  },
+  {
+   "i": 19,
+   "sha": "87c94e58b625dd2e6c075959c3eb96a7997fd3ee",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 840.9,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "carried": 4176,
+    "carried_of_recorded": 0,
+    "reused": 0,
+    "ran": 4177,
+    "recorded": 0,
+    "tests": 4177,
+    "miss_reasons": {
+     "new": 4177
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 103.0,
+    "rc": 1,
+    "tail": "failed to send, dropping 4 traces to intake at http://localhost:8126/v0.5/traces: Network error: client error (Connect)",
+    "test_time_s": 82.608
+   }
+  }
+ ]
+}
