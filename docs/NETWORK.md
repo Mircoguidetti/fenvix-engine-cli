@@ -14,7 +14,7 @@ run non-deterministic. External services are recorded once and replayed in every
 | `getfqdn(name)` of an external name | the name itself, without a lookup |
 | a local HTTP(S) proxy from `*_PROXY` | counts as external: blocked, recorded and replayed like the host behind it |
 | child processes (`subprocess`, `os.system`) | their `http_proxy`, `https_proxy`, `ALL_PROXY` point at `127.0.0.1:9`, where nothing listens, with `NO_PROXY` set for local and allowed hosts. curl, wget, git, pip and urllib honour these variables. A child that ignores them is not controlled (the verifier reports `[child]`) |
-| native clients that open their own sockets in C (grpcio, pycurl, libpq, ...) | not controlled (needs the syscall backend) |
+| native clients that open their own sockets in C (grpcio, pycurl, psycopg/psycopg2, MySQLdb, confluent_kafka, asyncpg, pymssql) | not blocked or recorded (needs the syscall backend); a test that uses one is marked `uncontrolled.native` and the verifier never reports it identical (`[native]`) |
 
 The error a test sees names the host and how to proceed: `detpy: network access to example.com:443 blocked (Level 0
 closes the network; localhost is allowed); use --det-record to record real responses, or --det-allow-host to allow
@@ -47,7 +47,7 @@ fenvix pytest                         # later runs replay from .detpy/cassette.j
   by the recorded datagrams from a local socket. The answers come back as real datagrams, so `select` and asyncio
   see them, and their source address is the recorded host's. Another datagram is not answered (refused, as for
   TCP). DNS over UDP (dnspython), statsd and syslog clients are covered this way.
-* **What is not covered.** Native clients are not covered (see above).
+* **What is not covered.** Native clients are not recorded (see above); the verifier marks the tests that use them.
 * **Staleness.** `--det-cassette-max-age=DAYS` refuses to replay recordings older than DAYS, or recordings
   without a date. Those tests meet the closed network until they are recorded again. The cassette's digest is a run
   input, so `fenvix verify` reports runs with different cassettes as divergent (`[net]`).
