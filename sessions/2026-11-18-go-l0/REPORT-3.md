@@ -164,7 +164,11 @@ Share of test time reused with proof, median / mean over the commits. 05a7dfa is
     - the shell's suite on Go 1.24, 1.25 and 1.26 (the shell itself needs 1.24);
     - the entropy matrix on 1.22-1.26;
     - the messages of failed tests are printed (the old output filter dropped them, which is why the CI log showed a bare `--- FAIL (0.00s)`).
-  - CI result: PENDING-CI.
+  - **CI result (MEASURED, run 44708445805, ubuntu-26.04, not root, no PID namespace):** green on Go 1.24, 1.25 and 1.26.
+    - The shell's whole suite passes on each version, with `TestR025b_D3_UncontrolledEntropy` (all 4 sources), `TestR025b_D1`, `TestDetVirtualPid` and `TestControlsDeterministicWithDet` among it.
+    - The entropy matrix on go1.22.12-go1.26.0 passes.
+    - Limit still present, from before this round: on go1.22.12 the `time`, `random` and `fastwait` controls are unavailable (their anchors do not exist there; said at start, `TestR025_D3_Go122`). The D3 entropy fixture does not depend on them.
+    - CI run 44705053441 had failed `TestControlsDeterministicWithDet` on Go 1.26; its message was not printed. It passes on all three versions in 44708445805 and locally, with and without a PID namespace. Cause UNKNOWN; possibly the same uncontrolled pid. It is kept under watch: CI now prints the 25 lines before every failure.
 - `/dev/urandom`: 1 MiB per open from the test's stream; a reader that needs more gets EOF (DECLARED; no case found).
 
 ## 7. Nightly real-clock run (NC)
