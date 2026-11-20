@@ -1,6 +1,6 @@
 {
  "run_id": "py-cache-2026-11-20",
- "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit",
+ "note": "py-cache (F-05, PY-05, PY-08): walks of real repositories on the stricter rules (reuse on the shard's first commit unchanged and on later commits changed, every reuse checked against a fresh --det run of the same commit); before/after memory pairs: engine 'before' = the release-1 merge commit before the chunked store (d27c1a59), 'after' = this commit (triggered by a push of this file to claude/py-cache)",
  "before_ref": "d27c1a59",
  "repos": [
   {
