@@ -1210,7 +1210,8 @@ class ProofSession:
             return
         t0 = _perf()
         try:
-            self._record_all()
+            if not getattr(self, "real_clock", False):  # the real-clock check reads the cache, never writes it
+                self._record_all()
         except Exception as e:  # never break the test session: nothing is recorded this time
             import traceback
             import warnings

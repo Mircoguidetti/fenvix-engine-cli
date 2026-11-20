@@ -305,3 +305,78 @@ def test_status_of_an_unlinked_temporary_file_is_not_a_refusal(pytester):
         assert p.returncode == 0, p.stdout
     assert "tests/test_p.py::test_size" in reused(c), c.get("not_cached_ids")
     assert "tests/test_p.py::test_time" not in reused(c)
+
+
+def test_g0159_cache_epoch_is_the_virtual_day_and_the_real_clock_check_reports(pytester):
+    """Audit G-0159: under --det-cache (``--det-epoch=auto``) the epoch is today 00:00 UTC; the nightly
+    ``--det-cache-real-clock`` check runs every test on the real clock, records nothing, and reports (and fails on)
+    a test that passed on the virtual day and fails on the real clock."""
+    import datetime
+
+    _probe(pytester, """
+        import datetime
+        def test_today_is_the_virtual_day():
+            now = datetime.datetime.now(datetime.timezone.utc)
+            assert (now.hour, now.minute) == (0, 0)
+            assert now.date() == datetime.datetime.fromtimestamp(OUTSIDE, datetime.timezone.utc).date()
+        def test_plain():
+            pass
+        """.replace("OUTSIDE", str(int(__import__("time").time()))))
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", "tests")
+        assert p.returncode == 0, p.stdout
+    assert "tests/test_p.py::test_today_is_the_virtual_day" in reused(c)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    p, c, _ = run(pytester, "nightly", "-rA", "--det-cache-real-clock", "tests")
+    assert reused(c) == set() and c.get("recorded") == 0, c
+    if (now.hour, now.minute) != (0, 0):
+        assert "REAL-CLOCK FINDINGS" in p.stdout and "test_today_is_the_virtual_day" in p.stdout, p.stdout
+        assert p.returncode != 0
+
+
+def test_g0510_numpy_random_imported_by_detpys_reseed_is_not_the_tests_entropy(pytester):
+    """Audit G-0510: numpy loads numpy.random lazily and draws OS entropy at that import (its global RandomState);
+    when detpy's own per-test reseed is what imports it, the draw reaches no test (it is reseeded at once). A stand-in
+    package with the same shape (module __getattr__, os.urandom at import, seed()), so the gate needs no numpy."""
+    write(pytester, **{
+        "numpy/__init__.py": """
+            import importlib
+            def __getattr__(name):
+                if name == "random":
+                    return importlib.import_module("numpy.random")
+                raise AttributeError(name)
+            def add(a, b):
+                return a + b
+            """,
+        "numpy/random.py": """
+            import os
+            _STATE = [int.from_bytes(os.urandom(8), "little")]
+            def seed(s):
+                _STATE[0] = s
+            """,
+        "tests/conftest.py": "",
+        "tests/test_np.py": """
+            import numpy as np
+            def test_a():
+                assert np.add(1, 1) == 2
+            def test_b():
+                pass
+            def test_c():
+                pass
+            """})
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", "tests", env={"PYTHONPATH": str(pytester.path)})
+        assert p.returncode == 0, p.stdout
+    assert reused(c) == {"tests/test_np.py::test_a", "tests/test_np.py::test_b", "tests/test_np.py::test_c"}, (
+        c.get("not_cached_ids"))
+
+
+def test_g0510_entropy_read_by_the_test_itself_still_refuses(pytester):
+    _probe(pytester, """
+        import os
+        def test_entropy():
+            assert len(os.urandom(4)) == 4
+        """)
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", "tests")
+    assert reused(c) == set() and "os entropy" in c["not_cached_ids"]["tests/test_p.py::test_entropy"]

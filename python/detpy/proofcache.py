@@ -154,6 +154,16 @@ class ProofCachePlugin(ProofSession):
         # of these tests are stored (_expect_serial compares an isolated outcome with them)
         self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False})[0]
                                      if config.getoption("det_isolate", False) else None)
+        # audit G-0159: the nightly real-clock check compares with the results recorded on the virtual day
+        self.real_clock = bool(config.getoption("det_cache_real_clock", False))
+        if self.real_clock:
+            cfg = _state.STATE.config
+            saved = cfg.controls
+            try:
+                cfg.controls = frozenset(saved | {"time"})
+                self.serial_config_digest = config_identity(config, as_if={"det_cache_real_clock": False})[0]
+            finally:
+                cfg.controls = saved
 
 
     # -- collection -------------------------------------------------------------
@@ -179,8 +189,11 @@ class ProofCachePlugin(ProofSession):
             return
         nids = [item.nodeid for item in session.items]
         self.check(nids, dict(zip(nids, session.items)), _unittest_units(nids, session.items))
-        if self.isolate and not self.iso_child:
+        if (self.isolate and not self.iso_child) or self.real_clock:
             self._expect_serial(nids)
+        if self.real_clock:
+            for nid in nids:  # every test runs on the real clock
+                self.sess.demote(nid, "real-clock check: every test runs")
 
     # -- pytest-xdist under --det: the controller --------------------------------------------------------------
     def decide_controller(self, nids: list) -> set:
@@ -210,6 +223,9 @@ class ProofCachePlugin(ProofSession):
             self.sess.decide(store, list(nids), self.max_age_s, _now(), _run_time, self.verify, seed)
             self._demote_writers_of_running_readers(list(nids))
             self._expect_serial(list(nids))
+            if self.real_clock:
+                for nid in nids:
+                    self.sess.demote(nid, "real-clock check: every test runs")
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
@@ -221,7 +237,7 @@ class ProofCachePlugin(ProofSession):
         it with the outcome this session got."""
         exp = self.serial_expect = {}
         store = self.store
-        if self.isolate and getattr(self, "serial_config_digest", None):
+        if (self.isolate or getattr(self, "real_clock", False)) and getattr(self, "serial_config_digest", None):
             # a read-only view of the same store under the serial session's configuration
             cap, was = self.cap, self.cap.active
             cap.active = False
@@ -447,7 +463,7 @@ class ProofCachePlugin(ProofSession):
         return super().iso_record(_plugin.S.fingerprints if fingerprints is None else fingerprints)
 
     def pytest_runtest_logreport(self, report):
-        if self.role == "controller" or (self.isolate and not self.iso_child):
+        if self.role == "controller" or (self.isolate and not self.iso_child) or getattr(self, "real_clock", False):
             self._note_outcome(report)
         if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
             return  # the child reported it to its own session
@@ -537,11 +553,17 @@ class ProofCachePlugin(ProofSession):
     def terminal_summary(self, tr) -> None:
         found = self.placement_findings()
         if found:
-            how = "-n" if self.role == "controller" else "--det-isolate"
-            tr.section(f"detpy PLACEMENT FINDINGS: outcomes under {how} differ from the serial run", red=True)
-            for nid, want, got in found:
-                tr.write_line(f"placement: {nid}: {got} here, {want} in a serial session with the same inputs "
-                              f"(it depends on another test's in-process state or on its worker)", red=True)
+            if getattr(self, "real_clock", False):
+                tr.section("detpy REAL-CLOCK FINDINGS: outcomes on the real clock differ from the virtual day", red=True)
+                for nid, want, got in found:
+                    tr.write_line(f"real clock: {nid}: {got} on the real clock, {want} on the virtual day with the "
+                                  f"same inputs (it depends on the real date or time)", red=True)
+            else:
+                how = "-n" if self.role == "controller" else "--det-isolate"
+                tr.section(f"detpy PLACEMENT FINDINGS: outcomes under {how} differ from the serial run", red=True)
+                for nid, want, got in found:
+                    tr.write_line(f"placement: {nid}: {got} here, {want} in a serial session with the same inputs "
+                                  f"(it depends on another test's in-process state or on its worker)", red=True)
         tr.section("detpy cache with proof")
         for text, markup in self.summary_lines(tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))

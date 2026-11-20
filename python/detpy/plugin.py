@@ -200,7 +200,7 @@ S = _Session()
 
 def _controls(ns) -> frozenset:
     try:
-        return _level0.controls_of(getattr(ns, "det_disable", "") or "")
+        return _level0.controls_of(getattr(ns, "det_disable", "") or "", bool(getattr(ns, "det_cache_real_clock", False)))
     except _level0.UsageError as e:
         raise pytest.UsageError(str(e))
 

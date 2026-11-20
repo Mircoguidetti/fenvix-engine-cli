@@ -102,6 +102,11 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                          help="with --det-cache and --det-epoch=auto: keep the cache's epoch while the "
                                               "HEAD commit time is at most DAYS later (default 30), so tests that read "
                                               "the clock are reusable across commits")),
+    (("--det-cache-real-clock",), dict(action="store_true", default=False,
+                                       help="with --det-cache: the nightly real-clock check (audit G-0159). Every test "
+                                            "runs on the real clock (the time control is off); nothing is reused and "
+                                            "nothing is recorded; a test that passed on the virtual day (its stored "
+                                            "result, same inputs) and fails now is reported and the session fails")),
     (("--det-cache-shared",), dict(default=None, metavar="DIR",
                                    help="with --det-cache: a store shared with other sessions and machines (a "
                                         "directory every job sees; also DETPY_CACHE_SHARED). Candidates are fetched "
@@ -117,9 +122,12 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
 ]
 
 
-def controls_of(disable: str) -> frozenset:
-    """The active controls: every control but the ``--det-disable`` ones."""
+def controls_of(disable: str, real_clock: bool = False) -> frozenset:
+    """The active controls: every control but the ``--det-disable`` ones (and the time control under
+    ``--det-cache-real-clock``)."""
     off = {c.strip() for c in (disable or "").split(",") if c.strip()}
+    if real_clock:
+        off.add("time")
     unknown = off - set(CONTROLS)
     if unknown:
         raise UsageError(f"--det-disable: unknown control(s) {sorted(unknown)}; known: {CONTROLS}")
@@ -175,13 +183,25 @@ def epoch_ns(text: str, root: str) -> int:
     return parse_epoch(text)
 
 
+import time as _time_mod
+
+_real_time = _time_mod.time  # bound before the clock control replaces time.time
+
+
 def epoch_for(ns, root: str) -> int:
     """The session's epoch. Under ``--det-cache`` with ``--det-epoch=auto`` it is the cache's epoch: the HEAD commit
     time when the cache took it, kept while HEAD is at most ``--det-cache-epoch-window`` days later. The epoch is a
     configuration input of every test that reads the clock; one that moved at every commit made those tests (and,
     through a clock read at import time, every test) unreusable from one commit to the next."""
-    ns_epoch = epoch_ns(ns.det_epoch, root)
     cache = getattr(ns, "det_cache", None)
+    if cache and ns.det_epoch == "auto":
+        # audit G-0159 (the rule of every language, DECISIONS 2026-11-19): under the cache the epoch is the virtual
+        # day, today 00:00 UTC; the day is in the key of every test that reads the clock, so a result is reused on
+        # the day it was recorded only, and the nightly --det-cache-real-clock check shows what the real clock changes
+        day = int(_real_time()) // 86400 * 86400
+        EPOCH_SOURCE.update(source="virtual day (today 00:00 UTC, --det-cache)", value=day)
+        return day * 1_000_000_000
+    ns_epoch = epoch_ns(ns.det_epoch, root)
     if cache and ns.det_epoch == "auto" and EPOCH_SOURCE.get("source") == "git HEAD commit time":
         window = getattr(ns, "det_cache_epoch_window", 30.0)
         kept = _core.cache_epoch(cache, ns_epoch, int(window * 86400 * 1_000_000_000))  # Rust: identity.rs

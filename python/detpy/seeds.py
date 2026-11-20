@@ -122,9 +122,17 @@ def start_test(patcher: Patcher, nodeid: str) -> None:
     if core is not None:
         _hypothesis(patcher, core)
     np = sys.modules.get("numpy")
-    if np is not None and hasattr(np, "random"):
+    if np is not None:
         try:
-            np.random.seed(s & 0xFFFFFFFF)
+            # audit G-0510 / G-0179: detpy's own reseed may be what imports numpy.random (numpy loads it lazily);
+            # the OS entropy numpy draws at that import seeds the global RandomState only, which is reseeded on the
+            # next line: it reaches no test, so it is not recorded (it made the first test of every process "os
+            # entropy" and every later one "after an earlier test")
+            with _state.quiet():
+                nprandom = getattr(np, "random", None)
+                if nprandom is None:
+                    raise AttributeError("numpy.random")
+                nprandom.seed(s & 0xFFFFFFFF)
             if not _numpy_patched and hasattr(np.random, "default_rng"):
                 real = np.random.default_rng
                 patcher.set(np.random, "default_rng", _core.stand_in("default_rng", real, "numpy.random", "default_rng"))

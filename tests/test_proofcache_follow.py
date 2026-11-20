@@ -386,19 +386,22 @@ def _git(path, *args, date=None):
 
 
 @pytest.mark.skipif(shutil.which("git") is None, reason="needs git")
-def test_cache_epoch_is_kept_across_commits_within_the_window(pytester, run_cache):
+def test_cache_epoch_is_the_virtual_day_across_commits(pytester, run_cache):
     # structlog in r5: a clock read at import time made every test depend on the epoch, and --det-epoch=auto (the
-    # HEAD commit time) moved at every commit, so nothing was ever reused across commits
-    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": """
-        import json, time
+    # HEAD commit time) moved at every commit. Audit G-0159 (py-cache): under the cache the epoch is the virtual day
+    # (today 00:00 UTC), the same for every commit of the day; the nightly --det-cache-real-clock check covers the rest
+    import time as _t
+
+    day = int(_t.time()) // 86400 * 86400
+    project(pytester, **{"pkg/stamp.py": "import time\n\nSTAMP = time.time()\n", "test_m.py": f"""
+        import time
         from pkg import stamp
 
         def test_reads_import_stamp():
             assert stamp.STAMP > 0
 
-        def test_now_is_the_cache_epoch():
-            epoch = json.load(open(".cachedir/epoch.json"))["epoch_ns"] / 1e9
-            assert abs(time.time() - epoch) < 1
+        def test_now_is_the_virtual_day():
+            assert abs(time.time() - {day}) < 1
         """, "other.txt": "1\n"})
     p = pytester.path
     _git(p, "init", "-q")
@@ -407,20 +410,12 @@ def test_cache_epoch_is_kept_across_commits_within_the_window(pytester, run_cach
     r, _, _ = run_cache()
     r.assert_outcomes(passed=2)
     (p / "other.txt").write_text("2\n")
-    _git(p, "commit", "-qam", "c2", date="2026-01-10T00:00:00Z")
+    _git(p, "commit", "-qam", "c2", date="2026-03-10T00:00:00Z")
     r, reused, data = run_cache()
-    assert reused == ids("test_reads_import_stamp", "test_now_is_the_cache_epoch")
-    # the epoch is a configuration input: past the window it moves to the HEAD commit time and the readers rerun
-    (p / "other.txt").write_text("3\n")
-    _git(p, "commit", "-qam", "c3", date="2026-03-01T00:00:00Z")
-    r, reused, data = run_cache()
-    r.assert_outcomes(passed=2)
-    assert reused == set()
-    assert miss(data)["test_m.py::test_reads_import_stamp"].startswith("clock")
-    assert json.load(open(p / ".cachedir" / "epoch.json"))["epoch_ns"] == 1772323200 * 10**9
-    # an explicit --det-epoch is used as given
+    assert reused == ids("test_reads_import_stamp", "test_now_is_the_virtual_day")
+    # an explicit --det-epoch is used as given: a clock reader reruns under it
     r, reused, data = run_cache("--det-epoch=2026-03-01T00:00:00")
-    assert reused == ids("test_reads_import_stamp", "test_now_is_the_cache_epoch")
+    assert "test_m.py::test_reads_import_stamp" not in reused
 
 
 def test_write_on_a_connection_between_two_own_sockets_is_not_the_network(pytester, run_cache, outside_server):

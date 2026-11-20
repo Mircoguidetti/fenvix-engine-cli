@@ -159,7 +159,7 @@ class DetRun:
             return
         if ns.det_cache and not _proof.AVAILABLE:
             raise UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
-        controls = _level0.controls_of(ns.det_disable)
+        controls = _level0.controls_of(ns.det_disable, bool(getattr(ns, "det_cache_real_clock", False)))
         reexec.SESSION_DEPTH += 1
         self.status = _level0.reexec_status(ns, controls, self.root, [])
         self.cfg = _level0.make_config(ns, self.root, controls)
