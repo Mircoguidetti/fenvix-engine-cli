@@ -431,11 +431,16 @@ if JOB in ("hunt", "huntp"):
     if only:
         T55 = [t for t in T55 if any(o in t["key"] for o in only)]
     PAR = {}
+    # The hunt selects its targets itself: a project's own sharding variable would drop some of them (sveltekit's
+    # KIT_E2E_SHARD=1/2 left the INP target in the other shard: "missing" in run 7).
+    for k in list(PW_ENV):
+        if k.endswith("_SHARD"):
+            PAR[k] = "1/1"
     if JOB == "huntp":
         # Point 3: the targets whose failure is neither a socket reset nor a timeout (round 3: parallel-worker data
         # interference and shared lists), hunted with several Playwright workers on one schedule (the hub).
         T55 = [t for t in T55 if t["messages"] and "ECONNRESET" not in t["messages"][0][0] and not t["messages"][0][0].startswith("Test timeout of")]
-        PAR = {"DETJS_PW_WORKERS": str(P.get("workers", 4))}
+        PAR = {**PAR, "DETJS_PW_WORKERS": str(P.get("workers", 2))}
     SEEDS = int(P.get("seeds", 8))
     REPLAYS = int(P.get("replays", 10))
 
@@ -462,9 +467,17 @@ if JOB in ("hunt", "huntp"):
                              "DETJS_LS_FAULT_PERMILLE": str(P.get("fault_permille", 300))}
         if m.startswith("Test timeout of"):
             ms = re.search(r"of (\d+)ms", m)
-            return "timeout", {"DETJS_LS_LATENCIES": P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5"),
-                               "DETJS_PW_DEADLINE_MS": ms.group(1) if ms else "30000"}
+            # A timeout in the test body (not "while running beforeEach"): holds only after the first decisions, the
+            # window moving later with the seed (seed_env), so a hold lands past the hooks.
+            g = "timeout" if "while running" in m else "timeout_body"
+            return g, {"DETJS_LS_LATENCIES": P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5"),
+                       "DETJS_PW_DEADLINE_MS": ms.group(1) if ms else "30000"}
         return "latency", {"DETJS_LS_LATENCIES": P.get("latencies", "1,1,1,5,20,50,200,1000")}
+
+    def seed_env(g, seed):
+        if g == "timeout_body" and seed:
+            return {"DETJS_LS_FOCUS_FROM": str(int(P.get("from_step", 40)) * seed)}
+        return {}
 
     def project_of(key):
         m = re.search(r" \[([^\]]+)\]$", key)
@@ -505,11 +518,12 @@ if JOB in ("hunt", "huntp"):
         keys = sorted({f"api {real_step(t)}" for t in ts if real_step(t)})
         if g == "reset" and keys:
             env["DETJS_LS_FOCUS_KEYS"] = "|".join(keys)
-        for seed in range(1, SEEDS + 1):
+        for seed in range(int(P.get("seed_from", 1)), SEEDS + 1):
             open_ts = [t for t in ts if rows[t["key"]]["seed"] is None]
             if not open_ts or not budget_for(P.get("per_run_s", 600)):
                 break
-            r = run_pw(f"h-{g}-s{seed}", "det", seed=seed, args=args_for(open_ts), env_extra=env,
+            # seed 0: the default schedule (no perturbation)
+            r = run_pw(f"h-{g}-s{seed}", "det", seed=seed or None, args=args_for(open_ts), env_extra={**env, **seed_env(g, seed)},
                        timeout_s=P["run_timeout_min"] * 60)
             for t in open_ts:
                 o, line, step = outcome(t, r)
@@ -529,7 +543,7 @@ if JOB in ("hunt", "huntp"):
                 if not budget_for(P.get("per_run_s", 600)):
                     break
                 label = f"h-{g}-s{seed}-r{i + 1}"
-                r = run_pw(label, "det", seed=seed, args=args_for(sts), env_extra=env, timeout_s=P["run_timeout_min"] * 60)
+                r = run_pw(label, "det", seed=seed or None, args=args_for(sts), env_extra={**env, **seed_env(g, seed)}, timeout_s=P["run_timeout_min"] * 60)
                 for t in sts:
                     o, line, step = outcome(t, r)
                     rows[t["key"]]["replays"].append(o)
