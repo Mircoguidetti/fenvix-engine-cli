@@ -45,9 +45,9 @@ writes the same trace format), `fenvix detect`, `fenvix version`.
 
 | platform | status |
 |---|---|
-| Linux x86_64 | gated: every job of `release-1.yml` (MEASURED, run ids in the REPORT) |
-| Linux arm64 | Rust core + decider tests, wheel, a Python subset: job `other-os (ubuntu-24.04-arm)`, not a gate (result in the REPORT; UNKNOWN for Node, Go, JVM) |
-| macOS arm64 | same subset on `macos-14`, not a gate (result in the REPORT). Go is Linux only by design (docs/GO.md); `--det-isolate` is Linux only; the Python capture of child processes needs strace (Linux): UNKNOWN beyond the subset |
+| Linux x86_64 | gated: every job of `release-1.yml`. Run 44710687525: build, Go, JVM ×4 and the four smoke tests green; Python fails 1 test on GitHub runners only (REPORT 0.1) (MEASURED) |
+| Linux arm64 | Rust core + decider tests, wheel, a Python subset: green in runs 44689328374, 44691940543, 44700422692, 44710687525 (MEASURED); not a gate; Node, Go and JVM on arm64 UNKNOWN |
+| macOS arm64 | UNKNOWN: the `macos-14` job never got a runner (cancelled at queue in every run). Go is Linux only by design (docs/GO.md); `--det-isolate` is Linux only; following child processes in the Python capture needs strace (Linux) |
 | Windows | UNKNOWN (never built) |
 
 ## Known limits (from each branch's limits doc; the full tables are there)
@@ -81,7 +81,8 @@ A release candidate is the branch commit whose `release-1` workflow run has ever
 
 1. `build`: `cargo test --workspace --exclude detpy-py` and every artifact built (wheel, addon, `libfenvix_go.a` +
    `fenvix-go`, `fenvix-agent.jar` + `fenvix-skip`).
-2. `python` (3.12, 3.13): `pytest tests -p no:randomly`, serial (R-019c E9/E10 change site-packages and break
+2. `python` (3.12, 3.13): the wheel installed and its extension also placed in `python/detpy` (some review tests
+   import detpy from the source tree); `pytest tests -p no:randomly`, serial (R-019c E9/E10 change site-packages and break
    concurrent tests: they cannot run under `-n`), with the one pre-existing deselection both parent branches gate with
    (`test_review_r017.py::test_h2_…`, a results-file check). Includes the reviewer files R-019c
    (`test_absent_inputs_r019c.py`), R-020/R-020b (`test_review_r020*_dep_verdict.py`, `test_dep_verdict_r020*_fixes.py`),
@@ -99,10 +100,13 @@ A release candidate is the branch commit whose `release-1` workflow run has ever
 Not gates (reported): `other-os`, R-001 results checks (`test_review_results.py`), the walks of each branch's harness
 (their numbers stay in their own reports; they were measured on the branch engines, not re-run on release-1).
 
-Open gates inherited from the branches (DECLARED, their latest reports): Go REPORT-3 PARTIAL (`review_r025b_check.py`
-S1 waits for walk skip-r9); all-runners-2 REPORT-2 PARTIAL (walks queued); parallel-proof review R-032b FAIL, fixes
-in progress on `claude/parallel-proof-3` (REPORT-3, round 4 `--det-isolate` next). Release 1 is final only when those
-branches report final and their last tips are merged here.
+Open gates (state of 2026-11-20, REPORT section 0):
+* Python on GitHub runners: `test_child_own_temporary_files_are_not_inputs` is refused because the runner image's
+  `cat` calls `statx` on a file its process tree wrote (`follow.rs:694`: a real-clock read). This is a lost reuse, not
+  a wrong one. The decision belongs to the parallel-proof lane.
+* parallel-proof-3 round 4 (bcd6d9c4) is not merged yet: it waits for all-runners-2's port to `_proof.py`.
+* Inherited (DECLARED): Go REPORT-3 PARTIAL, all-runners-2 REPORT-2 PARTIAL, parallel-proof review R-032b FAIL with
+  round 4 landing. Release 1 is final only when those branches report final and their last tips are merged here.
 
 ## Runner image (packaging plan)
 

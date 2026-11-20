@@ -9,21 +9,34 @@ session: this report lives on the engine branch.
 
 ## 0. Answer
 
-* **PARTIAL.** Every launch language is on one branch, built from one Cargo workspace and tested by one workflow
-  (`.github/workflows/release-1.yml`). One CLI entry (`release/fenvix`) and one image install
-  (`release/install-image.sh`) exist. The smoke tests run through them on GitHub Actions. What keeps this from DONE:
-  1. **Go:** `TestR025b_D3_UncontrolledEntropy` fails on GitHub's Go 1.26 runners. It also fails on `claude/go-l0`'s
-     own CI (run 44660485039), so the integration did not introduce it. It passes locally on Go 1.24.7. This is the go-l0
-     lane's open item (its REPORT-3 is PARTIAL).
-  2. **Inherited open gates (DECLARED):** parallel-proof review R-032b FAIL, with fixes still landing (round 4
-     `--det-isolate` next); all-runners-2 REPORT-2 PARTIAL (walks); go-l0 REPORT-3 PARTIAL. The moving branches have
-     not reported final, so step 5 (keep merging until final) is open.
-  3. **CI evidence on the final head is incomplete** (section 4): runners were contended by the branches' harness walks.
-  4. **JVM skip with proof is a decision, not a skip.** `fenvix-skip decide` says what is reusable. No build-tool
-     integration skips execution yet (DECLARED by docs/JVM.md; unchanged here).
-  5. **macOS:** UNKNOWN. The `macos-14` job never got a runner (cancelled at queue, runs 44689328374, 44691940543).
-* **No soundness traded.** Every conflict was resolved toward the stricter rule (section 3). Each port came with its
-  branch's tests, and three integration defects were found and fixed by those tests (section 3.4).
+* **PARTIAL.** Every launch language is on one branch (`claude/release-1`, head 64a9e5c7 + this report), built from
+  one Cargo workspace and tested by one workflow (`.github/workflows/release-1.yml`). One CLI entry (`release/fenvix`)
+  and one image install (`release/install-image.sh`) exist. On run 44710687525 (64a9e5c7), all of these are green:
+  build, Go, JVM (JDK 8/11/17/21), Linux arm64, and the four smoke tests (Python, Node, Go, JVM), each driven through
+  the installed image. What keeps this from DONE:
+  1. **Python gate: 1 of 954 tests fails on GitHub runners only.**
+     `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs`, runs 44700422692 and 44705350906, on
+     3.12 and 3.13. The engine's reason (printed since 5e1a531d): *"sh (subprocess.Popen) at test_m.py:5 [reads the real
+     clock (the time of a file it wrote: statx /tmp/tmp.…/f)]"*. On the runner image, `cat` stats the file its process
+     tree just wrote with `statx`, and the follower rule (`crates/detpy-py/src/follow.rs:694`) refuses that as a
+     real-clock read. Here coreutils 9.4's `cat` uses `fstat`, and the test passes (as root and as `nobody`, MEASURED).
+     The engine errs on the safe side: a lost reuse, not a wrong one. The rule belongs to the parallel-proof lineage.
+     The test is neither skipped nor changed in substance; only its assertion message now names the reason. Decision
+     for that lane: whether a statx on a path the tree itself wrote should key the time instead of refusing (round 4
+     moved user mtime reads that way, `7778dbb9`).
+  2. **parallel-proof-3 round 4 (bcd6d9c4, 7 commits) is not merged.** It changes the F2 design in the shared capture
+     (a user mtime/ctime read is keyed, `y:`), and its Python half lands in `proofcache.py`, which all-runners-2 moved
+     to `_proof.py`. all-runners-2 has ported every earlier F2 round itself (89971a3/0f45362 → 13d402fa); a third port
+     here would make a second implementation of one concern. The merge was attempted, conflicted in 4 files, and was
+     aborted. Merge it after all-runners-2's port.
+  3. **Inherited open gates (DECLARED):** parallel-proof review R-032b FAIL with round 4 landing; all-runners-2 REPORT-2
+     PARTIAL (walks); go-l0 REPORT-3 PARTIAL (its D3 CI fix is merged here and green: run 44710687525). No moving
+     branch has reported final, so step 5 is open.
+  4. **JVM skip with proof is a decision, not a skip.** `fenvix-skip decide` says what is reusable; no build-tool
+     integration skips execution yet (DECLARED, docs/JVM.md).
+  5. **macOS: UNKNOWN.** `macos-14` never got a runner in any run (cancelled at queue).
+* **No soundness traded.** Every conflict was resolved toward the stricter rule (section 3), and each port carries its
+  branch's tests. The tests found four integration defects, all fixed (section 3.4).
 
 ## 1. Branches, merge bases, unique content
 
@@ -46,11 +59,11 @@ moving tips repeatedly.
 
 | branch | last commit merged | merge commit on release-1 |
 |---|---|---|
-| claude/all-runners-2 | ce34ce02 | 13d402fa (earlier: a719d94b base, de456ab1 ← a9893338) |
+| claude/all-runners-2 | b4c921ff | 64a9e5c7 (earlier: a719d94b base, de456ab1 ← a9893338, 13d402fa ← ce34ce02) |
 | claude/jvm-l0 | 8317f887 (closed) | b712246e |
-| claude/go-l0 | 27ec80b1 | 0e342e84 (earlier: e6040e51 ← f28d2ad8, 02f68965 ← a658fb0b, cd104375 ← 4b4c3315) |
+| claude/go-l0 | 655f98f5 | 340ee59c (earlier: e6040e51 ← f28d2ad8, 02f68965 ← a658fb0b, cd104375 ← 4b4c3315, 0e342e84 ← 27ec80b1) |
 | claude/exact-culprit | abe3ffc2 (closed) | 820a0019 |
-| claude/parallel-proof-3 | 50a2238d | 377ddb5c (earlier: 271f4d5f ← 41968480, 012135fb ← 19ba7982) |
+| claude/parallel-proof-3 | 50a2238d (tip bcd6d9c4: round 4 not merged, see 0.2) | 377ddb5c (earlier: 271f4d5f ← 41968480, 012135fb ← 19ba7982) |
 | claude/dep-verdict-abjcfw | 43d52671 (via parallel-proof-3) | — |
 
 Release-1's own commits: 315a3c41, 1b57b351, 75334097, 498e543e, 9db671ff, acb80e2b, 0b2eeae3, plus this report and
@@ -102,7 +115,9 @@ all-runners-2.
    mtimes) would have refused every test. Fixed in 498e543e (then superseded by all-runners-2's port).
 2. `test_capture_sessions_match_reference` failed: the reference capture's volatile-option list lacked
    `det_cache_keys`, so the config digests differed. Fixed in 9db671ff.
-3. The Python suite under `pytest -n 4` broke other tests: R-019c E9/E10 add a `.pth` file and an entry point to
+3. CI: R-008/R-008b start interpreters that import `detpy` from `python/`, which had no compiled `_core` (the parent
+   gates run after `maturin develop`). The CI now puts the wheel's extension there too (529c1609).
+4. The Python suite under `pytest -n 4` broke other tests: R-019c E9/E10 add a `.pth` file and an entry point to
    site-packages. The same failures occur on the all-runners-2 baseline (MEASURED, local venv). The gate runs serially,
    as both parent branches gate.
 
@@ -133,21 +148,28 @@ were cancelled or superseded while queued (pushes). Results:
 | other-os ubuntu-24.04-arm (Rust core + decider, wheel, Python subset) | success | success | **success** |
 | other-os macos-14 | cancelled (no runner) | cancelled (no runner) | cancelled (no runner): UNKNOWN |
 
-Run 44705350906 (5e1a531d: the same code; the failing test's message now prints the engine's reason) is
-reported in 4.1.
+Run 44705350906 (5e1a531d, the same engine code; the failing test's message now prints the reason): Python
+3.12/3.13 the same single failure, with the reason quoted in 0.1; Go still D3.
+
+**Run 44710687525 (64a9e5c7: + go-l0 655f98f5 with the D3 CI fix, + all-runners-2 b4c921ff):** build success, **go
+success**, jvm ×4 success, smoke python/node/go/jvm success, arm64 success, macOS cancelled (no runner). Python and
+Node were still running when this report was written. The Python engine code is identical to run 44705350906 (the
+merges changed only Go code and results files, MEASURED: `git diff --stat 5e1a531d 64a9e5c7 -- crates python node`
+is empty), so its expected result is that single failure; this is not measured on this run.
 
 Local gates on the candidate tree (MEASURED, this container: 4 CPUs, Linux 6.18, Python 3.13.18, Go 1.24.7,
 Node 22, JDK 21):
 * `cargo test --workspace --exclude detpy-py`: detpy-core 137, fenvix-go 19, fenvix-skip 13, fenvix-jvm 2 passed, 0 failed.
-* Python, serial, `pytest tests -p no:randomly` with the parent branches' one deselection: **954 passed, 68 skipped,
-  1 xfailed, 4 failed**. The 4 are `test_review_r008.py::test_hole_module_on_an_import_path_outside_site_and_root`,
+* Python, serial, `pytest tests -p no:randomly` with the parent branches' one deselection (0e342e84): **954 passed,
+  68 skipped, 1 xfailed, 4 failed**. After the extension was placed in `python/detpy` (529c1609), R-008/R-008b pass
+  12/12 (5 skipped) locally. The 4 were `test_review_r008.py::test_hole_module_on_an_import_path_outside_site_and_root`,
   `::test_hole_cpu_count_visible_to_the_process` and `test_review_r008b.py::test_hole_symlinked_package_directory_on_an_import_path`,
   `::test_hole_sourceless_module_on_an_import_path`. They fail the same way on the all-runners-2 baseline wheel in the
-  same kind of venv (MEASURED) and passed in all-runners-2's own gate (DECLARED, 1031 passed, system interpreter), so
-  they depend on the environment (a venv interpreter), not on the integration. The skip count is higher than
+  same kind of venv (MEASURED) and passed in all-runners-2's own gate (DECLARED: run after `maturin develop`). Cause
+  (MEASURED): they start interpreters that import `detpy` from the source tree, which needs the compiled extension
+  there. The skip count is higher than
   all-runners-2's 55 because this venv lacks some optional runner packages (UNKNOWN which; CI is the reference).
-* Node: `node --test test/*.test.js` (after the jvm/go/culprit merges; node/ and detpy-node unchanged since):
-  **622 tests, 621 pass, 1 skipped, 0 fail**.
+* Node: `node --test test/*.test.js` with a fresh addon (529c1609): **622 tests, 621 pass, 1 skipped, 0 fail**.
 * Go: `go vet ./... && go test ./...` on Go 1.24.7 (after the go-l0 merge): exit 0, D3 included.
 * JVM: `jvm/build.sh` builds `fenvix-agent.jar` (751,891 bytes) and `fenvix-skip`.
 
@@ -176,12 +198,13 @@ the second reuses at least one test and no outcome differs.
 
 ## 7. What is missing
 
-1. The Go D3 failure on Go 1.26 runners (go-l0 lane).
-2. Merging the final tips of parallel-proof-3 (R-032b FAIL → fixes; round 4 `--det-isolate`), all-runners-2 and
-   go-l0 once they report final, and a green candidate run after that.
+1. The parallel-proof lane's decision on the `statx`-of-a-file-it-wrote refusal (0.1), then a green Python job on
+   GitHub runners.
+2. Merging parallel-proof-3 round 4 once all-runners-2 has ported it (0.2), and every moving branch's final tip, then a
+   fully green candidate run.
 3. JVM: applying the skip decision to execution (Gradle/Maven integration).
 4. macOS arm64 measurement (no runner obtained); Windows never built.
 5. One shared implementation of the file-value helpers used by the three skip deciders (section 3.5).
-6. The runner wrapper / GitHub App for non-Python languages.
-7. The 4 R-008/R-008b failures in a venv interpreter (environment dependence of the review tests or of the capture's
-   site detection; not investigated beyond the baseline comparison).
+6. The runner wrapper / GitHub App for non-Python languages (`runner/fenvix-run` drives pytest only).
+7. Node smoke: the outcome comparison covers only the first run's 76 receipt entries; compare per test from the
+   runner's own output.
