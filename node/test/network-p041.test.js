@@ -373,6 +373,20 @@ test('ws package', async () => {
   let WS; try { WS = require('ws'); } catch { put('key-ws', 'absent'); return; }
   expect(await echo(WS, 'ws')).toBe('hello ws');
 });`;
+const WS_REPLAY = `${PUT}
+${LOOKUP}
+function talk(msgs) {
+  const WS = require('ws');
+  const ws = new WS('ws://ws.detjs.test:' + process.env.COUNTER_PORT + '/', { lookup });
+  const got = [];
+  return new Promise((resolve, reject) => {
+    ws.on('open', () => ws.send(msgs[0]));
+    ws.on('message', (m) => { got.push(String(m)); if (got.length < msgs.length) ws.send(msgs[got.length]); else { ws.close(); resolve(got); } });
+    ws.on('error', reject);
+  });
+}
+test('first socket', async () => { const g = await talk(['first a', 'first b', 'first c']); put('one', g.join('|')); });
+test('second socket', async () => { const g = await talk(['second a', 'second b']); put('two', g[1]); });`;
 for (const runner of RUNNERS) {
   test(`${runner}: G-1421 WebSocket handshake keys and frame masks are deterministic (global WebSocket, ws)`, T, () => {
     const dir = proj(runner, 'websocket', { a: WS });
@@ -392,6 +406,26 @@ for (const runner of RUNNERS) {
     const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
     assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
     if (first.w === 'absent') process.stderr.write(`(${runner}: the ws package could not be installed: checked with the global WebSocket only)\n`);
+  });
+
+  // a recorded WebSocket conversation replays in another order of tests: client frames are compared unmasked
+  test(`${runner}: G-1421 a recorded WebSocket conversation (ws) replays alone and shuffled`, T, async () => {
+    if (!packages()) { process.stderr.write(`(${runner}: ws not installable: skipped)\n`); return; }
+    const dir = proj(runner, 'ws-replay', { a: WS_REPLAY });
+    linkPkgs(dir);
+    await withCounter(async (ports, stop) => {
+      const env = { COUNTER_PORT: String(ports.http) };
+      const rec = run(runner, dir, [], { det: ['--det', '--det-record'], env });
+      assert.equal(rec.status, 0, show(rec));
+      const recorded = { one: got(dir, 'one'), two: got(dir, 'two') };
+      assert.match(recorded.two, /^echo #\d+ second b$/);
+      stop();
+      const alone = run(runner, dir, ['-t', 'second'], { env });
+      assert.equal(alone.status, 0, `replaying the second WebSocket test alone\n${show(alone)}`);
+      assert.equal(got(dir, 'two'), recorded.two);
+      const shuffled = run(runner, dir, [], { env, det: ['--det', '--det-seed=3'] });
+      assert.equal(shuffled.status, 0, show(shuffled));
+    });
   });
 }
 

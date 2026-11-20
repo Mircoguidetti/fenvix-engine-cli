@@ -226,6 +226,88 @@ function bucketOf(key) {
 
 function newDir() { return { h: nodeCrypto.createHash('sha256'), n: 0 }; }
 
+/**
+ * Client WebSocket frames carry a random 4-byte mask (RFC 6455) drawn from a pool that implementations refill now and
+ * then: the same message has other bytes in another order of tests. What is digested, recorded and compared in replay
+ * is the client stream with every frame unmasked and its mask key zeroed (same length). Streams that do not start with
+ * an HTTP request upgrading to WebSocket pass through unchanged.
+ */
+class WsNormalizer {
+  constructor() {
+    this.mode = 'http';
+    this.head = '';
+    this.hdr = Buffer.alloc(0);
+    this.left = 0; // payload bytes left in the current frame
+    this.mask = null;
+    this.off = 0;
+  }
+
+  push(chunk) {
+    if (this.mode === 'other' || !chunk.length) return chunk;
+    if (this.mode === 'http') {
+      this.head += chunk.toString('latin1');
+      const end = this.head.indexOf('\r\n\r\n');
+      if (end < 0) {
+        if (this.head.length > 16384 || !/^(?:G|GE|GET|GET )/.test(this.head)) { this.mode = 'other'; this.head = ''; }
+        return chunk;
+      }
+      const isWs = /^GET /.test(this.head) && /\r\nupgrade:[ \t]*websocket/i.test(this.head.slice(0, end));
+      const after = this.head.length - (end + 4); // bytes of this chunk past the request head
+      this.head = '';
+      if (!isWs) { this.mode = 'other'; return chunk; }
+      this.mode = 'ws';
+      if (after <= 0) return chunk;
+      return Buffer.concat([chunk.subarray(0, chunk.length - after), this.frames(chunk.subarray(chunk.length - after))]);
+    }
+    return this.frames(chunk);
+  }
+
+  frames(data) {
+    const out = [];
+    let i = 0;
+    while (i < data.length) {
+      if (this.left > 0) {
+        const n = Math.min(this.left, data.length - i);
+        const part = Buffer.from(data.subarray(i, i + n));
+        if (this.mask) for (let k = 0; k < n; k++) part[k] ^= this.mask[(this.off + k) & 3];
+        this.off += n;
+        this.left -= n;
+        out.push(part);
+        i += n;
+        continue;
+      }
+      // a frame header: 2 bytes, extended length (2 or 8), mask key (4); held until complete
+      const before = this.hdr.length;
+      const take = data.subarray(i, i + 14 - before);
+      this.hdr = Buffer.concat([this.hdr, take]);
+      const len7 = this.hdr.length >= 2 ? this.hdr[1] & 0x7f : 0;
+      const masked = this.hdr.length >= 2 && (this.hdr[1] & 0x80) !== 0;
+      const ext = len7 === 126 ? 2 : len7 === 127 ? 8 : 0;
+      const need = 2 + ext + (masked ? 4 : 0);
+      if (this.hdr.length < 2 || this.hdr.length < need) { i += take.length; break; }
+      i += need - before;
+      const h = Buffer.from(this.hdr.subarray(0, need));
+      let len = len7;
+      if (ext === 2) len = h.readUInt16BE(2);
+      else if (ext === 8) len = Number(h.readBigUInt64BE(2));
+      this.mask = masked ? Buffer.from(h.subarray(2 + ext, need)) : null;
+      if (masked) h.fill(0, 2 + ext, need);
+      out.push(h);
+      this.hdr = Buffer.alloc(0);
+      this.left = len;
+      this.off = 0;
+    }
+    return out.length === 1 ? out[0] : Buffer.concat(out);
+  }
+
+  /** Bytes held back (an incomplete frame header), as they are. */
+  flush() {
+    const h = this.hdr;
+    this.hdr = Buffer.alloc(0);
+    return h;
+  }
+}
+
 class Stream {
   constructor(label, site, normPort) {
     this.id = streamSerial++;
@@ -237,6 +319,7 @@ class Stream {
     this.entry = null;
     this.entryKey = null;
     this.frozen = false;
+    this.ws = new WsNormalizer();
   }
 
   entryFor(key) {
@@ -254,8 +337,12 @@ class Stream {
   add(dir, buf) {
     if (this.frozen || !buf || !buf.length) return;
     const e = this.entryFor(currentKey());
-    const d = e[dir];
-    d.n += buf.length;
+    e[dir].n += buf.length;
+    this.feed(e[dir], dir, dir === 'send' ? this.ws.push(buf) : buf);
+  }
+
+  feed(d, dir, buf) {
+    if (!buf.length) return;
     if (!this.portRe) { d.h.update(buf); return; }
     // hold back a trailing run of digits (a port may continue in the next chunk)
     const s = this.tail[dir] + buf.toString('latin1');
@@ -266,6 +353,7 @@ class Stream {
   }
 
   flushTails(e) {
+    this.feed(e.send, 'send', this.ws.flush());
     for (const dir of ['send', 'recv']) {
       if (this.tail[dir]) { e[dir].h.update(this.norm(this.tail[dir]), 'latin1'); this.tail[dir] = ''; }
     }
@@ -441,7 +529,9 @@ function startRecording(sock, host, port, isTls, site) {
   const cassette = POLICY.recording;
   const h = hooks(sock);
   h.recv.push((b) => cassette.append(key, idx, 'recv', b));
-  h.send.push((b) => cassette.append(key, idx, 'send', redact(b)));
+  const wsn = new WsNormalizer(); // client WebSocket frames are stored unmasked (replay compares them so)
+  h.send.push((b) => { const n = wsn.push(b); if (n.length) cassette.append(key, idx, 'send', redact(n)); });
+  sock.once('close', () => { const r = wsn.flush(); if (r.length) { try { cassette.append(key, idx, 'send', r); } catch { /* saved */ } } });
   track(sock, `${host}:${port}`, site);
   if (key === STATE.testId) POLICY.testSockets.add(sock);
   STATE.record('net', isTls ? 'tls.connect' : 'net.connect', `${host}:${port} record#${idx}`);
@@ -502,6 +592,7 @@ function startReplayServer(segments, isTls, label, alpn) {
     let i = 0;
     let pending = Buffer.alloc(0);
     let idle = null;
+    const wsn = new WsNormalizer();
     const step = () => {
       while (i < segments.length) {
         const s = segments[i];
@@ -514,7 +605,9 @@ function startReplayServer(segments, isTls, label, alpn) {
             STATE.recordAt('net', 'net.connect', '<detjs>', `replay-mismatch ${label} segment ${i}`);
             if (!MISMATCH_TOLD.has(label)) {
               MISMATCH_TOLD.add(label);
-              process.stderr.write(`detjs: network replay: the request to ${label} differs from the recording (segment ${i}); the connection is reset. Re-record with --det-record.\n`);
+              let at = 0;
+              while (at < got.length && got[at] === s.data[at]) at++;
+              process.stderr.write(`detjs: network replay: the request to ${label} differs from the recording (segment ${i}, from byte ${at}: ${JSON.stringify(got.subarray(at, at + 40).toString('latin1'))} instead of ${JSON.stringify(s.data.subarray(at, at + 40).toString('latin1'))}); the connection is reset. Re-record with --det-record.\n`);
             }
             conn.destroy();
             server.close();
@@ -531,7 +624,7 @@ function startReplayServer(segments, isTls, label, alpn) {
       server.close();
     };
     conn.on('data', (d) => {
-      pending = Buffer.concat([pending, d]);
+      pending = Buffer.concat([pending, wsn.push(d)]);
       if (idle && idle !== 'expired') require('./clock').REAL.clearTimeout(idle);
       // Request bytes may differ in length from the recording (dates,
       // boundaries): after 50 ms without more data the segment is accepted.

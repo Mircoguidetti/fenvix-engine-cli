@@ -14,7 +14,7 @@
 // * Protocol nonces drawn through them are controlled whatever the option (G-1421): the WebSocket handshake key
 //   (`Sec-WebSocket-Key`) and the frame masks of the global `WebSocket` (undici) and of the `ws` package. They are
 //   not secrets (RFC 6455 uses them against proxy cache poisoning), and real ones made every WebSocket test differ
-//   from run to run. They come from a stream seeded per test and are `random` events (`crypto.randomBytes` /
+//   from run to run. They come from a stream seeded per test (independent of --det-seed) and are `random` events (`crypto.randomBytes` /
 //   `crypto.randomFillSync`, value `nonce <length>:<digest>`).
 
 const nodeCrypto = require('node:crypto');
@@ -84,7 +84,9 @@ function reseed(key) {
   CRYPTO.seed(h2, l2);
   const [h3, l3] = native.deriveSeedWords(base, key + '\0urandom');
   ENTROPY.seed(h3, l3);
-  const [h4, l4] = native.deriveSeedWords(base, key + '\0nonce');
+  // protocol nonces do not depend on --det-seed: a recorded WebSocket handshake (its Sec-WebSocket-Accept answers the
+  // key) replays under any seed
+  const [h4, l4] = native.deriveSeedWords(0n, key + '\0nonce');
   NONCE.seed(h4, l4);
 }
 
