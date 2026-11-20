@@ -40,7 +40,7 @@ jobs:
         include:
           - {os: ubuntu-latest, triple: linux-x64-gnu, target: x86_64-unknown-linux-gnu, lib: libdetpy_node.so}
           - {os: ubuntu-24.04-arm, triple: linux-arm64-gnu, target: aarch64-unknown-linux-gnu, lib: libdetpy_node.so}
-          - {os: macos-14, triple: darwin-arm64, target: aarch64-apple-darwin, lib: libdetpy_node.dylib}
+          - {os: macos-15, triple: darwin-arm64, target: aarch64-apple-darwin, lib: libdetpy_node.dylib}
     env:
       MACOSX_DEPLOYMENT_TARGET: "11.0"
     steps:
@@ -127,7 +127,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-14]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-15]
         python: ["3.12", "3.13", "3.14"]
         include:
           - {python: "3.12", node: "22"}
@@ -168,7 +168,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04-arm, macos-14]
+        os: [ubuntu-24.04-arm, macos-15]
         python: ["3.12", "3.13", "3.14"]
     steps:
       - uses: actions/checkout@v4
@@ -202,7 +202,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04-arm, macos-14]
+        os: [ubuntu-24.04-arm, macos-15]
         node: ["22", "24", "26"]
     steps:
       - uses: actions/checkout@v4
