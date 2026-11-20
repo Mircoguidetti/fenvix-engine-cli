@@ -1,6 +1,7 @@
 # Go-live acceptance exam (exam/PLAN.md). One job per leg of exam/legs.json (row x platform x versions); the
 # aggregate job merges every leg into exam/results.json and commits it to claude/exam.
-# The engine is installed as our runner machines do: the single Linux x86_64 artifact of the release-1 CI (exam/install.sh),
+# The engine is installed as our runner machines do: the versioned Linux x86_64 engine tarball (artifact engine-artifact) of
+# the release-1 CI, fetched with release/engine/fetch.sh and installed with its install.sh (exam/install.sh),
 # by default the newest claude/release-1 one; with input release_run, the artifact of that release-1.yml run (e.g. a PR head),
 # so a row is examined before its merge. results.json names the artifact (run, commit, branch) every leg tested.
 name: exam
