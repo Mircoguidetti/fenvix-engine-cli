@@ -147,11 +147,13 @@ def _user_stat_caller() -> bool:
 _TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
 
 
-def _time_helper_caller() -> bool:
-    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller)."""
+def _time_helper_caller() -> str | None:
+    """The name of os.path.getmtime/getctime/getatime when one of them called os.stat (the time goes to its caller)."""
     f = _getframe(2)
-    return (f is not None and f.f_code.co_name in _TIME_HELPERS
-            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
+    if (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath")):
+        return f.f_code.co_name
+    return None
 
 
 _STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
@@ -160,8 +162,10 @@ _TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
 
 
 class _TimedStat:
-    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached: a time
-    is not an input the cache keys; review R-032b F2). Everything else is the result's own."""
+    """An ``os.stat_result`` given to user code (review R-032b F2, round 4): reading ``st_mtime``/``st_ctime`` (their
+    ``_ns`` variants, indices 8 and 9) makes the file's modification and change times an input ("y:", keyed);
+    reading ``st_atime`` or ``st_birthtime`` (index 7; unpacking, equality, hashing give every field) refuses the
+    test ("mtime": the access time changes when the file is read). Everything else is the result's own."""
 
     __slots__ = ("_r", "_cap", "_path")
 
@@ -170,26 +174,41 @@ class _TimedStat:
         self._cap = cap
         self._path = path
 
+    def _p(self):
+        return os.fsdecode(os.fspath(self._path)) if not isinstance(self._path, int) else str(self._path)
+
     def _timed(self):
         try:
-            self._cap.flag(self._cap._cur(), "mtime", os.fsdecode(os.fspath(self._path)) if not isinstance(
-                self._path, int) else str(self._path))
+            self._cap.flag(self._cap._cur(), "mtime", self._p())
         except Exception:
             pass
 
+    def _keyed(self):
+        if isinstance(self._path, int):
+            return self._timed()
+        try:
+            self._cap.time_check(self._path)
+        except Exception:
+            self._timed()
+
     def __getattr__(self, name):
-        if name.startswith(_TIME_FIELDS):
+        if name.startswith(("st_mtime", "st_ctime")):
+            self._keyed()
+        elif name.startswith(("st_atime", "st_birthtime")):
             self._timed()
         return getattr(self._r, name)
 
     def __getitem__(self, i):
         idx = range(len(self._r))[i]
-        if (7 in idx or 8 in idx or 9 in idx) if isinstance(idx, range) else idx in (7, 8, 9):
+        idx = list(idx) if isinstance(idx, range) else [idx]
+        if 7 in idx:
             self._timed()
+        elif 8 in idx or 9 in idx:
+            self._keyed()
         return self._r[i]
 
     def __iter__(self):
-        self._timed()  # unpacking gives every field
+        self._timed()  # unpacking gives every field, the access time among them
         return iter(self._r)
 
     def __len__(self):
@@ -395,9 +414,13 @@ class Capture(_core.CaptureCore):
                         cap.stat_check(path, nolink, sized)
                         # pytest's assertion rewriting compares source mtimes: infrastructure, not the test's
                         timed = name in ("stat", "lstat") and _user_stat_caller() and cap._caller_kind() == "user"
-                        if _time_helper_caller() and cap._caller_kind() == "user":
+                        helper = _time_helper_caller()
+                        if helper and cap._caller_kind() == "user":
                             # os.path.getmtime & co.: the time is read inside the helper, for its caller
-                            cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
+                            if helper == "getatime":
+                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
+                            else:
+                                cap.time_check(path)
                     except Exception:
                         pass
                     finally:

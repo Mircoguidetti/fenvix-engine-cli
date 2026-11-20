@@ -440,6 +440,36 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
+        if kind == b'y' {
+            // a file's modification and change times, read by user code (round 4): keyed beside the path's own
+            // dependency; a time this session changed (it wrote the file) is a read of a session-written file
+            if self.writers.contains_key(p) {
+                let mut f = b"rw:".to_vec();
+                f.extend_from_slice(p);
+                self.flag_set(ctx).add(f);
+                return None;
+            }
+            let mut hk = vec![b'y'];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = format!("y:{}", proof::time_digest(os_path(p))).into_bytes();
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let mut k = self.key(p).to_vec();
+            k.extend_from_slice(proof::TIME_SUFFIX.as_bytes());
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
         if kind == b's' || kind == b'l' || kind == b'z' {
             // an existence or kind check (os.stat / lstat / access, a module lookup): the path's kind is the input
             // (absent inputs: a file, conftest.py, module or __init__.py that appears later). The project root and
@@ -572,7 +602,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l', b'z'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'y'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -2240,6 +2270,20 @@ impl CaptureCore {
     /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
     /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
     /// final symlink (LIMITS K4).
+    /// A user read of a file's modification or change time (round 4: keyed, "y:"; the caller is checked by the
+    /// Python side, which sees the stat result's field reads).
+    fn time_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        if self.ignored(&p) {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, b'y')
+    }
+
     #[pyo3(signature = (path, link=false, sized=false))]
     fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool, sized: bool) -> PyResult<()> {
         if !self.active() {

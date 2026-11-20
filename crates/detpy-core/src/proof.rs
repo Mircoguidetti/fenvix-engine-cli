@@ -358,6 +358,19 @@ pub const IMPORTABLE_ENDINGS: [&str; 5] = [".py", ".pyc", ".pyw", ".so", ".pyd"]
 /// Key suffix of an "i:" dependency (the directory is the key without it).
 pub const IMPORTABLE_SUFFIX: &str = "/\u{1}importable";
 
+/// Suffix of a path's time dependency key ("y:", round 4): `<path>\u{1}mtime`, beside the path's own dependency.
+pub const TIME_SUFFIX: &str = "\u{1}mtime";
+
+/// A file's modification and change times (round 4: a test that reads st_mtime/st_ctime depends on them; keyed, not
+/// refused): "<mtime>.<ns>,<ctime>.<ns>", or "missing".
+pub fn time_digest(path: &Path) -> String {
+    use std::os::unix::fs::MetadataExt;
+    match fs::metadata(path) {
+        Ok(m) => format!("{}.{:09},{}.{:09}", m.mtime(), m.mtime_nsec(), m.ctime(), m.ctime_nsec()),
+        Err(_) => "missing".into(),
+    }
+}
+
 fn ident(s: &str) -> bool {
     let mut cs = s.chars();
     matches!(cs.next(), Some(c) if c == '_' || c.is_alphabetic()) && cs.all(|c| c == '_' || c.is_alphanumeric())
@@ -541,6 +554,8 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("s:{}", stat_kind(path))
     } else if recorded.starts_with("z:") {
         format!("z:{}", size_kind(path))
+    } else if recorded.starts_with("y:") {
+        format!("y:{}", time_digest(path))
     } else if recorded.starts_with("l:") {
         format!("l:{}", lstat_kind(path))
     } else if recorded.starts_with("i:") {
@@ -1476,6 +1491,7 @@ impl Checker {
                 't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
                 'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
                 'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
+                'y' => path.strip_suffix(TIME_SUFFIX).unwrap_or(path),
                 _ => path,
             };
             let v = data_now(&self.cur.root.join(dir), recorded);

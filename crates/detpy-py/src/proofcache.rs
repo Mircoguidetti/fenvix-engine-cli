@@ -961,6 +961,12 @@ pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, S
     })
 }
 
+/// "<mtime>.<ns>,<ctime>.<ns>" or "missing" (`detpy_core::proof::time_digest`, round 4).
+#[pyfunction]
+pub fn time_digest(path: PathBuf) -> String {
+    proof::time_digest(&path)
+}
+
 /// "file:<size>", "dir", "other" or "missing" (`detpy_core::proof::size_kind`, review R-032b F2).
 #[pyfunction]
 pub fn size_kind(path: PathBuf) -> String {
