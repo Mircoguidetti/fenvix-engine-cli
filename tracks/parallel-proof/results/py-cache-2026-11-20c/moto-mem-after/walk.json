@@ -1,0 +1,145 @@
+{
+ "repo": "repo",
+ "workers": 4,
+ "args": [
+  "./tests/test_batch",
+  "./tests/test_dynamodb",
+  "./tests/test_ec2",
+  "tests/test_s3/",
+  "./tests/test_sqs",
+  "-m",
+  "not requires_clean_slate",
+  "-p",
+  "no:randomly",
+  "--timeout=600"
+ ],
+ "det_args": [
+  "--det-urandom"
+ ],
+ "shard": "",
+ "commits": [
+  {
+   "i": 0,
+   "sha": "980d15c304e72c384dfb6aa8cae9b4bf39c73100",
+   "shard_first": true,
+   "a_par": {
+    "wall_s": 154.8,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m9 failed\u001b[0m, \u001b[32m2480 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 133.52s (0:02:13)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 765.6,
+    "store_mb": 28.44,
+    "carried": 2489,
+    "carried_of_recorded": 1017,
+    "reused": 0,
+    "ran": 2498,
+    "recorded": 1017,
+    "tests": 2496,
+    "miss_reasons": {
+     "new": 2496
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "a_par_u": {
+    "wall_s": 102.6,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 100.58s (0:01:40)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 1101.1,
+    "store_mb": 40.29,
+    "carried": 2488,
+    "carried_of_recorded": 1399,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 1399,
+    "tests": 2496,
+    "miss_reasons": {
+     "data": 1016,
+     "new": 1480
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 204.1,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 199.42s (0:03:19)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 565.3,
+    "test_time_s": 196.195
+   }
+  },
+  {
+   "i": 1,
+   "sha": "38a79b90386f6c2ebc99a81d29bcf26102e36616",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 102.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 100.42s (0:01:40)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 1141.5,
+    "store_mb": 42.29,
+    "carried": 2488,
+    "carried_of_recorded": 1404,
+    "reused": 0,
+    "ran": 2496,
+    "recorded": 1404,
+    "tests": 2496,
+    "miss_reasons": {
+     "data": 1399,
+     "new": 1097
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 201.7,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2481 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 196.96s (0:03:16)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 564.8,
+    "test_time_s": 193.732
+   }
+  },
+  {
+   "i": 2,
+   "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+   "shard_first": false,
+   "a_par": {
+    "wall_s": 104.6,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 102.39s (0:01:42)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 1183.1,
+    "store_mb": 44.93,
+    "carried": 2493,
+    "carried_of_recorded": 1500,
+    "reused": 0,
+    "ran": 2501,
+    "recorded": 1500,
+    "tests": 2501,
+    "miss_reasons": {
+     "data": 1404,
+     "new": 1097
+    },
+    "reused_not_in_truth": 0,
+    "reused_time_s": 0,
+    "mismatches": 0,
+    "wrong_reuses": [],
+    "flaky": []
+   },
+   "b": {
+    "wall_s": 201.5,
+    "rc": 1,
+    "tail": "\u001b[31m\u001b[31m\u001b[1m8 failed\u001b[0m, \u001b[32m2486 passed\u001b[0m, \u001b[33m5 skipped\u001b[0m, \u001b[33m56 deselected\u001b[0m, \u001b[33m2 xfailed\u001b[0m, \u001b[33m1 warning\u001b[0m\u001b[31m in 196.85s (0:03:16)\u001b[0m\u001b[0m",
+    "peak_rss_mb": 564.6,
+    "test_time_s": 193.601
+   }
+  }
+ ]
+}
