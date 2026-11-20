@@ -3,10 +3,10 @@
  "job": "hunt",
  "repo": "actualbudget/actual",
  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
- "status": "ok",
- "run_id": "44734570997",
- "engine_commit": "b2fd625188a434d83223e4b3fb6b0e4f617c8179",
- "setup_s": 89,
+ "status": "running",
+ "run_id": "44783946608",
+ "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
+ "setup_s": 99,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -20,11 +20,6 @@
   "seeds": 8,
   "replays": 10,
   "per_run_s": 900,
-  "only": [
-   "extends after budgeting",
-   "keeps every displayed column",
-   "applies budget template"
-  ],
   "from_step": 20
  },
  "pw_dir": "packages/desktop-client",
@@ -33,68 +28,183 @@
   "--shard=1/3"
  ],
  "runs": [],
- "epoch": "2026-11-20T12:35:00Z",
- "measured_at": "2026-11-20T12:35:24Z",
+ "epoch": "2026-11-20T17:36:00Z",
+ "measured_at": "2026-11-20T17:36:24Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
   "replays": 10,
   "targets": [
    {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "step": null,
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": null,
+    "reproduced": false,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "step": null,
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": null,
+    "reproduced": false,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "step": null,
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": null,
+    "reproduced": false,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+    "real": "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+    "step": null,
+    "mechanism": "timeout",
+    "tried": [
+     [
+      1,
+      "timedOut",
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      null
+     ]
+    ],
+    "seed": 1,
+    "replays": [
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut"
+    ],
+    "replay_errors": [
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+     "Test timeout of 60000ms exceeded while running \"beforeEach\" hook."
+    ],
+    "fingerprints": null,
+    "reproduced": false,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ]
+   },
+   {
     "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
     "real": "Test timeout of 60000ms exceeded.",
     "step": null,
     "mechanism": "timeout_body",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -106,56 +216,7 @@
     "real": "Test timeout of 60000ms exceeded.",
     "step": null,
     "mechanism": "timeout_body",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -167,56 +228,7 @@
     "real": "Test timeout of 60000ms exceeded.",
     "step": null,
     "mechanism": "timeout_body",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -228,56 +240,7 @@
     "real": "Test timeout of 60000ms exceeded.",
     "step": null,
     "mechanism": "timeout_body",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
@@ -289,66 +252,13 @@
     "real": "Test timeout of 60000ms exceeded.",
     "step": null,
     "mechanism": "timeout_body",
-    "tried": [
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
-     ],
-     [
-      4,
-      "passed",
-      "",
-      null
-     ],
-     [
-      5,
-      "passed",
-      "",
-      null
-     ],
-     [
-      6,
-      "passed",
-      "",
-      null
-     ],
-     [
-      7,
-      "passed",
-      "",
-      null
-     ],
-     [
-      8,
-      "passed",
-      "",
-      null
-     ]
-    ],
+    "tried": [],
     "seed": null,
     "replays": [],
     "replay_errors": [],
     "fingerprints": null,
     "reproduced": false
    }
-  ],
-  "reproduced": 0,
-  "found_seed": 0,
-  "n": 5
- },
- "elapsed_min": 96.9
+  ]
+ }
 }
