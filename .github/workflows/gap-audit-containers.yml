@@ -1,0 +1,55 @@
+# Gap audit P-036: the container probes the first run did not reach (Node addon and fenvix-skip in CI images,
+# Python 3.10/3.11 Level 0). Audit only.
+name: gap-audit-containers
+
+on:
+  push:
+    branches: [claude/gap-audit]
+    paths: [".github/workflows/gap-audit-containers.yml"]
+
+jobs:
+  containers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - name: build
+        run: |
+          pip install -q "maturin>=1.5,<2" && maturin build --release --compatibility linux -o dist 2>&1 | tail -1
+          cargo build -p detpy-node -p fenvix-skip --release 2>&1 | tail -1
+          cp target/release/libdetpy_node.so dist/detjs.linux-x64.node && cp target/release/fenvix-skip dist/
+      - name: probes
+        run: |
+          set +e
+          mkdir -p proj && printf 'import time, random\ndef test_time(): assert time.time() > 0\ndef test_random(): assert 0 <= random.random() < 1\n' > proj/test_a.py
+          cat > proj/addon.js <<'JS'
+          try { const n = require('/dist/detjs.linux-x64.node'); console.log('addon loaded', Object.keys(n).length, 'exports, node', process.version); }
+          catch (e) { console.log('ADDON LOAD FAILED on node', process.version, ':', String(e.message).split('\n')[0]); process.exit(1); }
+          JS
+          : > summary.txt
+          run() {
+            timeout 600 docker run --rm -v "$PWD/dist:/dist:ro" -v "$PWD/proj:/proj" -w /proj "$2" sh -c "$3" > out.log 2>&1; rc=$?
+            echo "PROBE | $1 | $2 | rc=$rc | $(grep -vE 'WARNING|notice|^$|Pull|Download|Digest|Status|Unable|layer' out.log | tail -3 | tr '\n' ' ' | cut -c1-420)" | tee -a summary.txt
+          }
+          PYRUN='pip install -q pytest >/dev/null 2>&1; pip install -q --no-deps /dist/detpy-*.whl >/dev/null 2>&1; cp -r /proj /tmp/p && cd /tmp/p && python -m pytest -q --det -p no:cacheprovider 2>&1 | tail -4'
+          run "node addon, Alpine musl" node:22-alpine "node /proj/addon.js"
+          run "node addon, Debian 11 glibc 2.31" node:22-bullseye-slim "node /proj/addon.js"
+          run "node addon, Debian 12 glibc 2.36" node:22-bookworm-slim "node /proj/addon.js"
+          run "node addon, Node 16" node:16-bookworm-slim "node /proj/addon.js"
+          run "node addon, Node 18" node:18-bookworm-slim "node /proj/addon.js"
+          run "node addon, Node 20" node:20-bookworm-slim "node /proj/addon.js"
+          run "node addon, Node 24" node:24-bookworm-slim "node /proj/addon.js"
+          run "fenvix-skip, Alpine musl" alpine:3 "/dist/fenvix-skip --help 2>&1 | head -3"
+          run "fenvix-skip, Debian 11" debian:11-slim "/dist/fenvix-skip --help 2>&1 | head -3"
+          run "fenvix-skip, Ubuntu 20.04" ubuntu:20.04 "/dist/fenvix-skip --help 2>&1 | head -3"
+          run "fenvix-skip, Ubuntu 22.04" ubuntu:22.04 "/dist/fenvix-skip --help 2>&1 | head -3"
+          run "python --det, 3.10" python:3.10-slim "$PYRUN"
+          run "python --det, 3.11" python:3.11-slim "$PYRUN"
+          run "python --det, 3.12 on Ubuntu 22.04 glibc 2.35" ubuntu:22.04 "apt-get update -qq >/dev/null 2>&1; apt-get install -y -qq python3 python3-pip >/dev/null 2>&1; python3 --version; ln -s /usr/bin/python3 /usr/bin/python; $PYRUN"
+          run "python --det, Amazon Linux 2023 glibc 2.34" amazonlinux:2023 "dnf install -y -q python3.12 python3.12-pip >/dev/null 2>&1; ln -sf /usr/bin/python3.12 /usr/bin/python; ln -sf /usr/bin/pip3.12 /usr/bin/pip; $PYRUN"
+          run "python --det, PyPy 3.11" pypy:3.11-slim "pip install -q pytest >/dev/null 2>&1; pip install --no-deps /dist/detpy-*.whl 2>&1 | tail -2"
+          run "python --det, free-threaded 3.14t" ghcr.io/astral-sh/uv:python3.13-bookworm-slim "uv python install 3.14t >/dev/null 2>&1; uv venv -q -p 3.14t /tmp/v && uv pip install -q -p /tmp/v pytest && uv pip install -p /tmp/v --no-deps /dist/detpy-*.whl 2>&1 | tail -2; cp -r /proj /tmp/p; cd /tmp/p; /tmp/v/bin/python -m pytest -q --det -p no:cacheprovider 2>&1 | tail -4"
+          echo "==== SUMMARY"; cat summary.txt; { echo '```'; cat summary.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit 0
