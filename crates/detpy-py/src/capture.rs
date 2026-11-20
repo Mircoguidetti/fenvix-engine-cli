@@ -845,6 +845,26 @@ fn is_runner_entry(code: &Bound<'_, PyAny>) -> PyResult<bool> {
 }
 
 thread_local! {
+    /// Depth of detpy's own probes made outside the capture whose audit events are not the test's (the virtual
+    /// clock's listing of `/proc/self/task` and reads of its `children` files: py-cache, they refused every test
+    /// that slept with no other thread alive, and the tests after it).
+    static PROBE: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
+}
+
+/// Run `f` as one of detpy's own probes (see [`PROBE`]).
+pub(crate) fn detpy_probe<T>(f: impl FnOnce() -> T) -> T {
+    struct Guard;
+    impl Drop for Guard {
+        fn drop(&mut self) {
+            PROBE.with(|c| c.set(c.get() - 1));
+        }
+    }
+    PROBE.with(|c| c.set(c.get() + 1));
+    let _g = Guard;
+    f()
+}
+
+thread_local! {
     /// Depth of the capture's own calls into Python (``os.path.realpath`` of a code file, ...): a probe of a path
     /// made by them is the capture's, never the code under test's (``CaptureCore.probe``).
     static INTERNAL: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
@@ -1487,6 +1507,9 @@ impl CaptureCore {
     }
 
     fn audit_impl(&self, py: Python<'_>, slf: &Bound<'_, PyAny>, event: &str, args: &Bound<'_, PyTuple>) -> PyResult<()> {
+        if PROBE.with(|c| c.get()) > 0 {
+            return Ok(()); // detpy's own probe (see `detpy_probe`)
+        }
         if !self.active() {
             return Ok(());
         }

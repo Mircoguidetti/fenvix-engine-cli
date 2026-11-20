@@ -417,8 +417,13 @@ class Controller:
             if replay is None:
                 raise pytest.UsageError(f"--det-plan: {replay_path} is not a detpy plan")
         hist = load_json(os.path.join(self.dir, "durations.json")) or {}
+        # --det-isolate-scope=file: a test's in-process predecessors are the earlier tests of its file (one child per
+        # file), wherever the file runs: files are the atoms and the plan balances the tests that run (no sticky
+        # placement is needed to keep keys from churning)
+        file_scope = (pc is not None and self.config.getoption("det_isolate", False)
+                      and self.config.getoption("det_isolate_scope", "test") == "file")
         inp = {
-            "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": self.dist,
+            "ids": self.ids, "hits": [n for n in self.ids if n in hits], "dist": "loadfile" if file_scope else self.dist,
             "groups": self._groups(nodes) if self.dist == "loadgroup" else {}, "workers": wids,
             # under the cache, a test's carried inputs are those of the tests before it on its worker: the placement
             # is kept whatever the balance (new atoms by LPT), so that keys do not churn with timing noise
@@ -427,7 +432,8 @@ class Controller:
             "quarantine": pc.quarantine() if pc is not None and not self.config.getoption("det_isolate", False) else [],
             "history": {k: v for k, v in hist.items() if isinstance(v, list)},
             "cached": pc.durations(self.ids) if pc is not None else {},
-            "previous": load_json(os.path.join(self.dir, "plan.json")), "replay": replay,
+            "previous": (self._worker_reader_atoms(pc, hits, wids) if file_scope
+                         else load_json(os.path.join(self.dir, "plan.json"))), "replay": replay,
             "edges": [list(e) for e in pc.store.edges()] if pc is not None else [],
         }
         try:
@@ -464,7 +470,8 @@ class Controller:
         if self.waits:
             write_json(os.path.join(self.barrier, "waits.json"), {"waits": self.waits})
         self.plan = {
-            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": len(wids), "dist": self.dist,
+            "format": PLAN_FORMAT, "version": PLAN_VERSION, "workers": len(wids),
+            "dist": "loadfile" if file_scope else self.dist,
             "mode": p["mode"], "testrunuid": self.testrunuid, "digest": p["digest"],
             "makespan": round(p["makespan"], 6), "lpt_makespan": round(p["lpt_makespan"], 6), "sticky": p["sticky"],
             "kept": p["kept"], "replayed": p["replayed"], "previous_ignored": p["previous_ignored"],
@@ -474,6 +481,23 @@ class Controller:
             "assign": p["assign"], "waits": p["waits"],
         }
         return lists
+
+    def _worker_reader_atoms(self, pc, hits, wids) -> dict:
+        """--det-isolate-scope=file: a previous plan holding only the files of reused tests that read the worker's id
+        (PYTEST_XDIST_WORKER, pinned to the worker they were recorded on: Checker::worker_check), each on that worker;
+        every other file is placed by LPT on the tests that run."""
+        hit_ids = [n for n in self.ids if n in hits]
+        readers = [n for n, _ in pc.store.worker_check(hit_ids, {n: "" for n in hit_ids})]
+        atoms: dict = {}
+        for r in readers:
+            f = "f:" + r.split("::", 1)[0]  # the plan's atom key of a file (schedule::atom_key)
+            if f in atoms:
+                continue
+            for i, w in enumerate(wids):
+                if not pc.store.worker_check([r], {r: w}):
+                    atoms[f] = i
+                    break
+        return {"format": PLAN_FORMAT, "workers": len(wids), "dist": "loadfile", "atoms": atoms}
 
     def all_finished(self, last_node) -> list[int]:
         """Every worker finished its list. Reused results whose input a test that comes before them wrote in this

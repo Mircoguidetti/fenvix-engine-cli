@@ -996,6 +996,7 @@ class ProofSession:
         # --det-isolate (claude/parallel-proof-3 isolate.py; the pytest shell today): tests run in forked children,
         # each records a one-test shard; this process merges them (serial) or hands them to the controller (worker)
         self.isolate = False
+        self.iso_scope = "test"
         self.iso_child = False
         self.iso_shards: list[str] = []
         self.iso_forked: set[str] = set()
@@ -1075,7 +1076,14 @@ class ProofSession:
         in its own child: no in-process state reaches it). Returns the demoted tests."""
         out: list = []
         if getattr(self, "isolate", False):
-            return out
+            if getattr(self, "iso_scope", "test") != "file":
+                return out
+            # --det-isolate-scope=file: a file's tests share one child, in order; the process is the file
+            files: dict = {}
+            for lst in lists:
+                for n in lst:
+                    files.setdefault(n.split("::", 1)[0], []).append(n)
+            lists = list(files.values())
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
         present = set(ids)

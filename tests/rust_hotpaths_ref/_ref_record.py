@@ -429,7 +429,10 @@ def record_reference(self, store) -> None:
             self._not_cached(nid, "real clock")
             continue
         env_deps = []
+        whole = "*" in env
         for name in sorted(n for n in env if _encodable(n)):
+            if whole and name == "_":
+                continue  # py-cache: part of the whole-environment read (ENV_ALL_EXCLUDED)
             if name == "*":
                 env_deps.append(("*", _core.env_all_digest(dict(cap.env0))))
             else:

@@ -107,7 +107,8 @@ jobs:
             python -m harness.parallel_proof.walk_n --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \
               --commits "${{ matrix.repo.walk }}" --workers "${{ matrix.repo.workers }}" --dist "${{ matrix.repo.dist }}" \
               --modes "${{ matrix.repo.modes || 'a_par' }}" --deadline-s 18000 --out "$out/walk.json" \
-              --det-args="${{ matrix.repo.det_args }}" --shard "${{ matrix.repo.shard }}" \
+              --det-args="${{ matrix.repo.det_args }}" --cache-args="${{ matrix.repo.cache_args }}" \
+              --shard "${{ matrix.repo.shard }}" \
               --work "$RUNNER_TEMP/walk" ${{ matrix.repo.unchanged && '--unchanged' || '' }} -- "$@" || true
           else
             python -m harness.parallel_proof.variants --repo "$RUNNER_TEMP/repo" --python "$RUNNER_TEMP/venv/bin/python" \

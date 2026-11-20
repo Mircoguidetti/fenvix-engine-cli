@@ -253,3 +253,302 @@ class Isolate:
             f"detpy --det-isolate: {n} tests in forked children; overhead {STATS['overhead_s']:.2f} s "
             f"({1000 * STATS['overhead_s'] / n:.1f} ms per test, of which recording {1000 * STATS['record_s'] / n:.1f} "
             f"ms); {STATS['failed_children']} children failed")
+
+
+# -- --det-isolate-scope=file ------------------------------------------------------------------------------------
+def _file_key(item) -> str:
+    return item.nodeid.split("::", 1)[0]
+
+
+def _send(fh, obj) -> None:
+    data = pickle.dumps(obj)
+    fh.write(len(data).to_bytes(8, "little"))
+    fh.write(data)
+    fh.flush()
+
+
+def _recv(fh):
+    n = fh.read(8)
+    if len(n) < 8:
+        return None
+    data = fh.read(int.from_bytes(n, "little"))
+    return pickle.loads(data)
+
+
+class _Upto:
+    """A ``nextitem`` whose chain is ``nodes``: teardown_exact keeps exactly those."""
+
+    def __init__(self, nodes):
+        self._nodes = list(nodes)
+
+    def listchain(self):
+        return list(self._nodes)
+
+
+def _above_file(item) -> list:
+    chain = item.listchain()[:-1]
+    for i, col in enumerate(chain):
+        if isinstance(col, pytest.File):
+            return chain[:i]
+    return chain
+
+
+class _Child:
+    def __init__(self, key, pid, to_child, from_child, first):
+        self.key, self.pid, self.to_child, self.from_child = key, pid, to_child, from_child
+        self.first = first
+        self.last = first
+
+
+class FileIsolate(Isolate):
+    """One child per test file (forked from the session's snapshot after the collectors and the session- and
+    package-scoped fixtures above the file are set up): the file's tests run in it in order, sharing its memory; no
+    test sees state a test of another file left. The cache records the file's tests at the end of the child (the
+    carried set holds earlier tests of the same file only)."""
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.child: _Child | None = None
+
+    @pytest.hookimpl
+    def pytest_runtest_protocol(self, item, nextitem):
+        from . import proofcache
+
+        pc = proofcache.PLUGIN
+        if pc is not None and pc.sess.is_hit(item.nodeid):
+            return None
+        key = _file_key(item)
+        if self.child is not None and self.child.key != key:
+            self._close(item)
+        if self.child is None:
+            if pc is not None:
+                pc.iso_prepare()
+            self._open(item, pc, key)
+        same = nextitem is not None and _file_key(nextitem) == key
+        t0 = _perf()
+        payload = None
+        try:
+            _send(self.child.to_child, ("run", item.nodeid, nextitem.nodeid if same else None))
+            payload = _recv(self.child.from_child)
+        except (OSError, EOFError, pickle.PickleError) as e:
+            payload = {"error": f"{type(e).__name__}: {e}"}
+        if payload is None:
+            payload = {"error": "the file's child process exited"}
+        self.child.last = item.nodeid
+        wall = _perf() - t0
+        crashed = "error" in payload
+        self._parent(item, pc, payload)
+        STATS["tests"] += 1
+        STATS["overhead_s"] += max(0.0, wall - payload.get("protocol_s", 0.0))
+        if crashed:
+            self._reap(item)
+        elif not same:
+            self._close(nextitem)
+        return True
+
+    def _open(self, item, pc, key) -> None:
+        s0 = _perf()
+        self._scope_setup_above_file(item)
+        STATS["scope_setup_s"] = STATS.get("scope_setup_s", 0.0) + (_perf() - s0)
+        r1, w1 = os.pipe()  # parent -> child
+        r2, w2 = os.pipe()  # child -> parent
+        sys.stdout.flush()
+        sys.stderr.flush()
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            pid = os.fork()
+        if pid == 0:  # pragma: no cover - the child
+            os.close(w1)
+            os.close(r2)
+            code = 0
+            try:
+                with os.fdopen(r1, "rb") as fin, os.fdopen(w2, "wb") as fout:
+                    self._child_loop(item, pc, fin, fout)
+            except BaseException:  # noqa: BLE001
+                code = 1
+            os._exit(code)
+        os.close(r1)
+        os.close(w2)
+        self.child = _Child(key, pid, os.fdopen(w1, "wb"), os.fdopen(r2, "rb"), item.nodeid)
+        STATS["children"] = STATS.get("children", 0) + 1
+
+    def _scope_setup_above_file(self, item) -> None:
+        ss = item.session._setupstate
+        chain = _above_file(item)
+        for col, (_fins, exc) in list(ss.stack.items()):
+            if col not in chain or exc:
+                return
+        for col in chain[len(ss.stack):]:
+            ss.stack[col] = ([col.teardown], None)
+            try:
+                col.setup()
+            except BaseException as exc:  # noqa: BLE001
+                ss.stack[col] = (ss.stack[col][0], (exc, exc.__traceback__))
+                return
+        info = getattr(item, "_fixtureinfo", None)
+        req = getattr(item, "_request", None)
+        if info is None or req is None:
+            return
+        pushed = item not in ss.stack
+        if pushed:
+            ss.stack[item] = ([], None)
+        try:
+            for name in item.fixturenames:
+                defs = info.name2fixturedefs.get(name)
+                if not defs or defs[-1].scope not in ("session", "package"):
+                    continue
+                try:
+                    req.getfixturevalue(name)
+                except BaseException:  # noqa: BLE001
+                    pass
+        finally:
+            if pushed:
+                ss.stack.pop(item, None)
+
+    # -- child ---------------------------------------------------------------------------------------------------
+    def _child_loop(self, first, pc, fin, fout) -> None:  # pragma: no cover - runs in the child
+        from _pytest.runner import runtestprotocol
+
+        from . import plugin
+
+        if pc is not None:
+            pc.iso_child = True
+        session = first.session
+        by_id = {it.nodeid: it for it in session.items}
+        last = None
+        while True:
+            msg = _recv(fin)
+            if msg is None:
+                return
+            if msg[0] == "run":
+                _, nid, nxt = msg
+                item = by_id[nid]
+                last = item
+                try:
+                    plugin.level0_begin(item)
+                    t = pc.iso_begin(item) if pc is not None else None
+                    p0 = _perf()
+                    nextitem = by_id[nxt] if nxt is not None else _Collectors(item)
+                    reports = runtestprotocol(item, nextitem=nextitem, log=False)
+                    protocol_s = _perf() - p0
+                    if pc is not None:
+                        for rep in reports:
+                            pc.sess.report(rep)
+                    fp = plugin.level0_end(item, _det_outcome(reports))
+                    if pc is not None:
+                        pc.iso_end(item, t)
+                    hook = self.config.hook
+                    ser = [hook.pytest_report_to_serializable(config=self.config, report=rep) for rep in reports]
+                    out = {"reports": ser, "fingerprint": fp, "protocol_s": protocol_s}
+                except BaseException as e:  # noqa: BLE001
+                    import traceback
+
+                    out = {"error": f"{type(e).__name__}: {e}\n{traceback.format_exc()}"}
+                _send(fout, out)
+                if "error" in out:
+                    return
+            elif msg[0] == "close":
+                td_error = None
+                if last is not None:
+                    try:
+                        session._setupstate.teardown_exact(_Upto(_above_file(last)))
+                    except BaseException as e:  # noqa: BLE001
+                        td_error = f"{type(e).__name__}: {e}"
+                shard, summary, record_s = None, None, 0.0
+                if pc is not None:
+                    r0 = _perf()
+                    shard, summary = pc.iso_record()
+                    record_s = _perf() - r0
+                _send(fout, {"shard": shard, "summary": summary, "record_s": record_s, "teardown_error": td_error,
+                             "facts": list(pc.iso_new_facts) if pc is not None else []})
+                return
+
+    # -- parent --------------------------------------------------------------------------------------------------
+    def _close(self, nextitem) -> None:
+        from . import proofcache
+
+        c = self.child
+        if c is None:
+            return
+        self.child = None
+        pc = proofcache.PLUGIN
+        payload = None
+        try:
+            _send(c.to_child, ("close",))
+            payload = _recv(c.from_child)
+        except (OSError, EOFError, pickle.PickleError):
+            payload = None
+        for fh in (c.to_child, c.from_child):
+            try:
+                fh.close()
+            except OSError:
+                pass
+        try:
+            os.waitpid(c.pid, 0)
+        except ChildProcessError:
+            pass
+        if payload is not None:
+            STATS["record_s"] += payload.get("record_s", 0.0)
+            if pc is not None:
+                pc.iso_add_facts(payload.get("facts"))
+                pc.iso_child_done(c.last, payload.get("shard"), payload.get("summary"))
+            if payload.get("teardown_error"):
+                self._teardown_failure(c.last, payload["teardown_error"])
+        else:
+            STATS["failed_children"] += 1
+        if nextitem is not None or True:
+            self._parent_teardown(nextitem)
+
+    def _reap(self, item) -> None:
+        c = self.child
+        self.child = None
+        if c is None:
+            return
+        for fh in (c.to_child, c.from_child):
+            try:
+                fh.close()
+            except OSError:
+                pass
+        try:
+            os.waitpid(c.pid, 0)
+        except ChildProcessError:
+            pass
+        STATS["failed_children"] += 1
+
+    def _parent_teardown(self, nextitem) -> None:
+        import _pytest.main  # noqa: F401
+
+        session = getattr(self.config, "_detpy_session", None)
+        ss = None
+        try:
+            from _pytest.main import Session  # noqa: F401
+        except Exception:  # noqa: BLE001
+            pass
+        for it in (nextitem,):
+            if it is not None:
+                ss = it.session._setupstate
+        if ss is None and session is not None:
+            ss = session._setupstate
+        if ss is None:
+            return
+        try:
+            ss.teardown_exact(nextitem)
+        except BaseException:  # noqa: BLE001
+            STATS["scope_teardown_errors"] = STATS.get("scope_teardown_errors", 0) + 1
+
+    def _teardown_failure(self, nid, err) -> None:
+        self.scope_errors.add(nid)
+        STATS["scope_teardown_errors"] = STATS.get("scope_teardown_errors", 0) + 1
+
+    def _parent(self, item, pc, payload) -> None:
+        if pc is not None:
+            pc.iso_forked.add(item.nodeid)
+        super()._parent(item, pc, {k: v for k, v in payload.items() if k not in ("shard", "summary")})
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtestloop(self, session):
+        self.config._detpy_session = session
+        yield
+        self._close(None)

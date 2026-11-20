@@ -107,6 +107,9 @@ def main(argv=None) -> int:
                     help="cache modes to walk besides the truth run b (a_ser can be left out to fit a CI job)")
     ap.add_argument("--det-args", default="",
                     help="extra detpy options for every --det run (cache runs and truth), e.g. --det-urandom")
+    ap.add_argument("--cache-args", default="",
+                    help="extra detpy options for the cache runs only (a_par, a_ser), e.g. --det-isolate "
+                         "--det-isolate-scope=file; the truth b stays a plain --det run")
     ap.add_argument("--shard", default="",
                     help="K/M: walk only the K-th of M contiguous slices of the commits (0-based); each slice starts "
                          "with an empty cache at its first commit")
@@ -116,6 +119,7 @@ def main(argv=None) -> int:
     ap.add_argument("pytest_args", nargs="*")
     a = ap.parse_args(argv)
     det_args = a.det_args.split()
+    cache_args = a.cache_args.split()
     work = os.path.abspath(a.work or os.path.join(os.path.dirname(os.path.abspath(a.out)), "walk-work"))
     os.makedirs(work, exist_ok=True)
     head = git(a.repo, "rev-parse", "HEAD").strip()
@@ -142,14 +146,17 @@ def main(argv=None) -> int:
         row = {"i": i + offset, "sha": sha, "shard_first": i == 0}
         runs = {}
         modes = [m for m in a.modes.split(",") if m]
-        variants = (("a_par", ["--det", *det_args, f"--det-cache={work}/cache-par", f"--det-trace={work}/a_par.jsonl",
-                               *par]),
-                    ("a_ser", ["--det", *det_args, f"--det-cache={work}/cache-ser", f"--det-trace={work}/a_ser.jsonl"]),
+        variants = (("a_par", ["--det", *det_args, *cache_args, f"--det-cache={work}/cache-par",
+                               f"--det-trace={work}/a_par.jsonl", *par]),
+                    ("a_ser", ["--det", *det_args, *cache_args, f"--det-cache={work}/cache-ser",
+                               f"--det-trace={work}/a_ser.jsonl"]),
+                    # the time of the same -n run without the cache (the speed baseline of a_par)
+                    ("b_par", ["--det", *det_args, f"--det-trace={work}/b_par.jsonl", *par]),
                     ("b", ["--det", *det_args, f"--det-trace={work}/b.jsonl"]))
         todo = [v for v in variants if v[0] in modes or v[0] == "b"]
         if a.unchanged and i == 0:
             # the same commit again, warm: an unchanged commit's reuse (py-cache item 5)
-            todo = [v for v in todo if v[0] != "b"] + [(v[0] + "_u", v[1]) for v in todo if v[0] != "b"] + \
+            todo = [v for v in todo if v[0] != "b"] + [(v[0] + "_u", v[1]) for v in todo if v[0] in ("a_par", "a_ser")] + \
                 [v for v in todo if v[0] == "b"]
         for name, extra in todo:
             cf = os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser", "carried.jsonl")
@@ -157,9 +164,9 @@ def main(argv=None) -> int:
             meta, data = pytest(a.repo, a.python, [*a.pytest_args, *extra], f"{work}/{name}-{i}.json", a.timeout)
             runs[name] = data
             row[name] = meta
-            if name != "b":
+            if not name.startswith("b"):
                 meta["store_mb"] = store_mb(os.path.join(work, "cache-par" if name.startswith("a_par") else "cache-ser"))
-            if name != "b" and os.path.exists(cf):
+            if not name.startswith("b") and os.path.exists(cf):
                 # the carried-set rule: tests whose key carries earlier contexts of their process (every worker's
                 # recording session appends one line)
                 with open(cf) as fh:
@@ -205,6 +212,11 @@ def main(argv=None) -> int:
                 for n in bad:
                     (wrong if o2.get(n) == truth[n] else flaky).append([n, outcomes.get(n), truth[n], o2.get(n)])
             row[mode].update(mismatches=len(bad), wrong_reuses=wrong, flaky=flaky)
+            # the tests that ran in the cache session and ended otherwise than in the truth (a reused predecessor's
+            # missing state would show here; a flaky test too)
+            rs = set(reused)
+            row[mode]["ran_differ"] = sorted([n, outcomes.get(n), truth[n]] for n in outcomes
+                                             if n not in rs and n in truth and outcomes.get(n) != truth[n])[:50]
         rows.append(row)
         with open(a.out, "w") as f:
             json.dump({"repo": os.path.basename(os.path.abspath(a.repo)), "workers": a.workers, "args": a.pytest_args,

@@ -206,6 +206,12 @@ fn read_through<'py>(py: Python<'py>, open_: &Bound<'py, PyAny>, path: &str) -> 
 /// `clock._children_alive()`: this process has live child processes (Linux: `/proc/self/task/*/children`).
 #[pyfunction]
 pub fn clock_children_alive(py: Python<'_>) -> PyResult<bool> {
+    // detpy's own probe (its listing and reads of /proc/self/task are not the test's: py-cache, they refused every
+    // test that slept while a thread of it ran)
+    crate::capture::detpy_probe(|| children_alive(py))
+}
+
+fn children_alive(py: Python<'_>) -> PyResult<bool> {
     const TASKS: &str = "/proc/self/task";
     let real_listdir = REAL_LISTDIR.get_or_try_init(py, || -> PyResult<Py<PyAny>> {
         let m = py.import("posix").or_else(|_| py.import("nt"))?;

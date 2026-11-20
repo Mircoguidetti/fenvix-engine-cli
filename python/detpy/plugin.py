@@ -42,6 +42,9 @@ def pytest_addoption(parser, pluginmanager):
                 help="run each test in a child process forked from the session's snapshot (after collection): no "
                      "test sees state an earlier test left in memory, so a test's cache key carries no earlier test "
                      "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
+    g.addoption("--det-isolate-scope", default="test", choices=("test", "file"),
+                help="with --det-isolate: 'test' (default) forks a child per test; 'file' forks one child per test "
+                     "file, whose tests share that child in order (in-process state is carried within the file only)")
     _early_reexec(parser, pluginmanager)
 
 
@@ -685,7 +688,12 @@ def _configure_det(config) -> None:
             S.isolate = True
             if proofcache.PLUGIN is not None:
                 proofcache.PLUGIN.isolate = True
-            config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
+            if config.getoption("det_isolate_scope", "test") == "file":
+                if proofcache.PLUGIN is not None:
+                    proofcache.PLUGIN.iso_scope = "file"
+                config.pluginmanager.register(_isolate.FileIsolate(config), "detpy-isolate")
+            else:
+                config.pluginmanager.register(_isolate.Isolate(config), "detpy-isolate")
         else:
             S.adjustments.append("--det-isolate: fork is not available here; the carried-set rule applies")
     factory = getattr(config, "_tmp_path_factory", None)

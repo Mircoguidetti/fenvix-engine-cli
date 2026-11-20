@@ -164,6 +164,44 @@ def test_new_unread_variable_invalidates_and_allowlisted_one_does_not(pytester):
     assert nid not in reused(c), "a new variable of the process environment did not invalidate the test"
 
 
+def test_shell_last_argument_read_inside_an_environment_copy_is_not_an_input(pytester):
+    """`_` (the shell's last argument) is out of the whole-environment digest; a copy of os.environ reads it by name
+    too, which made every library that copies the environment churn with the way pytest was started (moto: 176 of
+    292 tests). Read by name alone, it stays an input."""
+    _probe(pytester, """
+        import os
+        def test_reads_it():
+            assert os.environ.get("_", "") != "x"
+        def test_copies():
+            assert len(os.environ.copy()) > 0
+        """)
+    for label in ("r1", "r2"):
+        run(pytester, label, "tests", env={"_": "/usr/bin/first"})
+    _, c, _ = run(pytester, "other", "tests", env={"_": "/usr/bin/second"})
+    assert "tests/test_p.py::test_copies" in reused(c), c.get("miss_reasons")
+    assert "tests/test_p.py::test_reads_it" not in reused(c)
+    _, c, _ = run(pytester, "flag", "tests", env={"_": "/usr/bin/second", "PY_CACHE_SOME_FLAG": "1"})
+    assert "tests/test_p.py::test_copies" not in reused(c), "a copy of the environment no longer sees other variables"
+
+
+def test_the_virtual_clocks_own_probe_of_threads_is_not_the_tests_read(pytester):
+    """detpy's clock lists /proc/self/task on a sleep (no other thread alive) to see whether a child process may need
+    real time; that probe was recorded as the test reading its process's state, refusing every test that slept
+    (moto: 128 of 292 with the tests after them)."""
+    _probe(pytester, """
+        import threading, time
+        def test_sleeps():
+            t = threading.Thread(target=lambda: None)
+            t.start()
+            t.join()
+            time.sleep(0.05)
+        """)
+    nid = "tests/test_p.py::test_sleeps"
+    run(pytester, "r1", "tests")
+    _, c, _ = run(pytester, "r2", "tests")
+    assert nid in reused(c), (c.get("not_cached_detail"), c.get("miss_reasons"))
+
+
 def test_allowlist_has_a_reason_for_every_entry():
     from detpy import _proof
 
@@ -574,3 +612,61 @@ def test_stdlib_cache_validators_are_not_time_inputs(pytester):
     (pytester.path / "new-file.txt").write_text("x")
     p, c, _ = run(pytester, "r3", "-rA", "tests")
     assert "tests/test_p.py::test_version" in reused(c), c.get("miss_ids")
+
+
+# -- --det-isolate-scope=file: one child per test file (py-cache, coordinator 2026-11-20 14:46) -------------------
+_FILE_SCOPE = ("--det-isolate", "--det-isolate-scope=file", "-rA", "tests")
+
+
+def _file_scope_project(pytester, a2_body="assert state.L == [1]"):
+    write(pytester, **{
+        "pkg/__init__.py": "",
+        "pkg/state.py": "L = []\n",
+        "tests/conftest.py": "",
+        "tests/test_a.py": f"""
+            from pkg import state
+
+            def test_a1():
+                state.L.append(1)
+
+            def test_a2():
+                {a2_body}
+            """,
+        "tests/test_b.py": """
+            from pkg import state
+
+            def test_b1():
+                assert state.L == []
+            """,
+    })
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+@pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+def test_file_scope_tests_of_a_file_share_their_child_and_no_other_file_sees_it(pytester, par):
+    if par and not shutil.which("true"):
+        pytest.skip("needs a shell")
+    pytest.importorskip("xdist") if par else None
+    _file_scope_project(pytester)
+    p, c, _ = run(pytester, "r1", *_FILE_SCOPE, *par)
+    assert p.returncode == 0, p.stdout + p.stderr
+    p, c, _ = run(pytester, "r2", *_FILE_SCOPE, *par)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert reused(c) == {"tests/test_a.py::test_a1", "tests/test_a.py::test_a2", "tests/test_b.py::test_b1"}, \
+        (c.get("miss_reasons"), c.get("not_cached_detail"), p.stdout)
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+def test_file_scope_a_test_that_runs_runs_after_the_earlier_tests_of_its_file(pytester):
+    """test_a2 changes and runs; it consumed test_a1's state when recorded (the file's child): test_a1 runs before it
+    again, not reused (E7 within the file), so test_a2 sees what a fresh run gives it."""
+    _file_scope_project(pytester)
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, *_FILE_SCOPE)
+        assert p.returncode == 0, p.stdout + p.stderr
+    _file_scope_project(pytester, a2_body="assert state.L == [1], 'changed'")
+    truth, _, _ = run(pytester, "truth", *_FILE_SCOPE, cache=False)
+    p, c, _ = run(pytester, "after", *_FILE_SCOPE)
+    assert "tests/test_a.py::test_a1" not in reused(c), p.stdout
+    assert "tests/test_b.py::test_b1" in reused(c), (c.get("miss_reasons"), p.stdout)
+    assert outcome_of(p, "tests/test_a.py::test_a2") == outcome_of(truth, "tests/test_a.py::test_a2") == "passed"

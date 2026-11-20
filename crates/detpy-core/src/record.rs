@@ -1185,8 +1185,13 @@ pub fn record_session_keys(
             continue;
         }
         let epoch = if clock { Some(plan.epoch) } else { None };
+        // py-cache: a test that iterated the environment (a copy of os.environ reads every variable by name) read `_`
+        // as part of that whole read, which leaves `_` out (ENV_ALL_EXCLUDED: the shell's last argument, which changes
+        // with the way pytest is started); `_` alone, read by name without iterating, stays an input
+        let whole = env.iter().any(|&n| n == "*");
         let env_deps: Vec<(String, String)> = env
             .iter()
+            .filter(|&&n| !(whole && n == "_"))
             .map(|&n| {
                 if n == "*" {
                     ("*".to_string(), env_all.clone())
@@ -1364,7 +1369,11 @@ fn dump_test(
         dd.insert(k.to_string(), Value::String(v.to_string()));
     }
     let mut ee = Map::new();
+    let whole = env.iter().any(|&n| n == "*");
     for &n in env {
+        if whole && n == "_" {
+            continue; // see record_session: part of the whole-environment read
+        }
         let v = if n == "*" { env_all.to_string() } else { env_value_digest(plan.env0.get(n).map(|s| s.as_str())) };
         ee.insert(n.to_string(), Value::String(v));
     }
