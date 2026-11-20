@@ -34,10 +34,10 @@ function project() {
   return dir;
 }
 
-function run(dir, label, env = {}) {
+function run(dir, label, env = {}, extra = []) {
   const e = { ...process.env, DETJS_PW_EXECUTABLE: shell(), ...env };
   delete e.CI; delete e.DETJS; delete e.NODE_OPTIONS;
-  const r = spawnSync(process.execPath, [BIN, 'playwright', '--det', '--det-epoch=2026-01-01T00:00:00Z', 'test'], { cwd: dir, encoding: 'utf8', env: e, timeout: 300000 });
+  const r = spawnSync(process.execPath, [BIN, 'playwright', '--det', '--det-epoch=2026-01-01T00:00:00Z', ...extra, 'test'], { cwd: dir, encoding: 'utf8', env: e, timeout: 300000 });
   const keep = path.join(dir, `trace-${label}.jsonl`);
   fs.renameSync(path.join(dir, '.detjs', 'trace.jsonl'), keep);
   return { out: r.stdout + r.stderr, path: keep, ...readTrace(keep) };
@@ -60,4 +60,19 @@ test('lockstep off (round 3 engine): the same fixture gives more than one finger
   const runs = [1, 2, 3].map((i) => run(dir, `off${i}`, { DETJS_PW_LOCKSTEP: '0' }));
   const v = JSON.parse(spawnSync(process.execPath, [BIN, 'verify', ...runs.map((r) => r.path), '--json'], { encoding: 'utf8' }).stdout);
   assert.ok(v.tests.some((t) => t.distinct_fingerprints > 1), JSON.stringify(v.tests.map((t) => t.distinct_fingerprints)));
+});
+
+test('socket faults (point 4): a seed that resets the runner API request gives the real client error, identically', { skip, timeout: 1500000 }, () => {
+  const dir = project();
+  for (const fault of ['reset-request', 'reset-response']) {
+    const env = { DETJS_LS_FAULTS: fault, DETJS_LS_FAULT_KINDS: 'api', DETJS_LS_FAULT_PERMILLE: '1000', DETJS_LS_FOCUS_TEST: 'lockstep fixture' };
+    const runs = [1, 2].map((i) => run(dir, `${fault}${i}`, env, ['--det-seed=1'])); // faults are drawn only with a seed
+    for (const r of runs) {
+      const a = r.tests.find((t) => /lockstep fixture/.test(t.nodeid));
+      assert.equal(a.outcome, 'failed', r.out);
+      assert.match(r.out, /apiRequestContext\.post: read ECONNRESET/, r.out);
+    }
+    const v = JSON.parse(spawnSync(process.execPath, [BIN, 'verify', ...runs.map((r) => r.path), '--json'], { encoding: 'utf8' }).stdout);
+    for (const t of v.tests) assert.equal(t.distinct_fingerprints, 1, `${fault}: ${JSON.stringify(t.divergence)}`);
+  }
 });

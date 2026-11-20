@@ -1,0 +1,938 @@
+{
+ "actual": {
+  "run_id": "44327291710",
+  "pw_dir": "packages/desktop-client",
+  "pw_args": [
+   "--browser=chromium",
+   "--shard=1/3"
+  ],
+  "targets": [
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "title": "keeps the search after opening a transaction and going back [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "title": "opens individual account page and checks that filtering is working [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "title": "opens the accounts page and asserts on balances [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "title": "reconciles an account [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "file": "automatic-budget-range.test.ts",
+    "title": "extends after budgeting the last month and shrinks on reload [chromium]",
+    "failed_plain": 4,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 9,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      9
+     ],
+     [
+      "Error: Failed to navigate to the next month.",
+      5
+     ]
+    ]
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]",
+    "file": "automatic-budget-range.test.ts",
+    "title": "keeps every displayed column inside the range [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 10,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "file": "automatic-budget-range.test.ts",
+    "title": "extends after budgeting the last month and shrinks on reload [chromium]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 9,
+    "runs_stress": 10,
+    "timed_out": 9,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      9
+     ]
+    ]
+   },
+   {
+    "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
+    "file": "budget.mobile.test.ts",
+    "title": "applies budget template [chromium]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 9,
+    "runs_stress": 10,
+    "timed_out": 10,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      10
+     ]
+    ]
+   },
+   {
+    "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
+    "file": "budget.mobile.test.ts",
+    "title": "applies budget template [chromium]",
+    "failed_plain": 8,
+    "runs_plain": 20,
+    "failed_stress": 7,
+    "runs_stress": 10,
+    "timed_out": 15,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      15
+     ]
+    ]
+   }
+  ]
+ },
+ "documenso": {
+  "run_id": "44327291710",
+  "pw_dir": "packages/app-tests",
+  "pw_args": [
+   "--project=api",
+   "--project=license"
+  ],
+  "targets": [
+   {
+    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
+    "file": "admin-find-documents.spec.ts",
+    "title": "[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]",
+    "file": "delete-organisation.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]",
+    "file": "delete-organisation.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]",
+    "file": "delete-organisation.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "failed_plain": 4,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      4
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]",
+    "failed_plain": 3,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      3
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]",
+    "failed_plain": 4,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      4
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      3
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]",
+    "failed_plain": 4,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      4
+     ]
+    ]
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]",
+    "file": "delete-recipient.spec.ts",
+    "title": "[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "file": "email-transport-claims.spec.ts",
+    "title": "[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "failed_plain": 5,
+    "runs_plain": 20,
+    "failed_stress": 4,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: locator.click: Element is outside of the viewport",
+      9
+     ]
+    ]
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
+    "file": "email-transport-claims.spec.ts",
+    "title": "[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
+    "failed_plain": 5,
+    "runs_plain": 20,
+    "failed_stress": 3,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: locator.click: Element is outside of the viewport",
+      8
+     ]
+    ]
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]",
+    "file": "find-inbox.spec.ts",
+    "title": "should not return documents the user is not a recipient of, even when searched by title [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Search Hardening::should keep wildcard searches scoped to the recipient inbox [api]",
+    "file": "find-inbox.spec.ts",
+    "title": "should keep wildcard searches scoped to the recipient inbox [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject draft and virtual status values [api]",
+    "file": "find-inbox.spec.ts",
+    "title": "should reject draft and virtual status values [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should reject pagination values outside of the allowed range [api]",
+    "file": "find-inbox.spec.ts",
+    "title": "should reject pagination values outside of the allowed range [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "find-inbox.spec.ts::Inbox Find - Status Filter Hardening::should scope each status filter to exactly that status [api]",
+    "file": "find-inbox.spec.ts",
+    "title": "should scope each status filter to exactly that status [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Cross-Team Isolation::should not reveal documents from other teams [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should not reveal documents from other teams [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Filtering::should find documents by externalId [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should find documents by externalId [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Token Masking::should not expose other recipients signing tokens to the owner [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should not expose other recipients signing tokens to the owner [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Token Masking::should not expose signing token in value field [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should not expose signing token in value field [api]",
+    "failed_plain": 3,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      3
+     ]
+    ]
+   },
+   {
+    "key": "search-documents.spec.ts::Document Search - Visibility::should respect team document visibility per role [api]",
+    "file": "search-documents.spec.ts",
+    "title": "should respect team document visibility per role [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "search-templates.spec.ts::Template Search - Cross-Team Isolation::should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "file": "search-templates.spec.ts",
+    "title": "should not cross team boundaries when searching SQL wildcard \"%\" [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "search-templates.spec.ts::Template Search - Visibility::should respect team template visibility per role [api]",
+    "file": "search-templates.spec.ts",
+    "title": "should respect team template visibility per role [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::does not log a save which changed nothing [api]",
+    "file": "set-envelope-contents-audit-logs.spec.ts",
+    "title": "does not log a save which changed nothing [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::logs a created content [api]",
+    "file": "set-envelope-contents-audit-logs.spec.ts",
+    "title": "logs a created content [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      3
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::logs a moved content as updated, recording the position [api]",
+    "file": "set-envelope-contents-audit-logs.spec.ts",
+    "title": "logs a moved content as updated, recording the position [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-audit-logs.spec.ts::rejects moving a content to another envelope item [api]",
+    "file": "set-envelope-contents-audit-logs.spec.ts",
+    "title": "rejects moving a content to another envelope item [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-ids.spec.ts::creates several new contents in one save [api]",
+    "file": "set-envelope-contents-ids.spec.ts",
+    "title": "creates several new contents in one save [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-ids.spec.ts::rejects a content listed twice without changing it [api]",
+    "file": "set-envelope-contents-ids.spec.ts",
+    "title": "rejects a content listed twice without changing it [api]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-limits.spec.ts::allows an over limit envelope to be trimmed back down [api]",
+    "file": "set-envelope-contents-limits.spec.ts",
+    "title": "allows an over limit envelope to be trimmed back down [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "set-envelope-contents-limits.spec.ts::rejects a save which exceeds the image content limit [api]",
+    "file": "set-envelope-contents-limits.spec.ts",
+    "title": "rejects a save which exceeds the image content limit [api]",
+    "failed_plain": 2,
+    "runs_plain": 20,
+    "failed_stress": 0,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template with prefilled fields [api]",
+    "file": "template-field-prefill.spec.ts",
+    "title": "should create a document from template with prefilled fields [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(locator).toBeVisible() failed",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a recipient of an organisation document on every procedure [api]",
+    "file": "test-unauthorized-analytics-access.spec.ts",
+    "title": "should reject a recipient of an organisation document on every procedure [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a team manager who is an organisation member on every procedure [api]",
+    "file": "test-unauthorized-analytics-access.spec.ts",
+    "title": "should reject a team manager who is an organisation member on every procedure [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Access::should reject an admin of a sibling team on every procedure [api]",
+    "file": "test-unauthorized-analytics-access.spec.ts",
+    "title": "should reject an admin of a sibling team on every procedure [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "test-unauthorized-analytics-access.spec.ts::Team Analytics API - Adversarial: Tampering::should not grant access through the x-team-id header [api]",
+    "file": "test-unauthorized-analytics-access.spec.ts",
+    "title": "should not grant access through the x-team-id header [api]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject combined title and order change on a PENDING envelope [api]",
+    "file": "update-envelope-items.spec.ts",
+    "title": "should reject combined title and order change on a PENDING envelope [api]",
+    "failed_plain": 7,
+    "runs_plain": 20,
+    "failed_stress": 9,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(received).toBeFalsy()",
+      16
+     ]
+    ]
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject order change on a PENDING envelope [api]",
+    "file": "update-envelope-items.spec.ts",
+    "title": "should reject order change on a PENDING envelope [api]",
+    "failed_plain": 15,
+    "runs_plain": 20,
+    "failed_stress": 9,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(received).toBeFalsy()",
+      24
+     ]
+    ]
+   }
+  ]
+ },
+ "etherpad": {
+  "run_id": "44327291710",
+  "pw_dir": "src",
+  "pw_args": [
+   "--project=chromium"
+  ],
+  "targets": []
+ },
+ "solid-start": {
+  "run_id": "44327291710",
+  "pw_dir": "./apps/tests",
+  "pw_args": [
+   "--project=chromium"
+  ],
+  "targets": []
+ },
+ "sveltekit": {
+  "run_id": "44326636551",
+  "pw_dir": "packages/kit/test/apps/basics",
+  "pw_args": [
+   "test/playwright"
+  ],
+  "targets": [
+   {
+    "key": "client.test.js::INP::does not block next paint [chromium-dev]",
+    "file": "client.test.js",
+    "title": "does not block next paint [chromium-dev]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(received).toBeLessThan(expected)",
+      1
+     ]
+    ]
+   },
+   {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+    "file": "client.test.js",
+    "title": "data-sveltekit-preload-code [chromium-dev]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 2,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(received).toEqual(expected) // deep equality",
+      2
+     ]
+    ]
+   },
+   {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+    "file": "client.test.js",
+    "title": "data-sveltekit-preload-data [chromium-dev]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(received).toBe(expected) // Object.is equality",
+      1
+     ]
+    ]
+   }
+  ]
+ },
+ "uptime-kuma": {
+  "run_id": "44327291710",
+  "pw_dir": ".",
+  "pw_args": [],
+  "targets": [
+   {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "file": "monitor-history-settings.spec.js",
+    "title": "saves the data retention period [specs]",
+    "failed_plain": 1,
+    "runs_plain": 20,
+    "failed_stress": 3,
+    "runs_stress": 10,
+    "timed_out": 0,
+    "messages": [
+     [
+      "Error: expect(locator).toHaveValue(expected) failed",
+      4
+     ]
+    ]
+   },
+   {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "file": "status-page.spec.js",
+    "title": "RSS feed escapes malicious monitor names [specs]",
+    "failed_plain": 0,
+    "runs_plain": 20,
+    "failed_stress": 1,
+    "runs_stress": 10,
+    "timed_out": 1,
+    "messages": [
+     [
+      "Test timeout of 60000ms exceeded.",
+      1
+     ]
+    ]
+   }
+  ]
+ }
+}

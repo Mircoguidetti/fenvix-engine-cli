@@ -400,11 +400,62 @@ function handleControl(req, res) {
   return true;
 }
 
+// ------------------------------------------------------------- socket faults (round 4, point 4)
+// A message the engine released with a fault (x-detjs-fault, drawn by the seed: crates/detpy-core/src/lockstep.rs)
+// meets it here, on the server's own socket, so the client sees what a real network or server gives it:
+//   reset-request   the connection is reset (TCP RST) before the app sees the request: the client reads ECONNRESET
+//   reset-response  the app handles the request (its side effects happen); the connection is reset instead of the
+//                   response being sent: the client reads ECONNRESET
+//   partial:MS      the response's body arrives in two parts, MS of (virtual) server time apart
+//   close-after     the server closes the connection after the response (the client's next request needs a new one)
+function resetSocket(sock) {
+  if (!sock) return;
+  try { if (typeof sock.resetAndDestroy === 'function') sock.resetAndDestroy(); else sock.destroy(); } catch { /* gone */ }
+}
+
+function applyFault(fault, req, res) {
+  if (fault === 'reset-request') { resetSocket(req.socket); return true; }
+  if (fault === 'reset-response') {
+    const sock = req.socket;
+    // Nothing of the response leaves: headers and body are swallowed, the end resets the connection.
+    res.writeHead = function writeHead() { return res; };
+    res.setHeader = function setHeader() { return res; };
+    res.flushHeaders = function flushHeaders() {};
+    res.write = function write(...a) { const cb = a.find((x) => typeof x === 'function'); if (cb) cb(); return true; };
+    res.end = function end(...a) { const cb = a.find((x) => typeof x === 'function'); resetSocket(sock); res.emit('close'); if (cb) cb(); return res; };
+    return false;
+  }
+  if (fault.startsWith('partial:')) {
+    const ms = Number(fault.slice(8)) || 0;
+    const origEnd = res.end.bind(res);
+    const origWrite = res.write.bind(res);
+    res.end = function end(chunk, enc, cb) {
+      if (typeof chunk === 'function') { cb = chunk; chunk = undefined; }
+      if (typeof enc === 'function') { cb = enc; enc = undefined; }
+      const buf = chunk === undefined || chunk === null ? Buffer.alloc(0) : Buffer.isBuffer(chunk) ? chunk : Buffer.from(String(chunk), enc || 'utf8');
+      const half = Math.floor(buf.length / 2);
+      if (!res.headersSent && !res.getHeader('content-length')) res.setHeader('content-length', buf.length);
+      origWrite(buf.subarray(0, half));
+      setTimeout(() => origEnd(buf.subarray(half), cb), ms); // a server timer: virtual under lockstep
+      return res;
+    };
+    return false;
+  }
+  if (fault === 'close-after') {
+    try { res.setHeader('connection', 'close'); } catch { /* sent */ }
+    res.shouldKeepAlive = false;
+    return false;
+  }
+  return false;
+}
+
 function patchServer(proto) {
   const origEmit = proto.emit;
   proto.emit = function emit(event, req, res) {
     if (event === 'request' && req && req.headers) {
       if (typeof req.url === 'string' && req.url.startsWith('/__detjs/')) return handleControl(req, res);
+      const fault = req.headers['x-detjs-fault'];
+      if (fault && applyFault(String(fault), req, res)) return true;
       inflight++;
       let counted = true;
       const dec = () => { if (counted) { counted = false; inflight--; } };

@@ -349,7 +349,8 @@ class Coordinator {
       const key = `${item.kind} ${item.method} ${item.target} ${item.bodyDigest}`;
       this.msgs.set(id, { item, resolve, key, kind });
       if (item.nav && item.page) { const p = this.pageState(item.page); if (p) p.navs++; }
-      this.sched.enqueue(id, key, item.test || '<none>', item.conn === undefined ? null : item.conn, 'w0', kind);
+      // The scheduler sees the readable test id (file::title [project]): seed focus (DETJS_LS_FOCUS_TEST) matches on it.
+      this.sched.enqueue(id, key, item.test ? this.o.readable(item.test) : '<none>', item.conn === undefined ? null : item.conn, 'w0', kind);
       this.trace(`enqueue #${id} ${key}`);
       activity();
       this.poke();

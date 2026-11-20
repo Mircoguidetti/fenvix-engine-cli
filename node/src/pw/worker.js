@@ -528,6 +528,7 @@ async function lsFetch(route, request, item, key, page, url, release, opt = {}) 
     Object.assign(headers, { 'x-detjs-test': testIdOf(key), 'x-detjs-t': String(item.lsT) });
     if (!opt.noMsg) headers['x-detjs-msg'] = String(item.lsId);
     else headers['x-detjs-lp'] = String(item.lsId);
+    if (item.fault && item.fault !== 'none') { headers['x-detjs-fault'] = item.fault; rec(key, 'net', 'browser.fault', `${item.method} ${item.target} ${item.fault}`); }
   }
   let resp = null;
   let body = null;
@@ -1017,45 +1018,88 @@ async function serverFingerprints(key) {
 
 // -------------------------------------------------- runner API requests
 let apiPatched = false;
+// The wrapper is compiled with a file name inside the playwright-core package: Playwright names an API call after the
+// first library frame above user code (captureLibraryStackTrace), so with a frame of ours in between an error would
+// read "apiRequestContext.fetch: ..." instead of the user's "apiRequestContext.post: ..." (found with the socket
+// faults: round 3's real failures read "apiRequestContext.post: read ECONNRESET"). The frame is also left out of the
+// stacks Playwright shows, like its own.
+const API_WRAP_SRC = `(function (deps) {
+  return async function fetch(urlOrRequest, options = {}) {
+    const h = deps.before(this, urlOrRequest, options);
+    if (!h) return deps.origFetch.call(this, urlOrRequest, options);
+    const opts = await h.ready;
+    try {
+      const resp = await deps.origFetch.call(this, urlOrRequest, opts);
+      await h.done(resp);
+      return resp;
+    } catch (e) {
+      h.error(e);
+      throw e;
+    } finally {
+      h.release();
+    }
+  };
+})`;
+
+function playwrightCoreRoot() {
+  for (const f of Object.keys(require.cache)) {
+    const m = /^(.*[\\/]playwright-core)[\\/]/.exec(f);
+    if (m) return m[1];
+  }
+  return null;
+}
+
 function patchApiRequest(reqCtx) {
   if (apiPatched || !reqCtx) return;
   const proto = Object.getPrototypeOf(reqCtx);
   if (!proto || typeof proto.fetch !== 'function') return;
   apiPatched = true;
   const origFetch = proto.fetch;
-  proto.fetch = async function fetch(urlOrRequest, options = {}) {
+  const before = (self, urlOrRequest, options) => {
     const key = currentKey();
-    if (!key || !NET) return origFetch.call(this, urlOrRequest, options);
+    if (!key || !NET) return null;
     const url = typeof urlOrRequest === 'string' ? urlOrRequest : (urlOrRequest && urlOrRequest.url && urlOrRequest.url()) || '';
     let abs = url;
     const ti = testInfo();
-    const base = (this._options && this._options.baseURL) || (ti && ti.project && ti.project.use && ti.project.use.baseURL) || undefined;
+    const base = (self._options && self._options.baseURL) || (ti && ti.project && ti.project.use && ti.project.use.baseURL) || undefined;
     try { abs = new URL(url, base).toString(); } catch { /* relative without base */ }
     const method = (options.method || (typeof urlOrRequest === 'object' && urlOrRequest.method && urlOrRequest.method()) || 'GET').toUpperCase();
     const body = options.data !== undefined ? (typeof options.data === 'string' || Buffer.isBuffer(options.data) ? options.data : JSON.stringify(options.data)) : options.form ? JSON.stringify(options.form) : undefined;
     const item = { kind: 'api', test: key, method, target: targetOf(abs), bodyDigest: digest(body) };
     if (LS && isServerHost(abs)) LS.addOrigin(new URL(abs).origin);
-    const release = await enqueue(item);
-    rec(key, 'net', 'api.request', `${method} ${item.target} ${item.bodyDigest}`);
-    let opts = options;
-    if (isServerHost(abs)) {
-      ORIGINS.add(new URL(abs).origin);
-      released();
-      opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}) } };
-    }
-    try {
-      const resp = await origFetch.call(this, urlOrRequest, opts);
-      let b = '-';
-      try { const buf = await resp.body(); b = digest(buf); diag(key, 'api.body', `${method} ${item.target} ${resp.status()}`, buf); } catch { b = 'nobody'; }
-      rec(key, 'net', 'api.done', `${method} ${item.target} ${resp.status()} ${b}`);
-      return resp;
-    } catch (e) {
-      rec(key, 'net', 'api.done', `${method} ${item.target} error`);
-      throw e;
-    } finally {
-      release();
-    }
+    let release = () => {};
+    const ready = enqueue(item).then((rel) => {
+      release = rel;
+      rec(key, 'net', 'api.request', `${method} ${item.target} ${item.bodyDigest}`);
+      let opts = options;
+      if (isServerHost(abs)) {
+        ORIGINS.add(new URL(abs).origin);
+        released();
+        const faulted = LS && item.fault && item.fault !== 'none';
+        opts = { ...options, headers: { ...(options.headers || {}), 'x-detjs-test': testIdOf(key), ...(LS ? { 'x-detjs-msg': String(item.lsId), 'x-detjs-t': String(item.lsT) } : {}),
+          ...(faulted ? { 'x-detjs-fault': item.fault } : {}) } };
+        if (faulted) rec(key, 'net', 'api.fault', `${method} ${item.target} ${item.fault}`);
+      }
+      return opts;
+    });
+    return {
+      ready,
+      done: async (resp) => {
+        let b = '-';
+        try { const buf = await resp.body(); b = digest(buf); diag(key, 'api.body', `${method} ${item.target} ${resp.status()}`, buf); } catch { b = 'nobody'; }
+        rec(key, 'net', 'api.done', `${method} ${item.target} ${resp.status()} ${b}`);
+      },
+      error: () => rec(key, 'net', 'api.done', `${method} ${item.target} error`),
+      release: () => release(),
+    };
   };
+  const root = playwrightCoreRoot();
+  let wrapped = null;
+  if (root) {
+    try { wrapped = require('node:vm').runInThisContext(API_WRAP_SRC, { filename: path.join(root, 'lib', 'detjs-api-request.js') })({ before, origFetch }); } catch { wrapped = null; }
+  }
+  if (!wrapped) wrapped = (0, eval)(API_WRAP_SRC)({ before, origFetch });
+  proto.fetch = wrapped;
 }
 
 // ------------------------------------------- test code's own HTTP (Node fetch) to the app servers
