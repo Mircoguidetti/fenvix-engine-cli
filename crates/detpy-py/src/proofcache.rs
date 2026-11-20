@@ -32,6 +32,8 @@ struct Inner {
     last_reads: BTreeMap<String, Vec<String>>,
     /// The last recorded session's tests in run order (a worker's in-process order: `Entry::preds`).
     last_order: Vec<String>,
+    /// The shards of this process's children folded into one (`shard_absorb`, --det-isolate).
+    absorbed: Option<proof::Shard>,
 }
 
 /// The on-disk store of one cache directory plus the reuse checker of the
@@ -80,7 +82,7 @@ impl ProofCache {
         let store = Store::load(&dir);
         let checker = Checker::new(Current { root, ..Default::default() });
         let written0 = store.written.clone();
-        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new() }) }
+        ProofCache { dir, inner: Mutex::new(Inner { store, checker, touched: BTreeSet::new(), written0, receipts: HashMap::new(), last_written: BTreeMap::new(), last_fixtures: BTreeMap::new(), fetched: None, origins: BTreeMap::new(), merged_ids: Vec::new(), last_reads: BTreeMap::new(), last_order: Vec::new(), absorbed: None }) }
     }
 
     /// Set the current session state: configuration and runtime digests, clock
@@ -518,6 +520,34 @@ impl ProofCache {
         drop(g);
         py.detach(|| shard.save(&path))?;
         Ok(n)
+    }
+
+    /// How many entries were recorded under configuration `digest` (py-cache: the in-process session's results an
+    /// isolated session compares with; none, and the read-only view of the store is not opened).
+    fn entries_with_config(&self, digest: String) -> usize {
+        lock(&self.inner).store.tests.values().filter(|e| e.config == digest).count()
+    }
+
+    /// A child's shard (--det-isolate: one child per test or per test file) folded into this process's one shard
+    /// (`proof::Shard::absorb`); the file is removed. False when it cannot be read (it is then left for the merge).
+    fn shard_absorb(&self, py: Python<'_>, path: PathBuf) -> bool {
+        let Ok(s) = py.detach(|| proof::Shard::load(&path)) else { return false };
+        let mut g = lock(&self.inner);
+        match g.absorbed.as_mut() {
+            Some(a) => a.absorb(s),
+            None => g.absorbed = Some(s),
+        }
+        drop(g);
+        let _ = std::fs::remove_file(&path);
+        true
+    }
+
+    /// Write the folded shard (`shard_absorb`) at `path` under `worker`'s name; false when nothing was folded.
+    fn shard_absorbed_save(&self, py: Python<'_>, path: PathBuf, worker: String) -> PyResult<bool> {
+        let Some(mut s) = lock(&self.inner).absorbed.take() else { return Ok(false) };
+        s.worker = worker;
+        py.detach(|| s.save(&path))?;
+        Ok(true)
     }
 
     /// The controller's end of a parallel session: the cross-worker write rule over the shards at `paths`, then one

@@ -152,7 +152,9 @@ class ProofCachePlugin(ProofSession):
         self.open(str(config.rootpath), *config_identity(config))
         # audit G-0169: the configuration of the same session without --det-isolate, under which the serial results
         # of these tests are stored (_expect_serial compares an isolated outcome with them)
-        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False})[0]
+        # (the in-process session: --det-cache-in-process, without isolation)
+        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False, "det_isolate_scope": "test",
+                                                                    "det_cache_in_process": True})[0]
                                      if config.getoption("det_isolate", False) else None)
         # audit G-0159: the nightly real-clock check compares with the results recorded on the virtual day
         self.real_clock = bool(config.getoption("det_cache_real_clock", False))
@@ -191,6 +193,7 @@ class ProofCachePlugin(ProofSession):
         self.check(nids, dict(zip(nids, session.items)), _unittest_units(nids, session.items))
         if (self.isolate and not self.iso_child) or self.real_clock:
             self._expect_serial(nids)
+            self.demote_for_running([nids])  # a result _expect_serial withdrew runs after its file's earlier tests
         if self.real_clock:
             for nid in nids:  # every test runs on the real clock
                 self.sess.demote(nid, "real-clock check: every test runs")
@@ -238,17 +241,37 @@ class ProofCachePlugin(ProofSession):
         it with the outcome this session got."""
         exp = self.serial_expect = {}
         store = self.store
-        if (self.isolate or getattr(self, "real_clock", False)) and getattr(self, "serial_config_digest", None):
-            # a read-only view of the same store under the serial session's configuration
-            cap, was = self.cap, self.cap.active
-            cap.active = False
-            try:
-                store = _core.ProofCache(self.dir, self.root)
-                store.begin(self.serial_config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
-            finally:
-                cap.active = was
-        for nid in nids:
-            if self.sess.is_hit(nid):
+        # set for --det-isolate (per test or per file, the default under the cache: the -n controller too, which
+        # isolates nothing itself) and for the real-clock check
+        view = None
+        if getattr(self, "serial_config_digest", None):
+            if self.store.entries_with_config(self.serial_config_digest):
+                # a read-only view of the same store under the serial session's configuration
+                cap, was = self.cap, self.cap.active
+                cap.active = False
+                try:
+                    view = _core.ProofCache(self.dir, self.root)
+                    view.begin(self.serial_config_digest, self.runtime_digest, self.epoch, dict(cap.env0))
+                finally:
+                    cap.active = was
+            # no result of the in-process session in the store: nothing to compare with but pending findings (the
+            # store itself holds this mode's results, not the in-process ones)
+            store = view
+        pending = self._pending_findings() if (getattr(self, "serial_config_digest", None) or self.role == "controller") \
+            and not getattr(self, "real_clock", False) else {}
+        for nid in list(nids):
+            hit = self.sess.is_hit(nid)
+            p = pending.get(nid)
+            if p is not None:
+                # a placement finding of an earlier session that no session has resolved: never reused here, compared
+                # again (it is reported until this mode gives the in-process outcome or the in-process session gives
+                # this mode's)
+                if hit:
+                    self.sess.demote(nid, f"placement: a pending finding: {p.get('here')} under {p.get('how')}, "
+                                          f"{p.get('in_process')} in the in-process session")
+                exp.setdefault(nid, p.get("in_process"))
+                continue
+            if store is None or (hit and store is self.store):
                 continue
             try:
                 ok, _ = store.check(nid)
@@ -257,8 +280,20 @@ class ProofCachePlugin(ProofSession):
                 e = json.loads(store.entry(nid))
             except Exception:
                 continue
-            if e.get("placement", "") in ("", "parallel-proven") and e.get("outcome"):
-                exp[nid] = e["outcome"]
+            if not (e.get("placement", "") in ("", "parallel-proven") and e.get("outcome")):
+                continue
+            if hit:
+                # coordinator condition 2: a result of this mode (one child per file or per test) whose outcome is not
+                # the in-process session's with the same inputs is not reused: it runs, and is a finding again
+                try:
+                    mine = json.loads(self.store.entry(nid)).get("outcome")
+                except Exception:
+                    mine = None
+                if mine != e["outcome"] and self.sess.demote(
+                        nid, f"placement: {mine} here, {e['outcome']} in the in-process session with the same inputs"):
+                    exp[nid] = e["outcome"]
+                continue
+            exp[nid] = e["outcome"]
 
     def _note_outcome(self, report) -> None:
         got = self.__dict__.setdefault("got_outcome", {})
@@ -280,8 +315,54 @@ class ProofCachePlugin(ProofSession):
         got = getattr(self, "got_outcome", None) or {}
         return [(n, exp[n], got[n]) for n in exp if n in got and got[n] != exp[n]]
 
+    FINDINGS = "placement-findings.json"
+
+    def _pending_findings(self) -> dict:
+        try:
+            with open(os.path.join(self.dir, self.FINDINGS)) as fh:
+                d = json.load(fh)
+            return d if isinstance(d, dict) else {}
+        except (OSError, ValueError):
+            return {}
+
+    def _save_findings(self) -> None:
+        """Placement findings persist until resolved (coordinator condition 2: never silent; the store keeps one entry
+        per test, so the in-process result they were found against may be gone). A session of this mode resolves one
+        when it gives the in-process outcome; an in-process session resolves one when it gives this mode's."""
+        pending = self._pending_findings()
+        got = getattr(self, "got_outcome", None) or {}
+        before = dict(pending)
+        if (getattr(self, "serial_config_digest", None) or self.role == "controller") \
+                and not getattr(self, "real_clock", False):
+            how = "-n" if self.role == "controller" and getattr(self, "iso_scope", "test") != "file" else (
+                "one child per test file" if getattr(self, "iso_scope", "test") == "file" else "one child per test")
+            exp = getattr(self, "serial_expect", None) or {}
+            for nid, want in exp.items():
+                if nid not in got:
+                    continue
+                if got[nid] == want:
+                    pending.pop(nid, None)
+                else:
+                    pending[nid] = {"in_process": want, "here": got[nid], "how": how, "run": self.run_id}
+        elif self.role != "worker" and not getattr(self, "isolate", False):
+            for nid in list(pending):  # the in-process session
+                if nid in got and got[nid] == pending[nid].get("here"):
+                    pending.pop(nid)
+        if pending != before:
+            try:
+                tmp = os.path.join(self.dir, self.FINDINGS + f".tmp{os.getpid()}")
+                with open(tmp, "w") as fh:
+                    json.dump(pending, fh, sort_keys=True)
+                os.replace(tmp, os.path.join(self.dir, self.FINDINGS))
+            except OSError:
+                pass
+
     @pytest.hookimpl(trylast=True)
     def pytest_sessionfinish(self, session):
+        try:
+            self._save_findings()
+        except Exception:  # never break the session
+            pass
         if self.placement_findings() and session.exitstatus == 0:
             session.exitstatus = pytest.ExitCode.TESTS_FAILED
 
@@ -385,6 +466,8 @@ class ProofCachePlugin(ProofSession):
     # -- pytest-xdist under --det: a worker ----------------------------------------------------------------------
     def worker_output(self) -> dict:
         self.iso_merge_summaries()
+        if self.isolate:
+            self.iso_flush()
         out = {"detpy_cache_summary": list(self.sess.worker_summary())}
         if self.shard_path:
             out["detpy_cache_shard"] = self.shard_path
@@ -464,8 +547,8 @@ class ProofCachePlugin(ProofSession):
         return super().iso_record(_plugin.S.fingerprints if fingerprints is None else fingerprints)
 
     def pytest_runtest_logreport(self, report):
-        if self.role == "controller" or (self.isolate and not self.iso_child) or getattr(self, "real_clock", False):
-            self._note_outcome(report)
+        if self.role != "worker" and not self.iso_child:
+            self._note_outcome(report)  # findings (and their resolution by an in-process session)
         if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
             return  # the child reported it to its own session
         self.sess.report(report)

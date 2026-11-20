@@ -202,6 +202,9 @@ pub struct Store {
     /// The data chunks of every entry, by address (written by [`Store::save`]; resolved and emptied on load).
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub chunks: BTreeMap<String, crate::datachunks::Chunk>,
+    /// Groups of chunk addresses entries list (after `tests` and `chunks`: filled while the entries are written).
+    #[serde(default, skip_serializing_if = "crate::datachunks::Groups::is_empty")]
+    pub groups: crate::datachunks::Groups,
     /// One copy of each distinct chunk in memory.
     #[serde(skip)]
     interner: crate::datachunks::Interner,
@@ -1000,20 +1003,16 @@ impl Store {
         let table: HashMap<String, crate::datachunks::Chunk> = std::mem::take(&mut self.chunks).into_iter().collect();
         let mut bad = Vec::new();
         for (nid, e) in self.tests.iter_mut() {
-            if !e.data.resolve(&table) || !e.env.resolve(&table) {
+            if !e.data.resolve_grouped(&table, &self.groups.0) || !e.env.resolve_grouped(&table, &self.groups.0) {
                 bad.push(nid.clone());
             }
         }
         for nid in bad {
             self.tests.remove(&nid);
         }
+        // the resolved chunks are the table's own `Arc`s: already one per distinct content (no second pass)
         self.interner = crate::datachunks::Interner::from_table(table);
-        let mut i = std::mem::take(&mut self.interner);
-        for e in self.tests.values_mut() {
-            e.data.share(&mut i);
-            e.env.share(&mut i);
-        }
-        self.interner = i;
+        self.groups = crate::datachunks::Groups::default();
     }
 
     fn reindex(&mut self) {
@@ -1335,14 +1334,16 @@ impl Store {
         let path = Self::path_in(dir);
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
         // each chunk once, entries by address (py-cache item 4)
-        let mut chunks = BTreeMap::new();
-        for e in self.tests.values() {
-            for c in e.data.chunks().iter().chain(e.env.chunks()) {
-                chunks.entry(crate::datachunks::address(c)).or_insert_with(|| c.clone());
+        let bytes = crate::datachunks::by_address(|| {
+            let mut chunks = BTreeMap::new();
+            for e in self.tests.values() {
+                for c in e.data.chunks().iter().chain(e.env.chunks()) {
+                    chunks.entry(crate::datachunks::address_of(c)).or_insert_with(|| c.clone());
+                }
             }
-        }
-        self.chunks = chunks;
-        let bytes = crate::datachunks::by_address(|| serde_json::to_vec(self));
+            self.chunks = chunks;
+            serde_json::to_vec(&*self)
+        });
         self.chunks.clear();
         fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
@@ -1384,6 +1385,33 @@ impl Shard {
         Ok(s)
     }
 
+    /// Fold another shard of the same session into this one (py-cache: a process that forks one child per test file
+    /// keeps one shard, not one per child: each child's shard repeated the facts of the files every test carries,
+    /// 648 shards and 1.4 GB on esphome). The cross-worker rule loses nothing: writers are compared by context name
+    /// over the union of every shard's writers (`writer_union`), not by shard.
+    pub fn absorb(&mut self, other: Shard) {
+        let touched: BTreeSet<String> = other.touched.iter().cloned().collect();
+        other.store.merge_into(&mut self.store, &touched);
+        for (k, v) in other.store.written {
+            self.store.written.entry(k).or_default().extend(v);
+        }
+        for t in other.touched {
+            if !self.touched.contains(&t) {
+                self.touched.push(t);
+            }
+        }
+        self.fixtures.extend(other.fixtures);
+        for (k, v) in other.written {
+            let e = self.written.entry(k).or_default();
+            for w in v {
+                if !e.contains(&w) {
+                    e.push(w);
+                }
+            }
+        }
+        self.reads.extend(other.reads);
+    }
+
     /// Written like a store: each data chunk once, entries by address (py-cache item 4: on esphome a worker's 220
     /// entries carried ~4,400 pairs each, written in full; the four shards reached 1.7 GB and the controller, reading
     /// them at the end of the session, ran a 16 GB runner out of memory).
@@ -1392,14 +1420,16 @@ impl Shard {
             fs::create_dir_all(d)?;
         }
         let tmp = path.with_extension(format!("tmp{}", std::process::id()));
-        let mut chunks = BTreeMap::new();
-        for e in self.store.tests.values() {
-            for c in e.data.chunks().iter().chain(e.env.chunks()) {
-                chunks.entry(crate::datachunks::address(c)).or_insert_with(|| c.clone());
+        let bytes = crate::datachunks::by_address(|| {
+            let mut chunks = BTreeMap::new();
+            for e in self.store.tests.values() {
+                for c in e.data.chunks().iter().chain(e.env.chunks()) {
+                    chunks.entry(crate::datachunks::address_of(c)).or_insert_with(|| c.clone());
+                }
             }
-        }
-        self.store.chunks = chunks;
-        let bytes = crate::datachunks::by_address(|| serde_json::to_vec(self));
+            self.store.chunks = chunks;
+            serde_json::to_vec(&*self)
+        });
         self.store.chunks.clear();
         fs::write(&tmp, bytes.map_err(io::Error::other)?)?;
         fs::rename(tmp, path)
@@ -1831,6 +1861,13 @@ pub struct Checker {
     pub defer_worker: bool,
     /// nodeid -> recorded digest of `PYTEST_XDIST_WORKER`, for the reusable results that read it (`defer_worker`).
     pub worker_reads: HashMap<String, String>,
+    /// Data chunks already proven unchanged this session, by allocation (entries share chunks: esphome's store
+    /// references 4.6 M, 3,420 distinct; checking every pair of every entry took the controller 13.5 s). The
+    /// `Arc` is kept, so an allocation is never reused by another chunk while it is here.
+    ok_chunks: HashMap<usize, crate::datachunks::Chunk>,
+    /// Per (file index, unit index) of the store: the unit is the current one (its file unchanged, or the unit's
+    /// digest still in the current facts). An entry lists ~900 units on esphome, mostly the same for every test.
+    unit_ok: FxMap<(u32, u32), u8>,
 }
 
 /// Outcomes whose results may be reused: never a failure.
@@ -1852,6 +1889,8 @@ impl Checker {
             parallel: false,
             defer_worker: false,
             worker_reads: HashMap::new(),
+            ok_chunks: HashMap::new(),
+            unit_ok: FxMap::default(),
         }
     }
 
@@ -2061,10 +2100,17 @@ impl Checker {
                 return Err(Miss { kind: "env", detail: format!("environment variable {k}") });
             }
         }
-        for (p, dep) in &e.data {
-            if self.data(p, dep) != &**dep {
-                return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
+        for c in e.data.chunks() {
+            let key = std::sync::Arc::as_ptr(c) as *const (Str, Str) as usize;
+            if self.ok_chunks.contains_key(&key) {
+                continue;
             }
+            for (p, dep) in c.iter() {
+                if self.data(p, dep) != &**dep {
+                    return Err(Miss { kind: "data", detail: format!("{p} ({})", dep.split(':').next().unwrap_or("")) });
+                }
+            }
+            self.ok_chunks.insert(key, c.clone());
         }
         let mut proven = std::collections::BTreeSet::new();
         // whole-content, skeleton and hook dependencies: per set, memoised (sets are shared across entries)
@@ -2081,19 +2127,33 @@ impl Checker {
         for c in e.units.chunks(2) {
             let Some(f) = store.files.get(c[0] as usize) else { continue };
             let Some(u) = f.units.get(c[1] as usize) else { continue };
+            // 0: changed, 1: file unchanged, 2: file changed, unit unchanged (proven)
+            match self.unit_ok.get(&(c[0], c[1])) {
+                Some(0) => return Err(Miss { kind: "code", detail: format!("{}::{}", f.path, u.q) }),
+                Some(1) => continue,
+                Some(_) => {
+                    proven.insert(f.path.clone());
+                    continue;
+                }
+                None => {}
+            }
             if self.content_is(&f.path, &f.content) {
+                self.unit_ok.insert((c[0], c[1]), 1);
                 continue;
             }
             let path = f.path.clone();
             let ok =
                 self.now_facts(store, &path).map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d)).unwrap_or(false);
+            self.unit_ok.insert((c[0], c[1]), if ok { 2 } else { 0 });
             if !ok {
                 return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
             }
             proven.insert(path);
         }
         Ok(Receipt {
-            key: store.key_of_with(nodeid, e, &mut self.key_parts),
+            // the key recorded with the entry (`Store::record`: key_of over the same parts); recomputing it hashed every
+            // pair of every reusable entry (esphome: ~5 GB per decision, most of the controller's 6 s)
+            key: if e.key.is_empty() { store.key_of_with(nodeid, e, &mut self.key_parts) } else { e.key.clone() },
             run: e.run.clone(),
             outcome: e.outcome.clone(),
             fingerprint: e.fingerprint.clone(),

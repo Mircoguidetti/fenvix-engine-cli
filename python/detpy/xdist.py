@@ -486,17 +486,23 @@ class Controller:
         """--det-isolate-scope=file: a previous plan holding only the files of reused tests that read the worker's id
         (PYTEST_XDIST_WORKER, pinned to the worker they were recorded on: Checker::worker_check), each on that worker;
         every other file is placed by LPT on the tests that run."""
+        import hashlib
+
         hit_ids = [n for n in self.ids if n in hits]
         readers = [n for n, _ in pc.store.worker_check(hit_ids, {n: "" for n in hit_ids})]
-        atoms: dict = {}
+        recorded: dict = {}
         for r in readers:
             f = "f:" + r.split("::", 1)[0]  # the plan's atom key of a file (schedule::atom_key)
-            if f in atoms:
-                continue
-            for i, w in enumerate(wids):
-                if not pc.store.worker_check([r], {r: w}):
-                    atoms[f] = i
-                    break
+            w = next((i for i, w in enumerate(wids) if not pc.store.worker_check([r], {r: w})), None)
+            recorded.setdefault(f, set()).add(w)
+        atoms: dict = {}
+        for f, ws in recorded.items():
+            if len(ws) == 1 and None not in ws:
+                atoms[f] = next(iter(ws))
+            else:
+                # its readers were recorded on different workers (esphome: they flipped from run to run, 2,348
+                # withdrawn): a worker fixed by the file's name, so the next runs agree
+                atoms[f] = int(hashlib.blake2b(f.encode(), digest_size=8).hexdigest(), 16) % len(wids)
         return {"format": PLAN_FORMAT, "workers": len(wids), "dist": "loadfile", "atoms": atoms}
 
     def all_finished(self, last_node) -> list[int]:

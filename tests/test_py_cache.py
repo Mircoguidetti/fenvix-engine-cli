@@ -292,22 +292,33 @@ STATE = {
 }
 
 
-@pytest.mark.parametrize("mode", ["n2", "isolate"])
+@pytest.mark.parametrize("mode", ["n2", "isolate", "file", "default", "default-n2"])
 def test_placement_difference_is_a_finding(pytester, mode):
+    """The in-process session records (the user's plain run, --det-cache-in-process); then -n, one child per test,
+    one child per file (explicit, and the default under the cache, serial and -n): a test whose outcome differs from
+    the in-process one is a PLACEMENT FINDING and the session fails (coordinator condition 2: never silent)."""
     pytest.importorskip("xdist")
     write(pytester, **STATE)
     for label in ("r1", "r2"):
         p, _, _ = run(pytester, label, "-rA", "tests")
         assert p.returncode == 0, p.stdout
-    extra = ("-n", "2", "--dist", "loadfile") if mode == "n2" else ("--det-isolate",)
+    extra = {"n2": ("-n", "2", "--dist", "loadfile"), "isolate": ("--det-isolate",),
+             "file": ("--det-isolate", "--det-isolate-scope=file"), "default": (),
+             "default-n2": ("-n", "2")}[mode]
+    env = {"DETPY_CACHE_IN_PROCESS": "0"} if mode.startswith("default") else None
     # every test runs (verified against its entry): the store holds each one's serial outcome under unchanged inputs
-    p, c, _ = run(pytester, "par", "-rA", "--det-cache-verify=1", *extra, "tests")
+    p, c, _ = run(pytester, "par", "-rA", "--det-cache-verify=1", *extra, "tests", env=env)
     got = outcome_of(p, "tests/test_b.py::test_b_needs")
     if got == "passed":
         return  # the same outcome as serial
     # a different outcome is never silent: the finding names the test and the session fails
     assert "PLACEMENT FINDINGS" in p.stdout and "tests/test_b.py::test_b_needs" in p.stdout, p.stdout
     assert p.returncode != 0
+    # and it is never reused in this mode while the in-process session says otherwise: the next run runs it again
+    # and reports the finding again
+    p, c, _ = run(pytester, "par2", "-rA", *extra, "tests", env=env)
+    assert "tests/test_b.py::test_b_needs" not in reused(c), p.stdout
+    assert "PLACEMENT FINDINGS" in p.stdout and p.returncode != 0, p.stdout
 
 
 def test_g0174_serial_testrun_uid_is_derived_under_det(pytester):
@@ -779,3 +790,45 @@ def test_a_directory_on_sys_path_twice_is_not_another_runtime_under_n(pytester):
     run(pytester, "r1", "-n", "2", "tests")
     _, c, _ = run(pytester, "r2", "-n", "2", "tests")
     assert "tests/unit/test_u.py::test_u" in reused(c), c.get("miss_reasons")
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+def test_per_file_is_the_default_under_the_cache_and_in_process_is_a_choice(pytester, monkeypatch):
+    """Coordinator decision 2026-11-20: --det-cache alone runs one child per test file (state left by file A never
+    reaches file B); --det-cache-in-process keeps the session's process."""
+    monkeypatch.delenv("DETPY_CACHE_IN_PROCESS", raising=False)
+    write(pytester, **{"pkg/__init__.py": "", "pkg/state.py": "L = []\n", "tests/conftest.py": "",
+                       "tests/test_a.py": """
+        from pkg import state
+
+        def test_a():
+            state.L.append(1)
+        """, "tests/test_b.py": """
+        from pkg import state
+
+        def test_b():
+            assert state.L == []
+        """})
+    p, c, _ = run(pytester, "default", "-rA", "tests")
+    assert outcome_of(p, "tests/test_b.py::test_b") == "passed", p.stdout  # file A's state does not reach file B
+    assert "forked children" in p.stdout or "--det-isolate" in p.stdout
+    p, c, _ = run(pytester, "inproc", "-rA", "tests", "--det-cache-in-process")
+    assert outcome_of(p, "tests/test_b.py::test_b") == "failed", p.stdout  # one process: it does
+
+
+@pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
+def test_file_scope_a_subprocess_in_a_files_child_runs_and_is_never_reused(pytester):
+    """esphome (tests/script/test_setup.py): following a process started in a file's child under strace hung (the
+    detached tracer kept the test's pipe open); in a file's child it is not followed, and the test is never reused."""
+    write(pytester, **{"tests/conftest.py": "", "tests/test_s.py": """
+        import subprocess, sys
+
+        def test_runs_python():
+            out = subprocess.run([sys.executable, "-c", "print('hi')"], capture_output=True, text=True, timeout=60)
+            assert out.stdout.strip() == "hi"
+        """})
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, *_FILE_SCOPE)
+        assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_s.py::test_runs_python" not in reused(c)
+    assert "not followed" in json.dumps(c.get("not_cached_detail")) or "process" in json.dumps(c.get("not_cached_detail"))

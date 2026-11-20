@@ -31,14 +31,81 @@ pub const MAX: usize = 64;
 thread_local! {
     /// While a store is written: entries serialize their chunk addresses (the store writes each chunk once).
     static BY_ADDRESS: Cell<bool> = const { Cell::new(false) };
+    /// While a store is written: the address of each chunk already hashed, by the chunk's allocation (an entry's
+    /// chunks are shared `Arc`s: esphome's store references 4.6 M chunks, 3,420 distinct; hashing every reference
+    /// was most of the time a store took to load and save).
+    static MEMO: std::cell::RefCell<HashMap<usize, String>> = std::cell::RefCell::new(HashMap::new());
+    /// While a store is written: the groups of chunk addresses entries listed (group address -> chunk addresses),
+    /// written once by the store's [`Groups`] field after its entries.
+    static GROUPS: std::cell::RefCell<std::collections::BTreeMap<String, Vec<String>>> =
+        std::cell::RefCell::new(std::collections::BTreeMap::new());
+}
+
+/// Average group length (chunk addresses) and longest group: an entry lists group addresses, each group once in
+/// the store (py-cache: esphome's per-file store listed ~400 chunk addresses per entry, 120 MB of 220).
+pub const GAVG: u64 = 16;
+pub const GMAX: usize = 64;
+
+/// The groups of chunk addresses a store holds (see [`GROUPS`]); serialized from the groups its entries wrote.
+#[derive(Clone, Debug, Default)]
+pub struct Groups(pub std::collections::BTreeMap<String, Vec<String>>);
+
+impl Serialize for Groups {
+    fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
+        if BY_ADDRESS.with(|b| b.get()) {
+            let g = GROUPS.with(|g| std::mem::take(&mut *g.borrow_mut()));
+            g.serialize(s)
+        } else {
+            self.0.serialize(s)
+        }
+    }
+}
+
+impl<'de> Deserialize<'de> for Groups {
+    fn deserialize<D: Deserializer<'de>>(d: D) -> Result<Groups, D::Error> {
+        Ok(Groups(std::collections::BTreeMap::deserialize(d)?))
+    }
+}
+
+impl Groups {
+    pub fn is_empty(&self) -> bool {
+        self.0.is_empty() && !BY_ADDRESS.with(|b| b.get())
+    }
+}
+
+fn group_address(addrs: &[String]) -> String {
+    let mut b = Vec::new();
+    for a in addrs {
+        b.extend_from_slice(a.as_bytes());
+        b.push(0);
+    }
+    format!("g{}", digest_bytes(&b).short())
 }
 
 /// Run `f` with entries serializing their chunk addresses instead of their pairs.
 pub fn by_address<T>(f: impl FnOnce() -> T) -> T {
+    GROUPS.with(|g| g.borrow_mut().clear());
     BY_ADDRESS.with(|c| c.set(true));
     let r = f();
     BY_ADDRESS.with(|c| c.set(false));
+    MEMO.with(|m| m.borrow_mut().clear());
+    GROUPS.with(|g| g.borrow_mut().clear());
     r
+}
+
+/// [`address`] of a shared chunk, hashed once per allocation while a store is written ([`by_address`]); the
+/// memo holds the chunk alive by its table, which outlives the write.
+pub fn address_of(c: &Chunk) -> String {
+    if !BY_ADDRESS.with(|b| b.get()) {
+        return address(c);
+    }
+    let key = Arc::as_ptr(c) as *const (Str, Str) as usize;
+    if let Some(a) = MEMO.with(|m| m.borrow().get(&key).cloned()) {
+        return a;
+    }
+    let a = address(c);
+    MEMO.with(|m| m.borrow_mut().insert(key, a.clone()));
+    a
 }
 
 fn fnv(s: &str) -> u64 {
@@ -122,11 +189,26 @@ impl Data {
     /// Resolve addresses read from a store file against its chunk table. False when one is missing (the entry is
     /// then unusable: the caller drops it).
     pub fn resolve(&mut self, table: &HashMap<String, Chunk>) -> bool {
+        self.resolve_grouped(table, &std::collections::BTreeMap::new())
+    }
+
+    /// [`Data::resolve`] where an address may be a group's ("g...": the chunk addresses of `groups`).
+    pub fn resolve_grouped(&mut self, table: &HashMap<String, Chunk>, groups: &std::collections::BTreeMap<String, Vec<String>>) -> bool {
         if self.pending.is_empty() {
             return true;
         }
         let mut out = Vec::with_capacity(self.pending.len());
         for a in &self.pending {
+            if a.starts_with('g') {
+                let Some(g) = groups.get(a) else { return false };
+                for ca in g {
+                    match table.get(ca) {
+                        Some(c) => out.push(c.clone()),
+                        None => return false,
+                    }
+                }
+                continue;
+            }
             match table.get(a) {
                 Some(c) => out.push(c.clone()),
                 None => return false,
@@ -180,9 +262,28 @@ impl fmt::Debug for Data {
 impl Serialize for Data {
     fn serialize<S: Serializer>(&self, s: S) -> Result<S::Ok, S::Error> {
         if BY_ADDRESS.with(|c| c.get()) {
-            let mut seq = s.serialize_seq(Some(self.chunks.len()))?;
-            for c in &self.chunks {
-                seq.serialize_element(&address(c))?;
+            // chunk addresses cut into groups at content-defined boundaries; the entry lists the groups
+            let addrs: Vec<String> = self.chunks.iter().map(address_of).collect();
+            let mut out: Vec<String> = Vec::new();
+            let mut cur: Vec<String> = Vec::new();
+            for a in addrs {
+                let boundary = fnv(&a) % GAVG == 0;
+                cur.push(a);
+                if boundary || cur.len() >= GMAX {
+                    let g = group_address(&cur);
+                    GROUPS.with(|m| { m.borrow_mut().entry(g.clone()).or_insert_with(|| cur.clone()); });
+                    out.push(g);
+                    cur.clear();
+                }
+            }
+            if !cur.is_empty() {
+                let g = group_address(&cur);
+                GROUPS.with(|m| { m.borrow_mut().entry(g.clone()).or_insert_with(|| cur.clone()); });
+                out.push(g);
+            }
+            let mut seq = s.serialize_seq(Some(out.len()))?;
+            for g in &out {
+                seq.serialize_element(g)?;
             }
             seq.end()
         } else {
@@ -284,10 +385,18 @@ mod tests {
         db.share(&mut i);
         let shared = da.chunks().iter().filter(|c| db.chunks().iter().any(|d| Arc::ptr_eq(c, d))).count();
         assert!(shared * 10 >= da.chunks().len() * 8, "{shared} of {}", da.chunks().len());
-        let j = by_address(|| serde_json::to_string(&da).unwrap());
+        // as a store writes it: the entry lists group addresses, the groups follow
+        let (j, groups) = by_address(|| {
+            let j = serde_json::to_string(&da).unwrap();
+            (j, serde_json::to_string(&Groups::default()).unwrap())
+        });
+        let groups: Groups = serde_json::from_str(&groups).unwrap();
+        let listed: Vec<String> = serde_json::from_str(&j).unwrap();
+        assert!(listed.iter().all(|g| g.starts_with('g')) && listed.len() * 4 <= da.chunks().len(), "{}", listed.len());
         let mut back: Data = serde_json::from_str(&j).unwrap();
         assert!(back.is_pending());
-        assert!(back.resolve(i.table()));
+        assert!(!back.clone().resolve(i.table()), "a group is not a chunk");
+        assert!(back.resolve_grouped(i.table(), &groups.0));
         assert_eq!(back.to_vec(), a);
         // plain serialization is the pairs, as before
         let plain: Vec<(String, String)> = serde_json::from_str(&serde_json::to_string(&db).unwrap()).unwrap();

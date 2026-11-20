@@ -23,6 +23,7 @@ carried-set rule applies and the header says so.
 
 from __future__ import annotations
 
+import json
 import os
 import pickle
 import sys
@@ -415,6 +416,12 @@ class FileIsolate(Isolate):
 
         if pc is not None:
             pc.iso_child = True
+            # a process a test or fixture of the file starts is never reused (PY-08); following it under strace from
+            # a forked child hung (esphome: strace -DDD's detached tracer kept the test's pipe open and never saw its
+            # tracee exit): not followed here, its context is refused as a spawn
+            fo = getattr(pc.cap, "follower", None)
+            if fo is not None and fo.why_not is None:
+                fo.why_not = "in a test file's child process (a test that starts a process is never reused)"
         session = first.session
         by_id = {it.nodeid: it for it in session.items}
         last = None

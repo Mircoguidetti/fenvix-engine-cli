@@ -841,7 +841,7 @@ def tz_locale_identity() -> dict:
 ENV_ALLOWLIST: dict[str, str] = {
     **{k: "detpy's own bookkeeping (re-exec, bytecode cache, assertion-rewrite cache, worker hand-over): set by "
           "detpy itself for its own processes, never an input of the project's code"
-       for k in ("DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS", "DETPY_XDIST_ENV",
+       for k in ("DETPY_CACHE_IN_PROCESS", "DETPY_REEXEC", "DETPY_PRECOMPILE_S", "DETPY_PYC_CACHE", "DETPY_BLOCKED_PLUGINS", "DETPY_XDIST_ENV",
                  "DETPY_REWRITE_CACHE", "DETPY_REWRITE_OWN")},
     "DETPY_L0_REF": "detpy's own equivalence tests: selects the Python reference of Level 0 (tests/rust_hotpaths_ref) "
                     "whose results must be identical to the engine's; never set in a project",
@@ -1304,6 +1304,7 @@ class ProofSession:
             if self.role == "worker":
                 return
             self.iso_merge_summaries()
+            self.iso_flush()
             self.merge_shards(list(self.iso_shards))
         if self.role == "controller" or (self.isolate and not self.iso_child):
             # no test ran here: the workers (or children) recorded, the merge happened in merge_workers
@@ -1642,7 +1643,24 @@ class ProofSession:
         if summary:
             self.iso_summaries.append(summary)
         if shard:
-            self.iso_shards.append(shard)
+            # folded into this process's one shard now (py-cache: one shard per child repeated every carried file's
+            # facts: 648 shards, 1.4 GB on esphome); a shard that cannot be read is merged as it is
+            try:
+                ok = self.store.shard_absorb(shard)
+            except Exception:
+                ok = False
+            if not ok:
+                self.iso_shards.append(shard)
+
+    def iso_flush(self) -> None:
+        """The children's shards folded by ``iso_child_done``, written as one shard (before the merge or the
+        controller's)."""
+        path = os.path.join(self.dir, "shards", f"{self.run_id}.{getattr(self, 'worker', None) or 'iso'}.isolate.json")
+        try:
+            if self.store.shard_absorbed_save(path, str(getattr(self, "worker", None) or "iso")):
+                self.iso_shards.append(path)
+        except Exception as e:  # nothing recorded this time
+            self.sess.error = f"isolate shard: {type(e).__name__}: {e}"
 
     def iso_merge_summaries(self) -> None:
         for summary in self.iso_summaries:

@@ -3,6 +3,13 @@ import os
 
 import pytest
 
+# py-cache (coordinator decision 2026-11-20): under --det-cache the tests of a file run in one child forked per file,
+# the default on Linux. detpy's suites were written for the session's process (carried-set rule, its reasons and
+# its -n placement) and keep it, with the in-process mode as an explicit choice (--det-cache-in-process); the per-file
+# default has its own tests (test_py_cache.py: file scope), and DETPY_TEST_CACHE_DEFAULT=1 runs every suite under it.
+if os.environ.get("DETPY_TEST_CACHE_DEFAULT") != "1":
+    os.environ.setdefault("DETPY_CACHE_IN_PROCESS", "1")
+
 
 def load_trace(path):
     lines = [json.loads(line) for line in open(path) if line.strip()]

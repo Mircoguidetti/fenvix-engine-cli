@@ -42,6 +42,10 @@ def pytest_addoption(parser, pluginmanager):
                 help="run each test in a child process forked from the session's snapshot (after collection): no "
                      "test sees state an earlier test left in memory, so a test's cache key carries no earlier test "
                      "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
+    g.addoption("--det-cache-in-process", action="store_true", default=False,
+                help="with --det-cache: run the tests in the session's process(es) as without the cache (the carried-set "
+                     "rule keys a test on the earlier tests of its process) instead of one child per test file, the "
+                     "default on Linux")
     g.addoption("--det-isolate-scope", default="test", choices=("test", "file"),
                 help="with --det-isolate: 'test' (default) forks a child per test; 'file' forks one child per test "
                      "file, whose tests share that child in order (in-process state is carried within the file only)")
@@ -679,6 +683,19 @@ def _configure_det(config) -> None:
         S.trace_path = _xdist.worker_path(S.trace_path, S.worker)
         if opt.det_record:
             S.cassette_out = _xdist.worker_path(_state.STATE.config.cassette_path, S.worker)
+    if os.environ.get("DETPY_CACHE_IN_PROCESS") == "1":
+        opt.det_cache_in_process = True  # the same as --det-cache-in-process (detpy's own test suites set it)
+    if (opt.det_cache and not getattr(opt, "det_isolate", False) and not getattr(opt, "det_cache_in_process", False)
+            and not getattr(opt, "det_plan_worker", None)):
+        # coordinator decision 2026-11-20 (py-cache, F-05): under --det-cache the tests of a file run in one child
+        # forked from the session after collection (as Jest/Vitest isolate per file): no in-process state crosses
+        # files, so a result's key holds the earlier tests of its file only. Before the cache's configuration digest:
+        # the mode is part of every key. --det-cache-in-process keeps the session's process.
+        from . import isolate as _isolate
+
+        if _isolate.available():
+            opt.det_isolate = True
+            opt.det_isolate_scope = "file"
     if opt.det_cache:
         proofcache.install(config)
     if (getattr(opt, "det_isolate", False) and getattr(opt, "det_isolate_scope", "test") == "file"
