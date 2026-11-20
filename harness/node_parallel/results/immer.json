@@ -1,0 +1,109 @@
+{
+ "name": "immer",
+ "runner": "vitest",
+ "workers": 4,
+ "commands": {
+  "plain": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run",
+  "det_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "det_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "det_parallel_2": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "cache_cold_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache",
+  "cache_warm_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache",
+  "fresh_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "cache_verify_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache --det-cache-verify",
+  "cache_warm_serial_on_parallel_store": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache"
+ },
+ "plain": {
+  "exit": 0,
+  "wall_s": 15.85
+ },
+ "det_serial": {
+  "exit": 0,
+  "wall_s": 18.42,
+  "tests": 4221,
+  "carried": 0
+ },
+ "det_parallel": {
+  "exit": 0,
+  "wall_s": 11.91,
+  "tests": 4221,
+  "plan_digest": "8aa4131a8a18553faa0e416a30b70935",
+  "lanes": [
+   1,
+   6,
+   9,
+   9
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.025,
+  "carried": 0
+ },
+ "det_parallel_2": {
+  "exit": 0,
+  "wall_s": 12.11,
+  "tests": 4221,
+  "plan_digest": "8aa4131a8a18553faa0e416a30b70935",
+  "lanes": [
+   1,
+   6,
+   9,
+   9
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.719,
+  "carried": 0
+ },
+ "plan_identical": true,
+ "parallel_vs_serial": {
+  "common": 4221,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 4221,
+  "equal_outcome": 4221,
+  "differ": []
+ },
+ "cache_cold_parallel": {
+  "exit": 0,
+  "wall_s": 17.18,
+  "recorded": 4221,
+  "not_cached": {}
+ },
+ "cache_warm_parallel": {
+  "exit": 0,
+  "wall_s": 3.77,
+  "reused_tests": 4221,
+  "reused_files": 25,
+  "ran_files": 0,
+  "total_tests": 4221,
+  "reuse_pct": 100.0,
+  "miss_reasons": {}
+ },
+ "fresh_serial": {
+  "exit": 0,
+  "wall_s": 18.32,
+  "tests": 4221,
+  "carried": 0
+ },
+ "wrong_reuse_vs_fresh_serial": {
+  "reused_checked": 4221,
+  "reused_not_in_fresh": 0,
+  "wrong_outcome": 0,
+  "wrong": [],
+  "fingerprint_equal": 4221
+ },
+ "cache_verify_parallel": {
+  "exit": 0,
+  "wall_s": 17.5,
+  "verified_tests": 4221,
+  "mismatches_tests": 0,
+  "mismatches": []
+ },
+ "cache_warm_serial_on_parallel_store": {
+  "exit": 0,
+  "wall_s": 3.31,
+  "reused_tests": 4221,
+  "miss_reasons": {}
+ }
+}

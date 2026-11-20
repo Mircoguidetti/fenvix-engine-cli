@@ -57,12 +57,14 @@ class DetSequencer extends Base {
       // the fixed plan (src/parallel.js): lanes over the files that run, handed to Jest in planned start order; the
       // worker binding (src/jest/cli.js) sends each file to its lane's worker
       const parallel = require('../parallel');
-      const plan = parallel.makePlan(root, ordered.map((k) => k.key), workers, { replay: process.env.DETJS_PLAN ? parallel.readReplay(process.env.DETJS_PLAN) : null });
+      // a file run twice under one key (two projects without a display name): one place in the plan, both runs
+      const byKey = new Map();
+      for (const k of ordered) { if (!byKey.has(k.key)) byKey.set(k.key, []); byKey.get(k.key).push(k.t); }
+      const plan = parallel.makePlan(root, [...byKey.keys()], workers, { replay: process.env.DETJS_PLAN ? parallel.readReplay(process.env.DETJS_PLAN) : null });
       parallel.writeRunPlan(c.dir, plan, 'jest-workers');
       controls.writeJson(path.join(c.dir, 'plan-full.json'), plan);
-      const byKey = new Map(ordered.map((k) => [k.key, k]));
       // Jest runs small suites in band when it has fast timings for them: none are given
-      return plan.dispatch.map((key) => { const t = byKey.get(key).t; t.duration = undefined; return t; });
+      return plan.dispatch.flatMap((key) => byKey.get(key).map((t) => { t.duration = undefined; return t; }));
     }
     return ordered.map((k) => k.t);
   }

@@ -1,0 +1,115 @@
+{
+ "name": "cheerio",
+ "runner": "vitest",
+ "workers": 4,
+ "commands": {
+  "plain": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run",
+  "det_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "det_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "det_parallel_2": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4",
+  "cache_cold_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache",
+  "cache_warm_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache",
+  "fresh_serial": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det",
+  "cache_verify_parallel": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache --det-cache-verify",
+  "cache_warm_serial_on_parallel_store": "node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache"
+ },
+ "plain": {
+  "exit": 0,
+  "wall_s": 10.35
+ },
+ "det_serial": {
+  "exit": 0,
+  "wall_s": 10.3,
+  "tests": 830,
+  "carried": 0
+ },
+ "det_parallel": {
+  "exit": 0,
+  "wall_s": 11.83,
+  "tests": 830,
+  "plan_digest": "94a3f4c55745cfbeb39431afbc47b468",
+  "lanes": [
+   3,
+   3,
+   4,
+   4
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.033,
+  "carried": 0
+ },
+ "det_parallel_2": {
+  "exit": 0,
+  "wall_s": 10.91,
+  "tests": 830,
+  "plan_digest": "94a3f4c55745cfbeb39431afbc47b468",
+  "lanes": [
+   3,
+   3,
+   4,
+   4
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 1.022,
+  "carried": 0
+ },
+ "plan_identical": true,
+ "parallel_vs_serial": {
+  "common": 830,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 830,
+  "equal_outcome": 830,
+  "differ": []
+ },
+ "cache_cold_parallel": {
+  "exit": 0,
+  "wall_s": 12.26,
+  "recorded": 816,
+  "not_cached": {
+   "reads the worker or pool id the runner gives its process (depends on placement)": 15
+  }
+ },
+ "cache_warm_parallel": {
+  "exit": 0,
+  "wall_s": 1.82,
+  "reused_tests": 816,
+  "reused_files": 13,
+  "ran_files": 1,
+  "total_tests": 830,
+  "reuse_pct": 98.3,
+  "miss_reasons": {
+   "new": 1
+  }
+ },
+ "fresh_serial": {
+  "exit": 0,
+  "wall_s": 11.43,
+  "tests": 830,
+  "carried": 0
+ },
+ "wrong_reuse_vs_fresh_serial": {
+  "reused_checked": 816,
+  "reused_not_in_fresh": 0,
+  "wrong_outcome": 0,
+  "wrong": [],
+  "fingerprint_equal": 816
+ },
+ "cache_verify_parallel": {
+  "exit": 0,
+  "wall_s": 9.6,
+  "verified_tests": 816,
+  "mismatches_tests": 0,
+  "mismatches": []
+ },
+ "cache_warm_serial_on_parallel_store": {
+  "exit": 0,
+  "wall_s": 1.73,
+  "reused_tests": 816,
+  "miss_reasons": {
+   "new": 1
+  }
+ }
+}

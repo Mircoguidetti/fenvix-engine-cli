@@ -82,6 +82,7 @@ async function main(argv) {
     }
   }
   process.env.DETJS_WORKERS = String(par.workers);
+  if (par.workers > 1) parallel.skipDirs(((shown && shown.configs) || []).map((c) => c.cacheDirectory));
   process.env.DETJS_JEST_RUNNERS = JSON.stringify(runners);
   let pc = null;
   if (opts.cache) {

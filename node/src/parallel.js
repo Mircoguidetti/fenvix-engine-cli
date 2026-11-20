@@ -113,8 +113,9 @@ function readReplay(file) {
  * Returns { workers, lanes: [[label]], digest, inputs_digest, sticky, loads, makespan, lpt_makespan, costs_known,
  * groups (together-edges used), replayed, dispatch: [label] }.
  */
-function makePlan(root, keys, workers, { replay = null } = {}) {
+function makePlan(root, keysIn, workers, { replay = null } = {}) {
   const n = native();
+  const keys = [...new Set(keysIn)];
   const state = loadState(root);
   const pos = new Map(keys.map((k, i) => [k, i]));
   const costOf = keys.map((k) => median3(state.durations[k]));
@@ -332,11 +333,24 @@ function toPath(p) {
 
 const WRITE_FLAGS = /[wax+]/;
 
+/** Directories of runner caches the footprint leaves out (inherited by the test processes). */
+function skipDirs(dirs) {
+  const cur = (process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter).filter(Boolean);
+  for (const d of dirs) if (typeof d === 'string' && d && !cur.includes(d)) cur.push(d);
+  process.env.DETJS_FOOTPRINT_SKIP_DIRS = cur.join(path.delimiter);
+}
+
 /** Install the footprint recorder in this process (once): fs reads, listings, writes; fixed ports. */
 function installFootprint(root) {
   if (PROC.hazard) return;
   const rootSep = path.resolve(root) + path.sep;
-  const skip = [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter).filter(Boolean).map((d) => path.resolve(d) + path.sep)];
+  // runner and tool caches whose content is a function of their key (Jest's cacheDirectory, Vite's cacheDir and
+  // temporary directories: set by the shells; jiti, tsx, swc-node, v8-compile-cache): every lane writes and reads them
+  const tmp = os.tmpdir();
+  const uid = typeof process.getuid === 'function' ? process.getuid() : '';
+  const skip = [...(process.env.DETJS_CACHE_SKIP_DIRS || '').split(path.delimiter), ...(process.env.DETJS_FOOTPRINT_SKIP_DIRS || '').split(path.delimiter),
+    path.join(tmp, 'jiti'), path.join(tmp, 'node-jiti'), path.join(tmp, `tsx-${uid}`), path.join(tmp, `v8-compile-cache-${uid}`),
+    path.join(tmp, 'v8-compile-cache'), path.join(tmp, `swc-node-${uid}`)].filter(Boolean).map((d) => path.resolve(d) + path.sep);
   const keyOf = (abs) => {
     if (abs.startsWith('/proc/') || abs.startsWith('/dev/') || abs.startsWith('/sys/')) return null;
     if (abs.includes(`${path.sep}node_modules${path.sep}`) || abs.endsWith(`${path.sep}node_modules`)) return null;
@@ -544,7 +558,8 @@ function spansOf(markers, keys) {
  * `keys`: the files that ran, serial order; `plan`: null for a serial run; `shared`: files of one lane share a process
  * (Jest workers; Vitest isolate=false); `planned`: what the run was asked for ({workers, source, refused}).
  */
-function collect(root, dir, keys, plan, { shared, planned, write = true } = {}) {
+function collect(root, dir, keysIn, plan, { shared, planned, write = true } = {}) {
+  const keys = [...new Set(keysIn)];
   const markers = readMarkers(dir);
   const state = loadState(root);
   const lines = [];
@@ -612,6 +627,6 @@ function collect(root, dir, keys, plan, { shared, planned, write = true } = {}) 
 }
 
 module.exports = {
-  PLACEMENT_VARS, workerCount, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint,
+  PLACEMENT_VARS, workerCount, resolveWorkers, makePlan, readReplay, writeRunPlan, enter, leave, markDone, installFootprint, skipDirs,
   carriedBefore, carriedAfter, collect, loadState, statePath, hazards,
 };

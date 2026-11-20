@@ -78,12 +78,17 @@ def summary(cwd):
 
 def receipts(cwd):
     out = {}
-    with open(os.path.join(cwd, ".detjs", "receipts.jsonl")) as f:
+    p = os.path.join(cwd, ".detjs", "receipts.jsonl")
+    if not os.path.exists(p):
+        return out
+    with open(p) as f:
         for line in f:
             if line.strip():
                 j = json.loads(line)
                 if j.get("reused") and "::" in j["nodeid"]:
-                    out[j["nodeid"]] = (j.get("outcome"), j.get("fingerprint"))
+                    # receipts name a project's file `<file>@@<project>`; trace ids do not
+                    f, rest = j["nodeid"].split("::", 1)
+                    out[f.split("@@", 1)[0] + "::" + rest] = (j.get("outcome"), j.get("fingerprint"))
     return out
 
 

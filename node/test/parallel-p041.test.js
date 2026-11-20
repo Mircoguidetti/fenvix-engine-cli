@@ -117,6 +117,14 @@ describe('fixed plan (unit)', () => {
     const laneOf = (p, k) => p.lanes.findIndex((l) => l.includes(k));
     assert.equal(laneOf(c, keys[3]), laneOf(c, keys[17]), 'files joined by a together-edge share a lane');
     assert.deepEqual(c.lanes.find((l) => l.includes(keys[0])), [keys[0]], 'the long file is alone in its lane');
+    // a file listed twice (a Vitest test file that is also a typecheck spec; found on cheerio, where the duplicate
+    // was its own lane predecessor and the run waited forever): one place in the plan, never its own predecessor
+    const d = parallel.makePlan(root, [keys[0], keys[1], keys[1], keys[2]], 2);
+    assert.deepEqual(d.lanes.flat().sort(), [keys[0], keys[1], keys[2]]);
+    const runDir = path.join(root, 'run');
+    parallel.writeRunPlan(runDir, d, 'vitest');
+    const rp = JSON.parse(fs.readFileSync(path.join(runDir, 'plan.json'), 'utf8'));
+    for (const [k, p] of Object.entries(rp.pred)) assert.notEqual(k, p);
     // replay: the same lanes whatever the state says
     const r = parallel.makePlan(root, keys, 2, { replay: { lanes: a.lanes } });
     assert.deepEqual(r.lanes, a.lanes);

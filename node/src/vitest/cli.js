@@ -111,13 +111,15 @@ async function main(argv) {
         }
       }
       executed.length = 0;
-      for (const k of ordered) executed.push({ fileId: k.fileId, part: controls.partName(k.fileId, k.project), key: k.key });
+      for (const k of ordered) if (!executed.some((e) => e.key === k.key)) executed.push({ fileId: k.fileId, part: controls.partName(k.fileId, k.project), key: k.key });
       if (par.workers > 1 && ordered.length) {
         // the fixed plan: lanes over the files that run (serial order), handed to Vitest in planned start order
-        par.plan = parallel.makePlan(root, ordered.map((k) => k.key), par.workers, { replay: opts.plan ? parallel.readReplay(path.resolve(opts.plan)) : null });
+        // a file run twice under one key (a test file that is also a typecheck spec): one place in the plan, both specs
+        const byKey = new Map();
+        for (const k of ordered) { if (!byKey.has(k.key)) byKey.set(k.key, []); byKey.get(k.key).push(k.f); }
+        par.plan = parallel.makePlan(root, [...byKey.keys()], par.workers, { replay: opts.plan ? parallel.readReplay(path.resolve(opts.plan)) : null });
         parallel.writeRunPlan(run.dir, par.plan, 'vitest');
-        const byKey = new Map(ordered.map((k) => [k.key, k]));
-        return par.plan.dispatch.map((key) => byKey.get(key).f);
+        return par.plan.dispatch.flatMap((key) => byKey.get(key));
       }
       return ordered.map((k) => k.f);
     }
@@ -235,6 +237,14 @@ async function main(argv) {
     if (reasons.size) { par.refused = [...reasons].join('; '); par.workers = 1; }
     const n = par.workers;
     process.env.DETJS_WORKERS = String(n);
+    if (n > 1) {
+      const dirs = [typeof ctx._tmpDir === 'string' ? ctx._tmpDir : null];
+      for (const pr of projects) {
+        const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config);
+        dirs.push(vite && vite.cacheDir, typeof pr.tmpDir === 'string' ? pr.tmpDir : null);
+      }
+      parallel.skipDirs(dirs);
+    }
     for (const c of [ctx.config, ...projects.map((pr) => pr.config || pr.getConfig?.())]) {
       if (!c) continue;
       c.maxWorkers = n;
