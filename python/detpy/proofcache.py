@@ -62,7 +62,7 @@ _AUDIT_EVENTS = ("exec", "open", "ctypes.dlopen", "sqlite3.connect", "os.listdir
                  "socket.getaddrinfo", "socket.gethostbyname", "socket.gethostbyaddr", "subprocess.Popen", "os.posix_spawn",
                  "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn", "os.remove", "os.rename", "os.mkdir",
                  "os.rmdir", "os.truncate", "shutil.rmtree", "shutil.copyfile", "shutil.move", "os.symlink",
-                 "os.link")
+                 "os.link", "ctypes.dlsym", "ctypes.dlsym/handle", "ctypes.call_function")
 _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 # options that never change a test's result (output, reporting, selection by path, detpy's own files)
 _VOLATILE_OPTIONS = {
@@ -106,10 +106,13 @@ _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GE
 
 
 # existence and kind checks that ask os.stat (their answer is the kind, not the size): genericpath, posixpath, pathlib,
-# glob, shutil
+# glob, shutil. (Review R-023c E4: samefile is not one: its answer is the inode and device, keyed as status fields.)
 _KIND_FUNCS = frozenset({"exists", "lexists", "isfile", "isdir", "islink", "ismount", "isjunction", "is_file", "is_dir",
                          "is_symlink", "is_mount", "is_junction", "is_socket", "is_fifo", "is_block_device",
-                         "is_char_device", "samefile", "_lexists", "_isdir", "which", "_access_check", "isdevdrive"})
+                         "is_char_device", "_lexists", "_isdir", "which", "_access_check", "isdevdrive",
+                         # review R-023c E4: realpath asks each component whether it is a symlink; shutil's _stat
+                         # (copyfile) whether a file is a FIFO: kinds
+                         "realpath", "_joinrealpath", "_stat"})
 _STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
                                   "pathlib._abc", "glob", "shutil", "os"})
 
@@ -127,19 +130,24 @@ def _kind_check_caller() -> bool:
     return False
 
 
-def _user_stat_caller() -> bool:
-    """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
-    library helper: shutil.copystat copies times, it does not decide on them); Path.stat() counts as its caller's."""
-    f = _getframe(2)
+_REWRITE_FILE = os.sep + os.path.join("_pytest", "assertion", "rewrite.py")
+
+
+def _reaches_user(f) -> bool:
+    """Review R-023c E2: whether a status result asked by frame ``f`` goes to code that can decide on it: walking
+    out from ``f``, the first frame that is neither the standard library nor test infrastructure is repository or
+    library code, whatever frames are between (tarfile's gettarinfo, pytest's LocalPath.mtime, Path.stat). Not:
+    detpy's own status reads, pytest's assertion rewriting (its .pyc is a cache of the source, rewritten from the
+    same source when stale) and shutil.copystat (it copies the times onto a file this session writes)."""
     while f is not None:
-        mod = f.f_globals.get("__name__", "")
-        if mod in ("pathlib", "pathlib._local", "pathlib._abc") and f.f_code.co_name in ("stat", "lstat"):
-            f = f.f_back
-            continue
         fn = f.f_code.co_filename
-        if fn.startswith(_DETPY_DIR):
-            return False  # detpy's own stat (its digests, its reference implementations): never the test's
-        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen"))
+        if fn.startswith(_DETPY_DIR) or fn.endswith(_REWRITE_FILE):
+            return False
+        if f.f_code.co_name == "copystat" and f.f_globals.get("__name__") == "shutil":
+            return False
+        if _sites._classify(fn)[0] == _sites._USER:
+            return True
+        f = f.f_back
     return False
 
 
@@ -159,43 +167,90 @@ def _time_helper_caller() -> str | None:
 _STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
 # st_atime, st_mtime, st_ctime (indices 7, 8, 9) and their _ns, birthtime variants
 _TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
+_REAL_STAT = os.stat
+_REAL_READLINK = os.readlink
 
 
 class _TimedStat:
-    """An ``os.stat_result`` given to user code (review R-032b F2, round 4): reading ``st_mtime``/``st_ctime`` (their
-    ``_ns`` variants, indices 8 and 9) makes the file's modification and change times an input ("y:", keyed);
-    reading ``st_atime`` or ``st_birthtime`` (index 7; unpacking, equality, hashing give every field) refuses the
-    test ("mtime": the access time changes when the file is read). Everything else is the result's own."""
+    """An ``os.stat_result`` given to user code (review R-032b F2, round 4, review R-023c E2/E4), each field an input
+    when it is read: ``st_mtime``/``st_ctime`` (their ``_ns`` variants, indices 8 and 9) the file's modification and
+    change times ("y:", keyed); ``st_atime``/``st_birthtime`` (index 7; unpacking, equality, hashing, repr give
+    every field) refuse the test ("mtime": the access time changes when the file is read); ``st_size`` (index 6) the
+    size (keyed when the call was ``os.stat`` of a path; else with the other fields); ``st_mode``, ``st_ino``,
+    ``st_dev``, ``st_nlink``, ``st_uid``, ``st_gid`` and the rest the status fields ("w:", keyed). ``path`` is a path
+    or a descriptor (``os.fstat``, ``os.stat(fd)``): a descriptor's file is named through /proc/self/fd and must be
+    the file the result describes (same device and inode); one of a pipe, socket or device is this process's own
+    state (no input); one that cannot be named refuses the test ("pstate")."""
 
-    __slots__ = ("_r", "_cap", "_path")
+    __slots__ = ("_r", "_cap", "_path", "_link", "_sized")
 
-    def __init__(self, r, cap, path):
+    def __init__(self, r, cap, path, link=False, sized=False):
         self._r = r
         self._cap = cap
         self._path = path
+        self._link = link
+        self._sized = sized
 
     def _p(self):
         return os.fsdecode(os.fspath(self._path)) if not isinstance(self._path, int) else str(self._path)
 
-    def _timed(self):
+    def _named(self):
+        """The path to key, "" for no input, None when the descriptor's file cannot be named."""
+        if not isinstance(self._path, int):
+            return self._path
         try:
-            self._cap.flag(self._cap._cur(), "mtime", self._p())
+            p = _REAL_READLINK(f"/proc/self/fd/{self._path}")
+        except OSError:
+            return None
+        if not p.startswith("/") or p.startswith(("/proc/", "/dev/", "/sys/")):
+            return ""  # a pipe, a socket, an anonymous inode, a device: the process's own descriptor
+        try:
+            st = _REAL_STAT(p)
+        except OSError:
+            return None
+        if (st.st_dev, st.st_ino) != (self._r.st_dev, self._r.st_ino):
+            return None  # deleted or replaced since it was opened
+        return p
+
+    def _flag(self, flag, detail):
+        try:
+            self._cap.flag(self._cap._cur(), flag, detail)
         except Exception:
             pass
 
-    def _keyed(self):
-        if isinstance(self._path, int):
-            return self._timed()
+    def _timed(self):
+        self._flag("mtime", self._p())
+
+    def _input(self, check):
+        p = self._named()
+        if p is None:
+            return self._flag("pstate", f"the status of descriptor {self._path} (its file cannot be named)")
+        if p == "":
+            return
         try:
-            self._cap.time_check(self._path)
+            getattr(self._cap, check)(p, self._link)
         except Exception:
             self._timed()
+
+    def _keyed(self):
+        self._input("time_check")
+
+    def _fields(self):
+        self._input("fields_check")
+
+    def _size(self):
+        if not self._sized:
+            self._fields()
 
     def __getattr__(self, name):
         if name.startswith(("st_mtime", "st_ctime")):
             self._keyed()
         elif name.startswith(("st_atime", "st_birthtime")):
             self._timed()
+        elif name == "st_size":
+            self._size()
+        elif name.startswith("st_"):
+            self._fields()
         return getattr(self._r, name)
 
     def __getitem__(self, i):
@@ -205,6 +260,10 @@ class _TimedStat:
             self._timed()
         elif 8 in idx or 9 in idx:
             self._keyed()
+        if any(j < 6 for j in idx):
+            self._fields()
+        if 6 in idx:
+            self._size()
         return self._r[i]
 
     def __iter__(self):
@@ -223,6 +282,7 @@ class _TimedStat:
         return hash(self._r)
 
     def __repr__(self):
+        self._timed()
         return repr(self._r)
 
     def __reduce__(self):
@@ -231,7 +291,8 @@ class _TimedStat:
 
 
 class _ScandirEntry:
-    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2)."""
+    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2;
+    review R-023c E4: its ``inode()`` too)."""
 
     __slots__ = ("_e", "_cap")
 
@@ -253,7 +314,8 @@ class _ScandirEntry:
 
     def stat(self, *, follow_symlinks=True):
         self._check(True, follow_symlinks)
-        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path)
+        return _TimedStat(self._e.stat(follow_symlinks=follow_symlinks), self._cap, self._e.path,
+                          not follow_symlinks, follow_symlinks)
 
     def is_file(self, *, follow_symlinks=True):
         self._check(False, follow_symlinks)
@@ -266,6 +328,13 @@ class _ScandirEntry:
     def is_symlink(self):
         self._check(False, False)
         return self._e.is_symlink()
+
+    def inode(self):
+        try:
+            self._cap.fields_check(self._e.path, True)
+        except Exception:
+            pass
+        return self._e.inode()
 
     def __fspath__(self):
         return self._e.__fspath__()
@@ -403,31 +472,49 @@ class Capture(_core.CaptureCore):
             link = name == "lstat"
 
             def checked(path, *args, **kwargs):
-                timed = False
-                if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
+                if cap._in_stat or kwargs.get("dir_fd") is not None:
+                    return orig(path, *args, **kwargs)
+                try:
+                    # review R-023c E2: whatever frames are between, the status goes to user code or it does not
+                    user = _reaches_user(_getframe(1))
+                except Exception:
+                    user = False
+                if not user:
+                    return orig(path, *args, **kwargs)
+                fd = isinstance(path, int)
+                nolink = link or kwargs.get("follow_symlinks") is False
+                kind = sized = False
+                if not fd:
                     cap._in_stat = True
                     try:
-                        nolink = link or kwargs.get("follow_symlinks") is False
-                        # review R-032b F2: os.stat asked for its own sake (st_size: Path.stat(), os.stat(p)) is keyed
-                        # by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by the kind
-                        sized = name == "stat" and not nolink and not _kind_check_caller()
-                        cap.stat_check(path, nolink, sized)
-                        # pytest's assertion rewriting compares source mtimes: infrastructure, not the test's
-                        timed = name in ("stat", "lstat") and _user_stat_caller() and cap._caller_kind() == "user"
-                        helper = _time_helper_caller()
-                        if helper and cap._caller_kind() == "user":
-                            # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                        if name == "access":
+                            # the kind, and (review R-023c E4) the permission bits and owner when a permission is asked
+                            cap.stat_check(path, nolink, False, True)
+                            mode = args[0] if args else kwargs.get("mode", os.F_OK)
+                            if mode != os.F_OK:
+                                cap.fields_check(path, nolink)
+                        else:
+                            # review R-032b F2: os.stat asked for its own sake (st_size: Path.stat(), os.stat(p)) is
+                            # keyed by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by
+                            # the kind
+                            kind = _kind_check_caller()
+                            sized = name == "stat" and not nolink and not kind
+                            cap.stat_check(path, nolink, sized, True)
+                            helper = _time_helper_caller()
                             if helper == "getatime":
                                 cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
-                            else:
+                            elif helper:
+                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
                                 cap.time_check(path)
+                                kind = True
                     except Exception:
                         pass
                     finally:
                         cap._in_stat = False
-                    if timed:
-                        return _TimedStat(orig(path, *args, **kwargs), cap, path)
-                return orig(path, *args, **kwargs)
+                r = orig(path, *args, **kwargs)
+                if name == "access" or kind:
+                    return r  # a boolean, or a kind check's / time helper's own use of the result (recorded above)
+                return _TimedStat(r, cap, path, nolink, sized)
 
             checked.__name__ = orig.__name__
             checked.__doc__ = orig.__doc__
@@ -447,7 +534,7 @@ class Capture(_core.CaptureCore):
                         except Exception:
                             pass
 
-        for name in ("stat", "lstat", "access"):
+        for name in ("stat", "lstat", "access", "fstat"):
             wrap(name)
 
         # review R-032b F2: os.scandir's entries answer stat() without os.stat: user code iterating os.scandir gets
@@ -459,7 +546,7 @@ class Capture(_core.CaptureCore):
             if isinstance(path, int) or cap._in_stat:
                 return it
             try:
-                if cap._caller_kind() != "user":
+                if not _reaches_user(_getframe(1)):  # review R-023c E2
                     return it
             except Exception:
                 return it
@@ -828,6 +915,7 @@ class ProofCachePlugin:
         rng = random.Random(f"detpy-cache-verify:{self.run_id}")
         self.sess.decide(store, nids, self.max_age_s, _now(), _run_time, self.verify, rng.random)
         self._demote_writers_of_running_readers(nids)
+        self.demote_for_running([nids])
 
     # -- pytest-xdist under --det: the controller --------------------------------------------------------------
     def decide_controller(self, nids: list) -> set:
@@ -859,6 +947,49 @@ class ProofCachePlugin:
             return set(self.sess.hit_ids)
         finally:
             self.sess.t_check = _perf() - t0
+
+    def demote_for_running(self, lists) -> list:
+        """Review R-023c E7: a test that runs in this session runs after the earlier tests of its process whose
+        in-process state it may consume (the tests of its carried set when it was recorded, ``Entry::needs``; every
+        earlier test when it reached the library node, or when it has no entry), as in a fresh run of the suite: those
+        are not reused. A demoted test runs too: its own predecessors follow, and so do the reused writers whose output
+        it reads (review R-023b N8). ``lists``: the tests of each process, in order. Not under --det-isolate (each test
+        in its own child: no in-process state reaches it). Returns the demoted tests."""
+        out: list = []
+        if self.config is not None and self.config.getoption("det_isolate", False):
+            return out
+        ids = [n for lst in lists for n in lst]
+        needs = dict(zip(ids, self.store.needs(ids)))
+        present = set(ids)
+        changed = True
+        while changed:
+            changed = False
+            for lst in lists:
+                for i in range(len(lst) - 1, -1, -1):
+                    n = lst[i]
+                    if self._is_hit(n):
+                        continue
+                    need = needs.get(n)
+                    want = None if need is None else set(need)
+                    for m in lst[:i]:
+                        if (want is None or m in want) and self._demote(
+                                m, f"placement: a predecessor of {n}, which runs in this session"):
+                            out.append(m)
+                            changed = True
+                    if want is None:
+                        break
+            for w, r in self.store.edges():
+                if r in present and w in present and self._is_hit(w) and not self._is_hit(r):
+                    if self._demote(w, f"reader: its output is read by {r}, which runs in this session"):
+                        out.append(w)
+                        changed = True
+        return out
+
+    def _is_hit(self, nid) -> bool:
+        return self.sess.is_hit(nid)
+
+    def _demote(self, nid, why) -> bool:
+        return self.sess.demote(nid, why)
 
     def _demote_writers_of_running_readers(self, nids) -> None:
         """review R-023b N8: a test whose output another test read (a data edge (writer, reader) of an earlier session:

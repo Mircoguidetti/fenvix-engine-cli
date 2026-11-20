@@ -75,6 +75,27 @@ fn os_mod(py: Python<'_>) -> PyResult<Bound<'_, PyModule>> {
 /// The real `os.path.abspath`, `os.path.realpath` and `os.getcwd`, bound when the capture is created (session start).
 static REAL_OS: pyo3::sync::PyOnceLock<(Py<PyAny>, Py<PyAny>, Py<PyAny>)> = pyo3::sync::PyOnceLock::new();
 
+/// The real `os.fspath`, `os.fsdecode`, `os.fsencode` and `os.path.basename` (review R-023c E8: pure functions the
+/// capture calls inside user code's calls; a tool that patches them must not make the capture raise into a test).
+static REAL_FS: pyo3::sync::PyOnceLock<[Py<PyAny>; 4]> = pyo3::sync::PyOnceLock::new();
+
+fn real_fs(py: Python<'_>, i: usize) -> PyResult<Bound<'_, PyAny>> {
+    let f = REAL_FS.get_or_try_init(py, || -> PyResult<_> {
+        let os = os_mod(py)?;
+        Ok([
+            os.getattr("fspath")?.unbind(),
+            os.getattr("fsdecode")?.unbind(),
+            os.getattr("fsencode")?.unbind(),
+            os.getattr("path")?.getattr("basename")?.unbind(),
+        ])
+    })?;
+    Ok(f[i].bind(py).clone())
+}
+const FSPATH: usize = 0;
+const FSDECODE: usize = 1;
+const FSENCODE: usize = 2;
+const BASENAME: usize = 3;
+
 fn real_os(py: Python<'_>) -> PyResult<&(Py<PyAny>, Py<PyAny>, Py<PyAny>)> {
     REAL_OS.get_or_try_init(py, || -> PyResult<_> {
         let os = os_mod(py)?;
@@ -447,27 +468,43 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
-        if kind == b'y' {
-            // a file's modification and change times, read by user code (round 4): keyed beside the path's own
-            // dependency; a time this session changed (it wrote the file) is a read of a session-written file
+        if matches!(kind, b'y' | b'Y' | b'w' | b'W') {
+            // a file's modification and change times (round 4: "y"; "Y" the symlink's own, os.lstat) or its other
+            // status fields (review R-023c E4: "w", "W"), read by user code: keyed beside the path's own dependency;
+            // a status this session changed (it wrote the file) is a read of a session-written file
             if self.writers.contains_key(p) {
                 let mut f = b"rw:".to_vec();
                 f.extend_from_slice(p);
                 self.flag_set(ctx).add(f);
                 return None;
             }
-            let mut hk = vec![b'y'];
+            let mut hk = vec![kind];
             hk.extend_from_slice(p);
             let dep = match self.hashed.get(&hk) {
                 Some(d) => d.clone(),
                 None => {
-                    let d = format!("y:{}", proof::time_digest(os_path(p))).into_bytes();
+                    let path = os_path(p);
+                    let d = match kind {
+                        b'y' => format!("y:{}", proof::time_digest_of(path, true)),
+                        b'Y' => format!("y:L{}", proof::time_digest_of(path, false)),
+                        b'w' => format!("w:{}", proof::fields_digest(path, true)),
+                        _ => format!("w:L{}", proof::fields_digest(path, false)),
+                    }
+                    .into_bytes();
                     self.hashed.insert(hk, d.clone());
                     d
                 }
             };
             let mut k = self.key(p).to_vec();
-            k.extend_from_slice(proof::TIME_SUFFIX.as_bytes());
+            k.extend_from_slice(
+                match kind {
+                    b'y' => proof::TIME_SUFFIX,
+                    b'Y' => proof::LTIME_SUFFIX,
+                    b'w' => proof::FIELDS_SUFFIX,
+                    _ => proof::LFIELDS_SUFFIX,
+                }
+                .as_bytes(),
+            );
             if !self.data.contains_key(&ctx) {
                 self.data_order.push(ctx);
             }
@@ -483,7 +520,7 @@ fn process_state(p: &[u8]) -> bool {
             // its ancestors are directories for the whole session.
             let mut ps = p.to_vec();
             ps.push(b'/');
-            if self.root_sep.starts_with(&ps) || p == b"/" || is_temp_root(p) {
+            if self.root_sep.starts_with(&ps) || p == b"/" {
                 return None;
             }
             if self.writers.contains_key(p) {
@@ -609,7 +646,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l', b'z', b'y'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'y', b'Y', b'w', b'W'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -635,22 +672,6 @@ const MACHINE_FILES: &[&[u8]] = &[
     b"/proc/sys/kernel/ostype",
     b"/proc/sys/kernel/version",
 ];
-
-/// The system's temporary roots (`/tmp`, `/var/tmp`, `$TMPDIR`): directories for the whole session, like the
-/// project root and its ancestors. A kind check of one is no input; a failed `os.mkdir` of one (makedirs with
-/// exist_ok) is recorded as a write, which made every later kind check a read of a file another test wrote.
-fn is_temp_root(p: &[u8]) -> bool {
-    let p = if p.len() > 1 { p.strip_suffix(b"/").unwrap_or(p) } else { p };
-    if p == b"/tmp" || p == b"/var/tmp" {
-        return true;
-    }
-    std::env::var_os("TMPDIR").is_some_and(|t| {
-        use std::os::unix::ffi::OsStrExt;
-        let t = t.as_bytes();
-        let t = if t.len() > 1 { t.strip_suffix(b"/").unwrap_or(t) } else { t };
-        !t.is_empty() && t == p
-    })
-}
 
 /// Python objects and constants of the capture.
 struct Env {
@@ -1098,9 +1119,8 @@ impl CaptureCore {
         if argv.len() != 2 {
             return Ok(false);
         }
-        let os = os_mod(py)?;
-        let a0 = os.getattr("fsdecode")?.call1((argv.get_item(0)?,))?;
-        let base = os.getattr("path")?.getattr("basename")?.call1((a0,))?;
+        let a0 = real_fs(py, FSDECODE)?.call1((argv.get_item(0)?,))?;
+        let base = real_fs(py, BASENAME)?.call1((a0,))?;
         if !base.eq("ldconfig")? || !argv.get_item(1)?.eq("-p")? {
             return Ok(false);
         }
@@ -1120,9 +1140,8 @@ impl CaptureCore {
         if p.is_none() || p.is_instance_of::<pyo3::types::PyInt>() {
             return Ok(None);
         }
-        let os = os_mod(py)?;
-        // os.fsdecode(os.fspath(p)): a str is itself (no call)
-        let s = match if p.is_exact_instance_of::<PyString>() { Ok(p.clone()) } else { os.getattr(intern!(py, "fspath"))?.call1((p,)).and_then(|x| os.getattr(intern!(py, "fsdecode"))?.call1((x,))) } {
+        // os.fsdecode(os.fspath(p)): a str is itself (no call); the real functions (review R-023c E8)
+        let s = match if p.is_exact_instance_of::<PyString>() { Ok(p.clone()) } else { real_fs(py, FSPATH)?.call1((p,)).and_then(|x| real_fs(py, FSDECODE)?.call1((x,))) } {
             Ok(s) => s,
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyTypeError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -1441,6 +1460,29 @@ impl CaptureCore {
                 }
                 Ok(())
             }
+            "ctypes.dlsym" | "ctypes.dlsym/handle" | "ctypes.call_function" => {
+                // review R-023c E3: a C function repository code takes from a library through ctypes, whatever handle
+                // it came from (ctypes.pythonapi, the standard library's PyDLL(None): the program's symbols, libc
+                // among them; a library a dependency opened): its file, clock and environment reads are not
+                // observed. CPython raises "ctypes.dlsym" when a symbol is looked up (an attribute of a CDLL object is
+                // looked up once, then cached on it) and "ctypes.call_function" only for _ctypes.call_function, not
+                // for an ordinary call. (Repository native code is refused as "native" whenever it is loaded.)
+                if self.caller_kind(py)? == Caller::User && self.caller_in_repo(py)? {
+                    let ctx = self.cur(py)?;
+                    let lib = arg(0)
+                        .and_then(|a| if event == "ctypes.dlsym" { a.getattr("_name").ok() } else { Some(a) })
+                        .and_then(|n| n.str().ok().map(|x| x.to_string_lossy().into_owned()))
+                        .unwrap_or_default();
+                    let sym = arg(1).and_then(|n| n.str().ok().map(|x| x.to_string_lossy().into_owned())).unwrap_or_default();
+                    let detail = match event {
+                        "ctypes.call_function" => "a C function called from repository code".to_string(),
+                        _ if lib == "None" || lib.is_empty() => format!("{sym} from the program's symbols"),
+                        _ => format!("{sym} from {lib}"),
+                    };
+                    self.flag_impl(py, ctx, b"cdll", Some(detail.into_bytes()))?;
+                }
+                Ok(())
+            }
             "ctypes.dlopen" => {
                 // review R-023b N6: a library ctypes is asked to load is an input whether or not it exists (a library
                 // that appears later makes a former OSError a load); a loaded one is also an input by content
@@ -1658,9 +1700,17 @@ impl CaptureCore {
                 for &i in idx.iter() {
                     let a = arg(i).unwrap_or_else(|| py.None().into_bound(py));
                     if let Some(p) = self.abs(py, &a)? {
-                        if !self.ignored(&p) {
-                            self.wrote_impl(ctx, &p);
+                        if self.ignored(&p) {
+                            continue;
                         }
+                        if event == "os.mkdir" && std::fs::symlink_metadata(os_path(&p)).is_ok() {
+                            // review R-023c E1: a mkdir of a path that exists fails (EEXIST) and writes nothing; its
+                            // outcome is the path's existence, a kind input (makedirs/Path.mkdir with exist_ok of
+                            // /tmp, of the project's own directories)
+                            self.read_impl(py, ctx, &p, b's')?;
+                            continue;
+                        }
+                        self.wrote_impl(ctx, &p);
                     }
                 }
                 Ok(())
@@ -1820,6 +1870,7 @@ impl CaptureCore {
     ) -> PyResult<Self> {
         let _ = hot;
         real_os(py)?; // the real path functions, before a test or a plugin patches them
+        real_fs(py, FSPATH)?;
         let mut root_sep = w_of(&root)?;
         root_sep.push(b'/');
         let st = State {
@@ -2290,7 +2341,8 @@ impl CaptureCore {
     /// final symlink (LIMITS K4).
     /// A user read of a file's modification or change time (round 4: keyed, "y:"; the caller is checked by the
     /// Python side, which sees the stat result's field reads).
-    fn time_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>) -> PyResult<()> {
+    #[pyo3(signature = (path, link=false))]
+    fn time_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
         if !self.active() {
             return Ok(());
         }
@@ -2299,18 +2351,43 @@ impl CaptureCore {
             return Ok(());
         }
         let ctx = self.cur(py)?;
-        self.read_impl(py, ctx, &p, b'y')
+        self.read_impl(py, ctx, &p, if link { b'Y' } else { b'y' })
     }
 
-    #[pyo3(signature = (path, link=false, sized=false))]
-    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool, sized: bool) -> PyResult<()> {
+    /// A user read of a file's other status fields (review R-023c E4: st_mode, st_uid, st_ino, ..., an os.access
+    /// permission): keyed, "w:"; the caller is checked by the Python side, like `time_check`.
+    #[pyo3(signature = (path, link=false))]
+    fn fields_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
+        if !self.active() {
+            return Ok(());
+        }
+        let Some(p) = self.abs(py, path)? else { return Ok(()) };
+        if self.ignored(&p) {
+            return Ok(());
+        }
+        let ctx = self.cur(py)?;
+        self.read_impl(py, ctx, &p, if link { b'W' } else { b'w' })
+    }
+
+    /// `user`: whether the status goes to user code, decided by the caller (review R-023c E2: the Python stat wrapper
+    /// walks out through standard library and infrastructure frames); None: the first frame outside detpy and the
+    /// standard library decides (`caller_kind`).
+    #[pyo3(signature = (path, link=false, sized=false, user=None))]
+    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool, sized: bool, user: Option<bool>) -> PyResult<()> {
         if !self.active() {
             return Ok(());
         }
         let Some(p) = self.abs(py, path)? else { return Ok(()) };
         // --det-cache-dists: a file a bump adds or removes under a site directory is an input (review R-020b N3)
         let site = self.dist_site(py, &p).is_some();
-        if (!site && self.ignored(&p)) || self.caller_kind(py)? != Caller::User {
+        if !site && self.ignored(&p) {
+            return Ok(());
+        }
+        let user = match user {
+            Some(u) => u,
+            None => self.caller_kind(py)? == Caller::User,
+        };
+        if !user {
             return Ok(());
         }
         let ctx = self.cur(py)?;
@@ -2428,7 +2505,7 @@ impl CaptureCore {
         let name = if key.is_exact_instance_of::<PyString>() {
             key.clone()
         } else if key.is_instance_of::<PyString>() || key.is_instance_of::<PyBytes>() {
-            os_mod(py)?.getattr(intern!(py, "fsdecode"))?.call1((key,))?
+            real_fs(py, FSDECODE)?.call1((key,))?
         } else {
             key.repr()?.into_any()
         };
@@ -2609,7 +2686,7 @@ impl CaptureCore {
         let follow = py.import("detpy.follow")?;
         let logdir_s = fo.getattr("logdir")?;
         let logdir = w_any(&logdir_s)?;
-        let fsenc = os_mod(py)?.getattr("fsencode")?;
+        let fsenc = real_fs(py, FSENCODE)?;
         let logdir_fs: Vec<u8> = fsenc.call1((&logdir_s,))?.extract()?;
         let t0 = std::time::Instant::now();
         let mono = || t0.elapsed().as_secs_f64();
@@ -2679,7 +2756,7 @@ impl CaptureCore {
                 me.flag_impl(py, ctx, b"spawn", Some(cat(&[&d, b" [not followed: no trace log]"])))?;
                 continue;
             }
-            let fsdec = os_mod(py)?.getattr("fsdecode")?;
+            let fsdec = real_fs(py, FSDECODE)?;
             let logs_py: Vec<Bound<'_, PyAny>> = logs.iter().map(|l| fsdec.call1((l.clone(),))).collect::<PyResult<_>>()?;
             let res = follow.getattr("parse")?.call1((PyList::new(py, &logs_py)?, sp.getattr("cwd")?))?;
             for f in &logs {
@@ -2929,7 +3006,7 @@ impl CaptureCore {
                 if let Some(fsb) = fs_bytes(&p) {
                     let path = std::ffi::OsString::from(std::ffi::OsStr::from_bytes(&fsb));
                     if let Some(interp) = crate::follow::follow_shebang(py, path)? {
-                        let s = os_mod(py)?.getattr("fsdecode")?.call1((interp,))?;
+                        let s = real_fs(py, FSDECODE)?.call1((interp,))?;
                         let iw = w_any(&s)?;
                         if !iw.is_empty() {
                             self.child_read_w(py, logdir, ctx, &iw, b'f')?;

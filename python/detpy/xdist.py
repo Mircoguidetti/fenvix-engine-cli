@@ -418,6 +418,9 @@ class Controller:
                     for m in lst[:lst.index(n)]:
                         if pc.sess.demote(m, f"placement: a predecessor of {n}, which runs in this session"):
                             withdrawn.append(m)
+            # review R-023c E7: every test that runs (not only a withdrawn one) runs after the predecessors on its
+            # worker whose state it may consume
+            withdrawn.extend(pc.demote_for_running([list(v) for v in p["lists"].values()]))
         index = {nid: i for i, nid in enumerate(self.ids)}
         # sent: the plan's list of each worker without the results reused in the end
         lists = [[index[nid] for nid in p["lists"].get(w, []) if pc is None or not pc.sess.is_hit(nid)]

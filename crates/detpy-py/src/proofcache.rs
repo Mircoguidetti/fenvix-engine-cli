@@ -248,7 +248,7 @@ impl ProofCache {
 
     /// Record the inputs and result of a test that ran; returns its key.
     #[allow(clippy::too_many_arguments)]
-    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units))]
+    #[pyo3(signature = (nodeid, outcome, report_json, fingerprint, duration, run, config, runtime, epoch, env, data, content, skeleton, hooks, units, needs=None))]
     fn record(
         &self,
         nodeid: &str,
@@ -266,6 +266,7 @@ impl ProofCache {
         skeleton: Vec<u32>,
         hooks: Vec<u32>,
         units: Vec<(u32, u32)>,
+        needs: Option<Vec<String>>,
     ) -> PyResult<String> {
         let report = serde_json::from_str(report_json).map_err(|e| PyValueError::new_err(format!("report: {e}")))?;
         let mut g = lock(&self.inner);
@@ -288,6 +289,7 @@ impl ProofCache {
                 hooks,
                 units,
                 fixtures: Vec::new(),
+                needs,
             },
         ))
     }
@@ -379,6 +381,13 @@ impl ProofCache {
     /// Together edges of the store: `[(writer test, reader test)]` (`Store::edges`).
     fn edges(&self) -> Vec<(String, String)> {
         lock(&self.inner).store.edges.iter().cloned().collect()
+    }
+
+    /// Review R-023c E7: per test, the earlier tests its stored entry may have consumed state from
+    /// (`Entry::needs`): `None` for every earlier test (no entry, or its carried set reached the library node).
+    fn needs(&self, nodeids: Vec<String>) -> Vec<Option<Vec<String>>> {
+        let g = lock(&self.inner);
+        nodeids.iter().map(|n| g.store.tests.get(n).and_then(|e| e.needs.clone())).collect()
     }
 
     fn __len__(&self) -> usize {
@@ -968,8 +977,16 @@ pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, S
 
 /// "<mtime>.<ns>,<ctime>.<ns>" or "missing" (`detpy_core::proof::time_digest`, round 4).
 #[pyfunction]
-pub fn time_digest(path: PathBuf) -> String {
-    proof::time_digest(&path)
+#[pyo3(signature = (path, follow=true))]
+pub fn time_digest(path: PathBuf, follow: bool) -> String {
+    proof::time_digest_of(&path, follow)
+}
+
+/// A path's status fields other than its times (`detpy_core::proof::fields_digest`, review R-023c E4).
+#[pyfunction]
+#[pyo3(signature = (path, follow=true))]
+pub fn fields_digest(path: PathBuf, follow: bool) -> String {
+    proof::fields_digest(&path, follow)
 }
 
 /// "file:<size>", "dir", "other" or "missing" (`detpy_core::proof::size_kind`, review R-032b F2).

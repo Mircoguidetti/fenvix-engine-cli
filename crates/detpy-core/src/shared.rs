@@ -35,7 +35,7 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 pub const ENTRY_FORMAT: &str = "detpy-shared-entry";
-pub const DOC_VERSION: u32 = 2;
+pub const DOC_VERSION: u32 = 3;
 
 /// The address of a document: SHA-256 of its bytes, hex.
 pub fn address(bytes: &[u8]) -> String {
@@ -81,6 +81,40 @@ pub struct EntryDoc {
     /// The entry's data dependencies, expanded (the entry's `data` chunk ids are the exporting store's).
     #[serde(default)]
     pub data: Vec<(String, String)>,
+    /// Review R-023c E6: the paths the test wrote (`Store::written` with this test as writer) and the together edges
+    /// (writer, reader) it is part of, so a reader keeps the test running on a machine that never ran it.
+    #[serde(default)]
+    pub links: Links,
+}
+
+/// The store-level records of one test that travel with its entry (review R-023c E6).
+#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq)]
+pub struct Links {
+    pub written: Vec<String>,
+    pub edges: Vec<(String, String)>,
+}
+
+/// The [`Links`] of `nodeid` in `store`.
+pub fn links_of(store: &Store, nodeid: &str) -> Links {
+    let me = format!("t|{nodeid}");
+    Links {
+        written: store.written.iter().filter(|(_, w)| w.contains(&me)).map(|(p, _)| p.clone()).collect(),
+        edges: store.edges.iter().filter(|(w, r)| w == nodeid || r == nodeid).cloned().collect(),
+    }
+}
+
+/// Merge adopted [`Links`] of `nodeid` into `store`.
+pub fn merge_links(store: &mut Store, nodeid: &str, links: &Links) {
+    let me = format!("t|{nodeid}");
+    for p in &links.written {
+        store.written.entry(p.clone()).or_default().insert(me.clone());
+    }
+    for (w, r) in &links.edges {
+        // only edges of this test: a document speaks for its own test
+        if w == nodeid || r == nodeid {
+            store.edges.insert((w.clone(), r.clone()));
+        }
+    }
 }
 
 /// A line of a key log.
@@ -144,6 +178,7 @@ pub fn export_entry(store: &Store, nodeid: &str, config_runtime_lookup: Option<&
         hooks,
         units,
         data,
+        links: links_of(store, nodeid),
     };
     let bytes = serde_json::to_vec(&doc).ok()?;
     Some((bytes, files.into_values().map(|(_, b)| b).collect()))
@@ -188,7 +223,7 @@ pub fn import_entry(
     config: &str,
     runtime: &str,
     get: &mut dyn FnMut(&str) -> Option<Vec<u8>>,
-) -> Result<Entry, Reject> {
+) -> Result<(Entry, Links), Reject> {
     if !valid_id(doc_id) {
         return Err(Reject::Corrupt(format!("invalid document address {doc_id:?}")));
     }
@@ -257,7 +292,7 @@ pub fn import_entry(
     if key != e.key {
         return Err(Reject::KeyMismatch(format!("stored key {} but its inputs give {key}", e.key)));
     }
-    Ok(e)
+    Ok((e, doc.links))
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -420,6 +455,8 @@ fn unique() -> u64 {
 #[derive(Default, Debug)]
 pub struct Fetched {
     pub candidates: BTreeMap<String, Vec<(String, Entry)>>,
+    /// The [`Links`] of each candidate document.
+    pub links: BTreeMap<String, Links>,
     pub rejected: Vec<(String, String, Reject)>,
     pub log: LogStats,
 }
@@ -444,7 +481,8 @@ pub fn fetch(dir: &SharedDir, store: &mut Store, nodeids: &[String], config: &st
                 }
             }
             match import_entry(store, &l.doc, nid, config, runtime, &mut get) {
-                Ok(e) => {
+                Ok((e, links)) => {
+                    out.links.insert(l.doc.clone(), links);
                     let v = out.candidates.entry(nid.clone()).or_default();
                     if !v.iter().any(|(_, x)| x.key == e.key && x.run == e.run) {
                         v.push((l.doc.clone(), e));
@@ -484,6 +522,9 @@ pub fn adopt(
         for (doc, e) in cands {
             store.tests.insert(nid.clone(), e.clone());
             if check(store, nid) {
+                if let Some(l) = fetched.links.get(doc) {
+                    merge_links(store, nid, l);
+                }
                 adopted.insert(nid.clone(), doc.clone());
                 ok = true;
                 break;
@@ -550,6 +591,42 @@ mod tests {
         let adopted = adopt(&mut b, &f, &mut |_, _| true);
         assert_eq!(adopted.len(), 1);
         assert_eq!(b.key_of("t.py::a", &b.tests["t.py::a"]), a.tests["t.py::a"].key);
+    }
+
+    #[test]
+    fn r023c_e6_a_writer_travels_with_its_written_paths_and_edges_and_a_tampered_one_is_rejected() {
+        let d = tempfile::tempdir().unwrap();
+        let dir = SharedDir::new(d.path());
+        let mut a = store_with("t.py::a", "rt");
+        a.written.insert("spool/job".into(), ["t|t.py::a".to_string(), "t|t.py::other".to_string()].into());
+        a.written.insert("unrelated".into(), ["t|t.py::other".to_string()].into());
+        a.edges.insert(("t.py::a".into(), "t.py::b".into()));
+        a.edges.insert(("t.py::x".into(), "t.py::y".into()));
+        dir.push(&a, &["t.py::a".into()]).unwrap();
+        // machine 2: an empty store adopts the writer, with its own written path and edge only
+        let mut b = Store::new();
+        let f = fetch(&dir, &mut b, &["t.py::a".into()], "cfg", "rt", 3);
+        assert!(f.rejected.is_empty(), "{:?}", f.rejected);
+        assert_eq!(adopt(&mut b, &f, &mut |_, _| true).len(), 1);
+        assert_eq!(b.written.keys().collect::<Vec<_>>(), ["spool/job"]);
+        assert_eq!(b.written["spool/job"], ["t|t.py::a".to_string()].into());
+        assert_eq!(b.edges, [("t.py::a".to_string(), "t.py::b".to_string())].into());
+        // the links are part of the addressed document: one dropped edge is a corrupt document, nothing adopted
+        let lookup = lookup_key("t.py::a", "cfg", "rt");
+        let doc_id = dir.keys(&lookup, &mut LogStats::default())[0].doc.clone();
+        let bytes = dir.get(&doc_id).unwrap();
+        let mut doc: serde_json::Value = serde_json::from_slice(&bytes).unwrap();
+        doc["links"]["edges"] = serde_json::json!([]);
+        std::fs::write(dir.blob_path(&doc_id), serde_json::to_vec(&doc).unwrap()).unwrap();
+        let mut c = Store::new();
+        let f = fetch(&dir, &mut c, &["t.py::a".into()], "cfg", "rt", 3);
+        assert_eq!(f.rejected.len(), 1);
+        assert_eq!(f.rejected[0].2.kind(), "corrupt");
+        assert!(adopt(&mut c, &f, &mut |_, _| true).is_empty() && c.edges.is_empty());
+        // and an absent document is incomplete
+        std::fs::remove_file(dir.blob_path(&doc_id)).unwrap();
+        let f = fetch(&dir, &mut Store::new(), &["t.py::a".into()], "cfg", "rt", 3);
+        assert_eq!(f.rejected[0].2.kind(), "incomplete");
     }
 
     #[test]

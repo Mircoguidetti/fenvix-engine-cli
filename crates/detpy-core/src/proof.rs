@@ -118,6 +118,12 @@ pub struct Entry {
     /// predecessors. Not part of the key.
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub preds: String,
+    /// Review R-023c E7: the earlier tests of its process whose in-process state the test may have consumed when it
+    /// was recorded (the tests of its carried set); `None`: every earlier context (it reached the library node, or a
+    /// context that runs only with its tests). A test that runs needs these to run before it, as in a fresh run.
+    /// Not part of the key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub needs: Option<Vec<String>>,
 }
 
 /// The digest of an in-process predecessor list ([`Entry::preds`]).
@@ -240,6 +246,8 @@ pub struct Observed {
     pub hooks: Vec<u32>,
     pub units: Vec<(u32, u32)>,
     pub fixtures: Vec<String>,
+    /// [`Entry::needs`].
+    pub needs: Option<Vec<String>>,
 }
 
 fn push_part(buf: &mut Vec<u8>, part: &str) {
@@ -396,9 +404,47 @@ pub const TIME_SUFFIX: &str = "\u{1}mtime";
 /// A file's modification and change times (round 4: a test that reads st_mtime/st_ctime depends on them; keyed, not
 /// refused): "<mtime>.<ns>,<ctime>.<ns>", or "missing".
 pub fn time_digest(path: &Path) -> String {
+    time_digest_of(path, true)
+}
+
+/// [`time_digest`] of the path itself when `follow` is false (`os.lstat`: a symlink's own times).
+pub fn time_digest_of(path: &Path, follow: bool) -> String {
     use std::os::unix::fs::MetadataExt;
-    match fs::metadata(path) {
+    match if follow { fs::metadata(path) } else { fs::symlink_metadata(path) } {
         Ok(m) => format!("{}.{:09},{}.{:09}", m.mtime(), m.mtime_nsec(), m.ctime(), m.ctime_nsec()),
+        Err(_) => "missing".into(),
+    }
+}
+
+/// Suffix of the key of a symlink's own times (`os.lstat(p).st_mtime`; value "y:L<times>").
+pub const LTIME_SUFFIX: &str = "\u{1}lmtime";
+/// Suffixes of a path's status-fields dependency ("w:", review R-023c E4): `<path>\u{1}stat` (`os.stat`, value
+/// "w:<digest>") and `<path>\u{1}lstat` (`os.lstat`, value "w:L<digest>").
+pub const FIELDS_SUFFIX: &str = "\u{1}stat";
+pub const LFIELDS_SUFFIX: &str = "\u{1}lstat";
+
+/// The status fields of a path other than its times (review R-023c E4: a test that reads st_mode, st_uid, st_ino,
+/// st_nlink, ... or asks os.access for a permission depends on them): mode, owner, group, inode, device, links,
+/// device number, size and blocks, or "missing".
+pub fn fields_digest(path: &Path, follow: bool) -> String {
+    use std::os::unix::fs::MetadataExt;
+    match if follow { fs::metadata(path) } else { fs::symlink_metadata(path) } {
+        Ok(m) => digest_bytes(
+            format!(
+                "{:o}:{}:{}:{}:{}:{}:{}:{}:{}",
+                m.mode(),
+                m.uid(),
+                m.gid(),
+                m.ino(),
+                m.dev(),
+                m.nlink(),
+                m.rdev(),
+                m.size(),
+                m.blocks()
+            )
+            .as_bytes(),
+        )
+        .short(),
         Err(_) => "missing".into(),
     }
 }
@@ -586,8 +632,14 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("s:{}", stat_kind(path))
     } else if recorded.starts_with("z:") {
         format!("z:{}", size_kind(path))
+    } else if recorded.starts_with("y:L") {
+        format!("y:L{}", time_digest_of(path, false))
     } else if recorded.starts_with("y:") {
         format!("y:{}", time_digest(path))
+    } else if recorded.starts_with("w:L") {
+        format!("w:L{}", fields_digest(path, false))
+    } else if recorded.starts_with("w:") {
+        format!("w:{}", fields_digest(path, true))
     } else if recorded.starts_with("l:") {
         format!("l:{}", lstat_kind(path))
     } else if recorded.starts_with("i:") {
@@ -835,6 +887,7 @@ impl Store {
             serial_fp: None,
             serial_noise: false,
             preds: String::new(),
+            needs: o.needs,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -1733,7 +1786,8 @@ impl Checker {
                 't' => path.strip_suffix(KINDS_SUFFIX).unwrap_or(path),
                 'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
                 'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
-                'y' => path.strip_suffix(TIME_SUFFIX).unwrap_or(path),
+                'y' => path.strip_suffix(TIME_SUFFIX).or_else(|| path.strip_suffix(LTIME_SUFFIX)).unwrap_or(path),
+                'w' => path.strip_suffix(FIELDS_SUFFIX).or_else(|| path.strip_suffix(LFIELDS_SUFFIX)).unwrap_or(path),
                 _ => path,
             };
             let v = data_now(&self.cur.root.join(dir), recorded);

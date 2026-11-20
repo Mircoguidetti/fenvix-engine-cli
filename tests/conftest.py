@@ -44,6 +44,22 @@ def _clean_env(monkeypatch, pyc_cache):
         monkeypatch.delenv(var, raising=False)
 
 
+@pytest.fixture(autouse=True)
+def _no_benchmark_plugin_in_pytester(request, _clean_env):
+    """pytest-benchmark (installed by the harness CI job) calls ``platform.architecture()`` in its pytest_configure:
+    it iterates ``os.environ`` and spawns ``file``, so every test of an inner run carries the whole environment (sound:
+    the child's environment reads are not observed) and any variable a test here changes invalidates every entry.
+    The inner runs of these tests leave the plugin out; a test marked ``benchmark_plugin`` keeps it."""
+    if "pytester" in request.fixturenames and request.node.get_closest_marker("benchmark_plugin") is None:
+        pt = request.getfixturevalue("pytester")
+        base = pt._getpytestargs
+        pt._getpytestargs = lambda: (*base(), "-p", "no:benchmark")  # every runpytest_subprocess of the test
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "benchmark_plugin: the inner pytest runs load pytest-benchmark if installed")
+
+
 # Review R-032b's file (tests/review_r032b/test_review_r032b_python.py, copied unchanged from claude/review-r032b
 # 6f49632): its runner-driver cases run `python -m detpy <runner>` (unittest, nose2, zope, django, ward, doctest),
 # which exists on claude/all-runners-2, not on this branch. They are skipped here and run where the drivers are (the

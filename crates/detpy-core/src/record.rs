@@ -308,8 +308,13 @@ fn basename(rel: &str) -> &str {
 
 /// Markers of access to modules or shared namespaces by name in a file's text (review R-032b F1): a file that holds
 /// one is connected to every module ([`LIB_NODE`]).
+/// Review R-023c E5: the names of pytest's objects that live for the whole session (the `request` and `pytestconfig`
+/// fixtures, `config`, its `cache` and `stash`, the session-scoped factories and namespaces) are markers too: state
+/// left in one connects the tests that use it without any import.
 pub const DYNAMIC_MARKERS: &[&str] = &["__import__", "importlib", "setattr", "getattr", "delattr", "sys.modules",
-    "builtins", "globals(", "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv"];
+    "builtins", "globals(", "vars(", "exec(", "eval(", "mock", "monkeypatch", "os.environ", "putenv", "request",
+    "pytestconfig", "config", "cache", "stash", "tmp_path_factory", "tmpdir_factory", "doctest_namespace",
+    "record_testsuite_property", "worker_id", "testrun_uid"];
 
 /// Whether a file's text holds a [`DYNAMIC_MARKERS`] marker (an unreadable file does: unknown references).
 pub fn dynamic_access(path: &std::path::Path) -> bool {
@@ -322,12 +327,17 @@ pub fn dynamic_access(path: &std::path::Path) -> bool {
     }
 }
 
+/// More earlier tests than this in a test's carried set are stored as "every earlier context" ([`Entry::needs`]).
+const NEEDS_LIMIT: usize = 64;
+
 /// The node standing for every module outside the repository (site-packages, the standard library, extension
 /// modules) in the carried-set rule's connectivity.
 pub const LIB_NODE: u32 = u32::MAX;
 
-/// Test infrastructure: modules whose state is the harness's, not a test input (as everywhere else in the engine).
-const INFRA_TOP: &[&str] = &["pytest", "_pytest", "pluggy", "xdist", "execnet", "detpy", "iniconfig", "__future__"];
+/// Imports that reach no module state: `from __future__ import ...` (a compiler directive). Review R-023c E5: pytest,
+/// pluggy, xdist and detpy are modules like any library here: state one test leaves in the `pytest` module (or an
+/// object reached through it) is read by another.
+const INFRA_TOP: &[&str] = &["__future__"];
 
 /// The carried-set rule's reference closure (coordinator's attack: memoised state in a third-party library). A
 /// context can read state an earlier context left in any module it can reach by reference, not only in files it
@@ -335,7 +345,7 @@ const INFRA_TOP: &[&str] = &["pytest", "_pytest", "pluggy", "xdist", "execnet", 
 /// each repository file (by file id), the nodes reachable through its static imports, transitively: repository
 /// files (every file whose dotted path ends with the imported name or one of its parent packages) and
 /// [`LIB_NODE`] for any import that is not resolved to a repository file by its full dotted path (a library, the
-/// standard library; a name matched only as a suffix may be a library too). Infrastructure modules are no node.
+/// standard library; a name matched only as a suffix may be a library too). `__future__` is no node.
 /// `imports[fid]` is `None` for a file without facts (not Python): it reaches [`LIB_NODE`] (unknown references).
 pub fn reference_closure(fnames: &[String], imports: &[Option<&[String]>], dynamic: &[bool]) -> Vec<Vec<u32>> {
     let mut by_name: HashMap<String, (Vec<u32>, bool)> = HashMap::new();
@@ -842,7 +852,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         // carried (the placement-aware fallback, for this context only). A test that can reach nothing an earlier
         // context reached carries nothing, so its key is the same in any process.
         let mut sel: BTreeSet<(usize, u32)> = BTreeSet::new();
-        if ctxs.iter().any(|&c| reaches_lib(c)) {
+        let reaches_all = ctxs.iter().any(|&c| reaches_lib(c));
+        if reaches_all {
             for &(p, c) in &carry_order {
                 if p < tpos && !ctxs.contains(&c) {
                     sel.insert((p, c));
@@ -900,6 +911,31 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 }
             }
         }
+        // review R-023c E7: the earlier tests whose state this test may have consumed (they run before it whenever it
+        // runs); every earlier context when it reached the library node, or when a carried context runs only with
+        // tests (a wider-scoped fixture's set-up, the code between tests) or the list is long
+        let needs: Option<Vec<String>> = if reaches_all {
+            None
+        } else {
+            let mut v: Vec<String> = Vec::new();
+            let mut all = false;
+            for &(_, c) in &sel {
+                let n = names[c as usize].as_str();
+                if let Some(t) = n.strip_prefix("t|") {
+                    v.push(t.to_string());
+                } else if !(n.starts_with("c|") || n == "i" || n.starts_with("i|") || n.is_empty()) {
+                    all = true;
+                    break;
+                }
+            }
+            if all || v.len() > NEEDS_LIMIT {
+                None
+            } else {
+                v.sort();
+                v.dedup();
+                Some(v)
+            }
+        };
         if sel != last_sel {
             // the selection of the next test usually extends the previous one with contexts that ran after all of
             // it (the test just before): those are folded in, in order, which is what a rebuild in order gives
@@ -1173,6 +1209,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                         merged.into_iter().collect()
                     }
                 },
+                needs,
                 content: content.into_iter().collect(),
                 skeleton: skeleton.into_iter().collect(),
                 hooks: hooks.into_iter().collect(),
@@ -1214,8 +1251,8 @@ mod tests {
         assert_eq!(cl[0], vec![0, 1, 2, 3, LIB_NODE]);
         // a file without facts references what it likes
         assert_eq!(cl[4], vec![4, LIB_NODE]);
-        // infrastructure is no node
-        assert_eq!(cl[5], vec![5]);
+        // review R-023c E5: pytest is a module like a library's
+        assert_eq!(cl[5], vec![5, LIB_NODE]);
         // a name matched only as a suffix (src layout) may be a library too
         assert_eq!(cl[7], vec![6, 7, LIB_NODE]);
     }
