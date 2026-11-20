@@ -277,16 +277,19 @@ for (const runner of RUNNERS) {
       refusalIsSound(runner, dir, fileOf(runner, 'a'), /a preload module read the clock or OS entropy before Level 0/, { 'v.txt': '2' }, { env });
     });
 
-    test('G-1585 loader: an off-thread loader (module.register) makes the tests never reused; what it reads changes the result', T, () => {
-      const dir = proj(runner, 'loader', { a: "test('loaded', async () => { const m = await import('../lib/v.mjs'); expect(m.v).toBe(1); });" }, {
-        'lib/v.mjs': 'export const v = 0;\n',
-        // the loader rewrites lib/v.mjs from data.txt, a file read in the loader thread (not observable)
-        'hooks.mjs': "import fs from 'node:fs';\nexport async function load(url, ctx, next) { const r = await next(url, ctx); if (url.endsWith('/lib/v.mjs')) return { ...r, source: `export const v = ${fs.readFileSync(new URL('./data.txt', import.meta.url), 'utf8').trim()};` }; return r; }\n",
+    test('G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run', T, () => {
+      if (runner === 'jest') return; // Jest's module registry loads modules itself, not through Node's loader
+      // an installed package loaded natively by Node (Vitest externalizes node_modules), rewritten by a loader from
+      // data.txt, a file read in the loader thread (not observable)
+      const dir = proj(runner, 'loader', { a: "import { v } from 'ldpkg';\ntest('loaded', () => { expect(v).toBe(1); });" }, {
+        'node_modules/ldpkg/package.json': '{"name":"ldpkg","version":"1.0.0","type":"module","main":"index.mjs"}',
+        'node_modules/ldpkg/index.mjs': 'export const v = 0;\n',
+        'hooks.mjs': "import fs from 'node:fs';\nexport async function load(url, ctx, next) { const r = await next(url, ctx); if (url.endsWith('/ldpkg/index.mjs')) return { ...r, source: `export const v = ${fs.readFileSync(new URL('./data.txt', import.meta.url), 'utf8').trim()};` }; return r; }\n",
         'reg.mjs': "import { register } from 'node:module';\nregister('./hooks.mjs', import.meta.url);\n",
         'data.txt': '1',
       });
       const env = { NODE_OPTIONS: `--import ${path.join(dir, 'reg.mjs')}` };
-      if (runner === 'jest') return; // Jest's module registry loads lib/v.mjs itself (its own ESM support), not through Node's loader
+      // the run itself under --det-cache: the worker used to die (in-thread and off-thread hooks mixed)
       refusalIsSound(runner, dir, fileOf(runner, 'a'), /off-thread module loader/, { 'data.txt': '2' }, { env });
     });
 

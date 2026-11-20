@@ -163,6 +163,24 @@ function staleness(run, days) {
 // controls whose source is an input no key can hold when it is off
 const CONTROLS_KEYED = ['time', 'seeds', 'net', 'fs'];
 
+/** [[path, digest]] of the preload modules named in NODE_OPTIONS and `execArgv` that are files. */
+function preloadFiles(nodeOptions, execArgv, root) {
+  const args = [...String(nodeOptions || '').split(/\s+/).filter(Boolean), ...(execArgv || [])];
+  const out = [];
+  for (let i = 0; i < args.length; i++) {
+    const m = /^(?:-r|--require|--import)(?:=(.*))?$/.exec(args[i]);
+    if (!m) continue;
+    let v = m[1] !== undefined ? m[1] : args[++i];
+    if (!v) continue;
+    v = v.replace(/^"|"$/g, '');
+    if (/[\\/]cache[\\/]early\.js$/.test(v)) continue;
+    if (v.startsWith('file:')) { try { v = require('node:url').fileURLToPath(v); } catch { continue; } }
+    const d = native.fileDigest(path.resolve(root, v));
+    if (d) out.push([v, d]);
+  }
+  return out;
+}
+
 /**
  * The human reason a result is reused (audit G-2161): what was compared and found unchanged, from the receipt's own
  * counters (`n_content` code files, `n_data` file keys, `n_env` environment variables), and the clock's part.
@@ -277,6 +295,9 @@ class ProofSession {
         level0: digest(level0),
         cassette: this.run.netMode === 'replay' ? (native.fileDigest(this.run.cassette) || 'missing') : '',
         cwd: path.relative(this.root, process.cwd()),
+        // the user's preload modules (`--require`, `--import`, `-r` in NODE_OPTIONS or the command line) by content:
+        // in a process whose preloads are ES modules the capture's module hooks start after them (early.js)
+        preloads: digest(preloadFiles(this.env0.NODE_OPTIONS, process.execArgv, this.root)),
       });
       this.configFilesList = configFiles(this.root, { ...scan, exclude: otherRunnersConfig(this.runner) });
       this.configParts.files = digest(this.configFilesList);
