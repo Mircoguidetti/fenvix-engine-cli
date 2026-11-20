@@ -1115,3 +1115,17 @@ def level0_end(item, outcome: str):
         S.fingerprints[item.nodeid] = fp
         item.user_properties.append(("detpy_fingerprint", fp))
     return fp
+
+
+@pytest.hookimpl(tryfirst=True, optionalhook=True)
+def pytest_xdist_auto_num_workers(config):
+    """``-n auto`` / ``-n logical`` is the engine's planning: sized on the real machine, not on the CPU count
+    ``--det`` pins for tests (design A). xdist's own detection, with the real functions."""
+    if not S.active:
+        return None
+    try:
+        from xdist import plugin as _xp
+    except ImportError:
+        return None
+    with _level0.real_cpu_count():
+        return _xp.pytest_xdist_auto_num_workers(config)

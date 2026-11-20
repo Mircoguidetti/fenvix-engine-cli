@@ -598,12 +598,10 @@ def _cpu_part() -> dict:
     """CPUs visible to the process (pool sizes, chunking) and, unless FENVIX_RUNTIME_ISA=off, the instruction-set
     level (x86-64 v1..v4 from /proc/cpuinfo; elsewhere the feature list): native code that dispatches on CPU features
     (libm, numpy, OpenBLAS) can give other floating-point results."""
-    try:
-        affinity = len(os.sched_getaffinity(0))
-    except (AttributeError, OSError):
-        affinity = None
-    d = {"cpu_count": os.cpu_count(), "affinity": affinity,
-         "process_cpu_count": getattr(os, "process_cpu_count", lambda: None)()}
+    from . import _machine  # the real machine, not the count --det pins for tests
+
+    d = {"cpu_count": _machine.cpu_count(), "affinity": _machine.affinity(),
+         "process_cpu_count": _machine.process_cpu_count()}
     if os.environ.get("FENVIX_RUNTIME_ISA", "level") == "off":
         d["isa"] = "not keyed (FENVIX_RUNTIME_ISA=off)"
         return d

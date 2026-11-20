@@ -77,7 +77,9 @@ def main(argv) -> int:
         if len(argv) >= 2 and argv[0] == "-x":
             exclude, argv = re.compile(argv[1]), argv[2:]
         files = list(sources(argv, exclude))
-    n = os.cpu_count() or 1
+    from . import _machine
+
+    n = _machine.cpu_count() or 1
     if n > 1 and len(files) > 256 and hasattr(os, "fork"):
         import multiprocessing
 

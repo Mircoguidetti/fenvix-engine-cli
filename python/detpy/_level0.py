@@ -17,7 +17,7 @@ import os
 import platform
 import sys
 
-from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, reexec, seeds, sqlvirt, uncontrolled
+from . import __version__, _core, _machine, _sites, _state, clock, envobs, fsorder, fstime, network, reexec, seeds, sqlvirt, uncontrolled
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale")
@@ -50,6 +50,7 @@ VOLATILE_KEPT = (
     "JOURNAL_STREAM", "SSH_AUTH_SOCK", "SSH_CLIENT", "SSH_CONNECTION", "SSH_TTY", "TERM_SESSION_ID",
     "WINDOWID", "XDG_SESSION_ID", "XDG_RUNTIME_DIR", "SYSTEMD_EXEC_PID", "FENVIX_VOLATILE_ENV",
 )
+PINNED_CPU_COUNT = 2  # os.cpu_count & co. under --det: CI runners differ in CPUs (the engine keeps the real one)
 PINNED_HOSTNAME = "localhost"  # socket.gethostname / platform.node / os.uname().nodename under --det (resolvable)
 
 
@@ -531,6 +532,7 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
         pin_volatile_env(controls)  # no re-exec (or a shell that installs here): pin in this process
         envobs.install()
         pin_hostname(PATCHER)
+        pin_cpu_count(PATCHER)
     uncontrolled.install(PATCHER)
     return rebound
 
@@ -556,6 +558,42 @@ def pin_hostname(patcher) -> None:
             patcher.set(platform, "_uname_cache", cached._replace(node=PINNED_HOSTNAME))
     except Exception:
         pass
+
+
+def pin_cpu_count(patcher) -> None:
+    """Design A, same class as the host name: the CPU count differs between CI runners (pool sizes, chunking, a
+    test that prints it). Under --det os.cpu_count, os.process_cpu_count, os.sched_getaffinity and
+    multiprocessing.cpu_count answer ``PINNED_CPU_COUNT`` (affinity: CPUs 0..N-1). The engine's own work is sized on
+    the real count (``_machine``, captured at import)."""
+    import multiprocessing
+
+    n = PINNED_CPU_COUNT
+    patcher.set(os, "cpu_count", lambda: n)
+    if hasattr(os, "process_cpu_count"):
+        patcher.set(os, "process_cpu_count", lambda: n)
+    if hasattr(os, "sched_getaffinity"):
+        patcher.set(os, "sched_getaffinity", lambda pid: set(range(n)))
+    patcher.set(multiprocessing, "cpu_count", lambda: n)
+
+
+class real_cpu_count:
+    """``with real_cpu_count():`` the engine's own planning (``-n auto``) reads the machine, not the pinned count."""
+
+    def __enter__(self):
+        import multiprocessing
+
+        real = {"cpu_count": _machine._cpu_count, "process_cpu_count": _machine._process_cpu_count,
+                "sched_getaffinity": _machine._sched_getaffinity}
+        self.saved = [(os, k, getattr(os, k)) for k, v in real.items() if v is not None and hasattr(os, k)]
+        self.saved.append((multiprocessing, "cpu_count", multiprocessing.cpu_count))
+        for mod, k, _ in self.saved:
+            setattr(mod, k, real[k] if mod is os else (lambda: _machine.cpu_count() or 1))
+        return self
+
+    def __exit__(self, *exc):
+        for mod, k, v in self.saved:
+            setattr(mod, k, v)
+        return False
 
 
 def hash_checked_imports(root: str) -> bool:

@@ -63,3 +63,15 @@ test('CI-volatile variables are never inputs (design A): runs differing only in 
   const hdr = JSON.parse(fs.readFileSync(a, 'utf8').split('\n')[0]).meta;
   for (const k of ['env:GITHUB_RUN_ID', 'env:RUNNER_TEMP', 'env:EXAM_OUT']) assert.ok(!(k in hdr.inputs), k);
 });
+
+test('the CPU count is pinned under --det (design A); the engine keeps the real one', T, () => {
+  const dir = fixture('verifier-inputs', 'cpus', {
+    'tests/a.test.mjs': "import { test } from 'node:test'; import os from 'node:os';\n"
+      + "test('cpus', () => { console.log(`CPU ${os.cpus().length} ${os.availableParallelism()}`); });\n",
+  });
+  const r = crun('node-test', dir, [], { cache: false, det: ['--det'], env: {} });
+  assert.equal(r.status, 0, show(r));
+  assert.match(String(r.stdout), /CPU 2 2/, show(r));
+  const volatile = require('../src/volatile');
+  assert.equal(volatile.realParallelism(), require('node:os').availableParallelism());
+});

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -223,6 +224,41 @@ def test_host_name_is_pinned(tmp_path):
     p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", "tests"],
                        cwd=tmp_path, env=_env(GITHUB_RUN_ID="12345"), capture_output=True, text=True, timeout=300)
     assert "HOST localhost localhost localhost" in p.stdout, p.stdout + p.stderr
+
+
+def test_cpu_count_is_pinned_and_the_engine_keeps_the_real_one(tmp_path):
+    """Design A, same class as the host name: CI runners differ in CPUs. Under --det every way a test reads the CPU
+    count answers 2; the engine's own sizing (runtime identity, precompile workers) still sees the machine."""
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_c.py").write_text(
+        "import multiprocessing, os\n"
+        "from detpy import _machine, runtime_id\n"
+        "def test_c():\n"
+        "    aff = len(os.sched_getaffinity(0)) if hasattr(os, 'sched_getaffinity') else 2\n"
+        "    pc = os.process_cpu_count() if hasattr(os, 'process_cpu_count') else 2\n"
+        "    print('CPU', os.cpu_count(), pc, aff, multiprocessing.cpu_count())\n"
+        "    print('ENGINE', _machine.cpu_count(), runtime_id._cpu_part()['cpu_count'])\n")
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", "tests"],
+                       cwd=tmp_path, env=_env(), capture_output=True, text=True, timeout=300)
+    assert "CPU 2 2 2 2" in p.stdout, p.stdout + p.stderr
+    real = os.cpu_count()
+    assert f"ENGINE {real} {real}" in p.stdout, p.stdout + p.stderr
+
+
+def test_n_auto_is_sized_on_the_real_machine_under_det(tmp_path):
+    """The pinned CPU count is the tests' view; `-n auto` is the engine's planning and uses the machine."""
+    pytest.importorskip("xdist")
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_c.py").write_text("def test_c():\n    pass\n")
+    env = _env()
+    env.pop("PYTEST_XDIST_AUTO_NUM_WORKERS", None)
+    plain = subprocess.run([sys.executable, "-m", "pytest", "-p", "no:cacheprovider", "-n", "auto", "tests"],
+                           cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    det = subprocess.run([sys.executable, "-m", "pytest", "-p", "no:cacheprovider", "--det", "-n", "auto", "tests"],
+                         cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    workers = [re.search(r"created: (\d+)/\d+ workers", p.stdout) for p in (plain, det)]
+    assert all(workers), plain.stdout + det.stdout + det.stderr
+    assert workers[0].group(1) == workers[1].group(1), (plain.stdout, det.stdout)
 
 
 def test_declared_irrelevant_env_is_listed_and_ignored(project):

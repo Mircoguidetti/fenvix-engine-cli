@@ -68,7 +68,9 @@ unstable: the variable is named, with the read's site. Variables no test read ar
 shell does not record which test read a variable: every test of its runs counts as reading it. CI-volatile variables
 are never inputs: under `--det` the run and attempt ids, the job and runner names and the host name are pinned
 (`GITHUB_RUN_ID=0`, `GITHUB_RUN_NUMBER=0`, `GITHUB_RUN_ATTEMPT=1`, `GITHUB_JOB=fenvix`, `RUNNER_NAME=fenvix-runner`,
-`RUNNER_TRACKING_ID=fenvix`, `HOSTNAME=localhost`; `socket.gethostname()` / `os.hostname()` answer `localhost`), and
+`RUNNER_TRACKING_ID=fenvix`, `HOSTNAME=localhost`; `socket.gethostname()` / `os.hostname()` answer `localhost`; the
+CPU count is 2 for `os.cpu_count()`, `os.process_cpu_count()`, `len(os.sched_getaffinity(0))`, `multiprocessing.cpu_count()`,
+`os.cpus().length` and `os.availableParallelism()`, while `-n auto` and the engine's own workers use the machine), and
 temp and workspace paths, per-step files, CI tokens and session variables (`RUNNER_TEMP`, `GITHUB_WORKSPACE`,
 `GITHUB_ENV`, `GITHUB_OUTPUT`, `TMPDIR`, `PWD`, `ACTIONS_RUNTIME_TOKEN`, ...: `VOLATILE_KEPT` in
 `python/detpy/_level0.py`, `node/src/volatile.js`) keep their values but are not compared. Add a project's own with

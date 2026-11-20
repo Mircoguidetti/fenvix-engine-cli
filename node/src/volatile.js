@@ -20,6 +20,24 @@ const KEPT = [
   'WINDOWID', 'XDG_SESSION_ID', 'XDG_RUNTIME_DIR', 'SYSTEMD_EXEC_PID', 'FENVIX_VOLATILE_ENV',
 ];
 const PINNED_HOSTNAME = 'localhost';
+// CPU count: CI runners differ (pool sizes, chunking, a test that prints it). Under --det os.cpus() has
+// PINNED_CPUS entries and os.availableParallelism() answers PINNED_CPUS; the engine sizes its own work on the real
+// machine (REAL, captured when this module loads).
+const PINNED_CPUS = 2;
+const os = require('node:os');
+const REAL = { cpus: os.cpus, availableParallelism: os.availableParallelism };
+
+function realParallelism() {
+  return REAL.availableParallelism ? REAL.availableParallelism.call(os) : REAL.cpus.call(os).length;
+}
+
+function pinCpus(patcher) {
+  patcher.set(os, 'cpus', () => {
+    const r = REAL.cpus.call(os);
+    return Array.from({ length: PINNED_CPUS }, (_, i) => r[i % Math.max(1, r.length)]).filter(Boolean);
+  });
+  if (REAL.availableParallelism) patcher.set(os, 'availableParallelism', () => PINNED_CPUS);
+}
 const ENGINE_PREFIXES = ['DETJS_', 'DETPY_', 'VITEST_', 'JEST_WORKER', 'PYTEST_XDIST_'];
 
 function patterns() {
@@ -45,4 +63,4 @@ function pinEnv() {
   return done;
 }
 
-module.exports = { PINNED, KEPT, PINNED_HOSTNAME, patterns, isVolatile, pinEnv };
+module.exports = { PINNED, KEPT, PINNED_HOSTNAME, PINNED_CPUS, patterns, isVolatile, pinEnv, pinCpus, realParallelism };

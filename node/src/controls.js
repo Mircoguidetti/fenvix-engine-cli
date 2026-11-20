@@ -38,6 +38,7 @@ function installProcess() {
   // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
   volatile.pinEnv();
   PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
+  volatile.pinCpus(PATCHER); // and the CPU count (each runner has its own)
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
   // are separate bindings: bring them in line with the patched objects.
   require('node:module').syncBuiltinESMExports();
