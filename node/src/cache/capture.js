@@ -1099,7 +1099,10 @@ function statsPlain(o) {
   const out = Object.create(realGetProto(o));
   for (const k of Reflect.ownKeys(o)) {
     const d = realGOPD(o, k);
-    realDefine(out, k, d.get !== undefined && STATS_GETTERS.has(d.get) && e ? statsDataDesc(o, k, d) : d);
+    if (d.get !== undefined && STATS_GETTERS.has(d.get) && e) realDefine(out, k, statsDataDesc(o, k, d));
+    // another accessor (Level 0's file-time mapping, src/fstime.js): its value, as on a plain Stats object
+    else if (d.get !== undefined) realDefine(out, k, { value: d.get.call(o), writable: true, enumerable: d.enumerable, configurable: true });
+    else realDefine(out, k, d);
   }
   return out;
 }
@@ -1140,10 +1143,12 @@ function installStatsProto() {
     realDefine(StatsBaseProto, n, { ...realGOPD(StatsBaseProto, n), value: w });
   }
   const custom = Symbol.for('nodejs.util.inspect.custom');
+  // an inspection installed before (Level 0's file-time mapping, src/fstime.js) still handles the objects it maps
+  const prevInspect = realGOPD(StatsBaseProto, custom);
   realDefine(StatsBaseProto, custom, {
-    value: function inspectStats() {
+    value: function inspectStats(...args) {
       const e = STATS_REC.get(this);
-      if (e === undefined) return this; // the same object: Node formats it as usual
+      if (e === undefined) return prevInspect && typeof prevInspect.value === 'function' ? prevInspect.value.apply(this, args) : this;
       if (e.cap.active && !e.cap.busy) { try { e.cap.statWhole(e); } catch { /* ignore */ } }
       return statsPlain(this);
     },
@@ -2145,9 +2150,31 @@ function installNativeEntropy(cap) {
 // the recorded inputs). The wrappers are removed when the preload phase ends.
 const PRELOAD_SAVED = [];
 
+/** Whether the first frame outside Node and detjs belongs to the runner (vitest, jest, ...: sites.INFRA). */
+function runnerFirst(fn) {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = 30;
+  try { E.captureStackTrace(h, fn); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  const { INFRA: RUNNER } = require('../sites');
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    let f = (cs.getFileName && cs.getFileName()) || '';
+    if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { /* keep */ } }
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+    return RUNNER.test(f);
+  }
+  return false;
+}
+
 function installPreloadClock(cap) {
   const hit = (what) => {
     if (!cap.preload || !cap.active || cap.busy) return;
+    // the runner's own start-up (Vitest's worker, its traces and environment set-up, reached through detjs' deadline
+    // clock) reads the clock while the preload stage lasts: only a read by other code is a preload module's
+    if (runnerFirst(hit)) return;
     cap.add(['flag', 'preload', `${what} read by a preload module before Level 0`], cap.isGlobal);
   };
   const put = (obj, name, what) => {

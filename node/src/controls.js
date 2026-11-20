@@ -63,6 +63,7 @@ function installProcess() {
 
 const OWN_ENV = /^(?:DETJS(?:$|_)|FENVIX_CACHE_)/;
 let envSeen = new Set();
+require('./concur').register({ name: 'env', save: () => envSeen, restore: (x) => { envSeen = x; } });
 function installEnvRecord(proc) {
   if (!STATE.__envHooked) {
     STATE.__envHooked = true;

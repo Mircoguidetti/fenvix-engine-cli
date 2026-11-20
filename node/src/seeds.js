@@ -20,6 +20,7 @@
 const nodeCrypto = require('node:crypto');
 const native = require('./native');
 const { STATE } = require('./state');
+const sites = require('./sites');
 
 // xoshiro128** (Blackman & Vigna), 32-bit arithmetic, seeded with SplitMix32.
 class Xoshiro128 {
@@ -75,6 +76,11 @@ const MATH = new Xoshiro128();
 const CRYPTO = new Xoshiro128();
 const ENTROPY = new Xoshiro128();
 const NONCE = new Xoshiro128();
+// draws made for the runner (a library working for it: source-map while Jest formats a stack trace): their own
+// streams, not recorded, so that how many of them a process makes (lazily, in whichever test comes first in it)
+// never shifts the test's own values (found on dom-testing-library: 2 fingerprints differed parallel vs serial)
+const INFRA_MATH = new Xoshiro128();
+const INFRA_CRYPTO = new Xoshiro128();
 
 function reseed(key) {
   const base = STATE.config.seed;
@@ -88,6 +94,23 @@ function reseed(key) {
   // key) replays under any seed
   const [h4, l4] = native.deriveSeedWords(0n, key + '\0nonce');
   NONCE.seed(h4, l4);
+  const [h5, l5] = native.deriveSeedWords(base, key + '\0infra');
+  INFRA_MATH.seed(h5, l5);
+  const [h6, l6] = native.deriveSeedWords(base, key + '\0infra-crypto');
+  INFRA_CRYPTO.seed(h6, l6);
+}
+
+// per-test state of a concurrent test (src/concur.js): each test draws from its own streams
+const STREAMS = [MATH, CRYPTO, ENTROPY, NONCE, INFRA_MATH, INFRA_CRYPTO];
+require('./concur').register({
+  name: 'seeds',
+  save: () => STREAMS.map((g) => g.s.slice()),
+  restore: (x) => { STREAMS.forEach((g, i) => g.s.set(x[i])); },
+});
+
+/** A draw made for the runner (src/sites.js runnerInitiated): only inside a test, where the streams are the test's. */
+function forRunner() {
+  return STATE.testId !== null && STATE.quietDepth === 0 && STATE.config && STATE.config.sites && sites.runnerInitiated();
 }
 
 // A draw made by a WebSocket implementation for its handshake key or frame masks (Node's bundled undici:
@@ -127,12 +150,15 @@ function protocolNonce() {
 }
 
 function nonce(op, buf) {
+  require('./concur').sync();
   NONCE.fill(buf);
   STATE.record('random', op, `nonce ${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
   return buf;
 }
 
 function mathRandom() {
+  require('./concur').sync();
+  if (forRunner()) return INFRA_MATH.nextDouble();
   const v = MATH.nextDouble();
   STATE.record('random', 'Math.random', String(v));
   return v;
@@ -148,6 +174,7 @@ const real = {
 };
 
 function getRandomValues(arr) {
+  require('./concur').sync();
   // Tag check, not instanceof: Jest test files run in another realm.
   const tag = Object.prototype.toString.call(arr);
   if (!ArrayBuffer.isView(arr) || /Float(16|32|64)Array|DataView/.test(tag)) {
@@ -155,20 +182,23 @@ function getRandomValues(arr) {
   }
   if (arr.byteLength > 65536) return real.getRandomValues(arr); // native QuotaExceededError
   const bytes = new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
+  if (forRunner()) { INFRA_CRYPTO.fill(bytes); return arr; }
   CRYPTO.fill(bytes);
   STATE.record('random', 'crypto.getRandomValues', `${bytes.length}:${native.digest(Buffer.from(bytes))}`);
   return arr;
 }
 
 function randomUUID(options) {
+  require('./concur').sync();
   if (options !== undefined && (options === null || typeof options !== 'object')) return real.randomUUID(options);
   const b = new Uint8Array(16);
-  CRYPTO.fill(b);
+  const runner = forRunner();
+  (runner ? INFRA_CRYPTO : CRYPTO).fill(b);
   b[6] = (b[6] & 0x0f) | 0x40;
   b[8] = (b[8] & 0x3f) | 0x80;
   const h = Buffer.from(b).toString('hex');
   const uuid = `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
-  STATE.record('random', 'crypto.randomUUID', uuid);
+  if (!runner) STATE.record('random', 'crypto.randomUUID', uuid);
   return uuid;
 }
 

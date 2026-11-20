@@ -162,22 +162,26 @@ for (const runner of RUNNERS) {
       sameOutcome(runner, dir);
     });
 
-    t('G1 an mtime read is keyed by its value: utimes changes it', T, () => {
+    // Level 0's file times (src/fstime.js, G-0143): an mtime the test did not set is its age at the test start on the
+    // virtual clock, which depends on when the run happens: never reused (the order of two files' times is kept)
+    t('G1 an mtime read is a real-clock read: never reused, utimes changes the fresh result', T, () => {
       const dir = fixture(runner, 'mtime', {
-        'data/f.txt': 'x',
-        ...tfile(runner, 'mt', "test('mt', () => { expect(fs.statSync('data/f.txt').mtimeMs).toBe(1000000000); });"),
+        'data/f.txt': 'x', 'data/g.txt': 'y',
+        ...tfile(runner, 'mt', "test('mt', () => { expect(fs.statSync('data/f.txt').mtimeMs < fs.statSync('data/g.txt').mtimeMs).toBe(true); });"),
       });
       fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 1000000);
-      noWrongReuse(runner, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 2000000));
+      fs.utimesSync(path.join(dir, 'data/g.txt'), 1500000, 1500000);
+      assert.equal(noWrongReuse(runner, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 2000000), { mayRefuse: true }), 'refused');
     });
 
-    t('G1 lstat: the inode of a link (not of its target) is keyed', T, () => {
+    // inode numbers are virtual (src/fstime.js: numbered by first sight, equal files equal numbers); the cache keys
+    // the real one, so a link pointing elsewhere reruns
+    t('G1 lstat/stat: which file a link reaches is keyed (virtual inode numbers)', T, () => {
       const dir = fixture(runner, 'lino', {
         'data/a.txt': 'a', 'data/b.txt': 'b',
-        ...tfile(runner, 'lino', "test('lino', () => { expect(fs.lstatSync('data/cur').ino).toBe(Number(fs.readFileSync('ino.txt', 'utf8'))); });"),
+        ...tfile(runner, 'lino', "test('lino', () => { expect(fs.lstatSync('data/cur').ino !== fs.lstatSync('data/a.txt').ino).toBe(true); expect(fs.statSync('data/cur').ino).toBe(fs.statSync('data/a.txt').ino); });"),
       });
       fs.symlinkSync('a.txt', path.join(dir, 'data/cur'));
-      fs.writeFileSync(path.join(dir, 'ino.txt'), String(fs.lstatSync(path.join(dir, 'data/cur')).ino));
       noWrongReuse(runner, dir, F('lino'), () => { fs.rmSync(path.join(dir, 'data/cur')); fs.writeFileSync(path.join(dir, 'data/tmp'), ''); fs.symlinkSync('b.txt', path.join(dir, 'data/cur')); });
     });
 

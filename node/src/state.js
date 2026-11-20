@@ -2,6 +2,8 @@
 // Process-wide state shared by the controls and the runner shells.
 const native = require('./native');
 const sites = require('./sites');
+const { wire } = require('./wire');
+const concur = require('./concur');
 
 const { AsyncLocalStorage } = require('node:async_hooks');
 
@@ -16,9 +18,10 @@ class State {
   constructor() {
     this.config = null;
     this.recorder = null; // native.Recorder of the current test file (one trace part per file)
-    this.testId = null; // id of the running test, null outside tests
+    this._testId = null; // id of the running test, null outside tests (the `testId` accessor: concurrent tests)
     this.testIndex = 0;
     this.buffer = [];
+    this.deferred = false; // a concurrent test: its events stay in its buffer until it ends (src/concur.js)
     this.quietDepth = 0;
     this.onOtherEvent = null; // set by the clock (adaptive tick)
     this.onTestStart = [];
@@ -27,6 +30,16 @@ class State {
     this.notes = [];
     this.onEvent = null; // set by the cache capture (src/cache/capture.js)
     this.onRealClock = null; // set by the cache capture: a read of a clock Level 0 does not virtualize
+  }
+
+  /** The running test: with concurrent tests running, the test whose asynchronous work is running (src/concur.js). */
+  get testId() {
+    concur.sync();
+    return this._testId;
+  }
+
+  set testId(v) {
+    this._testId = v;
   }
 
   /**
@@ -64,6 +77,7 @@ class State {
   }
 
   flush() {
+    if (this.deferred) return; // a concurrent test's events are written when it ends
     if (this.buffer.length && this.recorder) this.recorder.recordPacked(this.buffer.join(RS));
     this.buffer.length = 0;
   }
@@ -90,14 +104,45 @@ class State {
   beginTest(id) {
     if (this.testId !== null) this.endTest('interrupted');
     this.flush();
-    if (this.recorder) this.recorder.beginTest(id, this.testIndex);
+    // the id as the core gets every string: well-formed, injectively (src/wire.js)
+    if (this.recorder) this.recorder.beginTest(wire(id), this.testIndex);
     this.testIndex++;
     this.testId = id;
     for (const f of this.onTestStart) f(id);
   }
 
+  /**
+   * The per-test state of a concurrent test, set up the first time its context runs (src/concur.js): as a serial test
+   * start, but its events stay in its own buffer.
+   */
+  initConcurrent(id) {
+    this._testId = id;
+    this.buffer = [];
+    this.deferred = true;
+    for (const f of this.onTestStart) f(id);
+  }
+
   endTest(outcome) {
     if (this.testId === null) return null;
+    if (this.deferred) {
+      // a concurrent test: its hooks, the mark that it ran interleaved with others, then the test in one piece. (How
+      // often it was resumed is not recorded: with a sibling waiting on real I/O it changes from run to run, while the
+      // test's own events do not.)
+      const id = this._testId;
+      for (const f of this.onTestEnd) f(id);
+      this.buffer.push(`sched${FS}sched.concurrent${FS}<detjs>${FS}interleaved`);
+      let fp = null;
+      if (this.recorder) {
+        this.recorder.beginTest(wire(id), this.testIndex);
+        if (this.buffer.length) this.recorder.recordPacked(this.buffer.join(RS));
+        fp = this.recorder.endTest(outcome);
+      }
+      this.testIndex++;
+      this.buffer = [];
+      this._testId = null;
+      this.deferred = false;
+      return fp;
+    }
     for (const f of this.onTestEnd) f(this.testId);
     this.flush();
     this.testId = null;
@@ -118,4 +163,12 @@ class State {
 
 const KEY = Symbol.for('detjs.state');
 const STATE = globalThis[KEY] || (globalThis[KEY] = new State());
+if (!STATE.__concurRegistered) {
+  STATE.__concurRegistered = true;
+  concur.register({
+    name: 'state',
+    save: () => ({ t: STATE._testId, b: STATE.buffer, d: STATE.deferred }),
+    restore: (x) => { STATE._testId = x.t; STATE.buffer = x.b; STATE.deferred = x.d; },
+  });
+}
 module.exports = { STATE, State };

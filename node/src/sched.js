@@ -221,6 +221,9 @@ function stableId(site) {
 }
 function startTest() { siteCounters = new Map(); }
 
+// per-test state of a concurrent test (src/concur.js)
+require('./concur').register({ name: 'sched', save: () => siteCounters, restore: (x) => { siteCounters = x; } });
+
 /** A virtual timer was chosen while `n` operations of the test were still pending. */
 function timerChosen(site, n) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);

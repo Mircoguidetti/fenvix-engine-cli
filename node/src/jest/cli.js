@@ -5,7 +5,7 @@
 // With --det, jest runs in this process with
 //   --runInBand            files one after the other in this process (each in
 //                          its own vm context, as usual): no worker processes;
-//   --maxConcurrency=1     test.concurrent runs one test at a time, in order;
+//   test.concurrent        runs concurrently, as configured, each test in its own Level 0 context (src/concur.js);
 //   --testSequencer        files sorted by path (or shuffled with the seed);
 //   --testRunner           the detjs runner, which delegates to the project's
 //                          runner (jest-circus) after installing the controls.
@@ -122,7 +122,7 @@ async function main(argv) {
   // No --forceExit (audit G-2180): in band, a handle left open by the suite would keep this process alive where Jest's
   // worker mode kills its workers; detjs exits only in that case, after naming the open handles (exitWhenStuck).
   const userForceExit = rest.includes('--forceExit');
-  const extra = [...(par.workers > 1 ? [`--maxWorkers=${par.workers}`] : ['--runInBand']), '--maxConcurrency=1',
+  const extra = [...(par.workers > 1 ? [`--maxWorkers=${par.workers}`] : ['--runInBand']),
     `--testSequencer=${path.join(__dirname, 'sequencer.js')}`,
     `--testRunner=${runnerShim}`];
   // A custom Jest `runner` (jest-light-runner, create-jest-runner tools) runs the files itself: detjs wraps its class
@@ -151,8 +151,8 @@ async function main(argv) {
   if (/--randomize/.test(help.stdout || '')) extra.push('--no-randomize');
   const fe = userForceExit ? ' --forceExit' : '';
   const isolation = par.workers > 1
-    ? `jest --maxWorkers=${par.workers}${fe}: ${par.workers} worker processes, each runs the files of one lane in plan order, each file in its own vm context; maxConcurrency=1${runnerNote}`
-    : `jest --runInBand${fe}: one test file at a time in the main process, each in its own vm context; maxConcurrency=1${runnerNote}${par.refused ? `; parallel refused: ${par.refused}` : ''}`;
+    ? `jest --maxWorkers=${par.workers}${fe}: ${par.workers} worker processes, each runs the files of one lane in plan order, each file in its own vm context; concurrent tests as configured${runnerNote}`
+    : `jest --runInBand${fe}: one test file at a time in the main process, each in its own vm context; concurrent tests as configured${runnerNote}${par.refused ? `; parallel refused: ${par.refused}` : ''}`;
   const cliReq = require('node:module').createRequire(jest.bin);
   // the cache's reuse decision after globalSetup (G-1290): when Jest schedules the files (src/jest/sequencer.js)
   if (pc) await deferDecision(cliReq, pc);
@@ -349,7 +349,7 @@ const VOLATILE_GLOBAL = new Set(['json', 'outputFile', 'reporters', 'testPathPat
   'watch', 'watchAll', 'watchman', 'watchPlugins', 'maxWorkers', 'runInBand', 'forceExit', 'silent', 'verbose', 'listTests', 'passWithNoTests',
   'detectOpenHandles', 'seed', 'shard', 'useStderr', 'logHeapUsage', 'notify', 'notifyMode', 'lastCommit', 'changedSince', 'changedFilesWithAncestor',
   'findRelatedTests', 'testSequencer', 'coverageReporters', 'coverageDirectory', 'collectCoverageFrom', 'coverageThreshold', 'onlyFailures',
-  'openHandlesTimeout', 'testFailureExitCode', 'noStackTrace', 'expand', 'errorOnDeprecated', 'bail', 'maxConcurrency', 'randomize', 'showSeed',
+  'openHandlesTimeout', 'testFailureExitCode', 'noStackTrace', 'expand', 'errorOnDeprecated', 'bail', 'randomize', 'showSeed',
   'testNamePattern_', 'rootDir_', 'collectTests', 'waitForUnhandledRejections']);
 const VOLATILE_PROJECT = new Set(['testRunner', 'cacheDirectory', 'id', 'testPathIgnorePatterns', 'testMatch', 'testRegex', 'roots_']);
 

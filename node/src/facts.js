@@ -174,6 +174,7 @@ function installRealm(patcher, g) {
 const CHARS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 let mkdtempN = 0;
 STATE.onTestStart.push(() => { mkdtempN = 0; });
+require('./concur').register({ name: 'facts', save: () => mkdtempN, restore: (x) => { mkdtempN = x; } });
 
 function suffixes(prefix) {
   const cfg = STATE.config;

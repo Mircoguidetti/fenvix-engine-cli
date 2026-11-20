@@ -6,8 +6,8 @@
 //   * one worker, files one after the other (fileParallelism: false,
 //     maxWorkers: 1) whatever the pool (threads / forks / vmThreads): worker
 //     isolation is kept, parallelism is not; the choice is written in the trace;
-//   * maxConcurrency 1 and sequence.concurrent false (test.concurrent runs
-//     one test at a time, in order); sequence.shuffle off;
+//   * concurrent tests (test.concurrent, describe.concurrent, sequence.concurrent) run concurrently, as configured,
+//     each in its own Level 0 context (src/concur.js); sequence.shuffle off;
 //   * a sequencer that sorts files by path (or shuffles them with the seed);
 //   * the detjs runner (src/vitest/runner.mjs) in every worker.
 const fs = require('node:fs');
@@ -155,8 +155,7 @@ async function main(argv) {
     watch: false,
     fileParallelism: par.workers !== 1,
     maxWorkers: par.workers > 1 ? par.workers : par.workers === -1 ? undefined : 1,
-    maxConcurrency: 1,
-    sequence: { ...(options.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer },
+    sequence: { ...(options.sequence || {}), shuffle: false, sequencer: DetSequencer },
   });
   if (major < 4) options.minWorkers = par.workers > 1 ? par.workers : 1;
   if (options.maxWorkers === undefined) delete options.maxWorkers;
@@ -179,7 +178,7 @@ async function main(argv) {
     collectParallel();
     if (pc) for (const l of pc.finishSync()) fs.writeSync(1, `${l}\n`);
     const lanes = par.plan ? `${par.plan.workers} lanes (fixed plan ${par.plan.digest}), fileParallelism=true` : 'maxWorkers=1, fileParallelism=false';
-    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; ${lanes}, maxConcurrency=1${par.refused ? `; parallel refused: ${par.refused}` : ''}${info.userRunners && info.userRunners.length ? `; project runners composed with detjs: ${info.userRunners.join(',')}` : ''}`;
+    const isolation = `vitest pool=${info.pool || 'default'} isolate=${info.isolate}; projects=${(info.projects || []).join(',')}; ${lanes}, concurrent tests as configured (one Level 0 context each)${par.refused ? `; parallel refused: ${par.refused}` : ''}${info.userRunners && info.userRunners.length ? `; project runners composed with detjs: ${info.userRunners.join(',')}` : ''}`;
     const { lines } = session.finish(run, opts, executed, {
       runner: 'vitest', runner_version: pkg.version, isolation, serial: !par.plan,
       pool: info.pool, isolate: info.isolate, projects: info.projects, cli_args: args, parallel: par.result.meta,
@@ -214,10 +213,9 @@ async function main(argv) {
     if (own) { info.userRunners.push(`${c.name || 'root'}:${path.relative(root, own)}`); ownRunners.set(c, own); }
     // the vm pools: Level 0 in the worker before Vitest's vm context takes its view of Node's modules (G-0461)
     if (c.pool === 'vmThreads' || c.pool === 'vmForks') addPreload(c, VM_PRELOAD);
-    c.maxConcurrency = 1;
     // the runner's test and hook timeouts on the virtual clock: its clock functions are captured first (G-0144)
     if (cfg.controls.has('timers')) addEarlyCapture(c, DEADLINE_PRELOAD);
-    c.sequence = { ...(c.sequence || {}), shuffle: false, concurrent: false, sequencer: DetSequencer };
+    c.sequence = { ...(c.sequence || {}), shuffle: false, sequencer: DetSequencer };
     pools.add(`${c.name || 'root'}:${c.browser && c.browser.enabled ? 'browser' : c.pool}`);
     if (pc) {
       const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config);
@@ -441,7 +439,7 @@ const VOLATILE_ARGS = new Set(['maxWorkers', 'max-workers', 'minWorkers', 'min-w
   'shard', 'changed', 'passWithNoTests', 'clearScreen', 'logHeapUsage', 'color', 'hideSkippedTests', 'dir', 'includeTaskLocation',
   'standalone', 'printConsoleTrace', 'mergeReports', 'json', 'filter', '_', '--']);
 const VOLATILE_CONFIG = new Set(['reporters', 'outputFile', 'watch', 'ui', 'api', 'open', 'runner', 'maxWorkers', 'minWorkers',
-  'fileParallelism', 'maxConcurrency', 'include', 'exclude', 'includeSource', 'cliExclude', 'filters', 'shard', 'silent',
+  'fileParallelism', 'include', 'exclude', 'includeSource', 'cliExclude', 'filters', 'shard', 'silent',
   'logHeapUsage', 'printConsoleTrace', 'cache', 'changed', 'passWithNoTests', 'hideSkippedTests', 'dir', 'standalone',
   'coverage', 'benchmark', 'sequence', 'watchTriggerPatterns', 'forceRerunTriggers', 'related', 'mergeReports', 'project',
   'inspector', 'inspect', 'inspectBrk', 'slowTestThreshold', 'onTestFinished', 'tags', 'experimental']);
@@ -472,7 +470,7 @@ function configParts(projects, ctx, args, pc, ownRunners = new Map()) {
     if (!c) continue;
     const name = c.name || '';
     const seq = { ...(c.sequence || {}) };
-    for (const k of ['sequencer', 'seed', 'shuffle', 'concurrent']) delete seq[k];
+    for (const k of ['sequencer', 'seed', 'shuffle']) delete seq[k];
     const cov = c.coverage ? { enabled: c.coverage.enabled, provider: c.coverage.provider } : null;
     const vite = (pr.vite && pr.vite.config) || (pr.server && pr.server.config) || null;
     let viteParts = null;

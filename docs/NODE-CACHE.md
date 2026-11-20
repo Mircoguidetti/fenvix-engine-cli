@@ -162,6 +162,10 @@ the test modules are covered by the module graph).
   part of the configuration digest, so an entry recorded in parallel is reused serially and the reverse (MEASURED in
   `node/test/parallel-p041.test.js` on Vitest 3, 4, 5 and Jest 29, 30).
 * Receipts and the summary are written once, by the main process, for every decided file.
+* Concurrent tests (docs/NODE.md control 7e) interleave inside their file: `sequence.concurrent` and `maxConcurrency`
+  are part of the configuration digest (a file's results recorded with one concurrency are not reused with another).
+  A concurrent test's inputs are the file's log up to its end, which includes what the other tests of the file read
+  meanwhile: more inputs than its own, never fewer.
 
 ## Shared cache
 

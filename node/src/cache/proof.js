@@ -50,7 +50,8 @@ const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated', 'outputFile', 'r
   // worker counts, wherever Vitest repeats them (resolved projects, CLI options): serial and parallel lanes give the
   // same results (a placement that could change one is refused or not cached: src/parallel.js)
   'maxWorkers', 'minWorkers', 'fileParallelism', 'maxThreads', 'minThreads', 'maxForks', 'minForks']);
-const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
+// (sequence.concurrent is kept: concurrent tests interleave, which can change a file's results)
+const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle']);
 
 /** Deterministic, cycle-safe digestable form of a configuration value (`volatile`: top-level keys left out). */
 function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {
@@ -696,7 +697,8 @@ class ProofSession {
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
       uncacheable_projects: [...this.uncacheableProjects.keys()].map((p) => this.scoped(p)), verify: Boolean(this.verify), hits,
     };
-    const text = JSON.stringify(input);
+    // every string as the core gets it (a test named with an unpaired surrogate: src/wire.js)
+    const text = require('../wire').wireJson(input);
     if (process.env.DETJS_POLICY_DUMP) {
       // test-only: the inputs of the policy, for test/policy-equivalence.test.js
       try {

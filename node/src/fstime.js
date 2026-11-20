@@ -43,6 +43,8 @@ let cpVirt = [];
 const EXACT = new Map(); // real ms (integer) set by utimes -> virtual ms the test gave
 let INO = new Map();
 let DEV = new Map();
+// per-test state of a concurrent test (src/concur.js): its timeline anchor and checkpoints
+require('./concur').register({ name: 'fstime', save: () => [R0, V0, cpReal, cpVirt], restore: (x) => { [R0, V0, cpReal, cpVirt] = x; } });
 
 function realWallMs() {
   return clock.REAL.timeOrigin + clock.realNowMs();

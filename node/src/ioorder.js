@@ -22,6 +22,7 @@ const net = require('node:net');
 const { STATE } = require('./state');
 const sites = require('./sites');
 const sched = require('./sched');
+const concur = require('./concur');
 
 const HOLD_MAX_MS = 200;
 let clock = null; // src/clock.js (set at installation)
@@ -40,8 +41,19 @@ let marked = false;
 let undelivered = [];
 let held = [];
 let holdTimer = null;
+// per-test state of a concurrent test (src/concur.js)
+concur.register({
+  name: 'ioorder',
+  save: () => [seq, pending, marked, undelivered, held, holdTimer],
+  restore: (x) => { [seq, pending, marked, undelivered, held, holdTimer] = x; },
+});
 
 function startTest() {
+  if (concur.active()) {
+    // a concurrent test's own ordering state; the other tests' operations and held completions are theirs
+    seq = 0; pending = new Set(); marked = false; undelivered = []; held = []; holdTimer = null;
+    return;
+  }
   seq = 0;
   pending = new Set();
   marked = false;
@@ -77,9 +89,33 @@ function progressed(op, kind) {
   clock.DRIVER.rearm();
 }
 
+const STRUCTURED = (_e, cs) => cs;
+const SRC_DIR = require('node:path').resolve(__dirname) + require('node:path').sep;
+/**
+ * Whether the operation is started by Node's own file system code (the steps of `fs.cp`, which loads `fs/promises`
+ * after detjs wrapped it): part of the operation that started it, not an operation of the test to order (ordering
+ * them behind their own parent deadlocked `fs.promises.cp` until the hold timer released each step).
+ */
+function nodeInternal() {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = STRUCTURED;
+  E.stackTraceLimit = 12;
+  try { E.captureStackTrace(h, nodeInternal); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    const f = (cs.getFileName && cs.getFileName()) || '';
+    if (!f || f.startsWith(SRC_DIR)) continue;
+    return f.startsWith('node:internal/fs/') || f.startsWith('internal/fs/');
+  }
+  return false;
+}
+
 /** A new operation of the running test (null when outside tests or started by the runner). */
 function begin(kind) {
   if (STATE.testId === null || STATE.quietDepth > 0) return null;
+  if (nodeInternal()) return null;
   let site = '';
   if (STATE.config && STATE.config.sites) {
     site = STATE.quiet(() => sites.resolve());
@@ -117,17 +153,18 @@ function track(op) {
  */
 function complete(op, deliver) {
   if (op === null) { deliver(); return; }
+  concur.sync();
   const i = undelivered.indexOf(op);
   if (i <= 0) {
     if (i === 0) undelivered.shift();
     end(op);
-    try { deliver(); } finally { if (held.length) REAL_SET_IMMEDIATE(drain); }
+    try { deliver(); } finally { if (held.length) REAL_SET_IMMEDIATE(concur.bind(drain)); }
     return;
   }
   held.push({ op, deliver });
   sched.setHeld(held.length);
   if (holdTimer === null) {
-    holdTimer = REAL_SET_TIMEOUT(() => { holdTimer = null; releaseAll(true); }, HOLD_MAX_MS);
+    holdTimer = REAL_SET_TIMEOUT(concur.bind(() => { holdTimer = null; releaseAll(true); }), HOLD_MAX_MS);
     if (holdTimer.unref) holdTimer.unref();
   }
 }
@@ -143,7 +180,7 @@ function drain() {
   undelivered.shift();
   if (!held.length && holdTimer !== null) { REAL_CLEAR_TIMEOUT(holdTimer); holdTimer = null; }
   end(h.op);
-  try { h.deliver(); } finally { if (held.length) REAL_SET_IMMEDIATE(drain); }
+  try { h.deliver(); } finally { if (held.length) REAL_SET_IMMEDIATE(concur.bind(drain)); }
 }
 
 /** Release every held completion (an earlier operation does not complete, or the test ended). */
@@ -179,7 +216,7 @@ function wrapCallback(name, real) {
       const j = undelivered.indexOf(op);
       if (j >= 0) undelivered.splice(j, 1);
       end(op);
-      if (held.length) REAL_SET_IMMEDIATE(drain);
+      if (held.length) REAL_SET_IMMEDIATE(concur.bind(drain));
       throw e;
     }
   };

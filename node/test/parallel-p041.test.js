@@ -313,6 +313,23 @@ for (const runner of RUNNERS) {
         }
       });
 
+      // mobx: jsdom reads the host's performance.timeOrigin while it builds the window, before Level 0 was installed in
+      // the process: every result was refused as a real-clock read. The process controls now come first.
+      test('jsdom environment: results are recorded and reused, serially and in lanes', T, () => {
+        const dir = fixture(runner, 'jsdom-env', {
+          a: "test('dom', () => { document.body.innerHTML = '<p>x</p>'; expect(document.querySelectorAll('p').length).toBe(1); });",
+          b: "test('dom2', () => { expect(typeof window.performance.now()).toBe('number'); });",
+        }, { jest: { testEnvironment: 'jsdom' } });
+        for (const args of [[], ['-w', '2']]) {
+          const cache = path.join(dir, `.cache${args.length}`);
+          const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
+          assert.equal(r1.status, 0, show(r1));
+          assert.equal(r1.summary.recorded, 2, show(r1));
+          const r2 = det(runner, dir, [...args, `--det-cache=${cache}`]);
+          assert.equal(r2.summary.reused_tests, 2, show(r2));
+        }
+      });
+
       test('Jest workerThreads: lanes, the capture in each worker thread, no wrong reuse after a change', T, () => {
         const dir = fixture(runner, 'wthreads', {
           a: "test('reads', () => { expect(fs.readFileSync(path.join(process.cwd(), 'value.txt'), 'utf8')).toBe('1'); });",
@@ -355,6 +372,92 @@ for (const runner of RUNNERS) {
         assert.match(r.trace.header.meta.parallel.requested.refused, /isolate=false/);
       });
     }
+
+    // dom-testing-library: source-map's lazily drawn Math.random (parsing a map while Jest formats a stack) moved the
+    // test's own values depending on which file came first in the process, so 2 fingerprints differed between the
+    // parallel and the serial run. A draw made for the runner now uses its own stream and is not recorded.
+    test('a draw a library makes for the runner does not shift the test\'s own values', T, () => {
+      const req = runner === 'vitest' ? "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" : '';
+      const dir = fixture(runner, 'infra-draw', {
+        a: `${req}\ntest('own', () => { if (fs.existsSync('probe.on')) require('jest-probe')(); globalThis.__v = Math.random(); expect(globalThis.__v).toBeLessThan(1); });`,
+      }, {
+        extra: {
+          // a runner package (INFRA by name) calling an ordinary library that draws
+          'node_modules/jest-probe/package.json': '{"name":"jest-probe","main":"index.js"}',
+          'node_modules/jest-probe/index.js': "module.exports = () => require('lazy-dep')();\n",
+          'node_modules/lazy-dep/package.json': '{"name":"lazy-dep","main":"index.js"}',
+          'node_modules/lazy-dep/index.js': 'module.exports = () => { let x = 0; for (let i = 0; i < 5; i++) x += Math.random(); return x; };\n',
+        },
+      });
+      const randomEvents = (r) => r.trace.tests[0].events.filter((e) => e.s === 'random').map((e) => `${e.o}=${e.v}`);
+      const off = det(runner, dir);
+      assert.equal(off.status, 0, show(off));
+      write(dir, { 'probe.on': '1' });
+      const on = det(runner, dir);
+      assert.equal(on.status, 0, show(on));
+      assert.deepEqual(randomEvents(on), randomEvents(off), 'the probe\'s draws neither move the test\'s value nor appear in its events');
+      assert.equal(randomEvents(on).length, 1);
+    });
+
+    // audit G-1449 / G-1456: concurrent tests ran one at a time under --det. They now run interleaved, each in its own
+    // Level 0 context (src/concur.js): its events, clock and generators are its own, so its fingerprint is the same in
+    // every run, serially or in lanes, whatever the interleaving.
+    const concurrentCases = runner === 'vitest'
+      ? [['test.concurrent', 'test.concurrent', {}], ['describe.concurrent', 'test', { wrap: 'describe.concurrent' }], ['sequence.concurrent', 'test', { config: { sequence: { concurrent: true } } }]]
+      : [['test.concurrent', 'test.concurrent', {}]];
+    for (const [label, fnName, how] of concurrentCases) {
+      test(`${label}: tests interleave, each in its own context; fingerprints stable across runs and lanes`, T, () => {
+        const outDir = path.join(TMP, 'par', `${runner}-conc-out-${label}`);
+        fs.rmSync(outDir, { recursive: true, force: true });
+        fs.mkdirSync(outDir, { recursive: true });
+        const tests = [];
+        for (let i = 0; i < 3; i++) tests.push(`${fnName}('timer ${i}', async () => { const a = Math.random(); const t0 = Date.now(); await new Promise((r) => setTimeout(r, ${(3 - i) * 100})); expect(Date.now() - t0).toBeGreaterThanOrEqual(${(3 - i) * 100}); expect(Math.random()).not.toBe(a); });`);
+        // a child process prints the real time around a real 400 ms wait: overlapping intervals = the tests ran together
+        for (let i = 0; i < 3; i++) tests.push(`${fnName}('child ${i}', async () => { const a = Math.random(); const out = await new Promise((r) => cp.execFile(process.execPath, ['-e', 'const t = Date.now(); setTimeout(() => console.log(t + " " + Date.now()), 400)'], (e, so) => r(String(so)))); fs.writeFileSync(${JSON.stringify(outDir)} + '/child-${i}.txt', out); expect(Math.random()).not.toBe(a); });`);
+        let body = tests.join('\n');
+        if (how.wrap) body = `${how.wrap}('group', () => {\n${body}\n});`;
+        const dir = fixture(runner, `conc-${label.replace(/\W/g, '')}`, {
+          c: `${runner === 'vitest' ? "import cp from 'node:child_process';" : "const cp = require('node:child_process');"}\n${body}`,
+          d: "test('serial', () => { expect(Math.random()).toBeLessThan(1); });",
+        }, { vitest: how.config || {} });
+        const r1 = det(runner, dir);
+        assert.equal(r1.status, 0, show(r1));
+        const intervals = [0, 1, 2].map((i) => fs.readFileSync(path.join(outDir, `child-${i}.txt`), 'utf8').trim().split(' ').map(Number));
+        const overlap = intervals.some(([s1, e1], i) => intervals.some(([s2], j) => i !== j && s2 >= s1 && s2 < e1));
+        assert.ok(overlap, `the child tests ran at the same time: ${JSON.stringify(intervals)}`);
+        const conc = r1.trace.tests.filter((t) => /(timer|child) \d$/.test(t.nodeid));
+        assert.equal(conc.length, 6, JSON.stringify(r1.trace.tests.map((t) => t.nodeid)));
+        for (const t of conc) {
+          assert.equal(t.events.filter((e) => e.s === 'random').length, 2, `${t.nodeid}: its own two draws only`);
+          assert.ok(t.events.some((e) => e.o === 'sched.concurrent'), t.nodeid);
+        }
+        const r2 = det(runner, dir);
+        const p = det(runner, dir, ['--det-workers=2']);
+        assert.equal(p.status, 0, show(p));
+        assert.deepEqual(fps(r2), fps(r1));
+        assert.deepEqual(fps(p), fps(r1));
+      });
+    }
+
+    // yaml: test names with an unpaired surrogate made the policy input invalid JSON for the core ("lone leading
+    // surrogate"): nothing was recorded for the whole session; napi would also turn both into U+FFFD (one id)
+    test('test names with unpaired surrogates: distinct ids, recorded and reused', T, () => {
+      const dir = fixture(runner, 'surrogates', {
+        s: [
+          "test('lone \\ud800', () => { expect(Math.random()).toBeLessThan(1); });",
+          "test('lone \\ud801', () => { expect(Math.random()).toBeLessThan(1); });",
+          "test('marker \\uffffd800', () => { expect(1).toBe(1); });",
+          "test('pair \\ud83d\\ude00', () => { expect(1).toBe(1); });",
+        ].join('\n'),
+      });
+      const cache = path.join(dir, '.cache');
+      const r1 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.equal(r1.status, 0, show(r1));
+      assert.equal(new Set(r1.trace.tests.map((t) => t.nodeid)).size, 4, JSON.stringify(r1.trace.tests.map((t) => t.nodeid)));
+      assert.equal(r1.summary.recorded, 4, show(r1));
+      const r2 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.equal(r2.summary.reused_tests, 4, show(r2));
+    });
   });
 }
 
@@ -382,7 +485,10 @@ for (const v of VERSIONS) {
     test('plan identical across runs, fingerprints equal serial, cache reused both ways', T, (t) => {
       const base = installed(v);
       if (!base) { t.skip(`${v.pkg} could not be installed (offline?)`); return; }
-      const dir = fixture(v.runner, 'iso', isolatedSuite(4), { base: path.join(base, 'fx') });
+      // plus three concurrent tests (each in its own Level 0 context: G-1449, G-1456; Jest 29 starts them before their
+      // test_start events)
+      const conc = { conc: [0, 1, 2].map((i) => `test.concurrent('c${i}', async () => { const a = Math.random(); await new Promise((r) => setTimeout(r, ${(3 - i) * 50})); expect(Math.random()).not.toBe(a); });`).join('\n') };
+      const dir = fixture(v.runner, 'iso', { ...isolatedSuite(4), ...conc }, { base: path.join(base, 'fx') });
       const s = det(v.runner, dir);
       assert.equal(s.status, 0, show(s));
       const args = v.runner === 'vitest' ? ['--pool=threads', '--maxWorkers=2'] : ['--maxWorkers=2'];
@@ -395,14 +501,15 @@ for (const v of VERSIONS) {
       if (v.runner === 'jest') assert.deepEqual(p1.trace.header.meta.parallel.placement.processes.sort(), plan(p1).lanes.slice().sort());
       const cache = path.join(dir, '.cache');
       const c1 = det(v.runner, dir, [...args, `--det-cache=${cache}`]);
-      assert.equal(c1.summary.recorded, 16, show(c1));
+      assert.equal(c1.summary.recorded, 19, show(c1));
       const serialArgs = v.runner === 'vitest' ? ['--pool=threads'] : [];
       const c2 = det(v.runner, dir, [...serialArgs, `--det-cache=${cache}`]);
-      assert.equal(c2.summary.reused_tests, 16, show(c2));
+      assert.equal(c2.summary.reused_tests, 19, show(c2));
       fs.rmSync(cache, { recursive: true, force: true });
       det(v.runner, dir, [...serialArgs, `--det-cache=${cache}`]);
       const c4 = det(v.runner, dir, [...args, `--det-cache=${cache}`]);
-      assert.equal(c4.summary.reused_tests, 16, show(c4));
+      assert.equal(c4.summary.reused_tests, 19, show(c4));
+      for (const t of s.trace.tests.filter((x) => /::c\d$/.test(x.nodeid))) assert.equal(t.events.filter((e) => e.s === 'random').length, 2, t.nodeid);
     });
   });
 }
