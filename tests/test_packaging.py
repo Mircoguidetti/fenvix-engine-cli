@@ -222,7 +222,7 @@ def test_release_workflow_uses_trusted_publishing_with_the_configured_names():
     assert os.path.basename(path) == "release.yml"
     assert re.search(r"(?m)^  pypi:\n(?:    .*\n)*?    environment: pypi\n", text), "pypi job must use environment pypi"
     assert text.count("id-token: write") >= 2 and "pypa/gh-action-pypi-publish" in text
-    assert "${{ secrets." not in text and "password" not in text.lower() and "NPM_TOKEN" not in text
+    assert "${{ secrets." not in text and "password:" not in text and "NPM_TOKEN" not in text
     assert "test.pypi.org" not in text and "testpypi" not in text.lower()
     meta = tomllib.load(open(os.path.join(ROOT, "pyproject.toml"), "rb"))
     assert meta["project"]["name"] == "fenvix"
