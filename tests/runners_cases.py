@@ -124,8 +124,12 @@ CASES = [
          lambda r, m: {"DETPY_T_X": "1"}),
     case("env_enumeration", 'assert not [k for k in os.environ if k.startswith("DETPY_T_")]',
          lambda r, m: {"DETPY_T_Y": "1"}),
+    # claude/verifier-cli: --det pins TZ (--det-tz, default UTC); FENVIX_TZ=keep keeps the machine's zone, read by C
     case("timezone_read_by_c", 'assert time.strftime("%H", time.localtime(0)) == "00"',
-         lambda r, m: {"TZ": "Asia/Tokyo"}, env1={"TZ": "UTC"}, control=False),
+         lambda r, m: {"TZ": "Asia/Tokyo", "FENVIX_TZ": "keep"}, env1={"TZ": "UTC", "FENVIX_TZ": "keep"},
+         control=False),
+    case("timezone_pinned", 'assert time.strftime("%H", time.localtime(0)) == "00"',
+         lambda r, m: {"TZ": "Asia/Tokyo"}, env1={"TZ": "UTC"}, expect="reused", control=False),
     case("child_process_reads_file",
          'out = subprocess.run(["cat", "data.txt"], capture_output=True, text=True, check=True).stdout\n'
          'assert out == "hello\\n"',

@@ -410,7 +410,7 @@ class DetRun:
         w(f"detpy {__version__}: runner {self.runner} {self.version or ''}; controls={','.join(sorted(cfg.controls))};"
           f" order {'shuffled with seed %d' % cfg.seed if cfg.shuffle else 'fixed (runner order)'}")
         w(f"detpy: PYTHONHASHSEED={os.environ.get('PYTHONHASHSEED')} ({self.status}); "
-          f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={self.net_mode}; sleep={cfg.sleep}")
+          f"ASLR {'off' if reexec.aslr_disabled() else 'on'}; network={self.net_mode}; sleep={_level0.sleep_label(cfg)}")
         if self.adjustments:
             w(f"detpy: adjusted: {'; '.join(self.adjustments)}")
         w(f"trace: {self.trace_path}  order digest: {self.order_digest}  seed: {cfg.seed}"
