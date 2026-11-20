@@ -10,6 +10,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const controls = require('../controls');
+const concur = require('../concur');
 const parallel = require('../parallel');
 const repro = require('../repro');
 
@@ -94,7 +95,7 @@ function makeRunner(Base, realm = globalThis) {
     constructor(config) {
       super(config);
       const c = controls.cfg();
-      this.__det = { active: c.active, ids: new Map(), fileOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
+      this.__det = { active: c.active, ids: new Map(), ctx: new WeakMap(), fileOf: new Map(), root: process.env.DETJS_ROOT || config.root, opened: null };
       if (c.active) {
         controls.installProcess();
         controls.installRealm(realm, { sameRealm: realm === globalThis });
@@ -171,9 +172,21 @@ function makeRunner(Base, realm = globalThis) {
     }
 
     async onBeforeRunTask(test) {
+      // a concurrent test (test.concurrent, describe.concurrent, sequence.concurrent): its own Level 0 context, entered
+      // before the first await so that the hooks, the test and everything they start run in it (src/concur.js)
+      if (this.__det.active && test.concurrent && test.type === 'test' && !this.__det.ctx.has(test)) {
+        const cid = this.__det.ids.get(test) || `${test.file ? fileIdOf(test.file, this.__det.root) : '?'}::${test.name}`;
+        this.__det.ctx.set(test, concur.begin(cid, () => { STATE.initConcurrent(cid); if (CAP) CAP.setCtx('t'); }));
+      }
       if (super.onBeforeRunTask) await super.onBeforeRunTask(test);
       if (!this.__det.active) return;
       const id = this.__det.ids.get(test) || `${test.file ? fileIdOf(test.file, this.__det.root) : '?'}::${test.name}`;
+      const ctx = this.__det.ctx.get(test);
+      if (ctx) {
+        if (test.mode !== 'run' && test.mode !== 'queued') this.__endConcurrent(test, ctx, test.mode === 'todo' ? 'todo' : 'skipped');
+        else if (test.result && test.result.state === 'fail') this.__endConcurrent(test, ctx, 'failed');
+        return;
+      }
       if (STATE.testId === id) return; // retry/repeat of the running test
       STATE.beginTest(id);
       if (CAP) CAP.setCtx('t');
@@ -189,8 +202,17 @@ function makeRunner(Base, realm = globalThis) {
       }
     }
 
+    /** A concurrent test ends: in its context, its events written in one piece (src/state.js deferred mode). */
+    __endConcurrent(test, ctx, outcome) {
+      if (ctx.done) return;
+      concur.within(ctx, () => this.__end(test, ctx.id, outcome));
+      concur.finish(ctx);
+    }
+
     onAfterRunTask(test) {
-      if (this.__det.active && STATE.testId !== null) this.__end(test, STATE.testId, outcomeOf(test));
+      const ctx = this.__det.active ? this.__det.ctx.get(test) : undefined;
+      if (ctx) this.__endConcurrent(test, ctx, outcomeOf(test));
+      else if (this.__det.active && STATE.testId !== null) this.__end(test, STATE.testId, outcomeOf(test));
       if (super.onAfterRunTask) return super.onAfterRunTask(test);
       return undefined;
     }

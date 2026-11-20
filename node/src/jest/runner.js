@@ -10,6 +10,7 @@
 // (jest-circus).
 const path = require('node:path');
 const controls = require('../controls');
+const concur = require('../concur');
 const parallel = require('../parallel');
 const repro = require('../repro');
 
@@ -224,6 +225,13 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
   const exceptions = {};
   let fileError = null;
   let pending = null; // test whose last attempt finished (retries reuse the id)
+  const ctxOf = new Map(); // a concurrent test -> its Level 0 context (src/concur.js)
+  const endConcurrent = (test, id, outcome) => {
+    const ctx = ctxOf.get(test);
+    if (!ctx || ctx.done) return;
+    concur.within(ctx, () => endTest(id, outcome, test));
+    concur.finish(ctx);
+  };
   const endTest = (id, outcome, test) => {
     const fp = STATE.endTest(outcome);
     if (CAP) {
@@ -276,12 +284,27 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
       }
       case 'test_start': {
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
+        if (event.test.concurrent) {
+          // test.concurrent: its own Level 0 context, carried by its test function and what it starts
+          if (!ctxOf.has(event.test)) {
+            const ctx = concur.create(id, () => { STATE.initConcurrent(id); if (CAP) CAP.setCtx('t'); });
+            ctxOf.set(event.test, ctx);
+            const fn = event.test.fn;
+            if (typeof fn === 'function') {
+              const w = function concurrentTest(...a) { return concur.within(ctx, () => fn.apply(this, a)); };
+              Object.defineProperty(w, 'length', { value: fn.length });
+              event.test.fn = w;
+            }
+          }
+          break;
+        }
         if (STATE.testId !== id) begin(id);
         break;
       }
       case 'test_done': {
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
-        if (STATE.testId === id) pending = { id, outcome: outcomeOf(event.test), test: event.test };
+        if (ctxOf.has(event.test)) endConcurrent(event.test, id, outcomeOf(event.test));
+        else if (STATE.testId === id) pending = { id, outcome: outcomeOf(event.test), test: event.test };
         if (event.test.errors && event.test.errors.length) exceptions[id] = repro.exceptionOf(event.test.errors[0], 'call', root);
         else delete exceptions[id]; // a retry passed
         break;
@@ -289,6 +312,7 @@ async function detjsJestRunner(globalConfig, config, environment, runtime, testP
       case 'test_skip':
       case 'test_todo': {
         const id = ids.get(event.test) || `${fileId}::${event.test.name}`;
+        if (ctxOf.has(event.test)) { endConcurrent(event.test, id, event.name === 'test_todo' ? 'todo' : 'skipped'); break; }
         if (STATE.testId !== id) begin(id);
         pending = null;
         endTest(id, event.name === 'test_todo' ? 'todo' : 'skipped', event.test);

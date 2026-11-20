@@ -100,6 +100,14 @@ function reseed(key) {
   INFRA_CRYPTO.seed(h6, l6);
 }
 
+// per-test state of a concurrent test (src/concur.js): each test draws from its own streams
+const STREAMS = [MATH, CRYPTO, ENTROPY, NONCE, INFRA_MATH, INFRA_CRYPTO];
+require('./concur').register({
+  name: 'seeds',
+  save: () => STREAMS.map((g) => g.s.slice()),
+  restore: (x) => { STREAMS.forEach((g, i) => g.s.set(x[i])); },
+});
+
 /** A draw made for the runner (src/sites.js runnerInitiated): only inside a test, where the streams are the test's. */
 function forRunner() {
   return STATE.testId !== null && STATE.quietDepth === 0 && STATE.config && STATE.config.sites && sites.runnerInitiated();
@@ -142,12 +150,14 @@ function protocolNonce() {
 }
 
 function nonce(op, buf) {
+  require('./concur').sync();
   NONCE.fill(buf);
   STATE.record('random', op, `nonce ${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
   return buf;
 }
 
 function mathRandom() {
+  require('./concur').sync();
   if (forRunner()) return INFRA_MATH.nextDouble();
   const v = MATH.nextDouble();
   STATE.record('random', 'Math.random', String(v));
@@ -164,6 +174,7 @@ const real = {
 };
 
 function getRandomValues(arr) {
+  require('./concur').sync();
   // Tag check, not instanceof: Jest test files run in another realm.
   const tag = Object.prototype.toString.call(arr);
   if (!ArrayBuffer.isView(arr) || /Float(16|32|64)Array|DataView/.test(tag)) {
@@ -178,6 +189,7 @@ function getRandomValues(arr) {
 }
 
 function randomUUID(options) {
+  require('./concur').sync();
   if (options !== undefined && (options === null || typeof options !== 'object')) return real.randomUUID(options);
   const b = new Uint8Array(16);
   const runner = forRunner();

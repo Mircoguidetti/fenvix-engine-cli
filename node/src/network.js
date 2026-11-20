@@ -132,7 +132,7 @@ class Policy {
     this.hostOfFake = new Map();
     this.counters = new Map(); // key -> Map(host:port -> n)
     this.recordedTests = new Set();
-    this.testSockets = new Set();
+    this.testSockets = new Map(); // test id -> its connections (concurrent tests each close only their own)
   }
 
   startTest(id) {
@@ -145,11 +145,20 @@ class Policy {
    * a later test's request travelled on the first test's connection and was stored under the first test, so the
    * later test could not be replayed alone or in another order).
    */
-  endTest() {
-    for (const s of this.testSockets) {
-      try { if (!s.destroyed) s.destroy(); } catch { /* ignore */ }
+  addTestSocket(id, sock) {
+    let set = this.testSockets.get(id);
+    if (!set) this.testSockets.set(id, (set = new Set()));
+    set.add(sock);
+  }
+
+  endTest(id) {
+    const ids = id === undefined ? [...this.testSockets.keys()] : [id];
+    for (const k of ids) {
+      for (const s of this.testSockets.get(k) || []) {
+        try { if (!s.destroyed) s.destroy(); } catch { /* ignore */ }
+      }
+      this.testSockets.delete(k);
     }
-    this.testSockets.clear();
   }
 
   hostname(host) {
@@ -533,7 +542,7 @@ function startRecording(sock, host, port, isTls, site) {
   h.send.push((b) => { const n = wsn.push(b); if (n.length) cassette.append(key, idx, 'send', redact(n)); });
   sock.once('close', () => { const r = wsn.flush(); if (r.length) { try { cassette.append(key, idx, 'send', r); } catch { /* saved */ } } });
   track(sock, `${host}:${port}`, site);
-  if (key === STATE.testId) POLICY.testSockets.add(sock);
+  if (key === STATE.testId) POLICY.addTestSocket(key, sock);
   STATE.record('net', isTls ? 'tls.connect' : 'net.connect', `${host}:${port} record#${idx}`);
 }
 
@@ -740,7 +749,7 @@ function connect(...args) {
       const p = startReplayServer(rep.segments, false, `${host}:${port}#${rep.idx}`, null);
       const site = siteHere();
       const { host: _h, port: _p, lookup: _l, family: _f, hints: _hi, localAddress: _la, localPort: _lp, autoSelectFamily: _a, ...rest } = options;
-      if (currentKey() === STATE.testId) POLICY.testSockets.add(this);
+      if (currentKey() === STATE.testId) POLICY.addTestSocket(STATE.testId, this);
       const r = real.connect.call(this, { ...rest, path: p }, cb);
       track(this, `${host}:${port}`, site);
       return r;
@@ -844,7 +853,7 @@ function tlsConnect(...args) {
       const servername = options.servername || (net.isIP(host) ? undefined : host);
       // certificate checks are disabled for this replayed socket only (G-2165)
       const sock = callTls(this, [{ ...rest, path: p, servername, rejectUnauthorized: false, checkServerIdentity: () => undefined }, ...(cb ? [cb] : [])]);
-      if (currentKey() === STATE.testId) POLICY.testSockets.add(sock);
+      if (currentKey() === STATE.testId) POLICY.addTestSocket(STATE.testId, sock);
       return sock;
     }
   }
@@ -974,7 +983,7 @@ function installProcess(patcher, cfg) {
   if (!STATE.__netHooked) {
     STATE.__netHooked = true;
     STATE.onTestStart.push((id) => { if (POLICY) { POLICY.startTest(id); emitSetup(); } });
-    STATE.onTestEnd.push((id) => { emitTestStreams(id); if (POLICY) POLICY.endTest(); });
+    STATE.onTestEnd.push((id) => { emitTestStreams(id); if (POLICY) POLICY.endTest(id); });
   }
   MAIN = false;
   installHttpDate(patcher);

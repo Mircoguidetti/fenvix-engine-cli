@@ -399,6 +399,46 @@ for (const runner of RUNNERS) {
       assert.equal(randomEvents(on).length, 1);
     });
 
+    // audit G-1449 / G-1456: concurrent tests ran one at a time under --det. They now run interleaved, each in its own
+    // Level 0 context (src/concur.js): its events, clock and generators are its own, so its fingerprint is the same in
+    // every run, serially or in lanes, whatever the interleaving.
+    const concurrentCases = runner === 'vitest'
+      ? [['test.concurrent', 'test.concurrent', {}], ['describe.concurrent', 'test', { wrap: 'describe.concurrent' }], ['sequence.concurrent', 'test', { config: { sequence: { concurrent: true } } }]]
+      : [['test.concurrent', 'test.concurrent', {}]];
+    for (const [label, fnName, how] of concurrentCases) {
+      test(`${label}: tests interleave, each in its own context; fingerprints stable across runs and lanes`, T, () => {
+        const outDir = path.join(TMP, 'par', `${runner}-conc-out-${label}`);
+        fs.rmSync(outDir, { recursive: true, force: true });
+        fs.mkdirSync(outDir, { recursive: true });
+        const tests = [];
+        for (let i = 0; i < 3; i++) tests.push(`${fnName}('timer ${i}', async () => { const a = Math.random(); const t0 = Date.now(); await new Promise((r) => setTimeout(r, ${(3 - i) * 100})); expect(Date.now() - t0).toBeGreaterThanOrEqual(${(3 - i) * 100}); expect(Math.random()).not.toBe(a); });`);
+        // a child process prints the real time around a real 400 ms wait: overlapping intervals = the tests ran together
+        for (let i = 0; i < 3; i++) tests.push(`${fnName}('child ${i}', async () => { const a = Math.random(); const out = await new Promise((r) => cp.execFile(process.execPath, ['-e', 'const t = Date.now(); setTimeout(() => console.log(t + " " + Date.now()), 400)'], (e, so) => r(String(so)))); fs.writeFileSync(${JSON.stringify(outDir)} + '/child-${i}.txt', out); expect(Math.random()).not.toBe(a); });`);
+        let body = tests.join('\n');
+        if (how.wrap) body = `${how.wrap}('group', () => {\n${body}\n});`;
+        const dir = fixture(runner, `conc-${label.replace(/\W/g, '')}`, {
+          c: `${runner === 'vitest' ? "import cp from 'node:child_process';" : "const cp = require('node:child_process');"}\n${body}`,
+          d: "test('serial', () => { expect(Math.random()).toBeLessThan(1); });",
+        }, { vitest: how.config || {} });
+        const r1 = det(runner, dir);
+        assert.equal(r1.status, 0, show(r1));
+        const intervals = [0, 1, 2].map((i) => fs.readFileSync(path.join(outDir, `child-${i}.txt`), 'utf8').trim().split(' ').map(Number));
+        const overlap = intervals.some(([s1, e1], i) => intervals.some(([s2], j) => i !== j && s2 >= s1 && s2 < e1));
+        assert.ok(overlap, `the child tests ran at the same time: ${JSON.stringify(intervals)}`);
+        const conc = r1.trace.tests.filter((t) => /(timer|child) \d$/.test(t.nodeid));
+        assert.equal(conc.length, 6, JSON.stringify(r1.trace.tests.map((t) => t.nodeid)));
+        for (const t of conc) {
+          assert.equal(t.events.filter((e) => e.s === 'random').length, 2, `${t.nodeid}: its own two draws only`);
+          assert.ok(t.events.some((e) => e.o === 'sched.concurrent'), t.nodeid);
+        }
+        const r2 = det(runner, dir);
+        const p = det(runner, dir, ['--det-workers=2']);
+        assert.equal(p.status, 0, show(p));
+        assert.deepEqual(fps(r2), fps(r1));
+        assert.deepEqual(fps(p), fps(r1));
+      });
+    }
+
     // yaml: test names with an unpaired surrogate made the policy input invalid JSON for the core ("lone leading
     // surrogate"): nothing was recorded for the whole session; napi would also turn both into U+FFFD (one id)
     test('test names with unpaired surrogates: distinct ids, recorded and reused', T, () => {

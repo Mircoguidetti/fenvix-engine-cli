@@ -50,7 +50,8 @@ const ANY_VOLATILE = new Set(['webSocketToken', 'tokenCreated', 'outputFile', 'r
   // worker counts, wherever Vitest repeats them (resolved projects, CLI options): serial and parallel lanes give the
   // same results (a placement that could change one is refused or not cached: src/parallel.js)
   'maxWorkers', 'minWorkers', 'fileParallelism', 'maxThreads', 'minThreads', 'maxForks', 'minForks']);
-const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle', 'sequence.concurrent']);
+// (sequence.concurrent is kept: concurrent tests interleave, which can change a file's results)
+const NESTED_VOLATILE = new Set(['api.token', 'sequence.seed', 'sequence.sequencer', 'sequence.shuffle']);
 
 /** Deterministic, cycle-safe digestable form of a configuration value (`volatile`: top-level keys left out). */
 function stable(v, volatile, depth = 0, seen = new WeakSet(), parent = '') {

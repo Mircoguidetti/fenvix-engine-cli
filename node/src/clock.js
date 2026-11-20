@@ -29,6 +29,7 @@
 const { STATE } = require('./state');
 const sites = require('./sites');
 const sched = require('./sched');
+const concur = require('./concur');
 
 const NS_PER_MS = 1e6;
 const MAX_TICK_NS = 1e9;
@@ -120,6 +121,7 @@ function callerIsInfra() {
 // Clock reads ------------------------------------------------------------------
 let onRead = null; // set by src/fstime.js: the virtual clock advanced (real -> virtual checkpoints)
 function readFor(op) {
+  concur.sync(); // a concurrent test reads its own clock
   const e = CLOCK.read();
   STATE.record('time', op, CLOCK.rel(e));
   if (onRead !== null) onRead(e);
@@ -142,6 +144,7 @@ function fakeClockCaller() {
 
 /** Virtual wall-clock milliseconds for a fake clock's start, recorded as a clock read. */
 function fakeNow(what = 'fakeTimers.now') {
+  concur.sync();
   const e = CLOCK.read();
   STATE.recordAt('time', what, '<fake-timers>', CLOCK.rel(e));
   return Math.floor(CLOCK.wallMs(e));
@@ -282,6 +285,7 @@ class Timeout {
   constructor(fn, args, delayMs, repeat, site, realm) {
     this._realm = realm;
     this._test = STATE.testId;
+    this._ctx = concur.store(); // a concurrent test's timer fires in its context (src/concur.js)
     this._handle = null; // realm timer once the timer was released to real time
     this.id = nextId++;
     this._fn = fn;
@@ -557,13 +561,10 @@ class Driver {
       }
     }
     t._active = false;
-    CLOCK.advanceTo(t._due);
-    CLOCK.otherEvent();
-    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
-    if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
-    if (onRead !== null) onRead(CLOCK.elapsed);
     try {
-      t._fn.apply(undefined, t._args);
+      // a concurrent test's timer runs in its own context: its clock jumps, its events, its callback
+      if (concur.active()) concur.within(t._ctx && !t._ctx.done ? t._ctx : undefined, () => this.runTimer(t));
+      else this.runTimer(t);
     } finally {
       if (t._repeat && !t._destroyed && !t._active) {
         const due = t._due + t._delayMs * NS_PER_MS;
@@ -579,6 +580,16 @@ class Driver {
       }
       this.rearm();
     }
+  }
+
+  /** Fire timer `t` in the running context: the clock jumps to its due time, the event, the callback. */
+  runTimer(t) {
+    CLOCK.advanceTo(t._due);
+    CLOCK.otherEvent();
+    STATE.recordAt('time', t._repeat ? 'setInterval' : 'setTimeout', t._site, `fire:${CLOCK.rel(t._due)}`);
+    if (!t._repeat) BY_ID.delete(t.id); // intervals are rescheduled after the callback
+    if (onRead !== null) onRead(CLOCK.elapsed);
+    t._fn.apply(undefined, t._args);
   }
 
   /**
@@ -650,6 +661,17 @@ function pendingImmediates() {
 
 
 const DRIVER = new Driver();
+
+// per-test state of a concurrent test (src/concur.js): its virtual clock and its fast-firing budget
+concur.register({
+  name: 'clock',
+  save: () => (CLOCK ? { e: CLOCK.elapsed, t: CLOCK.tick, k: CLOCK.streak, s: CLOCK.surplus, ts: CLOCK.testStart, ff: DRIVER.fastFired, bh: DRIVER.budgetHit } : null),
+  restore: (x) => {
+    if (!x || !CLOCK) return;
+    CLOCK.elapsed = x.e; CLOCK.tick = x.t; CLOCK.streak = x.k; CLOCK.surplus = x.s; CLOCK.testStart = x.ts;
+    DRIVER.fastFired = x.ff; DRIVER.budgetHit = x.bh;
+  },
+});
 
 function makeSetTimeout(repeat, R) {
   const op = repeat ? 'setInterval' : 'setTimeout';

@@ -23,6 +23,8 @@ const native = require('./native');
 const WORKER_PRELOAD = path.join(__dirname, 'worker-preload.js');
 let seen = new Set();
 let workers = 0;
+// per-test state of a concurrent test (src/concur.js)
+require('./concur').register({ name: 'children', save: () => [seen, workers], restore: (x) => { [seen, workers] = x; } });
 
 function site() {
   if (!STATE.config || !STATE.config.sites) return '';
