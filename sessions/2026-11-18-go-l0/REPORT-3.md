@@ -139,7 +139,25 @@ Share of test time reused with proof, median / mean over the commits. 05a7dfa is
 
 - D2b and D3b: section 2 (the reviewer's `review_r025b_det_test.go` passes, section 1).
 - **quic-go (N5): the `--det` timeout is a break caused by the `sched` control, not fixed.** MEASURED here: `TestReadDeadlineAsync` hangs under `--det` (killed at 600 s) and passes in 0.93 s with `--det-disable=sched`. Cause, ESTIMATED: with GOMAXPROCS=1 and no asynchronous preemption, a goroutine spinning on a deadline that only the 500 ms system-monitor slice can interrupt starves the reader. Not fixed in this round; `--det-disable=sched` is the workaround, and "broken by `--det`" counts it (section 8).
-- PID: controlled only as root with util-linux `unshare`; the start message says when it is not.
+- **`TestR025b_D3_UncontrolledEntropy` failed on GitHub's Go 1.26 runners** (CI run 44660485039; passed here on Go 1.24.7). Two causes, neither of them a change in Go's entropy sources. MEASURED here:
+  1. **A switched toolchain lost the overlay.**
+     - When the go command downloads and switches to a toolchain (here `GOTOOLCHAIN=go1.26.0 go test`), it exports that toolchain's `GOROOT`, which lies under `GOMODCACHE`.
+     - fenvix-go runs a linked copy of the toolchain with `GOTOOLCHAIN=local`, but it kept the inherited `GOROOT`. Go refuses `-overlay` replacements under `GOMODCACHE`, so the test binary was built without fenvix's hooks.
+     - Result: the `--det` trace held 0 tests, and the D1 checks passed only because they had nothing to check.
+     - Fix: fenvix-go also sets `GOROOT` to the linked copy. Reproduced with `GOTOOLCHAIN=go1.26.0 go test -run TestR025b_D`: 0 tests in the trace before, 8 after, and D1 and D3 pass.
+  2. **The PID was controlled only as root, and GitHub runners do not run as root.**
+     - Without root, the test binary now runs in an unprivileged user namespace. It maps the caller's own uid and gid (the test still runs as that user, not as root) and owns the PID and mount namespaces.
+     - fenvix-go probes for this before use. When the kernel or an AppArmor policy refuses unprivileged user namespaces, the start message says the PID is not controlled.
+     - Side effect: inside that namespace, files owned by other uids (root's, for example) show as owned by the overflow uid (65534). Permission checks are the kernel's own and are unchanged.
+  - **What Go 1.22-1.26 do with entropy, as far as `--det` is concerned:** nothing that escapes the overlay.
+    - `hash/maphash` seeds, `sync.Map` iteration (a hash-trie seeded from the runtime since 1.24), and `/dev/urandom` (served from the test's stream) each give one outcome and one fingerprint on every toolchain.
+    - Runtime randomness is hooked at `cheaprand` and the raw `getrandom`, which also covers the vDSO `getrandom` of Go 1.24 and later.
+    - MEASURED here, as root: `harness/go/det_entropy_matrix.sh` on go1.22.12, go1.23.12, go1.24.7, go1.25.4 and go1.26.0, through toolchain switching, 3 runs each. Every one of the 4 tests had 1 (outcome, fingerprint) on each toolchain.
+  - **CI now covers this:**
+    - the shell's suite on Go 1.24, 1.25 and 1.26 (the shell itself needs 1.24);
+    - the entropy matrix on 1.22-1.26;
+    - the messages of failed tests are printed (the old output filter dropped them, which is why the CI log showed a bare `--- FAIL (0.00s)`).
+  - CI result: PENDING-CI.
 - `/dev/urandom`: 1 MiB per open from the test's stream; a reader that needs more gets EOF (DECLARED; no case found).
 
 ## 7. Nightly real-clock run (NC)
