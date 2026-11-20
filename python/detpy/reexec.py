@@ -224,6 +224,9 @@ def dir_stamp(d: str) -> str:
 BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"
 
 
+PRE_EXEC: list = []  # callables(env) run just before the exec
+
+
 def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, rootdir: str | None = None,
            block_plugins: list[str] | None = None) -> None:
     """Exec the current command line again. Does not return on success.
@@ -240,9 +243,6 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
         ensure_state_dir(rootdir)
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = want_hashseed
-    # G-0168: the warm re-exec's marker (plugin.WARM_ENV), present in every re-executed process with a value of the
-    # same length, so the process that runs the tests does the same work with it whichever exec started it
-    env["DETPY_REWRITE_WARM"] = "0"
     env[MARKER] = "1"
     if want_bytecode:
         env[PRECOMPILE_ENV] = f"{precompile(want_hashseed, rootdir):.3f}"
@@ -253,6 +253,11 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.flush()
+        except Exception:
+            pass
+    for hook in PRE_EXEC:  # G-0168: plugin.prewarm_rewrite_cache, with the new process's environment
+        try:
+            hook(env)
         except Exception:
             pass
     argv = _argv()

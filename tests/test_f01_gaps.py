@@ -343,20 +343,25 @@ def test_addr():
 '''
 
 
-def _addr_run(proj: Path, traces: Path, tag: str, *args):
+def _addr_run(proj: Path, traces: Path, tag: str, *args, env=None):
     # traces outside the project: a new file in the project directory is a real input change (G-1573)
     trace = traces / f"{tag}.jsonl"
     p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "-p", "no:randomly",
-                        "--det", f"--det-trace={trace}", *args], cwd=proj, env=_env(), capture_output=True, text=True,
-                       timeout=900)
+                        "--det", f"--det-trace={trace}", *args], cwd=proj, env=env or _env(), capture_output=True,
+                       text=True, timeout=900)
     assert p.returncode == 0, p.stdout[-3000:] + p.stderr[-3000:]
     return p, trace
 
 
+def _bytecode_input(trace: Path) -> str:
+    return json.loads(trace.read_text().splitlines()[0])["meta"]["inputs"]["bytecode"]
+
+
 def test_first_run_after_a_checkout_or_an_edit_is_laid_out_like_later_runs(tmp_path):
-    """G-0168: a fresh checkout (no .detpy, the test module never rewritten: its source is unique to this test) and an
-    edit of the test module. The first run compiles the module from source and runs again from the cache before any
-    test runs, so the order of a set of plain objects is the one every later run sees, and verify says IDENTICAL."""
+    """G-0168: a fresh checkout (no .detpy, a test module never rewritten: its source is unique to this test) and an
+    edit of the test module. The process that starts the run writes the rewritten module into the cache before the
+    re-exec (nothing imported), so the first run loads it like every later run: the order of a set of plain objects
+    is the same, the run inputs say nothing was compiled from source, and verify says IDENTICAL."""
     proj = tmp_path / "p"
     proj.mkdir()
     traces = tmp_path / "traces"
@@ -364,29 +369,32 @@ def test_first_run_after_a_checkout_or_an_edit_is_laid_out_like_later_runs(tmp_p
     src = ADDR + f"# {tmp_path.name}\n"
     project(proj, src)
     runs = [_addr_run(proj, traces, str(i)) for i in range(3)]
-    assert "compiled from source" in runs[0][0].stdout, runs[0][0].stdout[-2000:]
-    assert "compiled from source" not in runs[1][0].stdout
     orders = [values(p, "ORDER") for p, _ in runs]
     assert orders[0] and orders[0] == orders[1] == orders[2], orders
+    assert "rewritten from source" not in _bytecode_input(runs[0][1]), _bytecode_input(runs[0][1])
     identical(runs[0][1], runs[1][1])
     (proj / "tests" / "test_p.py").write_text(src + "# edited\n")
     edited = [_addr_run(proj, traces, f"e{i}") for i in range(2)]
-    assert "compiled from source" in edited[0][0].stdout
     assert values(edited[0][0], "ORDER") == values(edited[1][0], "ORDER") == orders[0]
+    assert "rewritten from source" not in _bytecode_input(edited[0][1])
     identical(edited[0][1], edited[1][1])
 
 
-def test_cold_workers_of_a_parallel_run_are_a_run_input(tmp_path):
-    """G-0168 under -n: the workers cannot run again; a run whose workers compiled test modules from source says so in
-    its inputs, so verify never calls it identical to a warm run (the input named is bytecode)."""
-    pytest.importorskip("xdist")
+@pytest.mark.parametrize("par", [[], ["-n", "2"]], ids=["serial", "n2"])
+def test_a_run_that_compiled_test_modules_is_never_identical_to_a_warm_one(tmp_path, par):
+    """G-0168, what the prewarm cannot cover: a run started without the re-exec (DETPY_REEXEC set by the caller: no
+    prewarm) compiles its test modules from source, in the process or in the -n workers. That is a run input
+    (bytecode), so verify never calls it identical to a later, warm run."""
+    if par:
+        pytest.importorskip("xdist")
     proj = tmp_path / "p"
     proj.mkdir()
     traces = tmp_path / "traces"
     traces.mkdir()
-    project(proj, ADDR + f"# {tmp_path.name} parallel\n")
-    (_, cold), (_, warm) = (_addr_run(proj, traces, t, "-n", "2") for t in ("cold", "warm"))
-    inputs = [json.loads(t.read_text().splitlines()[0])["meta"]["inputs"]["bytecode"] for t in (cold, warm)]
+    project(proj, ADDR + f"# {tmp_path.name} {par}\n")
+    env = _env(DETPY_REEXEC="1", PYTHONHASHSEED="0")
+    (_, cold), (_, warm) = (_addr_run(proj, traces, t, *par, env=env) for t in ("cold", "warm"))
+    inputs = [_bytecode_input(t) for t in (cold, warm)]
     assert "cold rewrite cache" in inputs[0] and "cold" not in inputs[1], inputs
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(cold), str(warm)], capture_output=True,
                        text=True, timeout=120)

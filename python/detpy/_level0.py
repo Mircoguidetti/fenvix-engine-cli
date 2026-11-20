@@ -370,12 +370,12 @@ def env_inputs() -> dict:
     return out
 
 
-# G-0168: test modules pytest's assertion rewrite compiled from source in this process because its cache missed (the
-# first run after a checkout or an edit). Such a run allocates what a warm run does not, so id()-dependent behaviour
-# (the order of a set of plain objects) can differ from every later run even with ASLR off. A serial run that missed
-# re-executes itself once, warm, before any test runs (plugin.warm_rewrite_reexec); what remains cold (the workers of
-# a parallel run, a re-exec that is not possible) is a run input, so the verifier never calls it identical to a
-# warm run. "workers": the sum the xdist controller received.
+# G-0168: test modules pytest's assertion rewrite compiled from source in this process because its cache missed. A
+# process that compiles them allocates what one that loads them does not, so id()-dependent behaviour (the order of a
+# set of plain objects) can differ between such a run and a later one, even with ASLR off. The process that starts a
+# --det run writes them into the cache before the re-exec (plugin.prewarm_rewrite_cache); what is still compiled here
+# (a module the walk did not find, a rewriter patched by a plugin, a run without re-exec) is a run input, so the
+# verifier never calls such a run identical to a warm one. "workers": the sum the xdist controller received.
 REWRITE = {"cold": 0, "workers": 0}
 
 

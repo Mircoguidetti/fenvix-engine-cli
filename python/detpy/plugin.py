@@ -124,6 +124,7 @@ def _early_reexec(parser, pluginmanager) -> None:
     block = [n for n in _CONFLICTING_PLUGINS
              if not pluginmanager.is_blocked(n) and (n in installed or pluginmanager.get_plugin(n) is not None)]
     rootdir = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    reexec.PRE_EXEC[:] = [lambda env: prewarm_rewrite_cache(config, env)]
     reexec.reexec(_hashseed(ns), not ns.det_keep_aslr, want_bytecode, rootdir, block)  # no return
 
 
@@ -264,6 +265,7 @@ def pytest_load_initial_conftests(early_config, parser, args):
             capman.stop_global_capturing()
 
     block = [n for n in _CONFLICTING_PLUGINS if early_config.pluginmanager.get_plugin(n) is not None]
+    reexec.PRE_EXEC[:] = [lambda env: prewarm_rewrite_cache(early_config, env)]
     S.reexec_status = _level0.reexec_status(ns, controls, rootdir, block, before_exec)  # may not return
     if "time" in controls:
         # pytest-benchmark: the adaptive tick lets calibration terminate, but the
@@ -426,7 +428,7 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
         t = keyed_tail(config)
         if t is None:
             return stamp, co
-        _level0.REWRITE["cold"] += 1  # a miss: G-0168 (warm_rewrite_reexec)
+        _level0.REWRITE["cold"] += 1  # a miss: G-0168 (prewarm_rewrite_cache wrote what it could before)
         cache_dir = cache_dir_of(fn)
         target = cache_dir / (fn.name[:-3] + t)
         try:
@@ -463,67 +465,60 @@ _REWRITE_CONFIG: list = [None]
 _EARLY_REWRITE_CACHE = [False]
 
 
-WARM_ENV = "DETPY_REWRITE_WARM"
-# this process is the warm re-exec. The variable stays where reexec.reexec put it, with a value of the same length
-# ("0" otherwise): the environment of the process that runs the tests is then laid out the same way in both (its
-# order and size decide addresses too); a child pytest --det re-executes with "0" again
-_WARMED = [os.environ.get(WARM_ENV) == "1"]
-_START_ENV = dict(os.environ)  # the environment this process started with (before --det pins TZ, the locale, ...)
+_SKIP_DIRS = frozenset({"node_modules", "__pycache__", "site-packages", "dist-packages"})
 
 
-def _initial_environ() -> dict:
-    """The environment this process was started with, in its order: the warm re-exec must give the new process the
-    environment a normal re-exec gives it (the order and size of the environment decide addresses too), not this
-    process's modified one (TZ and the locale pinned)."""
+def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
+    """Files pytest may rewrite in this project: conftest.py and the ``python_files`` patterns, under the root
+    (hidden directories, virtual environments and installed packages left out). More than pytest collects is
+    harmless: an extra cache entry."""
+    import fnmatch
+
     try:
-        with open("/proc/self/environ", "rb") as fh:
-            raw = fh.read()
-        env = {}
-        for item in raw.split(b"\0"):
-            if b"=" in item:
-                k, v = item.split(b"=", 1)
-                env[os.fsdecode(k)] = os.fsdecode(v)
-        if env:
-            return env
-    except OSError:
-        pass
-    return dict(_START_ENV)
-
-
-def warm_rewrite_reexec(session) -> None:
-    """Audit G-0168: a serial ``--det`` run whose assertion-rewrite cache missed (the first run after a checkout or an
-    edit of a test module or conftest) compiled those modules from source, allocating what a later run does not:
-    id()-dependent behaviour (the order of a set of plain objects, ``id()`` itself) then differed between the first
-    run and every later one, with ASLR off. Now the rewritten code is in the cache by the end of collection, and the
-    run executes itself again, once, before any test has run: every run that executes tests loads the same cached
-    code. Not when it cannot (no re-exec possible, already re-executed, collect-only, an xdist worker or controller):
-    the cold state then stays a run input (``_level0.REWRITE``)."""
-    if not _level0.REWRITE["cold"] or _WARMED[0] or S.worker is not None or S.controller is not None:
-        return
-    config = session.config
-    if config.getoption("collectonly", False) or os.environ.get("DETPY_REEXEC") != "1":
-        return
-    try:
-        argv = reexec._argv()
+        patterns = list(config.getini("python_files")) or ["test_*.py", "*_test.py"]
     except Exception:
-        argv = None
-    if not argv:
+        patterns = ["test_*.py", "*_test.py"]
+    root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
+    out: list[str] = []
+    for d, dirs, files in os.walk(root):
+        dirs[:] = sorted(x for x in dirs if not x.startswith(".") and x not in _SKIP_DIRS
+                         and not os.path.exists(os.path.join(d, x, "pyvenv.cfg")))
+        for f in sorted(files):
+            if f.endswith(".py") and (f == "conftest.py" or any(fnmatch.fnmatch(f, p) for p in patterns)):
+                out.append(os.path.join(d, f))
+                if len(out) >= limit:
+                    return out
+    return out
+
+
+def prewarm_rewrite_cache(config, env: dict) -> None:
+    """Audit G-0168: before the re-exec into the process that runs the tests, write the assertion-rewritten test
+    modules into the rewrite cache (``detpy._prewarm``, in a subprocess with that process's environment: hash seed,
+    bytecode prefix), so the first run after a checkout or an edit loads them from the cache like every later run and
+    lays out memory the same way. Nothing is imported or executed (no side effect runs twice). Best effort: what
+    is still compiled from source in the test process is a run input (``_level0.REWRITE``)."""
+    if os.environ.get("DETPY_REWRITE_CACHE", "1") == "0" or config is None:
         return
-    tr = config.pluginmanager.get_plugin("terminalreporter")
-    msg = (f"detpy: {_level0.REWRITE['cold']} test module(s) compiled from source (first run after a checkout or "
-           "an edit); running again from the cache, so this run is laid out like every later one")
-    if tr is not None:
-        tr.write_line(msg)
-    else:
-        print(msg, file=sys.stderr)
-    for stream in (sys.stdout, sys.stderr, sys.__stdout__, sys.__stderr__):
-        try:
-            stream.flush()
-        except Exception:
-            pass
-    env = _initial_environ()
-    env[WARM_ENV] = "1"  # in place: reexec.reexec set it to "0"
-    os.execve(sys.executable, argv, env)
+    try:
+        import subprocess
+
+        from _pytest.assertion import rewrite as rw
+
+        key = _rewrite_key(config, rw)
+        if key is None:
+            return
+        hashed = (b"\x03\x00\x00\x00" in rw._read_pyc.__code__.co_consts
+                  and os.environ.get("DETPY_REWRITE_OWN") != "1")
+        job = {"key": key, "hashed": hashed, "pass_hook": bool(config.getini("enable_assertion_pass_hook")),
+               "files": _rewrite_candidates(config)}
+        if not job["files"]:
+            return
+        child = dict(env)
+        child.pop("DETPY_REEXEC", None)
+        subprocess.run([sys.executable, "-m", "detpy._prewarm"], input=json.dumps(job), env=child,
+                       capture_output=True, text=True, timeout=600)
+    except Exception:
+        pass
 
 
 def _early_rewrite_cache() -> None:
@@ -953,7 +948,6 @@ class _DetSession(_Outcomes):
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
-        warm_rewrite_reexec(session)
         S.order = [i.nodeid for i in session.items]
         S.order_digest = _core.order_digest(S.order)
         meta = _level0.trace_meta(S.reexec_status, S.net_mode, len(S.rebound), S.order_digest, "pytest",

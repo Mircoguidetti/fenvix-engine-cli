@@ -37,7 +37,7 @@ A run that crashed has no footer (the verifier marks it `(partial)`).
 | `env` | whether environment reads are recorded |
 | `env:NAME` | one per environment variable: a digest of `NAME=value` (never the value) |
 | `network` | mode (block, record, replay), allowed hosts, cassette digest |
-| `fs`, `urandom`, `bytecode`, `aslr`, `order` | the state of those controls. `bytecode` ends with `test modules rewritten from source in this run (cold rewrite cache: N)` when a run compiled test modules from source and could not run again from the cache (the workers of a `-n` run): such a run can lay out memory differently from a later one, so it is never identical to it. A serial first run after a checkout or an edit runs itself again from the cache before any test (one line says so) and is laid out like every later run |
+| `fs`, `urandom`, `bytecode`, `aslr`, `order` | the state of those controls. `bytecode` ends with `test modules rewritten from source in this run (cold rewrite cache: N)` when a run compiled test modules from source and did not find them in the cache (a run started without the re-exec, a module outside the project's test files): such a run can lay out memory differently from a later one, so it is never identical to it. The process that starts a `--det` run writes the rewritten test modules into the cache before the re-exec (nothing is imported), so a first run after a checkout or an edit is laid out like every later run |
 
 Engine-internal variables (`DETPY_*`, `PYTEST_XDIST_*`) are not inputs.
 
