@@ -13,7 +13,7 @@ on:
     inputs:
       config: {description: "JSON parameters (see harness/node_cache/RUN-node-c)", default: "{}"}
   push:
-    branches: [claude/all-runners]
+    branches: [claude/all-runners-2]
     paths: [harness/node_cache/RUN-node-c]
 
 permissions:
@@ -96,7 +96,7 @@ jobs:
           cd node && npm ci
           bun --revision; deno --version
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../runner-tests.xml test/runner-bun.test.js test/runner-deno.test.js 2>&1 | tee ../runner-tests.log
+            --test-reporter=junit --test-reporter-destination=../runner-tests.xml test/runner-bun.test.js test/runner-deno.test.js test/review-r032-runtimes.test.js test/all-runners-2-f6f7.test.js 2>&1 | tee ../runner-tests.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:

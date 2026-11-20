@@ -14,7 +14,7 @@ on:
     inputs:
       config: {description: "JSON parameters (see harness/node_cache/RUN-node-b)", default: "{}"}
   push:
-    branches: [claude/all-runners]
+    branches: [claude/all-runners-2]
     paths: [harness/node_cache/RUN-node-b]
 
 permissions:
@@ -96,7 +96,7 @@ jobs:
           cd node
           if [ "${{ matrix.suite }}" = shared ]; then
             npm ci
-            FILES="test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js"
+            FILES="test/cache.test.js test/review-r021.test.js test/r021-fixes.test.js test/review-r032-runners-b.test.js test/all-runners-2-f6f7.test.js"
           else
             FILES="test/runner-${{ matrix.suite }}.test.js"
           fi

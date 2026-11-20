@@ -3,7 +3,7 @@ name: all-runners-python
 # All runners (P-032), Python: measure `python -m detpy <runner> --det --det-cache=DIR` (unittest, Django, nose2,
 # doctest, zope.testrunner, ward; the spec's "runner") over consecutive commits, with the same walk as the pytest
 # cache-proof runs (harness/cache_proof/walk.py: cache run A, full run B, every reuse compared, B' on a mismatch).
-# Triggered by a push that changes tracks/all-runners-python/run.json on claude/all-runners. The engine is this
+# Triggered by a push that changes tracks/all-runners-python/run.json on claude/all-runners-2. The engine is this
 # branch at the triggering commit. run.json: {"run_id": "...", "walk": [{"spec": "runner-unittest-jc",
 # "shards": 1, "commits": 21, "budget_min": 330}, ...]} (spec names from harness/cache_proof/specs/).
 #   build -> detpy wheel, job matrix from run.json
@@ -12,7 +12,7 @@ name: all-runners-python
 
 on:
   push:
-    branches: [claude/all-runners]
+    branches: [claude/all-runners-2]
     paths: [tracks/all-runners-python/run.json]
 
 permissions:
@@ -22,7 +22,7 @@ env:
   PYTHONUNBUFFERED: "1"
   UV_PYTHON_PREFERENCE: managed
   CP_COMMIT: "1"
-  CP_BRANCH: claude/all-runners
+  CP_BRANCH: claude/all-runners-2
 
 jobs:
   build:
