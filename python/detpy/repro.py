@@ -272,8 +272,9 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
                                                            confirm, max_runs)
     if fail_trace is None:  # not collected, not found or not minimised: no bundle
-        if result.get("status") == "not-collected" and runner.problem:
-            result["suite_error"] = runner.problem
+        problem = getattr(runner, "problem", "")  # (any Driver: simulated runners in tests have none)
+        if result.get("status") == "not-collected" and problem:
+            result["suite_error"] = problem
         return result
     if out_dir is not None:
         b = Path(out_dir) / _slug(target)
@@ -392,7 +393,7 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
         if not runner.keep_traces:
             runner.drop_traces()
     summary = book.summary(runner.runs, len(collected), runner.log)
-    if not collected and runner.problem:  # the suite cannot run: say why (reviewer #10)
+    if not collected and getattr(runner, "problem", ""):  # the suite cannot run: say why (reviewer #10)
         summary["suite_error"] = runner.problem
     (out_dir / "explore.json").write_text(json.dumps(summary, indent=1))
     return summary
