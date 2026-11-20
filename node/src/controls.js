@@ -37,6 +37,8 @@ function installProcess() {
   // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=<digest of the value>`
   // (`env.has`, `env.list` for enumerations); values never reach the trace
   installEnvRecord(process);
+  // completion order of a test's concurrent asynchronous I/O (src/ioorder.js)
+  require('./ioorder').installProcess(PATCHER);
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)

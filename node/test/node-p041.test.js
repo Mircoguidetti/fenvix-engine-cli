@@ -471,3 +471,38 @@ for (const runner of RUNNERS) {
     }
   });
 }
+
+// G-0150 G-0151: the completion order of a test's concurrent I/O is recorded (io.complete, uncontrolled.io), so a
+// different order is a different fingerprint; sequential I/O records nothing.
+const IOH = { vitest: "import http from 'node:http';", jest: "const http = require('node:http');" };
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0150 G-0151 completion order of concurrent fs and local HTTP is recorded`, T, () => {
+    const dir = proj(runner, 'io', {
+      a: `${IOH[runner]}
+test('fs race', async () => {
+  await Promise.all([1, 2, 3].map((i) => fs.promises.readFile('package.json')));
+  await new Promise((res) => fs.readFile('package.json', () => res()));
+});
+test('fs sequential', async () => { await fs.promises.readFile('package.json'); await fs.promises.readFile('package.json'); });
+test('http race', async () => {
+  const srv = http.createServer((q, r) => r.end(q.url));
+  await new Promise((res) => srv.listen(0, '127.0.0.1', res));
+  const get = (p) => new Promise((res, rej) => http.get({ host: '127.0.0.1', port: srv.address().port, path: p, agent: false }, (r) => { let b = ''; r.on('data', (d) => { b += d; }); r.on('end', () => res(b)); }).on('error', rej));
+  const first = await Promise.race([get('/a'), get('/b')]);
+  expect(['/a', '/b']).toContain(first);
+  await new Promise((res) => srv.close(res));
+});`,
+    });
+    const r = run(runner, dir, [], { cache: false });
+    assert.equal(r.status, 0, show(r));
+    const tr = trace(dir);
+    const ops = (id) => (tr.tests[id].events || []).map((e) => e.op || e.o || (Array.isArray(e) ? e[1] : ''));
+    const id = (n) => Object.keys(tr.tests).find((k) => k.endsWith(`::${n}`));
+    const raw = (n) => JSON.stringify(tr.tests[id(n)].events);
+    assert.match(raw('fs race'), /uncontrolled\.io/);
+    assert.match(raw('fs race'), /io\.complete/);
+    assert.doesNotMatch(raw('fs sequential'), /io\.complete|uncontrolled\.io/);
+    assert.match(raw('http race'), /net#\d+:data/);
+    void ops;
+  });
+}
