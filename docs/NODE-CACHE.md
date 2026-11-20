@@ -25,7 +25,11 @@ file entry (*manifest*: the list of its tests and the inputs of its collection, 
 share module state (Vitest: one worker per file; Jest: one module registry per file), so skipping some tests of a
 file would change the state the others run in. The inputs of a test are **cumulative**: everything logged in its
 process up to the end of the test (collection, `beforeAll`, earlier tests). Where state is shared *between* files
-(Vitest `isolate: false`, `vmThreads`/`vmForks`, browser mode, a custom Jest `runner`), the project is not cached.
+in one process (Vitest `isolate: false`, a custom Jest `runner` such as jest-light-runner in band), the files form one
+group (`src/cache/groups.js`, P-041 G-1475, G-0402): the ordered list of the group's files is part of their projects'
+configuration digest (another selection or order reuses nothing), and the group is reused all together or run all
+together (a file that could be reused runs when another file of the group must run; receipt reason `group: ...`).
+The Vitest vm pools and browser mode stay not cached.
 
 Why the file and not the test (audit G-1397): without isolation the tests of a file share module state that no
 capture observes (a module variable, a library's registry). Skipping a reused test would change what the next one
@@ -128,9 +132,12 @@ the test modules are covered by the module graph).
 
 * **Vitest**: in detjs' sequencer (`sort`), which Vitest calls after `globalSetup`; files proven reusable are removed
   from the run. If every file is reused, the run passes (`passWithNoTests` set for that session only).
-* **Jest**: in detjs' sequencer, which Jest calls *before* `globalSetup` (a globalSetup that runs processes changes
-  the start-up digest after the decision: such suites rerun every file); `--passWithNoTests` is added and a run that
-  found no tests at all still exits 1.
+* **Jest**: when Jest schedules the files, after `globalSetup` (P-041 G-1290): detjs patches the `scheduleTests` of the
+  TestScheduler that jest-cli's @jest/core uses; it awaits the decision and schedules the files that are not reused
+  (Jest's own list keeps every file: globalTeardown, results cache). A globalSetup's synchronous processes and reads are
+  then part of the start-up digest of both the recording run and the deciding run. With parallel lanes
+  (`--det-workers`) the plan is made from the decided files, so the decision stays in the sequencer, before
+  `globalSetup`. `--passWithNoTests` is added and a run that found no tests at all still exits 1.
 * Reused files do not appear in the runner's reporters; they are in the detjs summary line, the receipts and
   `cache-summary.json` (`reused_files_list`).
 
