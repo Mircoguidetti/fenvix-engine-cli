@@ -30,6 +30,13 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
                            (a directory, or a shared cache service https://host/<namespace>)
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
+  --det-tz=ZONE|keep       time zone of the run (default: TZ when set, else UTC; recorded)
+  --det-locale=LOC|keep    LC_ALL and LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+  --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
+  --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
+                           each test whose cached result differs (an expiry); its cache entries are removed
+                           With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
+                           test that reads the clock is reused only on the UTC day it was recorded
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
   --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: serial, or the
@@ -44,13 +51,13 @@ function parseArgs(argv, env = process.env) {
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
     disable: '', urandom: false, maxEvents: 10000, sites: true,
-    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null,
+    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
     workers: null, plan: null,
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
-  const takes = new Set(['--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
+  const takes = new Set(['--det-cache-max-age', '--det-tz', '--det-locale', '--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
     '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-workers', '--det-plan']);
   for (let i = 0; i < argv.length; i++) {
@@ -67,7 +74,7 @@ function parseArgs(argv, env = process.env) {
       case '--det-record': opts.record = true; break;
       case '--det-cassette': opts.cassette = value; break;
       case '--det-allow-host': opts.allowHosts.push(value); break;
-      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; break;
+      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; opts.epochExplicit = true; break;
       case '--det-tick': opts.tick = config.int(value, 1000); break;
       case '--det-tick-adapt': opts.tickAdapt = config.int(value, 1000); break;
       case '--det-timers': opts.timers = value === 'real' ? 'real' : 'virtual'; break;
@@ -78,6 +85,9 @@ function parseArgs(argv, env = process.env) {
       case '--det-sites': opts.sites = value !== 'off' && value !== '0'; break;
       case '--det-cache': opts.cache = value; break;
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
+      case '--det-cache-real-clock': opts.cacheRealClock = true; break;
+      case '--det-cache-max-age': opts.cacheMaxAge = Number(value); if (!(opts.cacheMaxAge >= 0)) throw new Error(`detjs: --det-cache-max-age: not a number of days: ${value}`); break;
+      case '--det-tz': case '--det-locale': break; // applied by bin/detjs.js before the runner starts
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;
       case '--det-workers': opts.workers = value; break;
@@ -86,7 +96,22 @@ function parseArgs(argv, env = process.env) {
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
   }
+  if (opts.cache && !opts.epochExplicit) opts.epoch = virtualDay();
+  if (opts.cacheRealClock) {
+    if (!opts.cache) throw new Error('detjs: --det-cache-real-clock needs --det-cache=DIR|URL');
+    // run on the real clock; the reuse decision is still the one of the virtual day (src/cache/proof.js)
+    opts.cacheVerify = true;
+    const off = new Set(String(opts.disable || '').split(',').filter(Boolean));
+    off.add('time');
+    opts.disable = [...off].join(',');
+  }
   return { opts, rest };
+}
+
+/** Today 00:00 UTC on the real clock (DECISIONS 2026-11-19: the virtual day of skip with proof). */
+function virtualDay(now = Date.now()) {
+  const d = new Date(now);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString().replace('.000Z', 'Z');
 }
 
 /** Prepare the run directory and the DETJS_* environment inherited by the workers. */
@@ -181,6 +206,10 @@ function finish(run, opts, files, meta) {
     files: files.map((f) => f.fileId),
     unordered_parts: extra.length,
     notes: [...new Set(all.flatMap(partNotes))],
+    // time zone and locale of the run: pinned by bin/detjs.js unless --det-tz/--det-locale=keep (G-0139, G-0140)
+    pinned: process.env.DETJS_PINNED || 'no',
+    tz: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().timeZone} TZ=${process.env.TZ === undefined ? '<unset>' : process.env.TZ}`; } catch { return '?'; } })(),
+    locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   fs.rmSync(run.dir, { recursive: true, force: true });

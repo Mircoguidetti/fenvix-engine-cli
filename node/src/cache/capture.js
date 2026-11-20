@@ -864,8 +864,17 @@ class Capture {
   }
 
   // -- code ----------------------------------------------------------------------------------------------------
-  module(file) {
+  module(file, dlopened = false) {
     if (!file || typeof file !== 'string') return;
+    // a native addon in the test's own module registry (Vitest's graph, Jest's registries): native code reads files,
+    // the environment and the clock where no wrapper sees it, so the tests of its process are never reused (row
+    // JS-09). An addon reached through Node's loader is attributed at process.dlopen, by its caller (runners and
+    // tools load their own bindings); its bytes stay keyed either way.
+    if (!dlopened && /\.node(?:$|[?#])/i.test(file) && !this.isGlobal) {
+      let f = file.split(/[?#]/)[0];
+      if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { /* keep */ } }
+      if (!TOOL_BINDING.test(f)) this.add(['flag', 'native', `native addon ${this.inRoot(f) ? this.rel(f) : f}`], false);
+    }
     // the same key again (every test end rescans the module registries): nothing to do
     if (this.modsRaw.has(file)) return;
     this.modsRaw.add(file);
@@ -877,6 +886,9 @@ class Capture {
     if (!path.isAbsolute(f) || f.includes('\0')) return;
     if (this.modsSeen.has(f)) return;
     this.modsSeen.add(f);
+    // a native addon loaded for the code under test (not one of the runner's or its tools' own bindings): native
+    // code reads files, the environment and the clock where no wrapper sees it, so the tests of its process are
+    // never reused (row JS-09; its bytes stay keyed for the processes that load it only as infrastructure)
     const w = this.where(f);
     if (w === 'skip' || w === 'proc') return;
     this.busy++;
@@ -971,9 +983,9 @@ class Capture {
     if (map) for (const m of map.values()) this.module(m.file || m.id);
     if (mc && typeof mc.keys === 'function') for (const k of mc.keys()) this.module(k);
     try {
-      for (const k in require.cache) this.module(k);
+      for (const k in require.cache) this.module(k, true); // Node's own loader: a native addon is attributed at dlopen
     } catch { /* no cache */ }
-    for (const f of this.nativeLoads) this.module(f);
+    for (const f of this.nativeLoads) this.module(f, true);
     if (extra) for (const f of extra) this.module(f);
     this.lastScan = sig;
   }
@@ -1494,31 +1506,39 @@ const ENV_PROXIES = new WeakMap();
  * `v8.serialize` and `postMessage` retry with the real environment in its place (which reads all of it), so they
  * succeed or fail as without the cache; `util.types.isProxy` answers for the real environment object.
  */
+const ENV_CAPS = new WeakMap(); // recording environment object -> the capture it reports to
 function installEnv(cap, proc) {
   const env = proc.env;
-  if (env && ENV_PROXIES.has(env)) return;
-  const real = env;
+  let real = env;
+  if (env && ENV_PROXIES.has(env)) {
+    // Level 0's own object (--det without the cache, installed first) is replaced by the capture's: both report
+    // through the capture's (STATE.onEnvRead); never the other way round
+    if (ENV_CAPS.get(env) !== LEVEL0_CAP || cap === LEVEL0_CAP) return;
+    real = ENV_PROXIES.get(env);
+  }
   const custom = Symbol.for('nodejs.util.inspect.custom');
   const stand = Object.create(realGetProto(real));
   realDefine(stand, custom, {
     value: function inspectEnv() { cap.env('*'); return real; },
     writable: true, enumerable: false, configurable: true,
   });
+  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126)
   const handler = {
     get(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.get(real, k);
     },
     has(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.has', k, real); }
       return Reflect.has(real, k);
     },
     getOwnPropertyDescriptor(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.getOwnPropertyDescriptor(real, k);
     },
     ownKeys() {
       cap.env('*');
+      if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', real);
       return Reflect.ownKeys(real);
     },
     set(_t, k, v) { real[k] = v; return true; },
@@ -1530,9 +1550,38 @@ function installEnv(cap, proc) {
   try {
     const p = new Proxy(stand, handler);
     ENV_PROXIES.set(p, real);
+    ENV_CAPS.set(p, cap);
     proc.env = p;
     if (proc.env !== p) realDefine(proc, 'env', { value: p, writable: true, configurable: true, enumerable: true });
   } catch { cap.notes.add('process.env not replaceable: environment reads not captured'); }
+}
+
+/**
+ * Level 0 without the cache (`--det`): the same recording environment object, its reads reported to STATE.onEnvRead
+ * only. With the cache on, the capture's own object is already in place and reports them as well.
+ */
+const LEVEL0_CAP = { env() {}, notes: new Set() };
+let level0CloneRetry = false;
+function installLevel0Env(proc) {
+  if (!proc || !proc.env) return;
+  installEnv(LEVEL0_CAP, proc);
+  if (level0CloneRetry) return;
+  level0CloneRetry = true;
+  installCloneRetry(LEVEL0_CAP);
+  const g = globalThis;
+  if (typeof g.structuredClone === 'function' && !g.structuredClone.__detjsCache) {
+    const real = g.structuredClone;
+    const sc = function structuredClone(v, ...rest) {
+      try { return real.call(this, v, ...rest); } catch (err) {
+        const u = unproxyEnv(LEVEL0_CAP, v);
+        if (u === v) throw err;
+        return real.call(this, u, ...rest);
+      }
+    };
+    realDefine(sc, '__detjsCache', { value: true });
+    realDefine(sc, 'length', { value: real.length, configurable: true });
+    try { realDefine(g, 'structuredClone', { ...realGOPD(g, 'structuredClone'), value: sc }); } catch { /* keep */ }
+  }
 }
 
 /** `v` with every recording environment Proxy in it replaced by the environment it stands for (null if none). */
@@ -1542,7 +1591,7 @@ function unproxyEnv(cap, v) {
   const walk = (x, depth) => {
     if (x === null || typeof x !== 'object' || depth > 1000) return x;
     const realEnv = ENV_PROXIES.get(x);
-    if (realEnv !== undefined) { found = true; cap.env('*'); return realEnv; }
+    if (realEnv !== undefined) { found = true; (ENV_CAPS.get(x) || cap).env('*'); if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', realEnv); return realEnv; }
     if (memo.has(x)) return memo.get(x);
     if (Array.isArray(x)) {
       const out = new Array(x.length);
@@ -1755,6 +1804,8 @@ function installRealClock(cap) {
   };
   for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
   STATE.onRealClock = real;
+  // a Level 0 control that could not be installed in a realm (src/controls.js): its source is real and unrecorded
+  STATE.onLevel0Gap = (what) => { if (cap.active && !cap.isGlobal) cap.flag('level0-gap', what); };
   // Temporal.Now (Deno; any runtime that has it): the real clock, which Level 0 does not virtualize (review R-032b
   // F5). timeZoneId() reads the time zone, which is part of the runtime identity, not the clock
   const TN = globalThis.Temporal && globalThis.Temporal.Now;
@@ -1814,11 +1865,41 @@ function installBinding(cap) {
   });
 }
 
+// Native bindings of the runners and their tools (resolvers, bundlers, transformers, watchers): loaded for the runner,
+// not for the code under test. Every other addon loaded in a test process counts as the test's (row JS-09: such a
+// test is never reused); a binding missing here costs reuse, never correctness.
+const TOOL_BINDING = new RegExp(`${INFRA.source}|[\\\\/]node_modules[\\\\/](?:\\.pnpm[\\\\/][^\\\\/]+[\\\\/]node_modules[\\\\/])?(?:@unrs|unrs-resolver|@rollup|rollup|@rolldown|rolldown|@oxc-[a-z-]+|oxc-[a-z-]+|@oxc-parser|lightningcss[a-z-]*|@parcel[\\\\/]watcher|fsevents|@esbuild|esbuild|@swc[a-z-]*|@napi-rs)[\\\\/@]`);
+
 function installDlopen(cap) {
   wrapFn(cap, process, 'dlopen', (a) => {
     const f = a[1];
-    if (typeof f === 'string') cap.nativeLoads.add(f);
+    if (typeof f !== 'string') return;
+    cap.nativeLoads.add(f);
+    if (!cap.active || cap.busy || cap.isGlobal) return;
+    if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
   });
+  // process.dlopen runs once per process (or thread) and addon: a later file of the same process that loads it again
+  // gets Node's require cache (Jest in band requires `.node` files with the host's require). Every load request of a
+  // `.node` file counts, cached or not.
+  const M = require('node:module');
+  // (not wrapFn: its marker would make the loader hooks below skip their own `_load` wrapper, which wraps
+  // node:sqlite; the two compose)
+  const realLoad = M._load;
+  if (typeof realLoad === 'function' && !realLoad.__detjsNative) {
+    const w = function _load(...a) {
+      const req = a[0];
+      if (typeof req === 'string' && /\.node$/i.test(req) && cap.active && !cap.busy && !cap.isGlobal) {
+        try {
+          const parent = a[1];
+          const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
+          if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+        } catch { /* never break the load */ }
+      }
+      return realLoad.apply(this, a);
+    };
+    Object.defineProperty(w, '__detjsNative', { value: true });
+    M._load = w;
+  }
 }
 
 /**
@@ -2157,4 +2238,4 @@ function installLoaderHooks(cap, resolveOnly = false) {
 const KEY = Symbol.for('detjs.cache.capture');
 const CAPTURE = globalThis[KEY] || (globalThis[KEY] = new Capture());
 
-module.exports = { CAPTURE, Capture, machineFacts, installEnv, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };
+module.exports = { CAPTURE, Capture, machineFacts, installEnv, installLevel0Env, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };

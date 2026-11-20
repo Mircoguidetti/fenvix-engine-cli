@@ -25,11 +25,23 @@ async function main(argv) {
   if (RUNNER_SHELLS.has(cmd)) return require(`../src/runners/${cmd}`).main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
+    const fs = require('node:fs');
     const paths = rest.filter((a) => !a.startsWith('--'));
-    if (paths.length < 1) { console.error(USAGE); return 2; }
-    if (rest.includes('--json')) process.stdout.write(`${native.verify(paths)}\n`);
-    else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')));
-    const rep = JSON.parse(native.verify(paths));
+    // one run proves nothing (audit G-2186); a missing trace is a usage error, not a stack trace (G-2187)
+    if (paths.length < 2) { console.error(`detjs verify: needs at least two traces of the same suite (got ${paths.length})\n${USAGE}`); return 2; }
+    for (const p of paths) {
+      try { fs.accessSync(p, fs.constants.R_OK); } catch { console.error(`detjs verify: cannot read trace ${p}`); return 2; }
+    }
+    let rep;
+    try {
+      rep = JSON.parse(native.verify(paths));
+      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify(rep)}\n`);
+      else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'));
+    } catch (e) {
+      console.error(`detjs verify: unreadable trace: ${e && e.message}`);
+      return 2;
+    }
+    if (!rep.summary.tests) { console.error('detjs verify: no test ran in these traces: nothing verified'); return 1; }
     return rep.summary.diverged || rep.summary.missing ? 1 : 0;
   }
   if (cmd === '--det-help') { process.stdout.write(require('../src/session').HELP); return 0; }
@@ -49,10 +61,53 @@ function needsEarly(argv) {
   return PRELOAD.test(process.env.NODE_OPTIONS || '') || process.execArgv.some((a) => PRELOAD.test(a));
 }
 
-if (needsEarly(process.argv.slice(2))) {
+// Time zone and locale (audit G-0139, G-0140): under --det they are pinned for the runner and every process it
+// starts, `TZ` (UTC when the job does not set it) and `LC_ALL`/`LANG` (C.UTF-8 when the job sets neither;
+// `LANGUAGE` removed); `--det-tz=ZONE|keep` / `--det-locale=LOC|keep` choose explicitly (recorded in the trace
+// header either way). The locale of ICU is chosen when
+// Node starts: detjs starts itself again with the pinned environment.
+const RUNNERS_ALL = new Set(['vitest', 'jest', 'bun-test', 'deno-test', 'node-test', 'mocha', ...RUNNER_SHELLS]);
+function pinned(argv) {
+  if (!RUNNERS_ALL.has(argv[0])) return null;
+  const det = argv.includes('--det') || process.env.DETJS === '1' || process.env.DETJS === 'true';
+  if (!det || argv.includes('--no-det')) return null;
+  const opt = (name, dflt) => {
+    let v = dflt;
+    for (let i = 0; i < argv.length; i++) {
+      if (argv[i] === name && i + 1 < argv.length) v = argv[i + 1];
+      else if (argv[i].startsWith(`${name}=`)) v = argv[i].slice(name.length + 1);
+    }
+    return v;
+  };
+  // default: the machine's own default (TZ unset: /etc/localtime; no LC_ALL/LANG) is replaced by UTC / C.UTF-8; a
+  // value the job sets explicitly is its configuration and is kept (recorded, and keyed by the cache)
+  const tz = opt('--det-tz', process.env.TZ !== undefined && process.env.DETJS_PINNED === undefined ? 'keep' : 'UTC');
+  const loc = opt('--det-locale', (process.env.LC_ALL || process.env.LANG) && process.env.DETJS_PINNED === undefined ? 'keep' : 'C.UTF-8');
+  const env = {};
+  if (tz !== 'keep') env.TZ = tz;
+  if (loc !== 'keep') { env.LC_ALL = loc; env.LANG = loc; }
+  return { tz, loc, env };
+}
+
+function pinEnv(pin, base) {
+  const env = { ...base, ...pin.env, DETJS_PINNED: `tz=${pin.tz};locale=${pin.loc}` };
+  if (pin.loc !== 'keep') delete env.LANGUAGE;
+  return env;
+}
+
+const PIN = pinned(process.argv.slice(2));
+const PIN_NEEDS_RESTART = PIN && process.env.DETJS_PINNED === undefined && (
+  Object.entries(PIN.env).some(([k, v]) => process.env[k] !== v) || (PIN.loc !== 'keep' && process.env.LANGUAGE !== undefined));
+if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINNED || `tz=${PIN.tz};locale=${PIN.loc}`;
+
+if (needsEarly(process.argv.slice(2)) || PIN_NEEDS_RESTART) {
   const path = require('node:path');
-  const early = path.join(__dirname, '..', 'src', 'cache', 'early.js');
-  const env = { ...process.env, DETJS_EARLY: '1', NODE_OPTIONS: `--require ${JSON.stringify(early)} ${process.env.NODE_OPTIONS || ''}`.trim() };
+  let env = { ...process.env };
+  if (needsEarly(process.argv.slice(2))) {
+    const early = path.join(__dirname, '..', 'src', 'cache', 'early.js');
+    env = { ...env, DETJS_EARLY: '1', NODE_OPTIONS: `--require ${JSON.stringify(early)} ${process.env.NODE_OPTIONS || ''}`.trim() };
+  }
+  if (PIN) env = pinEnv(PIN, env);
   const r = require('node:child_process').spawnSync(process.execPath, [...process.execArgv, __filename, ...process.argv.slice(2)], { stdio: 'inherit', env });
   if (r.signal) process.kill(process.pid, r.signal);
   process.exitCode = r.status ?? 1;

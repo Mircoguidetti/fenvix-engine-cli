@@ -176,6 +176,23 @@ function ownFile(nodeid) {
   return nodeid.split('::', 1)[0].split('@@', 1)[0];
 }
 
+/**
+ * A result recorded more than `days` ago on the real clock is not reused (`--det-cache-max-age`, default 30, as the
+ * Python shell; 0 = no limit): it bounds real-clock reads Level 0 cannot see (native code, TLS validity) and stale
+ * results in general (audit G-1398). The age comes from the run id (`YYYYMMDDTHHMMSS-...`, UTC).
+ */
+function staleness(run, days) {
+  if (!days || typeof run !== 'string') return null;
+  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/.exec(run);
+  if (!m) return null;
+  const t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+  const age = (Date.now() - t) / 86400000;
+  return age > days ? `stale: recorded ${Math.floor(age)} days ago (--det-cache-max-age=${days})` : null;
+}
+
+// controls whose source is an input no key can hold when it is off
+const CONTROLS_KEYED = ['time', 'seeds', 'net', 'fs'];
+
 class ProofSession {
   /**
    * @param opts parsed detjs options (opts.cache = directory or service URL)
@@ -216,6 +233,16 @@ class ProofSession {
     this.specKeys = new Set();
     this.configParts = {};
     this.epochMs = Number(run.cfg.epochNs / 1000000n);
+    // --det-cache-real-clock: the decision is the virtual day's (as if the clock control were on), the tests run on
+    // the real clock, nothing is recorded, and a test whose result differs from its cached one is an expiry
+    this.realClock = Boolean(opts.cacheRealClock);
+    this.maxAgeDays = opts.cacheMaxAge === undefined || opts.cacheMaxAge === null ? 30 : Number(opts.cacheMaxAge);
+    this.expiries = [];
+    // A Level 0 control switched off makes its source real and unrecorded (the real clock, real randomness, the open
+    // network, the file system's own listing order): a result may then depend on what no key holds (audit G-0123).
+    // The cache neither reuses nor records in such a session.
+    const off = CONTROLS_KEYED.filter((k) => !run.cfg.controls.has(k) && !(this.realClock && k === 'time'));
+    if (off.length) this.disabled = `Level 0 control(s) off: ${off.join(',')} (--det-disable); results would depend on unrecorded sources`;
   }
 
   /** Start capturing in the main process (before the runner loads its configuration). */
@@ -242,8 +269,10 @@ class ProofSession {
   setConfig(parts, scan = {}) {
     this.quiet(() => {
       const c = this.run.cfg;
+      const ctl = new Set(c.controls);
+      if (this.realClock) ctl.add('time');
       const level0 = {
-        seed: String(c.seed), shuffle: c.shuffle, controls: [...c.controls].sort(), tick: c.tickNs, tickAdapt: c.tickAdapt,
+        seed: String(c.seed), shuffle: c.shuffle, controls: [...ctl].sort(), tick: c.tickNs, tickAdapt: c.tickAdapt,
         timerBudget: c.timerBudget, timers: c.timers, net: this.run.netMode, allow: c.allowHosts, urandom: c.urandom, sites: c.sites,
       };
       const engineDir = path.resolve(__dirname, '..', '..');
@@ -398,11 +427,16 @@ class ProofSession {
     const entry = JSON.parse(this.store.entry(mid));
     const tests = (entry.report && entry.report.tests) || [];
     const receipts = [[mid, { ...JSON.parse(m.text), kind: 'file' }]];
+    const stale = staleness(entry.run, this.maxAgeDays);
+    if (stale) return { ok: false, why: stale };
     for (const t of tests) {
       const nid = this.testKey(t, project);
       const r = this.store.check(nid);
       if (!r.ok) return { ok: false, why: `${neutral(r.text)} [${t}]` };
-      receipts.push([nid, JSON.parse(r.text)]);
+      const rc = JSON.parse(r.text);
+      const st = staleness(rc.run, this.maxAgeDays);
+      if (st) return { ok: false, why: `${st} [${t}]` };
+      receipts.push([nid, rc]);
     }
     return { ok: true, receipts, tests, duration: entry.duration || 0 };
   }
@@ -435,7 +469,7 @@ class ProofSession {
       if (!this.disabled) this.identity();
     });
     if (!this.disabled && this.runtimeDigest && this.configDigest) {
-      this.quiet(() => this.recordAll(captures));
+      this.quiet(() => (this.realClock ? this.checkRealClock(captures) : this.recordAll(captures)));
     }
     this.t.record += Number(process.hrtime.bigint() - t0) / 1e9;
     this.quiet(() => {
@@ -515,6 +549,37 @@ class ProofSession {
     this.ranFiles = out.ran_files;
   }
 
+  /**
+   * --det-cache-real-clock: every file ran on the real clock. A test the virtual day would reuse whose real-clock
+   * result differs is an expiry (a certificate, token or fixture valid until a date): reported, and its entries and
+   * its file's entry are removed so that it runs again from now on (DECISIONS 2026-11-19).
+   */
+  checkRealClock(captures) {
+    for (const c of captures) {
+      const proj = c.project || '';
+      let expired = false;
+      for (const t of c.tests || []) {
+        const nid = this.testKey(t.id, proj);
+        const rc = this.hits.get(nid);
+        const fresh = t.outcome;
+        if (rc && rc.outcome !== fresh) {
+          this.expiries.push({ nodeid: nid, cached: rc.outcome, real_clock: fresh });
+          this.store.remove(nid);
+          expired = true;
+        }
+      }
+      if (!c.ok) {
+        // a file-level failure on the real clock: every reusable entry of the file goes
+        for (const nid of this.hits.keys()) if (nid.includes('::') && ownFile(nid) === c.fileId && !this.expiries.some((e) => e.nodeid === nid)) {
+          this.expiries.push({ nodeid: nid, cached: this.hits.get(nid).outcome, real_clock: 'file failed' });
+          this.store.remove(nid);
+          expired = true;
+        }
+      }
+      if (expired) this.store.remove(this.idOf(c.fileId, proj));
+    }
+  }
+
   writeReceipts() {
     try {
       fs.mkdirSync(path.dirname(this.receiptsPath), { recursive: true });
@@ -536,6 +601,9 @@ class ProofSession {
       run: this.runId,
       runner: this.runner,
       verify_mode: this.verify,
+      real_clock: this.realClock,
+      expiries: this.expiries,
+      epoch_ms: this.epochMs,
       reused_files: this.reusedFiles.size,
       reused_tests: reusedTests,
       ran_files: this.ranFiles || {},
@@ -585,7 +653,10 @@ class ProofSession {
     out.push(`detjs cache: ${verb} ${s.reused_tests} tests in ${s.reused_files} files (${s.reused_recorded_seconds} s recorded); `
       + `ran ${s.missed_files} files; recorded ${s.recorded} tests; check ${s.check_seconds} s, identity ${s.identity_seconds} s, record ${s.record_seconds} s`);
     if (Object.keys(s.not_cached).length) out.push(`detjs cache: not cached: ${Object.entries(s.not_cached).map(([k, v]) => `${k} ${v}`).join(', ')}`);
-    if (s.verify_mode) out.push(`detjs cache: verified ${s.verified} results, ${s.verify_mismatches.length} differ`);
+    if (s.real_clock) {
+      out.push(`detjs cache: real-clock check: ${s.expiries.length} expired result(s) (cached on the virtual day ${new Date(s.epoch_ms).toISOString().slice(0, 10)}, different on the real clock)`);
+      for (const e of s.expiries.slice(0, 50)) out.push(`detjs cache: EXPIRY ${e.nodeid}: cached ${e.cached}, real clock ${e.real_clock} (entry removed)`);
+    } else if (s.verify_mode) out.push(`detjs cache: verified ${s.verified} results, ${s.verify_mismatches.length} differ`);
     for (const m of s.verify_mismatches.slice(0, 20)) out.push(`detjs cache: VERIFY MISMATCH ${m.nodeid}: cached ${m.cached}, fresh ${m.fresh}`);
     out.push(`detjs cache: receipts ${path.relative(process.cwd(), s.receipts) || s.receipts}`);
     if (s.remote) {
