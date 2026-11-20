@@ -171,7 +171,11 @@ function monoNs(op) {
 // in later files only: 40 tests broken in a full run, none in the file alone).
 let FILE_ORIGIN_NS = 0;
 function startFile() {
-  if (CLOCK) FILE_ORIGIN_NS = CLOCK.elapsed;
+  if (!CLOCK) return;
+  FILE_ORIGIN_NS = CLOCK.elapsed;
+  // module-level code of a file sees the wall clock from the epoch, as in a fresh worker, whatever files ran before it
+  // in this process (Vitest isolate=false and the vm pools, Jest in band; audit G-1475)
+  CLOCK.startTest();
 }
 
 function performanceNow() {

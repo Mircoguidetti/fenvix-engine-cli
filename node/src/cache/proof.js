@@ -257,6 +257,16 @@ class ProofSession {
     });
   }
 
+  /** A part of one project's configuration known only at the decision (src/cache/groups.js); global if unknown. */
+  addProjectPart(project, name, value) {
+    const k = `project:${project || ''}`;
+    if (!Object.prototype.hasOwnProperty.call(this.configParts, k)) { this.addGlobalPart(`${name}:${project || ''}`, value); return; }
+    this.quiet(() => {
+      this.configParts[k] = digest([this.configParts[k], name, typeof value === 'string' ? value : digest(value)]);
+      if (this.configDigest !== undefined) this.digests();
+    });
+  }
+
   digests() {
     {
       const keys = Object.keys(this.configParts).sort();

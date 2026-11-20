@@ -1519,27 +1519,32 @@ function installEnv(cap, proc) {
   const custom = Symbol.for('nodejs.util.inspect.custom');
   const stand = Object.create(realGetProto(real));
   realDefine(stand, custom, {
-    value: function inspectEnv() { cap.env('*'); return real; },
+    value: function inspectEnv() { cap.env('*'); return STATE.envView ? STATE.envView.view(real) : real; },
     writable: true, enumerable: false, configurable: true,
   });
-  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126)
+  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126); STATE.envView: detjs' own
+  // variables are absent for test code (src/envview.js, audit G-2162)
   const handler = {
     get(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.get(real, k);
     },
     has(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return false;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.has', k, real); }
       return Reflect.has(real, k);
     },
     getOwnPropertyDescriptor(_t, k) {
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
       if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.getOwnPropertyDescriptor(real, k);
     },
     ownKeys() {
       cap.env('*');
       if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', real);
-      return Reflect.ownKeys(real);
+      const keys = Reflect.ownKeys(real);
+      return STATE.envView ? STATE.envView.visibleKeys(keys) : keys;
     },
     set(_t, k, v) { real[k] = v; return true; },
     deleteProperty(_t, k) { delete real[k]; return true; },
