@@ -119,19 +119,22 @@ all-runners-2.
 Workflow `release-1.yml`. Runs on this branch: 44686929297, 44688434841, 44688631508, 44688802910 and 44689296016
 were cancelled or superseded while queued (pushes). Results:
 
-| job | run 44689328374 (498e543e) | run 44691940543 (acb80e2b) | run 44695977358 (0e342e84, candidate) |
+| job | run 44689328374 (498e543e) | run 44691940543 (acb80e2b) | run 44700422692 (529c1609, final engine code) |
 |---|---|---|---|
-| build: cargo workspace tests + wheel + addon + libfenvix_go.a + agent/fenvix-skip | success | success | RESULT_BUILD |
-| python 3.12 / 3.13 (serial, reviewer files) | cancelled mid-run | RESULT_PY8 | RESULT_PY |
-| node (all node/test, R-021/R-021b/R-032/R-032b) | cancelled mid-run | RESULT_NODE8 | RESULT_NODE |
-| go (vet + test, R-025/R-025b) | **failure**: TestR025b_D3_UncontrolledEntropy only (pre-existing, see 0) | RESULT_GO8 | RESULT_GO |
-| jvm 8 / 11 / 17 / 21 (controls Gradle+Maven, JUnit 5+4; skipkeys + R-022 on 21) | success ×4 | RESULT_JVM8 | RESULT_JVM |
-| smoke python | check bug (outcomes file read flat); --det and reuse OK | same (old smoke) | RESULT_SP |
-| smoke node | wrong tag (v7.8.8) | (old smoke) | RESULT_SN |
-| smoke go | success | success | RESULT_SG |
-| smoke jvm | success | RESULT_SJ8 | RESULT_SJ |
-| other-os ubuntu-24.04-arm (Rust core + decider, wheel, Python subset) | success | success | RESULT_ARM |
-| other-os macos-14 | cancelled (no runner) | cancelled (no runner) | RESULT_MAC |
+| build: cargo workspace tests + wheel + addon + libfenvix_go.a/fenvix-go + agent/fenvix-skip | success | success | **success** |
+| python 3.12 / 3.13 (serial, every reviewer file) | cancelled mid-run | 3.13: 5 failed (R-008/R-008b ×4: the source tree had no `_core`, fixed in 529c1609; the 5th not shown, the step filtered its output); 3.12: cancelled | **1 failed, 952 passed, 73 skipped** (3.13; 3.12 the same single failure): `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs` (section 4.1) |
+| node (all node/test, R-021/R-021b/R-032/R-032b) | cancelled mid-run | failure (no output: the step filtered it; the run predates 13d402fa) | **success** |
+| go (vet + test, R-025/R-025b) | failure: `TestR025b_D3_UncontrolledEntropy` only | same | same (pre-existing on go-l0, run 44660485039) |
+| jvm 8 / 11 / 17 / 21 (controls Gradle+Maven, JUnit 5+4; skip keys + R-022 on 21) | success ×4 | success ×4 | **success ×4** |
+| smoke python | check bug (outcomes read flat) | same (old smoke) | **success** |
+| smoke node | wrong tag | (old smoke) | **success** |
+| smoke go | success | success | **success** |
+| smoke jvm | success | success | **success** |
+| other-os ubuntu-24.04-arm (Rust core + decider, wheel, Python subset) | success | success | **success** |
+| other-os macos-14 | cancelled (no runner) | cancelled (no runner) | cancelled (no runner): UNKNOWN |
+
+Run 44705350906 (5e1a531d: the same code; the failing test's message now prints the engine's reason) is
+reported in 4.1.
 
 Local gates on the candidate tree (MEASURED, this container: 4 CPUs, Linux 6.18, Python 3.13.18, Go 1.24.7,
 Node 22, JDK 21):
@@ -156,10 +159,10 @@ the second reuses at least one test and no outcome differs.
 
 | language | repository | --det (verify) | skip with proof | run |
 |---|---|---|---|---|
-| Python | pallets/itsdangerous 2.2.0 | 297 covered, 0 not covered, 0 outcome-unstable | 297 reused with proof in run 2 | 44689328374 (outcome check read wrongly, fixed in 0b2eeae3); RESULT_SP_RUN |
-| Node/TS | simple-statistics v7.9.3 (node:test) | RESULT_SN_DET | RESULT_SN_CACHE | RESULT_SN_RUN |
-| Go | google/uuid v1.6.0 | 40 covered, 0 not covered | 39 of 40 reused; 43/43 outcomes equal | 44691940543 (also 44689328374) |
-| JVM | google/gson 2.11.0 (Maven, `-pl gson`) | traces identical | decision: 1324 of 1371 tests reusable; 0 reusable tests whose fresh outcome differs | 44689328374 |
+| Python | pallets/itsdangerous 2.2.0 | 297 covered, 0 not covered, 0 outcome-unstable | 297 of 297 reused with proof in run 2; 297/297 outcomes equal | 44700422692 |
+| Node/TS | simple-statistics v7.9.3 (node:test) | 277 covered, 0 not covered, 0 outcome-unstable | 277 tests in 76 files reused with proof in run 2 (ran 0 files); the outcome comparison covered only the 76 entries in run 1's receipts (0 differing): a weaker check than the other three | 44700422692 |
+| Go | google/uuid v1.6.0 | 40 covered, 0 not covered | 39 of 40 reused; 43/43 outcomes equal | 44691940543, 44700422692 (also 44689328374) |
+| JVM | google/gson 2.11.0 (Maven, `-pl gson`) | traces identical | decision: 1324 of 1371 tests reusable; 0 reusable tests whose fresh outcome differs | 44689328374, 44691940543, 44700422692 |
 
 ## 6. Single CLI entry and packaging
 
