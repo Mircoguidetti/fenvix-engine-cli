@@ -151,7 +151,9 @@ test('parallel walks', async () => {
   const cb = [];
   await new Promise((done) => { let n = 0; const fin = (k) => () => { cb.push(k); if (++n === 2) done(); }; fs.readdir('w/big', fin('big')); fs.readdir('w/small', fin('small')); });
   put('order', order.join() + ';' + cb.join());
-});
+});`;
+
+const WATCH = `
 test('watch', async () => {
   fs.mkdirSync('wd', { recursive: true });
   const w = fs.watch('wd');
@@ -189,11 +191,21 @@ for (const runner of RUNNERS) {
       assert.ok(r.ms < 15000, `two 20 s virtual sleeps took ${r.ms} ms of real time`);
     });
 
-    test('G-1412 G-1411: concurrent directory reads complete in start order; fs.watch events are recorded', T, () => {
+    test('G-1412: concurrent directory reads complete in start order (promises and callbacks)', T, () => {
       const dir = proj(runner, 'walk', { a: WALK });
+      for (let i = 0; i < 2; i++) {
+        const r = run(runner, dir);
+        assert.equal(r.status, 0, show(r));
+        assert.equal(got(dir, 'order'), 'big,small;big,small');
+      }
+      const ev = events(dir, 'parallel walks');
+      assert.ok(ev.some((e) => e[1] === 'io.complete' && e[3] === 'fs.readdir#0'), JSON.stringify(ev));
+    });
+
+    test('G-1411: fs.watch events delivered to the test are recorded', T, () => {
+      const dir = proj(runner, 'watch', { a: WATCH });
       const r = run(runner, dir);
       assert.equal(r.status, 0, show(r));
-      assert.equal(got(dir, 'order'), 'big,small;big,small');
       assert.equal(got(dir, 'watched'), 'x.txt');
       const ev = events(dir, 'watch');
       assert.ok(ev.some((e) => e[1] === 'fs.watch' && e[3].includes('x.txt')), JSON.stringify(ev));
@@ -258,7 +270,7 @@ for (const runner of RUNNERS) {
 
     test('G-0143: the cache never reuses a test that read a file time mapped from the real clock', T, () => {
       const dir = proj(runner, 'files-cache', {
-        b: "test('old file', () => { expect(Date.now() - fs.statSync('package.json').mtimeMs > 0).toBe(true); });",
+        b: "test('old file', () => { expect(Number.isFinite(fs.statSync('package.json').mtimeMs)).toBe(true); });",
         c: "test('size only', () => { expect(fs.statSync('package.json').size > 0).toBe(true); });",
       });
       const r1 = run(runner, dir, [], { cache: true });

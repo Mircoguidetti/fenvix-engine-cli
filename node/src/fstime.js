@@ -150,10 +150,9 @@ function mappedValue(st, e, k) {
   }
   if (!e.seen.has(k)) {
     e.seen.add(k);
-    if (STATE.testId !== null) {
-      STATE.recordAt('fs', `fs.stat.${k}`, e.site, text);
-      if (realDep && STATE.onRealClock) STATE.onRealClock(`fs.stat ${k} (file time on the virtual clock: depends on when the run happens)`);
-    }
+    if (STATE.testId !== null) STATE.recordAt('fs', `fs.stat.${k}`, e.site, text);
+    // (outside a test too: a module-level read belongs to every test of the file)
+    if (realDep && STATE.onRealClock) STATE.onRealClock(`fs.stat ${k} (file time on the virtual clock: depends on when the run happens)`);
   }
   return value;
 }
@@ -417,6 +416,7 @@ function installProcess(patcher) {
 function startFile() {
   INO = new Map();
   DEV = new Map();
+  if (clock !== null) { anchor(); rewrap(); }
 }
 
 module.exports = { installProcess, startFile, mapStats, toVirtual, toReal };

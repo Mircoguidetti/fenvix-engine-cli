@@ -403,6 +403,7 @@ class Driver {
     BY_ID.delete(t.id);
     if (how === 'virtual') CLOCK.advanceTo(this.deadlineDue(t));
     STATE.recordAt('time', 'runner.timeout', '<runner>', `${how}:${t._delayMs}`);
+    if (how === 'real' && STATE.onRealClock) STATE.onRealClock('the runner timeout fired on its real watchdog');
     t._fn.apply(undefined, t._args);
   }
 

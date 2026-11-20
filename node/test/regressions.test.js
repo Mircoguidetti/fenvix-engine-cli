@@ -111,17 +111,25 @@ describe('regressions', () => {
     assert.match(r.trace.header.meta.isolation, /my-runner\.js/);
   });
 
-  // 50036b6: runner timers must stay real. Its parent did not have the defect
-  // (a null-vs-undefined fall-through introduced and fixed while the call-site
-  // capture was rewritten), so this test guards the behaviour, not a commit.
+  // 50036b6: the runner's own timers must not become plain virtual timers (the runner's timeout then fired at once).
+  // Its parent did not have the defect (a null-vs-undefined fall-through introduced and fixed while the call-site
+  // capture was rewritten), so this test guards the behaviour, not a commit. Since G-0144 the runner's test timeout
+  // is a runner deadline on the virtual clock: a virtual sleep within it passes at once, one beyond it fails at its
+  // virtual deadline (as without --det), and the deadline never fires by itself while the test waits for real work.
   for (const runner of RUNNERS) {
-    test(`${runner}: a long virtual sleep is not cut by the runner's real test timeout`, T, () => {
+    test(`${runner}: the runner's test timeout is a virtual deadline, not a plain virtual timer`, T, () => {
       const dir = project(runner, 'runner-timers', {
-        a: "test('sleeps 10 s of virtual time', async () => { await new Promise((r) => setTimeout(r, 10000)); expect(1).toBe(1); }, 3000);",
+        a: [
+          "test('sleeps 10 s of virtual time', async () => { await new Promise((r) => setTimeout(r, 10000)); expect(1).toBe(1); }, 30000);",
+          "test('sleeps past its timeout', async () => { await new Promise((r) => setTimeout(r, 10000)); }, 3000);",
+          "test('waits 1.5 s for a child process', async () => { await new Promise((r) => process.getBuiltinModule('node:child_process').exec('sleep 1.5', r)); }, 3000);",
+        ].join('\n'),
       });
+      const t0 = Date.now();
       const r = run(runner, dir, ['--det']);
-      assert.deepEqual(failed(r), [], r.stdout + r.stderr);
-      assert.equal(Object.keys(r.outcomes).length, 1);
+      assert.deepEqual(failed(r), ['a.test.' + (runner === 'vitest' ? 'mjs' : 'js') + ' > sleeps past its timeout'], r.stdout + r.stderr);
+      assert.equal(Object.keys(r.outcomes).length, 3);
+      assert.ok(Date.now() - t0 < 60000);
     });
   }
 });

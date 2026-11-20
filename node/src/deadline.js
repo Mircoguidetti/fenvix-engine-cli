@@ -18,6 +18,7 @@ const { STATE } = require('./state');
 const KEY = Symbol.for('detjs.deadlineClock');
 const DEADLINE_SETUP = /\b(?:callAsyncCircusFn|runWithTimeout|new TaskDeadline)\b/;
 // frames that read the clock for a deadline: Vitest 1-4 `runWithTimeout` / its `resolve`, Vitest 5 `TaskDeadline`
+const INITIALIZER = /^\s*at <instance_members_initializer>/;
 const DEADLINE_READ = /^\s*at (?:runWithTimeout|resolve|new TaskDeadline|TaskDeadline\.(?:remaining|exceeded|derive|track|settle)) \(.*[\\/](?:@vitest[\\/]runner|vitest[\\/]dist)[\\/]/m;
 
 function stackOf(limit) {
@@ -47,8 +48,11 @@ function installClockHook() {
   box.hook = function deadlineClock(unit) {
     if (STATE.testId === null || !clock.CLOCK || clock.DRIVER.mode !== 'virtual') return undefined;
     // the caller of the preload's clock function (frames: stackOf, this hook, the preload's function, its caller)
-    const lines = stackOf(4).split('\n');
-    if (lines.length < 5 || !DEADLINE_READ.test(lines[4])) return undefined;
+    // (a class field initializer, `startTime = now()`, runs in a frame of its own below the constructor)
+    const lines = stackOf(5).split('\n');
+    if (lines.length < 5) return undefined;
+    const caller = INITIALIZER.test(lines[4]) && lines.length > 5 ? lines[5] : lines[4];
+    if (!DEADLINE_READ.test(caller)) return undefined;
     return base[unit] + (clock.CLOCK.charged() - c0) / 1e6;
   };
 }

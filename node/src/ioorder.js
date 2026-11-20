@@ -155,7 +155,10 @@ function releaseAll(record) {
   for (const h of list) {
     const i = undelivered.indexOf(h.op);
     if (i >= 0) undelivered.splice(i, 1);
-    if (record && STATE.testId === h.op.test) STATE.recordAt('other', 'io.release', h.op.site, `${h.op.kind}#${h.op.n}`);
+    if (record && STATE.testId === h.op.test) {
+      STATE.recordAt('other', 'io.release', h.op.site, `${h.op.kind}#${h.op.n}`);
+      if (STATE.onRealClock) STATE.onRealClock('a file operation was delivered out of start order (real time decided)');
+    }
     end(h.op);
     try { h.deliver(); } catch (e) { REAL_SET_IMMEDIATE(() => { throw e; }); }
   }

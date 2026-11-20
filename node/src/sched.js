@@ -185,6 +185,8 @@ function startTest() { siteCounters = new Map(); }
 /** A virtual timer was chosen while `n` operations of the test were still pending. */
 function timerChosen(site, n) {
   STATE.recordAt('sched', 'sched.timer', site || '', `0/${1 + n}:${stableId(site)}`);
+  // real time decided the order: the test's result is not reusable (src/cache/capture.js)
+  if (STATE.onRealClock) STATE.onRealClock('a virtual timer fired while I/O of the test was pending (real time decided the order)');
 }
 
 /** An operation of the test completed while `n` virtual timers of the test were waiting. */
