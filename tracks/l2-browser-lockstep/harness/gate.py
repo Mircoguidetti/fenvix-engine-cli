@@ -489,7 +489,9 @@ if JOB in ("hunt", "huntp"):
     def args_for(ts):
         files = sorted({t["file"] for t in ts})
         grep = "|".join(js_escape(title_of(t["key"])) for t in ts)
-        args = [js_escape(f) for f in files] + ["--grep", f"({grep})"]
+        # huntp: the targets' whole spec files (their parallel failures come from the other tests of the file running
+        # beside them, round 3 M2); only the targets are judged
+        args = [js_escape(f) for f in files] + ([] if JOB == "huntp" else ["--grep", f"({grep})"])
         base = [a for a in PW_ARGS if not a.startswith("--shard") and not a.startswith("--project")]
         projs = sorted({project_of(t["key"]) for t in ts} - {None})
         return args + base + [f"--project={p}" for p in projs]
