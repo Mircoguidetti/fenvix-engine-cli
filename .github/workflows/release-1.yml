@@ -32,6 +32,8 @@ jobs:
         with: {python-version: "3.13"}
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: "21"}
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
       - run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
       - name: Rust workspace tests
         run: cargo test --workspace --exclude detpy-py 2>&1 | tee cargo-test.log | grep -E "^test result|FAILED|panicked"; exit ${PIPESTATUS[0]}
@@ -40,7 +42,9 @@ jobs:
       - name: napi addon (detjs)
         run: cargo build -p detpy-node --release && cp target/release/libdetpy_node.so dist/detjs.linux-x64.node
       - name: Go overlay core (libfenvix_go.a)
-        run: cargo build -p fenvix-go --release && cp target/release/libfenvix_go.a dist/
+        run: |
+          cargo build -p fenvix-go --release && cp target/release/libfenvix_go.a dist/
+          (cd go && CGO_ENABLED=1 go build -o ../dist/fenvix-go ./cmd/fenvix-go)
       - name: JVM agent and fenvix-skip
         run: ./jvm/build.sh && cp jvm/dist/fenvix-agent.jar target/release/fenvix-skip dist/
       - uses: actions/upload-artifact@v4
@@ -174,14 +178,13 @@ jobs:
         with: {distribution: temurin, java-version: "17"}
       - uses: actions/download-artifact@v4
         with: {name: engine-linux-x64, path: dist}
-      - name: install the engine as the runner image would
+      - name: install the engine as the runner image does (release/install-image.sh)
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
-          pip install --no-deps dist/detpy-*.whl && pip install pytest
-          cp dist/detjs.linux-x64.node node/ && (cd node && npm ci --no-audit --no-fund --omit=dev)
-          mkdir -p target/release jvm/dist && cp dist/libfenvix_go.a dist/fenvix-skip target/release/ && chmod +x target/release/fenvix-skip
-          cp dist/fenvix-agent.jar jvm/dist/
+          sudo mkdir -p /opt/fenvix && sudo chown "$USER" /opt/fenvix
+          release/install-image.sh dist /opt/fenvix
       - name: smoke ${{ matrix.lang }} (--det x2 verified, skip with proof x2)
+        env: {FENVIX_HOME: /opt/fenvix}
         run: python3 release/smoke.py --lang ${{ matrix.lang }} --engine . --work /tmp/smoke --out smoke-${{ matrix.lang }}.json
       - uses: actions/upload-artifact@v4
         if: always()

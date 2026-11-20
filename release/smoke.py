@@ -37,6 +37,9 @@ class Smoke:
         self.steps: list[dict] = []
         self.checks: dict[str, dict] = {}
         os.makedirs(self.log, exist_ok=True)
+        # every engine command goes through the release's single CLI entry, on the installed image layout
+        # (release/install-image.sh; FENVIX_HOME)
+        self.fx = [sys.executable, os.path.join(self.engine, "release", "fenvix")]
 
     def sh(self, name, cmd, cwd=None, env=None, timeout=3600):
         t = time.time()
@@ -69,7 +72,7 @@ class Smoke:
         if not (os.path.exists(t1) and os.path.exists(t2)):
             self.check("det_traces_identical", False, f"trace missing: {t1} {os.path.exists(t1)}, {t2} {os.path.exists(t2)}")
             return
-        rc, out = self.sh("verify", [sys.executable, "-m", "detpy", "verify", t1, t2])
+        rc, out = self.sh("verify", self.fx + ["verify", t1, t2])
         self.check("det_traces_identical", rc == 0 and os.path.getsize(t1) > 0,
                    (out.strip().splitlines() or [""])[-1][:300])
 
@@ -85,7 +88,7 @@ class Smoke:
         traces = []
         for i in (1, 2):
             t = os.path.join(self.work, f"det{i}.jsonl")
-            self.sh(f"det{i}", [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+            self.sh(f"det{i}", self.fx + ["python", "-q", "-p", "no:cacheprovider", "--det",
                                 f"--det-trace={t}", "tests"])
             traces.append(t)
         self.verify(*traces)
@@ -93,7 +96,7 @@ class Smoke:
         outs, reused = [], 0
         for i in (1, 2):
             o = os.path.join(self.work, f"outcomes{i}.json")
-            _, out = self.sh(f"cache{i}", [sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+            _, out = self.sh(f"cache{i}", self.fx + ["python", "-q", "-p", "no:cacheprovider", "--det",
                                            f"--det-cache={cache}", f"--det-outcomes={o}", "tests"])
             outs.append(json.load(open(o)) if os.path.exists(o) else {})
             m = re.search(r"reused (\d+) result", out)
@@ -102,19 +105,18 @@ class Smoke:
 
     # -- Node: detjs (node --test runner) -------------------------------------------------------------------------
     def node(self):
-        detjs = os.path.join(self.engine, "node", "bin", "detjs.js")
         self.sh("install", "npm install --no-audit --no-fund --ignore-scripts")
         args = ["--experimental-test-isolation=none", "test/*.test.js"]
         traces = []
         for i in (1, 2):
             t = os.path.join(self.work, f"det{i}.jsonl")
-            self.sh(f"det{i}", ["node", detjs, "node-test", "--det", f"--det-trace={t}"] + args)
+            self.sh(f"det{i}", self.fx + ["node", "node-test", "--det", f"--det-trace={t}"] + args)
             traces.append(t)
         self.verify(*traces)
         cache = os.path.join(self.work, "cache")
         outs, reused = [], 0
         for i in (1, 2):
-            _, out = self.sh(f"cache{i}", ["node", detjs, "node-test", "--det", f"--det-cache={cache}"] + args)
+            _, out = self.sh(f"cache{i}", self.fx + ["node", "node-test", "--det", f"--det-cache={cache}"] + args)
             rec = os.path.join(self.repo, ".detjs", "receipts.jsonl")
             o, n = {}, 0
             for line in open(rec) if os.path.exists(rec) else ():
@@ -134,18 +136,17 @@ class Smoke:
 
     # -- Go: fenvix-go overlay ------------------------------------------------------------------------------------
     def go(self):
-        fx = os.path.join(self.work, "fenvix-go")
-        self.sh("build", ["go", "build", "-o", fx, "./cmd/fenvix-go"], cwd=os.path.join(self.engine, "go"))
+        fx = self.fx + ["go"]
         traces = []
         for i in (1, 2):
             t = os.path.join(self.work, f"det{i}.jsonl")
-            self.sh(f"det{i}", [fx, "test", "--det", f"--det-trace={t}", "."])
+            self.sh(f"det{i}", fx + ["test", "--det", f"--det-trace={t}", "."])
             traces.append(t)
         self.verify(*traces)
         cache = os.path.join(self.work, "cache")
         outs, reused = [], 0
         for i in (1, 2):
-            _, out = self.sh(f"cache{i}", [fx, "test", f"--skip-cache={cache}", "-json", "."])
+            _, out = self.sh(f"cache{i}", fx + ["test", f"--skip-cache={cache}", "-json", "."])
             o, n = {}, 0
             for line in out.splitlines():
                 try:
@@ -172,22 +173,20 @@ class Smoke:
         return dst
 
     def jvm(self):
-        agent = os.path.join(self.engine, "jvm", "dist", "fenvix-agent.jar")
-        skip = os.path.join(self.engine, "target", "release", "fenvix-skip")
         mvn = ["mvn", "-q", "-B", "test", "-pl", "gson", "-am", "-Dmaven.javadoc.skip=true", "-Denforcer.skip=true"]
         self.sh("install", ["mvn", "-q", "-B", "-DskipTests", "install", "-pl", "gson", "-am"])
         traces = []
         for i in (1, 2):
-            self.sh(f"det{i}", ["java", "-jar", agent, "run", "--det", "--"] + mvn)
+            self.sh(f"det{i}", self.fx + ["jvm", "run", "--det", "--"] + mvn)
             d = self._fenvix_copy(os.path.join(self.work, f"det{i}"))
             traces.append(os.path.join(d, "trace.jsonl"))
         self.verify(*traces)
         deps = []
         for i in (1, 2):
-            self.sh(f"cache{i}", ["java", "-jar", agent, "run", "--det", "--deps", "--"] + mvn)
+            self.sh(f"cache{i}", self.fx + ["jvm", "run", "--det", "--deps", "--"] + mvn)
             deps.append(os.path.join(self._fenvix_copy(os.path.join(self.work, f"deps{i}")), "deps"))
         j = os.path.join(self.work, "decide.json")
-        self.sh("decide", [skip, "decide", deps[0], deps[1], "--root-b", self.repo, "--json", j])
+        self.sh("decide", self.fx + ["jvm", "decide", deps[0], deps[1], "--root-b", self.repo, "--json", j])
         rows = json.load(open(j)) if os.path.exists(j) else []
         # B's measurement ran every test: B's own capture holds its fresh outcome
         fresh = {}
