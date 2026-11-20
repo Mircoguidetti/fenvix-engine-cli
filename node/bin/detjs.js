@@ -35,8 +35,10 @@ async function main(argv) {
     let rep;
     try {
       rep = JSON.parse(native.verify(paths));
-      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify(rep)}\n`);
-      else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'));
+      // settings, order and reuse behind each divergence (G-1482, G-1483, G-1402): src/verify-explain.js
+      const ex = require('../src/verify-explain').explain(paths, rep);
+      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify({ ...rep, ...ex.json })}\n`);
+      else process.stdout.write(require('../src/verify-explain').annotate(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'), ex));
     } catch (e) {
       console.error(`detjs verify: unreadable trace: ${e && e.message}`);
       return 2;

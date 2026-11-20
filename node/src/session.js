@@ -175,7 +175,9 @@ function partIds(file) {
 
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
-  const parts = files.map((f) => path.join(run.dir, 'parts', f.part)).filter((p) => fs.existsSync(p));
+  const executed = files.map((f) => ({ fileId: f.fileId, path: path.join(run.dir, 'parts', f.part) })).filter((p) => fs.existsSync(p.path));
+  // --det-cache: the reused tests are in the trace too, with their recorded fingerprints (G-1402)
+  const { paths: parts, reusedTests } = require('./cache/trace-reused').withReused(run, executed);
   // Parts not claimed by the sequencer order (should not happen) go last, sorted.
   const known = new Set(parts);
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
@@ -198,6 +200,7 @@ function finish(run, opts, files, meta) {
     node: process.version,
     platform: process.platform,
     files: files.map((f) => f.fileId),
+    ...(reusedTests.length ? { reused_tests: reusedTests } : {}),
     unordered_parts: extra.length,
     notes: [...new Set(all.flatMap(partNotes))],
     // time zone and locale of the run: pinned by bin/detjs.js unless --det-tz/--det-locale=keep (G-0139, G-0140)
