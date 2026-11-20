@@ -425,14 +425,26 @@ class Capture:
             link = name == "lstat"
 
             def checked(path, *args, **kwargs):
+                from detpy import proofcache as _pc  # review R-032b F2: the same rules as detpy's capture
+
+                timed = False
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
-                        cap.stat_check(path, link or kwargs.get("follow_symlinks") is False)
+                        nolink = link or kwargs.get("follow_symlinks") is False
+                        sized = name == "stat" and not nolink and not _pc._kind_check_caller()
+                        cap.stat_check(path, nolink, sized)
+                        own = _getframe(1).f_code.co_filename.startswith(_DETPY_DIR)  # this reference's own stat
+                        user = not own and cap._caller_kind() == "user"
+                        timed = name in ("stat", "lstat") and user and _pc._user_stat_caller()
+                        if user and _pc._time_helper_caller():
+                            cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
                     except Exception:
                         pass
                     finally:
                         cap._in_stat = False
+                    if timed:
+                        return _pc._TimedStat(orig(path, *args, **kwargs), cap, path)
                 return orig(path, *args, **kwargs)
 
             checked.__name__ = orig.__name__
@@ -455,6 +467,24 @@ class Capture:
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
+
+        orig_scandir = os.scandir
+
+        def scandir(path=".", *args, **kwargs):
+            from detpy import proofcache as _pc
+
+            it = orig_scandir(path, *args, **kwargs)
+            if isinstance(path, int) or cap._in_stat or _getframe(1).f_code.co_filename.startswith(_DETPY_DIR):
+                return it
+            try:
+                if cap._caller_kind() != "user":
+                    return it
+            except Exception:
+                return it
+            return _pc._ScandirIter(it, cap)
+
+        self._stat_saved.append((os, "scandir", orig_scandir))
+        os.scandir = scandir
 
     def stat_check(self, path, link=False, sized=False) -> None:
         if not self.active:

@@ -137,8 +137,21 @@ def _user_stat_caller() -> bool:
             f = f.f_back
             continue
         fn = f.f_code.co_filename
+        if fn.startswith(_DETPY_DIR):
+            return False  # detpy's own stat (its digests, its reference implementations): never the test's
         return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen"))
     return False
+
+
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time
+_TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
+
+
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller)."""
+    f = _getframe(2)
+    return (f is not None and f.f_code.co_name in _TIME_HELPERS
+            and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath"))
 
 
 _STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
@@ -382,6 +395,9 @@ class Capture(_core.CaptureCore):
                         cap.stat_check(path, nolink, sized)
                         # pytest's assertion rewriting compares source mtimes: infrastructure, not the test's
                         timed = name in ("stat", "lstat") and _user_stat_caller() and cap._caller_kind() == "user"
+                        if _time_helper_caller() and cap._caller_kind() == "user":
+                            # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                            cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
                     except Exception:
                         pass
                     finally:
