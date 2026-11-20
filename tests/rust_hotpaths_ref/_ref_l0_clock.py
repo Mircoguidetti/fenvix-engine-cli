@@ -250,8 +250,23 @@ def _mark_external(real):
     return wrapper
 
 
+def _os_children_alive() -> bool:
+    """Off Linux (no /proc): the OS's own list (macOS: proc_listchildpids); unknown counts as alive (audit G-0158)."""
+    if sys.platform == "darwin":
+        import ctypes
+
+        libc = ctypes.CDLL(None)
+        buf = (ctypes.c_int * 64)()
+        n = libc.proc_listchildpids(os.getpid(), buf, ctypes.sizeof(buf))
+        if n >= 0:
+            return n > 0
+    return True
+
+
 def _children_alive() -> bool:
     """True if this process has live child processes (Linux: /proc children lists)."""
+    if not sys.platform.startswith("linux"):
+        return _os_children_alive()
     try:
         for tid in _real_listdir("/proc/self/task"):
             with open(f"/proc/self/task/{tid}/children") as f:

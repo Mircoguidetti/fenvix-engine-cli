@@ -779,16 +779,20 @@ def test_children_alive_and_its_audit_events_match_reference(ref, monkeypatch):
         assert seen[n:m] == seen[m:], (seen[n:m], seen[m:])
         return a, seen[n:m]
 
-    _, events = both()
+    alive, events = both()
     if sys.platform == "linux":
         assert events[0] == ("os.listdir", ("/proc/self/task",))
         assert events[1][0] == "open" and events[1][1][1:] == ("r", os.O_RDONLY | os.O_CLOEXEC)
+    else:
+        assert events == [] and alive is False  # the OS's list (macOS: proc_listchildpids), no /proc reads
     p = subprocess.Popen([sys.executable, "-c", "import time; time.sleep(30)"])
     try:
-        assert both()[0] is (sys.platform == "linux")
+        assert both()[0] is True  # a live child is seen on every supported OS (audit G-0158)
     finally:
         p.kill()
         p.wait()
+    if not sys.platform.startswith("linux"):
+        return  # what follows replaces the /proc reader's open and listdir, which only Linux uses
     # open replaced (a test's mock_open), reads that fail, a listing replaced
     with mock.patch("builtins.open", mock.mock_open(read_data="12 ")):
         assert both()[0] is (sys.platform == "linux")
