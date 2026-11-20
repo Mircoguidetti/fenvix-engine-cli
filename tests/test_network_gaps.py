@@ -365,3 +365,35 @@ def test_tls_replay_answers_what_the_handshake_negotiated(tmp_path):
     line_rep = next(x for x in rep.stdout.splitlines() if "TLS b" in x)
     assert line_rep.split("TLS", 1)[1] == line_rec.split("TLS", 1)[1], (line_rec, line_rep)
     assert "True http/1.1" in line_rep, line_rep
+
+
+def test_native_network_clients_are_never_identical(tmp_path):
+    """G-1521: a native client (its sockets are opened in C, outside the closed network) marks the test
+    `uncontrolled.native`; the verifier never reports it identical. Stand-in modules with the clients' factory
+    names (grpcio, psycopg2, pycurl are not installable in the gate); the engine patches the factories by name."""
+    stubs = tmp_path / "stubs"
+    stubs.mkdir()
+    (stubs / "psycopg2.py").write_text("class _C:\n    pass\ndef connect(*a, **k):\n    return _C()\n")
+    (stubs / "pycurl.py").write_text("class Curl:\n    pass\n")
+    proj = tmp_path / "p"
+    proj.mkdir()
+    (proj / "test_n.py").write_text(
+        "def test_db():\n    import psycopg2\n    psycopg2.connect('host=db.example dbname=x')\n\n"
+        "def test_curl():\n    import pycurl\n    pycurl.Curl()\n\n"
+        "def test_plain():\n    pass\n")
+    env = dict(os.environ, PYTHONPATH=str(stubs))
+    env.pop("PYTEST_ADDOPTS", None)
+    traces = []
+    for tag in ("a", "b"):
+        t = proj / f"{tag}.jsonl"
+        r = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det", f"--det-trace={t}"],
+                           cwd=proj, env=env, capture_output=True, text=True, timeout=300)
+        assert "3 passed" in r.stdout, r.stdout + r.stderr
+        traces.append(str(t))
+    v = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", "--json", *traces], capture_output=True,
+                       text=True)
+    rep = json.loads(v.stdout)
+    by = {t["nodeid"].split("::")[1]: t for t in rep["tests"]}
+    assert by["test_db"]["divergence"]["reason"] == "native", by["test_db"]
+    assert by["test_curl"]["divergence"]["reason"] == "native", by["test_curl"]
+    assert by["test_plain"]["status"] == "stable"

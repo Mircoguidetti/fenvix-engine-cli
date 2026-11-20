@@ -61,6 +61,9 @@ pub enum Reason {
     Child,
     /// The test waited on I/O readiness (selectors): the order in which ready I/O is delivered is not controlled.
     Io,
+    /// The test used a native network client (grpcio, pycurl, libpq, ...): its sockets are outside the closed
+    /// network and the cassette.
+    Native,
     /// One run is a parallel run under a plan (merged trace), the other serial, and the test ran in its worker
     /// without some of its serial in-process predecessors (`lost_predecessors`): it observed process state that
     /// depends on where it ran (docs/PARALLEL-PROOF-DESIGN.md 2.4). Entropy and thread divergences keep their class.
@@ -93,6 +96,7 @@ impl Reason {
             Reason::Config => "config",
             Reason::Child => "child",
             Reason::Io => "io",
+            Reason::Native => "native",
         }
     }
 
@@ -112,6 +116,7 @@ impl Reason {
             Some("thread") => Some(Reason::Thread),
             Some("child") => Some(Reason::Child),
             Some("io") => Some(Reason::Io),
+            Some("native") => Some(Reason::Native),
             Some(_) => Some(Reason::Other),
             None => None,
         }
@@ -126,6 +131,7 @@ impl Reason {
             "thread" => Reason::Thread,
             "child" => Reason::Child,
             "io" => Reason::Io,
+            "native" => Reason::Native,
             _ => Reason::Other,
         }
     }
@@ -416,6 +422,7 @@ fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
         "thread" => "started a thread: thread scheduling",
         "child" => "started a child process: what the child does",
         "io" => "waited for I/O readiness: the order in which ready I/O is delivered",
+        "native" => "used a native network client: its connections (outside the closed network and the cassette)",
         _ => "used an uncontrolled source: it",
     };
     let at = ev.as_ref().map(|e| format!(" ({} @ {})", e.op, e.site)).unwrap_or_default();
@@ -836,6 +843,8 @@ pub const HINTS: &[(&str, &str)] = &[
     ("thread", "threads are not scheduled deterministically by this release: the test cannot be proven identical"),
     ("child", "a child process is not controlled by this release: the test cannot be proven identical"),
     ("io", "the order of ready I/O is not controlled by this release: the test cannot be proven identical"),
+    ("native", "a native network client (grpcio, pycurl, libpq, ...) opens its sockets in C, outside the closed \
+                network: the test cannot be proven identical (needs the syscall backend)"),
     ("outcome-only", "same observed events, different outcome: the cause is outside what is observed (C code, \
                       memory addresses, files or services outside the test); `fenvix repro TEST` searches for it"),
 ];

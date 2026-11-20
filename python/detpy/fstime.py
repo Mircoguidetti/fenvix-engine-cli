@@ -119,8 +119,31 @@ def install(patcher) -> None:
     patcher.set(os, "open", os_open)
     patcher.set(os, "rename", _moved(_real_rename))
     patcher.set(os, "replace", _moved(_real_replace))
-    patcher.set(os, "stat", _stat_of(_real_stat))
-    patcher.set(os, "lstat", _stat_of(_real_lstat))
+    for name, real in (("stat", _real_stat), ("lstat", _real_lstat)):
+        from ._patch import nonbinding
+
+        wrapper = _stat_of(real)
+        wrapper.__wrapped__ = real
+        # one object for every binding, so the cache (and anyone comparing by identity) sees the same function
+        wrapper = nonbinding(wrapper, "os", name)
+        patcher.set(os, name, wrapper)
+        # references bound before the session (``from os import stat`` in a plugin loaded at startup) follow, as the
+        # cache with proof rebinds them: the cache then finds them by this wrapper (the import system's ``posix``
+        # module and detpy's own modules are left alone)
+        import sys
+
+        own = os.path.dirname(os.path.abspath(__file__)) + os.sep
+        for mod in list(sys.modules.values()):
+            d = getattr(mod, "__dict__", None)
+            if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                    or str(getattr(mod, "__file__", "") or "").startswith(own):
+                continue
+            for k, v in list(d.items()):
+                if v is real:
+                    try:
+                        patcher.set(mod, k, wrapper)
+                    except Exception:
+                        pass
 
 
 def start_test() -> None:
