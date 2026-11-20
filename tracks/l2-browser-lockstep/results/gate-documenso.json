@@ -3,10 +3,10 @@
  "job": "gate",
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
- "status": "running",
- "run_id": "44640516333",
- "engine_commit": "f1fd6c43a9c18cb9a3fefbe85122d1300ba142ed",
- "setup_s": 354,
+ "status": "ok",
+ "run_id": "44670127108",
+ "engine_commit": "8c2dd949b13e9ea83087dff4f12778c1dc758360",
+ "setup_s": 232,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -27,8 +27,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T00:25:00Z",
- "measured_at": "2026-11-20T00:25:57Z",
+ "epoch": "2026-11-20T04:52:00Z",
+ "measured_at": "2026-11-20T04:52:04Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "gate": [
   {
@@ -41,16 +41,16 @@
     "passed"
    ],
    "runs": [
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing"
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
    ],
    "errors": [
     "",
@@ -65,16 +65,16 @@
     ""
    ],
    "walls": [
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1,
-    601.1
+    15.5,
+    15.4,
+    15.4,
+    15.3,
+    15.3,
+    15.4,
+    15.3,
+    15.4,
+    15.4,
+    15.4
    ],
    "stats": [
     null,
@@ -89,30 +89,33 @@
     null
    ],
    "traces": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    "gate-documenso/g1-det-1.jsonl.gz",
+    "gate-documenso/g1-det-2.jsonl.gz",
+    "gate-documenso/g1-det-3.jsonl.gz",
+    "gate-documenso/g1-det-4.jsonl.gz",
+    "gate-documenso/g1-det-5.jsonl.gz",
+    "gate-documenso/g1-det-6.jsonl.gz",
+    "gate-documenso/g1-det-7.jsonl.gz",
+    "gate-documenso/g1-det-8.jsonl.gz",
+    "gate-documenso/g1-det-9.jsonl.gz",
+    "gate-documenso/g1-det-10.jsonl.gz"
    ],
-   "run_logs": {
-    "1": "ug: true }\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:8011) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:8011) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:8011) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "2": " }\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:12208) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:12208) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:12208) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "3": "cted env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:16461) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:16461) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:16461) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "4": "m]\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:20657) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:20657) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:20657) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "5": "cted env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:24836) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:24836) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:24836) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "6": " }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 override existing { override: true }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:29071) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:29071) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:29071) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "7": "envx.com]\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 suppress logs { quiet: true }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:33254) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:33254) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:33254) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "8": " }\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:38089) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:38089) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:38089) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "9": "cted env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:42299) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:42299) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:42299) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n",
-    "10": "x.com]\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 enable debugging { debug: true }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:46491) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:46491) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:46491) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n"
-   },
-   "verify_all": []
+   "verify_all": [
+    {
+     "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
   },
   {
    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
@@ -124,23 +127,82 @@
     "passed"
    ],
    "runs": [
-    "missing"
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
    ],
    "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
     ""
    ],
    "walls": [
-    601.1
+    15.4,
+    15.3,
+    15.3,
+    15.3,
+    15.3,
+    15.4,
+    15.4,
+    15.4,
+    15.3,
+    15.3
    ],
    "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
     null
    ],
    "traces": [
-    null
+    "gate-documenso/g2-det-1.jsonl.gz",
+    "gate-documenso/g2-det-2.jsonl.gz",
+    "gate-documenso/g2-det-3.jsonl.gz",
+    "gate-documenso/g2-det-4.jsonl.gz",
+    "gate-documenso/g2-det-5.jsonl.gz",
+    "gate-documenso/g2-det-6.jsonl.gz",
+    "gate-documenso/g2-det-7.jsonl.gz",
+    "gate-documenso/g2-det-8.jsonl.gz",
+    "gate-documenso/g2-det-9.jsonl.gz",
+    "gate-documenso/g2-det-10.jsonl.gz"
    ],
-   "run_logs": {
-    "1": " }\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n\nRunning 1 test using 1 worker\n\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:51366) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:51366) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:51366) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n"
+   "verify_all": [
+    {
+     "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
    }
   }
- ]
+ ],
+ "elapsed_min": 7.2
 }
