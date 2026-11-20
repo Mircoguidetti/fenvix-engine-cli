@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44612327770",
- "engine_commit": "85a82cd7b6763524f10947136ccea0285513395a",
- "setup_s": 32,
+ "run_id": "44640516333",
+ "engine_commit": "f1fd6c43a9c18cb9a3fefbe85122d1300ba142ed",
+ "setup_s": 31,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-19T22:25:00Z",
- "measured_at": "2026-11-19T22:25:27Z",
+ "epoch": "2026-11-20T00:27:00Z",
+ "measured_at": "2026-11-20T00:27:31Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -40,16 +40,16 @@
     "passed"
    ],
    "runs": [
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing"
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
    ],
    "errors": [
     "",
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    600.0,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5
+    17.1,
+    16.4,
+    16.4,
+    16.4,
+    16.3,
+    16.1,
+    16.2,
+    16.4,
+    16.2,
+    16.2
    ],
    "stats": [
     null,
@@ -88,7 +88,7 @@
     null
    ],
    "traces": [
-    null,
+    "gate-sveltekit/g1-det-1.jsonl.gz",
     "gate-sveltekit/g1-det-2.jsonl.gz",
     "gate-sveltekit/g1-det-3.jsonl.gz",
     "gate-sveltekit/g1-det-4.jsonl.gz",
@@ -99,7 +99,22 @@
     "gate-sveltekit/g1-det-9.jsonl.gz",
     "gate-sveltekit/g1-det-10.jsonl.gz"
    ],
-   "verify_all": []
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
   },
   {
    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
@@ -107,20 +122,20 @@
    "grep": "data-sveltekit attributes data-sveltekit-preload-data",
    "project": null,
    "plain": [
-    "missing",
-    "missing"
+    "passed",
+    "passed"
    ],
    "runs": [
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing",
-    "missing"
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
    ],
    "errors": [
     "",
@@ -135,16 +150,16 @@
     ""
    ],
    "walls": [
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5,
-    0.5
+    121.1,
+    118.3,
+    118.3,
+    118.3,
+    118.3,
+    118.2,
+    118.2,
+    118.0,
+    117.9,
+    121.0
    ],
    "stats": [
     null,
@@ -170,8 +185,37 @@
     "gate-sveltekit/g2-det-9.jsonl.gz",
     "gate-sveltekit/g2-det-10.jsonl.gz"
    ],
-   "verify_all": []
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
+     "status": "stable",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": null
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+    "status": "stable",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": null
+   }
   }
  ],
- "elapsed_min": 10.5
+ "elapsed_min": 23.4
 }
