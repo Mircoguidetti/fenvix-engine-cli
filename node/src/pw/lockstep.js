@@ -292,6 +292,16 @@ class Coordinator {
     this.gating = ENV.DETJS_LS_GATE !== '0';
     this.admits = []; // runner calls waiting for admission
     this.actionMs = Number(ENV.DETJS_LS_ACTION_MS || 20);
+    // Teardown hold (round 4, documenso group replays): once the test function has finished (Playwright's
+    // _didFinishTestFunction: error context, screenshots, afterEach hooks, fixture teardown, trace and video), the
+    // runner's calls are admitted without engine time and time does not advance while the runner only waits on its
+    // own calls, deadlines or library timers. Before, the teardown's real-time pace decided how many ACTION-ms steps
+    // passed (MEASURED locally: the next test started 20 ms later in one of two replays, so every row it created
+    // carried another timestamp). Time still moves for what the teardown's test code waits on (a sleep, a message);
+    // a hold without any runner activity for DETJS_LS_TEARDOWN_HOLD_MS real ms is given up (recorded).
+    this.teardownHold = ENV.DETJS_LS_TEARDOWN !== '0';
+    this.teardownMaxMs = Number(ENV.DETJS_LS_TEARDOWN_HOLD_MS || 5000);
+    this.teardown = null; // { key, since, act, released }
     this.clock = new RunnerClock({
       currentTest: () => o.currentTest(),
       epochMs: o.epochMs,
@@ -403,9 +413,49 @@ class Coordinator {
     m.resolve(done);
   }
 
+  // -------------------------------------------------------------- teardown hold
+  /** The test function of `key` has finished: its teardown begins (worker.js hooks Playwright's TestInfo). */
+  beginTeardown(key) {
+    if (!this.teardownHold || !key) return;
+    this.teardown = { key, since: realNow(), act: ACT.n, released: false };
+    this.trace(`teardown ${key}`);
+    // calls already waiting for admission are admitted now
+    if (this.admits.length) { const a = this.admits; this.admits = []; for (const x of a) x.resolve(); }
+    for (const g of this.gatedResults) g.due = Math.min(g.due, this.sched.now());
+    this.poke();
+  }
+
+  inTeardown() {
+    const td = this.teardown;
+    return !!td && !td.released && td.key === this.o.currentTest();
+  }
+
+  /** In teardown: may time stay where it is? Not when the runner waits on what moves with time (a sleep of the
+   * test code, a held or pending message, its own API requests); given up after a long real-time stall. */
+  holdTime(key, rs) {
+    const td = this.teardown;
+    if (!td || td.released || td.key !== key) return false;
+    if (rs.state === 'idle') return false;
+    if (this.sched.pending() > 0 || this.holds.length || this.responses.length) return false;
+    const kinds = this.clock.kinds();
+    if (kinds.wait) return false;
+    for (const m of this.msgs.values()) if (m.item.kind === 'api') return false;
+    for (const it of this.inprogress.values()) if (it.kind === 'api') return false;
+    if (ACT.n !== td.act) { td.act = ACT.n; td.since = realNow(); }
+    if (realNow() - td.since > this.teardownMaxMs) {
+      td.released = true;
+      this.stats.stalls++;
+      this.decision(key, 'ls.stall', 'teardown');
+      this.trace('teardown hold released');
+      return false;
+    }
+    return true;
+  }
+
   // -------------------------------------------------------------- gated call results
   /** A runner call waits for admission: at a quiet point, ACTION ms after it was asked for. */
   admit(id) {
+    if (this.inTeardown()) return Promise.resolve();
     return new Promise((resolve) => {
       this.admits.push({ id, due: this.sched.now() + this.actionMs * NS, resolve });
       this.admits.sort((a, b) => a.id - b.id);
@@ -426,7 +476,7 @@ class Coordinator {
   gate(id, deliver, issuedNs) {
     // Seen by the runner ACTION ms after the call was issued, or when its result arrived if that was later.
     const T = this.sched.now();
-    const due = Math.max((issuedNs === undefined ? T : issuedNs) + this.actionMs * NS, T);
+    const due = this.inTeardown() ? T : Math.max((issuedNs === undefined ? T : issuedNs) + this.actionMs * NS, T);
     this.gatedResults.push({ id, deliver, waitFor: null, due });
     this.gatedResults.sort((a, b) => a.id - b.id);
     activity();
@@ -1142,6 +1192,7 @@ class Coordinator {
       if (key !== this.lastKey) {
         if (this.lastKey) this.endTest(this.lastKey);
         this.lastKey = key;
+        if (key && this.o.onTest) { try { this.o.onTest(key); } catch { /* ignore */ } }
         if (this.multi) { await this.sched.ready; this.sched.active(!!key); }
       }
       if (this.multi && this.remoteActions.length) { this.applyRemote(this.remoteActions.shift(), key); continue; }
@@ -1180,6 +1231,12 @@ class Coordinator {
       if (rs.state === 'busy' && this.sched.pending() === 0) {
         // The browser (or a browser launch) works for the runner: wait for it, in real time, without deciding.
         await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 20); });
+        continue;
+      }
+      if (this.holdTime(key, rs)) {
+        // Teardown: the runner's calls run without engine time (see beginTeardown).
+        if (ENV.DETJS_LS_TRACE_ALL) this.trace(`hold ${rs.state}/${rs.why}`);
+        await new Promise((r) => { this.wake = r; REAL.setTimeout(r, 10); });
         continue;
       }
       if (rs.stall) { this.stats.stalls++; this.decision(key, 'ls.stall', rs.why.split(':')[0]); }

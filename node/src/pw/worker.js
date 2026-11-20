@@ -1273,8 +1273,23 @@ if (LOCKSTEP) {
     record: (key, source, op, value) => recNow(key, source, op, value),
   });
   LS.navPending = NAV.pending;
+  // Teardown hold (lockstep.js beginTeardown): Playwright calls TestInfo._didFinishTestFunction once the test
+  // function is done, before afterEach hooks and fixture teardown. Hooked on the class, on the first test seen.
+  LS.o.onTest = () => {
+    const ti = testInfo();
+    const proto = ti && Object.getPrototypeOf(ti);
+    if (!proto || proto.__detjsTeardown || typeof proto._didFinishTestFunction !== 'function') return;
+    Object.defineProperty(proto, '__detjsTeardown', { value: true });
+    const orig = proto._didFinishTestFunction;
+    proto._didFinishTestFunction = function _didFinishTestFunction(...a) {
+      try { if (LS) LS.beginTeardown(this.testId); } catch { /* never break the runner */ }
+      return orig.apply(this, a);
+    };
+  };
   LS.extraWaiting = () => NODE_FETCH.inflight;
-  if (LS.multi && ENV.DETJS_LS_DB_GATE !== '0') {
+  // With one worker too (DETJS_LS_DB_GATE=1): test code that seeds rows concurrently (Promise.all of creates) got
+  // them in the database's real-time order (documenso seedDocuments: list order by createdAt swapped between replays).
+  if ((LS.multi && ENV.DETJS_LS_DB_GATE !== '0') || ENV.DETJS_LS_DB_GATE === '1') {
     require('../prisma').setGate(async (p, runIt) => {
       const key = currentKey();
       if (!key) return runIt();
@@ -1371,7 +1386,7 @@ function patchBrowserType(bt) {
 }
 
 let corePatched = false;
-if (LS) require('../prisma').install(); // seeding code's @default(now()) / @updatedAt on the runner clock
+if (LS) require('../prisma').install({ monotonic: true }); // seeding code's @default(now()) / @updatedAt on the runner clock, one ms per write
 const origLoad = Module._load;
 Module._load = function load(request, parent, isMain) {
   const exp = origLoad.apply(this, arguments);

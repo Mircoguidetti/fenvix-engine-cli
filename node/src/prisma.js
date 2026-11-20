@@ -108,7 +108,15 @@ function nested(dm, mi, data, t) {
 
 function fill(dm, model, action, args) {
   if (!model || !args || typeof args !== 'object') return;
-  const t = Date.now(); // one instant for the whole write, like the engine's own now()
+  let t = Date.now(); // one instant for the whole write, like the engine's own now()
+  if (MONO) {
+    // Runner (test code): the engine clock does not move while the test code itself works, so rows it seeds one
+    // after another got the same millisecond and lists ordered by createdAt came back in either order (MEASURED
+    // locally, documenso search-documents visibility: two seeded documents swapped places between replays). Each
+    // write of the runner gets its own millisecond, in the order the test code made them (deterministic).
+    if (t <= MONO.last) t = MONO.last + 1;
+    MONO.last = t;
+  }
   if (CREATE.has(action)) {
     if (action.startsWith('upsert')) { fillCreate(dm, model, args.create, t); fillUpdate(dm, model, args.update, t); }
     else fillCreate(dm, model, args.data, t);
@@ -164,7 +172,9 @@ let GATE = null;
 function setGate(fn) { GATE = fn; }
 
 let installed = false;
-function install() {
+let MONO = null;
+function install(opt = {}) {
+  if (opt.monotonic && process.env.DETJS_PRISMA_MONO !== '0') MONO = MONO || { last: -Infinity };
   if (installed || process.env.DETJS_PRISMA_CLOCK === '0') return;
   installed = true;
   const origLoad = Module._load;
