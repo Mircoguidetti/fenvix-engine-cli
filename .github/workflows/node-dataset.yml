@@ -46,5 +46,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add harness/node/dataset/raw
-          git commit -m "Node harness: JavaScript flaky-test dataset (Zenodo 7111773) from Actions run ${{ github.run_id }}" || exit 0
+          git commit -m "Node harness: JavaScript flaky-test dataset (Zenodo 7111773) from Actions run ${{ github.run_id }} [skip ci]" || exit 0
           for i in 1 2 3 4; do git pull --rebase -q && git push -q && break; sleep $((i * 5)); done

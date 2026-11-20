@@ -117,5 +117,5 @@ jobs:
         run: |
           git config user.name "parallel-proof bot" && git config user.email "noreply@anthropic.com"
           git add tracks/parallel-proof/results
-          git commit -qm "parallel-proof: ${{ matrix.repo.name }} (${{ needs.build.outputs.run_id }})" || exit 0
+          git commit -qm "parallel-proof: ${{ matrix.repo.name }} (${{ needs.build.outputs.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5; do git pull -q --rebase origin "${{ github.ref_name }}" && git push -q origin "HEAD:${{ github.ref_name }}" && break; sleep $((i*5)); done

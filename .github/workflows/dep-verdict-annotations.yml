@@ -24,7 +24,7 @@ jobs:
             --out results/dv1/annotations.json && cd ../..
           for i in 1 2 3 4 5 6 7 8; do
             git fetch -q origin claude/dep-verdict-abjcfw && git reset -q --soft origin/claude/dep-verdict-abjcfw && git reset -q
-            git add -f "$out" && git commit -q -m "dep-verdict: upstream check-run annotations" || exit 0
+            git add -f "$out" && git commit -q -m "dep-verdict: upstream check-run annotations [skip ci]" || exit 0
             git push -q origin HEAD:claude/dep-verdict-abjcfw && exit 0
             sleep $((5 + RANDOM % 20))
           done

@@ -76,7 +76,7 @@ jobs:
           gzip -f jvm/harness/results/skip/$repo/shard$shard.log || true
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/harness/results/skip/$repo
-          git commit -m "JVM skip walk: $repo shard $shard (run ${{ github.run_id }})" || exit 0
+          git commit -m "JVM skip walk: $repo shard $shard (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5 6 7 8; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*9)); done
 
   aggregate:
@@ -90,5 +90,5 @@ jobs:
       - run: |
           git config user.name "fenvix-ci"; git config user.email "ci@fenvix.invalid"
           git add jvm/harness/results/skip/REPORT.md jvm/harness/results/skip/summary.json
-          git commit -m "JVM skip walk: report (run ${{ github.run_id }})" || exit 0
+          git commit -m "JVM skip walk: report (run ${{ github.run_id }}) [skip ci]" || exit 0
           for i in 1 2 3 4 5 6; do git pull --rebase -q origin claude/jvm-l0 && git push -q origin HEAD:claude/jvm-l0 && break; sleep $((i*7)); done

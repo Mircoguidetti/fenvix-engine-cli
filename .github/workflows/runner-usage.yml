@@ -27,5 +27,5 @@ jobs:
           git config user.name "fenvix-ci"
           git config user.email "fenvix-ci@users.noreply.github.com"
           git add harness/runner_usage/results
-          git commit -m "runner usage: download statistics from Actions run ${{ github.run_id }}"
+          git commit -m "runner usage: download statistics from Actions run ${{ github.run_id }} [skip ci]"
           for i in 1 2 3 4; do git pull --rebase -q origin claude/all-runners && git push -q origin HEAD:claude/all-runners && break; sleep $((i*5)); done
