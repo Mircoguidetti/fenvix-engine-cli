@@ -3,6 +3,11 @@
 const native = require('./native');
 const sites = require('./sites');
 
+const { AsyncLocalStorage } = require('node:async_hooks');
+
+// the site of the user call that started asynchronous work inside Node (fs.glob's directory reads): events of that
+// work without a user frame of their own are given that site (audit G-1481)
+const AMBIENT = new AsyncLocalStorage();
 const FS = '\u001f';
 const RS = '\u001e';
 const FLUSH_AT = 256;
@@ -24,8 +29,12 @@ class State {
     this.onRealClock = null; // set by the cache capture: a read of a clock Level 0 does not virtualize
   }
 
-  /** Record one event of the running test. */
-  record(source, op, value) {
+  /**
+   * Record one event of the running test. `callSite`: the site resolved when the operation was started (an event
+   * emitted later, from a callback or after an await, has no caller of its own on the stack: audit G-1481); used
+   * unless it is `<node>` and the stack at the event names a better one.
+   */
+  record(source, op, value, callSite) {
     if (source !== 'time' && this.onOtherEvent) this.onOtherEvent();
     if (this.testId === null || this.quietDepth > 0 || this.recorder === null) {
       if (this.onEvent !== null && this.quietDepth === 0) this.onEvent(source, value);
@@ -33,8 +42,13 @@ class State {
     }
     let site = '';
     if (this.config.sites) {
-      this.quietDepth++;
-      try { site = sites.resolve(); } finally { this.quietDepth--; }
+      if (callSite !== undefined && callSite !== '<node>') site = callSite;
+      else {
+        this.quietDepth++;
+        try { site = sites.resolve(); } finally { this.quietDepth--; }
+        if (site === '<node>' && callSite !== undefined) site = callSite;
+        if (site === '<node>') { const amb = AMBIENT.getStore(); if (amb !== undefined) site = amb; }
+      }
       if (site === null) return; // runner infrastructure
     }
     if (this.onEvent !== null) this.onEvent(source, value);
@@ -52,6 +66,19 @@ class State {
   flush() {
     if (this.buffer.length && this.recorder) this.recorder.recordPacked(this.buffer.join(RS));
     this.buffer.length = 0;
+  }
+
+  /** The site of the caller now, for an event recorded later (`record(..., callSite)`); undefined when not needed. */
+  callSite() {
+    if (this.testId === null || this.quietDepth > 0 || !this.config || !this.config.sites) return undefined;
+    this.quietDepth++;
+    try { return sites.resolve(); } finally { this.quietDepth--; }
+  }
+
+  /** Run fn (and the asynchronous work it starts) with `site` as the site of events that have no user frame. */
+  withSite(site, fn) {
+    if (site === undefined || site === null || site === '<node>') return fn();
+    return AMBIENT.run(site, fn);
   }
 
   /** Run fn without recording events (detjs' own use of patched APIs). */

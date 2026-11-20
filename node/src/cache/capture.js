@@ -613,7 +613,9 @@ class Capture {
       if (!s) this.written.set(abs, (s = new Set()));
       s.add(global ? '' : this.label);
       if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
-      this.add(['write', this.key(abs)], global);
+      // a write of the main process after the reuse decision (the tests are running, a teardown) is marked: only
+      // what the start-up wrote before the decision can be keyed by content (src/cache/proof.js, G-1401)
+      this.add(global && this.phase === 'run' ? ['write', this.key(abs), 'run'] : ['write', this.key(abs)], global);
       for (const k of ['f', 'd', 's', 'l', 'm', 'e']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
       this.memo.delete(`e${path.dirname(abs)}`);

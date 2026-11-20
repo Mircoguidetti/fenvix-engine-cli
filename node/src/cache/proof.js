@@ -222,6 +222,8 @@ class ProofSession {
     // --det-cache-real-clock: the decision is the virtual day's (as if the clock control were on), the tests run on
     // the real clock, nothing is recorded, and a test whose result differs from its cached one is an expiry
     this.realClock = Boolean(opts.cacheRealClock);
+    // the runner calls the reuse decision after its start-up code (Vitest: globalSetup runs before the sequencer)
+    this.decidesAfterStartup = runner === 'vitest';
     this.maxAgeDays = opts.cacheMaxAge === undefined || opts.cacheMaxAge === null ? 30 : Number(opts.cacheMaxAge);
     this.expiries = [];
     // A Level 0 control switched off makes its source real and unrecorded (the real clock, real randomness, the open
@@ -420,7 +422,7 @@ class ProofSession {
       return this.verify ? new Set() : skip;
     }
     this.decided = true;
-    for (const f of files) this.specKeys.add(f.fileId);
+    for (const f of files) { this.specKeys.add(f.fileId); for (const c of f.covers || []) this.specKeys.add(c); }
     CAPTURE.scanModules();
     CAPTURE.phase = 'run';
     await this.identityAsync();
@@ -443,7 +445,7 @@ class ProofSession {
         this.store.setConfig(this.configFor(proj));
         const r = this.checkFile(f.fileId, proj);
         if (r.ok) {
-          this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration, receipts: r.receipts });
+          this.reusedFiles.set(f.key, { fileId: f.fileId, project: proj, tests: r.tests, duration: r.duration, receipts: r.receipts, covers: f.covers || null });
           for (const [nid, rc] of r.receipts) this.hits.set(nid, rc);
           skip.add(f.key);
         } else {
@@ -586,7 +588,7 @@ class ProofSession {
     const hits = {};
     for (const [nid, rc] of this.hits) hits[nid] = rc.outcome;
     const input = {
-      global: CAPTURE.global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
+      global: this.globalItems(), spec_keys: [...this.specKeys], captures, cur_env: curEnv,
       urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
       uncacheable_projects: [...this.uncacheableProjects.keys()], verify: Boolean(this.verify), hits,
@@ -604,6 +606,21 @@ class ProofSession {
     for (const [nid, why] of out.not_cached) this.notCached.set(nid, why);
     this.verified = [...(this.verified || []), ...out.verified];
     this.ranFiles = out.ran_files;
+  }
+
+  /**
+   * The main process's items for the policy. Start-up outputs as inputs (audit G-1401): where the reuse decision
+   * is taken after the start-up code ran (Vitest: its sequencer runs after globalSetup), a file the start-up wrote
+   * is on disk, as this session's start-up left it, when the decision reads it: a test that read it is keyed by its
+   * content like any other file, and the start-up is not a writer of it. A write of the main process after the
+   * decision (a teardown, a write while the tests run: marked `run` by the capture) stays a writer, so does every
+   * test file that wrote it. Jest decides before globalSetup: there the start-up stays a writer (never reused).
+   */
+  globalItems() {
+    const g = CAPTURE.global;
+    if (!this.decidesAfterStartup) return g;
+    const late = new Set(g.filter((it) => it[0] === 'write' && it[2] === 'run').map((it) => it[1]));
+    return g.filter((it) => it[0] !== 'write' || it[2] === 'run' || late.has(it[1]));
   }
 
   /**
@@ -664,7 +681,8 @@ class ProofSession {
       reused_files: this.reusedFiles.size,
       reused_tests: reusedTests,
       ran_files: this.ranFiles || {},
-      reused_files_list: [...this.reusedFiles.values()].map((f) => (f.project ? `${f.fileId}@@${f.project}` : f.fileId)),
+      // a process unit (a shared-process runner's whole run) lists the test files it covers
+      reused_files_list: [...this.reusedFiles.values()].flatMap((f) => (f.covers ? f.covers : [f.project ? `${f.fileId}@@${f.project}` : f.fileId])),
       reused_recorded_seconds: Math.round(reusedSeconds * 1000) / 1000,
       missed_files: this.misses.size,
       miss_reasons: kinds,

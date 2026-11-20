@@ -40,10 +40,12 @@ function sortEntries(list) {
   return list.sort(cmp);
 }
 
-function event(op, where, list) {
+// `site`: the caller's site taken when the listing was asked for (callback and promise forms report after the
+// caller's frame is gone: audit G-1481)
+function event(op, where, list, site) {
   if (STATE.testId === null) return;
   const names = list.map((e) => (typeof e === 'string' || Buffer.isBuffer(e) ? e : String(e.name)));
-  STATE.record('fs', op, `${sites.normPath(where)}|${names.length}|${STATE.digestNames(names)}`);
+  STATE.record('fs', op, `${sites.normPath(where)}|${names.length}|${STATE.digestNames(names)}`, site);
 }
 
 function readdirSync(p, options) {
@@ -55,16 +57,20 @@ function readdirSync(p, options) {
 function readdir(p, options, cb) {
   if (typeof options === 'function') { cb = options; options = undefined; }
   if (typeof cb !== 'function') return real.readdir.call(fs, p, options, cb); // native error
+  const site = STATE.callSite();
   return real.readdir.call(fs, p, options, (err, list) => {
-    if (!err) { sortEntries(list); event('fs.readdir', p, list); }
+    if (!err) { sortEntries(list); event('fs.readdir', p, list, site); }
     cb(err, list);
   });
 }
 
-async function pReaddir(p, options) {
-  const list = sortEntries(await real.pReaddir.call(fs.promises, p, options));
-  event('fs.promises.readdir', p, list);
-  return list;
+function pReaddir(p, options) {
+  const site = STATE.callSite();
+  return real.pReaddir.call(fs.promises, p, options).then((list) => {
+    sortEntries(list);
+    event('fs.promises.readdir', p, list, site);
+    return list;
+  });
 }
 
 /** Stand-in for fs.Dir over a sorted, eagerly read listing. */
@@ -130,23 +136,45 @@ function opendirSync(p, options) {
   return new SortedDir(dir.path, entries);
 }
 
-async function pOpendir(p, options) {
+async function openSorted(p, options, op, site) {
   const dir = await real.pOpendir.call(fs.promises, p, options);
   const entries = [];
   for await (const e of dir) entries.push(e); // closes the Dir
   sortEntries(entries);
-  event('fs.promises.opendir', p, entries);
+  event(op, p, entries, site);
   return new SortedDir(dir.path, entries);
+}
+
+function pOpendir(p, options) {
+  return openSorted(p, options, 'fs.promises.opendir', STATE.callSite());
 }
 
 function opendir(p, options, cb) {
   if (typeof options === 'function') { cb = options; options = undefined; }
   if (typeof cb !== 'function') return real.opendir.call(fs, p, options, cb);
-  pOpendir(p, options).then((d) => cb(null, d), (err) => cb(err));
+  openSorted(p, options, 'fs.promises.opendir', STATE.callSite()).then((d) => cb(null, d), (err) => cb(err));
   return undefined;
 }
 
+// fs.glob / fs.promises.glob (Node 22+) read directories inside Node, after their caller's frame is gone: their
+// events carry the caller's site
+function glob(...a) {
+  const site = STATE.callSite();
+  return STATE.withSite(site, () => real.glob.apply(fs, a));
+}
+
+function pGlob(...a) {
+  const site = STATE.callSite();
+  const it = STATE.withSite(site, () => real.pGlob.apply(fs.promises, a));
+  if (!it || typeof it.next !== 'function') return it;
+  const next = it.next.bind(it);
+  it.next = (...x) => STATE.withSite(site, () => next(...x));
+  return it;
+}
+
 function installProcess(patcher) {
+  if (typeof fs.glob === 'function') { real.glob = fs.glob; patcher.set(fs, 'glob', glob); }
+  if (typeof fs.promises.glob === 'function') { real.pGlob = fs.promises.glob; patcher.set(fs.promises, 'glob', pGlob); }
   patcher.set(fs, 'readdirSync', readdirSync);
   patcher.set(fs, 'readdir', readdir);
   patcher.set(fs.promises, 'readdir', pReaddir);
