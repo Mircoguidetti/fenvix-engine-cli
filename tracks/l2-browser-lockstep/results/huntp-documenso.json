@@ -1,0 +1,349 @@
+{
+ "name": "documenso",
+ "job": "huntp",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "ok",
+ "run_id": "44685676329",
+ "engine_commit": "41ed81c951e1329c727af60e3b0c6ee302724184",
+ "setup_s": 463,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "seeds": 8,
+  "replays": 10,
+  "per_run_s": 900,
+  "workers": 4
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-20T06:49:00Z",
+ "measured_at": "2026-11-20T06:49:00Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "hunt": {
+  "seeds": 8,
+  "replays": 10,
+  "targets": [
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      2,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      3,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      5,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      6,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      7,
+      "passed",
+      "",
+      null
+     ],
+     [
+      8,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
+    "real": "Error: locator.click: Element is outside of the viewport",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      2,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      3,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      5,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      6,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      7,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      8,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "template-field-prefill.spec.ts::Template Field Prefill API v1::should create a document from template with prefilled fields [api]",
+    "real": "Error: expect(locator).toBeVisible() failed",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      2,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      3,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      5,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      6,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ],
+     [
+      7,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ],
+     [
+      8,
+      "failed",
+      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject combined title and order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      2,
+      "failed",
+      "TypeError: Cannot read properties of undefined (reading 'id')",
+      null
+     ],
+     [
+      3,
+      "passed",
+      "",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      5,
+      "failed",
+      "TypeError: Cannot read properties of undefined (reading 'id')",
+      null
+     ],
+     [
+      6,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      7,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      8,
+      "passed",
+      "",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   },
+   {
+    "key": "update-envelope-items.spec.ts::Update envelope items::should reject order change on a PENDING envelope [api]",
+    "real": "Error: expect(received).toBeFalsy()",
+    "step": null,
+    "mechanism": "latency",
+    "tried": [
+     [
+      1,
+      "failed",
+      "TypeError: Cannot read properties of undefined (reading 'id')",
+      null
+     ],
+     [
+      2,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      3,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      5,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      6,
+      "failed",
+      "PrismaClientKnownRequestError:",
+      null
+     ],
+     [
+      7,
+      "failed",
+      "TypeError: Cannot read properties of undefined (reading 'id')",
+      null
+     ],
+     [
+      8,
+      "failed",
+      "TypeError: Cannot read properties of undefined (reading 'id')",
+      null
+     ]
+    ],
+    "seed": null,
+    "replays": [],
+    "replay_errors": [],
+    "fingerprints": null,
+    "reproduced": false
+   }
+  ],
+  "reproduced": 0,
+  "found_seed": 0,
+  "n": 5
+ },
+ "elapsed_min": 62.2
+}
