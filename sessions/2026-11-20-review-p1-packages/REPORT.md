@@ -169,3 +169,32 @@ sentence there, by design).
 Leg results: `<scratchpad>/legs/<ROW>-py<V>-node<N>/out/{summary.txt,result.json,run.log}`. The attrs divergence is
 in `legs/PY-01-py3.13-node22/work/logs/0027-PY-01.det2-attrs-verify.log`. These are not committed (scratch). The tests
 in `tests/test_review_p1_packages.py` reproduce every defect without them.
+
+## Re-check D1-D3: PASS
+
+Coordinator re-check round, 2026-11-20: PR #9, `claude/packages` @ 3a90d44 (one commit on f84dde7). Only the fixed tests
+were re-run (founder rule). D4 is not re-checked here (PR #10, later).
+
+- **Build as CI does it:** maturin manylinux_2_28 wheel from 3a90d44; the addon is unchanged (no `crates/` or `node/`
+  change); `assemble.sh` → `fenvix-engine-0.1.0-rlocal.3a90d44-linux-x86_64.tar.gz`. As in the `python` job, the wheel
+  was installed into a fresh venv per version with `_core` copied into `python/detpy`.
+- **My tests, unchanged (`tests/test_review_p1_packages.py` as committed in 0119874), `-k "d1 or d2 or d3"`:**
+  4 passed on CPython 3.12.13, 3.13.18 and 3.14.6 (D1 engine, D1 installer, D2, D3).
+- **What the tests guard still holds (MEASURED, real interpreters, the artifact installed via `fetch.sh` + `install.sh`):**
+  - D1:
+    - `install.sh` exits 4 on a real CPython 3.15.0b4 and on 3.11, with one sentence.
+    - A wheel forced into 3.15 refuses `pytest --det` with exit 4: "fenvix is not built or tested for CPython 3.15
+      yet (the newest supported is 3.14)".
+    - A 3.15 or 3.11 job venv reaching the image's `fenvix` through the new fallback is refused with exit 4, one
+      line, no traceback. (A first 3.15 try gave exit 127 because my own forced install and uninstall had left a stray
+      `detpy/` directory in that venv; a clean venv gives 4.)
+  - D2: `fenvix version` from the installed image prints `artifact fenvix-engine 0.1.0 build rlocal.3a90d44 commit
+    3a90d44fe7b4… (linux-x86_64, glibc 2.28+)`.
+  - D3, through the real image path (`$FENVIX_HOME/python`, no checkout fallback):
+    - Job venvs on 3.12, 3.13 and 3.14 hold itsdangerous with its test dependencies and no engine (`import detpy`
+      fails there).
+    - `$FENVIX_HOME/bin/fenvix python --det tests` twice: 297 passed each run, `fenvix verify` exit 0; plain pytest
+      in the same venv also gives 297 passed.
+- **Note (non-blocking):** the D2 `artifact` line reads `$FENVIX_HOME/VERSION.json`, so it names the image's artifact,
+  not the build of the wheel actually imported. A job that pip-installs a wheel from another build into its own venv
+  still sees the image's build and commit. Both carry version 0.1.0.
