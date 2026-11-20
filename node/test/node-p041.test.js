@@ -298,3 +298,82 @@ test('async entropy', async () => {
     });
   });
 }
+
+// -- network family: G-0128 UDP, G-0129 keep-alive across tests, G-0130 replay of a changed request, G-0131 secrets --
+const { spawn } = require('node:child_process');
+const NETH = {
+  vitest: "import http from 'node:http'; import dgram from 'node:dgram';",
+  jest: "const http = require('node:http'); const dgram = require('node:dgram');",
+};
+const NETBODY = `
+const lookup = (h, o, cb) => { if (typeof o === 'function') cb = o; return o && o.all ? cb(null, [{ address: '127.0.0.1', family: 4 }]) : cb(null, '127.0.0.1', 4); };
+const agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
+function get(p) {
+  return new Promise((resolve, reject) => {
+    http.get({ host: 'counter.detjs.test', port: Number(process.env.COUNTER_PORT), path: p, lookup, agent,
+      headers: { authorization: 'Bearer SUPERSECRETTOKEN0123456789' } }, (r) => {
+      let b = ''; r.setEncoding('utf8'); r.on('data', (d) => { b += d; }); r.on('end', () => resolve(b));
+    }).on('error', reject);
+  });
+}
+test('one', async () => { expect(await get('/one' + (process.env.SUFFIX || ''))).toMatch(/^response #/); });
+test('two', async () => { expect(await get('/two')).toMatch(/^response #/); });
+`;
+
+async function withCounter(fn) {
+  const srv = spawn(process.execPath, [path.join(__dirname, 'counter-server.js')], { stdio: ['ignore', 'pipe', 'inherit'] });
+  const ports = await new Promise((resolve) => srv.stdout.once('data', (d) => resolve(JSON.parse(String(d)))));
+  try { return await fn(ports, () => srv.kill()); } finally { srv.kill(); }
+}
+
+for (const runner of RUNNERS) {
+  describe(`${runner}: network family`, () => {
+    test('G-0129 G-0131: keep-alive connections do not cross tests; credentials are not stored in the cassette', T, async () => {
+      await withCounter(async (ports, stop) => {
+        const dir = proj(runner, 'keepalive', { a: `${NETH[runner]}\n${NETBODY}` });
+        const env = { COUNTER_PORT: String(ports.http) };
+        const rec = run(runner, dir, [], { cache: false, det: ['--det', '--det-record'], env });
+        assert.equal(rec.status, 0, show(rec));
+        const cas = fs.readFileSync(path.join(dir, '.detjs', 'cassette.json'), 'utf8');
+        assert.ok(!cas.includes('SUPERSECRETTOKEN') && !cas.includes(Buffer.from('SUPERSECRETTOKEN').toString('base64').slice(0, 16)), 'no credential in the cassette');
+        stop();
+        // the second test alone, and both in a shuffled order, replay
+        const alone = run(runner, dir, ['-t', 'two'], { cache: false, env });
+        assert.equal(alone.status, 0, `replaying "two" alone\n${show(alone)}`);
+        for (const seed of [1, 2, 3]) {
+          const sh = run(runner, dir, [], { cache: false, det: ['--det', `--det-seed=${seed}`], env });
+          assert.equal(sh.status, 0, `shuffled replay (seed ${seed})\n${show(sh)}`);
+        }
+      });
+    });
+
+    test('G-0130: a request that differs from the recording is not answered with the recorded response', T, async () => {
+      await withCounter(async (ports, stop) => {
+        const dir = proj(runner, 'mismatch', { a: `${NETH[runner]}\n${NETBODY}` });
+        const env = { COUNTER_PORT: String(ports.http) };
+        assert.equal(run(runner, dir, [], { cache: false, det: ['--det', '--det-record'], env }).status, 0);
+        stop();
+        const same = run(runner, dir, [], { cache: false, env });
+        assert.equal(same.status, 0, show(same));
+        const changed = run(runner, dir, [], { cache: false, env: { ...env, SUFFIX: 'X' } });
+        assert.notEqual(changed.status, 0, `the changed request must not get the stale answer\n${show(changed)}`);
+        assert.match(changed.stdout + changed.stderr, /differs from the recording/);
+      });
+    });
+
+    test('G-0128: UDP to an external address is refused and recorded', T, () => {
+      const dir = proj(runner, 'udp', {
+        a: `${NETH[runner]}
+test('udp', async () => {
+  const s = dgram.createSocket('udp4');
+  const err = await new Promise((res) => s.send(Buffer.from('x'), 9, '203.0.113.7', (e) => res(e)));
+  s.close();
+  expect(err && err.name).toBe('NetworkBlockedError');
+});`,
+      });
+      const r = run(runner, dir, [], { cache: false });
+      assert.equal(r.status, 0, show(r));
+      assert.match(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8'), /dgram\.send/);
+    });
+  });
+}

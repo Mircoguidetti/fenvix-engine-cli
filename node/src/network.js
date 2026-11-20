@@ -91,10 +91,24 @@ class Policy {
     this.hostOfFake = new Map();
     this.counters = new Map();
     this.recordedTests = new Set();
+    this.testSockets = new Set();
   }
 
   startTest() {
     this.counters = new Map();
+  }
+
+  /**
+   * Recorded and replayed connections belong to the test that opened them: when it ends they are closed, so that a
+   * keep-alive agent opens a new one for the next test, which is then recorded under that test (audit G-0129:
+   * a later test's request travelled on the first test's connection and was stored under the first test, so the
+   * later test could not be replayed alone or in another order).
+   */
+  endTest() {
+    for (const s of this.testSockets) {
+      try { if (!s.destroyed) s.destroy(); } catch { /* ignore */ }
+    }
+    this.testSockets.clear();
   }
 
   hostname(host) {
@@ -157,11 +171,11 @@ function hookRecording(sock, testId, idx) {
         for (const c of data) {
           const chunk = c && c.chunk !== undefined ? c.chunk : c;
           const b = toBuf(chunk, c && c.encoding);
-          if (b.length) cassette.append(testId, idx, 'send', b);
+          if (b.length) cassette.append(testId, idx, 'send', redact(b));
         }
       } else {
         const b = toBuf(data, encoding);
-        if (b.length) cassette.append(testId, idx, 'send', b);
+        if (b.length) cassette.append(testId, idx, 'send', redact(b));
       }
     }
     return origWrite.call(this, writev, data, encoding, cb);
@@ -174,6 +188,7 @@ function startRecording(sock, host, port, isTls) {
   if (isTls) POLICY.recording.setTls(testId, idx);
   POLICY.recordedTests.add(testId);
   hookRecording(sock, testId, idx);
+  POLICY.testSockets.add(sock);
   STATE.record('net', isTls ? 'tls.connect' : 'net.connect', `${host}:${port} record#${idx}`);
 }
 
@@ -183,6 +198,33 @@ let pipeCounter = 0;
 function pipePath() {
   const name = `detjs-${process.pid}-${pipeCounter++}-${Date.now().toString(36)}`;
   return process.platform === 'win32' ? `\\\\?\\pipe\\${name}` : path.join(os.tmpdir(), `${name}.sock`);
+}
+
+const MISMATCH_TOLD = new Set();
+
+// Credentials in recorded requests (audit G-0131): the values of these HTTP request headers are stored as a digest
+// padded to the same length (so replay compares requests byte for byte after the same redaction). Responses are kept
+// as they are (the code under test reads them).
+const SECRET_HEADERS = /^(authorization|proxy-authorization|cookie|x-api-key|api-key|x-auth-token|x-access-token|x-csrf-token|x-amz-security-token|x-goog-api-key|private-token|x-[a-z0-9-]*(?:token|secret|key|signature))$/i;
+const REQUEST_LINE = /^[A-Z]{3,10} \S+ HTTP\/1\.[01]\r\n/;
+function redact(buf) {
+  if (buf.length < 16 || !REQUEST_LINE.test(buf.subarray(0, Math.min(buf.length, 2048)).toString('latin1'))) return buf;
+  const text = buf.toString('latin1');
+  const end = text.indexOf('\r\n\r\n');
+  const head = end < 0 ? text : text.slice(0, end);
+  let changed = false;
+  const lines = head.split('\r\n').map((line, i) => {
+    if (i === 0) return line;
+    const c = line.indexOf(':');
+    if (c <= 0 || !SECRET_HEADERS.test(line.slice(0, c).trim())) return line;
+    const value = line.slice(c + 1);
+    const tag = `<${native.digest(Buffer.from(value, 'latin1')).slice(0, 12)}>`;
+    const out = (tag.length <= value.length ? tag + '*'.repeat(value.length - tag.length) : '*'.repeat(value.length));
+    changed = true;
+    return `${line.slice(0, c + 1)}${out}`;
+  });
+  if (!changed) return buf;
+  return Buffer.from(lines.join('\r\n') + (end < 0 ? '' : text.slice(end)), 'latin1');
 }
 
 function startReplayServer(segments, isTls, label) {
@@ -196,8 +238,19 @@ function startReplayServer(segments, isTls, label) {
         const s = segments[i];
         if (s.dir === 'recv') { conn.write(s.data); i++; continue; }
         if (pending.length >= s.data.length || (idle === 'expired' && pending.length > 0)) {
-          const got = pending.subarray(0, Math.min(pending.length, s.data.length));
-          if (!got.equals(s.data)) STATE.recordAt('net', 'net.connect', '<detjs>', `replay-mismatch ${label} segment ${i}`);
+          const got = redact(pending.subarray(0, Math.min(pending.length, s.data.length)));
+          if (!got.equals(s.data)) {
+            // the request is not the recorded one: the recorded answer would be stale (audit G-0130). The
+            // connection is reset and the test sees the error; the trace names the mismatch.
+            STATE.recordAt('net', 'net.connect', '<detjs>', `replay-mismatch ${label} segment ${i}`);
+            if (!MISMATCH_TOLD.has(label)) {
+              MISMATCH_TOLD.add(label);
+              process.stderr.write(`detjs: network replay: the request to ${label} differs from the recording (segment ${i}); the connection is reset. Re-record with --det-record.\n`);
+            }
+            conn.destroy();
+            server.close();
+            return;
+          }
           pending = pending.subarray(got.length);
           idle = null;
           i++;
@@ -271,6 +324,7 @@ function connect(...args) {
       STATE.record('net', 'net.connect', `${host}:${port} replay#${rep.idx}`);
       const p = startReplayServer(rep.segments, false, `${host}:${port}#${rep.idx}`);
       const { host: _h, port: _p, lookup: _l, family: _f, hints: _hi, localAddress: _la, localPort: _lp, autoSelectFamily: _a, ...rest } = options;
+      POLICY.testSockets.add(this);
       return real.connect.call(this, { ...rest, path: p }, cb);
     }
   }
@@ -318,7 +372,9 @@ function tlsConnect(...args) {
       const p = startReplayServer(rep.segments, true, `${host}:${port}#${rep.idx}`);
       const { host: _h, port: _p, lookup: _l, family: _f, ...rest } = options;
       const servername = options.servername || (net.isIP(host) ? undefined : host);
-      return callTls(this, [{ ...rest, path: p, servername, rejectUnauthorized: false, checkServerIdentity: () => undefined }, ...(cb ? [cb] : [])]);
+      const sock = callTls(this, [{ ...rest, path: p, servername, rejectUnauthorized: false, checkServerIdentity: () => undefined }, ...(cb ? [cb] : [])]);
+      POLICY.testSockets.add(sock);
+      return sock;
     }
   }
   return callTls(this, args); // block mode: the socket's connect is refused
@@ -414,9 +470,11 @@ function dnsCheckNoFake(hostname) {
 function installProcess(patcher, cfg) {
   if (POLICY === null) {
     POLICY = new Policy(cfg);
-    STATE.onTestStart.push(() => POLICY.startTest());
+    STATE.onTestStart.push(() => POLICY && POLICY.startTest());
+    STATE.onTestEnd.push(() => POLICY && POLICY.endTest());
   }
   patcher.set(net.Socket.prototype, 'connect', connect);
+  installDgram(patcher);
   patcher.set(tls, 'connect', tlsConnect);
   patcher.set(dns, 'lookup', lookup);
   patcher.set(dns.promises, 'lookup', pLookup);
@@ -427,6 +485,42 @@ function installProcess(patcher, cfg) {
     if (pf) patcher.set(dns.promises, n, pf);
   }
   return POLICY.mode;
+}
+
+// UDP (audit G-0128): datagrams to non-local addresses are refused like connections (no record/replay for UDP).
+function installDgram(patcher) {
+  const dgram = require('node:dgram');
+  const P = dgram.Socket.prototype;
+  const realSend = P.send;
+  const realConnect = P.connect;
+  const refuse = (sock, host, port, cb) => {
+    STATE.record('net', 'dgram.send', `${host}:${port} blocked`);
+    const err = new NetworkBlockedError(`${host}:${port} (UDP)`);
+    err.address = host;
+    err.port = Number(port);
+    if (typeof cb === 'function') process.nextTick(cb, err);
+    else process.nextTick(() => sock.emit('error', err));
+  };
+  patcher.set(P, 'send', function send(msg, ...rest) {
+    if (POLICY === null) return realSend.call(this, msg, ...rest);
+    const cb = typeof rest[rest.length - 1] === 'function' ? rest[rest.length - 1] : undefined;
+    const a = rest.filter((x) => typeof x !== 'function');
+    // send(msg[, offset, length][, port][, address])
+    let port;
+    let address;
+    if (a.length >= 3 && typeof a[0] === 'number' && typeof a[1] === 'number' && !(typeof msg === 'string')) { port = a[2]; address = a[3]; } else { port = a[0]; address = a[1]; }
+    if (port === undefined || port === null) return realSend.call(this, msg, ...rest); // connected socket: checked at connect
+    const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
+    if (!POLICY.external(host, port)) return realSend.call(this, msg, ...rest);
+    return refuse(this, POLICY.hostname(host), port, cb);
+  });
+  patcher.set(P, 'connect', function connect(port, address, cb) {
+    if (typeof address === 'function') { cb = address; address = undefined; }
+    if (POLICY === null) return realConnect.call(this, port, address, cb);
+    const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
+    if (!POLICY.external(host, port)) return realConnect.call(this, port, address, cb);
+    return refuse(this, POLICY.hostname(host), port, cb);
+  });
 }
 
 /** Merge what this process recorded into the cassette file; returns the number of tests. */
