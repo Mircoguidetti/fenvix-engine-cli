@@ -1,0 +1,37 @@
+# Gap audit P-036: the same platform probe on Apple silicon. `macos-14` (the label release-1.yml uses for its
+# other-os job) is cancelled at queue; this tries the current labels. Audit only.
+name: gap-audit-macos-arm
+
+on:
+  push:
+    branches: [claude/gap-audit]
+    paths: [".github/workflows/gap-audit-macos-arm.yml"]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  macos-arm:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 150
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "22"}
+      - uses: actions/setup-go@v5
+        with: {go-version: "1.26", cache: false}
+      - uses: actions/setup-java@v4
+        with: {distribution: temurin, java-version: "21"}
+      - name: probe
+        run: python .github/gap-audit/probe.py --name ${{ matrix.os }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "probe-${{ matrix.os }}", path: "probe-*.json"}
