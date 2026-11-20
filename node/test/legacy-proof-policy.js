@@ -37,7 +37,12 @@ const UNCACHEABLE = {
   keygen: 'OS randomness drawn in native crypto (key generation, randomized encryption or signatures)',
   preload: 'a preload module read the clock or OS entropy before Level 0 was installed',
   loader: 'an off-thread module loader (--loader, module.register): what it reads is not observable',
+  // P-041 (policy change, mirrored here): native addons (row JS-09), Level 0 controls that could not be installed
+  // (G-0181), and any flag the table does not know refuses reuse instead of being ignored
+  native: 'loads a native addon (its reads are not observable)',
+  'level0-gap': 'a Level 0 control could not be installed',
 };
+const UNKNOWN_FLAG = 'an input the engine cannot key';
 
 function idOf(fileId, project) { return project ? `${fileId}@@${project}` : fileId; }
 function testKey(testId, project) {
@@ -49,7 +54,7 @@ function testKey(testId, project) {
 function uncacheable(o, outcome) {
   if (!['passed', 'skipped', 'todo'].includes(outcome)) return `outcome ${outcome}`;
   for (const [f, detail] of o.flags) {
-    if (UNCACHEABLE[f]) return `${UNCACHEABLE[f]}: ${detail}`;
+    return `${Object.prototype.hasOwnProperty.call(UNCACHEABLE, f) ? UNCACHEABLE[f] : UNKNOWN_FLAG}: ${detail}`;
   }
   return null;
 }

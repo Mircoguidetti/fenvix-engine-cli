@@ -36,6 +36,7 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
   --det-tz=ZONE|keep       time zone of the run (default: TZ when set, else UTC; recorded)
   --det-locale=LOC|keep    LC_ALL and LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+  --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
   --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
                            each test whose cached result differs (an expiry); its cache entries are removed
                            With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
@@ -57,7 +58,7 @@ function parseArgs(argv, env = process.env) {
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
-  const takes = new Set(['--det-tz', '--det-locale', '--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
+  const takes = new Set(['--det-cache-max-age', '--det-tz', '--det-locale', '--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
     '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-order', '--det-outcomes']);
   for (let i = 0; i < argv.length; i++) {
@@ -86,6 +87,7 @@ function parseArgs(argv, env = process.env) {
       case '--det-cache': opts.cache = value; break;
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
       case '--det-cache-real-clock': opts.cacheRealClock = true; break;
+      case '--det-cache-max-age': opts.cacheMaxAge = Number(value); if (!(opts.cacheMaxAge >= 0)) throw new Error(`detjs: --det-cache-max-age: not a number of days: ${value}`); break;
       case '--det-tz': case '--det-locale': break; // applied by bin/detjs.js before the runner starts
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;

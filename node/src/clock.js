@@ -554,6 +554,53 @@ function promisesSetTimeout(ms, value, options = {}) {
   });
 }
 
+// timers/promises.setInterval(ms, value, {signal, ref}): an async iterator on the virtual timers (audit G-1432)
+function promisesSetInterval(ms, value, options = {}) {
+  const signal = options && options.signal;
+  let fired = 0;
+  let waiter = null;
+  let done = false;
+  let failure = null;
+  const t = TIMERS.setInterval(() => {
+    fired += 1;
+    if (waiter) { const w = waiter; waiter = null; fired -= 1; w.resolve({ value, done: false }); }
+  }, ms);
+  if (options && options.ref === false && t && t.unref) t.unref();
+  const stop = () => { if (!done) { done = true; TIMERS.clearInterval(t); } };
+  const onAbort = () => {
+    failure = abortError(signal);
+    stop();
+    if (waiter) { const w = waiter; waiter = null; w.reject(failure); }
+  };
+  if (signal) {
+    if (signal.aborted) onAbort();
+    else signal.addEventListener('abort', onAbort, { once: true });
+  }
+  return {
+    [Symbol.asyncIterator]() { return this; },
+    next() {
+      if (failure) return Promise.reject(failure);
+      if (done) return Promise.resolve({ value: undefined, done: true });
+      if (fired > 0) { fired -= 1; return Promise.resolve({ value, done: false }); }
+      return new Promise((resolve, reject) => { waiter = { resolve, reject }; });
+    },
+    return() {
+      stop();
+      if (signal) signal.removeEventListener('abort', onAbort);
+      if (waiter) { const w = waiter; waiter = null; w.resolve({ value: undefined, done: true }); }
+      return Promise.resolve({ value: undefined, done: true });
+    },
+  };
+}
+
+// timers/promises.setImmediate: recorded like the callback form (audit G-2169)
+function makePromisesSetImmediate(real) {
+  return function setImmediate(value, options) {
+    if (STATE.testId !== null) STATE.record('time', 'setImmediate', '');
+    return real(value, options);
+  };
+}
+
 function abortError(signal) {
   const e = new Error('The operation was aborted', { cause: signal && signal.reason });
   e.name = 'AbortError';
@@ -630,7 +677,35 @@ function installProcess(patcher, cfg) {
     const tp = require('node:timers/promises');
     for (const k of ['setTimeout', 'setInterval', 'clearTimeout', 'clearInterval', 'setImmediate']) patcher.set(timers, k, TIMERS[k]);
     patcher.set(tp, 'setTimeout', promisesSetTimeout);
+    patcher.set(tp, 'setInterval', promisesSetInterval);
+    if (typeof tp.setImmediate === 'function') patcher.set(tp, 'setImmediate', makePromisesSetImmediate(tp.setImmediate));
+    // timers/promises.scheduler.wait / yield (audit G-1433)
+    if (tp.scheduler && typeof tp.scheduler.wait === 'function') {
+      const sch = tp.scheduler;
+      const realYield = typeof sch.yield === 'function' ? sch.yield.bind(sch) : null;
+      patcher.define(sch, 'wait', function wait(delay, options) { return promisesSetTimeout(delay, undefined, options); });
+      if (realYield) patcher.define(sch, 'yield', function yield_() { if (STATE.testId !== null) STATE.record('time', 'setImmediate', ''); return realYield(); });
+    }
+    // Atomics.wait with a timeout blocks for real time: the virtual clock advances by the timeout when it times out
+    // (audit G-2184)
+    installAtomicsWait(patcher, globalThis);
   }
+}
+
+function installAtomicsWait(patcher, g) {
+  const A = g.Atomics;
+  if (!A || typeof A.wait !== 'function' || A.wait.__detjs) return;
+  const real = A.wait;
+  const w = function wait(ta, index, value, timeout) {
+    const r = real.call(this, ta, index, value, timeout);
+    if (STATE.testId !== null && CLOCK && Number.isFinite(Number(timeout)) && Number(timeout) > 0) {
+      if (r === 'timed-out') CLOCK.advanceTo(CLOCK.elapsed + Number(timeout) * NS_PER_MS);
+      STATE.record('time', 'Atomics.wait', `${r}:${Number(timeout)}`);
+    }
+    return r;
+  };
+  Object.defineProperty(w, '__detjs', { value: true });
+  patcher.set(A, 'wait', w);
 }
 
 /** Installation into one realm (global object). */
@@ -644,6 +719,7 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
     patcher.set(g.process, 'hrtime', hrtime); // Jest gives every context its own process object
     if (typeof g.process.uptime === 'function') patcher.set(g.process, 'uptime', uptime);
   }
+  if (cfg.controls.has('timers')) installAtomicsWait(patcher, g); // each vm context has its own Atomics
   if (cfg.controls.has('timers') && g.AbortSignal && typeof g.AbortSignal.timeout === 'function' && !g.AbortSignal.timeout.__detjs) {
     const f = makeAbortTimeout(g.AbortSignal.timeout.bind(g.AbortSignal), g.AbortController || AbortController, g.DOMException || globalThis.DOMException, TIMERS);
     Object.defineProperty(f, '__detjs', { value: true });

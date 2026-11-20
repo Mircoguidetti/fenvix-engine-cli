@@ -494,6 +494,37 @@ function guardResolve(obj, name, promises) {
   };
 }
 
+/** dns.reverse(ip) / lookupService(ip, port): a query about a non-local address goes to the resolver: blocked. */
+function guardReverse(obj, name, promises) {
+  const orig = obj[name];
+  if (typeof orig !== 'function') return null;
+  const check = (ip) => {
+    if (POLICY === null || POLICY.mode === 'record') return null;
+    const h = String(ip);
+    if (isLocalName(h) || POLICY.allow.has(h.toLowerCase())) return null;
+    STATE.record('net', `dns.${name}`, `${h} blocked`);
+    const err = new NetworkBlockedError(`${h} (reverse DNS)`, 'ENOTFOUND');
+    err.hostname = h;
+    return err;
+  };
+  if (promises) {
+    return async function (ip, ...rest) {
+      const err = check(ip);
+      if (err) throw err;
+      return orig.call(this, ip, ...rest);
+    };
+  }
+  return function (ip, ...rest) {
+    const err = check(ip);
+    if (err) {
+      const cb = rest[rest.length - 1];
+      if (typeof cb === 'function') { process.nextTick(cb, err); return undefined; }
+      throw err;
+    }
+    return orig.call(this, ip, ...rest);
+  };
+}
+
 function dnsCheckNoFake(hostname) {
   const h = String(hostname);
   if (isLocalName(h) || net.isIP(h) || POLICY.allow.has(h.toLowerCase())) return;
@@ -515,6 +546,22 @@ function installProcess(patcher, cfg) {
   patcher.set(tls, 'connect', tlsConnect);
   patcher.set(dns, 'lookup', lookup);
   patcher.set(dns.promises, 'lookup', pLookup);
+  // `new dns.Resolver()` instances and reverse lookups send real queries too (audit G-1413, G-1414)
+  for (const [P, promises] of [[dns.Resolver && dns.Resolver.prototype, false], [dns.promises.Resolver && dns.promises.Resolver.prototype, true]]) {
+    if (!P) continue;
+    for (const n of RESOLVE_FNS) {
+      const f = guardResolve(P, n, promises);
+      if (f) patcher.set(P, n, f);
+    }
+    const rv = guardReverse(P, 'reverse', promises);
+    if (rv) patcher.set(P, 'reverse', rv);
+  }
+  for (const [obj, promises] of [[dns, false], [dns.promises, true]]) {
+    const rv = guardReverse(obj, 'reverse', promises);
+    if (rv) patcher.set(obj, 'reverse', rv);
+    const ls = guardReverse(obj, 'lookupService', promises);
+    if (ls) patcher.set(obj, 'lookupService', ls);
+  }
   for (const n of RESOLVE_FNS) {
     const f = guardResolve(dns, n, false);
     if (f) patcher.set(dns, n, f);

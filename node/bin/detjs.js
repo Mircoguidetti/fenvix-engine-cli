@@ -25,11 +25,23 @@ async function main(argv) {
   if (RUNNER_SHELLS.has(cmd)) return require(`../src/runners/${cmd}`).main(rest);
   if (cmd === 'verify') {
     const native = require('../src/native');
+    const fs = require('node:fs');
     const paths = rest.filter((a) => !a.startsWith('--'));
-    if (paths.length < 1) { console.error(USAGE); return 2; }
-    if (rest.includes('--json')) process.stdout.write(`${native.verify(paths)}\n`);
-    else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')));
-    const rep = JSON.parse(native.verify(paths));
+    // one run proves nothing (audit G-2186); a missing trace is a usage error, not a stack trace (G-2187)
+    if (paths.length < 2) { console.error(`detjs verify: needs at least two traces of the same suite (got ${paths.length})\n${USAGE}`); return 2; }
+    for (const p of paths) {
+      try { fs.accessSync(p, fs.constants.R_OK); } catch { console.error(`detjs verify: cannot read trace ${p}`); return 2; }
+    }
+    let rep;
+    try {
+      rep = JSON.parse(native.verify(paths));
+      if (rest.includes('--json')) process.stdout.write(`${JSON.stringify(rep)}\n`);
+      else process.stdout.write(native.verifyText(paths, rest.includes('--show-stable')).replace(/^detpy verify:/m, 'detjs verify:'));
+    } catch (e) {
+      console.error(`detjs verify: unreadable trace: ${e && e.message}`);
+      return 2;
+    }
+    if (!rep.summary.tests) { console.error('detjs verify: no test ran in these traces: nothing verified'); return 1; }
     return rep.summary.diverged || rep.summary.missing ? 1 : 0;
   }
   if (cmd === '--det-help') { process.stdout.write(require('../src/session').HELP); return 0; }

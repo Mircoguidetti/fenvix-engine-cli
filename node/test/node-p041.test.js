@@ -506,3 +506,123 @@ test('http race', async () => {
     void ops;
   });
 }
+
+// -- DEGRADES gaps of the rows closed by family: machine/process facts recorded (G-1406 G-1407 G-1408 G-1430 G-1431
+// G-2163), native key generation recorded (G-1422..G-1425 G-2166), mkdtemp names seeded (G-1409), timers/promises
+// setInterval / scheduler / setImmediate and Atomics.wait on the virtual clock (G-1432 G-1433 G-2169 G-2184), DNS
+// resolver instances and reverse lookups closed (G-1413 G-1414), cache max age (G-1398), verify usage (G-2185..G-2187)
+const FX = {
+  vitest: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);",
+  jest: '',
+};
+for (const runner of RUNNERS) {
+  describe(`${runner}: facts, timers/promises, dns, mkdtemp`, () => {
+    test('machine and process facts and native keys are recorded; mkdtemp names are reproducible', T, () => {
+      const dir = proj(runner, 'facts', {
+        a: `${FX[runner]}\n${PUT}
+const os = require('node:os'); const nodeCrypto = require('node:crypto');
+test('facts', () => { os.hostname(); os.cpus(); os.uptime(); process.cpuUsage(); process.memoryUsage(); void process.pid; });
+test('keys', () => { nodeCrypto.generateKeyPairSync('ec', { namedCurve: 'P-256' }); });
+test('tmp', () => { const d = fs.mkdtempSync(path.join(os.tmpdir(), 'p041-')); put('tmp', path.basename(d)); fs.rmSync(d, { recursive: true }); });`,
+      });
+      const names = [];
+      for (let i = 0; i < 2; i++) {
+        const r = run(runner, dir, [], { cache: false });
+        assert.equal(r.status, 0, show(r));
+        names.push(got(dir, 'tmp'));
+        fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, `r${i}.jsonl`));
+      }
+      assert.equal(names[0], names[1], 'mkdtemp suffix seeded');
+      const text = fs.readFileSync(path.join(dir, 'r0.jsonl'), 'utf8');
+      for (const op of ['os.hostname', 'os.cpus', 'os.uptime', 'process.cpuUsage', 'process.memoryUsage', 'process.pid', 'crypto.generateKeyPairSync', 'fs.mkdtemp']) assert.ok(text.includes(`"${op}"`), op);
+      const rep = JSON.parse(native.verify([path.join(dir, 'r0.jsonl'), path.join(dir, 'r1.jsonl')]));
+      const st = Object.fromEntries(rep.tests.map((t) => [t.nodeid.split('::').pop(), t.status]));
+      assert.notEqual(st.facts, 'stable', 'cpu usage / pid differ between runs: not identical');
+      assert.notEqual(st.keys, 'stable', 'different keys: not identical');
+      assert.equal(st.tmp, 'stable', JSON.stringify(rep.tests.find((t) => t.nodeid.endsWith('tmp'))));
+    });
+
+    test('timers/promises setInterval, scheduler.wait and Atomics.wait run on the virtual clock', T, () => {
+      const dir = proj(runner, 'tp', {
+        a: `${FX[runner]}\n${PUT}
+const tp = require('node:timers/promises');
+test('virtual waits', async () => {
+  const t0 = Date.now(); const r0 = process.hrtime.bigint();
+  let n = 0;
+  for await (const v of tp.setInterval(400, 'x')) { if (++n === 3) break; }
+  if (tp.scheduler) await tp.scheduler.wait(1000);
+  await tp.setImmediate();
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 50);
+  put('virt', Date.now() - t0);
+});`,
+      });
+      const t = Date.now();
+      const r = run(runner, dir, [], { cache: false });
+      assert.equal(r.status, 0, show(r));
+      const v = Number(got(dir, 'virt'));
+      assert.ok(v >= 2250, `virtual time advanced by the waits: ${v}`);
+      assert.ok(Date.now() - t < 60000);
+    });
+
+    test('dns Resolver instances and reverse lookups are closed', T, () => {
+      const dir = proj(runner, 'dnsr', {
+        a: `${FX[runner]}
+const dns = require('node:dns');
+test('resolver', async () => {
+  const r = new dns.promises.Resolver();
+  await expect(r.resolve4('example.com')).rejects.toThrow(/blocked/);
+  await expect(dns.promises.reverse('93.184.216.34')).rejects.toThrow(/blocked/);
+  await expect(dns.promises.lookupService('93.184.216.34', 80)).rejects.toThrow(/blocked/);
+});`,
+      });
+      const r = run(runner, dir, [], { cache: false });
+      assert.equal(r.status, 0, show(r));
+    });
+
+    test('G-1398: a cached result older than --det-cache-max-age is not reused', T, () => {
+      const dir = proj(runner, 'maxage', { a: "test('x', () => { expect(1).toBe(1); });" });
+      assert.equal(run(runner, dir).status, 0);
+      assert.ok(reused(run(runner, dir)).includes(fileOf(runner, 'a')));
+      const f = path.join(dir, '.cache', 'proof-cache.json');
+      fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace(/"run":"\d{8}T/g, '"run":"20200101T'));
+      const r = run(runner, dir);
+      assert.ok(!reused(r).includes(fileOf(runner, 'a')), show(r));
+      assert.match(JSON.stringify(r.summary.misses), /stale: recorded \d+ days ago/);
+      const r0 = run(runner, dir, [], { det: ['--det', '--det-cache-max-age=0'] });
+      assert.equal(r0.status, 0, show(r0));
+    });
+  });
+}
+
+test('G-2185 G-2186 G-2187: detjs verify names itself, refuses one trace and unreadable traces', T, () => {
+  const { spawnSync } = require('node:child_process');
+  const BIN = path.join(__dirname, '..', 'bin', 'detjs.js');
+  const one = spawnSync(process.execPath, [BIN, 'verify', __filename], { encoding: 'utf8' });
+  assert.equal(one.status, 2);
+  assert.match(one.stderr, /at least two traces/);
+  const missing = spawnSync(process.execPath, [BIN, 'verify', '/nonexistent/a.jsonl', '/nonexistent/b.jsonl'], { encoding: 'utf8' });
+  assert.equal(missing.status, 2);
+  assert.match(missing.stderr, /cannot read trace/);
+  assert.doesNotMatch(missing.stderr, /\n\s+at /);
+});
+
+// G-0181: a control that cannot be installed is never silent: the test gets an `uncontrolled.level0` event (the
+// verifier does not call it identical) and the cache never reuses it.
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0181 a realm whose globals cannot be replaced is marked and never reused`, T, () => {
+    const dir = proj(runner, 'gap0181', {
+      a: `${REQ[runner]}
+test('frozen realm', () => {
+  const sb = {};
+  const own = { getRandomValues: (a) => a, randomUUID: () => 'x' };
+  Object.defineProperty(sb, 'crypto', { value: own, writable: false, configurable: false, enumerable: true });
+  const ctx = vm.createContext(sb);
+  expect(vm.runInContext('typeof crypto.getRandomValues', ctx)).toBe('function');
+});`,
+    });
+    const r = run(runner, dir, [], { cache: false });
+    assert.equal(r.status, 0, show(r));
+    assert.match(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8'), /uncontrolled\.level0/);
+    notReused(runner, dir, fileOf(runner, 'a'), 'a Level 0 control could not be installed');
+  });
+}

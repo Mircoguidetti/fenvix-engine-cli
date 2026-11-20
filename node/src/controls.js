@@ -37,6 +37,8 @@ function installProcess() {
   // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=<digest of the value>`
   // (`env.has`, `env.list` for enumerations); values never reach the trace
   installEnvRecord(process);
+  // machine and process facts, native key generation, mkdtemp names (src/facts.js)
+  require('./facts').installProcess(PATCHER);
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js)
   require('./ioorder').installProcess(PATCHER);
   // worker threads, child processes and vm contexts started by tests (src/children.js)
@@ -93,6 +95,7 @@ function installRealm(g, { sameRealm, vm = false }) {
   realms.add(g);
   // Jest gives every test file its own process object with a copy of the environment
   if (!vm && g.process && g.process !== process && g.process.env) installEnvRecord(g.process);
+  if (!vm) require('./facts').installRealm(PATCHER, g);
   // A realm whose globals cannot be replaced keeps them: never silently (audit G-0181). The gap is noted in the
   // trace header, printed once, recorded as an `uncontrolled.level0` event in every later test of the process (the
   // verifier does not call such a test identical) and the cache does not reuse those tests.

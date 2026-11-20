@@ -129,6 +129,20 @@ function ownFile(nodeid) {
   return nodeid.split('::', 1)[0].split('@@', 1)[0];
 }
 
+/**
+ * A result recorded more than `days` ago on the real clock is not reused (`--det-cache-max-age`, default 30, as the
+ * Python shell; 0 = no limit): it bounds real-clock reads Level 0 cannot see (native code, TLS validity) and stale
+ * results in general (audit G-1398). The age comes from the run id (`YYYYMMDDTHHMMSS-...`, UTC).
+ */
+function staleness(run, days) {
+  if (!days || typeof run !== 'string') return null;
+  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/.exec(run);
+  if (!m) return null;
+  const t = Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]);
+  const age = (Date.now() - t) / 86400000;
+  return age > days ? `stale: recorded ${Math.floor(age)} days ago (--det-cache-max-age=${days})` : null;
+}
+
 // controls whose source is an input no key can hold when it is off
 const CONTROLS_KEYED = ['time', 'seeds', 'net', 'fs'];
 
@@ -175,6 +189,7 @@ class ProofSession {
     // --det-cache-real-clock: the decision is the virtual day's (as if the clock control were on), the tests run on
     // the real clock, nothing is recorded, and a test whose result differs from its cached one is an expiry
     this.realClock = Boolean(opts.cacheRealClock);
+    this.maxAgeDays = opts.cacheMaxAge === undefined || opts.cacheMaxAge === null ? 30 : Number(opts.cacheMaxAge);
     this.expiries = [];
     // A Level 0 control switched off makes its source real and unrecorded (the real clock, real randomness, the open
     // network, the file system's own listing order): a result may then depend on what no key holds (audit G-0123).
@@ -364,11 +379,16 @@ class ProofSession {
     const entry = JSON.parse(this.store.entry(mid));
     const tests = (entry.report && entry.report.tests) || [];
     const receipts = [[mid, { ...JSON.parse(m.text), kind: 'file' }]];
+    const stale = staleness(entry.run, this.maxAgeDays);
+    if (stale) return { ok: false, why: stale };
     for (const t of tests) {
       const nid = this.testKey(t, project);
       const r = this.store.check(nid);
       if (!r.ok) return { ok: false, why: `${neutral(r.text)} [${t}]` };
-      receipts.push([nid, JSON.parse(r.text)]);
+      const rc = JSON.parse(r.text);
+      const st = staleness(rc.run, this.maxAgeDays);
+      if (st) return { ok: false, why: `${st} [${t}]` };
+      receipts.push([nid, rc]);
     }
     return { ok: true, receipts, tests, duration: entry.duration || 0 };
   }
