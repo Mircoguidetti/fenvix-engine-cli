@@ -1,4 +1,2 @@
-{"nonce": 12, "jobs": [{"job": "hunt", "name": "actual"}, {"job": "hunt", "name": "sveltekit"}, {"job": "huntp", "name": "documenso"}],
- "params": {"hunt": {"seeds": 8, "replays": 10, "budget_min": 340, "run_timeout_min": 45, "per_run_s": 900},
-            "hunt:actual": {"only": ["extends after budgeting", "keeps every displayed column", "applies budget template"], "from_step": 40},
-            "huntp": {"seeds": 6, "seed_from": 0, "replays": 10, "budget_min": 340, "run_timeout_min": 45, "per_run_s": 900, "workers": 2}}}
+{"nonce": 13, "jobs": [{"job": "hunt", "name": "documenso"}],
+ "params": {"hunt": {"seeds": 8, "replays": 10, "budget_min": 345, "run_timeout_min": 45, "per_run_s": 900}}}
