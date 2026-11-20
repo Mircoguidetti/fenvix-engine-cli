@@ -1050,12 +1050,24 @@ const API_WRAP_SRC = `(function (deps) {
   };
 })`;
 
-function playwrightCoreRoot() {
+function playwrightCoreRoot(fn) {
+  // The playwright-core whose client code defines this method (the project's, not the engine's own copy).
+  const own = path.resolve(__dirname, '..', '..');
+  const roots = [];
   for (const f of Object.keys(require.cache)) {
     const m = /^(.*[\\/]playwright-core)[\\/]/.exec(f);
-    if (m) return m[1];
+    if (m && !roots.includes(m[1])) roots.push(m[1]);
   }
-  return null;
+  const src = fn ? Function.prototype.toString.call(fn) : '';
+  for (const r of roots) {
+    if (r.startsWith(own + path.sep)) continue;
+    for (const f of Object.keys(require.cache)) {
+      if (!f.startsWith(r + path.sep)) continue;
+      const m = require.cache[f];
+      if (src && m && m.exports && Object.values(m.exports).some((v) => typeof v === 'function' && v.prototype && v.prototype.fetch && Function.prototype.toString.call(v.prototype.fetch) === src)) return r;
+    }
+  }
+  return roots.find((r) => !r.startsWith(own + path.sep)) || roots[0] || null;
 }
 
 function patchApiRequest(reqCtx) {
@@ -1102,7 +1114,7 @@ function patchApiRequest(reqCtx) {
       release: () => release(),
     };
   };
-  const root = playwrightCoreRoot();
+  const root = playwrightCoreRoot(origFetch);
   let wrapped = null;
   if (root) {
     try { wrapped = require('node:vm').runInThisContext(API_WRAP_SRC, { filename: path.join(root, 'lib', 'detjs-api-request.js') })({ before, origFetch }); } catch { wrapped = null; }

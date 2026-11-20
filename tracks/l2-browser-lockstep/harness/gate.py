@@ -439,11 +439,21 @@ if JOB == "hunt":
                 return re.sub(r"\s+", " ", ln.strip())[:200]
         return ""
 
+    STEP = re.compile(r"\u2192 (GET|POST|PUT|PATCH|DELETE|HEAD) (https?://[^\s?]+)")
+
+    def step_of(e):
+        m = STEP.search(re.sub(r"\x1b\[[0-9;]*m", "", e or ""))
+        return f"{m.group(1)} {m.group(2)}" if m else None
+
+    def real_step(t):
+        return t["steps"][0][0] if t.get("steps") else None
+
     def mech(t):
         m = (t["messages"][0][0] if t["messages"] else "")
         if "ECONNRESET" in m:
+            # Aimed at the flaking step: faults only on the request the real failure was on (its call log).
             return "reset", {"DETJS_LS_FAULTS": "reset-request,reset-response", "DETJS_LS_FAULT_KINDS": "api",
-                             "DETJS_LS_FAULT_PERMILLE": str(P.get("fault_permille", 60))}
+                             "DETJS_LS_FAULT_PERMILLE": str(P.get("fault_permille", 300))}
         if m.startswith("Test timeout of"):
             ms = re.search(r"of (\d+)ms", m)
             return "timeout", {"DETJS_LS_LATENCIES": P.get("timeout_latencies", "1,1,1,1,1,1,1,1,1,D1.5"),
@@ -468,11 +478,15 @@ if JOB == "hunt":
     def outcome(t, run):
         for k, o in (run.get("outcomes") or {}).items():
             if k == t["key"]:
-                return o, first_line((run.get("errors") or {}).get(k, ""))
-        return "missing", ""
+                e = (run.get("errors") or {}).get(k, "")
+                return o, first_line(e), step_of(e)
+        return "missing", "", None
+
+    def matches_real(row, o, line, step):
+        return o in FAIL and line == first_line(row["real"]) and (row["step"] is None or step == row["step"])
 
     R["hunt"] = {"seeds": SEEDS, "replays": REPLAYS, "targets": []}
-    rows = {t["key"]: {"key": t["key"], "real": t["messages"][0][0] if t["messages"] else "", "mechanism": mech(t)[0],
+    rows = {t["key"]: {"key": t["key"], "real": t["messages"][0][0] if t["messages"] else "", "step": real_step(t), "mechanism": mech(t)[0],
                        "tried": [], "seed": None, "replays": [], "replay_errors": [], "fingerprints": None, "reproduced": False}
             for t in T55}
     R["hunt"]["targets"] = list(rows.values())
@@ -482,6 +496,9 @@ if JOB == "hunt":
     for g, ts in groups.items():
         # Only the targets are perturbed (setup tests and the rest run the default schedule).
         env = {**mech(ts[0])[1], "DETJS_LS_FOCUS_TEST": "||".join(t["key"] for t in ts)}
+        keys = sorted({f"api {real_step(t)}" for t in ts if real_step(t)})
+        if g == "reset" and keys:
+            env["DETJS_LS_FOCUS_KEYS"] = "|".join(keys)
         for seed in range(1, SEEDS + 1):
             open_ts = [t for t in ts if rows[t["key"]]["seed"] is None]
             if not open_ts or not budget_for(P.get("per_run_s", 600)):
@@ -489,10 +506,10 @@ if JOB == "hunt":
             r = run_pw(f"h-{g}-s{seed}", "det", seed=seed, args=args_for(open_ts), env_extra=env,
                        timeout_s=P["run_timeout_min"] * 60)
             for t in open_ts:
-                o, line = outcome(t, r)
+                o, line, step = outcome(t, r)
                 row = rows[t["key"]]
-                row["tried"].append([seed, o, line[:160]])
-                if o in FAIL and line == first_line(row["real"]):
+                row["tried"].append([seed, o, line[:160], step])
+                if matches_real(row, o, line, step):
                     row["seed"] = seed
             save()
         # Replays: the targets that found a seed, grouped by seed.
@@ -508,9 +525,10 @@ if JOB == "hunt":
                 label = f"h-{g}-s{seed}-r{i + 1}"
                 r = run_pw(label, "det", seed=seed, args=args_for(sts), env_extra=env, timeout_s=P["run_timeout_min"] * 60)
                 for t in sts:
-                    o, line = outcome(t, r)
+                    o, line, step = outcome(t, r)
                     rows[t["key"]]["replays"].append(o)
                     rows[t["key"]]["replay_errors"].append(line[:160])
+                    rows[t["key"]].setdefault("replay_match", []).append(matches_real(rows[t["key"]], o, line, step))
                 traces.append(r.get("trace"))
                 if i < 2:
                     keep_trace(r.get("trace"), label)
@@ -523,8 +541,8 @@ if JOB == "hunt":
                     rows[k]["divergence"] = tv.get("divergence")
             for t in sts:
                 row = rows[t["key"]]
-                row["reproduced"] = (len(row["replays"]) == REPLAYS and all(o in FAIL for o in row["replays"])
-                                     and all(e == first_line(row["real"]) for e in row["replay_errors"]) and row["fingerprints"] == 1)
+                row["reproduced"] = (len(row["replays"]) == REPLAYS and all(row.get("replay_match") or [False])
+                                     and row["fingerprints"] == 1)
             save()
     R["hunt"]["reproduced"] = sum(1 for r_ in rows.values() if r_["reproduced"])
     R["hunt"]["found_seed"] = sum(1 for r_ in rows.values() if r_["seed"] is not None)

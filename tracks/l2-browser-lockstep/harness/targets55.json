@@ -21,7 +21,8 @@
       "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "accounts.mobile.test.ts::Mobile Accounts::opens individual account page and checks that filtering is working [chromium]",
@@ -37,7 +38,8 @@
       "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "accounts.mobile.test.ts::Mobile Accounts::opens the accounts page and asserts on balances [chromium]",
@@ -53,7 +55,8 @@
       "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
@@ -69,7 +72,8 @@
       "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
@@ -89,7 +93,8 @@
       "Error: Failed to navigate to the next month.",
       5
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::keeps every displayed column inside the range [chromium]",
@@ -105,7 +110,8 @@
       "Test timeout of 60000ms exceeded.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "automatic-budget-range.test.ts::Automatic budget range (mobile)::extends after budgeting the last month and shrinks on reload [chromium]",
@@ -121,7 +127,8 @@
       "Test timeout of 60000ms exceeded.",
       9
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
@@ -137,7 +144,8 @@
       "Test timeout of 60000ms exceeded.",
       10
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "budget.mobile.test.ts::Mobile Budget [Tracking]::applies budget template [chromium]",
@@ -153,7 +161,8 @@
       "Test timeout of 60000ms exceeded.",
       15
      ]
-    ]
+    ],
+    "steps": []
    }
   ]
  },
@@ -179,6 +188,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/admin.document.find",
+      1
+     ]
     ]
    },
    {
@@ -193,6 +208,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.organisation.delete",
       2
      ]
     ]
@@ -211,6 +232,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.organisation.delete",
+      1
+     ]
     ]
    },
    {
@@ -225,6 +252,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.organisation.delete",
       1
      ]
     ]
@@ -243,6 +276,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       4
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+      4
+     ]
     ]
    },
    {
@@ -257,6 +296,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
       2
      ]
     ]
@@ -275,6 +320,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       3
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+      3
+     ]
     ]
    },
    {
@@ -289,6 +340,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      4
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
       4
      ]
     ]
@@ -307,6 +364,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       3
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+      3
+     ]
     ]
    },
    {
@@ -321,6 +384,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      4
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
       4
      ]
     ]
@@ -339,6 +408,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/admin.recipient.delete",
+      1
+     ]
     ]
    },
    {
@@ -355,7 +430,8 @@
       "Error: locator.click: Element is outside of the viewport",
       9
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITHOUT backport does not touch organisation claims [ui]",
@@ -371,7 +447,8 @@
       "Error: locator.click: Element is outside of the viewport",
       8
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "find-inbox.spec.ts::Inbox Find - Recipient Scoping::should not return documents the user is not a recipient of, even when searched by title [api]",
@@ -385,6 +462,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.inbox.find",
       1
      ]
     ]
@@ -403,6 +486,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       2
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.inbox.find",
+      2
+     ]
     ]
    },
    {
@@ -417,6 +506,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.inbox.find",
       2
      ]
     ]
@@ -435,6 +530,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.inbox.find",
+      1
+     ]
     ]
    },
    {
@@ -449,6 +550,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.inbox.find",
       1
      ]
     ]
@@ -467,6 +574,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       2
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
+      2
+     ]
     ]
    },
    {
@@ -481,6 +594,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
       1
      ]
     ]
@@ -499,6 +618,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
+      1
+     ]
     ]
    },
    {
@@ -513,6 +638,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
       1
      ]
     ]
@@ -531,6 +662,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       3
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
+      3
+     ]
     ]
    },
    {
@@ -545,6 +682,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/document.search",
       2
      ]
     ]
@@ -563,6 +706,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       2
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/template.search",
+      2
+     ]
     ]
    },
    {
@@ -577,6 +726,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/template.search",
       2
      ]
     ]
@@ -595,6 +750,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
+      1
+     ]
     ]
    },
    {
@@ -609,6 +770,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      3
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
       3
      ]
     ]
@@ -627,6 +794,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
+      1
+     ]
     ]
    },
    {
@@ -641,6 +814,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
       2
      ]
     ]
@@ -659,6 +838,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
+      1
+     ]
     ]
    },
    {
@@ -673,6 +858,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
       1
      ]
     ]
@@ -691,6 +882,12 @@
       "Error: apiRequestContext.post: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
+      1
+     ]
     ]
    },
    {
@@ -705,6 +902,12 @@
     "messages": [
      [
       "Error: apiRequestContext.post: read ECONNRESET",
+      2
+     ]
+    ],
+    "steps": [
+     [
+      "POST http://localhost:3000/api/trpc/envelope.content.set",
       2
      ]
     ]
@@ -723,7 +926,8 @@
       "Error: expect(locator).toBeVisible() failed",
       1
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "test-unauthorized-analytics-access.spec.ts::Organisation Analytics API - Adversarial: Access::should reject a recipient of an organisation document on every procedure [api]",
@@ -737,6 +941,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
       1
      ]
     ]
@@ -755,6 +965,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/organisation.analytics.getOverview",
+      1
+     ]
     ]
    },
    {
@@ -769,6 +985,12 @@
     "messages": [
      [
       "Error: apiRequestContext.get: read ECONNRESET",
+      1
+     ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
       1
      ]
     ]
@@ -787,6 +1009,12 @@
       "Error: apiRequestContext.get: read ECONNRESET",
       1
      ]
+    ],
+    "steps": [
+     [
+      "GET http://localhost:3000/api/trpc/team.analytics.getOverview",
+      1
+     ]
     ]
    },
    {
@@ -803,7 +1031,8 @@
       "Error: expect(received).toBeFalsy()",
       16
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "update-envelope-items.spec.ts::Update envelope items::should reject order change on a PENDING envelope [api]",
@@ -819,7 +1048,8 @@
       "Error: expect(received).toBeFalsy()",
       24
      ]
-    ]
+    ],
+    "steps": []
    }
   ]
  },
@@ -860,7 +1090,8 @@
       "Error: expect(received).toBeLessThan(expected)",
       1
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
@@ -876,7 +1107,8 @@
       "Error: expect(received).toEqual(expected) // deep equality",
       2
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
@@ -892,7 +1124,8 @@
       "Error: expect(received).toBe(expected) // Object.is equality",
       1
      ]
-    ]
+    ],
+    "steps": []
    }
   ]
  },
@@ -915,7 +1148,8 @@
       "Error: expect(locator).toHaveValue(expected) failed",
       4
      ]
-    ]
+    ],
+    "steps": []
    },
    {
     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
@@ -931,7 +1165,8 @@
       "Test timeout of 60000ms exceeded.",
       1
      ]
-    ]
+    ],
+    "steps": []
    }
   ]
  }
