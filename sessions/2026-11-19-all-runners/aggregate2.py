@@ -38,11 +38,12 @@ for p in sorted(glob.glob(f"{ROOT}/tracks/all-runners-python/results/ar2-py-*/*.
     r = next((x for x in rows if x["repo"] == name), None)
     if r is None:
         r = {"lang": "python", "repo": name, "runs": set(), "files": [], "engine": set(), "transitions": 0,
-             "verified": 0, "mismatches": 0, "wrong": 0, "share_tests": [], "share_time": []}
+             "verified": 0, "mismatches": 0, "wrong": 0, "share_tests": [], "share_time": [], "unfinished": 0}
         rows.append(r)
     r["runs"].add(os.path.basename(os.path.dirname(p)))
     r["files"].append(os.path.relpath(p, ROOT))
     r["engine"].add((d.get("engine") or "")[:8])
+    r["unfinished"] += 0 if d.get("finished") else 1
     for s in d.get("steps", [])[1:]:  # the shard's first commit records only
         r["transitions"] += 1
         v = s.get("verify") or {}
@@ -62,7 +63,7 @@ for p in sorted(glob.glob(f"{ROOT}/harness/node_cache/results/ar2-node-*/*.json.
     if r is None:
         r = {"lang": "node", "repo": name, "runs": set(), "files": [], "engine": set(), "transitions": 0,
              "verified": 0, "mismatches": 0, "wrong": 0, "missing": 0, "engine_verified": 0, "engine_mismatches": 0,
-             "share_tests": [], "share_time": []}
+             "share_tests": [], "share_time": [], "unfinished": 0}
         rows.append(r)
     r["runs"].add(os.path.basename(os.path.dirname(p)))
     r["files"].append(os.path.relpath(p, ROOT))
