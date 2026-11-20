@@ -1,21 +1,31 @@
-Local full suites at the commit that follows this file (python -m pytest -q -p no:randomly tests --deselect tests/test_review_r017.py::test_h2_..., the three run in parallel on 4 CPUs, 2026-11-20T21:41Z)
+Local suites on the merged head (claude/py-cache with origin/claude/release-1 a996b68b merged; fc3ab726), MEASURED
+2026-11-20, 4 CPUs, the three Python suites run in parallel. Engine installed into each venv from the wheel built at
+this head (the venvs hold an installed copy; a stale one made ~115 tests fail on the first post-merge run).
 
-== Python 312
-FAILED tests/test_level0_seeds_fsorder_rust.py::test_rust_stand_ins_are_faster_than_the_reference
-1 failed, 1039 passed, 79 skipped, 1 deselected, 4 warnings in 1838.15s (0:30:38)
+1) Full suite: python -m pytest -q -p no:randomly tests --deselect tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does
+   at the merge commit (before fc3ab726):
+== Python 3.12   5 failed, 1148 passed, 88 skipped, 1 deselected  (2305 s)
+== Python 3.13   5 failed, 1151 passed, 85 skipped, 1 deselected  (2290 s)
+== Python 3.14   9 failed, 1150 passed, 82 skipped, 1 deselected  (2451 s)
+   Failures and what was done:
+   - test_py_cache: test_environment_variable_no_python_read_sees_is_an_input and test_g2197_* (all versions):
+     release-1 pins TZ under --det, so the probes' TZ change no longer reaches the test (reuse there is correct);
+     the probes now run with --det-tz=keep, where TZ is an input again. fc3ab726.
+   - test_py_cache::test_g1539_runner_shells_refuse_pytest_only_options (all versions): release-1's runner-shell
+     unknown-option check ran before the G-1539 message; it names pytest-only options again. fc3ab726.
+   - test_clock::test_waiting_for_a_{child,daemonized}_process_waits_for_real (3.13, 3.14): mkdtemp under --det
+     tries 20 deterministic names; this machine's /tmp held the first 20 from earlier local runs (the test never
+     removes its directory). Leftovers removed; fresh CI runners start without them.
+   - 3.12 test_level0_rust::test_level0_traces_match_reference, test_review_r023c::test_1a_*[serial]: timing under
+     three parallel suites; pass when rerun (below).
+   - 3.14 test_rand::test_draw, test_review_r023b::test_2e_* (os.getrandom absent in uv's standalone 3.14.6) and
+     test_clock_rust's two mock_open cases: the same failures as with the trunk engine in this interpreter; CI's
+     3.14 runs them.
 
-== Python 313
-1040 passed, 79 skipped, 1 deselected, 4 warnings in 2369.21s (0:39:29)
+2) Every failing test above, rerun after fc3ab726 (3.12 / 3.13 / 3.14):
+   72 passed, 3 skipped  /  72 passed, 3 skipped  /  72 passed, 3 skipped
 
-== Python 314
-FAILED tests/test_rand.py::test_draw - AttributeError: module 'os' has no att...
-FAILED tests/test_rand.py::test_draw - AttributeError: module 'os' has no att...
-FAILED tests/test_clock_rust.py::test_traces_match_reference - AssertionError...
-FAILED tests/test_clock_rust.py::test_children_alive_and_its_audit_events_match_reference
-FAILED tests/test_repro_rust.py::test_prefix_through_matches_reference - asse...
-FAILED tests/test_review_r023b.py::test_2e_os_getrandom_is_entropy[serial] - ...
-FAILED tests/test_review_r023b.py::test_2e_os_getrandom_is_entropy[n2] - Asse...
-5 failed, 1036 passed, 78 skipped, 1 deselected, 4 warnings in 1972.30s (0:32:52)
+3) Suites touching the code changed by fc3ab726 (runner shells, CLI, packaging, test_py_cache, test_clock):
+   191 passed, 9 skipped  /  191 passed, 9 skipped  /  191 passed, 9 skipped
 
-3.12 test_level0_seeds_fsorder_rust.py::test_rust_stand_ins_are_faster_than_the_reference rerun alone: 1 passed (a timing comparison under three parallel suites).
-3.14 (uv's standalone CPython 3.14.6): os.getrandom is absent (test_rand, test_2e_*); test_clock_rust's two mock_open cases and test_repro_rust fail the same way with the trunk engine (claude/release-1 1ae6ca25) in this interpreter; CI's 3.14 runs them.
+4) cargo test --release (merged head): 0 failed (156 + 19 + 13 + 2 + 1 passed).

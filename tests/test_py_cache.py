@@ -871,3 +871,21 @@ def test_file_scope_a_file_another_files_test_writes_this_session_is_not_a_wrong
     p, c, _ = run(pytester, "after", "-rA", *par, "tests", env=env)
     assert "tests/test_b_reader.py::test_b_no_flag" not in reused(c), ("WRONG REUSE", p.stdout)
     assert outcome_of(p, "tests/test_b_reader.py::test_b_no_flag") == "failed", p.stdout
+
+
+@pytest.mark.parametrize("n", ["serial", "n2"])
+def test_carried_lines_of_test_files_children_stay_whole(pytester, n):
+    """Walk run py-cache-2026-11-20g (esphome): test files' children appended to DIR/carried.jsonl at the same time
+    and one line was cut by another; each line is now one write. Every line parses, one per recording child."""
+    if n == "n2":
+        pytest.importorskip("xdist")
+    files = {"tests/conftest.py": ""}
+    for i in range(12):
+        files[f"tests/test_f{i}.py"] = "".join(f"def test_{j}():\n    assert {j} >= 0\n" for j in range(30))
+    write(pytester, **files)
+    args = ("-n", "2", "tests") if n == "n2" else ("tests",)
+    p, c, _ = run(pytester, "r1", *args, env={"DETPY_CACHE_IN_PROCESS": "0"})
+    assert p.returncode == 0, p.stdout + p.stderr
+    lines = (pytester.path / ".c" / "carried.jsonl").read_text().splitlines()
+    rows = [json.loads(x) for x in lines if x.strip()]  # a cut line fails here
+    assert sum(r["tests"] for r in rows) == 12 * 30, rows

@@ -730,7 +730,9 @@ impl ProofCache {
         if std::fs::create_dir_all(&self.dir).is_ok() {
             if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(self.dir.join("carried.jsonl")) {
                 use std::io::Write;
-                let _ = writeln!(f, "{line}");
+                // one write per line: test files' children append at the same time (O_APPEND keeps a single write
+                // whole; writeln! of a JSON value writes it in pieces, which interleaved on esphome)
+                let _ = f.write_all(format!("{line}\n").as_bytes());
             }
         }
         Ok(out)
