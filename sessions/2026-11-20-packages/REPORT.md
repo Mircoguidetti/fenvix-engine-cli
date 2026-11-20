@@ -43,17 +43,23 @@ True now (code on the branch; CI evidence in section 2):
   `FENVIX_ENGINE_URL` + `FENVIX_ENGINE_SHA256` (both or neither) through it.
 - **Installer**: `install.sh [PREFIX]` (with `PYTHON=`): refuses another OS/CPU and an unsupported interpreter
   (exit 4, one sentence), installs the wheel into that Python's environment, the Node shells into `PREFIX/node`,
-  then runs `fenvix doctor` and refuses the installation if the native core does not load or another distribution
+  then runs `fenvix doctor --install` and refuses the installation if the native core does not load or another distribution
   writes the import package `detpy/` (the unrelated PyPI project; G-0170, G-0737).
 - **Install test in clean containers** (job `install`, no checkout: only the artifact and `install_test.py`):
-  checksum and manifest, `install.sh`, `fenvix --version` (Python command and Node shell), `fenvix doctor`, then
+  checksum and manifest, `install.sh`, `fenvix --version` (Python command and Node shell), `fenvix doctor --install` (the full `fenvix doctor`
+  is recorded in the job's JSON: what a container of that image gives), then
   `pytest --det` twice (traces verified identical) and `--det-cache` twice (second run reuses, no outcome differs)
   on a small real Python project (itsdangerous 2.2.0) and `fenvix node vitest run --det` twice and `--det-cache`
   twice on a small real Vitest project (ufo v1.6.1, Vitest 3); images: `quay.io/pypa/manylinux_2_28_x86_64`
   (AlmaLinux 8, glibc 2.28, CPython 3.12, **pytest 8.1**, Node 22), `python:3.13-slim-bookworm` (Debian 12, Node 24),
   `python:3.14-slim` (Debian 13, Node 26), and `python:3.11-slim` for the refusal.
-- **Single entry point** `fenvix` (wheel console script, `bin/fenvix` of the image): `--version`, `version`,
-  `doctor`, `python`, `python-runner`, `node`, `verify`, `detect`.
+- **Single entry point** `fenvix` = `detpy.fenvix:main` (wheel console script; `bin/fenvix` of the image runs the
+  same function). After merging the trunk (verifier PR #4, which brought the product command `detpy/fenvix.py`:
+  repro, explore, replay, verify, cassette, the runners), this branch's `detpy/fenvix_cli.py` is gone and its parts
+  live in `detpy.fenvix`: the installation checks (interpreter, native core, no foreign `detpy`) as `fenvix doctor
+  --install` and as the first rows of `fenvix doctor`; the refusal of an unsupported interpreter (exit 4, one
+  sentence) before any engine command; the image-only `go` / `jvm` entries. Test
+  `test_fenvix_command_version_and_doctor`.
 - **One version** for every component (`release/version.py`; Cargo.toml, `detpy/_version.py`,
   `node/package.json`), `CHANGELOG.md`, `docs/INSTALL.md` (contents, install, requirements, containers, uninstall).
 - **Removed** (founder decision): `packages.yml` (macOS and arm64 jobs), the npm packaging and publishing
@@ -219,6 +225,9 @@ where known).
 | G-1497, G-1498, G-1544 cc / strace at run time | OTHER ROW (cache) | documented in docs/INSTALL.md |
 | G-1493, G-1494, G-1495 Go pid, gVisor, Docker-in-Docker | OUT / OTHER ROW | |
 | G-1503 replay across operating systems | OUT | |
+| suite determinism: `test_level0_rust::test_level0_traces_match_reference` on CI 3.12 (a path's first run of a fresh project differed from its third) | FIXED (cause removed) | this branch's G-2194 writer (`mark_state_dir`) wrote `.detpy/.gitignore` only when absent, so a fresh project's first run did more work before the first test than later runs, the class the trunk documents as G-0168 (addresses tests see). The trunk's `ensure_state_dir` (G-2207) does the same work every run and replaces it; the test now names the first differing line if it recurs. Not reproduced locally on 3.12.3 / 3.12.13 (CI used 3.12.16, which this container cannot run: see section 2) |
+| PY-03 runner shells after the merge: every ward / zope test depended on the whole environment (`test_wrong_reuse[env_single|env_enumeration]`) | FIXED | the trunk's `_level0.env_inputs` read `os.environ` through the capture's wrapper while a runner shell writes its trace header; it reads `os.environ._data` (as `envobs` does). Locally: ward, nose2, Django, zope, django_order, django_pytest_cache 148 passed / 1 skipped (pre-existing skip) |
+| PY-03 Django: the trunk's `timezone_pinned` case (Django sets TZ from `settings.TIME_ZONE` over the tz control) | FIXED (test) | the case's Django project pins `TIME_ZONE = "UTC"`; reuse across a machine TZ change still proven |
 | PY-01 `detpy repro` on 3.14: the Rust path worded a missing test's error as CPython 3.12/3.13 do (`'missing::x' is not in list`), the reference raises 3.14's (`list.index(x): x not in list`); red on the trunk too (run 44714888645, job 136217550170) | FIXED | `repro_prefix_through` raises the interpreter's own `list.index` error; `test_repro_rust.py::test_prefix_through_missing_target_raises_this_interpreters_list_index_error`, `::test_prefix_through_matches_reference` (MEASURED locally: 3.14 19 passed, 3.13 passed) |
 
 Trunk failure not in these rows: `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs` (fixed by
