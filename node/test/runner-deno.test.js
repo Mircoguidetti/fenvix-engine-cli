@@ -117,9 +117,11 @@ describe('deno: wrong reuse (--det-cache)', { skip: SKIP }, () => {
     H.noWrongReuse(RT, dir, F('size'), { 'data/blob.bin': 'abcd' });
   });
 
-  test('file metadata: modification time is never keyed (not cached)', T, () => {
+  test('file metadata: modification time keyed by its value', T, () => {
+    // claude/all-runners-2: claude/node-cache-proof's review r021b fixes key a stat field by its value (V:), so a
+    // test that reads mtime is cached and reruns when the value changes (claude/all-runners: never cached)
     const dir = H.fixture(RT, 'mtime', { 'data/a.txt': 'a', ...tf('mt', "Deno.test('mt', () => { if (Deno.statSync('data/a.txt').mtime!.getFullYear() > 2029) throw new Error('future'); });") });
-    H.neverReused(RT, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), new Date('2031-01-01'), new Date('2031-01-01')), /metadata/);
+    H.noWrongReuse(RT, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), new Date('2031-01-01'), new Date('2031-01-01')));
   });
 
   test('symbolic link target through Deno.realPathSync', T, () => {

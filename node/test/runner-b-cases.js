@@ -202,9 +202,12 @@ function sharedCases(runner) {
       fs.chmodSync(path.join(dir, 'data', 'run.sh'), 0o644);
       noWrongReuse(runner, dir, F('mode'), () => fs.chmodSync(path.join(dir, 'data', 'run.sh'), 0o755));
     }],
-    ['stat() mtime read by the test: not cached', () => {
-      const dir = fx('stat-mtime', { 'data/a.txt': 'a', ...tf('mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs > 0).toBe(true); });") });
-      neverCached(runner, dir, F('mtime'), /metadata that is not keyed/);
+    ['stat() mtime read by the test: keyed by its value', () => {
+      // claude/all-runners-2: claude/node-cache-proof's review r021b fixes key a Stats field by its value (V:), so a
+      // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
+      const dir = fx('stat-mtime', { 'data/a.txt': 'a', ...tf('mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs < 1e12).toBe(true); });") });
+      fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
+      noWrongReuse(runner, dir, F('mtime'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
     }],
     ['F1b realpath() of a symbolic link: retargeting the link', () => {
       const dir = fx('realpath', { 'data/one.txt': '1', 'data/two.txt': '2', ...tf('real', "test('real', () => { expect(path.basename(fs.realpathSync('data/current'))).toBe('one.txt'); });") });

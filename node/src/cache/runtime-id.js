@@ -99,8 +99,43 @@ function memoPath() {
   return path.join(base, 'fenvix', `runtime-memo-node-${process.getuid ? process.getuid() : 0}.json`);
 }
 
-/** {digest, parts, lists} for the project at `root`, with `env` the environment at session start. */
-function runtimeIdentity(root, env = process.env) {
+/** The package trees of the runtime identity: [label, directory] pairs. */
+function packageRoots(root, env) {
+  const roots = nodeModulesDirs(root);
+  // Node's resolution also walks up from the project: node_modules of every ancestor directory
+  for (let dir = path.dirname(root), up = '..'; dir !== path.dirname(dir); dir = path.dirname(dir), up += '/..') {
+    const nm = path.join(dir, 'node_modules');
+    let names = [];
+    try { names = fs.readdirSync(nm); } catch { /* none */ }
+    if (names.some((x) => !TREE_EXCLUDE.includes(x))) roots.push([`${up}/node_modules`, nm]);
+  }
+  for (const [i, p] of String(env.NODE_PATH || '').split(path.delimiter).filter(Boolean).entries()) roots.push([`NODE_PATH#${i}`, path.resolve(p)]);
+  return roots;
+}
+
+function treeThreads() {
+  return Math.max(2, Math.min(16, os.availableParallelism ? os.availableParallelism() : 4));
+}
+
+/**
+ * Start the digest of the installed packages on a background thread (the slow part of the identity: every
+ * installed file is stat'ed, the new ones hashed). The caller passes the result to `runtimeIdentity` when nothing
+ * was installed or changed in those trees since (it recomputes otherwise).
+ */
+function startPackages(root, env = process.env) {
+  const roots = packageRoots(root, env);
+  const t0 = process.hrtime.bigint();
+  const promise = native.treeDigestAsync(roots, root, TREE_EXCLUDE, memoPath(), 400000, treeThreads())
+    .then((json) => ({ json, seconds: Number(process.hrtime.bigint() - t0) / 1e9 }));
+  promise.catch(() => {});
+  return { roots, promise };
+}
+
+/**
+ * {digest, parts, lists} for the project at `root`, with `env` the environment at session start; `packages`: the
+ * JSON of a package tree digest computed earlier (startPackages) for the same trees.
+ */
+function runtimeIdentity(root, env = process.env, packages = null) {
   const t0 = process.hrtime.bigint();
   const parts = {};
   const lists = {};
@@ -133,24 +168,14 @@ function runtimeIdentity(root, env = process.env) {
   parts.cpu = d({ visible: os.availableParallelism ? os.availableParallelism() : os.cpus().length, isa: isaLevel() });
   lists.lockfiles = LOCKFILES.map((f) => [f, native.fileDigest(path.join(root, f))]).filter(([, x]) => x);
   parts.lockfiles = d(lists.lockfiles);
-  const roots = nodeModulesDirs(root);
-  // Node's resolution also walks up from the project: node_modules of every ancestor directory
-  for (let dir = path.dirname(root), up = '..'; dir !== path.dirname(dir); dir = path.dirname(dir), up += '/..') {
-    const nm = path.join(dir, 'node_modules');
-    let names = [];
-    try { names = fs.readdirSync(nm); } catch { /* none */ }
-    if (names.some((x) => !TREE_EXCLUDE.includes(x))) roots.push([`${up}/node_modules`, nm]);
-  }
-  for (const [i, p] of String(env.NODE_PATH || '').split(path.delimiter).filter(Boolean).entries()) roots.push([`NODE_PATH#${i}`, path.resolve(p)]);
-  const threads = Math.max(2, Math.min(16, os.availableParallelism ? os.availableParallelism() : 4));
-  const tree = JSON.parse(native.treeDigest(roots, root, TREE_EXCLUDE, memoPath(), 400000, threads));
+  const tree = JSON.parse(packages || native.treeDigest(packageRoots(root, env), root, TREE_EXCLUDE, memoPath(), 400000, treeThreads()));
   parts.packages = tree.truncated ? `truncated-${process.pid}-${Date.now()}` : tree.digest;
   lists.packages = { roots: tree.roots, files: tree.files, links: tree.links, bytes: tree.bytes, hashed: tree.hashed, followed: tree.followed };
   const digest = d(Object.keys(parts).sort().map((k) => [k, parts[k]]));
   return { digest, parts, lists, seconds: Number(process.hrtime.bigint() - t0) / 1e9 };
 }
 
-module.exports = { runtimeIdentity, nodeModulesDirs, TREE_EXCLUDE, isaLevel };
+module.exports = { runtimeIdentity, startPackages, packageRoots, nodeModulesDirs, TREE_EXCLUDE, isaLevel };
 
 if (require.main === module) {
   const r = runtimeIdentity(path.resolve(process.argv[2] || '.'));

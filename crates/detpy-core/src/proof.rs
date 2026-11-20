@@ -86,8 +86,9 @@ pub struct Entry {
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
-    /// [`crate::deps`] ("m:", "r:", "e:", "u:" (recursive listing), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key [`probe_key`],
-    /// first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
+    /// [`crate::deps`] ("m:", "V:" (one stat field), "r:", "e:", "w:" (recursive listing), "u:" (recursive listing,
+    /// links not followed), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key
+    /// [`probe_key`], first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
     pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -719,8 +720,18 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         deps::realpath_digest(path).map(|d| format!("r:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("e:") {
         deps::typed_listing_digest(path).map(|d| format!("e:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("w:") {
+        deps::tree_listing_digest(path).map(|d| format!("w:{d}")).unwrap_or_else(|| "missing".into())
+    } else if let Some(rest) = recorded.strip_prefix("V:") {
+        // V:<follow 0|1>:<field>:<digest>
+        let mut it = rest.splitn(3, ':');
+        let follow = it.next() == Some("1");
+        let field = it.next().unwrap_or("");
+        deps::stat_field_digest(path, field, follow)
+            .map(|d| format!("V:{}:{field}:{d}", if follow { 1 } else { 0 }))
+            .unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("u:") {
-        deps::tree_listing_digest(path).map(|d| format!("u:{d}")).unwrap_or_else(|| "missing".into())
+        deps::tree_listing_nofollow_digest(path).map(|d| format!("u:{d}")).unwrap_or_else(|| "missing".into())
     } else if recorded.starts_with("c:") {
         deps::copy_tree_digest(path).map(|d| format!("c:{d}")).unwrap_or_else(|| "missing".into())
     } else {
@@ -730,8 +741,19 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
 
 /// Fields of a package.json that module resolution reads (Node, Vite, bundlers): a package.json is a *resolution*
 /// input through these only; code that reads or imports the file depends on its whole content (recorded apart).
-pub const RESOLUTION_FIELDS: [&str; 11] =
-    ["name", "type", "main", "module", "browser", "exports", "imports", "types", "typings", "jsnext:main", "react-native"];
+pub const RESOLUTION_FIELDS: [&str; 11] = [
+    "name",
+    "type",
+    "main",
+    "module",
+    "browser",
+    "exports",
+    "imports",
+    "types",
+    "typings",
+    "jsnext:main",
+    "react-native",
+];
 
 /// Digest of the resolution fields of a package.json (`None` when missing or not a JSON object: then "missing" or a
 /// whole-content digest is what the caller records).
@@ -1769,6 +1791,16 @@ impl Checker {
         }
         let kind = recorded.chars().next().unwrap_or('?');
         let kind = if recorded == "missing" { 'f' } else { kind };
+        if kind == 'V' {
+            // one stat field (Node capture): several fields of one path are memoised apart ("V:<follow>:<field>")
+            let mk = format!("{path}\0{}", recorded.rsplitn(2, ':').nth(1).unwrap_or(""));
+            let m = self.data_now.entry('V').or_default();
+            if !m.contains_key(&mk) {
+                let v = data_now(&self.cur.root.join(path), recorded);
+                m.insert(mk.clone(), v);
+            }
+            return &m[&mk];
+        }
         let m = self.data_now.entry(kind).or_default();
         if !m.contains_key(path) {
             // a directory-level dependency is keyed by the directory and a suffix naming its kind
@@ -1905,10 +1937,8 @@ impl Checker {
                 continue;
             }
             let path = f.path.clone();
-            let ok = self
-                .now_facts(store, &path)
-                .map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d))
-                .unwrap_or(false);
+            let ok =
+                self.now_facts(store, &path).map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d)).unwrap_or(false);
             if !ok {
                 return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
             }
@@ -1990,7 +2020,14 @@ mod tests {
         });
         let mut env = BTreeMap::new();
         env.insert("HOME".to_string(), "/root".to_string());
-        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env, startup: String::new() };
+        let cur = Current {
+            root: root.clone(),
+            config: "C".into(),
+            runtime: "R".into(),
+            epoch: 5,
+            env,
+            startup: String::new(),
+        };
         s.record(
             "t::a",
             Observed {
@@ -2166,6 +2203,33 @@ mod tests {
     }
 
     #[test]
+    fn startup_processes_output_is_an_input_and_absent_keeps_the_key() {
+        let (_d, s, cur) = setup();
+        let key0 = s.tests["t::a"].key.clone();
+        // an entry recorded without start-up processes: serialised and keyed as before
+        assert!(!serde_json::to_string(&s.tests["t::a"]).unwrap().contains("startup"));
+        let mut c = cur.clone();
+        c.startup = "S1".into();
+        assert_eq!(Checker::new(c.clone()).check(&s, "t::a").unwrap_err().kind, "startup");
+        let mut s2 = s.clone();
+        s2.record(
+            "t::a",
+            Observed {
+                outcome: "passed".into(),
+                config: "C".into(),
+                runtime: "R".into(),
+                startup: "S1".into(),
+                ..Default::default()
+            },
+        );
+        assert_ne!(s2.tests["t::a"].key, key0);
+        assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
+        assert_eq!(Checker::new(cur).check(&s2, "t::a").unwrap_err().kind, "startup");
+        c.startup = "S2".into();
+        assert_eq!(Checker::new(c).check(&s2, "t::a").unwrap_err().kind, "startup");
+    }
+
+    #[test]
     fn data_env_runtime_config_clock() {
         let (d, s, cur) = setup();
         fs::write(d.path().join("data.txt"), "y").unwrap();
@@ -2196,27 +2260,6 @@ mod tests {
     }
 
     #[test]
-    fn startup_processes_output_is_an_input_and_absent_keeps_the_key() {
-        let (_d, s, cur) = setup();
-        let key0 = s.tests["t::a"].key.clone();
-        // an entry recorded without start-up processes: serialised and keyed as before
-        assert!(!serde_json::to_string(&s.tests["t::a"]).unwrap().contains("startup"));
-        let mut c = cur.clone();
-        c.startup = "S1".into();
-        assert_eq!(Checker::new(c.clone()).check(&s, "t::a").unwrap_err().kind, "startup");
-        let mut s2 = s.clone();
-        s2.record(
-            "t::a",
-            Observed { outcome: "passed".into(), config: "C".into(), runtime: "R".into(), startup: "S1".into(), ..Default::default() },
-        );
-        assert_ne!(s2.tests["t::a"].key, key0);
-        assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
-        assert_eq!(Checker::new(cur).check(&s2, "t::a").unwrap_err().kind, "startup");
-        c.startup = "S2".into();
-        assert_eq!(Checker::new(c).check(&s2, "t::a").unwrap_err().kind, "startup");
-    }
-
-    #[test]
     fn memoised_checks_and_keys_match_the_unmemoised_ones() {
         // one checker over every entry (memo shared) vs a fresh checker per entry; and key_of_with vs key_of
         let (d, mut s, cur) = setup();
@@ -2244,7 +2287,10 @@ mod tests {
     #[test]
     fn failure_is_never_reused() {
         let (_d, mut s, cur) = setup();
-        s.record("t::f", Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() });
+        s.record(
+            "t::f",
+            Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() },
+        );
         assert_eq!(Checker::new(cur).check(&s, "t::f").unwrap_err().kind, "failed-before");
     }
 
@@ -2298,7 +2344,10 @@ mod tests {
             units: vec![unit("u", "U")],
             imports: vec![],
         });
-        s2.record("t::x", Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() });
+        s2.record(
+            "t::x",
+            Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() },
+        );
         s2.written.entry("out.txt".into()).or_default().insert("t|t::x".into());
         let mut s3 = Store::load(&dir);
         s3.remove("t::a");

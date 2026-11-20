@@ -262,9 +262,12 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     notCached(R, dir, F('b'), 'written by tests/a.test.mjs');
   });
 
-  test('stat().mtimeMs read by the test: not cacheable', T, () => {
-    const dir = proj('mtime', { 'data/a.txt': 'a', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs > 0); });") });
-    notCached(R, dir, F('m'), 'mtimeMs');
+  test('stat().mtimeMs read by the test: keyed by its value', T, () => {
+    // claude/all-runners-2: claude/node-cache-proof's review r021b fixes key a Stats field by its value (V:), so a
+    // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
+    const dir = proj('mtime', { 'data/a.txt': 'a', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < 1e12); });") });
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
+    noWrongReuse(R, dir, F('m'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
   });
 
   test('R-009 exclusive create (wx): the path appears before the run', T, () => {
