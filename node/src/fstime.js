@@ -29,6 +29,8 @@ const fs = require('node:fs');
 const { STATE } = require('./state');
 const sites = require('./sites');
 
+// a reflection function no wrapper observes (the cache capture records a Stats field whose descriptor is read)
+const GOPD = require('node:vm').runInNewContext('Object.getOwnPropertyDescriptor');
 const SLACK_MS = 10; // coarse kernel timestamps: a file written right after the test start can be stamped before it
 const TIME_FIELDS = ['atime', 'mtime', 'ctime', 'birthtime'];
 const MAPPED = new WeakMap(); // Stats -> { raw: {field: value}, infra: bool|null, seen: Set, bigint }
@@ -162,11 +164,14 @@ function mapStats(st, site) {
   if (!st || typeof st !== 'object' || MAPPED.has(st) || clock === null || !clock.CLOCK) return st;
   if (site === undefined) site = siteOrNull();
   if (site === null) return st; // the runner's own call
-  const e = { raw: {}, get: {}, infra: false, seen: new Set(), bigint: typeof st.mtimeNs === 'bigint' || typeof st.ino === 'bigint', site: site || '' };
+  // (the fields are not read here: a read is an input of the test for the cache)
+  const proto = Object.getPrototypeOf(st);
+  const bigint = Boolean(proto && proto.constructor && proto.constructor.name === 'BigIntStats');
+  const e = { raw: {}, get: {}, infra: false, seen: new Set(), bigint, site: site || '' };
   const keys = ['ino', 'dev'];
   for (const f of TIME_FIELDS) keys.push(`${f}Ms`, `${f}Ns`);
   for (const k of keys) {
-    const d = Object.getOwnPropertyDescriptor(st, k);
+    const d = GOPD(st, k);
     if (!d || !d.configurable) continue;
     if ('value' in d) e.raw[k] = d.value; else if (typeof d.get === 'function') e.get[k] = d.get; else continue;
     try {

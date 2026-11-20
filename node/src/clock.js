@@ -516,6 +516,9 @@ class Driver {
     this.deferrals = 0;
     const head = this.queue[0];
     if (!head) return;
+    // fast time was decided when the timer was armed: I/O started since then (a connection the test opened in the
+    // same tick) is waited for first
+    if (fastMode && !this.fast()) { this.rearm(); return; }
     // a runner deadline due no later than the next timer fires first (on the virtual clock)
     if (this.deadlines.size) {
       const d = this.nextDeadline();

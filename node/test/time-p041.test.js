@@ -99,6 +99,34 @@ test('slow in real time', async () => { ${body} put('done', 'yes'); }, 500);`,
       assert.ok(ev.some((e) => e[1] === 'runner.timeout' && e[3] === 'virtual:1000'), JSON.stringify(ev));
     });
 
+    test('G-0144: a background timer does not fire the runner deadline while local I/O or thread-pool work runs', T, () => {
+      // an HTTP server starts a 30 s interval of its own; a polling interval runs while pbkdf2 and zlib work in the
+      // thread pool (not libuv requests): none of them may push virtual time past the 2 s timeout before the work ends
+      const dir = proj(runner, 'background', {
+        a: `test('loopback', async () => {
+  const s = http.createServer((q, r) => r.end('ok'));
+  await new Promise((r) => s.listen(0, '127.0.0.1', r));
+  const body = await new Promise((res) => http.get({ host: '127.0.0.1', port: s.address().port }, (r) => { let d = ''; r.on('data', (c) => { d += c; }); r.on('end', () => res(d)); }));
+  s.close();
+  put('body', body);
+}, 2000);
+test('thread pool', async () => {
+  const crypto = typeof require === 'function' ? require('node:crypto') : process.getBuiltinModule('node:crypto');
+  const zlib = typeof require === 'function' ? require('node:zlib') : process.getBuiltinModule('node:zlib');
+  let ticks = 0;
+  const iv = setInterval(() => { ticks++; }, 10);
+  await new Promise((r, j) => crypto.pbkdf2('pw', 'salt', 400000, 32, 'sha256', (e) => (e ? j(e) : r())));
+  await new Promise((r, j) => zlib.gzip(Buffer.alloc(1 << 22), (e) => (e ? j(e) : r())));
+  clearInterval(iv);
+  put('pool', 'done');
+}, 2000);`,
+      });
+      const r = run(runner, dir);
+      assert.equal(r.status, 0, show(r));
+      assert.equal(got(dir, 'body'), 'ok');
+      assert.equal(got(dir, 'pool'), 'done');
+    });
+
     test('G-0144: a test that truly hangs still fails with the runner timeout (real watchdog)', T, () => {
       const dir = proj(runner, 'hangs', {
         a: "test('hangs', async () => { await new Promise(() => {}); }, 700);\ntest('after', () => { put('after', 'ran'); });",
@@ -118,6 +146,7 @@ const srv = http.createServer((q, s) => s.end('pong'));
 const get = (port) => new Promise((res, rej) => http.get({ host: '127.0.0.1', port, path: '/', agent: false }, (r) => { let b = ''; r.on('data', (c) => { b += c; }); r.on('end', () => res(b)); }).on('error', rej));
 test('race', async () => {
   await new Promise((r) => srv.listen(0, '127.0.0.1', r));
+  await get(srv.address().port); // warm-up (not raced)
   const wins = [];
   for (let i = 0; i < 5; i++) {
     const ac = new AbortController();

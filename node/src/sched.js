@@ -13,10 +13,14 @@
 //   until its first message or exit, and from a message posted to it until its next message (a long-lived pool with
 //   nothing to do no longer turns every timer into a real wait, G-1484). Handles that existed when the test file
 //   started (the runner's own) are never counted.
+// * thread-pool work that libuv does not list as a request is counted while it runs: the callback forms of
+//   `crypto.pbkdf2`, `scrypt`, `randomBytes`, `randomFill`, `randomInt`, `generateKeyPair`, `generateKey`,
+//   `generatePrime`, `checkPrime`, `hkdf`, `sign`, `verify` and of the zlib convenience methods (`gzip`, `inflate`,
+//   `brotliCompress`, ...). Before, virtual timers (and so a runner deadline, src/deadline.js) could outrun them.
 // * local I/O first, then timers: when an operation of the test completes and nothing else is pending, the driver
 //   goes back to fast time at once (before, a timer kept waiting its whole real delay). A timer whose real delay has
 //   passed while an operation of the test that just started (a file operation, a connection waiting for its first
-//   data) is still pending waits a short grace (its own delay, between 20 and 50 ms) so that local I/O that completes
+//   data) is still pending waits a short grace (its own delay, between 30 and 50 ms) so that local I/O that completes
 //   in that time completes first.
 // * recorded decisions (event source `sched`, value `<chosen>/<set size>:<stable id>`, crates/detpy-core/src/event.rs):
 //   `sched.timer` when a virtual timer fires while I/O of the test is still pending (the timer was chosen before
@@ -25,7 +29,7 @@
 //   differently records a different choice, and `detjs verify` names it ("first diverging scheduling choice").
 const { STATE } = require('./state');
 
-const MIN_GRACE_MS = 20;
+const MIN_GRACE_MS = 30;
 const MAX_GRACE_MS = 50;
 
 // Busy accounting of worker threads (posted - received; a fresh worker is busy until it is heard).
@@ -89,6 +93,10 @@ function installProcess(patcher) {
       return emit.call(this, ev, ...a);
     });
   }
+  trackWork(patcher, require('node:crypto'), ['pbkdf2', 'scrypt', 'randomBytes', 'randomFill', 'randomInt', 'generateKeyPair',
+    'generateKey', 'generatePrime', 'checkPrime', 'hkdf', 'sign', 'verify']);
+  trackWork(patcher, require('node:zlib'), ['deflate', 'deflateRaw', 'inflate', 'inflateRaw', 'gzip', 'gunzip', 'unzip',
+    'brotliCompress', 'brotliDecompress', 'zstdCompress', 'zstdDecompress']);
 }
 
 /** A worker is busy from its start until it is first heard from, and from a message posted to it until its next message. */
@@ -123,6 +131,7 @@ function pending() {
   if (!HAS_HANDLES) return pendingByNames();
   const out = [];
   for (let i = 0; i < held; i++) out.push('held');
+  for (let i = 0; i < work; i++) out.push('work');
   for (const r of process._getActiveRequests()) {
     if (baseline.has(r)) continue;
     out.push(r && r.constructor ? r.constructor.name : 'request');
@@ -147,11 +156,41 @@ function pendingByNames() {
   return out;
 }
 
+let work = 0; // thread-pool jobs in flight (crypto, zlib callback forms)
 let held = 0; // completions src/ioorder.js holds for ordering: delivered later, so still pending
 function setHeld(n) { held = n; }
 
 function isPending() {
-  return held > 0 || pending().length > 0;
+  return held > 0 || work > 0 || pending().length > 0;
+}
+
+/** Wrap callback-style thread-pool functions of module `m`: pending while their job runs. */
+function trackWork(patcher, m, names) {
+  for (const n of names) {
+    const real = m && m[n];
+    if (typeof real !== 'function' || real.__detjsWork) continue;
+    const w = function (...a) {
+      const i = a.length - 1;
+      if (i < 0 || typeof a[i] !== 'function') return real.apply(this, a);
+      const cb = a[i];
+      let done = false;
+      a[i] = function (...r) { if (!done) { done = true; work -= 1; } return cb.apply(this, r); };
+      work += 1;
+      try {
+        return real.apply(this, a);
+      } catch (e) {
+        if (!done) { done = true; work -= 1; }
+        throw e;
+      }
+    };
+    for (const k of Reflect.ownKeys(real)) {
+      if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(k)) continue;
+      try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(real, k)); } catch { /* ignore */ }
+    }
+    Object.defineProperty(w, 'name', { value: real.name, configurable: true });
+    Object.defineProperty(w, '__detjsWork', { value: true });
+    patcher.set(m, n, w);
+  }
 }
 
 /** Handles and requests present now are the runner's own: never counted (taken when a test file starts). */
