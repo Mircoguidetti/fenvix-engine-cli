@@ -197,6 +197,44 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('ei'), () => {}, { env1: { R021BF_X: 'a' }, env2: { R021BF_X: 'b' } });
     });
 
+    // -- review R-032 F6 / F7 (claude/review-r032), coordinator's addition to this round ----------------------------
+    t('R032-F6 a nested package.json with "type": "module" appears (module format of the unchanged lib/x.js)', T, () => {
+      // Node's own loader in both runners (Jest's module registry ignores "type" without its ESM mode)
+      const req = runner === 'vitest' ? "import { createRequire } from 'node:module'; const nodeRequire = createRequire(import.meta.url);\n"
+        : "const nodeRequire = require('node:module').createRequire(__filename);\n";
+      const dir = fixture(runner, 'pkgtype', {
+        'lib/x.js': 'exports.v = 1;\n',
+        ...tfile(runner, 'pt', `${req}test('pt', () => { expect(nodeRequire('../lib/x.js').v).toBe(1); });`),
+      });
+      const change = { 'lib/package.json': JSON.stringify({ type: 'module' }) };
+      if (runner === 'vitest') { noWrongReuse(runner, dir, F('pt'), change); return; }
+      // Jest: its module registry (createRequire included) does not apply "type" outside its ESM mode: the change does
+      // not alter the result; the cached run must agree with a fresh one
+      assert.equal(crun(runner, dir).status, 0);
+      write(dir, change);
+      const fresh = crun(runner, dir, { cache: false });
+      const cached = crun(runner, dir);
+      assert.equal(cached.status, fresh.status, `cached run must agree with the fresh run\n${show(cached)}\n${show(fresh)}`);
+    });
+
+    for (const [name, body] of [
+      ['subtle.generateKey', "const k = await globalThis.crypto.subtle.generateKey({ name: 'HMAC', hash: 'SHA-256', length: 256 }, true, ['sign']); expect(new Uint8Array(await globalThis.crypto.subtle.exportKey('raw', k)).length).toBe(32);"],
+      ['generateKeyPairSync', "const nc = ${NC}; const { publicKey } = nc.generateKeyPairSync('ec', { namedCurve: 'P-256' }); expect(publicKey.asymmetricKeyType).toBe('ec');"],
+      ['createECDH().generateKeys', "const nc = ${NC}; expect(nc.createECDH('prime256v1').generateKeys().length).toBe(65);"],
+    ]) {
+      t(`R032-F7 OS randomness in native crypto (${name}) makes the file not cached`, T, () => {
+        const NC = runner === 'vitest' ? "(await import('node:crypto')).default" : "require('node:crypto')";
+        const dir = fixture(runner, `entropy-${name.replace(/[^a-z]/gi, '')}`, {
+          ...tfile(runner, 'en', `test('en', async () => { ${body.replace('${NC}', NC)} });`),
+        });
+        const r1 = crun(runner, dir);
+        assert.equal(r1.status, 0, show(r1));
+        const r2 = crun(runner, dir);
+        assert.equal(r2.status, 0, show(r2));
+        assert.ok(!reusedFiles(r2).includes(F('en')), `a test that drew OS randomness in native crypto was reused\n${show(r2)}`);
+      });
+    }
+
     // -- G3: recursive listings ---------------------------------------------------------------------------------
     t('G3 callback readdir recursive through a link to a directory', T, () => {
       const dir = fixture(runner, 'rcb', {

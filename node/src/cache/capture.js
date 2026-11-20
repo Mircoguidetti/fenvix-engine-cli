@@ -218,6 +218,7 @@ class Capture {
     installDlopen(this);
     installNodeReaders(this);
     installCloneRetry(this);
+    installNativeEntropy(this);
     if (hooks) installLoaderHooks(this);
     STATE.onEvent = (source, value) => this.levelEvent(source, value);
     require('node:module').syncBuiltinESMExports();
@@ -872,12 +873,16 @@ class Capture {
       stem(path.dirname(f), base);
       if (base === 'index' && this.inRoot(path.dirname(f))) stem(path.dirname(path.dirname(f)), path.basename(path.dirname(f)));
       this.importGlobs(f);
-      const pkg = this.nearestPackageJson(path.dirname(f));
+      const { found: pkg, absent } = this.nearestPackageJson(path.dirname(f));
+      for (const a of absent) {
+        if (this.where(a) === 'skip') continue;
+        this.add(['data', this.key(a), this.dep('f', a)], this.isGlobal);
+      }
       if (pkg) {
         // resolution reads only some fields (exports, main, type, ...): those are the input; a test that reads or
         // imports the package.json itself depends on its whole content through that read
         const x = native.packageResolutionDigest(pkg);
-        this.add(['data', this.rel(pkg), x === null || x === undefined ? this.dep('f', pkg) : `p:${x}`], this.isGlobal);
+        this.add(['data', this.key(pkg), x === null || x === undefined ? this.dep('f', pkg) : `p:${x}`], this.isGlobal);
       }
     } finally {
       this.busy--;
@@ -910,12 +915,22 @@ class Capture {
     }
   }
 
+  /**
+   * The package.json Node (or Vite) finds for a module in `dir`, walking up: { found, absent } where `absent` are
+   * the package.json paths probed on the way and not found (review R-032 F6: one appearing there, such as a nested
+   * `{"type": "module"}`, changes how the unchanged module loads). The walk goes up to the first one found, past the
+   * project root if need be, as Node's does.
+   */
   nearestPackageJson(dir) {
     if (this.pkgMemo.has(dir)) return this.pkgMemo.get(dir);
-    let out = null;
+    let out;
     const p = path.join(dir, 'package.json');
-    if (native.statKind(p) === 'file') out = p;
-    else if (this.inRoot(path.dirname(dir) + path.sep) && dir !== this.root) out = this.nearestPackageJson(path.dirname(dir));
+    if (native.statKind(p) === 'file') out = { found: p, absent: [] };
+    else if (path.dirname(dir) === dir) out = { found: null, absent: [p] };
+    else {
+      const up = this.nearestPackageJson(path.dirname(dir));
+      out = { found: up.found, absent: [p, ...up.absent] };
+    }
     this.pkgMemo.set(dir, out);
     return out;
   }
@@ -1701,6 +1716,56 @@ function wrapSqlite(cap) {
   try { m.DatabaseSync = DatabaseSync; } catch { /* read-only */ }
   if (typeof m.backup === 'function') wrapFn(cap, m, 'backup', (a) => cap.wrote(a[1]));
   try { require('node:module').syncBuiltinESMExports(); } catch { /* ignore */ }
+}
+
+// -- randomness drawn in native code (review R-032 F7) -------------------------------------------------------------
+// Key generation and randomized cryptography draw OS randomness inside OpenSSL, where Level 0's seeded streams do
+// not reach (and --det-urandom does not control it): a test that uses them is not cacheable.
+const RANDOM_SIGN = new Set(['ec', 'dsa', 'rsa-pss']);
+
+function keyKind(k) {
+  try {
+    if (k && typeof k === 'object' && !Buffer.isBuffer(k) && k.key !== undefined) {
+      if (k.padding === require('node:crypto').constants.RSA_PKCS1_PSS_PADDING) return 'rsa-pss';
+      k = k.key;
+    }
+    const c = require('node:crypto');
+    const ko = k instanceof c.KeyObject ? k : c.createPrivateKey(k);
+    return ko.asymmetricKeyType || '?';
+  } catch { return '?'; }
+}
+
+function installNativeEntropy(cap) {
+  const c = require('node:crypto');
+  const hit = (what) => cap.flag('keygen', what);
+  for (const n of ['generateKeyPair', 'generateKeyPairSync', 'generateKey', 'generateKeySync', 'generatePrime', 'generatePrimeSync']) {
+    wrapFn(cap, c, n, () => hit(`crypto.${n}`));
+  }
+  // publicEncrypt: OAEP and PKCS#1 v1.5 padding are randomized
+  wrapFn(cap, c, 'publicEncrypt', () => hit('crypto.publicEncrypt'));
+  wrapFn(cap, c, 'sign', (a) => { const t = keyKind(a[2]); if (RANDOM_SIGN.has(t) || t === '?') hit(`crypto.sign (${t})`); });
+  const keyed = (factory, label) => wrapFn(cap, c, factory, () => {}, (_a, obj) => {
+    if (obj && typeof obj.generateKeys === 'function' && !obj.generateKeys.__detjsCache) wrapFn(cap, obj, 'generateKeys', () => hit(`${label}.generateKeys`));
+  });
+  keyed('createECDH', 'ECDH');
+  keyed('createDiffieHellman', 'DiffieHellman');
+  keyed('getDiffieHellman', 'DiffieHellmanGroup');
+  keyed('createDiffieHellmanGroup', 'DiffieHellmanGroup');
+  wrapFn(cap, c, 'createSign', () => {}, (_a, obj) => {
+    if (obj && typeof obj.sign === 'function' && !obj.sign.__detjsCache) {
+      wrapFn(cap, obj, 'sign', (b) => { const t = keyKind(b[0]); if (RANDOM_SIGN.has(t) || t === '?') hit(`Sign.sign (${t})`); });
+    }
+  });
+  // WebCrypto
+  const subtle = c.webcrypto && c.webcrypto.subtle;
+  const proto = subtle && Object.getPrototypeOf(subtle);
+  if (proto) {
+    const algo = (a) => String((a && typeof a === 'object' ? a.name : a) || '').toUpperCase();
+    wrapFn(cap, proto, 'generateKey', (a) => hit(`subtle.generateKey (${algo(a[0])})`));
+    wrapFn(cap, proto, 'encrypt', (a) => { if (algo(a[0]) === 'RSA-OAEP') hit('subtle.encrypt (RSA-OAEP)'); });
+    wrapFn(cap, proto, 'wrapKey', (a) => { if (algo(a[3]) === 'RSA-OAEP') hit('subtle.wrapKey (RSA-OAEP)'); });
+    wrapFn(cap, proto, 'sign', (a) => { const n = algo(a[0]); if (n === 'ECDSA' || n === 'RSA-PSS') hit(`subtle.sign (${n})`); });
+  }
 }
 
 // -- preload phase (src/cache/early.js) --------------------------------------------------------------------------

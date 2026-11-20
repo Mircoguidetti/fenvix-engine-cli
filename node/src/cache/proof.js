@@ -51,6 +51,7 @@ const UNCACHEABLE = {
   sqlite: 'opens an SQLite database that cannot be keyed by its path',
   resolve: 'a module specifier that could not be resolved and is not keyed (bare or mapped)',
   'import-glob': 'an import.meta.glob call that cannot be keyed',
+  keygen: 'OS randomness drawn in native crypto (key generation, randomized encryption or signatures)',
   preload: 'a preload module read the clock or OS entropy before Level 0 was installed',
   loader: 'an off-thread module loader (--loader, module.register): what it reads is not observable',
 };
