@@ -318,15 +318,18 @@ def test_runner_image_fetch_is_pinned_and_fails_closed(tmp_path):
 
 
 def test_state_directory_keeps_the_checkout_clean(pytester):
-    """G-2194: after `pytest --det` a git checkout has no untracked engine state (.detpy/ carries a .gitignore)."""
+    """G-2194 / G-2207: after `pytest --det` a git checkout has no untracked engine run state: .detpy/ carries a
+    .gitignore that ignores everything but itself and the network cassette (both meant to be committed)."""
     pytester.makepyfile(test_a="def test_a():\n    assert 1\n")
     subprocess.run(["git", "init", "-q", str(pytester.path)], check=True)
     subprocess.run(["git", "-C", str(pytester.path), "add", "-A"], check=True)
     r = pytester.runpytest_subprocess("--det", "-p", "no:cacheprovider")
     assert r.ret == 0, r.stdout.str()
     assert (pytester.path / ".detpy" / "trace.jsonl").exists()
-    st = subprocess.run(["git", "-C", str(pytester.path), "status", "--porcelain"], capture_output=True, text=True).stdout
-    assert ".detpy" not in st, st
+    st = subprocess.run(["git", "-C", str(pytester.path), "status", "--porcelain", "--untracked-files=all"],
+                        capture_output=True, text=True).stdout
+    detpy_entries = [line for line in st.splitlines() if ".detpy" in line]
+    assert detpy_entries == ["?? .detpy/.gitignore"], st
 
 
 def test_gate_runs_on_pull_requests_and_trunk_only_and_cancels_only_superseded_pr_runs():
