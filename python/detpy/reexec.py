@@ -123,12 +123,55 @@ def precompile(hashseed: str, rootdir: str | None) -> float:
             continue
         else:
             cmd, data = [sys.executable, "-c", driver, "--stdin"], b"\0".join(os.fsencode(f) for f in stale)
+        if not extra:
+            # audit G-2202: compiling the libraries takes seconds the first time: say so before it starts
+            try:
+                sys.stderr.write(f"fenvix: compiling the standard library and site-packages under PYTHONHASHSEED="
+                                 f"{hashseed} into {prefix} (once per environment and hash seed)\n")
+                sys.stderr.flush()
+            except Exception:
+                pass
+            _evict_old_caches(prefix)
         p = subprocess.run(cmd, env=env, input=data, stdin=None if data is not None else subprocess.DEVNULL,
                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if p.returncode != 0:  # interrupted: no stamps (a file that does not compile is skipped, not an error)
             return time.perf_counter() - t0
     stamps.write(stamps_path)
     return time.perf_counter() - t0
+
+
+KEEP_ENV = "FENVIX_PYC_KEEP"
+
+
+def _evict_old_caches(current: str) -> None:
+    """Keep the bytecode caches of the most recently used hash seeds only (audit G-1531: every seed explored left
+    one behind, never removed): ``$FENVIX_PYC_KEEP`` (default 8, the hash seeds ``--det-seed`` uses) caches of this
+    interpreter; the others are removed,
+    least recently used first (their stamps file's time)."""
+    import shutil
+
+    try:
+        keep = max(1, int(os.environ.get(KEEP_ENV, "8")))
+    except ValueError:
+        keep = 8
+    parent = os.path.dirname(current)
+    tag = os.path.basename(current).split("-hashseed", 1)[0]
+    try:
+        names = [n for n in os.listdir(parent) if n.split("-hashseed", 1)[0] == tag and "-hashseed" in n]
+    except OSError:
+        return
+
+    def used(n: str) -> float:
+        for f in ("stamps-v3.json", "."):
+            try:
+                return os.stat(os.path.join(parent, n, f)).st_mtime
+            except OSError:
+                continue
+        return 0.0
+
+    others = sorted((n for n in names if os.path.join(parent, n) != current), key=used, reverse=True)
+    for n in others[keep - 1:]:
+        shutil.rmtree(os.path.join(parent, n), ignore_errors=True)
 
 
 def _core():
@@ -181,6 +224,9 @@ def dir_stamp(d: str) -> str:
 BLOCKED_ENV = "DETPY_BLOCKED_PLUGINS"
 
 
+PRE_EXEC: list = []  # callables(env) run just before the exec
+
+
 def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, rootdir: str | None = None,
            block_plugins: list[str] | None = None) -> None:
     """Exec the current command line again. Does not return on success.
@@ -189,6 +235,12 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
     loads them (unregistering an already loaded plugin leaves its fixtures).
     """
     need = plan(want_hashseed, want_no_aslr, want_bytecode)
+    if rootdir:
+        # audit G-0168: the state directory exists before the process that runs the tests starts, in the first run
+        # of a fresh checkout as in every later one (creating it there changed the addresses the tests see)
+        from ._level0 import ensure_state_dir
+
+        ensure_state_dir(rootdir)
     env = dict(os.environ)
     env["PYTHONHASHSEED"] = want_hashseed
     env[MARKER] = "1"
@@ -201,6 +253,11 @@ def reexec(want_hashseed: str, want_no_aslr: bool, want_bytecode: bool = True, r
     for stream in (sys.stdout, sys.stderr):
         try:
             stream.flush()
+        except Exception:
+            pass
+    for hook in PRE_EXEC:  # G-0168: plugin.prewarm_rewrite_cache, with the new process's environment
+        try:
+            hook(env)
         except Exception:
             pass
     argv = _argv()

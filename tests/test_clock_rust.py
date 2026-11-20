@@ -823,6 +823,7 @@ def test_wall_derived_and_gettime_match_reference(ref, capture):
         cases += [("clock_gettime", (i,)), ("clock_gettime_ns", (i,))]
     cases += [("clock_gettime", ()), ("clock_gettime_ns", (0, 1))]
     real_ids = {getattr(time, n) for n in ("CLOCK_PROCESS_CPUTIME_ID", "CLOCK_THREAD_CPUTIME_ID") if hasattr(time, n)}
+    real_ids.add(-7)  # a negative id is a CPU-time clock of a process or thread (Linux): its value moves too
 
     def kind_only(r):  # the real CPU clocks: the type of the value, the clock's state
         (res, st) = r

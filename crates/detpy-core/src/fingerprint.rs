@@ -86,7 +86,15 @@ pub struct TestRecord {
     pub worker: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub worker_index: Option<u64>,
+    /// Sources the test used that Level 0 observes but does not control (`thread`, `child`, `io`): taken from its
+    /// `uncontrolled.*` events, kept even when `events` is truncated. A test with any of them is never reported
+    /// covered by the verifier: identical fingerprints are no evidence of an identical execution then.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub uncontrolled: Vec<String>,
 }
+
+/// Prefix of the op of an event that marks the use of a source Level 0 does not control.
+pub const UNCONTROLLED_PREFIX: &str = "uncontrolled.";
 
 /// Incrementally fingerprints the event stream of one test.
 #[derive(Clone, Debug)]
@@ -100,6 +108,7 @@ pub struct Fingerprinter {
     checkpoints: Vec<(u64, String)>,
     counts: BTreeMap<Source, u64>,
     scratch: Vec<u8>,
+    uncontrolled: std::collections::BTreeSet<String>,
 }
 
 impl Default for Fingerprinter {
@@ -120,6 +129,7 @@ impl Fingerprinter {
             checkpoints: Vec::new(),
             counts: BTreeMap::new(),
             scratch: Vec::with_capacity(256),
+            uncontrolled: std::collections::BTreeSet::new(),
         }
     }
 
@@ -145,6 +155,11 @@ impl Fingerprinter {
         self.chain = Digest(*h.finalize().as_bytes());
         self.count += 1;
         *self.counts.entry(event.source).or_insert(0) += 1;
+        if let Some(kind) = event.op.strip_prefix(UNCONTROLLED_PREFIX) {
+            if !self.uncontrolled.contains(kind) {
+                self.uncontrolled.insert(kind.to_string());
+            }
+        }
         if self.count % self.checkpoint_every == 0 {
             self.checkpoints.push((self.count, self.chain.short()));
         }
@@ -170,6 +185,7 @@ impl Fingerprinter {
             events: self.events,
             worker: None,
             worker_index: None,
+            uncontrolled: self.uncontrolled.into_iter().collect(),
         }
     }
 }

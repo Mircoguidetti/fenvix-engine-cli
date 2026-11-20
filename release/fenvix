@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
-"""fenvix: the single CLI entry of release 1. Interface only: it finds the language shell installed by the runner
-image and hands it the arguments unchanged. Every decision (controls, fingerprints, traces, keys, reuse) is the
-engine's (Rust: detpy-core, fenvix-skip, fenvix-go; the shells call it).
+"""fenvix in the runner image. The product command is the `fenvix` console script installed with the Python
+package (python/detpy/fenvix.py, docs/CLI.md): repro, explore, replay, verify, pytest and the other runners. This
+file hands those commands to it, and keeps the image-only entries below (Go, JVM) that the package does not carry.
+Every decision (controls, fingerprints, traces, keys, reuse) is the engine's (Rust: detpy-core, fenvix-skip,
+fenvix-go; the shells call it).
+
+    fenvix repro TEST | explore --budget MIN | replay BUNDLE | verify TRACE... | pytest ... | <runner> ...
+                                           python -m detpy.fenvix ... (see `fenvix --help` there)
 
     fenvix python [pytest args]            pytest with the detpy plugin  (e.g. --det, --det-cache=DIR)
     fenvix python-runner RUNNER [args]     python -m detpy RUNNER ...    (unittest, django, nose2, ward, zope, doctest)
@@ -75,11 +80,18 @@ def version():
     print("fenvix-agent.jar", "present" if os.path.exists(_path("jvm", "fenvix-agent.jar")) else "absent")
 
 
+PRODUCT = {"repro", "explore", "replay", "verify", "pytest", "unittest", "django", "nose2", "ward", "zope",
+           "zope-testrunner", "doctest", "--version", "-V", "vitest", "jest", "mocha", "node-test", "ava", "tap", "uvu",
+           "jasmine", "bun", "deno", "playwright"}
+
+
 def main(argv):
     if not argv or argv[0] in ("-h", "--help", "help"):
         print(__doc__)
         return 0
     cmd, rest = argv[0], argv[1:]
+    if cmd in PRODUCT:
+        _exec([sys.executable, "-m", "detpy.fenvix"] + argv)
     if cmd == "python":
         _exec([sys.executable, "-m", "pytest"] + rest)
     if cmd == "python-runner":

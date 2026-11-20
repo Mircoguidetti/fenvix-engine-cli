@@ -148,6 +148,40 @@ function partIds(file) {
   return ids;
 }
 
+/** Run inputs the verifier compares (header `inputs`, crates/detpy-core/src/verify.rs): two runs whose inputs differ
+ * are never reported identical, and the first differing input is named. Values of environment variables are
+ * digests. The time zone and the locale are not pinned by this shell: they are recorded, so a difference is reported
+ * (audit G-0139, G-0140). */
+function runInputs(run, meta) {
+  const crypto = require('node:crypto');
+  const dig = (t) => crypto.createHash('sha256').update(String(t)).digest('hex').slice(0, 16);
+  const cfg = run.cfg;
+  const has = (c) => cfg.controls.has ? cfg.controls.has(c) : [...cfg.controls].includes(c);
+  let tz = '?';
+  let loc = '?';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch { /* no Intl */ }
+  try { loc = Intl.DateTimeFormat().resolvedOptions().locale; } catch { /* no Intl */ }
+  const offset = new Date(Number(cfg.epochNs / 1000000n)).getTimezoneOffset();
+  const lc = ['LC_ALL', 'LC_CTYPE', 'LC_TIME', 'LC_NUMERIC', 'LANG', 'LANGUAGE'].filter((k) => k in process.env)
+    .map((k) => `${k}=${process.env[k]}`).join(',');
+  const inputs = {
+    runtime: `node ${process.version} ${process.platform} ${process.arch}`,
+    runner: `${(meta && meta.runner) || ""} ${(meta && meta.runner_version) || ""}`.trim(),
+    seed: String(cfg.seed),
+    shuffle: cfg.shuffle ? 'yes' : 'no',
+    clock: has('time') ? `virtual epoch_ns=${cfg.epochNs} tick_ns=${cfg.tickNs} adapt=${cfg.tickAdapt} timers=${cfg.timers}` : 'real (time control off)',
+    tz: `${tz} offset=${offset} TZ=${process.env.TZ === undefined ? '<unset>' : process.env.TZ} (not pinned)`,
+    locale: `${loc} ${lc} (not pinned)`,
+    network: has('net') ? String(run.netMode) : 'open (net control off)',
+    urandom: cfg.urandom ? 'controlled' : 'observed',
+  };
+  for (const [k, v] of Object.entries(process.env)) {
+    if (k.startsWith('DETJS_') || k.startsWith('DETPY_') || k.startsWith('VITEST_') || k.startsWith('JEST_WORKER')) continue;
+    inputs[`env:${k}`] = dig(`${k}=${v}`);
+  }
+  return inputs;
+}
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   const parts = files.map((f) => path.join(run.dir, 'parts', f.part)).filter((p) => fs.existsSync(p));
@@ -176,6 +210,7 @@ function finish(run, opts, files, meta) {
     unordered_parts: extra.length,
     notes: [...new Set(all.flatMap(partNotes))],
   };
+  try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   fs.rmSync(run.dir, { recursive: true, force: true });
   const lines = [`detjs: trace ${path.relative(process.cwd(), run.tracePath) || run.tracePath}: ${res.nTests} tests, order digest ${res.orderDigest}`];

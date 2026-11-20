@@ -408,6 +408,10 @@ def test_reference_plugin_installs_network(pytester, net_env):
     assert "REF method_descriptor net_function_stand_in True False" in new.stdout.str()
 
 
+def _no_dates(path):
+    return re.sub(rb'"recorded": \{[^}]*\}', b'"recorded": {}', path.read_bytes())
+
+
 def test_sessions_match_reference(pytester, net_env):
     """Block, record (cassettes compared) and replay sessions: traces byte-identical, printed values identical."""
     _write(pytester.path, PROJECT)
@@ -432,7 +436,8 @@ def test_sessions_match_reference(pytester, net_env):
             assert a == b, net_mode
         assert tr == tn, net_mode
         assert vr == vn, net_mode
-    assert (p / "cassette-ref.json").read_bytes() == (p / "cassette-new.json").read_bytes()
+    # claude/verifier-cli: the recording date (real time, audit G-1519) is the only wall-clock value of a cassette
+    assert _no_dates(p / "cassette-ref.json") == _no_dates(p / "cassette-new.json")
     # the sessions did what they claim
     cas = json.loads((p / "cassette-ref.json").read_text())
     conns = [c for t in cas["tests"].values() for c in t]
@@ -862,7 +867,8 @@ def test_replayed_socket_matches_reference(ref, capture, monkeypatch):
         results.append((ip, r, peer, opt, got, list(mod.POLICY.mismatches), type(tls).__name__))
         tls.close()
     assert results[0] == results[1]
-    assert results[1][2] == ("198.18.0.2", 443) and results[1][4] == b"200 OK" and results[1][5]
+    # claude/verifier-cli (audit G-0166): a request that differs from the recording is refused (no recorded answer)
+    assert results[1][2] == ("198.18.0.2", 443) and results[1][4] == b"" and results[1][5]
     ev = capture.events
     assert len(ev) == 4 and ev[:2] == ev[2:]
 

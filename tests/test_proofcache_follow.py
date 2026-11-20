@@ -172,8 +172,10 @@ def test_child_through_a_proxy_named_by_a_loopback_hostname_is_never_cached(pyte
             out = subprocess.run(["curl", "-s", "http://service.example/"], capture_output=True, text=True)
             assert out.stdout == "ok"
         """})
-    run_cache()
-    r, reused, data = run_cache()
+    # claude/verifier-cli (audit G-1520): under --det a child process meets the closed network (its proxy variables
+    # point at a closed port); the network is open to it in record mode, which this case needs
+    run_cache("--det-record")
+    r, reused, data = run_cache("--det-record")
     r.assert_outcomes(passed=1)
     assert reused == set()
     assert nc(data)["test_m.py::test_curl"] == "subprocess"

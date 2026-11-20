@@ -17,6 +17,7 @@ detpy = "detpy.plugin"
 
 [project.scripts]
 detpy = "detpy.cli:main"
+fenvix = "detpy.fenvix:main"
 
 [tool.maturin]
 manifest-path = "crates/detpy-py/Cargo.toml"
