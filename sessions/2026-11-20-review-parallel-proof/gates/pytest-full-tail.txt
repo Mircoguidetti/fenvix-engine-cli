@@ -1,0 +1,40 @@
+ss.sssssssssssssss...................................................... [  8%]
+...s.s...........................................................sss.... [ 16%]
+........................................................................ [ 25%]
+........................................................................ [ 33%]
+........................................................................ [ 42%]
+................................................s....................... [ 50%]
+........................................................................ [ 59%]
+...................................................s.................... [ 67%]
+........................................................................ [ 76%]
+...........................
+repro python: wall 6.243 s, pytest subprocesses 6.236 s (99.9 %), 10 runs
+
+repro rust: wall 6.291 s, pytest subprocesses 6.285 s (99.9 %), 10 runs
+.............................F............... [ 84%]
+................................................ss..........ss.......... [ 93%]
+...................................s......................               [100%]
+=================================== FAILURES ===================================
+______ test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does _______
+
+    def test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does():
+        d = json.loads(P8.read_text())
+        plain_ok = all(x["exit"] == 0 for x in d["cache"]["P0"])
+        failing = {k: [i for i, x in enumerate(v) if x["exit"] != 0 and (x.get("cache") or {}).get("not_cached", {})
+>                      .get("outcome")] for k, v in d["cache"].items() if k != "P0"}
+                        ^^^
+E       AttributeError: 'NoneType' object has no attribute 'get'
+
+tests/test_review_r017.py:108: AttributeError
+=============================== warnings summary ===============================
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+tests/test_rust_hotpaths.py::test_dist_identity_matches_importlib_metadata
+  /usr/local/lib/python3.13/importlib/metadata/__init__.py:486: DeprecationWarning: Implicit None on return values is deprecated and will raise KeyErrors.
+    return self.metadata['Version']
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does
+1 failed, 820 passed, 29 skipped, 4 warnings in 1238.67s (0:20:38)

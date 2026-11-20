@@ -61,13 +61,13 @@ FIX rather than FAIL:
 
 | gate | REPORT-3 | this review | raw |
 |---|---|---|---|
-| `test_review_r023b.py` + `test_review_r023.py` + `tests/review_r032b` + `test_r032b_engine.py` | 107 passed, 21 skipped | **107 passed, 21 skipped** (321 s) | re-run here |
-| `cargo test --release --workspace` | 113 + 1 | **113 + 1 passed**, 0 failed | re-run here |
-| full suite (`pytest tests -p no:randomly`, without this review's file) | 820 passed, 29 skipped, 1 deselected | FULLSUITE | re-run here |
+| `test_review_r023b.py` + `test_review_r023.py` + `tests/review_r032b` + `test_r032b_engine.py` | 107 passed, 21 skipped | **107 passed, 21 skipped** (321 s) | `gates/review-r023b-r023-r032b.txt` |
+| `cargo test --release --workspace` | 113 + 1 | **113 + 1 passed**, 0 failed | `gates/cargo-test.txt` |
+| full suite (`pytest tests -p no:randomly`, without this review's file) | 820 passed, 29 skipped, 1 deselected | **820 passed, 29 skipped, 1 failed** (1,239 s). The failure is `test_review_r017.py::test_h2_report_says_ci_never_sees_tmp_name_exhaustion_but_p8_does`, the pre-existing one the report deselects; the counts agree | `sessions/2026-11-20-review-parallel-proof/gates/` |
 
 ## Proven errors (failing tests in `tests/test_review_r023c.py`)
 
-All counts are MEASURED: `pytest tests/test_review_r023c.py -p no:randomly`, RESULTCOUNT. Unless marked otherwise, each
+All counts are MEASURED: `pytest tests/test_review_r023c.py -p no:randomly`, **24 failed, 2 passed** (109 s). Unless marked otherwise, each
 test follows these steps:
 1. Two cache sessions record the test.
 2. One input changes.
