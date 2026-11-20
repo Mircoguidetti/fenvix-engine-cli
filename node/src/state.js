@@ -2,6 +2,7 @@
 // Process-wide state shared by the controls and the runner shells.
 const native = require('./native');
 const sites = require('./sites');
+const { wire } = require('./wire');
 
 const { AsyncLocalStorage } = require('node:async_hooks');
 
@@ -90,7 +91,8 @@ class State {
   beginTest(id) {
     if (this.testId !== null) this.endTest('interrupted');
     this.flush();
-    if (this.recorder) this.recorder.beginTest(id, this.testIndex);
+    // the id as the core gets every string: well-formed, injectively (src/wire.js)
+    if (this.recorder) this.recorder.beginTest(wire(id), this.testIndex);
     this.testIndex++;
     this.testId = id;
     for (const f of this.onTestStart) f(id);

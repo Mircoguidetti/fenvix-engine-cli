@@ -696,7 +696,8 @@ class ProofSession {
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
       uncacheable_projects: [...this.uncacheableProjects.keys()].map((p) => this.scoped(p)), verify: Boolean(this.verify), hits,
     };
-    const text = JSON.stringify(input);
+    // every string as the core gets it (a test named with an unpaired surrogate: src/wire.js)
+    const text = require('../wire').wireJson(input);
     if (process.env.DETJS_POLICY_DUMP) {
       // test-only: the inputs of the policy, for test/policy-equivalence.test.js
       try {

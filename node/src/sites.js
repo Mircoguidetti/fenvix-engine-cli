@@ -156,4 +156,37 @@ function resolveDepth(depth) {
   return frames.length < depth ? '<node>' : undefined;
 }
 
-module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA };
+/**
+ * Whether the call was made for the runner: walking out from the caller past Node, detjs and installed libraries,
+ * a runner frame (INFRA) comes before any project frame. A library working for the runner (source-map parsing a
+ * map while Jest formats a stack) is then the runner's; a library a test calls is the test's.
+ */
+function runnerInitiated() {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = 40;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, runnerInitiated);
+    // eslint-disable-next-line no-unused-expressions
+    holder.stack;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+  const frames = holder.stack;
+  if (!Array.isArray(frames)) return false;
+  for (const cs of frames) {
+    const f = rawFile(cs);
+    if (RUNNER_INTERNAL.test(f)) return true;
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+    if (INFRA.test(f)) return true;
+    if (f.includes(`${path.sep}node_modules${path.sep}`)) continue;
+    return false;
+  }
+  return false;
+}
+
+module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };

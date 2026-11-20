@@ -355,6 +355,52 @@ for (const runner of RUNNERS) {
         assert.match(r.trace.header.meta.parallel.requested.refused, /isolate=false/);
       });
     }
+
+    // dom-testing-library: source-map's lazily drawn Math.random (parsing a map while Jest formats a stack) moved the
+    // test's own values depending on which file came first in the process, so 2 fingerprints differed between the
+    // parallel and the serial run. A draw made for the runner now uses its own stream and is not recorded.
+    test('a draw a library makes for the runner does not shift the test\'s own values', T, () => {
+      const req = runner === 'vitest' ? "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);" : '';
+      const dir = fixture(runner, 'infra-draw', {
+        a: `${req}\ntest('own', () => { if (fs.existsSync('probe.on')) require('jest-probe')(); globalThis.__v = Math.random(); expect(globalThis.__v).toBeLessThan(1); });`,
+      }, {
+        extra: {
+          // a runner package (INFRA by name) calling an ordinary library that draws
+          'node_modules/jest-probe/package.json': '{"name":"jest-probe","main":"index.js"}',
+          'node_modules/jest-probe/index.js': "module.exports = () => require('lazy-dep')();\n",
+          'node_modules/lazy-dep/package.json': '{"name":"lazy-dep","main":"index.js"}',
+          'node_modules/lazy-dep/index.js': 'module.exports = () => { let x = 0; for (let i = 0; i < 5; i++) x += Math.random(); return x; };\n',
+        },
+      });
+      const randomEvents = (r) => r.trace.tests[0].events.filter((e) => e.s === 'random').map((e) => `${e.o}=${e.v}`);
+      const off = det(runner, dir);
+      assert.equal(off.status, 0, show(off));
+      write(dir, { 'probe.on': '1' });
+      const on = det(runner, dir);
+      assert.equal(on.status, 0, show(on));
+      assert.deepEqual(randomEvents(on), randomEvents(off), 'the probe\'s draws neither move the test\'s value nor appear in its events');
+      assert.equal(randomEvents(on).length, 1);
+    });
+
+    // yaml: test names with an unpaired surrogate made the policy input invalid JSON for the core ("lone leading
+    // surrogate"): nothing was recorded for the whole session; napi would also turn both into U+FFFD (one id)
+    test('test names with unpaired surrogates: distinct ids, recorded and reused', T, () => {
+      const dir = fixture(runner, 'surrogates', {
+        s: [
+          "test('lone \\ud800', () => { expect(Math.random()).toBeLessThan(1); });",
+          "test('lone \\ud801', () => { expect(Math.random()).toBeLessThan(1); });",
+          "test('marker \\uffffd800', () => { expect(1).toBe(1); });",
+          "test('pair \\ud83d\\ude00', () => { expect(1).toBe(1); });",
+        ].join('\n'),
+      });
+      const cache = path.join(dir, '.cache');
+      const r1 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.equal(r1.status, 0, show(r1));
+      assert.equal(new Set(r1.trace.tests.map((t) => t.nodeid)).size, 4, JSON.stringify(r1.trace.tests.map((t) => t.nodeid)));
+      assert.equal(r1.summary.recorded, 4, show(r1));
+      const r2 = det(runner, dir, [`--det-cache=${cache}`]);
+      assert.equal(r2.summary.reused_tests, 4, show(r2));
+    });
   });
 }
 
