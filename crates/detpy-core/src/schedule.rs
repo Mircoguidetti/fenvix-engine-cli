@@ -351,6 +351,12 @@ pub struct ControllerInput {
     /// gives it, not the outcome of a race between two processes (review R-023 F2).
     #[serde(default)]
     pub edges: Vec<(String, String)>,
+    /// Tests the previous session refused for inputs of their own that are not files (a network connection, a
+    /// process-state read, a socket outside Python: `.detpy-cache/quarantine.json`). Under the carried-set rule every
+    /// test that runs after one of them in its process carries the refusal; their atoms get a worker of their own
+    /// (the last), so the other workers' tests stay cacheable. With one worker, or a replayed plan, no quarantine.
+    #[serde(default)]
+    pub quarantine: Vec<String>,
 }
 
 /// The controller's plan.
@@ -374,6 +380,8 @@ pub struct ControllerPlan {
     pub replayed: bool,
     /// Why the previous plan was not used for stickiness ("" when it was, or there was none).
     pub previous_ignored: String,
+    /// Workers (the last ones) that run only quarantined atoms (0: no quarantine).
+    pub quarantine_workers: usize,
     /// Reader test -> the writer tests it waits for: both sent this run, on different workers, the writer first in
     /// the serial order. A wait never deadlocks: every worker runs its list in the serial order and only waits for
     /// tests that come earlier in that order.
@@ -515,15 +523,80 @@ pub fn controller_plan(input: &ControllerInput) -> Result<ControllerPlan, String
         },
         (None, None) => (BTreeMap::new(), input.tolerance),
     };
-    let p = plan(&PlanInput {
-        ids: ids.clone(),
-        atoms,
-        costs,
-        workers: n,
-        previous,
-        tolerance,
-        slack: input.slack,
-    })?;
+    let qset: std::collections::HashSet<&str> = input.quarantine.iter().map(|s| s.as_str()).collect();
+    let q_atoms: std::collections::HashSet<&str> = if n >= 2 && replay.is_none() {
+        ids.iter().zip(&atoms).filter(|(id, _)| qset.contains(id.as_str())).map(|(_, a)| a.as_str()).collect()
+    } else {
+        Default::default()
+    };
+    let mut q_workers = 0usize;
+    let p = if q_atoms.is_empty() {
+        plan(&PlanInput { ids: ids.clone(), atoms, costs, workers: n, previous, tolerance, slack: input.slack })?
+    } else {
+        // the quarantined atoms on the last k workers, the others over the first n-k. k from the full costs (reused
+        // tests at their recorded cost, so that k does not follow the cache's hits), kept from the previous plan
+        // when within one: a change of k moves atoms and changes what the tests after them carry
+        let keep: Vec<usize> = (0..ids.len()).filter(|&i| !q_atoms.contains(atoms[i].as_str())).collect();
+        let q: Vec<usize> = (0..ids.len()).filter(|&i| q_atoms.contains(atoms[i].as_str())).collect();
+        let full = |i: usize| -> f64 {
+            cost_precedence(input.history.get(&ids[i]).map(|v| v.as_slice()), input.cached.get(&ids[i]).copied())
+                .unwrap_or(default)
+        };
+        let q_full: f64 = q.iter().map(|&i| full(i)).sum();
+        let all_full: f64 = (0..ids.len()).map(full).sum::<f64>().max(1e-9);
+        let want = ((n as f64) * q_full / all_full).round().clamp(1.0, (n - 1) as f64) as usize;
+        let prev_k = input
+            .previous
+            .as_ref()
+            .and_then(|p| p.get("quarantine_workers"))
+            .and_then(|v| v.as_u64())
+            .map(|v| v as usize)
+            .filter(|&k| k >= 1 && k < n);
+        let k = match prev_k {
+            Some(pk) if pk.abs_diff(want) <= 1 => pk,
+            _ => want,
+        };
+        q_workers = k;
+        let m = n - k;
+        let sub = plan(&PlanInput {
+            ids: keep.iter().map(|&i| ids[i].clone()).collect(),
+            atoms: keep.iter().map(|&i| atoms[i].clone()).collect(),
+            costs: keep.iter().map(|&i| costs[i]).collect(),
+            workers: m,
+            previous: previous.iter().filter(|(_, &w)| w < m).map(|(k, &w)| (k.clone(), w)).collect(),
+            tolerance,
+            slack: input.slack,
+        })?;
+        let qp = plan(&PlanInput {
+            ids: q.iter().map(|&i| ids[i].clone()).collect(),
+            atoms: q.iter().map(|&i| atoms[i].clone()).collect(),
+            costs: q.iter().map(|&i| costs[i]).collect(),
+            workers: k,
+            // no stickiness: every quarantined test is refused anyway, so where one runs changes no key
+            previous: BTreeMap::new(),
+            tolerance,
+            slack: input.slack,
+        })?;
+        let mut lists: Vec<Vec<usize>> = sub.lists.iter().map(|l| l.iter().map(|&j| keep[j]).collect()).collect();
+        lists.extend(qp.lists.iter().map(|l| l.iter().map(|&j| q[j]).collect::<Vec<usize>>()));
+        let mut atom_worker = sub.atom_worker.clone();
+        for (a, &w) in &qp.atom_worker {
+            atom_worker.insert(a.clone(), w + m);
+        }
+        let mut loads = sub.loads.clone();
+        loads.extend(qp.loads.iter().copied());
+        let named: Vec<Vec<&str>> = lists.iter().map(|l| l.iter().map(|&i| ids[i].as_str()).collect()).collect();
+        Plan {
+            makespan: loads.iter().copied().fold(0.0, f64::max),
+            loads,
+            lpt_makespan: sub.lpt_makespan.max(qp.lpt_makespan),
+            sticky: sub.sticky && qp.sticky,
+            kept: sub.kept + qp.kept,
+            digest: plan_digest(&named),
+            lists,
+            atom_worker,
+        }
+    };
     let mut lists = BTreeMap::new();
     let mut assign = BTreeMap::new();
     let mut send = Vec::with_capacity(n);
@@ -566,6 +639,7 @@ pub fn controller_plan(input: &ControllerInput) -> Result<ControllerPlan, String
         kept: p.kept,
         replayed: replay.is_some(),
         previous_ignored,
+        quarantine_workers: q_workers,
         waits,
     })
 }
@@ -999,6 +1073,25 @@ mod tests {
         assert!(cross, "two files under loadfile with two workers");
         assert_eq!(p.waits.get("tests/test_b.py::w"), Some(&vec!["tests/test_a.py::r".to_string()]));
         assert!(!p.waits.contains_key("tests/test_a.py::r"));
+    }
+
+    #[test]
+    fn round3_quarantined_atoms_get_the_last_worker_alone() {
+        let ids: Vec<String> = (0..12).map(|i| format!("tests/test_{}.py::t", i)).collect();
+        let mut inp = cinput(&ids, &[]);
+        inp.dist = "loadfile".into();
+        inp.workers = vec!["gw0".into(), "gw1".into(), "gw2".into()];
+        inp.quarantine = vec!["tests/test_3.py::t".into(), "tests/test_7.py::t".into()];
+        let p = controller_plan(&inp).unwrap();
+        assert_eq!(p.quarantine_workers, 1);
+        assert_eq!(p.lists["gw2"], vec!["tests/test_3.py::t".to_string(), "tests/test_7.py::t".to_string()]);
+        for w in ["gw0", "gw1"] {
+            assert!(p.lists[w].iter().all(|t| !inp.quarantine.contains(t)));
+        }
+        assert_eq!(p.assign.len(), 12);
+        // one worker: nothing to isolate
+        inp.workers = vec!["gw0".into()];
+        assert_eq!(controller_plan(&inp).unwrap().lists["gw0"].len(), 12);
     }
 
     #[test]

@@ -906,6 +906,7 @@ class ProofCachePlugin:
             sess.compare_verified()
             sess.write_receipts(self.store)
             self._shared_push()
+            self._write_quarantine()
             return
         t0 = _perf()
         try:
@@ -923,6 +924,38 @@ class ProofCachePlugin:
         sess.compare_verified()
         sess.write_receipts(self.store)
         self._shared_push()
+        self._write_quarantine()
+
+    # refusals that are not a test's own non-file inputs (those of an earlier test, a file another test wrote, a code
+    # change during the session). A test that did not pass is quarantined too: its flags are not evaluated (it is
+    # not recorded) but carried into the tests after it
+    _NOT_QUARANTINED = ("after an earlier test", "reads a file another test", "source changed")
+
+    def _write_quarantine(self) -> None:
+        """The tests this session refused for inputs of their own that are not files (a network connection, a
+        process-state read, ...): the next ``-n`` plan runs their atoms on a worker of their own, so that no other
+        test of a worker carries their refusal (the carried-set rule; ``schedule::ControllerInput::quarantine``)."""
+        try:
+            nc = self.sess.outcomes_data(self.cap).get("not_cached_ids") or {}
+            # cumulative while refused: a quarantined test refused for a carried input (it runs after another
+            # quarantined one) stays, else it would leave the quarantine worker and carry the refusal back out; one
+            # that is recorded (or not run) leaves it
+            prev = set(self.quarantine())
+            ids = sorted(n for n, why in nc.items() if n in prev or not str(why).startswith(self._NOT_QUARANTINED))
+            os.makedirs(self.dir, exist_ok=True)
+            tmp = os.path.join(self.dir, f"quarantine.json.{os.getpid()}")
+            with open(tmp, "w") as fh:
+                json.dump({"run": self.run_id, "tests": ids}, fh)
+            os.replace(tmp, os.path.join(self.dir, "quarantine.json"))
+        except Exception:
+            pass
+
+    def quarantine(self) -> list:
+        try:
+            with open(os.path.join(self.dir, "quarantine.json")) as fh:
+                return list(json.load(fh).get("tests") or ())
+        except (OSError, ValueError, AttributeError):
+            return []
 
     def _facts(self, rels, cache: dict) -> None:
         """Store index of the facts of the current version of every file in ``rels`` not in ``cache`` (new versions
