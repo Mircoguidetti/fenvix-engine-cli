@@ -864,8 +864,17 @@ class Capture {
   }
 
   // -- code ----------------------------------------------------------------------------------------------------
-  module(file) {
+  module(file, dlopened = false) {
     if (!file || typeof file !== 'string') return;
+    // a native addon in the test's own module registry (Vitest's graph, Jest's registries): native code reads files,
+    // the environment and the clock where no wrapper sees it, so the tests of its process are never reused (row
+    // JS-09). An addon reached through Node's loader is attributed at process.dlopen, by its caller (runners and
+    // tools load their own bindings); its bytes stay keyed either way.
+    if (!dlopened && /\.node(?:$|[?#])/i.test(file) && !this.isGlobal) {
+      let f = file.split(/[?#]/)[0];
+      if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { /* keep */ } }
+      if (!TOOL_BINDING.test(f)) this.add(['flag', 'native', `native addon ${this.inRoot(f) ? this.rel(f) : f}`], false);
+    }
     // the same key again (every test end rescans the module registries): nothing to do
     if (this.modsRaw.has(file)) return;
     this.modsRaw.add(file);
@@ -877,6 +886,9 @@ class Capture {
     if (!path.isAbsolute(f) || f.includes('\0')) return;
     if (this.modsSeen.has(f)) return;
     this.modsSeen.add(f);
+    // a native addon loaded for the code under test (not one of the runner's or its tools' own bindings): native
+    // code reads files, the environment and the clock where no wrapper sees it, so the tests of its process are
+    // never reused (row JS-09; its bytes stay keyed for the processes that load it only as infrastructure)
     const w = this.where(f);
     if (w === 'skip' || w === 'proc') return;
     this.busy++;
@@ -971,9 +983,9 @@ class Capture {
     if (map) for (const m of map.values()) this.module(m.file || m.id);
     if (mc && typeof mc.keys === 'function') for (const k of mc.keys()) this.module(k);
     try {
-      for (const k in require.cache) this.module(k);
+      for (const k in require.cache) this.module(k, true); // Node's own loader: a native addon is attributed at dlopen
     } catch { /* no cache */ }
-    for (const f of this.nativeLoads) this.module(f);
+    for (const f of this.nativeLoads) this.module(f, true);
     if (extra) for (const f of extra) this.module(f);
     this.lastScan = sig;
   }
@@ -1755,6 +1767,8 @@ function installRealClock(cap) {
   };
   for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
   STATE.onRealClock = real;
+  // a Level 0 control that could not be installed in a realm (src/controls.js): its source is real and unrecorded
+  STATE.onLevel0Gap = (what) => { if (cap.active && !cap.isGlobal) cap.flag('level0-gap', what); };
   // Temporal.Now (Deno; any runtime that has it): the real clock, which Level 0 does not virtualize (review R-032b
   // F5). timeZoneId() reads the time zone, which is part of the runtime identity, not the clock
   const TN = globalThis.Temporal && globalThis.Temporal.Now;
@@ -1814,10 +1828,29 @@ function installBinding(cap) {
   });
 }
 
+// Native bindings of the runners and their tools (resolvers, bundlers, transformers, watchers): loaded for the runner,
+// not for the code under test. Every other addon loaded in a test process counts as the test's (row JS-09: such a
+// test is never reused); a binding missing here costs reuse, never correctness.
+const TOOL_BINDING = new RegExp(`${INFRA.source}|[\\\\/]node_modules[\\\\/](?:\\.pnpm[\\\\/][^\\\\/]+[\\\\/]node_modules[\\\\/])?(?:@unrs|unrs-resolver|@rollup|rollup|@rolldown|rolldown|@oxc-[a-z-]+|oxc-[a-z-]+|@oxc-parser|lightningcss[a-z-]*|@parcel[\\\\/]watcher|fsevents|@esbuild|esbuild|@swc[a-z-]*|@napi-rs)[\\\\/@]`);
+
 function installDlopen(cap) {
   wrapFn(cap, process, 'dlopen', (a) => {
     const f = a[1];
-    if (typeof f === 'string') cap.nativeLoads.add(f);
+    if (typeof f !== 'string') return;
+    cap.nativeLoads.add(f);
+    if (!cap.active || cap.busy || cap.isGlobal) return;
+    if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+  });
+  // process.dlopen runs once per process (or thread) and addon: a later file of the same process that loads it again
+  // gets Node's require cache (Jest in band requires `.node` files with the host's require). Every load request of a
+  // `.node` file counts, cached or not.
+  const M = require('node:module');
+  wrapFn(cap, M, '_load', (a) => {
+    const req = a[0];
+    if (typeof req !== 'string' || !/\.node$/i.test(req) || !cap.active || cap.isGlobal) return;
+    const parent = a[1];
+    const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
+    if (!TOOL_BINDING.test(f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
   });
 }
 

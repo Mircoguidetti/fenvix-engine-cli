@@ -139,8 +139,16 @@ function randomFillSync(buf, offset, size) {
   return out;
 }
 
+// Async forms (callback): the value is drawn (and recorded) at the call, the callback runs on a later tick, as the
+// real API does (audit G-0133, G-0132: they bypassed the control and the trace).
 function randomInt(min, max, cb) {
-  if (typeof max === 'function' || typeof cb === 'function') return real.randomInt(min, max, cb);
+  if (typeof max === 'function') { cb = max; max = min; min = 0; }
+  if (typeof cb === 'function') {
+    if (max === undefined) real.randomInt(min); else real.randomInt(min, max); // argument validation, thrown synchronously
+    const v = max === undefined ? randomInt(min) : randomInt(min, max);
+    process.nextTick(cb, null, v);
+    return undefined;
+  }
   if (STATE.config.urandom) {
     if (max === undefined) { max = min; min = 0; }
     const range = max - min;
@@ -151,6 +159,14 @@ function randomInt(min, max, cb) {
   const v = real.randomInt(min, max);
   STATE.record('entropy', 'crypto.randomInt', String(v));
   return v;
+}
+
+function randomFill(buf, offset, size, cb) {
+  if (typeof offset === 'function') { cb = offset; offset = undefined; size = undefined; } else if (typeof size === 'function') { cb = size; size = undefined; }
+  if (typeof cb !== 'function') return real.randomFill(buf, offset, size, cb); // the real API's own error
+  randomFillSync(buf, offset, size);
+  process.nextTick(cb, null, buf);
+  return undefined;
 }
 
 function observe(op, buf) {
@@ -177,6 +193,7 @@ function installProcess(patcher, cfg) {
   patcher.set(nodeCrypto, 'randomBytes', randomBytes);
   patcher.set(nodeCrypto, 'pseudoRandomBytes', randomBytes);
   patcher.set(nodeCrypto, 'randomFillSync', randomFillSync);
+  patcher.set(nodeCrypto, 'randomFill', randomFill);
   patcher.set(nodeCrypto, 'randomInt', randomInt);
   if (nodeCrypto.webcrypto) {
     patcher.define(nodeCrypto.webcrypto, 'getRandomValues', getRandomValues);

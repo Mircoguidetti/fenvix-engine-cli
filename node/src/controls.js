@@ -34,6 +34,8 @@ function installProcess() {
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
+  // worker threads, child processes and vm contexts started by tests (src/children.js)
+  require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
   // are separate bindings: bring them in line with the patched objects.
   require('node:module').syncBuiltinESMExports();
@@ -42,22 +44,47 @@ function installProcess() {
 }
 
 /** Install the realm controls (globals of one realm: Math, Date, timers, crypto). */
-function installRealm(g, { sameRealm }) {
+function installRealm(g, { sameRealm, vm = false }) {
   const c = cfg();
   if (!c.active) return;
-  sites.setRealmError(g.Error);
+  if (!vm) sites.setRealmError(g.Error); // a vm context of the code under test is not the test realm
   if (realms.has(g)) return;
   realms.add(g);
-  // Fail-soft: a realm whose globals cannot be replaced keeps them (noted).
+  // A realm whose globals cannot be replaced keeps them: never silently (audit G-0181). The gap is noted in the
+  // trace header, printed once, recorded as an `uncontrolled.level0` event in every later test of the process (the
+  // verifier does not call such a test identical) and the cache does not reuse those tests.
+  const failedBefore = PATCHER.failed.length;
   for (const [name, mod] of [['seeds', seeds], ['time', clock]]) {
     if (!c.controls.has(name)) continue;
     try {
       mod.installRealm(PATCHER, g, c, { sameRealm });
     } catch (e) {
-      STATE.notes.push(`${name}: realm installation failed: ${e && e.message}`);
+      level0Gap(`${name}: realm installation failed: ${e && e.message}`, vm);
     }
   }
-  if (PATCHER.failed.length) STATE.notes.push(`not replaceable: ${[...new Set(PATCHER.failed)].join(',')}`);
+  if (PATCHER.failed.length > failedBefore) level0Gap(`not replaceable: ${[...new Set(PATCHER.failed.slice(failedBefore))].join(',')}`, vm);
+}
+
+const GAPS = new Set();
+function level0Gap(what, vm) {
+  STATE.notes.push(what);
+  if (vm) {
+    // a vm context of the code under test: only the running test is concerned
+    if (STATE.testId !== null) STATE.recordAt('other', 'uncontrolled.level0', '<detjs>', what);
+    if (STATE.onLevel0Gap) STATE.onLevel0Gap(what);
+    return;
+  }
+  if (GAPS.has(what)) return;
+  GAPS.add(what);
+  process.stderr.write(`detjs: WARNING: a Level 0 control could not be installed (${what}); the tests of this process are marked uncontrolled and never reused by the cache\n`);
+  if (STATE.onLevel0Gap) STATE.onLevel0Gap(what);
+  if (!STATE.__gapHooked) {
+    STATE.__gapHooked = true;
+    STATE.onTestStart.push(() => {
+      for (const w of GAPS) STATE.recordAt('other', 'uncontrolled.level0', '<detjs>', w);
+      if (STATE.onLevel0Gap) for (const w of GAPS) STATE.onLevel0Gap(w);
+    });
+  }
 }
 
 function stableName(s) {

@@ -43,11 +43,19 @@ pub const UNCACHEABLE: &[(&str, &str)] = &[
     ("keygen", "OS randomness drawn in native crypto (key generation, randomized encryption or signatures)"),
     ("preload", "a preload module read the clock or OS entropy before Level 0 was installed"),
     ("loader", "an off-thread module loader (--loader, module.register): what it reads is not observable"),
+    // row JS-09: native code reads files, the environment and the clock where no wrapper sees it
+    ("native", "loads a native addon (its reads are not observable)"),
+    // audit G-0181: a control that could not be installed leaves its source real and unrecorded
+    ("level0-gap", "a Level 0 control could not be installed"),
 ];
+
+/// A flag a shell reports that this table does not know: never ignored (a source the engine cannot attribute
+/// refuses reuse).
+const UNKNOWN_FLAG: &str = "an input the engine cannot key";
 
 /// The description of an uncacheable flag (None: the flag does not refuse caching).
 pub fn uncacheable_flag(flag: &str) -> Option<&'static str> {
-    UNCACHEABLE.iter().find(|(f, _)| *f == flag).map(|(_, d)| *d)
+    Some(UNCACHEABLE.iter().find(|(f, _)| *f == flag).map(|(_, d)| *d).unwrap_or(UNKNOWN_FLAG))
 }
 
 /// The outcome rule and the flag rule: why a result with `outcome` and these flags (in their order of first

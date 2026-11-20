@@ -163,3 +163,138 @@ test('clocks', async () => {
     });
   });
 }
+
+// -- JS-09 and the processes family: native addons, worker_threads, child_process, vm contexts (G-0124, G-0125,
+// G-0134, G-0152), async crypto (G-0132, G-0133), control installation (G-0181) -----------------------------------
+const ADDON = path.join(__dirname, '..', `detjs.${process.platform}-${process.arch}.node`);
+const REQ = {
+  vitest: "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url); const cp = require('node:child_process'); const wt = require('node:worker_threads'); const vm = require('node:vm'); const nodeCrypto = require('node:crypto');",
+  jest: "const cp = require('node:child_process'); const wt = require('node:worker_threads'); const vm = require('node:vm'); const nodeCrypto = require('node:crypto');",
+};
+const evOps = (t) => Object.values(t.tests).flatMap((x) => (x.events || []).map((e) => (Array.isArray(e) ? e[1] : e.op)));
+
+function traceEvents(dir) {
+  const lines = fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+  const out = {};
+  for (const l of lines) if (l.type === 'event' || l.op) (out[l.nodeid || l.test || '?'] = out[l.nodeid || l.test || '?'] || []).push(l);
+  return lines;
+}
+
+function notReused(runner, dir, file, why) {
+  const r1 = run(runner, dir);
+  assert.equal(r1.status, 0, `run 1 must pass (the source runs)\n${show(r1)}`);
+  const r2 = run(runner, dir);
+  assert.equal(r2.status, 0, show(r2));
+  assert.ok(!reused(r2).includes(file), `${file} must never be reused\n${show(r2)}`);
+  const detail = JSON.stringify(r1.summary && r1.summary.not_cached_detail);
+  assert.ok(detail.includes(why), `not cached because of ${why}: ${detail}`);
+  return { r1, r2 };
+}
+
+for (const runner of RUNNERS) {
+  describe(`${runner}: JS-09 native addons, worker threads, child processes`, () => {
+    test('a test that loads a native addon runs and is never reused', T, () => {
+      const dir = proj(runner, 'native', {
+        a: `${REQ[runner]}\ntest('addon', () => { const a = require('../addon.node'); expect(typeof a.digest(Buffer.from('x'))).toBe('string'); });`,
+        b: "test('plain', () => { expect(1).toBe(1); });",
+        c: `${REQ[runner]}\ntest('same addon again', () => { const a = require('../addon.node'); expect(typeof a.digest(Buffer.from('y'))).toBe('string'); });`,
+      });
+      fs.copyFileSync(ADDON, path.join(dir, 'addon.node'));
+      const { r2 } = notReused(runner, dir, fileOf(runner, 'a'), 'native addon');
+      assert.ok(!reused(r2).includes(fileOf(runner, 'c')), `a second file loading the same addon is never reused either\n${show(r2)}`);
+      const r3 = run(runner, dir);
+      assert.ok(reused(r3).includes(fileOf(runner, 'b')), `the other file is reused\n${show(r3)}`);
+    });
+
+    test('worker_threads: the worker runs under Level 0 (seeded, virtual clock); never reused; uncontrolled.thread recorded', T, () => {
+      const dir = proj(runner, 'worker', {
+        a: `${REQ[runner]}\n${PUT}
+test('worker', async () => {
+  const code = "const { parentPort } = require('node:worker_threads'); parentPort.postMessage([Math.random(), Date.now(), require('node:crypto').randomUUID()].join('|'));";
+  const v = await new Promise((res, rej) => { const w = new wt.Worker(code, { eval: true }); w.once('message', res); w.once('error', rej); });
+  put('worker', v);
+});`,
+      });
+      const vals = [];
+      for (let i = 0; i < 2; i++) {
+        const r = run(runner, dir, [], { cache: false });
+        assert.equal(r.status, 0, show(r));
+        vals.push(got(dir, 'worker'));
+        fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, `run${i}.jsonl`));
+      }
+      assert.equal(vals[0], vals[1], 'the worker is controlled: same values in two runs');
+      assert.match(vals[0], /\|1735689600\d{3}\|/, `the worker's clock is virtual: ${vals[0]}`);
+      const text = fs.readFileSync(path.join(dir, 'run0.jsonl'), 'utf8');
+      assert.match(text, /uncontrolled\.thread/);
+      assert.match(text, /worker\.message/);
+      notReused(runner, dir, fileOf(runner, 'a'), 'worker thread');
+    });
+
+    test('child_process: it runs; never reused; its result is in the trace, so a different output diverges', T, () => {
+      const dir = proj(runner, 'child', {
+        a: `${REQ[runner]}\n${PUT}
+test('child', () => {
+  const out = cp.execFileSync(process.execPath, ['-e', 'process.stdout.write(require("node:fs").readFileSync("data.txt", "utf8"))'], { encoding: 'utf8' });
+  put('child', out);
+  expect(out.length).toBeGreaterThan(0);
+});`,
+      });
+      fs.writeFileSync(path.join(dir, 'data.txt'), 'one');
+      const r1 = run(runner, dir, [], { cache: false });
+      assert.equal(r1.status, 0, show(r1));
+      fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), path.join(dir, 'one.jsonl'));
+      const text = fs.readFileSync(path.join(dir, 'one.jsonl'), 'utf8');
+      assert.match(text, /uncontrolled\.child/);
+      assert.match(text, /child\.result/);
+      fs.writeFileSync(path.join(dir, 'data.txt'), 'two');
+      const r2 = run(runner, dir, [], { cache: false });
+      assert.equal(r2.status, 0, show(r2));
+      const rep = JSON.parse(native.verify([path.join(dir, 'one.jsonl'), path.join(dir, '.detjs', 'trace.jsonl')]));
+      assert.equal(rep.summary.stable, 0, `the child's different output is a divergence: ${JSON.stringify(rep.summary)}`);
+      notReused(runner, dir, fileOf(runner, 'a'), 'subprocess');
+    });
+
+    test('G-0134: vm contexts created by a test get the realm controls', T, () => {
+      const dir = proj(runner, 'vm', {
+        a: `${REQ[runner]}\n${PUT}
+test('vm', () => {
+  put('vm', vm.runInNewContext('[Math.random(), Date.now(), new Date().toISOString()].join("|")'));
+  const ctx = vm.createContext({});
+  put('vm2', vm.runInContext('Math.random() + "|" + typeof setTimeout', ctx));
+});`,
+      });
+      const vals = [];
+      for (let i = 0; i < 2; i++) {
+        const r = run(runner, dir, [], { cache: false });
+        assert.equal(r.status, 0, show(r));
+        vals.push([got(dir, 'vm'), got(dir, 'vm2')]);
+      }
+      assert.deepEqual(vals[0], vals[1]);
+      assert.match(vals[0][0], /\|2025-01-01T00:00:00\.\d{3}Z$/);
+      assert.match(vals[0][1], /\|undefined$/, 'a bare context gets no timers');
+    });
+
+    test('G-0132 G-0133: async crypto.randomFill / randomInt(cb) are controlled (--det-urandom) and recorded', T, () => {
+      const dir = proj(runner, 'crypto-async', {
+        a: `${REQ[runner]}\n${PUT}
+test('async entropy', async () => {
+  const b = await new Promise((res, rej) => nodeCrypto.randomFill(Buffer.alloc(8), (e, x) => (e ? rej(e) : res(x.toString('hex')))));
+  const i = await new Promise((res, rej) => nodeCrypto.randomInt(1000000, (e, x) => (e ? rej(e) : res(x))));
+  put('rnd', b + '|' + i);
+});`,
+      });
+      const vals = [];
+      for (let i = 0; i < 2; i++) {
+        const r = run(runner, dir, [], { cache: false, det: ['--det', '--det-urandom'] });
+        assert.equal(r.status, 0, show(r));
+        vals.push(got(dir, 'rnd'));
+      }
+      assert.equal(vals[0], vals[1], 'controlled with --det-urandom');
+      const r = run(runner, dir, [], { cache: false });
+      assert.equal(r.status, 0, show(r));
+      const text = fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8');
+      assert.match(text, /crypto\.randomFillSync|crypto\.randomFill/);
+      assert.match(text, /crypto\.randomInt/);
+    });
+  });
+}

@@ -588,8 +588,8 @@ function wrapPerformance(hostPerf) {
       Object.defineProperty(out, k, { value: hostPerf[k].bind(hostPerf), writable: true, configurable: true });
     }
   }
-  out.mark = wrapMark(out.mark);
-  out.measure = wrapMeasure(out.measure);
+  if (typeof out.mark === 'function') out.mark = wrapMark(out.mark);
+  if (typeof out.measure === 'function') out.measure = wrapMeasure(out.measure);
   Object.defineProperty(out, 'timeOrigin', { get: timeOrigin, enumerable: true });
   Object.defineProperty(out, 'nodeTiming', { get: () => hostPerf.nodeTiming });
   Object.defineProperty(out, 'now', { value: performanceNow, writable: true, configurable: true, enumerable: true });
@@ -658,6 +658,7 @@ function installRealm(patcher, g, cfg, { sameRealm }) {
     }
     const T = sameRealm ? TIMERS : makeTimers(R);
     for (const k of Object.keys(T)) {
+      if (typeof g[k] !== 'function') continue; // a bare vm context has no timers: none are added
       Object.defineProperty(T[k], '__detjs', { value: true });
       patcher.set(g, k, T[k]);
     }
