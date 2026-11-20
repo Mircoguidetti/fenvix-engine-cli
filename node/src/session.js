@@ -1,5 +1,4 @@
 'use strict';
-if (process.env.DETJS_DEBUG_UNDICI) require('/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/nodeB/trap.cjs');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.
@@ -159,6 +158,16 @@ function prepare(opts, root, runner) {
   // the main process (globalSetup, start-up code): external connections closed, recorded or replayed (G-1419)
   if (cfg.active && cfg.controls.has('net')) {
     try { require('./network').installStartup(new (require('./patch').Patcher)(), cfg); } catch (e) { process.stderr.write(`detjs: WARNING: the network control could not be installed in the main process: ${e && e.message}\n`); }
+  }
+  // Jest runs the tests in this process, and its test environment loads Node's bundled undici (it copies the
+  // global descriptors) before the detjs test runner installs Level 0; from Node 24 undici keeps the
+  // `crypto.randomFillSync` / `randomInt` it finds when it loads (WebSocket masks, FormData boundaries). The OS entropy
+  // controls are installed now, so that what undici keeps is detjs' (G-1421, G-1426).
+  if (runner === 'jest' && cfg.active && cfg.controls.has('seeds')) {
+    try {
+      const controls = require('./controls');
+      require('./seeds').installProcess(controls.PATCHER, controls.cfg());
+    } catch (e) { process.stderr.write(`detjs: WARNING: the entropy control could not be installed early: ${e && e.message}\n`); }
   }
   return run;
 }
