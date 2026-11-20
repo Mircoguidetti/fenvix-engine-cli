@@ -767,7 +767,8 @@ class Capture:
         if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
-            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
+            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep or \
+                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", (os.environ.get("TMPDIR") or "\0").rstrip(os.sep)):
                 return
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)
@@ -945,7 +946,7 @@ class Capture:
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
             if name is None:
-                if self._caller_kind() == "user":  # CDLL(None): the program's symbols (review R-032b F3)
+                if self._caller_kind() == "user" and _caller_in_repo(self):  # CDLL(None) (review R-032b F3)
                     self.flag(self._cur(), "cdll", "<the program's symbols>")
                 return
             if "/" in str(name):  # LIMITS A2/K2: a library opened by path is an input by content, whoever opens it
@@ -956,7 +957,7 @@ class Capture:
                 return
             # review R-032b F3: a C library outside the repository called directly: its reads are not observed
             ap = self._abs(name) if "/" in str(name) else None
-            if not (ap is not None and ap.startswith(self.root_sep)):
+            if not (ap is not None and ap.startswith(self.root_sep)) and _caller_in_repo(self):
                 self.flag(self._cur(), "cdll", str(name))
             n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
             if n is None:
@@ -2352,6 +2353,7 @@ def _process_state(p):
 
 
 _FLAG_OF = {"native code from the repository": "native",
+            "reads a file's modification, change or access time (not an input the cache keys)": "mtime",
             "calls a C library through ctypes (its file, clock and environment reads are not observed)": "cdll", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
@@ -2558,9 +2560,26 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "reads this process's state under /proc (descriptors, status counters, threads)"
     if "native" in flags:
         return "native code from the repository"
+    if "mtime" in flags:
+        return "reads a file's modification, change or access time (not an input the cache keys)"
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
+
+
+def _caller_in_repo(cap) -> bool:
+    """CaptureCore::caller_in_repo: the first frame outside detpy and the standard library is repository code."""
+    import sysconfig
+
+    std = sysconfig.get_paths()["stdlib"] + os.sep
+    f = _getframe(1)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if fn.startswith("<frozen") or fn.startswith(_DETPY_DIR) or fn.startswith(std):
+            f = f.f_back
+            continue
+        return os.path.realpath(fn).startswith(cap.root_sep) and "site-packages" not in fn
+    return False
 
 
 _MODMAP: dict = {}

@@ -52,7 +52,8 @@ jobs:
   python:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    # serial on purpose: some suites change the interpreter's site-packages (R-019c E9/E10) and cannot share it
+    timeout-minutes: 240
     strategy:
       fail-fast: false
       matrix:
@@ -67,7 +68,7 @@ jobs:
       - run: pip install pytest pytest-xdist && pip install --no-deps dist/detpy-*.whl
       - name: Python suites and reviewer test files
         run: |
-          python -m pytest -q -n 4 -p no:randomly --junitxml=py-${{ matrix.python }}.xml tests test_review_results.py 2>&1 | tee py-${{ matrix.python }}.log | tail -60
+          python -m pytest -q -p no:randomly --junitxml=py-${{ matrix.python }}.xml tests test_review_results.py 2>&1 | tee py-${{ matrix.python }}.log | tail -60
           exit ${PIPESTATUS[0]}
       - uses: actions/upload-artifact@v4
         if: always()

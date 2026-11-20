@@ -264,6 +264,7 @@ fn flag_of(why: &[u8]) -> Option<&'static str> {
         b"reads /proc, /sys or /dev" => "proc",
         b"reads this process's state under /proc (descriptors, status counters, threads)" => "pstate",
         b"native code from the repository" => "native",
+        b"reads a file's modification, change or access time (not an input the cache keys)" => "mtime",
         b"calls a C library through ctypes (its file, clock and environment reads are not observed)" => "cdll",
         _ => return None,
     })

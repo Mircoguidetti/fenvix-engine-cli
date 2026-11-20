@@ -260,6 +260,20 @@ def cache_run(pytester, n, label, *args):
     return r, data.get("cache", {}), rc
 
 
+def after_worker_reader(pytester):
+    """The worker-id reader and the tests after it in the serial order or on its worker in the last -n plan: they carry its
+    PYTEST_XDIST_WORKER read (review R-032b F1: a test that reaches modules outside the repository carries every
+    earlier context of its process), so an entry of the other mode, with another value, is not theirs."""
+    # in the serial session: the tests after it in the serial order (test_d's; they import only pytest, but carry
+    # the earlier contexts that reach outside the repository)
+    out = {"tests/test_c.py::test_worker", "tests/test_d.py::test_g2", "tests/test_d.py::test_g3"}
+    plan = json.loads((pytester.path / ".detpy" / "plan.json").read_text())
+    for lst in plan["lists"].values():
+        if "tests/test_c.py::test_worker" in lst:
+            out |= set(lst[lst.index("tests/test_c.py::test_worker"):])
+    return out
+
+
 def receipts(path):
     return [json.loads(line) for line in open(path) if line.strip()]
 
@@ -312,10 +326,12 @@ def test_serial_and_parallel_sessions_take_the_same_decisions(pytester):
     r.assert_outcomes(passed=N_SUITE)
     _, ser, rc_ser = cache_run(pytester, 0, "warm-serial", "tests")
     _, par, rc_par = cache_run(pytester, 2, "warm-par", "tests")
-    assert set(ser["reused_ids"]) - {"tests/test_c.py::test_worker"} == set(par["reused_ids"])
-    # the test that reads its worker id is not reused from a serial entry under -n (its value differs)
+    # the test that reads its worker id is not reused from a serial entry under -n (its value differs), nor the
+    # tests after it on its worker (they carry the read)
+    after = after_worker_reader(pytester)
+    assert set(ser["reused_ids"]) - after == set(par["reused_ids"])
     assert "tests/test_c.py::test_worker" not in par["reused_ids"]
-    assert len(par["reused_ids"]) == N_SUITE - 1
+    assert len(par["reused_ids"]) == N_SUITE - len(after)
     # receipts come from the controller and cover every test
     assert len(receipts(rc_par)) == N_SUITE
 
@@ -339,8 +355,9 @@ def test_a_store_written_under_n_is_not_reused_serially_and_receipts_are_stable(
     _, ser2, _ = cache_run(pytester, 0, "serial2", "tests")
     assert len(ser2["reused_ids"]) == N_SUITE
     _, par, _ = cache_run(pytester, 2, "par-on-serial", "tests")
-    # serial entries serve a parallel run (the worker-id reader excepted: its recorded value is unset)
-    assert set(par["reused_ids"]) == set(ser2["reused_ids"]) - {"tests/test_c.py::test_worker"}
+    # serial entries serve a parallel run (the worker-id reader and the tests after it on its worker excepted:
+    # its recorded value is unset)
+    assert set(par["reused_ids"]) == set(ser2["reused_ids"]) - after_worker_reader(pytester)
 
 
 @needs_cache
