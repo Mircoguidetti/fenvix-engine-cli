@@ -1,0 +1,12 @@
+....................ss................................................ss [ 51%]
+..........ss........................s.............sss................    [100%]
+=========================== short test summary info ============================
+SKIPPED [2] tests/test_review_r023c.py:311: out of go-live scope
+SKIPPED [2] tests/test_review_r023b.py:566: HOSTALIASES not honoured for this name here
+SKIPPED [2] tests/test_review_r023b.py:847: the first requester does not change the value here
+SKIPPED [1] tests/review_r032b/test_review_r032b_python.py:58: could not import 'nose2': No module named 'nose2'
+SKIPPED [1] tests/review_r032b/test_review_r032b_python.py:235: could not import 'zope.testrunner': No module named 'zope'
+SKIPPED [1] tests/review_r032b/test_review_r032b_python.py:252: could not import 'django': No module named 'django'
+SKIPPED [1] tests/review_r032b/test_review_r032b_python.py:272: could not import 'ward': No module named 'ward'
+131 passed, 10 skipped in 573.72s (0:09:33)
+EXIT 0
