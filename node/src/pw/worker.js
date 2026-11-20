@@ -1274,6 +1274,18 @@ if (LOCKSTEP) {
   });
   LS.navPending = NAV.pending;
   LS.extraWaiting = () => NODE_FETCH.inflight;
+  if (LS.multi && ENV.DETJS_LS_DB_GATE !== '0') {
+    require('../prisma').setGate(async (p, runIt) => {
+      const key = currentKey();
+      if (!key) return runIt();
+      const item = { kind: 'db', test: key, method: String(p.action || '?'), target: String(p.model || '-'), bodyDigest: '-' };
+      NODE_FETCH.inflight++;
+      let done;
+      try { done = await enqueue(item); } catch (e) { NODE_FETCH.inflight--; throw e; }
+      rec(key, 'net', 'db.request', `${item.method} ${item.target}`);
+      try { return await runIt(); } finally { NODE_FETCH.inflight--; done(); }
+    });
+  }
   patchNodeFetch();
 }
 installWorkerSeeds();

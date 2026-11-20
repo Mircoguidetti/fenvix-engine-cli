@@ -90,6 +90,7 @@ function patchClientClass(C) {
         fill(this._runtimeDataModel, params.model, params.action, params.args);
       }
     } catch { /* leave the request as it was */ }
+    if (GATE) return GATE(params || {}, () => orig.call(this, params));
     return orig.call(this, params);
   };
 }
@@ -117,6 +118,12 @@ function patchRuntime(exp) {
   try { exp.getPrismaClient = wrapped; } catch { /* frozen exports */ }
 }
 
+// Multi-worker lockstep (point 3): the test code's own database operations become engine messages (worker.js),
+// released in the scheduler's order across workers; otherwise rows that tests seed in parallel get ids and
+// timestamps in real-time order (MEASURED on documenso with 2 workers: envelope bodies differed between runs).
+let GATE = null;
+function setGate(fn) { GATE = fn; }
+
 let installed = false;
 function install() {
   if (installed || process.env.DETJS_PRISMA_CLOCK === '0') return;
@@ -131,4 +138,4 @@ function install() {
   };
 }
 
-module.exports = { install, fill, patchClientClass };
+module.exports = { install, fill, patchClientClass, setGate };
