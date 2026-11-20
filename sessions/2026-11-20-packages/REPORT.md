@@ -219,7 +219,6 @@ where known).
 | G-1497, G-1498, G-1544 cc / strace at run time | OTHER ROW (cache) | documented in docs/INSTALL.md |
 | G-1493, G-1494, G-1495 Go pid, gVisor, Docker-in-Docker | OUT / OTHER ROW | |
 | G-1503 replay across operating systems | OUT | |
-
 | PY-01 `detpy repro` on 3.14: the Rust path worded a missing test's error as CPython 3.12/3.13 do (`'missing::x' is not in list`), the reference raises 3.14's (`list.index(x): x not in list`); red on the trunk too (run 44714888645, job 136217550170) | FIXED | `repro_prefix_through` raises the interpreter's own `list.index` error; `test_repro_rust.py::test_prefix_through_missing_target_raises_this_interpreters_list_index_error`, `::test_prefix_through_matches_reference` (MEASURED locally: 3.14 19 passed, 3.13 passed) |
 
 Trunk failure not in these rows: `test_proofcache_follow.py::test_child_own_temporary_files_are_not_inputs` (fixed by
