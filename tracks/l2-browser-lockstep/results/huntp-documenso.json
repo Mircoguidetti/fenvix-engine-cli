@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "ok",
- "run_id": "44704657024",
- "engine_commit": "10ee65be9516c5e9315ec66a84a212e711fa473f",
- "setup_s": 320,
+ "run_id": "44717542771",
+ "engine_commit": "588ce5cf4ed0cb6c60e125e1be9b88abe903b0d2",
+ "setup_s": 293,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -29,8 +29,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T08:56:00Z",
- "measured_at": "2026-11-20T08:56:35Z",
+ "epoch": "2026-11-20T10:33:00Z",
+ "measured_at": "2026-11-20T10:33:48Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
   "seeds": 6,
@@ -44,44 +44,44 @@
     "tried": [
      [
       0,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "missing",
+      "",
       null
      ],
      [
       1,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       2,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       3,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       4,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       5,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       6,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ]
     ],
@@ -99,44 +99,44 @@
     "tried": [
      [
       0,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "missing",
+      "",
       null
      ],
      [
       1,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       2,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "missing",
+      "",
       null
      ],
      [
       3,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       4,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       5,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "missing",
+      "",
       null
      ],
      [
       6,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      "missing",
+      "",
       null
      ]
     ],
@@ -154,44 +154,44 @@
     "tried": [
      [
       0,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       1,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "missing",
+      "",
       null
      ],
      [
       2,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "missing",
+      "",
       null
      ],
      [
       3,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      "missing",
+      "",
       null
      ],
      [
       4,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "missing",
+      "",
       null
      ],
      [
       5,
-      "failed",
-      "PrismaClientKnownRequestError:",
+      "missing",
+      "",
       null
      ],
      [
       6,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
+      "missing",
+      "",
       null
      ]
     ],
@@ -209,44 +209,44 @@
     "tried": [
      [
       0,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       1,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       2,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       3,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       4,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       5,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       6,
-      "timedOut",
-      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      "missing",
+      "",
       null
      ]
     ],
@@ -264,44 +264,44 @@
     "tried": [
      [
       0,
-      "timedOut",
-      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      "missing",
+      "",
       null
      ],
      [
       1,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       2,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       3,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       4,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       5,
-      "passed",
+      "missing",
       "",
       null
      ],
      [
       6,
-      "timedOut",
-      "Test timeout of 60000ms exceeded while running \"beforeEach\" hook.",
+      "missing",
+      "",
       null
      ]
     ],
@@ -316,5 +316,5 @@
   "found_seed": 0,
   "n": 5
  },
- "elapsed_min": 74.9
+ "elapsed_min": 315.8
 }
