@@ -89,7 +89,22 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ## 2. What is not true
 
-__NOTTRUE__
+1. **Placement findings need an in-process result in the store.** A plain `--det` run without the cache records
+   nothing, so a test whose outcome differs only between that run and the per-file run (it relied on state another
+   file left in memory) is not reported until an in-process cached run (`--det-cache-in-process`) records it. The
+   review gates show the class: 11 of 101 gate cases (R-023, R-023b, R-023c) under the per-file default have
+   another outcome than in one process, by design.
+2. **Cold runs cost more than no cache.** esphome: 227 s cold against 60 s (4.3); the in-process mode's cold run
+   costs the same order (CI run f, esphome-inproc: 196-221 s against 67-71 s). The cost is recording (capture during
+   the test, ~1.7 ms of recording per test) and, per file, a fork. Warm runs are faster than no cache (4.3, 4.4).
+3. **Fast unit suites gain little.** A subset of 824 esphome tests that runs in 4 s without the cache: 4.4 s warm
+   (163 tests that cannot be cached or rerun with their file set the floor).
+4. **A process started inside a file's child is not followed**: its test is refused (PY-08 refuses it anyway); a
+   wider-scoped fixture that starts one in the parent is followed as before.
+5. **Receipts** name the changed configuration parts, not old and new values (the environment is stored as digests).
+6. **macOS** (Apple Silicon is in the go-live scope) is not exercised: the `other-os (macos-14)` job of the release-1
+   workflow is cancelled within a second on every run of this repository, trunk included (it has
+   `continue-on-error`); Linux x86_64 and arm64 run.
 
 ## 3. Audit gaps of these rows (audit 2026-11-20), one line each
 
