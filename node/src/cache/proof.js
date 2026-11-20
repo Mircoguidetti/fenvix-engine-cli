@@ -57,6 +57,7 @@ const UNCACHEABLE = {
   unobserved: 'the runtime reported an access the capture did not see',
   binding: 'reaches native bindings directly (process.binding): reads not observable',
   'clock-real': 'reads a clock Level 0 does not virtualize',
+  keygen: 'OS randomness drawn in native crypto (key generation, randomized encryption or signatures)',
   preload: 'a preload module read the clock or OS entropy before Level 0 was installed',
   loader: 'an off-thread module loader (--loader, module.register): what it reads is not observable',
 };

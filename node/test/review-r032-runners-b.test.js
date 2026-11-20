@@ -3,6 +3,7 @@
 // tap, AVA, Jasmine and uvu (shared helpers of runner-b-cases.js).
 // Run: cd node && node --test --test-concurrency=1 test/review-r032-runners-b.test.js
 const { test, describe } = require('node:test');
+const assert = require('node:assert/strict');
 const B = require('./runner-b-cases');
 
 const T = { timeout: 900000 };
@@ -14,7 +15,15 @@ for (const runner of ['tap', 'ava', 'jasmine', 'uvu']) {
         'lib/x.js': 'exports.v = 1;\n',
         ...B.tfile(runner, 'nt', "test('nt', () => { expect(require(path.resolve('lib/x.js')).v).toBe(1); });"),
       });
-      B.noWrongReuse(runner, dir, F('nt'), { 'lib/package.json': JSON.stringify({ type: 'module' }) });
+      const change = { 'lib/package.json': JSON.stringify({ type: 'module' }) };
+      if (runner !== 'tap') { B.noWrongReuse(runner, dir, F('nt'), change); return; }
+      // claude/all-runners-2: under tap the change does not alter the result (the review's "n/a": a fresh run still
+      // passes); the cached run must agree with a fresh one
+      assert.equal(B.crun(runner, dir).status, 0);
+      B.write(dir, change);
+      const fresh = B.crun(runner, dir, { cache: false });
+      const cached = B.crun(runner, dir);
+      assert.equal(cached.status, fresh.status, `cached run must agree with the fresh run\n${B.show(cached)}\n${B.show(fresh)}`);
     });
     test('N3b a workspace package.json "main" retargeted (both files exist)', T, () => {
       const dir = B.fixture(runner, 'r032-main', {

@@ -24,7 +24,11 @@ if (c.active && fileId && !globalThis[Symbol.for('detjs.deno.setup')]) {
   let cap = null;
   if (process.env.DETJS_CACHE === '1') {
     cap = require('../cache/capture').CAPTURE;
-    cap.install({ role: 'worker', root: c.root, mainAnyReads: false });
+    // Node loader hooks under Deno: the resolve hook only (failed resolutions, review R-032 D2). Deno's module graph
+    // comes from `deno info --json` (deno.js), and a load hook changed Deno's CommonJS detection (a file under a
+    // package.json with "type": "module" loaded as CommonJS: a pass under --det-cache where plain deno test and --det
+    // fail; MEASURED, claude/all-runners-2, test/all-runners-2-f6f7.test.js)
+    cap.install({ role: 'worker', root: c.root, mainAnyReads: false, hooks: 'resolve' });
     // DETJS_RUNTIME_NAIVE=1 (tests only): the shared Node capture alone, to measure what Deno's own capture adds
     if (process.env.DETJS_RUNTIME_NAIVE !== '1') runtime.installCapture(cap, notes, { wrappers: process.env.DETJS_DENO_WRAPPERS !== 'off' });
     for (const n of notes) cap.notes.add(n);
