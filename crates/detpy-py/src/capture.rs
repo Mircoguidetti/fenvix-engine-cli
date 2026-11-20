@@ -399,7 +399,7 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
-        if kind == b's' || kind == b'l' {
+        if kind == b's' || kind == b'l' || kind == b'z' {
             // an existence or kind check (os.stat / lstat / access, a module lookup): the path's kind is the input
             // (absent inputs: a file, conftest.py, module or __init__.py that appears later). The project root and
             // its ancestors are directories for the whole session.
@@ -422,6 +422,8 @@ fn process_state(p: &[u8]) -> bool {
                     // `os.lstat` (lexists, islink): the kind without following a final symlink (LIMITS K4)
                     let d = if kind == b'l' {
                         format!("l:{}", proof::lstat_kind(os_path(p))).into_bytes()
+                    } else if kind == b'z' {
+                        format!("z:{}", proof::size_kind(os_path(p))).into_bytes()
                     } else {
                         format!("s:{}", proof::stat_kind(os_path(p))).into_bytes()
                     };
@@ -434,7 +436,10 @@ fn process_state(p: &[u8]) -> bool {
                 self.data_order.push(ctx);
             }
             let m = self.data.entry(ctx).or_default();
-            if !m.idx.contains_key(&k) {
+            // a size (review R-032b F2) replaces a kind check of the same path; nothing replaces a stronger read
+            let upgrade = kind == b'z'
+                && m.idx.get(&k).is_some_and(|&i| m.items[i].1.starts_with(b"s:") || m.items[i].1.starts_with(b"l:"));
+            if !m.idx.contains_key(&k) || upgrade {
                 m.set(k, dep);
             }
             return None;
@@ -1309,6 +1314,11 @@ impl CaptureCore {
                 // LD_LIBRARY_PATH candidates are inputs.
                 let Some(name) = arg(0) else { return Ok(()) };
                 if name.is_none() {
+                    // CDLL(None): the program's own symbols, the C library among them (review R-032b F3)
+                    if self.caller_kind(py)? == Caller::User {
+                        let ctx = self.cur(py)?;
+                        self.flag_impl(py, ctx, b"cdll", Some(b"<the program's symbols>".to_vec()))?;
+                    }
                     return Ok(());
                 }
                 // LIMITS K2 (claude/dep-verdict-abjcfw): a library opened by path is an input by content even when it
@@ -1318,6 +1328,16 @@ impl CaptureCore {
                 }
                 if self.caller_kind(py)? != Caller::User {
                     return Ok(());
+                }
+                // review R-032b F3 (the R-021 F3 rule): a C library outside the repository that user code loads is
+                // called directly (libc's access, stat, open, getenv, time): its reads are not observed, the context
+                // is not cached. (A library from the repository is "native" above.)
+                let in_repo = self.abs(py, &name)?.is_some_and(|p| p.starts_with(&lock(&self.st).root_sep))
+                    && name.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false);
+                if !in_repo {
+                    let ctx = self.cur(py)?;
+                    let detail = name.str().map(|x| x.to_string_lossy().into_owned()).unwrap_or_default();
+                    self.flag_impl(py, ctx, b"cdll", Some(detail.into_bytes()))?;
                 }
                 let n: W = if let Ok(s) = name.cast::<PyString>() {
                     w_of(s)?
@@ -2122,8 +2142,8 @@ impl CaptureCore {
     /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
     /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
     /// final symlink (LIMITS K4).
-    #[pyo3(signature = (path, link=false))]
-    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
+    #[pyo3(signature = (path, link=false, sized=false))]
+    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool, sized: bool) -> PyResult<()> {
         if !self.active() {
             return Ok(());
         }
@@ -2134,7 +2154,7 @@ impl CaptureCore {
             return Ok(());
         }
         let ctx = self.cur(py)?;
-        self.read_impl(py, ctx, &p, if link { b'l' } else { b's' })
+        self.read_impl(py, ctx, &p, if link { b'l' } else if sized { b'z' } else { b's' })
     }
 
     /// A module lookup (`importlib`'s path finder, called from a finder in front of `sys.meta_path`): for module

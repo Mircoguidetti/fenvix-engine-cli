@@ -105,6 +105,99 @@ _PRELUDE = {_opcode.opmap[n] for n in ("MAKE_CELL", "COPY_FREE_VARS", "RETURN_GE
             if n in _opcode.opmap}
 
 
+# existence and kind checks that ask os.stat (their answer is the kind, not the size): genericpath, posixpath, pathlib,
+# glob, shutil
+_KIND_FUNCS = frozenset({"exists", "lexists", "isfile", "isdir", "islink", "ismount", "isjunction", "is_file", "is_dir",
+                         "is_symlink", "is_mount", "is_junction", "is_socket", "is_fifo", "is_block_device",
+                         "is_char_device", "samefile", "_lexists", "_isdir", "which", "_access_check", "isdevdrive"})
+_STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
+                                  "pathlib._abc", "glob", "shutil", "os"})
+
+
+def _kind_check_caller() -> bool:
+    """True when os.stat was called by an existence or kind check of the standard library."""
+    f = _getframe(2)
+    while f is not None:
+        mod = f.f_globals.get("__name__", "")
+        if mod not in _STDLIB_PATH_MODULES:
+            return False
+        if f.f_code.co_name in _KIND_FUNCS:
+            return True
+        f = f.f_back
+    return False
+
+
+class _ScandirEntry:
+    """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2)."""
+
+    __slots__ = ("_e", "_cap")
+
+    def __init__(self, e, cap):
+        self._e = e
+        self._cap = cap
+
+    def _check(self, sized, follow=True):
+        cap = self._cap
+        if cap._in_stat:
+            return
+        cap._in_stat = True
+        try:
+            cap.stat_check(self._e.path, not follow, sized and follow)
+        except Exception:
+            pass
+        finally:
+            cap._in_stat = False
+
+    def stat(self, *, follow_symlinks=True):
+        self._check(True, follow_symlinks)
+        return self._e.stat(follow_symlinks=follow_symlinks)
+
+    def is_file(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_file(follow_symlinks=follow_symlinks)
+
+    def is_dir(self, *, follow_symlinks=True):
+        self._check(False, follow_symlinks)
+        return self._e.is_dir(follow_symlinks=follow_symlinks)
+
+    def is_symlink(self):
+        self._check(False, False)
+        return self._e.is_symlink()
+
+    def __fspath__(self):
+        return self._e.__fspath__()
+
+    def __getattr__(self, name):
+        return getattr(self._e, name)
+
+    def __repr__(self):
+        return repr(self._e)
+
+
+class _ScandirIter:
+    __slots__ = ("_it", "_cap")
+
+    def __init__(self, it, cap):
+        self._it = it
+        self._cap = cap
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        return _ScandirEntry(next(self._it), self._cap)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        self._it.close()
+        return False
+
+    def close(self):
+        self._it.close()
+
+
 # ---------------------------------------------------------------------------
 class Capture(_core.CaptureCore):
     """Records, per context, executed code, data reads, environment reads and events.
@@ -210,7 +303,11 @@ class Capture(_core.CaptureCore):
                 if not cap._in_stat and not isinstance(path, int) and not kwargs.get("dir_fd"):
                     cap._in_stat = True
                     try:
-                        cap.stat_check(path, link or kwargs.get("follow_symlinks") is False)
+                        nolink = link or kwargs.get("follow_symlinks") is False
+                        # review R-032b F2: os.stat asked for its own sake (st_size: Path.stat(), os.stat(p)) is keyed
+                        # by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by the kind
+                        sized = name == "stat" and not nolink and not _kind_check_caller()
+                        cap.stat_check(path, nolink, sized)
                     except Exception:
                         pass
                     finally:
@@ -237,6 +334,26 @@ class Capture(_core.CaptureCore):
 
         for name in ("stat", "lstat", "access"):
             wrap(name)
+
+        # review R-032b F2: os.scandir's entries answer stat() without os.stat: user code iterating os.scandir gets
+        # entries whose stat() is keyed like os.stat (by size), whose is_file()/is_dir() like a kind check
+        orig_scandir = os.scandir
+
+        def scandir(path=".", *args, **kwargs):
+            it = orig_scandir(path, *args, **kwargs)
+            if isinstance(path, int) or cap._in_stat:
+                return it
+            try:
+                if cap._caller_kind() != "user":
+                    return it
+            except Exception:
+                return it
+            return _ScandirIter(it, cap)
+
+        scandir.__name__ = "scandir"
+        scandir.__wrapped__ = orig_scandir
+        self._stat_saved.append((os, "scandir", orig_scandir))
+        os.scandir = scandir
 
     def _installed(self, p: str) -> bool:
         """Whether a distribution's RECORD lists ``p`` (an installed wheel's library in an environment that lives

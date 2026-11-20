@@ -961,6 +961,12 @@ pub fn dist_identity(py: Python<'_>, path: PathBuf) -> Option<(String, String, S
     })
 }
 
+/// "file:<size>", "dir", "other" or "missing" (`detpy_core::proof::size_kind`, review R-032b F2).
+#[pyfunction]
+pub fn size_kind(path: PathBuf) -> String {
+    proof::size_kind(&path)
+}
+
 /// "file", "dir", "other" or "missing" (`detpy_core::proof::stat_kind`, follows symlinks).
 #[pyfunction]
 pub fn stat_kind(path: PathBuf) -> &'static str {
