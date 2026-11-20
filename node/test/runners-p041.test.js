@@ -448,7 +448,7 @@ export function body(name) {
       'vitest.config.mjs': "export default { test: { include: ['t/**/*.test.mjs'], isolate: process.env.ISO !== '0', poolOptions: { forks: { isolate: process.env.ISO !== '0' }, threads: { isolate: process.env.ISO !== '0' } } } };\n",
       'shared.mjs': 'export const state = { files: [] };\n',
       'out/.keep': '', // (a directory one file creates and the next reads makes that file not cached)
-      't/a.test.mjs': "import { test } from 'vitest'; import { state } from '../shared.mjs'; import fs from 'node:fs'; const mod = [Math.random(), Date.now()]; test('a', () => { state.files.push('a'); fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/a-' + process.env.ISO + '.json', JSON.stringify({ mod, now: Date.now() })); });\n",
+      't/a.test.mjs': "import { test } from 'vitest'; import { state } from '../shared.mjs'; import fs from 'node:fs'; const mod = [Math.random(), Date.now()]; test('a', async () => { await new Promise((r) => setTimeout(r, 30)); state.files.push('a'); fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/a-' + process.env.ISO + '.json', JSON.stringify({ mod, now: Date.now() })); });\n",
       't/b.test.mjs': "import { test, expect } from 'vitest'; import { state } from '../shared.mjs'; import fs from 'node:fs'; const mod = [Math.random(), Date.now()]; test('b', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/b-' + process.env.ISO + '.json', JSON.stringify({ mod, now: Date.now() })); if (process.env.ISO === '0') expect(state.files).toEqual(['a']); });\n",
       ...extra,
     });
@@ -472,6 +472,9 @@ export function body(name) {
       // a subset is another group: nothing reused
       const r3 = vrun(dir, ['t/b.test.mjs'], { cache: true, env });
       assert.ok(!reused(r3).includes('t/b.test.mjs'), show(r3));
+      // (the subset run re-recorded b under its own group: the full group runs once more, then is reused)
+      const r4a = vrun(dir, [], { cache: true, env });
+      assert.ok(!reused(r4a).includes('t/b.test.mjs'), show(r4a));
       // a changes the state b depends on: a fresh run of b fails; b must not be reused
       const r4 = vrun(dir, [], { cache: true, env });
       assert.deepEqual(reused(r4).sort(), ['t/a.test.mjs', 't/b.test.mjs'], show(r4));
