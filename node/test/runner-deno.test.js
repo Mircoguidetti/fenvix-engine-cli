@@ -246,7 +246,21 @@ describe('deno: wrong reuse (--det-cache)', { skip: SKIP }, () => {
     const dir = H.fixture(RT, 'written', {
       ...tf('a_writer', "Deno.test('w', () => { Deno.mkdirSync('out', { recursive: true }); Deno.writeTextFileSync('out/shared.txt', 'x'); });"),
       ...tf('b_reader', "Deno.test('r', () => { eq(Deno.readTextFileSync('out/shared.txt'), 'x'); });") });
-    H.neverReused(RT, dir, F('b_reader'), null, /another test file/);
+    // one process (the default): writer and reader are one unit, the write is the unit's own; a change of the
+    // writer reruns the reader
+    assert.equal(H.crun(RT, dir).status, 0);
+    assert.deepEqual(H.reused(H.crun(RT, dir)).sort(), [F('a_writer'), F('b_reader')]);
+    H.write(dir, tf('a_writer', "Deno.test('w', () => { Deno.mkdirSync('out', { recursive: true }); Deno.writeTextFileSync('out/shared.txt', 'y'); });"));
+    const u3 = H.crun(RT, dir);
+    assert.notEqual(u3.status, 0, H.show(u3));
+    assert.ok(!H.reused(u3).includes(F('b_reader')), H.show(u3));
+    H.write(dir, tf('a_writer', "Deno.test('w', () => { Deno.mkdirSync('out', { recursive: true }); Deno.writeTextFileSync('out/shared.txt', 'x'); });"));
+    // --det-isolate (a process per file): the reader is never reused
+    const i1 = H.crun(RT, dir, { args: ['--det-isolate'] });
+    assert.equal(i1.status, 0, H.show(i1));
+    const i2 = H.crun(RT, dir, { args: ['--det-isolate'] });
+    assert.ok(!H.reused(i2).includes(F('b_reader')), H.show(i2));
+    assert.match(JSON.stringify(i2.summary.not_cached_detail), /another test file/, H.show(i2));
   });
 
   test('persistent storage (localStorage): never reused', T, () => {
