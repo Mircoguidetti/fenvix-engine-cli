@@ -1,15 +1,32 @@
-PARTIAL — pending the final CI evidence (section 2); see section 0 for what is left.
+PARTIAL — the final CI round on 7e36c39 (full run 44804076830, light gate 44804078923) was started and not yet read: the coordinator's overnight budget rule stops this session before it ends (section 0).
 
 # Rows F-09 (the engine artifact for our machines), PY-01 (Python versions), JS-01 (Node versions)
 
-Session 2026-11-20, branch `claude/packages` (from `claude/release-1` @ 7d5a552), PR #2 into `claude/release-1`.
+Session 2026-11-20, branch `claude/packages` (from `claude/release-1` @ 7d5a552, merged with `claude/release-1` @
+71f8081 after PR #4), PR #2 into `claude/release-1`.
 Scope after the founder decision of 2026-11-20 (relayed by the coordinator): the go-live runs only on our machines;
 no PyPI/npm publishing, no macOS, no Linux arm64. F-10 (packages) became the single engine artifact of F-09.
 Numbers are MEASURED (with run id or command), ESTIMATED (with derivation), DECLARED (with source) or UNKNOWN.
 
 ## 0. Status
 
-(filled with the final CI run)
+Done in code, verified locally (section 2, "Local verification"), pushed once (7e36c39):
+- F-09: the versioned Linux x86_64 manylinux_2_28 engine artifact with sha256, published by full trunk runs as a
+  GitHub pre-release, pinned and fetched fail-closed by the runner image; the install test in clean containers.
+- PY-01: CPython 3.12/3.13/3.14 suites and install test; refusal below 3.12 (exit 4, one sentence); one `fenvix`
+  entry point (`detpy.fenvix`, after the merge with the trunk's product command).
+- JS-01: Node 22/24/26 suites and install test (the trunk's Node 26 job fixed).
+- The light/full CI rule (PR #6) and the failures of the last two full runs, each with its cause (section 3).
+
+What is missing for DONE:
+- **The final CI round has not been read**: full run 44804076830 (Python 3.12/3.13/3.14, Node 22/24/26, the four
+  install containers) and light gate 44804078923, both on 7e36c39, started 2026-11-20 ~19:37 UTC. The coordinator's
+  budget rule for the night (no polling, stop after starting them) stops this session first. Their result decides
+  DONE; the previous full run on this branch (44763521026, 7532de3) had all four install jobs and Node 22/24/26
+  green.
+- Not reproducible in this container, left to that CI round: `test_level0_rust::test_level0_traces_match_reference`
+  on CI's CPython 3.12.16 (its likely cause is removed), and the uv-interpreter artifacts listed in section 2.
+- Founder steps (section 4): the licence holder; protecting the default branch.
 
 ## 1. Per row
 
@@ -140,7 +157,15 @@ True now:
 
 ## 2. CI evidence
 
-(final run ids below)
+- Final round, on 7e36c39 (after the merge with `claude/release-1` @ 71f8081): full run **44804076830**
+  (workflow_dispatch, depth full) and light gate **44804078923** (pull_request). Started, result UNKNOWN when this
+  report was written (section 0).
+- Previous full run on this branch, 44763521026 (7532de3), MEASURED: build, smoke ×2, Node 22/24/26, the four
+  install jobs (glibc 2.28 / CPython 3.12 / pytest 8.1 / Node 22; Debian 12 / 3.13 / Node 24; Debian 13 / 3.14 /
+  Node 26; CPython 3.11 refused) green; Python 3.12/3.13/3.14 red on the failures fixed since (section 3).
+- Light gate on b5163de (44763726600): build, smoke ×2, Node 24 green; Python 3.13 red on the clock test fixed since
+  and the temporary-files test fixed by PR #4.
+- Gate wall time before the light/full rule: run 44714888645, 32 min 33 s (MEASURED, trunk push, full matrix).
 
 ### CI load (coordinator tasks of 2026-11-20, founder decisions)
 
@@ -286,3 +311,10 @@ Il go-live gira solo sulle nostre macchine: niente PyPI, niente npm, niente macO
    `release-1.yml` e nella condizione di `publish-engine`.
 5. **Licenza**: `LICENSE` è MIT con titolare "fenvix" (segnaposto): sostituiscilo con il tuo nome o quello della
    società.
+6. **Stato di stasera**: tutto il codice è su `claude/packages` (un solo push, 7e36c39, dopo il merge di
+   `claude/release-1` con la PR #4). Il giro CI finale è partito (run completo 44804076830, gate leggero 44804078923)
+   ma non l'ho letto: la regola di budget della notte mi ferma prima. Se è verde, la riga di stato diventa DONE;
+   se no, i fallimenti sono da leggere lì. Due limiti di questo container, scritti nella sezione 2: il Python 3.14
+   disponibile qui (uv 3.14.6) ha due difetti suoi, e scaricare il CPython 3.12.16 identico a quello della CI per
+   riprodurre un fallimento è stato bloccato dalla policy dei permessi della sessione: se vuoi che le sessioni lo
+   possano fare, va consentito nelle impostazioni dei permessi.
