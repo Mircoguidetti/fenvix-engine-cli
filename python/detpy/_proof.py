@@ -924,9 +924,10 @@ def load_store(path: str) -> dict:
         s = json.load(fh)
     chunks = s.pop("chunks", None) or {}
     for e in (s.get("tests") or {}).values():
-        d = e.get("data") or []
-        if d and isinstance(d[0], str):
-            e["data"] = [list(p) for a in d for p in chunks[a]]
+        for field in ("data", "env"):
+            d = e.get(field) or []
+            if d and isinstance(d[0], str):
+                e[field] = [list(p) for a in d for p in chunks[a]]
     return s
 
 

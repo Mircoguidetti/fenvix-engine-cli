@@ -85,7 +85,7 @@ pub struct Entry {
     pub runtime: String,
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
-    pub env: Vec<(String, String)>,
+    pub env: crate::datachunks::Data,
     /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
     /// [`crate::deps`] ("m:", "V:" (one stat field), "r:", "e:", "w:" (recursive listing), "u:" (recursive listing,
     /// links not followed), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key
@@ -1000,7 +1000,7 @@ impl Store {
         let table: HashMap<String, crate::datachunks::Chunk> = std::mem::take(&mut self.chunks).into_iter().collect();
         let mut bad = Vec::new();
         for (nid, e) in self.tests.iter_mut() {
-            if !e.data.resolve(&table) {
+            if !e.data.resolve(&table) || !e.env.resolve(&table) {
                 bad.push(nid.clone());
             }
         }
@@ -1011,6 +1011,7 @@ impl Store {
         let mut i = std::mem::take(&mut self.interner);
         for e in self.tests.values_mut() {
             e.data.share(&mut i);
+            e.env.share(&mut i);
         }
         self.interner = i;
     }
@@ -1080,7 +1081,7 @@ impl Store {
             config: o.config,
             runtime: o.runtime,
             epoch: o.epoch,
-            env: o.env,
+            env: o.env.into_iter().map(|(k, v)| (Str::from(k), Str::from(v))).collect(),
             data: o.data.into(),
             content,
             skeleton,
@@ -1102,6 +1103,7 @@ impl Store {
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
         e.data.share(&mut self.interner);
+        e.env.share(&mut self.interner);
         self.tests.insert(nodeid.to_string(), e);
         k
     }
@@ -1294,6 +1296,7 @@ impl Store {
                         c[0] = remap_file(c[0], disk);
                     }
                     e.data.share(&mut disk.interner);
+                    e.env.share(&mut disk.interner);
                     disk.tests.insert(nid.clone(), e);
                 }
             }
@@ -1334,7 +1337,7 @@ impl Store {
         // each chunk once, entries by address (py-cache item 4)
         let mut chunks = BTreeMap::new();
         for e in self.tests.values() {
-            for c in e.data.chunks() {
+            for c in e.data.chunks().iter().chain(e.env.chunks()) {
                 chunks.entry(crate::datachunks::address(c)).or_insert_with(|| c.clone());
             }
         }
@@ -1391,7 +1394,13 @@ impl Shard {
 }
 
 fn parent_key(key: &str) -> Option<&str> {
-    key.rfind('/').map(|i| if i == 0 { "/" } else { &key[..i] })
+    match key.rfind('/') {
+        Some(0) => Some("/"),
+        Some(i) => Some(&key[..i]),
+        // a top-level path of the project: its parent is the root, keyed "." (the capture's key of the root)
+        None if !key.is_empty() && key != "." && !key.starts_with('\u{1}') => Some("."),
+        None => None,
+    }
 }
 
 /// A writer context that is not the test's own code: another test, or a wider-scoped fixture the test does not use.
@@ -2018,8 +2027,9 @@ impl Checker {
             });
         }
         for (k, v) in &e.env {
+            let (k, v): (&str, &str) = (k, v);
             if k == "PYTEST_XDIST_WORKER" && self.defer_worker {
-                self.worker_reads.insert(nodeid.to_string(), v.clone());
+                self.worker_reads.insert(nodeid.to_string(), v.to_string());
                 continue;
             }
             let now: &str = if k == "*" {
@@ -2030,7 +2040,7 @@ impl Checker {
             } else {
                 if !self.env_now.contains_key(k) {
                     let d = env_value_digest(self.cur.env.get(k).map(|s| s.as_str()));
-                    self.env_now.insert(k.clone(), d);
+                    self.env_now.insert(k.to_string(), d);
                 }
                 &self.env_now[k]
             };
@@ -2565,6 +2575,18 @@ mod tests {
     }
 
     #[test]
+    fn listing_of_the_project_root_another_test_wrote_into() {
+        // py-cache (moto): rb.tmp written and removed at the root by one test while another listed the root
+        let shards = vec![shard("gw0", &[], &[("rb.tmp", &["t|t.py::w"])])];
+        let (written, dirs) = writer_union(&shards);
+        let listing = vec![(Str::from("."), Str::from("d:abc"))];
+        assert!(foreign_write("t.py::r", &[], &listing.into(), &written, &dirs).is_some());
+        assert_eq!(parent_key("rb.tmp"), Some("."));
+        assert_eq!(parent_key("pkg/x.py"), Some("pkg"));
+        assert_eq!(parent_key("."), None);
+    }
+
+    #[test]
     fn listing_of_a_directory_another_test_wrote_into() {
         let shards = vec![shard("gw0", &[], &[("/tmp/d/new", &["t|t.py::w"])])];
         let (written, dirs) = writer_union(&shards);
@@ -2644,7 +2666,12 @@ mod tests {
     #[test]
     fn r023_f3_worker_reads_are_checked_against_this_runs_plan() {
         let (_d, mut s, cur) = setup();
-        s.tests.get_mut("t::a").unwrap().env.push(("PYTEST_XDIST_WORKER".into(), env_value_digest(Some("gw0"))));
+        {
+            let e = s.tests.get_mut("t::a").unwrap();
+            let mut env = e.env.to_vec();
+            env.push(("PYTEST_XDIST_WORKER".into(), env_value_digest(Some("gw0")).into()));
+            e.env = env.into();
+        }
         let mut c = Checker::new(cur);
         c.parallel = true;
         c.defer_worker = true;

@@ -370,6 +370,11 @@ impl State {
     fn key<'a>(&self, p: &'a [u8]) -> &'a [u8] {
         if p.starts_with(&self.root_sep) {
             &p[self.root_sep.len()..]
+        } else if p.len() + 1 == self.root_sep.len() && self.root_sep.starts_with(p) {
+            // the project root itself: ".", the parent key of its top-level paths (proof::parent_key), so a listing of
+            // the root is matched to the writers of the files in it (py-cache: moto's rb.tmp, written and removed by
+            // one test while another listed the root in another worker)
+            b"."
         } else {
             p
         }
