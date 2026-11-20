@@ -7,7 +7,9 @@
 #   fenvix-go              -> $FENVIX_HOME/bin/fenvix-go (self-contained: overlay embedded, core linked statically)
 #   fenvix-skip            -> $FENVIX_HOME/bin/fenvix-skip (JVM skip decider)
 #   fenvix-agent.jar       -> $FENVIX_HOME/jvm/fenvix-agent.jar (agent, runtime, JNI core, Gradle init, Maven ext)
-#   release/fenvix         -> $FENVIX_HOME/bin/fenvix (the single CLI entry)
+#   release/fenvix         -> $FENVIX_HOME/bin/fenvix (the single CLI entry; with the job's python3, and the engine
+#                             from $FENVIX_HOME/python when that Python has none)
+#   fenvix-*.whl (again)   -> $FENVIX_HOME/python (pip --target, no dependencies: the copy for jobs' own venvs)
 # Toolchains (Python 3.12+, Node 22, Go 1.22+, JDK 8+, strace) are the image's, not installed here.
 #
 #   release/install-image.sh DIST_DIR [FENVIX_HOME]
@@ -17,6 +19,10 @@ home="${2:-${FENVIX_HOME:-/opt/fenvix}}"
 here="$(cd "$(dirname "$0")/.." && pwd)"
 mkdir -p "$home/bin" "$home/jvm" "$home/node"
 python3 -m pip install -q --no-deps "$dist"/fenvix-*.whl
+# the image's copy for jobs that make their own virtual environment: $FENVIX_HOME/bin/fenvix puts it on their path
+# (release/fenvix; R-050 D3, G-0413)
+rm -rf "$home/python"
+python3 -m pip install -q --no-deps --target "$home/python" "$dist"/fenvix-*.whl
 python3 -m pip install -q "pytest>=8"
 cp -r "$here/node/bin" "$here/node/src" "$here/node/package.json" "$here/node/package-lock.json" "$home/node/"
 plat="$(node -p 'process.platform + "-" + process.arch')"
