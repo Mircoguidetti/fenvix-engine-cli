@@ -1,0 +1,127 @@
+# Go-live acceptance exam (exam/PLAN.md). One job per leg of exam/legs.json (row x platform x versions); the
+# aggregate job merges every leg into exam/results.json and commits it to claude/exam.
+# The engine is installed as a customer would (exam/install.sh; EXAM_INSTALL=ci-artifact today, packages later).
+name: exam
+
+on:
+  push:
+    branches: [claude/exam]
+    paths: ["exam/**", ".github/workflows/exam.yml", "!exam/results.json"]
+  workflow_dispatch:
+    inputs:
+      install:
+        description: "install source: ci-artifact | packages"
+        default: ci-artifact
+      rows:
+        description: "comma list of rows to run (empty = all)"
+        default: ""
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: exam-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    runs-on: ubuntu-24.04
+    outputs:
+      legs: ${{ steps.p.outputs.legs }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        env: {ROWS: "${{ github.event.inputs.rows }}"}
+        run: |
+          python3 -c "
+          import json, os
+          legs = json.load(open('exam/legs.json'))['legs']
+          want = [r for r in os.environ.get('ROWS', '').split(',') if r]
+          if want: legs = [l for l in legs if set(l['rows']) & set(want)]
+          print('legs=' + json.dumps(legs))" >> "$GITHUB_OUTPUT"
+
+  leg:
+    needs: plan
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runs_on }}
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 40
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.legs) }}
+    env:
+      EXAM_INSTALL: ${{ github.event.inputs.install || 'ci-artifact' }}
+      EXAM_PLATFORM: ${{ matrix.platform }}
+      EXAM_PYTHON: ${{ matrix.python }}
+      EXAM_NODE: ${{ matrix.node }}
+      EXAM_VARIANT: ${{ matrix.variant }}
+      EXAM_JOB_NAME: ${{ matrix.name }}
+      GH_TOKEN: ${{ github.token }}
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 1}
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}", allow-prereleases: true}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - if: contains(join(matrix.rows, ','), 'JS-03')
+        uses: oven-sh/setup-bun@v2
+      - if: contains(join(matrix.rows, ','), 'JS-03')
+        uses: denoland/setup-deno@v2
+        with: {deno-version: v2.x}
+      - name: machine prerequisites the install docs name (strace, locales)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq strace locales > /dev/null
+          sudo locale-gen de_DE.UTF-8 C.UTF-8 > /dev/null || true
+          corepack enable || true
+      - name: leg env
+        run: |
+          python3 -c "import json,os; [print(f'{k}={v}') for k,v in json.loads(os.environ['E']).items()]" >> "$GITHUB_ENV"
+          echo "EXAM_PY_EXE=$(command -v python3)" >> "$GITHUB_ENV"
+          echo "EXAM_TMP=$RUNNER_TEMP" >> "$GITHUB_ENV"
+        env: {E: "${{ matrix.env_json }}"}
+      - name: install the engine (exam/install.sh)
+        env: {EXAM_OUT_DIR: "${{ runner.temp }}/exam-out", FENVIX_HOME: "${{ runner.temp }}/fenvix"}
+        run: bash exam/install.sh "${{ matrix.platform }}"
+      - name: run the exam rows
+        run: |
+          python3 exam/run.py --rows "${{ join(matrix.rows, ',') }}" --work "$RUNNER_TEMP/exam-work" \
+            --out "$RUNNER_TEMP/exam-out/result.json" 2>&1 | tee "$RUNNER_TEMP/exam-out/run.log" | grep -E "^(PASS|FAIL|##|[0-9]+/)"
+      - name: pack logs
+        if: always()
+        run: tar -czf "$RUNNER_TEMP/exam-out/logs.tgz" -C "$RUNNER_TEMP/exam-work" logs 2>/dev/null || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: exam-${{ strategy.job-index }}
+          path: ${{ runner.temp }}/exam-out/
+
+  aggregate:
+    needs: [plan, leg]
+    if: always()
+    runs-on: ubuntu-24.04
+    env: {GH_TOKEN: "${{ github.token }}"}
+    steps:
+      - uses: actions/checkout@v4
+        with: {ref: claude/exam}
+      - uses: actions/download-artifact@v4
+        with: {pattern: "exam-*", path: exam-out-all}
+      - name: job ids
+        run: |
+          gh api --paginate "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs?per_page=100" \
+            --jq '.jobs[] | {(.name): .id}' | python3 -c "import sys,json; d={}; [d.update(json.loads(l)) for l in sys.stdin if l.strip()]; json.dump(d, open('jobs.json','w'))"
+      - name: aggregate
+        run: python3 exam/aggregate.py --in exam-out-all --legs exam/legs.json --gaps exam/gap_map.json --out exam/results.json --jobs jobs.json
+      - name: commit exam/results.json to claude/exam
+        if: github.ref == 'refs/heads/claude/exam'
+        run: |
+          git config user.name "exam-bot"; git config user.email "exam-bot@users.noreply.github.com"
+          git add exam/results.json
+          git commit -qm "exam: results.json from run ${{ github.run_id }}" || exit 0
+          for i in 1 2 3 4; do git pull -q --rebase origin claude/exam && git push -q origin HEAD:claude/exam && break; sleep $((i*5)); done
+      - uses: actions/upload-artifact@v4
+        with: {name: exam-results, path: exam/results.json}

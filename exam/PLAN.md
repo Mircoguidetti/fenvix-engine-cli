@@ -52,7 +52,7 @@ Standard check families used below (each is one check per project and leg):
 ### PY-01 Python versions (CPython 3.12, 3.13, 3.14)
 
 Legs: {linux-x64, linux-arm64, macos-arm64} x {3.12, 3.13, 3.14}.
-Projects: `pallets/itsdangerous@629bedb8` (2.2.0), `python-attrs/attrs@bd2446d7` (25.3.0).
+Projects: `pallets/itsdangerous@096c8d42` (2.2.0), `python-attrs/attrs@3dca08ce` (25.3.0).
 
 | check | expected |
 |---|---|
@@ -64,7 +64,7 @@ Projects: `pallets/itsdangerous@629bedb8` (2.2.0), `python-attrs/attrs@bd2446d7`
 ### PY-02 pytest 8 and 9 (unittest via pytest)
 
 Legs: linux-x64 x Python 3.13 x {pytest 8.4.x, pytest 9.0.x}.
-Projects: `pallets/click@d4ecb8a8` (8.1.8, pytest), `more-itertools/more-itertools@28ab7367` (v10.7.0,
+Projects: `pallets/click@934813e4` (8.1.8, pytest), `more-itertools/more-itertools@28ab7367` (v10.7.0,
 `unittest.TestCase` suites collected by pytest).
 
 | check | expected |
@@ -82,10 +82,10 @@ Legs: linux-x64 x {3.12, 3.14}.
 |---|---|---|
 | unittest (`python -m detpy`) | more-itertools@28ab7367 | `fenvix python-runner unittest --det discover -s tests` |
 | Django `manage.py test` | `wagtail/bakerydemo@890285b9` | `fenvix python-runner django manage.py test --det` |
-| nose2 | `nose-devs/nose2@de503d19` (0.15.1) | `fenvix python-runner nose2 --det` |
+| nose2 | `nose-devs/nose2@9ec19c0c` (0.15.1) | `fenvix python-runner nose2 --det` |
 | ward | `darrenburns/ward@f41c6164` (0.68.0b0) | `fenvix python-runner ward --det test` |
-| zope.testrunner | `zopefoundation/zope.interface@c8eed40c` (7.2) | `fenvix python-runner zope-testrunner --det --test-path=src` |
-| doctest | `pytoolz/toolz@a729c913` (1.0.0) | `fenvix python-runner doctest --det toolz/itertoolz.py ...` |
+| zope.testrunner | `zopefoundation/zope.interface@d860f651` (7.2) | `fenvix python-runner zope-testrunner --det --test-path=src` |
+| doctest | `pytoolz/toolz@07f30a9c` (1.0.0) | `fenvix python-runner doctest --det toolz/itertoolz.py ...` |
 
 | check | expected |
 |---|---|
@@ -108,7 +108,7 @@ Legs: linux-x64 x {3.12, 3.14}. Project: `jazzband/django-model-utils@aeef1088` 
 
 ### PY-05 pytest-xdist parallel
 
-Legs: linux-x64 x {3.12, 3.14}, linux-arm64 x 3.13. Project: attrs@bd2446d7 and an injected order-dependent pair
+Legs: linux-x64 x {3.12, 3.14}, linux-arm64 x 3.13. Project: attrs@3dca08ce and an injected order-dependent pair
 (probe `odpair`: `test_a` sets a module global, `test_b` asserts it; in collection order b passes).
 
 | check | expected |
@@ -125,11 +125,11 @@ Legs: linux-x64 x {3.12, 3.14}.
 
 | plugin | project |
 |---|---|
-| pytest-asyncio | `aio-libs/aiosignal@d56b2493` (v1.3.2) |
-| pytest-mock | `pytest-dev/pytest-mock@c25005fb` (v3.14.0) |
-| pytest-cov | itsdangerous@629bedb8 with `--cov=itsdangerous` |
+| pytest-asyncio | `aio-libs/aiosignal@f90f6d41` (v1.3.2) |
+| pytest-mock | `pytest-dev/pytest-mock@8733134b` (v3.14.0) |
+| pytest-cov | itsdangerous@096c8d42 with `--cov=itsdangerous` |
 | freezegun | `spulec/freezegun@3f9fac48` (1.5.1) |
-| time-machine | `adamchainz/time-machine@dc31ad89` (2.16.0) |
+| time-machine | `adamchainz/time-machine@731c9456` (2.16.0) |
 
 | check | expected |
 |---|---|
@@ -154,7 +154,7 @@ Legs: linux-x64 x {3.12, 3.14}. Projects: `agronholm/anyio@a6e9ebb7` (4.9.0, Blo
 
 ### PY-08 native code and subprocesses are never reused
 
-Legs: linux-x64 x {3.12, 3.14}, macos-arm64 x 3.13. Probes injected into itsdangerous@629bedb8:
+Legs: linux-x64 x {3.12, 3.14}, macos-arm64 x 3.13. Probes injected into itsdangerous@096c8d42:
 `child_reads_file` (a test asserts the output of `subprocess.run(["cat", F])`), `ctypes_clock` (`libc.time()`
 compared with a fixed date), `ctypes_getenv` (`libc.getenv("X")`), `native_ext` (a C extension, `_testcapi`/`zlib`
 with an input file outside the root).
@@ -171,7 +171,7 @@ with an input file outside the root).
 ### JS-01 Node versions (22, 24, 26)
 
 Legs: {linux-x64, linux-arm64, macos-arm64} x {22, 24, 26}.
-Projects: `simple-statistics/simple-statistics@dbc9785a` (v7.9.3, node:test-compatible), `unjs/ufo@5e0795f6`
+Projects: `simple-statistics/simple-statistics@f9d368f4` (v7.9.3, node:test-compatible), `unjs/ufo@0f15ddc6`
 (v1.5.4, Vitest).
 
 | check | expected |
@@ -184,7 +184,7 @@ Projects: `simple-statistics/simple-statistics@dbc9785a` (v7.9.3, node:test-comp
 ### JS-02 Vitest 3/4, Jest 29/30
 
 Legs: linux-x64 x Node 22 x {vitest 3, vitest 4, jest 29, jest 30}.
-Projects: ufo@5e0795f6 and `pmndrs/zustand@3f9127f4` (v5.0.3) for Vitest; `moment/luxon@a4044fe6` (3.5.0) and
+Projects: ufo@0f15ddc6 and `pmndrs/zustand@3f9127f4` (v5.0.3) for Vitest; `moment/luxon@a4044fe6` (3.5.0) and
 `typestack/class-validator@adffae38` (v0.14.1) for Jest. The runner major is installed over the project's pin
 (`npm i -D vitest@3` / `@4`, `jest@29` / `@30`).
 
@@ -202,10 +202,10 @@ Legs: linux-x64 x Node 22 (Bun latest 1.x, Deno 2.x).
 | runner | project |
 |---|---|
 | Mocha | `expressjs/express@1faf2289` (4.21.2) |
-| node:test | simple-statistics@dbc9785a |
-| AVA | `sindresorhus/p-map@c9831c7a` (v7.0.3) |
-| tap | `isaacs/minimatch@bb026771` (v10.0.1) |
-| uvu | `lukeed/dequal@e12a9d61` (v2.0.3) |
+| node:test | simple-statistics@f9d368f4 |
+| AVA | `sindresorhus/p-map@2ba3a002` (v7.0.3) |
+| tap | `isaacs/minimatch@0569cd33` (v10.0.1) |
+| uvu | `lukeed/dequal@37d4f27d` (v2.0.3) |
 | Jasmine | `jasmine/jasmine-npm@2cd62ca5` (v5.5.0) |
 | Bun | `elysiajs/elysia@353efd2a` (1.2.10) |
 | Deno | `oakserver/oak@08a7eb1c` (v17.1.4) |
@@ -229,7 +229,7 @@ Legs: linux-x64 x Node 22. Project: `mxschmitt/playwright-test-coverage@910da570
 
 ### JS-05 ESM, CommonJS, TypeScript via the runner
 
-Legs: linux-x64 x {22, 24}. ESM: p-map@c9831c7a (AVA) and ufo (Vitest, TS); CJS: express@1faf2289 (Mocha);
+Legs: linux-x64 x {22, 24}. ESM: p-map@2ba3a002 (AVA) and ufo (Vitest, TS); CJS: express@1faf2289 (Mocha);
 TS: class-validator@adffae38 (Jest + ts-jest).
 
 | check | expected |
@@ -339,7 +339,7 @@ Legs: linux-x64 x Python 3.13 x Node 22.
 
 ### F-05 cache with proof, Python, serial and parallel
 
-Legs: linux-x64 x {3.12, 3.14}. Projects: itsdangerous@629bedb8, click@d4ecb8a8, attrs@bd2446d7.
+Legs: linux-x64 x {3.12, 3.14}. Projects: itsdangerous@096c8d42, click@934813e4, attrs@3dca08ce.
 
 | check | expected |
 |---|---|
