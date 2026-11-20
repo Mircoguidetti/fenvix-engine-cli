@@ -40,3 +40,47 @@ def test_a_raising_os_path_patch_does_not_reach_the_test_through_detpy(pytester)
     for _ in range(2):
         r = pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.c'}", "-p", "no:cacheprovider")
         r.assert_outcomes(passed=1)
+
+
+def test_a_spawn_hook_of_the_project_does_not_make_infrastructure_spawns_its_own(pytester):
+    """pydantic-ai's cost_guards replaces subprocess.Popen._execute_child with a guard (a repository function). xdist's
+    worker set-up spawns `uname` (platform.platform()) through it: that spawn is the infrastructure's, not the
+    project's; before, every test of every worker was refused ('subprocess ... between tests')."""
+    pytester.makeini("[pytest]\n")
+    pytester.makeconftest("""
+        import subprocess
+
+        _orig = subprocess.Popen._execute_child
+
+        def guarded(self, *a, **k):
+            return _orig(self, *a, **k)
+
+        subprocess.Popen._execute_child = guarded
+        """)
+    pytester.makepyfile(test_a="def test_a():\n    pass\n", test_b="def test_b():\n    pass\n",
+                        test_spawn="import subprocess\n\ndef test_spawn():\n    subprocess.run(['true'])\n")
+    import json
+
+    out = pytester.path / "o.json"
+    r = pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.c'}", f"--det-outcomes={out}",
+                                      "-p", "no:cacheprovider", "-p", "xdist", "-n", "2")
+    r.assert_outcomes(passed=3)
+    nc = json.loads(out.read_text())["cache"]["not_cached_ids"]
+    # the tests that spawn nothing are not refused for the worker set-up's spawn (the test's own spawn of `true` is
+    # followed: no refusal either)
+    assert not {"test_a.py::test_a", "test_b.py::test_b"} & set(nc), nc
+
+
+def test_a_boot_id_read_at_import_is_a_content_input_not_a_refusal(pytester):
+    """filelock reads /proc/sys/kernel/random/boot_id at import (pydantic-ai's conftest imports it): the session was
+    uncacheable ('reads /proc, /sys or /dev', every test). It is keyed by content now: reused on the same boot."""
+    import json
+
+    pytester.makeini("[pytest]\n")
+    pytester.makeconftest("BOOT = open('/proc/sys/kernel/random/boot_id').read()\n")
+    pytester.makepyfile(test_a="def test_a():\n    pass\n")
+    for i in range(2):
+        out = pytester.path / f"o{i}.json"
+        pytester.runpytest_subprocess("--det", f"--det-cache={pytester.path / '.c'}", f"--det-outcomes={out}",
+                                      "-p", "no:cacheprovider").assert_outcomes(passed=1)
+    assert json.loads(out.read_text())["cache"]["reused_ids"] == ["test_a.py::test_a"]

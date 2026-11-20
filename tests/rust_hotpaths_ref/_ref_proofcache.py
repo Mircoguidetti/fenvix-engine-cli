@@ -685,8 +685,11 @@ class Capture:
                 continue
             kind, _ = _sites._classify(fn)
             if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
+                b = f.f_back
+                # a user hook installed in place of the spawn primitive: who called into subprocess decides
+                if not (b is not None and b.f_code.co_filename.endswith(("/subprocess.py", "/multiprocessing/util.py"))):
+                    return "user"
+            elif kind == _sites._INFRA:
                 return "infra"
             f = f.f_back
         return "user"
@@ -849,8 +852,11 @@ class Capture:
                 continue
             kind, _ = _sites._classify(fn)
             if kind == _sites._USER:
-                return "user"
-            if kind == _sites._INFRA:
+                b = f.f_back
+                # a user hook installed in place of the spawn primitive: who called into subprocess decides
+                if not (b is not None and b.f_code.co_filename.endswith(("/subprocess.py", "/multiprocessing/util.py"))):
+                    return "user"
+            elif kind == _sites._INFRA:
                 return "infra"
             f = f.f_back
         return "user"
@@ -932,7 +938,7 @@ class Capture:
             if k not in m or (kind == "z" and m[k].startswith(("s:", "l:"))):
                 m[k] = dep
             return
-        if kind == "m":
+        if kind == "m" or (kind == "f" and p in _MACHINE_FILES):
             kind = "f"  # a machine identity file under /sys read on purpose (uuid.getnode): its content is the input
         elif kind == "a":
             # a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
@@ -2697,6 +2703,10 @@ def _uncacheable(flags: set, cfg) -> str | None:
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
+
+
+_MACHINE_FILES = frozenset({"/proc/sys/kernel/random/boot_id", "/proc/sys/kernel/hostname", "/proc/sys/kernel/osrelease",
+                            "/proc/sys/kernel/ostype", "/proc/sys/kernel/version"})
 
 
 def _tmpdir_raw() -> str:

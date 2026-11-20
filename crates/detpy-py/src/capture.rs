@@ -485,7 +485,9 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
-        if kind == b'm' {
+        if kind == b'm' || (kind == b'f' && MACHINE_FILES.contains(&p)) {
+            // a machine identity file (uuid.getnode's /sys reads; filelock's boot_id at import): its content is the
+            // input, keyed like a file (it changes with the machine or the boot, never during a session)
             kind = b'f';
         } else if kind == b'a' {
             // a child's exclusive create that succeeded: the path did not exist then (its state now is irrelevant)
@@ -586,6 +588,16 @@ fn process_state(p: &[u8]) -> bool {
     }
 
 }
+
+/// Kernel identity files whose content does not change during a boot: read as content inputs, not refused as /proc
+/// state (round 4: pydantic-ai's conftest imports filelock, which reads boot_id at import: every test was refused).
+const MACHINE_FILES: &[&[u8]] = &[
+    b"/proc/sys/kernel/random/boot_id",
+    b"/proc/sys/kernel/hostname",
+    b"/proc/sys/kernel/osrelease",
+    b"/proc/sys/kernel/ostype",
+    b"/proc/sys/kernel/version",
+];
 
 /// The system's temporary roots (`/tmp`, `/var/tmp`, `$TMPDIR`): directories for the whole session, like the
 /// project root and its ancestors. A kind check of one is no input; a failed `os.mkdir` of one (makedirs with
@@ -910,7 +922,23 @@ impl CaptureCore {
                 continue;
             }
             match hub.classify(py, &fname)?.0 {
-                Kind::User => return Ok(Caller::User),
+                Kind::User => {
+                    // a user function installed in place of the spawn primitive (Popen._execute_child replaced by a
+                    // guard, pydantic-ai's cost_guards) is a hook, not the code that started the process: who called
+                    // into subprocess decides (xdist's worker set-up asking platform.platform() spawns `uname`)
+                    let back = level0::back(&fr)?;
+                    let hooked = match &back {
+                        Some(b) => {
+                            let (_c, bf) = code_filename(b)?;
+                            let bw = w_of(bf.cast::<PyString>()?)?;
+                            bw.ends_with(b"/subprocess.py") || bw.ends_with(b"/multiprocessing/util.py")
+                        }
+                        None => false,
+                    };
+                    if !hooked {
+                        return Ok(Caller::User);
+                    }
+                }
                 Kind::Infra => return Ok(Caller::Infra),
                 Kind::Stdlib => {}
             }
