@@ -1011,6 +1011,10 @@ class _DetSession(_Outcomes):
         if S.controller is not None:  # G-0168: workers that rewrote test modules from source
             _level0.REWRITE["workers"] = sum(int(o.get("detpy_rewrite_cold") or 0)
                                              for o in S.controller.workeroutput.values())
+            # the controller runs no test: what it rewrote (xdist's own modules, imported only by a -n controller,
+            # cold in the first -n run of a cache) lays out no memory a test sees. Review P1 finding 11: counting it
+            # made the first -n run after any serial run fully divergent
+            _level0.REWRITE["cold"] = 0
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
