@@ -41,6 +41,11 @@ function installProcess() {
   require('./facts').installProcess(PATCHER);
   // completion order of a test's concurrent asynchronous I/O (src/ioorder.js)
   require('./ioorder').installProcess(PATCHER);
+  // SQLite's clock and randomness (node:sqlite, better-sqlite3) and WASI's (src/sqlvirt.js, src/wasi.js)
+  if (c.controls.has('time') && c.controls.has('seeds')) {
+    try { require('./sqlvirt').installProcess(PATCHER); } catch (e) { level0Gap(`sqlite: ${e && e.message}`, false); }
+    try { require('./wasi').installProcess(PATCHER); } catch (e) { level0Gap(`wasi: ${e && e.message}`, false); }
+  }
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)

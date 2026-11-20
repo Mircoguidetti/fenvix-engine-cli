@@ -7,9 +7,15 @@
 //   whatever its position in the run.
 // * `crypto.getRandomValues` and `crypto.randomUUID` (global Web Crypto and
 //   `node:crypto`) draw from a second stream derived from the same key.
-// * `crypto.randomBytes`, `randomFillSync`, `randomFill`, `randomInt` are OS
+// * `crypto.randomBytes`, `randomFillSync`, `randomFill`, `randomInt`, `pseudoRandomBytes` are OS
 //   entropy: observed (digest in the fingerprint), not controlled, unless
-//   `--det-urandom` is given (Python: os.urandom / --det-urandom).
+//   `--det-urandom` is given (the Python shell's contract: os.urandom observed, --det-urandom controls it; audit
+//   G-1426). Never silently: each draw is an `entropy` event and the run ends with the list of tests that drew it.
+// * Protocol nonces drawn through them are controlled whatever the option (G-1421): the WebSocket handshake key
+//   (`Sec-WebSocket-Key`) and the frame masks of the global `WebSocket` (undici) and of the `ws` package. They are
+//   not secrets (RFC 6455 uses them against proxy cache poisoning), and real ones made every WebSocket test differ
+//   from run to run. They come from a stream seeded per test and are `random` events (`crypto.randomBytes` /
+//   `crypto.randomFillSync`, value `nonce <length>:<digest>`).
 
 const nodeCrypto = require('node:crypto');
 const native = require('./native');
@@ -68,6 +74,7 @@ function rotl(x, k) {
 const MATH = new Xoshiro128();
 const CRYPTO = new Xoshiro128();
 const ENTROPY = new Xoshiro128();
+const NONCE = new Xoshiro128();
 
 function reseed(key) {
   const base = STATE.config.seed;
@@ -77,6 +84,50 @@ function reseed(key) {
   CRYPTO.seed(h2, l2);
   const [h3, l3] = native.deriveSeedWords(base, key + '\0urandom');
   ENTROPY.seed(h3, l3);
+  const [h4, l4] = native.deriveSeedWords(base, key + '\0nonce');
+  NONCE.seed(h4, l4);
+}
+
+// A draw made by a WebSocket implementation for its handshake key or frame masks (Node's bundled undici:
+// establishWebSocketConnection, generateMask / WebsocketFrameSend; undici from npm: lib/web/websocket/; ws:
+// lib/websocket.js, lib/sender.js).
+const STRUCTURED = (_e, cs) => cs;
+function protocolNonce() {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = STRUCTURED;
+  E.stackTraceLimit = 6;
+  const holder = {};
+  let frames;
+  try {
+    E.captureStackTrace(holder, protocolNonce);
+    frames = holder.stack;
+  } catch {
+    frames = null;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+  if (!Array.isArray(frames)) return false;
+  for (const cs of frames) {
+    const f = (cs.getFileName && cs.getFileName()) || '';
+    if (!f) continue;
+    if (f.includes('undici')) {
+      if (/[\\/]websocket[\\/]/.test(f)) return true;
+      const fn = `${(cs.getTypeName && cs.getTypeName()) || ''}.${(cs.getFunctionName && cs.getFunctionName()) || ''}`;
+      if (/WebSocket|Websocket|generateMask/.test(fn)) return true;
+    } else if (/[\\/]ws[\\/]lib[\\/](?:websocket|sender)\.js$/.test(f)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function nonce(op, buf) {
+  NONCE.fill(buf);
+  STATE.record('random', op, `nonce ${buf.length}:${native.digest(Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength))}`);
+  return buf;
 }
 
 function mathRandom() {
@@ -121,6 +172,7 @@ function randomUUID(options) {
 
 // OS entropy: observed, controlled only with --det-urandom.
 function randomBytes(size, cb) {
+  if (!STATE.config.urandom && typeof cb !== 'function' && protocolNonce()) return nonce('crypto.randomBytes', real.randomBytes(size));
   if (typeof cb === 'function') {
     return real.randomBytes(size, (err, buf) => {
       if (!err) observe('crypto.randomBytes', buf);
@@ -135,7 +187,8 @@ function randomFillSync(buf, offset, size) {
   const view = ArrayBuffer.isView(buf) ? Buffer.from(buf.buffer, buf.byteOffset, buf.byteLength) : Buffer.from(buf);
   const start = offset === undefined ? 0 : offset * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
   const len = size === undefined ? view.length - start : size * (ArrayBuffer.isView(buf) ? buf.BYTES_PER_ELEMENT || 1 : 1);
-  observe('crypto.randomFillSync', view.subarray(start, start + len));
+  if (!STATE.config.urandom && protocolNonce()) nonce('crypto.randomFillSync', view.subarray(start, start + len));
+  else observe('crypto.randomFillSync', view.subarray(start, start + len));
   return out;
 }
 

@@ -324,3 +324,196 @@ test('G-2165: no private key is shipped in the engine sources', () => {
   assert.equal(replayCert(), replayCert(), 'one per process');
   assert.match(new (require('node:crypto').X509Certificate)(a.cert).subject, /detjs network replay/);
 });
+
+// ---------------------------------------------------------------------------------------------------------------
+// G-1421: WebSocket handshake keys and frame masks (global WebSocket = undici, and the `ws` package when it can be
+// installed) are deterministic: two runs are identical, no entropy event
+const PKGS = path.join(TMP, 'pkgs');
+function packages() {
+  // ws and better-sqlite3 for the tests that need them (network once; later runs reuse the directory)
+  const want = ['ws', 'better-sqlite3'];
+  if (want.every((p) => fs.existsSync(path.join(PKGS, 'node_modules', p, 'package.json')))) return true;
+  fs.mkdirSync(PKGS, { recursive: true });
+  fs.writeFileSync(path.join(PKGS, 'package.json'), JSON.stringify({ name: 'pkgs', private: true }));
+  const r = spawnSync('npm', ['install', '--no-audit', '--no-fund', ...want], { cwd: PKGS, encoding: 'utf8', timeout: 300000 });
+  return r.status === 0;
+}
+const linkPkgs = (dir) => { try { fs.symlinkSync(path.join(PKGS, 'node_modules'), path.join(dir, 'node_modules'), 'dir'); } catch { /* exists */ } };
+
+const WS = `${PUT}
+function wsServer() {
+  const srv = http.createServer();
+  srv.on('upgrade', (req, sock) => {
+    const key = req.headers['sec-websocket-key'];
+    put('key-' + req.url.slice(1), key);
+    const acc = nodeCrypto.createHash('sha1').update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').digest('base64');
+    sock.write('HTTP/1.1 101 Switching Protocols\\r\\nUpgrade: websocket\\r\\nConnection: Upgrade\\r\\nSec-WebSocket-Accept: ' + acc + '\\r\\n\\r\\n');
+    sock.once('data', (d) => {
+      put('frame-' + req.url.slice(1), d.toString('hex'));
+      const len = d[1] & 0x7f; const mask = d.subarray(2, 6); const p = Buffer.from(d.subarray(6, 6 + len)).map((b, i) => b ^ mask[i % 4]);
+      sock.write(Buffer.concat([Buffer.from([0x81, p.length]), p]));
+    });
+    sock.on('error', () => {});
+  });
+  return new Promise((r) => srv.listen(0, '127.0.0.1', () => r(srv)));
+}
+async function echo(Ctor, name) {
+  const srv = await wsServer();
+  const ws = new Ctor('ws://127.0.0.1:' + srv.address().port + '/' + name);
+  const got = await new Promise((resolve, reject) => {
+    ws.onopen = () => ws.send('hello ' + name);
+    ws.onmessage = (m) => resolve(String(m.data));
+    ws.onerror = (e) => reject(e.error || e);
+  });
+  ws.close(); srv.close();
+  return got;
+}
+test('global WebSocket', async () => { expect(await echo(globalThis.WebSocket, 'global')).toBe('hello global'); });
+test('ws package', async () => {
+  let WS; try { WS = require('ws'); } catch { put('key-ws', 'absent'); return; }
+  expect(await echo(WS, 'ws')).toBe('hello ws');
+});`;
+for (const runner of RUNNERS) {
+  test(`${runner}: G-1421 WebSocket handshake keys and frame masks are deterministic (global WebSocket, ws)`, T, () => {
+    const dir = proj(runner, 'websocket', { a: WS });
+    if (packages()) linkPkgs(dir);
+    const r1 = run(runner, dir);
+    assert.equal(r1.status, 0, show(r1));
+    const first = { g: got(dir, 'key-global'), gf: got(dir, 'frame-global'), w: got(dir, 'key-ws') };
+    save(dir, 'run1.jsonl');
+    const ev = events(dir);
+    assert.ok(!ev.some((e) => e.s === 'entropy'), `no real entropy: ${JSON.stringify(ev.filter((e) => e.s === 'entropy'))}`);
+    assert.ok(ev.some((e) => e.s === 'random' && /^nonce 16:/.test(e.v)), 'the handshake key is a recorded nonce');
+    assert.doesNotMatch(r1.stdout + r1.stderr, /real OS entropy/, show(r1));
+    const r2 = run(runner, dir);
+    assert.equal(r2.status, 0, show(r2));
+    assert.deepEqual({ g: got(dir, 'key-global'), gf: got(dir, 'frame-global'), w: got(dir, 'key-ws') }, first);
+    save(dir, 'run2.jsonl');
+    const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
+    assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
+    if (first.w === 'absent') process.stderr.write(`(${runner}: the ws package could not be installed: checked with the global WebSocket only)\n`);
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// G-1426: crypto.randomBytes & co. stay observed by default (the Python shell's contract: OS entropy observed,
+// --det-urandom controls it), and the run says so; --det-urandom=on controls them, =off is the explicit default
+const ENT = `${PUT}
+test('session token', () => { put('token', nodeCrypto.randomBytes(8).toString('hex')); });
+test('plain', () => { expect(1).toBe(1); });`;
+for (const runner of RUNNERS) {
+  test(`${runner}: G-1426 OS entropy is observed by default and never silent; --det-urandom=on|off`, T, () => {
+    const dir = proj(runner, 'entropy', { a: ENT });
+    const r1 = run(runner, dir);
+    assert.equal(r1.status, 0, show(r1));
+    const out = r1.stdout + r1.stderr;
+    assert.match(out, /entropy=observed \(--det-urandom to control\)/, show(r1));
+    assert.match(out, /1 test\(s\) used real OS entropy, observed but not controlled \(crypto\.randomBytes\).*--det-urandom makes .* deterministic.*session token/, show(r1));
+    assert.equal(trace(dir).header.meta.entropy, 'observed');
+    const off = run(runner, dir, [], { det: ['--det', '--det-urandom=off'] });
+    assert.match(off.stdout + off.stderr, /used real OS entropy/, show(off));
+    const on1 = run(runner, dir, [], { det: ['--det', '--det-urandom=on'] });
+    assert.equal(on1.status, 0, show(on1));
+    assert.doesNotMatch(on1.stdout + on1.stderr, /used real OS entropy/, show(on1));
+    assert.match(on1.stdout + on1.stderr, /entropy=controlled/);
+    const t1 = got(dir, 'token');
+    assert.equal(run(runner, dir, [], { det: ['--det', '--det-urandom'] }).status, 0);
+    assert.equal(got(dir, 'token'), t1, 'controlled: the same token');
+    const bad = run(runner, dir, [], { det: ['--det', '--det-urandom=maybe'] });
+    assert.notEqual(bad.status, 0);
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// G-1427 better-sqlite3, G-1428 node:sqlite: random(), randomblob(), 'now', CURRENT_TIMESTAMP (column default
+// included) are virtual and recorded; two runs identical
+const SQLQ = "select random() % 1000000 as r, hex(randomblob(6)) as b, datetime('now') as n, CURRENT_TIMESTAMP as c, strftime('%s') as s, date('now', '+1 day') as d, julianday('2020-01-01') as j";
+const SQL = `${PUT}
+const big = (k, v) => (typeof v === 'bigint' ? String(v) : v);
+test('node sqlite', () => {
+  let DatabaseSync; try { ({ DatabaseSync } = require('node:sqlite')); } catch { put('node', 'absent'); return; }
+  const db = new DatabaseSync(':memory:');
+  db.exec('create table t (id integer primary key, at text default CURRENT_TIMESTAMP, r integer default (random() % 1000))');
+  db.exec('insert into t (id) values (1)');
+  put('node', JSON.stringify({ ...db.prepare("${SQLQ}").get(), t: { ...db.prepare('select * from t').get() } }, big));
+});
+test('better sqlite3', () => {
+  let Database; try { Database = require('better-sqlite3'); } catch { put('better', 'absent'); return; }
+  const db = new Database(':memory:');
+  db.exec('create table t (id integer primary key, at text default CURRENT_TIMESTAMP, r integer default (random() % 1000))');
+  db.prepare('insert into t (id) values (1)').run();
+  put('better', JSON.stringify({ ...db.prepare("${SQLQ}").get(), t: db.prepare('select * from t').get() }, big));
+});`;
+for (const runner of RUNNERS) {
+  test(`${runner}: G-1427 G-1428 SQLite random(), randomblob(), 'now' and CURRENT_TIMESTAMP are virtual and recorded (node:sqlite, better-sqlite3)`, T, () => {
+    const dir = proj(runner, 'sqlite', { a: SQL });
+    if (packages()) linkPkgs(dir);
+    const r1 = run(runner, dir);
+    assert.equal(r1.status, 0, show(r1));
+    const first = { node: got(dir, 'node'), better: got(dir, 'better') };
+    for (const [lib, text] of Object.entries(first)) {
+      if (text === 'absent') { process.stderr.write(`(${runner}: ${lib} not available here)\n`); continue; }
+      const v = JSON.parse(text);
+      assert.equal(v.n, '2025-01-01 00:00:00', `${lib}: 'now' is the virtual epoch`);
+      assert.equal(v.c, '2025-01-01 00:00:00', `${lib}: CURRENT_TIMESTAMP`);
+      assert.equal(v.s, '1735689600');
+      assert.equal(v.d, '2025-01-02', `${lib}: modifiers keep SQLite's semantics`);
+      assert.equal(v.j, 2458849.5);
+      assert.equal(v.t.at, '2025-01-01 00:00:00', `${lib}: column default`);
+    }
+    assert.notEqual(first.node, 'absent', 'node:sqlite is available on the release Node versions');
+    const ev = events(dir);
+    assert.ok(ev.some((e) => e.o === 'sqlite.random') && ev.some((e) => e.o === 'sqlite.randomblob') && ev.some((e) => e.s === 'time' && e.o === 'sqlite.datetime'), JSON.stringify(ev.filter((e) => /sqlite/.test(e.o))));
+    save(dir, 'run1.jsonl');
+    assert.equal(run(runner, dir).status, 0);
+    assert.deepEqual({ node: got(dir, 'node'), better: got(dir, 'better') }, first, 'the same values in a second run');
+    save(dir, 'run2.jsonl');
+    const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
+    assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
+  });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// G-1429: WASI random_get and clock_time_get
+function wasmModule() {
+  const u = (n) => { const o = []; do { let b = n & 0x7f; n >>>= 7; if (n) b |= 0x80; o.push(b); } while (n); return o; };
+  const str = (s) => [...u(s.length), ...Buffer.from(s)];
+  const sec = (id, b) => [id, ...u(b.length), ...b];
+  const vec = (items) => [...u(items.length), ...items.flat()];
+  const types = vec([[0x60, 2, 0x7f, 0x7f, 1, 0x7f], [0x60, 3, 0x7f, 0x7e, 0x7f, 1, 0x7f], [0x60, 0, 0]]);
+  const W = 'wasi_snapshot_preview1';
+  const imports = vec([[...str(W), ...str('random_get'), 0, 0], [...str(W), ...str('clock_time_get'), 0, 1]]);
+  // random_get(0, 16); clock_time_get(0 realtime, 1, 64); clock_time_get(1 monotonic, 1, 72)
+  const body = [0, 0x41, 0, 0x41, 16, 0x10, 0, 0x1a, 0x41, 0, 0x42, 1, 0x41, 0xc0, 0x00, 0x10, 1, 0x1a, 0x41, 1, 0x42, 1, 0x41, 0xc8, 0x00, 0x10, 1, 0x1a, 0x0b];
+  return Buffer.from([0, 0x61, 0x73, 0x6d, 1, 0, 0, 0, ...sec(1, types), ...sec(2, imports), ...sec(3, vec([[2]])),
+    ...sec(5, vec([[0, 1]])), ...sec(7, vec([[...str('memory'), 2, 0], [...str('_start'), 0, 2]])), ...sec(10, vec([[...u(body.length), ...body]]))]);
+}
+const WASI_T = `${PUT}
+test('wasi', async () => {
+  const { WASI } = require('node:wasi');
+  const wasi = new WASI({ version: 'preview1' });
+  const { instance } = await WebAssembly.instantiate(fs.readFileSync('mod.wasm'), wasi.getImportObject());
+  wasi.start(instance);
+  const dv = new DataView(instance.exports.memory.buffer);
+  put('rand', Buffer.from(instance.exports.memory.buffer, 0, 16).toString('hex'));
+  put('wall', dv.getBigUint64(64, true));
+  put('mono', dv.getBigUint64(72, true));
+});`;
+for (const runner of RUNNERS) {
+  test(`${runner}: G-1429 WASI random_get and clock_time_get are seeded / virtual and recorded`, T, () => {
+    const dir = proj(runner, 'wasi', { a: WASI_T }, { 'mod.wasm': wasmModule() });
+    const r1 = run(runner, dir);
+    assert.equal(r1.status, 0, show(r1));
+    const first = { rand: got(dir, 'rand'), wall: got(dir, 'wall'), mono: got(dir, 'mono') };
+    assert.equal(BigInt(first.wall) / 1000000000n, 1735689600n, `the virtual wall clock: ${first.wall}`);
+    assert.notEqual(first.rand, '0'.repeat(32));
+    const ev = events(dir);
+    assert.ok(ev.some((e) => e.s === 'random' && e.o === 'wasi.random_get') && ev.some((e) => e.s === 'time' && e.o === 'wasi.clock_time_get'), JSON.stringify(ev));
+    save(dir, 'run1.jsonl');
+    assert.equal(run(runner, dir).status, 0);
+    assert.deepEqual({ rand: got(dir, 'rand'), wall: got(dir, 'wall'), mono: got(dir, 'mono') }, first);
+    save(dir, 'run2.jsonl');
+    const rep = verify(dir, 'run1.jsonl', 'run2.jsonl');
+    assert.equal(rep.summary.stable, rep.summary.tests, divergences(rep).join('\n'));
+  });
+}
