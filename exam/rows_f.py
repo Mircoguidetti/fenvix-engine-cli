@@ -188,12 +188,12 @@ def F_02(ctx: Ctx):
                     except ValueError:
                         pass
                     break
-            replay = re.findall(r"(fenvix replay \S+|detpy replay \S+)", out)
+            replay = re.findall(r"replay: ((?:fenvix|pytest|detpy) [^\n]+)", out)
             ok = rc == 0 and bool(replay)
             # evidence: the engine's own capability under its internal name
             rc2, out2 = ctx.sh(f"detpy-repro-{name}", ["python", "-m", "detpy", "repro", target, "--confirm", "10"], cwd=d,
                                env=env, timeout=3600)
-            rp = re.findall(r"((?:fenvix|detpy) replay \S+)", out2)
+            rp = re.findall(r"replay: ((?:fenvix|pytest|detpy) [^\n]+)", out2)
             ctx._f02 = getattr(ctx, "_f02", {})
             ctx._f02[name] = {"d": d, "env": env, "replay": (replay or rp or [None])[0], "via": "fenvix" if replay else "detpy"}
             return ok, (f"`fenvix repro` rc={rc} replay command printed: {replay[:1]}; "
@@ -204,11 +204,21 @@ def F_02(ctx: Ctx):
         def replay(name=name):
             info = getattr(ctx, "_f02", {}).get(name)
             if not info or not info.get("replay"):
-                raise Skip("no replay command was printed by repro")
-            cmd = info["replay"]
-            rc, out = ctx.sh(f"replay-{name}", cmd.replace("detpy replay", "fenvix replay"), cwd=info["d"], env=info["env"], timeout=3600)
-            ok = rc == 0 and '"identical_fingerprint": true' in out
-            return ok, f"`{cmd}` as printed (run through fenvix): rc={rc}; {out.strip()[-300:]}"
+                raise Skip("neither `fenvix repro` nor the engine's own repro printed a replay command")
+            cmd = info["replay"].strip()
+            if cmd.startswith("pytest "):
+                cmd = "fenvix python " + cmd[len("pytest "):]
+            fails, traces = 0, []
+            for i in range(10):
+                t = ctx.work / f"replay-{name}-{i}.jsonl"
+                rc, out = ctx.sh(f"replay-{name}-{i}", f"{cmd} -p no:cacheprovider --det-trace={t}", cwd=info["d"], env=info["env"], timeout=1800)
+                fails += rc not in (0, "timeout")
+                if t.exists():
+                    traces.append(str(t))
+            vrc, vout = ctx.sh(f"replay-{name}-verify", ["fenvix", "verify"] + traces, cwd=info["d"], env=info["env"]) if len(traces) > 1 else (None, "")
+            ok = fails == 10 and vrc == 0
+            return ok, (f"replay command printed by {info['via']} (`{info['replay'][:160]}`), run 10x through fenvix: "
+                        f"{fails}/10 failed; verify of the {len(traces)} traces rc={vrc} (0 = one fingerprint)")
         ctx.run_check(f"F-02.py-replay.{name}", "the printed replay command fails 10/10 with the same fingerprint", replay)
 
         def explore(name=name, target=target):

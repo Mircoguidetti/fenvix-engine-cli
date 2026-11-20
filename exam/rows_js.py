@@ -325,6 +325,8 @@ def JS_08(ctx: Ctx):
     def add():
         from projects import P
         d = ctx.clone(P["ufo"], name=f"ufo-add-{pm}", fresh=True)
+        if pm.startswith("yarn"):
+            lib.drop_package_manager(d)
         cmd = {"npm": "npm install --no-audit --no-fund --legacy-peer-deps -D fenvix && npx --no-install fenvix version",
                "pnpm": "pnpm add -D fenvix && pnpm exec fenvix version",
                "yarn-classic": "yarn add -D fenvix && yarn fenvix version",

@@ -270,6 +270,8 @@ def npm_install(ctx: Ctx, d: Path, pm="npm", extra: list | None = None, env=None
     key = f"node:{d}:{pm}"
     if key in ctx._venvs:
         return
+    if pm.startswith("yarn"):
+        drop_package_manager(d)
     if pm == "npm":
         cmd = "npm ci --no-audit --no-fund --ignore-scripts || npm install --no-audit --no-fund --ignore-scripts"
     elif pm == "pnpm":
@@ -293,6 +295,17 @@ def npm_install(ctx: Ctx, d: Path, pm="npm", extra: list | None = None, env=None
         if rc != 0:
             raise Skip(f"{pm} add {extra} failed: {out[-500:]}")
     ctx._venvs[key] = d
+
+
+def drop_package_manager(d: Path):
+    """A project pinned to another manager (`packageManager` field) as a yarn user would have it: without the pin."""
+    p = d / "package.json"
+    try:
+        j = json.loads(p.read_text())
+    except (OSError, ValueError):
+        return
+    if j.pop("packageManager", None) is not None:
+        p.write_text(json.dumps(j, indent=2))
 
 
 def node_engine_env(ctx: Ctx) -> dict:
