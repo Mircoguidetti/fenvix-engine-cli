@@ -167,6 +167,43 @@ for (const runner of RUNNERS.filter((r) => r === 'vitest' || r === 'jest')) {
       assert.deepEqual(o.order_missing, []);
     });
 
+    test('--det-order-seed: the order of that seed, the generator values of --det-seed (G-1459)', T, () => {
+      const body = "test('r1', () => { fs.writeFileSync(path.join(__dirname, '..', 'r1-' + process.env.DETJS_SEED + '-' + (process.env.DETJS_ORDER_SEED || '-')), String(Math.random())); });";
+      const dir = project(runner, 'p041-orderseed', { a: BODY_A, b: BODY_B, c: body });
+      det(runner, dir, ['--det-seed=4', '--det-outcomes=s4.json']);
+      const r = det(runner, dir, ['--det-seed=4', '--det-order-seed=9', '--det-outcomes=s4o9.json']);
+      const header = JSON.parse(fs.readFileSync(path.join(dir, '.detjs', 'trace.jsonl'), 'utf8').split('\n', 1)[0]).meta;
+      det(runner, dir, ['--det-seed=9', '--det-collect', '--det-outcomes=c9.json']);
+      ran(dir);
+      assert.deepEqual(outcomes(dir, 's4o9.json').order, outcomes(dir, 'c9.json').order, 'the order follows --det-order-seed');
+      assert.notDeepEqual(outcomes(dir, 's4o9.json').order, outcomes(dir, 's4.json').order);
+      assert.equal(fs.readFileSync(path.join(dir, 'r1-4-9'), 'utf8'), fs.readFileSync(path.join(dir, 'r1-4--'), 'utf8'),
+        'Math.random follows --det-seed, not the order');
+      assert.match(r.out, /order shuffled with seed 9 \(--det-order-seed; generators: seed 4\)/);
+      const cmd = `detjs ${runner}${runner === 'vitest' ? ' run' : ''} --det --det-seed=4 --det-order-seed=9 tests/a.test`;
+      assert.ok(r.out.includes(`rerun the failing file with the same seeds and order: ${cmd}`), r.out);
+      assert.equal(header.order_seed, 9);
+      assert.equal(header.seed, 4);
+    });
+
+    test('the failing run prints the command that reruns the failing file with the same seed (G-0447, G-1460)', T, () => {
+      const dir = project(runner, 'p041-rerun', { a: BODY_A, b: BODY_B });
+      const I = ids(runner);
+      const r = det(runner, dir, ['--det-seed=7', '--det-outcomes=full.json']);
+      const prefix = '  rerun the failing file with the same seeds and order: detjs ';
+      const line = `${prefix}${runner}${runner === 'vitest' ? ' run' : ''} --det --det-seed=7 ${I.a}`;
+      assert.ok(r.out.includes(`${line}\n`), r.out);
+      ran(dir);
+      // pasted as printed: the same failure with the same fingerprint
+      const env = { ...process.env };
+      for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS']) delete env[k];
+      const words = line.slice(prefix.length).split(' ');
+      spawnSync(process.execPath, [BIN, ...words, '--det-outcomes=re.json'], { cwd: dir, encoding: 'utf8', env, timeout: 120000 });
+      ran(dir);
+      assert.equal(outcomes(dir, 're.json').outcomes[I.a3], 'failed');
+      assert.equal(outcomes(dir, 're.json').fingerprints[I.a3], outcomes(dir, 'full.json').fingerprints[I.a3]);
+    });
+
     test('--det-order names a missing file: a clear error', T, () => {
       const dir = project(runner, 'p041-nofile', { a: "test('a1', () => {});" });
       const r = det(runner, dir, ['--det-order=missing.txt']);
@@ -175,3 +212,20 @@ for (const runner of RUNNERS.filter((r) => r === 'vitest' || r === 'jest')) {
     });
   });
 }
+
+describe('repro lines of the other Node shells (G-1460)', () => {
+  test('mocha: a failing --det run prints the command that reruns the failing file with the same seed', T, () => {
+    const { fixture } = require('./runner-helpers');
+    const dir = fixture('p041', 'mocha-rerun', {
+      'test/a.spec.js': "const assert = require('node:assert');\ndescribe('s', () => { it('ok', () => {}); it('bad', () => { assert.strictEqual(1, 2); }); });\n",
+    });
+    const env = { ...process.env };
+    for (const k of ['CI', 'GITHUB_ACTIONS', 'DETJS', 'NODE_OPTIONS']) delete env[k];
+    const r = spawnSync(process.execPath, [BIN, 'mocha', '--det', '--det-seed=5', 'test/a.spec.js'], { cwd: dir, encoding: 'utf8', env, timeout: 120000 });
+    const out = `${r.stdout}\n${r.stderr}`;
+    assert.notEqual(r.status, 0, out);
+    assert.match(out, /1 test\(s\) failed under --det \(seed 5, shuffled\)\./);
+    assert.ok(out.includes('  rerun the failing file with the same seeds and order: detjs mocha --det --det-seed=5 test/a.spec.js\n'), out);
+    assert.ok(!out.includes('fenvix repro'), 'mocha has no repro adapter: no fenvix repro line');
+  });
+});

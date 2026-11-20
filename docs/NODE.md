@@ -23,19 +23,32 @@ own CLI unchanged.
 `--det-cache=DIR|URL` adds the cache with proof (skip test files whose every recorded input is unchanged, with a
 receipt per reused result): [NODE-CACHE.md](NODE-CACHE.md).
 
-A failing test under `--det` ends the run with the command that turns it into a defect (as the pytest plugin does):
+A failing test under `--det` ends the run with ready-to-paste commands (every Node shell): the failing file(s) again
+with the same seeds and order, and, for Vitest, Jest and Playwright, the command that turns each failing test into a
+defect (as the pytest plugin does):
 
 ```
 1 test(s) failed under --det (seed 7, shuffled). Turn each into a reproducible defect (cause, seed, order, replay command):
     fenvix repro tests/a.test.ts::cache::evicts --runner=vitest --seed=7
+  rerun the failing file with the same seeds and order: detjs vitest run --det --det-seed=7 tests/a.test.ts
   the same run again: detjs vitest run --det --det-seed=7 (with the same arguments)
 ```
 
-## Repro: flaky test to reproducible defect (Vitest, Jest)
+`--det-seed=N` seeds both the order (shuffle) and every generator; `--det-order-seed=M` shuffles the order with `M`
+and leaves the generators on `--det-seed` (a new order with the same `Math.random` / `randomUUID` values, or new values
+in the same order: an order-dependent failure is told apart from a value-dependent one). Both are in the trace header
+(`seed`, `order_seed`) and in the rerun command.
 
-`fenvix repro TEST`, `fenvix explore --budget MIN` and `fenvix replay BUNDLE` work for Vitest and Jest with the same
-options, output and bundle as for pytest (docs/CLI.md on branch verifier-cli; before that branch merges:
-`python -m detpy.fenvix_js repro|explore|replay`, same options). The search, the minimisation, the replay verdict and
+`detjs playwright [test] --det [playwright test args]` runs Playwright Test with the project's configuration, one
+worker, no parallel mode and no retries, and the Level 0 controls and per-test brackets in the worker processes
+(`node/src/playwright/`): one trace, fingerprints per test, the repro options below. The browser and the web servers
+Playwright starts are separate processes, not controlled (the L2 lane); the test process is.
+
+## Repro: flaky test to reproducible defect (Vitest, Jest, Playwright)
+
+`fenvix repro TEST`, `fenvix explore --budget MIN` and `fenvix replay BUNDLE` work for Vitest, Jest and Playwright Test
+with the same options, output and bundle as for pytest (docs/CLI.md on branch verifier-cli). `detjs repro|explore|
+replay` runs the same driver (`python -m detpy.fenvix_js`, Python with detpy: `FENVIX_PYTHON`). The search, the minimisation, the replay verdict and
 the bundle are the runner-neutral Rust ones (`crates/detpy-core/src/repro.rs`); `python/detpy/fenvix_js.py` drives
 detjs (`DetjsRunner`, the `vitest` / `jest` / `playwright` adapters). The bundle's `runner` field picks the runner at
 replay; `command` is the detjs command line that reruns the bundle.
@@ -79,9 +92,12 @@ Level 0 does not control (its `uncontrolled.child|thread|io|level0` events, cont
 names the source (e.g. `child (execSync node -e ...)`); the polluters / setters its minimisation found on those
 unstable outcomes are kept in the bundle's `minimised` field, not reported as the cause.
 
-Playwright Test: no repro driver yet. `fenvix repro` says why (`PlaywrightAdapter.available`): detjs runs Playwright
-measured only (J11: no per-test brackets, no trace, no fingerprints, no `--det-order`, and the browser is not
-controlled).
+Playwright Test: the reporter detjs adds (`node/src/playwright/reporter.js`, Playwright >= 1.56 `preprocess`) orders
+and filters the tests before Playwright groups them; the worker (`node/src/playwright/worker.js`) runs a file's tests
+in that order (Playwright reloads the file in declaration order) and brackets each with Playwright's own `testBegin` /
+`testEnd`. Playwright starts a new worker after a failure: the file's remaining tests go to a second trace part,
+merged in run order. Test ids are the detjs ids (`<file>::<describe>::<title>`, ` [<project>]` when more than one
+project has tests).
 
 ## Layout
 
@@ -101,6 +117,8 @@ node/src/network.js   closed network, record/replay (net, tls, dns => http, http
 node/src/controls.js  installation (process-wide and per realm), per-file trace parts
 node/src/session.js   main process: options, DETJS_* environment, merge of parts, compare
 node/src/repro.js     --det-order / --det-outcomes / --det-collect, the `fenvix repro` line of a failing run
+node/src/playwright/   cli.js (detjs playwright: wrapped config, worker preload, merge of the parts), config.js,
+                      reporter.js (ids, order, --det-order / --det-collect, outcomes), worker.js (controls, brackets)
 node/src/vitest/      cli.js (Node API + sequencer), runner.mjs/shell.js (custom runner in the worker)
 node/src/jest/        cli.js (in-process jest-cli), sequencer.js, runner.js (wraps jest-circus)
 ```
@@ -194,7 +212,7 @@ Found by the shell tests (**T**), by the harness (**H**) or by design (**D**).
 | J7 | Network replay: a replayed socket is a Unix socket (`remoteAddress`/`remotePort` undefined); request bytes that differ from the recording reset the connection (the test sees the error, the trace has `replay-mismatch`, detjs prints the request; G-0130); recorded and replayed connections are closed when their test ends, so keep-alive agents reconnect per test (G-0129); credential request headers (`Authorization`, `Cookie`, `*-token`, `*-key`, ...) are stored as a digest padded to the same length (G-0131); UDP to non-local addresses is refused like a connection (G-0128); sockets intercepted by a mocking library (nock >= 14 / @mswjs/interceptors: an own `connect` on the socket and on its handle) are answered by the mock, the network stays closed for everything else (G-0127). TLS replay does not negotiate ALPN `h2`; `new dns.Resolver()` instances are not guarded (connections are). | T,D |
 | J8 | Only the order of directory enumeration is normalised; libraries that issue several asynchronous `readdir` calls in parallel (fast-glob) still merge results in completion order. | D |
 | J9 | (Vitest projects get the detjs runner and ordering on every resolved project, found by the harness on date-fns: before the fix project configs ignored them.) A file run by two projects of a Vitest workspace / Jest multi-project config yields two parts with the same test ids; the verifier then keeps one. | D |
-| J11 | Playwright Test is measured only (`node/src/register.js`, enabled with `NODE_OPTIONS=--require` in the worker processes): controls without per-test brackets or traces; the browser and web servers are not controlled. | D |
+| J11 | Playwright Test (`detjs playwright`): the test process is controlled and traced per test; the browser and the web servers are separate processes and are not controlled (what a page does in Chromium is not an event). Retries and parallel workers are switched off under `--det`. `node/src/register.js` (the earlier measurement-only preload) is kept for the harness. | D |
 | J14 | Jest under `--det` runs in band with `--forceExit`: a handle left open by a suite would otherwise keep the single process alive forever (react-testing-library hangs in band without `--det` too; in worker mode Jest kills the workers). Recorded in `meta.isolation`. | H |
 | J13 | Vitest (and Jest, since matrix-js-sdk: Jest compiles its `testRunner` with the project's Babel config, whose `transform-runtime` then required `@babel/runtime` from detjs's directory) load the detjs runner through a one-line shim in `<root>/node_modules/.detjs/` (removed at exit): a runner outside the project root is served by Vite and refused when the project restricts `server.fs` (found on jotai: 0 of 44 files ran). | H |
 | J12 | The wrappers call the runners' Node APIs in-process, so they reproduce what the runners' own CLIs set up first: `NODE_ENV=test` (Jest's bin; Babel configs such as kcd-scripts depend on it), `TEST`/`VITEST`/`NODE_ENV` and the CLI filters at `createVitest` (Vitest's `startVitest`). Found by the harness on user-event and jotai/pinia. | H |
