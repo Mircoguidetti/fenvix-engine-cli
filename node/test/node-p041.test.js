@@ -377,3 +377,49 @@ test('udp', async () => {
     });
   });
 }
+
+// G-0127: a mocking library that intercepts sockets the way nock >= 14 (@mswjs/interceptors) does: an own `connect`
+// on the socket instance and an own `connect` on its handle that answers without the network. Under --det the
+// mocked connection must work; a socket whose handle is not intercepted must still be refused. (Measured with real
+// nock 15.0 as well: see the P-041 report.)
+const INTERCEPT = `
+const net = require('node:net');
+function connectTo(host, mock) {
+  return new Promise((resolve) => {
+    const s = new net.Socket();
+    const proto = s.connect;
+    s.connect = new Proxy(proto, { apply(t, th, a) {
+      const r = Reflect.apply(t, th, a);
+      return r;
+    } });
+    if (mock) {
+      s.once('lookup', () => {});
+      const wrap = () => {
+        const h = s._handle;
+        if (!h || h.__mock) return;
+        h.__mock = true;
+        h.connect = h.connect6 = (req) => { process.nextTick(() => req.oncomplete(0, h, req, true, true)); return 0; };
+        h.readStart = () => 0; h.readStop = () => 0;
+      };
+      const origLookup = (hn, o, cb) => { if (typeof o === 'function') cb = o; wrap(); return o && o.all ? cb(null, [{ address: '203.0.113.9', family: 4 }]) : cb(null, '203.0.113.9', 4); };
+      s.on('connect', () => { resolve('connected'); s.destroy(); });
+      s.on('error', (e) => resolve('error ' + e.code));
+      s.connect({ host, port: 80, lookup: origLookup });
+    } else {
+      const lk = (hn, o, cb) => { if (typeof o === 'function') cb = o; return o && o.all ? cb(null, [{ address: '203.0.113.9', family: 4 }]) : cb(null, '203.0.113.9', 4); };
+      s.on('connect', () => { resolve('connected'); s.destroy(); });
+      s.on('error', (e) => resolve('error ' + e.code));
+      s.connect({ host, port: 80, lookup: lk });
+    }
+  });
+}
+test('mocked socket connects', async () => { expect(await connectTo('api.example.com', true)).toBe('connected'); });
+test('unmocked socket with an overridden connect is refused', async () => { expect(await connectTo('api.example.com', false)).toMatch(/^error /); });
+`;
+for (const runner of RUNNERS) {
+  test(`${runner}: G-0127 an intercepting mock library works under --det; the network stays closed`, T, () => {
+    const dir = proj(runner, 'intercept', { a: (runner === 'vitest' ? "import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\n" : '') + INTERCEPT });
+    const r = run(runner, dir, [], { cache: false });
+    assert.equal(r.status, 0, show(r));
+  });
+}

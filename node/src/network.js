@@ -312,6 +312,17 @@ function connect(...args) {
   if (!POLICY.external(rawHost, port)) return real.connect.apply(this, args);
   const host = POLICY.hostname(rawHost);
   const isTls = this instanceof tls.TLSSocket;
+  // A mocking library that intercepts this socket (nock >= 14 / @mswjs/interceptors: an own `connect` on the
+  // instance, the answer served from its handle): no real connection is made here. The real connection, if the mock
+  // passes the request through, is a new socket and comes back through this function (audit G-0127).
+  if (Object.prototype.hasOwnProperty.call(this, 'connect') && this._handle && Object.prototype.hasOwnProperty.call(this._handle, 'connect')) {
+    STATE.record('net', 'net.connect', `${host}:${port} intercepted`);
+    return real.connect.apply(this, args);
+  }
+  if (Object.prototype.hasOwnProperty.call(this, 'connect')) {
+    guardHandle(this, host, port);
+    return real.connect.apply(this, args);
+  }
   if (POLICY.mode === 'record') {
     if (inTlsConnect || isTls || STATE.testId === null) return real.connect.apply(this, args);
     const r = real.connect.apply(this, args);
@@ -329,6 +340,32 @@ function connect(...args) {
     }
   }
   return blockSocket(this, host, port);
+}
+
+/**
+ * A socket whose `connect` a library overrode on the instance, without (yet) a handle of its own: the connection is
+ * decided when the handle connects. An interceptor replaces `handle.connect` on the instance (mocked: no network);
+ * otherwise the handle's own connect would reach the network and is refused.
+ */
+function guardHandle(sock, host, port) {
+  const arm = () => {
+    const h = sock._handle;
+    if (!h || h.__detjsGuard) return;
+    Object.defineProperty(h, '__detjsGuard', { value: true });
+    const protoConnect = Object.getPrototypeOf(h).connect;
+    for (const k of ['connect', 'connect6']) {
+      if (Object.prototype.hasOwnProperty.call(h, k)) continue; // intercepted: mocked
+      const orig = h[k];
+      if (typeof orig !== 'function') continue;
+      h[k] = function guarded(...a) {
+        if (Object.prototype.hasOwnProperty.call(h, 'connect') && h.connect !== guarded && h.connect !== protoConnect) return orig.apply(this, a);
+        STATE.record('net', 'net.connect', `${host}:${port} blocked`);
+        return -111; // UV_ECONNREFUSED: net reports "connect ECONNREFUSED"
+      };
+    }
+  };
+  arm();
+  sock.once('lookup', arm);
 }
 
 // tls.connect --------------------------------------------------------------------
