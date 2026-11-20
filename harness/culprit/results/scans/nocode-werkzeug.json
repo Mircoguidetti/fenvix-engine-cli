@@ -1,0 +1,33 @@
+{
+ "project": "werkzeug",
+ "green": "b73dce5a2ce14f7c7fd645699d1d878de48d2948",
+ "red": "0f43c6ebd426039e4b99ec22535c2c8a2ec2f69f",
+ "exit": {
+  "base": 0,
+  "tz": 0,
+  "locale": 0,
+  "lang": 0,
+  "no-color": 0,
+  "force-color": 0,
+  "term": 0,
+  "columns": 0,
+  "ci": 0,
+  "optimize": 1,
+  "devmode": 0,
+  "ioenc": 0,
+  "home": 0,
+  "language": 0
+ },
+ "by_change": {
+  "optimize": [
+   "tests/middleware/test_dispatcher.py::test_dispatcher",
+   "tests/middleware/test_http_proxy.py::test_http_proxy",
+   "tests/middleware/test_lint.py::test_lint_middleware",
+   "tests/middleware/test_lint.py::test_lint_middleware_check_environ[wsgi.version-value0-Environ is not a WSGI 1.0 environ.]",
+   "tests/middleware/test_lint.py::test_lint_middleware_check_environ[SCRIPT_NAME-test-'SCRIPT_NAME' does not start with a slash:]"
+  ],
+  "_session_red": [
+   "optimize"
+  ]
+ }
+}

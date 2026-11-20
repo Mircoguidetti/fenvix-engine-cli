@@ -182,6 +182,8 @@ struct State {
     /// Paths this session's code created exclusively after finding them missing, with their writers then
     /// (review R-009b R2).
     excl_seeded: Vec<(W, Py<PyAny>)>,
+    /// `--det-cache-keys`: JSON of every test's inputs, built by `record` when asked.
+    keys_json: Option<String>,
 }
 
 /// `json.dumps`-able value of a report attribute (`Err`: what `json.dumps` raises for it).
@@ -698,7 +700,7 @@ impl CacheSession {
     /// the session's state, the capture (`CaptureCore.fill_plan`) and the facts the shell computed (`fcache`:
     /// `{rel: store index or None}`, `needed`, the folded lines `per` / `imp`), then recorded in the store. The
     /// reasons a test is not cached and where are kept. Returns the seconds spent recording (the "assemble" phase).
-    #[pyo3(signature = (store, cap, items, fcache, needed, per, imp, module_of, control_urandom, time_controlled, cassette_path))]
+    #[pyo3(signature = (store, cap, items, fcache, needed, per, imp, module_of, control_urandom, time_controlled, cassette_path, keys=false))]
     #[allow(clippy::too_many_arguments)]
     fn record<'py>(
         &self,
@@ -714,6 +716,7 @@ impl CacheSession {
         control_urandom: bool,
         time_controlled: bool,
         cassette_path: Option<Bound<'py, PyAny>>,
+        keys: bool,
     ) -> PyResult<f64> {
         let os = py.import("os")?;
         let ospath = os.getattr("path")?;
@@ -810,9 +813,13 @@ impl CacheSession {
         }
         plan.env0 = cap.getattr(intern!(py, "env0"))?.extract()?;
         let t = Instant::now();
-        let out = store.get().record_plan(py, plan, cap)?;
+        let mut dump = if keys { Some(Map::new()) } else { None };
+        let out = store.get().record_plan(py, plan, cap, dump.as_mut())?;
         let assemble = t.elapsed().as_secs_f64();
         let mut st = lock(&self.st);
+        if let Some(d) = dump {
+            st.keys_json = Some(Value::Object(d).to_string());
+        }
         st.recorded += out.recorded as i64;
         for (nid, path) in out.stale {
             st.stale_hits.insert(nid.into_bytes(), path.into_bytes());
@@ -884,6 +891,11 @@ impl CacheSession {
         for (k, v) in stale {
             st.stale_hits.insert(k.into_bytes(), v.into_bytes());
         }
+    }
+
+    /// The `--det-cache-keys` dump of the last `record(..., keys=True)`: JSON `{nodeid: inputs}`, or None.
+    fn keys_json(&self) -> Option<String> {
+        lock(&self.st).keys_json.clone()
     }
 
     // -- timings and errors ----------------------------------------------------------------------------------------

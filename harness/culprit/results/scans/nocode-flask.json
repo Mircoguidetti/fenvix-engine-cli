@@ -1,0 +1,33 @@
+{
+ "project": "flask",
+ "green": "d318b683471101618febed18996405ad26462110",
+ "red": "49943b5a94413a530761350f04e896f76e8d620e",
+ "exit": {
+  "base": 0,
+  "tz": 0,
+  "locale": 0,
+  "lang": 0,
+  "no-color": 0,
+  "force-color": 0,
+  "term": 0,
+  "columns": 0,
+  "ci": 0,
+  "optimize": 1,
+  "devmode": 0,
+  "ioenc": 0,
+  "home": 0,
+  "language": 0
+ },
+ "by_change": {
+  "optimize": [
+   "tests/test_appctx.py::test_basic_url_generation",
+   "tests/test_appctx.py::test_url_generation_requires_server_name",
+   "tests/test_appctx.py::test_url_generation_without_context_fails",
+   "tests/test_appctx.py::test_request_context_means_app_context",
+   "tests/test_appctx.py::test_app_context_provides_current_app"
+  ],
+  "_session_red": [
+   "optimize"
+  ]
+ }
+}

@@ -649,7 +649,8 @@ impl ProofCache {
 
     /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);
     /// the store is not saved (`CacheSession.record`).
-    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>) -> PyResult<record::Outcome> {
+    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>,
+                              keys: Option<&mut serde_json::Map<String, serde_json::Value>>) -> PyResult<record::Outcome> {
         cap.get().fill_plan(py, &mut plan)?;
         let mut g = lock(&self.inner);
         for t in &plan.tests {
@@ -657,7 +658,7 @@ impl ProofCache {
         }
         g.last_written = plan.session_written.clone();
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
-        let out = record::record_session(&mut g.store, &plan);
+        let out = record::record_session_keys(&mut g.store, &plan, keys);
         g.last_reads = out.reads.clone();
         g.last_order = plan.tests.iter().map(|t| t.nodeid.clone()).collect();
         for (n, _) in &out.stale {

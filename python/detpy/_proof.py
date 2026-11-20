@@ -606,6 +606,7 @@ class ProofSession:
         self.items: dict[str, object] = {}
         self.run_id = f"{time.strftime('%Y%m%dT%H%M%S', time.gmtime(_now()))}-{os.getpid()}"
         self.sess = _core.CacheSession(self.run_id, self.receipts_path)
+        self.keys_path: str | None = None  # --det-cache-keys (the culprit finder's input)
         # pytest-xdist under --det (pytest shell only): "controller" (decides, reports hits, merges the shards),
         # "worker" (runs what the plan sends, records a shard), "serial" (every other runner)
         self.role = "serial"
@@ -852,9 +853,12 @@ class ProofSession:
         per, imp = cap.rec.fold(len(cap.ctx_names), cap.segs, store.unit_ranges([fcache.get(r) for r in cap.fnames]))
         cfg = _state.STATE.config
         assemble = sess.record(store, cap, self.items, fcache, needed, per, imp, _module_of,
-                               bool(cfg.control_urandom), "time" in cfg.controls, cfg.cassette_path)
+                               bool(cfg.control_urandom), "time" in cfg.controls, cfg.cassette_path,
+                               bool(self.keys_path))
         sess.set_phase("plan", _perf() - t - assemble)
         sess.set_phase("assemble", assemble)
+        if self.keys_path:
+            self._dump_keys()
         t = _perf()
         if self.role == "worker":
             self.shard_path = os.path.join(self.dir, "shards", f"{self.run_id}.{self.worker}.json")
@@ -862,6 +866,65 @@ class ProofSession:
         else:
             store.save()
         sess.set_phase("save", _perf() - t)
+
+    def _dump_keys(self) -> None:
+        """``--det-cache-keys``: every test's inputs (any outcome), resolved to paths, names and digests.
+
+        Prototype for the culprit finder: the per-test inputs are built in Rust next to the record plan
+        (``detpy_core::record::record_session_keys``), for every test that ran, failures and uncacheable tests
+        included, without the cacheability checks. Writes JSON only.
+        """
+        raw = self.sess.keys_json()
+        tests = json.loads(raw) if raw else {}
+        try:
+            dists, _editable = _dist_infos(self.root, os.path.join(self.dir, "distributions.json"))
+        except Exception:
+            dists = []
+        # top-level import names loaded in this process, mapped to their distributions (prunes package changes)
+        loaded_dists: set[str] = set()
+        try:
+            from importlib import metadata
+
+            pkg = metadata.packages_distributions()
+            for m in list(sys.modules):
+                for dname in pkg.get(m.split(".", 1)[0], ()):
+                    loaded_dists.add(dname.lower().replace("_", "-"))
+        except Exception:
+            pass
+        # interpreter start-up settings (PYTHON* variables, -W/-X options, flags): read by C at start-up, so no
+        # os.environ event records them and they are not in the config or runtime digest
+        env0 = dict(self.cap.env0)
+        interp = {
+            "warnoptions": list(sys.warnoptions),
+            "xoptions": {str(k): str(v) for k, v in getattr(sys, "_xoptions", {}).items()},
+            "flags": repr(sys.flags),
+            "env": {k: _core.env_value_digest(v) for k, v in sorted(env0.items())
+                    if k.startswith("PYTHON") and k not in ("PYTHONHASHSEED",)},
+        }
+        out = {
+            "root": self.root,
+            "interpreter": interp,
+            "config": self.config_digest,
+            "config_info": self.config_info,
+            "runtime": self.runtime_digest,
+            "runtime_info": self.runtime_info,
+            "distributions": dists,
+            "loaded_distributions": sorted(loaded_dists),
+            "epoch": self.epoch,
+            "tests": tests,
+        }
+        # one file per recording process: an xdist worker or a --det-isolate child records its own tests only
+        path = self.keys_path
+        if self.role == "worker":
+            path = f"{path}.{self.worker}"
+        elif self.iso_child:
+            path = f"{path}.{os.getpid()}"
+        try:
+            os.makedirs(os.path.dirname(os.path.abspath(path)) or ".", exist_ok=True)
+            with open(path, "w") as fh:
+                json.dump(out, fh, sort_keys=True, default=str)
+        except OSError:
+            pass
 
     # -- --det-isolate (a shell that forks a child per test calls these) ------------------------------------------
     def merge_shards(self, paths: list, edges=(), lists: dict | None = None, t0: float | None = None) -> None:

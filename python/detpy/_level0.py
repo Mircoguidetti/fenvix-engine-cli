@@ -107,6 +107,10 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                         "directory every job sees; also DETPY_CACHE_SHARED). Candidates are fetched "
                                         "before the reuse decision and checked like local entries; this session's "
                                         "entries are pushed at the end (by the controller under -n)")),
+    (("--det-cache-keys",), dict(default=None, metavar="PATH",
+                                 help="with --det-cache (input of the culprit finder): also write every test's inputs, "
+                                      "resolved to names and digests, to PATH as JSON, for every outcome (failures "
+                                      "included); nothing else changes")),
     (("--det-cache-receipts",), dict(default=None, metavar="PATH",
                                      help="where to write the per-test receipts (JSON lines; default "
                                           "DIR/receipts.jsonl)")),

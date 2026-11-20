@@ -1,0 +1,1129 @@
+{
+ "a": {
+  "cases": 200,
+  "repos": 10,
+  "finder_correct": 200,
+  "bisect_correct": 200,
+  "finder_exec": {
+   "n": 200,
+   "median": 3.0,
+   "mean": 3.19,
+   "p90": 5,
+   "max": 7
+  },
+  "bisect_exec": {
+   "n": 200,
+   "median": 5.0,
+   "mean": 4.83,
+   "p90": 7,
+   "max": 8
+  },
+  "finder_wall": {
+   "n": 200,
+   "median": 8.125,
+   "mean": 9.72,
+   "p90": 20.74,
+   "max": 37.66
+  },
+  "bisect_wall": {
+   "n": 200,
+   "median": 2.7649999999999997,
+   "mean": 3.5,
+   "p90": 6.68,
+   "max": 11.91
+  },
+  "candidates": {
+   "n": 200,
+   "median": 11.0,
+   "mean": 18.76,
+   "p90": 47,
+   "max": 119
+  },
+  "k": {
+   "n": 200,
+   "median": 28.5,
+   "mean": 50.83,
+   "p90": 140,
+   "max": 200
+  },
+  "exact": 200,
+  "wrong": [],
+  "bisect_wrong": []
+ },
+ "a_by_k": {
+  "121-205": {
+   "n": 28,
+   "finder_correct": 28,
+   "finder_exec_median": 5.5,
+   "bisect_exec_median": 7.0,
+   "candidates_median": 55.0
+  },
+  "21-60": {
+   "n": 57,
+   "finder_correct": 57,
+   "finder_exec_median": 3,
+   "bisect_exec_median": 5,
+   "candidates_median": 13
+  },
+  "5-20": {
+   "n": 84,
+   "finder_correct": 84,
+   "finder_exec_median": 2.0,
+   "bisect_exec_median": 3.0,
+   "candidates_median": 5.0
+  },
+  "61-120": {
+   "n": 31,
+   "finder_correct": 31,
+   "finder_exec_median": 5,
+   "bisect_exec_median": 6,
+   "candidates_median": 23
+  }
+ },
+ "a_by_repo": {
+  "attrs": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 4.0,
+   "candidate_share_median": 0.16
+  },
+  "boltons": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 2.0,
+   "candidate_share_median": 0.32
+  },
+  "cachetools": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 4.0,
+   "candidate_share_median": 0.4
+  },
+  "click": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 3.0,
+   "candidate_share_median": 0.68
+  },
+  "jinja": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 3.0,
+   "candidate_share_median": 0.34
+  },
+  "marshmallow": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 3.0,
+   "candidate_share_median": 0.18
+  },
+  "more-itertools": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 4.0,
+   "candidate_share_median": 0.61
+  },
+  "sqlparse": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 4.5,
+   "candidate_share_median": 0.56
+  },
+  "structlog": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 1.0,
+   "candidate_share_median": 0.16
+  },
+  "toolz": {
+   "n": 20,
+   "ok": 20,
+   "exec_median": 5.0,
+   "candidate_share_median": 0.82
+  }
+ },
+ "b": {
+  "transitions_checked": 5,
+  "skipped": [
+   {
+    "walk": "s1d/pygments-0of1",
+    "step": 8,
+    "why": "no pass-to-fail test (only new failing tests)"
+   },
+   {
+    "walk": "s1d/pygments-0of1",
+    "step": 13,
+    "why": "no pass-to-fail test (only new failing tests)"
+   },
+   {
+    "walk": "s1d/arrow-0of1",
+    "step": 6,
+    "why": "no pass-to-fail test (only new failing tests)"
+   },
+   {
+    "walk": "s1d/arrow-0of1",
+    "step": 28,
+    "why": "no pass-to-fail test (only new failing tests)"
+   },
+   {
+    "walk": "s1d/jinja-0of1",
+    "step": 20,
+    "why": "no pass-to-fail test (only new failing tests)"
+   }
+  ],
+  "cases": 0,
+  "finder_correct": 0,
+  "bisect_correct": 0,
+  "finder_exec": {},
+  "bisect_exec": {},
+  "rows": []
+ },
+ "c": {
+  "cases": 40,
+  "finder_correct": 40,
+  "bisect_correct": 20,
+  "singles": 14,
+  "singles_correct": 14,
+  "finder_exec": {
+   "n": 40,
+   "median": 2.0,
+   "mean": 1.62,
+   "p90": 2,
+   "max": 3
+  },
+  "bisect_exec": {
+   "n": 40,
+   "median": 3.0,
+   "mean": 3,
+   "p90": 3,
+   "max": 3
+  },
+  "rebuild_needed": 36,
+  "rebuilt_exactly": 33,
+  "skipped": [
+   {
+    "id": "click-env-none",
+    "why": "no red test that only the change breaks (red failures: 0, also red at green: 0)"
+   },
+   {
+    "id": "click-env-tz",
+    "why": "no red test that only the change breaks (red failures: 0, also red at green: 0)"
+   },
+   {
+    "id": "click-env-dep",
+    "why": "no red test that only the change breaks (red failures: 0, also red at green: 0)"
+   }
+  ],
+  "rows": [
+   {
+    "id": "sqlparse-env-none",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "4/7",
+    "bisect": "31903e09db",
+    "bisect_ok": false
+   },
+   {
+    "id": "toolz-env-none",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 1,
+    "exact": false,
+    "cands": [
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "7/7",
+    "bisect": "03b37158ab",
+    "bisect_ok": false
+   },
+   {
+    "id": "sqlparse-env-tz",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS",
+     "env:TZ"
+    ],
+    "commits": "4/7",
+    "bisect": "31903e09db",
+    "bisect_ok": false
+   },
+   {
+    "id": "toolz-env-tz",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": false,
+    "cands": [
+     "env:PYTHONWARNINGS",
+     "env:TZ"
+    ],
+    "commits": "7/7",
+    "bisect": "03b37158ab",
+    "bisect_ok": false
+   },
+   {
+    "id": "sqlparse-env-dep",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy",
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "4/7",
+    "bisect": "31903e09db",
+    "bisect_ok": false
+   },
+   {
+    "id": "toolz-env-dep",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": false,
+    "cands": [
+     "dist:pluggy",
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "7/7",
+    "bisect": "03b37158ab",
+    "bisect_ok": false
+   },
+   {
+    "id": "sqlparse-data-none",
+    "truth": "88268e377c16cb49c9ac926c0376226f1e1888f5",
+    "named": "88268e377c16cb49c9ac926c0376226f1e1888f5",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [],
+    "commits": "4/8",
+    "bisect": "88268e377c",
+    "bisect_ok": true
+   },
+   {
+    "id": "sqlparse-data-tz",
+    "truth": "6e4457feb7ab5a752ee37a9da5a9e8d14ab842dd",
+    "named": "6e4457feb7ab5a752ee37a9da5a9e8d14ab842dd",
+    "ok": true,
+    "exec": 3,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "4/8",
+    "bisect": "6e4457feb7",
+    "bisect_ok": true
+   },
+   {
+    "id": "sqlparse-data-dep",
+    "truth": "965ec25d22e784830f402414882eb31badc179e4",
+    "named": "965ec25d22e784830f402414882eb31badc179e4",
+    "ok": true,
+    "exec": 3,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "4/8",
+    "bisect": "965ec25d22",
+    "bisect_ok": true
+   },
+   {
+    "id": "pygments-data-none",
+    "truth": "092fd056fa8b0738233607ed75502612b886a640",
+    "named": "092fd056fa8b0738233607ed75502612b886a640",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [],
+    "commits": "2/8",
+    "bisect": "092fd056fa",
+    "bisect_ok": true
+   },
+   {
+    "id": "flask-dep-none",
+    "truth": "dist:pytest",
+    "named": "dist:pytest",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "dist:pytest"
+    ],
+    "commits": "2/7",
+    "bisect": "218880c7fd",
+    "bisect_ok": false
+   },
+   {
+    "id": "pygments-data-tz",
+    "truth": "5bf1b4ab8316c72a04859c310f6540e7ffb02911",
+    "named": "5bf1b4ab8316c72a04859c310f6540e7ffb02911",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "2/8",
+    "bisect": "5bf1b4ab83",
+    "bisect_ok": true
+   },
+   {
+    "id": "flask-dep-tz",
+    "truth": "dist:pytest",
+    "named": "dist:pytest",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pytest",
+     "env:TZ"
+    ],
+    "commits": "2/7",
+    "bisect": "218880c7fd",
+    "bisect_ok": false
+   },
+   {
+    "id": "flask-dep-dep",
+    "truth": "dist:pytest",
+    "named": "dist:pytest",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy",
+     "dist:pytest"
+    ],
+    "commits": "2/7",
+    "bisect": "218880c7fd",
+    "bisect_ok": false
+   },
+   {
+    "id": "pygments-data-dep",
+    "truth": "750502316ef0cd7a56dbb6962b53903a39f8fdb5",
+    "named": "750502316ef0cd7a56dbb6962b53903a39f8fdb5",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "2/8",
+    "bisect": "750502316e",
+    "bisect_ok": true
+   },
+   {
+    "id": "flask-data-none",
+    "truth": "e250e0ef3f5f4fa06669c128a5df90fc855d1bbd",
+    "named": "e250e0ef3f5f4fa06669c128a5df90fc855d1bbd",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [],
+    "commits": "3/8",
+    "bisect": "e250e0ef3f",
+    "bisect_ok": true
+   },
+   {
+    "id": "jinja-data-none",
+    "truth": "1332e262784c40adabf5b027c53685e6aa8ce391",
+    "named": "1332e262784c40adabf5b027c53685e6aa8ce391",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [],
+    "commits": "3/8",
+    "bisect": "1332e26278",
+    "bisect_ok": true
+   },
+   {
+    "id": "jinja-data-tz",
+    "truth": "df920492e0aca8787175a5973564b87edf4c36e0",
+    "named": "df920492e0aca8787175a5973564b87edf4c36e0",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "3/8",
+    "bisect": "df920492e0",
+    "bisect_ok": true
+   },
+   {
+    "id": "flask-data-tz",
+    "truth": "6f93f858cb27d3cab6775ab8362f96639fb8b075",
+    "named": "6f93f858cb27d3cab6775ab8362f96639fb8b075",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "3/8",
+    "bisect": "6f93f858cb",
+    "bisect_ok": true
+   },
+   {
+    "id": "jinja-data-dep",
+    "truth": "d216fec47d6dd72315585faa051911d288b0f65e",
+    "named": "d216fec47d6dd72315585faa051911d288b0f65e",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "3/8",
+    "bisect": "d216fec47d",
+    "bisect_ok": true
+   },
+   {
+    "id": "flask-data-dep",
+    "truth": "e6b55ebac06c8130f66065be3fc0cf55d4f7055d",
+    "named": "e6b55ebac06c8130f66065be3fc0cf55d4f7055d",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "3/8",
+    "bisect": "e6b55ebac0",
+    "bisect_ok": true
+   },
+   {
+    "id": "werkzeug-data-none",
+    "truth": "845b6e9d7bb87caa6fe0533c3412b0649869c60d",
+    "named": "845b6e9d7bb87caa6fe0533c3412b0649869c60d",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [],
+    "commits": "7/8",
+    "bisect": "845b6e9d7b",
+    "bisect_ok": true
+   },
+   {
+    "id": "structlog-dep-none",
+    "truth": "dist:rich",
+    "named": "dist:rich",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "dist:rich"
+    ],
+    "commits": "2/7",
+    "bisect": "ba04ac2752",
+    "bisect_ok": false
+   },
+   {
+    "id": "werkzeug-data-tz",
+    "truth": "d8ca8e2b887b7ca0d277824fc8863ba7f399b730",
+    "named": "d8ca8e2b887b7ca0d277824fc8863ba7f399b730",
+    "ok": true,
+    "exec": 3,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "7/8",
+    "bisect": "d8ca8e2b88",
+    "bisect_ok": true
+   },
+   {
+    "id": "structlog-dep-tz",
+    "truth": "dist:rich",
+    "named": "dist:rich",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:rich",
+     "env:TZ"
+    ],
+    "commits": "2/7",
+    "bisect": "ba04ac2752",
+    "bisect_ok": false
+   },
+   {
+    "id": "werkzeug-data-dep",
+    "truth": "e698a733d17ce9a2ce66222a5450293f03cc4dfe",
+    "named": "e698a733d17ce9a2ce66222a5450293f03cc4dfe",
+    "ok": true,
+    "exec": 3,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "7/8",
+    "bisect": "e698a733d1",
+    "bisect_ok": true
+   },
+   {
+    "id": "structlog-dep-dep",
+    "truth": "dist:rich",
+    "named": "dist:rich",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy",
+     "dist:rich"
+    ],
+    "commits": "2/7",
+    "bisect": "ba04ac2752",
+    "bisect_ok": false
+   },
+   {
+    "id": "boltons-env-none",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "2/7",
+    "bisect": "bba729bf45",
+    "bisect_ok": false
+   },
+   {
+    "id": "boltons-env-tz",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS",
+     "env:TZ"
+    ],
+    "commits": "2/7",
+    "bisect": "bba729bf45",
+    "bisect_ok": false
+   },
+   {
+    "id": "home-assistant-data-none",
+    "truth": "9509e10e90b8685c9f6b7a7bea5e5d04b9fab921",
+    "named": "9509e10e90b8685c9f6b7a7bea5e5d04b9fab921",
+    "ok": true,
+    "exec": 0,
+    "exact": null,
+    "cands": [],
+    "commits": "1/8",
+    "bisect": "9509e10e90",
+    "bisect_ok": true
+   },
+   {
+    "id": "boltons-env-dep",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy",
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "2/7",
+    "bisect": "bba729bf45",
+    "bisect_ok": false
+   },
+   {
+    "id": "home-assistant-data-tz",
+    "truth": "61e2f214b1c447894e5022a1fda6aa48da5e989f",
+    "named": "61e2f214b1c447894e5022a1fda6aa48da5e989f",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "1/8",
+    "bisect": "61e2f214b1",
+    "bisect_ok": true
+   },
+   {
+    "id": "home-assistant-data-dep",
+    "truth": "fad8e514373412171bd3ef3397890c1ee1cc3f41",
+    "named": "fad8e514373412171bd3ef3397890c1ee1cc3f41",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "dist:pluggy"
+    ],
+    "commits": "1/8",
+    "bisect": "fad8e51437",
+    "bisect_ok": true
+   },
+   {
+    "id": "pygments-env-none",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "5/7",
+    "bisect": "21fb2b5d7b",
+    "bisect_ok": false
+   },
+   {
+    "id": "pygments-env-tz",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "env:PYTHONWARNINGS",
+     "env:TZ"
+    ],
+    "commits": "5/7",
+    "bisect": "21fb2b5d7b",
+    "bisect_ok": false
+   },
+   {
+    "id": "pygments-env-dep",
+    "truth": "env:PYTHONWARNINGS",
+    "named": "env:PYTHONWARNINGS",
+    "ok": true,
+    "exec": 2,
+    "exact": true,
+    "cands": [
+     "dist:pluggy",
+     "env:PYTHONWARNINGS"
+    ],
+    "commits": "5/7",
+    "bisect": "21fb2b5d7b",
+    "bisect_ok": false
+   },
+   {
+    "id": "docusaurus-data-none",
+    "truth": "312017c1a1e42f21c1ae65a67569c47f117f242a",
+    "named": "312017c1a1e42f21c1ae65a67569c47f117f242a",
+    "ok": true,
+    "exec": 0,
+    "exact": null,
+    "cands": [],
+    "commits": "1/8",
+    "bisect": "312017c1a1",
+    "bisect_ok": true
+   },
+   {
+    "id": "docusaurus-data-tz",
+    "truth": "685949872e325260f3a70ee5592054abf4177e27",
+    "named": "685949872e325260f3a70ee5592054abf4177e27",
+    "ok": true,
+    "exec": 1,
+    "exact": true,
+    "cands": [
+     "env:TZ"
+    ],
+    "commits": "1/8",
+    "bisect": "685949872e",
+    "bisect_ok": true
+   },
+   {
+    "id": "docusaurus-env-none",
+    "truth": "env:NODE_ENV",
+    "named": "env:NODE_ENV",
+    "ok": true,
+    "exec": 0,
+    "exact": null,
+    "cands": [
+     "env:NODE_ENV"
+    ],
+    "commits": "0/7",
+    "bisect": "f390446c20",
+    "bisect_ok": false
+   },
+   {
+    "id": "docusaurus-env-tz",
+    "truth": "env:NODE_ENV",
+    "named": "env:NODE_ENV",
+    "ok": true,
+    "exec": 1,
+    "exact": null,
+    "cands": [
+     "env:NODE_ENV",
+     "env:TZ"
+    ],
+    "commits": "0/7",
+    "bisect": "f390446c20",
+    "bisect_ok": false
+   }
+  ]
+ },
+ "d": {
+  "victims_tried": 118,
+  "cases": 63,
+  "finder_correct": 62,
+  "finder_exec": {
+   "n": 63,
+   "median": 17,
+   "mean": 17.03,
+   "p90": 21,
+   "max": 30
+  },
+  "finder_exec_polluter": {
+   "n": 63,
+   "median": 8,
+   "mean": 8.37,
+   "p90": 12,
+   "max": 14
+  },
+  "finder_exec_commit": {
+   "n": 63,
+   "median": 10,
+   "mean": 8.67,
+   "p90": 14,
+   "max": 16
+  },
+  "finder_wall": {
+   "n": 63,
+   "median": 8.08,
+   "mean": 15.45,
+   "p90": 31.97,
+   "max": 71.59
+  },
+  "bisect_attempts": 630,
+  "bisect_wrong": 548,
+  "bisect_cases_any_wrong": 62,
+  "bisect_cases_majority_wrong": 55,
+  "bisect_exec": {
+   "n": 630,
+   "median": 4.0,
+   "mean": 3.93,
+   "p90": 6,
+   "max": 15
+  },
+  "bisect_wall": {
+   "n": 630,
+   "median": 3.61,
+   "mean": 6.09,
+   "p90": 9.47,
+   "max": 84.97
+  },
+  "named_adds_polluter_or_victim_file": 63,
+  "skipped": [
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_command_context.py::test_manual_context_noccr",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_merger.py::test_core_commands",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-centreon-sdk-python",
+    "victim": "tests/test_hosts.py::TestHosts::test_hosts_add",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-centreon-sdk-python",
+    "victim": "tests/test_hosts.py::TestHost::test_host_applytemplate",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-centreon-sdk-python",
+    "victim": "tests/test_hosts.py::TestHost::test_host_getcontactgroup",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-devtracker",
+    "victim": "devtracker/test_devtracker.py::test_add_start",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-devtracker",
+    "victim": "devtracker/test_devtracker.py::test_current_status",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-easypy",
+    "victim": "tests/test_caching.py::test_resilient_between_timecaches",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-easypy",
+    "victim": "tests/test_concurrency.py::test_thread_contexts_counters",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-eppy",
+    "victim": "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-eppy",
+    "victim": "eppy/tests/test_modeleditor.py::test_idd_index",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-freezegun",
+    "victim": "tests/test_warnings.py::test_ignore_warnings_in_start",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-freezegun",
+    "victim": "tests/test_warnings.py::test_ignore_warnings_in_stop",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-mdutils",
+    "victim": "tests/test_mdutils.py::TestMdUtils::test_create_md_file",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-mdutils",
+    "victim": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-py-autodoc",
+    "victim": "tests/test_autodoc.py::TestAutodoc::test_parse_responses",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-py-autodoc",
+    "victim": "tests/test_autodoc.py::TestAutodoc::test_parse_response",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-pykicad",
+    "victim": "tests/test_module.py::ModuleTests::test_module",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-supertunnel",
+    "victim": "supertunnel/ssh/continuous_test.py::test_backoff",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-supertunnel",
+    "victim": "supertunnel/ssh/continuous_test.py::test_run",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-todo-sync",
+    "victim": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-todo-sync",
+    "victim": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "rich",
+    "victim": "tests/test_box.py::test_get_row",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "rich",
+    "victim": "tests/test_rule_in_table.py::test_rule_in_expanded_table",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_merger.py::test_context_commands",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_merger.py::test_invalid",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_loading.py::test_loading",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_merger.py::test_noccr_commands",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-breathe",
+    "victim": "tests/test_loading.py::test_reloading",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-centreon-sdk-python",
+    "victim": "tests/test_hosts.py::TestHosts::test_hosts_delete",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-centreon-sdk-python",
+    "victim": "tests/test_hosts.py::TestHosts::test_hosts_delete_with_obj",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-cloudnetpy",
+    "victim": "tests/unit/test_drizzle.py::test_calc_fall_velocity",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-coinbase-commerce-python",
+    "victim": "tests/api_resources/base/test_create_api_resource.py::TestCreateAPIResource::test_create",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-coinbase-commerce-python",
+    "victim": "tests/api_resources/base/test_list_api_resource.py::TestListAPIResource::test_list",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-coinbase-commerce-python",
+    "victim": "tests/api_resources/test_charge.py::TestCharge::test_list_iter_mapping",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-coinbase-commerce-python",
+    "victim": "tests/api_resources/test_checkout.py::TestCheckout::test_list_iter_mapping",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-devtracker",
+    "victim": "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-devtracker",
+    "victim": "devtracker/test_devtracker.py::test_today_report_err_one",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-easypy",
+    "victim": "tests/test_concurrency.py::test_concurrent_done_status[False]",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-easypy",
+    "victim": "tests/test_concurrency.py::test_concurrent_done_status[True]",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-eppy",
+    "victim": "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-eppy",
+    "victim": "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-mdutils",
+    "victim": "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_checked_list",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-mdutils",
+    "victim": "tests/test_mdutils.py::TestMdUtils::test_new_header",
+    "why": "victim not red in the full run (passed, in order: True)"
+   },
+   {
+    "repo": "idoft-py-autodoc",
+    "victim": "examples/test_unittest.py::TestUnittest::test_foo_bar",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "idoft-supertunnel",
+    "victim": "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-supertunnel",
+    "victim": "supertunnel/ssh/continuous_test.py::test_run_continuous",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-todo-sync",
+    "victim": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node7-expected_node7]",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-todo-sync",
+    "victim": "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node3-expected_node3]",
+    "why": "brittle: fails alone (state-setter case, not a polluter)"
+   },
+   {
+    "repo": "idoft-pykicad",
+    "victim": "tests/test_module.py::DrillTests::test_drill",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-pykicad",
+    "victim": "tests/test_module.py::DrillTests::test_drill_offset",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-pykicad",
+    "victim": "tests/test_module.py::DrillTests::test_drill_oval",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "idoft-pykicad",
+    "victim": "tests/test_module.py::LineTests::test_line",
+    "why": "the pair fails at every reachable commit (no green found within 512 first-parent commits)"
+   },
+   {
+    "repo": "rich",
+    "victim": "tests/test_rule_in_table.py::test_rule_in_ratio_table",
+    "why": "no single polluter"
+   },
+   {
+    "repo": "rich",
+    "victim": "tests/test_rule_in_table.py::test_rule_in_unexpanded_table[expand_kwarg0]",
+    "why": "no single polluter"
+   }
+  ]
+ },
+ "overall": {
+  "cases": 303,
+  "correct": 302,
+  "share": 0.9967,
+  "exec": {
+   "n": 303,
+   "median": 3,
+   "mean": 5.86,
+   "p90": 17,
+   "max": 30
+  },
+  "exec_without_d": {
+   "n": 240,
+   "median": 3.0,
+   "mean": 2.92,
+   "p90": 5,
+   "max": 7
+  },
+  "rebuild_cases": 36,
+  "rebuild_failed": 3
+ }
+}

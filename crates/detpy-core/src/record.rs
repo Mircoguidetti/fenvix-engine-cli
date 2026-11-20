@@ -439,6 +439,17 @@ pub fn reference_closure_with(
 /// Record every test of the plan in `store` (and drop the stale reuses and the
 /// not-cacheable tests' previous entries). The store is not saved.
 pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
+    record_session_keys(store, plan, None)
+}
+
+/// [`record_session`], and with `keys`: every test that ran (any outcome, cacheable or not) with its inputs
+/// resolved to paths, names and digests (`--det-cache-keys`, the culprit finder's input; ported from
+/// claude/exact-culprit). The dump is computed before the cacheability checks and does not change what is recorded.
+pub fn record_session_keys(
+    store: &mut Store,
+    plan: &Plan,
+    mut keys: Option<&mut serde_json::Map<String, serde_json::Value>>,
+) -> Outcome {
     let mut out = Outcome::default();
     let names = &plan.ctx_names;
     let ctx_of: HashMap<&str, u32> = names.iter().enumerate().map(|(i, n)| (n.as_str(), i as u32)).collect();
@@ -839,7 +850,8 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
                 out.reads.insert(nid.to_string(), keys.into_iter().map(|k| k.to_string()).collect());
             }
         }
-        if !reusable_outcome(&t.outcome) {
+        let not_reusable = !reusable_outcome(&t.outcome);
+        if not_reusable && keys.is_none() {
             store.remove(nid);
             out.not_cached.push((nid.to_string(), format!("outcome {}", t.outcome), Vec::new()));
             continue;
@@ -983,7 +995,7 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             }
             last_sel = sel;
         }
-        if !c_ctxs.is_empty() {
+        if !c_ctxs.is_empty() && !not_reusable {
             out.carried += 1;
         }
         let mut flags = g_flags.clone();
@@ -1006,6 +1018,18 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
             }
             units_of(&per(c).0, &mut units);
             unparsable(&per(c).1, &mut content);
+        }
+        if let Some(k) = keys.as_deref_mut() {
+            k.insert(
+                nid.to_string(),
+                dump_test(store, plan, t, own, &flags, &data, &env, &units, &content, &g_units, &file_of_ix, &conftests,
+                          &in_scope, &env_all, &c_ctxs),
+            );
+        }
+        if not_reusable {
+            store.remove(nid);
+            out.not_cached.push((nid.to_string(), format!("outcome {}", t.outcome), Vec::new()));
+            continue;
         }
         let own_flags = flags.clone();
         let mut why: Option<String> = uncacheable(&flags, plan.control_urandom).map(|s| s.to_string());
@@ -1208,7 +1232,115 @@ pub fn record_session(store: &mut Store, plan: &Plan) -> Outcome {
         );
         out.recorded += 1;
     }
+    if let Some(k) = keys {
+        // the engine's own verdict: why a test's inputs are not a proof of its outcome (None: they are)
+        for (nid, why, _) in &out.not_cached {
+            if let Some(serde_json::Value::Object(e)) = k.get_mut(nid) {
+                e.insert("not_cached".into(), serde_json::Value::String(why.clone()));
+            }
+        }
+        for v in k.values_mut() {
+            if let serde_json::Value::Object(e) = v {
+                e.entry("not_cached").or_insert(serde_json::Value::Null);
+            }
+        }
+    }
     out
+}
+
+/// One test's entry of the `--det-cache-keys` dump (see [`record_session_keys`]).
+#[allow(clippy::too_many_arguments)]
+fn dump_test(
+    store: &Store,
+    plan: &Plan,
+    t: &TestRun,
+    own: &str,
+    flags: &BTreeSet<&str>,
+    data: &TestData,
+    env: &BTreeSet<&str>,
+    units: &BTreeSet<(u32, u32)>,
+    content: &BTreeSet<u32>,
+    g_units: &BTreeSet<(u32, u32)>,
+    file_of_ix: &HashMap<u32, &str>,
+    conftests: &HashSet<&str>,
+    in_scope: &dyn Fn(&str, &str) -> bool,
+    env_all: &str,
+    carried: &[u32],
+) -> serde_json::Value {
+    use serde_json::{json, Map, Value};
+    let mut units = units.clone();
+    let mut content = content.clone();
+    let mut skeleton: BTreeSet<u32> = BTreeSet::new();
+    let mut hooks: BTreeSet<u32> = BTreeSet::new();
+    for (rel, seen_at) in &plan.loaded_order {
+        if *seen_at > t.index {
+            continue;
+        }
+        let Some(&ix) = plan.file_ix.get(rel) else { continue };
+        if conftests.contains(rel.as_str()) {
+            hooks.insert(ix);
+        }
+        if in_scope(rel, own) {
+            skeleton.insert(ix);
+        }
+    }
+    for &(ix, u) in g_units {
+        if let Some(rel) = file_of_ix.get(&ix) {
+            if conftests.contains(rel) || in_scope(rel, own) {
+                units.insert((ix, u));
+            }
+        }
+    }
+    if t.whole {
+        if let Some(&ix) = plan.file_ix.get(own) {
+            content.insert(ix);
+        }
+    }
+    let mut code = Map::new();
+    for &(ix, u) in &units {
+        if let Some(f) = store.files.get(ix as usize) {
+            if let Some(un) = f.units.get(u as usize) {
+                code.insert(format!("unit:{}::{}", f.path, un.q), Value::String(un.d.clone()));
+            }
+        }
+    }
+    for &ix in &skeleton {
+        if let Some(f) = store.files.get(ix as usize) {
+            code.insert(format!("skeleton:{}", f.path), Value::String(f.skeleton.clone()));
+        }
+    }
+    for &ix in &hooks {
+        if let Some(f) = store.files.get(ix as usize) {
+            code.insert(format!("hooks:{}", f.path), Value::String(f.hooks.clone()));
+        }
+    }
+    for &ix in &content {
+        if let Some(f) = store.files.get(ix as usize) {
+            code.insert(format!("content:{}", f.path), Value::String(f.content.clone()));
+        }
+    }
+    let mut dd = Map::new();
+    for (k, v) in data.sorted() {
+        dd.insert(k.to_string(), Value::String(v.to_string()));
+    }
+    let mut ee = Map::new();
+    for &n in env {
+        let v = if n == "*" { env_all.to_string() } else { env_value_digest(plan.env0.get(n).map(|s| s.as_str())) };
+        ee.insert(n.to_string(), Value::String(v));
+    }
+    let fl: Vec<&str> = flags.iter().copied().filter(|f| !f.starts_with("rw:")).collect();
+    json!({
+        "outcome": t.outcome,
+        "fingerprint": t.fingerprint,
+        "code": code,
+        "data": dd,
+        "env": ee,
+        "clock": flags.contains("time"),
+        "flags": fl,
+        // earlier contexts of the process whose inputs are carried into this test's key (the carried-set rule,
+        // R-020 / parallel-proof round 3): their code, data and environment are in the sets above
+        "carried": carried.iter().filter_map(|&c| plan.ctx_names.get(c as usize)).collect::<Vec<_>>(),
+    })
 }
 
 #[cfg(test)]

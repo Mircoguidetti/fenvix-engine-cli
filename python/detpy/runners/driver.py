@@ -190,6 +190,7 @@ class DetRun:
             age = ns.det_cache_max_age
             proof.max_age_s = age * 86400 if age and age > 0 else None
             proof.shared = getattr(ns, "det_cache_shared", None) or os.environ.get("DETPY_CACHE_SHARED") or None
+            proof.keys_path = getattr(ns, "det_cache_keys", None)
             proof.open(self.root, _proof.digest_identity(info), info)
             # the runner's own framework is infrastructure in the carried-set rule, as pytest is (record.rs)
             mods = RUNNER_INFRA_MODULES.get(self.runner, ()) if infra_modules is None else infra_modules

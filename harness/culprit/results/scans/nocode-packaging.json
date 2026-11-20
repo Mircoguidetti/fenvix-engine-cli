@@ -1,0 +1,33 @@
+{
+ "project": "packaging",
+ "green": "72f951fde68ca849f2ad5f2db819ba26fae7d76d",
+ "red": "f91ea7931fa551eb498ca2cdf5644dbbf20bcbc6",
+ "exit": {
+  "base": 0,
+  "tz": 0,
+  "locale": 0,
+  "lang": 0,
+  "no-color": 0,
+  "force-color": 0,
+  "term": 0,
+  "columns": 0,
+  "ci": 0,
+  "optimize": 1,
+  "devmode": 0,
+  "ioenc": 0,
+  "home": 0,
+  "language": 0
+ },
+ "by_change": {
+  "optimize": [
+   "tests/test_dependency_groups.py::test_resolver_init_catches_normalization_conflict",
+   "tests/test_dependency_groups.py::test_lookup_on_trivial_normalization",
+   "tests/test_dependency_groups.py::test_lookup_with_include_result",
+   "tests/test_dependency_groups.py::test_lookup_does_not_trigger_cyclic_include",
+   "tests/test_dependency_groups.py::test_expand_contract_model_only_does_inner_lookup_once"
+  ],
+  "_session_red": [
+   "optimize"
+  ]
+ }
+}

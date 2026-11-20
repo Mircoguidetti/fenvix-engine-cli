@@ -1,0 +1,18 @@
+{
+ "cases": {
+  "placed": 138,
+  "reland": 138
+ },
+ "skipped": 116,
+ "correct": {
+  "placed:largest_diff": 7,
+  "placed:newest_touching_source": 9,
+  "placed:newest_touching_test_file": 2,
+  "placed:oldest_touching_source": 3,
+  "placed:oldest_touching_test_file": 2,
+  "reland:largest_diff": 8,
+  "reland:newest_touching_source": 16,
+  "reland:newest_touching_test_file": 9,
+  "reland:oldest_touching_test_file": 2
+ }
+}

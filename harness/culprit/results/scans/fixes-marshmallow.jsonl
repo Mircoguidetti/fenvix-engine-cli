@@ -1,0 +1,1 @@
+{"fix": "3bc191ab3c8cac8356839bcde0918cb6aed4d3a1", "repo": "marshmallow", "subject": "Fix Field.error_messages type to allow dict and list values (#2907)", "overlay": ["tests/test_deserialization.py"], "exit": {"bug": 0, "fixed": 0}, "regression_tests": [], "dropped": "no test fails before the fix and passes after it", "cases": []}
