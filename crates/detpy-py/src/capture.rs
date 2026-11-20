@@ -446,7 +446,7 @@ fn process_state(p: &[u8]) -> bool {
             // its ancestors are directories for the whole session.
             let mut ps = p.to_vec();
             ps.push(b'/');
-            if self.root_sep.starts_with(&ps) || p == b"/" {
+            if self.root_sep.starts_with(&ps) || p == b"/" || is_temp_root(p) {
                 return None;
             }
             if self.writers.contains_key(p) {
@@ -593,7 +593,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l', b'q', b'Q'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'q', b'Q'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -616,6 +616,22 @@ fn process_state(p: &[u8]) -> bool {
         self.hashed.remove(&hk);
     }
 
+}
+
+/// The system's temporary roots (`/tmp`, `/var/tmp`, `$TMPDIR`): directories for the whole session, like the
+/// project root and its ancestors. A kind check of one is no input; a failed `os.mkdir` of one (makedirs with
+/// exist_ok) is recorded as a write, which made every later kind check a read of a file another test wrote.
+fn is_temp_root(p: &[u8]) -> bool {
+    let p = if p.len() > 1 { p.strip_suffix(b"/").unwrap_or(p) } else { p };
+    if p == b"/tmp" || p == b"/var/tmp" {
+        return true;
+    }
+    std::env::var_os("TMPDIR").is_some_and(|t| {
+        use std::os::unix::ffi::OsStrExt;
+        let t = t.as_bytes();
+        let t = if t.len() > 1 { t.strip_suffix(b"/").unwrap_or(t) } else { t };
+        !t.is_empty() && t == p
+    })
 }
 
 /// Python objects and constants of the capture.
@@ -964,6 +980,26 @@ impl CaptureCore {
             f = level0::back(&fr)?;
         }
         Ok(Caller::User)
+    }
+
+    /// Whether the first frame outside detpy and the standard library is repository code (review R-032b F3: a library
+    /// in site-packages loading its own shared library is like a C extension, not a test calling libc).
+    fn caller_in_repo(&self, py: Python<'_>) -> PyResult<bool> {
+        let hub = Classifier::get(py)?;
+        let mut f = current_frame(py);
+        while let Some(fr) = f {
+            let (_code, fname) = code_filename(&fr)?;
+            if starts_with_str(&fname, &self.env.detpy_dir) || starts_with_str(&fname, b"<frozen") {
+                f = level0::back(&fr)?;
+                continue;
+            }
+            if hub.classify(py, &fname)?.0 == Kind::Stdlib {
+                f = level0::back(&fr)?;
+                continue;
+            }
+            return self.want(py, &fname);
+        }
+        Ok(false)
     }
 
     /// The kind of the code that started an import: the first frame outside the import system and detpy.
@@ -1455,7 +1491,7 @@ impl CaptureCore {
                 let Some(name) = arg(0) else { return Ok(()) };
                 if name.is_none() {
                     // CDLL(None): the program's own symbols, the C library among them (review R-032b F3)
-                    if self.caller_kind(py)? == Caller::User {
+                    if self.caller_kind(py)? == Caller::User && self.caller_in_repo(py)? {
                         let ctx = self.cur(py)?;
                         self.flag_impl(py, ctx, b"cdll", Some(b"<the program's symbols>".to_vec()))?;
                     }
@@ -1474,7 +1510,7 @@ impl CaptureCore {
                 // is not cached. (A library from the repository is "native" above.)
                 let in_repo = self.abs(py, &name)?.is_some_and(|p| p.starts_with(&lock(&self.st).root_sep))
                     && name.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false);
-                if !in_repo {
+                if !in_repo && self.caller_in_repo(py)? {
                     let ctx = self.cur(py)?;
                     let detail = name.str().map(|x| x.to_string_lossy().into_owned()).unwrap_or_default();
                     self.flag_impl(py, ctx, b"cdll", Some(detail.into_bytes()))?;

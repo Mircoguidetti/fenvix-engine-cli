@@ -159,6 +159,84 @@ _CO_OPTIMIZED = 0x1
 
 
 # ---------------------------------------------------------------------------
+# review R-032b F2-mtime (claude/parallel-proof-3 6cfae24, 97e61ac): a time field read from a stat result that user
+# code asked for refuses the test ("mtime"). The path's metadata probe (q/Q) keys the mtime where the path is an input;
+# the refusal also covers paths that are not (temporary files, a file the test wrote: its real-clock time against the
+# virtual clock). Standard-library helpers (shutil.copystat, os.path.getmtime: keyed by the probe) are left alone.
+_STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
+                                  "pathlib._abc", "glob", "shutil", "os"})
+_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
+_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
+
+
+def _user_stat_caller() -> bool:
+    """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
+    library helper); Path.stat() counts as its caller's. Called from the os.stat wrapper (frame 1)."""
+    f = _getframe(2)
+    while f is not None:
+        mod = f.f_globals.get("__name__", "")
+        if mod in ("pathlib", "pathlib._local", "pathlib._abc") and f.f_code.co_name in ("stat", "lstat"):
+            f = f.f_back
+            continue
+        fn = f.f_code.co_filename
+        # detpy's own reads (the capture, Level 0's patches) are not the test's
+        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen")
+                    or fn.startswith(_DETPY_DIR) or fn == __file__)
+    return False
+
+
+class _TimedStat:
+    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
+    Everything else is the result's own."""
+
+    __slots__ = ("_r", "_cap", "_path")
+
+    def __init__(self, r, cap, path):
+        self._r = r
+        self._cap = cap
+        self._path = path
+
+    def _timed(self):
+        try:
+            p = self._path
+            self._cap.flag(self._cap._cur(), "mtime", str(p) if isinstance(p, int) else os.fsdecode(os.fspath(p)))
+        except Exception:
+            pass
+
+    def __getattr__(self, name):
+        if name.startswith(_TIME_FIELDS):
+            self._timed()
+        return getattr(self._r, name)
+
+    def __getitem__(self, i):
+        idx = range(len(self._r))[i]
+        if (7 in idx or 8 in idx or 9 in idx) if isinstance(idx, range) else idx in (7, 8, 9):
+            self._timed()
+        return self._r[i]
+
+    def __iter__(self):
+        self._timed()  # unpacking gives every field
+        return iter(self._r)
+
+    def __len__(self):
+        return len(self._r)
+
+    def __eq__(self, other):
+        self._timed()
+        return self._r == (other._r if isinstance(other, _TimedStat) else other)
+
+    def __hash__(self):
+        self._timed()
+        return hash(self._r)
+
+    def __repr__(self):
+        return repr(self._r)
+
+    def __reduce__(self):
+        self._timed()
+        return self._r.__reduce__()
+
+
 class Capture:
     """Records, per context, executed code, data reads, environment reads and events."""
 
@@ -457,9 +535,16 @@ class Capture:
             own = name in ("lstat", "readlink")
 
             def checked(path, *args, **kwargs):
+                timed = False
                 if not kwargs.get("dir_fd"):
                     note(path, own or kwargs.get("follow_symlinks") is False, True)
-                return orig(path, *args, **kwargs)
+                    if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
+                        try:
+                            timed = _user_stat_caller() and cap._caller_kind() == "user"
+                        except Exception:
+                            timed = False
+                r = orig(path, *args, **kwargs)
+                return _TimedStat(r, cap, path) if timed else r
 
             checked.__name__ = orig.__name__
             checked.__wrapped__ = orig
@@ -767,7 +852,8 @@ class Capture:
         if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
             # directories for the whole session; a kind never replaces a content or listing read of the same path
-            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep:
+            if self.root_sep.startswith(p.rstrip(os.sep) + os.sep) or p == os.sep or \
+                    p.rstrip(os.sep) in ("/tmp", "/var/tmp", _tmpdir_raw().rstrip(os.sep)):
                 return
             if p in self.writers:
                 self.flags.setdefault(ctx, set()).add("rw:" + p)
@@ -945,7 +1031,7 @@ class Capture:
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
             if name is None:
-                if self._caller_kind() == "user":  # CDLL(None): the program's symbols (review R-032b F3)
+                if self._caller_kind() == "user" and _caller_in_repo(self):  # CDLL(None) (review R-032b F3)
                     self.flag(self._cur(), "cdll", "<the program's symbols>")
                 return
             if "/" in str(name):  # LIMITS A2/K2: a library opened by path is an input by content, whoever opens it
@@ -956,7 +1042,7 @@ class Capture:
                 return
             # review R-032b F3: a C library outside the repository called directly: its reads are not observed
             ap = self._abs(name) if "/" in str(name) else None
-            if not (ap is not None and ap.startswith(self.root_sep)):
+            if not (ap is not None and ap.startswith(self.root_sep)) and _caller_in_repo(self):
                 self.flag(self._cur(), "cdll", str(name))
             n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
             if n is None:
@@ -2354,6 +2440,7 @@ def _process_state(p):
 
 
 _FLAG_OF = {"native code from the repository": "native",
+            "reads a file's modification, change or access time (not an input the cache keys)": "mtime",
             "calls a C library through ctypes (its file, clock and environment reads are not observed)": "cdll", "reads this process's state under /proc (descriptors, status counters, threads)": "pstate", "real clock read outside the virtual clock": "rclock", "subprocess": "spawn", "network connection": "connect", "host name lookup": "dns",
             "network socket opened outside Python (C extension)": "csock", "reads /proc, /sys or /dev": "proc"}
 
@@ -2560,9 +2647,32 @@ def _uncacheable(flags: set, cfg) -> str | None:
         return "reads this process's state under /proc (descriptors, status counters, threads)"
     if "native" in flags:
         return "native code from the repository"
+    if "mtime" in flags:
+        return "reads a file's modification, change or access time (not an input the cache keys)"
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
+
+
+def _tmpdir_raw() -> str:
+    """$TMPDIR without an environment read of the capture (the Rust side reads the C environment)."""
+    v = os.environ._data.get(os.environ.encodekey("TMPDIR"))
+    return os.environ.decodevalue(v) if v is not None else "\0"
+
+
+def _caller_in_repo(cap) -> bool:
+    """CaptureCore::caller_in_repo: the first frame outside detpy and the standard library is repository code."""
+    import sysconfig
+
+    std = sysconfig.get_paths()["stdlib"] + os.sep
+    f = _getframe(1)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if fn.startswith("<frozen") or fn.startswith(_DETPY_DIR) or fn.startswith(std):
+            f = f.f_back
+            continue
+        return os.path.realpath(fn).startswith(cap.root_sep) and "site-packages" not in fn
+    return False
 
 
 _MODMAP: dict = {}

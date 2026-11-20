@@ -57,6 +57,20 @@ CASES = {
         "f.txt": "abc",
         "test_t.py": "import os\n\ndef test_t():\n    assert os.stat('f.txt').st_size == 3\n",
     }, {"f.txt": "abcd"}, "test_t.py::test_t"),
+    # F2, coordinator: a modification time read with the same size (freshness checks): the test is not cached
+    "w6c_stat_mtime": ({
+        "f.txt": "abc",
+        "test_t.py": "import os\n\ndef test_t():\n    assert os.stat('f.txt').st_mtime < 2e9\n",
+    }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
+    "w6d_path_stat_mtime_ns_index": ({
+        "f.txt": "abc",
+        "test_t.py": "import pathlib\n\ndef test_t():\n    assert pathlib.Path('f.txt').stat()[8] < 2e9\n",
+    }, ("utime", "f.txt", 3e9), "test_t.py::test_t"),
+    "w5b_scandir_entry_mtime": ({
+        "d/f.txt": "abc",
+        "test_t.py": "import os\n\ndef test_t():\n    e = [e for e in os.scandir('d')][0]\n"
+                     "    assert e.stat().st_mtime_ns < 2e18\n",
+    }, ("utime", "d/f.txt", 3e9), "test_t.py::test_t"),
     # F3: the C library through ctypes
     "w7_libc_access": ({
         "test_t.py": "import ctypes\n\ndef test_t():\n    libc = ctypes.CDLL('libc.so.6')\n"
@@ -66,6 +80,11 @@ CASES = {
 
 
 def _write(root, files):
+    if isinstance(files, tuple) and files[0] == "utime":  # the same content, another modification time
+        import os
+
+        os.utime(root / files[1], (files[2], files[2]))
+        return
     for name, text in files.items():
         p = root / name
         p.parent.mkdir(parents=True, exist_ok=True)
