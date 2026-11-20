@@ -6,8 +6,8 @@ Branch `claude/all-runners-2` (fenvix-engine-cli). Final engine: code **ed66b960
 
 ## Answer
 
-* **PARTIAL because walks on the final engine have not all landed**: hexo, ink, runner-django-healthchecks (Actions runs 44692179684, 44692179670, 44692179449, 44692179649).
-* **Final engine (code ed66b960, head db0c8c56): 0 wrong reuses in 120,979 tests verified** (Python 29,076, Node 91,903; 0 mismatches before recheck; MEASURED, `aggregate2.py --set final`). Counted per TEST, never per file entry (R-032 F8), and re-derived test by test from the committed pairs `[id, reused outcome, fresh outcome]` (R-032b F7d).
+* **PARTIAL because walks on the final engine have not all landed**: hexo, ink (Actions runs 44692179684, 44692179670, 44692179449, 44692179649).
+* **Final engine (code ed66b960, head db0c8c56): 0 wrong reuses in 125,740 tests verified** (Python 30,968, Node 94,772; 0 mismatches before recheck; MEASURED, `aggregate2.py --set final`). Counted per TEST, never per file entry (R-032 F8), and re-derived test by test from the committed pairs `[id, reused outcome, fresh outcome]` (R-032b F7d).
 * **What "fresh" means** (R-032b F7e): Python, run B = the runner under `--det` without cache on the same commit; Node, a separate run `detjs <runner> --det` without cache. Both are the engine under Level 0 without the cache, **not** the plain runner. The Node walks also keep the engine's own `--det-cache-verify` sample.
 * Earlier, separate measurements (first set, engine **7510773**, before the parallel-proof-3 quarantine merge; runs cancelled after the landed shards were kept): 92,016 tests verified (Python 29,468, Node 62,548), 0 wrong (MEASURED, `aggregate2.py --set first`). They do not cover the final tree.
 * Earlier, separate measurements (second set, engine **0f969116**, R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept): 92,654 tests verified (Python 30,313, Node 62,341), 0 wrong (MEASURED, `aggregate2.py --set second`). They do not cover the final tree.
@@ -75,7 +75,7 @@ Branch `claude/all-runners-2` (fenvix-engine-cli). Final engine: code **ed66b960
 
 | support | control tests | adversarial tests | walks (MEASURED, final set, run 44692179684) | not covered |
 |---|---|---|---|---|
-| det + skip; DiscoverRunner groups; `--parallel` 1 under --det; cached template loader re-read (`_django.py`) | tests/test_runners_django.py, tests/test_django_pytest_cache.py (in the full suite: 0 failed) | shared cases + settings, migration, JSON fixture, template through the cached loader; R-032b W13 | django-debug-toolbar: 20 transitions, reuse by tests 34% / 26%, by time 22% / 17%, **1939** tests verified against a fresh run, 0 mismatches, **0 wrong**<br>django-healthchecks: 9 transitions, reuse by tests 11% / 20%, by time 15% / 20%, **2912** tests verified against a fresh run, 0 mismatches, **0 wrong**, PARTIAL (0 of 1 shards finished) | every test depends on the whole environment (wsgiref at import); pytest-django not installed locally (its test skips) |
+| det + skip; DiscoverRunner groups; `--parallel` 1 under --det; cached template loader re-read (`_django.py`) | tests/test_runners_django.py, tests/test_django_pytest_cache.py (in the full suite: 0 failed) | shared cases + settings, migration, JSON fixture, template through the cached loader; R-032b W13 | django-debug-toolbar: 20 transitions, reuse by tests 34% / 26%, by time 22% / 17%, **1939** tests verified against a fresh run, 0 mismatches, **0 wrong**<br>django-healthchecks: 20 transitions, reuse by tests 11% / 15%, by time 15% / 16%, **4804** tests verified against a fresh run, 0 mismatches, **0 wrong** | every test depends on the whole environment (wsgiref at import); pytest-django not installed locally (its test skips) |
 
 ### nose2
 
@@ -163,14 +163,51 @@ Shared Node tests (every runner): the cache/r021/r021b/controls suites, R-032 fi
 
 | support | tests | walks (MEASURED, final set, runs 44692179670, 44692179449, 44692179649) | not covered |
 |---|---|---|---|
-| det + skip | through the runners above | ink: NOT LANDED (0 of 2 shards)<br>hexo: NOT LANDED (0 of 4 shards) | — |
+| det + skip | through the runners above | ink: NOT LANDED (0 of 2 shards)<br>hexo: 24 transitions, reuse by tests 9% / 9%, **2869** tests verified against a fresh run, 0 mismatches, **0 wrong** (engine --det-cache-verify: 2869 tests, 0 differ), PARTIAL (3 of 4 shards finished) | — |
+
+## Reuse share, final engine vs the second set (0f969116, before the R-032b F1-F3 engine rules)
+
+Median / mean share of tests reused per transition (MEASURED, aggregate2.py). The final engine refuses more: a context that reaches a library or a by-name marker is carried into every later test of its process (F1), a C library called through ctypes and a time read refuse (F3, F2). Where the second set has no row, its run was cancelled before that walk landed. The F1-F3 rules are Python's: the Node capture did not change between the two sets, and the Node rows differ only where the second set has fewer shards (yargs: 1 of 2).
+
+| repository | second set | final |
+|---|---|---|
+| django-debug-toolbar | 100% / 75% | 34% / 26% |
+| django-healthchecks | — | 11% / 15% |
+| doctest-autopep8 | 100% / 57% | 100% / 57% |
+| doctest-nameparser | 0% / 31% | 0% / 31% |
+| hypothesis-attrs | 90% / 70% | 90% / 70% |
+| nose2-howdoi | 0% / 0% | 0% / 0% |
+| nose2-nose2 | 27% / 15% | 27% / 15% |
+| unittest-icecream | 0% / 10% | 0% / 10% |
+| unittest-jc | 0% / 10% | 0% / 10% |
+| ward-thoughtspot-tml | 0% / 0% | 0% / 0% |
+| ward-ward | 0% / 0% | 0% / 0% |
+| zope-datetime | 0% / 10% | 0% / 10% |
+| zope-irclog2html | 0% / 35% | 0% / 14% |
+| commander | 97% / 57% | 98% / 59% |
+| dependency-cruiser | 63% / 39% | 64% / 44% |
+| hexo | — | 9% / 9% |
+| simple-statistics | 0% / 23% | 0% / 23% |
+| yargs | 3% / 27% | 29% / 29% |
+| ava-globby | — | 0% / 4% |
+| ava-shelljs | 0% / 2% | 0% / 3% |
+| jasmine-cordova-android | 82% / 66% | 82% / 66% |
+| jasmine-xregexp | 0% / 25% | 0% / 25% |
+| tap-dotenv | 0% / 21% | 0% / 21% |
+| tap-minimatch | 0% / 20% | 0% / 20% |
+| uvu-autoprefixer | — | 24% / 26% |
+| uvu-browserslist | 1% / 13% | 1% / 13% |
+| json-schema-faker | 2% / 10% | 2% / 10% |
+| oak | 33% / 37% | 33% / 37% |
+| std | 77% / 63% | 77% / 63% |
+| wouter | 0% / 0% | 0% / 0% |
 
 ## All walks, final engine (aggregate2.py --set final)
 
 | lang | repository | runs | transitions | reuse share by tests (median / mean %) | by time (median / mean %) | tests verified (fresh run) | mismatches | wrong (confirmed) | engine verify (tests) |
 |---|---|---|---:|---|---|---:|---:|---:|---:|
 | python | runner-django-debug-toolbar | ar2-py-4 | 20 | 34 / 26 | 22 / 17 | 1939 | 0 | 0 | —; re-derived from pairs: 1939, 0 differ |
-| python | runner-django-healthchecks | ar2-py-4 | 9 | 11 / 20 | 15 / 20 | 2912 | 0 | 0 | —; re-derived from pairs: 2912, 0 differ |
+| python | runner-django-healthchecks | ar2-py-4 | 20 | 11 / 15 | 15 / 16 | 4804 | 0 | 0 | —; re-derived from pairs: 4804, 0 differ |
 | python | runner-doctest-autopep8 | ar2-py-4 | 120 | 100 / 57 | 100 / 57 | 68 | 0 | 0 | —; re-derived from pairs: 68, 0 differ |
 | python | runner-doctest-nameparser | ar2-py-4 | 200 | 0 / 31 | 0 / 31 | 62 | 0 | 0 | —; re-derived from pairs: 62, 0 differ |
 | python | runner-hypothesis-attrs | ar2-py-4 | 20 | 90 / 70 | 99 / 75 | 19720 | 0 | 0 | —; re-derived from pairs: 19720, 0 differ |
@@ -184,6 +221,7 @@ Shared Node tests (every runner): the cache/r021/r021b/controls suites, R-032 fi
 | python | runner-zope-irclog2html | ar2-py-4 | 20 | 0 / 14 | 0 / 13 | 252 | 0 | 0 | —; re-derived from pairs: 252, 0 differ |
 | node | commander | ar2-node-a4 | 30 | 98 / 59 | — | 20623 | 0 | 0 | 20623 (0 differ); re-derived from pairs: 20623, 0 differ |
 | node | dependency-cruiser | ar2-node-a4 | 30 | 64 / 44 | — | 26004 | 0 | 0 | 26004 (0 differ); re-derived from pairs: 26004, 0 differ |
+| node | hexo | ar2-node-a4 | 24 | 9 / 9 | — | 2869 | 0 | 0 | 2869 (0 differ); re-derived from pairs: 2869, 0 differ |
 | node | simple-statistics | ar2-node-a4 | 30 | 0 / 23 | — | 2632 | 0 | 0 | 2632 (0 differ); re-derived from pairs: 2632, 0 differ |
 | node | yargs | ar2-node-a4 | 30 | 29 / 29 | — | 7207 | 0 | 0 | 7207 (0 differ); re-derived from pairs: 7207, 0 differ |
 | node | ava-globby | ar2-node-b4 | 25 | 0 / 4 | — | 227 | 0 | 0 | 227 (0 differ); re-derived from pairs: 227, 0 differ |
@@ -199,11 +237,11 @@ Shared Node tests (every runner): the cache/r021/r021b/controls suites, R-032 fi
 | node | std | ar2-node-c4 | 20 | 77 / 63 | — | 20666 | 0 | 0 | 20666 (0 differ); re-derived from pairs: 20666, 0 differ |
 | node | wouter | ar2-node-c4 | 20 | 0 / 0 | — | 0 | 0 | 0 | 0 (0 differ); re-derived from pairs: 0, 0 differ |
 
-TOTAL python: tests verified 29076, mismatches 0, confirmed wrong 0
+TOTAL python: tests verified 30968, mismatches 0, confirmed wrong 0
 
-TOTAL node: tests verified 91903, mismatches 0, confirmed wrong 0
+TOTAL node: tests verified 94772, mismatches 0, confirmed wrong 0
 
-TOTAL: tests verified 120979, confirmed wrong 0
+TOTAL: tests verified 125740, confirmed wrong 0
 
 ## Earlier measurement: second set, engine 0f969116 (R-032b F4-F6 fixed, before the parallel-proof-3 F1-F3 engine fix; runs cancelled when that fix landed, landed shards kept)
 

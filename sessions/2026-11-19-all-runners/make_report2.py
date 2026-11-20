@@ -244,6 +244,21 @@ for name, tests, ws in NODE_RUNNERS:
         nc = "the capture's load hook is off under Deno (it changed Deno's CommonJS detection; MEASURED): Deno's graph comes from `deno info`"
     w(f"| det + skip | {tests} | " + "<br>".join(walk(x) for x in ws) + f" | {nc} |")
     w("")
+w("## Reuse share, final engine vs the second set (0f969116, before the R-032b F1-F3 engine rules)")
+w("")
+w("Median / mean share of tests reused per transition (MEASURED, aggregate2.py). The final engine refuses more: a "
+  "context that reaches a library or a by-name marker is carried into every later test of its process (F1), a C "
+  "library called through ctypes and a time read refuse (F3, F2). Where the second set has no row, its run was "
+  "cancelled before that walk landed. The F1-F3 rules are Python's: the Node capture did not change between the two "
+  "sets, and the Node rows differ only where the second set has fewer shards (yargs: 1 of 2).")
+w("")
+w("| repository | second set | final |")
+w("|---|---|---|")
+_sec = {r["repo"]: r for r in SETS["second"]}
+for r in SETS["final"]:
+    o2 = _sec.get(r["repo"])
+    w(f"| {r['repo'].removeprefix('runner-')} | {mm(o2['share_tests']) if o2 else '—'} | {mm(r['share_tests'])} |")
+w("")
 w("## All walks, final engine (aggregate2.py --set final)")
 w("")
 w(agg("final", False))
