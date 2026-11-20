@@ -116,7 +116,7 @@ jobs:
         run: |
           npm ci --no-audit --no-fund
           node --test --test-concurrency=1 --test-reporter=spec --test-reporter-destination=stdout \
-            --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1; rc=$?
+            --test-reporter=junit --test-reporter-destination=../node-tests-${{ matrix.node }}.xml test/*.test.js > ../node-tests-${{ matrix.node }}.log 2>&1 && rc=0 || rc=$?
           tail -40 ../node-tests-${{ matrix.node }}.log; echo "== failures"; grep -nE "✖|not ok|Error" ../node-tests-${{ matrix.node }}.log | head -80 || true
           exit $rc
       - uses: actions/upload-artifact@v4
