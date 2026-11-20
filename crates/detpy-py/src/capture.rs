@@ -870,6 +870,26 @@ impl CaptureCore {
         Ok(Caller::User)
     }
 
+    /// Whether the first frame outside detpy and the standard library is repository code (review R-032b F3: a library
+    /// in site-packages loading its own shared library is like a C extension, not a test calling libc).
+    fn caller_in_repo(&self, py: Python<'_>) -> PyResult<bool> {
+        let hub = Classifier::get(py)?;
+        let mut f = current_frame(py);
+        while let Some(fr) = f {
+            let (_code, fname) = code_filename(&fr)?;
+            if starts_with_str(&fname, &self.env.detpy_dir) || starts_with_str(&fname, b"<frozen") {
+                f = level0::back(&fr)?;
+                continue;
+            }
+            if hub.classify(py, &fname)?.0 == Kind::Stdlib {
+                f = level0::back(&fr)?;
+                continue;
+            }
+            return self.want(py, &fname);
+        }
+        Ok(false)
+    }
+
     /// The kind of the code that started an import: the first frame outside the import system and detpy.
     fn importer_kind(&self, py: Python<'_>) -> PyResult<Caller> {
         let hub = Classifier::get(py)?;
@@ -1315,7 +1335,7 @@ impl CaptureCore {
                 let Some(name) = arg(0) else { return Ok(()) };
                 if name.is_none() {
                     // CDLL(None): the program's own symbols, the C library among them (review R-032b F3)
-                    if self.caller_kind(py)? == Caller::User {
+                    if self.caller_kind(py)? == Caller::User && self.caller_in_repo(py)? {
                         let ctx = self.cur(py)?;
                         self.flag_impl(py, ctx, b"cdll", Some(b"<the program's symbols>".to_vec()))?;
                     }
@@ -1334,7 +1354,7 @@ impl CaptureCore {
                 // is not cached. (A library from the repository is "native" above.)
                 let in_repo = self.abs(py, &name)?.is_some_and(|p| p.starts_with(&lock(&self.st).root_sep))
                     && name.str().map(|x| x.to_string_lossy().contains('/')).unwrap_or(false);
-                if !in_repo {
+                if !in_repo && self.caller_in_repo(py)? {
                     let ctx = self.cur(py)?;
                     let detail = name.str().map(|x| x.to_string_lossy().into_owned()).unwrap_or_default();
                     self.flag_impl(py, ctx, b"cdll", Some(detail.into_bytes()))?;

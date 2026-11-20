@@ -878,7 +878,7 @@ class Capture:
         elif event == "ctypes.dlopen":
             name = args[0] if args else None
             if name is None:
-                if self._caller_kind() == "user":  # CDLL(None): the program's symbols (review R-032b F3)
+                if self._caller_kind() == "user" and _caller_in_repo(self):  # CDLL(None) (review R-032b F3)
                     self.flag(self._cur(), "cdll", "<the program's symbols>")
                 return
             if "/" in str(name):  # LIMITS A2/K2: a library opened by path is an input by content, whoever opens it
@@ -889,7 +889,7 @@ class Capture:
                 return
             # review R-032b F3: a C library outside the repository called directly: its reads are not observed
             ap = self._abs(name) if "/" in str(name) else None
-            if not (ap is not None and ap.startswith(self.root_sep)):
+            if not (ap is not None and ap.startswith(self.root_sep)) and _caller_in_repo(self):
                 self.flag(self._cur(), "cdll", str(name))
             n = os.fsdecode(name) if isinstance(name, (str, bytes)) else None
             if n is None:
@@ -2488,6 +2488,21 @@ def _uncacheable(flags: set, cfg) -> str | None:
     if "cdll" in flags:
         return "calls a C library through ctypes (its file, clock and environment reads are not observed)"
     return None
+
+
+def _caller_in_repo(cap) -> bool:
+    """CaptureCore::caller_in_repo: the first frame outside detpy and the standard library is repository code."""
+    import sysconfig
+
+    std = sysconfig.get_paths()["stdlib"] + os.sep
+    f = _getframe(1)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if fn.startswith("<frozen") or fn.startswith(_DETPY_DIR) or fn.startswith(std):
+            f = f.f_back
+            continue
+        return os.path.realpath(fn).startswith(cap.root_sep) and "site-packages" not in fn
+    return False
 
 
 _MODMAP: dict = {}
