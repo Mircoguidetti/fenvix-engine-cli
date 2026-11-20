@@ -375,7 +375,8 @@ def test_first_run_after_a_checkout_or_an_edit_is_laid_out_like_later_runs(tmp_p
     identical(runs[0][1], runs[1][1])
     (proj / "tests" / "test_p.py").write_text(src + "# edited\n")
     edited = [_addr_run(proj, traces, f"e{i}") for i in range(2)]
-    assert values(edited[0][0], "ORDER") == values(edited[1][0], "ORDER") == orders[0]
+    # the edit is a real input change (the source differs): the first run after it is laid out like the next one
+    assert values(edited[0][0], "ORDER") == values(edited[1][0], "ORDER"), (edited[0][0].stdout, edited[1][0].stdout)
     assert "rewritten from source" not in _bytecode_input(edited[0][1])
     identical(edited[0][1], edited[1][1])
 
