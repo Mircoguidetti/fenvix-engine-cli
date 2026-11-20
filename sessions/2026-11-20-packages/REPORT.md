@@ -168,7 +168,7 @@ where known).
 | G-2171, G-2173, G-2174, G-2175, G-2176 Node CLI | FIXED | `node/test/platform.test.js` |
 | G-2172 npm package fields | OUT | no npm package (founder decision) |
 | G-2177, G-2194 state directories dirty the checkout | FIXED | `test_state_directory_keeps_the_checkout_clean`, `platform.test.js` (.detjs) |
-| G-0205, G-0242, G-0561 default branch is a Block 2 tip | FOUNDER | section 4 |
+| G-0205, G-0242, G-0561 default branch is a Block 2 tip | FIXED (by the founder) | default branch `claude/release-1` (MEASURED via the repository API, 2026-11-20); section 4 |
 | G-0522, G-1439 names unregistered | FOUNDER / OUT | PyPI `fenvix` reserved by the founder's pending publisher; npm dropped |
 | G-0155, G-0156, G-0157, G-0158, G-0472..G-0477, G-0492..G-0495, G-0415, G-0416, G-0255, G-0526, G-0527, G-0441..G-0443, G-0723, G-1500..G-1506 macOS and Linux arm64 | OUT | founder decision; the Node loader names the supported platform; `detpy_core::host` keeps the loaded-image list of Linux in one place |
 | G-0444, G-0528, G-0256, G-0499..G-0508, G-1869, G-2195 Windows / WSL2 | OUT | |
@@ -203,12 +203,10 @@ Il go-live gira solo sulle nostre macchine: niente PyPI, niente npm, niente macO
 3. **PyPI**: il nome `fenvix` è riservato dal tuo publisher "pending" (progetto `fenvix`, workflow `release.yml`,
    environment `pypi`). Il job di pubblicazione esiste ma è spento (`if: false`); per accenderlo un giorno basta
    cambiare quella riga e creare l'environment `pypi` in Settings → Environments. Nessun token.
-4. **Branch di default** (G-0561): oggi è `claude/gracious-rubin-eyswxd`, una punta del Block 2 (solo Python, 3.034
-   commit dietro `claude/release-1`). Chi clona o apre il repository vede il motore vecchio; i workflow pianificati
-   (`schedule`) e il pulsante "Run workflow" funzionano solo dal branch di default. Consiglio: dopo il merge di
-   questo PR crea **`main`** da `claude/release-1`, impostalo come default (Settings → General → Default branch),
-   proteggilo (PR obbligatoria, CI `release-1` verde) e fai lì i merge; finché `main` non esiste, imposta come
-   default `claude/release-1`. Se il trunk diventa `main`, in `release-1.yml` va cambiato il nome del branch del
-   trigger e del job `publish-engine`.
+4. **Branch di default** (G-0561): fatto da te verso le 13:25 UTC: oggi il default è `claude/release-1`
+   (MEASURED: `GET /repos/…` → `default_branch: claude/release-1`, 2026-11-20 ~14:47 UTC). Così il run notturno
+   completo (`schedule`) e "Run workflow" funzionano. Consiglio ancora: proteggi il branch (PR obbligatoria con il
+   check `release-1` verde) e, se un giorno lo rinomini in `main`, cambia il nome del branch nei trigger di
+   `release-1.yml` e nella condizione di `publish-engine`.
 5. **Licenza**: `LICENSE` è MIT con titolare "fenvix" (segnaposto): sostituiscilo con il tuo nome o quello della
    società.
