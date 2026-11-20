@@ -1,0 +1,244 @@
+{
+ "name": "idoft-cloudnetpy",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/unit/test_classify.py::TestFindRain::test_1",
+  "tests/unit/test_classify.py::TestFindRain::test_3",
+  "tests/unit/test_drizzle.py::test_calc_beta_z_ratio",
+  "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_N]",
+  "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwc]",
+  "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwf]",
+  "tests/unit/test_drizzle.py::test_calc_derived_products[v_air]",
+  "tests/unit/test_drizzle.py::test_calc_derived_products[v_drizzle]",
+  "tests/unit/test_drizzle.py::test_calc_dia",
+  "tests/unit/test_drizzle.py::test_calc_fall_velocity",
+  "tests/unit/test_drizzle.py::test_calc_lwc",
+  "tests/unit/test_drizzle.py::test_calc_lwf",
+  "tests/unit/test_drizzle.py::test_calc_v_air",
+  "tests/unit/test_drizzle.py::test_find_indices",
+  "tests/unit/test_drizzle.py::test_find_lut_indices",
+  "tests/unit/test_drizzle.py::test_init_variables[Do]",
+  "tests/unit/test_drizzle.py::test_init_variables[S]",
+  "tests/unit/test_drizzle.py::test_init_variables[beta_corr]",
+  "tests/unit/test_drizzle.py::test_is_converged",
+  "tests/unit/test_drizzle.py::test_update_result_tables[Do-10]",
+  "tests/unit/test_drizzle.py::test_update_result_tables[S-93.7247943]",
+  "tests/unit/test_drizzle.py::test_update_result_tables[mu--1]",
+  "tests/unit/test_lwc.py::test_init_status[0]",
+  "tests/unit/test_lwc.py::test_remove_good_profiles",
+  "tests/unit/test_lwc.py::test_update_status[0]",
+  "tests/unit/test_lwc.py::test_update_status[1]",
+  "tests/unit/test_rpg.py::TestReduceHeader::test_1"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012269",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [],
+ "explore_exit": 1,
+ "explore_printed": "",
+ "bundles": [
+  {
+   "test": "tests/unit/test_classify.py::TestFindRain::test_1",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_classify.py::TestFindRain::test_3",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_beta_z_ratio",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_N]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwc]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_derived_products[drizzle_lwf]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_derived_products[v_air]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_derived_products[v_drizzle]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_dia",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_fall_velocity",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_lwc",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_lwf",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_calc_v_air",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_find_indices",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_find_lut_indices",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_init_variables[Do]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_init_variables[S]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_init_variables[beta_corr]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_is_converged",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_update_result_tables[Do-10]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_update_result_tables[S-93.7247943]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_drizzle.py::test_update_result_tables[mu--1]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_lwc.py::test_init_status[0]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_lwc.py::test_remove_good_profiles",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_lwc.py::test_update_status[0]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_lwc.py::test_update_status[1]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  },
+  {
+   "test": "tests/unit/test_rpg.py::TestReduceHeader::test_1",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 1
+  }
+ ],
+ "seconds": 3.81
+}

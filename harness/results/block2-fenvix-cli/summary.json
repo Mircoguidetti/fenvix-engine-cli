@@ -1,0 +1,126 @@
+{
+ "totals": {
+  "targets": 388,
+  "reproduced": 21,
+  "cause": 21,
+  "replay_one_fp": 21,
+  "replay_cmd": 21
+ },
+ "statuses": {
+  "not-found": 366,
+  "reproduced": 21,
+  "not-minimised": 1
+ },
+ "kinds": {
+  "order": 21
+ },
+ "causes": {
+  "test order": 21
+ },
+ "per_repo": {
+  "anyio": {
+   "targets": 16,
+   "reproduced": 11,
+   "cause": 11,
+   "replay_one_fp": 11,
+   "replay_cmd": 11
+  },
+  "arrow": {
+   "targets": 2,
+   "reproduced": 2,
+   "cause": 2,
+   "replay_one_fp": 2,
+   "replay_cmd": 2
+  },
+  "idoft-accessify": {
+   "targets": 7
+  },
+  "idoft-breathe": {
+   "targets": 8
+  },
+  "idoft-centreon-sdk-python": {
+   "targets": 41
+  },
+  "idoft-cloudnetpy": {
+   "targets": 27
+  },
+  "idoft-coinbase-commerce-python": {
+   "targets": 8
+  },
+  "idoft-crom": {
+   "targets": 13
+  },
+  "idoft-devtracker": {
+   "targets": 6
+  },
+  "idoft-domain2idna": {
+   "targets": 15
+  },
+  "idoft-easypy": {
+   "targets": 44
+  },
+  "idoft-eppy": {
+   "targets": 67
+  },
+  "idoft-flask-multi-redis": {
+   "targets": 14
+  },
+  "idoft-freezegun": {
+   "targets": 8
+  },
+  "idoft-krllint": {
+   "targets": 3
+  },
+  "idoft-ljson": {
+   "targets": 4
+  },
+  "idoft-mdutils": {
+   "targets": 8
+  },
+  "idoft-odinweb": {
+   "targets": 12
+  },
+  "idoft-panamah-sdk-python": {
+   "targets": 4
+  },
+  "idoft-py-autodoc": {
+   "targets": 15
+  },
+  "idoft-pykicad": {
+   "targets": 28
+  },
+  "idoft-pymq": {
+   "targets": 1
+  },
+  "idoft-supertunnel": {
+   "targets": 9
+  },
+  "idoft-todo-sync": {
+   "targets": 10
+  },
+  "idoft-tunacell": {
+   "targets": 10
+  },
+  "jsonschema": {
+   "targets": 2,
+   "reproduced": 2,
+   "cause": 2,
+   "replay_one_fp": 2,
+   "replay_cmd": 2
+  },
+  "packaging": {
+   "targets": 1,
+   "reproduced": 1,
+   "cause": 1,
+   "replay_one_fp": 1,
+   "replay_cmd": 1
+  },
+  "rich": {
+   "targets": 5,
+   "reproduced": 5,
+   "cause": 5,
+   "replay_one_fp": 5,
+   "replay_cmd": 5
+  }
+ }
+}

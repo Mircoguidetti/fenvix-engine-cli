@@ -1,0 +1,1039 @@
+{
+ "name": "arrow",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+  "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012280",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 12.203,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 12.086,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 12.227,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 12.038,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 12.34,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 12.124,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 12.178,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 5.945,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 6.096,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 6.065,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 5.995,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 6.046,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 5.923,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 5.755,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 5.754,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 5.878,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 6.388,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 6.125,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 6.146,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 5.94,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 5.753,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 6.117,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 5.558,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 5.557,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 5.491,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 5.626,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 5.646,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 5.685,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 5.552,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 5.724,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 5.791,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 5.368,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 5.457,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 5.584,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 5.326,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 5.545,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 5.605,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 5.524,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 5.406,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 5.405,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 5.546,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 5.43,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 5.884,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 5.549,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 5.629,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 5.347,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 5.5,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 5.616,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 5.674,
+   "tests": 1904,
+   "failing": [
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 5.439,
+   "tests": 1904,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 489.82 s; 2 flaky failing tests (0 always failing, not flaky); 2 replay bundles; 1 distinct first diverging events, 1 distinct polluter sets\ndetpy repro: tests/test_locales.py::TestLocaleValidation::test_locale_name_validation: reproduced\n  found with --det-seed=2; order minimised from 1883 to 2 test(s)\n  polluter(s): tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass\n  replay: 10/10 failed, identical fingerprint: True\n  first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass] (first difference at position 0: <none> vs tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass)\n  replay: pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591/order.txt -n 0\n  32 pytest runs, 72.03 s\ndetpy repro: tests/test_locales.py::TestLocaleValidation::test_locale_validation: reproduced\n  found with --det-seed=2; order minimised from 1882 to 2 test(s)\n  polluter(s): tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass\n  replay: 10/10 failed, identical fingerprint: True\n  first diverging event vs a passing run: order: before the test started: it ran after different tests in its process: [] vs [tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass] (first difference at position 0: <none> vs tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass)\n  replay: pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556/order.txt -n 0\n  33 pytest runs, 73.23 s\n  defect: tests/test_locales.py::TestLocaleValidation::test_locale_name_validation: test order: it fails when run after tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass (state left behind by that test); replay: fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591\n  defect: tests/test_locales.py::TestLocaleValidation::test_locale_validation: test order: it fails when run after tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass (state left behind by that test); replay: fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556\n{\n  \"seeds\": 50,\n  \"seconds\": 489.82,\n  \"runs\": 115,\n  \"collected\": 1904,\n  \"failing_tests\": 2,\n  \"always_failing\": [],\n  \"flaky_failing\": [\n    \"tests/test_locales.py::TestLocaleValidation::test_locale_name_validation\",\n    \"tests/test_locales.py::TestLocaleValidation::test_locale_validation\"\n  ],\n  \"bundles\": [\n    {\n      \"test\": \"tests/test_locales.py::TestLocaleValidation::test_locale_name_validation\",\n      \"configs_searched\": 1,\n      \"status\": \"reproduced\",\n      \"config\": \"2\",\n      \"seed\": 2,\n      \"kind\": \"order\",\n      \"prefix_length\": 1883,\n      \"minimal_length\": 2,\n      \"polluters\": [\n        \"tests/test_local",
+ "bundles": [
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1883,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert None",
+    "tests/test_locales.py:42"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "a15c305183fa5ef344187a2bedb52903"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": null,
+    "reason": "order",
+    "description": "before the test started: it ran after different tests in its process: [] vs [tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass] (first difference at position 0: <none> vs tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass)",
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "<none>"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+    },
+    "fingerprints": [
+     "4d4e50b0f463c87d290871627d13fed9",
+     "a15c305183fa5ef344187a2bedb52903"
+    ]
+   },
+   "runs": 32,
+   "seconds": 72.03,
+   "controls": [
+    "bytecode",
+    "env",
+    "fs",
+    "hashseed",
+    "locale",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "tz"
+   ],
+   "detpy": "0.1.0",
+   "python": "3.13.18",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591/order.txt -n 0",
+   "replay_command": "fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591",
+   "first_failing_seed": 2,
+   "runner": "pytest",
+   "provenance": {
+    "commit": "2224255c4acc594d734cef0bbc83360452a67983",
+    "dirty": false,
+    "python": "3.13.18",
+    "platform": "linux",
+    "distributions": [
+     "PyYAML==6.0.3",
+     "Pygments==2.21.0",
+     "arrow==1.4.0",
+     "cfgv==3.5.0",
+     "coverage==7.17.3",
+     "dateparser==1.5.1",
+     "detpy==0.1.0",
+     "distlib==0.4.4",
+     "execnet==2.1.2",
+     "filelock==4.2.12",
+     "identify==2.6.20",
+     "iniconfig==2.3.1",
+     "nodeenv==1.12.0",
+     "packaging==26.3",
+     "platformdirs==4.14.8",
+     "pluggy==1.7.0",
+     "pre_commit==4.7.0",
+     "pytest-cov==7.1.0",
+     "pytest-mock==3.17.0",
+     "pytest-randomly==5.1.0",
+     "pytest-xdist==3.8.0",
+     "pytest==9.2.0",
+     "python-dateutil==4.0.0",
+     "python-discovery==1.9.6",
+     "pytz==2025.2",
+     "regex==2026.11.19",
+     "simplejson==3.20.2",
+     "tzdata==2026.6",
+     "tzlocal==5.4.5",
+     "virtualenv==21.15.9"
+    ],
+    "inputs": {
+     "aslr": "off",
+     "bytecode": "precompiled",
+     "clock": "virtual epoch_ns=1777536791000000000 tick_ns=1000 adapt=8 sleep=virtual",
+     "env": "recorded (every os.environ read is an event)",
+     "env:ACCEPT_EULA": "182d0a62f4fde27d",
+     "env:ACTIONS_ORCHESTRATION_ID": "4ab8bc7a1a15f0e9",
+     "env:ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE": "3817efca84f700ed",
+     "env:ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED": "d9f239164986909d",
+     "env:AGENT_TOOLSDIRECTORY": "681db81b209d9214",
+     "env:ANDROID_HOME": "6c452a0d181bf924",
+     "env:ANDROID_NDK": "13c9a21bdcd910ea",
+     "env:ANDROID_NDK_HOME": "9443ff1c4545a4dd",
+     "env:ANDROID_NDK_LATEST_HOME": "b449c7922ec604ca",
+     "env:ANDROID_NDK_ROOT": "8e7a2cd92ce0c225",
+     "env:ANDROID_SDK_ROOT": "2af2cb1101093b77",
+     "env:ANT_HOME": "38cfcf7c004d6214",
+     "env:AZURE_EXTENSION_DIR": "2159b49579c67580",
+     "env:BOOTSTRAP_HASKELL_NONINTERACTIVE": "780dec3aacce4885",
+     "env:CHROMEWEBDRIVER": "26b1d7846b125fba",
+     "env:CHROME_BIN": "bbe2ec81badb26e3",
+     "env:CI": "b1efec8a5a05ac69",
+     "env:COLUMNS": "85282d0618c5904c",
+     "env:DEBIAN_FRONTEND": "27aec16ed36f5e7f",
+     "env:DOTNET_MULTILEVEL_LOOKUP": "89bfbd5d816261ef",
+     "env:DOTNET_NOLOGO": "3540f515b71a6df4",
+     "env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "3a4874cb6c653e4d",
+     "env:EDGEWEBDRIVER": "d089132ac1f18f1b",
+     "env:ENABLE_RUNNER_TRACING": "f2f2b54c9dd22250",
+     "env:GECKOWEBDRIVER": "57a62dbfdd685bd8",
+     "env:GHCUP_INSTALL_BASE_PREFIX": "7389ae6f098f9f3c",
+     "env:GITHUB_ACTION": "c19161ac8b493f69",
+     "env:GITHUB_ACTIONS": "c44b85ca6019e2db",
+     "env:GITHUB_ACTION_REF": "3cddfa0262ff5f6a",
+     "env:GITHUB_ACTION_REPOSITORY": "83af35af73dd9503",
+     "env:GITHUB_ACTOR": "6ad4bf975871895a",
+     "env:GITHUB_ACTOR_ID": "7ed44d7d3d2a08a9",
+     "env:GITHUB_API_URL": "43a055384c8ee30c",
+     "env:GITHUB_ARTIFACTS": "4c2b4276c5941edd",
+     "env:GITHUB_ARTIFACTS_LIST": "306ea92561d691cc",
+     "env:GITHUB_BASE_REF": "36ea8bcd27955dab",
+     "env:GITHUB_ENV": "111f760399f46b09",
+     "env:GITHUB_EVENT_NAME": "fa7a96b0a221af88",
+     "env:GITHUB_EVENT_PATH": "417c413edfef940e",
+     "env:GITHUB_GRAPHQL_URL": "e0e9b1b7ce267fe1",
+     "env:GITHUB_HEAD_REF": "3e58f9d4f9aa6b33",
+     "env:GITHUB_JOB": "7b6fab157d7d3cc0",
+     "env:GITHUB_OUTPUT": "769c246ada8a0073",
+     "env:GITHUB_PATH": "84d038fc11b5ebb4",
+     "env:GITHUB_REF": "61e5933d0afe18ca",
+     "env:GITHUB_REF_NAME": "fe244bdd1f4650c0",
+     "env:GITHUB_REF_PROTECTED": "32c5d85da0ae1f0c",
+     "env:GITHUB_REF_TYPE": "171cd17c3f4d6017",
+     "env:GITHUB_REPOSITORY": "2f64c204ccf34f7e",
+     "env:GITHUB_REPOSITORY_ID": "0b6e7bb6bc74ec4e",
+     "env:GITHUB_REPOSITORY_OWNER": "cf646ea515a3997a",
+     "env:GITHUB_REPOSITORY_OWNER_ID": "f4951112f4bbb5c9",
+     "env:GITHUB_RETENTION_DAYS": "971dcb0e5dad0f2f",
+     "env:GITHUB_RUN_ATTEMPT": "b2dcd211709fef69",
+     "env:GITHUB_RUN_ID": "56418d55df93cca5",
+     "env:GITHUB_RUN_NUMBER": "1dc04dd079e50fc6",
+     "env:GITHUB_SERVER_URL": "c50bd2479aa52911",
+     "env:GITHUB_SHA": "6ac479ac05b36b28",
+     "env:GITHUB_STATE": "c8230116c67233f4",
+     "env:GITHUB_STEP_SUMMARY": "c542d7c37147d154",
+     "env:GITHUB_TRIGGERING_ACTOR": "898c72bfedd19214",
+     "env:GITHUB_WORKFLOW": "628bab0cb1899c95",
+     "env:GITHUB_WORKFLOW_REF": "81959f3dd413bf13",
+     "env:GITHUB_WORKFLOW_SHA": "9d4f4f06f412f2fe",
+     "env:GITHUB_WORKSPACE": "789f34d13fa4936e",
+     "env:GOROOT_1_24_X64": "3629fac124e57eb5",
+     "env:GOROOT_1_25_X64": "fa7c4ec287d57b9f",
+     "env:GOROOT_1_26_X64": "201ca86d6b29fd1e",
+     "env:GRADLE_HOME": "b530acf488e53c6f",
+     "env:HCA_CLOUD_PROVIDER": "53e48cb538078553",
+     "env:HOME": "85c350014407f59f",
+     "env:HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS": "1a5f460566fbf3f8",
+     "env:HOMEBREW_NO_AUTO_UPDATE": "3bcebb319419e1b3",
+     "env:INVOCATION_ID": "e649e12e412a50f3",
+     "env:ImageOS": "b30184772249a8d0",
+     "env:ImageVersion": "919bf90963038103",
+     "env:JAVA_HOME": "e0fe90e802e5cdd2",
+     "env:JAVA_HOME_11_X64": "ff4a954f5c22e7d5",
+     "env:JAVA_HOME_17_X64": "d39a6d2e33f1b224",
+     "env:JAVA_HOME_21_X64": "a933373ec7e963c6",
+     "env:JAVA_HOME_25_X64": "2947bc67d2b1428d",
+     "env:JOURNAL_STREAM": "566e253171c19aad",
+     "env:LANG": "aeefb95e8953c950",
+     "env:LC_ALL": "2a27cc871e6df502",
+     "env:LD_LIBRARY_PATH": "d423c0ae8ccc0804",
+     "env:LOGNAME": "2747607f229d426c",
+     "env:MEMORY_PRESSURE_WATCH": "73faf3830b45241a",
+     "env:MEMORY_PRESSURE_WRITE": "7aded114e20b3a54",
+     "env:NVM_DIR": "f50d5fa74ec9d1fc",
+     "env:PATH": "a556b2c74ad9e5b7",
+     "env:PIPX_BIN_DIR": "c0af67eb00e8a110",
+     "env:PIPX_HOME": "fcf3c3c2086cdc24",
+     "env:PKG_CONFIG_PATH": "7bc241f651af4862",
+     "env:POWERSHELL_DISTRIBUTION_CHANNEL": "fabc98d43b69d11e",
+     "env:PSModulePath": "a5d18c7ab9c63fb3",
+     "env:PWD": "a971d54ee14bda81",
+     "env:PYTEST_VERSION": "60da7eae2c76ff24",
+     "env:PYTHONDONTWRITEBYTECODE": "9cd66641cafe0368",
+     "env:PYTHONHASHSEED": "71e1bda1aca8f11b",
+     "env:PYTHONPYCACHEPREFIX": "88e045a7bd45da93",
+     "env:PYTHONUNBUFFERED": "3418ad26d15b6bca",
+     "env:Python2_ROOT_DIR": "0e6dfa739327a86b",
+     "env:Python3_ROOT_DIR": "ed5ee891efbfedc1",
+     "env:Python_ROOT_DIR": "492be005f070df00",
+     "env:RUNNER_ARCH": "d44571bdde1373e8",
+     "env:RUNNER_ENVIRONMENT": "0b5eac3a378d54ec",
+     "env:RUNNER_NAME": "000223a89f517717",
+     "env:RUNNER_OS": "8abead566bda766e",
+     "env:RUNNER_TEMP": "1e0cc05c794bf974",
+     "env:RUNNER_TOOL_CACHE": "d44df44136d9d17d",
+     "env:RUNNER_TRACKING_ID": "f4d5e2811bed939e",
+     "env:RUNNER_WORKSPACE": "1bae29b9f0b0cbde",
+     "env:SELENIUM_JAR_PATH": "4aa10ab371ad593c",
+     "env:SGX_AESM_ADDR": "5af2398115839293",
+     "env:SHELL": "e0967e19dba5186d",
+     "env:SHLVL": "f64e54d0db2c8a15",
+     "env:SWIFT_PATH": "6c960c1d10e160f0",
+     "env:SYSTEMD_EXEC_PID": "78b37d1105bf491d",
+     "env:TZ": "5cb1eccfbfb87fdf",
+     "env:USER": "f1263236a8c1c1aa",
+     "env:USE_BAZEL_FALLBACK_VERSION": "2193f7e26afcd30d",
+     "env:UV_CACHE_DIR": "99dc8e37094a1958",
+     "env:UV_PYTHON_PREFERENCE": "bb261975476c0b69",
+     "env:VCPKG_INSTALLATION_ROOT": "097342195b689f58",
+     "env:VIRTUAL_ENV": "b2787b19f50dd2ce",
+     "env:XDG_CONFIG_HOME": "0b89a8c10ed4499b",
+     "env:XDG_RUNTIME_DIR": "541daeb8f9196077",
+     "env:_": "4cd50b3bf249f30a",
+     "env:pythonLocation": "88f7d672a5963f27",
+     "fs": "sorted",
+     "hashseed": "2",
+     "locale": "C.UTF-8 (pinned)",
+     "network": "block allow= cassette=none",
+     "order": "fixed",
+     "runner": "pytest 9.2.0",
+     "runtime": "CPython 3.13.18 linux x86_64",
+     "seed": "2",
+     "shuffle": "no",
+     "tz": "UTC (pinned)",
+     "urandom": "observed"
+    }
+   },
+   "cause_line": "test order: it fails when run after tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass (state left behind by that test)",
+   "replay_line": "replay: fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_name_validation-9cea9591",
+   "exit": 0
+  },
+  {
+   "test": "tests/test_locales.py::TestLocaleValidation::test_locale_validation",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 1882,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass",
+    "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: assert 0 == 8",
+    "tests/test_locales.py:13"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "50ea6127fd3f298041049044f2275285"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": null,
+    "reason": "order",
+    "description": "before the test started: it ran after different tests in its process: [] vs [tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass] (first difference at position 0: <none> vs tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass)",
+    "event_a": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "<none>"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "other",
+     "o": "order.predecessor",
+     "at": "<run>",
+     "v": "tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass"
+    },
+    "fingerprints": [
+     "777004484f9fffc85fec400c81bc8b65",
+     "50ea6127fd3f298041049044f2275285"
+    ]
+   },
+   "runs": 33,
+   "seconds": 73.23,
+   "controls": [
+    "bytecode",
+    "env",
+    "fs",
+    "hashseed",
+    "locale",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "tz"
+   ],
+   "detpy": "0.1.0",
+   "python": "3.13.18",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556/order.txt -n 0",
+   "replay_command": "fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556",
+   "first_failing_seed": 2,
+   "runner": "pytest",
+   "provenance": {
+    "commit": "2224255c4acc594d734cef0bbc83360452a67983",
+    "dirty": false,
+    "python": "3.13.18",
+    "platform": "linux",
+    "distributions": [
+     "PyYAML==6.0.3",
+     "Pygments==2.21.0",
+     "arrow==1.4.0",
+     "cfgv==3.5.0",
+     "coverage==7.17.3",
+     "dateparser==1.5.1",
+     "detpy==0.1.0",
+     "distlib==0.4.4",
+     "execnet==2.1.2",
+     "filelock==4.2.12",
+     "identify==2.6.20",
+     "iniconfig==2.3.1",
+     "nodeenv==1.12.0",
+     "packaging==26.3",
+     "platformdirs==4.14.8",
+     "pluggy==1.7.0",
+     "pre_commit==4.7.0",
+     "pytest-cov==7.1.0",
+     "pytest-mock==3.17.0",
+     "pytest-randomly==5.1.0",
+     "pytest-xdist==3.8.0",
+     "pytest==9.2.0",
+     "python-dateutil==4.0.0",
+     "python-discovery==1.9.6",
+     "pytz==2025.2",
+     "regex==2026.11.19",
+     "simplejson==3.20.2",
+     "tzdata==2026.6",
+     "tzlocal==5.4.5",
+     "virtualenv==21.15.9"
+    ],
+    "inputs": {
+     "aslr": "off",
+     "bytecode": "precompiled",
+     "clock": "virtual epoch_ns=1777536791000000000 tick_ns=1000 adapt=8 sleep=virtual",
+     "env": "recorded (every os.environ read is an event)",
+     "env:ACCEPT_EULA": "182d0a62f4fde27d",
+     "env:ACTIONS_ORCHESTRATION_ID": "4ab8bc7a1a15f0e9",
+     "env:ACTIONS_RUNNER_ACTION_ARCHIVE_CACHE": "3817efca84f700ed",
+     "env:ACTIONS_RUNNER_RETURN_JOB_RESULT_FOR_HOSTED": "d9f239164986909d",
+     "env:AGENT_TOOLSDIRECTORY": "681db81b209d9214",
+     "env:ANDROID_HOME": "6c452a0d181bf924",
+     "env:ANDROID_NDK": "13c9a21bdcd910ea",
+     "env:ANDROID_NDK_HOME": "9443ff1c4545a4dd",
+     "env:ANDROID_NDK_LATEST_HOME": "b449c7922ec604ca",
+     "env:ANDROID_NDK_ROOT": "8e7a2cd92ce0c225",
+     "env:ANDROID_SDK_ROOT": "2af2cb1101093b77",
+     "env:ANT_HOME": "38cfcf7c004d6214",
+     "env:AZURE_EXTENSION_DIR": "2159b49579c67580",
+     "env:BOOTSTRAP_HASKELL_NONINTERACTIVE": "780dec3aacce4885",
+     "env:CHROMEWEBDRIVER": "26b1d7846b125fba",
+     "env:CHROME_BIN": "bbe2ec81badb26e3",
+     "env:CI": "b1efec8a5a05ac69",
+     "env:COLUMNS": "85282d0618c5904c",
+     "env:DEBIAN_FRONTEND": "27aec16ed36f5e7f",
+     "env:DOTNET_MULTILEVEL_LOOKUP": "89bfbd5d816261ef",
+     "env:DOTNET_NOLOGO": "3540f515b71a6df4",
+     "env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE": "3a4874cb6c653e4d",
+     "env:EDGEWEBDRIVER": "d089132ac1f18f1b",
+     "env:ENABLE_RUNNER_TRACING": "f2f2b54c9dd22250",
+     "env:GECKOWEBDRIVER": "57a62dbfdd685bd8",
+     "env:GHCUP_INSTALL_BASE_PREFIX": "7389ae6f098f9f3c",
+     "env:GITHUB_ACTION": "c19161ac8b493f69",
+     "env:GITHUB_ACTIONS": "c44b85ca6019e2db",
+     "env:GITHUB_ACTION_REF": "3cddfa0262ff5f6a",
+     "env:GITHUB_ACTION_REPOSITORY": "83af35af73dd9503",
+     "env:GITHUB_ACTOR": "6ad4bf975871895a",
+     "env:GITHUB_ACTOR_ID": "7ed44d7d3d2a08a9",
+     "env:GITHUB_API_URL": "43a055384c8ee30c",
+     "env:GITHUB_ARTIFACTS": "4c2b4276c5941edd",
+     "env:GITHUB_ARTIFACTS_LIST": "306ea92561d691cc",
+     "env:GITHUB_BASE_REF": "36ea8bcd27955dab",
+     "env:GITHUB_ENV": "111f760399f46b09",
+     "env:GITHUB_EVENT_NAME": "fa7a96b0a221af88",
+     "env:GITHUB_EVENT_PATH": "417c413edfef940e",
+     "env:GITHUB_GRAPHQL_URL": "e0e9b1b7ce267fe1",
+     "env:GITHUB_HEAD_REF": "3e58f9d4f9aa6b33",
+     "env:GITHUB_JOB": "7b6fab157d7d3cc0",
+     "env:GITHUB_OUTPUT": "769c246ada8a0073",
+     "env:GITHUB_PATH": "84d038fc11b5ebb4",
+     "env:GITHUB_REF": "61e5933d0afe18ca",
+     "env:GITHUB_REF_NAME": "fe244bdd1f4650c0",
+     "env:GITHUB_REF_PROTECTED": "32c5d85da0ae1f0c",
+     "env:GITHUB_REF_TYPE": "171cd17c3f4d6017",
+     "env:GITHUB_REPOSITORY": "2f64c204ccf34f7e",
+     "env:GITHUB_REPOSITORY_ID": "0b6e7bb6bc74ec4e",
+     "env:GITHUB_REPOSITORY_OWNER": "cf646ea515a3997a",
+     "env:GITHUB_REPOSITORY_OWNER_ID": "f4951112f4bbb5c9",
+     "env:GITHUB_RETENTION_DAYS": "971dcb0e5dad0f2f",
+     "env:GITHUB_RUN_ATTEMPT": "b2dcd211709fef69",
+     "env:GITHUB_RUN_ID": "56418d55df93cca5",
+     "env:GITHUB_RUN_NUMBER": "1dc04dd079e50fc6",
+     "env:GITHUB_SERVER_URL": "c50bd2479aa52911",
+     "env:GITHUB_SHA": "6ac479ac05b36b28",
+     "env:GITHUB_STATE": "c8230116c67233f4",
+     "env:GITHUB_STEP_SUMMARY": "c542d7c37147d154",
+     "env:GITHUB_TRIGGERING_ACTOR": "898c72bfedd19214",
+     "env:GITHUB_WORKFLOW": "628bab0cb1899c95",
+     "env:GITHUB_WORKFLOW_REF": "81959f3dd413bf13",
+     "env:GITHUB_WORKFLOW_SHA": "9d4f4f06f412f2fe",
+     "env:GITHUB_WORKSPACE": "789f34d13fa4936e",
+     "env:GOROOT_1_24_X64": "3629fac124e57eb5",
+     "env:GOROOT_1_25_X64": "fa7c4ec287d57b9f",
+     "env:GOROOT_1_26_X64": "201ca86d6b29fd1e",
+     "env:GRADLE_HOME": "b530acf488e53c6f",
+     "env:HCA_CLOUD_PROVIDER": "53e48cb538078553",
+     "env:HOME": "85c350014407f59f",
+     "env:HOMEBREW_CLEANUP_PERIODIC_FULL_DAYS": "1a5f460566fbf3f8",
+     "env:HOMEBREW_NO_AUTO_UPDATE": "3bcebb319419e1b3",
+     "env:INVOCATION_ID": "e649e12e412a50f3",
+     "env:ImageOS": "b30184772249a8d0",
+     "env:ImageVersion": "919bf90963038103",
+     "env:JAVA_HOME": "e0fe90e802e5cdd2",
+     "env:JAVA_HOME_11_X64": "ff4a954f5c22e7d5",
+     "env:JAVA_HOME_17_X64": "d39a6d2e33f1b224",
+     "env:JAVA_HOME_21_X64": "a933373ec7e963c6",
+     "env:JAVA_HOME_25_X64": "2947bc67d2b1428d",
+     "env:JOURNAL_STREAM": "566e253171c19aad",
+     "env:LANG": "aeefb95e8953c950",
+     "env:LC_ALL": "2a27cc871e6df502",
+     "env:LD_LIBRARY_PATH": "d423c0ae8ccc0804",
+     "env:LOGNAME": "2747607f229d426c",
+     "env:MEMORY_PRESSURE_WATCH": "73faf3830b45241a",
+     "env:MEMORY_PRESSURE_WRITE": "7aded114e20b3a54",
+     "env:NVM_DIR": "f50d5fa74ec9d1fc",
+     "env:PATH": "a556b2c74ad9e5b7",
+     "env:PIPX_BIN_DIR": "c0af67eb00e8a110",
+     "env:PIPX_HOME": "fcf3c3c2086cdc24",
+     "env:PKG_CONFIG_PATH": "7bc241f651af4862",
+     "env:POWERSHELL_DISTRIBUTION_CHANNEL": "fabc98d43b69d11e",
+     "env:PSModulePath": "a5d18c7ab9c63fb3",
+     "env:PWD": "a971d54ee14bda81",
+     "env:PYTEST_VERSION": "60da7eae2c76ff24",
+     "env:PYTHONDONTWRITEBYTECODE": "9cd66641cafe0368",
+     "env:PYTHONHASHSEED": "71e1bda1aca8f11b",
+     "env:PYTHONPYCACHEPREFIX": "88e045a7bd45da93",
+     "env:PYTHONUNBUFFERED": "3418ad26d15b6bca",
+     "env:Python2_ROOT_DIR": "0e6dfa739327a86b",
+     "env:Python3_ROOT_DIR": "ed5ee891efbfedc1",
+     "env:Python_ROOT_DIR": "492be005f070df00",
+     "env:RUNNER_ARCH": "d44571bdde1373e8",
+     "env:RUNNER_ENVIRONMENT": "0b5eac3a378d54ec",
+     "env:RUNNER_NAME": "000223a89f517717",
+     "env:RUNNER_OS": "8abead566bda766e",
+     "env:RUNNER_TEMP": "1e0cc05c794bf974",
+     "env:RUNNER_TOOL_CACHE": "d44df44136d9d17d",
+     "env:RUNNER_TRACKING_ID": "f4d5e2811bed939e",
+     "env:RUNNER_WORKSPACE": "1bae29b9f0b0cbde",
+     "env:SELENIUM_JAR_PATH": "4aa10ab371ad593c",
+     "env:SGX_AESM_ADDR": "5af2398115839293",
+     "env:SHELL": "e0967e19dba5186d",
+     "env:SHLVL": "f64e54d0db2c8a15",
+     "env:SWIFT_PATH": "6c960c1d10e160f0",
+     "env:SYSTEMD_EXEC_PID": "78b37d1105bf491d",
+     "env:TZ": "5cb1eccfbfb87fdf",
+     "env:USER": "f1263236a8c1c1aa",
+     "env:USE_BAZEL_FALLBACK_VERSION": "2193f7e26afcd30d",
+     "env:UV_CACHE_DIR": "99dc8e37094a1958",
+     "env:UV_PYTHON_PREFERENCE": "bb261975476c0b69",
+     "env:VCPKG_INSTALLATION_ROOT": "097342195b689f58",
+     "env:VIRTUAL_ENV": "b2787b19f50dd2ce",
+     "env:XDG_CONFIG_HOME": "0b89a8c10ed4499b",
+     "env:XDG_RUNTIME_DIR": "541daeb8f9196077",
+     "env:_": "4cd50b3bf249f30a",
+     "env:pythonLocation": "88f7d672a5963f27",
+     "fs": "sorted",
+     "hashseed": "2",
+     "locale": "C.UTF-8 (pinned)",
+     "network": "block allow= cassette=none",
+     "order": "fixed",
+     "runner": "pytest 9.2.0",
+     "runtime": "CPython 3.13.18 linux x86_64",
+     "seed": "2",
+     "shuffle": "no",
+     "tz": "UTC (pinned)",
+     "urandom": "observed"
+    }
+   },
+   "cause_line": "test order: it fails when run after tests/test_locales.py::TestCustomLocale::test_custom_locale_subclass (state left behind by that test)",
+   "replay_line": "replay: fenvix replay /tmp/work/block2/arrow/fenvix/bundles/bundles/test_locale_validation-9b2db556",
+   "exit": 0
+  }
+ ],
+ "seconds": 490.08
+}

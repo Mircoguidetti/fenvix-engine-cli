@@ -1,0 +1,965 @@
+{
+ "name": "idoft-eppy",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+  "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+  "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object",
+  "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs",
+  "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+  "eppy/tests/test_case_insensitive.py::test_contains[building]",
+  "eppy/tests/test_case_insensitive.py::test_del[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_del[Building]",
+  "eppy/tests/test_case_insensitive.py::test_del[building]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]",
+  "eppy/tests/test_case_insensitive.py::test_get_and_set[building]",
+  "eppy/tests/test_examples.py::test_pythonic",
+  "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+  "eppy/tests/test_fanpower.py::testfanpower_bhp",
+  "eppy/tests/test_fanpower.py::testfanpower_watts",
+  "eppy/tests/test_hvacbuilder.py::test_connectcomponents",
+  "eppy/tests/test_hvacbuilder.py::test_renamenodes",
+  "eppy/tests/test_hvacbuilder.py::test_replacebranch",
+  "eppy/tests/test_idf_helpers.py::test_getanymentions",
+  "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes",
+  "eppy/tests/test_json_functions.py::test_updateidf",
+  "eppy/tests/test_modeleditor.py::test_getallobjlists",
+  "eppy/tests/test_modeleditor.py::test_getiddgroupdict",
+  "eppy/tests/test_modeleditor.py::test_getrefnames",
+  "eppy/tests/test_modeleditor.py::test_idd_index",
+  "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+  "eppy/tests/test_modeleditor.py::test_idfstr",
+  "eppy/tests/test_modeleditor.py::test_initread",
+  "eppy/tests/test_modeleditor.py::test_initreadtxt",
+  "eppy/tests/test_modeleditor.py::test_new",
+  "eppy/tests/test_modeleditor.py::test_newidfobject",
+  "eppy/tests/test_modeleditor.py::test_refname2key",
+  "eppy/tests/test_modeleditor.py::test_rename",
+  "eppy/tests/test_modeleditor.py::test_save",
+  "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings",
+  "eppy/tests/test_modeleditor.py::test_saveas",
+  "eppy/tests/test_modeleditor.py::test_savecopy",
+  "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume",
+  "eppy/tests/test_parse_error.py::test_capture_real_error",
+  "eppy/tests/test_simpleread.py::test_idfreadtest",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction",
+  "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012272",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.805,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.96,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.866,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.865,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.852,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.865,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.857,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.576,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.58,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.573,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.567,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.587,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.697,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.748,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.571,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.57,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.567,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.567,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.707,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.567,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.571,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.586,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.71,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.568,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.603,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.567,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.569,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.573,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.571,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.566,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.566,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 40.09 s; 0 flaky failing tests (0 always failing, not flaky); 0 replay bundles; 0 distinct first diverging events, 0 distinct polluter sets\n{\n  \"seeds\": 50,\n  \"seconds\": 40.09,\n  \"runs\": 50,\n  \"collected\": 0,\n  \"failing_tests\": 0,\n  \"always_failing\": [],\n  \"flaky_failing\": [],\n  \"bundles\": [],\n  \"not_reproduced_budget\": [],\n  \"families_by_divergence\": {},\n  \"families_by_polluter\": {},\n  \"seeds_log\": [\n    {\n      \"seed\": 1,\n      \"seconds\": 1.805,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 2,\n      \"seconds\": 1.96,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 3,\n      \"seconds\": 1.866,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 4,\n      \"seconds\": 1.865,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 5,\n      \"seconds\": 1.852,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 6,\n      \"seconds\": 1.865,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 7,\n      \"seconds\": 1.857,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 8,\n      \"seconds\": 0.569,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 9,\n      \"seconds\": 0.568,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 10,\n      \"seconds\": 0.569,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 11,\n      \"seconds\": 0.576,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 12,\n      \"seconds\": 0.58,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 13,\n      \"seconds\": 0.573,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 14,\n      \"seconds\": 0.568,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 15,\n      \"seconds\": 0.567,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 16,\n      \"seconds\": 0.568,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 17,\n      \"seconds\": 0.568,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 18,\n      \"seconds\": 0.568,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 19,\n      \"seconds\": 0.587,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n ",
+ "bundles": [
+  {
+   "test": "eppy/tests/test_IDF.py::TestIDF::test_popidfobject",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_IDF.py::TestIDF::test_removeidfobject",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_get_referenced_object",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_bunch_subclass.py::TestEpBunch::test_getreferingobjs",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[BUILDING]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[BuIlDiNg]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[Building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_contains[building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[BUILDING]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[BuIlDiNg]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[Building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_del[building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[BUILDING]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[BuIlDiNg]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[Building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_case_insensitive.py::test_get_and_set[building]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_examples.py::test_pythonic",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::test_fan_maxcfm",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::testfanpower_bhp",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_fanpower.py::testfanpower_watts",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_connectcomponents",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_renamenodes",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_hvacbuilder.py::test_replacebranch",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_idf_helpers.py::test_getanymentions",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_idf_helpers.py::test_getidfkeyswithnodes",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_json_functions.py::test_updateidf",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getallobjlists",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getiddgroupdict",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_getrefnames",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idd_index",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idfinmsequence",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_idfstr",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_initread",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_initreadtxt",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_new",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_newidfobject",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_refname2key",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_rename",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_save",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_save_with_lineendings_and_encodings",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_saveas",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_savecopy",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_modeleditor.py::test_zonearea_zonevolume",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_parse_error.py::test_capture_real_error",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_simpleread.py::test_idfreadtest",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_1_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_2_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_airgap_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_infraredtransparent_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_material",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_nomass_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_heatcapacity_roofvegetation_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_1_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_2_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_airgap_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_fails",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_infraredtransparent_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_material",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_nomass_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_rvalue_roofvegetation_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_1_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_2_layer_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_airgap_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_infraredtransparent_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_material",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_nomass_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "eppy/tests/test_thermal_properties.py::Test_ThermalProperties::test_ufactor_roofvegetation_construction",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  }
+ ],
+ "seconds": 40.16
+}
