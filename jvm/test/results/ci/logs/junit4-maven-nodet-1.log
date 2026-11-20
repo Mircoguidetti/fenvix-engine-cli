@@ -1,0 +1,102 @@
+[ERROR] Tests run: 6, Failures: 1, Errors: 2, Skipped: 0, Time elapsed: 4.534 s <<< FAILURE! -- in fx4.Junit4ControlTest
+[ERROR] fx4.Junit4ControlTest.externalConnectIsRefused -- Time elapsed: 3.007 s <<< ERROR!
+java.net.SocketTimeoutException: connect timed out
+	at java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:350)
+	at java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:206)
+	at java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:188)
+	at java.net.SocksSocketImpl.connect(SocksSocketImpl.java:405)
+	at java.net.Socket.connect(Socket.java:607)
+	at fx4.Junit4ControlTest.externalConnectIsRefused(Junit4ControlTest.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:316)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:240)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:214)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+
+[ERROR] fx4.Junit4ControlTest.listingIsSorted -- Time elapsed: 0.020 s <<< FAILURE!
+java.lang.AssertionError: expected:<[0-0, 102-137, 105-91, 108-45, 157-198, 15a-152, 15d-106, 160-60, 163-14, 1b2-167, 1b5-121, 1b8-75, 1bb-29, 20a-182, 20d-136, 210-90, 213-44, 262-197, 265-151, 268-105, 26b-59, 26e-13, 2bd-166, 2c0-120, 2c3-74, 2c6-28, 315-181, 318-135, 31b-89, 31e-43, 36d-196, 370-150, 373-104, 376-58, 379-12, 3c8-165, 3cb-119, 3ce-73, 3d1-27, 420-180, 423-134, 426-88, 429-42, 478-195, 47b-149, 47e-103, 481-57, 484-11, 4c-199, 4d3-164, 4d6-118, 4d9-72, 4dc-26, 4f-153, 52-107, 52b-179, 52e-133, 531-87, 534-41, 55-61, 58-15, 583-194, 586-148, 589-102, 58c-56, 58f-10, 5de-163, 5e1-117, 5e4-71, 5e7-25, 636-178, 639-132, 63c-86, 63f-40, 68e-193, 691-147, 694-101, 697-55, 69a-9, 6e9-162, 6ec-116, 6ef-70, 6f2-24, 741-177, 744-131, 747-85, 74a-39, 799-192, 79c-146, 79f-100, 7a2-54, 7a5-8, 7f4-161, 7f7-115, 7fa-69, 7fd-23, 84c-176, 84f-130, 852-84, 855-38, 8a4-191, 8a7-145, 8aa-99, 8ad-53, 8b0-7, 8ff-160, 902-114, 905-68, 908-22, 957-175, 95a-129, 95d-83, 960-37, 9af-190, 9b2-144, 9b5-98, 9b8-52, 9bb-6, a0a-159, a0d-113, a10-67, a13-21, a62-174, a65-128, a68-82, a6b-36, a7-168, aa-122, aba-189, abd-143, ac0-97, ac3-51, ac6-5, ad-76, b0-30, b15-158, b18-112, b1b-66, b1e-20, b6d-173, b70-127, b73-81, b76-35, bc5-188, bc8-142, bcb-96, bce-50, bd1-4, c20-157, c23-111, c26-65, c29-19, c78-172, c7b-126, c7e-80, c81-34, cd0-187, cd3-141, cd6-95, cd9-49, cdc-3, d2b-156, d2e-110, d31-64, d34-18, d83-171, d86-125, d89-79, d8c-33, ddb-186, dde-140, de1-94, de4-48, de7-2, e36-155, e39-109, e3c-63, e3f-17, e8e-170, e91-124, e94-78, e97-32, ee6-185, ee9-139, eec-93, eef-47, ef2-1, f41-154, f44-108, f47-62, f4a-16, f99-169, f9c-123, f9f-77, fa2-31, ff-183, ff1-184, ff4-138, ff7-92, ffa-46]> but was:<[cdc-3, 7fa-69, f4a-16, 2bd-166, 8a7-145, a65-128, b18-112, 47e-103, 6ec-116, 957-175, 63f-40, ef2-1, d86-125, 31b-89, 213-44, 429-42, cd9-49, 636-178, eec-93, 58c-56, bc5-188, c29-19, 908-22, de4-48, 268-105, bce-50, f44-108, 318-135, de7-2, ff7-92, d31-64, e94-78, bcb-96, e91-124, e39-109, 95a-129, d89-79, 7fd-23, 47b-149, d83-171, 423-134, 694-101, 52e-133, 26e-13, 2c6-28, 26b-59, 3d1-27, bd1-4, fa2-31, ff1-184, 639-132, 52-107, 160-60, 3c8-165, 586-148, f99-169, 157-198, 105-91, e3f-17, 58f-10, 1b2-167, 426-88, 5e1-117, 905-68, 20d-136, 478-195, a62-174, 691-147, 58-15, 31e-43, d34-18, 315-181, 697-55, 960-37, 262-197, 9b2-144, b70-127, 741-177, 1bb-29, 589-102, 84f-130, 108-45, eef-47, d8c-33, de1-94, b6d-173, 84c-176, 265-151, ddb-186, bc8-142, 74a-39, ffa-46, 68e-193, 481-57, 855-38, 210-90, 4dc-26, f41-154, d2e-110, 379-12, 852-84, 799-192, a13-21, 370-150, 5e4-71, a0a-159, 20a-182, d2b-156, 376-58, ee6-185, 9bb-6, 15a-152, 4c-199, 373-104, aba-189, 4d3-164, c26-65, cd0-187, 7a5-8, e3c-63, 8aa-99, 4f-153, c7e-80, f9f-77, abd-143, 8b0-7, 79f-100, e97-32, ac6-5, 9af-190, 0-0, 163-14, aa-122, 534-41, 95d-83, 747-85, 583-194, 36d-196, b1b-66, 902-114, b73-81, 7f4-161, a10-67, 6e9-162, e36-155, b76-35, cd6-95, b1e-20, c81-34, dde-140, 3ce-73, ff-183, ff4-138, a68-82, e8e-170, 52b-179, c78-172, b15-158, a7-168, c23-111, 3cb-119, 69a-9, 15d-106, 4d9-72, 1b8-75, 5e7-25, 4d6-118, 5de-163, 7f7-115, ad-76, 8a4-191, 2c0-120, 79c-146, b0-30, 531-87, 8ff-160, ac3-51, ee9-139, a0d-113, 420-180, 744-131, cd3-141, c7b-126, a6b-36, 7a2-54, 63c-86, f9c-123, ac0-97, 9b8-52, 1b5-121, 6ef-70, c20-157, 55-61, f47-62, 484-11, 9b5-98, 102-137, 2c3-74, 6f2-24, 8ad-53]>
+	at org.junit.Assert.fail(Assert.java:89)
+	at org.junit.Assert.failNotEquals(Assert.java:835)
+	at org.junit.Assert.assertEquals(Assert.java:120)
+	at org.junit.Assert.assertEquals(Assert.java:146)
+	at fx4.Junit4ControlTest.listingIsSorted(Junit4ControlTest.java:51)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:316)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:240)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:214)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:385)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:162)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:507)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:495)
+
+[ERROR] fx4.Junit4ControlTest.sleepIsVirtual -- Time elapsed: 1.502 s <<< ERROR!
+org.junit.runners.model.TestTimedOutException: test timed out after 1500 milliseconds
+	at java.lang.Thread.sleep(Native Method)
+	at fx4.Junit4ControlTest.sleepIsVirtual(Junit4ControlTest.java:38)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:299)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:293)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:750)
+
+[ERROR] Failures: 
+[ERROR]   Junit4ControlTest.listingIsSorted:51 expected:<[0-0, 102-137, 105-91, 108-45, 157-198, 15a-152, 15d-106, 160-60, 163-14, 1b2-167, 1b5-121, 1b8-75, 1bb-29, 20a-182, 20d-136, 210-90, 213-44, 262-197, 265-151, 268-105, 26b-59, 26e-13, 2bd-166, 2c0-120, 2c3-74, 2c6-28, 315-181, 318-135, 31b-89, 31e-43, 36d-196, 370-150, 373-104, 376-58, 379-12, 3c8-165, 3cb-119, 3ce-73, 3d1-27, 420-180, 423-134, 426-88, 429-42, 478-195, 47b-149, 47e-103, 481-57, 484-11, 4c-199, 4d3-164, 4d6-118, 4d9-72, 4dc-26, 4f-153, 52-107, 52b-179, 52e-133, 531-87, 534-41, 55-61, 58-15, 583-194, 586-148, 589-102, 58c-56, 58f-10, 5de-163, 5e1-117, 5e4-71, 5e7-25, 636-178, 639-132, 63c-86, 63f-40, 68e-193, 691-147, 694-101, 697-55, 69a-9, 6e9-162, 6ec-116, 6ef-70, 6f2-24, 741-177, 744-131, 747-85, 74a-39, 799-192, 79c-146, 79f-100, 7a2-54, 7a5-8, 7f4-161, 7f7-115, 7fa-69, 7fd-23, 84c-176, 84f-130, 852-84, 855-38, 8a4-191, 8a7-145, 8aa-99, 8ad-53, 8b0-7, 8ff-160, 902-114, 905-68, 908-22, 957-175, 95a-129, 95d-83, 960-37, 9af-190, 9b2-144, 9b5-98, 9b8-52, 9bb-6, a0a-159, a0d-113, a10-67, a13-21, a62-174, a65-128, a68-82, a6b-36, a7-168, aa-122, aba-189, abd-143, ac0-97, ac3-51, ac6-5, ad-76, b0-30, b15-158, b18-112, b1b-66, b1e-20, b6d-173, b70-127, b73-81, b76-35, bc5-188, bc8-142, bcb-96, bce-50, bd1-4, c20-157, c23-111, c26-65, c29-19, c78-172, c7b-126, c7e-80, c81-34, cd0-187, cd3-141, cd6-95, cd9-49, cdc-3, d2b-156, d2e-110, d31-64, d34-18, d83-171, d86-125, d89-79, d8c-33, ddb-186, dde-140, de1-94, de4-48, de7-2, e36-155, e39-109, e3c-63, e3f-17, e8e-170, e91-124, e94-78, e97-32, ee6-185, ee9-139, eec-93, eef-47, ef2-1, f41-154, f44-108, f47-62, f4a-16, f99-169, f9c-123, f9f-77, fa2-31, ff-183, ff1-184, ff4-138, ff7-92, ffa-46]> but was:<[cdc-3, 7fa-69, f4a-16, 2bd-166, 8a7-145, a65-128, b18-112, 47e-103, 6ec-116, 957-175, 63f-40, ef2-1, d86-125, 31b-89, 213-44, 429-42, cd9-49, 636-178, eec-93, 58c-56, bc5-188, c29-19, 908-22, de4-48, 268-105, bce-50, f44-108, 318-135, de7-2, ff7-92, d31-64, e94-78, bcb-96, e91-124, e39-109, 95a-129, d89-79, 7fd-23, 47b-149, d83-171, 423-134, 694-101, 52e-133, 26e-13, 2c6-28, 26b-59, 3d1-27, bd1-4, fa2-31, ff1-184, 639-132, 52-107, 160-60, 3c8-165, 586-148, f99-169, 157-198, 105-91, e3f-17, 58f-10, 1b2-167, 426-88, 5e1-117, 905-68, 20d-136, 478-195, a62-174, 691-147, 58-15, 31e-43, d34-18, 315-181, 697-55, 960-37, 262-197, 9b2-144, b70-127, 741-177, 1bb-29, 589-102, 84f-130, 108-45, eef-47, d8c-33, de1-94, b6d-173, 84c-176, 265-151, ddb-186, bc8-142, 74a-39, ffa-46, 68e-193, 481-57, 855-38, 210-90, 4dc-26, f41-154, d2e-110, 379-12, 852-84, 799-192, a13-21, 370-150, 5e4-71, a0a-159, 20a-182, d2b-156, 376-58, ee6-185, 9bb-6, 15a-152, 4c-199, 373-104, aba-189, 4d3-164, c26-65, cd0-187, 7a5-8, e3c-63, 8aa-99, 4f-153, c7e-80, f9f-77, abd-143, 8b0-7, 79f-100, e97-32, ac6-5, 9af-190, 0-0, 163-14, aa-122, 534-41, 95d-83, 747-85, 583-194, 36d-196, b1b-66, 902-114, b73-81, 7f4-161, a10-67, 6e9-162, e36-155, b76-35, cd6-95, b1e-20, c81-34, dde-140, 3ce-73, ff-183, ff4-138, a68-82, e8e-170, 52b-179, c78-172, b15-158, a7-168, c23-111, 3cb-119, 69a-9, 15d-106, 4d9-72, 1b8-75, 5e7-25, 4d6-118, 5de-163, 7f7-115, ad-76, 8a4-191, 2c0-120, 79c-146, b0-30, 531-87, 8ff-160, ac3-51, ee9-139, a0d-113, 420-180, 744-131, cd3-141, c7b-126, a6b-36, 7a2-54, 63c-86, f9c-123, ac0-97, 9b8-52, 1b5-121, 6ef-70, c20-157, 55-61, f47-62, 484-11, 9b5-98, 102-137, 2c3-74, 6f2-24, 8ad-53]>
+[ERROR] Errors: 
+[ERROR]   Junit4ControlTest.externalConnectIsRefused:57 » SocketTimeout connect timed out
+[ERROR]   Junit4ControlTest.sleepIsVirtual:38 » TestTimedOut test timed out after 1500 milliseconds
+[ERROR] Tests run: 10, Failures: 1, Errors: 2, Skipped: 0
+[ERROR] There are test failures.
+
+See /home/runner/work/fenvix-engine-cli/fenvix-engine-cli/jvm/fixtures/controls-junit4/target/surefire-reports for the individual test results.
+See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.

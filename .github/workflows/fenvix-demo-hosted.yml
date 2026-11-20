@@ -1,0 +1,28 @@
+name: fenvix-demo-hosted
+
+# Rehearsal of fenvix-demo on a GitHub-hosted machine (free: the repository is public). Same two jobs, same wrapper,
+# same step summary; the only difference is that two hosted jobs never share a machine, so the cache directory is
+# carried from job 1 to job 2 as an artifact (a stand-in for the disk of our machine). It proves the wrapper, the
+# engine and the summary end to end on GitHub; it does not replace the `runs-on: fenvix` run.
+# Never runs on pull requests (see docs/RUNNER-PROTOTYPE.md, "Security").
+
+on:
+  push:
+    branches: [claude/runner-prototype-ee21he]
+    paths: [".github/workflows/fenvix-demo*.yml", "runner/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fenvix-demo-hosted
+  cancel-in-progress: false
+
+jobs:
+  demo:
+    if: github.repository == 'Mircoguidetti/fenvix-engine-cli'
+    uses: ./.github/workflows/fenvix-demo-jobs.yml
+    with:
+      runs_on: '"ubuntu-latest"'
+      hosted: true

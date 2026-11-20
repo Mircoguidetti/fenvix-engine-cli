@@ -32,6 +32,8 @@ _USER = "user"
 _real_getcwd = os.getcwd
 _cache: dict[str, tuple[str, str]] = {}
 _rootdir: str | None = None
+# files of a non-pytest runner's own machinery (its discovery and loop), infrastructure like pytest (add_infra)
+_extra_infra: list[str] = []
 _basetemp_provider = None  # callable returning pytest's basetemp (or None)
 
 
@@ -60,6 +62,7 @@ def _dirs() -> tuple[list[str], list[str], list[str]]:
         if f:
             for v in (os.path.realpath(f), os.path.normpath(os.path.abspath(f))):
                 infra.append(os.path.dirname(v) if os.path.basename(f) == "__init__.py" else v)
+    infra.extend(_extra_infra)
     return sorted(stdlib, key=len, reverse=True), sorted(site, key=len, reverse=True), infra
 
 
@@ -67,6 +70,16 @@ _stdlib_dirs, _site_dirs, _infra_paths = _dirs()
 _TMP = os.path.realpath(tempfile.gettempdir())
 _HOME = os.path.expanduser("~")
 _PYTEST_TMP = re.compile(r"pytest-of-[^/\\]+[/\\]pytest-\d+")
+
+
+def add_infra(paths) -> None:
+    """Files (or package directories) of a runner's own machinery: its events are not recorded and its reads are not
+    inputs, as for pytest (``runners.driver.DetRun.configure``). Takes effect at the next ``refresh``."""
+    for f in paths:
+        if f:
+            for v in (os.path.realpath(f), os.path.normpath(os.path.abspath(f))):
+                if v not in _extra_infra:
+                    _extra_infra.append(v)
 
 
 def refresh(rootdir: str | None = None) -> None:

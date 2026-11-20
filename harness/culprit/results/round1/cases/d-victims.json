@@ -1,0 +1,248 @@
+{
+ "arrow": [
+  [
+   "2",
+   "tests/test_locales.py::TestLocaleValidation::test_locale_name_validation"
+  ],
+  [
+   "2",
+   "tests/test_locales.py::TestLocaleValidation::test_locale_validation"
+  ]
+ ],
+ "idoft-accessify": [
+  [
+   "5",
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_getter"
+  ],
+  [
+   "5",
+   "tests/interfaces/test_implements.py::test_implements_no_implementation_static_method"
+  ],
+  [
+   "5",
+   "tests/interfaces/test_implements.py::test_implements_not_self_convention"
+  ]
+ ],
+ "idoft-breathe": [
+  [
+   "1",
+   "tests/test_command_context.py::test_manual_context_noccr"
+  ],
+  [
+   "1",
+   "tests/test_merger.py::test_core_commands"
+  ],
+  [
+   "10",
+   "tests/test_loading.py::test_loading_failure"
+  ]
+ ],
+ "idoft-centreon-sdk-python": [
+  [
+   "1",
+   "tests/test_hosts.py::TestHosts::test_hosts_add"
+  ],
+  [
+   "10",
+   "tests/test_hosts.py::TestHost::test_host_applytemplate"
+  ],
+  [
+   "10",
+   "tests/test_hosts.py::TestHost::test_host_getcontactgroup"
+  ]
+ ],
+ "idoft-cloudnetpy": [
+  [
+   "1",
+   "tests/unit/test_drizzle.py::test_calc_beta_z_ratio"
+  ],
+  [
+   "1",
+   "tests/unit/test_drizzle.py::test_init_variables[beta_corr]"
+  ],
+  [
+   "2",
+   "tests/unit/test_drizzle.py::test_is_converged"
+  ]
+ ],
+ "idoft-coinbase-commerce-python": [
+  [
+   "1",
+   "tests/test_api_client.py::TestApiClient::test_invalid_request_error"
+  ],
+  [
+   "2",
+   "tests/test_api_client.py::TestApiClient::test_resource_not_found_error"
+  ]
+ ],
+ "idoft-crom": [
+  [
+   "1",
+   "tests/test_model.py::TestFactorySerialization::test_collapse_json"
+  ],
+  [
+   "5",
+   "tests/test_model.py::TestFactorySerialization::test_toString"
+  ]
+ ],
+ "idoft-devtracker": [
+  [
+   "1",
+   "devtracker/test_devtracker.py::test_add_start"
+  ],
+  [
+   "1",
+   "devtracker/test_devtracker.py::test_current_status"
+  ]
+ ],
+ "idoft-domain2idna": [
+  [
+   "1",
+   "tests/test_cli.py::TestCLI::test_domain"
+  ],
+  [
+   "fixed",
+   "tests/test_converter.py::TestConverter::test_hosts_file_format"
+  ]
+ ],
+ "idoft-easypy": [
+  [
+   "fixed",
+   "tests/test_caching.py::test_resilient_between_timecaches"
+  ],
+  [
+   "fixed",
+   "tests/test_concurrency.py::test_thread_contexts_counters"
+  ]
+ ],
+ "idoft-eppy": [
+  [
+   "1",
+   "eppy/tests/test_IDF.py::TestIDF::test_popidfobject"
+  ],
+  [
+   "3",
+   "eppy/tests/test_modeleditor.py::test_idd_index"
+  ]
+ ],
+ "idoft-flask-multi-redis": [
+  [
+   "3",
+   "test/integration/test_flask_multi_redis.py::test_aggregated_delitem_method"
+  ],
+  [
+   "3",
+   "test/integration/test_flask_multi_redis.py::test_aggregator_set_method"
+  ]
+ ],
+ "idoft-freezegun": [
+  [
+   "10",
+   "tests/test_warnings.py::test_ignore_warnings_in_start"
+  ],
+  [
+   "10",
+   "tests/test_warnings.py::test_ignore_warnings_in_stop"
+  ]
+ ],
+ "idoft-krllint": [
+  [
+   "10",
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_without_fix"
+  ],
+  [
+   "2",
+   "tests/test_open_task.py::OpenTaskTestCase::test_rule_with_fix"
+  ]
+ ],
+ "idoft-ljson": [
+  [
+   "1",
+   "test/test_ljson_disk.py::test_edit"
+  ],
+  [
+   "1",
+   "test/test_ljson_disk.py::test_read"
+  ]
+ ],
+ "idoft-mdutils": [
+  [
+   "1",
+   "tests/test_mdutils.py::TestMdUtils::test_create_md_file"
+  ],
+  [
+   "1",
+   "tests/test_mdutils.py::TestMdUtils::test_new_checkbox_list"
+  ]
+ ],
+ "idoft-odinweb": [
+  [
+   "1",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__error_handled_by_middleware"
+  ],
+  [
+   "1",
+   "tests/test_containers.py::TestApiInterfaceBase::test_dispatch__exceptions[NotImplementedError-501]"
+  ]
+ ],
+ "idoft-py-autodoc": [
+  [
+   "1",
+   "tests/test_autodoc.py::TestAutodoc::test_parse_responses"
+  ],
+  [
+   "2",
+   "tests/test_autodoc.py::TestAutodoc::test_parse_response"
+  ]
+ ],
+ "idoft-pykicad": [
+  [
+   "1",
+   "tests/test_module.py::NetTests::test_net_auto_numbering"
+  ],
+  [
+   "2",
+   "tests/test_module.py::ModuleTests::test_module"
+  ]
+ ],
+ "idoft-supertunnel": [
+  [
+   "1",
+   "supertunnel/ssh/continuous_test.py::test_backoff"
+  ],
+  [
+   "1",
+   "supertunnel/ssh/continuous_test.py::test_run"
+  ]
+ ],
+ "idoft-todo-sync": [
+  [
+   "1",
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node6-expected_node6]"
+  ],
+  [
+   "14",
+   "tests/test_org_to_asana.py::test_o2a_behind_make_fn[a_node4-expected_node4]"
+  ]
+ ],
+ "idoft-tunacell": [
+  [
+   "1",
+   "tunacell/tests/test_experiment.py::test_counts"
+  ],
+  [
+   "1",
+   "tunacell/tests/test_experiment.py::test_experiment_attributes"
+  ]
+ ],
+ "rich": [
+  [
+   "1",
+   "tests/test_box.py::test_get_row"
+  ],
+  [
+   "1",
+   "tests/test_rule_in_table.py::test_rule_in_expanded_table"
+  ]
+ ]
+}

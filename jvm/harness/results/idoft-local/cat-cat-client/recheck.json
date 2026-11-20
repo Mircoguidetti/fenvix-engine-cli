@@ -1,0 +1,12 @@
+{
+ "name": "cat-cat-client",
+ "before": 1,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "com.dianping.cat.support.servlet.CatFilterTest::testMode1",
+   "baseline": "0F/10P",
+   "det_now": "1F/10"
+  }
+ ]
+}

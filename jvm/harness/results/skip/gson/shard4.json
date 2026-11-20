@@ -1,0 +1,260 @@
+{
+ "repo": "gson",
+ "spec": {
+  "url": "https://github.com/google/gson",
+  "tool": "maven",
+  "jdk": "17",
+  "before": "2026-11-15",
+  "args": [
+   "-pl",
+   "gson",
+   "-am"
+  ]
+ },
+ "shard": 4,
+ "shards": 5,
+ "rows": [
+  {
+   "sha": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 38.6,
+   "tests": 4677,
+   "test_ms": 2968,
+   "failed": 0
+  },
+  {
+   "sha": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.6,
+   "tests": 4677,
+   "test_ms": 2737,
+   "failed": 0,
+   "prev": "828cbe0d7c5ab224c9bf441914ee391677196c0f",
+   "reused": 3750,
+   "verified": 3750,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.5278,
+   "share_tests_skipped": 0.8018,
+   "rerun_reasons": {
+    "code": 900,
+    "not-passed": 20,
+    "after": 7
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.5,
+   "tests": 4691,
+   "test_ms": 2769,
+   "failed": 0,
+   "prev": "57731049da3e415be3d5d34db1ca3b80f3c73810",
+   "reused": 3755,
+   "verified": 3755,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.542,
+   "share_tests_skipped": 0.8005,
+   "rerun_reasons": {
+    "code": 895,
+    "not-passed": 20,
+    "after": 7
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.2,
+   "tests": 4691,
+   "test_ms": 2726,
+   "failed": 0,
+   "prev": "65df6e5a99747f73d386f3a61d887a0257255e0f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 4671,
+    "not-passed": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 16.4,
+   "tests": 4693,
+   "test_ms": 2661,
+   "failed": 0,
+   "prev": "3c13aec04fa0400f9e660ebf344ea5aa925dc3c0",
+   "reused": 4247,
+   "verified": 4247,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.7843,
+   "share_tests_skipped": 0.905,
+   "rerun_reasons": {
+    "prop": 1,
+    "not-passed": 20,
+    "code": 423
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 22.5,
+   "tests": 4693,
+   "test_ms": 4153,
+   "failed": 0,
+   "prev": "7047a257a22cf79eef580538184c0cff6bb6975f",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4673,
+    "not-passed": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.5,
+   "tests": 4693,
+   "test_ms": 3980,
+   "failed": 0,
+   "prev": "7630ce2578331c953bb7984170b7ad52d2985e5b",
+   "reused": 4672,
+   "verified": 4672,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.9964,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "prop": 1,
+    "not-passed": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.7,
+   "tests": 4693,
+   "test_ms": 4351,
+   "failed": 0,
+   "prev": "a961b0fe088f8558d00cc1b56e506a3656907a91",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4673,
+    "not-passed": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 19.6,
+   "tests": 4693,
+   "test_ms": 4115,
+   "failed": 0,
+   "prev": "630771b770ea7dc938f3e5e456f913895bddee27",
+   "reused": 4672,
+   "verified": 4672,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.9974,
+   "share_tests_skipped": 0.9955,
+   "rerun_reasons": {
+    "prop": 1,
+    "not-passed": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 21.1,
+   "tests": 4699,
+   "test_ms": 4593,
+   "failed": 0,
+   "prev": "d938a10f7564f596603dd4e958bc9249fb2225b5",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "runtime": 4673,
+    "not-passed": 20
+   },
+   "module_cache_hits": 0,
+   "modules": 1,
+   "module_cache_share_time": 0.0
+  },
+  {
+   "sha": "7c6a3152b293b2ba1175dfff659fb08c33721f30",
+   "status": "ok",
+   "rc": 0,
+   "seconds": 20.7,
+   "tests": 4699,
+   "test_ms": 4624,
+   "failed": 0,
+   "prev": "e241218aa27667d4518478bef0574ed40ff6ba97",
+   "reused": 23,
+   "verified": 23,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0601,
+   "share_tests_skipped": 0.0049,
+   "rerun_reasons": {
+    "runtime": 4656,
+    "not-passed": 20
+   },
+   "module_cache_hits": 1,
+   "modules": 1,
+   "module_cache_share_time": 1.0
+  }
+ ]
+}

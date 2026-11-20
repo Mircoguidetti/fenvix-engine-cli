@@ -1,0 +1,12 @@
+{
+  "name": "next.js-flaky",
+  "kind": "flaky",
+  "status": "baseline-broken",
+  "node": "node v20.20.2",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 2119,
+  "first_run_s": 31.573305333000008,
+  "commit": "969733cfb7014a782464456f048807faff6caa33",
+  "detail": "2119/2119 tests fail in the first baseline run"
+}

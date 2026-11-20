@@ -1,0 +1,15 @@
+{
+ "name": "std",
+ "url": "https://github.com/denoland/std",
+ "node": "22",
+ "runner": "deno-test",
+ "deno": "2.9.8",
+ "install": [],
+ "install_files": ["deno.json"],
+ "build": [],
+ "unset_ci": true,
+ "args": ["-A", "collections/", "semver/", "text/", "path/", "encoding/", "async/", "fs/", "dotenv/", "ini/", "csv/"],
+ "plain": "deno test -A --parallel --junit-path={report} collections/ semver/ text/ path/ encoding/ async/ fs/ dotenv/ ini/ csv/",
+ "shards": 1,
+ "source": "21 consecutive first-parent commits of main, 2026-09-17 (d7afd1a1) to 2026-09-25 (f834d022). Ten packages of the Deno standard library (its own runner is `deno test -A --parallel ...` over the whole workspace; the subset keeps the walk inside the job budget): 203 test files, about 1,630 tests, no services (checked locally: 1,619 pass, 14 fail in the plain run, the same in every run)."
+}

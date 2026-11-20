@@ -25,6 +25,7 @@
 //! file is compared at the level of its units and skeleton (facts supplied by
 //! the producer for changed files only).
 
+use crate::deps;
 use crate::fingerprint::digest_bytes;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet, HashMap};
@@ -84,7 +85,10 @@ pub struct Entry {
     pub epoch: Option<i64>,
     /// (variable, value digest or "-" when unset); "*" = the whole environment.
     pub env: Vec<(String, String)>,
-    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>".
+    /// (absolute path, dependency): "f:<digest>", "missing", "d:<digest>", "s:<kind>", and the kinds of
+    /// [`crate::deps`] ("m:", "V:" (one stat field), "r:", "e:", "w:" (recursive listing), "u:" (recursive listing,
+    /// links not followed), "c:"), "k:"/"K:" (link), "p:", "g:" (Node capture); a probe of a path (key
+    /// [`probe_key`], first character [`PROBE`]): "missing", "s:<kind>", "m:<digest>", "n:<digest>" ([`probe_now`]).
     pub data: Vec<(Str, Str)>,
     /// Set ids (see [`Store::sets`]) of code files whose whole content, skeleton
     /// or hook surface is a dependency.
@@ -121,6 +125,10 @@ pub struct Entry {
     /// Not part of the key.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub needs: Option<Vec<String>>,
+    /// Digest of what the processes started at start-up gave back (argv, cwd, exit code, output); empty when
+    /// none was started. An input of every test of the session.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub startup: String,
 }
 
 /// The digest of an in-process predecessor list ([`Entry::preds`]).
@@ -216,6 +224,8 @@ pub struct Observed {
     pub fixtures: Vec<String>,
     /// [`Entry::needs`].
     pub needs: Option<Vec<String>>,
+    /// Digest of the outputs of processes a Node shell started at start-up (empty for Python shells).
+    pub startup: String,
 }
 
 fn push_part(buf: &mut Vec<u8>, part: &str) {
@@ -386,8 +396,8 @@ pub fn time_digest_of(path: &Path, follow: bool) -> String {
 
 /// Suffix of the key of a symlink's own times (`os.lstat(p).st_mtime`; value "y:L<times>").
 pub const LTIME_SUFFIX: &str = "\u{1}lmtime";
-/// Suffixes of a path's status-fields dependency ("w:", review R-023c E4): `<path>\u{1}stat` (`os.stat`, value
-/// "w:<digest>") and `<path>\u{1}lstat` (`os.lstat`, value "w:L<digest>").
+/// Suffixes of a path's status-fields dependency ("x:", review R-023c E4): `<path>\u{1}stat` (`os.stat`, value
+/// "x:<digest>") and `<path>\u{1}lstat` (`os.lstat`, value "x:L<digest>").
 pub const FIELDS_SUFFIX: &str = "\u{1}stat";
 pub const LFIELDS_SUFFIX: &str = "\u{1}lstat";
 
@@ -450,6 +460,36 @@ pub fn importable_digest(dir: &Path) -> Option<String> {
     Some(digest_bytes(&items.join(&b'\n')).short())
 }
 
+/// Key suffix of a "j:" dependency (the key without it is "<dir>/<name>").
+pub const IMPORTABLE_NAME_SUFFIX: &str = "\u{1}imp";
+
+/// Digest of the entries of the parent directory of `path` = "<dir>/<name>" a lookup of module `name` can find:
+/// a directory `name` (a package or a namespace portion) and files `name.<anything>` ending with an importable
+/// ending, each with its kind ([`importable_digest`] restricted to one name, so a new module of another name in
+/// `dir` does not change it). None when `dir` is not a directory.
+pub fn importable_name_digest(path: &Path) -> Option<String> {
+    let dir = path.parent()?;
+    let name = path.file_name()?.to_string_lossy().into_owned();
+    let mut items: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let n = e.file_name().to_string_lossy().into_owned();
+        if n != name && !n.starts_with(&format!("{name}.")) {
+            continue;
+        }
+        let kind = stat_kind(&e.path());
+        let keep = if kind == "dir" { n == name } else { IMPORTABLE_ENDINGS.iter().any(|x| n.ends_with(x)) };
+        if keep {
+            let mut b = n.into_bytes();
+            b.push(0);
+            b.extend_from_slice(kind.as_bytes());
+            items.push(b);
+        }
+    }
+    items.sort();
+    Some(digest_bytes(&items.join(&b'\n')).short())
+}
+
 /// What a lookup of module `name` finds in `dir`: (a regular module or package, the package directory exists).
 pub fn import_probe(dir: &str, name: &str, suffixes: &[String]) -> (bool, bool) {
     let c = import_candidates(dir, name, suffixes);
@@ -475,6 +515,7 @@ pub type KindsMemo = HashMap<(PathBuf, char), Option<String>>;
 
 /// [`compact_stats`] with the directory digests kept across the tests of one session.
 pub fn compact_stats_memo(data: Vec<(String, String)>, root: &Path, min: usize, memo: &mut KindsMemo) -> Vec<(String, String)> {
+    let data = compact_lookups(data, root, min, memo);
     let mut by_dir: BTreeMap<String, usize> = BTreeMap::new();
     let parent = |k: &str| -> Option<String> {
         let k = k.trim_end_matches('/');
@@ -559,6 +600,55 @@ pub fn compact_stats_memo(data: Vec<(String, String)>, root: &Path, min: usize, 
     out.into_iter().collect()
 }
 
+/// Module lookups of at least `min` names in one directory ("j:" dependencies, [`importable_name_digest`]) are
+/// replaced by one dependency on that directory's whole importable digest ("i:", [`importable_digest`]): coarser
+/// (any new module there invalidates), so every replaced lookup is still covered; it bounds the size of an entry
+/// when a context imports many modules lazily.
+pub fn compact_lookups(data: Vec<(String, String)>, root: &Path, min: usize, memo: &mut KindsMemo) -> Vec<(String, String)> {
+    let dir_of = |k: &str| -> Option<String> {
+        let p = k.strip_suffix(IMPORTABLE_NAME_SUFFIX)?;
+        Some(match p.rfind('/') {
+            Some(0) => "/".to_string(),
+            Some(i) => p[..i].to_string(),
+            None => ".".to_string(),
+        })
+    };
+    let mut by_dir: BTreeMap<String, usize> = BTreeMap::new();
+    for (k, v) in &data {
+        if v.starts_with("j:") {
+            if let Some(d) = dir_of(k) {
+                *by_dir.entry(d).or_default() += 1;
+            }
+        }
+    }
+    let big: BTreeSet<String> = by_dir.into_iter().filter(|(_, n)| *n >= min).map(|(d, _)| d).collect();
+    if big.is_empty() {
+        return data;
+    }
+    let mut out: Vec<(String, String)> = Vec::with_capacity(data.len());
+    let mut have: BTreeSet<String> = BTreeSet::new();
+    for (k, v) in data {
+        if v.starts_with("j:") && dir_of(&k).is_some_and(|d| big.contains(&d)) {
+            continue;
+        }
+        if k.ends_with(IMPORTABLE_SUFFIX) {
+            have.insert(k.clone());
+        }
+        out.push((k, v));
+    }
+    for d in big {
+        let key = format!("{d}{IMPORTABLE_SUFFIX}");
+        if have.contains(&key) {
+            continue;
+        }
+        let p = root.join(&d);
+        let got = memo.entry((p.clone(), 'i')).or_insert_with(|| importable_digest(&p)).clone();
+        out.push((key, got.map(|x| format!("i:{x}")).unwrap_or_else(|| "i:missing".into())));
+    }
+    out.sort();
+    out
+}
+
 /// Kind of `path` without following a final symlink: "link" for a symlink (dangling or not), else [`stat_kind`].
 /// The input of `os.lstat`, `os.path.lexists` and `os.path.islink` (LIMITS K4: a dangling link and a missing path
 /// differ here).
@@ -586,6 +676,84 @@ pub fn collection_candidates(rel_dir: &str) -> Vec<String> {
     out
 }
 
+/// The first character of the data key of a probe of a path (`os.stat`, `os.lstat`, `os.path.exists`, ...): the key
+/// is `PROBE`, the probe's mode, then the path's key. A probe's dependency is kept apart from the path's content or
+/// listing dependency (a test may read a file and look at its size).
+pub const PROBE: char = '\u{1}';
+
+/// The probe modes: `e` existence and kind (following symlinks), `E` the same without following, `q` metadata
+/// (following), `Q` metadata of the path itself (a symlink's target included).
+pub fn probe_key(mode: u8, key: &str) -> String {
+    let mut k = String::with_capacity(key.len() + 2);
+    k.push(PROBE);
+    k.push(mode as char);
+    k.push_str(key);
+    k
+}
+
+/// (mode, path key) of a probe's data key, None for a content or listing key.
+pub fn probe_parts(key: &str) -> Option<(u8, &str)> {
+    let b = key.as_bytes();
+    if b.len() >= 2 && b[0] == PROBE as u8 {
+        Some((b[1], &key[2..]))
+    } else {
+        None
+    }
+}
+
+/// The path a data key depends on (a probe's key without its prefix).
+pub fn data_path(key: &str) -> &str {
+    probe_parts(key).map(|(_, p)| p).unwrap_or(key)
+}
+
+/// What a probe of `path` sees now: `missing`, `s:<kind>` (modes `e`, `E`), `m:<digest>` / `n:<digest>` (modes `q`,
+/// `Q`: the kind and permission bits; for a file its size and modification time; for a symlink its target; a
+/// directory's size and times are left out: its entries are the listing's business).
+pub fn probe_now(path: &Path, mode: u8) -> String {
+    let follow = matches!(mode, b'e' | b'q');
+    let meta = if follow { fs::metadata(path) } else { fs::symlink_metadata(path) };
+    let Ok(m) = meta else { return "missing".into() };
+    let ft = m.file_type();
+    let kind = if ft.is_symlink() {
+        "link"
+    } else if ft.is_file() {
+        "file"
+    } else if ft.is_dir() {
+        "dir"
+    } else {
+        "other"
+    };
+    if matches!(mode, b'e' | b'E') {
+        return format!("s:{kind}");
+    }
+    let mut b = Vec::new();
+    push_part(&mut b, kind);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::MetadataExt;
+        push_part(&mut b, &format!("{:o}", m.mode() & 0o7777));
+        if ft.is_file() {
+            push_part(&mut b, &m.size().to_string());
+            push_part(&mut b, &format!("{}.{:09}", m.mtime(), m.mtime_nsec()));
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        push_part(&mut b, if m.permissions().readonly() { "ro" } else { "rw" });
+        if ft.is_file() {
+            push_part(&mut b, &m.len().to_string());
+            let t = m.modified().ok().and_then(|t| t.duration_since(std::time::UNIX_EPOCH).ok());
+            push_part(&mut b, &t.map(|d| format!("{}.{:09}", d.as_secs(), d.subsec_nanos())).unwrap_or_default());
+        }
+    }
+    if ft.is_symlink() {
+        if let Ok(t) = fs::read_link(path) {
+            push_part(&mut b, &t.to_string_lossy());
+        }
+    }
+    format!("{}:{}", if follow { "m" } else { "n" }, digest_bytes(&b).short())
+}
+
 /// Current dependency string of a recorded data dependency of the same kind.
 pub fn data_now(path: &Path, recorded: &str) -> String {
     if recorded == "missing" || recorded.starts_with("f:") {
@@ -604,20 +772,171 @@ pub fn data_now(path: &Path, recorded: &str) -> String {
         format!("y:L{}", time_digest_of(path, false))
     } else if recorded.starts_with("y:") {
         format!("y:{}", time_digest(path))
-    } else if recorded.starts_with("w:L") {
-        format!("w:L{}", fields_digest(path, false))
-    } else if recorded.starts_with("w:") {
-        format!("w:{}", fields_digest(path, true))
+    } else if recorded.starts_with("x:L") {
+        format!("x:L{}", fields_digest(path, false))
+    } else if recorded.starts_with("x:") {
+        format!("x:{}", fields_digest(path, true))
     } else if recorded.starts_with("l:") {
         format!("l:{}", lstat_kind(path))
     } else if recorded.starts_with("i:") {
         importable_digest(path).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+    } else if recorded.starts_with("j:") {
+        importable_name_digest(path).map(|d| format!("j:{d}")).unwrap_or_else(|| "j:missing".into())
     } else if recorded.starts_with("T:") {
         tree_kinds_digest(path, TREE_LIMIT).map(|d| format!("T:{d}")).unwrap_or_else(|| "T:missing".into())
     } else if recorded.starts_with("t:") {
         kinds_digest(path).map(|d| format!("t:{d}")).unwrap_or_else(|| "t:missing".into())
+    // Node capture kinds (node/src/cache/capture.js). Its link and recursive-listing kinds were "l:"/"L:" and "t:"
+    // on claude/all-runners; they are "k:"/"K:" and "u:" here, apart from the Python capture's "l:" (lstat kind) and
+    // "t:" (listing with kinds)
+    } else if recorded.starts_with("k:") || recorded.starts_with("K:") {
+        link_dep(path)
+    } else if recorded.starts_with("p:") {
+        package_resolution_digest(path).map(|d| format!("p:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("g:") {
+        stem_listing_digest(path).map(|d| format!("g:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("m:") {
+        deps::stat_meta_digest(path).map(|d| format!("m:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("r:") {
+        deps::realpath_digest(path).map(|d| format!("r:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("e:") {
+        deps::typed_listing_digest(path).map(|d| format!("e:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("w:") {
+        deps::tree_listing_digest(path).map(|d| format!("w:{d}")).unwrap_or_else(|| "missing".into())
+    } else if let Some(rest) = recorded.strip_prefix("V:") {
+        // V:<follow 0|1>:<field>:<digest>
+        let mut it = rest.splitn(3, ':');
+        let follow = it.next() == Some("1");
+        let field = it.next().unwrap_or("");
+        deps::stat_field_digest(path, field, follow)
+            .map(|d| format!("V:{}:{field}:{d}", if follow { 1 } else { 0 }))
+            .unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("u:") {
+        deps::tree_listing_nofollow_digest(path).map(|d| format!("u:{d}")).unwrap_or_else(|| "missing".into())
+    } else if recorded.starts_with("c:") {
+        deps::copy_tree_digest(path).map(|d| format!("c:{d}")).unwrap_or_else(|| "missing".into())
     } else {
         "unknown".into()
+    }
+}
+
+/// Fields of a package.json that module resolution reads (Node, Vite, bundlers): a package.json is a *resolution*
+/// input through these only; code that reads or imports the file depends on its whole content (recorded apart).
+pub const RESOLUTION_FIELDS: [&str; 11] = [
+    "name",
+    "type",
+    "main",
+    "module",
+    "browser",
+    "exports",
+    "imports",
+    "types",
+    "typings",
+    "jsnext:main",
+    "react-native",
+];
+
+/// Digest of the resolution fields of a package.json (`None` when missing or not a JSON object: then "missing" or a
+/// whole-content digest is what the caller records).
+pub fn package_resolution_digest(path: &Path) -> Option<String> {
+    let bytes = fs::read(path).ok()?;
+    // raw text of each field: key order inside `exports` (condition order) is significant
+    let obj: HashMap<String, Box<serde_json::value::RawValue>> = serde_json::from_slice(&bytes).ok()?;
+    let mut buf = Vec::new();
+    for k in RESOLUTION_FIELDS {
+        push_part(&mut buf, k);
+        match obj.get(k) {
+            Some(v) => push_part(&mut buf, v.get()),
+            None => push_part(&mut buf, "\u{0}absent"),
+        }
+    }
+    Some(digest_bytes(&buf).short())
+}
+
+#[cfg(test)]
+mod resolution_tests {
+    use super::*;
+
+    #[test]
+    fn package_resolution_fields_only() {
+        let d = tempfile::tempdir().unwrap();
+        let p = d.path().join("package.json");
+        fs::write(&p, r#"{"name":"a","version":"1.0.0","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        let a = package_resolution_digest(&p).unwrap();
+        fs::write(&p, r#"{"name":"a","version":"2.0.0","engines":{"node":">=26"},"exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_eq!(package_resolution_digest(&p).unwrap(), a, "version and engines are not resolution fields");
+        fs::write(&p, r#"{"name":"a","exports":{"require":"./a.cjs","import":"./a.mjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a, "condition order is significant");
+        fs::write(&p, r#"{"name":"a","type":"module","exports":{"import":"./a.mjs","require":"./a.cjs"}}"#).unwrap();
+        assert_ne!(package_resolution_digest(&p).unwrap(), a);
+        fs::write(&p, "not json").unwrap();
+        assert_eq!(package_resolution_digest(&p), None);
+        assert_eq!(data_now(&p, "p:x"), "missing");
+    }
+}
+
+/// Digest of the entries of `path`'s directory whose name is `path`'s file name or starts with it followed by a
+/// dot (`src/m` -> `m`, `m.ts`, `m.mjs`, `m.d.ts`, ...): what module resolution can find for that stem. `None`
+/// when the directory cannot be listed.
+pub fn stem_listing_digest(path: &Path) -> Option<String> {
+    let dir = path.parent()?;
+    let stem = os_bytes(path.file_name()?);
+    let mut dotted = stem.clone();
+    dotted.push(b'.');
+    let mut names: Vec<Vec<u8>> = Vec::new();
+    for e in fs::read_dir(dir).ok()? {
+        let e = e.ok()?;
+        let n = os_bytes(&e.file_name());
+        if n == stem || n.starts_with(&dotted) {
+            names.push(n);
+        }
+    }
+    names.sort();
+    Some(digest_bytes(&names.join(&b'\0')).short())
+}
+
+/// Dependency string of a symbolic link's target text (`readlink`, `lstat`; Node capture): "k:<digest>", "K:<kind>" when the
+/// path is not a link (its own kind, no link followed), "missing" when it does not exist. A non-link is not
+/// recorded as "s:<kind>": that kind follows links, so a regular file replaced by a link to a file would not
+/// change it (review r021 F1c).
+pub fn link_dep(path: &Path) -> String {
+    match fs::read_link(path) {
+        Ok(t) => format!("k:{}", digest_bytes(&os_bytes(t.as_os_str())).short()),
+        Err(_) => match fs::symlink_metadata(path) {
+            Ok(m) => format!(
+                "K:{}",
+                if m.file_type().is_symlink() {
+                    "link"
+                } else if m.is_file() {
+                    "file"
+                } else if m.is_dir() {
+                    "dir"
+                } else {
+                    "other"
+                }
+            ),
+            Err(_) => "missing".into(),
+        },
+    }
+}
+
+#[cfg(all(test, unix))]
+mod link_tests {
+    use super::*;
+
+    #[test]
+    fn file_replaced_by_link_changes_link_dep() {
+        let d = tempfile::tempdir().unwrap();
+        fs::write(d.path().join("t"), "x").unwrap();
+        let p = d.path().join("e");
+        fs::write(&p, "x").unwrap();
+        let a = link_dep(&p);
+        assert_eq!(a, "K:file");
+        assert_eq!(data_now(&p, &a), a);
+        fs::remove_file(&p).unwrap();
+        std::os::unix::fs::symlink("t", &p).unwrap();
+        assert_ne!(data_now(&p, &a), a);
+        assert!(data_now(&p, &a).starts_with("k:"));
     }
 }
 
@@ -749,6 +1068,7 @@ impl Store {
             serial_noise: false,
             preds: String::new(),
             needs: o.needs,
+            startup: o.startup,
         };
         e.key = self.key_of(nodeid, &e);
         let k = e.key.clone();
@@ -832,6 +1152,11 @@ impl Store {
             push_part(&mut b, p);
             push_part(&mut b, q);
             push_part(&mut b, d);
+        }
+        if !e.startup.is_empty() {
+            // only when start-up processes ran: the keys of the other entries stay as they were
+            push_part(&mut b, "|startup");
+            push_part(&mut b, &e.startup);
         }
         digest_bytes(&b).short()
     }
@@ -1349,6 +1674,8 @@ pub struct Current {
     pub runtime: String,
     pub epoch: i64,
     pub env: BTreeMap<String, String>,
+    /// Digest of what this session's start-up processes gave back (empty: none).
+    pub startup: String,
 }
 
 /// Why a test cannot reuse its result.
@@ -1535,8 +1862,27 @@ impl Checker {
     }
 
     fn data(&mut self, path: &str, recorded: &str) -> &str {
+        if let Some((mode, real)) = probe_parts(path) {
+            // probes are memoised under their own key (its prefix names the mode)
+            let m = self.data_now.entry(PROBE).or_default();
+            if !m.contains_key(path) {
+                let v = probe_now(&self.cur.root.join(real), mode);
+                m.insert(path.to_string(), v);
+            }
+            return &m[path];
+        }
         let kind = recorded.chars().next().unwrap_or('?');
         let kind = if recorded == "missing" { 'f' } else { kind };
+        if kind == 'V' {
+            // one stat field (Node capture): several fields of one path are memoised apart ("V:<follow>:<field>")
+            let mk = format!("{path}\0{}", recorded.rsplitn(2, ':').nth(1).unwrap_or(""));
+            let m = self.data_now.entry('V').or_default();
+            if !m.contains_key(&mk) {
+                let v = data_now(&self.cur.root.join(path), recorded);
+                m.insert(mk.clone(), v);
+            }
+            return &m[&mk];
+        }
         let m = self.data_now.entry(kind).or_default();
         if !m.contains_key(path) {
             // a directory-level dependency is keyed by the directory and a suffix naming its kind
@@ -1545,7 +1891,8 @@ impl Checker {
                 'T' => path.strip_suffix(TREE_SUFFIX).unwrap_or(path),
                 'i' => path.strip_suffix(IMPORTABLE_SUFFIX).unwrap_or(path),
                 'y' => path.strip_suffix(TIME_SUFFIX).or_else(|| path.strip_suffix(LTIME_SUFFIX)).unwrap_or(path),
-                'w' => path.strip_suffix(FIELDS_SUFFIX).or_else(|| path.strip_suffix(LFIELDS_SUFFIX)).unwrap_or(path),
+                'x' => path.strip_suffix(FIELDS_SUFFIX).or_else(|| path.strip_suffix(LFIELDS_SUFFIX)).unwrap_or(path),
+                'j' => path.strip_suffix(IMPORTABLE_NAME_SUFFIX).unwrap_or(path),
                 _ => path,
             };
             let v = data_now(&self.cur.root.join(dir), recorded);
@@ -1623,6 +1970,12 @@ impl Checker {
                 return Err(Miss { kind: "clock", detail: "the test read the clock and the epoch changed".into() });
             }
         }
+        if e.startup != self.cur.startup {
+            return Err(Miss {
+                kind: "startup",
+                detail: "a process started at start-up gave back a different output or exit code".into(),
+            });
+        }
         for (k, v) in &e.env {
             if k == "PYTEST_XDIST_WORKER" && self.defer_worker {
                 self.worker_reads.insert(nodeid.to_string(), v.clone());
@@ -1668,10 +2021,8 @@ impl Checker {
                 continue;
             }
             let path = f.path.clone();
-            let ok = self
-                .now_facts(store, &path)
-                .map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d))
-                .unwrap_or(false);
+            let ok =
+                self.now_facts(store, &path).map(|n| n.units.iter().any(|x| x.q == u.q && x.d == u.d)).unwrap_or(false);
             if !ok {
                 return Err(Miss { kind: "code", detail: format!("{path}::{}", u.q) });
             }
@@ -1699,6 +2050,37 @@ impl Checker {
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn importable_name_digest_sees_only_that_name() {
+        use super::*;
+        let d = tempfile::tempdir().unwrap();
+        let r = d.path();
+        fs::write(r.join("test_x.py"), b"").unwrap();
+        let p = r.join("optmod");
+        let a = importable_name_digest(&p).unwrap();
+        // another module, a data file of that name: no change
+        fs::write(r.join("other.py"), b"").unwrap();
+        fs::write(r.join("optmod.txt"), b"").unwrap();
+        assert_eq!(importable_name_digest(&p).unwrap(), a);
+        // the module itself, an extension of it, a package or namespace directory of that name: a change
+        for f in ["optmod.py", "optmod.cpython-313-x86_64-linux-gnu.so"] {
+            fs::write(r.join(f), b"").unwrap();
+            assert_ne!(importable_name_digest(&p).unwrap(), a, "{f}");
+            fs::remove_file(r.join(f)).unwrap();
+        }
+        fs::create_dir(r.join("optmod")).unwrap();
+        assert_ne!(importable_name_digest(&p).unwrap(), a);
+        assert_eq!(data_now(&r.join("nodir/optmod"), "j:x"), "j:missing");
+        // many names of one directory: compacted into its whole importable digest, which covers each of them
+        let rs = r.to_str().unwrap();
+        let data: Vec<(String, String)> = (0..5).map(|i| (format!("{rs}/m{i}{IMPORTABLE_NAME_SUFFIX}"), "j:x".to_string())).collect();
+        let c = compact_lookups(data.clone(), r, 5, &mut KindsMemo::new());
+        assert_eq!(c.len(), 1);
+        assert_eq!(c[0].0, format!("{rs}{IMPORTABLE_SUFFIX}"));
+        assert!(c[0].1.starts_with("i:"));
+        assert_eq!(compact_lookups(data, r, 6, &mut KindsMemo::new()).len(), 5);
+    }
+
     use super::*;
 
     fn unit(q: &str, d: &str) -> Unit {
@@ -1722,7 +2104,14 @@ mod tests {
         });
         let mut env = BTreeMap::new();
         env.insert("HOME".to_string(), "/root".to_string());
-        let cur = Current { root: root.clone(), config: "C".into(), runtime: "R".into(), epoch: 5, env };
+        let cur = Current {
+            root: root.clone(),
+            config: "C".into(),
+            runtime: "R".into(),
+            epoch: 5,
+            env,
+            startup: String::new(),
+        };
         s.record(
             "t::a",
             Observed {
@@ -1898,6 +2287,33 @@ mod tests {
     }
 
     #[test]
+    fn startup_processes_output_is_an_input_and_absent_keeps_the_key() {
+        let (_d, s, cur) = setup();
+        let key0 = s.tests["t::a"].key.clone();
+        // an entry recorded without start-up processes: serialised and keyed as before
+        assert!(!serde_json::to_string(&s.tests["t::a"]).unwrap().contains("startup"));
+        let mut c = cur.clone();
+        c.startup = "S1".into();
+        assert_eq!(Checker::new(c.clone()).check(&s, "t::a").unwrap_err().kind, "startup");
+        let mut s2 = s.clone();
+        s2.record(
+            "t::a",
+            Observed {
+                outcome: "passed".into(),
+                config: "C".into(),
+                runtime: "R".into(),
+                startup: "S1".into(),
+                ..Default::default()
+            },
+        );
+        assert_ne!(s2.tests["t::a"].key, key0);
+        assert!(Checker::new(c.clone()).check(&s2, "t::a").is_ok());
+        assert_eq!(Checker::new(cur).check(&s2, "t::a").unwrap_err().kind, "startup");
+        c.startup = "S2".into();
+        assert_eq!(Checker::new(c).check(&s2, "t::a").unwrap_err().kind, "startup");
+    }
+
+    #[test]
     fn data_env_runtime_config_clock() {
         let (d, s, cur) = setup();
         fs::write(d.path().join("data.txt"), "y").unwrap();
@@ -1955,7 +2371,10 @@ mod tests {
     #[test]
     fn failure_is_never_reused() {
         let (_d, mut s, cur) = setup();
-        s.record("t::f", Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() });
+        s.record(
+            "t::f",
+            Observed { outcome: "failed".into(), config: "C".into(), runtime: "R".into(), ..Default::default() },
+        );
         assert_eq!(Checker::new(cur).check(&s, "t::f").unwrap_err().kind, "failed-before");
     }
 
@@ -2009,7 +2428,10 @@ mod tests {
             units: vec![unit("u", "U")],
             imports: vec![],
         });
-        s2.record("t::x", Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() });
+        s2.record(
+            "t::x",
+            Observed { outcome: "passed".into(), skeleton: vec![fi], units: vec![(fi, 0)], ..Default::default() },
+        );
         s2.written.entry("out.txt".into()).or_default().insert("t|t::x".into());
         let mut s3 = Store::load(&dir);
         s3.remove("t::a");

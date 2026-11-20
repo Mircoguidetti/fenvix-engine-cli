@@ -1,0 +1,4987 @@
+{
+ "spec": {
+  "name": "cli",
+  "repo": "docker/cli",
+  "sha": "6d274590f2f63276a54da8adf475a455d21c1fdd",
+  "fix_commit": "dd50814004d1e3c9d6e0b2aae0e50dd1bb57f136",
+  "fix_date": "2026-10-22T10:04:59.000-07:00",
+  "title": "fix: flaky `TestPrunePromptTermination` test",
+  "tests": [
+   "TestPrunePromptTermination"
+  ],
+  "source": "github commit search 'repo:docker/cli flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [
+  "vendor.mod used as go.mod"
+ ],
+ "located": {
+  "TestPrunePromptTermination": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./cli/command/image"
+ ],
+ "imports": [
+  "github.com/docker/cli/cli/command/image"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 24.6,
+ "build_det_s": 37.1,
+ "baseline": {
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileOutsideContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrunePromptTermination": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileFromStdinWithCompress": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandAlias": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestImagesFilterDangling": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Table": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedSince": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandInvalidFile": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAmbiguous": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildResetsUidAndGidInContext": [
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped",
+   "skipped"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeAnsiTty": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Comment": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAlias": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildRemoteContextDownloadError": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromLocalGitHubDir": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_ID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedBy": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeGolden": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandInvalidInput": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunPushRespectsNoColorForAuxNotes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommand": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Size": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandSuccess": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommandErrors": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildWithSymlinkedContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 107.9,
+ "det0_fail_output": {
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase": "=== RUN   TestRunBuildFromGitHubSpecialCase\n    build_test.go:132: assertion failed: expected error to contain \"docker-build-git\", got \"unable to prepare context: unable to 'git clone' to temporary context directory: error fetching: fatal: unable to access 'https://github.com/docker/for-win/': SSL certificate verification failed: certificate error, no details available. (CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none)\\n: exit status 128\"\n--- FAIL: TestRunBuildFromGitHubSpecialCase (0.08s)\n"
+ },
+ "det0_events_by_source": {
+  "time": 143,
+  "fs": 21,
+  "entropy": 3,
+  "outcome": 45,
+  "net": 16
+ },
+ "det0_top_tests_by_events": [
+  [
+   123,
+   "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase"
+  ],
+  [
+   17,
+   "github.com/docker/cli/cli/command/image::TestRunBuildRemoteContextDownloadError"
+  ],
+  [
+   13,
+   "github.com/docker/cli/cli/command/image::TestHistoryContext_Table"
+  ],
+  [
+   8,
+   "github.com/docker/cli/cli/command/image::TestPrunePromptTermination"
+  ],
+  [
+   7,
+   "github.com/docker/cli/cli/command/image::TestNewHistoryCommandSuccess"
+  ],
+  [
+   6,
+   "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileOutsideContext"
+  ],
+  [
+   6,
+   "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileFromStdinWithCompress"
+  ],
+  [
+   5,
+   "github.com/docker/cli/cli/command/image::TestRunBuildWithSymlinkedContext"
+  ]
+ ],
+ "det0_divergences": [],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 45,
+  "stable": 45,
+  "diverged": 0,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {}
+ },
+ "det0": {
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAmbiguous": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildResetsUidAndGidInContext": [
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeAnsiTty": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrunePromptTermination": [
+   [
+    "passed",
+    "2b8089ccb0dcfb56a2e6a33e1c6021ee"
+   ],
+   [
+    "passed",
+    "2b8089ccb0dcfb56a2e6a33e1c6021ee"
+   ],
+   [
+    "passed",
+    "2b8089ccb0dcfb56a2e6a33e1c6021ee"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileOutsideContext": [
+   [
+    "passed",
+    "5a6a3ae8a60db89479e266b0cfda6d38"
+   ],
+   [
+    "passed",
+    "5a6a3ae8a60db89479e266b0cfda6d38"
+   ],
+   [
+    "passed",
+    "5a6a3ae8a60db89479e266b0cfda6d38"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_ID": [
+   [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase": [
+   [
+    "failed",
+    "6a58a778f6d02f44c0c0b124786ed056"
+   ],
+   [
+    "failed",
+    "6a58a778f6d02f44c0c0b124786ed056"
+   ],
+   [
+    "failed",
+    "6a58a778f6d02f44c0c0b124786ed056"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromLocalGitHubDir": [
+   [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedSince": [
+   [
+    "passed",
+    "6821c9b7a7e1662e4627a62124f75e62"
+   ],
+   [
+    "passed",
+    "6821c9b7a7e1662e4627a62124f75e62"
+   ],
+   [
+    "passed",
+    "6821c9b7a7e1662e4627a62124f75e62"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Size": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileFromStdinWithCompress": [
+   [
+    "passed",
+    "ec0583de5ac75c47821d6f24d8447925"
+   ],
+   [
+    "passed",
+    "ec0583de5ac75c47821d6f24d8447925"
+   ],
+   [
+    "passed",
+    "ec0583de5ac75c47821d6f24d8447925"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestImagesFilterDangling": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Table": [
+   [
+    "passed",
+    "3ad66b3266d164121db3b08b9f6e346f"
+   ],
+   [
+    "passed",
+    "3ad66b3266d164121db3b08b9f6e346f"
+   ],
+   [
+    "passed",
+    "3ad66b3266d164121db3b08b9f6e346f"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAlias": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunPushRespectsNoColorForAuxNotes": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandInvalidInput": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeGolden": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Comment": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedBy": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandAlias": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildWithSymlinkedContext": [
+   [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestRunBuildRemoteContextDownloadError": [
+   [
+    "passed",
+    "0a2147603488b72d2cc39c88fa874ff3"
+   ],
+   [
+    "passed",
+    "0a2147603488b72d2cc39c88fa874ff3"
+   ],
+   [
+    "passed",
+    "0a2147603488b72d2cc39c88fa874ff3"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandErrors": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommand": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandSuccess": [
+   [
+    "passed",
+    "62aaccb944de6ed305fe796fdf269e24"
+   ],
+   [
+    "passed",
+    "62aaccb944de6ed305fe796fdf269e24"
+   ],
+   [
+    "passed",
+    "62aaccb944de6ed305fe796fdf269e24"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandInvalidFile": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandSuccess": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestImagesFilterDangling": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildWithSymlinkedContext": {
+   "1": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "2": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "3": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "4": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "5": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "6": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "7": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "8": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "9": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "10": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "11": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "12": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "13": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "14": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "15": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "16": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "17": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "18": [
+    "passed",
+    "30a653cd01f79465c986c7dd87f9f524"
+   ],
+   "19": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ],
+   "20": [
+    "passed",
+    "8768da3893d740fc5192c9b2af6359b0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandInvalidFile": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Table": {
+   "1": [
+    "passed",
+    "21e1968d45130a515ace943330f9a1ee"
+   ],
+   "2": [
+    "passed",
+    "0afb52cb4268485fc1315757ab78feee"
+   ],
+   "3": [
+    "passed",
+    "2d558d435a506d34ea320f514b73f419"
+   ],
+   "4": [
+    "passed",
+    "75faa9f4d5c72c529283b0fbca3e6145"
+   ],
+   "5": [
+    "passed",
+    "7707b915c59ea0eadbb67f176721e225"
+   ],
+   "6": [
+    "passed",
+    "2b77c3e29b2d895c5f5d73a82349279f"
+   ],
+   "7": [
+    "passed",
+    "cca221d38edbaea732b9aaff7183d40e"
+   ],
+   "8": [
+    "passed",
+    "31fb41cc60882b73d8a4fee2262ac631"
+   ],
+   "9": [
+    "passed",
+    "ad0eb27cca265223ce3f68a2ad48e536"
+   ],
+   "10": [
+    "passed",
+    "7e6511758798204eae19ddfd6c0e4742"
+   ],
+   "11": [
+    "passed",
+    "2374d3f0f4c3a0dd946b69e6c5867bc0"
+   ],
+   "12": [
+    "passed",
+    "4c7651d0f7eb286b8ab9a6741563a9aa"
+   ],
+   "13": [
+    "passed",
+    "a0dfc29d4b59650d3f3e07bdc0d033ce"
+   ],
+   "14": [
+    "passed",
+    "78406c9133882a27374865b3d779499c"
+   ],
+   "15": [
+    "passed",
+    "5552ee3de0d1f926afdf756a3475f909"
+   ],
+   "16": [
+    "passed",
+    "f3f7e224f5a7104a2939eab380e591e0"
+   ],
+   "17": [
+    "passed",
+    "a6c6354e2f7a00a50c4ce534ab8f9c6f"
+   ],
+   "18": [
+    "passed",
+    "c97bda1086c8bc391dfb1a4df8d2dd01"
+   ],
+   "19": [
+    "passed",
+    "66ddfcc6e30675beff5b5b84a11845a7"
+   ],
+   "20": [
+    "passed",
+    "0b157bd1a3decc983dda17b3bd1ce7f0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildResetsUidAndGidInContext": {
+   "1": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "2": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "3": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "4": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "5": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "6": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "7": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "8": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "9": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "10": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "11": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "12": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "13": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "14": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "15": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "16": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "17": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "18": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "19": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ],
+   "20": [
+    "skipped",
+    "878686684e15f60b29c29621d36eb37e"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewHistoryCommandSuccess": {
+   "1": [
+    "passed",
+    "a8356e12970331f4a951f6d078a381f3"
+   ],
+   "2": [
+    "passed",
+    "972b2b2fbfc66cde5b2bef8f797095c6"
+   ],
+   "3": [
+    "passed",
+    "34cd90c970ebfb87637b01d26328f354"
+   ],
+   "4": [
+    "passed",
+    "7226fcf170b5e127169f4235b1a5280c"
+   ],
+   "5": [
+    "passed",
+    "17d17c2a81cc84e4d7bd871523063811"
+   ],
+   "6": [
+    "passed",
+    "b149ab7c1f3f89de069d288c95ae10fd"
+   ],
+   "7": [
+    "passed",
+    "318d3423742ad053aa14a045b21e747d"
+   ],
+   "8": [
+    "passed",
+    "7d713a714937d55cf0fc0babf7c2d90e"
+   ],
+   "9": [
+    "passed",
+    "29d645268d654efd8ea3970770b7f875"
+   ],
+   "10": [
+    "passed",
+    "a0571471cdab92bbbb22a4b7d773e4d5"
+   ],
+   "11": [
+    "passed",
+    "cc6fb1f7c6a9f26498f620a8ce4b0fb6"
+   ],
+   "12": [
+    "passed",
+    "d6559e93bb1cebefa6ce0a29c0fff070"
+   ],
+   "13": [
+    "passed",
+    "c589b871dd7c79ab3ca260c5aacca217"
+   ],
+   "14": [
+    "passed",
+    "102e2a0694d68b23eeaa86d02190c828"
+   ],
+   "15": [
+    "passed",
+    "caab15ec1cd9332cb7ddb53c452a9a50"
+   ],
+   "16": [
+    "passed",
+    "28518a6f75cb8ebcf0a4e3c827f85bdf"
+   ],
+   "17": [
+    "passed",
+    "78ff3c51858b7327dbb442fcc956e379"
+   ],
+   "18": [
+    "passed",
+    "c90e2e6f1315d0f5e27dfee841db1109"
+   ],
+   "19": [
+    "passed",
+    "0551cb62b89e6b2a85ed4d63df930878"
+   ],
+   "20": [
+    "passed",
+    "b1b87417b5d854fa7455010a13a717e2"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeGolden": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileFromStdinWithCompress": {
+   "1": [
+    "passed",
+    "5399d93f6e0f2154aa50fcddfee90591"
+   ],
+   "2": [
+    "passed",
+    "8efbe45ba0d031577f596fb4c8644be6"
+   ],
+   "3": [
+    "passed",
+    "c8bde76f3508e6409e67bc665c4cac81"
+   ],
+   "4": [
+    "passed",
+    "a491ccd394e85b28f7290c73d9343f28"
+   ],
+   "5": [
+    "passed",
+    "34ca7476ba988a9c0c24867d0ce2435d"
+   ],
+   "6": [
+    "passed",
+    "c6a98e9fbc8244eba2249e8fe2243a94"
+   ],
+   "7": [
+    "passed",
+    "e84fb8b8e03385e2386fbb39769c5c5f"
+   ],
+   "8": [
+    "passed",
+    "98711f85f288cf58b1e7a9d55f88704b"
+   ],
+   "9": [
+    "passed",
+    "9e4ca51f8af6e8f3bb4c48e5988e0d73"
+   ],
+   "10": [
+    "passed",
+    "0bd1d59c7575a0b3902509535a39caa3"
+   ],
+   "11": [
+    "passed",
+    "6a32c964584a1f1b91781d3c79eaca45"
+   ],
+   "12": [
+    "passed",
+    "94d7e052c5b606bd3956727bcaeba805"
+   ],
+   "13": [
+    "passed",
+    "47b73a5e0adc6f02b3793b4a286a1982"
+   ],
+   "14": [
+    "passed",
+    "b4ae1f40f5151431baa546533c334bdb"
+   ],
+   "15": [
+    "passed",
+    "4090abc85dc755a6d2d8dc9eadcf3073"
+   ],
+   "16": [
+    "passed",
+    "0a029054794efdd0a5159080a10c47a0"
+   ],
+   "17": [
+    "passed",
+    "cfc70ca4f2f68dcfedd7688aa88a1b11"
+   ],
+   "18": [
+    "passed",
+    "b084766e3cb0a8f8010badbb4594a535"
+   ],
+   "19": [
+    "passed",
+    "41c7234314e530dbe73a0c76ad96ec20"
+   ],
+   "20": [
+    "passed",
+    "78b32ae9f417986738c5fde066f507ea"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPushCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestPrunePromptTermination": {
+   "1": [
+    "passed",
+    "578ab52d1f4d6f6fd08d0e73da8cdd74"
+   ],
+   "2": [
+    "passed",
+    "1a5f372c00884d349277356505875850"
+   ],
+   "3": [
+    "passed",
+    "1eece06a6c57be8852c8410d4d6f9b66"
+   ],
+   "4": [
+    "passed",
+    "a3d99e2c2528e69efda6ffe7e3e8dcf3"
+   ],
+   "5": [
+    "passed",
+    "df3248006c4bdce9123158a648d2acd3"
+   ],
+   "6": [
+    "passed",
+    "b656d74dceeb92dcde576857715d3504"
+   ],
+   "7": [
+    "passed",
+    "5df42cee8ca26e13828f334d7956400a"
+   ],
+   "8": [
+    "passed",
+    "d923372e66d6c5f39fd7648799b2823f"
+   ],
+   "9": [
+    "passed",
+    "28cb08bf41b7dc35255a85a575967921"
+   ],
+   "10": [
+    "passed",
+    "4ee563ec3af9ae3cd71052b108b4a361"
+   ],
+   "11": [
+    "passed",
+    "1d2ab329c6254f48a7ccc3a316243f96"
+   ],
+   "12": [
+    "passed",
+    "653b2d7996d617e89d6405b7dfdcfdf3"
+   ],
+   "13": [
+    "passed",
+    "5d2de2aa1112a9893468e786abe9bfe2"
+   ],
+   "14": [
+    "passed",
+    "f6063ab48e68b8453b17d17a949e3ee8"
+   ],
+   "15": [
+    "passed",
+    "d73f895d71a46bc2406a42a9e8ae8e3c"
+   ],
+   "16": [
+    "passed",
+    "1d97329adcfb3ac6adbe0e88491ca064"
+   ],
+   "17": [
+    "passed",
+    "8cd29e4a25c4ac1cf5cde1502e7ad45a"
+   ],
+   "18": [
+    "passed",
+    "e2b47f8f390971ffac98a407a1004015"
+   ],
+   "19": [
+    "passed",
+    "e8f103d497efbd44e45acdaed0b808d8"
+   ],
+   "20": [
+    "passed",
+    "05386aa84f974ada637dc32dcc3dcaea"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Comment": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedBy": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildRemoteContextDownloadError": {
+   "1": [
+    "passed",
+    "50eafe42dbb6a1fc66802d9cefa92efb"
+   ],
+   "2": [
+    "passed",
+    "0ed4199e348052f7346b5d0ed2da7a01"
+   ],
+   "3": [
+    "passed",
+    "b58688486f2e2535225ef6fcdb9e8900"
+   ],
+   "4": [
+    "passed",
+    "1b231a80dc03a21ba6813dcd7cde9cd9"
+   ],
+   "5": [
+    "passed",
+    "587e64d16809fb7a7939cdc68ac98979"
+   ],
+   "6": [
+    "passed",
+    "4c657854f79fc987f07c3e3217645e38"
+   ],
+   "7": [
+    "passed",
+    "9fe1e57f59af25adea1eaef18238e2c1"
+   ],
+   "8": [
+    "passed",
+    "8db31f8387967c1373358d908cc47dd5"
+   ],
+   "9": [
+    "passed",
+    "f39d2fda37b98d94b6345d45e0e63786"
+   ],
+   "10": [
+    "passed",
+    "b61c163d831f3f33ec92c935e329e716"
+   ],
+   "11": [
+    "passed",
+    "c04cf7857ff9e2ba307b4932d965d7cd"
+   ],
+   "12": [
+    "passed",
+    "0b6bdd71d40ff1a358716fc474d9b05b"
+   ],
+   "13": [
+    "passed",
+    "a034cf332206587ae4e22a719e9a1459"
+   ],
+   "14": [
+    "passed",
+    "fb1f58de85640be64b16043db23d4ca5"
+   ],
+   "15": [
+    "passed",
+    "9543ae8fa8c309731f7111269dad5fb4"
+   ],
+   "16": [
+    "passed",
+    "4c51f0986122d0690a907976396474eb"
+   ],
+   "17": [
+    "passed",
+    "ae5fa5f5efdb0fba6a8b7e09c080b4b7"
+   ],
+   "18": [
+    "passed",
+    "5bebd062da0b38d9f5166977ed9347c8"
+   ],
+   "19": [
+    "passed",
+    "ac7f8dbbe7b9759ed60f62b2d5a5ae9b"
+   ],
+   "20": [
+    "passed",
+    "8d30993085fc8059cca72c5a9cc45bd2"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase": {
+   "1": [
+    "failed",
+    "d0006a782930ff35ca6939008fee1a71"
+   ],
+   "2": [
+    "failed",
+    "670d0505afc335e8554e76ee5f7233ab"
+   ],
+   "3": [
+    "failed",
+    "fbaed5a92f38a152ca4aa4fbd0d37734"
+   ],
+   "4": [
+    "failed",
+    "8cab1935f57784b32b9d1f4f2830e330"
+   ],
+   "5": [
+    "failed",
+    "57ff258330a5d37950511da4101d6bcc"
+   ],
+   "6": [
+    "failed",
+    "7f37a0094f5a8e0eb18d8213a816cde1"
+   ],
+   "7": [
+    "failed",
+    "57b077a288d3cba4470fd18fd1f228fe"
+   ],
+   "8": [
+    "failed",
+    "a3a12d5c9c49d9cc35333d8653a7db4e"
+   ],
+   "9": [
+    "failed",
+    "764c9bdd3a9bce5a184ed4f3a4d2fb18"
+   ],
+   "10": [
+    "failed",
+    "adbee89b86028734aa5e71ebf1e9a07f"
+   ],
+   "11": [
+    "failed",
+    "06d1972633b6168e5b803904c5390b67"
+   ],
+   "12": [
+    "failed",
+    "728d24bff3f76c3c452dd80e6344a589"
+   ],
+   "13": [
+    "failed",
+    "35e6984b8ac8781726bb6539fab7fb90"
+   ],
+   "14": [
+    "failed",
+    "09c94c5fc8886fe738ed23acba8e8ac4"
+   ],
+   "15": [
+    "failed",
+    "b354a0e28717b9117706966519f353c8"
+   ],
+   "16": [
+    "failed",
+    "19f097cbc9b1d9317049e2a4cc2295a4"
+   ],
+   "17": [
+    "failed",
+    "0c8b8bde3eaf9776aa4254c1ab60e8dd"
+   ],
+   "18": [
+    "failed",
+    "23619765f53b8d3d0a2ed357253d1bba"
+   ],
+   "19": [
+    "failed",
+    "1757f06c13f2e8ca586e0a54b1c48b0b"
+   ],
+   "20": [
+    "failed",
+    "c1891086bcbccf77e91bda47d56360e9"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunPushRespectsNoColorForAuxNotes": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAlias": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_CreatedSince": {
+   "1": [
+    "passed",
+    "6e73f519518e5dc77a467a1de2b62581"
+   ],
+   "2": [
+    "passed",
+    "486d5b506aa52f3e7aea5dffb83e454e"
+   ],
+   "3": [
+    "passed",
+    "d1637d515458d04db7a3b696453c8bf9"
+   ],
+   "4": [
+    "passed",
+    "cd330ec32f7f3ff9c354669f8ad27331"
+   ],
+   "5": [
+    "passed",
+    "72bcbfd4ddc6075fb31ff47ed622a041"
+   ],
+   "6": [
+    "passed",
+    "3f1a911572510ca21ec097bc68d988bb"
+   ],
+   "7": [
+    "passed",
+    "d288b877552984c0a23a5481b699ab04"
+   ],
+   "8": [
+    "passed",
+    "7af85ca7f1e1b1f25ae2508dc971c1bf"
+   ],
+   "9": [
+    "passed",
+    "b9ca5a5483796259cb61ae1022e252c5"
+   ],
+   "10": [
+    "passed",
+    "d9765b00e9763d4ec147be1136258b13"
+   ],
+   "11": [
+    "passed",
+    "5b219a915779c36bcf4d7e0cbcf9d001"
+   ],
+   "12": [
+    "passed",
+    "e1278eb52b817653da788f9f158b4694"
+   ],
+   "13": [
+    "passed",
+    "6faa9cda1b254195dfd7db94575639f7"
+   ],
+   "14": [
+    "passed",
+    "595cd41b2dd87efaf69e6d5d5c81225a"
+   ],
+   "15": [
+    "passed",
+    "a535d330f5af515c9fc2ee89a12f4714"
+   ],
+   "16": [
+    "passed",
+    "edcb0440b6b431d12c0af83e9f2b75f5"
+   ],
+   "17": [
+    "passed",
+    "0c94c1361d917b55c4bd9ed885908622"
+   ],
+   "18": [
+    "passed",
+    "1794684faa91a8160341aa10b0eeed8c"
+   ],
+   "19": [
+    "passed",
+    "2f427fe2d33ba72a2a605db15f8386dc"
+   ],
+   "20": [
+    "passed",
+    "e8d50dbad7d55a0b4e52467f080507d6"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewInspectCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestCliNewTagCommand": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandAlias": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewImagesCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPruneCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewSaveCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestPrintImageTreeAnsiTty": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_Size": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestHistoryContext_ID": {
+   "1": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "2": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "3": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "4": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "5": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "6": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "7": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "8": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "9": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "10": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "11": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "12": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "13": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "14": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "15": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "16": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "17": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "18": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "19": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ],
+   "20": [
+    "passed",
+    "ac97f437b2d16e23e9ce8f7b558f8b2e"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewImportCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewRemoveCommandSuccess": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewPullCommandErrors": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromLocalGitHubDir": {
+   "1": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "2": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "3": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "4": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "5": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "6": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "7": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "8": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "9": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "10": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "11": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "12": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "13": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "14": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "15": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "16": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "17": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "18": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "19": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ],
+   "20": [
+    "passed",
+    "c4563d8cc3f4c4c631c73b24a1953e14"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewLoadCommandInvalidInput": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestNewListCommandAmbiguous": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/docker/cli/cli/command/image::TestRunBuildDockerfileOutsideContext": {
+   "1": [
+    "passed",
+    "e3ae9b7a1f5985cf8e481f7cc3ccd9bd"
+   ],
+   "2": [
+    "passed",
+    "7bd92f99b2c7e53becac42e041657719"
+   ],
+   "3": [
+    "passed",
+    "65df21f4a87cbc7da69c32d38b4dfdf9"
+   ],
+   "4": [
+    "passed",
+    "3b3598cdf0f5825de5e0805909b3db08"
+   ],
+   "5": [
+    "passed",
+    "d9ddfad5b971ad077d8ff181728f6951"
+   ],
+   "6": [
+    "passed",
+    "33bbf12aefb8b28ab1f1759191da1d8d"
+   ],
+   "7": [
+    "passed",
+    "90d0e149355191d60354959e0f048bb2"
+   ],
+   "8": [
+    "passed",
+    "d3fdfe0357d9726dc2f2c793277207c3"
+   ],
+   "9": [
+    "passed",
+    "4b341b871c9524ed512163e2f952c303"
+   ],
+   "10": [
+    "passed",
+    "b6cfe28e38838ec9d995714e91ac23d0"
+   ],
+   "11": [
+    "passed",
+    "8a2a1f8b20bb6369df369b8833bf1347"
+   ],
+   "12": [
+    "passed",
+    "fa2bc7e3f0568737e1c279344c0592a1"
+   ],
+   "13": [
+    "passed",
+    "ce02f4d7756023082244f82f31bb4220"
+   ],
+   "14": [
+    "passed",
+    "2b487ba1642ea115e98e705c9e0d395f"
+   ],
+   "15": [
+    "passed",
+    "1317c519c24029ed9059692f24ad0c39"
+   ],
+   "16": [
+    "passed",
+    "d3ec5a8a563faa53bb1f53ba7883e578"
+   ],
+   "17": [
+    "passed",
+    "51952d8f0d4b6b8c72de8c632d2ee0e0"
+   ],
+   "18": [
+    "passed",
+    "57733c611c1cb72d808ac69dc8a9547f"
+   ],
+   "19": [
+    "passed",
+    "11a4dfb071862e1547879a1925aeab47"
+   ],
+   "20": [
+    "passed",
+    "8ced71cb9ddb4eab9e655924c0fa32c7"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/docker/cli/cli/command/image::TestPrunePromptTermination": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [
+  "github.com/docker/cli/cli/command/image::TestRunBuildFromGitHubSpecialCase"
+ ],
+ "fingerprint_coverage": [
+  45,
+  45
+ ],
+ "timing_keep_parallel": [
+  0.118,
+  0.116,
+  0.118
+ ],
+ "timing": {
+  "plain": [
+   0.465,
+   0.428,
+   0.433
+  ],
+  "det": [
+   0.131,
+   0.12,
+   0.131
+  ]
+ },
+ "slowdown": -0.697459584295612
+}

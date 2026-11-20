@@ -1,0 +1,1536 @@
+{
+ "spec": {
+  "name": "pebble",
+  "repo": "cockroachdb/pebble",
+  "sha": "521683eeeb9b910d1c0a85fc1fcc6015a2895c58",
+  "fix_commit": "babd2f323b0e38dfbd6f6098133a7ab5ac78eff5",
+  "fix_date": "2026-04-27T13:14:42.000-07:00",
+  "title": "wal: fix flaky TestConcurrentWritersWithManyRecords",
+  "tests": [
+   "TestConcurrentWritersWithManyRecords"
+  ],
+  "source": "github commit search 'repo:cockroachdb/pebble flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestConcurrentWritersWithManyRecords": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./wal"
+ ],
+ "imports": [
+  "github.com/cockroachdb/pebble/wal"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 18.9,
+ "build_det_s": 23.3,
+ "baseline": {
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriter": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestCopyClosesWriterOnError": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_Quiesce": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestLogRecycler": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestDirProber": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestReader": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestManagerFailover": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestConcurrentWritersWithManyRecords": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_AllFilesDeletable": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestList": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_SecondaryIsWritable": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriterManyRecords": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 178.3,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 55200,
+  "random": 199978,
+  "outcome": 12,
+  "fs": 1
+ },
+ "det0_top_tests_by_events": [
+  [
+   50001,
+   "github.com/cockroachdb/pebble/wal::TestManagerFailover"
+  ],
+  [
+   50001,
+   "github.com/cockroachdb/pebble/wal::TestFailoverManager_Quiesce"
+  ],
+  [
+   50001,
+   "github.com/cockroachdb/pebble/wal::TestFailoverManager_AllFilesDeletable"
+  ],
+  [
+   50001,
+   "github.com/cockroachdb/pebble/wal::TestDirProber"
+  ],
+  [
+   32870,
+   "github.com/cockroachdb/pebble/wal::TestFailoverWriterManyRecords"
+  ],
+  [
+   21094,
+   "github.com/cockroachdb/pebble/wal::TestConcurrentWritersWithManyRecords"
+  ],
+  [
+   696,
+   "github.com/cockroachdb/pebble/wal::TestFailoverWriter"
+  ],
+  [
+   477,
+   "github.com/cockroachdb/pebble/wal::TestReader"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/cockroachdb/pebble/wal::TestManagerFailover",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": null,
+    "window": [
+     14336,
+     14592
+    ],
+    "event_a": null,
+    "event_b": null,
+    "reason": "beyond-trace",
+    "description": "stored events are identical; first difference in events [14336, 14592) (raise --det-max-events to capture it exactly)"
+   }
+  },
+  {
+   "nodeid": "github.com/cockroachdb/pebble/wal::TestFailoverManager_AllFilesDeletable",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Sleep",
+     "at": "vfs/errorfs/latency.go:102",
+     "v": "12406797"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "wal/failover_manager.go:573",
+     "v": "3000"
+    },
+    "reason": "time",
+    "description": "event #2: [time] time.Sleep @ vfs/errorfs/latency.go:102 = 12406797  <>  [time] time.Now @ wal/failover_manager.go:573 = 3000"
+   }
+  },
+  {
+   "nodeid": "github.com/cockroachdb/pebble/wal::TestFailoverWriter",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 41,
+    "window": null,
+    "event_a": {
+     "t": 13,
+     "s": "time",
+     "o": "time.Now",
+     "at": "wal/failover_manager.go:1046",
+     "v": "5030000"
+    },
+    "event_b": {
+     "t": 13,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/cockroachdb/datadriven@v1.0.3-0.20251123150250-ddff6747b112/datadriven.go:351",
+     "v": "5030000"
+    },
+    "reason": "thread",
+    "description": "event #41: [time] time.Now @ wal/failover_manager.go:1046 = 5030000 (thread 13)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/cockroachdb/datadriven@v1.0.3-0.20251123150250-ddff6747b112/datadriven.go:351 = 5030000 (thread 13)"
+   }
+  },
+  {
+   "nodeid": "github.com/cockroachdb/pebble/wal::TestFailoverWriterManyRecords",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 1260,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Since",
+     "at": "/home/runner/go/pkg/mod/github.com/cockroachdb/crlib@v0.0.0-20251122031428-fe658a2dbda1/crtime/monotonic.go:34",
+     "v": "1261000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "wal/failover_manager.go:1046",
+     "v": "1261000"
+    },
+    "reason": "thread",
+    "description": "event #1260: [time] time.Since @ /home/runner/go/pkg/mod/github.com/cockroachdb/crlib@v0.0.0-20251122031428-fe658a2dbda1/crtime/monotonic.go:34 = 1261000  <>  [time] time.Now @ wal/failover_manager.go:1046 = 1261000 (thread 1)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 12,
+  "stable": 8,
+  "diverged": 4,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "beyond-trace": 1,
+   "thread": 2,
+   "time": 1
+  }
+ },
+ "det0": {
+  "github.com/cockroachdb/pebble/wal::TestLogRecycler": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_AllFilesDeletable": [
+   [
+    "passed",
+    "27baf0383d10041ec2e64da0cc3991f8"
+   ],
+   [
+    "passed",
+    "88e411739c679a743f04931681b49f5e"
+   ],
+   [
+    "passed",
+    "d607862d7b7a5644d8648aff3a610c49"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriter": [
+   [
+    "passed",
+    "ceb32ed31f800b0ccca749a1a92fdce5"
+   ],
+   [
+    "passed",
+    "81151a9a253b061b2cd32651b1711dc5"
+   ],
+   [
+    "passed",
+    "81151a9a253b061b2cd32651b1711dc5"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestCopyClosesWriterOnError": [
+   [
+    "passed",
+    "686d99903be3e1316a270d478552e049"
+   ],
+   [
+    "passed",
+    "686d99903be3e1316a270d478552e049"
+   ],
+   [
+    "passed",
+    "686d99903be3e1316a270d478552e049"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestList": [
+   [
+    "passed",
+    "3334dfb5bf3223cc006d254b82846703"
+   ],
+   [
+    "passed",
+    "3334dfb5bf3223cc006d254b82846703"
+   ],
+   [
+    "passed",
+    "3334dfb5bf3223cc006d254b82846703"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestManagerFailover": [
+   [
+    "passed",
+    "762d82c92f9e698c3f99b1a3560221bf"
+   ],
+   [
+    "passed",
+    "762d82c92f9e698c3f99b1a3560221bf"
+   ],
+   [
+    "passed",
+    "5a9469d44f0bcaa35be9e4391dafab59"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestReader": [
+   [
+    "passed",
+    "a2c242786ae0b4bdfc36d94ffe62f598"
+   ],
+   [
+    "passed",
+    "a2c242786ae0b4bdfc36d94ffe62f598"
+   ],
+   [
+    "passed",
+    "a2c242786ae0b4bdfc36d94ffe62f598"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_Quiesce": [
+   [
+    "passed",
+    "ca05e617e926bb6fb7a757ee7f3ae786"
+   ],
+   [
+    "passed",
+    "ca05e617e926bb6fb7a757ee7f3ae786"
+   ],
+   [
+    "passed",
+    "ca05e617e926bb6fb7a757ee7f3ae786"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriterManyRecords": [
+   [
+    "passed",
+    "8a8ec923eca7244ea58c9aaca601ce5f"
+   ],
+   [
+    "passed",
+    "869b61fb6fbe62fa710c33694970fa21"
+   ],
+   [
+    "passed",
+    "2c36296da35ba15d3ebe08c6e9f0f8e1"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_SecondaryIsWritable": [
+   [
+    "passed",
+    "d87a2bf362fcd39272f1b06fc41ba92d"
+   ],
+   [
+    "passed",
+    "d87a2bf362fcd39272f1b06fc41ba92d"
+   ],
+   [
+    "passed",
+    "d87a2bf362fcd39272f1b06fc41ba92d"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestConcurrentWritersWithManyRecords": [
+   [
+    "passed",
+    "3f4fb8ecf2849be815b9670b68099c75"
+   ],
+   [
+    "passed",
+    "3f4fb8ecf2849be815b9670b68099c75"
+   ],
+   [
+    "passed",
+    "3f4fb8ecf2849be815b9670b68099c75"
+   ]
+  ],
+  "github.com/cockroachdb/pebble/wal::TestDirProber": [
+   [
+    "passed",
+    "30a3167cbde1c3c1ef02a69208eb5b4a"
+   ],
+   [
+    "passed",
+    "30a3167cbde1c3c1ef02a69208eb5b4a"
+   ],
+   [
+    "passed",
+    "30a3167cbde1c3c1ef02a69208eb5b4a"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/cockroachdb/pebble/wal::TestDirProber": {
+   "1": [
+    "passed",
+    "86e7489d2ac0c43589636d5c90e7ec4b"
+   ],
+   "2": [
+    "passed",
+    "a1b584627d39b3332d17af7804fa4c10"
+   ],
+   "3": [
+    "passed",
+    "24773c7ddd6ac127145514218ce8e827"
+   ],
+   "4": [
+    "passed",
+    "1539624c8b6c3ce28dd8c0d2b793a709"
+   ],
+   "5": [
+    "passed",
+    "e67036c359e24d43c1116dfb7239fe9a"
+   ],
+   "6": [
+    "passed",
+    "092892dcd0fe8bad1ba715e6d9122ffa"
+   ],
+   "7": [
+    "passed",
+    "f23e64714e12313b1980838f02e5d9fb"
+   ],
+   "8": [
+    "passed",
+    "32206252b40e23635bd9943e930dc0ca"
+   ],
+   "9": [
+    "passed",
+    "44b4c38fd42dacb55a91e4f9822651ae"
+   ],
+   "10": [
+    "passed",
+    "50eca275181fae3ed46e06846d17dcc2"
+   ],
+   "11": [
+    "passed",
+    "9c620b060fd5f5418af54a65fd231c4b"
+   ],
+   "12": [
+    "passed",
+    "68450a3422bdbd97bd80a134ffe7df82"
+   ],
+   "13": [
+    "passed",
+    "b21a63afccd61c99889298235ede2fb7"
+   ],
+   "14": [
+    "passed",
+    "ce43cdd67976b0469351b0a414e092cc"
+   ],
+   "15": [
+    "passed",
+    "3ff7ae60acf3afaf5da5d7f3c15606d4"
+   ],
+   "16": [
+    "passed",
+    "a36f7c40636746a25e879e6a363e1771"
+   ],
+   "17": [
+    "passed",
+    "0ee28e4ca7ba5663035e0cf21a0b4f5d"
+   ],
+   "18": [
+    "passed",
+    "81472689fcbaf2dd195301ea707d2d27"
+   ],
+   "19": [
+    "passed",
+    "78ee0268ab77b20fabdee93465db0563"
+   ],
+   "20": [
+    "passed",
+    "7e9d626920cd67b826c8235025494404"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_SecondaryIsWritable": {
+   "1": [
+    "passed",
+    "21a6570e9bd257930c0b0d7b6e9df6a6"
+   ],
+   "2": [
+    "passed",
+    "f957d4fc04db0b4d837cd84993840646"
+   ],
+   "3": [
+    "passed",
+    "5d83b89f2bf9d3d017ed492cd7c7637f"
+   ],
+   "4": [
+    "passed",
+    "c6d4016a07717efd6139274cdcc47b4a"
+   ],
+   "5": [
+    "passed",
+    "52593ac9d9204a723a14b73f16058b06"
+   ],
+   "6": [
+    "passed",
+    "466d632b0864b5ce8516c60363d4ef3c"
+   ],
+   "7": [
+    "passed",
+    "f23cb5899c9b9577ee9bd0458b32ad14"
+   ],
+   "8": [
+    "passed",
+    "bf62e64d59c3716bc842054e49c94e79"
+   ],
+   "9": [
+    "passed",
+    "1d60b3cabf21ff773e91a11c19210837"
+   ],
+   "10": [
+    "passed",
+    "cfcff7277c8ac2fbc48a3db0ee451e36"
+   ],
+   "11": [
+    "passed",
+    "c866d3bf43b9f95a00f83e766a3d0514"
+   ],
+   "12": [
+    "passed",
+    "aa65783cb886020eb27e130f6502b4a5"
+   ],
+   "13": [
+    "passed",
+    "41ff78d328d35d8913ccb70909fc622d"
+   ],
+   "14": [
+    "passed",
+    "0633ed722f9edb9df0f8e4d98b5f7321"
+   ],
+   "15": [
+    "passed",
+    "74e70dfd73aaff6e87f604c26916bf6c"
+   ],
+   "16": [
+    "passed",
+    "464f6e4474c49994d2d2cb7512b65ddf"
+   ],
+   "17": [
+    "passed",
+    "c3152625b549a761a796c5dae7a14e35"
+   ],
+   "18": [
+    "passed",
+    "ab52c314e53180ff36c51b140e4d7e53"
+   ],
+   "19": [
+    "passed",
+    "c16ba563cd89820c3c1c0477eaf1c4b3"
+   ],
+   "20": [
+    "passed",
+    "f0b70b14a6b09f4a4b2840d96c10aca1"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestReader": {
+   "1": [
+    "passed",
+    "bd7da7cb3859ef8dbc4f657f4656bdbd"
+   ],
+   "2": [
+    "passed",
+    "23e7e8f1b06054d40b04d55d4f0787e6"
+   ],
+   "3": [
+    "passed",
+    "2878d56b15e4e9eb6e46e7795b57dbf1"
+   ],
+   "4": [
+    "passed",
+    "c5e6700894ced2438fe66e4facc1d28c"
+   ],
+   "5": [
+    "passed",
+    "5e3d6a9ab4569a6a8fb8c30402937413"
+   ],
+   "6": [
+    "passed",
+    "41bcd8ee468679af32417de10ad1c26d"
+   ],
+   "7": [
+    "passed",
+    "585458258b5d9457c413798cb0ed386b"
+   ],
+   "8": [
+    "passed",
+    "12ea8cdb22fcf3e22bedd3d2c98063fa"
+   ],
+   "9": [
+    "passed",
+    "d946ff121531a9ce19be0a7cfdef5eef"
+   ],
+   "10": [
+    "passed",
+    "fe63e05a80b31642c2ee2f69e26e6212"
+   ],
+   "11": [
+    "passed",
+    "3198d6730e0df12528608855532ed8d3"
+   ],
+   "12": [
+    "passed",
+    "f960870df815611547ac838c00ad744a"
+   ],
+   "13": [
+    "passed",
+    "65f77a9a957698456ccc71768005a391"
+   ],
+   "14": [
+    "passed",
+    "6bb40308feab48ee3f721b8f6b2f0b00"
+   ],
+   "15": [
+    "passed",
+    "d07853a31ad7421d58e796e7b2245faf"
+   ],
+   "16": [
+    "passed",
+    "5e3867ff4bc96900ea9d1229602c689b"
+   ],
+   "17": [
+    "passed",
+    "3a432df5550cf702eb84a7c2222f22c6"
+   ],
+   "18": [
+    "passed",
+    "816ffebc3acdde5e167e601158e99a48"
+   ],
+   "19": [
+    "passed",
+    "0e087ff1cac3abd3567fddb7266f812b"
+   ],
+   "20": [
+    "passed",
+    "80e28df95162aa8c674d83582c9a4b7a"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriter": {
+   "1": [
+    "passed",
+    "2a58d1eabef0ca42a4cc8c45c0e74262"
+   ],
+   "2": [
+    "passed",
+    "65231cb5f3f81f969f9c334e05da6c79"
+   ],
+   "3": [
+    "passed",
+    "4ef1098168b2dde33e9e9fb274152d6d"
+   ],
+   "4": [
+    "passed",
+    "8f17b08290162d45c2228c0e0e81b3dd"
+   ],
+   "5": [
+    "passed",
+    "cd95a5fb35493de42b4a0359f81fea76"
+   ],
+   "6": [
+    "passed",
+    "33a31c72008ce96242f766cf7c538f94"
+   ],
+   "7": [
+    "passed",
+    "6394e4b67e37f268de9c7fd92033711a"
+   ],
+   "8": [
+    "passed",
+    "568e27132e9341d9ad6fbd55d5b9c373"
+   ],
+   "9": [
+    "passed",
+    "6af6100b94d3c776b28155c6d421f15c"
+   ],
+   "10": [
+    "passed",
+    "ad7c1722aa9fc93e362ea99deb1579e3"
+   ],
+   "11": [
+    "passed",
+    "38f83a3537bd429bccd72061580ca786"
+   ],
+   "12": [
+    "passed",
+    "e47635a8b89b7f0029dd8039841d4f23"
+   ],
+   "13": [
+    "passed",
+    "10751fd6f32d3d7d064ad33bb05a5059"
+   ],
+   "14": [
+    "passed",
+    "30cd92613d6f58014cb19d79756b94e2"
+   ],
+   "15": [
+    "passed",
+    "d1521fcc21d1374c94e7af5a34fcc76a"
+   ],
+   "16": [
+    "passed",
+    "f2926b13e122b1059ecc7845980e28a8"
+   ],
+   "17": [
+    "passed",
+    "50708c6a1e40f212ceca6bf828445166"
+   ],
+   "18": [
+    "passed",
+    "e5c0bfc72b3dd476d6cc31ff71eb5e98"
+   ],
+   "19": [
+    "passed",
+    "c7824aec54c67634d1afa0323d95c2e7"
+   ],
+   "20": [
+    "passed",
+    "8fc5d9d712d9ad286c34cff058ca1260"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_Quiesce": {
+   "1": [
+    "passed",
+    "dd633491d4cdde355521709a03392854"
+   ],
+   "2": [
+    "passed",
+    "a6d837a4a3782d39fd801c0aa914f4fb"
+   ],
+   "3": [
+    "passed",
+    "43b72478f5931a40a27e0c2f3113506b"
+   ],
+   "4": [
+    "passed",
+    "90416c22e47bc002e45f7976d4d773be"
+   ],
+   "5": [
+    "passed",
+    "3d148845720407ce4372e5b7ee358562"
+   ],
+   "6": [
+    "passed",
+    "9d79f27dc8d9e4ee585075ae05f77d94"
+   ],
+   "7": [
+    "passed",
+    "a164ca565f962ff6101a2dd365767ca4"
+   ],
+   "8": [
+    "passed",
+    "650e09a1858711b90f9750a314d3c988"
+   ],
+   "9": [
+    "passed",
+    "b0d1a815a06d97ace3a3e56c2b5f01c2"
+   ],
+   "10": [
+    "passed",
+    "03b72edae70d246cb064d2603882b4bd"
+   ],
+   "11": [
+    "passed",
+    "4ae9eb46c68962e4b895085f9847e545"
+   ],
+   "12": [
+    "passed",
+    "844c106da6c7d86e37b2d44e7a1c43af"
+   ],
+   "13": [
+    "passed",
+    "f6a0fae574109ad01dca0c47ea2b282c"
+   ],
+   "14": [
+    "passed",
+    "59b3c339b97366d18a78a989af16494d"
+   ],
+   "15": [
+    "passed",
+    "f05c90443f24331481a8174a7f3101cf"
+   ],
+   "16": [
+    "passed",
+    "6c03ebd281c6400c94bba5868409ec74"
+   ],
+   "17": [
+    "passed",
+    "0ff0e2ec390ad749d4e917bcd0fd583e"
+   ],
+   "18": [
+    "passed",
+    "b3940bd6e826e0d3edf2a6412ee42f80"
+   ],
+   "19": [
+    "passed",
+    "eb22da8bf1a34099078f825ea990858d"
+   ],
+   "20": [
+    "passed",
+    "6f84df94310fddef73cca282354a894c"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestConcurrentWritersWithManyRecords": {
+   "1": [
+    "passed",
+    "a56264e377e9db92321a941e041a4978"
+   ],
+   "2": [
+    "passed",
+    "acc1043193408a3356f9bcffbb850a84"
+   ],
+   "3": [
+    "passed",
+    "879cd8350be4e97c7738b75c0c54a6e6"
+   ],
+   "4": [
+    "passed",
+    "e9e105ae4db4ab758708a04fc184e3cb"
+   ],
+   "5": [
+    "passed",
+    "f5feccd34bcb6c60cd6e90c17bf32beb"
+   ],
+   "6": [
+    "passed",
+    "7a45050ccb87d14a0229145060838f98"
+   ],
+   "7": [
+    "passed",
+    "bce224c85d97168c72f741b270687410"
+   ],
+   "8": [
+    "passed",
+    "1b0374ae53293a080e9109f6e08b91b3"
+   ],
+   "9": [
+    "passed",
+    "6ea742ae0108c6405426fba9a98c48ec"
+   ],
+   "10": [
+    "passed",
+    "c6b3268b67d649fd9626f339e006082f"
+   ],
+   "11": [
+    "passed",
+    "2b1890154420e5496e0763c0db5b3b4a"
+   ],
+   "12": [
+    "passed",
+    "a518b0a652a34d41c81575532633e6ab"
+   ],
+   "13": [
+    "passed",
+    "b32376ac4063622a466c247871895a63"
+   ],
+   "14": [
+    "passed",
+    "c42a735c67edb19bc118dca35f3d6ba0"
+   ],
+   "15": [
+    "passed",
+    "8ca1cd2c2faebdcc8501131f803026f2"
+   ],
+   "16": [
+    "passed",
+    "b47053e7f81fc96a37429752c9d16132"
+   ],
+   "17": [
+    "passed",
+    "35b0d11d35a09b956b826588ac89b7e4"
+   ],
+   "18": [
+    "passed",
+    "3ef09b6f0becaf5df3ded5aa5bb1e469"
+   ],
+   "19": [
+    "passed",
+    "67b7ed5fd908e8b46ee7789751e5b62c"
+   ],
+   "20": [
+    "passed",
+    "1dd6ab0a231b8aad028f17d584d4bcae"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestCopyClosesWriterOnError": {
+   "1": [
+    "passed",
+    "b65cdab07e648396fd15d8cb5a98c45f"
+   ],
+   "2": [
+    "passed",
+    "b762755e91a11ef27997f354a0e44f84"
+   ],
+   "3": [
+    "passed",
+    "e1994b8e6e507ecb8a8e2071c4f31740"
+   ],
+   "4": [
+    "passed",
+    "658a575cfdbd75dffb65ce117f3463ae"
+   ],
+   "5": [
+    "passed",
+    "ebab45f1eb9ed65995456c6817ecbe8a"
+   ],
+   "6": [
+    "passed",
+    "84d2f1deb2751169d737b4d8e71dc66f"
+   ],
+   "7": [
+    "passed",
+    "831a63f844641f4b50805d292ced7530"
+   ],
+   "8": [
+    "passed",
+    "ab5efd30c4d6717d51e5c6bdfe97f287"
+   ],
+   "9": [
+    "passed",
+    "06c807edcda0886de2dc9f54c2a6084e"
+   ],
+   "10": [
+    "passed",
+    "58288eee46ac39163c3dfe6afaaf64e3"
+   ],
+   "11": [
+    "passed",
+    "dedcbea614c61dfa9f61d570d4cc590a"
+   ],
+   "12": [
+    "passed",
+    "8a0ca993d91a7e1593bf69ef13181f67"
+   ],
+   "13": [
+    "passed",
+    "8746689f3e547738a5d934c6cc8084ac"
+   ],
+   "14": [
+    "passed",
+    "fead88e33e4710000e7352d44372bfa6"
+   ],
+   "15": [
+    "passed",
+    "ba64498dd26aecf8ec74bca0fb57ce12"
+   ],
+   "16": [
+    "passed",
+    "ea757f80e9447a700e39dc48821e5c01"
+   ],
+   "17": [
+    "passed",
+    "ec06cd7f728b18657332e844556f302d"
+   ],
+   "18": [
+    "passed",
+    "4462c7bfaba23b06af70e9cd78071158"
+   ],
+   "19": [
+    "passed",
+    "67808c04fe709c161ff7a926bc77c5a9"
+   ],
+   "20": [
+    "passed",
+    "f6b6dbfb801ceab221c0c611a51f2842"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestFailoverWriterManyRecords": {
+   "1": [
+    "passed",
+    "31ec3cb0f51f069e832669572bb73ebc"
+   ],
+   "2": [
+    "passed",
+    "037981919bebd2dde835f51718625a15"
+   ],
+   "3": [
+    "passed",
+    "28635b0fbb2deccb06c709d1d6d114fd"
+   ],
+   "4": [
+    "passed",
+    "4370b67fd11c51172aa0fed749e29c1f"
+   ],
+   "5": [
+    "passed",
+    "796cacf73b9ce1311204f5d53f247401"
+   ],
+   "6": [
+    "passed",
+    "7a4674de46a0a083c16fb822072aaa85"
+   ],
+   "7": [
+    "passed",
+    "20c1ba2f79755fb6072b37f7170aaf85"
+   ],
+   "8": [
+    "passed",
+    "15c5e98c78cf489ad4153564a2b96972"
+   ],
+   "9": [
+    "passed",
+    "e8b8a77511b5209a60bac403113386c1"
+   ],
+   "10": [
+    "passed",
+    "e898530ef5c3d88d268775988546dfb0"
+   ],
+   "11": [
+    "passed",
+    "e24cc04bcaefa65eb55e355483b22ff2"
+   ],
+   "12": [
+    "passed",
+    "08a6190bc0efec5923da761011f79e60"
+   ],
+   "13": [
+    "passed",
+    "2557756cc9661cb8ada08bd08ce3de45"
+   ],
+   "14": [
+    "passed",
+    "8f211190d11e9868886f2ccab1355e2d"
+   ],
+   "15": [
+    "passed",
+    "287cf026f63adb143e7559adca6ed126"
+   ],
+   "16": [
+    "passed",
+    "3237c7f3610956bbe301603210d08805"
+   ],
+   "17": [
+    "passed",
+    "edfaf43ba75b6a8a6385e0d78a599f14"
+   ],
+   "18": [
+    "passed",
+    "350eec9b949826e0047e50e35b0308a5"
+   ],
+   "19": [
+    "passed",
+    "bffd6a51a2e876a9f3b51bda2a57a16e"
+   ],
+   "20": [
+    "passed",
+    "4a4ee56701b84489aa0a99fab4e87ffa"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestFailoverManager_AllFilesDeletable": {
+   "1": [
+    "passed",
+    "6e2eef01b10b3a4d08d1ab1289fe4e95"
+   ],
+   "2": [
+    "passed",
+    "f3ee1d61e14c5406b8e22cc26b49d1aa"
+   ],
+   "3": [
+    "passed",
+    "e13362ea6d0d64c4b65a807fd4e28940"
+   ],
+   "4": [
+    "passed",
+    "61740338fdfaf0a7ff0303c291b302f1"
+   ],
+   "5": [
+    "passed",
+    "d53765b7fef1653e7209dddee708e3a2"
+   ],
+   "6": [
+    "passed",
+    "ff1a96a23f6636057fc08d66707c8a6c"
+   ],
+   "7": [
+    "passed",
+    "861129bc35f93f3da63e71075d13a308"
+   ],
+   "8": [
+    "passed",
+    "4fcecf77384dab915b40041b4d5db2bc"
+   ],
+   "9": [
+    "passed",
+    "432629435a2494f69d1ac4c42c8288fb"
+   ],
+   "10": [
+    "passed",
+    "7f5617ea9fec92040b7bde2415e14a24"
+   ],
+   "11": [
+    "passed",
+    "e768c1c3a9c3eff5ed1f5c8969c4514c"
+   ],
+   "12": [
+    "passed",
+    "bd61d2754fd6f908944b6480cc00b0d1"
+   ],
+   "13": [
+    "passed",
+    "96a44fcc9c743568da5a6fff58798208"
+   ],
+   "14": [
+    "passed",
+    "3834f82dba67f177100e5539deeb4ed0"
+   ],
+   "15": [
+    "passed",
+    "5db114a98a201b8ecfa6ceaaf391eeec"
+   ],
+   "16": [
+    "passed",
+    "de61bb38d107cfbd24e7c4094a180394"
+   ],
+   "17": [
+    "passed",
+    "1d34a042df52df7a2d35858e3468c167"
+   ],
+   "18": [
+    "passed",
+    "1e714c6088dc5ec219357fd968b1e3c8"
+   ],
+   "19": [
+    "passed",
+    "9457aa909aaf13882a4d509d142fa458"
+   ],
+   "20": [
+    "passed",
+    "dcecceccdeb0d6f904f8bdd82ec1d949"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestList": {
+   "1": [
+    "passed",
+    "f2ca052a459518196682569c058a3824"
+   ],
+   "2": [
+    "passed",
+    "47c7b00ec1cc0d689fc5981a070316ec"
+   ],
+   "3": [
+    "passed",
+    "bb832b99b7d02ffdf6e5455a31a5fe82"
+   ],
+   "4": [
+    "passed",
+    "7904833a529353337c1ca2050053111a"
+   ],
+   "5": [
+    "passed",
+    "52796b3cda47bedf49ae51a8e0a5191e"
+   ],
+   "6": [
+    "passed",
+    "129db24f4833ef6ec3d78030b17d984b"
+   ],
+   "7": [
+    "passed",
+    "0f594a285caa0140a2c08476f6f373ba"
+   ],
+   "8": [
+    "passed",
+    "afb732c6687f8f7818e54cd503af9206"
+   ],
+   "9": [
+    "passed",
+    "99a66ea4eae55d4d65e2d1cf5324d2cc"
+   ],
+   "10": [
+    "passed",
+    "f34133b30f0f57a002c6a883bac68a2e"
+   ],
+   "11": [
+    "passed",
+    "1c3fcf05acbfd141c49b51a7dd025d14"
+   ],
+   "12": [
+    "passed",
+    "591502ff0562f29518bd8e59dec22d69"
+   ],
+   "13": [
+    "passed",
+    "3ee95ab44853ec7780e5fae29cba6d0e"
+   ],
+   "14": [
+    "passed",
+    "c25423a4d9956118f5136b5f03de1770"
+   ],
+   "15": [
+    "passed",
+    "74de0c0da3209b150f941844c3ac70e3"
+   ],
+   "16": [
+    "passed",
+    "cd907df7c47cbdd5e194ee1075c97e09"
+   ],
+   "17": [
+    "passed",
+    "2bc023691cd070ffe125168a013c0137"
+   ],
+   "18": [
+    "passed",
+    "c52a9049ef316f73976555919a6029a0"
+   ],
+   "19": [
+    "passed",
+    "5cbcf8655bc26cecca9260e43abf15d8"
+   ],
+   "20": [
+    "passed",
+    "a77a37a777ee845025b8f473674f88df"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestLogRecycler": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/cockroachdb/pebble/wal::TestManagerFailover": {
+   "1": [
+    "passed",
+    "d570fd7d3c77e1135d262bbb1ed2ade4"
+   ],
+   "2": [
+    "passed",
+    "df2058b93ec42b466671b5d09a3dcbd1"
+   ],
+   "3": [
+    "passed",
+    "351adc569da7ab634b7048afeffc28f3"
+   ],
+   "4": [
+    "passed",
+    "cad62cfcca19fe785f1ac96e3b07fc4f"
+   ],
+   "5": [
+    "passed",
+    "013a1d3279133161dabe6179606a2c57"
+   ],
+   "6": [
+    "passed",
+    "959ba3628f2638381b8ad4659350ade0"
+   ],
+   "7": [
+    "passed",
+    "ae72c46490f978b51ffe24705f41258b"
+   ],
+   "8": [
+    "passed",
+    "227154deef1801fde474e473f73f7e9d"
+   ],
+   "9": [
+    "passed",
+    "2ea6240c63971e927e3dab501d651402"
+   ],
+   "10": [
+    "passed",
+    "d070b7f134f5b0a36281c947dffac6e3"
+   ],
+   "11": [
+    "passed",
+    "1611e824ab8a78cfc357a83618950362"
+   ],
+   "12": [
+    "passed",
+    "0929918fa5281c903f8359932f233234"
+   ],
+   "13": [
+    "passed",
+    "cbae90c0de447308ebb876024e986195"
+   ],
+   "14": [
+    "passed",
+    "b94283e144f5216560d112f176a895f9"
+   ],
+   "15": [
+    "passed",
+    "1dfa9f0e6ed136ac43a9f70e76f428e6"
+   ],
+   "16": [
+    "passed",
+    "01c9631d15027f6979696c69082fe216"
+   ],
+   "17": [
+    "passed",
+    "db03e0ae63c620d8d7916e493a16d16a"
+   ],
+   "18": [
+    "passed",
+    "6f091c9a1a8aa330c717b9d629800b5d"
+   ],
+   "19": [
+    "passed",
+    "45aa7a1a59940a9b3a5cd2ae60d24639"
+   ],
+   "20": [
+    "passed",
+    "c666d411cc8eb2016a5557f24ec77277"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/cockroachdb/pebble/wal::TestConcurrentWritersWithManyRecords": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  8,
+  12
+ ],
+ "timing_keep_parallel": [
+  3.128,
+  3.205,
+  3.195
+ ],
+ "timing": {
+  "plain": [
+   1.48,
+   1.2810000000000001,
+   1.863
+  ],
+  "det": [
+   3.165,
+   3.253,
+   3.193
+  ]
+ },
+ "slowdown": 1.1574324324324325
+}

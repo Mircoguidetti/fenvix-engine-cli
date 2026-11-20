@@ -1,0 +1,70 @@
+{
+  "name": "user-event",
+  "kind": "popular",
+  "status": "ok",
+  "url": "https://github.com/testing-library/user-event",
+  "commit": "930fb1ee1a6ccb2a492bfd3f790b60619af9d872",
+  "commit_date": "2026-11-16T13:25:58+11:00",
+  "python": "node v18.20.8",
+  "install": "npm install --no-audit --no-fund --legacy-peer-deps",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 11.4400595455,
+  "det_mean_s": 21.5214950194,
+  "slowdown_pct": 88.12397727305168,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 569,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 2,
+  "covered": 569,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 2,
+  "broken_always": 2,
+  "broken_causes": {
+    "time | Error": 2
+  },
+  "broken_examples": {
+    "time | Error": [
+      "tests/keyboard/index.ts::delay::delay keyboard per setTimeout: Error: expect(received).toBeLessThan(expected) (first diverging source: -)",
+      "tests/pointer/index.ts::delay::delay pointer actions per setTimeout: Error: expect(received).toBeLessThan(expected) (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "tests/keyboard/index.ts::delay::delay keyboard per setTimeout",
+      "tests/pointer/index.ts::delay::delay pointer actions per setTimeout"
+    ]
+  },
+  "runner": "jest 28.1.3",
+  "node": "node v18.20.8",
+  "documented_source": "",
+  "documented_hints": [],
+  "random_order_baseline": false,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "\nPASS tests/pointer/select.ts\nPASS tests/react/index.tsx\nPASS tests/setup/index.ts\nPASS tests/system/pointer.ts\nPASS tests/utility/clear.ts\nPASS tests/utility/selectOptions/deselect.ts\nPASS tests/utility/selectOptions/select.ts\nPASS tests/utility/type.ts\nPASS tests/utility/upload.ts\nPASS tests/utils/dataTransfer/Clipboard.ts\nPASS tests/utils/dataTransfer/DataTransfer.ts\nPASS tests/utils/dataTransfer/FileList.ts\nPASS tests/utils/edit/isContentEditable.ts\nPASS tests/utils/edit/isEditable.ts\nPASS tests/utils/edit/setFiles.ts\nPASS tests/utils/focus/cursor.ts\nPASS tests/utils/focus/getTabDestination.ts\nPASS tests/utils/keyDef/readNextDescriptor.ts\nPASS tests/utils/misc/getDocumentFromNode.ts\nPASS tests/utils/misc/isDescendantOrSelf.ts\nPASS tests/utils/misc/isDisabled.ts\nPASS tests/utils/misc/isElementType.ts\nPASS tests/utils/misc/isVisible.ts\nPASS tests/utils/misc/wait.ts\nPASS tests/utils/pointer/cssPointerEvents.ts\n\nSummary of all failing tests\nFAIL tests/keyboard/index.ts\n  \u25cf delay \u203a delay keyboard per setTimeout\n\n    expect(received).toBeLessThan(expected)\n\n    Expected: < 1229.0039999999572\n    Received:   1249.003000000026\n\n      127 |\n      128 |     expect(spy.mock.calls.length).toBeGreaterThanOrEqual(2)\n    > 129 |     expect(time0).toBeLessThan(performance.now() - 20)\n          |                   ^\n      130 |   })\n      131 |\n      132 |   test('do not call setTimeout with delay `null`', async () => {\n\n      at Object.toBeLessThan (tests/keyboard/index.ts:129:19)\n\nFAIL tests/pointer/index.ts\n  \u25cf delay \u203a delay pointer actions per setTimeout\n\n    expect(received).toBeLessThan(expected)\n\n    Expected: < 1446.0060000000522\n    Received:   1466.0050000000047\n\n      78 |\n      79 |     expect(spy.mock.calls.length).toBeGreaterThanOrEqual(2)\n    > 80 |     expect(time0).toBeLessThan(performance.now() - 20)\n         |                   ^\n      81 |   })\n      82 |\n      83 |   test('do not call setTimeout with delay `null`', async () => {\n\n      at Object.toBeLessThan (tests/pointer/index.ts:80:19)\n\n\nTest Suites: 2 failed, 53 passed, 55 total\nTests:       2 failed, 574 passed, 576 total\nSnapshots:   79 passed, 79 total\nTime:        20.297 s\nRan all test suites.\nTest results written to: ../../runs/user-event/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/user-event/det_0.jsonl: 576 tests, order digest ad50231c58705a0286995ed4c869692b\n"
+  },
+  "not_reproduced_causes": {},
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T12:49:49.396575+00:00"
+}

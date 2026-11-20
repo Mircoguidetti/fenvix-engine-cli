@@ -1,0 +1,12 @@
+{
+  "name": "react-three-fiber-flaky",
+  "kind": "flaky",
+  "status": "too-few-tests",
+  "node": "node v22.23.5",
+  "runner": "jest",
+  "runner_version": "29.7.0",
+  "tests": 15,
+  "first_run_s": 1.007207956000002,
+  "commit": "0a107412ac64667b1908422e859447952f57feef",
+  "detail": "15 test outcomes (exit 1): \n      at new JSDOMEnvironment (node_modules/jest-environment-jsdom/build/index.js:72:44)\n\nSeed:        1000\nTest Suites: 15 failed, 15 total\nTests:       0 total\nSnapshots:   0 total\nTime:        0.512 s\nRan all test suites.\nTest results written to: ../../runs/react-three-fiber-flaky/normal_0.json\n"
+}

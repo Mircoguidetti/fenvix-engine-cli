@@ -1,0 +1,682 @@
+{
+ "name": "jsonschema",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "detpy",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009027",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 18.972,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 19.551,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 19.052,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 19.149,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 19.309,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 19.141,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 19.09,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 19.199,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 19.059,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 19.258,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 19.369,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 19.276,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 19.048,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 19.366,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 18.925,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 19.082,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 19.281,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 18.947,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 19.038,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 19.133,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 19.028,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 19.017,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 19.131,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 19.087,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 18.926,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 19.195,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 19.399,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 19.089,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 19.046,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 19.258,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 19.138,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 19.136,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 19.082,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 19.072,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 19.106,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 19.11,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 19.132,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 19.332,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 19.24,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 19.309,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 18.946,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 19.055,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 19.141,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 18.956,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 19.051,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 19.164,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 19.098,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 19.277,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 19.455,
+   "tests": 8529,
+   "failing": [
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "exit": 1,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 19.314,
+   "tests": 8529,
+   "failing": [],
+   "exit": 0,
+   "timed_out": false
+  }
+ ],
+ "always_failing": [],
+ "flaky_failing": [
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+ ],
+ "bundles": [
+  {
+   "test": "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 159,
+   "minimal_length": 2,
+   "polluters": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator_draft6"
+   ],
+   "setters": [],
+   "order": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator_draft6",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: {'htt[557 chars]tor'>} != {'htt[557 chars]tor'>, 'meta schema $id': <class 'jsonschema.v[19 chars]or'>}",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/unittest/case.py:900"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7f15ef235243666a70a0e617a5ce340a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "caa91b819f7a1cbe2bea21dc0635ec38",
+     "7f15ef235243666a70a0e617a5ce340a"
+    ]
+   },
+   "runs": 22,
+   "seconds": 53.81,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/jsonschema/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e",
+   "first_failing_seed": 2
+  },
+  {
+   "test": "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 163,
+   "minimal_length": 2,
+   "polluters": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator"
+   ],
+   "setters": [],
+   "order": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: {'htt[557 chars]tor'>} != {'htt[557 chars]tor'>, 'meta schema id': <class 'jsonschema.va[18 chars]or'>}",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/unittest/case.py:900"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "935a4be1337dc2741f72ae5e7fa85d03"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "7629c33b2844a9dd9d3e6ebbbcba5d37",
+     "935a4be1337dc2741f72ae5e7fa85d03"
+    ]
+   },
+   "runs": 24,
+   "seconds": 57.44,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/jsonschema/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_id-2b2533cc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_id-2b2533cc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/jsonschema/detpy/bundles/test_validates_registers_meta_schema_id-2b2533cc",
+   "first_failing_seed": 2
+  }
+ ],
+ "not_reproduced_budget": [],
+ "families_by_divergence": {
+  "outcome-only|outcome|": [
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+  ]
+ },
+ "families_by_polluter": {
+  "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator_draft6": [
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id"
+  ],
+  "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator": [
+   "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+  ]
+ },
+ "collected": 8529,
+ "seconds": 1078.85
+}

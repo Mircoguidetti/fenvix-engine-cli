@@ -1,0 +1,84 @@
+{
+  "name": "mermaid-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/mermaid-js/mermaid",
+  "commit": "89818e854e6e517726e49e6625b3a1ccd62e1935",
+  "commit_date": "2026-05-08T16:07:22+02:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 79.08640758119999,
+  "det_mean_s": 40.3189957952,
+  "slowdown_pct": -49.01905772644499,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 4015,
+  "unstable_baseline": 17,
+  "unstable_det": 0,
+  "became_stable": 17,
+  "outcome_changed_by_det": 3954,
+  "covered": 44,
+  "not_covered": 0,
+  "reproduced": 0,
+  "never_fails_under_det": 17,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 20,
+  "exploration_runs": 20,
+  "exploration_budget_hit": false,
+  "reasons": {},
+  "pass_fail_reasons": {},
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->None": [
+      "packages/examples/src/example.spec.ts::examples::should have examples for each diagrams",
+      "packages/mermaid-example-diagram/src/exampleDiagram.spec.js::when parsing an info graph it::should handle an example-diagram definition"
+    ],
+    "changed:error->None": [
+      "packages/mermaid/scripts/docs.spec.ts::<file>"
+    ],
+    "changed:failed->None": [
+      "packages/mermaid/src/config.spec.ts::getUserDefinedConfig::should return empty object when no user config is defined",
+      "packages/mermaid/src/diagrams/class/classDiagram.spec.ts::given a basic class diagram, ::when parsing class definition::should parse diagram with direction"
+    ],
+    "changed:skipped->None": [
+      "packages/mermaid/src/diagrams/class/classDiagram.spec.ts::given a basic class diagram, ::when parsing class definition::should handle a leading newline",
+      "packages/mermaid/src/diagrams/er/parser/erDiagram.spec.js::when parsing ER diagram it...::entity name::[skipped test] can contain \u00e0\u00e1\u00e2\u00e4\u00e6\u00e3\u00e5\u0101"
+    ],
+    "changed:todo->None": [
+      "packages/mermaid/src/diagrams/pie/pie.spec.ts::pie::config::resetConfig",
+      "packages/mermaid/src/diagrams/pie/pie.spec.ts::pie::config::setConfig"
+    ]
+  },
+  "runner": "vitest 3.2.4",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/mermaid-js/mermaid/issues/7729",
+  "documented_hints": [
+    "One visual test for Architecture diagrams is flaky/failing in CI"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "g: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-forest.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-helpers.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neo-dark.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neo.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neutral.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-color.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-dark-color.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-dark.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux.js' because it would overwrite input file.\u001b[39m\n\u001b[2m7:02:44 PM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/scripts/e2e-diagram-scope.mjs' because it would overwrite input file.\u001b[39m\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 9,
+    "unknown": 6,
+    "l0-gap": 2
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T19:34:41.984748+00:00"
+}

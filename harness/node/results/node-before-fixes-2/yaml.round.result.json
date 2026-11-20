@@ -1,0 +1,8 @@
+{
+  "name": "yaml",
+  "kind": "popular",
+  "status": "harness-error",
+  "detail": "UnicodeEncodeError('utf-8', 'tests/doc/stringify.ts::unpaired surrogate pairs of Unicode code points::\\udead,,passed=10,False,passed=10,True,False,False,False,,,,,,False,0,,,,,,False,\\r\\n', 73, 74, 'surrogates not allowed')ne-cli/harness/node/node_harness.py\", line 563, in analyze\n    s = _orig_analyze(p, results, explore, outdir)\n  File \"/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/harness/detpy_harness.py\", line 689, in analyze\n    w.writerows(rows)\n    ~~~~~~~~~~~^^^^^^\n  File \"/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/csv.py\", line 229, in writerows\n    return self.writer.writerows(map(self._dict_to_list, rowdicts))\n           ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nUnicodeEncodeError: 'utf-8' codec can't encode character '\\udead' in position 73: surrogates not allowed\n",
+  "executor": "GitHub Actions",
+  "date": "2026-11-16T19:21:40.325668+00:00"
+}

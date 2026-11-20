@@ -1,0 +1,26 @@
+[
+ {
+  "repo": "nuxt-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/nuxt/test/builder.test.ts::builder:watch::should restart Nuxt when a file is added with chokidar strategy",
+  "class": "l0-gap",
+  "evidence": "diverging event `fs`: a controlled source still differs between runs",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": "fs"
+ },
+ {
+  "repo": "nuxt-flaky",
+  "pool": "flaky",
+  "nodeid": "packages/nuxt/test/builder.test.ts::builder:watch::should restart Nuxt when a file is added with parcel strategy",
+  "class": "l0-gap",
+  "evidence": "diverging event `fs`: a controlled source still differs between runs",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=8",
+  "det_exception": "",
+  "pass_fail_reason": "fs"
+ }
+]

@@ -1,0 +1,12 @@
+{
+ "name": "tyrus-non-deployable",
+ "before": 1,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "Test mechanism::Test mechanism",
+   "baseline": "0F/0P",
+   "det_now": "10F/10"
+  }
+ ]
+}

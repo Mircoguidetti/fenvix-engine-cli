@@ -1,0 +1,42 @@
+{
+ "agent": "/home/user/fenvix-engine-cli/jvm/dist/fenvix-agent.jar",
+ "cpus": 4,
+ "pairs": [
+  {
+   "pair": 0,
+   "summary": "covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0",
+   "differ": [],
+   "detail": []
+  },
+  {
+   "pair": 1,
+   "summary": "covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0",
+   "differ": [],
+   "detail": []
+  },
+  {
+   "pair": 2,
+   "summary": "covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0",
+   "differ": [],
+   "detail": []
+  },
+  {
+   "pair": 3,
+   "summary": "covered by Level 0: 39  not covered: 1  missing: 0  outcome-unstable: 0",
+   "differ": [
+    "fx.SchedControlTest::fixedRateTicksWithoutWaiting()"
+   ],
+   "detail": [
+    "runs 0 vs 1: event #5: [sched] sched.timer @ src/test/java/fx/SchedControlTest.java:34 = 0/1:fx/SchedControlTest.java:34#0 (thread 1)  <>  [outcome] outcome @  = passed"
+   ]
+  },
+  {
+   "pair": 4,
+   "summary": "covered by Level 0: 40  not covered: 0  missing: 0  outcome-unstable: 0",
+   "differ": [],
+   "detail": []
+  }
+ ],
+ "ok": false,
+ "time": "2026-11-19T08:31:50Z"
+}

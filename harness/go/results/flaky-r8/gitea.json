@@ -1,0 +1,9296 @@
+{
+ "spec": {
+  "name": "gitea",
+  "repo": "go-gitea/gitea",
+  "sha": "5badd1bdeef0e22bc6d001c763a5baf506156298",
+  "fix_commit": "3223d919b04818cc3aea24562c12e17de2516be3",
+  "fix_date": "2026-05-26T05:06:54.000Z",
+  "title": "test: fix flaky `TestResourceIndex` and reduce its runtime (#37847)",
+  "tests": [
+   "TestResourceIndex"
+  ],
+  "source": "github commit search 'repo:go-gitea/gitea flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestResourceIndex": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./models/issues"
+ ],
+ "imports": [
+  "code.gitea.io/gitea/models/issues"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 82.8,
+ "build_det_s": 112.3,
+ "baseline": {
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabelsScope": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_ExclusiveScope": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteReview": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewMilestone": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestContentHistory": [
+   "passed",
+   "failed",
+   "passed",
+   "passed",
+   "failed",
+   "failed",
+   "passed",
+   "failed",
+   "failed",
+   "failed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ClearLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestFetchCodeComments": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetReviewersByIssueID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestAddReviewRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetParticipantIDsByIssue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::Test_UpdateIssueNumComments": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestoneByRepoID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateComment": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountIssues": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestFindLatestReviews": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateIssueDependency": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestLoadTotalTrackedTime": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasIssueLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteMilestoneByRepoID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestChangeMilestoneStatus": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssuesByIDs": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByName": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ResolveMentions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDismissReview": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestones": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMilestone_State": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadRepositories": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestPullRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByRepoID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueLoadAttributes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCorrectIssueStats": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssues": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullTrue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullFalse": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_AddCrossReferences": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteIssueLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestReview_LoadCodeComments": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCancelStopwatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoIDs": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueMultipleProjects": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestSubmitReviewClearsStaleReviewRequest": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadAttributes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestTotalTimesForEachUser": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInOrgByIDs": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelByID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatchers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueAPIURL": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNamesDiscardsNonExistentLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestResourceIndex": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateReview": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountRepoClosedMilestones": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByIssueID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::Test_GetIssueIDsByRepoID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::Test_UpdateCommentAttachment": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateOrStopIssueStopwatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_LoadSelectedLabelsAfterClick": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMilestoneList_LoadTotalTrackedTimes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountRepoMilestones": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteDismissedReview": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_CalOpenIssues": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestReview_LoadAttributes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueCols": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNames": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestoneCounters": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByName": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInRepoByIDs": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMakeIDsFromAPIAssigneesToAdd": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByOrgID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ReplaceLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertMilestones": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateOrUpdateIssueWatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueTotalTrackedTime": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_ResolveCrossReferences": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestReviewType_Icon": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestFixturesAreConsistent": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountMilestonesByRepoIDs": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestAsCommentType": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueExclusiveLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestone": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_InsertIssue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasIssueContentHistoryForCommentOnly": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetTrackedTimes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateAssignee": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestFindReviews": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUsersByMentions": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_loadTotalTimes": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUserByRead": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestPullRequestList": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::Test_NewIssueUsers": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertIssueComments": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetReviewByID": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestAddTime": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetCurrentReview": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabel": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestStopwatchExists": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_NeuterCrossReferences": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasUserStopwatch": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {
+  "code.gitea.io/gitea/models/issues::TestContentHistory": "=== RUN   TestContentHistory\n--- FAIL: TestContentHistory (0.02s)\npanic: runtime error: invalid memory address or nil pointer dereference [recovered, repanicked]\n[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x185c55e]\n\ngoroutine 3446 [running]:\ntesting.tRunner.func1.2({0x1a7bd80, 0x37e92d0})\n\t/opt/hostedtoolcache/go/1.26.11/x64/src/testing/testing.go:1974 +0x232\ntesting.tRunner.func1()\n\t/opt/hostedtoolcache/go/1.26.11/x64/src/testing/testing.go:1977 +0x349\npanic({0x1a7bd80?, 0x37e92d0?})\n\t/opt/hostedtoolcache/go/1.26.11/x64/src/runtime/panic.go:860 +0x13a\ncode.gitea.io/gitea/models/issues_test.TestContentHistory(0x1b980bc9a6c8)\n\t/tmp/work/src/models/issues/content_history_test.go:34 +0x27e\ntesting.tRunner(0x1b980bc9a6c8, 0x210ef28)\n\t/opt/hostedtoolcache/go/1.26.11/x64/src/testing/testing.go:2036 +0xea\ncreated by testing.(*T).Run in goroutine 1\n\t/opt/hostedtoolcache/go/1.26.11/x64/src/testing/testing.go:2101 +0x4c5\n"
+ },
+ "seconds": 373.5,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 22398,
+  "outcome": 105,
+  "entropy": 4
+ },
+ "det0_top_tests_by_events": [
+  [
+   3435,
+   "code.gitea.io/gitea/models/issues::TestChangeMilestoneStatus"
+  ],
+  [
+   1931,
+   "code.gitea.io/gitea/models/issues::TestCorrectIssueStats"
+  ],
+  [
+   1760,
+   "code.gitea.io/gitea/models/issues::TestNewLabels"
+  ],
+  [
+   1726,
+   "code.gitea.io/gitea/models/issues::TestDeleteLabel"
+  ],
+  [
+   1718,
+   "code.gitea.io/gitea/models/issues::TestNewMilestone"
+  ],
+  [
+   1713,
+   "code.gitea.io/gitea/models/issues::TestUpdateLabel"
+  ],
+  [
+   1690,
+   "code.gitea.io/gitea/models/issues::TestDeleteMilestoneByRepoID"
+  ],
+  [
+   1392,
+   "code.gitea.io/gitea/models/issues::TestResourceIndex"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "code.gitea.io/gitea/models/issues::TestResourceIndex",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 255,
+    "window": null,
+    "event_a": {
+     "t": 6,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/contexts/hook.go:27",
+     "v": "256000"
+    },
+    "event_b": {
+     "t": 5,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/contexts/hook.go:27",
+     "v": "256000"
+    },
+    "reason": "thread",
+    "description": "event #255: [time] time.Now @ /home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/contexts/hook.go:27 = 256000 (thread 6)  <>  [time] time.Now @ /home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/contexts/hook.go:27 = 256000 (thread 5)"
+   }
+  },
+  {
+   "nodeid": "code.gitea.io/gitea/models/issues::TestTotalTimesForEachUser",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 27,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/session_get.go:172",
+     "v": "28000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/session_get.go:153",
+     "v": "28000"
+    },
+    "reason": "time",
+    "description": "event #27: [time] time.Now @ /home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/session_get.go:172 = 28000  <>  [time] time.Now @ /home/runner/go/pkg/mod/xorm.io/xorm@v1.3.11/session_get.go:153 = 28000"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 105,
+  "stable": 103,
+  "diverged": 2,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 1,
+   "time": 1
+  }
+ },
+ "det0": {
+  "code.gitea.io/gitea/models/issues::TestCancelStopwatch": [
+   [
+    "passed",
+    "cea19ba205a1d61049997b093d9ebccb"
+   ],
+   [
+    "passed",
+    "cea19ba205a1d61049997b093d9ebccb"
+   ],
+   [
+    "passed",
+    "cea19ba205a1d61049997b093d9ebccb"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountIssues": [
+   [
+    "passed",
+    "7d127271fe6bc275f7f8c7c75dc0f76d"
+   ],
+   [
+    "passed",
+    "7d127271fe6bc275f7f8c7c75dc0f76d"
+   ],
+   [
+    "passed",
+    "7d127271fe6bc275f7f8c7c75dc0f76d"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertIssueComments": [
+   [
+    "passed",
+    "ad8b483a053809fcbd12d98e310c70d5"
+   ],
+   [
+    "passed",
+    "ad8b483a053809fcbd12d98e310c70d5"
+   ],
+   [
+    "passed",
+    "ad8b483a053809fcbd12d98e310c70d5"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateComment": [
+   [
+    "passed",
+    "94be138ec26c535ff0603b024d6257b6"
+   ],
+   [
+    "passed",
+    "94be138ec26c535ff0603b024d6257b6"
+   ],
+   [
+    "passed",
+    "94be138ec26c535ff0603b024d6257b6"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByName": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_InsertIssue": [
+   [
+    "passed",
+    "d7c4dc4da9a85a9664dcc4b7178f335b"
+   ],
+   [
+    "passed",
+    "d7c4dc4da9a85a9664dcc4b7178f335b"
+   ],
+   [
+    "passed",
+    "d7c4dc4da9a85a9664dcc4b7178f335b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueLoadAttributes": [
+   [
+    "passed",
+    "d5913e2f2afdbb2494443d6e2c14457d"
+   ],
+   [
+    "passed",
+    "d5913e2f2afdbb2494443d6e2c14457d"
+   ],
+   [
+    "passed",
+    "d5913e2f2afdbb2494443d6e2c14457d"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasIssueLabel": [
+   [
+    "passed",
+    "e5ff19e58cc104ef48e5c3ba782e224a"
+   ],
+   [
+    "passed",
+    "e5ff19e58cc104ef48e5c3ba782e224a"
+   ],
+   [
+    "passed",
+    "e5ff19e58cc104ef48e5c3ba782e224a"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_ExclusiveScope": [
+   [
+    "passed",
+    "b7ea438b408f5f7821b37a53229c9e05"
+   ],
+   [
+    "passed",
+    "b7ea438b408f5f7821b37a53229c9e05"
+   ],
+   [
+    "passed",
+    "b7ea438b408f5f7821b37a53229c9e05"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestoneByRepoID": [
+   [
+    "passed",
+    "80510bc5228342e7abeffeaacfb98673"
+   ],
+   [
+    "passed",
+    "80510bc5228342e7abeffeaacfb98673"
+   ],
+   [
+    "passed",
+    "80510bc5228342e7abeffeaacfb98673"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByIssueID": [
+   [
+    "passed",
+    "d3652f7a77845021c2ab9a416a21e37d"
+   ],
+   [
+    "passed",
+    "d3652f7a77845021c2ab9a416a21e37d"
+   ],
+   [
+    "passed",
+    "d3652f7a77845021c2ab9a416a21e37d"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountRepoClosedMilestones": [
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ],
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ],
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestResourceIndex": [
+   [
+    "passed",
+    "c33bf674a577bab3846600c332296372"
+   ],
+   [
+    "passed",
+    "0cef8183d02f73e1eed9126e5a2ba8c6"
+   ],
+   [
+    "passed",
+    "e005a3366105f502a14c2e868c678b45"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullFalse": [
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ],
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ],
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_CalOpenIssues": [
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ],
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ],
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteDismissedReview": [
+   [
+    "passed",
+    "cc8ec6da56df79b0aacfd7bf5b37ccea"
+   ],
+   [
+    "passed",
+    "cc8ec6da56df79b0aacfd7bf5b37ccea"
+   ],
+   [
+    "passed",
+    "cc8ec6da56df79b0aacfd7bf5b37ccea"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestones": [
+   [
+    "passed",
+    "67c2cfcedf9a79a410480e1ac46b5838"
+   ],
+   [
+    "passed",
+    "67c2cfcedf9a79a410480e1ac46b5838"
+   ],
+   [
+    "passed",
+    "67c2cfcedf9a79a410480e1ac46b5838"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByID": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetParticipantIDsByIssue": [
+   [
+    "passed",
+    "59db0cfe1f35ec88e2da29c42ba129a4"
+   ],
+   [
+    "passed",
+    "59db0cfe1f35ec88e2da29c42ba129a4"
+   ],
+   [
+    "passed",
+    "59db0cfe1f35ec88e2da29c42ba129a4"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::Test_UpdateIssueNumComments": [
+   [
+    "passed",
+    "884e8f161c02b5ab55915a8761e543bc"
+   ],
+   [
+    "passed",
+    "884e8f161c02b5ab55915a8761e543bc"
+   ],
+   [
+    "passed",
+    "884e8f161c02b5ab55915a8761e543bc"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasUserStopwatch": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByID": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelByID": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoIDs": [
+   [
+    "passed",
+    "5339903bee8e293634cb0305f3a134c8"
+   ],
+   [
+    "passed",
+    "5339903bee8e293634cb0305f3a134c8"
+   ],
+   [
+    "passed",
+    "5339903bee8e293634cb0305f3a134c8"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByRepoID": [
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_AddCrossReferences": [
+   [
+    "passed",
+    "f760b08f2db959e47bd10e211437a271"
+   ],
+   [
+    "passed",
+    "f760b08f2db959e47bd10e211437a271"
+   ],
+   [
+    "passed",
+    "f760b08f2db959e47bd10e211437a271"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCorrectIssueStats": [
+   [
+    "passed",
+    "b2b1aa2f0ee1fc02fc36aed85fd1b903"
+   ],
+   [
+    "passed",
+    "b2b1aa2f0ee1fc02fc36aed85fd1b903"
+   ],
+   [
+    "passed",
+    "b2b1aa2f0ee1fc02fc36aed85fd1b903"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByOrgID": [
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountMilestonesByRepoIDs": [
+   [
+    "passed",
+    "af561c8d50acf459e83e0acacd31c8b6"
+   ],
+   [
+    "passed",
+    "af561c8d50acf459e83e0acacd31c8b6"
+   ],
+   [
+    "passed",
+    "af561c8d50acf459e83e0acacd31c8b6"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestContentHistory": [
+   [
+    "passed",
+    "4dbfd87b321d081224d46ce780a0ee17"
+   ],
+   [
+    "passed",
+    "4dbfd87b321d081224d46ce780a0ee17"
+   ],
+   [
+    "passed",
+    "4dbfd87b321d081224d46ce780a0ee17"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullTrue": [
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ],
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ],
+   [
+    "passed",
+    "4d79b245a623b046f71f468ded417cd2"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestReview_LoadCodeComments": [
+   [
+    "passed",
+    "3d77eda28de998abc7b02005e370315f"
+   ],
+   [
+    "passed",
+    "3d77eda28de998abc7b02005e370315f"
+   ],
+   [
+    "passed",
+    "3d77eda28de998abc7b02005e370315f"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_NeuterCrossReferences": [
+   [
+    "passed",
+    "7e6e307b560f41c09278d53e581d737e"
+   ],
+   [
+    "passed",
+    "7e6e307b560f41c09278d53e581d737e"
+   ],
+   [
+    "passed",
+    "7e6e307b560f41c09278d53e581d737e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewMilestone": [
+   [
+    "passed",
+    "9b2c85c00bec32781f5b8fb541309bd1"
+   ],
+   [
+    "passed",
+    "9b2c85c00bec32781f5b8fb541309bd1"
+   ],
+   [
+    "passed",
+    "9b2c85c00bec32781f5b8fb541309bd1"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadRepositories": [
+   [
+    "passed",
+    "b6dcf485dbabfeab49b8b1cd3ddbc270"
+   ],
+   [
+    "passed",
+    "b6dcf485dbabfeab49b8b1cd3ddbc270"
+   ],
+   [
+    "passed",
+    "b6dcf485dbabfeab49b8b1cd3ddbc270"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ResolveMentions": [
+   [
+    "passed",
+    "3c10de1112b39f49d31bdf57f610b937"
+   ],
+   [
+    "passed",
+    "3c10de1112b39f49d31bdf57f610b937"
+   ],
+   [
+    "passed",
+    "3c10de1112b39f49d31bdf57f610b937"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabel": [
+   [
+    "passed",
+    "43f19e7a9d8def2b2dc85620333c825f"
+   ],
+   [
+    "passed",
+    "43f19e7a9d8def2b2dc85620333c825f"
+   ],
+   [
+    "passed",
+    "43f19e7a9d8def2b2dc85620333c825f"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateIssueDependency": [
+   [
+    "passed",
+    "e64f6901be3cfcb235330378845a6fb8"
+   ],
+   [
+    "passed",
+    "e64f6901be3cfcb235330378845a6fb8"
+   ],
+   [
+    "passed",
+    "e64f6901be3cfcb235330378845a6fb8"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestFindReviews": [
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetTrackedTimes": [
+   [
+    "passed",
+    "7e20d60dc27d618148e02e0e642f3d52"
+   ],
+   [
+    "passed",
+    "7e20d60dc27d618148e02e0e642f3d52"
+   ],
+   [
+    "passed",
+    "7e20d60dc27d618148e02e0e642f3d52"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteMilestoneByRepoID": [
+   [
+    "passed",
+    "323b79e2eb189511f8f0941c40fea641"
+   ],
+   [
+    "passed",
+    "323b79e2eb189511f8f0941c40fea641"
+   ],
+   [
+    "passed",
+    "323b79e2eb189511f8f0941c40fea641"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::Test_GetIssueIDsByRepoID": [
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestFixturesAreConsistent": [
+   [
+    "passed",
+    "4b0f29b6bf87221c9b23d2d8b36effc8"
+   ],
+   [
+    "passed",
+    "4b0f29b6bf87221c9b23d2d8b36effc8"
+   ],
+   [
+    "passed",
+    "4b0f29b6bf87221c9b23d2d8b36effc8"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMilestoneList_LoadTotalTrackedTimes": [
+   [
+    "passed",
+    "437f59cd439e77a73c19f4f72cd624fe"
+   ],
+   [
+    "passed",
+    "437f59cd439e77a73c19f4f72cd624fe"
+   ],
+   [
+    "passed",
+    "437f59cd439e77a73c19f4f72cd624fe"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateAssignee": [
+   [
+    "passed",
+    "f61ac70f52645e16ebe25600d01c749b"
+   ],
+   [
+    "passed",
+    "f61ac70f52645e16ebe25600d01c749b"
+   ],
+   [
+    "passed",
+    "f61ac70f52645e16ebe25600d01c749b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestPullRequest": [
+   [
+    "passed",
+    "ba314fae1a5e3a398eac3cb0594cfd3c"
+   ],
+   [
+    "passed",
+    "ba314fae1a5e3a398eac3cb0594cfd3c"
+   ],
+   [
+    "passed",
+    "ba314fae1a5e3a398eac3cb0594cfd3c"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInRepoByIDs": [
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestLoadTotalTrackedTime": [
+   [
+    "passed",
+    "02057af29d96961ba50fcf4c22799b4c"
+   ],
+   [
+    "passed",
+    "02057af29d96961ba50fcf4c22799b4c"
+   ],
+   [
+    "passed",
+    "02057af29d96961ba50fcf4c22799b4c"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteReview": [
+   [
+    "passed",
+    "61ab3f966163f9909a200a3dcb3167c7"
+   ],
+   [
+    "passed",
+    "61ab3f966163f9909a200a3dcb3167c7"
+   ],
+   [
+    "passed",
+    "61ab3f966163f9909a200a3dcb3167c7"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestHasIssueContentHistoryForCommentOnly": [
+   [
+    "passed",
+    "7ab836348297526811fa95c8c85600e4"
+   ],
+   [
+    "passed",
+    "7ab836348297526811fa95c8c85600e4"
+   ],
+   [
+    "passed",
+    "7ab836348297526811fa95c8c85600e4"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNames": [
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateOrUpdateIssueWatch": [
+   [
+    "passed",
+    "cb0b7545386c1d542386198c92302a54"
+   ],
+   [
+    "passed",
+    "cb0b7545386c1d542386198c92302a54"
+   ],
+   [
+    "passed",
+    "cb0b7545386c1d542386198c92302a54"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetReviewersByIssueID": [
+   [
+    "passed",
+    "e59398f2522f6c4a12e4b7e12717c674"
+   ],
+   [
+    "passed",
+    "e59398f2522f6c4a12e4b7e12717c674"
+   ],
+   [
+    "passed",
+    "e59398f2522f6c4a12e4b7e12717c674"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabelsScope": [
+   [
+    "passed",
+    "257c065322817addf9990fb8594a8eb7"
+   ],
+   [
+    "passed",
+    "257c065322817addf9990fb8594a8eb7"
+   ],
+   [
+    "passed",
+    "257c065322817addf9990fb8594a8eb7"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCountRepoMilestones": [
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ],
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ],
+   [
+    "passed",
+    "1e22c269d9cf5126d8590f6c30d7286e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteIssueLabel": [
+   [
+    "passed",
+    "a0919bf372c2cd1de49314914fab391f"
+   ],
+   [
+    "passed",
+    "a0919bf372c2cd1de49314914fab391f"
+   ],
+   [
+    "passed",
+    "a0919bf372c2cd1de49314914fab391f"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestXRef_ResolveCrossReferences": [
+   [
+    "passed",
+    "45b6f3bc6cdf2ef3ba90f4716ee6808d"
+   ],
+   [
+    "passed",
+    "45b6f3bc6cdf2ef3ba90f4716ee6808d"
+   ],
+   [
+    "passed",
+    "45b6f3bc6cdf2ef3ba90f4716ee6808d"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewLabels": [
+   [
+    "passed",
+    "35713131ce75518a7774d59ca1062c1b"
+   ],
+   [
+    "passed",
+    "35713131ce75518a7774d59ca1062c1b"
+   ],
+   [
+    "passed",
+    "35713131ce75518a7774d59ca1062c1b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_loadTotalTimes": [
+   [
+    "passed",
+    "8c90ceee1ef1a9a6249fad0a8dacbd23"
+   ],
+   [
+    "passed",
+    "8c90ceee1ef1a9a6249fad0a8dacbd23"
+   ],
+   [
+    "passed",
+    "8c90ceee1ef1a9a6249fad0a8dacbd23"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateOrStopIssueStopwatch": [
+   [
+    "passed",
+    "a6c692fb5a8e78df8700f2346b5db28d"
+   ],
+   [
+    "passed",
+    "a6c692fb5a8e78df8700f2346b5db28d"
+   ],
+   [
+    "passed",
+    "a6c692fb5a8e78df8700f2346b5db28d"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoID": [
+   [
+    "passed",
+    "7cbf6dd51c99418a5b6d378ebc143f1b"
+   ],
+   [
+    "passed",
+    "7cbf6dd51c99418a5b6d378ebc143f1b"
+   ],
+   [
+    "passed",
+    "7cbf6dd51c99418a5b6d378ebc143f1b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMakeIDsFromAPIAssigneesToAdd": [
+   [
+    "passed",
+    "c21f7f6f4dfa07aef22c504cab9bfe99"
+   ],
+   [
+    "passed",
+    "c21f7f6f4dfa07aef22c504cab9bfe99"
+   ],
+   [
+    "passed",
+    "c21f7f6f4dfa07aef22c504cab9bfe99"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::Test_NewIssueUsers": [
+   [
+    "passed",
+    "f41277d86695d48a2b0802915e260a03"
+   ],
+   [
+    "passed",
+    "f41277d86695d48a2b0802915e260a03"
+   ],
+   [
+    "passed",
+    "f41277d86695d48a2b0802915e260a03"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUserByRead": [
+   [
+    "passed",
+    "96d06e593ff277c3c573e783b931c21f"
+   ],
+   [
+    "passed",
+    "96d06e593ff277c3c573e783b931c21f"
+   ],
+   [
+    "passed",
+    "96d06e593ff277c3c573e783b931c21f"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestFindLatestReviews": [
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestLabel_LoadSelectedLabelsAfterClick": [
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ],
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ],
+   [
+    "passed",
+    "b3e9caccb08f26ec3e344f1e43892230"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestStopwatchExists": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ClearLabels": [
+   [
+    "passed",
+    "690cc38b2b28a7dbe0195f6c0f617589"
+   ],
+   [
+    "passed",
+    "690cc38b2b28a7dbe0195f6c0f617589"
+   ],
+   [
+    "passed",
+    "690cc38b2b28a7dbe0195f6c0f617589"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetReviewByID": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateLabel": [
+   [
+    "passed",
+    "b49e6bf1ef2a188b92536cf0afd7aef7"
+   ],
+   [
+    "passed",
+    "b49e6bf1ef2a188b92536cf0afd7aef7"
+   ],
+   [
+    "passed",
+    "b49e6bf1ef2a188b92536cf0afd7aef7"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestSubmitReviewClearsStaleReviewRequest": [
+   [
+    "passed",
+    "ed71ca513427b8eaa0eec16ba5152d95"
+   ],
+   [
+    "passed",
+    "ed71ca513427b8eaa0eec16ba5152d95"
+   ],
+   [
+    "passed",
+    "ed71ca513427b8eaa0eec16ba5152d95"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertMilestones": [
+   [
+    "passed",
+    "234096effa7d8eccadf631ca8d6bf36b"
+   ],
+   [
+    "passed",
+    "234096effa7d8eccadf631ca8d6bf36b"
+   ],
+   [
+    "passed",
+    "234096effa7d8eccadf631ca8d6bf36b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestCreateReview": [
+   [
+    "passed",
+    "e295f27d08dae2643da0677476419fe7"
+   ],
+   [
+    "passed",
+    "e295f27d08dae2643da0677476419fe7"
+   ],
+   [
+    "passed",
+    "e295f27d08dae2643da0677476419fe7"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueMultipleProjects": [
+   [
+    "passed",
+    "f2217c125bcb29e059697d6882940a52"
+   ],
+   [
+    "passed",
+    "f2217c125bcb29e059697d6882940a52"
+   ],
+   [
+    "passed",
+    "f2217c125bcb29e059697d6882940a52"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestReviewType_Icon": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueTotalTrackedTime": [
+   [
+    "passed",
+    "a2cd0a2e41f7225e4f080d283f69f28e"
+   ],
+   [
+    "passed",
+    "a2cd0a2e41f7225e4f080d283f69f28e"
+   ],
+   [
+    "passed",
+    "a2cd0a2e41f7225e4f080d283f69f28e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestAddTime": [
+   [
+    "passed",
+    "103620b5aa65d956f70023eda1999210"
+   ],
+   [
+    "passed",
+    "103620b5aa65d956f70023eda1999210"
+   ],
+   [
+    "passed",
+    "103620b5aa65d956f70023eda1999210"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDismissReview": [
+   [
+    "passed",
+    "168979c8043eb30e25ed503826803e0b"
+   ],
+   [
+    "passed",
+    "168979c8043eb30e25ed503826803e0b"
+   ],
+   [
+    "passed",
+    "168979c8043eb30e25ed503826803e0b"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestTotalTimesForEachUser": [
+   [
+    "passed",
+    "199377e4d990a5c33bea779a6b03ae08"
+   ],
+   [
+    "passed",
+    "b9b636ee94dc85b99b3588752aff6d3c"
+   ],
+   [
+    "passed",
+    "b9b636ee94dc85b99b3588752aff6d3c"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueCols": [
+   [
+    "passed",
+    "0a9cc0b48344985be3f015e6d8bb1865"
+   ],
+   [
+    "passed",
+    "0a9cc0b48344985be3f015e6d8bb1865"
+   ],
+   [
+    "passed",
+    "0a9cc0b48344985be3f015e6d8bb1865"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestPullRequestList": [
+   [
+    "passed",
+    "5d6fa349ceb418b97fda639f7fc3ca26"
+   ],
+   [
+    "passed",
+    "5d6fa349ceb418b97fda639f7fc3ca26"
+   ],
+   [
+    "passed",
+    "5d6fa349ceb418b97fda639f7fc3ca26"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestAddReviewRequest": [
+   [
+    "passed",
+    "478dd38dd2cabf7aa262fb29b664bfe5"
+   ],
+   [
+    "passed",
+    "478dd38dd2cabf7aa262fb29b664bfe5"
+   ],
+   [
+    "passed",
+    "478dd38dd2cabf7aa262fb29b664bfe5"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetCurrentReview": [
+   [
+    "passed",
+    "4c25997516ec7d89977b8b0ade632e11"
+   ],
+   [
+    "passed",
+    "4c25997516ec7d89977b8b0ade632e11"
+   ],
+   [
+    "passed",
+    "4c25997516ec7d89977b8b0ade632e11"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatch": [
+   [
+    "passed",
+    "0b27e1a5f36e64e61409716f7879dc1c"
+   ],
+   [
+    "passed",
+    "0b27e1a5f36e64e61409716f7879dc1c"
+   ],
+   [
+    "passed",
+    "0b27e1a5f36e64e61409716f7879dc1c"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUsersByMentions": [
+   [
+    "passed",
+    "8afc03138339a35a40d35ca87cea49ae"
+   ],
+   [
+    "passed",
+    "8afc03138339a35a40d35ca87cea49ae"
+   ],
+   [
+    "passed",
+    "8afc03138339a35a40d35ca87cea49ae"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestone": [
+   [
+    "passed",
+    "bbc9a80fa5b679354fb8bf6665d71894"
+   ],
+   [
+    "passed",
+    "bbc9a80fa5b679354fb8bf6665d71894"
+   ],
+   [
+    "passed",
+    "bbc9a80fa5b679354fb8bf6665d71894"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssue_ReplaceLabels": [
+   [
+    "passed",
+    "a2f738797ea346cadcb2ca35a6d7d74e"
+   ],
+   [
+    "passed",
+    "a2f738797ea346cadcb2ca35a6d7d74e"
+   ],
+   [
+    "passed",
+    "a2f738797ea346cadcb2ca35a6d7d74e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestAsCommentType": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestMilestone_State": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueAPIURL": [
+   [
+    "passed",
+    "5b9f90004d2fd2c5f25c8058c00c52b8"
+   ],
+   [
+    "passed",
+    "5b9f90004d2fd2c5f25c8058c00c52b8"
+   ],
+   [
+    "passed",
+    "5b9f90004d2fd2c5f25c8058c00c52b8"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabels": [
+   [
+    "passed",
+    "66cd672a552e5dbe6b23effff2729a25"
+   ],
+   [
+    "passed",
+    "66cd672a552e5dbe6b23effff2729a25"
+   ],
+   [
+    "passed",
+    "66cd672a552e5dbe6b23effff2729a25"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestReview_LoadAttributes": [
+   [
+    "passed",
+    "378de8f660a6e7b644625ce35410939e"
+   ],
+   [
+    "passed",
+    "378de8f660a6e7b644625ce35410939e"
+   ],
+   [
+    "passed",
+    "378de8f660a6e7b644625ce35410939e"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNamesDiscardsNonExistentLabels": [
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ],
+   [
+    "passed",
+    "446020d4a8de2e3c33628b61b5b64d56"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadAttributes": [
+   [
+    "passed",
+    "7b7fba9f582c6b09b980952b2d9c80c2"
+   ],
+   [
+    "passed",
+    "7b7fba9f582c6b09b980952b2d9c80c2"
+   ],
+   [
+    "passed",
+    "7b7fba9f582c6b09b980952b2d9c80c2"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestoneCounters": [
+   [
+    "passed",
+    "61e62ad378ad35c3e79ea6fcd2ace63a"
+   ],
+   [
+    "passed",
+    "61e62ad378ad35c3e79ea6fcd2ace63a"
+   ],
+   [
+    "passed",
+    "61e62ad378ad35c3e79ea6fcd2ace63a"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInOrgByIDs": [
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ],
+   [
+    "passed",
+    "4b78529b8df13c942dc13875d99a4d65"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestNewIssueExclusiveLabel": [
+   [
+    "passed",
+    "0c0a417e3d314c8041ce0b8c12e260bd"
+   ],
+   [
+    "passed",
+    "0c0a417e3d314c8041ce0b8c12e260bd"
+   ],
+   [
+    "passed",
+    "0c0a417e3d314c8041ce0b8c12e260bd"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestFetchCodeComments": [
+   [
+    "passed",
+    "91dc12ff0283c38238ca346ba50192b7"
+   ],
+   [
+    "passed",
+    "91dc12ff0283c38238ca346ba50192b7"
+   ],
+   [
+    "passed",
+    "91dc12ff0283c38238ca346ba50192b7"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByName": [
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ],
+   [
+    "passed",
+    "0b510345b2079a9d74098529bc8ad768"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatchers": [
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ],
+   [
+    "passed",
+    "7a518fba16925653884db7cb7e1b09e5"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestGetIssuesByIDs": [
+   [
+    "passed",
+    "f183d46b54c4f00faf035c35e8f2f616"
+   ],
+   [
+    "passed",
+    "f183d46b54c4f00faf035c35e8f2f616"
+   ],
+   [
+    "passed",
+    "f183d46b54c4f00faf035c35e8f2f616"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestIssues": [
+   [
+    "passed",
+    "cefe234b9820da4a6a3caa6500ddbefb"
+   ],
+   [
+    "passed",
+    "cefe234b9820da4a6a3caa6500ddbefb"
+   ],
+   [
+    "passed",
+    "cefe234b9820da4a6a3caa6500ddbefb"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestDeleteLabel": [
+   [
+    "passed",
+    "a69e31e1c53f924f5aa01a4561b4e6e8"
+   ],
+   [
+    "passed",
+    "a69e31e1c53f924f5aa01a4561b4e6e8"
+   ],
+   [
+    "passed",
+    "a69e31e1c53f924f5aa01a4561b4e6e8"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::Test_UpdateCommentAttachment": [
+   [
+    "passed",
+    "95e572bfc8aff4eb6a6c2be6e6f39c51"
+   ],
+   [
+    "passed",
+    "95e572bfc8aff4eb6a6c2be6e6f39c51"
+   ],
+   [
+    "passed",
+    "95e572bfc8aff4eb6a6c2be6e6f39c51"
+   ]
+  ],
+  "code.gitea.io/gitea/models/issues::TestChangeMilestoneStatus": [
+   [
+    "passed",
+    "5d8ff1e2d7bf71d7086e517830cf9f20"
+   ],
+   [
+    "passed",
+    "5d8ff1e2d7bf71d7086e517830cf9f20"
+   ],
+   [
+    "passed",
+    "5d8ff1e2d7bf71d7086e517830cf9f20"
+   ]
+  ]
+ },
+ "explore": {
+  "code.gitea.io/gitea/models/issues::TestFixturesAreConsistent": {
+   "1": [
+    "passed",
+    "a276e8da56cf6eba7185763e98e0378c"
+   ],
+   "2": [
+    "passed",
+    "e93fb059af3b2f9ba5567aa13ff721d4"
+   ],
+   "4": [
+    "passed",
+    "aa846b69a4204c9277ee0b19e005cb5c"
+   ],
+   "6": [
+    "passed",
+    "08fd415b8746e8ec34f2116984de20f5"
+   ],
+   "7": [
+    "passed",
+    "4d9484473b3c6b48050de12b48ff475f"
+   ],
+   "8": [
+    "passed",
+    "736252fa98d53b2ee413395f1dc8196b"
+   ],
+   "9": [
+    "passed",
+    "26281fb0190dd90b13ff17a127df4704"
+   ],
+   "10": [
+    "passed",
+    "305af68356b1aee7a5d3d844b126e788"
+   ],
+   "13": [
+    "passed",
+    "a880efc5e77190b9a2a15e6b37fe11d5"
+   ],
+   "14": [
+    "passed",
+    "e661e43d0e126d4ad390e1c82bec88d4"
+   ],
+   "15": [
+    "passed",
+    "e3cc8745b9cc031730b654476df9d5de"
+   ],
+   "16": [
+    "passed",
+    "950d8696c21793ffa2457f86252c032a"
+   ],
+   "17": [
+    "passed",
+    "72fae83f20a22a4b3c4d103d52d7aeb4"
+   ],
+   "20": [
+    "passed",
+    "39d814efcdfd310487aff41353f65600"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::Test_UpdateIssueNumComments": {
+   "1": [
+    "passed",
+    "8c1e696cfbcd2717b40471a6fca37b0e"
+   ],
+   "2": [
+    "passed",
+    "4d3877b614244c4fcdb096a6075daa1d"
+   ],
+   "3": [
+    "passed",
+    "4ef950ba68e69062a71353337ec432d0"
+   ],
+   "7": [
+    "passed",
+    "fc63ac59114f2dc20486c8d648f312bc"
+   ],
+   "8": [
+    "passed",
+    "0a3417795262b51a92fe6099244638fa"
+   ],
+   "9": [
+    "passed",
+    "7de7c63ef7441189cc4b856a08e6ff5c"
+   ],
+   "10": [
+    "passed",
+    "afa2ccd1ce0eaa63d22219bc7a90825e"
+   ],
+   "12": [
+    "passed",
+    "1a88911649bea2f08afa9fb412562fa2"
+   ],
+   "13": [
+    "passed",
+    "6a81c22f0a034de51dfd1eb3ab423859"
+   ],
+   "14": [
+    "passed",
+    "2615126573b526b7931dbac8ecc1d0fc"
+   ],
+   "16": [
+    "passed",
+    "73a67b461055905ae47c884aa4c1c0a3"
+   ],
+   "17": [
+    "passed",
+    "45cf028e64fae79cad3a9a654a0877b5"
+   ],
+   "18": [
+    "passed",
+    "e181e83521dcb04bcf861fe54becc22a"
+   ],
+   "20": [
+    "passed",
+    "54e263067ebacee33a418124d887dbd1"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetReviewersByIssueID": {
+   "1": [
+    "passed",
+    "434caba99d3e170137908e64d770895a"
+   ],
+   "2": [
+    "passed",
+    "beab438475b441dbad10d02a64831473"
+   ],
+   "3": [
+    "passed",
+    "2fe512b32f63112df001eda72a76d2ba"
+   ],
+   "4": [
+    "passed",
+    "d8eaa41b390ff2c2011e4490df5612cd"
+   ],
+   "5": [
+    "passed",
+    "914ce959d3db1d556d3dc78a70c79302"
+   ],
+   "6": [
+    "passed",
+    "3e8058a12cd4903f8a6133c8f5cde900"
+   ],
+   "7": [
+    "passed",
+    "d65584bae11fa4fa50f070fbe0c555c5"
+   ],
+   "8": [
+    "passed",
+    "39418ad1f3fc69ac80fb59a3b0bb353d"
+   ],
+   "10": [
+    "passed",
+    "6233315197b58f30aafa87be5054b36a"
+   ],
+   "11": [
+    "passed",
+    "7ae75cb4ea5cdb3ac20738cf4a6f4101"
+   ],
+   "13": [
+    "passed",
+    "69e346a1b7f1257d2b04d87a4ae01353"
+   ],
+   "14": [
+    "passed",
+    "0f98f5026cdf762faa38aaa02e3189ef"
+   ],
+   "16": [
+    "passed",
+    "d96c2f334cf1990c77e155eb84fecd36"
+   ],
+   "17": [
+    "passed",
+    "a7dedaa36c91c6964591523df2e13dcc"
+   ],
+   "20": [
+    "passed",
+    "315802243770b7312ee16816318d9cd8"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNames": {
+   "1": [
+    "passed",
+    "a358a969e9b5878ec26e6b9ae501c7df"
+   ],
+   "2": [
+    "passed",
+    "aa9fad636901df0d7970988d88c37f71"
+   ],
+   "3": [
+    "passed",
+    "11017425587caa4c2b71190472f8b518"
+   ],
+   "5": [
+    "passed",
+    "134c87bee279114939316aa70d460d07"
+   ],
+   "7": [
+    "passed",
+    "63c601169e5b22091fff436cb1431b4c"
+   ],
+   "8": [
+    "passed",
+    "50f8631d7edd2fa5267bef3465de5d2a"
+   ],
+   "9": [
+    "passed",
+    "19ba3ecae5e1abe219436aad07d8ede0"
+   ],
+   "10": [
+    "passed",
+    "16b4f9b404ff6042a7fac7fdfd72007e"
+   ],
+   "13": [
+    "passed",
+    "c16cc1bb01e8b9c0308a76d4321aedc3"
+   ],
+   "14": [
+    "passed",
+    "612c47d723c1193387cd85105dd918f2"
+   ],
+   "15": [
+    "passed",
+    "acab1c945f1de6a32d1c2c7d99296863"
+   ],
+   "16": [
+    "passed",
+    "243aba4897e6ce41844e4171340f22cc"
+   ],
+   "17": [
+    "passed",
+    "00ff41c0238ac5526aaee61b9053eef3"
+   ],
+   "18": [
+    "passed",
+    "254dc152e0842bcd4a90de1c32fc216b"
+   ],
+   "20": [
+    "passed",
+    "cc5fd7fd692b2ca1d8e16e2f62952ee4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateAssignee": {
+   "1": [
+    "passed",
+    "5d52824baa8bbbc8c0b612eb7ba849bd"
+   ],
+   "2": [
+    "passed",
+    "3815ea8c8206d80eacd5c51b02b5fc0f"
+   ],
+   "3": [
+    "passed",
+    "e9cb3ce19d4eeed023aa8d8530f3686a"
+   ],
+   "4": [
+    "passed",
+    "44128ff071bb24a2f23d11c91feca3b7"
+   ],
+   "6": [
+    "passed",
+    "c0b7529c72756e4fe7491706669e18a8"
+   ],
+   "7": [
+    "passed",
+    "81679b3df8486022f6f9a6d7354b996e"
+   ],
+   "8": [
+    "passed",
+    "557648ac39fa4deaa67bfec337b4ebac"
+   ],
+   "10": [
+    "passed",
+    "7a6eb891ee5c385ae2aea8ffa69f4f08"
+   ],
+   "12": [
+    "passed",
+    "5963f2cfd22084113baa62baeab8e0e7"
+   ],
+   "13": [
+    "passed",
+    "32e4d074100e826b30c5d1779bf84347"
+   ],
+   "14": [
+    "passed",
+    "d0400f45b49fc343ece9731a8df4dcab"
+   ],
+   "15": [
+    "passed",
+    "a56654c99bfd6af876747084d408fdbf"
+   ],
+   "16": [
+    "passed",
+    "97869ae45e5ce1c83dcc97d470b59d89"
+   ],
+   "17": [
+    "passed",
+    "164ca683e404233a4f56806a60a5fc4c"
+   ],
+   "18": [
+    "passed",
+    "dfce79c6b8554e57f65a99776e38e64e"
+   ],
+   "20": [
+    "passed",
+    "36b4595c74bdfbc48fef6bf72de63be3"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDeleteReview": {
+   "1": [
+    "passed",
+    "e7fc15f3198da8fb27909142c5e6928a"
+   ],
+   "2": [
+    "passed",
+    "3c4c0e447024f749759b125168a3f39c"
+   ],
+   "5": [
+    "passed",
+    "e6347dcb8f288f3851f3d9b3235c2bc1"
+   ],
+   "6": [
+    "passed",
+    "1807085dd9bae26f4a5623aa7377a5a3"
+   ],
+   "7": [
+    "passed",
+    "d832f7b6c5567bed445d1b84134bd678"
+   ],
+   "8": [
+    "passed",
+    "36437ae7784be1bc94e799e4230a280c"
+   ],
+   "9": [
+    "passed",
+    "6321c34d76d0564765115219bc20f610"
+   ],
+   "10": [
+    "passed",
+    "d2ec8f91c7b0bc1db624b92f953937f3"
+   ],
+   "11": [
+    "passed",
+    "fea9ce7d6416b9e021f8c1ac0567ec4f"
+   ],
+   "13": [
+    "passed",
+    "c9658b7f8014f9a05edf434bceab7ed1"
+   ],
+   "14": [
+    "passed",
+    "c513a48a049586de8ef7724ff4285445"
+   ],
+   "15": [
+    "passed",
+    "b57797771d3e54624d6dfff8f7ceebc4"
+   ],
+   "16": [
+    "passed",
+    "0f4213d75791bb1d38b087b05765468a"
+   ],
+   "17": [
+    "passed",
+    "5d8775306acc6cf32b3edebd455907ba"
+   ],
+   "20": [
+    "passed",
+    "02522e7de58b8367e75c42a63c5b4e3c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestLabel_CalOpenIssues": {
+   "1": [
+    "passed",
+    "ada5ace8d3eb9460e257ac8540abd950"
+   ],
+   "2": [
+    "passed",
+    "88a4be31cb262164b05479ae69c81cce"
+   ],
+   "3": [
+    "passed",
+    "3dde95be350a535152552793aa6b8692"
+   ],
+   "4": [
+    "passed",
+    "af8bb03b884398519b4a26ecc0e1b670"
+   ],
+   "5": [
+    "passed",
+    "4fd845c6d7ead7125c8c86ed319b4c21"
+   ],
+   "6": [
+    "passed",
+    "5c02c7722958470e49c13e51b828ba10"
+   ],
+   "7": [
+    "passed",
+    "fcfa2fd9dfaed772f07f5eafff73f28f"
+   ],
+   "8": [
+    "passed",
+    "85f7a8b70de65671ca1f5b33ff914b6d"
+   ],
+   "9": [
+    "passed",
+    "3cf4925ffd1dbca5f58a74dbbd94029a"
+   ],
+   "10": [
+    "passed",
+    "ce1c36cde6e27ab5f1e1d9c523890b9c"
+   ],
+   "12": [
+    "passed",
+    "2c0e20c82df65b07802b61c64b199dea"
+   ],
+   "13": [
+    "passed",
+    "8df8b1136e0627b546112fe621692aab"
+   ],
+   "14": [
+    "passed",
+    "99e1da8f2b8f7ad0acb1c3c09be1bdbe"
+   ],
+   "15": [
+    "passed",
+    "62950dba0096048880a7453e1cdd5917"
+   ],
+   "16": [
+    "passed",
+    "5ca7d83780b47277c2eb424ad4266420"
+   ],
+   "17": [
+    "passed",
+    "4b1438a6b06521a5da8d7cff27381681"
+   ],
+   "18": [
+    "passed",
+    "02f53be38d42c920d870360a9c1d64ab"
+   ],
+   "20": [
+    "passed",
+    "60269bd3200b2fd4ed1327431ffb103e"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullFalse": {
+   "1": [
+    "passed",
+    "cbbe2df0fb85668e4a819780f8a693d1"
+   ],
+   "2": [
+    "passed",
+    "4eb907661f12fd388665a7639c5bdee7"
+   ],
+   "3": [
+    "passed",
+    "20a382b60ee1b19d267437fee4c2cc50"
+   ],
+   "5": [
+    "passed",
+    "17583cd1cce6b03fa6344015c096b297"
+   ],
+   "6": [
+    "passed",
+    "2fdd9dbdef243b8c5a7bdc225248b56d"
+   ],
+   "7": [
+    "passed",
+    "e4ad06573f51b35056220845c100ad23"
+   ],
+   "8": [
+    "passed",
+    "1bb4be61eea252d9a016399505cc8169"
+   ],
+   "9": [
+    "passed",
+    "33cc51460c8be15a46f8c923fa90cd87"
+   ],
+   "10": [
+    "passed",
+    "6d8a2156ae277062ecb49a3e2fab3b6f"
+   ],
+   "11": [
+    "passed",
+    "af9e8ed6a3d1e3321408a6c12cdd681d"
+   ],
+   "13": [
+    "passed",
+    "b8ee83a0142d42e77608a8603402aceb"
+   ],
+   "14": [
+    "passed",
+    "e1f1b8f251feae971cdecbac3dbc9dda"
+   ],
+   "15": [
+    "passed",
+    "b91b02e1d7dc7056c834f55cf44efca2"
+   ],
+   "16": [
+    "passed",
+    "35f25ad9390d25404f1396b9b2164c34"
+   ],
+   "17": [
+    "passed",
+    "9e9f130641b1a53708deaab2fda6a33d"
+   ],
+   "18": [
+    "passed",
+    "6f7cc3af7ced8e29246d9b8efbb5d85d"
+   ],
+   "19": [
+    "passed",
+    "b0fb0648159e94999441004d1d94a518"
+   ],
+   "20": [
+    "passed",
+    "2920e7587d9345512c8a70112216edab"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByRepoID": {
+   "1": [
+    "passed",
+    "3f3441054bbd2657a6954bdafe0167ae"
+   ],
+   "2": [
+    "passed",
+    "e4fc03f776cee57e794b0ac5caf98fd1"
+   ],
+   "3": [
+    "passed",
+    "766e4265bf06d680fbc8db18aeefc6e9"
+   ],
+   "5": [
+    "passed",
+    "075e189eee0b96dedebe0738e02c8330"
+   ],
+   "6": [
+    "passed",
+    "c23cb30372e7ca7558fa4a6431033e30"
+   ],
+   "7": [
+    "passed",
+    "07dabcb490510db9a9e107dc5afa86a0"
+   ],
+   "8": [
+    "passed",
+    "82e93c45c3dbb1923103d2e34c16f9db"
+   ],
+   "9": [
+    "passed",
+    "3b07490a15ad4632a83e0f86d29e2da3"
+   ],
+   "10": [
+    "passed",
+    "5ba3be3d6dcadd532f1759a6d279a980"
+   ],
+   "12": [
+    "passed",
+    "5b8e77c3a66ae6a260bfccd88b08c210"
+   ],
+   "13": [
+    "passed",
+    "8a4467cfb78cb138abcfec423d0ab02c"
+   ],
+   "15": [
+    "passed",
+    "1bc951311fcd9e040321a9edd71738b0"
+   ],
+   "16": [
+    "passed",
+    "5b9cd8f1a16208d29cdbe867786119f5"
+   ],
+   "17": [
+    "passed",
+    "d60fb92f2effef3bb19fdcd25dda1de6"
+   ],
+   "18": [
+    "passed",
+    "880486ec40984b66b923ff4ae3008b49"
+   ],
+   "20": [
+    "passed",
+    "06e9682500a5ee3dfad4bfea01358fc2"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetCurrentReview": {
+   "1": [
+    "passed",
+    "4239aa8946302c63189384dc5d612979"
+   ],
+   "2": [
+    "passed",
+    "196239b9dc59d906fb16a7a19674c27b"
+   ],
+   "4": [
+    "passed",
+    "66e30c6f1718a8e8a2313b3fd2e3526e"
+   ],
+   "5": [
+    "passed",
+    "16cbdb023b9ef593ca3dba69e3d9f5d9"
+   ],
+   "6": [
+    "passed",
+    "3b486ef08e1e4d1f4ef9ef443ff9fe0d"
+   ],
+   "8": [
+    "passed",
+    "e3f73789262244a6b923468e4a33834e"
+   ],
+   "9": [
+    "passed",
+    "1306602ddda409d9763c21094b0ad4e1"
+   ],
+   "10": [
+    "passed",
+    "c1cb451bbbeeafc845db5740e619c6c1"
+   ],
+   "11": [
+    "passed",
+    "42c6bbaf62a20c79b60dc9ab17db4b49"
+   ],
+   "12": [
+    "passed",
+    "e42b96823a65162cd5bfd00031e9c268"
+   ],
+   "13": [
+    "passed",
+    "4209cff50e9a7da024f609c6daed9172"
+   ],
+   "14": [
+    "passed",
+    "4f11980d2f33aedc0fe0d5abe5efae28"
+   ],
+   "15": [
+    "passed",
+    "be58407b664dd334c693f87f180f5a05"
+   ],
+   "16": [
+    "passed",
+    "a2dae81b88730d2bcfe8f010cbeecc13"
+   ],
+   "17": [
+    "passed",
+    "466fe9c2494a1f83446bb62dc2a47d48"
+   ],
+   "20": [
+    "passed",
+    "0c6ab63965e00ed60b5e4436f9127d85"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssues": {
+   "1": [
+    "passed",
+    "3c26f61063367eb936c805cb23a40ccd"
+   ],
+   "2": [
+    "passed",
+    "59533b9b16ddbbd9eb2bf34f4be7741d"
+   ],
+   "4": [
+    "passed",
+    "0e0678dbbec2e513b7b7d53185701d3f"
+   ],
+   "5": [
+    "passed",
+    "7712cb8de5140b7ef210148b8c93de44"
+   ],
+   "7": [
+    "passed",
+    "e1658bc25950944eb7d6abf19a7034eb"
+   ],
+   "8": [
+    "passed",
+    "b7338fb2aa1d436dcbc53d31bb3142f0"
+   ],
+   "9": [
+    "passed",
+    "287817a6e5e30ad5bc93b60547ade4fd"
+   ],
+   "10": [
+    "passed",
+    "4d643dcfba0e76fdd10016fb83842d63"
+   ],
+   "11": [
+    "passed",
+    "a02994d09e05b2ab4ec50f02f5d73104"
+   ],
+   "12": [
+    "passed",
+    "41bce813b898cec8405fd1769bf8a143"
+   ],
+   "13": [
+    "passed",
+    "6e5ebf6802cc4f557c20692a874ade7a"
+   ],
+   "14": [
+    "passed",
+    "1aa52de722ef17a0492d9b6febd85ba7"
+   ],
+   "15": [
+    "passed",
+    "5ccff31b02c05e32da76df8e1ed4d348"
+   ],
+   "16": [
+    "passed",
+    "6aef42561729cf118a6248a055541442"
+   ],
+   "17": [
+    "passed",
+    "e6e9e59eccdd75d8db0d7db969f1a0ef"
+   ],
+   "18": [
+    "passed",
+    "b6604df7d5078472a247655c6fc0a797"
+   ],
+   "20": [
+    "passed",
+    "230436a244581dedba6a5ef342822d9c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestXRef_ResolveCrossReferences": {
+   "1": [
+    "passed",
+    "44790b6b673f246d07f4ebb3678343eb"
+   ],
+   "2": [
+    "passed",
+    "d620eb86d2f53736015041677afcf700"
+   ],
+   "3": [
+    "passed",
+    "f1505aaf6f38b83d7b9b9d2711c57aa0"
+   ],
+   "6": [
+    "passed",
+    "66e7299f64edc1f6112e7dc547f25942"
+   ],
+   "7": [
+    "passed",
+    "08f3d43b58b547042bb01c0c056167e8"
+   ],
+   "8": [
+    "passed",
+    "70b779989395b2fa2650b02fcb149f1d"
+   ],
+   "10": [
+    "passed",
+    "4e6cb28a8b22d75aebc7d03d8f559bb7"
+   ],
+   "11": [
+    "passed",
+    "2062d062c35ec5fc4b518a272acbbfef"
+   ],
+   "12": [
+    "passed",
+    "cb4d6cadd4d305bcbee35f68029626dd"
+   ],
+   "13": [
+    "passed",
+    "582a002da5c79025d6aee20ebc158616"
+   ],
+   "14": [
+    "passed",
+    "5d8f98bce253445030181ffda4a3ef27"
+   ],
+   "15": [
+    "passed",
+    "c52b79d21228da30325f4e7a830984a1"
+   ],
+   "16": [
+    "passed",
+    "f6bf9cc48082e909462d019bcb5bcf54"
+   ],
+   "17": [
+    "passed",
+    "c086a548a810fe7fc34d7ba3c8b65d58"
+   ],
+   "20": [
+    "passed",
+    "cc9f7007e8237cd4e0a8e464e405873d"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssueMultipleProjects": {
+   "1": [
+    "passed",
+    "fca03c1831c056b6eef5cee8586ec828"
+   ],
+   "2": [
+    "passed",
+    "3e09ef37a953440eaa81530ceef660c3"
+   ],
+   "4": [
+    "passed",
+    "7cb89f8d09adac4d23716eac6bf2a49e"
+   ],
+   "5": [
+    "passed",
+    "2abd86628b41866cd08d563a2b3306b0"
+   ],
+   "6": [
+    "passed",
+    "3e1c3667ce47c9f04aaf334a82259a6d"
+   ],
+   "7": [
+    "passed",
+    "e712c332e0b0d6ce8bed931ba0a9cdb2"
+   ],
+   "8": [
+    "passed",
+    "baddd80d189835fb41f81711198ea068"
+   ],
+   "9": [
+    "passed",
+    "322d7eb26c449b7bb5f7ceb17d5f36d3"
+   ],
+   "10": [
+    "passed",
+    "f14f20d6ec2ae495e1f517d41ca703f6"
+   ],
+   "11": [
+    "passed",
+    "81772c52533ebe859bfa57b3d978f09d"
+   ],
+   "13": [
+    "passed",
+    "d737c41fc20cf84c55ea482cb64c326a"
+   ],
+   "14": [
+    "passed",
+    "e83b8911a28471e510e10196aaf2261a"
+   ],
+   "16": [
+    "passed",
+    "7711690ba500c27a3a6b7fab5a45ce36"
+   ],
+   "17": [
+    "passed",
+    "98672db086add4a6782e67d3da21d2a5"
+   ],
+   "20": [
+    "passed",
+    "5820e27f830f366f7b001bcd07e6d8f9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMilestone_State": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssueAPIURL": {
+   "1": [
+    "passed",
+    "9a1dddcecfe69a951c13be4284c688e5"
+   ],
+   "2": [
+    "passed",
+    "db66acdfc9a67beaedbdd7da89252137"
+   ],
+   "3": [
+    "passed",
+    "604985e4bbb1699d0ee8dddb7859f4c7"
+   ],
+   "5": [
+    "passed",
+    "a40ec8798c88c0a9b26dcbca262def6c"
+   ],
+   "8": [
+    "passed",
+    "20012ae0b2af306512442f85366957c7"
+   ],
+   "9": [
+    "passed",
+    "f916f556badad4338cf5ca8e9e4460a6"
+   ],
+   "10": [
+    "passed",
+    "c749ce2c4e3c19a0a02797203b92b698"
+   ],
+   "12": [
+    "passed",
+    "2b75a99a662cded4751cc0d8b2cc1eed"
+   ],
+   "13": [
+    "passed",
+    "8f094972f82c9976ddfe645368ab0f44"
+   ],
+   "14": [
+    "passed",
+    "25791cccc0e5c0fd49d9388563f7b8ef"
+   ],
+   "16": [
+    "passed",
+    "17a2f24c47bf44ef7303b26ca3d03ccf"
+   ],
+   "17": [
+    "passed",
+    "8c6869d858b2128d57b12485cb6339e2"
+   ],
+   "18": [
+    "passed",
+    "a6d6b2a0cd8b764eb009d78853b17dc6"
+   ],
+   "20": [
+    "passed",
+    "f6f30406baec027068615abc7605eb99"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssue_ClearLabels": {
+   "1": [
+    "passed",
+    "421e72a9a334fcd79ab89e25b6a67616"
+   ],
+   "2": [
+    "passed",
+    "6463846dbb20e5efa881c048f8702ea0"
+   ],
+   "6": [
+    "passed",
+    "7b49908da618979877eb6b8966c27d15"
+   ],
+   "7": [
+    "passed",
+    "2da757638c0ae7c67f6d523265aa3418"
+   ],
+   "8": [
+    "passed",
+    "a4edaef10e802dda0be4eccb1334d530"
+   ],
+   "9": [
+    "passed",
+    "c45c205cabf7e75d12d2df6e8762535e"
+   ],
+   "10": [
+    "passed",
+    "819b3c04a2cd1d649b28ebd168ad7ec2"
+   ],
+   "11": [
+    "passed",
+    "fc47b6970df876b5fffd7da4c91502a9"
+   ],
+   "12": [
+    "passed",
+    "b26fd235c04f7ccbc000f4b6ceedf599"
+   ],
+   "13": [
+    "passed",
+    "9ab6c98a60efb75f0c71ff480864d7bb"
+   ],
+   "14": [
+    "passed",
+    "c234609a7ed58e22424e78a8d002f73f"
+   ],
+   "15": [
+    "passed",
+    "598c830194edcbaa75559f19b11af6de"
+   ],
+   "16": [
+    "passed",
+    "cfbd27abbe6176b96640d7ab10bbdb50"
+   ],
+   "17": [
+    "passed",
+    "8ca2210d198a731eb4a5a16595d8b712"
+   ],
+   "18": [
+    "passed",
+    "0025e8347ae9de13d8193820ed986914"
+   ],
+   "20": [
+    "passed",
+    "776e12397fc600fad539a274cf9cba1d"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssue_ResolveMentions": {
+   "1": [
+    "passed",
+    "9dc2654760a82ade3bf560aaad4216ac"
+   ],
+   "2": [
+    "passed",
+    "2db11ed535de1ce2619a403874894892"
+   ],
+   "3": [
+    "passed",
+    "f6d2550be384c8417d1a5896123ad4a5"
+   ],
+   "4": [
+    "passed",
+    "cf1bde5418b2a386c7c9c408d121dc58"
+   ],
+   "5": [
+    "passed",
+    "11ec309bfa3be18ffee766e2ed98f166"
+   ],
+   "8": [
+    "passed",
+    "e23fcedeca2a4aa8b49fe0fab954034b"
+   ],
+   "9": [
+    "passed",
+    "f5813255b8ea0c94b15ff77f03afd85e"
+   ],
+   "10": [
+    "passed",
+    "deddf1dcf4bb46d3ab649d45c5756067"
+   ],
+   "11": [
+    "passed",
+    "f7c03f0b20ae4fea678f20d723e7a59b"
+   ],
+   "13": [
+    "passed",
+    "870a7bab4979d585db5435a70486c7cf"
+   ],
+   "14": [
+    "passed",
+    "243991af0a5839c13190abf63947b826"
+   ],
+   "15": [
+    "passed",
+    "9cdd35d45133935dbddf64c1c2d9f36c"
+   ],
+   "16": [
+    "passed",
+    "53297e8ebc62d9c8376f7b10d99aa724"
+   ],
+   "17": [
+    "passed",
+    "8ca0d6410f2567674af4674b1d52e32f"
+   ],
+   "18": [
+    "passed",
+    "fb524b6a12498a735e4f7b3abb2761a3"
+   ],
+   "20": [
+    "passed",
+    "dd2d6372271ddfc17fca9a22a8af8295"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoID": {
+   "1": [
+    "passed",
+    "569fe11fb1bcf3a02a03962fba9d71b3"
+   ],
+   "2": [
+    "passed",
+    "3c206c4aaa0364bd0a7605c3ae5a7d0c"
+   ],
+   "4": [
+    "passed",
+    "1be6a3102d4e7a3c229d48a68451514c"
+   ],
+   "5": [
+    "passed",
+    "66978b08110a6c7370f0062dabb10f4c"
+   ],
+   "6": [
+    "passed",
+    "85a9c3aa5e7be050a9a7e9551a6e556b"
+   ],
+   "7": [
+    "passed",
+    "a337648b15cc23953949e1180657ed58"
+   ],
+   "8": [
+    "passed",
+    "806df0c1560ad10859da04d90fadb01b"
+   ],
+   "9": [
+    "passed",
+    "049a17ebf35ab7f08cbd035609429a49"
+   ],
+   "10": [
+    "passed",
+    "aab4cdc8abb35987fc65097a50211e0a"
+   ],
+   "11": [
+    "passed",
+    "e563062624dc2af48c84d44346f36d21"
+   ],
+   "13": [
+    "passed",
+    "bb52759e58e00502ad03112c02f2be3d"
+   ],
+   "14": [
+    "passed",
+    "4a78e66f8d2fdb98074f7c7c4ec8f7a7"
+   ],
+   "16": [
+    "passed",
+    "1ca17d935ca716269fd2ba14fe7edf17"
+   ],
+   "17": [
+    "passed",
+    "1c28eaaec23ad48ee7cf100c685836b6"
+   ],
+   "18": [
+    "passed",
+    "b09653bbbb6175c1255e61c281db272c"
+   ],
+   "20": [
+    "passed",
+    "6c421accb8b00d2588acc9b2844d7af2"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewIssueExclusiveLabel": {
+   "1": [
+    "passed",
+    "9d067effcfbffee5e12a25c4dfc61ca2"
+   ],
+   "2": [
+    "passed",
+    "223ba8e3bad54d0f06e8ff1a1e926f07"
+   ],
+   "4": [
+    "passed",
+    "ad0c3e4ffc8ca2960205da36e2d021e4"
+   ],
+   "5": [
+    "passed",
+    "df74a9d76606e1e9e9b331e829617662"
+   ],
+   "6": [
+    "passed",
+    "2cfa06404b915b7cc7341f4f9d343aee"
+   ],
+   "7": [
+    "passed",
+    "7d3742df4be55a344b8e9aef0368b014"
+   ],
+   "8": [
+    "passed",
+    "bc089067901b336cb27548fcb7f0661b"
+   ],
+   "9": [
+    "passed",
+    "928f366ea5c899c7af7afc1f3624252f"
+   ],
+   "10": [
+    "passed",
+    "d066d40d0bc007352700685970648157"
+   ],
+   "11": [
+    "passed",
+    "c11a96b19d1e9c3f4c0878c5200dbfdf"
+   ],
+   "13": [
+    "passed",
+    "3f8fd27b95fccb7c81b2bcc8f42ad40d"
+   ],
+   "14": [
+    "passed",
+    "95cbbbfabbcac626da05febd10e71a9f"
+   ],
+   "15": [
+    "passed",
+    "4cf4e3bc255b795b6d76b49fcd9cfdbe"
+   ],
+   "16": [
+    "passed",
+    "4699a1c4d948b63e91baea8f8409d880"
+   ],
+   "17": [
+    "passed",
+    "860a57b4d8d1a3d587431221a05eaf29"
+   ],
+   "20": [
+    "passed",
+    "11741e2a1f76d93ba8a406ddb18ca3e4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestChangeMilestoneStatus": {
+   "1": [
+    "passed",
+    "e04462dff9018babf08c88a3b846c341"
+   ],
+   "2": [
+    "passed",
+    "c204b240a443ebe74c49a219ef44cb92"
+   ],
+   "5": [
+    "passed",
+    "2dcbaf74b362920b79e5b635a13d3880"
+   ],
+   "6": [
+    "passed",
+    "08207fd6ab4a4559a585ab347f8b11d5"
+   ],
+   "7": [
+    "passed",
+    "413e45660cfc954e047317b42874572e"
+   ],
+   "8": [
+    "passed",
+    "c85b3bb2e4eac7b39e174147b50cd353"
+   ],
+   "9": [
+    "passed",
+    "0e972736875863d0f917c45e517059ae"
+   ],
+   "10": [
+    "passed",
+    "03c6ff7976059e1e837d7c70df81383f"
+   ],
+   "13": [
+    "passed",
+    "b20f3d531691e401687913bfde4d903c"
+   ],
+   "14": [
+    "passed",
+    "1817eb9e2a4deacfdc54d93a6989ab79"
+   ],
+   "15": [
+    "passed",
+    "9b755aebdcc01fbe79b96b20e55f8ca4"
+   ],
+   "16": [
+    "passed",
+    "9336e768cd3f0f3863d91919bd4ca6b0"
+   ],
+   "17": [
+    "passed",
+    "e139bdf7864af40c61220eee64641a96"
+   ],
+   "20": [
+    "passed",
+    "c4ba354da0cef2efb37190123254ba1c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDeleteLabel": {
+   "1": [
+    "passed",
+    "921b4fd44bd0e6ca94da09e72f551c36"
+   ],
+   "2": [
+    "passed",
+    "614da30cd6d6574afce243023e4426a1"
+   ],
+   "4": [
+    "passed",
+    "81bd77e591ecd3e91907279ce655c0ee"
+   ],
+   "6": [
+    "passed",
+    "44950eb3166e79c4e8c7b535fd9fb837"
+   ],
+   "7": [
+    "passed",
+    "f2acb0cb260814b847fa1a4a600c8b75"
+   ],
+   "8": [
+    "passed",
+    "8e6fdaf6b643a6614636e7967ef55f4f"
+   ],
+   "9": [
+    "passed",
+    "bf621a6db480801023bb0e1a846c0421"
+   ],
+   "10": [
+    "passed",
+    "bbdfec35f0487cf7ed78a2c2d2f3c475"
+   ],
+   "12": [
+    "passed",
+    "29719ae5be32f9b90212aa3cad3fc639"
+   ],
+   "13": [
+    "passed",
+    "a6ad675a5622ddbe7b06ed3116234b1d"
+   ],
+   "14": [
+    "passed",
+    "b9b481e6cea67ce26a79ec434b61c219"
+   ],
+   "15": [
+    "passed",
+    "2eeff0ddbdec295ab059485430c61384"
+   ],
+   "16": [
+    "passed",
+    "f9dcd4f76613b0677d7093e000bb2886"
+   ],
+   "17": [
+    "passed",
+    "49124099d4d48006edf9578adcba5e52"
+   ],
+   "18": [
+    "passed",
+    "f6689c7ff38d9158c67aa86be99845c4"
+   ],
+   "20": [
+    "passed",
+    "2d913be6ffa9538e32a01e899028d0d3"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssue_loadTotalTimes": {
+   "1": [
+    "passed",
+    "a1f348f5ae2eb376ee2f5ad82322eb8a"
+   ],
+   "2": [
+    "passed",
+    "9288281b42f01b966524af61c4bbc4ab"
+   ],
+   "3": [
+    "passed",
+    "2ec03d154be95d975f1f0bc367f35c69"
+   ],
+   "6": [
+    "passed",
+    "6b08a170f929dcb9c0bc284192f55da8"
+   ],
+   "7": [
+    "passed",
+    "2cbf4d26142c1737de7ae91787cb0623"
+   ],
+   "8": [
+    "passed",
+    "9cc4140ce738b36020a33dc1fcc725b7"
+   ],
+   "9": [
+    "passed",
+    "01b71ce29cff82cf045d4948128bc9b8"
+   ],
+   "10": [
+    "passed",
+    "d877a90fa5b5e8cef5ad6a293110ddc2"
+   ],
+   "13": [
+    "passed",
+    "448597239dfdeaed67e6b46b8309d3a3"
+   ],
+   "14": [
+    "passed",
+    "ce54d6de0c59ad1b9bccfbe5ef56c3ea"
+   ],
+   "16": [
+    "passed",
+    "17d953bc59bad06faa0ebc56386e39e0"
+   ],
+   "17": [
+    "passed",
+    "4d4b943a8c427ec3c8b42b065e1dd307"
+   ],
+   "18": [
+    "passed",
+    "c110a6ed5bd8c626db7b79a092e57aa3"
+   ],
+   "20": [
+    "passed",
+    "56ae93f7422eb8e221e9e8057a477935"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByNamesDiscardsNonExistentLabels": {
+   "1": [
+    "passed",
+    "a358a969e9b5878ec26e6b9ae501c7df"
+   ],
+   "2": [
+    "passed",
+    "aa9fad636901df0d7970988d88c37f71"
+   ],
+   "4": [
+    "passed",
+    "648deea260b52ed19de9d556f4a56f9c"
+   ],
+   "6": [
+    "passed",
+    "a8adce9808dee0c0bdbe8cf489983950"
+   ],
+   "8": [
+    "passed",
+    "68ca26dab8d246de8f857809f5f5a3af"
+   ],
+   "9": [
+    "passed",
+    "19ba3ecae5e1abe219436aad07d8ede0"
+   ],
+   "10": [
+    "passed",
+    "16b4f9b404ff6042a7fac7fdfd72007e"
+   ],
+   "12": [
+    "passed",
+    "5a31e385f49d6304bcf6899c5ef66101"
+   ],
+   "13": [
+    "passed",
+    "c16cc1bb01e8b9c0308a76d4321aedc3"
+   ],
+   "14": [
+    "passed",
+    "612c47d723c1193387cd85105dd918f2"
+   ],
+   "16": [
+    "passed",
+    "243aba4897e6ce41844e4171340f22cc"
+   ],
+   "17": [
+    "passed",
+    "00ff41c0238ac5526aaee61b9053eef3"
+   ],
+   "20": [
+    "passed",
+    "cc5fd7fd692b2ca1d8e16e2f62952ee4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByIssueID": {
+   "1": [
+    "passed",
+    "8769083c032b313e91c941d5f4e94f65"
+   ],
+   "2": [
+    "passed",
+    "90105b5e4365ec3aaacf824b6b89a9e1"
+   ],
+   "3": [
+    "passed",
+    "4e5bf47e3a4be9f3734090706fa3df52"
+   ],
+   "5": [
+    "passed",
+    "ba56e5917348081762102ce628edfc39"
+   ],
+   "6": [
+    "passed",
+    "00a3ee9e197ce51c022b6a678d9374c0"
+   ],
+   "7": [
+    "passed",
+    "af1e3a78f08a6ffbc9f473cb86aeda2b"
+   ],
+   "8": [
+    "passed",
+    "c77b7f923916cab9868782ba30070406"
+   ],
+   "9": [
+    "passed",
+    "f1c885b9d527431fd21aa95c7fd537a9"
+   ],
+   "10": [
+    "passed",
+    "d0ac57c97bddec0370d3bff017ce679f"
+   ],
+   "12": [
+    "passed",
+    "44faeece54b5e383bb2e850657ab140e"
+   ],
+   "13": [
+    "passed",
+    "a44e55c0697692a61368af51d20dabcb"
+   ],
+   "14": [
+    "passed",
+    "63808fd6aba28e5803d4ce6b63f9f903"
+   ],
+   "16": [
+    "passed",
+    "47d1c5216510576b7e576a96e8d7b165"
+   ],
+   "17": [
+    "passed",
+    "c841c5a6d76fa9e71f6db8b3f8f0a5d8"
+   ],
+   "20": [
+    "passed",
+    "d797cb7ae502441f5443449d1ab3844f"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetMilestonesByRepoIDs": {
+   "1": [
+    "passed",
+    "88c5631b0f73605208bf6b26958d8a47"
+   ],
+   "2": [
+    "passed",
+    "10840423a016b7d9e206e20b17237230"
+   ],
+   "3": [
+    "passed",
+    "bf06926c963b65301ec7cce7fe24fddd"
+   ],
+   "5": [
+    "passed",
+    "259e87b1f6a3f1a37e5d09289e0bf9d9"
+   ],
+   "6": [
+    "passed",
+    "ace05cf0de912cf04260d847492763a8"
+   ],
+   "8": [
+    "passed",
+    "59a8e5011e320afce2f9d73785dfb272"
+   ],
+   "10": [
+    "passed",
+    "d75d2c1081d341f3d8c952027e5f4a87"
+   ],
+   "11": [
+    "passed",
+    "7f9dc2b88eea9c86c960695527ad4624"
+   ],
+   "12": [
+    "passed",
+    "86c4ce597ba5cf92d11e1071e8fa2a5b"
+   ],
+   "13": [
+    "passed",
+    "fd2a70f07be8f6a8cd5bad0c9b257278"
+   ],
+   "14": [
+    "passed",
+    "89b6798339c546902e081a01f1a52278"
+   ],
+   "15": [
+    "passed",
+    "3c8cb6b612080b8ebeef2e33ba5e220e"
+   ],
+   "16": [
+    "passed",
+    "43e88707e4e99396ff6c68e027330557"
+   ],
+   "17": [
+    "passed",
+    "8148a9f9c5c5c827b5f4ddc20ef15f50"
+   ],
+   "18": [
+    "passed",
+    "b08c9abbd15276641df60185d8fc1c56"
+   ],
+   "20": [
+    "passed",
+    "c97620fa6a89bfe51d95306b41f150ff"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestXRef_AddCrossReferences": {
+   "1": [
+    "passed",
+    "c453b4366bcc857c10c3f21eb90de4e3"
+   ],
+   "2": [
+    "passed",
+    "690f9d1e93a9eed71d3533db9b65a2c8"
+   ],
+   "3": [
+    "passed",
+    "2c81a89ee5e63fcf9d5b9628e316e3a9"
+   ],
+   "5": [
+    "passed",
+    "21247d1551a71a514c8777525ea71523"
+   ],
+   "6": [
+    "passed",
+    "1bbdc0438bd3ea9d25ddb8c0096e8e8b"
+   ],
+   "7": [
+    "passed",
+    "0e661e987ba45c3f06c80749cbe3ac06"
+   ],
+   "8": [
+    "passed",
+    "b4d5302172c2e873a08852b39e9c22fd"
+   ],
+   "9": [
+    "passed",
+    "761f07a36ee2de9a8013f3bc058a2202"
+   ],
+   "10": [
+    "passed",
+    "8d89133f3f9b5a9f9d91fe57068927ce"
+   ],
+   "11": [
+    "passed",
+    "a66d0e9111d2a162299f2b3d4cbe95d3"
+   ],
+   "12": [
+    "passed",
+    "4e322f77c4f2a5e5e2540723dc90c067"
+   ],
+   "13": [
+    "passed",
+    "e1470b893bb443031ae4c359b6d67679"
+   ],
+   "14": [
+    "passed",
+    "0dfdb889ecf8eeb648119bb6208db133"
+   ],
+   "15": [
+    "passed",
+    "9d60acd15a4384821b4a7c0d8031adf3"
+   ],
+   "16": [
+    "passed",
+    "7c29a60fd61712dd16fd410ca661ac73"
+   ],
+   "17": [
+    "passed",
+    "348097fef459264b7d3c5693f6057517"
+   ],
+   "20": [
+    "passed",
+    "6607f0c51b9b27985ce74e1567a64d61"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestHasUserStopwatch": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "5": [
+    "passed",
+    "0a97bc6232e09bd514f4c631d2d768b8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "10": [
+    "passed",
+    "5a13cda892f5111f3b7c01e2a031db71"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUserByRead": {
+   "1": [
+    "passed",
+    "d51a547c07f18dda5a5ca35a64af6fb2"
+   ],
+   "2": [
+    "passed",
+    "0e67ba8ea1bcc420af61fdbd6cf48998"
+   ],
+   "5": [
+    "passed",
+    "c996d455bd12d363bfb1405eb2f1c6da"
+   ],
+   "6": [
+    "passed",
+    "6a705e2cd2cbe9dfae340816f03ffccf"
+   ],
+   "7": [
+    "passed",
+    "953ffd725b9fb86426f43f07e11ce174"
+   ],
+   "8": [
+    "passed",
+    "c6bbb0e1c3ed7680a47c3cef93d4bcdd"
+   ],
+   "9": [
+    "passed",
+    "e86683140124a4cc938b865543ed4c84"
+   ],
+   "10": [
+    "passed",
+    "b8d080d4b606a275241de35701d33f99"
+   ],
+   "11": [
+    "passed",
+    "3a88b03272ad9c32a784c6516697cdc2"
+   ],
+   "12": [
+    "passed",
+    "9e859da362ecce2e6e84b246648d04d8"
+   ],
+   "13": [
+    "passed",
+    "54f3e99b6b2fa2c7fe4725ecb1c9d52a"
+   ],
+   "14": [
+    "passed",
+    "594ae4c992a40bc291ec8274282cc8f8"
+   ],
+   "16": [
+    "passed",
+    "88826bf7821c0e30c7d7e74003a5c7b4"
+   ],
+   "17": [
+    "passed",
+    "fc36246e0a1bb3a604b5ab28bf27dca0"
+   ],
+   "20": [
+    "passed",
+    "1cab9fc5a914535c25e7cffc758c8ed2"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestLoadTotalTrackedTime": {
+   "1": [
+    "passed",
+    "b936477d3953123167bc49d869a19fb5"
+   ],
+   "2": [
+    "passed",
+    "3789e6be0ebdb7e856e12a1e52fa0877"
+   ],
+   "5": [
+    "passed",
+    "628bbca780698b8f1089f2b9aac2b1db"
+   ],
+   "8": [
+    "passed",
+    "f21388b23eb6ffa61d6acfc20308c84e"
+   ],
+   "9": [
+    "passed",
+    "e35da0d0b97c52cc81f39bad99346452"
+   ],
+   "10": [
+    "passed",
+    "937018ec0a627ae723b4a50c17545319"
+   ],
+   "11": [
+    "passed",
+    "9a5e5987eb9954f4abdcc14a316d8c9c"
+   ],
+   "12": [
+    "passed",
+    "06032ddfc79d2553e728e0c24d909912"
+   ],
+   "13": [
+    "passed",
+    "4a437d660eb33924cb2a8be756172c5a"
+   ],
+   "14": [
+    "passed",
+    "43c80bc81935a3bae2f7b1d62ba23405"
+   ],
+   "15": [
+    "passed",
+    "640718c120b6abed7312043b784c209b"
+   ],
+   "16": [
+    "passed",
+    "9b8e4482b781859627184959b2751f4f"
+   ],
+   "17": [
+    "passed",
+    "383370dc025552df3baf35d5baf42d2a"
+   ],
+   "18": [
+    "passed",
+    "88557cbdc7b5cb315c2a71d7e79f8736"
+   ],
+   "20": [
+    "passed",
+    "13e51ab74be6964a05115f5e079b5e80"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadAttributes": {
+   "1": [
+    "passed",
+    "620f830cf74d2ac1e789071faa62ba18"
+   ],
+   "2": [
+    "passed",
+    "e88fd997ec53281c2da6dd3f5d3a2b4b"
+   ],
+   "3": [
+    "passed",
+    "a5c109694622f5a38b9a0fa3cd57ca28"
+   ],
+   "7": [
+    "passed",
+    "d220fe9206791c1c9e868bb82e3c4a56"
+   ],
+   "8": [
+    "passed",
+    "1d9400ee427be547d3f155102e6d21f7"
+   ],
+   "10": [
+    "passed",
+    "30597c5a5677aec7fdfc665a3783b5e8"
+   ],
+   "11": [
+    "passed",
+    "1512b8adaf89530d493ea56116b0d3dd"
+   ],
+   "13": [
+    "passed",
+    "de2004adacee19a7599138afebeecc60"
+   ],
+   "15": [
+    "passed",
+    "2c29d3fbe24e73721a82dfe306be05a9"
+   ],
+   "16": [
+    "passed",
+    "0e441c2af3d694b7fffc12a0b1d5cfaa"
+   ],
+   "17": [
+    "passed",
+    "fd146b79e7c075414d506cb2670be9a5"
+   ],
+   "20": [
+    "passed",
+    "699beeb9afb53b8a7d0aad230e753ea1"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestPullRequestList": {
+   "1": [
+    "passed",
+    "973371eeee1e4925eeba60084a24d851"
+   ],
+   "2": [
+    "passed",
+    "7ccebdbb4e5f4f03feddf22eb58b0e9b"
+   ],
+   "4": [
+    "passed",
+    "9e8c10db871a8df5d1cb1974b891d1dc"
+   ],
+   "5": [
+    "passed",
+    "545b234c8b6e592af7cc124cda945eec"
+   ],
+   "6": [
+    "passed",
+    "d58a61199255255c5528fb9e719b9d0d"
+   ],
+   "8": [
+    "passed",
+    "c8e99a4bf6d95f4d7e93819bdbabd53f"
+   ],
+   "9": [
+    "passed",
+    "f15caaf78cdb93a7db514295fbdebe3a"
+   ],
+   "10": [
+    "passed",
+    "5ca6c75676453884e8204a5372b5406f"
+   ],
+   "11": [
+    "passed",
+    "e47c5c4946fb26dad87e2d1a5247fc94"
+   ],
+   "13": [
+    "passed",
+    "b37cf0cf7ce1bef64ff3f2cfcf8446d6"
+   ],
+   "14": [
+    "passed",
+    "25b91f73ab852e7338be824d809256d9"
+   ],
+   "16": [
+    "passed",
+    "2056b98672e9f675904fdb7445de205f"
+   ],
+   "17": [
+    "passed",
+    "fc53e562d1789939ad4d67c7147e0ae6"
+   ],
+   "18": [
+    "passed",
+    "f21a168d8d73016f6c29a0ed3afa01bd"
+   ],
+   "20": [
+    "passed",
+    "a9f033dc8373a80b04f1c1e7b1a8e1f4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestAddReviewRequest": {
+   "1": [
+    "passed",
+    "ec6c1b4829e7b52c5b9db81443e4caad"
+   ],
+   "2": [
+    "passed",
+    "c637dfece65ac7c0af859a548ff7c581"
+   ],
+   "3": [
+    "passed",
+    "c7564fd6896f10a8e7e4070374eac086"
+   ],
+   "4": [
+    "passed",
+    "ecfe61b1d86f5cae2f7222bda0ef3fbf"
+   ],
+   "6": [
+    "passed",
+    "04ef489f2e44ba522f13c9b9f41cc111"
+   ],
+   "7": [
+    "passed",
+    "d2f558250ff62b2959fafeaf724a7bc2"
+   ],
+   "8": [
+    "passed",
+    "9ad68a18ab55ae2eaf56f7553f553b4b"
+   ],
+   "9": [
+    "passed",
+    "82979037b569a487d4e5aeb7d69ebbc4"
+   ],
+   "10": [
+    "passed",
+    "278a4d61e1b5858bce40cb29a75eb509"
+   ],
+   "12": [
+    "passed",
+    "87d027cb902ba942fcee2498e6e76aa2"
+   ],
+   "13": [
+    "passed",
+    "376390f5a9f2ce21816515810842610d"
+   ],
+   "14": [
+    "passed",
+    "26ae48381f2d3bc141a1da695bf0e9e4"
+   ],
+   "16": [
+    "passed",
+    "b293520c4518e14a1414f8bc2b56698d"
+   ],
+   "17": [
+    "passed",
+    "7acb76551bef4d0923af86020aa5e705"
+   ],
+   "20": [
+    "passed",
+    "ea63d0b3a77fec3b30516315abebf79c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestSubmitReviewClearsStaleReviewRequest": {
+   "1": [
+    "passed",
+    "fd8c37b10bf08b2432904a15b0a34a9c"
+   ],
+   "2": [
+    "passed",
+    "5c075061b67ad65c9fdf6413b896d54e"
+   ],
+   "3": [
+    "passed",
+    "c65a0aa19824d26cc529be6187ff461b"
+   ],
+   "4": [
+    "passed",
+    "1d580a8ee2230fad18091648721a2ce8"
+   ],
+   "6": [
+    "passed",
+    "4548d0fe7404481f0db80750219ceed4"
+   ],
+   "7": [
+    "passed",
+    "c1bf93e6abd707832287c9bd16082aa5"
+   ],
+   "8": [
+    "passed",
+    "013933ee1d9b36c03fc6665b6e6910d0"
+   ],
+   "10": [
+    "passed",
+    "d6bdaaadbc08f8cb0eac1527e59980eb"
+   ],
+   "11": [
+    "passed",
+    "ebb00271b67ef76c196e72b5f5d8e2e7"
+   ],
+   "13": [
+    "passed",
+    "ac756513f0f01ba24ba0ef0266ff808c"
+   ],
+   "15": [
+    "passed",
+    "a8b09ae8c1c30972d46fb24901346c28"
+   ],
+   "16": [
+    "passed",
+    "01d90667e360a5e40b326892f595b29b"
+   ],
+   "17": [
+    "passed",
+    "30698dd98873d999a8c57bdfe522ab9a"
+   ],
+   "18": [
+    "passed",
+    "21ab24daa1054dd41ef8cbd5ab1490a9"
+   ],
+   "20": [
+    "passed",
+    "717d34ea72d03edc9253c45cc4ffeb37"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByID": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "3": [
+    "passed",
+    "c79ebd47720fe1884cac5bfacf05eae8"
+   ],
+   "4": [
+    "passed",
+    "22fc3d8d27fde0319ccaa62e86730cc5"
+   ],
+   "5": [
+    "passed",
+    "0a97bc6232e09bd514f4c631d2d768b8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "11": [
+    "passed",
+    "84736daf53fe155516da3317b9c369f7"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "18": [
+    "passed",
+    "5596a17b8c972ce35005f3de918721eb"
+   ],
+   "19": [
+    "passed",
+    "50f2f74a6cafb2766c45ae65a2a4332c"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestoneCounters": {
+   "1": [
+    "passed",
+    "b389e2f00eadd866bf10b30a9e86ca40"
+   ],
+   "2": [
+    "passed",
+    "a5b8390696a82cacb45fb9414f77ac54"
+   ],
+   "6": [
+    "passed",
+    "0d5cd41a68295bd0fc1ff77adb8cc9ce"
+   ],
+   "7": [
+    "passed",
+    "43e3c277726dc0aacb5e07809be87838"
+   ],
+   "8": [
+    "passed",
+    "128ec5cb13c31d5cd09a3fb79a944e1c"
+   ],
+   "9": [
+    "passed",
+    "0750a3c3d31716f32e300ca7e8e0d9e0"
+   ],
+   "10": [
+    "passed",
+    "93b0254e305c84eaf78559277c245654"
+   ],
+   "11": [
+    "passed",
+    "87ecd4ff5344faf89b6be25993470576"
+   ],
+   "12": [
+    "passed",
+    "af72922ddc40786fcf626a8d12033de6"
+   ],
+   "13": [
+    "passed",
+    "72c63d9a58dd0e273264d8e2c0ab87c2"
+   ],
+   "14": [
+    "passed",
+    "a383f952ed4c96c7b1de11d2742d4bd2"
+   ],
+   "16": [
+    "passed",
+    "bd9f5d53ff5d956c0de171dbcfe13755"
+   ],
+   "17": [
+    "passed",
+    "a2a1aaa4e1f23e7e4258e6ec05953c47"
+   ],
+   "18": [
+    "passed",
+    "e0470af1c1644149d0556106fc9d1018"
+   ],
+   "20": [
+    "passed",
+    "cb309168b86659775c944da410bbc597"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabel": {
+   "1": [
+    "passed",
+    "ed292577b168beb90d247e6062d63252"
+   ],
+   "2": [
+    "passed",
+    "666f81b4e30b5682b076cd32922b0071"
+   ],
+   "3": [
+    "passed",
+    "75bbc8394891754b8df1f6c7b3b92f5c"
+   ],
+   "5": [
+    "passed",
+    "26bf30cbc266d36fd608d06ab08a7761"
+   ],
+   "6": [
+    "passed",
+    "c6f53614465714784b19d609b8cc894e"
+   ],
+   "7": [
+    "passed",
+    "0f6dc263f73f8cda9bb2eeed9846f9bd"
+   ],
+   "8": [
+    "passed",
+    "7a4a0becfeae192eac795e82d119cd74"
+   ],
+   "9": [
+    "passed",
+    "715996cab3aedac3c3781f2e395f4114"
+   ],
+   "10": [
+    "passed",
+    "8cb828534f6a00b2ea03686ff77f8d55"
+   ],
+   "12": [
+    "passed",
+    "51947ed3e971b41d624e66ec8cbe49aa"
+   ],
+   "13": [
+    "passed",
+    "7956956a4e5c5eea2bb6bc2e78232aaf"
+   ],
+   "14": [
+    "passed",
+    "f573271f008c1e20bfa699f5662ca79b"
+   ],
+   "16": [
+    "passed",
+    "3248887a398e302363e4d8e0ef83a8a9"
+   ],
+   "17": [
+    "passed",
+    "fe3be92fc7ae818105c2d5f72a769388"
+   ],
+   "18": [
+    "passed",
+    "550cedfbd83f0e2a8d6347bd560d7f6c"
+   ],
+   "20": [
+    "passed",
+    "0237ec7d60a62585b324041d0b4af92d"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCreateReview": {
+   "1": [
+    "passed",
+    "7ac1a44a780128137092f5f7a562ec8f"
+   ],
+   "2": [
+    "passed",
+    "ffed0ec6234391915a7c0a4d87f1f75a"
+   ],
+   "3": [
+    "passed",
+    "761807ac640593db045b0e4b22318db5"
+   ],
+   "4": [
+    "passed",
+    "c3f10b21357edb4f997b9d8f609d9fa7"
+   ],
+   "6": [
+    "passed",
+    "bb6f2fee17ee2c9040fac60cbb91ba5e"
+   ],
+   "7": [
+    "passed",
+    "7614715a6842aea04952c1f176fad332"
+   ],
+   "8": [
+    "passed",
+    "9df11009e14da3547a468e9c7adb4bac"
+   ],
+   "9": [
+    "passed",
+    "18ec248c7fccb439d5d7297ec9cc479f"
+   ],
+   "10": [
+    "passed",
+    "b6c5b8dbd325c5cdbdb12386408ed5f1"
+   ],
+   "13": [
+    "passed",
+    "534379ad0339e439861ee06b8a54800c"
+   ],
+   "14": [
+    "passed",
+    "2f8d2355f8b379ff7914162b76e4ed58"
+   ],
+   "16": [
+    "passed",
+    "b052b629adbe10d7c824bdf3820a5e87"
+   ],
+   "17": [
+    "passed",
+    "de9248cd876f90fda39f686274ba7d34"
+   ],
+   "20": [
+    "passed",
+    "0bfb4e8658de279382e03442a5cf5600"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDeleteIssueLabel": {
+   "1": [
+    "passed",
+    "fe1982c20766900714f70556a00bf621"
+   ],
+   "2": [
+    "passed",
+    "43069229fd2cada00a5bee6714c190aa"
+   ],
+   "3": [
+    "passed",
+    "18fba0f2e16bcaa9c443a3e566e33593"
+   ],
+   "6": [
+    "passed",
+    "4865cde47f0604b8e6bc4eb42c3b268a"
+   ],
+   "8": [
+    "passed",
+    "e0c1c414501f859072a854edab13849a"
+   ],
+   "10": [
+    "passed",
+    "8e3a1f18db3c65cf4495d036830d7663"
+   ],
+   "13": [
+    "passed",
+    "f3d86658fb88d757a34116242c0713f6"
+   ],
+   "14": [
+    "passed",
+    "debc6a6477fcf1f07b6abb7548047cdd"
+   ],
+   "15": [
+    "passed",
+    "82cc312c67b6ae630bd71673f61c1d52"
+   ],
+   "16": [
+    "passed",
+    "40b3b7d928bc06695273ed358be7e8ca"
+   ],
+   "17": [
+    "passed",
+    "c826edf80f59fd3140fd1f217ce57c21"
+   ],
+   "18": [
+    "passed",
+    "e3b246a1479198b6968bc67f015c1cb1"
+   ],
+   "20": [
+    "passed",
+    "739448517fd5bd9130d3b120adcfd43a"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetIssueTotalTrackedTime": {
+   "1": [
+    "passed",
+    "b65c13e7d8043ae2a8871a06bd82fa05"
+   ],
+   "2": [
+    "passed",
+    "020450b09dfccf4589ba196566ef6dbe"
+   ],
+   "5": [
+    "passed",
+    "bf224c5a54abdcc022ba6b1e2fb90926"
+   ],
+   "6": [
+    "passed",
+    "db185fcbcac2d4aa4bba67cce7a37435"
+   ],
+   "7": [
+    "passed",
+    "9745e7c8f3a8ecff2722b601949067f3"
+   ],
+   "8": [
+    "passed",
+    "8d38b2330b214a75071c1c878cb12b49"
+   ],
+   "9": [
+    "passed",
+    "a498e511eded1aff87fc14680b97e801"
+   ],
+   "10": [
+    "passed",
+    "221da50b44fed0b14102ce1ef60fc0c5"
+   ],
+   "13": [
+    "passed",
+    "38d607593aa724d8d7f0e9153c2687ad"
+   ],
+   "14": [
+    "passed",
+    "2b5a95001df3e416cb33c08c1c8e82d1"
+   ],
+   "15": [
+    "passed",
+    "e17ee0446d0dc9a7e329ffdc5974bc9c"
+   ],
+   "16": [
+    "passed",
+    "14bc82e026c88467844a8649d102660f"
+   ],
+   "17": [
+    "passed",
+    "921dcf91089a54c73b54a61951169613"
+   ],
+   "18": [
+    "passed",
+    "4d69c308dfec375a2d31f7027731b18d"
+   ],
+   "20": [
+    "passed",
+    "3cd55fd555ec45e40b614d1a51c348cb"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCancelStopwatch": {
+   "1": [
+    "passed",
+    "e4b8b6ca7a90d8a1f2c5c5bc295a0a29"
+   ],
+   "2": [
+    "passed",
+    "bc1b4b5b102e2db1e1c8688ad1c8cfdc"
+   ],
+   "5": [
+    "passed",
+    "dda7e6f39e3e048f6d7fd117a2847a70"
+   ],
+   "8": [
+    "passed",
+    "4448d9a4c66214920a92996642cb0f35"
+   ],
+   "9": [
+    "passed",
+    "38d4ea7f9124691b9d6af954b66e920a"
+   ],
+   "10": [
+    "passed",
+    "07802dff40f76b7e05f1ee624eef0642"
+   ],
+   "11": [
+    "passed",
+    "a0c790d1679b2ff0fac4314f07b4ee8e"
+   ],
+   "12": [
+    "passed",
+    "0dac1495bf5111d40c848ae4d08b13c6"
+   ],
+   "13": [
+    "passed",
+    "d1158b09498ad33be5b370f426116d5b"
+   ],
+   "14": [
+    "passed",
+    "5ecb1b4b3a7652a86d3a999514628325"
+   ],
+   "16": [
+    "passed",
+    "385e40aac4f59ce6306b7c0ca4851a8a"
+   ],
+   "17": [
+    "passed",
+    "280bb7e6a98e77f3587e002cf4f54054"
+   ],
+   "19": [
+    "passed",
+    "6679080f5a5a10eb9816812fad791725"
+   ],
+   "20": [
+    "passed",
+    "de92785a7c1be91ead0ac7fde141996e"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewLabels": {
+   "1": [
+    "passed",
+    "f842684012de3b13a39ac83a8d946f08"
+   ],
+   "2": [
+    "passed",
+    "c6e69a82224988bb7ca86511564702b0"
+   ],
+   "3": [
+    "passed",
+    "fdb7a2a3ae77467672ff678dc9932c5e"
+   ],
+   "6": [
+    "passed",
+    "cdd2f07452f3d71b6d7b6c84b43daaec"
+   ],
+   "8": [
+    "passed",
+    "373859864ce187541b998be0358c2fa7"
+   ],
+   "9": [
+    "passed",
+    "c876219a3a669b9ae2a0102e7e06a6c6"
+   ],
+   "10": [
+    "passed",
+    "6430c164c385845f585fd5ac714ae613"
+   ],
+   "11": [
+    "passed",
+    "3df544f31887ed27dcec2bbd6cba825c"
+   ],
+   "12": [
+    "passed",
+    "b75149752e820fdfdf137ece6e0570ee"
+   ],
+   "13": [
+    "passed",
+    "f78c37136538206ffbe5b1b7c032dd1a"
+   ],
+   "14": [
+    "passed",
+    "d2d8d0d71349df98450fa69d3c3ba547"
+   ],
+   "16": [
+    "passed",
+    "eafed8722fe50f432378bd6f0a6a2ad1"
+   ],
+   "17": [
+    "passed",
+    "99a0eee3eb9a16c0ffd01c406b528a66"
+   ],
+   "18": [
+    "passed",
+    "ff2b7b0b9c764ade1554d18d65d7ecce"
+   ],
+   "19": [
+    "passed",
+    "a035589dce04c991c2ffe2c5a2d1e3fc"
+   ],
+   "20": [
+    "passed",
+    "cb45800cfc452d8352b767700ccf2821"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCountMilestonesByRepoIDs": {
+   "1": [
+    "passed",
+    "8c386991fee2d0ff1d92ddee11ca7bbf"
+   ],
+   "2": [
+    "passed",
+    "631e431de995a742c7bbd7c63bc84cc6"
+   ],
+   "3": [
+    "passed",
+    "2130a3ba4e5a5d0d135b6c6af51952bc"
+   ],
+   "4": [
+    "passed",
+    "43ddfa82692605245dfc770d5660ed15"
+   ],
+   "5": [
+    "passed",
+    "0c2007da66b68bf3ad238e6ca2b90458"
+   ],
+   "6": [
+    "passed",
+    "a065c5d949c3910ce89fe77a9f2107a7"
+   ],
+   "7": [
+    "passed",
+    "84164a6649cc93ca81228268d9fa5343"
+   ],
+   "8": [
+    "passed",
+    "526731228f3af06dcd84c931cd1232c6"
+   ],
+   "9": [
+    "passed",
+    "56c1b1df86489ff91db1e5d136f8434d"
+   ],
+   "10": [
+    "passed",
+    "21822c4faf6e8a35ef61be7c4be6eb55"
+   ],
+   "13": [
+    "passed",
+    "28f9255756207d91beddecf8d09d1fe5"
+   ],
+   "14": [
+    "passed",
+    "4ffb02a0402e755f358a218867fb66a7"
+   ],
+   "16": [
+    "passed",
+    "f707aa6b432f567b62005fbb867e3590"
+   ],
+   "17": [
+    "passed",
+    "23629afcb9a71606b8df880558a364c6"
+   ],
+   "20": [
+    "passed",
+    "b54f6b16b7d679c13c85259fa65cb2a6"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestFindReviews": {
+   "1": [
+    "passed",
+    "4ca0437c832bbc45e963c212ddb80148"
+   ],
+   "2": [
+    "passed",
+    "325b375e4c828c3124c6cd4be886dd6d"
+   ],
+   "5": [
+    "passed",
+    "580195000b64350a22c7b41497738909"
+   ],
+   "8": [
+    "passed",
+    "6b265d37315ebd4c1c2c4e5d42b29522"
+   ],
+   "9": [
+    "passed",
+    "8ad72c0ceaa4b7e30aca94356ecd7b01"
+   ],
+   "10": [
+    "passed",
+    "68f2187667c8587ac3b3af84749787c0"
+   ],
+   "11": [
+    "passed",
+    "6411732b07d668f5e5650bde6f89e1ee"
+   ],
+   "12": [
+    "passed",
+    "3beb725b3b9911418618b9d45bb360e2"
+   ],
+   "13": [
+    "passed",
+    "30ca4ca5ba15e7cfafc6f1306d7b3727"
+   ],
+   "14": [
+    "passed",
+    "a6d1fef7d3633d79e4b243db03dc55ab"
+   ],
+   "16": [
+    "passed",
+    "e19e14da67809a9b306f3f81ec391d89"
+   ],
+   "17": [
+    "passed",
+    "a40ceeb877d789f1990dc5983a784114"
+   ],
+   "19": [
+    "passed",
+    "29a57ce998463d41deedefa179c2a3a8"
+   ],
+   "20": [
+    "passed",
+    "4d278c0d526aca284bee4bf08f19d2e9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCreateIssueDependency": {
+   "1": [
+    "passed",
+    "3216881f59c33eca3ca145c24d09176f"
+   ],
+   "2": [
+    "passed",
+    "7242f2bcc35b1d65bc3999112817378e"
+   ],
+   "4": [
+    "passed",
+    "15786a5cc8ed8bb632f068d29ad2adf2"
+   ],
+   "7": [
+    "passed",
+    "cad1ac58b66f1f173c9ec78be50ae288"
+   ],
+   "8": [
+    "passed",
+    "822722ebc83a14ce5d43467d2e5755aa"
+   ],
+   "9": [
+    "passed",
+    "bfa01d9f76a55b04c66cd6993c81d2e8"
+   ],
+   "10": [
+    "passed",
+    "57b7b767093c730a6fd720c077786388"
+   ],
+   "11": [
+    "passed",
+    "6ecdddd542c395785f29d23be70f5993"
+   ],
+   "12": [
+    "passed",
+    "609ec94b11dd9e175ac727168436b7fb"
+   ],
+   "13": [
+    "passed",
+    "5b288c4ea27b60da210ad3bf8ffe6088"
+   ],
+   "14": [
+    "passed",
+    "86fc43798a4e45a7a4d4008dc3ffd004"
+   ],
+   "16": [
+    "passed",
+    "72ff14148517b1bea0b6850452cc183d"
+   ],
+   "17": [
+    "passed",
+    "17ac5ede0f2b9acacff4cb148a7d284f"
+   ],
+   "20": [
+    "passed",
+    "59db5267d2b23b70c65e817179774dd3"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateMilestone": {
+   "1": [
+    "passed",
+    "36a8570b2a3f48b8e43a674bd37559b2"
+   ],
+   "2": [
+    "passed",
+    "e5dcd0fe65e202f6da394781a6051ca4"
+   ],
+   "3": [
+    "passed",
+    "caccb8715457f368715ae546fc5e0ab5"
+   ],
+   "4": [
+    "passed",
+    "bbbd3c8d07fe75d5b951c675da25d3d2"
+   ],
+   "5": [
+    "passed",
+    "c7e25d8db03e3c01dd06d54132a94ffb"
+   ],
+   "6": [
+    "passed",
+    "facf184dc5e00085a42381a415156b15"
+   ],
+   "7": [
+    "passed",
+    "662e500a60390cb1e73a973a538bda3e"
+   ],
+   "8": [
+    "passed",
+    "1329f9255ff62831fcd01daa9ac3a065"
+   ],
+   "9": [
+    "passed",
+    "ac1bd83a21fba75a2948391c8a695beb"
+   ],
+   "10": [
+    "passed",
+    "48cb9107b382749a82a9f0d92dd1417d"
+   ],
+   "12": [
+    "passed",
+    "fb353e0529d8f7eb2c04a5072487ca84"
+   ],
+   "13": [
+    "passed",
+    "7bf60c8ff83037c0d121f1341bc98bd1"
+   ],
+   "14": [
+    "passed",
+    "ee6101a06f4a11775fcc978466a9ebcb"
+   ],
+   "15": [
+    "passed",
+    "58e7b3b66ee13603ed540417084d2fe9"
+   ],
+   "16": [
+    "passed",
+    "79fc838a20b694bb574d2f47edda8110"
+   ],
+   "17": [
+    "passed",
+    "90765423a83f12a1ab0ab3170778bdcb"
+   ],
+   "20": [
+    "passed",
+    "bd8ecd7419302f44287f4319be82ac75"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCountRepoMilestones": {
+   "1": [
+    "passed",
+    "f49a549bbf982fb278eead2879c6ee02"
+   ],
+   "2": [
+    "passed",
+    "24b04abda9419f06d821db0610728316"
+   ],
+   "3": [
+    "passed",
+    "2803127b6cb5fb10c0ff78d689fb6329"
+   ],
+   "4": [
+    "passed",
+    "5aedfe313469c0a040e9e8dfa26feece"
+   ],
+   "6": [
+    "passed",
+    "38646796a2557a2ac431a684e2ac7485"
+   ],
+   "7": [
+    "passed",
+    "a4e4df49105403a66999b7298a8aef38"
+   ],
+   "8": [
+    "passed",
+    "d3eb2e7f291a1b98770a81c270a6e1dd"
+   ],
+   "9": [
+    "passed",
+    "f72d1a1b5a704ec0926e66212bf770df"
+   ],
+   "10": [
+    "passed",
+    "07afd99acecd74d49fc929d8f901e309"
+   ],
+   "13": [
+    "passed",
+    "15acfe35c81fa1801fe31b95d9d1edb4"
+   ],
+   "14": [
+    "passed",
+    "054faf30ffd5b1747d2d7062e27a8e37"
+   ],
+   "16": [
+    "passed",
+    "b0a3f211de13b3831be26412b749937f"
+   ],
+   "17": [
+    "passed",
+    "0eb43cddc05b9ad5bdd8110224bd2a1a"
+   ],
+   "19": [
+    "passed",
+    "fff427f706c974de080cfae516660dc6"
+   ],
+   "20": [
+    "passed",
+    "17921f282c172ad0e8f9b5c11be4da99"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCreateOrStopIssueStopwatch": {
+   "1": [
+    "passed",
+    "989a2f7f6e4996cc25d29dc592dccb6a"
+   ],
+   "2": [
+    "passed",
+    "27250d54963ad177a499fe544b06eb67"
+   ],
+   "3": [
+    "passed",
+    "2ff300fa50043884b7e165a7f22a4752"
+   ],
+   "4": [
+    "passed",
+    "295c051cf13b8b803a8c6d0f82372e67"
+   ],
+   "5": [
+    "passed",
+    "6f0f5c9a3cacda4311e4c64b48708e6b"
+   ],
+   "6": [
+    "passed",
+    "627abda8bb7eae9a98beded1074e57e5"
+   ],
+   "7": [
+    "passed",
+    "f0dabb54a24e92ce47e7afb93696b9d1"
+   ],
+   "8": [
+    "passed",
+    "a50d65cbd17a87f943a9785fdbe47988"
+   ],
+   "10": [
+    "passed",
+    "f7609922cc4ca9dfbbfa27b84a92d942"
+   ],
+   "11": [
+    "passed",
+    "f1965f911eb8c48fd867b4ffe1087720"
+   ],
+   "12": [
+    "passed",
+    "38a4eda844f61de14ffd42307db40678"
+   ],
+   "13": [
+    "passed",
+    "8ce70722497221ae34e5f7c8214e3f6d"
+   ],
+   "14": [
+    "passed",
+    "b8ee8fe183ae360cfcbe9b838c0d5ffa"
+   ],
+   "16": [
+    "passed",
+    "df86cd25e7a6757f04c1bb9cf419ba24"
+   ],
+   "17": [
+    "passed",
+    "e25aff72f2e024b30073edcd82f3336f"
+   ],
+   "18": [
+    "passed",
+    "18ed3b3f1e8d47419a8bc8f95e5eaeb7"
+   ],
+   "20": [
+    "passed",
+    "de6613de320242c81ebbeea56c72b2e6"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMilestoneList_LoadTotalTrackedTimes": {
+   "1": [
+    "passed",
+    "9394634c5822ca20cb7f20f5691dfa4c"
+   ],
+   "2": [
+    "passed",
+    "b671f4ef9ac0bc38a17784599911977f"
+   ],
+   "3": [
+    "passed",
+    "14c6594ab5b9a990519b6b1afcddbbc6"
+   ],
+   "4": [
+    "passed",
+    "f418a9c2e491d637a109c78dcca04137"
+   ],
+   "7": [
+    "passed",
+    "63e91d306acbdd152d35a7237c2d5fc9"
+   ],
+   "8": [
+    "passed",
+    "871c728723a00b519c06b378dfac960e"
+   ],
+   "10": [
+    "passed",
+    "e727ebc554cbe3487446ce758a5dbd60"
+   ],
+   "11": [
+    "passed",
+    "c1a4d2fc011707939c9137e65add9057"
+   ],
+   "12": [
+    "passed",
+    "a0636b7f1454b54b0bbf80cf0b6fb1c1"
+   ],
+   "13": [
+    "passed",
+    "8977b78e18231217c91508720535307f"
+   ],
+   "14": [
+    "passed",
+    "8644631eb5be33cdc3cef874f27aa724"
+   ],
+   "15": [
+    "passed",
+    "11c1a20a84a139207ff4f4e51968062c"
+   ],
+   "16": [
+    "passed",
+    "8fb3c66fff1937f7c21aec4331c58a13"
+   ],
+   "17": [
+    "passed",
+    "f1f815efa0935c0f3af4834ab01f3585"
+   ],
+   "20": [
+    "passed",
+    "6d6b615885b1c701d60488eb0f0130bb"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCountRepoClosedMilestones": {
+   "1": [
+    "passed",
+    "f49a549bbf982fb278eead2879c6ee02"
+   ],
+   "2": [
+    "passed",
+    "24b04abda9419f06d821db0610728316"
+   ],
+   "3": [
+    "passed",
+    "2803127b6cb5fb10c0ff78d689fb6329"
+   ],
+   "4": [
+    "passed",
+    "5aedfe313469c0a040e9e8dfa26feece"
+   ],
+   "5": [
+    "passed",
+    "1008626d27712aa16bd01a2f9a1b48b4"
+   ],
+   "7": [
+    "passed",
+    "a4e4df49105403a66999b7298a8aef38"
+   ],
+   "8": [
+    "passed",
+    "d3eb2e7f291a1b98770a81c270a6e1dd"
+   ],
+   "10": [
+    "passed",
+    "07afd99acecd74d49fc929d8f901e309"
+   ],
+   "11": [
+    "passed",
+    "e58405c8ea7584aadfc9aa3ea90d0843"
+   ],
+   "13": [
+    "passed",
+    "461e3fd0db8c3e848249fb507018f8be"
+   ],
+   "14": [
+    "passed",
+    "054faf30ffd5b1747d2d7062e27a8e37"
+   ],
+   "16": [
+    "passed",
+    "b0a3f211de13b3831be26412b749937f"
+   ],
+   "17": [
+    "passed",
+    "0eb43cddc05b9ad5bdd8110224bd2a1a"
+   ],
+   "20": [
+    "passed",
+    "17921f282c172ad0e8f9b5c11be4da99"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetReviewByID": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "3": [
+    "passed",
+    "c79ebd47720fe1884cac5bfacf05eae8"
+   ],
+   "5": [
+    "passed",
+    "0a97bc6232e09bd514f4c631d2d768b8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestPullRequest": {
+   "1": [
+    "passed",
+    "b41a76c92d72596194d4f59c0b71c575"
+   ],
+   "2": [
+    "passed",
+    "268f30cab2e4be9cf2f90fd305e1147f"
+   ],
+   "3": [
+    "passed",
+    "cc0171067d69fa018ae7d917138255c3"
+   ],
+   "4": [
+    "passed",
+    "2a1f9473d88ab7f091cabe5f8eae363f"
+   ],
+   "5": [
+    "passed",
+    "0a6c31542e7897b4e2c5df1cf8a6439d"
+   ],
+   "6": [
+    "passed",
+    "aa25ab1438082b61be14a65d92da75b1"
+   ],
+   "7": [
+    "passed",
+    "94a3009a525e9d55c726995bb38d079c"
+   ],
+   "8": [
+    "passed",
+    "a5b5ed849a9a2ee5898fb62a4a56df24"
+   ],
+   "9": [
+    "passed",
+    "5c089818b5b659d05509e0dbdcf75b1e"
+   ],
+   "10": [
+    "passed",
+    "7c339e26e3cb0c2c5158ec5ff4ce3af2"
+   ],
+   "11": [
+    "passed",
+    "855229f645835efe65d2f7d378fd1219"
+   ],
+   "13": [
+    "passed",
+    "7c912c67caa92c6103bb5dba014690fe"
+   ],
+   "14": [
+    "passed",
+    "0f8816e4120ae1b1ee5b49268790b1f7"
+   ],
+   "16": [
+    "passed",
+    "f4137d95303223180dceb9018e0ffd44"
+   ],
+   "17": [
+    "passed",
+    "9dd3d8c155faaacbe06896a263cbe945"
+   ],
+   "20": [
+    "passed",
+    "95992b48c9924bc29898d405336160ed"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestReviewType_Icon": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestFindLatestReviews": {
+   "1": [
+    "passed",
+    "4ca0437c832bbc45e963c212ddb80148"
+   ],
+   "2": [
+    "passed",
+    "325b375e4c828c3124c6cd4be886dd6d"
+   ],
+   "3": [
+    "passed",
+    "9d4229d9139baecd4f6d7da4ac762597"
+   ],
+   "6": [
+    "passed",
+    "d43d1965f0b5928fe1529a225139656a"
+   ],
+   "8": [
+    "passed",
+    "bdf75f0fea9df4708d00f3c86145c6da"
+   ],
+   "9": [
+    "passed",
+    "8ad72c0ceaa4b7e30aca94356ecd7b01"
+   ],
+   "10": [
+    "passed",
+    "68f2187667c8587ac3b3af84749787c0"
+   ],
+   "13": [
+    "passed",
+    "30ca4ca5ba15e7cfafc6f1306d7b3727"
+   ],
+   "14": [
+    "passed",
+    "a6d1fef7d3633d79e4b243db03dc55ab"
+   ],
+   "16": [
+    "passed",
+    "e19e14da67809a9b306f3f81ec391d89"
+   ],
+   "17": [
+    "passed",
+    "a40ceeb877d789f1990dc5983a784114"
+   ],
+   "18": [
+    "passed",
+    "6393051b1984db2a52cd2ea8c9a9b928"
+   ],
+   "20": [
+    "passed",
+    "4d278c0d526aca284bee4bf08f19d2e9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::Test_UpdateCommentAttachment": {
+   "1": [
+    "passed",
+    "a90a3c1821b2b239e5df5439ed171739"
+   ],
+   "2": [
+    "passed",
+    "954b96b8381cb9bbb7075d059f203500"
+   ],
+   "3": [
+    "passed",
+    "5b454d347460b5c902c6d018358b6d9f"
+   ],
+   "6": [
+    "passed",
+    "d0e8cf1afa31f4b8c910e51025f4684b"
+   ],
+   "7": [
+    "passed",
+    "49dd899041090d3245f05e0a774b11f3"
+   ],
+   "8": [
+    "passed",
+    "49c2828cccc82eb1d3f051e4529b62aa"
+   ],
+   "10": [
+    "passed",
+    "c3c67e5593b1062b0561bc7cd18d8962"
+   ],
+   "13": [
+    "passed",
+    "e186073ca60bed72e5ecc90d300330a0"
+   ],
+   "14": [
+    "passed",
+    "458e38efb911d5727a1e9ee566f25307"
+   ],
+   "16": [
+    "passed",
+    "03285c653b7dd2ee9d997a17299c66fb"
+   ],
+   "17": [
+    "passed",
+    "5e224e6df43fea9febb8599ad8a6aed1"
+   ],
+   "20": [
+    "passed",
+    "8067605c16be8420bb9eaef9dbc8ac64"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueCols": {
+   "1": [
+    "passed",
+    "d34988ffef8133363831eb6dd0e564e1"
+   ],
+   "2": [
+    "passed",
+    "06a45f2457abfc24531a8131f5fa7945"
+   ],
+   "3": [
+    "passed",
+    "6e383f7f575cd7cce76ad72f8ac0c61c"
+   ],
+   "4": [
+    "passed",
+    "8f350c494fb6c5fea45b77034a549b61"
+   ],
+   "5": [
+    "passed",
+    "3b70cd8b528d9890dfa50f5d240b1c24"
+   ],
+   "6": [
+    "passed",
+    "fc8a08dc83da2102dcec7640851d99e7"
+   ],
+   "7": [
+    "passed",
+    "eef31bcf2b7ff86115c977959aa92795"
+   ],
+   "8": [
+    "passed",
+    "9d9ee8cc45ac963a7dc7fe924216f5dd"
+   ],
+   "9": [
+    "passed",
+    "7f92a802589da4c13cb2421842060b8b"
+   ],
+   "10": [
+    "passed",
+    "202f1c6b2dfe0c81dd63015abac66fc2"
+   ],
+   "11": [
+    "passed",
+    "4e3ac5c0de3befcf76fc2bad21e8f399"
+   ],
+   "13": [
+    "passed",
+    "7edd024137b141c99457c637d5c6e6ab"
+   ],
+   "14": [
+    "passed",
+    "86130e3f1611f789d973f7e5ba827c66"
+   ],
+   "15": [
+    "passed",
+    "723c53d34624b564e2b85aaeb831abdc"
+   ],
+   "16": [
+    "passed",
+    "dd1e5991d45e7a682d5eda2b658628ab"
+   ],
+   "17": [
+    "passed",
+    "6470685da9d4a213b7d571fc626e4175"
+   ],
+   "18": [
+    "passed",
+    "a0caf5f5e1ab487f925eecb87a64e9af"
+   ],
+   "20": [
+    "passed",
+    "3fa959d7e88e1a07564fa5aad5ef4851"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertMilestones": {
+   "1": [
+    "passed",
+    "cfe1f36b4802340d8b9a4a3df3072049"
+   ],
+   "2": [
+    "passed",
+    "0dd88718ef9cfe6b5d59c57f60a826e4"
+   ],
+   "3": [
+    "passed",
+    "0e6a0c76ee617f1bbf3bcd19e575e814"
+   ],
+   "5": [
+    "passed",
+    "777334398c640b424e23cc329328dd58"
+   ],
+   "8": [
+    "passed",
+    "6e78d6782cf136964b3073bedfbbf546"
+   ],
+   "9": [
+    "passed",
+    "c5d7d7e239752cf38f4ff3335e05245a"
+   ],
+   "10": [
+    "passed",
+    "20c272d48500c6d9a843da862e609bba"
+   ],
+   "11": [
+    "passed",
+    "ebac7829553ea39cb1dbfee2228046c0"
+   ],
+   "12": [
+    "passed",
+    "2cd2680ee3a37429f2c7fb74a05f496f"
+   ],
+   "13": [
+    "passed",
+    "bca9d88fc044db76501d25f4f7954657"
+   ],
+   "14": [
+    "passed",
+    "60f0543b828f5ae2b4832e43d2955888"
+   ],
+   "15": [
+    "passed",
+    "9dde2fdff8de169ba6b6c4fbeef5ff56"
+   ],
+   "16": [
+    "passed",
+    "ece63746f56f2c78cfb433e67004ac2a"
+   ],
+   "17": [
+    "passed",
+    "27138d85eb482b92f81c4f24d07f5883"
+   ],
+   "20": [
+    "passed",
+    "0127d98d1f7693e44ce0c436b29426dd"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestStopwatchExists": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "5": [
+    "passed",
+    "0a97bc6232e09bd514f4c631d2d768b8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "18": [
+    "passed",
+    "5596a17b8c972ce35005f3de918721eb"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssueList_LoadRepositories": {
+   "1": [
+    "passed",
+    "db7369e9969794d6442d2e2d0fea4c94"
+   ],
+   "2": [
+    "passed",
+    "401002f0fb9edcbaf49a9f47a244887a"
+   ],
+   "4": [
+    "passed",
+    "707973bb415aad056756965d0714e4b1"
+   ],
+   "5": [
+    "passed",
+    "def85958718447991bc07bc088661500"
+   ],
+   "6": [
+    "passed",
+    "acc89a0e8eceeabe7df98997d478d418"
+   ],
+   "8": [
+    "passed",
+    "5aad400eb103f60089676852a59b4d9b"
+   ],
+   "9": [
+    "passed",
+    "7430ea9b35feba12ba84b42ca47eff32"
+   ],
+   "10": [
+    "passed",
+    "175685afc6a3c571dfd5c83393409668"
+   ],
+   "11": [
+    "passed",
+    "f9781986d201035a3fdfa6eb73755f13"
+   ],
+   "13": [
+    "passed",
+    "d9fcc75197e443f77e74a1fcf9a3962b"
+   ],
+   "14": [
+    "passed",
+    "ef3031fa75be11d980ccc5781f5e0934"
+   ],
+   "16": [
+    "passed",
+    "53b7c4f459242290a4845602f886c81b"
+   ],
+   "17": [
+    "passed",
+    "b22b6ad5ab740614b616d8c848f3e59b"
+   ],
+   "20": [
+    "passed",
+    "7403f231e9021e4cdfa46bcaa193eabc"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInRepoByIDs": {
+   "1": [
+    "passed",
+    "4ca0437c832bbc45e963c212ddb80148"
+   ],
+   "2": [
+    "passed",
+    "325b375e4c828c3124c6cd4be886dd6d"
+   ],
+   "3": [
+    "passed",
+    "9d4229d9139baecd4f6d7da4ac762597"
+   ],
+   "4": [
+    "passed",
+    "ba94bac41ae1667f61d428cfbd4730cb"
+   ],
+   "5": [
+    "passed",
+    "580195000b64350a22c7b41497738909"
+   ],
+   "6": [
+    "passed",
+    "d43d1965f0b5928fe1529a225139656a"
+   ],
+   "8": [
+    "passed",
+    "bdf75f0fea9df4708d00f3c86145c6da"
+   ],
+   "9": [
+    "passed",
+    "8ad72c0ceaa4b7e30aca94356ecd7b01"
+   ],
+   "10": [
+    "passed",
+    "68f2187667c8587ac3b3af84749787c0"
+   ],
+   "12": [
+    "passed",
+    "3beb725b3b9911418618b9d45bb360e2"
+   ],
+   "13": [
+    "passed",
+    "30ca4ca5ba15e7cfafc6f1306d7b3727"
+   ],
+   "14": [
+    "passed",
+    "a6d1fef7d3633d79e4b243db03dc55ab"
+   ],
+   "16": [
+    "passed",
+    "e19e14da67809a9b306f3f81ec391d89"
+   ],
+   "17": [
+    "passed",
+    "a40ceeb877d789f1990dc5983a784114"
+   ],
+   "19": [
+    "passed",
+    "29a57ce998463d41deedefa179c2a3a8"
+   ],
+   "20": [
+    "passed",
+    "4d278c0d526aca284bee4bf08f19d2e9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCreateComment": {
+   "1": [
+    "passed",
+    "9fae652f70c64ff250cd43cca7c90ace"
+   ],
+   "2": [
+    "passed",
+    "7651e8c95847051b225042b7bf7a352d"
+   ],
+   "6": [
+    "passed",
+    "18c9d12c4dff063e8bb60178b0698dfe"
+   ],
+   "7": [
+    "passed",
+    "d379bef9bcf0038dbea5feca7759db9e"
+   ],
+   "8": [
+    "passed",
+    "68c95ae4cc13fa8c39c24b5b43c1902d"
+   ],
+   "9": [
+    "passed",
+    "6d4b6c859d62f245e8970428f58dd556"
+   ],
+   "10": [
+    "passed",
+    "a660ef6006d4f70bc766f7d3f577cb10"
+   ],
+   "13": [
+    "passed",
+    "581438343494581d8605a854432ce7b0"
+   ],
+   "14": [
+    "passed",
+    "060ea42b98874f8b21b6b7558659a810"
+   ],
+   "16": [
+    "passed",
+    "50cd30f0517d76b999e752933e850539"
+   ],
+   "17": [
+    "passed",
+    "35b0acd2dcff4bf971b2b79596b091b5"
+   ],
+   "20": [
+    "passed",
+    "32cfa52350b77deba5e4cee9848c1967"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabels": {
+   "1": [
+    "passed",
+    "4706434098ac08400564d253ea5f0f76"
+   ],
+   "2": [
+    "passed",
+    "5055ace3f46ef9a9cf7fa446189983c5"
+   ],
+   "4": [
+    "passed",
+    "de547cbb8a3b71c02da310ab05ffc8ea"
+   ],
+   "6": [
+    "passed",
+    "40ac6fcc69dbd0df5853bea1842a703c"
+   ],
+   "7": [
+    "passed",
+    "a1cd50ea976d86b9746c2b98c4c49fc2"
+   ],
+   "8": [
+    "passed",
+    "8df146bdab4e1964a274258b352f01cb"
+   ],
+   "10": [
+    "passed",
+    "b286ec0aa356d933281fd6d9029bbee2"
+   ],
+   "12": [
+    "passed",
+    "e1aaec9bc8328e5dffbd0870d7155022"
+   ],
+   "13": [
+    "passed",
+    "4cb295c8542a45317484c2b9c0513463"
+   ],
+   "14": [
+    "passed",
+    "94ba16170483a531bce238246e04f435"
+   ],
+   "16": [
+    "passed",
+    "8413cbb0216f6883bd5a7dd7cce3f2dc"
+   ],
+   "17": [
+    "passed",
+    "11b3516c815d04f32544dbf52d65868a"
+   ],
+   "20": [
+    "passed",
+    "429d50f086d5f0b86ee351d6b1552de1"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDismissReview": {
+   "1": [
+    "passed",
+    "8cd04c355488886f980fdf6bfdc762e7"
+   ],
+   "2": [
+    "passed",
+    "b78ab49f3bd13f2a77fefe85555cce1a"
+   ],
+   "3": [
+    "passed",
+    "ac4053295cf6d773b6ab253f2f8de665"
+   ],
+   "4": [
+    "passed",
+    "eafd2831ec7bc33584fe784930ed9934"
+   ],
+   "5": [
+    "passed",
+    "cde0ef37d999fb2b25c0b348849b6aa8"
+   ],
+   "7": [
+    "passed",
+    "a24a66f6081012acce8909ef63c1ecc4"
+   ],
+   "8": [
+    "passed",
+    "a89603c54720cfa3378672a85bc1ead3"
+   ],
+   "9": [
+    "passed",
+    "910dba32243cd6cefdc476f92a5d3f95"
+   ],
+   "10": [
+    "passed",
+    "63ba11bb7b76f8769b4f6a0deee411cc"
+   ],
+   "11": [
+    "passed",
+    "798ad5c54fd8f5ae85a4e3723af93e28"
+   ],
+   "12": [
+    "passed",
+    "b43acf382fb6256bb6c21d4b286327ab"
+   ],
+   "13": [
+    "passed",
+    "5f28514a32e9d402baab038ce76d2a5d"
+   ],
+   "14": [
+    "passed",
+    "d30f9943ea6904d683e02dfba8d12489"
+   ],
+   "16": [
+    "passed",
+    "9998e06185abf51f91394e5177ea2060"
+   ],
+   "17": [
+    "passed",
+    "c2693d679aef3471843c7b13483eff53"
+   ],
+   "20": [
+    "passed",
+    "2d82ef963646a5665f5163b33ec00390"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestAddTime": {
+   "1": [
+    "passed",
+    "7ab9fb4923c2b43d533e6686a5a2e8b3"
+   ],
+   "2": [
+    "passed",
+    "63d0b6d705753f344ee5e29d615d980d"
+   ],
+   "3": [
+    "passed",
+    "c80db786c07be4389526628a657c69ed"
+   ],
+   "4": [
+    "passed",
+    "3ea62479c2294822dda5409a03dd68b4"
+   ],
+   "8": [
+    "passed",
+    "8b1af9196b75b0adcc82ba5e18d4034d"
+   ],
+   "9": [
+    "passed",
+    "6d2f1048602919b4dbf2488a6ee8524c"
+   ],
+   "10": [
+    "passed",
+    "556b6b07aac5b2866f3d5cf1c32b5271"
+   ],
+   "11": [
+    "passed",
+    "b1a7802e84e5e17216ac89f5be07f01f"
+   ],
+   "12": [
+    "passed",
+    "71935000eb1b5d9a7c38fa646271fc67"
+   ],
+   "13": [
+    "passed",
+    "b0f24239871d76070f506d79a0a69dc2"
+   ],
+   "14": [
+    "passed",
+    "e343a93abeb072a02e052caa0af41ae7"
+   ],
+   "16": [
+    "passed",
+    "4cec10d1a02f93067e7547b488050f0b"
+   ],
+   "17": [
+    "passed",
+    "4ab3851e583ec2a996efb64fc2ed348f"
+   ],
+   "18": [
+    "passed",
+    "c0eda694a63a716a33517be083a44364"
+   ],
+   "20": [
+    "passed",
+    "c77305740baa8865b118dce8a50a7b16"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestXRef_NeuterCrossReferences": {
+   "1": [
+    "passed",
+    "5d48b11b61778ddfe2e2553dc8091a11"
+   ],
+   "2": [
+    "passed",
+    "840190c2baf8766a1c15476e4b6a8442"
+   ],
+   "3": [
+    "passed",
+    "c1c1966d411824cad780011a107a3073"
+   ],
+   "6": [
+    "passed",
+    "cfb415aaff5a784974848c5cba1c54e8"
+   ],
+   "7": [
+    "passed",
+    "aa5e026db4bf0ec96842debbbaacabc2"
+   ],
+   "8": [
+    "passed",
+    "2defa45d7f4bae5376364e21cee6aac1"
+   ],
+   "9": [
+    "passed",
+    "24ffbd76503e32ec3fc14f6d5ba3cec8"
+   ],
+   "10": [
+    "passed",
+    "e15b34603dbda3a86a9308dde3efa8d8"
+   ],
+   "11": [
+    "passed",
+    "2b74226735753b128811eaef0cb4a671"
+   ],
+   "12": [
+    "passed",
+    "aa828935263ca578c9d2b1c56dcc264c"
+   ],
+   "13": [
+    "passed",
+    "7e5ef06bf8579f00f01d097728f73fe7"
+   ],
+   "14": [
+    "passed",
+    "668722ebbcc40dc0c344a4a6b17c2e3e"
+   ],
+   "16": [
+    "passed",
+    "39b95f0b029cf1b84af7d08f27633410"
+   ],
+   "17": [
+    "passed",
+    "f9d0d1fc1591bf8ebb14c7c072a9f863"
+   ],
+   "20": [
+    "passed",
+    "2669a307d59205833cb31510a4053742"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCreateOrUpdateIssueWatch": {
+   "1": [
+    "passed",
+    "412259606477848419f54f30685d3f27"
+   ],
+   "2": [
+    "passed",
+    "5a7c3d39ef9d6b6c9638f98bb27f17d9"
+   ],
+   "3": [
+    "passed",
+    "52049c89ea4c514c141dabf331865d17"
+   ],
+   "5": [
+    "passed",
+    "5c0ffee6c3de2e6aa503f75271e8128b"
+   ],
+   "6": [
+    "passed",
+    "0cfb4128a6ae6a50486c698161721001"
+   ],
+   "7": [
+    "passed",
+    "50c9b6f28f208dc69e5fe6da8304aef3"
+   ],
+   "8": [
+    "passed",
+    "479ec7f0efa55ba9ebc1947ff2e3ca13"
+   ],
+   "9": [
+    "passed",
+    "1dad963f06848d885a044624ea287964"
+   ],
+   "10": [
+    "passed",
+    "beb4f9c9215789fbac2ac250ff65690b"
+   ],
+   "13": [
+    "passed",
+    "6399e68cf27168778de22885ca5a25c9"
+   ],
+   "14": [
+    "passed",
+    "2664ca6fb0750059e849e16ca221553c"
+   ],
+   "15": [
+    "passed",
+    "40e6ad24491fdc06a2310133098f7698"
+   ],
+   "16": [
+    "passed",
+    "4cb954ecf8160a58eda7ebe407a2ae15"
+   ],
+   "17": [
+    "passed",
+    "f4f9e594eaea885cf8abf5c7def14f2c"
+   ],
+   "19": [
+    "passed",
+    "ed2cd7d6d3b09a099ab1a509a6459d17"
+   ],
+   "20": [
+    "passed",
+    "8ef3f13d3f45d84f27243ae351587f8d"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateLabel": {
+   "1": [
+    "passed",
+    "61362b39818f26535e1b14e85e6fc8f4"
+   ],
+   "2": [
+    "passed",
+    "e0981f8c0ed87214446f2e1ed34e6d4b"
+   ],
+   "3": [
+    "passed",
+    "eae43b8775cb5262a3864035e2caf326"
+   ],
+   "5": [
+    "passed",
+    "b2718e0bc7e85422944a502c0c910943"
+   ],
+   "6": [
+    "passed",
+    "609bf808a21cf9b90796e96e9c41481e"
+   ],
+   "7": [
+    "passed",
+    "eda5de9d9ccb313d88e26e4fff42cb10"
+   ],
+   "8": [
+    "passed",
+    "351d0af4eebce99af437e350f7441f75"
+   ],
+   "9": [
+    "passed",
+    "2b7b636dc9394fd6b413e07862f9f76f"
+   ],
+   "10": [
+    "passed",
+    "98bae708fea0a3d24d52bfcc5928ba60"
+   ],
+   "12": [
+    "passed",
+    "cd5634b2c5a47feb2ef0780e2cdf7327"
+   ],
+   "13": [
+    "passed",
+    "c3f94c4faaf493006caf48cf187a09cf"
+   ],
+   "16": [
+    "passed",
+    "283d806bd3c68bf08f66ec47d474266f"
+   ],
+   "17": [
+    "passed",
+    "39ed7f59005d1b40465c94175d8e6c73"
+   ],
+   "19": [
+    "passed",
+    "3c902a1eeef4afa077c29afb09bcbd82"
+   ],
+   "20": [
+    "passed",
+    "eef1cf4685650dd1c4fb946196d3fa98"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDeleteMilestoneByRepoID": {
+   "1": [
+    "passed",
+    "15e11b78bbec0fd83d1b5574d40e42c8"
+   ],
+   "2": [
+    "passed",
+    "6371f6f9777cacc0186fcc09de277dca"
+   ],
+   "4": [
+    "passed",
+    "48b41a75136af7e7a3e33825a98c4185"
+   ],
+   "5": [
+    "passed",
+    "8c8c4461e54e1fa1dd8cc13b280fc58d"
+   ],
+   "6": [
+    "passed",
+    "441da1149f8f4f65c4aa28db7b10fa61"
+   ],
+   "7": [
+    "passed",
+    "ab5c14db8e09f3e6b6ebe9d85ad1a5f6"
+   ],
+   "8": [
+    "passed",
+    "f4838e6e6bb25ecbd8d25ad6084418da"
+   ],
+   "9": [
+    "passed",
+    "dce43de52b5ce85c56d974784e3a3a59"
+   ],
+   "10": [
+    "passed",
+    "e834b0e9fde26fae5c0d8b79c7223aba"
+   ],
+   "12": [
+    "passed",
+    "a6cf36dc4637406ff85db9f62a95e9a6"
+   ],
+   "13": [
+    "passed",
+    "b573a6d8c51d4ba9fb3536c56ce005a6"
+   ],
+   "14": [
+    "passed",
+    "63e69a5f0c442fc6ad7813352cb64879"
+   ],
+   "15": [
+    "passed",
+    "42cc647f76891222ea77008fcd806cc4"
+   ],
+   "16": [
+    "passed",
+    "115f98114c35aacb7b9fd22e78f5d23f"
+   ],
+   "17": [
+    "passed",
+    "97eb366d1acf28b3f574628633b365fd"
+   ],
+   "18": [
+    "passed",
+    "55a592fbff3837c29afb400e3fe39f80"
+   ],
+   "20": [
+    "passed",
+    "f0cafc3bd3c93c29adc7e6f1b41244d4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetTrackedTimes": {
+   "1": [
+    "passed",
+    "edff451e3cefc2599ebad421482029bb"
+   ],
+   "2": [
+    "passed",
+    "e23af66935dcca52b610e3e6aee88029"
+   ],
+   "4": [
+    "passed",
+    "035ddb06e84c66a45eec052472bafc1d"
+   ],
+   "6": [
+    "passed",
+    "dd6be45c02f74fe18664004210c42c30"
+   ],
+   "7": [
+    "passed",
+    "e7bcc188e33d5ca2af16034d5060ce61"
+   ],
+   "8": [
+    "passed",
+    "32f2a0298109709e97976a0bbe971aa2"
+   ],
+   "9": [
+    "passed",
+    "f4047627db53a121fe6816dc1e02fdca"
+   ],
+   "10": [
+    "passed",
+    "2e7dd0ca9ee6f773b2ecf85a754d872a"
+   ],
+   "11": [
+    "passed",
+    "1fa29cc513fec77cb276952246ea82f1"
+   ],
+   "12": [
+    "passed",
+    "f95139dad58f518acd627aaadb952220"
+   ],
+   "13": [
+    "passed",
+    "f407a5bd782546c80c4edf8e1af17432"
+   ],
+   "14": [
+    "passed",
+    "fd8b8453c9f809b1cf4ff3c6b9d493bd"
+   ],
+   "16": [
+    "passed",
+    "d0a9d7b99febc1c27ae9fb1581cf47f9"
+   ],
+   "17": [
+    "passed",
+    "6215791e5afe2208d2e570018c1a5d75"
+   ],
+   "18": [
+    "passed",
+    "3f8ce6d9005ed4080aad9d01a7f523b1"
+   ],
+   "19": [
+    "passed",
+    "d407c7ca8a732e45cfd1c59887a8e175"
+   ],
+   "20": [
+    "passed",
+    "2325ee28bc98101ab98f759e915b7efc"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestUpdateIssueUsersByMentions": {
+   "1": [
+    "passed",
+    "ba4c0b7c375c996be285dbf6ec1ca586"
+   ],
+   "2": [
+    "passed",
+    "0fbcec57f1c3e0338da478e32edaca5f"
+   ],
+   "5": [
+    "passed",
+    "f9d87994fbd37f46a0a99e4f6f95304f"
+   ],
+   "7": [
+    "passed",
+    "8f7c0609ac776e7b7883c7d69149e8ae"
+   ],
+   "8": [
+    "passed",
+    "357c7468fbc41f18b06af986c33ecbaa"
+   ],
+   "9": [
+    "passed",
+    "d7a59e8db60eb552b560a3af30638b95"
+   ],
+   "10": [
+    "passed",
+    "7f38fc409f3f25fba2ec625a0f5d2405"
+   ],
+   "12": [
+    "passed",
+    "c2270744abdd1fcbc12893351414dcad"
+   ],
+   "13": [
+    "passed",
+    "59a6c9ca475b860421667e51e1ec152e"
+   ],
+   "14": [
+    "passed",
+    "87c1e93ba0fa91d06554125b43ef96a3"
+   ],
+   "16": [
+    "passed",
+    "b75e38e8c8bf6979d1c9b98ac4a33025"
+   ],
+   "17": [
+    "passed",
+    "047e1b8fbb335f8ce1b19822ac949a27"
+   ],
+   "18": [
+    "passed",
+    "051874dac47d19aac0e794b067eae2d2"
+   ],
+   "20": [
+    "passed",
+    "1856ea366428cd6cfd078eb4e331ecc1"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMigrate_InsertIssueComments": {
+   "1": [
+    "passed",
+    "ab0689ad1e49cec80c82310ed964af1f"
+   ],
+   "2": [
+    "passed",
+    "067a2aa379b12e8ff6647e65a9d60234"
+   ],
+   "3": [
+    "passed",
+    "1bc88de6d0e2e4c81120fd0555d44932"
+   ],
+   "4": [
+    "passed",
+    "c5276de5c709fcd94ceecebd83e47e17"
+   ],
+   "8": [
+    "passed",
+    "c98bbcfd3f2920350a71ff315f78cabc"
+   ],
+   "9": [
+    "passed",
+    "3ef626ccb34423ce12dfaa51d980f8b5"
+   ],
+   "10": [
+    "passed",
+    "56e47f24a40bbb62e330ba6e8a265b65"
+   ],
+   "11": [
+    "passed",
+    "a5a3f64486f0a93a1205bfd9d33368a5"
+   ],
+   "12": [
+    "passed",
+    "7d8062d9074cb49efd12a3e9ba24ddd9"
+   ],
+   "13": [
+    "passed",
+    "383ef36e928f4072cc3d98d747458953"
+   ],
+   "14": [
+    "passed",
+    "5704f077048e5451f038e6f3d8a1daa6"
+   ],
+   "16": [
+    "passed",
+    "294ede3a41d629fce7c80e2527697b6a"
+   ],
+   "17": [
+    "passed",
+    "0e731575a10113a16c0f3efbca9583fb"
+   ],
+   "18": [
+    "passed",
+    "dd82ba789f07a19b1301464191d53851"
+   ],
+   "20": [
+    "passed",
+    "86dbd26f3e6977a51b370ce3bcaa0dd1"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::Test_GetIssueIDsByRepoID": {
+   "1": [
+    "passed",
+    "a358a969e9b5878ec26e6b9ae501c7df"
+   ],
+   "2": [
+    "passed",
+    "aa9fad636901df0d7970988d88c37f71"
+   ],
+   "5": [
+    "passed",
+    "1674907f9689db6e8a906c306db16729"
+   ],
+   "6": [
+    "passed",
+    "a8adce9808dee0c0bdbe8cf489983950"
+   ],
+   "7": [
+    "passed",
+    "913a5af6f004c57a672313bede313417"
+   ],
+   "8": [
+    "passed",
+    "68ca26dab8d246de8f857809f5f5a3af"
+   ],
+   "9": [
+    "passed",
+    "f0d9a39630cacfdd37a75354f5a9e0db"
+   ],
+   "10": [
+    "passed",
+    "16b4f9b404ff6042a7fac7fdfd72007e"
+   ],
+   "12": [
+    "passed",
+    "5a31e385f49d6304bcf6899c5ef66101"
+   ],
+   "13": [
+    "passed",
+    "c16cc1bb01e8b9c0308a76d4321aedc3"
+   ],
+   "14": [
+    "passed",
+    "c668871178b30079d83f40b8636f5db7"
+   ],
+   "16": [
+    "passed",
+    "243aba4897e6ce41844e4171340f22cc"
+   ],
+   "17": [
+    "passed",
+    "00ff41c0238ac5526aaee61b9053eef3"
+   ],
+   "19": [
+    "passed",
+    "390717cde2c95688cb4f8d65d4a3d900"
+   ],
+   "20": [
+    "passed",
+    "cc5fd7fd692b2ca1d8e16e2f62952ee4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelByID": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "4": [
+    "passed",
+    "22fc3d8d27fde0319ccaa62e86730cc5"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "19": [
+    "passed",
+    "50f2f74a6cafb2766c45ae65a2a4332c"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestReview_LoadAttributes": {
+   "1": [
+    "passed",
+    "b345dfbdf77b282ff6a56e6e8798a0a2"
+   ],
+   "2": [
+    "passed",
+    "d797cb07f3f9b43055a77bda00d31c68"
+   ],
+   "4": [
+    "passed",
+    "1bec420f3219054ca2d54eb252c4435c"
+   ],
+   "7": [
+    "passed",
+    "2ff93aecb020d13772146913bc0517ca"
+   ],
+   "8": [
+    "passed",
+    "471e2894c14113bfc027df624f52b353"
+   ],
+   "9": [
+    "passed",
+    "9e0a9d2dcf88ac70656134ea33bcc9f6"
+   ],
+   "10": [
+    "passed",
+    "a916226a351c97c93b66f9e579861445"
+   ],
+   "11": [
+    "passed",
+    "2c170f34981c96c491bcd99d88f83f81"
+   ],
+   "13": [
+    "passed",
+    "2bc21ca0ef771c661d5cb2f461078262"
+   ],
+   "14": [
+    "passed",
+    "e587a5183a1e320556d06da161923518"
+   ],
+   "16": [
+    "passed",
+    "e1c36488e0a1c4d19fe8d91a4ed9e3b3"
+   ],
+   "17": [
+    "passed",
+    "c5f69530a52fd0573c7a159775ac8a29"
+   ],
+   "18": [
+    "passed",
+    "5c540433e440d9a592eb6a1cdb12a594"
+   ],
+   "20": [
+    "passed",
+    "c568c7b13a339ed0e89d39612afe4510"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewIssueLabelsScope": {
+   "1": [
+    "passed",
+    "88e9364fa2decacbcee35cb1f29989b6"
+   ],
+   "2": [
+    "passed",
+    "db4afd918deca003329ebe14b4518e06"
+   ],
+   "5": [
+    "passed",
+    "967c959799c089eb5572a7002f7aa8e2"
+   ],
+   "6": [
+    "passed",
+    "097cc8665ceb449409a508d23184f321"
+   ],
+   "7": [
+    "passed",
+    "c7789d394b5845ccabc46aec7e2dfae2"
+   ],
+   "8": [
+    "passed",
+    "7c539b37a0bf796f4202fa80a23409f0"
+   ],
+   "9": [
+    "passed",
+    "8783dafc6eb793b73f503a41f4eee3b6"
+   ],
+   "10": [
+    "passed",
+    "e569b750b2181f77c2aab7c92128463a"
+   ],
+   "11": [
+    "passed",
+    "ecfa68d19b8a5530921d4d989e3630ab"
+   ],
+   "12": [
+    "passed",
+    "6f46c528e60e800ec2ac079b271f1313"
+   ],
+   "13": [
+    "passed",
+    "68ed0c62b0d44e276112e9168783f2be"
+   ],
+   "14": [
+    "passed",
+    "12f49f7bf75a8785d5e24d9d517a873d"
+   ],
+   "15": [
+    "passed",
+    "1900937f67d2c682d8747887ffbe4a85"
+   ],
+   "16": [
+    "passed",
+    "7b0ef1c24d70624e2b626982492a57a1"
+   ],
+   "17": [
+    "passed",
+    "1ee85f9487036e4f05ae0f80f5196787"
+   ],
+   "18": [
+    "passed",
+    "d349163a1ced7cc47268b3dc85def6d4"
+   ],
+   "19": [
+    "passed",
+    "f77cb8e4defb024506968a57ed68008f"
+   ],
+   "20": [
+    "passed",
+    "9c06d8c9a3aea20607cafd660cc5ac4a"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestLabel_ExclusiveScope": {
+   "1": [
+    "passed",
+    "a5aa0f0ccb783d6d897fd78b6c29a420"
+   ],
+   "2": [
+    "passed",
+    "ae3152e516657cf205d8b3145cd76b02"
+   ],
+   "4": [
+    "passed",
+    "42d33374f356b807429139a6d2997a34"
+   ],
+   "5": [
+    "passed",
+    "34734a11cb59020d44b9ec0e224f3982"
+   ],
+   "6": [
+    "passed",
+    "0748c1c4434e4ecb97521db8d6cc2759"
+   ],
+   "7": [
+    "passed",
+    "26c7b62bba3c271ede45d63055453a1b"
+   ],
+   "8": [
+    "passed",
+    "673c04acc5f15e4094d0b750b63793e3"
+   ],
+   "9": [
+    "passed",
+    "2102138556a9094a1f6653c2b15e064b"
+   ],
+   "10": [
+    "passed",
+    "9033925bbef7b415ab5079e30f8af727"
+   ],
+   "11": [
+    "passed",
+    "0fef3e532fe02e51ee9713e8d9f90ec3"
+   ],
+   "12": [
+    "passed",
+    "f8135f0df9c42fb1442a4dff0d616b14"
+   ],
+   "13": [
+    "passed",
+    "d606cb964deb30303e89652410b3dece"
+   ],
+   "14": [
+    "passed",
+    "5b9ff1827a43c8da09f911c448b7488c"
+   ],
+   "16": [
+    "passed",
+    "c268c5f1a764681e1124e2e1e2d193cb"
+   ],
+   "17": [
+    "passed",
+    "33c47bc776b712a0e984478d238bbd05"
+   ],
+   "19": [
+    "passed",
+    "4dcfb9e085f49257cc8658a7796b81dc"
+   ],
+   "20": [
+    "passed",
+    "db992889d98f5b41c2b805373c9f74c3"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestTotalTimesForEachUser": {
+   "1": [
+    "passed",
+    "d5ca9713c45628ed033c8c370c24b8c4"
+   ],
+   "2": [
+    "passed",
+    "d6a504c49640807ec91cf6a2082416b3"
+   ],
+   "3": [
+    "passed",
+    "d901735e81f1d821ff0897fe622c31c4"
+   ],
+   "5": [
+    "passed",
+    "fc350c440631b2989c05b1e9e2f03b0b"
+   ],
+   "6": [
+    "passed",
+    "5a899a5e5ca2139b3a4f8c1ac93a3b1f"
+   ],
+   "7": [
+    "passed",
+    "cea7d74e54368f7da16abee81c3fd98a"
+   ],
+   "8": [
+    "passed",
+    "03f30f1c8bae30ef798a42fd881f6908"
+   ],
+   "10": [
+    "passed",
+    "e2a333975ade80955bd5b6b87286fc84"
+   ],
+   "11": [
+    "passed",
+    "ce3d7e7633ea60da173f5c58a3b715de"
+   ],
+   "12": [
+    "passed",
+    "15fa679fd58616d5508119506f07130a"
+   ],
+   "13": [
+    "passed",
+    "925872a818b000fa2f6986edafedd341"
+   ],
+   "15": [
+    "passed",
+    "c9bb74d294fc7e59d0f8dc1f38296d61"
+   ],
+   "16": [
+    "passed",
+    "e7b4bc8d9c48d67dd4c6f8f04c9a5ad3"
+   ],
+   "17": [
+    "passed",
+    "ccd326850dc6875819ba45236156f137"
+   ],
+   "20": [
+    "passed",
+    "53a115e25502bdee29a7a29c2ace368d"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelsByOrgID": {
+   "1": [
+    "passed",
+    "3f3441054bbd2657a6954bdafe0167ae"
+   ],
+   "2": [
+    "passed",
+    "e4fc03f776cee57e794b0ac5caf98fd1"
+   ],
+   "6": [
+    "passed",
+    "c23cb30372e7ca7558fa4a6431033e30"
+   ],
+   "8": [
+    "passed",
+    "82e93c45c3dbb1923103d2e34c16f9db"
+   ],
+   "9": [
+    "passed",
+    "3b07490a15ad4632a83e0f86d29e2da3"
+   ],
+   "10": [
+    "passed",
+    "5ba3be3d6dcadd532f1759a6d279a980"
+   ],
+   "13": [
+    "passed",
+    "8a4467cfb78cb138abcfec423d0ab02c"
+   ],
+   "14": [
+    "passed",
+    "1f025f3ba728de2e77b892877e98683a"
+   ],
+   "16": [
+    "passed",
+    "5b9cd8f1a16208d29cdbe867786119f5"
+   ],
+   "17": [
+    "passed",
+    "d60fb92f2effef3bb19fdcd25dda1de6"
+   ],
+   "20": [
+    "passed",
+    "06e9682500a5ee3dfad4bfea01358fc2"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInOrgByName": {
+   "1": [
+    "passed",
+    "fa6a10fc7d874e8fb5f1e1d12b98d21a"
+   ],
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "3": [
+    "passed",
+    "c79ebd47720fe1884cac5bfacf05eae8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestHasIssueContentHistoryForCommentOnly": {
+   "1": [
+    "passed",
+    "b5fd34831a4d6b6c028ba26ca0230264"
+   ],
+   "2": [
+    "passed",
+    "875431537b6e043a7d7f8aa119d92248"
+   ],
+   "3": [
+    "passed",
+    "2623fa6be1d83dbac13fcd3ef2e23f38"
+   ],
+   "4": [
+    "passed",
+    "3b51a22010684568e26dc1166736e64b"
+   ],
+   "5": [
+    "passed",
+    "5b0434dcf699c1d67b932252b4fbc0a5"
+   ],
+   "6": [
+    "passed",
+    "60c0a796e104a505697d56a852a2314a"
+   ],
+   "7": [
+    "passed",
+    "398fb0949fcd1926f430e6f083cc888a"
+   ],
+   "8": [
+    "passed",
+    "1b7907c731e34e42b6f0e1b32a8e30f8"
+   ],
+   "9": [
+    "passed",
+    "315a5a91846ee5a1045df186b4b55f1d"
+   ],
+   "10": [
+    "passed",
+    "db96d2cde5e7690ce981833fe1661418"
+   ],
+   "11": [
+    "passed",
+    "3cc81e20cf5242f25ece6e58866aba8d"
+   ],
+   "12": [
+    "passed",
+    "4bbdc8503be8ec096f09e41cd7e85dea"
+   ],
+   "13": [
+    "passed",
+    "9952be40643d81278c24ed3cf4260a1c"
+   ],
+   "14": [
+    "passed",
+    "05be3e71e1bccd3984b51a80b6ade283"
+   ],
+   "15": [
+    "passed",
+    "31257eb96e6734bf4eb3e549d9ad8779"
+   ],
+   "16": [
+    "passed",
+    "01a675d5001e0d422d03c2e15a9d6c1b"
+   ],
+   "17": [
+    "passed",
+    "a70cb19ee93fdb32dbe34f2741c0fe0b"
+   ],
+   "18": [
+    "passed",
+    "52354f70acb733cdf469b0d75dd911a2"
+   ],
+   "19": [
+    "passed",
+    "661cd0faabc3508054101e2820963f7d"
+   ],
+   "20": [
+    "passed",
+    "06974df6c3516f1e8c16ac9a020d7f40"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetIssuesByIDs": {
+   "1": [
+    "passed",
+    "8f6048cd8e51defb251fe025e50d61c5"
+   ],
+   "2": [
+    "passed",
+    "88fce515d18fdd3fc9948a79c9f2bd39"
+   ],
+   "4": [
+    "passed",
+    "a0d619bca2c0ca5c66e99405fe9f50ed"
+   ],
+   "5": [
+    "passed",
+    "8ecf4ca17d0254be088e891a48fba0e7"
+   ],
+   "6": [
+    "passed",
+    "02fe6948d13b72f30ed856af0f4ced4e"
+   ],
+   "7": [
+    "passed",
+    "caf74d05f56a4ec028f6e77fb0e5511f"
+   ],
+   "8": [
+    "passed",
+    "40974a6ee295bf2cce8dc9bac0f0e72d"
+   ],
+   "9": [
+    "passed",
+    "2940f28a9ca8fde064103f13a590ce8e"
+   ],
+   "10": [
+    "passed",
+    "e9f1e5c07179499b9f85088138f0ae94"
+   ],
+   "11": [
+    "passed",
+    "c4af837940d27c7267a78cee8dcdb92b"
+   ],
+   "12": [
+    "passed",
+    "26f4b5725c6384bd60d458ff831ff756"
+   ],
+   "13": [
+    "passed",
+    "466c98c21af5284b5311b592bd7922ff"
+   ],
+   "14": [
+    "passed",
+    "591df3bcc3cda6f445de5b69d48bfdeb"
+   ],
+   "15": [
+    "passed",
+    "e9aaa1ea175d63516facdd1932c76436"
+   ],
+   "16": [
+    "passed",
+    "fe9a819ea835a37e6d540c019c993bd9"
+   ],
+   "17": [
+    "passed",
+    "7746ae9c6c9b7d2ba2b3a47d5c34446d"
+   ],
+   "18": [
+    "passed",
+    "8d139bba0b199a3f1f0d422fd1a5e05c"
+   ],
+   "20": [
+    "passed",
+    "f28f55d7e32a0e842e40d5c82f43d9b8"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestFetchCodeComments": {
+   "1": [
+    "passed",
+    "526c03e48b17d14194e8d99b1da1ff7f"
+   ],
+   "2": [
+    "passed",
+    "7a503cc99f98727f9281bec32f50ef7a"
+   ],
+   "4": [
+    "passed",
+    "c21ab49e1c319b5165c81c1477607e12"
+   ],
+   "5": [
+    "passed",
+    "86f572400071e49ea4019319009719f1"
+   ],
+   "6": [
+    "passed",
+    "9c0dd5bb5fdcbcf96e8b411acea80b68"
+   ],
+   "7": [
+    "passed",
+    "1012c438d39cc66b1132fd040d9c2cdb"
+   ],
+   "8": [
+    "passed",
+    "cbb1966b8536869305b6024fb93bbe0a"
+   ],
+   "10": [
+    "passed",
+    "1f3c8ac9b533bac1b28ec0d4c4ee1f04"
+   ],
+   "13": [
+    "passed",
+    "5bd185a4be48d3c08a94f3eaddeb8298"
+   ],
+   "14": [
+    "passed",
+    "1f0637605ef964d52641b302bedc6305"
+   ],
+   "15": [
+    "passed",
+    "b97e33f64acf63a881fa722abc37fa99"
+   ],
+   "16": [
+    "passed",
+    "aaf5ab4f69082d40f3d7a1818c40f116"
+   ],
+   "17": [
+    "passed",
+    "d23a5c7abe126ed9e45e88b9ecc9fbc2"
+   ],
+   "20": [
+    "passed",
+    "338137c3ee1fa09d97a0d9eebd4d2b0a"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssueLoadAttributes": {
+   "1": [
+    "passed",
+    "8c4b4f50095073b509ddfcc94c73702c"
+   ],
+   "2": [
+    "passed",
+    "dacc3dfc023145f9ab7c865e657a1eac"
+   ],
+   "3": [
+    "passed",
+    "82b6b384bfdf3ad3a1c2478491769cc4"
+   ],
+   "5": [
+    "passed",
+    "2073e6716334b0fd0311129f0c779b1f"
+   ],
+   "6": [
+    "passed",
+    "99ecacb020e45da2fe0bb5ff1bde04d7"
+   ],
+   "7": [
+    "passed",
+    "e8d19f6da1fe2345e9a7ce24ffc03742"
+   ],
+   "8": [
+    "passed",
+    "9139f0e24a204df0856aa97fd9ff402c"
+   ],
+   "9": [
+    "passed",
+    "da949bc7e0810d1e57b1d9a136385fb5"
+   ],
+   "10": [
+    "passed",
+    "8df571e88460a948a26961d5e995e035"
+   ],
+   "11": [
+    "passed",
+    "a664d6f49c127548eceb4f9246a4abba"
+   ],
+   "13": [
+    "passed",
+    "8fb2479e7df3ad010c2e4fb5fe36ebd4"
+   ],
+   "15": [
+    "passed",
+    "05eb3c6be55a7912f1790f9a43212791"
+   ],
+   "16": [
+    "passed",
+    "c44c2559c8d22b8cec28178764465457"
+   ],
+   "17": [
+    "passed",
+    "fd05a5e142b15fcbdc5ecc32620f7817"
+   ],
+   "20": [
+    "passed",
+    "a5f6e82a9916cf1b9ab801daeb731086"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatchers": {
+   "1": [
+    "passed",
+    "3f3441054bbd2657a6954bdafe0167ae"
+   ],
+   "2": [
+    "passed",
+    "e4fc03f776cee57e794b0ac5caf98fd1"
+   ],
+   "7": [
+    "passed",
+    "07dabcb490510db9a9e107dc5afa86a0"
+   ],
+   "8": [
+    "passed",
+    "82e93c45c3dbb1923103d2e34c16f9db"
+   ],
+   "9": [
+    "passed",
+    "3b07490a15ad4632a83e0f86d29e2da3"
+   ],
+   "10": [
+    "passed",
+    "5ba3be3d6dcadd532f1759a6d279a980"
+   ],
+   "13": [
+    "passed",
+    "8a4467cfb78cb138abcfec423d0ab02c"
+   ],
+   "14": [
+    "passed",
+    "1f025f3ba728de2e77b892877e98683a"
+   ],
+   "16": [
+    "passed",
+    "5b9cd8f1a16208d29cdbe867786119f5"
+   ],
+   "17": [
+    "passed",
+    "7c3e99b09a4180b7abaabe00e080c1f7"
+   ],
+   "18": [
+    "passed",
+    "880486ec40984b66b923ff4ae3008b49"
+   ],
+   "20": [
+    "passed",
+    "06e9682500a5ee3dfad4bfea01358fc2"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestDeleteDismissedReview": {
+   "1": [
+    "passed",
+    "bb452571e26b6f8ba0422f9e0545bcdb"
+   ],
+   "2": [
+    "passed",
+    "73b2d2c8396a3b31df687613403552a2"
+   ],
+   "5": [
+    "passed",
+    "ae35675050124837f51c523849c29542"
+   ],
+   "6": [
+    "passed",
+    "59dd2864ad79163eb74c419e9eef6f44"
+   ],
+   "8": [
+    "passed",
+    "f1a463b6d5f06136ec310412e4c70d90"
+   ],
+   "9": [
+    "passed",
+    "41a25d0f58e3a55b03ad326913ddc838"
+   ],
+   "10": [
+    "passed",
+    "79f92aeb60c52862666cd8a3b6ee2eb8"
+   ],
+   "12": [
+    "passed",
+    "bbbd4cc8c26b06bf4d1ea8f81ac90902"
+   ],
+   "13": [
+    "passed",
+    "6e29d1ccb859a3c7ea45bf6affbcfce0"
+   ],
+   "15": [
+    "passed",
+    "9a38cdd19466dd21d1befe5852f29038"
+   ],
+   "16": [
+    "passed",
+    "06bc8339b088a914ebb96ec6dfa31604"
+   ],
+   "17": [
+    "passed",
+    "dba98bd88567df6cf3cc436e33be11f2"
+   ],
+   "18": [
+    "passed",
+    "a88794b6bc722f1f21fc03de3c5ebb72"
+   ],
+   "19": [
+    "passed",
+    "082c82fb9b1ed9c9357ee49dd903f75b"
+   ],
+   "20": [
+    "passed",
+    "88c0c0e5d939981e8c4d59b48e8556ff"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssue_ReplaceLabels": {
+   "1": [
+    "passed",
+    "eaf54a0bb7ad099bca5bd3fced10a751"
+   ],
+   "2": [
+    "passed",
+    "a02a0e6c82624e9f33e4352634f8fa60"
+   ],
+   "3": [
+    "passed",
+    "e6c160640f74bfb43c3a13c913a710d0"
+   ],
+   "6": [
+    "passed",
+    "a30fe6c2969d2cdcfcaeccdc04a2ce55"
+   ],
+   "7": [
+    "passed",
+    "386c12c7f1bb4998737cf44308047192"
+   ],
+   "8": [
+    "passed",
+    "36536466055b1b11670c4a2ac559e9b4"
+   ],
+   "10": [
+    "passed",
+    "a2dd9a956eac1b209afde8b1922401a6"
+   ],
+   "11": [
+    "passed",
+    "aecf0a893cdd0d6da1f40f5f338a9ed0"
+   ],
+   "12": [
+    "passed",
+    "30b087bd840fb73118c84cc483a9cf6c"
+   ],
+   "13": [
+    "passed",
+    "7f07619d1e60b3789267194eb64986bc"
+   ],
+   "14": [
+    "passed",
+    "ed1a0aae9271fc95edd5ae9b508ef951"
+   ],
+   "15": [
+    "passed",
+    "2ae6d8b58cbd17ac9fb591deddec8c23"
+   ],
+   "16": [
+    "passed",
+    "181b63784696082c6631707591c14b8f"
+   ],
+   "17": [
+    "passed",
+    "f6802ab02b5ed0d60e7f55893ddbcd88"
+   ],
+   "20": [
+    "passed",
+    "a1a85a57b6586d0ea95bbcbea82b1755"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestResourceIndex": {
+   "1": [
+    "passed",
+    "6eab2e59568a7e2fbf8a5f8c4aa93465"
+   ],
+   "2": [
+    "passed",
+    "611b84fb04421c492752f41d91e69187"
+   ],
+   "4": [
+    "passed",
+    "9bcfa9d0fe3e805aa20b9a90d16c5a16"
+   ],
+   "5": [
+    "passed",
+    "f4cd0116a567616e9973f5dce956d53c"
+   ],
+   "6": [
+    "passed",
+    "859053695abec7adbb4e02bbb1cb83f0"
+   ],
+   "7": [
+    "passed",
+    "419bcc9f41f99e3898d3ed938a66e544"
+   ],
+   "8": [
+    "passed",
+    "3d3649608c6848a5608aa8be53e91444"
+   ],
+   "10": [
+    "passed",
+    "ca2ce8db330934534f1a8b60f82965b9"
+   ],
+   "11": [
+    "passed",
+    "b1e309c14e728756fcc50a597ad56b40"
+   ],
+   "13": [
+    "passed",
+    "cd8c9d12c66e0f1ccf0263cdc79894cd"
+   ],
+   "14": [
+    "passed",
+    "20524d13c5c5c481486c0973ef79aae4"
+   ],
+   "16": [
+    "passed",
+    "bb4bbfe6167843efcc0445f4dfbd9d64"
+   ],
+   "17": [
+    "passed",
+    "74f1a3e7c321c2f97cb60f3e36efdb87"
+   ],
+   "18": [
+    "passed",
+    "0ec45b6af0ae64c5a8bdd0b9495fc59f"
+   ],
+   "19": [
+    "passed",
+    "1062e37477e16ebc3cfc1320ff0835da"
+   ],
+   "20": [
+    "passed",
+    "02e639301aaedbcd70a7e1989cad33f7"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestLabel_LoadSelectedLabelsAfterClick": {
+   "1": [
+    "passed",
+    "ada5ace8d3eb9460e257ac8540abd950"
+   ],
+   "2": [
+    "passed",
+    "88a4be31cb262164b05479ae69c81cce"
+   ],
+   "4": [
+    "passed",
+    "af8bb03b884398519b4a26ecc0e1b670"
+   ],
+   "6": [
+    "passed",
+    "5c02c7722958470e49c13e51b828ba10"
+   ],
+   "7": [
+    "passed",
+    "fcfa2fd9dfaed772f07f5eafff73f28f"
+   ],
+   "8": [
+    "passed",
+    "85f7a8b70de65671ca1f5b33ff914b6d"
+   ],
+   "9": [
+    "passed",
+    "3cf4925ffd1dbca5f58a74dbbd94029a"
+   ],
+   "10": [
+    "passed",
+    "ce1c36cde6e27ab5f1e1d9c523890b9c"
+   ],
+   "12": [
+    "passed",
+    "2c0e20c82df65b07802b61c64b199dea"
+   ],
+   "13": [
+    "passed",
+    "8df8b1136e0627b546112fe621692aab"
+   ],
+   "14": [
+    "passed",
+    "99e1da8f2b8f7ad0acb1c3c09be1bdbe"
+   ],
+   "16": [
+    "passed",
+    "5ca7d83780b47277c2eb424ad4266420"
+   ],
+   "17": [
+    "passed",
+    "4b1438a6b06521a5da8d7cff27381681"
+   ],
+   "20": [
+    "passed",
+    "60269bd3200b2fd4ed1327431ffb103e"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestReview_LoadCodeComments": {
+   "1": [
+    "passed",
+    "8f66216c0740da9facc42bd49aecaa66"
+   ],
+   "2": [
+    "passed",
+    "ea8ecb5e919c55c745b4216225f81ca4"
+   ],
+   "3": [
+    "passed",
+    "3afa0082798189cdbb49fabf6b6e7bfa"
+   ],
+   "6": [
+    "passed",
+    "373dc7f9fb4a0012111b30efabc5e584"
+   ],
+   "7": [
+    "passed",
+    "8406ffbdcf8fefbb53dff70a2ba10bfb"
+   ],
+   "8": [
+    "passed",
+    "85785a83bf0e1a8854ef24e56687682e"
+   ],
+   "9": [
+    "passed",
+    "b188d3a19c5b9d780a24459195b287b6"
+   ],
+   "10": [
+    "passed",
+    "e48db986f5126162d63e8b50e9752d9a"
+   ],
+   "11": [
+    "passed",
+    "67a6d84cc7455a17ab3a22bf047682af"
+   ],
+   "13": [
+    "passed",
+    "63ca76904a70cc948aecb0c42f74c76b"
+   ],
+   "14": [
+    "passed",
+    "76f5ae352bdcd54d09900b9460e36516"
+   ],
+   "15": [
+    "passed",
+    "5852d4830e23640c3a6d520c4b266e97"
+   ],
+   "16": [
+    "passed",
+    "8ced5c9b2f23f591b6e2424433745e96"
+   ],
+   "17": [
+    "passed",
+    "4e7951b645ba9e0c66d4fddcf8acf7b4"
+   ],
+   "18": [
+    "passed",
+    "aa9880d7578923f0af2dd057dfa9fd85"
+   ],
+   "20": [
+    "passed",
+    "f1f002a81631a75b62291218b4907381"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestContentHistory": {
+   "1": [
+    "passed",
+    "7518cf27a6d82ad5890e489b70570e23"
+   ],
+   "2": [
+    "passed",
+    "51b3f7f23997751c3b35794892c0c628"
+   ],
+   "3": [
+    "passed",
+    "5f79728947eccaa0c1d14f30d0feecc1"
+   ],
+   "4": [
+    "passed",
+    "b2b1d0bba4372cd971acd8a782549597"
+   ],
+   "5": [
+    "passed",
+    "6c9cd46190a8fe806e12bc03809fa4aa"
+   ],
+   "6": [
+    "passed",
+    "9c91b955b2fa51db49827ba7e23a4c40"
+   ],
+   "7": [
+    "passed",
+    "287c3a3711ec8ac494cba48747548bc6"
+   ],
+   "8": [
+    "passed",
+    "392f925d1b3ff3cdb20a0a32e69a8901"
+   ],
+   "9": [
+    "passed",
+    "82236b7e393c6e60e2009cca00e205df"
+   ],
+   "10": [
+    "passed",
+    "8945311088cd4440384f2eed1a731df8"
+   ],
+   "11": [
+    "passed",
+    "7e95b51cca998359d5a48bf732f0c905"
+   ],
+   "12": [
+    "passed",
+    "b7d8b50bb8927d0d9dd524fea3501612"
+   ],
+   "13": [
+    "passed",
+    "f7aca9c9f490913dcd25f28b25fc149b"
+   ],
+   "14": [
+    "passed",
+    "a8c2973380b9ec30295e26986753f00a"
+   ],
+   "15": [
+    "passed",
+    "824e5450e0ca5e003de22017adfe7fa3"
+   ],
+   "16": [
+    "passed",
+    "7b83d983fc27a23f0a38f4f0c39641fc"
+   ],
+   "17": [
+    "passed",
+    "fff60576e2305fd5f023d2b96e763553"
+   ],
+   "18": [
+    "passed",
+    "4b3d970687f99c390c8e0caca14a7f00"
+   ],
+   "19": [
+    "passed",
+    "4e654c5183e2412d97e4868409397366"
+   ],
+   "20": [
+    "passed",
+    "17a9cb2c9df8b786ca7c0467c33d861c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestAsCommentType": {
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCountIssues": {
+   "2": [
+    "passed",
+    "f5113447960e0d69bdca54996a0a712c"
+   ],
+   "3": [
+    "passed",
+    "d26461ce80a22c56911a473e9c1ec4d6"
+   ],
+   "4": [
+    "passed",
+    "8383bf7a42c5b98fc59a743ae764200b"
+   ],
+   "6": [
+    "passed",
+    "7fe67284e2fb2e7622ce11a6be9a9fc2"
+   ],
+   "7": [
+    "passed",
+    "55dbb7eb54382c44e7c621a7b9f9f8ad"
+   ],
+   "8": [
+    "passed",
+    "41302371a6b995fea46626f7b901b52c"
+   ],
+   "9": [
+    "passed",
+    "1acbca483c959966ae83b67ee644cb14"
+   ],
+   "10": [
+    "passed",
+    "644f142098a98234200dcc3af478fcb9"
+   ],
+   "11": [
+    "passed",
+    "ccdd34d495bbf6674224c7b4be1b197f"
+   ],
+   "12": [
+    "passed",
+    "10c0872e4e40884ecec2263bd4a17002"
+   ],
+   "13": [
+    "passed",
+    "ef7fd13d59ebd1a0f83acd977a9dbd69"
+   ],
+   "14": [
+    "passed",
+    "5ba36bc73c9e44857766674329ddac06"
+   ],
+   "15": [
+    "passed",
+    "10fec9cf6119c08756b0e3249c3a3202"
+   ],
+   "16": [
+    "passed",
+    "9ba61224d02e93e2e26cecbb63d33b01"
+   ],
+   "17": [
+    "passed",
+    "8c23bb1556a8cc9fc09ead3de1ed6c7f"
+   ],
+   "20": [
+    "passed",
+    "36fa49eb16b6bc474ee77577c5537bbe"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetIssueWatch": {
+   "2": [
+    "passed",
+    "061b53c43f664f35a98c06b4e1f5a21b"
+   ],
+   "3": [
+    "passed",
+    "8efac3b5b147cf8836a9eedfc3302a32"
+   ],
+   "5": [
+    "passed",
+    "02b2e012d6b0bf90f1c52b6cb2a9623c"
+   ],
+   "6": [
+    "passed",
+    "2a47f335df11b6b3ced21521c69bd507"
+   ],
+   "8": [
+    "passed",
+    "8371e71a63c0459d0be6989115c45162"
+   ],
+   "10": [
+    "passed",
+    "49a8d039ccd30306c16d4491591240de"
+   ],
+   "12": [
+    "passed",
+    "f0db004ec6bd8ca75b9f1f10c54d0ad7"
+   ],
+   "13": [
+    "passed",
+    "fe66c53be718643cff55725f6beaad24"
+   ],
+   "14": [
+    "passed",
+    "fdc5902360bf0514fd51a512530dba17"
+   ],
+   "16": [
+    "passed",
+    "a796c519f3a9b21d956329c698b2c927"
+   ],
+   "17": [
+    "passed",
+    "fc7fe0ce20ee3d2a3f9cbdeb179b6b8d"
+   ],
+   "20": [
+    "passed",
+    "808f3e67fc41c5533913f1898d02da3a"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetParticipantIDsByIssue": {
+   "2": [
+    "passed",
+    "5234b14d0079677c359a9ae70ac46bc0"
+   ],
+   "3": [
+    "passed",
+    "c77c38bda3b5d7097e96da7df594489d"
+   ],
+   "6": [
+    "passed",
+    "0db0e9267245cd8b14d235a8f8889ddb"
+   ],
+   "7": [
+    "passed",
+    "b3da96e3150b2a9b72ba7e5262b8a706"
+   ],
+   "8": [
+    "passed",
+    "ee7cfe678005dfb8a8a71499d9b88a5b"
+   ],
+   "9": [
+    "passed",
+    "72573f2ae0cc6bd3e489c59d91891734"
+   ],
+   "10": [
+    "passed",
+    "900f3b0cdf822256d92ab87036325b83"
+   ],
+   "11": [
+    "passed",
+    "15c7e5224e665bf584c0165a4deb1672"
+   ],
+   "12": [
+    "passed",
+    "ba7bc1409bce4e888a78aa035ed8e744"
+   ],
+   "13": [
+    "passed",
+    "65fa0a622c8599a3caf679e8a16fc71b"
+   ],
+   "14": [
+    "passed",
+    "4f5067b89729bcb940dcb4e8cd837d88"
+   ],
+   "16": [
+    "passed",
+    "7bbd9e211f17b4133e613e7409406221"
+   ],
+   "17": [
+    "passed",
+    "41968dc2c9c0d6e2a3772f57712776f1"
+   ],
+   "18": [
+    "passed",
+    "1821b14f270dac74d86ecd323094ee4d"
+   ],
+   "20": [
+    "passed",
+    "ec0a575c534d4de0c24d753a10bce8f4"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetMilestoneByRepoID": {
+   "2": [
+    "passed",
+    "8ceac5bcb0181ab779e18f75b05ce67e"
+   ],
+   "3": [
+    "passed",
+    "e5620fecf319eef36a248e6223e60461"
+   ],
+   "5": [
+    "passed",
+    "e833fd6637d942971b9e4cb0ba3827a6"
+   ],
+   "6": [
+    "passed",
+    "185e11b5f012c330230d7da704426cfb"
+   ],
+   "8": [
+    "passed",
+    "a21d718382596871ba733024b9306cdb"
+   ],
+   "9": [
+    "passed",
+    "6276bf53900004491cf229b733724435"
+   ],
+   "10": [
+    "passed",
+    "d0e64ebef1fc71852094b2da44ccaefc"
+   ],
+   "11": [
+    "passed",
+    "142b8750918e5cb6d5668830c34c89c8"
+   ],
+   "12": [
+    "passed",
+    "49e98bab126adbaa523d978ad7d1164c"
+   ],
+   "13": [
+    "passed",
+    "a22717b588307ce0187caa0b42b4486a"
+   ],
+   "14": [
+    "passed",
+    "560a55fac13095f59638010be7c49546"
+   ],
+   "15": [
+    "passed",
+    "564a24c89d01c02465a6b404ef186fd8"
+   ],
+   "16": [
+    "passed",
+    "4010fa188d5ef03f7a3258beb814f6a0"
+   ],
+   "17": [
+    "passed",
+    "6df6463456cd33eaea20f423e81af4a5"
+   ],
+   "18": [
+    "passed",
+    "254cbab816f383b2b1469bfc373c082a"
+   ],
+   "20": [
+    "passed",
+    "f1a6ef2b9d4f3dc5cb5a0862e775cd55"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestHasIssueLabel": {
+   "2": [
+    "passed",
+    "d2d77718f03cfc2929a02790932f278d"
+   ],
+   "3": [
+    "passed",
+    "f4fff1043ac71585a469f63874599396"
+   ],
+   "5": [
+    "passed",
+    "237f55b9977d7510f0118937f508763a"
+   ],
+   "6": [
+    "passed",
+    "2e396b48a4823b90190b24901bfd85b2"
+   ],
+   "7": [
+    "passed",
+    "673bc9cbd5d50e571356b1a0c464a6be"
+   ],
+   "8": [
+    "passed",
+    "9f1ec97c4790438707ca6e9d7ba67f19"
+   ],
+   "9": [
+    "passed",
+    "2806ebbec9a6c0e7ed0fa3d0f30258eb"
+   ],
+   "10": [
+    "passed",
+    "ed1b89972d2c4c2bbf2995a0742f418f"
+   ],
+   "11": [
+    "passed",
+    "268f22b0e85702d37ca7c3f6679c22fc"
+   ],
+   "13": [
+    "passed",
+    "18b56814d85feafa3cd56fbebfca139b"
+   ],
+   "14": [
+    "passed",
+    "46ce6b3e1547242d31908768b2959c90"
+   ],
+   "16": [
+    "passed",
+    "5305dde5a0ed5b112e2bc8c621eca927"
+   ],
+   "17": [
+    "passed",
+    "44a30e4ab5133af5fafea9119dbbdcb0"
+   ],
+   "19": [
+    "passed",
+    "4ef73aeadaf2ef08379fc7069320017e"
+   ],
+   "20": [
+    "passed",
+    "150e480c8c2f83df9a36d019dd514524"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByName": {
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::Test_NewIssueUsers": {
+   "2": [
+    "passed",
+    "c920bac9e8b3d45171d1b9669ec2b644"
+   ],
+   "5": [
+    "passed",
+    "6d81afe7773eda5c95ec1f3386c33f54"
+   ],
+   "7": [
+    "passed",
+    "8820f84e112321b5f07000fe25c429b6"
+   ],
+   "8": [
+    "passed",
+    "d4219f85b324c50991f68dbb45b2974d"
+   ],
+   "9": [
+    "passed",
+    "2e0346e0ce4800417cbf7bb559730d85"
+   ],
+   "10": [
+    "passed",
+    "0ed7e5ab8c6674f19b7b30b92e9c7bde"
+   ],
+   "11": [
+    "passed",
+    "9a5be54a973a9e5aa964adaadbc2ccd2"
+   ],
+   "13": [
+    "passed",
+    "dd0a290935377a8afc58631549e9e004"
+   ],
+   "16": [
+    "passed",
+    "171ff7c6f357169ff085ba09534968d0"
+   ],
+   "17": [
+    "passed",
+    "85d9cc0996477a283347d7a95c0def41"
+   ],
+   "20": [
+    "passed",
+    "91733f61044338721b79902fe717130c"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestIssue_InsertIssue": {
+   "2": [
+    "passed",
+    "5541e370f39207bb36d5254efbdbe458"
+   ],
+   "4": [
+    "passed",
+    "9c6b4a38bc828d771e383341baa571e8"
+   ],
+   "5": [
+    "passed",
+    "c5f084986a754d8fcdacb578ddf2a705"
+   ],
+   "6": [
+    "passed",
+    "6e520c8302151fd54de78fefe3d76216"
+   ],
+   "7": [
+    "passed",
+    "9a4d610d0a4ec73ae7f2b9166f53e295"
+   ],
+   "8": [
+    "passed",
+    "7c80e09e2134d24c85681a4d9616e645"
+   ],
+   "9": [
+    "passed",
+    "aa635b03b991e2e82600a70c2b5faf9c"
+   ],
+   "10": [
+    "passed",
+    "e2389a10f0be478dc71b788a11d2f1da"
+   ],
+   "13": [
+    "passed",
+    "fdeb3c501072f72ab1c5264dd9aea70c"
+   ],
+   "15": [
+    "passed",
+    "41c474b757c7f3bd77b47e973bbbb53d"
+   ],
+   "16": [
+    "passed",
+    "5c2c7f1409d93841e7f4d2b2ab9624f3"
+   ],
+   "17": [
+    "passed",
+    "b176a984d1d8882a1bb40a8288f59d4e"
+   ],
+   "20": [
+    "passed",
+    "f2dc26b719a9276177b84ce8131b8afd"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetMilestones": {
+   "2": [
+    "passed",
+    "cdd66b5ee14317a9ed37b5c81a7206dc"
+   ],
+   "4": [
+    "passed",
+    "d5d5d9c7b3a0d4e317757c8f1a7a5e48"
+   ],
+   "5": [
+    "passed",
+    "1c46e86dfaef3cf2f073fc21d26cf7d0"
+   ],
+   "6": [
+    "passed",
+    "cb25280184ca1e1ea46346efa73cb486"
+   ],
+   "7": [
+    "passed",
+    "5d0f281efa39f5aae33b644fcef6ebf6"
+   ],
+   "8": [
+    "passed",
+    "a6c739000a5aa5359b54aff6e246c24a"
+   ],
+   "9": [
+    "passed",
+    "cf0e0d2028a91c963d77a5716b9de237"
+   ],
+   "10": [
+    "passed",
+    "a0038cd43ce08ab9c3f607a58d70363e"
+   ],
+   "12": [
+    "passed",
+    "9e23fd31b7ccbd33a10423f94102d294"
+   ],
+   "13": [
+    "passed",
+    "0dcd6a6ab7b3d8da7b2189c02edfd4e6"
+   ],
+   "14": [
+    "passed",
+    "72a165703ce2b9b9332e243281ae782a"
+   ],
+   "16": [
+    "passed",
+    "a3abca85d320fa1f94bd95efa46ab04a"
+   ],
+   "17": [
+    "passed",
+    "4e9203b87f87b228bde73f157d147fdf"
+   ],
+   "20": [
+    "passed",
+    "5f41be54d17cdc200148ec01988cf859"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelInRepoByID": {
+   "2": [
+    "passed",
+    "e7d8beae548e3f77cafb21f3b18e0f28"
+   ],
+   "4": [
+    "passed",
+    "22fc3d8d27fde0319ccaa62e86730cc5"
+   ],
+   "5": [
+    "passed",
+    "0a97bc6232e09bd514f4c631d2d768b8"
+   ],
+   "6": [
+    "passed",
+    "e541005b0c1ca7929a492db120a09546"
+   ],
+   "7": [
+    "passed",
+    "7405e558262de036ad676024d24757ff"
+   ],
+   "8": [
+    "passed",
+    "974168e4a05741025f239ef855ed2d29"
+   ],
+   "9": [
+    "passed",
+    "67adeee5b0c9dd4e1c4fe528b9847e86"
+   ],
+   "10": [
+    "passed",
+    "573316f86627dcd0d06d69d7f88e2cc9"
+   ],
+   "12": [
+    "passed",
+    "490d5ce46b7536b2af77842f2f136780"
+   ],
+   "13": [
+    "passed",
+    "4be64e04d848f19f010ac213b2ee44cb"
+   ],
+   "14": [
+    "passed",
+    "00f527221df5e99de47ea358234a7f5f"
+   ],
+   "15": [
+    "passed",
+    "aa6846a53d0dfcfb4f57c73aeec487a9"
+   ],
+   "16": [
+    "passed",
+    "e5d07cea47932ec4a3a62b103bae6382"
+   ],
+   "17": [
+    "passed",
+    "c256bc21209ee52353225be871dc87d7"
+   ],
+   "18": [
+    "passed",
+    "5596a17b8c972ce35005f3de918721eb"
+   ],
+   "20": [
+    "passed",
+    "e1577a9b8eb27103f0c4708c0d983b78"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestCorrectIssueStats": {
+   "2": [
+    "passed",
+    "9f4eaff4b1ed7cfa7a6cf825993f755f"
+   ],
+   "3": [
+    "passed",
+    "62162092ceeefcc14284165f9e2d7bfc"
+   ],
+   "4": [
+    "passed",
+    "04b41b335f422995118dd1dfa4fefda4"
+   ],
+   "6": [
+    "passed",
+    "dd72e2394aa3da980df8473acee434d4"
+   ],
+   "7": [
+    "passed",
+    "89fb90d843b9e988b2d8de1c2853b9d7"
+   ],
+   "8": [
+    "passed",
+    "09382bfd2b15d81960e14d50ba3e1143"
+   ],
+   "9": [
+    "passed",
+    "88c6e2a53f39c4ff416c4290fe324246"
+   ],
+   "10": [
+    "passed",
+    "38ab0224f3a4c0ae82d272ca6e2cda22"
+   ],
+   "11": [
+    "passed",
+    "021a8d8adee23047819fcdd42a060f2b"
+   ],
+   "12": [
+    "passed",
+    "1266dccc85d555d1c72db922087c9124"
+   ],
+   "13": [
+    "passed",
+    "6f80678e7fcacac4a9849821bd6c65b8"
+   ],
+   "14": [
+    "passed",
+    "69669903205bc9d18c3708d9b5f84a55"
+   ],
+   "16": [
+    "passed",
+    "d4b4b7b48dcbf4d91a13d37995136530"
+   ],
+   "17": [
+    "passed",
+    "7963d2bee9a1138fe48921e4d6b844a8"
+   ],
+   "20": [
+    "passed",
+    "fd42fa7f4f2b4b75294f9ee86982266f"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMigrate_CreateIssuesIsPullTrue": {
+   "2": [
+    "passed",
+    "4eb907661f12fd388665a7639c5bdee7"
+   ],
+   "3": [
+    "passed",
+    "20a382b60ee1b19d267437fee4c2cc50"
+   ],
+   "5": [
+    "passed",
+    "17583cd1cce6b03fa6344015c096b297"
+   ],
+   "6": [
+    "passed",
+    "2fdd9dbdef243b8c5a7bdc225248b56d"
+   ],
+   "7": [
+    "passed",
+    "e4ad06573f51b35056220845c100ad23"
+   ],
+   "8": [
+    "passed",
+    "1bb4be61eea252d9a016399505cc8169"
+   ],
+   "9": [
+    "passed",
+    "33cc51460c8be15a46f8c923fa90cd87"
+   ],
+   "10": [
+    "passed",
+    "6d8a2156ae277062ecb49a3e2fab3b6f"
+   ],
+   "11": [
+    "passed",
+    "af9e8ed6a3d1e3321408a6c12cdd681d"
+   ],
+   "13": [
+    "passed",
+    "e5ae5323a52626d32dfce7d8a449f49e"
+   ],
+   "14": [
+    "passed",
+    "e1f1b8f251feae971cdecbac3dbc9dda"
+   ],
+   "16": [
+    "passed",
+    "35f25ad9390d25404f1396b9b2164c34"
+   ],
+   "17": [
+    "passed",
+    "791367e60be6aaee0553a29e5f1d89df"
+   ],
+   "18": [
+    "passed",
+    "6f7cc3af7ced8e29246d9b8efbb5d85d"
+   ],
+   "20": [
+    "passed",
+    "2920e7587d9345512c8a70112216edab"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestNewMilestone": {
+   "2": [
+    "passed",
+    "48c8d0a0d2a53bfc52b22b0b30f4bd7c"
+   ],
+   "8": [
+    "passed",
+    "77c7c5b88244254cf42fa211e14e4d40"
+   ],
+   "9": [
+    "passed",
+    "dc85f05c4ef2df6665f16c52756ff3f0"
+   ],
+   "10": [
+    "passed",
+    "c6130a7627016f2225cee5654a8c5656"
+   ],
+   "11": [
+    "passed",
+    "dc2f0be1a4fbe528a7d95a8b6ff71deb"
+   ],
+   "13": [
+    "passed",
+    "3647ced248a98d3a219af21af66d5e39"
+   ],
+   "14": [
+    "passed",
+    "e4505a8260e1095a3b738f08429e4271"
+   ],
+   "16": [
+    "passed",
+    "38db7c46e3a417ee5320087544910363"
+   ],
+   "17": [
+    "passed",
+    "f1972c25d3b6ff8dc100c870678ab412"
+   ],
+   "20": [
+    "passed",
+    "0ebb2cc511cd761b885f7fdfef7de5d9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestGetLabelsInOrgByIDs": {
+   "2": [
+    "passed",
+    "325b375e4c828c3124c6cd4be886dd6d"
+   ],
+   "4": [
+    "passed",
+    "ba94bac41ae1667f61d428cfbd4730cb"
+   ],
+   "6": [
+    "passed",
+    "d43d1965f0b5928fe1529a225139656a"
+   ],
+   "7": [
+    "passed",
+    "569b5c8f5817450cf0720a078a2f4f18"
+   ],
+   "8": [
+    "passed",
+    "bdf75f0fea9df4708d00f3c86145c6da"
+   ],
+   "9": [
+    "passed",
+    "8ad72c0ceaa4b7e30aca94356ecd7b01"
+   ],
+   "10": [
+    "passed",
+    "68f2187667c8587ac3b3af84749787c0"
+   ],
+   "11": [
+    "passed",
+    "6411732b07d668f5e5650bde6f89e1ee"
+   ],
+   "13": [
+    "passed",
+    "30ca4ca5ba15e7cfafc6f1306d7b3727"
+   ],
+   "14": [
+    "passed",
+    "a6d1fef7d3633d79e4b243db03dc55ab"
+   ],
+   "16": [
+    "passed",
+    "185d338d642c0b2f86a07f30bb3b0aa2"
+   ],
+   "17": [
+    "passed",
+    "d682cd3e38e93ec2a2a70c1c0472dbe3"
+   ],
+   "18": [
+    "passed",
+    "6393051b1984db2a52cd2ea8c9a9b928"
+   ],
+   "20": [
+    "passed",
+    "4d278c0d526aca284bee4bf08f19d2e9"
+   ]
+  },
+  "code.gitea.io/gitea/models/issues::TestMakeIDsFromAPIAssigneesToAdd": {
+   "2": [
+    "passed",
+    "b3dcaa2e34517e7e61a67d71c87f1c24"
+   ],
+   "5": [
+    "passed",
+    "de8c2906e759ef9ce36aa4cffd8200c6"
+   ],
+   "6": [
+    "passed",
+    "99bc736d6a27633a5b62cab9513affc6"
+   ],
+   "7": [
+    "passed",
+    "86c0dbe7b487b247fef1f2dd37d33489"
+   ],
+   "8": [
+    "passed",
+    "f0b5ce2dd49cf9138af0a62a1a2a2d31"
+   ],
+   "10": [
+    "passed",
+    "eacd2c1397f7eefdfdca9a57ea12c465"
+   ],
+   "12": [
+    "passed",
+    "031c870ab36acd68d32e7552716f771a"
+   ],
+   "13": [
+    "passed",
+    "4aab89fb9b716f7c1449ff8e1f7cca4e"
+   ],
+   "14": [
+    "passed",
+    "1914f39054dbe9b683a044acd845198c"
+   ],
+   "16": [
+    "passed",
+    "fc0b57dcba575c662ad636c8975933fc"
+   ],
+   "17": [
+    "passed",
+    "771a2ea2c591d84980c21897e75eae3a"
+   ],
+   "20": [
+    "passed",
+    "a1bdb8c5b39f1c57fecfe450b4923e9f"
+   ]
+  }
+ },
+ "baseline_unstable": [
+  "code.gitea.io/gitea/models/issues::TestContentHistory"
+ ],
+ "confirm": {
+  "code.gitea.io/gitea/models/issues::TestContentHistory": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  },
+  "code.gitea.io/gitea/models/issues::TestResourceIndex": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  103,
+  105
+ ],
+ "timing_keep_parallel": [
+  2.792,
+  2.162,
+  2.537
+ ],
+ "timing": {
+  "plain": [
+   2.206,
+   2.284,
+   2.3689999999999998
+  ],
+  "det": [
+   2.974,
+   2.128,
+   2.842
+  ]
+ },
+ "slowdown": 0.24430823117338019
+}

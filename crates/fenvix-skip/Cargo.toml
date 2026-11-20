@@ -1,0 +1,23 @@
+[package]
+name = "fenvix-skip"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "Skip with proof for the JVM shell: which tests of a base run can be reused in the current state (the decider)."
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "fenvix-skip"
+path = "src/main.rs"
+
+[dependencies]
+detpy-core = { path = "../detpy-core" }
+serde_json = "1"
+blake3 = "1.8"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+
+[dev-dependencies]
+tempfile = "3"

@@ -54,6 +54,18 @@ const WRITE_EVENTS: [(&str, &[usize]); 10] = [
     ("os.link", &[1]),
     ("os.truncate", &[0]),
 ];
+/// (event, path argument, its `dir_fd` argument): a relative path with a directory descriptor is relative to that
+/// directory, not to the working directory (``shutil.rmtree`` removes every entry by name under the descriptor of
+/// its directory: those removals were taken as writes of the same names under the working directory).
+const DIR_FD_ARGS: [(&str, usize, usize); 7] = [
+    ("os.remove", 0, 1),
+    ("os.rmdir", 0, 1),
+    ("os.mkdir", 0, 2),
+    ("os.rename", 0, 2),
+    ("os.rename", 1, 3),
+    ("os.symlink", 1, 2),
+    ("os.link", 1, 3),
+];
 const SPAWN: [&str; 7] = ["subprocess.Popen", "os.posix_spawn", "os.exec", "os.system", "os.fork", "os.forkpty", "os.spawn"];
 const CO_OPTIMIZED: i64 = 0x1;
 const CO_PLAIN_EXCLUDE: i64 = 0x20 | 0x80 | 0x100 | 0x200;
@@ -468,9 +480,38 @@ fn process_state(p: &[u8]) -> bool {
             }
             return None;
         }
-        if matches!(kind, b'y' | b'Y' | b'w' | b'W') {
+        if kind == b'j' {
+            // a module lookup of one name in a searched directory (`p` = "<dir>/<name>"): the directory's importable
+            // entries of that name with kinds (keyed "<dir>/<name>\x01imp"; proof::importable_name_digest). Many
+            // names of one directory are compacted into its whole importable digest at record time
+            // (proof::compact_stats_memo)
+            let mut hk = vec![b'j'];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = match proof::importable_name_digest(os_path(p)) {
+                        Some(x) => format!("j:{x}").into_bytes(),
+                        None => b"j:missing".to_vec(),
+                    };
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let mut k = self.key(p).to_vec();
+            k.extend_from_slice(proof::IMPORTABLE_NAME_SUFFIX.as_bytes());
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
+        if matches!(kind, b'y' | b'Y' | b'x' | b'X') {
             // a file's modification and change times (round 4: "y"; "Y" the symlink's own, os.lstat) or its other
-            // status fields (review R-023c E4: "w", "W"), read by user code: keyed beside the path's own dependency;
+            // status fields (review R-023c E4: "x", "X"), read by user code: keyed beside the path's own dependency;
             // a status this session changed (it wrote the file) is a read of a session-written file
             if self.writers.contains_key(p) {
                 let mut f = b"rw:".to_vec();
@@ -487,8 +528,8 @@ fn process_state(p: &[u8]) -> bool {
                     let d = match kind {
                         b'y' => format!("y:{}", proof::time_digest_of(path, true)),
                         b'Y' => format!("y:L{}", proof::time_digest_of(path, false)),
-                        b'w' => format!("w:{}", proof::fields_digest(path, true)),
-                        _ => format!("w:L{}", proof::fields_digest(path, false)),
+                        b'x' => format!("x:{}", proof::fields_digest(path, true)),
+                        _ => format!("x:L{}", proof::fields_digest(path, false)),
                     }
                     .into_bytes();
                     self.hashed.insert(hk, d.clone());
@@ -500,7 +541,7 @@ fn process_state(p: &[u8]) -> bool {
                 match kind {
                     b'y' => proof::TIME_SUFFIX,
                     b'Y' => proof::LTIME_SUFFIX,
-                    b'w' => proof::FIELDS_SUFFIX,
+                    b'x' => proof::FIELDS_SUFFIX,
                     _ => proof::LFIELDS_SUFFIX,
                 }
                 .as_bytes(),
@@ -603,6 +644,29 @@ fn process_state(p: &[u8]) -> bool {
             self.flag_set(ctx).add(f);
             return None;
         }
+        if matches!(kind, b'e' | b'E' | b'q' | b'Q') {
+            // a metadata probe (os.stat, os.lstat, os.access, os.readlink: `stat_check` with `meta`): its own
+            // dependency, apart from the content's
+            let mut hk = vec![kind];
+            hk.extend_from_slice(p);
+            let dep = match self.hashed.get(&hk) {
+                Some(d) => d.clone(),
+                None => {
+                    let d = proof::probe_now(os_path(p), kind).into_bytes();
+                    self.hashed.insert(hk, d.clone());
+                    d
+                }
+            };
+            let k = proof::probe_key(kind, &String::from_utf8_lossy(self.key(p))).into_bytes();
+            if !self.data.contains_key(&ctx) {
+                self.data_order.push(ctx);
+            }
+            let m = self.data.entry(ctx).or_default();
+            if !m.idx.contains_key(&k) {
+                m.set(k, dep);
+            }
+            return None;
+        }
         let mut hk = vec![kind];
         hk.extend_from_slice(p);
         let dep = match self.hashed.get(&hk) {
@@ -646,7 +710,7 @@ fn process_state(p: &[u8]) -> bool {
                 self.writers_order.push(p.to_vec());
             }
             self.writers.entry(p.to_vec()).or_default().insert(ctx);
-            for k in [b'f', b'd', b's', b'l', b'z', b'y', b'Y', b'w', b'W'] {
+            for k in [b'f', b'd', b's', b'l', b'z', b'q', b'Q', b'y', b'Y', b'x', b'X'] {
                 let mut hk = vec![k];
                 hk.extend_from_slice(p);
                 self.hashed.remove(&hk);
@@ -659,6 +723,14 @@ fn process_state(p: &[u8]) -> bool {
             hk.extend_from_slice(dirname(p));
             self.hashed.remove(&hk);
         }
+        // the one-name lookup dependency ("j") of the written entry's module name: "<dir>/<name>" for
+        // "<dir>/<name>.<suffix>" or a directory "<dir>/<name>"
+        let base = p.rsplit(|&c| c == b'/').next().unwrap_or(p);
+        let stem = base.split(|&c| c == b'.').next().unwrap_or(base);
+        let mut hk = vec![b'j'];
+        hk.extend_from_slice(&p[..p.len() - base.len()]);
+        hk.extend_from_slice(stem);
+        self.hashed.remove(&hk);
     }
 
 }
@@ -760,6 +832,27 @@ impl Classifier {
     }
 }
 
+/// The outermost frame of a non-pytest runner's shell (``runners._detpy_runner_entry``): the walk over the calling
+/// frames that reaches it found no test code (no user frame) on the way, so the call is the shell's own (as pytest's
+/// own frames are infrastructure).
+fn is_runner_entry(code: &Bound<'_, PyAny>) -> PyResult<bool> {
+    code.getattr(intern!(code.py(), "co_name"))?.eq("_detpy_runner_entry")
+}
+
+thread_local! {
+    /// Depth of the capture's own calls into Python (``os.path.realpath`` of a code file, ...): a probe of a path
+    /// made by them is the capture's, never the code under test's (``CaptureCore.probe``).
+    static INTERNAL: std::cell::Cell<u32> = const { std::cell::Cell::new(0) };
+}
+
+/// Run `f` as the capture's own work (see [`INTERNAL`]).
+fn internal<T>(f: impl FnOnce() -> T) -> T {
+    INTERNAL.with(|c| c.set(c.get() + 1));
+    let out = f();
+    INTERNAL.with(|c| c.set(c.get() - 1));
+    out
+}
+
 /// The current frame (the code that raised the event or called the patched API), if any.
 fn current_frame(py: Python<'_>) -> Option<Bound<'_, PyAny>> {
     let p = unsafe { ffi::PyEval_GetFrame() };
@@ -856,7 +949,7 @@ impl CaptureCore {
         let mut w = false;
         let mut rel = None;
         if !k.is_empty() && !k.starts_with(b"<") {
-            let p = match os_call(py, "abspath", Some(fs.as_any())).and_then(|a| os_call(py, "realpath", Some(&a))) {
+            let p = match internal(|| os_call(py, "abspath", Some(fs.as_any())).and_then(|a| os_call(py, "realpath", Some(&a)))) {
                 Ok(p) => w_of(p.cast::<PyString>()?)?,
                 Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                     || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -902,7 +995,7 @@ impl CaptureCore {
             return Ok(());
         }
         let k = stat_key(&p);
-        let r = match os_call(py, "realpath", Some(&py_of(py, &p)?)) {
+        let r = match internal(|| os_call(py, "realpath", Some(&py_of(py, &p)?))) {
             Ok(r) => Some(w_of(r.cast::<PyString>()?)?),
             Err(e) if e.is_instance_of::<pyo3::exceptions::PyOSError>(py)
                 || e.is_instance_of::<pyo3::exceptions::PyValueError>(py) =>
@@ -958,7 +1051,7 @@ impl CaptureCore {
                     }
                     return Ok(Some(out));
                 }
-                cur = w_of(os_call(py, "realpath", Some(&py_of(py, &q)?))?.cast::<PyString>()?)?;
+                cur = w_of(internal(|| os_call(py, "realpath", Some(&py_of(py, &q)?)))?.cast::<PyString>()?)?;
             } else {
                 cur = q;
             }
@@ -976,6 +1069,9 @@ impl CaptureCore {
                 return Ok(Caller::Import);
             }
             if starts_with_str(&fname, &self.env.detpy_dir) {
+                if is_runner_entry(&_code)? {
+                    return Ok(Caller::Infra);
+                }
                 f = level0::back(&fr)?;
                 continue;
             }
@@ -1032,6 +1128,9 @@ impl CaptureCore {
         while let Some(fr) = f {
             let (_code, fname) = code_filename(&fr)?;
             let fb = w_of(fname.cast::<PyString>()?)?;
+            if starts_with_str(&fname, &self.env.detpy_dir) && is_runner_entry(&_code)? {
+                return Ok(Caller::Infra); // a non-pytest runner's shell importing (its discovery, its loop)
+            }
             if starts_with_str(&fname, b"<frozen ")
                 || starts_with_str(&fname, &self.env.detpy_dir)
                 || contains(&fb, b"/importlib/")
@@ -1170,6 +1269,45 @@ impl CaptureCore {
             w = j;
         }
         Ok(Some(normpath(&w)))
+    }
+
+    /// The absolute path of a relative path argument given with a directory descriptor (`DIR_FD_ARGS`), from the
+    /// descriptor's target (`/proc/self/fd`); None when there is no descriptor (or it cannot be read: then the path
+    /// is taken as relative to the working directory, as before).
+    fn under_dir_fd<'py>(
+        &self,
+        _py: Python<'py>,
+        event: &str,
+        i: usize,
+        a: &Bound<'py, PyAny>,
+        arg: &dyn Fn(usize) -> Option<Bound<'py, PyAny>>,
+    ) -> PyResult<Option<W>> {
+        let Some(&(_, _, fd_i)) = DIR_FD_ARGS.iter().find(|(e, p, _)| *e == event && *p == i) else { return Ok(None) };
+        let Some(fd) = arg(fd_i) else { return Ok(None) };
+        if !fd.is_instance_of::<pyo3::types::PyInt>() {
+            return Ok(None);
+        }
+        let fd: i64 = fd.extract()?;
+        if fd < 0 {
+            return Ok(None); // AT_FDCWD
+        }
+        let name: W = if let Ok(s) = a.cast::<PyString>() {
+            w_of(s)?
+        } else if let Ok(b) = a.cast::<PyBytes>() {
+            b.as_bytes().to_vec()
+        } else {
+            return Ok(None);
+        };
+        if name.is_empty() || name.starts_with(b"/") {
+            return Ok(None);
+        }
+        let Ok(dir) = std::fs::read_link(format!("/proc/self/fd/{fd}")) else { return Ok(None) };
+        let mut j = dir.as_os_str().as_bytes().to_vec();
+        if !j.ends_with(b"/") {
+            j.push(b'/');
+        }
+        j.extend_from_slice(&name);
+        Ok(Some(normpath(&j)))
     }
 
     /// `Capture.flag(ctx, flag, detail)`; `detail` None: the first user site.
@@ -1455,7 +1593,9 @@ impl CaptureCore {
                 } else if reads && !trunc {
                     self.read_impl(py, ctx, &p, b'f')?;
                 }
-                if writes {
+                // an open of a directory for writing writes no file of that name (tempfile's O_TMPFILE attempt on the
+                // temporary directory): taken as a write of the directory, it made every probe of it stale
+                if writes && !is_dir(&p) {
                     self.wrote_impl(ctx, &p);
                 }
                 Ok(())
@@ -1699,6 +1839,12 @@ impl CaptureCore {
                 let ctx = self.cur(py)?;
                 for &i in idx.iter() {
                     let a = arg(i).unwrap_or_else(|| py.None().into_bound(py));
+                    if let Some(p) = self.under_dir_fd(py, event, i, &a, &arg)? {
+                        if !self.ignored(&p) {
+                            self.wrote_impl(ctx, &p);
+                        }
+                        continue;
+                    }
                     if let Some(p) = self.abs(py, &a)? {
                         if self.ignored(&p) {
                             continue;
@@ -2335,10 +2481,6 @@ impl CaptureCore {
         self.native_check(py, ctx, &p)
     }
 
-    /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
-    /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
-    /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
-    /// final symlink (LIMITS K4).
     /// A user read of a file's modification or change time (round 4: keyed, "y:"; the caller is checked by the
     /// Python side, which sees the stat result's field reads).
     #[pyo3(signature = (path, link=false))]
@@ -2355,7 +2497,7 @@ impl CaptureCore {
     }
 
     /// A user read of a file's other status fields (review R-023c E4: st_mode, st_uid, st_ino, ..., an os.access
-    /// permission): keyed, "w:"; the caller is checked by the Python side, like `time_check`.
+    /// permission): keyed, "x:"; the caller is checked by the Python side, like `time_check`.
     #[pyo3(signature = (path, link=false))]
     fn fields_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool) -> PyResult<()> {
         if !self.active() {
@@ -2366,15 +2508,38 @@ impl CaptureCore {
             return Ok(());
         }
         let ctx = self.cur(py)?;
-        self.read_impl(py, ctx, &p, if link { b'W' } else { b'w' })
+        self.read_impl(py, ctx, &p, if link { b'X' } else { b'x' })
     }
 
+
+    /// An existence or kind check of `path` by user code (`os.stat`, `os.lstat`, `os.access`: no audit event): the
+    /// path's kind is an input of the running context (absent inputs, review of the serial cache; ported from
+    /// claude/dep-verdict-abjcfw 8b5a1d8 onto the Rust capture). `link`: `os.lstat`, the kind without following a
+    /// final symlink (LIMITS K4).
+    ///
+    /// `meta`: the caller sees the path's metadata, not only its kind (`os.stat`, `os.lstat`, `os.access`,
+    /// `os.readlink`: size, modification time, permission bits, a symlink's target): the dependency is
+    /// `proof::probe_now` under its own key (`proof::probe_key`, modes `q` following symlinks, `Q` not), apart from the
+    /// path's content or kind dependency. The `os.path.exists` family sees the kind only (`meta` false). Ported from
+    /// claude/all-runners (`_statcap.py`'s probe set) into the Rust capture.
+    ///
+    /// `sized` (claude/parallel-proof-3, review R-032b F2): the size only (`z:`, `proof::size_kind`), replacing a kind
+    /// check of the same path. `meta` is the stronger dependency and wins when both are given.
+    ///
     /// `user`: whether the status goes to user code, decided by the caller (review R-023c E2: the Python stat wrapper
     /// walks out through standard library and infrastructure frames); None: the first frame outside detpy and the
     /// standard library decides (`caller_kind`).
-    #[pyo3(signature = (path, link=false, sized=false, user=None))]
-    fn stat_check(&self, py: Python<'_>, path: &Bound<'_, PyAny>, link: bool, sized: bool, user: Option<bool>) -> PyResult<()> {
-        if !self.active() {
+    #[pyo3(signature = (path, link=false, meta=false, sized=false, user=None))]
+    fn stat_check(
+        &self,
+        py: Python<'_>,
+        path: &Bound<'_, PyAny>,
+        link: bool,
+        meta: bool,
+        sized: bool,
+        user: Option<bool>,
+    ) -> PyResult<()> {
+        if !self.active() || INTERNAL.with(|c| c.get()) > 0 {
             return Ok(());
         }
         let Some(p) = self.abs(py, path)? else { return Ok(()) };
@@ -2391,7 +2556,14 @@ impl CaptureCore {
             return Ok(());
         }
         let ctx = self.cur(py)?;
-        self.read_impl(py, ctx, &p, if link { b'l' } else if sized { b'z' } else { b's' })
+        let kind = match (link, meta) {
+            (false, false) if sized => b'z',
+            (false, false) => b's',
+            (true, false) => b'l',
+            (false, true) => b'q',
+            (true, true) => b'Q',
+        };
+        self.read_impl(py, ctx, &p, kind)
     }
 
     /// A module lookup (`importlib`'s path finder, called from a finder in front of `sys.meta_path`): for module
@@ -2423,10 +2595,13 @@ impl CaptureCore {
             }
             let Ok(dstr) = std::str::from_utf8(&d) else { continue };
             if whole {
-                // one dependency on the directory's importable entries covers every probe of an identifier name
-                // there; the package's __init__ files are inside the package directory, checked one by one when it
-                // exists
-                self.read_impl(py, ctx, &d, b'i')?;
+                // one dependency on the directory's importable entries of this name covers every probe of it there
+                // (compacted into the directory's whole importable digest when many names are looked up there); the
+                // package's __init__ files are inside the package directory, checked one by one when it exists
+                let mut dn = d.clone();
+                dn.push(b'/');
+                dn.extend_from_slice(tail.as_bytes());
+                self.read_impl(py, ctx, &dn, b'j')?;
                 let (mut regular, pkg_dir) = proof::import_probe(dstr, tail, &suffixes);
                 if pkg_dir {
                     for c in &proof::import_candidates(dstr, tail, &suffixes)[1..1 + n] {
@@ -2473,7 +2648,7 @@ impl CaptureCore {
     /// The audit hook (`_core.set_audit_hook(cap.audit, ...)`).
     fn audit(slf: &Bound<'_, Self>, event: &str, args: &Bound<'_, PyTuple>) -> PyResult<()> {
         let py = slf.py();
-        slf.get().audit_impl(py, slf.as_any(), event, args)
+        internal(|| slf.get().audit_impl(py, slf.as_any(), event, args))
     }
 
     #[pyo3(signature = (ctx, flag, detail = None))]
@@ -2527,6 +2702,10 @@ impl CaptureCore {
         while let Some(fr) = f {
             let (_code, fname) = code_filename(&fr)?;
             if starts_with_str(&fname, &self.env.detpy_dir) {
+                if is_runner_entry(&_code)? {
+                    user = false;
+                    break;
+                }
                 f = level0::back(&fr)?;
                 continue;
             }

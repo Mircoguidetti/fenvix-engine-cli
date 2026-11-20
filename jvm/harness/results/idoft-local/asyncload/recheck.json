@@ -1,0 +1,12 @@
+{
+ "name": "asyncload",
+ "before": 5,
+ "after": 1,
+ "broken_now": [
+  {
+   "test": "com.alibaba.asyncload.spring.AsyncLoadSpringCompsiteTest::testSingleton",
+   "baseline": "0F/10P",
+   "det_now": "2F/10"
+  }
+ ]
+}

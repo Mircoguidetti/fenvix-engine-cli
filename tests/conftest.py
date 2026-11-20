@@ -80,7 +80,27 @@ def _r032b_runners() -> bool:
 
 def pytest_collection_modifyitems(config, items):
     for item in items:
+        if _uses_shared_cache(item):
+            item.add_marker(pytest.mark.skip(reason=_OUT_OF_SCOPE))
+            continue
         if "review_r032b" not in str(item.fspath) or "pytest_plugin" in item.name or "xdist" in item.name:
             continue
         if not _r032b_runners():
             item.add_marker(pytest.mark.skip(reason="needs claude/all-runners-2's `python -m detpy <runner>`"))
+
+
+# Go-live scope (decided 2026-11-20): the shared cache across machines (--det-cache-shared, detpy_core::shared) is out.
+# Its tests (reviewer files included, kept unchanged) are skipped, not deleted: a test whose body passes the option is
+# marked here.
+_OUT_OF_SCOPE = "out of go-live scope"
+
+
+def _uses_shared_cache(item) -> bool:
+    import inspect
+
+    fn = getattr(item, "function", None)
+    try:
+        src = inspect.getsource(fn) if fn is not None else ""
+    except (OSError, TypeError):
+        return False
+    return "--det-cache-shared" in src

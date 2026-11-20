@@ -1,0 +1,78 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// With the random control on, the global source of math/rand (Int, Intn,
+// Float64, Shuffle, Perm, Read, ...) is a source seeded per test with the
+// seed fenvix-go derived for that test, so draws are the same on every run.
+// Rand values the code creates itself with NewSource are not touched.
+
+package rand
+
+import (
+	"runtime"
+	"syscall"
+	"sync"
+)
+
+type fenvixLocked struct {
+	mu  sync.Mutex
+	src *rngSource
+}
+
+func (s *fenvixLocked) Int63() int64 {
+	s.mu.Lock()
+	v := s.src.Int63()
+	s.mu.Unlock()
+	syscall.Fenvix_Event("random", "math/rand", fenvixI(uint64(v)))
+	return v
+}
+
+func (s *fenvixLocked) Uint64() uint64 {
+	s.mu.Lock()
+	v := s.src.Uint64()
+	s.mu.Unlock()
+	syscall.Fenvix_Event("random", "math/rand", fenvixI(v))
+	return v
+}
+
+func (s *fenvixLocked) Seed(seed int64) {
+	s.mu.Lock()
+	s.src.Seed(seed)
+	s.mu.Unlock()
+}
+
+var fenvixG struct {
+	mu  sync.Mutex
+	r   *Rand
+	gen uint64
+}
+
+// fenvixGlobalRand returns the per-test global generator, or nil when the
+// random control is off.
+func fenvixGlobalRand() *Rand {
+	if !runtime.Fenvix_On(runtime.FenvixRandom) {
+		return nil
+	}
+	seed, gen := syscall.Fenvix_Seed("math/rand")
+	fenvixG.mu.Lock()
+	defer fenvixG.mu.Unlock()
+	if fenvixG.r == nil || gen != fenvixG.gen {
+		src := &fenvixLocked{src: newSource(int64(seed & (1<<63 - 1)))}
+		fenvixG.r = &Rand{src: src, s64: src}
+		fenvixG.gen = gen
+	}
+	return fenvixG.r
+}
+
+func fenvixI(v uint64) string {
+	var b [20]byte
+	i := len(b)
+	for {
+		i--
+		b[i] = byte('0' + v%10)
+		v /= 10
+		if v == 0 {
+			break
+		}
+	}
+	return string(b[i:])
+}

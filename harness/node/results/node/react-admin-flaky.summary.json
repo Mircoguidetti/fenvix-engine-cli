@@ -1,0 +1,118 @@
+{
+  "name": "react-admin-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/marmelab/react-admin",
+  "commit": "3ff5554b10342fc8467348d35143c805a2ff81e5",
+  "commit_date": "2024-10-25T10:00:44+02:00",
+  "python": "node v20.20.2",
+  "install": "yarn install --immutable",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 123.09368749859995,
+  "det_mean_s": 180.65755457439997,
+  "slowdown_pct": 46.764272194262404,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 2087,
+  "unstable_baseline": 28,
+  "unstable_det": 0,
+  "became_stable": 28,
+  "outcome_changed_by_det": 24,
+  "covered": 2058,
+  "not_covered": 29,
+  "reproduced": 12,
+  "never_fails_under_det": 8,
+  "always_fails_under_det": 2,
+  "fails_sometimes_under_det": 6,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 13,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 29
+  },
+  "pass_fail_reasons": {
+    "random": 8,
+    "time": 4
+  },
+  "broken_by_det": 24,
+  "broken_always": 24,
+  "broken_causes": {
+    "unexplained | Error": 2,
+    "net | Error": 1,
+    "time+timers | Error": 20,
+    "time | Error": 1
+  },
+  "broken_examples": {
+    "unexplained | Error": [
+      "examples/crm/src/providers/commons/getCompanyAvatar.spec.ts::should return favicon URL if website url exist: Error: expect(received).toStrictEqual(expected) // deep equality (first diverging source: -)",
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return favicon URL if gravatar does not exist: Error: expect(received).toBe(expected) // Object.is equality (first diverging source: -)"
+    ],
+    "net | Error": [
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return gravatar URL for anthony@marmelab.com: Error: expect(received).toBe(expected) // Object.is equality (first diverging source: -)"
+    ],
+    "time+timers | Error": [
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::security::should redirect to the /access-denied page when users do not have access: Error: Unable to find an element with the text: Access denied. This could be because the text is broken up by multiple elements. In this cas (first diverging source: -)",
+      "packages/ra-core/src/controller/list/useListController.spec.tsx::useListController::security::should redirect to the /access-denied page when users do not have access: Error: Unable to find an element with the text: Access denied. This could be because the text is broken up by multiple elements. In this cas (first diverging source: -)",
+      "packages/ra-core/src/core/NavigateToFirstResource.spec.tsx::<NavigateToFirstResource>::should render the first resource with a list users have access to: Error: Unable to find an element with the text: Posts. This could be because the text is broken up by multiple elements. In this case, you c (first diverging source: -)"
+    ],
+    "time | Error": [
+      "packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx::<FilterButton />::filter selection menu::should close the filter menu on removing all filters: Error: thrown: \"Exceeded timeout of 20000 ms for a test. (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "examples/crm/src/providers/commons/getCompanyAvatar.spec.ts::should return favicon URL if website url exist",
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return favicon URL if gravatar does not exist"
+    ],
+    "not-reproduced": [
+      "packages/ra-core/src/auth/useLogoutIfAccessDenied.spec.tsx::useLogoutIfAccessDenied::should notify if passed an error with a message that makes the authProvider throw (fixed:0/10) event #8: [time] performance.now @ <deps>/scheduler/cjs/scheduler.development.js:129 = 6000  <>  [time] setTimeout @ pac",
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::queryOptions::should accept meta in queryOptions (seed 2:3/3) event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.7753371144380226\" vs"
+    ],
+    "reproduced": [
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::setFilters::should take only last change in case of a burst of changes (case of inputs being currently edited) (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.04961816652228379\" vs \"0.0005583865296668877\"",
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::showFilter::Does not remove previously shown filter when adding a new one (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.09132346049237394\" vs \"0.15959944287306893\"",
+      "packages/ra-core/src/controller/list/useListController.spec.tsx::useListController::security::should call the dataProvider if disableAuthentication is true (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.2805490000141222\" vs \"0.4011052146726236\""
+    ],
+    "always-fails-under-det": [
+      "packages/ra-ui-materialui/src/input/AutocompleteInput.spec.tsx::<AutocompleteInput />::should allow to edit the input if it's inside a FormDataConsumer (fixed:10/10)",
+      "packages/ra-ui-materialui/src/input/AutocompleteInput.spec.tsx::<AutocompleteInput />::should reset filter when users selected a value (fixed:10/10)"
+    ]
+  },
+  "runner": "jest 29.5.0",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/marmelab/react-admin/issues/10301",
+  "documented_hints": [
+    "parent.id"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "it('should not render when authProvider.canAccess returns false with a Function as <Admin> child', async () => {\n      23 |         render(<AccessControlInsideAdminChildFunction />);\n    > 24 |         await screen.findByText('resources.posts.name');\n         |                      ^\n      25 |         expect(screen.queryByText('resources.users.name')).toBeNull();\n      26 |     });\n      27 | });\n\n      at waitForWrapper (node_modules/@testing-library/dom/dist/wait-for.js:163:27)\n      at node_modules/@testing-library/dom/dist/query-helpers.js:86:33\n      at packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:24:22\n      at step (packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:56:23)\n      at Object.next (packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:37:53)\n      at packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:31:71\n      at Object.<anonymous>.__awaiter (packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:27:12)\n      at Object.<anonymous> (packages/ra-ui-materialui/src/layout/ResourceMenuItem.spec.tsx:22:104)\n\nFAIL packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx (25.406 s)\n  \u25cf <FilterButton /> \u203a filter selection menu \u203a should close the filter menu on removing all filters\n\n    thrown: \"Exceeded timeout of 20000 ms for a test.\n    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.\"\n\n      287 |         });\n      288 |\n    > 289 |         it('should close the filter menu on removing all filters', async () => {\n          |         ^\n      290 |             render(<WithAutoCompleteArrayInput />);\n      291 |\n      292 |             // Open Posts List\n\n      at packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:289:9\n      at packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:46:5\n      at Object.<anonymous> (packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:19:1)\n\n\nTest Suites: 16 failed, 229 passed, 245 total\nTests:       26 failed, 10 skipped, 2059 passed, 2095 total\nSnapshots:   0 total\nTime:        190.256 s\nRan all test suites.\nTest results written to: ../../runs/react-admin-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/react-admin-flaky/det_0.jsonl: 2095 tests, order digest 3c3c178fef19d967ad7582d16499ba97\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 9,
+    "l0-gap": 7
+  }
+}

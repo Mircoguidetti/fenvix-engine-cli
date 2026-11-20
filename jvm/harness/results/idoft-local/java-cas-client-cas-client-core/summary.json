@@ -1,0 +1,42 @@
+{
+ "name": "java-cas-client-cas-client-core",
+ "url": "https://github.com/apereo/java-cas-client",
+ "sha": "574b74fa64e4c95bda00ff41d06d358684a0b2e6",
+ "module": "cas-client-core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 154,
+ "documented": 1,
+ "documented_present": 1,
+ "documented_categories": {
+  "NOD;UD": 1
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 8,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 8,
+ "broken_by_det": 2,
+ "broken_tests": [
+  "org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilterTests::testCallsCleanAllOnSchedule",
+  "org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilterTests::testDelaysFirstCleanAll"
+ ],
+ "fingerprint_coverage": "143/154",
+ "fingerprint_covered": 143,
+ "fingerprinted": 154,
+ "timing_base_s": [
+  2.7339999999999987,
+  2.6379999999999986,
+  2.7839999999999985
+ ],
+ "timing_det_s": [
+  1.8599999999999985,
+  2.259999999999999,
+  2.358999999999998
+ ],
+ "slowdown": -0.1734,
+ "seconds": 650.4
+}

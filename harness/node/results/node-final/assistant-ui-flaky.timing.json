@@ -1,0 +1,30 @@
+{
+  "name": "assistant-ui-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "node": "node v22.23.5",
+  "runner": "vitest 4.1.11",
+  "serial_s": [
+    33.223261234999995,
+    32.665423457,
+    33.211607442
+  ],
+  "det_s": [
+    34.159353890000006,
+    34.253263995,
+    34.65729709200002
+  ],
+  "tests": 702,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009534",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "slowdown_pct": 3.1364231762016415
+}

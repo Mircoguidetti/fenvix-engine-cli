@@ -1,0 +1,966 @@
+{
+ "name": "idoft-crom",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+  "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+  "tests/test_model.py::TestBaseResource::test_allows_multiple",
+  "tests/test_model.py::TestBaseResource::test_check_reference",
+  "tests/test_model.py::TestBaseResource::test_init_params",
+  "tests/test_model.py::TestBaseResource::test_list_my_props",
+  "tests/test_model.py::TestBaseResource::test_multiplicity",
+  "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+  "tests/test_model.py::TestFactorySerialization::test_toFile",
+  "tests/test_model.py::TestFactorySerialization::test_toJSON",
+  "tests/test_model.py::TestFactorySerialization::test_toString",
+  "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+  "tests/test_vocab.py::TestClassBuilder::test_multitype"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009156",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/test_add_classification.py::TestAddClassification::test_add_classification",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 97.68
+  },
+  {
+   "test": "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+   "configs_searched": 7,
+   "status": "replay-unstable",
+   "config": "6",
+   "seed": 6,
+   "kind": "order",
+   "prefix_length": 81,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: False is not true",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:688"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0ea7116c755acd6e5d1143b3fe067cdd",
+     "112e7335d38f2951749f7105537aac7c",
+     "1e4e93e69c710153d9f1363283655fe6",
+     "2b89acf5910409b25f4a6537ae7407c2",
+     "5a61d00f461033255202216b4c8cd4eb",
+     "661219e1a2b07573b6e61c145791c51c",
+     "ae9c589f11630ab03755603c2f084f89",
+     "b43d7ad35de5d21d7bbb6049616c0b08",
+     "ba83962a65eaa306ef3898a34546f2c0",
+     "ca144e0e48561c263a542543ccad1c93"
+    ],
+    "identical_fingerprint": false
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [random] random.state @ <end> = 332fdd49aa859c4e2d5572375b4496d5  <>  [entropy] os.urandom @ cromulent/model.py:279 = 16:5bdbbe1c826f40ead9d416353fac2b6b",
+    "event_a": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "332fdd49aa859c4e2d5572375b4496d5"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "cromulent/model.py:279",
+     "v": "16:5bdbbe1c826f40ead9d416353fac2b6b"
+    },
+    "fingerprints": [
+     "2708c1bfb4b2a7dbfa48f75ae80f8704",
+     "5a61d00f461033255202216b4c8cd4eb"
+    ]
+   },
+   "runs": 25,
+   "seconds": 16.25,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_no_ident-f3878049/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_no_ident-f3878049",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_no_ident-f3878049"
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_allows_multiple",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 53,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_model.py::TestBaseResource::test_allows_multiple"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1dd8194a99f149e76bd29e477235f8cf"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "66f349e7ab188b7d0897a31cfbc8479d",
+     "1dd8194a99f149e76bd29e477235f8cf"
+    ]
+   },
+   "runs": 32,
+   "seconds": 21.45,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_allows_multiple-edb43955/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_allows_multiple-edb43955",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_allows_multiple-edb43955"
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_check_reference",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 50,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestFactorySerialization::test_broken_unicode"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestFactorySerialization::test_broken_unicode",
+    "tests/test_model.py::TestBaseResource::test_check_reference"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "MetadataError",
+    "call",
+    "cromulent.model.MetadataError: expecing a resource, got: <class 'cromulent.model.Person'>",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:253"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1bcaef67b2c0f1ff76d192ec0bb9d372"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "0aa77968075ddbe80ab9bdfbe52613a7",
+     "1bcaef67b2c0f1ff76d192ec0bb9d372"
+    ]
+   },
+   "runs": 22,
+   "seconds": 14.3,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_check_reference-6a001277/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_check_reference-6a001277",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_check_reference-6a001277"
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_init_params",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 57,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_model.py::TestBaseResource::test_init_params"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c880a6abffecd6d08f6d67803c060a61"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "aca254c4f2c593305e1121a210733dda",
+     "c880a6abffecd6d08f6d67803c060a61"
+    ]
+   },
+   "runs": 31,
+   "seconds": 20.53,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_init_params-6ae69975/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_init_params-6ae69975",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_init_params-6ae69975"
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_list_my_props",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 52,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_model.py::TestBaseResource::test_list_my_props"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6932b8e48558b7c6c272cee3aaec5daa"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "c888fe040dcfde00447f9445a60d8a12",
+     "6932b8e48558b7c6c272cee3aaec5daa"
+    ]
+   },
+   "runs": 29,
+   "seconds": 19.21,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_list_my_props-a6191b59/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_list_my_props-a6191b59",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_list_my_props-a6191b59"
+  },
+  {
+   "test": "tests/test_model.py::TestBaseResource::test_multiplicity",
+   "configs_searched": 10,
+   "status": "reproduced",
+   "config": "9",
+   "seed": 9,
+   "kind": "order",
+   "prefix_length": 55,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_model.py::TestBaseResource::test_multiplicity"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "094542dab282d767797f177f2a34b44c"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "d2643f93afa75720c7628f19267eba3f",
+     "094542dab282d767797f177f2a34b44c"
+    ]
+   },
+   "runs": 31,
+   "seconds": 20.02,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=9 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_multiplicity-76491082/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_multiplicity-76491082",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_multiplicity-76491082"
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_collapse_json",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 63,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_no_ident",
+    "tests/test_model.py::TestFactorySerialization::test_collapse_json"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: 11 != 12",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "25efd912888b52d3a8e0c19590ee2b3e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ cromulent/model.py:279 = 16:0d7cbf0e121293181b865311f92249a9  <>  [random] random.state @ <end> = 93254633aeff11331740b7c798fe12be",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "cromulent/model.py:279",
+     "v": "16:0d7cbf0e121293181b865311f92249a9"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "93254633aeff11331740b7c798fe12be"
+    },
+    "fingerprints": [
+     "029cacfe6a6a3c2a553833eaf5389144",
+     "25efd912888b52d3a8e0c19590ee2b3e"
+    ]
+   },
+   "runs": 22,
+   "seconds": 13.15,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_collapse_json-15595417/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_collapse_json-15595417",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_collapse_json-15595417"
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toFile",
+   "configs_searched": 1,
+   "status": "reproduced",
+   "config": "fixed",
+   "seed": null,
+   "kind": "order",
+   "prefix_length": 31,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestFactorySetup::test_base_dir"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestFactorySetup::test_base_dir",
+    "tests/test_model.py::TestFactorySerialization::test_toFile"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: ConfigurationError not raised by toFile",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:163"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "6bad3412354f5254d7dbcdfa71b49c80"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "fs",
+    "description": "event #0: [fs] os.scandir @ tests/test_model.py:133 = <fd>|1|6350fc18dc76b770fe5421afcedae9ae  <>  [random] random.state @ <end> = 82efc69b424373c219c0e9ae92e1f849",
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "tests/test_model.py:133",
+     "v": "<fd>|1|6350fc18dc76b770fe5421afcedae9ae"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "random",
+     "o": "random.state",
+     "at": "<end>",
+     "v": "82efc69b424373c219c0e9ae92e1f849"
+    },
+    "fingerprints": [
+     "dbe479d83aaac7440919db52337b7ad8",
+     "6bad3412354f5254d7dbcdfa71b49c80"
+    ]
+   },
+   "runs": 21,
+   "seconds": 12.8,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_toFile-fcbdd8fd/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_toFile-fcbdd8fd",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_toFile-fcbdd8fd"
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toJSON",
+   "configs_searched": 2,
+   "status": "reproduced",
+   "config": "1",
+   "seed": 1,
+   "kind": "order",
+   "prefix_length": 60,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction",
+    "tests/test_model.py::TestFactorySerialization::test_toJSON"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: OrderedDict([('@context', ''), ('id', 'http://lod.exampl[98 chars]t')]) != OrderedDict([('id', 'http://lod.example.org/museum/Infor[80 chars]t')])",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:830"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "63a48efd60249522f54495e70ffcf013"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "962e8599ac9c62ff18ecb07f36b54254",
+     "63a48efd60249522f54495e70ffcf013"
+    ]
+   },
+   "runs": 18,
+   "seconds": 11.36,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=1 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_toJSON-82b70d3f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_toJSON-82b70d3f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_toJSON-82b70d3f"
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toString",
+   "configs_searched": 6,
+   "status": "reproduced",
+   "config": "5",
+   "seed": 5,
+   "kind": "order",
+   "prefix_length": 10,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction",
+    "tests/test_model.py::TestFactorySerialization::test_toString"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '{\"@context\":\"\",\"id\":\"http://lod.example.org[84 chars]ct\"}' != '{\"id\":\"http://lod.example.org/museum/Inform[70 chars]ct\"}'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "c542ba0060b52ecbc7f38c7fc64b30dd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "cfdcd2cbd6b0d74dee2079c4f5432621",
+     "c542ba0060b52ecbc7f38c7fc64b30dd"
+    ]
+   },
+   "runs": 21,
+   "seconds": 12.8,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=5 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_toString-f759e670/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_toString-f759e670",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_toString-f759e670"
+  },
+  {
+   "test": "tests/test_model.py::TestFactorySerialization::test_toString_fast",
+   "configs_searched": 7,
+   "status": "reproduced",
+   "config": "6",
+   "seed": 6,
+   "kind": "order",
+   "prefix_length": 35,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_multiple_instantiation.py::TestMIClasses::test_destruction",
+    "tests/test_model.py::TestFactorySerialization::test_toString_fast"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: '{\"@context\":\"\",\"id\":\"http://lod.example.org[84 chars]ct\"}' != '{\"id\":\"http://lod.example.org/museum/Inform[70 chars]ct\"}'",
+    "/home/runner/.local/share/uv/python/cpython-3.9-linux-x86_64-gnu/lib/python3.9/unittest/case.py:676"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "07f3bda660bf6c3ebdb5428a500232af"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "13b1088610e9ccd76d9c275c4f245960",
+     "07f3bda660bf6c3ebdb5428a500232af"
+    ]
+   },
+   "runs": 26,
+   "seconds": 15.77,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=6 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_toString_fast-6fe191a9/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_toString_fast-6fe191a9",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_toString_fast-6fe191a9"
+  },
+  {
+   "test": "tests/test_vocab.py::TestClassBuilder::test_multitype",
+   "configs_searched": 30,
+   "status": "reproduced",
+   "config": "29",
+   "seed": 29,
+   "kind": "order",
+   "prefix_length": 74,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid"
+   ],
+   "setters": [],
+   "order": [
+    "tests/test_model.py::TestAutoIdentifiers::test_bad_autoid",
+    "tests/test_vocab.py::TestClassBuilder::test_multitype"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "ConfigurationError",
+    "call",
+    "cromulent.model.ConfigurationError: Unknown auto-id type",
+    "/tmp/work/src/idoft-crom/cromulent/model.py:281"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "985722dba5b042ceb82dd6e1b92e7618"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "8ee1364c35f5bf228736d7d6efa496d8",
+     "985722dba5b042ceb82dd6e1b92e7618"
+    ]
+   },
+   "runs": 50,
+   "seconds": 33.96,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/idoft-crom/bin/python",
+   "command": "pytest --det --det-seed=29 --det-order=/tmp/work/block2/idoft-crom/standalone/bundles/test_multitype-0a8dc3f1/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/idoft-crom/standalone/bundles/test_multitype-0a8dc3f1",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/idoft-crom/standalone/bundles/test_multitype-0a8dc3f1"
+  }
+ ],
+ "seconds": 309.29
+}

@@ -1,0 +1,42 @@
+{
+ "name": "mTracker-core",
+ "url": "https://github.com/eBay/mTracker",
+ "sha": "dbead631bb0e8cacbb4448fef7aa2fe3aefc034b",
+ "module": "core",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 38,
+ "documented": 2,
+ "documented_present": 2,
+ "documented_categories": {
+  "NIO": 2
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 1,
+ "unstable_baseline": 2,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 2,
+ "broken_by_det": 2,
+ "broken_tests": [
+  "com.ccoe.build.core.utils.FileUtilsTest::testDiskClean",
+  "com.ccoe.build.core.utils.FileUtilsTest::testWrite"
+ ],
+ "fingerprint_coverage": "36/38",
+ "fingerprint_covered": 36,
+ "fingerprinted": 38,
+ "timing_base_s": [
+  0.7010000000000001,
+  0.539,
+  0.548
+ ],
+ "timing_det_s": [
+  0.48900000000000005,
+  0.48100000000000004,
+  0.547
+ ],
+ "slowdown": -0.1077,
+ "seconds": 169.3
+}

@@ -58,6 +58,17 @@ impl SplitMix64 {
     }
 }
 
+/// Permutation of `0..n` for one group of the hierarchical shuffle: the
+/// entries of the group whose key is `key` (`""` for the root, a module path,
+/// `module::Class`, ...). [`shuffle_order`] applies it at every level of the
+/// tree; producers that know their own tree (the Node shells: file, describe
+/// blocks, tests) call it per level and obtain the same orders.
+pub fn shuffle_indices(n: usize, seed: u64, key: &str) -> Vec<usize> {
+    let mut idx: Vec<usize> = (0..n).collect();
+    SplitMix64::new(derive_seed(seed, key)).shuffle(&mut idx);
+    idx
+}
+
 /// Split a pytest node id into its grouping prefixes:
 /// `"pkg/test_a.py::TestX::test_y[1]"` -> `["pkg/test_a.py", "pkg/test_a.py::TestX"]`.
 fn groups(nodeid: &str) -> Vec<&str> {
@@ -106,9 +117,8 @@ pub fn shuffle_order<S: AsRef<str>>(ids: &[S], seed: u64) -> Vec<usize> {
         }
     }
     fn emit(node: &Node<'_>, seed: u64, out: &mut Vec<usize>) {
-        let mut entries = node.entries.clone();
-        SplitMix64::new(derive_seed(seed, node.key)).shuffle(&mut entries);
-        for e in entries {
+        for i in shuffle_indices(node.entries.len(), seed, node.key) {
+            let e = node.entries[i];
             match e {
                 Ok(c) => emit(&node.children[c], seed, out),
                 Err(l) => out.push(node.leaves[l]),
@@ -198,6 +208,13 @@ mod tests {
                 order.iter().enumerate().filter(|(_, id)| id.starts_with(prefix)).map(|(i, _)| i).collect();
             assert_eq!(pos.last().unwrap() - pos[0] + 1, pos.len(), "{prefix} not contiguous in {order:?}");
         }
+    }
+
+    #[test]
+    fn shuffle_indices_matches_tree_shuffle() {
+        // Flat ids (one group): shuffle_order == shuffle_indices on the root.
+        let flat: Vec<String> = (0..9).map(|i| format!("t{i}")).collect();
+        assert_eq!(shuffle_order(&flat, 5), shuffle_indices(9, 5, ""));
     }
 
     #[test]

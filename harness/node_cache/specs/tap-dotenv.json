@@ -1,0 +1,33 @@
+{
+ "name": "tap-dotenv",
+ "url": "https://github.com/motdotla/dotenv",
+ "node": "22",
+ "runner": "tap",
+ "install": [
+  "npm ci --no-audit --no-fund"
+ ],
+ "install_files": [
+  "package-lock.json",
+  "package.json"
+ ],
+ "build": [
+  "npm run build"
+ ],
+ "args": [
+  "run",
+  "tests/**/*.js",
+  "--allow-empty-coverage",
+  "--disable-coverage",
+  "--timeout=60000"
+ ],
+ "plain": "npx tap run 'tests/**/*.js' --allow-empty-coverage --disable-coverage --timeout=60000",
+ "shards": 1,
+ "source": "26 first-parent commits of master up to 2026-11-08 (tap 21, CommonJS tests, CLI tests spawn processes)",
+ "window": [
+  0,
+  26
+ ],
+ "run_timeout": 3000,
+ "overhead": "shard0",
+ "unset_ci": true
+}

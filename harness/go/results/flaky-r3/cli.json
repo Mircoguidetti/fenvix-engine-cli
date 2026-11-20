@@ -1,0 +1,25 @@
+{
+ "spec": {
+  "name": "cli",
+  "repo": "docker/cli",
+  "sha": "6d274590f2f63276a54da8adf475a455d21c1fdd",
+  "fix_commit": "dd50814004d1e3c9d6e0b2aae0e50dd1bb57f136",
+  "fix_date": "2026-10-22T10:04:59.000-07:00",
+  "title": "fix: flaky `TestPrunePromptTermination` test",
+  "tests": [
+   "TestPrunePromptTermination"
+  ],
+  "source": "github commit search 'repo:docker/cli flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "list-failed",
+ "notes": [],
+ "located": {
+  "TestPrunePromptTermination": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./cli/command/image"
+ ],
+ "error": "go: cannot find main module, but found .git/config in /tmp/work/src\n\tto create a module there, run:\n\tgo mod init\n",
+ "seconds": 1.6
+}

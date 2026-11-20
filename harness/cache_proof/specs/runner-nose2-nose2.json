@@ -1,0 +1,13 @@
+{
+ "name": "runner-nose2-nose2",
+ "url": "https://github.com/nose-devs/nose2",
+ "head": "c6decb29bed3",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "nose2",
+ "runner_args": [
+  "--pretty-assert"
+ ],
+ "note": "tox.ini: nose2 -v --pretty-assert"
+}

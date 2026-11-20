@@ -1,0 +1,24 @@
+{
+ "name": "tanstack-query",
+ "url": "https://github.com/TanStack/query",
+ "node": "24",
+ "runner": "vitest",
+ "install": [
+  "corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"
+ ],
+ "install_files": [
+  "pnpm-lock.yaml",
+  "package.json",
+  "packages/*/package.json",
+  "pnpm-workspace.yaml"
+ ],
+ "build": [],
+ "setup_files": {
+  "vitest.config.mts": "harness/node_cache/tanstack-query.vitest.config.mts"
+ },
+ "unset_ci": true,
+ "args": [],
+ "plain": "pnpm exec vitest run --reporter=json --outputFile={report}",
+ "shards": 3,
+ "source": "51 first-parent commits of main before 2026-11-17 (Nx-managed Vitest monorepo, 27 packages; CI runs `nx affected --target=test:lib` per package). The harness adds an untracked root vitest.config.mts that runs every package as a Vitest project (each package's own config extended, `dir` set to its src)."
+}

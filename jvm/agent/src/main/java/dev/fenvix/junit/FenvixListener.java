@@ -1,0 +1,208 @@
+package dev.fenvix.junit;
+
+import dev.fenvix.rt.Det;
+import dev.fenvix.rt.Deps;
+import dev.fenvix.rt.Lifecycle;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.launcher.TestExecutionListener;
+import org.junit.platform.launcher.TestIdentifier;
+import org.junit.platform.launcher.TestPlan;
+
+/**
+ * JUnit Platform listener (registered through ServiceLoader from the agent
+ * jar): brackets every test for Level 0 (reseed, wall clock reset,
+ * fingerprint) and for the skip-with-proof capture, and writes one trace part
+ * per test plan. Engine-agnostic: Jupiter, Vintage (JUnit 4) and other
+ * Platform engines get the same brackets.
+ */
+public class FenvixListener implements TestExecutionListener {
+    static final AtomicInteger PLANS = new AtomicInteger();
+    private final boolean on;
+    private TestPlan plan;
+    private int index;
+    private String module = "";
+
+    public FenvixListener() {
+        boolean ok;
+        try {
+            ok = Det.ON || Det.DEPS;
+        } catch (Throwable t) {
+            ok = false; // agent not installed in this JVM
+        }
+        on = ok;
+    }
+
+    static String runnerVersion() {
+        Package p = TestPlan.class.getPackage();
+        return p != null && p.getImplementationVersion() != null ? p.getImplementationVersion() : "";
+    }
+
+    @Override
+    public void testPlanExecutionStarted(TestPlan testPlan) {
+        if (!on) return;
+        Flags.platformActive = true;
+        plan = testPlan;
+        module = Ids.module(System.getProperty("fenvix.module", ""));
+        List<String> order = new ArrayList<>();
+        for (TestIdentifier root : testPlan.getRoots()) collect(testPlan, root, order);
+        if (Det.DEPS) {
+            configurationParameters(testPlan);
+            lifecycleDefault = lifecycleDefault(testPlan);
+        }
+        if (Det.ON) {
+            String out = System.getProperty("fenvix.out", ".fenvix");
+            String pid = dev.fenvix.rt.Compat.pid();
+            int n = PLANS.incrementAndGet();
+            String name = System.currentTimeMillis() + "-" + (module.isEmpty() ? "root" : module.replace('/', '_')) + "-" + pid + "-" + n;
+            File part = new File(out, "parts/" + name + ".jsonl");
+            if (n > 1) Det.closeTrace();
+            String engines = engines(testPlan);
+            Det.openTrace(part.getPath(), Lifecycle.metaJson(engines, runnerVersion(),
+                    "one JVM per build module, serial (no parallel forks, no parallel JUnit execution)"), order.toArray(new String[0]));
+        }
+    }
+
+    /**
+     * The plan's JUnit configuration parameters (Platform 1.8+: getConfigurationParameters,
+     * 1.9+: keySet), part of the configuration key: Surefire configurationParameters,
+     * junit-platform.properties, system properties. Reflection: older Platforms lack them.
+     */
+    static void configurationParameters(TestPlan p) {
+        try {
+            Object cp = TestPlan.class.getMethod("getConfigurationParameters").invoke(p);
+            Object keys = cp.getClass().getMethod("keySet").invoke(cp);
+            java.lang.reflect.Method get = cp.getClass().getMethod("get", String.class);
+            get.setAccessible(true);
+            for (Object k : (java.util.Set<?>) keys) {
+                Object v = get.invoke(cp, k);
+                Object val = v instanceof java.util.Optional ? ((java.util.Optional<?>) v).orElse(null) : v;
+                Deps.junitConfig(String.valueOf(k), val == null ? null : String.valueOf(val));
+            }
+        } catch (Throwable ignored) {
+            // Platform < 1.9: the system properties and junit-platform.properties are in the key already
+        }
+    }
+
+    static String lifecycleDefault(TestPlan p) {
+        try {
+            Object cp = TestPlan.class.getMethod("getConfigurationParameters").invoke(p);
+            Object v = cp.getClass().getMethod("get", String.class).invoke(cp, "junit.jupiter.testinstance.lifecycle.default");
+            Object val = v instanceof java.util.Optional ? ((java.util.Optional<?>) v).orElse(null) : v;
+            return val == null ? null : String.valueOf(val);
+        } catch (Throwable t) {
+            return System.getProperty("junit.jupiter.testinstance.lifecycle.default");
+        }
+    }
+
+    static String engines(TestPlan p) {
+        List<String> e = new ArrayList<>();
+        for (TestIdentifier r : p.getRoots()) {
+            String u = r.getUniqueId();
+            int c = u.indexOf(':');
+            int close = u.indexOf(']');
+            if (c > 0 && close > c) e.add(u.substring(c + 1, close));
+        }
+        return String.join("+", e);
+    }
+
+    private void collect(TestPlan p, TestIdentifier id, List<String> out) {
+        if (id.isTest()) out.add(Ids.fromUniqueId(id.getUniqueId(), module));
+        for (TestIdentifier c : p.getChildren(id)) collect(p, c, out);
+    }
+
+    @Override
+    public void testPlanExecutionFinished(TestPlan testPlan) {
+        if (!on) return;
+        Flags.platformActive = false;
+        if (Det.ON) Det.closeTrace();
+    }
+
+    @Override
+    public void executionStarted(TestIdentifier id) {
+        if (!on) return;
+        if (id.isTest()) {
+            Det.beginTest(Ids.fromUniqueId(id.getUniqueId(), module), index++);
+        } else if (id.getParentId().isPresent()) {
+            Deps.beginContainer(Ids.fromUniqueId(id.getUniqueId(), module), Det.DEPS && sharedInstance(id));
+        }
+    }
+
+    /** Default test instance lifecycle (configuration parameter), read once per plan. */
+    static volatile String lifecycleDefault;
+
+    /**
+     * Whether the tests of a container run on one shared test instance: a Jupiter class with
+     * {@code @TestInstance(PER_CLASS)} (on it, a superclass, an interface or an enclosing class) or
+     * the PER_CLASS default; any class of an engine other than Jupiter and Vintage (TestNG: one
+     * instance per class), or whose class cannot be inspected. Method-level containers
+     * (parameterized templates) share their class's instance: the class container covers them.
+     */
+    static boolean sharedInstance(TestIdentifier id) {
+        Object src = id.getSource().orElse(null);
+        if (!(src instanceof org.junit.platform.engine.support.descriptor.ClassSource)) return false;
+        String u = id.getUniqueId();
+        boolean jupiter = u.startsWith("[engine:junit-jupiter]");
+        boolean vintage = u.startsWith("[engine:junit-vintage]");
+        if (vintage) return false; // JUnit 4: a new instance per test method
+        if (!jupiter) return true;
+        if ("per_class".equalsIgnoreCase(lifecycleDefault)) return true;
+        try {
+            Class<?> c = ((org.junit.platform.engine.support.descriptor.ClassSource) src).getJavaClass();
+            for (Class<?> k = c; k != null; k = k.getEnclosingClass()) {
+                if (perClass(k, new java.util.HashSet<>())) return true;
+            }
+            return false;
+        } catch (Throwable t) {
+            return true; // cannot tell: assume shared
+        }
+    }
+
+    static boolean perClass(Class<?> c, java.util.Set<Class<?>> seen) {
+        if (c == null || c == Object.class || !seen.add(c)) return false;
+        for (java.lang.annotation.Annotation a : c.getDeclaredAnnotations()) {
+            if (a.annotationType().getName().equals("org.junit.jupiter.api.TestInstance")) {
+                try {
+                    Object v = a.annotationType().getMethod("value").invoke(a);
+                    if (String.valueOf(v).equals("PER_CLASS")) return true;
+                } catch (Exception e) {
+                    return true;
+                }
+            }
+        }
+        for (Class<?> i : c.getInterfaces()) if (perClass(i, seen)) return true;
+        return perClass(c.getSuperclass(), seen);
+    }
+
+    @Override
+    public void executionFinished(TestIdentifier id, TestExecutionResult result) {
+        if (!on) return;
+        if (id.isTest()) {
+            Det.endTest(outcome(result));
+        } else if (id.getParentId().isPresent()) {
+            Deps.endContainer();
+        }
+    }
+
+    @Override
+    public void executionSkipped(TestIdentifier id, String reason) {
+        if (!on || !id.isTest()) return;
+        Det.beginTest(Ids.fromUniqueId(id.getUniqueId(), module), index++);
+        Det.endTest("skipped");
+    }
+
+    static String outcome(TestExecutionResult r) {
+        switch (r.getStatus()) {
+            case SUCCESSFUL:
+                return "passed";
+            case ABORTED:
+                return "skipped";
+            default:
+                return "failed";
+        }
+    }
+}

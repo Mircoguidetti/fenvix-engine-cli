@@ -1,0 +1,17 @@
+{
+ "spec": {
+  "name": "grpc-go",
+  "repo": "grpc/grpc-go",
+  "sha": "d619b5d0208981a4c74c418fe03f486ad6595862",
+  "fix_commit": "5210090b567328709f04666131c8c539ea93f5bb",
+  "fix_date": "2026-10-26T22:52:19.000-07:00",
+  "title": "autosharding: fix flaky test TestAggregatedConnectivityStateAndAutoConnect (#9516)",
+  "tests": [
+   "TestAggregatedConnectivityStateAndAutoConnect"
+  ],
+  "source": "github commit search 'repo:grpc/grpc-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "tests-not-found",
+ "notes": [],
+ "seconds": 1.2
+}

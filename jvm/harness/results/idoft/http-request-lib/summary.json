@@ -1,0 +1,39 @@
+{
+ "name": "http-request-lib",
+ "url": "https://github.com/kevinsawicki/http-request",
+ "sha": "2d62a3e9da726942a93cf16b6e91c0187e6c0136",
+ "module": "lib",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 163,
+ "documented": 28,
+ "documented_present": 28,
+ "documented_categories": {
+  "OD-Vic": 28
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "118/163",
+ "fingerprint_covered": 118,
+ "fingerprinted": 163,
+ "timing_base_s": [
+  0.5930000000000001,
+  0.609,
+  0.605
+ ],
+ "timing_det_s": [
+  0.8,
+  0.683,
+  0.746
+ ],
+ "slowdown": 0.2331,
+ "seconds": 170.9
+}

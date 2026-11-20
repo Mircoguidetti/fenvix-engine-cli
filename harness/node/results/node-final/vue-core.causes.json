@@ -1,0 +1,26 @@
+[
+ {
+  "repo": "vue-core",
+  "pool": "popular",
+  "nodeid": "packages/server-renderer/__tests__/render.spec.ts::ssr: pipeToNodeWritable::reset current instance after error in errorCaptured",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses async , await ; also fetch(, https://",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "vue-core",
+  "pool": "popular",
+  "nodeid": "packages/server-renderer/__tests__/render.spec.ts::ssr: renderToNodeStream::vnode component::Transition",
+  "class": "concurrency/event-order",
+  "evidence": "test source uses .on(, async , await , nexttick",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=9",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]

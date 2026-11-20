@@ -1,0 +1,110 @@
+{
+  "name": "react-admin-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/marmelab/react-admin",
+  "commit": "3ff5554b10342fc8467348d35143c805a2ff81e5",
+  "commit_date": "2024-10-25T10:00:44+02:00",
+  "python": "node v20.20.2",
+  "install": "yarn install --immutable",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 115.92937748210008,
+  "det_mean_s": 181.1759672273,
+  "slowdown_pct": 56.281325029347485,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 2087,
+  "unstable_baseline": 27,
+  "unstable_det": 0,
+  "became_stable": 27,
+  "outcome_changed_by_det": 5,
+  "covered": 2035,
+  "not_covered": 52,
+  "reproduced": 11,
+  "never_fails_under_det": 10,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 6,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 14,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 52
+  },
+  "pass_fail_reasons": {
+    "random": 7,
+    "time": 4
+  },
+  "broken_by_det": 5,
+  "broken_always": 5,
+  "broken_causes": {
+    "unexplained | Error": 2,
+    "net | Error": 1,
+    "time | Error": 2
+  },
+  "broken_examples": {
+    "unexplained | Error": [
+      "examples/crm/src/providers/commons/getCompanyAvatar.spec.ts::should return favicon URL if website url exist: Error: expect(received).toStrictEqual(expected) // deep equality (first diverging source: -)",
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return favicon URL if gravatar does not exist: Error: expect(received).toBe(expected) // Object.is equality (first diverging source: -)"
+    ],
+    "net | Error": [
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return gravatar URL for anthony@marmelab.com: Error: expect(received).toBe(expected) // Object.is equality (first diverging source: -)"
+    ],
+    "time | Error": [
+      "packages/ra-ui-materialui/src/detail/ShowGuesser.spec.tsx::<ShowGuesser />::should log the guessed Show view based on the fetched record: Error: Unknown dataProvider function: getMany (first diverging source: -)",
+      "packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx::<FilterButton />::filter selection menu::should close the filter menu on removing all filters: Error: thrown: \"Exceeded timeout of 20000 ms for a test. (first diverging source: time)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "examples/crm/src/providers/commons/getCompanyAvatar.spec.ts::should return favicon URL if website url exist",
+      "examples/crm/src/providers/commons/getContactAvatar.spec.ts::should return favicon URL if gravatar does not exist"
+    ],
+    "not-reproduced": [
+      "packages/ra-core/src/auth/useLogoutIfAccessDenied.spec.tsx::useLogoutIfAccessDenied::should logout without showing a notification if authProvider returns error with message false (fixed:0/10) event #5: [time] setTimeout @ packages/ra-core/src/auth/useLogoutIfAccessDenied.ts:61 = schedule:1000000  <>  [time] per",
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::queryOptions::should accept meta in queryOptions (seed 2:4/4) event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.7753371144380226\" vs"
+    ],
+    "reproduced": [
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::setFilters::should take only last change in case of a burst of changes (case of inputs being currently edited) (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.04961816652228379\" vs \"0.0005583865296668877\"",
+      "packages/ra-core/src/controller/list/useInfiniteListController.spec.tsx::useInfiniteListController::showFilter::Does not remove previously shown filter when adding a new one (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.09132346049237394\" vs \"0.15959944287306893\"",
+      "packages/ra-core/src/controller/list/useListController.spec.tsx::useListController::security::should call the dataProvider if disableAuthentication is true (seed 1): event #3: Math.random @ packages/ra-core/src/store/memoryStore.tsx:68 returned different values: \"0.2805490000141222\" vs \"0.4011052146726236\""
+    ]
+  },
+  "runner": "jest 29.5.0",
+  "node": "node v20.20.2",
+  "documented_source": "https://github.com/marmelab/react-admin/issues/10301",
+  "documented_hints": [
+    "parent.id"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "ord\n\n    Unknown dataProvider function: getMany\n\n      100 |\n      101 |                     if (typeof dataProvider[type] !== 'function') {\n    > 102 |                         throw new Error(\n          |                               ^\n      103 |                             `Unknown dataProvider function: ${type}`\n      104 |                         );\n      105 |                     }\n\n      at Proxy.<anonymous> (packages/ra-core/src/dataProvider/useDataProvider.ts:102:31)\n      at packages/ra-core/src/dataProvider/useGetManyAggregate.ts:309:18\n          at Array.forEach (<anonymous>)\n      at packages/ra-core/src/dataProvider/useGetManyAggregate.ts:271:34\n      at packages/ra-core/src/dataProvider/useGetManyAggregate.ts:221:13\n      at Driver.fire (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:314:13)\n      at Immediate.<anonymous> (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/clock.js:273:46)\n\nFAIL packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx (26.352 s)\n  \u25cf <FilterButton /> \u203a filter selection menu \u203a should close the filter menu on removing all filters\n\n    thrown: \"Exceeded timeout of 20000 ms for a test.\n    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout.\"\n\n      287 |         });\n      288 |\n    > 289 |         it('should close the filter menu on removing all filters', async () => {\n          |         ^\n      290 |             render(<WithAutoCompleteArrayInput />);\n      291 |\n      292 |             // Open Posts List\n\n      at packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:289:9\n      at packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:46:5\n      at Object.<anonymous> (packages/ra-ui-materialui/src/list/filter/FilterButton.spec.tsx:19:1)\n      at detjsJestRunner (../../../../home/runner/work/fenvix-engine-cli/fenvix-engine-cli/node/src/jest/runner.js:146:12)\n\n\nTest Suites: 4 failed, 241 passed, 245 total\nTests:       5 failed, 10 skipped, 2080 passed, 2095 total\nSnapshots:   0 total\nTime:        178.324 s\nRan all test suites.\nTest results written to: ../../runs/react-admin-flaky/det_0.json\nForce exiting Jest: Have you considered using `--detectOpenHandles` to detect async operations that kept running after all tests finished?\ndetjs: trace ../../runs/react-admin-flaky/det_0.jsonl: 2095 tests, order digest 3c3c178fef19d967ad7582d16499ba97\n"
+  },
+  "not_reproduced_causes": {
+    "concurrency/event-order": 6,
+    "l0-gap": 10
+  },
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T14:14:05.063006+00:00"
+}

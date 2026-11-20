@@ -1,0 +1,39 @@
+{
+ "name": "wikidata-toolkit-wdtk-dumpfiles",
+ "url": "https://github.com/wikidata/wikidata-toolkit",
+ "sha": "20de6f7f12319f54eb962ff6e8357b3f5695d54d",
+ "module": "wdtk-dumpfiles",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 50,
+ "documented": 3,
+ "documented_present": 3,
+ "documented_categories": {
+  "OD-Brit": 3
+ },
+ "documented_reproduced": 3,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "49/50",
+ "fingerprint_covered": 49,
+ "fingerprinted": 50,
+ "timing_base_s": [
+  3.184,
+  3.016,
+  3.0710000000000006
+ ],
+ "timing_det_s": [
+  3.5729999999999995,
+  3.3270000000000004,
+  3.6489999999999996
+ ],
+ "slowdown": 0.1635,
+ "seconds": 474.7
+}

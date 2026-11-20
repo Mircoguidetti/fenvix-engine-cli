@@ -1,0 +1,9 @@
+{
+ "name": "vue-core", "url": "https://github.com/vuejs/core", "node": "24", "runner": "vitest",
+ "install": ["corepack enable >/dev/null 2>&1; pnpm install --frozen-lockfile --reporter=silent || pnpm install --reporter=silent"],
+ "install_files": ["pnpm-lock.yaml", "package.json", "packages/*/package.json", "packages-private/*/package.json", "pnpm-workspace.yaml"],
+ "build": [],
+ "args": ["--project", "unit*"],
+ "plain": "pnpm exec vitest run --project 'unit*' --reporter=json --outputFile={report}",
+ "shards": 2, "source": "same 51 commits as harness/skip_study2 (results/v3/walk/vue-core-0o1.json.gz)"
+}

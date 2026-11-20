@@ -1,0 +1,990 @@
+{
+ "name": "anyio",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]",
+  "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+  "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+  "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+  "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]",
+  "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009169",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio+uvloop]",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 2993.95
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]",
+   "configs_searched": 8,
+   "status": "reproduced",
+   "config": "7",
+   "seed": 7,
+   "kind": "order",
+   "prefix_length": 1936,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_alpn_negotiation[asyncio]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ef5f80a9fc41ff7a58fbab1323688c03"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:93fc98fba9c905a38b555b811aade533  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:93fc98fba9c905a38b555b811aade533"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "e41932fe74206205b68dd9cd58461eda",
+     "ef5f80a9fc41ff7a58fbab1323688c03"
+    ]
+   },
+   "runs": 66,
+   "seconds": 687.78,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=7 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_alpn_negotiation_asyncio_-7126d8cc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_alpn_negotiation_asyncio_-7126d8cc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_alpn_negotiation_asyncio_-7126d8cc"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]",
+   "configs_searched": 33,
+   "status": "reproduced",
+   "config": "32",
+   "seed": 32,
+   "kind": "order",
+   "prefix_length": 817,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eof_on_receive[asyncio+eager]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "272bdea3b56ed079b13be48c3f203f89"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:6279c3f97016dd0e530b17bdd0722960  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:6279c3f97016dd0e530b17bdd0722960"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "d8fda6b88cf959decff20fb13a675577",
+     "272bdea3b56ed079b13be48c3f203f89"
+    ]
+   },
+   "runs": 93,
+   "seconds": 2048.75,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=32 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_ragged_eof_on_receive_asyncio_eager_-dc1e7f4f"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]",
+   "configs_searched": 17,
+   "status": "reproduced",
+   "config": "16",
+   "seed": 16,
+   "kind": "order",
+   "prefix_length": 1243,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio+uvloop-server_standard]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "dd34ee5752262848af579dbbfc9c19d4"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:0fd6f74a7e4bbd659f136fbba4eec27e  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:0fd6f74a7e4bbd659f136fbba4eec27e"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "f244665593da5a7d1f89f0b44a6b2436",
+     "dd34ee5752262848af579dbbfc9c19d4"
+    ]
+   },
+   "runs": 72,
+   "seconds": 1257.97,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=16 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio_uvloop-server_standard_-1d53f253"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]",
+   "configs_searched": 31,
+   "status": "reproduced",
+   "config": "30",
+   "seed": 30,
+   "kind": "order",
+   "prefix_length": 2085,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+uvloop]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_ragged_eofs[asyncio-neither_standard]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-2 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "4c5564aff24593ab0cac48b5e0df7ae9"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:514bd35a70d6f2861887829437b79d13  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:514bd35a70d6f2861887829437b79d13"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "ed10116d7f73dad9c580287b10411d05",
+     "4c5564aff24593ab0cac48b5e0df7ae9"
+    ]
+   },
+   "runs": 75,
+   "seconds": 2073.72,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=30 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_ragged_eofs_asyncio-neither_standard_-b7e6fd05"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]",
+   "configs_searched": 23,
+   "status": "reproduced",
+   "config": "22",
+   "seed": 22,
+   "kind": "order",
+   "prefix_length": 2413,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_receive_invalid_max_bytes[asyncio+uvloop-0]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "37ae39175f0ebf56c6c00fbb6f700391"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:bdc67620e42fc50379d02ae58020d379  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:bdc67620e42fc50379d02ae58020d379"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "43a47037e4d3828c0d51fd8f54eb0c67",
+     "37ae39175f0ebf56c6c00fbb6f700391"
+    ]
+   },
+   "runs": 83,
+   "seconds": 1660.58,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=22 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_receive_invalid_max_bytes_asyncio_uvloop-0_-323ca1f5"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4800,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1035)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:969"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "30e0321d69c1459b9448fa030a3eceac"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:0eac7883029c8fcafc9d99b67c602ac6  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:0eac7883029c8fcafc9d99b67c602ac6"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "964e71cf4ee41f68107584f0daeed245",
+     "30e0321d69c1459b9448fa030a3eceac"
+    ]
+   },
+   "runs": 33,
+   "seconds": 466.91,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv12_-b85ae3e3"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4787,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+eager-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0b08e4ce8f6ff5abaaa97310bcae0b0e"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:87fa89297caf01c9fe94127195fcf87a  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:87fa89297caf01c9fe94127195fcf87a"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "6dacca666596f88c5ffd33ee71ac53e3",
+     "0b08e4ce8f6ff5abaaa97310bcae0b0e"
+    ]
+   },
+   "runs": 35,
+   "seconds": 470.57,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_eager-tlsv13_-3c23e895"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4749,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "OSError",
+    "call",
+    "OSError: [Errno 16] Device or resource busy",
+    "uvloop/loop.pyx:614"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "ade779dfccc24edd3f52ebc04a10e820"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:c185e6a90c03f8ea1e2cc24bf81e2043  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:c185e6a90c03f8ea1e2cc24bf81e2043"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "75d9e35bf466ac03d98e9e6738d5958a",
+     "ade779dfccc24edd3f52ebc04a10e820"
+    ]
+   },
+   "runs": 36,
+   "seconds": 487.89,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv12_-5ac87147"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4767,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "0d9d8330366a49760d1fe9815881c3cd"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:12d0c8e9bd162d5f9dfb506e35f87a5c  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:12d0c8e9bd162d5f9dfb506e35f87a5c"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "8afd9b3954c831c872218ca5b53d5032",
+     "0d9d8330366a49760d1fe9815881c3cd"
+    ]
+   },
+   "runs": 36,
+   "seconds": 508.35,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio_uvloop-tlsv13_-e665f973"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4768,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv12]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] ssl/tls alert handshake failure (_ssl.c:1035)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:969"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "1dc6a5b849a4b1a1ff66d39324689288"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:690813c8efae18b0668332c7bba88555  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:690813c8efae18b0668332c7bba88555"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "fc6d9f2cde34de4ec019cefed0e4f041",
+     "1dc6a5b849a4b1a1ff66d39324689288"
+    ]
+   },
+   "runs": 36,
+   "seconds": 497.94,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv12_-14c1a1b5"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 4784,
+   "minimal_length": 2,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio+eager]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio-tlsv13]"
+   ],
+   "outcome": "failed+teardown-error",
+   "exception": [
+    "SSLError",
+    "call",
+    "ssl.SSLError: [SSL: SHUTDOWN_WHILE_IN_INIT] shutdown while in init (_ssl.c:2791)",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/ssl.py:973"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "5961257359aa22b645220d99a4cdaf12"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:8e77fec149c8b3ba3b4c925f4b6f014f  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:8e77fec149c8b3ba3b4c925f4b6f014f"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "17525585cf6b2e16039b97a6f8e7fc41",
+     "5961257359aa22b645220d99a4cdaf12"
+    ]
+   },
+   "runs": 38,
+   "seconds": 462.25,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_eof_not_implemented_asyncio-tlsv13_-37fda230"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]",
+   "configs_searched": 14,
+   "status": "reproduced",
+   "config": "13",
+   "seed": 13,
+   "kind": "order",
+   "prefix_length": 1993,
+   "minimal_length": 3,
+   "polluters": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]"
+   ],
+   "setters": [],
+   "order": [
+    "tests/streams/test_tls.py::TestTLSListener::test_extra_attributes[asyncio]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_eof_not_implemented[asyncio+uvloop-tlsv12]",
+    "tests/streams/test_tls.py::TestTLSStream::test_send_receive[asyncio+eager]"
+   ],
+   "outcome": "error",
+   "exception": [
+    "PytestUnhandledThreadExceptionWarning",
+    "setup",
+    "pytest.PytestUnhandledThreadExceptionWarning: Exception in thread Thread-3 (serve_sync)",
+    "/tmp/work/venvs/anyio/lib/python3.13/site-packages/_pytest/threadexception.py:54"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "8128d232bdda146ceabf612e15785f01"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 0,
+    "reason": "entropy",
+    "description": "event #0: [entropy] os.urandom @ <site>/trustme/__init__.py:61 = 12:6dea94625694c6b0d8f660f1df85efe9  <>  [fs] os.scandir @ <site>/blockbuster/blockbuster.py:372 = .|15|ee52d80c082ee17391ed9856dc928a9f",
+    "event_a": {
+     "t": 0,
+     "s": "entropy",
+     "o": "os.urandom",
+     "at": "<site>/trustme/__init__.py:61",
+     "v": "12:6dea94625694c6b0d8f660f1df85efe9"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.scandir",
+     "at": "<site>/blockbuster/blockbuster.py:372",
+     "v": ".|15|ee52d80c082ee17391ed9856dc928a9f"
+    },
+    "fingerprints": [
+     "40e87abb2158f2988726f3de0b47a8fa",
+     "8128d232bdda146ceabf612e15785f01"
+    ]
+   },
+   "runs": 66,
+   "seconds": 1174.34,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/anyio/bin/python",
+   "command": "pytest --det --det-seed=13 --det-order=/tmp/work/block2/anyio/standalone/bundles/test_send_receive_asyncio_eager_-65426774/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/anyio/standalone/bundles/test_send_receive_asyncio_eager_-65426774",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/anyio/standalone/bundles/test_send_receive_asyncio_eager_-65426774"
+  },
+  {
+   "test": "tests/streams/test_tls.py::TestTLSStream::test_unicode_hostname_idna2008[asyncio+eager]",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 2745.73
+  },
+  {
+   "test": "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio+uvloop]",
+   "configs_searched": 51,
+   "status": "not-found",
+   "runs": 51,
+   "seconds": 2331.5
+  },
+  {
+   "test": "tests/test_sockets.py::TestTCPStream::test_unretrieved_future_exception_server_crash[ipv6-asyncio]",
+   "status": "budget"
+  }
+ ],
+ "seconds": 19868.86
+}

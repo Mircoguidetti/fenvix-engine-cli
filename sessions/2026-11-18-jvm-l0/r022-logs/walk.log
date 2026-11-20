@@ -1,0 +1,4 @@
+{"sha": "f4c8a25d79bca0ffc021f73c986bd7dd7fb9b82a", "status": "ok", "rc": 1, "seconds": 6.3, "tests": 18, "test_ms": 67, "failed": 1}
+{"sha": "44bb81f82098e377df07afd9b75190900396a694", "status": "ok", "rc": 1, "seconds": 6.2, "tests": 19, "test_ms": 71, "failed": 2, "prev": "f4c8a25d79bca0ffc021f73c986bd7dd7fb9b82a", "reused": 14, "verified": 14, "unverifiable": 0, "share_time_skipped": 0.6633, "share_tests_skipped": 0.7368, "rerun_reasons": {"native": 1, "process": 1, "after-new": 2}, "rerun_details": {"after-new: rv.PolluterTest::pollute()": 2, "native: lib:/tmp/fenvix-review-r022-walk/walk/review-r022-walk/build/native/librvnative.so": 1, "process: cat": 1}, "module_cache_hits": 0, "modules": 1, "module_cache_share_time": 0.0}
+BAD walk-verifier  reused=14 wrong=[] flaky=[]
+EXIT 1

@@ -85,7 +85,7 @@ _O_TMPFILE = getattr(os, "O_TMPFILE", 0)
 _VOLATILE_OPTIONS = {
     "file_or_dir", "verbose", "quiet", "color", "code_highlight", "reportchars", "tbstyle", "showlocals",
     "durations", "durations_min", "junitxml", "junitprefix", "resultlog", "basetemp", "det_cache",
-    "det_cache_verify", "det_cache_receipts", "det_cache_shared", "det_trace", "det_outcomes", "det_compare", "det_max_events",
+    "det_cache_verify", "det_cache_receipts", "det_cache_shared", "det_cache_keys", "det_trace", "det_outcomes", "det_compare", "det_max_events",
     "showcapture", "fulltrace", "collectonly", "markers", "fixtures", "show_fixtures_per_test", "help", "version",
     "debug", "traceconfig", "showlocals", "log_file", "log_cli_level", "pastebin", "usepdb", "usepdb_cls",
     "trace", "xmlpath", "htmlpath", "lf", "failedfirst", "last_failed_no_failures", "newfirst", "cacheclear",
@@ -159,59 +159,36 @@ _CO_OPTIMIZED = 0x1
 
 
 # ---------------------------------------------------------------------------
-# review R-032b F2: verbatim from detpy/proofcache.py (the reference replaces that module in its sessions)
-# existence and kind checks that ask os.stat (their answer is the kind, not the size): genericpath, posixpath, pathlib,
-# glob, shutil. (Review R-023c E4: samefile is not one: its answer is the inode and device, keyed as status fields.)
-_KIND_FUNCS = frozenset({"exists", "lexists", "isfile", "isdir", "islink", "ismount", "isjunction", "is_file", "is_dir",
-                         "is_symlink", "is_mount", "is_junction", "is_socket", "is_fifo", "is_block_device",
-                         "is_char_device", "_lexists", "_isdir", "which", "_access_check", "isdevdrive",
-                         # review R-023c E4: realpath asks each component whether it is a symlink; shutil's _stat
-                         # (copyfile) whether a file is a FIFO: kinds
-                         "realpath", "_joinrealpath", "_stat"})
+# review R-032b F2-mtime (claude/parallel-proof-3 6cfae24, 97e61ac): a time field read from a stat result that user
+# code asked for refuses the test ("mtime"). The path's metadata probe (q/Q) keys the mtime where the path is an input;
+# the refusal also covers paths that are not (temporary files, a file the test wrote: its real-clock time against the
+# virtual clock). Standard-library helpers (shutil.copystat, os.path.getmtime: keyed by the probe) are left alone.
 _STDLIB_PATH_MODULES = frozenset({"genericpath", "posixpath", "ntpath", "pathlib", "pathlib._local",
                                   "pathlib._abc", "glob", "shutil", "os"})
+_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
+_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
 
 
-def _kind_check_caller() -> bool:
-    """True when os.stat was called by an existence or kind check of the standard library."""
+def _user_stat_caller() -> bool:
+    """True when os.stat / os.lstat was asked by repository or library code for its result (not by a standard
+    library helper); Path.stat() counts as its caller's. Called from the os.stat wrapper (frame 1)."""
     f = _getframe(2)
     while f is not None:
-        mod = f.f_globals.get("__name__", "")
-        if mod not in _STDLIB_PATH_MODULES:
-            return False
-        if f.f_code.co_name in _KIND_FUNCS:
-            return True
-        f = f.f_back
-    return False
-
-
-_REWRITE_FILE = os.sep + os.path.join("_pytest", "assertion", "rewrite.py")
-
-
-def _reaches_user(f) -> bool:
-    """Review R-023c E2: whether a status result asked by frame ``f`` goes to code that can decide on it: walking
-    out from ``f``, the first frame that is neither the standard library nor test infrastructure is repository or
-    library code, whatever frames are between (tarfile's gettarinfo, pytest's LocalPath.mtime, Path.stat). Not:
-    detpy's own status reads, pytest's assertion rewriting (its .pyc is a cache of the source, rewritten from the
-    same source when stale) and shutil.copystat (it copies the times onto a file this session writes)."""
-    while f is not None:
         fn = f.f_code.co_filename
-        if fn.startswith(_DETPY_DIR) or fn.endswith(_REWRITE_FILE):
-            return False
-        if f.f_code.co_name == "copystat" and f.f_globals.get("__name__") == "shutil":
-            return False
-        if _sites._classify(fn)[0] == _sites._USER:
-            return True
-        f = f.f_back
+        # detpy's own reads (the capture, Level 0's patches) are not the test's
+        return not (mod in _STDLIB_PATH_MODULES or fn.startswith(_STDLIB_DIR) or fn.startswith("<frozen")
+                    or fn.startswith(_DETPY_DIR) or fn == __file__)
     return False
 
 
-# standard-library helpers that return a time from os.stat themselves: their caller reads a time
+# standard-library helpers that return a time from os.stat themselves: their caller reads a time (claude/parallel-proof-3
+# 89971a3: os.path.getmtime / getctime / getatime by user code refuse, test W6e)
 _TIME_HELPERS = frozenset({"getmtime", "getctime", "getatime"})
 
 
-def _time_helper_caller() -> str | None:
-    """The name of os.path.getmtime/getctime/getatime when one of them called os.stat (the time goes to its caller)."""
+def _time_helper_caller() -> bool:
+    """True when os.stat was called by os.path.getmtime/getctime/getatime (the time goes to their caller). Called
+    from the os.stat wrapper (frame 1)."""
     f = _getframe(2)
     if (f is not None and f.f_code.co_name in _TIME_HELPERS
             and f.f_globals.get("__name__", "") in ("genericpath", "posixpath", "ntpath")):
@@ -219,23 +196,9 @@ def _time_helper_caller() -> str | None:
     return None
 
 
-_STDLIB_DIR = os.path.dirname(os.__file__) + os.sep
-# st_atime, st_mtime, st_ctime (indices 7, 8, 9) and their _ns, birthtime variants
-_TIME_FIELDS = ("st_atime", "st_mtime", "st_ctime", "st_birthtime")
-_REAL_STAT = os.stat
-_REAL_READLINK = os.readlink
-
-
 class _TimedStat:
-    """An ``os.stat_result`` given to user code (review R-032b F2, round 4, review R-023c E2/E4), each field an input
-    when it is read: ``st_mtime``/``st_ctime`` (their ``_ns`` variants, indices 8 and 9) the file's modification and
-    change times ("y:", keyed); ``st_atime``/``st_birthtime`` (index 7; unpacking, equality, hashing, repr give
-    every field) refuse the test ("mtime": the access time changes when the file is read); ``st_size`` (index 6) the
-    size (keyed when the call was ``os.stat`` of a path; else with the other fields); ``st_mode``, ``st_ino``,
-    ``st_dev``, ``st_nlink``, ``st_uid``, ``st_gid`` and the rest the status fields ("w:", keyed). ``path`` is a path
-    or a descriptor (``os.fstat``, ``os.stat(fd)``): a descriptor's file is named through /proc/self/fd and must be
-    the file the result describes (same device and inode); one of a pipe, socket or device is this process's own
-    state (no input); one that cannot be named refuses the test ("pstate")."""
+    """An ``os.stat_result`` given to user code: reading a time field flags the context "mtime" (not cached).
+    Everything else is the result's own."""
 
     __slots__ = ("_r", "_cap", "_path", "_link", "_sized")
 
@@ -254,22 +217,8 @@ class _TimedStat:
         if not isinstance(self._path, int):
             return self._path
         try:
-            p = _REAL_READLINK(f"/proc/self/fd/{self._path}")
-        except OSError:
-            return None
-        if not p.startswith("/") or p.startswith(("/proc/", "/dev/", "/sys/")):
-            return ""  # a pipe, a socket, an anonymous inode, a device: the process's own descriptor
-        try:
-            st = _REAL_STAT(p)
-        except OSError:
-            return None
-        if (st.st_dev, st.st_ino) != (self._r.st_dev, self._r.st_ino):
-            return None  # deleted or replaced since it was opened
-        return p
-
-    def _flag(self, flag, detail):
-        try:
-            self._cap.flag(self._cap._cur(), flag, detail)
+            p = self._path
+            self._cap.flag(self._cap._cur(), "mtime", str(p) if isinstance(p, int) else os.fsdecode(os.fspath(p)))
         except Exception:
             pass
 
@@ -347,7 +296,7 @@ class _TimedStat:
 
 class _ScandirEntry:
     """An ``os.DirEntry`` of user code's ``os.scandir`` whose ``stat()`` and kind checks are inputs (review R-032b F2;
-    review R-023c E4: its ``inode()`` too)."""
+    ``Capture._patch_scandir``)."""
 
     __slots__ = ("_e", "_cap")
 
@@ -355,13 +304,13 @@ class _ScandirEntry:
         self._e = e
         self._cap = cap
 
-    def _check(self, sized, follow=True):
+    def _check(self, meta: bool, follow: bool = True) -> None:
         cap = self._cap
         if cap._in_stat:
             return
         cap._in_stat = True
         try:
-            cap.stat_check(self._e.path, not follow, sized and follow)
+            cap.stat_check(self._e.path, not follow, meta)
         except Exception:
             pass
         finally:
@@ -629,6 +578,7 @@ class Capture:
         _core.set_audit_hook(self._audit, _AUDIT_EVENTS)
         self._patch_sqlite()
         self._patch_stat()
+        self._patch_scandir()
         self._patch_lookups()
         self._installed_cb = self._installed
         self.active = False
@@ -678,84 +628,13 @@ class Capture:
             self.tool = None
 
     # -- absent inputs (parallel-proof round 3, item 9) ---------------------------------
-    def _patch_stat(self) -> None:
+    def _patch_scandir(self) -> None:
+        """Review R-032b F2 (claude/parallel-proof-3 c5f0e70): ``os.scandir``'s entries answer ``stat()``,
+        ``is_file()``, ``is_dir()`` and ``is_symlink()`` without ``os.stat``. User code iterating ``os.scandir`` gets
+        entries whose ``stat()`` is an input like ``os.stat`` here (the path's metadata: ``q``, ``Q`` without
+        following a symlink) and whose kind checks are kind checks. Library code's iterations (glob, shutil) keep the
+        plain entries (their callers' own checks are recorded where they look)."""
         cap = self
-        self._stat_saved = []
-        self._in_stat = False
-
-        def wrap(name):
-            orig = getattr(os, name, None)
-            if orig is None:
-                return
-
-            link = name == "lstat"
-
-            def checked(path, *args, **kwargs):
-                if cap._in_stat or kwargs.get("dir_fd") is not None:
-                    return orig(path, *args, **kwargs)
-                try:
-                    # review R-023c E2: whatever frames are between, the status goes to user code or it does not
-                    user = _reaches_user(_getframe(1))
-                except Exception:
-                    user = False
-                if not user:
-                    return orig(path, *args, **kwargs)
-                fd = isinstance(path, int)
-                nolink = link or kwargs.get("follow_symlinks") is False
-                kind = sized = False
-                if not fd:
-                    cap._in_stat = True
-                    try:
-                        if name == "access":
-                            # the kind, and (review R-023c E4) the permission bits and owner when a permission is asked
-                            cap.stat_check(path, nolink, False, True)
-                            mode = args[0] if args else kwargs.get("mode", os.F_OK)
-                            if mode != os.F_OK:
-                                cap.fields_check(path, nolink)
-                        else:
-                            # review R-032b F2: os.stat asked for its own sake (st_size: Path.stat(), os.stat(p)) is
-                            # keyed by the size; asked by an existence or kind check (exists, isfile, is_dir, glob) by
-                            # the kind
-                            kind = _kind_check_caller()
-                            sized = name == "stat" and not nolink and not kind
-                            cap.stat_check(path, nolink, sized, True)
-                            helper = _time_helper_caller()
-                            if helper == "getatime":
-                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
-                            elif helper:
-                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
-                                cap.time_check(path)
-                                kind = True
-                    except Exception:
-                        pass
-                    finally:
-                        cap._in_stat = False
-                r = orig(path, *args, **kwargs)
-                if name == "access" or kind:
-                    return r  # a boolean, or a kind check's / time helper's own use of the result (recorded above)
-                return _TimedStat(r, cap, path, nolink, sized)
-
-            checked.__name__ = orig.__name__
-            checked.__wrapped__ = orig
-            self._stat_saved.append((os, name, orig))
-            setattr(os, name, checked)
-            # LIMITS A3: references bound before the session
-            for mod in list(sys.modules.values()):
-                d = getattr(mod, "__dict__", None)
-                if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
-                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
-                    continue
-                for k, v in list(d.items()):
-                    if v is orig:
-                        self._stat_saved.append((mod, k, orig))
-                        try:
-                            setattr(mod, k, checked)
-                        except Exception:
-                            pass
-
-        for name in ("stat", "lstat", "access", "fstat"):
-            wrap(name)
-
         orig_scandir = os.scandir
 
         def scandir(path=".", *args, **kwargs):
@@ -769,44 +648,133 @@ class Capture:
                 return it
             return _ScandirIter(it, cap)
 
+        scandir.__name__ = "scandir"
+        scandir.__doc__ = orig_scandir.__doc__
+        scandir.__wrapped__ = orig_scandir
         self._stat_saved.append((os, "scandir", orig_scandir))
         os.scandir = scandir
 
-    def time_check(self, path, link=False) -> None:
-        if not self.active:
-            return
-        p = self._abs(path)
-        if p is None or self._ignored(p):
-            return
-        self.read(self._cur(), p, "Y" if link else "y")
+    def _patch_stat(self) -> None:
+        # claude/all-runners-2: as detpy/_proof.py: stat/lstat/access/readlink key the metadata, the os.path.exists
+        # family the kind (it calls the unwrapped stat)
+        import posixpath
+        import stat as _st
 
-    def fields_check(self, path, link=False) -> None:
-        if not self.active:
-            return
-        p = self._abs(path)
-        if p is None or self._ignored(p):
-            return
-        self.read(self._cur(), p, "W" if link else "w")
+        cap = self
+        self._stat_saved = []
+        self._in_stat = False
 
-    def stat_check(self, path, link=False, sized=False, user=None) -> None:
-        if not self.active:
-            return
-        p = self._abs(path)
-        if p is None or self._ignored(p):
-            return
-        if user is None:
+        def rebind(owner, name, orig, new):
+            self._stat_saved.append((owner, name, orig))
+            setattr(owner, name, new)
+            # LIMITS A3: references bound before the session
+            for mod in list(sys.modules.values()):
+                d = getattr(mod, "__dict__", None)
+                if not isinstance(d, dict) or mod is owner or getattr(mod, "__name__", "") in ("posix", "nt") \
+                        or str(getattr(mod, "__file__", "") or "").startswith(_DETPY_DIR):
+                    continue
+                for k, v in list(d.items()):
+                    if v is orig:
+                        self._stat_saved.append((mod, k, orig))
+                        try:
+                            setattr(mod, k, new)
+                        except Exception:
+                            pass
+
+        def note(path, link, meta):
+            if cap._in_stat or isinstance(path, int):
+                return
+            cap._in_stat = True
             try:
-                f = _getframe(1)
-            except ValueError:
-                f = None
-            user = self._kind_from(f) == "user"
-        if not user:
+                cap.stat_check(path, link, meta)
+            except Exception:
+                pass
+            finally:
+                cap._in_stat = False
+
+        def wrap(name):
+            orig = getattr(os, name, None)
+            if orig is None:
+                return
+            own = name in ("lstat", "readlink")
+
+            def checked(path, *args, **kwargs):
+                timed = False
+                if not kwargs.get("dir_fd"):
+                    note(path, own or kwargs.get("follow_symlinks") is False, True)
+                    if name in ("stat", "lstat") and not cap._in_stat and not isinstance(path, int):
+                        try:
+                            timed = _user_stat_caller() and cap._caller_kind() == "user"
+                            if _time_helper_caller() and cap._caller_kind() == "user":
+                                # os.path.getmtime & co.: the time is read inside the helper, for its caller
+                                cap.flag(cap._cur(), "mtime", os.fsdecode(os.fspath(path)))
+                        except Exception:
+                            timed = False
+                r = orig(path, *args, **kwargs)
+                return _TimedStat(r, cap, path) if timed else r
+
+            checked.__name__ = orig.__name__
+            checked.__wrapped__ = orig
+            rebind(os, name, orig, checked)
+
+        real_stat, real_lstat = os.stat, os.lstat
+        for name in ("stat", "lstat", "access", "readlink"):
+            wrap(name)
+        if os.path is not posixpath:
             return
-        self.read(self._cur(), p, "l" if link else "z" if sized else "s")
+
+        def kind_of(path, link):
+            note(path, link, False)
+            try:
+                return (real_lstat if link else real_stat)(path)
+            except (OSError, ValueError):
+                return None
+
+        def exists(path):
+            return kind_of(path, False) is not None
+
+        def lexists(path):
+            return kind_of(path, True) is not None
+
+        def isfile(path):
+            st = kind_of(path, False)
+            return st is not None and _st.S_ISREG(st.st_mode)
+
+        def isdir(s):
+            st = kind_of(s, False)
+            return st is not None and _st.S_ISDIR(st.st_mode)
+
+        def islink(path):
+            st = kind_of(path, True)
+            return st is not None and _st.S_ISLNK(st.st_mode)
+
+        for name, fn in (("exists", exists), ("lexists", lexists), ("isfile", isfile), ("isdir", isdir),
+                         ("islink", islink)):
+            orig = getattr(posixpath, name, None)
+            if orig is not None:
+                rebind(posixpath, name, orig, fn)
+
+    def stat_check(self, path, link=False, meta=False, sized=False) -> None:  # noqa: D401
+        if not self.active:
+            return
+        p = self._abs(path)
+        if p is None or self._ignored(p):
+            return
+        try:
+            f = _getframe(1)
+        except ValueError:
+            f = None
+        while f is not None and f.f_code.co_filename == __file__ and f.f_code.co_name in _PROBE_WRAPPERS:
+            f = f.f_back  # the probe's own wrappers; a frame of this file further out is the capture's own call
+        if self._kind_from(f) != "user":
+            return
+        self.read(self._cur(), p, ("Q" if link else "q") if meta else ("l" if link else "z" if sized else "s"))
 
     def _kind_from(self, f) -> str:
         while f is not None:
             fn = f.f_code.co_filename
+            if fn == __file__:
+                return "infra"  # the capture's own calls (realpath of a code file, ...): Rust's INTERNAL
             if fn.startswith("<frozen importlib") or fn.startswith("<frozen zipimport"):
                 return "import"
             if fn.startswith(_DETPY_DIR):
@@ -873,8 +841,8 @@ class Capture:
             if d is None or not os.path.isdir(d) or self._ignored(d + os.sep):
                 continue
             if whole:
-                # one dependency on the directory's importable entries (proof::importable_digest)
-                self.read(ctx, d, "i")
+                # one dependency on the directory's entries of this name (proof::importable_name_digest)
+                self.read(ctx, d + "/" + tail, "j")
                 regular, pkg_dir = _core.import_probe(d, tail, suffixes)
                 if pkg_dir:
                     for c in _core.import_candidates(d, tail, suffixes)[1:1 + n]:
@@ -1050,22 +1018,12 @@ class Capture:
                 dep = self._hashed[hk] = _core.importable_dep(p)
             self.data.setdefault(ctx, {}).setdefault(self._key(p) + "/\x01importable", dep)
             return
-        if kind in ("y", "Y", "w", "W"):
-            # round 4: a file's modification and change times ("Y": a symlink's own); review R-023c E4: its other
-            # status fields ("w", "W"); keyed beside the path's own dependency
-            if p in self.writers:
-                self.flags.setdefault(ctx, set()).add("rw:" + p)
-                return
-            hk = kind + p
+        if kind == "j":
+            hk = "j" + p
             dep = self._hashed.get(hk)
             if dep is None:
-                dep = self._hashed[hk] = {
-                    "y": lambda: "y:" + _core.time_digest(p),
-                    "Y": lambda: "y:L" + _core.time_digest(p, False),
-                    "w": lambda: "w:" + _core.fields_digest(p),
-                    "W": lambda: "w:L" + _core.fields_digest(p, False)}[kind]()
-            suffix = {"y": "\x01mtime", "Y": "\x01lmtime", "w": "\x01stat", "W": "\x01lstat"}[kind]
-            self.data.setdefault(ctx, {}).setdefault(self._key(p) + suffix, dep)
+                dep = self._hashed[hk] = _core.importable_name_dep(p)
+            self.data.setdefault(ctx, {}).setdefault(self._key(p) + "\x01imp", dep)
             return
         if kind in ("s", "l", "z"):
             # parallel-proof round 3, item 9: an existence or kind check; the project root and its ancestors are
@@ -1111,6 +1069,14 @@ class Capture:
             # reads what code of this session wrote: allowed only if every writer is credited to the reader
             self.flags.setdefault(ctx, set()).add("rw:" + p)
             return
+        if kind in ("q", "Q"):
+            # claude/all-runners-2: a metadata probe, its own key (proof::probe_key) apart from the content's
+            hk = kind + p
+            dep = self._hashed.get(hk)
+            if dep is None:
+                dep = self._hashed[hk] = _core.probe_dep(p, kind)
+            self.data.setdefault(ctx, {}).setdefault(_core.probe_key(kind, self._key(p)), dep)
+            return
         hk = kind + p
         dep = self._hashed.get(hk)
         if dep is None:
@@ -1126,8 +1092,9 @@ class Capture:
 
     def wrote(self, ctx: int, p: str) -> None:
         self.writers.setdefault(p, set()).add(ctx)
-        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "l" + p, "z" + p, "y" + p, "Y" + p, "w" + p,
-                  "W" + p, "i" + os.path.dirname(p)):
+        base = os.path.basename(p)
+        for k in ("f" + p, "d" + p, "d" + os.path.dirname(p), "s" + p, "l" + p, "q" + p, "Q" + p,
+                  "i" + os.path.dirname(p), "j" + p[:len(p) - len(base)] + base.split(".")[0]):
             self._hashed.pop(k, None)
 
     def _audit(self, event, args):
@@ -1835,7 +1802,9 @@ def _dist_infos(root: str, memo_path: str | None = None):
             os.replace(tmp, memo_path)
         except OSError:
             pass
-    return sorted(parts), editable
+    # a distribution found twice with the same identity (several sys.path entries naming its directory, or a
+    # dist-info and an egg-info of one version side by side) is one distribution, as in Rust (identity.rs)
+    return sorted(set(parts)), sorted(set(editable))
 
 
 def runtime_identity(root: str, memo_path: str | None = None) -> tuple[str, dict, list]:
@@ -1883,6 +1852,9 @@ def tz_locale_identity() -> dict:
     return d
 
 
+_PROBE_WRAPPERS = frozenset({"note", "checked", "kind_of", "exists", "lexists", "isfile", "isdir", "islink"})
+
+
 def config_identity(config) -> tuple[str, dict]:
     cfg = _state.STATE.config
     plugins = sorted({f"{dist.project_name}=={dist.version}"
@@ -1892,8 +1864,11 @@ def config_identity(config) -> tuple[str, dict]:
         ini = {}
     ini_items = sorted((str(k), repr(getattr(v, "value", v))) for k, v in dict(ini).items())
     opts = []
+    pm = config.pluginmanager
+    inert = tuple(prefix for name, prefix in (("randomly", "randomly_"), ("random_order", "random_order"))
+                  if pm.is_blocked(name))  # claude/all-runners-2: as detpy/proofcache.py
     for k, v in sorted(vars(config.option).items()):
-        if k in _VOLATILE_OPTIONS:
+        if k in _VOLATILE_OPTIONS or (inert and k.startswith(inert)):
             continue
         r = repr(v)
         if " at 0x" in r:

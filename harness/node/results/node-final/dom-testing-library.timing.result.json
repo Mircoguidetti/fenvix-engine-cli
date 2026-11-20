@@ -1,0 +1,32 @@
+{
+  "name": "dom-testing-library",
+  "kind": "popular",
+  "status": "ok",
+  "node": "node v18.20.8",
+  "runner": "jest 29.7.0",
+  "serial_s": [
+    8.716830113999997,
+    8.789393947999997,
+    8.775917246000006
+  ],
+  "det_s": [
+    7.547315504000004,
+    7.569193342999995,
+    7.577700995000001
+  ],
+  "tests": 664,
+  "machine": {
+    "cpus": 4,
+    "platform": "linux",
+    "RUNNER_NAME": "GitHub Actions 1000009530",
+    "RUNNER_OS": "Linux",
+    "RUNNER_ARCH": "X64",
+    "RUNNER_ENVIRONMENT": "github-hosted",
+    "ImageOS": "ubuntu26",
+    "ImageVersion": "20261111.196.1",
+    "cpu_model": "AMD EPYC 9V45 96-Core Processor"
+  },
+  "slowdown_pct": -13.750402028346675,
+  "executor": "GitHub Actions",
+  "date": "2026-11-17T16:01:40.593159+00:00"
+}

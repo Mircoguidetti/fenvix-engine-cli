@@ -1,0 +1,35 @@
+{
+ "name": "fastjson",
+ "url": "https://github.com/alibaba/fastjson",
+ "sha": "e05e9c5e4be580691cc55a59f3256595393203a1",
+ "module": ".",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 4464,
+ "documented": 19,
+ "documented_present": 19,
+ "documented_categories": {
+  "NDOD": 2,
+  "NOD": 2,
+  "OD": 15
+ },
+ "documented_reproduced": 1,
+ "documented_unstable_in_baseline": 1,
+ "unstable_baseline": 1,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 1,
+ "broken_tests": [
+  "com.alibaba.json.bvt.bug.Bug_for_cnhans::test_iso_format"
+ ],
+ "fingerprint_coverage": "4453/4464",
+ "fingerprint_covered": 4453,
+ "fingerprinted": 4464,
+ "timing_base_s": [],
+ "timing_det_s": [],
+ "slowdown": null,
+ "seconds": 3032.4
+}

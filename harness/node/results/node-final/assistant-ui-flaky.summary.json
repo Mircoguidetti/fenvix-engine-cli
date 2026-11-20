@@ -1,0 +1,82 @@
+{
+  "name": "assistant-ui-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/assistant-ui/assistant-ui",
+  "commit": "b8c5e68298a81ff6c9c99b504bc57479c5dd4f05",
+  "commit_date": "2026-09-08T11:32:31+08:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 23.125793435599988,
+  "det_mean_s": 39.097188958800004,
+  "slowdown_pct": 69.06312454825247,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 702,
+  "unstable_baseline": 0,
+  "unstable_det": 0,
+  "became_stable": 0,
+  "outcome_changed_by_det": 8,
+  "covered": 691,
+  "not_covered": 1,
+  "reproduced": 0,
+  "never_fails_under_det": 0,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 0,
+  "seeds_needed": [],
+  "seeds_explored": 0,
+  "exploration_runs": 0,
+  "exploration_budget_hit": false,
+  "reasons": {
+    "fs": 1
+  },
+  "pass_fail_reasons": {},
+  "broken_by_det": 8,
+  "broken_always": 8,
+  "broken_causes": {
+    "time | AssertionError": 5,
+    "unexplained | AssertionError": 1,
+    "time+timers | AssertionError": 2
+  },
+  "broken_examples": {
+    "time | AssertionError": [
+      "lib/repo-sandbox.test.ts::createRepoSandbox::cannot reach the host filesystem outside the mounted root: AssertionError: expected 'bash: Maximum call stack size exceeded' to contain 'No such file or directory' (first diverging source: -)",
+      "lib/repo-sandbox.test.ts::createRepoSandbox::falls back to an empty mount before the tree is generated: AssertionError: expected 'bash: Maximum call stack size exceeded' to be '' // Object.is equality (first diverging source: -)",
+      "lib/repo-sandbox.test.ts::createRepoSandbox::isolates writes, overwrites, and deletes between factories: AssertionError: expected 'bash: Maximum call stack size exceeded' to contain 'No such file or directory' (first diverging source: -)"
+    ],
+    "unexplained | AssertionError": [
+      "lib/repo-sandbox.test.ts::createRepoSandbox::serves reads from the generated source tree: AssertionError: expected 'bash: Maximum call stack size exceeded' to be '# assistant-ui' // Object.is equality (first diverging source: -)"
+    ],
+    "time+timers | AssertionError": [
+      "lib/xulux/fetch-sandbox.test.ts::fetchSandboxResource::keeps the deadline over the response body by default: AssertionError: expected false to be true // Object.is equality (first diverging source: -)",
+      "lib/xulux/fetch-sandbox.test.ts::fetchSandboxResource::rejects at the budget rather than waiting out the backoff: AssertionError: expected \"vi.fn()\" to be called 1 times, but got 3 times (first diverging source: -)"
+    ]
+  },
+  "ablation_runs": 6,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "changed:passed->failed": [
+      "lib/repo-sandbox.test.ts::createRepoSandbox::cannot reach the host filesystem outside the mounted root",
+      "lib/repo-sandbox.test.ts::createRepoSandbox::falls back to an empty mount before the tree is generated"
+    ]
+  },
+  "runner": "vitest 4.1.11",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/assistant-ui/assistant-ui/issues/7007",
+  "documented_hints": [
+    "flaky: react-native MessageContent derived-status cases sit on the 5s vitest timeout"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)\ndetjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5\nJSON report written to /tmp/work/runs/assistant-ui-flaky/det_0.json\ndetjs: trace ../../../../runs/assistant-ui-flaky/det_0.jsonl: 692 tests, order digest ef3dc2abd462890350bf80cc21041bf2\n"
+  },
+  "not_reproduced_causes": {}
+}

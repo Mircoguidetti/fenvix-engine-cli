@@ -1,0 +1,31 @@
+name: runner-usage
+
+# P-032 step 1: package download statistics of the test runners (npm registry and pypistats.org).
+# The session container cannot reach those hosts; this job fetches them and commits the raw responses.
+# Started by a push that changes harness/runner_usage/RUN.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/all-runners]
+    paths: [harness/runner_usage/RUN]
+
+permissions:
+  contents: write
+
+jobs:
+  downloads:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - name: fetch download statistics
+        run: python3 harness/runner_usage/downloads.py harness/runner_usage/results/downloads-${{ github.run_id }}
+      - name: commit raw results
+        run: |
+          git config user.name "fenvix-ci"
+          git config user.email "fenvix-ci@users.noreply.github.com"
+          git add harness/runner_usage/results
+          git commit -m "runner usage: download statistics from Actions run ${{ github.run_id }}"
+          for i in 1 2 3 4; do git pull --rebase -q origin claude/all-runners && git push -q origin HEAD:claude/all-runners && break; sleep $((i*5)); done

@@ -1,0 +1,8252 @@
+{
+ "spec": {
+  "name": "prometheus",
+  "repo": "prometheus/prometheus",
+  "sha": "ef78ff64267724c8ecd1a1283cad49b365a8b67f",
+  "fix_commit": "2a12aec285a4f3d19c5fc76829b06faae845672c",
+  "fix_date": "2026-11-01T12:56:28.000+05:30",
+  "title": "rules: fix flaky TestUpdateWhenStopped panic",
+  "tests": [
+   "TestUpdateWhenStopped"
+  ],
+  "source": "github commit search 'repo:prometheus/prometheus flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestUpdateWhenStopped": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./rules"
+ ],
+ "imports": [
+  "github.com/prometheus/prometheus/rules"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 51.9,
+ "build_det_s": 73.8,
+ "baseline": {
+  "github.com/prometheus/prometheus/rules::TestDependencyMapUpdatesOnGroupUpdate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestParseFiles": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestPendingAndKeepFiringFor": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingEvalWithOrigin": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_Equals": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLimit": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateRestoreHoldDuration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleEmptyLabelFromTemplate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependentRulesWithNonMetricExpression": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestSendAlertsDontAffectActiveAlerts": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateRestore": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleDependencyController_AnalyseRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupEvalJSONLoggerRule": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNativeHistogramsInRecordingRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestCopyState": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLabelsUpdate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_QueryOffset": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependentRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeries": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleEval": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependenciesEdgeCases": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleDuplicate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeriesTemplateLabels": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependentRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleLogValue": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestMetricsUpdate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNotify": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleHealthUpdates": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleState": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_ActiveAlertsCount": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestBoundedRuleEvalConcurrency": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_ShouldCheckWhetherEachRuleHasDependentsAndDependencies": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestUpdateWhenStopped": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNoMetricSelector": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestStaleness": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAsyncRuleEvaluation": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_Eval_RaceConditionOnStoppingGroupEvaluationWhileRulesAreEvaluatedConcurrently": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestDeletedRuleMarkedStale": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateAddSamples": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestKeepFiringFor": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependencyRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestLabels_FromMaps": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalURLInTemplate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleEvalDuplicate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNoDependency": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingEvalWithOrigin": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetailPanics": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependencyRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleTemplateWithHistogram": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestUpdate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestEngineQueryFunc_ClosesQuery": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalLabelsInTemplate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependencyMap": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRuleLimit": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetail": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleQueryInTemplate": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupHasAlertingRules": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestFiringAlertResetToPendingOnHoldDurationIncrease": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestFromOriginContext": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_WithoutLogger": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestoration": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestorationWithRestoreNewGroupOption": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleMovedBetweenGroups": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestMetricsStalenessOnManagerShutdown": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleGroupEvalIterationFunc": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupStalenessOnRemoval": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 1955.5,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 8956,
+  "outcome": 67,
+  "fs": 641
+ },
+ "det0_top_tests_by_events": [
+  [
+   2137,
+   "github.com/prometheus/prometheus/rules::TestForStateRestoreHoldDuration"
+  ],
+  [
+   687,
+   "github.com/prometheus/prometheus/rules::TestForStateRestore"
+  ],
+  [
+   449,
+   "github.com/prometheus/prometheus/rules::TestForStateAddSamples"
+  ],
+  [
+   409,
+   "github.com/prometheus/prometheus/rules::TestGroup_Eval_RaceConditionOnStoppingGroupEvaluationWhileRulesAreEvaluatedConcurrently"
+  ],
+  [
+   381,
+   "github.com/prometheus/prometheus/rules::TestGroupStalenessOnRemoval"
+  ],
+  [
+   357,
+   "github.com/prometheus/prometheus/rules::TestMetricsUpdate"
+  ],
+  [
+   351,
+   "github.com/prometheus/prometheus/rules::TestStaleness"
+  ],
+  [
+   324,
+   "github.com/prometheus/prometheus/rules::TestRuleMovedBetweenGroups"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleLabelsUpdate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 76,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "tsdb/db.go:1304",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "67000"
+    },
+    "reason": "thread",
+    "description": "event #76: [time] time.NewTimer @ tsdb/db.go:1304 = 0 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 67000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalLabelsInTemplate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 74,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "tsdb/db.go:1304",
+     "v": "0"
+    },
+    "reason": "thread",
+    "description": "event #74: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000  <>  [time] time.NewTimer @ tsdb/db.go:1304 = 0 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalURLInTemplate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 75,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "64000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "reason": "thread",
+    "description": "event #75: [time] time.timer @ timer = 64000 (thread 2)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleQueryInTemplate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 75,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 2,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "64000"
+    },
+    "reason": "thread",
+    "description": "event #75: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000  <>  [time] time.timer @ timer = 64000 (thread 2)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleDuplicate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 77,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "69000"
+    },
+    "reason": "thread",
+    "description": "event #77: [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 69000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRuleLimit",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "19882000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)  <>  [time] time.timer @ timer = 19882000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestKeepFiringFor",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 21,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "19722000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.File.ReadDir",
+     "at": "tsdb/chunks/head_chunks.go:376",
+     "v": "0:cbf29ce484222325"
+    },
+    "reason": "thread",
+    "description": "event #21: [time] time.timer @ timer = 19722000 (thread 1)  <>  [fs] os.File.ReadDir @ tsdb/chunks/head_chunks.go:376 = 0:cbf29ce484222325"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestPendingAndKeepFiringFor",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestAlertingRule",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 75,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "tsdb/db.go:1304",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "66000"
+    },
+    "reason": "thread",
+    "description": "event #75: [time] time.NewTimer @ tsdb/db.go:1304 = 0 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 66000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestForStateAddSamples",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 2,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000 (thread 1)  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 2)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestForStateRestoreHoldDuration",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 81,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "72000"
+    },
+    "event_b": {
+     "t": 2,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "tsdb/db.go:1304",
+     "v": "0"
+    },
+    "reason": "thread",
+    "description": "event #81: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 72000 (thread 1)  <>  [time] time.NewTimer @ tsdb/db.go:1304 = 0 (thread 2)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestForStateRestore",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 2)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestStaleness",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 80,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "72000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #80: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 72000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestGroup_QueryOffset",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 22,
+    "window": null,
+    "event_a": {
+     "t": 3,
+     "s": "time",
+     "o": "time.Now",
+     "at": "rules/group.go:212",
+     "v": "23000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "rules/group.go:214",
+     "v": "43012135"
+    },
+    "reason": "thread",
+    "description": "event #22: [time] time.Now @ rules/group.go:212 = 23000 (thread 3)  <>  [time] time.NewTimer @ rules/group.go:214 = 43012135 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestDeletedRuleMarkedStale",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 21,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "fs",
+     "o": "os.File.ReadDir",
+     "at": "tsdb/chunks/head_chunks.go:376",
+     "v": "0:cbf29ce484222325"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.timer",
+     "at": "timer",
+     "v": "2515409"
+    },
+    "reason": "thread",
+    "description": "event #21: [fs] os.File.ReadDir @ tsdb/chunks/head_chunks.go:376 = 0:cbf29ce484222325  <>  [time] time.timer @ timer = 2515409 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestUpdate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 81,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "72000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "tsdb/db.go:1304",
+     "v": "0"
+    },
+    "reason": "thread",
+    "description": "event #81: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 72000  <>  [time] time.NewTimer @ tsdb/db.go:1304 = 0 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestNotify",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 2,
+    "index": 80,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "72000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #80: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 72000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestMetricsUpdate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 81,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/histogram.go:569",
+     "v": "73000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #81: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/histogram.go:569 = 73000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestGroupStalenessOnRemoval",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 79,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260",
+     "v": "71000"
+    },
+    "reason": "thread",
+    "description": "event #79: [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260 = 71000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestMetricsStalenessOnManagerShutdown",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 77,
+    "window": null,
+    "event_a": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "69000"
+    },
+    "reason": "thread",
+    "description": "event #77: [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)  <>  [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 69000"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRuleMovedBetweenGroups",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 90,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260",
+     "v": "80000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #90: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260 = 80000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRuleHealthUpdates",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 79,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260",
+     "v": "71000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #79: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:260 = 71000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRuleGroupEvalIterationFunc",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestDependencyMapUpdatesOnGroupUpdate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 80,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274",
+     "v": "72000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #80: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/summary.go:274 = 72000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestBoundedRuleEvalConcurrency",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 95,
+    "window": null,
+    "event_a": {
+     "t": 3,
+     "s": "time",
+     "o": "time.Sleep",
+     "at": "rules/manager_test.go:2760",
+     "v": "250000000"
+    },
+    "event_b": {
+     "t": 6,
+     "s": "time",
+     "o": "time.Now",
+     "at": "rules/group.go:530",
+     "v": "84000"
+    },
+    "reason": "thread",
+    "description": "event #95: [time] time.Sleep @ rules/manager_test.go:2760 = 250000000 (thread 3)  <>  [time] time.Now @ rules/group.go:530 = 84000 (thread 6)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestGroup_Eval_RaceConditionOnStoppingGroupEvaluationWhileRulesAreEvaluatedConcurrently",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 92,
+    "window": null,
+    "event_a": {
+     "t": 3,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "rules/group.go:214",
+     "v": "314739831"
+    },
+    "event_b": {
+     "t": 4,
+     "s": "time",
+     "o": "time.Now",
+     "at": "rules/group.go:212",
+     "v": "81000"
+    },
+    "reason": "thread",
+    "description": "event #92: [time] time.NewTimer @ rules/group.go:214 = 314739831 (thread 3)  <>  [time] time.Now @ rules/group.go:212 = 81000 (thread 4)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRuleEval",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 74,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "66000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #74: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 66000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRuleEvalDuplicate",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 81,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/histogram.go:569",
+     "v": "73000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #81: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/histogram.go:569 = 73000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  },
+  {
+   "nodeid": "github.com/prometheus/prometheus/rules::TestRecordingRuleLimit",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 73,
+    "window": null,
+    "event_a": {
+     "t": 0,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221",
+     "v": "65000"
+    },
+    "event_b": {
+     "t": 1,
+     "s": "time",
+     "o": "time.NewTicker",
+     "at": "tsdb/db.go:1297",
+     "v": "60000000000"
+    },
+    "reason": "thread",
+    "description": "event #73: [time] time.Now @ /home/runner/go/pkg/mod/github.com/prometheus/client_golang@v1.25.0/prometheus/counter.go:221 = 65000  <>  [time] time.NewTicker @ tsdb/db.go:1297 = 60000000000 (thread 1)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 67,
+  "stable": 38,
+  "diverged": 29,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 29
+  }
+ },
+ "det0": {
+  "github.com/prometheus/prometheus/rules::TestBoundedRuleEvalConcurrency": [
+   [
+    "passed",
+    "9cb26a792904a004925559aa0d955487"
+   ],
+   [
+    "passed",
+    "f7bc4aa6b4265988602b612fced05053"
+   ],
+   [
+    "passed",
+    "6af982cd6e02f741bed54e897d35f61a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalURLInTemplate": [
+   [
+    "passed",
+    "66125f4393a0457515bd564031f4ec28"
+   ],
+   [
+    "passed",
+    "7c5b8f696b5d4f33868f527d2d1b5c34"
+   ],
+   [
+    "passed",
+    "66125f4393a0457515bd564031f4ec28"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingEvalWithOrigin": [
+   [
+    "passed",
+    "8bef8c22897a6ad6de1fae437c4fddde"
+   ],
+   [
+    "passed",
+    "8bef8c22897a6ad6de1fae437c4fddde"
+   ],
+   [
+    "passed",
+    "8bef8c22897a6ad6de1fae437c4fddde"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestLabels_FromMaps": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupStalenessOnRemoval": [
+   [
+    "passed",
+    "d841cfafb510c6109db1c359bf368deb"
+   ],
+   [
+    "passed",
+    "304f9c09831dc62821919dbfad89f7d6"
+   ],
+   [
+    "passed",
+    "66b9344d8e5449949f0bbf2cfe2c2fa7"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestMetricsStalenessOnManagerShutdown": [
+   [
+    "passed",
+    "650a362505efdd58a00ede2c796ceacc"
+   ],
+   [
+    "passed",
+    "b60b8ca29fa5af20a19d09314417cb31"
+   ],
+   [
+    "passed",
+    "1fab4ab5761fba5b0aff9c96afae73c0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleDependencyController_AnalyseRules": [
+   [
+    "passed",
+    "4bed9c6c9768ec3667282e3bad0f70ec"
+   ],
+   [
+    "passed",
+    "4bed9c6c9768ec3667282e3bad0f70ec"
+   ],
+   [
+    "passed",
+    "4bed9c6c9768ec3667282e3bad0f70ec"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeriesTemplateLabels": [
+   [
+    "passed",
+    "103bdf2838ee6bdda6603d4de239efb5"
+   ],
+   [
+    "passed",
+    "103bdf2838ee6bdda6603d4de239efb5"
+   ],
+   [
+    "passed",
+    "103bdf2838ee6bdda6603d4de239efb5"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestDeletedRuleMarkedStale": [
+   [
+    "passed",
+    "58f51c894e02e866e505ddd60bf631f8"
+   ],
+   [
+    "passed",
+    "58f51c894e02e866e505ddd60bf631f8"
+   ],
+   [
+    "passed",
+    "88d0170dc2ba22a75248f74c38f29889"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_Eval_RaceConditionOnStoppingGroupEvaluationWhileRulesAreEvaluatedConcurrently": [
+   [
+    "passed",
+    "594db7dbbb6e98d212f17c7a5296459a"
+   ],
+   [
+    "passed",
+    "be78827efef35229b494ae5f1117e519"
+   ],
+   [
+    "passed",
+    "e1b4a4139a15bb9dfc099af59f78a991"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRuleLimit": [
+   [
+    "passed",
+    "9241147af930df649ab8c5d625728ab5"
+   ],
+   [
+    "passed",
+    "957acffea67d2eb64e3cd93554e2e3ab"
+   ],
+   [
+    "passed",
+    "957acffea67d2eb64e3cd93554e2e3ab"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleEmptyLabelFromTemplate": [
+   [
+    "passed",
+    "3ecc1b8c89312e9d2c8d6667ecf150be"
+   ],
+   [
+    "passed",
+    "3ecc1b8c89312e9d2c8d6667ecf150be"
+   ],
+   [
+    "passed",
+    "3ecc1b8c89312e9d2c8d6667ecf150be"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetail": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLabelsUpdate": [
+   [
+    "passed",
+    "fc3f196f987b16510b850e8ef5427e18"
+   ],
+   [
+    "passed",
+    "c7093f3ec86bfbbb3a392bf5551b09f2"
+   ],
+   [
+    "passed",
+    "c0724d4a2e3bbe45263c948c53465e23"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestSendAlertsDontAffectActiveAlerts": [
+   [
+    "passed",
+    "6370a0206ee5600fd6cf45b1f3478ab7"
+   ],
+   [
+    "passed",
+    "6370a0206ee5600fd6cf45b1f3478ab7"
+   ],
+   [
+    "passed",
+    "6370a0206ee5600fd6cf45b1f3478ab7"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestKeepFiringFor": [
+   [
+    "passed",
+    "d27b693e4479fe642980cfa976fc38b9"
+   ],
+   [
+    "passed",
+    "6a0980defd19e0db592f382830e9b596"
+   ],
+   [
+    "passed",
+    "f399d524ed0bce252de83acde54e5e80"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_Equals": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateRestoreHoldDuration": [
+   [
+    "passed",
+    "8771e0b10b5a184a449cfa0385a41a67"
+   ],
+   [
+    "passed",
+    "754bbdc742609ff416d9fff0012b85d7"
+   ],
+   [
+    "passed",
+    "30941925dfb5e39156f382705ee7094c"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNativeHistogramsInRecordingRules": [
+   [
+    "passed",
+    "f47254db84ed2a2c36d904760d2a535a"
+   ],
+   [
+    "passed",
+    "f47254db84ed2a2c36d904760d2a535a"
+   ],
+   [
+    "passed",
+    "f47254db84ed2a2c36d904760d2a535a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestUpdateWhenStopped": [
+   [
+    "passed",
+    "1b34a16035cd2999cee54ada405f033c"
+   ],
+   [
+    "passed",
+    "1b34a16035cd2999cee54ada405f033c"
+   ],
+   [
+    "passed",
+    "1b34a16035cd2999cee54ada405f033c"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestParseFiles": [
+   [
+    "passed",
+    "4282c6755165861ea9af56fc28de3011"
+   ],
+   [
+    "passed",
+    "4282c6755165861ea9af56fc28de3011"
+   ],
+   [
+    "passed",
+    "4282c6755165861ea9af56fc28de3011"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetailPanics": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestMetricsUpdate": [
+   [
+    "passed",
+    "8a5ac50ed8768870e1b8e2bd1a563c88"
+   ],
+   [
+    "passed",
+    "e8bde141182cbd36549ea3e94d5b82cf"
+   ],
+   [
+    "passed",
+    "ba0a10d581a4aaf9371fb0fb68bc4897"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLimit": [
+   [
+    "passed",
+    "957acffea67d2eb64e3cd93554e2e3ab"
+   ],
+   [
+    "passed",
+    "4bbfac3d82a76b2743e5abe71fb28523"
+   ],
+   [
+    "passed",
+    "957acffea67d2eb64e3cd93554e2e3ab"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestPendingAndKeepFiringFor": [
+   [
+    "passed",
+    "872fcf5ad6d691d1cf295c4a7af343f2"
+   ],
+   [
+    "passed",
+    "f335b895f4731a3c934fabfaf841b179"
+   ],
+   [
+    "passed",
+    "33b4980d09b8f98f09ac77288c096bac"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependencyMap": [
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestCopyState": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependenciesEdgeCases": [
+   [
+    "passed",
+    "ec4bdb8fb93c78293b752b839bf40318"
+   ],
+   [
+    "passed",
+    "ec4bdb8fb93c78293b752b839bf40318"
+   ],
+   [
+    "passed",
+    "ec4bdb8fb93c78293b752b839bf40318"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleEvalDuplicate": [
+   [
+    "passed",
+    "e42005e12f4c30b55473813086622970"
+   ],
+   [
+    "passed",
+    "3e6f7acd915e6466230e4f7098835c65"
+   ],
+   [
+    "passed",
+    "2faaf207370a9504017631ac8b5e3bbd"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleQueryInTemplate": [
+   [
+    "passed",
+    "39e08fd9efb6db06826921a16534cdd1"
+   ],
+   [
+    "passed",
+    "c7c7792e5939685a3e657b15ce39c292"
+   ],
+   [
+    "passed",
+    "c7c7792e5939685a3e657b15ce39c292"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_WithoutLogger": [
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestoration": [
+   [
+    "passed",
+    "0c30c8e3e73254e177faf9ce7c6f37e2"
+   ],
+   [
+    "passed",
+    "0c30c8e3e73254e177faf9ce7c6f37e2"
+   ],
+   [
+    "passed",
+    "0c30c8e3e73254e177faf9ce7c6f37e2"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_ShouldCheckWhetherEachRuleHasDependentsAndDependencies": [
+   [
+    "passed",
+    "df92f4fca4089e8be28ed411d2d2ea10"
+   ],
+   [
+    "passed",
+    "df92f4fca4089e8be28ed411d2d2ea10"
+   ],
+   [
+    "passed",
+    "df92f4fca4089e8be28ed411d2d2ea10"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNotify": [
+   [
+    "passed",
+    "5e5e0a476510cef999ef696847e40bc2"
+   ],
+   [
+    "passed",
+    "5e5e0a476510cef999ef696847e40bc2"
+   ],
+   [
+    "passed",
+    "3e1c4157f19b55a7a9865baba6717b60"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNoDependency": [
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependentRules": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleDuplicate": [
+   [
+    "passed",
+    "1d19fd08da82b01f9b73625434aaf929"
+   ],
+   [
+    "passed",
+    "4d0988f3d4f72d7144b19b21e0a2eb0e"
+   ],
+   [
+    "passed",
+    "dc1b7c366d266ca3d934f43496cb8f9a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNoMetricSelector": [
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependencyRules": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestFromOriginContext": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestUpdate": [
+   [
+    "passed",
+    "d651e223fa210f4d2dba997e2f073e0b"
+   ],
+   [
+    "passed",
+    "07ef3e3c66fa7c5921408c52fa438a12"
+   ],
+   [
+    "passed",
+    "f0005fd93d80cd617b5b4611f7cc6bae"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroup_QueryOffset": [
+   [
+    "passed",
+    "b001879808b1382abaf6689de6ba0739"
+   ],
+   [
+    "passed",
+    "8e2671349beddf9693671d196cdb4603"
+   ],
+   [
+    "passed",
+    "b5131118e4e024380929bf373f62f78a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleMovedBetweenGroups": [
+   [
+    "passed",
+    "830e882fd539eb6ed054276265185060"
+   ],
+   [
+    "passed",
+    "f2dc6088fffd58c82c0eb04854b93366"
+   ],
+   [
+    "passed",
+    "e11aa7212aa9a9f37e8b534cb9ddf776"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleState": [
+   [
+    "passed",
+    "9f23794d19c598c081ed54a31f019f8d"
+   ],
+   [
+    "passed",
+    "9f23794d19c598c081ed54a31f019f8d"
+   ],
+   [
+    "passed",
+    "9f23794d19c598c081ed54a31f019f8d"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestFiringAlertResetToPendingOnHoldDurationIncrease": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestStaleness": [
+   [
+    "passed",
+    "51cd0609c570c42686303c4a13a60cda"
+   ],
+   [
+    "passed",
+    "9e8188711f28edf3bc219c1556ee743b"
+   ],
+   [
+    "passed",
+    "d6458a580151bad9483d4fe0907c65a8"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleHealthUpdates": [
+   [
+    "passed",
+    "5de3e6b6ba8e41531fa8c7621ca9a695"
+   ],
+   [
+    "passed",
+    "4ad78cd2acae215586e12b48b31a4b57"
+   ],
+   [
+    "passed",
+    "9e897db2dad011b0adc5cef42f253b10"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalLabelsInTemplate": [
+   [
+    "passed",
+    "5adb6980e0d9cd6e808f36ae9d31e0a6"
+   ],
+   [
+    "passed",
+    "66125f4393a0457515bd564031f4ec28"
+   ],
+   [
+    "passed",
+    "66125f4393a0457515bd564031f4ec28"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateRestore": [
+   [
+    "passed",
+    "a59155d118463f1d69541dbbb363e8e3"
+   ],
+   [
+    "passed",
+    "f6f6b7630c8f9d797d650d0df3caf9f8"
+   ],
+   [
+    "passed",
+    "e890b0feda7593aacf967176995fade8"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAsyncRuleEvaluation": [
+   [
+    "passed",
+    "a3e766bcf5888ff91ed3a7526e0d0e08"
+   ],
+   [
+    "passed",
+    "a3e766bcf5888ff91ed3a7526e0d0e08"
+   ],
+   [
+    "passed",
+    "a3e766bcf5888ff91ed3a7526e0d0e08"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupHasAlertingRules": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleTemplateWithHistogram": [
+   [
+    "passed",
+    "5d9b8dcdee801811d1510f2862e38ed3"
+   ],
+   [
+    "passed",
+    "5d9b8dcdee801811d1510f2862e38ed3"
+   ],
+   [
+    "passed",
+    "5d9b8dcdee801811d1510f2862e38ed3"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestorationWithRestoreNewGroupOption": [
+   [
+    "passed",
+    "59c2e8831165bec53cd5e915abafaec3"
+   ],
+   [
+    "passed",
+    "59c2e8831165bec53cd5e915abafaec3"
+   ],
+   [
+    "passed",
+    "59c2e8831165bec53cd5e915abafaec3"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_ActiveAlertsCount": [
+   [
+    "passed",
+    "30759368657a244960552c8cfadd6599"
+   ],
+   [
+    "passed",
+    "30759368657a244960552c8cfadd6599"
+   ],
+   [
+    "passed",
+    "30759368657a244960552c8cfadd6599"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependencyMapUpdatesOnGroupUpdate": [
+   [
+    "passed",
+    "59619e6c7191d116c3bc5f0712fd865b"
+   ],
+   [
+    "passed",
+    "4fa4467207617e7670dcc1d8fd9c9d38"
+   ],
+   [
+    "passed",
+    "9756fbb4842938cb86baef547fcc936a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestGroupEvalJSONLoggerRule": [
+   [
+    "passed",
+    "5caf679b880703a0ea1e93f2a679cbda"
+   ],
+   [
+    "passed",
+    "5caf679b880703a0ea1e93f2a679cbda"
+   ],
+   [
+    "passed",
+    "5caf679b880703a0ea1e93f2a679cbda"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleEval": [
+   [
+    "passed",
+    "790b579983b8b588a4973f702b145380"
+   ],
+   [
+    "passed",
+    "49e7c694c8532253592f9f2eddda3341"
+   ],
+   [
+    "passed",
+    "109aca8b75a7623645ff18f7c44b335c"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestDependentRulesWithNonMetricExpression": [
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ],
+   [
+    "passed",
+    "e9e415a49c4d0ab4a368aa6dcc0a81bc"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule": [
+   [
+    "passed",
+    "12d7a68d262fb8b6d1713db0913ed219"
+   ],
+   [
+    "passed",
+    "2f46190a81bef2aae17316d6ddf685ff"
+   ],
+   [
+    "passed",
+    "15376cc363e3679433416cbf241062b9"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependentRules": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestForStateAddSamples": [
+   [
+    "passed",
+    "6e6dd12245043ada4e7efe51d351045a"
+   ],
+   [
+    "passed",
+    "f94e6704676150a7f505a3ca02d0a77d"
+   ],
+   [
+    "passed",
+    "4737c9d7ded6e988bee026cc3c60355a"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleLogValue": [
+   [
+    "passed",
+    "a075f5ad0e6b369d56d33dda38c57796"
+   ],
+   [
+    "passed",
+    "a075f5ad0e6b369d56d33dda38c57796"
+   ],
+   [
+    "passed",
+    "a075f5ad0e6b369d56d33dda38c57796"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingEvalWithOrigin": [
+   [
+    "passed",
+    "ebf54386a89cbccb18ef8ff47beed9d1"
+   ],
+   [
+    "passed",
+    "ebf54386a89cbccb18ef8ff47beed9d1"
+   ],
+   [
+    "passed",
+    "ebf54386a89cbccb18ef8ff47beed9d1"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRuleGroupEvalIterationFunc": [
+   [
+    "passed",
+    "90bc7637f6f6f8ce1c933992aa12d341"
+   ],
+   [
+    "passed",
+    "ae792dc216f263344af8feaf09c93fe9"
+   ],
+   [
+    "passed",
+    "6f3bb9ceb5c3264d2aa8763a64eeac14"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestEngineQueryFunc_ClosesQuery": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeries": [
+   [
+    "passed",
+    "b6d19d54a5372f8851a948be22d67ed7"
+   ],
+   [
+    "passed",
+    "b6d19d54a5372f8851a948be22d67ed7"
+   ],
+   [
+    "passed",
+    "b6d19d54a5372f8851a948be22d67ed7"
+   ]
+  ],
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependencyRules": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLabelsUpdate": {
+   "1": [
+    "passed",
+    "51ce67b2dd567304d4b9934ba42276b5"
+   ],
+   "2": [
+    "passed",
+    "e38b3a1d97d821786ffecf07ca30e74e"
+   ],
+   "3": [
+    "passed",
+    "bba614edc83e12d3478fa9223b61f90d"
+   ],
+   "4": [
+    "passed",
+    "c730e6863a601a89f4c8d38a8a0ca0c5"
+   ],
+   "5": [
+    "passed",
+    "2d3a09613ed25aa8cc27bbed173a760e"
+   ],
+   "6": [
+    "passed",
+    "df357e34f6b0d456b3d1267c92d9d066"
+   ],
+   "7": [
+    "passed",
+    "54ab84095fb2d641f626eab93f8c3691"
+   ],
+   "8": [
+    "passed",
+    "2b2a43ee7daa3b3d6d4c7037c9bd93d3"
+   ],
+   "9": [
+    "passed",
+    "827da2588e3367da0df57d3e74a12027"
+   ],
+   "10": [
+    "passed",
+    "320b09bebd7d2bcea0450bf69f9200ab"
+   ],
+   "11": [
+    "passed",
+    "20267cb98edfd0dab8c9ff9a8547ba1e"
+   ],
+   "12": [
+    "passed",
+    "d5435c1cf821f79983e38a920c72ad44"
+   ],
+   "13": [
+    "passed",
+    "9a691c9876671f9e5f91725c355229ad"
+   ],
+   "14": [
+    "passed",
+    "7c18d87cbac4749c8b1452c509f83ae5"
+   ],
+   "15": [
+    "passed",
+    "c0db12245a9ae8ccb8e173644439e01f"
+   ],
+   "16": [
+    "passed",
+    "84fcd98db6bd84bc2abfd053da06d2d8"
+   ],
+   "17": [
+    "passed",
+    "3802fa35bb6a1f6a32743a333ea8b85e"
+   ],
+   "18": [
+    "passed",
+    "e2900d4a6e5a36d6b9dc5d05d5d082a7"
+   ],
+   "19": [
+    "passed",
+    "e1a416bb974592f02edd5d91620c85d6"
+   ],
+   "20": [
+    "passed",
+    "c613fd7a5bbc108b743be440592dea26"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestDependencyMapUpdatesOnGroupUpdate": {
+   "1": [
+    "passed",
+    "37766537162a962246ad4299f7a1e720"
+   ],
+   "2": [
+    "passed",
+    "98092597056a808e43912bc5dc6b1264"
+   ],
+   "3": [
+    "passed",
+    "ef124e91c5feffd1d6115d4fd1a7a0c2"
+   ],
+   "4": [
+    "passed",
+    "29d4bbb6d2b6ecb65ad8eee48f14a2b4"
+   ],
+   "5": [
+    "passed",
+    "0fab16196bb0cf1e2ab101506a607eaf"
+   ],
+   "6": [
+    "passed",
+    "4c7e979803cbb25dbf2adb44424ce3d3"
+   ],
+   "7": [
+    "passed",
+    "44ed997953e42e9499bf0aa066013338"
+   ],
+   "8": [
+    "passed",
+    "5a3edf567ec797b949015529f2e487c9"
+   ],
+   "9": [
+    "passed",
+    "57d4b19c85ef2ea7a429d11ae29553f3"
+   ],
+   "10": [
+    "passed",
+    "4e5f88d3c8b4cec934fbb18dedbe1c1d"
+   ],
+   "11": [
+    "passed",
+    "d234519a7501507abdf44cc4d0cf9b10"
+   ],
+   "12": [
+    "passed",
+    "f65ce3dbfc4316243b2c9df825c526e5"
+   ],
+   "13": [
+    "passed",
+    "2f1d6b5aecc8576fbb5473bfeacf17f1"
+   ],
+   "14": [
+    "passed",
+    "4602bbfe36f31d8645e6b7e7bb18bdb3"
+   ],
+   "15": [
+    "passed",
+    "8086d2ae601009cb9fd3204407c22341"
+   ],
+   "16": [
+    "passed",
+    "019eeb94ec51e7e67ea8fa954b34afd3"
+   ],
+   "17": [
+    "passed",
+    "95932b7da07a5fa3cd5bf19e86ea07dc"
+   ],
+   "18": [
+    "passed",
+    "3fee9334e8eec0e692593c20ce85975e"
+   ],
+   "19": [
+    "passed",
+    "e2647418ba74824eb4bedbdbbf52fadf"
+   ],
+   "20": [
+    "passed",
+    "1aec51a249936eea013a2c4986076f75"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestPendingAndKeepFiringFor": {
+   "1": [
+    "passed",
+    "a08903660bfe7aa0805f45db615b8799"
+   ],
+   "2": [
+    "passed",
+    "1328174eeabb2b426f3101611c7445cc"
+   ],
+   "3": [
+    "passed",
+    "87fab96db87b0649a035ad436807b702"
+   ],
+   "4": [
+    "passed",
+    "15d24b2157c9e181261896a8c60e8d7f"
+   ],
+   "5": [
+    "passed",
+    "9647ea1de672ac6674e99ef52d346f58"
+   ],
+   "6": [
+    "passed",
+    "613f62314fd8bb9f2de7662226677530"
+   ],
+   "7": [
+    "passed",
+    "709434ade778898f0577dace9bbf66ef"
+   ],
+   "8": [
+    "passed",
+    "8ef46ca14f61cd22fe1ec22cf5ffccaa"
+   ],
+   "9": [
+    "passed",
+    "166ef6a7726874c74b4a490e106667ed"
+   ],
+   "10": [
+    "passed",
+    "d4c1ca539bf780eb99827bdac955e552"
+   ],
+   "11": [
+    "passed",
+    "384e0c7f29e0580988760483f30ca1be"
+   ],
+   "12": [
+    "passed",
+    "12d70bc081ab9b30f96b3b71d2fef1ac"
+   ],
+   "13": [
+    "passed",
+    "eb97a77118614e6122a643e32df0dd3f"
+   ],
+   "14": [
+    "passed",
+    "3881e633871c940ead3dc249874da9e6"
+   ],
+   "15": [
+    "passed",
+    "a623c5013bb836b3572df26343f3b3c0"
+   ],
+   "16": [
+    "passed",
+    "2cd8fbce5c710fadc1b513effc96d4db"
+   ],
+   "17": [
+    "passed",
+    "643bab632de129880b1d03b13ed43a9b"
+   ],
+   "18": [
+    "passed",
+    "c9c83bf8c07e7ce44933c7bf3c15dad3"
+   ],
+   "19": [
+    "passed",
+    "b1a315fa736f3616f0aa602a2289a84f"
+   ],
+   "20": [
+    "passed",
+    "7570034f5cd44a92ee153fa1947bf5a2"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleDependencyController_AnalyseRules": {
+   "1": [
+    "passed",
+    "8896120fbca12834b19397fe48de4d3b"
+   ],
+   "2": [
+    "passed",
+    "c55eb93c9486bac4180e9aa66259ddce"
+   ],
+   "3": [
+    "passed",
+    "0109bf0b27d1e2d61721388dae2c98e2"
+   ],
+   "4": [
+    "passed",
+    "bf9933c143a8a38a11e21e35778cbb58"
+   ],
+   "5": [
+    "passed",
+    "236c6a21bf83ba9242e3075273ed48b7"
+   ],
+   "6": [
+    "passed",
+    "1cfc85bc412398af716b5752b57d4105"
+   ],
+   "7": [
+    "passed",
+    "89dc2c77f38dee22d79f792248b34161"
+   ],
+   "8": [
+    "passed",
+    "4eaba555725f43b79b34f3e9bad70a10"
+   ],
+   "9": [
+    "passed",
+    "4efdf8ca337c65e28774a6f4de555719"
+   ],
+   "10": [
+    "passed",
+    "6e839b8684bd771ada14e993d61d7e9c"
+   ],
+   "11": [
+    "passed",
+    "db1ffe9235a5c73ee813b987d4f6b63e"
+   ],
+   "12": [
+    "passed",
+    "2000f7d6927ae40b7b0da6f1fb195634"
+   ],
+   "13": [
+    "passed",
+    "37ffc07e1a37639c16306b9676b4b074"
+   ],
+   "14": [
+    "passed",
+    "b711796eafa7069c63a3b9197dc2f6b8"
+   ],
+   "15": [
+    "passed",
+    "e090c0858cb1cf4f3a59b150d732e21a"
+   ],
+   "16": [
+    "passed",
+    "aeddad080978c7576ef453084606042a"
+   ],
+   "17": [
+    "passed",
+    "c5ce0e9e5db8be0ff028e44e36c593b9"
+   ],
+   "18": [
+    "passed",
+    "c4c57f10a8cf5b48cc7c5fdad6949667"
+   ],
+   "19": [
+    "passed",
+    "dbd2696f4c2b1e0147f6b680972dc2be"
+   ],
+   "20": [
+    "passed",
+    "31ec5bf28f5a4231c730bd0873081057"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleLogValue": {
+   "1": [
+    "passed",
+    "78a9e8ef95a96d5142a5431307e4356b"
+   ],
+   "2": [
+    "passed",
+    "fd39d53e7c8f101f31d121821b2e94b5"
+   ],
+   "3": [
+    "passed",
+    "2354098c7afe9ddf2d71d8aa059a54b1"
+   ],
+   "4": [
+    "passed",
+    "5366b7a7cf4934833523108ee966a0cf"
+   ],
+   "5": [
+    "passed",
+    "a8d7014047d34b4cb1fa064d15391c5c"
+   ],
+   "6": [
+    "passed",
+    "cad055e4376cff38f7a48f6e0a4cf30d"
+   ],
+   "7": [
+    "passed",
+    "2de99adbb3a65440db54f278b7803ee4"
+   ],
+   "8": [
+    "passed",
+    "a312af66cd8319ce5b545a0f42618a54"
+   ],
+   "9": [
+    "passed",
+    "f4fd5e5c9904439cd9bd0c2df42d1cf5"
+   ],
+   "10": [
+    "passed",
+    "5b449122c70aa96a7daaa26c36a026d4"
+   ],
+   "11": [
+    "passed",
+    "63221ed2e491fd27e4c83377f2a44e27"
+   ],
+   "12": [
+    "passed",
+    "b7977118510f592c1397188822cf6665"
+   ],
+   "13": [
+    "passed",
+    "100c336ea2f961c99574951840603295"
+   ],
+   "14": [
+    "passed",
+    "879e8674fac9038c9af5df2a73cb3255"
+   ],
+   "15": [
+    "passed",
+    "56774040f800f8c23294383426e01c11"
+   ],
+   "16": [
+    "passed",
+    "9e70bc414c28ec0e3061fc9443daa3c6"
+   ],
+   "17": [
+    "passed",
+    "3ba39d203373632727597f2c73b8ee68"
+   ],
+   "18": [
+    "passed",
+    "ab6cdf957c5bd54611511242cffce980"
+   ],
+   "19": [
+    "passed",
+    "e098cf43eaf3774c39b8d13923b31504"
+   ],
+   "20": [
+    "passed",
+    "d2cbc2f53732884f2e7f4c158284c379"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestCopyState": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleQueryInTemplate": {
+   "1": [
+    "passed",
+    "a7d28732984ae6dbbf51762f96e0f70c"
+   ],
+   "2": [
+    "passed",
+    "be3d99392afcefe8c7e0a6fd997a307a"
+   ],
+   "3": [
+    "passed",
+    "a1c127ba835447d3446d05e88661c631"
+   ],
+   "4": [
+    "passed",
+    "ce46fa1d47e5f4ac97f6ca282b527b64"
+   ],
+   "5": [
+    "passed",
+    "ebc6ffd8ac6dc0eb20cce6696c261d79"
+   ],
+   "6": [
+    "passed",
+    "3329e7cd1781eca2e89d7a7b2d87e975"
+   ],
+   "7": [
+    "passed",
+    "1963c98e95b9ef8e6631e814710a1ad9"
+   ],
+   "8": [
+    "passed",
+    "3edc1003da2f9cb25ccc81f45361d437"
+   ],
+   "9": [
+    "passed",
+    "f8ba31f2833ea0803f42bc40209c4bb7"
+   ],
+   "10": [
+    "passed",
+    "f8d4f7b8ad3a345d503881005f2584b1"
+   ],
+   "11": [
+    "passed",
+    "96a986771d2d3e3b9a9d45e9c1db0658"
+   ],
+   "12": [
+    "passed",
+    "c3a7377d52797086f7dabcf44f8aa9b7"
+   ],
+   "13": [
+    "passed",
+    "707683ffb297c7c4a4d9f92c33c71d18"
+   ],
+   "14": [
+    "passed",
+    "21c5022a6dbcf892f9fbe1ba40230007"
+   ],
+   "15": [
+    "passed",
+    "7b789d4ea049d01da7fced5ff6700848"
+   ],
+   "16": [
+    "passed",
+    "6869b0af6bfcc6eea6ef4751048bf161"
+   ],
+   "17": [
+    "passed",
+    "0eb3cf54cab2115ff70b1257d63c7116"
+   ],
+   "18": [
+    "passed",
+    "1ec2b2a8aec35b9a104b283baeff7c65"
+   ],
+   "19": [
+    "passed",
+    "cdba222502b6c64e3cde2daa9507d6fc"
+   ],
+   "20": [
+    "passed",
+    "c81340815e6e580c789eb1ef4a91cec4"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependencyRules": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroup_Eval_RaceConditionOnStoppingGroupEvaluationWhileRulesAreEvaluatedConcurrently": {
+   "1": [
+    "passed",
+    "3de47073d104e81d4966153371308c3b"
+   ],
+   "2": [
+    "passed",
+    "4bdd97c74ec767cb4791df5133a81883"
+   ],
+   "3": [
+    "passed",
+    "901d0bda57f43d669be38c3f1853ac75"
+   ],
+   "4": [
+    "passed",
+    "c135bd66861702c74f72a1d19a9daaea"
+   ],
+   "5": [
+    "passed",
+    "739e4e068660badd19f58a43f39dfe13"
+   ],
+   "6": [
+    "passed",
+    "bf903aa80f17b57064089b76c96b8a1d"
+   ],
+   "7": [
+    "passed",
+    "18ec23a9fdbd4f9f31031ebb92893de7"
+   ],
+   "8": [
+    "passed",
+    "d7ec028057d4c5b697c915bd777e64c2"
+   ],
+   "9": [
+    "passed",
+    "8497ff77614ef0d6062b7031cad5c5b5"
+   ],
+   "10": [
+    "passed",
+    "31ba89b3045195a0a3ad64b989cbda06"
+   ],
+   "11": [
+    "passed",
+    "ff410a70e853690b0e0964a63cbd4aa2"
+   ],
+   "12": [
+    "passed",
+    "149a2ad0528685e875e50d1ae952199c"
+   ],
+   "13": [
+    "passed",
+    "0d377c92bfb5334a0385f7532347afbe"
+   ],
+   "14": [
+    "passed",
+    "3b4d4c988a404fbebf84feb27022f557"
+   ],
+   "15": [
+    "passed",
+    "079e70822ccfe814feaf502604e08825"
+   ],
+   "16": [
+    "passed",
+    "a654eb867fa39eebe8af021b3f3412ac"
+   ],
+   "17": [
+    "passed",
+    "b1188de8b6177440eceebe605253d55c"
+   ],
+   "18": [
+    "passed",
+    "2e948509d9f1ea6464d46b87026eb392"
+   ],
+   "19": [
+    "passed",
+    "271324e95dc4e4f60185ffd07e056114"
+   ],
+   "20": [
+    "passed",
+    "4905582108954bacf215e50330c28d60"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNativeHistogramsInRecordingRules": {
+   "1": [
+    "passed",
+    "452013e739b548d5980e69ea8c319038"
+   ],
+   "2": [
+    "passed",
+    "2c9ada1b602af3b0e3a27d83ee2b3d69"
+   ],
+   "3": [
+    "passed",
+    "2cd4e4b70b8c849f1d250701cdb6c04f"
+   ],
+   "4": [
+    "passed",
+    "bfae45d21822ef10edc6f934f456c99a"
+   ],
+   "5": [
+    "passed",
+    "8f7c1cb016478af0c9f130c7b7bc6b96"
+   ],
+   "6": [
+    "passed",
+    "40dcc322e553c43bc25dbdaa6d07edb0"
+   ],
+   "7": [
+    "passed",
+    "7f15851907080af9b17b6c7cda2ad531"
+   ],
+   "8": [
+    "passed",
+    "411f5517679bc17b6e5ec8383b0559f2"
+   ],
+   "9": [
+    "passed",
+    "277bda9e1a999a6c47ac993bf6df0600"
+   ],
+   "10": [
+    "passed",
+    "11f7c7c1b28391ab2bc11f45f94426c9"
+   ],
+   "11": [
+    "passed",
+    "c3c0515439eebd1d497cb0f37ef2d148"
+   ],
+   "12": [
+    "passed",
+    "941d0f9fe7146a001754084dba785329"
+   ],
+   "13": [
+    "passed",
+    "08e7929a8deb8b82748f43c4c7edd007"
+   ],
+   "14": [
+    "passed",
+    "2bc7efb8e9e6aca8e1db7befef086587"
+   ],
+   "15": [
+    "passed",
+    "3229ad3b96cb2882baa481bb1dda4edb"
+   ],
+   "16": [
+    "passed",
+    "73c5ba81668f3f0ea3736ddd42682c09"
+   ],
+   "17": [
+    "passed",
+    "ee710a223c40a6462c996676c5a07585"
+   ],
+   "18": [
+    "passed",
+    "70fdfd728dbce9805848139d9a88278d"
+   ],
+   "19": [
+    "passed",
+    "c9635aa43295e64d5c636a78ede0c424"
+   ],
+   "20": [
+    "passed",
+    "85b70adc59108b09f3fa2677fec8d67d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestForStateAddSamples": {
+   "1": [
+    "passed",
+    "a109f088fa0c4280bc2b2778d7cd16d8"
+   ],
+   "2": [
+    "passed",
+    "a442fe6a9a7a8bdcc1bdd2c60eaf7c2a"
+   ],
+   "3": [
+    "passed",
+    "e28d45bc2a76d4fb0baf63f865ac7de9"
+   ],
+   "4": [
+    "passed",
+    "d1c5fc60ec00419ff421dcb60c722272"
+   ],
+   "5": [
+    "passed",
+    "a8ee2fd55ce1a9ad976f7844c728c837"
+   ],
+   "6": [
+    "passed",
+    "52c756c1630dcbeabe82f57f86357878"
+   ],
+   "7": [
+    "passed",
+    "f2072472537a6e58f7bcee4bc8cdc4a4"
+   ],
+   "8": [
+    "passed",
+    "c0334efb396574a178582ef83375adfa"
+   ],
+   "9": [
+    "passed",
+    "a2b980c9012a734c7f67556b510ea337"
+   ],
+   "10": [
+    "passed",
+    "e3899805362dc87d1b9c402f0c0d801b"
+   ],
+   "11": [
+    "passed",
+    "fe57a9fe66279044898a18b094e3835b"
+   ],
+   "12": [
+    "passed",
+    "b4e2dc6f9236587e8a5415a82eafdf77"
+   ],
+   "13": [
+    "passed",
+    "553bc4145b3c8659e92e49f1da641a01"
+   ],
+   "14": [
+    "passed",
+    "d626f2b20032a899c70b706704008ed2"
+   ],
+   "15": [
+    "passed",
+    "60e9ab3968ce1d4ccf5054cc22a56b8d"
+   ],
+   "16": [
+    "passed",
+    "758ad8d56679a5d532182ffcede2ea0c"
+   ],
+   "17": [
+    "passed",
+    "0592e5ede28ff0a1aa5302fee23af8b6"
+   ],
+   "18": [
+    "passed",
+    "aa9f9690f1898f0cb7070a0efc753e5e"
+   ],
+   "19": [
+    "passed",
+    "39545746a621caeef38b53a525fd229d"
+   ],
+   "20": [
+    "passed",
+    "bc1548715d6359bb8b9bd4737485fec3"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestForStateRestoreHoldDuration": {
+   "1": [
+    "passed",
+    "64b10b33990cebccd3fe185db4d7f538"
+   ],
+   "2": [
+    "passed",
+    "aa29843c00caaf62636ad0223a9a4928"
+   ],
+   "3": [
+    "passed",
+    "34654419f3f62fb7d3693da6e4015f2f"
+   ],
+   "4": [
+    "passed",
+    "dd66eb232bd7b2bccd9dad8c3036ebcf"
+   ],
+   "5": [
+    "passed",
+    "7fe1bc830e5733f3c0fdfc6ca92fe0dc"
+   ],
+   "6": [
+    "passed",
+    "1918cb6bb4a9ca1c8ff385a1625b6410"
+   ],
+   "7": [
+    "passed",
+    "7aaf95f65a02393e1e7f9426ecf4b009"
+   ],
+   "8": [
+    "passed",
+    "f7ac3bb95b657e6dc67cba0b2d972068"
+   ],
+   "9": [
+    "passed",
+    "2fb80402b3fa38ccd77896cd3cf717a3"
+   ],
+   "10": [
+    "passed",
+    "88ff37bfde2255ac9b82e04a63c22e1f"
+   ],
+   "11": [
+    "passed",
+    "15aa05120a1da351db4a55f25ecf9711"
+   ],
+   "12": [
+    "passed",
+    "8ec9e8449ac5323804b0eced79f3656d"
+   ],
+   "13": [
+    "passed",
+    "b85e57c38aa3a9f15338d07b4ce408e6"
+   ],
+   "14": [
+    "passed",
+    "fac54005bba6b563323c16b541880d06"
+   ],
+   "15": [
+    "passed",
+    "1609329f3e6e3b5a06ebf94410b740e5"
+   ],
+   "16": [
+    "passed",
+    "1107bdbb6d34faea732c1fedf74c6056"
+   ],
+   "17": [
+    "passed",
+    "20cca90ebaa4791ac7bd9819ccba9090"
+   ],
+   "18": [
+    "passed",
+    "8f79cceb1111bd209f7a5dd8232af1a1"
+   ],
+   "19": [
+    "passed",
+    "11d5e64b660f2dff912d73f5702db6e4"
+   ],
+   "20": [
+    "passed",
+    "48a1752a8ee3efc4139db04cbde277ab"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleEvalDuplicate": {
+   "1": [
+    "passed",
+    "d12f8f862737d005fe18dde8084816da"
+   ],
+   "2": [
+    "passed",
+    "26a700a5b08a6f2ca370696b218bcff1"
+   ],
+   "3": [
+    "passed",
+    "b29e9a3e3a88bf33da562431269d9497"
+   ],
+   "4": [
+    "passed",
+    "6eab4b1f99d241c1adf66c58c992a394"
+   ],
+   "5": [
+    "passed",
+    "7f45bd7c512578daeec3fad5a1b39539"
+   ],
+   "6": [
+    "passed",
+    "1cf6a2040b6c5452b21746d921244c2d"
+   ],
+   "7": [
+    "passed",
+    "6468195f0377ae71f24c0009f3aa6ad3"
+   ],
+   "8": [
+    "passed",
+    "ebb3a4ca6b1d0e1b3a18b47942ec1e80"
+   ],
+   "9": [
+    "passed",
+    "3a3a508e2a0cf2f3d2458729b4871483"
+   ],
+   "10": [
+    "passed",
+    "0b59857ca232cbac36be3fc9106d46e0"
+   ],
+   "11": [
+    "passed",
+    "66977d126856581e7ba56e9170697c44"
+   ],
+   "12": [
+    "passed",
+    "e3c7686bdd49d960f2c11090c80fe298"
+   ],
+   "13": [
+    "passed",
+    "4b6039b1413555c64a1fc72610c1bdea"
+   ],
+   "14": [
+    "passed",
+    "2e7b07e0c3614d0915498d8d00e9a2d6"
+   ],
+   "15": [
+    "passed",
+    "23c171c0bee0ca8d41edfc18bb252a92"
+   ],
+   "16": [
+    "passed",
+    "b1f8b6fab80ad2ae5e80f3929762a0bc"
+   ],
+   "17": [
+    "passed",
+    "d33452b625bd8dc4a26e5b28dc141be8"
+   ],
+   "18": [
+    "passed",
+    "de1cbd3e9e248098d9e0a8fe3e984171"
+   ],
+   "19": [
+    "passed",
+    "ff15608e24d1fa71b1129e0e1b45746e"
+   ],
+   "20": [
+    "passed",
+    "6c26e6f01b9649eb4a10094dbf610da1"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestoration": {
+   "1": [
+    "passed",
+    "3b28c7d1e3ea700d7c1effc18e9ed57a"
+   ],
+   "2": [
+    "passed",
+    "57aca32183798752030f9881197d389e"
+   ],
+   "3": [
+    "passed",
+    "160b57ca3226f7a4b3bfd07a0b3d8621"
+   ],
+   "4": [
+    "passed",
+    "f117a975989d41c7ba6224d363140c19"
+   ],
+   "5": [
+    "passed",
+    "98485ce5b8a1e8b809f42f5a45884057"
+   ],
+   "6": [
+    "passed",
+    "74391ba26e2c3382a08cabfcdc9c650f"
+   ],
+   "7": [
+    "passed",
+    "8d6f6ede61d13a3c1319052334cf0cc5"
+   ],
+   "8": [
+    "passed",
+    "1a9595dc6cf4e35f6be082f2a32e9ad8"
+   ],
+   "9": [
+    "passed",
+    "f8991cbe5347b6c5fef2a14ba9714fb3"
+   ],
+   "10": [
+    "passed",
+    "b10bd227d9b8ff7ebe5bd9a7245bff49"
+   ],
+   "11": [
+    "passed",
+    "0f81af7aee87b9e7906a0d833a8b1f83"
+   ],
+   "12": [
+    "passed",
+    "97d712e9a11e24d48c1704f4eca66bba"
+   ],
+   "13": [
+    "passed",
+    "f25634e4cd2086a8234491bb545a8e06"
+   ],
+   "14": [
+    "passed",
+    "95a4bf8d94b6a822dc3ca052fc838b2f"
+   ],
+   "15": [
+    "passed",
+    "5b3a71e1c34f1d7cbbb400348046d384"
+   ],
+   "16": [
+    "passed",
+    "c5da6d5397942beb2ecb190e50c87baf"
+   ],
+   "17": [
+    "passed",
+    "717392a33362f2ed94a24a025c09e0ce"
+   ],
+   "18": [
+    "passed",
+    "74022f3f92fc58278c50686c38b1820f"
+   ],
+   "19": [
+    "passed",
+    "56fe886871583b787d2747bb898a6b54"
+   ],
+   "20": [
+    "passed",
+    "d9e2b68d8c1948dacbc2bec604d4c4a5"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleDuplicate": {
+   "1": [
+    "passed",
+    "69dd025c75f4a8909476aa0334d43810"
+   ],
+   "2": [
+    "passed",
+    "0876ecf60b131aebaf76eec1769380cc"
+   ],
+   "3": [
+    "passed",
+    "7da1f9438dd19efa22ca7e14f8aa507d"
+   ],
+   "4": [
+    "passed",
+    "f77c3edf33f963e784d498f642fd1049"
+   ],
+   "5": [
+    "passed",
+    "b556ddde81d1abfbe30bf20339a9a15e"
+   ],
+   "6": [
+    "passed",
+    "73058666157c41e50f6d9764a6f4c692"
+   ],
+   "7": [
+    "passed",
+    "7fbfbcf151c53785fb434ef82b1df661"
+   ],
+   "8": [
+    "passed",
+    "6c2190316039f17aa0e8982c196d40cf"
+   ],
+   "9": [
+    "passed",
+    "df80c33751330c007932bada94c279c4"
+   ],
+   "10": [
+    "passed",
+    "2efb785fe22d28bfb9f27411ec8e8254"
+   ],
+   "11": [
+    "passed",
+    "8bfe9bbad50becff41d6e3235cb8c169"
+   ],
+   "12": [
+    "passed",
+    "c34432c04b0cfca81185459ef58cbb1b"
+   ],
+   "13": [
+    "passed",
+    "671dc86ba170f6122a02295dff531af5"
+   ],
+   "14": [
+    "passed",
+    "d982ca2eb6ab94c47b6bae72d5eabc36"
+   ],
+   "15": [
+    "passed",
+    "b0454e52955d0f4f52bfd087153878bd"
+   ],
+   "16": [
+    "passed",
+    "289d7bd5aa2c432ba4a6862b1e2993cc"
+   ],
+   "17": [
+    "passed",
+    "29dd644e6b5089b723dcd8af8596b09f"
+   ],
+   "18": [
+    "passed",
+    "5c4f33ac47e0aefdacfdca46f7cd2e11"
+   ],
+   "19": [
+    "passed",
+    "5d3b2530031f3c6fe12f365045731c02"
+   ],
+   "20": [
+    "passed",
+    "b2c102ada6bd507bcf3f3a4a5a1f0c0a"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleEval": {
+   "1": [
+    "passed",
+    "11ae6ac4d2f1e4fdf8800269c1f3c720"
+   ],
+   "2": [
+    "passed",
+    "53c4464c30686b1100bf2e1d1c9aa3fc"
+   ],
+   "3": [
+    "passed",
+    "3143294c94cb66f664ccba9162b70a0f"
+   ],
+   "4": [
+    "passed",
+    "fa7b50ac9b041e61e8d9331fc71ee378"
+   ],
+   "5": [
+    "passed",
+    "f8bcde1e2fe4551e78744f6bfe902f32"
+   ],
+   "6": [
+    "passed",
+    "35af197e7315d1556c9a85374c214445"
+   ],
+   "7": [
+    "passed",
+    "d0f172fc5561614fcf3bac3f30fdadfe"
+   ],
+   "8": [
+    "passed",
+    "df7708eb4d018a3a29f62538cb6ce7cd"
+   ],
+   "9": [
+    "passed",
+    "020b2664df693e93a24438893297c4fb"
+   ],
+   "10": [
+    "passed",
+    "af49f6da46b248f9eabf2ed2e11adac8"
+   ],
+   "11": [
+    "passed",
+    "5164d12cbb7fb61770ecd2682d7f471b"
+   ],
+   "12": [
+    "passed",
+    "7bafbef4e29f9af57b9eb64c10effd85"
+   ],
+   "13": [
+    "passed",
+    "e0d760b4ba4be35ab842f393628fb4de"
+   ],
+   "14": [
+    "passed",
+    "97cfa7d75599ad3d864b878265fdbfde"
+   ],
+   "15": [
+    "passed",
+    "25affeaae70c8eb62d0597a87b6ab144"
+   ],
+   "16": [
+    "passed",
+    "8dec6f6dc80f5488e1a7666aedc53bf9"
+   ],
+   "17": [
+    "passed",
+    "415b395d736f00efdd5ee07a1f572a00"
+   ],
+   "18": [
+    "passed",
+    "2ee36343f301aabcf44e1d7968ee1ba3"
+   ],
+   "19": [
+    "passed",
+    "f4e4ed20f7dabdeb4e1c8c93e50dc513"
+   ],
+   "20": [
+    "passed",
+    "8fc1bd6d1c8d42fd631186005e566083"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetailPanics": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeries": {
+   "1": [
+    "passed",
+    "6164448cbfd655ced0cc211156339cc7"
+   ],
+   "2": [
+    "passed",
+    "dc5277af8f2c832c60decfdf54e855d1"
+   ],
+   "3": [
+    "passed",
+    "3dd276858cd7b348c2956953ceb26211"
+   ],
+   "4": [
+    "passed",
+    "8b7177e248e5ea653d9194718743339a"
+   ],
+   "5": [
+    "passed",
+    "828fca27eac60dfe8d5c4b31c51ca6f4"
+   ],
+   "6": [
+    "passed",
+    "aef623a8e99f0cb2b2bdf135b30247e3"
+   ],
+   "7": [
+    "passed",
+    "8f7fcec53c24fefd48681325042ef8af"
+   ],
+   "8": [
+    "passed",
+    "5465f3f00a50ce864cc18dcfc1e38094"
+   ],
+   "9": [
+    "passed",
+    "cbbc65e8fe1e3c8146006b0e3347fcbc"
+   ],
+   "10": [
+    "passed",
+    "6e3ca365c38d168282fbfd727fd2be24"
+   ],
+   "11": [
+    "passed",
+    "0f5af0e2a9646b5f316d9db4934ca67c"
+   ],
+   "12": [
+    "passed",
+    "88bbf971296ca80169c11754451fe9de"
+   ],
+   "13": [
+    "passed",
+    "75ecb4805da8a46e66ff7b8f3682b435"
+   ],
+   "14": [
+    "passed",
+    "4f813000fd2e06189245d74130abcaaf"
+   ],
+   "15": [
+    "passed",
+    "2767254240d2c39338f1ff4f2d3bdc82"
+   ],
+   "16": [
+    "passed",
+    "93b46dc2e0a6e6b678fd0e141e20b8b6"
+   ],
+   "17": [
+    "passed",
+    "a199b01de0288ffb53d8247044e8648f"
+   ],
+   "18": [
+    "passed",
+    "70766670e16487e9a7fa5f1c2f431eb8"
+   ],
+   "19": [
+    "passed",
+    "f5b2ce0a396d430683830d3efff835e3"
+   ],
+   "20": [
+    "passed",
+    "4312bbfed370de48710f098be62bcb64"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRecordingRuleLimit": {
+   "1": [
+    "passed",
+    "82de6bbe2a5bf2521b352b1f6f6c28e7"
+   ],
+   "2": [
+    "passed",
+    "6befa3eccdf12510fce90e1119d11670"
+   ],
+   "3": [
+    "passed",
+    "e716232e4aa066f3943856507a8559d2"
+   ],
+   "4": [
+    "passed",
+    "04e361c92e409ebb90cf04f95fcd02ff"
+   ],
+   "5": [
+    "passed",
+    "daa86816b6f0496720be919c450e928d"
+   ],
+   "6": [
+    "passed",
+    "0e062ff8707f70ffadcaf60d74b77073"
+   ],
+   "7": [
+    "passed",
+    "f77965c710c2ecf14033b9b2f1af26ef"
+   ],
+   "8": [
+    "passed",
+    "40d71976135aca66d43ac7239d60c1da"
+   ],
+   "9": [
+    "passed",
+    "1d77d9a7c9c98835ef98a26b2cee06b4"
+   ],
+   "10": [
+    "passed",
+    "f178ffbaa264a2564fb8479cc587f17c"
+   ],
+   "11": [
+    "passed",
+    "cb95d8d62f0313455cdb2105ca4a9e45"
+   ],
+   "12": [
+    "passed",
+    "822c8ba8fbc00699237e4adae25b94a0"
+   ],
+   "13": [
+    "passed",
+    "969824af4d55d4b52fa5d6a7a6afc9d8"
+   ],
+   "14": [
+    "passed",
+    "ffa1c3f136782e60e75e04adbacbb922"
+   ],
+   "15": [
+    "passed",
+    "5222ac39ed88ff87c403c5c6188ba7cc"
+   ],
+   "16": [
+    "passed",
+    "092609384de09daeb50b1d7cec12225e"
+   ],
+   "17": [
+    "passed",
+    "027ce09b7cd2b4920946107193bb7fd1"
+   ],
+   "18": [
+    "passed",
+    "f0cdd84c004ddf0f88b4daf52b916d32"
+   ],
+   "19": [
+    "passed",
+    "63aabc6b0fc1644c28333d15f691cd08"
+   ],
+   "20": [
+    "passed",
+    "0e8fd9c58d846cb7c7cb8f4f2a2e9363"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestUpdate": {
+   "1": [
+    "passed",
+    "81a304fa1d253d3d28be979040cb4dac"
+   ],
+   "2": [
+    "passed",
+    "9eb00e8f7fb62e8f4896246c2d9709d0"
+   ],
+   "3": [
+    "passed",
+    "64840416ac8a3b9c13fdc744f6ca174c"
+   ],
+   "4": [
+    "passed",
+    "8030007f5fe8210f73f06585a94339d7"
+   ],
+   "5": [
+    "passed",
+    "bd48ff9797ddb23e813301fed10f3199"
+   ],
+   "6": [
+    "passed",
+    "585d4353cbcadacd0c9e7295f0e8ea52"
+   ],
+   "7": [
+    "passed",
+    "7effffad4a95596d8c1a44e02bf3c275"
+   ],
+   "8": [
+    "passed",
+    "bc84cf8531b562d42ce150e7201f9fc6"
+   ],
+   "9": [
+    "passed",
+    "e4c19c578a9310392f55382b4b656da9"
+   ],
+   "10": [
+    "passed",
+    "ae0ba4e87c74ff53ce13ff033eb46f68"
+   ],
+   "11": [
+    "passed",
+    "985dbfccaf28a58bd660b1b5c6fed593"
+   ],
+   "12": [
+    "passed",
+    "3222209c9f8112dde6aa0414dff5e152"
+   ],
+   "13": [
+    "passed",
+    "de5ba9e9c7fd8bb8a2293a4368256c65"
+   ],
+   "14": [
+    "passed",
+    "f585ae457e5951357cf9c10a1416ab8a"
+   ],
+   "15": [
+    "passed",
+    "7d5d335fb7844054b08cf6a74ee47cf4"
+   ],
+   "16": [
+    "passed",
+    "5321996d646719a356d8e619b4b97c35"
+   ],
+   "17": [
+    "passed",
+    "73307ddcf4da343fa867cf2d5cc95cd9"
+   ],
+   "18": [
+    "passed",
+    "07e87b65cd6361f8ce2186a25dfad8ec"
+   ],
+   "19": [
+    "passed",
+    "04b3b6e7faff8874e6634aec862a2003"
+   ],
+   "20": [
+    "passed",
+    "d16385d66206ea6bbe0a79ddf82b5b2e"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNoDependency": {
+   "1": [
+    "passed",
+    "334f29c33c0e5ffce29cc4705d066427"
+   ],
+   "2": [
+    "passed",
+    "14692194a480cf29735957d111319e73"
+   ],
+   "3": [
+    "passed",
+    "fe28e0f73d5e553a905a5d098d21eb6c"
+   ],
+   "4": [
+    "passed",
+    "d9d611a964fa02d349945c2e727367f8"
+   ],
+   "5": [
+    "passed",
+    "192cf2945fd359435e8c579bd9705bef"
+   ],
+   "6": [
+    "passed",
+    "03e7ebfa13b685651c6315d527fd735e"
+   ],
+   "7": [
+    "passed",
+    "bd347120184e46d3924e108ba3edfb05"
+   ],
+   "8": [
+    "passed",
+    "a52b2b09b2cf8a02d8143b848c420582"
+   ],
+   "9": [
+    "passed",
+    "b019fc1cc1cf2dfc893c7f8d63819cf7"
+   ],
+   "10": [
+    "passed",
+    "fd93022c0bcf545e6217368302d8917e"
+   ],
+   "11": [
+    "passed",
+    "095cd8fd53387c40ef2f165fe28b33de"
+   ],
+   "12": [
+    "passed",
+    "d69d7b1c7c869b7678781df51c4ef57c"
+   ],
+   "13": [
+    "passed",
+    "1a3f44a9d25afcb0930ce14f8ea662fa"
+   ],
+   "14": [
+    "passed",
+    "ed996ad42abb5f31d53fe58216c8f76e"
+   ],
+   "15": [
+    "passed",
+    "05146f659a8618fe3ca0fff79f2964dc"
+   ],
+   "16": [
+    "passed",
+    "0fd7cbc9ffac3d710ae9b55feb618baa"
+   ],
+   "17": [
+    "passed",
+    "23c1bc318c01f4200d854db40d11dab9"
+   ],
+   "18": [
+    "passed",
+    "3bc93d61209dd3ebc6d76864ad31ec47"
+   ],
+   "19": [
+    "passed",
+    "0df76f785b74b00eb25d86acefb498b0"
+   ],
+   "20": [
+    "passed",
+    "cfabbe62fad7a9f21111224efa62b58d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_SetDependentRules": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNoMetricSelector": {
+   "1": [
+    "passed",
+    "334f29c33c0e5ffce29cc4705d066427"
+   ],
+   "2": [
+    "passed",
+    "14692194a480cf29735957d111319e73"
+   ],
+   "3": [
+    "passed",
+    "fe28e0f73d5e553a905a5d098d21eb6c"
+   ],
+   "4": [
+    "passed",
+    "d9d611a964fa02d349945c2e727367f8"
+   ],
+   "5": [
+    "passed",
+    "192cf2945fd359435e8c579bd9705bef"
+   ],
+   "6": [
+    "passed",
+    "03e7ebfa13b685651c6315d527fd735e"
+   ],
+   "7": [
+    "passed",
+    "bd347120184e46d3924e108ba3edfb05"
+   ],
+   "8": [
+    "passed",
+    "a52b2b09b2cf8a02d8143b848c420582"
+   ],
+   "9": [
+    "passed",
+    "b019fc1cc1cf2dfc893c7f8d63819cf7"
+   ],
+   "10": [
+    "passed",
+    "fd93022c0bcf545e6217368302d8917e"
+   ],
+   "11": [
+    "passed",
+    "095cd8fd53387c40ef2f165fe28b33de"
+   ],
+   "12": [
+    "passed",
+    "d69d7b1c7c869b7678781df51c4ef57c"
+   ],
+   "13": [
+    "passed",
+    "1a3f44a9d25afcb0930ce14f8ea662fa"
+   ],
+   "14": [
+    "passed",
+    "ed996ad42abb5f31d53fe58216c8f76e"
+   ],
+   "15": [
+    "passed",
+    "05146f659a8618fe3ca0fff79f2964dc"
+   ],
+   "16": [
+    "passed",
+    "0fd7cbc9ffac3d710ae9b55feb618baa"
+   ],
+   "17": [
+    "passed",
+    "23c1bc318c01f4200d854db40d11dab9"
+   ],
+   "18": [
+    "passed",
+    "3bc93d61209dd3ebc6d76864ad31ec47"
+   ],
+   "19": [
+    "passed",
+    "0df76f785b74b00eb25d86acefb498b0"
+   ],
+   "20": [
+    "passed",
+    "cfabbe62fad7a9f21111224efa62b58d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAsyncRuleEvaluation": {
+   "1": [
+    "passed",
+    "81ded0eb645ad7913eb30f32af772703"
+   ],
+   "2": [
+    "passed",
+    "9dab8f455ed25259ee86ebcb5a667e23"
+   ],
+   "3": [
+    "passed",
+    "7bddc3fa8d331f27b6d3e688f7bb4d93"
+   ],
+   "4": [
+    "passed",
+    "9dab8f455ed25259ee86ebcb5a667e23"
+   ],
+   "5": [
+    "passed",
+    "341efb80772488ac90df0fa5a406c0d9"
+   ],
+   "6": [
+    "passed",
+    "81ded0eb645ad7913eb30f32af772703"
+   ],
+   "7": [
+    "passed",
+    "73e10f9524dc179b2de9c792e0cb6b4a"
+   ],
+   "8": [
+    "passed",
+    "e5bac33c7d30008e92e97f3a274e3929"
+   ],
+   "9": [
+    "passed",
+    "d77a2cbd46473451d13a4a63881a3f5d"
+   ],
+   "10": [
+    "passed",
+    "7bddc3fa8d331f27b6d3e688f7bb4d93"
+   ],
+   "11": [
+    "passed",
+    "d77a2cbd46473451d13a4a63881a3f5d"
+   ],
+   "12": [
+    "passed",
+    "7bddc3fa8d331f27b6d3e688f7bb4d93"
+   ],
+   "13": [
+    "passed",
+    "228d5b2bd7ca378bcbda8b4ea761659c"
+   ],
+   "14": [
+    "passed",
+    "73e10f9524dc179b2de9c792e0cb6b4a"
+   ],
+   "15": [
+    "passed",
+    "9dab8f455ed25259ee86ebcb5a667e23"
+   ],
+   "16": [
+    "passed",
+    "c776c37c26a989c56329cedfa09c3010"
+   ],
+   "17": [
+    "passed",
+    "7bddc3fa8d331f27b6d3e688f7bb4d93"
+   ],
+   "18": [
+    "passed",
+    "7e553f8f442e672976c47796f7147639"
+   ],
+   "19": [
+    "passed",
+    "a3e766bcf5888ff91ed3a7526e0d0e08"
+   ],
+   "20": [
+    "passed",
+    "73e10f9524dc179b2de9c792e0cb6b4a"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestEngineQueryFunc_ClosesQuery": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestDependentRulesWithNonMetricExpression": {
+   "1": [
+    "passed",
+    "334f29c33c0e5ffce29cc4705d066427"
+   ],
+   "2": [
+    "passed",
+    "14692194a480cf29735957d111319e73"
+   ],
+   "3": [
+    "passed",
+    "fe28e0f73d5e553a905a5d098d21eb6c"
+   ],
+   "4": [
+    "passed",
+    "d9d611a964fa02d349945c2e727367f8"
+   ],
+   "5": [
+    "passed",
+    "192cf2945fd359435e8c579bd9705bef"
+   ],
+   "6": [
+    "passed",
+    "03e7ebfa13b685651c6315d527fd735e"
+   ],
+   "7": [
+    "passed",
+    "bd347120184e46d3924e108ba3edfb05"
+   ],
+   "8": [
+    "passed",
+    "a52b2b09b2cf8a02d8143b848c420582"
+   ],
+   "9": [
+    "passed",
+    "b019fc1cc1cf2dfc893c7f8d63819cf7"
+   ],
+   "10": [
+    "passed",
+    "fd93022c0bcf545e6217368302d8917e"
+   ],
+   "11": [
+    "passed",
+    "095cd8fd53387c40ef2f165fe28b33de"
+   ],
+   "12": [
+    "passed",
+    "d69d7b1c7c869b7678781df51c4ef57c"
+   ],
+   "13": [
+    "passed",
+    "1a3f44a9d25afcb0930ce14f8ea662fa"
+   ],
+   "14": [
+    "passed",
+    "ed996ad42abb5f31d53fe58216c8f76e"
+   ],
+   "15": [
+    "passed",
+    "05146f659a8618fe3ca0fff79f2964dc"
+   ],
+   "16": [
+    "passed",
+    "0fd7cbc9ffac3d710ae9b55feb618baa"
+   ],
+   "17": [
+    "passed",
+    "23c1bc318c01f4200d854db40d11dab9"
+   ],
+   "18": [
+    "passed",
+    "3bc93d61209dd3ebc6d76864ad31ec47"
+   ],
+   "19": [
+    "passed",
+    "0df76f785b74b00eb25d86acefb498b0"
+   ],
+   "20": [
+    "passed",
+    "cfabbe62fad7a9f21111224efa62b58d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingEvalWithOrigin": {
+   "1": [
+    "passed",
+    "f4dacb6ef05efb20e7c6fc2a2eab5251"
+   ],
+   "2": [
+    "passed",
+    "a21104bbe1669e48b3aa5340da41c205"
+   ],
+   "3": [
+    "passed",
+    "6780afa3a27580276dc2ee481e361c9f"
+   ],
+   "4": [
+    "passed",
+    "fc51121d51d3abe3d1c855a962b27b78"
+   ],
+   "5": [
+    "passed",
+    "963066db877479d8d4258555eb7961a5"
+   ],
+   "6": [
+    "passed",
+    "38be8d3241438eea9d95aa8c1cb9aa92"
+   ],
+   "7": [
+    "passed",
+    "c154d4669b55ea1ac844fb480ce2f313"
+   ],
+   "8": [
+    "passed",
+    "652915a083b2298642da10f784f89a79"
+   ],
+   "9": [
+    "passed",
+    "7a709bb82fd29fff973d557438598128"
+   ],
+   "10": [
+    "passed",
+    "331792b6511ffcaa799888a63a460651"
+   ],
+   "11": [
+    "passed",
+    "3fbb668a4875867fba46010ee8c32470"
+   ],
+   "12": [
+    "passed",
+    "c5bd70b2e68a9d10611a44cd1e000166"
+   ],
+   "13": [
+    "passed",
+    "f723915b379902356872b77e0792b7f9"
+   ],
+   "14": [
+    "passed",
+    "bb7811888710cb73a7eaa2b0b96acd75"
+   ],
+   "15": [
+    "passed",
+    "b9e0f3d63caa230f78213bff1a3a54f1"
+   ],
+   "16": [
+    "passed",
+    "af9b8eee665175c4bc32d2dacc46d1d7"
+   ],
+   "17": [
+    "passed",
+    "a3e958e0472dcdd26a4091586e6ed82b"
+   ],
+   "18": [
+    "passed",
+    "1193f9e700f9daf85044aa6a9a96e5d2"
+   ],
+   "19": [
+    "passed",
+    "c5c1644d1ee4bb73d9c149fbf42dcd73"
+   ],
+   "20": [
+    "passed",
+    "3a0f9d0cd87619715443bd0af017f9be"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_ShouldCheckWhetherEachRuleHasDependentsAndDependencies": {
+   "1": [
+    "passed",
+    "2bf16c07978253361aa806dde5e41639"
+   ],
+   "2": [
+    "passed",
+    "b7f6e800281ba71d64a0a6004a1cdd87"
+   ],
+   "3": [
+    "passed",
+    "93e3b64c7997640c980c80014da235ce"
+   ],
+   "4": [
+    "passed",
+    "7d0c02239acca4838b740ab6a146dfc2"
+   ],
+   "5": [
+    "passed",
+    "68d0772c70e7436ab2f2c76a7448c745"
+   ],
+   "6": [
+    "passed",
+    "90ffcd15e76a2f4b6d4dee404ed99dce"
+   ],
+   "7": [
+    "passed",
+    "3ccf2c5dc50accb1e064173726199108"
+   ],
+   "8": [
+    "passed",
+    "78e0262dd81c135ab5765fd7c3143cd7"
+   ],
+   "9": [
+    "passed",
+    "81c4f79f0299e590312e64612f012a0c"
+   ],
+   "10": [
+    "passed",
+    "a8fe5c4beab8e9f9986568138ab844c2"
+   ],
+   "11": [
+    "passed",
+    "c2654071552a1a55b853312c67bb714a"
+   ],
+   "12": [
+    "passed",
+    "b9b98d7b1a8835e8aad33f7923e8f842"
+   ],
+   "13": [
+    "passed",
+    "ec1fce4d7a274099087887dc4b969388"
+   ],
+   "14": [
+    "passed",
+    "dbce8ae947d67b58253648a5c8caec0e"
+   ],
+   "15": [
+    "passed",
+    "18d7fb9aa6205ca9c4dab97f74cdb903"
+   ],
+   "16": [
+    "passed",
+    "7d684db2a6673bb305332b81f2442850"
+   ],
+   "17": [
+    "passed",
+    "6bfe7efd37f15d445fbc960eca044965"
+   ],
+   "18": [
+    "passed",
+    "e6739fd7c3c3fa8e6f2b136cdf69f01f"
+   ],
+   "19": [
+    "passed",
+    "7482c7493136b8d4995431ccc732126d"
+   ],
+   "20": [
+    "passed",
+    "d038bc36b09b9aba25b19c026767aa98"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRule_ActiveAlertsCount": {
+   "1": [
+    "passed",
+    "015c01b031487850975631477c7992e5"
+   ],
+   "2": [
+    "passed",
+    "a6f1870fd59ce0096281021011fe80df"
+   ],
+   "3": [
+    "passed",
+    "1b66fd77affe630b6614873a7f2e9d28"
+   ],
+   "4": [
+    "passed",
+    "f721e2c58a790fdf00e74d062342fe3f"
+   ],
+   "5": [
+    "passed",
+    "e12a62cd8a86c7a6f341dc6e408ca37f"
+   ],
+   "6": [
+    "passed",
+    "ed9eea78cb292461c341ae3666ed093b"
+   ],
+   "7": [
+    "passed",
+    "872388e312f5ffcbe02a4ab6b50fb525"
+   ],
+   "8": [
+    "passed",
+    "06a68ca5170cac8a3ac3d51428e83ab8"
+   ],
+   "9": [
+    "passed",
+    "1dee7c62d8ed2777791c9822bdcf435f"
+   ],
+   "10": [
+    "passed",
+    "8f7133e9e88d65fd756f91aa8605c803"
+   ],
+   "11": [
+    "passed",
+    "6459b60f901a60e2e250b5b9467e7e30"
+   ],
+   "12": [
+    "passed",
+    "6fba1b25447c17d87c3ff594fa611f63"
+   ],
+   "13": [
+    "passed",
+    "d6796f222be08e591b840ed5660ff361"
+   ],
+   "14": [
+    "passed",
+    "47793825cfced9e82c8650973dc412a0"
+   ],
+   "15": [
+    "passed",
+    "fef9a172e629f2844595e710a81918be"
+   ],
+   "16": [
+    "passed",
+    "9e4485fa72fdd0a0ff4ddcf9449048eb"
+   ],
+   "17": [
+    "passed",
+    "e23a5f7c7b82e696741b57c41f4a793c"
+   ],
+   "18": [
+    "passed",
+    "a041b673ce250a278951171273eb8323"
+   ],
+   "19": [
+    "passed",
+    "8f23901d4fca2fb0f0a35d3785224faa"
+   ],
+   "20": [
+    "passed",
+    "5bf706d6d4143683fdf6ee6f30901426"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalURLInTemplate": {
+   "1": [
+    "passed",
+    "e6a85aded55f78f0fa24535d5965e296"
+   ],
+   "2": [
+    "passed",
+    "19dfa1196b93b79b50df405a0d9a2146"
+   ],
+   "3": [
+    "passed",
+    "db991f72de219373b2009248f40195ce"
+   ],
+   "4": [
+    "passed",
+    "d2a051edc979159dee880e61df95e7a1"
+   ],
+   "5": [
+    "passed",
+    "b513f292d34d48629fd94308e88de8f2"
+   ],
+   "6": [
+    "passed",
+    "dae4adaf4611e0abd1f9f0c25bd699c7"
+   ],
+   "7": [
+    "passed",
+    "bbf7a5fe26b7ed16e3b823c2bc36bbc1"
+   ],
+   "8": [
+    "passed",
+    "11699a2e9e080906eaf2c8f4d387df1b"
+   ],
+   "9": [
+    "passed",
+    "d34e43ec156dc6bb7bba397a795e4996"
+   ],
+   "10": [
+    "passed",
+    "83433c833939deecbfde88bd25f60959"
+   ],
+   "11": [
+    "passed",
+    "e57e01fbcfa2e434e847028eb5d5a186"
+   ],
+   "12": [
+    "passed",
+    "31b1ad340ca25c672b45d0de321373b8"
+   ],
+   "13": [
+    "passed",
+    "dc03ef132aaa20c17d693dd678fef161"
+   ],
+   "14": [
+    "passed",
+    "6000960408e2ceaa3a2f0d1f1c91cfa1"
+   ],
+   "15": [
+    "passed",
+    "f4be0594b015ffac2b4d34b446e907d5"
+   ],
+   "16": [
+    "passed",
+    "e5e2d098adfc6b979bce7ae8bece186e"
+   ],
+   "17": [
+    "passed",
+    "7f28cab97324ccd956f08b493e1eb2af"
+   ],
+   "18": [
+    "passed",
+    "99d9b7e5a8d9f4801fbe63111a4e3bb0"
+   ],
+   "19": [
+    "passed",
+    "1f42feebc2ff57ac5905b1171e7d09d9"
+   ],
+   "20": [
+    "passed",
+    "49136d1a084b35b8096489429f328a32"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestDependenciesEdgeCases": {
+   "1": [
+    "passed",
+    "091b720d6e4fc0e5fd82660993b8490f"
+   ],
+   "2": [
+    "passed",
+    "f8c17da65b847aa1b17043e060a6810e"
+   ],
+   "3": [
+    "passed",
+    "0c9f1abad6ce26b4bdd9d71dbefdf4a0"
+   ],
+   "4": [
+    "passed",
+    "81914753a5d3b49eb772adb554b791d1"
+   ],
+   "5": [
+    "passed",
+    "fba3520c52f5964ba25dfe4ada6a9c18"
+   ],
+   "6": [
+    "passed",
+    "bef5f12e4033a767d9e3bbcb0ada880e"
+   ],
+   "7": [
+    "passed",
+    "01c957b168ff1b5305e5163d0ec6b33e"
+   ],
+   "8": [
+    "passed",
+    "ac8fafb8b3bc52e2956f047cbb0b9fc8"
+   ],
+   "9": [
+    "passed",
+    "7667142eaaeb6f0b17166c299f149a75"
+   ],
+   "10": [
+    "passed",
+    "717546c54330e5a2b1ebfae266e37cfd"
+   ],
+   "11": [
+    "passed",
+    "11f5d809d230cf9408393afca89ce44d"
+   ],
+   "12": [
+    "passed",
+    "d2392b0f20a1222e06ddde0428af4bf2"
+   ],
+   "13": [
+    "passed",
+    "9a2481e3864662ec1ea7990fd56b4de3"
+   ],
+   "14": [
+    "passed",
+    "a14523fd618b596bf91ae75b227e6673"
+   ],
+   "15": [
+    "passed",
+    "196ff956c45918b7981e42c08d650b59"
+   ],
+   "16": [
+    "passed",
+    "68864eed5f3d3d1acb4fb6309c82097e"
+   ],
+   "17": [
+    "passed",
+    "634c9f1dbb59c953f39ca72d40f6cfd1"
+   ],
+   "18": [
+    "passed",
+    "5cc0a5bcd625b3733b846b3bc1ccfed6"
+   ],
+   "19": [
+    "passed",
+    "12757e89be47ec153d6479425a85ab7a"
+   ],
+   "20": [
+    "passed",
+    "1dbe70852b81ecfb75bb0137081b6460"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestSendAlertsDontAffectActiveAlerts": {
+   "1": [
+    "passed",
+    "6bf6f3e8c3c254287a32d73dbfbddaff"
+   ],
+   "2": [
+    "passed",
+    "e1b3a1a5c973f8058e99b93ff99ed48e"
+   ],
+   "3": [
+    "passed",
+    "2bddbbb1fe6b81f2f16cfa944f56d19a"
+   ],
+   "4": [
+    "passed",
+    "4343927f84696af15fe990ea5453a9c4"
+   ],
+   "5": [
+    "passed",
+    "d0c0bee9068208488ac53df5c217cb03"
+   ],
+   "6": [
+    "passed",
+    "f7d2aa9ec36161bb73a8c3c6735ff783"
+   ],
+   "7": [
+    "passed",
+    "638011de32bf47bafdc2716253dcdc48"
+   ],
+   "8": [
+    "passed",
+    "c3fc306b834120de44524d5cc6f9034d"
+   ],
+   "9": [
+    "passed",
+    "f972000f666b452b91e1a43483b4d77f"
+   ],
+   "10": [
+    "passed",
+    "bcd14c10d6318484378166bd77b2f720"
+   ],
+   "11": [
+    "passed",
+    "c80119acd876b5d7e8b4392f2c15b1c7"
+   ],
+   "12": [
+    "passed",
+    "1879067e9bd750bfc4c29240f30daef0"
+   ],
+   "13": [
+    "passed",
+    "3dbbc05a0d6e946c14796841f8fc4333"
+   ],
+   "14": [
+    "passed",
+    "2685578fbc4210e926a9da4498a1d452"
+   ],
+   "15": [
+    "passed",
+    "161205c3af9a7e5059602cd3d775df77"
+   ],
+   "16": [
+    "passed",
+    "95001c57ab0a5f0bbd6d471a1597229a"
+   ],
+   "17": [
+    "passed",
+    "c84ea248eb903ae99ebdafea9fddadb8"
+   ],
+   "18": [
+    "passed",
+    "02211291bd71bf9cc0d10cf9ddb64d39"
+   ],
+   "19": [
+    "passed",
+    "47da30ba0264cf5ae6aab66421107945"
+   ],
+   "20": [
+    "passed",
+    "0823723475b41719ee2c3bc474d04dad"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestUpdateWhenStopped": {
+   "1": [
+    "passed",
+    "7d8d5cea72ef695452a854826316b3ed"
+   ],
+   "2": [
+    "passed",
+    "82d0a72e171ed5e084dfc4cf9b789fb3"
+   ],
+   "3": [
+    "passed",
+    "1314d45e8cd8daf8c6b8ec8c33eac51b"
+   ],
+   "4": [
+    "passed",
+    "28c1225fbb4d1105523de8577d31245d"
+   ],
+   "5": [
+    "passed",
+    "d9c2b38b9473dc433d3a61be0dc41615"
+   ],
+   "6": [
+    "passed",
+    "9e6e0437db483906d84a0772e3c40a4c"
+   ],
+   "7": [
+    "passed",
+    "4fdcec74ae1adca3addf760fbf66c5c2"
+   ],
+   "8": [
+    "passed",
+    "31df7ef867dc016c333651c59ee11529"
+   ],
+   "9": [
+    "passed",
+    "333236f3b949234d48d85b5418f1e8f3"
+   ],
+   "10": [
+    "passed",
+    "c47b42e1cc3d3e069dfd8d9fb7902de8"
+   ],
+   "11": [
+    "passed",
+    "ebe4ff69bbc43382634a28c7fae76a3c"
+   ],
+   "12": [
+    "passed",
+    "79d0153023e9a309ee6c713caf992c6d"
+   ],
+   "13": [
+    "passed",
+    "ee7d1d935bdbec5ef65d7d9bc216e9df"
+   ],
+   "14": [
+    "passed",
+    "63b53dce11d8411dccf0733816599c01"
+   ],
+   "15": [
+    "passed",
+    "ed0e35fb91c40bb4bb9802a4752332a0"
+   ],
+   "16": [
+    "passed",
+    "c4f1ba8f18414de6c31943130b03ee71"
+   ],
+   "17": [
+    "passed",
+    "9f39d102c6fa311dc2e9e029112156e9"
+   ],
+   "18": [
+    "passed",
+    "ef9fe52ea3d9e3ade546b80251cc25aa"
+   ],
+   "19": [
+    "passed",
+    "de7c2f6978b4fdc0d3cb5ca6d90be533"
+   ],
+   "20": [
+    "passed",
+    "9525d8c6fd86149397f8bbde26e3da4b"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroup_QueryOffset": {
+   "1": [
+    "passed",
+    "bcbd6465bf6bf587877ef0e081ca3803"
+   ],
+   "2": [
+    "passed",
+    "6af97c73ffc22279f2d5859bec324403"
+   ],
+   "3": [
+    "passed",
+    "2acb1d7e3d392e8c7548b38bb0a99e6d"
+   ],
+   "4": [
+    "passed",
+    "5ebeff58f1f5baa0a07a4f36d7ec53f6"
+   ],
+   "5": [
+    "passed",
+    "8a14f6c920ae67edeb9a2aaec2193909"
+   ],
+   "6": [
+    "passed",
+    "146c4c1e20ffc8e412ff48b5f637f57e"
+   ],
+   "7": [
+    "passed",
+    "569b63d7867f54f808e798cfd0fc389e"
+   ],
+   "8": [
+    "passed",
+    "7fac1b5b72e26d787a02b7e71a4451ec"
+   ],
+   "9": [
+    "passed",
+    "9696f26306a15e4c61d14f169b2181a5"
+   ],
+   "10": [
+    "passed",
+    "3d407a6fd6cd96ba6859602e13227430"
+   ],
+   "11": [
+    "passed",
+    "c69ed288e317eac3c8a5587024fb7193"
+   ],
+   "12": [
+    "passed",
+    "6250eb6e74dfadb4cc447d8c5dbd55ee"
+   ],
+   "13": [
+    "passed",
+    "20213e6b56d9b1af7ef8b2ce81d7e1a2"
+   ],
+   "14": [
+    "passed",
+    "8ae5cf11b84a911893cda5d68c61d76a"
+   ],
+   "15": [
+    "passed",
+    "4fb59e266cd04a9fadddc5dea3d25aa2"
+   ],
+   "16": [
+    "passed",
+    "e0378c085e402cdaf3c6a760728a788a"
+   ],
+   "17": [
+    "passed",
+    "af636305f3c71e61d07e86cc1668534c"
+   ],
+   "18": [
+    "passed",
+    "b880c371831886cc4dad0944f28a934a"
+   ],
+   "19": [
+    "passed",
+    "802bde63ef198ae8df4021a56b269736"
+   ],
+   "20": [
+    "passed",
+    "618e3a86abd552e4b2100e58427cc2fd"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestForStateRestore": {
+   "1": [
+    "passed",
+    "1062e3338102a64463f9fcd7c1d97c02"
+   ],
+   "2": [
+    "passed",
+    "ae274b514c40b0462f1609be9dbac7d1"
+   ],
+   "3": [
+    "passed",
+    "ef4164564c3e0e9c74a3a9b98d59046b"
+   ],
+   "4": [
+    "passed",
+    "950cc46d685703db356eae23c9500cc7"
+   ],
+   "5": [
+    "passed",
+    "ea3f3fa6caae0004c2b0d3e2ecae4a5d"
+   ],
+   "6": [
+    "passed",
+    "d1b192e08a732d12eb7998e4ec0023dd"
+   ],
+   "7": [
+    "passed",
+    "1823e862ffd36d5d2b33690bdbe0c593"
+   ],
+   "8": [
+    "passed",
+    "ac8ff4b2606614ddd1ce979145bc9686"
+   ],
+   "9": [
+    "passed",
+    "93b55cbec874331a9aa383918f952e82"
+   ],
+   "10": [
+    "passed",
+    "e6ac4667b8f832e84567a7fef50aa8f7"
+   ],
+   "11": [
+    "passed",
+    "89dab042b36bbc67034533dbaa0712f2"
+   ],
+   "12": [
+    "passed",
+    "9fb54d727fc61486069e5d857d137643"
+   ],
+   "13": [
+    "passed",
+    "7f7c3113d87983984989e25e98aa5ba7"
+   ],
+   "14": [
+    "passed",
+    "9c32589e2fead38c13b6c224050533ce"
+   ],
+   "15": [
+    "passed",
+    "d49ea608f9fea12984d3ab0e7cfffbaf"
+   ],
+   "16": [
+    "passed",
+    "eb5dfd08f10cdd6524065b708155a231"
+   ],
+   "17": [
+    "passed",
+    "886970f81c4efb4381dfd30bf6a032c2"
+   ],
+   "18": [
+    "passed",
+    "752ed027156499f45cf5508efcc72cee"
+   ],
+   "19": [
+    "passed",
+    "4530784eed04cfa5ffdfe942845ff9aa"
+   ],
+   "20": [
+    "passed",
+    "9567a44984f6edf46fc1ecef39155679"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestMetricsUpdate": {
+   "1": [
+    "passed",
+    "b7f27386e3dc995953430fb0ed182572"
+   ],
+   "2": [
+    "passed",
+    "d18dfc45d9f49de467f3268195ea9bbb"
+   ],
+   "3": [
+    "passed",
+    "7fd586437f98b42cc82ca727de6d3f14"
+   ],
+   "4": [
+    "passed",
+    "a00f645dd79594f2b5e8af79b5172e6e"
+   ],
+   "5": [
+    "passed",
+    "31a413f5b2cbb065db0893013b006911"
+   ],
+   "6": [
+    "passed",
+    "b8dc08bf7153f9ea98cc82e6a39379e5"
+   ],
+   "7": [
+    "passed",
+    "38ab00425d2acd1e1063fa2b517305bf"
+   ],
+   "8": [
+    "passed",
+    "d6a39a829032a3576c4bd13f3df54e37"
+   ],
+   "9": [
+    "passed",
+    "20cde65186f1ac1ac10d0921dd106144"
+   ],
+   "10": [
+    "passed",
+    "c5e59030c63a2bfa41afc8c024ce82ea"
+   ],
+   "11": [
+    "passed",
+    "8e37456299b3d4119a33da92cacab3c3"
+   ],
+   "12": [
+    "passed",
+    "880c09f94f8b9db4d61fa918a2834c10"
+   ],
+   "13": [
+    "passed",
+    "8a473678e3812aff80e8a42f33bce301"
+   ],
+   "14": [
+    "passed",
+    "7682a19b43e60b45eb9502a02dbeaae2"
+   ],
+   "15": [
+    "passed",
+    "799411c8b971f158b66c4384c4f50ca0"
+   ],
+   "16": [
+    "passed",
+    "743c56ed511341eb7a16ad8fdd729f3b"
+   ],
+   "17": [
+    "passed",
+    "7175c68c3181252f073fece4268b9e80"
+   ],
+   "18": [
+    "passed",
+    "c67259a39b1d9e077b4a67d8e45d399a"
+   ],
+   "19": [
+    "passed",
+    "018b2da562175ee71e1d7fe248f34700"
+   ],
+   "20": [
+    "passed",
+    "aa796e7e1a6f992811de6e6b46499817"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleHealthUpdates": {
+   "1": [
+    "passed",
+    "4f4bd336de55ced1ff99906c51fda4f7"
+   ],
+   "2": [
+    "passed",
+    "df54ef37b698fdabdc692cac4eb71817"
+   ],
+   "3": [
+    "passed",
+    "c8b0de463c44bc077bde8f7bc010935e"
+   ],
+   "4": [
+    "passed",
+    "251cfe581cc68e4c8e253ba0da97635f"
+   ],
+   "5": [
+    "passed",
+    "33d5812242fdc6d385d45330050d9def"
+   ],
+   "6": [
+    "passed",
+    "467b14b107641d5f53c438c8f7288ee6"
+   ],
+   "7": [
+    "passed",
+    "b209596aa4d01eeb456ea395f8badfae"
+   ],
+   "8": [
+    "passed",
+    "79b3d70b50c819744c4aedf2a7b4b0ec"
+   ],
+   "9": [
+    "passed",
+    "6a01f243e70b107f61e10d050ea95422"
+   ],
+   "10": [
+    "passed",
+    "19e0f5471dd669c4ed4f4007507d4af2"
+   ],
+   "11": [
+    "passed",
+    "26c6d4f98e3f4188d586c0f1213f5637"
+   ],
+   "12": [
+    "passed",
+    "a577ae43e9d72466fe4d4edbd55d2503"
+   ],
+   "13": [
+    "passed",
+    "69cd6b8e444122404e3c47d780e86356"
+   ],
+   "14": [
+    "passed",
+    "7f5f8b95d8e78c6b3ea291e689ac9aab"
+   ],
+   "15": [
+    "passed",
+    "272756e0d4ec92c3744d6c60e95a0d68"
+   ],
+   "16": [
+    "passed",
+    "d128a3aa54c250a439f8d5f53f1b19e3"
+   ],
+   "17": [
+    "passed",
+    "2c9a02df432e6f58ee5ad327dfb77e12"
+   ],
+   "18": [
+    "passed",
+    "6ac11dfd5c123660417c3660143fba02"
+   ],
+   "19": [
+    "passed",
+    "6bfe13307ee893409d721cf9e0fbb725"
+   ],
+   "20": [
+    "passed",
+    "c7285a8105f33accd5fb73bd0f0216fc"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestQueryForStateSeriesTemplateLabels": {
+   "1": [
+    "passed",
+    "fbd7062c829893779ab9ac2e4b556538"
+   ],
+   "2": [
+    "passed",
+    "85af5bb187b34a56ccdaf5419494ad98"
+   ],
+   "3": [
+    "passed",
+    "af0aa6fddccf3d64e6e82011fccae560"
+   ],
+   "4": [
+    "passed",
+    "c73dc7a0d9565e6863907f1500ff1611"
+   ],
+   "5": [
+    "passed",
+    "144197f323b0430bb9c2eccfadfe4995"
+   ],
+   "6": [
+    "passed",
+    "2c8ec832f4788fce816e999a21d9c85f"
+   ],
+   "7": [
+    "passed",
+    "d13330b39cbd20c03b3cfe791f8c18df"
+   ],
+   "8": [
+    "passed",
+    "679745fc013e2520920862df1e029425"
+   ],
+   "9": [
+    "passed",
+    "04f9e5b44fed91a4009c26ecc30d51cb"
+   ],
+   "10": [
+    "passed",
+    "a5559242dcb4c662ccfc4fad94b79cf6"
+   ],
+   "11": [
+    "passed",
+    "70993422e5906b44c19519ba182a826f"
+   ],
+   "12": [
+    "passed",
+    "49b8eb3a86c8d66413c346d36ccf43af"
+   ],
+   "13": [
+    "passed",
+    "d714d098176e4881b90d78d271f18d06"
+   ],
+   "14": [
+    "passed",
+    "3ef953484d652529a184ef4b0034bc56"
+   ],
+   "15": [
+    "passed",
+    "41f4e0df12d7c1af843bb77f2358bb5b"
+   ],
+   "16": [
+    "passed",
+    "6ebf9043e509b473a6293e3fcc691072"
+   ],
+   "17": [
+    "passed",
+    "ed06171e2a401b552f2d5f385dac3bb3"
+   ],
+   "18": [
+    "passed",
+    "d9c10a3643080cc8e405c525c4a00a64"
+   ],
+   "19": [
+    "passed",
+    "e22cb441daf44a8570d6db793fc85af2"
+   ],
+   "20": [
+    "passed",
+    "f0a80dced9d9757a422092f25780b3c4"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleTemplateWithHistogram": {
+   "1": [
+    "passed",
+    "dfe604c22ec269952b793bf215a68b8b"
+   ],
+   "2": [
+    "passed",
+    "aefb4c7ecafb6cf71f41c00e87c4abf8"
+   ],
+   "3": [
+    "passed",
+    "47d0bed075be70a387cb8f4a185de1c6"
+   ],
+   "4": [
+    "passed",
+    "4096952dc892ab0acdc247ba8e29f3e9"
+   ],
+   "5": [
+    "passed",
+    "d3fcf3f1c6af992c1ae67f6da30e1ab8"
+   ],
+   "6": [
+    "passed",
+    "b6d9d567914a8d00b314909c8dcf383f"
+   ],
+   "7": [
+    "passed",
+    "d2fdcdbf57bc3db16a9999370c4c06be"
+   ],
+   "8": [
+    "passed",
+    "feafdaf5f461c725165272eee1903699"
+   ],
+   "9": [
+    "passed",
+    "62e73bac0291bac6dc64cf84490b8e00"
+   ],
+   "10": [
+    "passed",
+    "59b7b0ba6b8d98892b68dbd1528c4220"
+   ],
+   "11": [
+    "passed",
+    "9878ccbf03d6387da4be5d3ab8551c2c"
+   ],
+   "12": [
+    "passed",
+    "f78a1ddf36e9bc69314caaedb350e02d"
+   ],
+   "13": [
+    "passed",
+    "30133c9d8b7821e8b44524a76c98f121"
+   ],
+   "14": [
+    "passed",
+    "38abd56f3344893d2c2e46325c1b7b34"
+   ],
+   "15": [
+    "passed",
+    "4134804e08dd4227d71e3b60206d5356"
+   ],
+   "16": [
+    "passed",
+    "ed7614169a1266123ed2fee71a1256de"
+   ],
+   "17": [
+    "passed",
+    "4499147b00780621b7029a6129db6875"
+   ],
+   "18": [
+    "passed",
+    "7934a16368dbd7143e2e9333e18257b8"
+   ],
+   "19": [
+    "passed",
+    "83a090ab7302580f30a3e049602e343a"
+   ],
+   "20": [
+    "passed",
+    "4c4bc926511ed77ea3f87b96b30657d9"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependentRules": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroup_Equals": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroupStalenessOnRemoval": {
+   "1": [
+    "passed",
+    "e5a3fc537408e6e4c66a852f8d9da5f5"
+   ],
+   "2": [
+    "passed",
+    "7d19d034f4a7f13211c90a8947be30ab"
+   ],
+   "3": [
+    "passed",
+    "d17f61883276b646b4b6555aad8b1bb9"
+   ],
+   "4": [
+    "passed",
+    "40cfe57c8d9fb9d0ed4b6763f1845199"
+   ],
+   "5": [
+    "passed",
+    "d3e5153a74ea7c90b72633671f274734"
+   ],
+   "6": [
+    "passed",
+    "9d06a0bd367f8d57cefe6ed807b2cf31"
+   ],
+   "7": [
+    "passed",
+    "89a2bc4822aca3cac4a850e529994659"
+   ],
+   "8": [
+    "passed",
+    "0e48865a9dfeef172c322ccb6a259c2d"
+   ],
+   "9": [
+    "passed",
+    "f1e8a681156353e80d7f044ec8428070"
+   ],
+   "10": [
+    "passed",
+    "f564522fd51f13c71f4f8f0a55a3467b"
+   ],
+   "11": [
+    "passed",
+    "2ac802794083ecb758873eafa79cecd7"
+   ],
+   "12": [
+    "passed",
+    "c673fbc374cd24e73f959c5ead162b23"
+   ],
+   "13": [
+    "passed",
+    "1c28f219522c1d7895f579c88fc33c8b"
+   ],
+   "14": [
+    "passed",
+    "76892786e0c417985e772e5ffee27023"
+   ],
+   "15": [
+    "passed",
+    "e60bd0521803e8e4684361b1e75cf71f"
+   ],
+   "16": [
+    "passed",
+    "22f805e9cdd10a76b75d7fb245e3455b"
+   ],
+   "17": [
+    "passed",
+    "ab625cb1863be079396ae10eedde432a"
+   ],
+   "18": [
+    "passed",
+    "b438ff00af9a20522c942f8e6a9c940f"
+   ],
+   "19": [
+    "passed",
+    "2fa2b2bd0a6a027a08c757b4d113dc94"
+   ],
+   "20": [
+    "passed",
+    "36d264545658c6e33aa22b95d28bedd9"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestParseFiles": {
+   "1": [
+    "passed",
+    "59ce1d10eed4e3e267d50111b66761d1"
+   ],
+   "2": [
+    "passed",
+    "02d7b78ab51c219748110cb60c3e0fb0"
+   ],
+   "3": [
+    "passed",
+    "c69da2e2cec579dd0bdf9041e68494d0"
+   ],
+   "4": [
+    "passed",
+    "1187d927fdb8358e5482fc9241546f8c"
+   ],
+   "5": [
+    "passed",
+    "a4bd9d6cff59793209712045a89516db"
+   ],
+   "6": [
+    "passed",
+    "d6c37b678521cfddb803f0ee360af7dc"
+   ],
+   "7": [
+    "passed",
+    "aa833467395ed7ba219fe778194551f7"
+   ],
+   "8": [
+    "passed",
+    "6cfbb702e6f22301a456f479b5039125"
+   ],
+   "9": [
+    "passed",
+    "05ff651f4ed1f2fcf466c0461c2571b8"
+   ],
+   "10": [
+    "passed",
+    "fbf8f290dc7020f59145fe2ef5901b12"
+   ],
+   "11": [
+    "passed",
+    "112fa0419c475357c08f89e55c0f63e2"
+   ],
+   "12": [
+    "passed",
+    "7916a8f74ad2f55f7e4e7e5cf0094179"
+   ],
+   "13": [
+    "passed",
+    "6b1864596eca43f334ae27476477c316"
+   ],
+   "14": [
+    "passed",
+    "4ee316c1238a869068ae121eff447322"
+   ],
+   "15": [
+    "passed",
+    "70fe052150f2e47f50c2a5d0307e7b38"
+   ],
+   "16": [
+    "passed",
+    "31b4a610f59c28f50b05e8e649dc32ec"
+   ],
+   "17": [
+    "passed",
+    "66931047c7ed1c49ba02105a15c3d9dc"
+   ],
+   "18": [
+    "passed",
+    "fd38957b212244391cd74dab2541d299"
+   ],
+   "19": [
+    "passed",
+    "185aca9c736cc0fba2ff563d94058bc6"
+   ],
+   "20": [
+    "passed",
+    "9195dedc96c6e37a88411d3749111742"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleGroupEvalIterationFunc": {
+   "1": [
+    "passed",
+    "c1567c6ea2329ec19d53ffee85cf41f7"
+   ],
+   "2": [
+    "passed",
+    "2b1c468e0d5ac3c996ba76b7e75169a9"
+   ],
+   "3": [
+    "passed",
+    "93e2ba65695f4ff9886097c428799043"
+   ],
+   "4": [
+    "passed",
+    "1e1e3b807de249ecb48f910c056080e7"
+   ],
+   "5": [
+    "passed",
+    "6efb11478b2dabeb0e60bb0bb1952863"
+   ],
+   "6": [
+    "passed",
+    "443e2384a334ca8999b49742e972cd2e"
+   ],
+   "7": [
+    "passed",
+    "e3f3618586cef269bbcce883b820e755"
+   ],
+   "8": [
+    "passed",
+    "d108107f08396f0ba28efb6d5a656093"
+   ],
+   "9": [
+    "passed",
+    "bdd0b9e56f19d88507a1026db72b1d03"
+   ],
+   "10": [
+    "passed",
+    "1c4c3e85fb7d48e8bba5e8bef6222b52"
+   ],
+   "11": [
+    "passed",
+    "eee03f0c4c0617bd86147c5397c5bc5c"
+   ],
+   "12": [
+    "passed",
+    "5d982e37367b44bb4a5a12f7623fb51c"
+   ],
+   "13": [
+    "passed",
+    "5b7b5c9a1c9efa2706c6a23519b0cabc"
+   ],
+   "14": [
+    "passed",
+    "0c45e9d50479c4f86c22e0841eda67ce"
+   ],
+   "15": [
+    "passed",
+    "7bea47a05724f1d4a68ac59c25566bc0"
+   ],
+   "16": [
+    "passed",
+    "6ea6d8c6832d1e53536af86ca8080704"
+   ],
+   "17": [
+    "passed",
+    "274d088060c2feb60a2b154327d977d2"
+   ],
+   "18": [
+    "passed",
+    "f6821cb785a4a84923bd33ab0f2930a6"
+   ],
+   "19": [
+    "passed",
+    "cc9cd50f317a52596dd04da8534f5f8c"
+   ],
+   "20": [
+    "passed",
+    "80cd8c3c89cdbce44cfdc7fd711e6ac5"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRecordingEvalWithOrigin": {
+   "1": [
+    "passed",
+    "ffed37913e39edafcf5a6aae81a9dc49"
+   ],
+   "2": [
+    "passed",
+    "7a4fb068435dd950510f7e33ddecc18f"
+   ],
+   "3": [
+    "passed",
+    "f13bd03e1a2e20edaca95c4a6558110b"
+   ],
+   "4": [
+    "passed",
+    "ba7da051f1a3e6d70d4c11cbf38ec0f9"
+   ],
+   "5": [
+    "passed",
+    "8c3f179d531d6270539251687c64f13d"
+   ],
+   "6": [
+    "passed",
+    "e696462e8519c1031d7bad5c2c72a28f"
+   ],
+   "7": [
+    "passed",
+    "55ed5d6f699bef7d1b7c6a75ffa03884"
+   ],
+   "8": [
+    "passed",
+    "feebcf9e7a3f6feb75bb446a34408877"
+   ],
+   "9": [
+    "passed",
+    "3a924114bbcc1289aa76d2c34a4f148c"
+   ],
+   "10": [
+    "passed",
+    "9753080b5cee60f2a638a25ed45ae019"
+   ],
+   "11": [
+    "passed",
+    "9eed3de97872afae600d59261995b189"
+   ],
+   "12": [
+    "passed",
+    "1337e180f19187c06e1097004d01d861"
+   ],
+   "13": [
+    "passed",
+    "454fa7a134e3a44c09684ac27aa9deb5"
+   ],
+   "14": [
+    "passed",
+    "1bdf9b7e885a0764091a24daa197ce7f"
+   ],
+   "15": [
+    "passed",
+    "39178ddd8206c4ddad30b08f809ce188"
+   ],
+   "16": [
+    "passed",
+    "06a22b69cea0cf8bcc9b380a1b9e06f9"
+   ],
+   "17": [
+    "passed",
+    "6787f4e4bb77cecc48896504e7710fc4"
+   ],
+   "18": [
+    "passed",
+    "1cee11c18828ba85bf8d3dec34b5d480"
+   ],
+   "19": [
+    "passed",
+    "a854682208734968e875ff0eca7d1679"
+   ],
+   "20": [
+    "passed",
+    "1f57ed768352cac9b0b03ee38c9911e5"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRuleMovedBetweenGroups": {
+   "1": [
+    "passed",
+    "548ded808c29e98b8bb239505b4106d5"
+   ],
+   "2": [
+    "passed",
+    "e811afca16461f6e037e77f97551ab6b"
+   ],
+   "3": [
+    "passed",
+    "54f4291fe16fb281e7a854b5d763447a"
+   ],
+   "4": [
+    "passed",
+    "11e8311eeb670e535bc4c9102963f7f0"
+   ],
+   "5": [
+    "passed",
+    "e5487bb3e01b5e59d0d71e748466f039"
+   ],
+   "6": [
+    "passed",
+    "4513796813d9f6b16c726bf3eb6a3c18"
+   ],
+   "7": [
+    "passed",
+    "7d849cbe6b91b4ed67b924caa80404a5"
+   ],
+   "8": [
+    "passed",
+    "c4158df1fd2e42cdad0947c68a064446"
+   ],
+   "9": [
+    "passed",
+    "7ddc9fd1999c8ba27b053bbaf433af4a"
+   ],
+   "10": [
+    "passed",
+    "8d56471e2574068ef5c94c030d06f580"
+   ],
+   "11": [
+    "passed",
+    "09042210dcae27e0ecea1a2efc4c3746"
+   ],
+   "12": [
+    "passed",
+    "081f9062637aae4cf52c0943cc86f58c"
+   ],
+   "13": [
+    "passed",
+    "b6c5d82fb504cb58c08ef92f7bf84fbc"
+   ],
+   "14": [
+    "passed",
+    "3a3207595cdee93eee2b0b7e74e7c094"
+   ],
+   "15": [
+    "passed",
+    "cf6afcb1b442b5204eab04278bfa41cd"
+   ],
+   "16": [
+    "passed",
+    "441c2a737a48b430a89f5e324546dc20"
+   ],
+   "17": [
+    "passed",
+    "439786132e22390932dcd67882b1cf3b"
+   ],
+   "18": [
+    "passed",
+    "2732c6011fef2baea25e3ec008e136ed"
+   ],
+   "19": [
+    "passed",
+    "cb01f4cfd0cc3b22b796f7a97e40137d"
+   ],
+   "20": [
+    "passed",
+    "914adce9c308b6beeee3f2f9a77c9e55"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestManager_LoadGroups_WithoutLogger": {
+   "1": [
+    "passed",
+    "334f29c33c0e5ffce29cc4705d066427"
+   ],
+   "2": [
+    "passed",
+    "14692194a480cf29735957d111319e73"
+   ],
+   "3": [
+    "passed",
+    "fe28e0f73d5e553a905a5d098d21eb6c"
+   ],
+   "4": [
+    "passed",
+    "d9d611a964fa02d349945c2e727367f8"
+   ],
+   "5": [
+    "passed",
+    "192cf2945fd359435e8c579bd9705bef"
+   ],
+   "6": [
+    "passed",
+    "03e7ebfa13b685651c6315d527fd735e"
+   ],
+   "7": [
+    "passed",
+    "bd347120184e46d3924e108ba3edfb05"
+   ],
+   "8": [
+    "passed",
+    "a52b2b09b2cf8a02d8143b848c420582"
+   ],
+   "9": [
+    "passed",
+    "b019fc1cc1cf2dfc893c7f8d63819cf7"
+   ],
+   "10": [
+    "passed",
+    "fd93022c0bcf545e6217368302d8917e"
+   ],
+   "11": [
+    "passed",
+    "095cd8fd53387c40ef2f165fe28b33de"
+   ],
+   "12": [
+    "passed",
+    "d69d7b1c7c869b7678781df51c4ef57c"
+   ],
+   "13": [
+    "passed",
+    "1a3f44a9d25afcb0930ce14f8ea662fa"
+   ],
+   "14": [
+    "passed",
+    "ed996ad42abb5f31d53fe58216c8f76e"
+   ],
+   "15": [
+    "passed",
+    "05146f659a8618fe3ca0fff79f2964dc"
+   ],
+   "16": [
+    "passed",
+    "0fd7cbc9ffac3d710ae9b55feb618baa"
+   ],
+   "17": [
+    "passed",
+    "23c1bc318c01f4200d854db40d11dab9"
+   ],
+   "18": [
+    "passed",
+    "3bc93d61209dd3ebc6d76864ad31ec47"
+   ],
+   "19": [
+    "passed",
+    "0df76f785b74b00eb25d86acefb498b0"
+   ],
+   "20": [
+    "passed",
+    "cfabbe62fad7a9f21111224efa62b58d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNewRuleDetail": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestDependencyMap": {
+   "1": [
+    "passed",
+    "334f29c33c0e5ffce29cc4705d066427"
+   ],
+   "2": [
+    "passed",
+    "14692194a480cf29735957d111319e73"
+   ],
+   "3": [
+    "passed",
+    "fe28e0f73d5e553a905a5d098d21eb6c"
+   ],
+   "4": [
+    "passed",
+    "d9d611a964fa02d349945c2e727367f8"
+   ],
+   "5": [
+    "passed",
+    "192cf2945fd359435e8c579bd9705bef"
+   ],
+   "6": [
+    "passed",
+    "03e7ebfa13b685651c6315d527fd735e"
+   ],
+   "7": [
+    "passed",
+    "bd347120184e46d3924e108ba3edfb05"
+   ],
+   "8": [
+    "passed",
+    "a52b2b09b2cf8a02d8143b848c420582"
+   ],
+   "9": [
+    "passed",
+    "b019fc1cc1cf2dfc893c7f8d63819cf7"
+   ],
+   "10": [
+    "passed",
+    "fd93022c0bcf545e6217368302d8917e"
+   ],
+   "11": [
+    "passed",
+    "095cd8fd53387c40ef2f165fe28b33de"
+   ],
+   "12": [
+    "passed",
+    "d69d7b1c7c869b7678781df51c4ef57c"
+   ],
+   "13": [
+    "passed",
+    "1a3f44a9d25afcb0930ce14f8ea662fa"
+   ],
+   "14": [
+    "passed",
+    "ed996ad42abb5f31d53fe58216c8f76e"
+   ],
+   "15": [
+    "passed",
+    "05146f659a8618fe3ca0fff79f2964dc"
+   ],
+   "16": [
+    "passed",
+    "0fd7cbc9ffac3d710ae9b55feb618baa"
+   ],
+   "17": [
+    "passed",
+    "23c1bc318c01f4200d854db40d11dab9"
+   ],
+   "18": [
+    "passed",
+    "3bc93d61209dd3ebc6d76864ad31ec47"
+   ],
+   "19": [
+    "passed",
+    "0df76f785b74b00eb25d86acefb498b0"
+   ],
+   "20": [
+    "passed",
+    "cfabbe62fad7a9f21111224efa62b58d"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleLimit": {
+   "1": [
+    "passed",
+    "908268578aae8f51783eaf7e7df4353c"
+   ],
+   "2": [
+    "passed",
+    "18c458b87bba867912b6a29fde040061"
+   ],
+   "3": [
+    "passed",
+    "8b04f5aa2a361760c91c20a323bdb201"
+   ],
+   "4": [
+    "passed",
+    "017b6d7bdc1f1ff0567f0662dd1d67a6"
+   ],
+   "5": [
+    "passed",
+    "c35cc96d414ae663d815d501f41516e3"
+   ],
+   "6": [
+    "passed",
+    "c44c3ec4c8fc69481b629ca7425717fa"
+   ],
+   "7": [
+    "passed",
+    "d7060433dd867862de86e46b1b99cf11"
+   ],
+   "8": [
+    "passed",
+    "b5db5c6b15a03dcafdd97a350d1bacff"
+   ],
+   "9": [
+    "passed",
+    "3dba57210c1cbb2ab5a35a351dfb3c01"
+   ],
+   "10": [
+    "passed",
+    "4647e85bbe4dbe942bd5c82281511bed"
+   ],
+   "11": [
+    "passed",
+    "44563b71a9582cb0525cceadd3ab283d"
+   ],
+   "12": [
+    "passed",
+    "279402947245d367880228e97c1cdf6a"
+   ],
+   "13": [
+    "passed",
+    "c68f0f9791b235250d71422ad59a216b"
+   ],
+   "14": [
+    "passed",
+    "b848eb8a667a899b78f1a45fc569c2f5"
+   ],
+   "15": [
+    "passed",
+    "62f018d6f2f70f83683d211c457935ac"
+   ],
+   "16": [
+    "passed",
+    "530816e8bf7f0f3dde9fe21a2bf08057"
+   ],
+   "17": [
+    "passed",
+    "951545e876a50a0d1452a51c59717315"
+   ],
+   "18": [
+    "passed",
+    "83757d8cb44ec8911648a5bd0f07cf68"
+   ],
+   "19": [
+    "passed",
+    "a28f042d3908162e8ba06c413a2d4c8e"
+   ],
+   "20": [
+    "passed",
+    "4bd4fb938556b16bdfd44a857f37467b"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleEmptyLabelFromTemplate": {
+   "1": [
+    "passed",
+    "edb3a2b1df6bded8f2b17323f37df8f5"
+   ],
+   "2": [
+    "passed",
+    "0119fac52672fbf81df3099e977725c7"
+   ],
+   "3": [
+    "passed",
+    "4bdc9e49ba6ce3e03e422341c2827933"
+   ],
+   "4": [
+    "passed",
+    "ea1ffb7769f23cadc02adf77575c72e9"
+   ],
+   "5": [
+    "passed",
+    "35179e3967b671f96e52edfca3aba01b"
+   ],
+   "6": [
+    "passed",
+    "cb02ed2108f791f6984ebe61fe65b7c8"
+   ],
+   "7": [
+    "passed",
+    "7b127520e47742d24314444dc71f7ac7"
+   ],
+   "8": [
+    "passed",
+    "74ca94c22c5d0994acd9e0d018f0dfb8"
+   ],
+   "9": [
+    "passed",
+    "17ff9dc1af1cc4a2fc8aefd06aa931ce"
+   ],
+   "10": [
+    "passed",
+    "686d3894730337411aa8c82c0ed0d0d0"
+   ],
+   "11": [
+    "passed",
+    "8ed08fd3e816590f56ff1e80a4d09b10"
+   ],
+   "12": [
+    "passed",
+    "b66b0c070a83f8376fee67002dbde2e2"
+   ],
+   "13": [
+    "passed",
+    "4aac9a58f71ccf48a22f1f2a98c6aac0"
+   ],
+   "14": [
+    "passed",
+    "69d42d697cdd850712697817763f1413"
+   ],
+   "15": [
+    "passed",
+    "3fe34945a8919eaf476f6c7424a01361"
+   ],
+   "16": [
+    "passed",
+    "a3865d2ce7bdcbdc7b356b760c123828"
+   ],
+   "17": [
+    "passed",
+    "f6674e85bfd1341f532cddff43e4d12b"
+   ],
+   "18": [
+    "passed",
+    "f00502da640c98c9c6d7dc7b45853560"
+   ],
+   "19": [
+    "passed",
+    "f7db256eb4086484a1263631f14f208d"
+   ],
+   "20": [
+    "passed",
+    "cdba4535aca8b4365fea373659aea0b6"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestStaleness": {
+   "1": [
+    "passed",
+    "ed6cdb00842826e1b7c9b8538d8ded15"
+   ],
+   "2": [
+    "passed",
+    "ca34f1f24f8c3b65b111b9cfb7d6bb18"
+   ],
+   "3": [
+    "passed",
+    "27b7d6c1c4afe5b08d9763bb3baa7336"
+   ],
+   "4": [
+    "passed",
+    "8ff42068c77c40b7fb9821e7c17c05a5"
+   ],
+   "5": [
+    "passed",
+    "1f8af7a858bb76c7b7b8212053c57254"
+   ],
+   "6": [
+    "passed",
+    "7da9fa1db45ec6bcc7752ae753e5e4b1"
+   ],
+   "7": [
+    "passed",
+    "647ebcf2b2d08cfca6fda45e1df462ce"
+   ],
+   "8": [
+    "passed",
+    "58bd8e5591354f56a9c639b716e06759"
+   ],
+   "9": [
+    "passed",
+    "a05350579632d7a0a5c7f09c0e7b17fe"
+   ],
+   "10": [
+    "passed",
+    "8f728aa1f219fb239695d561fc5068b8"
+   ],
+   "11": [
+    "passed",
+    "0e78bf7391939f194030cbe7a85f382f"
+   ],
+   "12": [
+    "passed",
+    "7b51e0c14cbe1a1b3de64d755c6f05ab"
+   ],
+   "13": [
+    "passed",
+    "ff1b34166346c6f3e23eb6600496cad3"
+   ],
+   "14": [
+    "passed",
+    "de0f371c0af30979594c84a2a0d39d2d"
+   ],
+   "15": [
+    "passed",
+    "aed6ee7e072ea6d827705ebe8be30b85"
+   ],
+   "16": [
+    "passed",
+    "0671f1f0ba75abe92db2e3b8a49d5814"
+   ],
+   "17": [
+    "passed",
+    "9488ec0ee4a692c041711cb4df0a64a0"
+   ],
+   "18": [
+    "passed",
+    "9511fb48533171717c0afb3d384e52b0"
+   ],
+   "19": [
+    "passed",
+    "497fddfbfaa8ff6fa2af3493c684eb0a"
+   ],
+   "20": [
+    "passed",
+    "8672255ad3310736eb09869c9c6851d2"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestRecordingRule_SetDependencyRules": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleState": {
+   "1": [
+    "passed",
+    "2dcb99136c1add6b32d57555dd41f7da"
+   ],
+   "2": [
+    "passed",
+    "ccea57a8fbbb535e70939a7c8ac081df"
+   ],
+   "3": [
+    "passed",
+    "b5148cc8a3678ab44fa89795b28660e1"
+   ],
+   "4": [
+    "passed",
+    "7ac605bdb9b570c8a91873f99f8df0ee"
+   ],
+   "5": [
+    "passed",
+    "c1d03c08fb9689a5031301e974a676f6"
+   ],
+   "6": [
+    "passed",
+    "6b8a2ed79ca64529d83e66195ceb84d5"
+   ],
+   "7": [
+    "passed",
+    "75455decb16424b4d7033b551c559f64"
+   ],
+   "8": [
+    "passed",
+    "a45a188513763ff1ca03417b42272f78"
+   ],
+   "9": [
+    "passed",
+    "63deeca3e8ec38a836f96b4a51bcea2e"
+   ],
+   "10": [
+    "passed",
+    "88307e2a2f7cd1e3b34deb9ebd21109a"
+   ],
+   "11": [
+    "passed",
+    "6b628d062e1ee60c4bf5c78cd80c0ef1"
+   ],
+   "12": [
+    "passed",
+    "46f00d992b1a61ac61464f0f638ac432"
+   ],
+   "13": [
+    "passed",
+    "922f6c2ddc8e5ae03555b994d871a2af"
+   ],
+   "14": [
+    "passed",
+    "b8098d78bd144408361a16e204890dc9"
+   ],
+   "15": [
+    "passed",
+    "fd49acf1043da7454121a9525d52589c"
+   ],
+   "16": [
+    "passed",
+    "f8d0921f0560622432e8001d76d07a76"
+   ],
+   "17": [
+    "passed",
+    "2cb58e1c412d5285bfb17bc534b33769"
+   ],
+   "18": [
+    "passed",
+    "f5dbd614216ed69ca9a2bfd07ee4ae7b"
+   ],
+   "19": [
+    "passed",
+    "1023442099719c147372653a83e06e9c"
+   ],
+   "20": [
+    "passed",
+    "9b4391e6eda4f3970949ac27f2bcee80"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNotify": {
+   "1": [
+    "passed",
+    "2bd0a7132e5d2c875203a628d6be64c6"
+   ],
+   "2": [
+    "passed",
+    "63e3d04d387dd5e20d97ef098b23bfcd"
+   ],
+   "3": [
+    "passed",
+    "a61c0e57510c8366a83c2ec940352e92"
+   ],
+   "4": [
+    "passed",
+    "4bd44b5e423b920665cc28cef1ac4093"
+   ],
+   "5": [
+    "passed",
+    "ffde670306689dcf6bbff2286826034a"
+   ],
+   "6": [
+    "passed",
+    "e23a19e76097e3bd7f543752ce4d3a6a"
+   ],
+   "7": [
+    "passed",
+    "189483e7bd4bf1e2cc883396b3870336"
+   ],
+   "8": [
+    "passed",
+    "ee10a38429b21f4f359e7999c1fc67f9"
+   ],
+   "9": [
+    "passed",
+    "9921ba1bc13b8568c2aa76ec51883769"
+   ],
+   "10": [
+    "passed",
+    "4e0b1bbbed21e4d3d51cce198d2b5cb9"
+   ],
+   "11": [
+    "passed",
+    "3be350b079cf86eafc7d4ac8fd7c6825"
+   ],
+   "12": [
+    "passed",
+    "54380ae5ccdd448cb177eeb573222c7d"
+   ],
+   "13": [
+    "passed",
+    "af5f65d7b0a6ba94ae98ecaee93bd0d7"
+   ],
+   "14": [
+    "passed",
+    "dab11c77078cbfd3b79caaf5af167619"
+   ],
+   "15": [
+    "passed",
+    "2dc41e6735d1c3605bf68989e37d6a8b"
+   ],
+   "16": [
+    "passed",
+    "c248bc3c7b3ff14f0b368909e297381a"
+   ],
+   "17": [
+    "passed",
+    "65ed30d850b9a4821663a785bdc1985d"
+   ],
+   "18": [
+    "passed",
+    "0ae055bb72c4a83a760f0ab20ae399f3"
+   ],
+   "19": [
+    "passed",
+    "5c9c1abefa8044e91d147225e79cb3be"
+   ],
+   "20": [
+    "passed",
+    "da29bd9f8699ac261681e60796921e30"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestFromOriginContext": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestDeletedRuleMarkedStale": {
+   "1": [
+    "passed",
+    "9a21897221ccd17e83817105c3778b9d"
+   ],
+   "2": [
+    "passed",
+    "8f59caa5a0fa09140ce6d9212a208526"
+   ],
+   "3": [
+    "passed",
+    "318206a45f7cc532c17aadb9fed72dd4"
+   ],
+   "4": [
+    "passed",
+    "20c21974f25348795ff77526a09fa71f"
+   ],
+   "5": [
+    "passed",
+    "4741b5ec425549aeea2985a102dd6100"
+   ],
+   "6": [
+    "passed",
+    "f433a9681bb81272fa9217574cf61d14"
+   ],
+   "7": [
+    "passed",
+    "0c55478288c59d2cb484383b31915867"
+   ],
+   "8": [
+    "passed",
+    "f4b180cbd32c5b808bdbda0930df5a65"
+   ],
+   "9": [
+    "passed",
+    "7a680eac54ccf2a1268be822ab9c0889"
+   ],
+   "10": [
+    "passed",
+    "843d276ea673cba8ccd45dc34482f4aa"
+   ],
+   "11": [
+    "passed",
+    "eca7f024dd191e6a145bf61e3affa202"
+   ],
+   "12": [
+    "passed",
+    "d0212161939c05ef689835912eb745da"
+   ],
+   "13": [
+    "passed",
+    "1602fc59cc54ade193fb0ce74524675c"
+   ],
+   "14": [
+    "passed",
+    "87eccd1f8d1edb823f6f3b1e23c4b4d2"
+   ],
+   "15": [
+    "passed",
+    "288cfb2261a3c8a1248c9319b2dea08e"
+   ],
+   "16": [
+    "passed",
+    "b10bdfad3bf08fa9fef503b3921dcf1c"
+   ],
+   "17": [
+    "passed",
+    "7f04ac28c73ffe2ffa147326af653577"
+   ],
+   "18": [
+    "passed",
+    "0323256237b91258df7704cf11c739e1"
+   ],
+   "19": [
+    "passed",
+    "7195f03576a8f854c64e85607b6a281a"
+   ],
+   "20": [
+    "passed",
+    "9d945799fa717d7d449ab9fe6ace411c"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestKeepFiringFor": {
+   "1": [
+    "passed",
+    "75d0fbb5af6fd3cf8ae417577ab32c6e"
+   ],
+   "2": [
+    "passed",
+    "2716053d881dcd0b1a42fb2b8429e2dc"
+   ],
+   "3": [
+    "passed",
+    "f8c4e44c27fb916bbd5e5d34803e6efe"
+   ],
+   "4": [
+    "passed",
+    "caf7aecf5b2cf030453d4716d36da5d5"
+   ],
+   "5": [
+    "passed",
+    "9ded234a4d4b144aec6e3c3b54bfbfa6"
+   ],
+   "6": [
+    "passed",
+    "ae6eb4ec0633f7e802bd69101c1af32a"
+   ],
+   "7": [
+    "passed",
+    "ba87b94089847dd891f86d1cb3fb5cc9"
+   ],
+   "8": [
+    "passed",
+    "b6183bdd27f3ce47525bc8218e4b3be1"
+   ],
+   "9": [
+    "passed",
+    "cb4f642daf3d3bf616b5cf54c2df2d63"
+   ],
+   "10": [
+    "passed",
+    "ac3983fb441962047dd0afac7f8ea948"
+   ],
+   "11": [
+    "passed",
+    "5c73b62920c2d571a28b63290721c460"
+   ],
+   "12": [
+    "passed",
+    "dd1da54f831e72bdd36250924b2e4d43"
+   ],
+   "13": [
+    "passed",
+    "05a29d8b258b76e57e3a69a78dc3511b"
+   ],
+   "14": [
+    "passed",
+    "e974534960ad662113f00d7c459839ef"
+   ],
+   "15": [
+    "passed",
+    "a58123907f6e32ef041a39ee79f6f9cd"
+   ],
+   "16": [
+    "passed",
+    "73845dd08eabbd83ba92064611446ce0"
+   ],
+   "17": [
+    "passed",
+    "bcc3a5e6b162f20144e280bf34c4c3f7"
+   ],
+   "18": [
+    "passed",
+    "25c5f272620233e973593fc93bda1d0f"
+   ],
+   "19": [
+    "passed",
+    "a1e8fe2c120e97972b40eae06362ee4d"
+   ],
+   "20": [
+    "passed",
+    "bd7706da37cf3d9234a1a633cca4d48f"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestLabels_FromMaps": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRule": {
+   "1": [
+    "passed",
+    "a1639c7c41b9359e72c157186b99c592"
+   ],
+   "2": [
+    "passed",
+    "3058672a874d34f986afee88ef71aa87"
+   ],
+   "3": [
+    "passed",
+    "01291ecd69d3502f05d8e635995fa363"
+   ],
+   "4": [
+    "passed",
+    "8522625ca686132ce5691b911b25894c"
+   ],
+   "5": [
+    "passed",
+    "52f00e4d8738f05c382bda581644b542"
+   ],
+   "6": [
+    "passed",
+    "baa18c4c1799ead7c5ef95419b9d76d1"
+   ],
+   "7": [
+    "passed",
+    "c6a2c631bd53ca7bd6a3743284d4deff"
+   ],
+   "8": [
+    "passed",
+    "75d5168eb7e16e4bcb3b9098129fb687"
+   ],
+   "9": [
+    "passed",
+    "b282e2c32c4b99e6a3d317dae63ab152"
+   ],
+   "10": [
+    "passed",
+    "44e73562bd6293260b1f950c4246829e"
+   ],
+   "11": [
+    "passed",
+    "6e74d1b5cdb33abe8ad9414fc7eaf8ee"
+   ],
+   "12": [
+    "passed",
+    "ccb58e75d69602693d52416a61b2fbcb"
+   ],
+   "13": [
+    "passed",
+    "83aa14976eda714348d3f0c418f32f85"
+   ],
+   "14": [
+    "passed",
+    "337f91c99006ed6b727bcc0e073658bb"
+   ],
+   "15": [
+    "passed",
+    "a2f96444ee766b8719f0f3c74ca19f29"
+   ],
+   "16": [
+    "passed",
+    "2e2a589dccf84384d31c5d13a521ffea"
+   ],
+   "17": [
+    "passed",
+    "384d425a90c3e955030fe834abb54281"
+   ],
+   "18": [
+    "passed",
+    "c65df138076112e8b9ef7d299ae9f2a2"
+   ],
+   "19": [
+    "passed",
+    "244d270f3338d4b069ed64b478a0056b"
+   ],
+   "20": [
+    "passed",
+    "0cad728a3417bb5822b1964a80bdaaa5"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestMetricsStalenessOnManagerShutdown": {
+   "1": [
+    "passed",
+    "2655b40f3c4663acd9497eb6b64400fb"
+   ],
+   "2": [
+    "passed",
+    "f83171f6e8fad068280ef7ebb8cfe391"
+   ],
+   "3": [
+    "passed",
+    "d4a1ea917c8e65a9c84b3bd77f276d5c"
+   ],
+   "4": [
+    "passed",
+    "269e169675c4a744ba779449d02e67f9"
+   ],
+   "5": [
+    "passed",
+    "dec68ec6f2488749709c51435703840a"
+   ],
+   "6": [
+    "passed",
+    "d9770b63a1ea17215c57440174e6cd0a"
+   ],
+   "7": [
+    "passed",
+    "b46d8518d50694e310c02868414f49a1"
+   ],
+   "8": [
+    "passed",
+    "cdccefc9d973a86f6363c0b64d8e6023"
+   ],
+   "9": [
+    "passed",
+    "82fa890cdb8896ee138a59f96fe45d62"
+   ],
+   "10": [
+    "passed",
+    "1af9544ada7a2a2318fa2863f3c3f7d7"
+   ],
+   "11": [
+    "passed",
+    "0d3b35dc0d17560e2a8e31895e5ddec0"
+   ],
+   "12": [
+    "passed",
+    "c06777c0455dddf132beb3b02e438fa1"
+   ],
+   "13": [
+    "passed",
+    "659ce810a5b033bad486cbb723a843b9"
+   ],
+   "14": [
+    "passed",
+    "29236ffd1c2ca61154ed3370630ff4fc"
+   ],
+   "15": [
+    "passed",
+    "369b28ba5a4974070a28fe132d6c52e9"
+   ],
+   "16": [
+    "passed",
+    "9c6b79ae61d8efce37274f451c5ea07e"
+   ],
+   "17": [
+    "passed",
+    "68ae4e114f195c105cf598d6486b00c6"
+   ],
+   "18": [
+    "passed",
+    "e14856b6d3aecd8603e9b386a063ed10"
+   ],
+   "19": [
+    "passed",
+    "777e73f0172c6db6c12e78cf6e415bbf"
+   ],
+   "20": [
+    "passed",
+    "cbe182c7477c8f9f67174315ace30ba6"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestNewRuleGroupRestorationWithRestoreNewGroupOption": {
+   "1": [
+    "passed",
+    "743bba04d244d121bc20b53d7cc3071c"
+   ],
+   "2": [
+    "passed",
+    "c2103549c5a5fa26ed8030e4da9814d5"
+   ],
+   "3": [
+    "passed",
+    "89ca8657b8d0d350e257bd83622d1656"
+   ],
+   "4": [
+    "passed",
+    "5cdb2b57affeec4b865cdca83258f58c"
+   ],
+   "5": [
+    "passed",
+    "a22a49c70f4a0b92456f5585df811b9f"
+   ],
+   "6": [
+    "passed",
+    "72c13c5be6844139ffc604f8a75a4531"
+   ],
+   "7": [
+    "passed",
+    "ee95c997a2bbdd0a9329a10e6b83509a"
+   ],
+   "8": [
+    "passed",
+    "22b288a32360673f1e3e6176881ce490"
+   ],
+   "9": [
+    "passed",
+    "ec74df6438bd9f04fc330f0d4e59529e"
+   ],
+   "10": [
+    "passed",
+    "dab8ec7a3beb2f1cb451c17e5311a241"
+   ],
+   "11": [
+    "passed",
+    "af632c77176542f4b6800542d31a2e63"
+   ],
+   "12": [
+    "passed",
+    "e8032f94e921db13667f8671a45cd690"
+   ],
+   "13": [
+    "passed",
+    "93efec1b268190e1b1dd6d2594afcbb2"
+   ],
+   "14": [
+    "passed",
+    "989ecb8204443785f4fc2a88baba7de0"
+   ],
+   "15": [
+    "passed",
+    "e98b8b0db9712bcc0f3f5d2a5e57a52f"
+   ],
+   "16": [
+    "passed",
+    "d28ae1c6ec9388649aa532b0b36f3d1c"
+   ],
+   "17": [
+    "passed",
+    "6d6580654e4cc0f630d455e903bc889a"
+   ],
+   "18": [
+    "passed",
+    "ba9a148895ddb400fcefda47baf52930"
+   ],
+   "19": [
+    "passed",
+    "41e4a6b12e981e705a0f21d030768f6a"
+   ],
+   "20": [
+    "passed",
+    "57221bae6332764bda4839cd1717db74"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroupHasAlertingRules": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestBoundedRuleEvalConcurrency": {
+   "1": [
+    "passed",
+    "b032cbf5746a01138d42b5101ac732c0"
+   ],
+   "2": [
+    "passed",
+    "eeef2ae6fb4f7a1dbc3fa64250b1cdee"
+   ],
+   "3": [
+    "passed",
+    "5554dabb42af8c1c1a98207ac5f57e3b"
+   ],
+   "4": [
+    "passed",
+    "7046f0d209eda4a437fabd68d8594248"
+   ],
+   "5": [
+    "passed",
+    "68101640cea261acb90ab8eaa3308cc8"
+   ],
+   "6": [
+    "passed",
+    "a12a1acd574f01e8b7cccc88fd0e1eda"
+   ],
+   "7": [
+    "passed",
+    "b7c95bc0c19b21c9b4ca470101661ba0"
+   ],
+   "8": [
+    "passed",
+    "0b7bbb4b0578b19f6c90f39700c9a201"
+   ],
+   "9": [
+    "passed",
+    "d7d5272cd5d1eef1b23199ca8d7e38d7"
+   ],
+   "10": [
+    "passed",
+    "3977e108ccc292d0d63325b1cb0a1e5c"
+   ],
+   "11": [
+    "passed",
+    "41d83c5af385d1a401922d3cdf812ff0"
+   ],
+   "12": [
+    "passed",
+    "c1176e3b0d1151056a8c40715ac3c011"
+   ],
+   "13": [
+    "passed",
+    "e362e1281ba823a6d08267210ff8647e"
+   ],
+   "14": [
+    "passed",
+    "53239b755fa8a14debc12c7a43d02c08"
+   ],
+   "15": [
+    "passed",
+    "8056bb96feb395b6bd84558cd171f0cc"
+   ],
+   "16": [
+    "passed",
+    "6aadd219da8b62f913ceee10df201df6"
+   ],
+   "17": [
+    "passed",
+    "2c209a8333bdbfbc8b6fddb9b34414e3"
+   ],
+   "18": [
+    "passed",
+    "1ee8222b5d2de9ef2faad2d218e5b80d"
+   ],
+   "19": [
+    "passed",
+    "73fa7d0ab1b330ee49df4d86e1a1b1f1"
+   ],
+   "20": [
+    "passed",
+    "0394a6b39b89a8ad833e7e2d020bd009"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestAlertingRuleExternalLabelsInTemplate": {
+   "1": [
+    "passed",
+    "a157048507990d73eb5c6d6a64600bd2"
+   ],
+   "2": [
+    "passed",
+    "0e5536d63037b7ca2fe045d365eb1be5"
+   ],
+   "3": [
+    "passed",
+    "7b2b0d79824fafdf13c9fbc62a5667fb"
+   ],
+   "4": [
+    "passed",
+    "ffceb916bad44371f871373713bbf80b"
+   ],
+   "5": [
+    "passed",
+    "1acbf3b816d08603488fdde5419f20e3"
+   ],
+   "6": [
+    "passed",
+    "36d0ed808fa596d6538660ecc4323ff0"
+   ],
+   "7": [
+    "passed",
+    "b6dea9666c8d6a275c0231585bc1646f"
+   ],
+   "8": [
+    "passed",
+    "d3d3040976d88271efe9acc18e06fa85"
+   ],
+   "9": [
+    "passed",
+    "e05328f9ec1c768beadcc81232f6709c"
+   ],
+   "10": [
+    "passed",
+    "7b3d7e6239c44f15c2fba9e00d763573"
+   ],
+   "11": [
+    "passed",
+    "c14fd74143fec1ded6e68a80d246cf79"
+   ],
+   "12": [
+    "passed",
+    "6175f6e0e3ff098f38f2ff735b68712b"
+   ],
+   "13": [
+    "passed",
+    "7a355cfdee407da195d30c9c5b6c7d67"
+   ],
+   "14": [
+    "passed",
+    "e88140c240a42353b6361d05f29dafd0"
+   ],
+   "15": [
+    "passed",
+    "7c0cb51e5bc2f4557f36ff5b80b3b58f"
+   ],
+   "16": [
+    "passed",
+    "e795fbbc364ba50a7af6d22f040cc8f9"
+   ],
+   "17": [
+    "passed",
+    "bd2dcddad905446b0571e7314daa651c"
+   ],
+   "18": [
+    "passed",
+    "36ddf5bd851257ed403ae4798f6ce69e"
+   ],
+   "19": [
+    "passed",
+    "27014ee71b0bccda251d79d7eefd5642"
+   ],
+   "20": [
+    "passed",
+    "ba203bd092009da68962be7c99dc4ce8"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestFiringAlertResetToPendingOnHoldDurationIncrease": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/prometheus/prometheus/rules::TestGroupEvalJSONLoggerRule": {
+   "1": [
+    "passed",
+    "b6e3a797f97f157475ed48ef37ccb9fc"
+   ],
+   "2": [
+    "passed",
+    "c8cf62ca33b4ee712c62c3b4ea60e64f"
+   ],
+   "3": [
+    "passed",
+    "be2a7d5613ebcf3afef4031fdecd9cb7"
+   ],
+   "4": [
+    "passed",
+    "7325bc10f58e5812f80146155b01fa38"
+   ],
+   "5": [
+    "passed",
+    "aa3194d06aa108c5c84cb27c72bb41ac"
+   ],
+   "6": [
+    "passed",
+    "c70fc857413fc413953bd9347413aa10"
+   ],
+   "7": [
+    "passed",
+    "e98ec247f7c55c6d2c835365b7514a3c"
+   ],
+   "8": [
+    "passed",
+    "0f812b072da4fac1ecb75b85ab68ecab"
+   ],
+   "9": [
+    "passed",
+    "19d31843544fa60a17c0f59418d63305"
+   ],
+   "10": [
+    "passed",
+    "dc4a653ed98865eb80011e3d396f1e37"
+   ],
+   "11": [
+    "passed",
+    "9e3f33767ca1373ff2b7bd15fb1c36c6"
+   ],
+   "12": [
+    "passed",
+    "892a1455f5d40469937a10ee53cf0aaa"
+   ],
+   "13": [
+    "passed",
+    "75ed12cb4b196093d1ce7ad8ace09823"
+   ],
+   "14": [
+    "passed",
+    "3f9ae981f284295434b64f1871344e5d"
+   ],
+   "15": [
+    "passed",
+    "f3fcdf33c6de2ef808924ae643b48244"
+   ],
+   "16": [
+    "passed",
+    "ae05c1901feb6aa5e1c161edcfed6cae"
+   ],
+   "17": [
+    "passed",
+    "0dc57a6f705b718e535003c2b643bb8d"
+   ],
+   "18": [
+    "passed",
+    "ad099a8e02b4054caae6ff1fc48b63c9"
+   ],
+   "19": [
+    "passed",
+    "28fabadc0709a7d3b205628b1a955ac5"
+   ],
+   "20": [
+    "passed",
+    "bb06658a0fd02b2de60f2c573076cabe"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/prometheus/prometheus/rules::TestUpdateWhenStopped": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  38,
+  67
+ ],
+ "timing": {
+  "plain": [
+   26.155,
+   26.463,
+   26.212
+  ],
+  "det": [
+   54.034,
+   54.046,
+   54.056
+  ]
+ },
+ "slowdown": 1.0618800549366703
+}

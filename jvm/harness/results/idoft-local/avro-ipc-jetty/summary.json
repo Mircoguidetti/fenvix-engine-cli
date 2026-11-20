@@ -1,0 +1,39 @@
+{
+ "name": "avro-ipc-jetty",
+ "url": "https://github.com/apache/avro",
+ "sha": "efe9aa7fbe457805dc894a9186e1267603d82dd2",
+ "module": "lang/java/ipc-jetty",
+ "jdk": "8",
+ "runs": 10,
+ "seeds_explored": 20,
+ "seed_budget_hit": false,
+ "confirm": 10,
+ "tests": 35,
+ "documented": 20,
+ "documented_present": 20,
+ "documented_categories": {
+  "OD": 20
+ },
+ "documented_reproduced": 0,
+ "documented_unstable_in_baseline": 0,
+ "unstable_baseline": 0,
+ "unstable_reproduced": 0,
+ "unstable_under_det_seed0": 0,
+ "broken_by_det": 0,
+ "broken_tests": [],
+ "fingerprint_coverage": "26/35",
+ "fingerprint_covered": 26,
+ "fingerprinted": 35,
+ "timing_base_s": [
+  5.941000000000001,
+  5.832,
+  5.386
+ ],
+ "timing_det_s": [
+  5.720000000000001,
+  4.514,
+  6.267
+ ],
+ "slowdown": -0.0192,
+ "seconds": 796.4
+}

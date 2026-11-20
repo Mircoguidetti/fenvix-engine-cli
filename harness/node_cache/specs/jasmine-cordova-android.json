@@ -1,0 +1,27 @@
+{
+ "name": "jasmine-cordova-android",
+ "url": "https://github.com/apache/cordova-android",
+ "node": "22",
+ "runner": "jasmine",
+ "install": [
+  "npm ci --no-audit --no-fund"
+ ],
+ "install_files": [
+  "package-lock.json",
+  "package.json"
+ ],
+ "build": [],
+ "args": [
+  "--config=spec/unit/jasmine.json"
+ ],
+ "plain": "npx jasmine --config=spec/unit/jasmine.json",
+ "shards": 1,
+ "source": "26 first-parent commits of master up to 2026-11-03 (Jasmine 6-7 unit specs, random: true in the config; needs ANDROID_HOME as on GitHub runners)",
+ "window": [
+  0,
+  26
+ ],
+ "run_timeout": 3000,
+ "overhead": "shard0",
+ "unset_ci": true
+}

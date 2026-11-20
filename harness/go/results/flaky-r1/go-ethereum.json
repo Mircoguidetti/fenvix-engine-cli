@@ -1,0 +1,17 @@
+{
+ "spec": {
+  "name": "go-ethereum",
+  "repo": "ethereum/go-ethereum",
+  "sha": "7d0a3d848b82959eb14d5eb4b65cc0c26ae97418",
+  "fix_commit": "85494461066fed119207379928c757ee98aa1fcd",
+  "fix_date": "2026-10-29T14:15:24.000+08:00",
+  "title": "accounts/abi/abigen: fix flaky TestOverload (#36038)",
+  "tests": [
+   "TestOverload"
+  ],
+  "source": "github commit search 'repo:ethereum/go-ethereum flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "tests-not-found",
+ "notes": [],
+ "seconds": 1.8
+}

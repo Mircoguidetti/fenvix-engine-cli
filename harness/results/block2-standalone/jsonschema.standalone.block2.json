@@ -1,0 +1,179 @@
+{
+ "name": "jsonschema",
+ "kind": "popular",
+ "status": "ok",
+ "python": "3.13",
+ "tool": "standalone",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+  "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000009185",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261111.196.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "bundles": [
+  {
+   "test": "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 159,
+   "minimal_length": 2,
+   "polluters": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator_draft6"
+   ],
+   "setters": [],
+   "order": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator_draft6",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_draft6_id"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: {'htt[557 chars]tor'>} != {'htt[557 chars]tor'>, 'meta schema $id': <class 'jsonschema.v[19 chars]or'>}",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/unittest/case.py:900"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "7f15ef235243666a70a0e617a5ce340a"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "caa91b819f7a1cbe2bea21dc0635ec38",
+     "7f15ef235243666a70a0e617a5ce340a"
+    ]
+   },
+   "runs": 24,
+   "seconds": 73.17,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/jsonschema/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_draft6_id-54e5eb5e"
+  },
+  {
+   "test": "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id",
+   "configs_searched": 3,
+   "status": "reproduced",
+   "config": "2",
+   "seed": 2,
+   "kind": "order",
+   "prefix_length": 163,
+   "minimal_length": 2,
+   "polluters": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator"
+   ],
+   "setters": [],
+   "order": [
+    "jsonschema/tests/test_validators.py::TestValidatorFor::test_custom_validator",
+    "jsonschema/tests/test_validators.py::TestCreateAndExtend::test_validates_registers_meta_schema_id"
+   ],
+   "outcome": "failed",
+   "exception": [
+    "AssertionError",
+    "call",
+    "AssertionError: {'htt[557 chars]tor'>} != {'htt[557 chars]tor'>, 'meta schema id': <class 'jsonschema.va[18 chars]or'>}",
+    "/opt/hostedtoolcache/Python/3.13.18/x64/lib/python3.13/unittest/case.py:900"
+   ],
+   "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+     "935a4be1337dc2741f72ae5e7fa85d03"
+    ],
+    "identical_fingerprint": true
+   },
+   "divergence": {
+    "index": 1,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "passed"
+    },
+    "event_b": {
+     "t": 0,
+     "s": "outcome",
+     "o": "outcome",
+     "at": "",
+     "v": "failed"
+    },
+    "fingerprints": [
+     "7629c33b2844a9dd9d3e6ebbbcba5d37",
+     "935a4be1337dc2741f72ae5e7fa85d03"
+    ]
+   },
+   "runs": 26,
+   "seconds": 57.26,
+   "controls": [
+    "bytecode",
+    "fs",
+    "hashseed",
+    "net",
+    "order",
+    "seeds",
+    "time"
+   ],
+   "detpy": "0.1.0",
+   "python": "/tmp/work/venvs/jsonschema/bin/python",
+   "command": "pytest --det --det-seed=2 --det-order=/tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_id-2b2533cc/order.txt -n 0",
+   "replay_command": "detpy replay /tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_id-2b2533cc",
+   "pytest_args": [
+    "-n",
+    "0"
+   ],
+   "bundle": "/tmp/work/block2/jsonschema/standalone/bundles/test_validates_registers_meta_schema_id-2b2533cc"
+  }
+ ],
+ "seconds": 130.44
+}

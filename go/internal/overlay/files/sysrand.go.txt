@@ -1,0 +1,56 @@
+// Code added by fenvix-go (build-time overlay, --det). Not part of Go.
+//
+// With the crypto control on, crypto/rand (and every crypto package that
+// draws from the system source: keys, nonces, TLS) reads a deterministic
+// stream seeded per test. Test builds only: never ship a binary built with
+// this overlay.
+
+package sysrand
+
+import (
+	"runtime"
+	"syscall"
+	"sync"
+)
+
+var fenvixC struct {
+	mu    sync.Mutex
+	state uint64
+	gen   uint64
+	ok    bool
+}
+
+func fenvixRead(b []byte) bool {
+	if !runtime.Fenvix_On(runtime.FenvixCrypto) {
+		return false
+	}
+	seed, gen := syscall.Fenvix_Seed("crypto/rand")
+	fenvixC.mu.Lock()
+	if !fenvixC.ok || gen != fenvixC.gen {
+		fenvixC.state, fenvixC.gen, fenvixC.ok = seed, gen, true
+	}
+	for i := 0; i < len(b); i += 8 {
+		fenvixC.state += 0x9E3779B97F4A7C15
+		z := fenvixC.state
+		z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9
+		z = (z ^ (z >> 27)) * 0x94D049BB133111EB
+		z ^= z >> 31
+		for j := 0; j < 8 && i+j < len(b); j++ {
+			b[i+j] = byte(z >> (8 * j))
+		}
+	}
+	fenvixC.mu.Unlock()
+	n := len(b)
+	var d [20]byte
+	k := len(d)
+	for {
+		k--
+		d[k] = byte('0' + n%10)
+		n /= 10
+		if n == 0 {
+			break
+		}
+	}
+	syscall.Fenvix_Event("entropy", "crypto/rand.Read", string(d[k:]))
+	return true
+}

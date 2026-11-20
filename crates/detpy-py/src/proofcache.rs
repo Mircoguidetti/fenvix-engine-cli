@@ -88,7 +88,8 @@ impl ProofCache {
     fn begin(&self, config: String, runtime: String, epoch: i64, env: BTreeMap<String, String>) {
         let mut g = lock(&self.inner);
         let root = g.checker.cur.root.clone();
-        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
+        // the pytest shell captures no start-up process outputs: empty, as `record::record_session` records it
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup: String::new() });
     }
 
     /// Known code files whose content changed: `[(path, current content digest)]`.
@@ -285,6 +286,7 @@ impl ProofCache {
                 units,
                 fixtures: Vec::new(),
                 needs,
+                startup: String::new(),
             },
         ))
     }
@@ -402,7 +404,7 @@ impl ProofCache {
         }
         let mut g = lock(&self.inner);
         let root = g.checker.cur.root.clone();
-        g.checker = Checker::new(Current { root, config, runtime, epoch, env });
+        g.checker = Checker::new(Current { root, config, runtime, epoch, env, startup: String::new() });
         g.checker.parallel = true;
         g.checker.defer_worker = true;
     }
@@ -656,7 +658,8 @@ impl ProofCache {
 
     /// Record every test of the session from `plan`, its capture part filled from `cap` (`CaptureCore.fill_plan`);
     /// the store is not saved (`CacheSession.record`).
-    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>) -> PyResult<record::Outcome> {
+    pub(crate) fn record_plan(&self, py: Python<'_>, mut plan: record::Plan, cap: &Bound<'_, crate::capture::CaptureCore>,
+                              keys: Option<&mut serde_json::Map<String, serde_json::Value>>) -> PyResult<record::Outcome> {
         cap.get().fill_plan(py, &mut plan)?;
         let mut g = lock(&self.inner);
         for t in &plan.tests {
@@ -664,7 +667,7 @@ impl ProofCache {
         }
         g.last_written = plan.session_written.clone();
         g.last_fixtures = plan.tests.iter().map(|t| (t.nodeid.clone(), t.fixtures.clone())).collect();
-        let out = record::record_session(&mut g.store, &plan);
+        let out = record::record_session_keys(&mut g.store, &plan, keys);
         g.last_reads = out.reads.clone();
         g.last_order = plan.tests.iter().map(|t| t.nodeid.clone()).collect();
         for (n, _) in &out.stale {
@@ -1074,6 +1077,24 @@ pub fn lstat_kind(path: PathBuf) -> &'static str {
 #[pyfunction]
 pub fn importable_dep(dir: PathBuf) -> String {
     proof::importable_digest(&dir).map(|d| format!("i:{d}")).unwrap_or_else(|| "i:missing".into())
+}
+
+/// Dependency on the importable entries of one name, `path` = "<dir>/<name>" ("j:<digest>" or "j:missing").
+#[pyfunction]
+pub fn importable_name_dep(path: PathBuf) -> String {
+    proof::importable_name_digest(&path).map(|d| format!("j:{d}")).unwrap_or_else(|| "j:missing".into())
+}
+
+/// A metadata probe's dependency (`proof::probe_now`; `mode` "q" following symlinks, "Q" not).
+#[pyfunction]
+pub fn probe_dep(path: PathBuf, mode: &str) -> String {
+    proof::probe_now(&path, mode.as_bytes().first().copied().unwrap_or(b'q'))
+}
+
+/// The data key of a probe of `key` (`proof::probe_key`).
+#[pyfunction]
+pub fn probe_key(mode: &str, key: &str) -> String {
+    proof::probe_key(mode.as_bytes().first().copied().unwrap_or(b'q'), key)
 }
 
 /// (a regular module or package found, the package directory exists) for module `name` in `dir`.

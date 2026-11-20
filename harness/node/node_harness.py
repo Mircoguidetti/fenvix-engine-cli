@@ -1,0 +1,957 @@
+#!/usr/bin/env python3
+"""Measurement harness for detjs Level 0 (Node / TypeScript, Vitest and Jest).
+
+Mirrors harness/detpy_harness.py (same protocol, metrics and per-test CSV
+columns; the protocol, seed exploration, ablation and per-test analysis are
+the Python harness's own functions, with the test-runner invocation replaced):
+
+* pools (harness/node/repos.json): ``flaky`` = projects with documented flaky
+  tests (harness/node/flaky_candidates.json: the Hashemi et al. ICSME 2022
+  dataset, then GitHub issues), pinned at the commit where the flakiness was
+  documented; ``popular`` = popular projects with large Vitest/Jest suites at HEAD;
+* baseline (realistic): Vitest ``--sequence.shuffle --sequence.seed=<per run>``,
+  Jest ``--randomize --seed=<per run>`` (Jest >= 29.2; older Jest has no
+  random order), two workers;
+* ``--det`` runs (fixed order, serial), seed exploration ``--det-seed=1..K``
+  with confirm/confirm confirmation, ablation of tests broken by ``--det``
+  (reference: ``--det`` with every Level 0 control off but order and serial
+  execution, then one ``--det-disable=<control>`` run per control), quiet
+  timing pass, causes of non-reproduced baseline-flaky tests.
+
+The verifier is the Rust one: through the Python binding when the detpy wheel
+is installed (CI installs it: the same verifier reads Node and Python traces),
+otherwise through the Node binding (``detjs verify --json``).
+
+    python harness/node/node_harness.py --set zod --mode round --runs 10
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+import csv
+import datetime
+import json
+import os
+import re
+import shutil
+import statistics
+import subprocess
+import sys
+import time
+import urllib.request
+from dataclasses import dataclass, field
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent
+sys.path.insert(0, str(HERE.parent))
+import detpy_harness as H  # noqa: E402
+
+DETJS = ROOT / "node" / "bin" / "detjs.js"
+NODE_CONTROLS = ("seeds", "time", "timers", "fs", "net")
+log = H.log
+sh = H.sh
+
+
+# ---------------------------------------------------------------------------
+# Verifier: Python binding of the Rust core when available, else the Node one.
+class _NodeCore:
+    @staticmethod
+    def verify(paths) -> str:
+        r = subprocess.run([NODE_BIN or "node", str(DETJS), "verify", "--json", *map(str, paths)],
+                           capture_output=True, text=True)
+        if not r.stdout.strip():
+            raise RuntimeError(r.stderr[-500:])
+        return r.stdout
+
+
+class _Shim:
+    _core = _NodeCore
+    __version__ = "node-binding"
+
+
+VERIFIER = "unknown"
+
+
+def _import_core():
+    global VERIFIER
+    try:
+        import detpy._core  # noqa: F401
+        import detpy
+        VERIFIER = f"Rust verifier through the Python binding (detpy {detpy.__version__})"
+        return detpy
+    except ImportError:
+        VERIFIER = "Rust verifier through the Node binding (detjs verify)"
+        return _Shim
+
+
+H._import_detpy = _import_core
+H.ABLATE_CONTROLS = NODE_CONTROLS
+NODE_BIN = None
+
+
+# ---------------------------------------------------------------------------
+# Node versions
+NODE_DIST = "https://nodejs.org/dist"
+
+
+def node_versions() -> list:
+    cache = Path(os.environ.get("DETJS_HARNESS_CACHE", "/tmp/detjs-harness-cache"))
+    cache.mkdir(parents=True, exist_ok=True)
+    f = cache / "node-index.json"
+    if not f.exists():
+        urllib.request.urlretrieve(f"{NODE_DIST}/index.json", f)
+    return json.loads(f.read_text())
+
+
+def ensure_node(major: int) -> str:
+    """bin directory of the latest Node `major` (downloaded once)."""
+    cache = Path(os.environ.get("DETJS_HARNESS_CACHE", "/tmp/detjs-harness-cache"))
+    v = next(x["version"] for x in node_versions() if int(x["version"][1:].split(".")[0]) == major)
+    d = cache / f"node-{v}-linux-x64"
+    if not (d / "bin" / "node").exists():
+        tar = cache / f"node-{v}.tar.xz"
+        urllib.request.urlretrieve(f"{NODE_DIST}/{v}/node-{v}-linux-x64.tar.xz", tar)
+        subprocess.run(["tar", "-xJf", str(tar), "-C", str(cache)], check=True)
+        tar.unlink()
+    return str(d / "bin")
+
+
+def pick_node(src: Path, commit_date: str, forced) -> int:
+    """Node major for a checkout: .nvmrc/.node-version, else engines.node, else the commit era.
+    Never below 18 (detjs needs Node >= 18) nor above 22."""
+    if forced:
+        return int(forced)
+    for f in (".nvmrc", ".node-version"):
+        p = src / f
+        if p.exists():
+            m = re.search(r"(\d+)", p.read_text())
+            if m:
+                return min(22, max(18, int(m.group(1))))
+    try:
+        eng = json.loads((src / "package.json").read_text()).get("engines", {}).get("node", "")
+        m = re.findall(r"(\d+)", eng)
+        if m and ">" in eng:
+            return min(22, max(18, int(m[0]) if int(m[0]) >= 18 else 18))
+    except (OSError, ValueError):
+        pass
+    year = int(commit_date[:4]) if commit_date[:4].isdigit() else 2026
+    return 18 if year <= 2022 else 20 if year <= 2024 else 22
+
+
+# ---------------------------------------------------------------------------
+# Preparation
+@dataclass
+class Prepared(H.Prepared):
+    runner: str = ""  # vitest | jest
+    runner_version: str = ""
+    node_bin: str = ""
+    runner_bin: str = ""
+    random_order: bool = True
+    documented: dict = field(default_factory=dict)  # file or test-name hint -> category
+    source: str = ""
+    pw_dir: str = ""
+    repo_root: str = ""
+    script: tuple = ()  # (args, env, script name) found in the project's test script, applied on demand
+    tree: dict = field(default_factory=dict)  # working-tree snapshot restored before every run (clean_tree)
+
+
+def sh_group(cmd, cwd=None, env=None, timeout=None):
+    """sh() in a new process group that is killed afterwards: servers a run leaves behind (Playwright
+    web servers, watchers) must not survive into the next run (`port already used`), and a timeout must
+    not wait for grandchildren holding the output pipe."""
+    import signal
+    t0 = time.perf_counter()
+    proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                            stdin=subprocess.DEVNULL, start_new_session=True)
+    timed_out = False
+    try:
+        out, _ = proc.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        timed_out = True
+        try:
+            os.killpg(proc.pid, signal.SIGKILL)
+        except OSError:
+            pass
+        try:
+            out, _ = proc.communicate(timeout=30)
+        except subprocess.TimeoutExpired:
+            out = b""
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)
+    except OSError:
+        pass
+    text = (out or b"").decode(errors="replace")
+    return (-9 if timed_out else proc.returncode), text, time.perf_counter() - t0, timed_out
+
+
+def git(args, cwd, timeout=900):
+    return sh(["git", *args], cwd=cwd, timeout=timeout)
+
+
+def checkout(p: Prepared, repo: dict, work: Path) -> bool:
+    src = work / "src" / p.name
+    shutil.rmtree(src, ignore_errors=True)
+    code, out, _, _ = git(["clone", "-q", "--filter=blob:none", p.url, str(src)], cwd=work)
+    if code != 0:
+        p.status, p.detail = "clone-failed", out[-300:]
+        return False
+    target = "HEAD"
+    if repo.get("pin") == "parent-of-fix":
+        for c in repo.get("commits", []):
+            if git(["cat-file", "-e", f"{c['fix_commit']}^"], cwd=src)[0] == 0:
+                target = f"{c['fix_commit']}^"
+                _, files, _, _ = git(["diff", "--name-only", f"{c['fix_commit']}^", c["fix_commit"]], cwd=src)
+                for f in files.split():
+                    if re.search(r"(test|spec|__tests__)", f):
+                        p.documented[f] = f"hashemi:{c['cause']}"
+                p.source = c["commit_url"]
+                break
+        else:
+            p.status, p.detail = "commit-missing", "no fix commit of the dataset is reachable"
+            return False
+    elif repo.get("pin") == "before-issue":
+        issue = repo["issues"][0]
+        _, sha, _, _ = git(["rev-list", "-1", f"--before={issue['created_at']}", "HEAD"], cwd=src)
+        target = sha.strip() or "HEAD"
+        p.source = issue["url"]
+        for tok in re.findall(r"[`'\"]([^`'\"]{4,120})[`'\"]|([\w./-]+\.(?:test|spec)\.[cm]?[jt]sx?)", issue["title"]):
+            hint = tok[0] or tok[1]
+            p.documented[hint] = "issue"
+        if not p.documented:
+            p.documented[issue["title"]] = "issue-title"
+    elif repo.get("commit"):
+        target = repo["commit"]
+    if git(["checkout", "-q", target], cwd=src)[0] != 0:
+        p.status, p.detail = "checkout-failed", target
+        return False
+    _, p.commit, _, _ = git(["rev-parse", "HEAD"], cwd=src)
+    p.commit = p.commit.strip()
+    _, p.commit_date, _, _ = git(["log", "-1", "--format=%cI"], cwd=src)
+    p.commit_date = p.commit_date.strip()
+    p.src = str(src)
+    return True
+
+
+def node_env(p: Prepared, extra=None) -> dict:
+    env = {k: v for k, v in os.environ.items() if not k.startswith(("DETJS", "npm_", "NODE_OPTIONS"))}
+    env.update({"PATH": f"{p.node_bin}:{env.get('PATH', '')}", "CI": "true", "HUSKY": "0", "FORCE_COLOR": "0",
+                "PUPPETEER_SKIP_DOWNLOAD": "1", "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "1",
+                "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "1", "CYPRESS_INSTALL_BINARY": "0",
+                "ELECTRON_SKIP_BINARY_DOWNLOAD": "1", "COREPACK_ENABLE_DOWNLOAD_PROMPT": "0",
+                "COREPACK_ENABLE_STRICT": "0", "NODE_OPTIONS": "--max-old-space-size=6144"})
+    env.update(p.env)
+    env.update(extra or {})
+    return env
+
+
+def install(p: Prepared, repo: dict) -> bool:
+    src = Path(p.src)
+    env = node_env(p)
+    sh(["corepack", "enable", "--install-directory", p.node_bin], cwd=src, env=env)
+    if not (src / "package.json").exists():
+        p.status, p.detail = "no-runner", "no package.json at the repository root"
+        return False
+    pkg = json.loads((src / "package.json").read_text())
+    pm_field = pkg.get("packageManager", "")
+    if repo.get("install"):
+        cmds = [repo["install"]]
+    elif (src / "pnpm-lock.yaml").exists() or pm_field.startswith("pnpm"):
+        lock = (src / "pnpm-lock.yaml").read_text()[:200] if (src / "pnpm-lock.yaml").exists() else ""
+        m = re.search(r"lockfileVersion:\s*'?(\d+)", lock)
+        pnpm = "pnpm@9" if not m or int(m.group(1)) >= 9 else "pnpm@8" if int(m.group(1)) >= 6 else "pnpm@7"
+        pm_ver = re.match(r"pnpm@(\d+[\w.\-]*)", pm_field)
+        if pm_ver:
+            pnpm = f"pnpm@{pm_ver.group(1).split('+')[0]}"
+        elif pnpm == "pnpm@9":
+            pnpm = "pnpm@10"
+        cmds = [["pnpm", "install", "--frozen-lockfile"], ["npx", "-y", pnpm, "install", "--frozen-lockfile"],
+                ["npx", "-y", pnpm, "install", "--no-frozen-lockfile"]]
+    elif (src / "yarn.lock").exists() or pm_field.startswith("yarn"):
+        if (src / ".yarnrc.yml").exists():
+            cmds = [["yarn", "install", "--immutable"], ["yarn", "install"], ["npx", "-y", "@yarnpkg/cli-dist", "install"]]
+        else:
+            cmds = [["npx", "-y", "yarn@1", "install", "--frozen-lockfile", "--ignore-engines"],
+                    ["npx", "-y", "yarn@1", "install", "--ignore-engines"]]
+    elif (src / "bun.lockb").exists() or (src / "bun.lock").exists():
+        p.status, p.detail = "unsupported", "bun project"
+        return False
+    else:
+        cmds = [["npm", "ci", "--no-audit", "--no-fund"], ["npm", "install", "--no-audit", "--no-fund", "--legacy-peer-deps"]]
+    out = ""
+    for cmd in cmds:
+        cmd = cmd if isinstance(cmd, list) else ["bash", "-lc", cmd]
+        code, out, dur, to = sh(cmd, cwd=src, env=env, timeout=1500)
+        log(f"{p.name}: install `{' '.join(cmd)}` exit={code} {dur:.0f}s")
+        if code == 0:
+            p.install_cmd = " ".join(cmd)
+            break
+    else:
+        p.status, p.detail = "install-failed", out[-400:]
+        return False
+    for cmd in repo.get("build", []):
+        code, out, dur, _ = sh(["bash", "-lc", cmd], cwd=src, env=env, timeout=1500)
+        log(f"{p.name}: build `{cmd}` exit={code} {dur:.0f}s")
+        if code != 0:
+            p.status, p.detail = "build-failed", out[-400:]
+            return False
+    return True
+
+
+def find_pw_dir(src: Path, repo: dict) -> Path | None:
+    if repo.get("pw_dir"):
+        return src / repo["pw_dir"]
+    found = []
+    for pat in ("playwright.config.ts", "playwright.config.js", "playwright.config.mjs", "playwright.config.cjs", "playwright.config.mts"):
+        for f in src.rglob(pat):
+            if "node_modules" not in f.parts:
+                found.append(f)
+    found.sort(key=lambda f: len(f.parts))
+    return found[0].parent if found else None
+
+
+def detect_playwright(p: Prepared, repo: dict) -> bool:
+    src = Path(p.src)
+    d = find_pw_dir(src, repo)
+    if d is None:
+        p.status, p.detail = "no-runner", "no playwright.config.* found"
+        return False
+    p.pw_dir = str(d)
+    code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
+                          "const r=require('module').createRequire(process.cwd()+'/x.js');const path=require('path');"
+                          "let f;try{f=r.resolve('@playwright/test/package.json')}catch{f=r.resolve('playwright/package.json')}"
+                          "const j=require(f);let cli;try{cli=path.join(path.dirname(r.resolve('playwright/package.json',{paths:[path.dirname(f)]})),'cli.js')}"
+                          "catch{cli=path.join(path.dirname(f),'cli.js')}"
+                          "console.log(JSON.stringify({v:j.version,bin:cli}))"], cwd=d, env=node_env(p))
+    if code != 0:
+        p.status, p.detail = "no-runner", "@playwright/test / playwright not resolvable: " + out[-200:]
+        return False
+    info = json.loads(out.strip().splitlines()[-1])
+    p.runner, p.runner_version, p.runner_bin = "playwright", info["v"], info["bin"]
+    # System dependencies through the latest Playwright (older ones do not know the runner's OS
+    # release), then the project's own browser build.
+    sh(["npx", "-y", "playwright@latest", "install-deps", "chromium"], cwd=d, env=node_env(p), timeout=1200)
+    code, out, dur, _ = sh([f"{p.node_bin}/node", p.runner_bin, "install", "chromium"], cwd=d,
+                           env=node_env(p), timeout=1200)
+    log(f"{p.name}: playwright install chromium exit={code} {dur:.0f}s")
+    if code != 0:
+        p.status, p.detail = "browser-install-failed", out[-300:]
+        return False
+    return True
+
+
+def detect_runner(p: Prepared, repo: dict) -> bool:
+    if repo.get("runner") == "playwright":
+        return detect_playwright(p, repo)
+    src = Path(p.src)
+    if not (src / "package.json").exists():
+        p.status, p.detail = "no-runner", "no package.json at the repository root"
+        return False
+    req = f"require('module').createRequire(process.cwd() + '/x.js')"
+    # The repository root first; then directories with a runner config (monorepos
+    # whose tests run from a package: ids and paths are then relative to it).
+    dirs = [src] + ([src / repo["test_dir"]] if repo.get("test_dir") else []) + config_dirs(src)
+    for d in dirs:
+        for runner in ([repo["runner"]] if repo.get("runner") else ["vitest", "jest"]):
+            code, out, _, _ = sh([f"{p.node_bin}/node", "-e",
+                                  f"const r={req}; const f=r.resolve('{runner}/package.json'); const j=require(f);"
+                                  f"const b=typeof j.bin==='string'?j.bin:j.bin['{runner}'];"
+                                  f"console.log(JSON.stringify({{v:j.version, bin:require('path').join(require('path').dirname(f), b)}}))"],
+                                 cwd=d, env=node_env(p))
+            if code != 0:
+                continue
+            info = json.loads(out.strip().splitlines()[-1])
+            p.runner, p.runner_version, p.runner_bin = runner, info["v"], info["bin"]
+            if d != src:
+                p.repo_root = p.src
+                p.src = str(d)
+                log(f"{p.name}: tests run from {os.path.relpath(d, src)}")
+            major, minor = (int(x) for x in info["v"].split(".")[:2])
+            if runner == "jest" and major < 27:
+                p.status, p.detail = "unsupported", f"jest {info['v']} (detjs needs jest-circus, the default runner since Jest 27)"
+                return False
+            if runner == "jest":
+                _, helptext, _, _ = sh([f"{p.node_bin}/node", info["bin"], "--help"], cwd=d, env=node_env(p), timeout=120)
+                p.random_order = "--randomize" in helptext
+            if runner == "vitest" and (major, minor) < (1, 4):
+                p.status, p.detail = "unsupported", f"vitest {info['v']} (detjs needs >= 1.4)"
+                return False
+            return True
+    p.status, p.detail = "no-runner", "neither vitest nor jest resolvable from the repository root or a package with a runner config"
+    return False
+
+
+TEST_SCRIPTS = ("test", "test:unit", "unit", "test:ci", "test:node", "test:js", "test:jest", "test:vitest")
+SCRIPT_FLAGS = {"--config", "-c", "--project", "--selectProjects", "--dir", "--root", "--environment", "--env"}
+
+
+def script_setup(p: Prepared) -> None:
+    """What the project's own test script adds to the runner (found on apollo-client: `jest --config
+    ./config/jest.config.js`; without it every suite failed to parse): the config / project / root
+    flags after the runner, VAR=value assignments (also after cross-env) and Node flags before it
+    (moved to NODE_OPTIONS). One level of `npm run` / `pnpm` / `yarn` indirection is followed."""
+    import shlex
+    try:
+        scripts = json.loads((Path(p.src) / "package.json").read_text()).get("scripts", {}) or {}
+    except (OSError, ValueError):
+        return
+
+    def segments(text, depth=0):
+        for seg in re.split(r"&&|\|\||;", text):
+            try:
+                toks = shlex.split(seg)
+            except ValueError:
+                continue
+            if depth == 0 and len(toks) >= 2 and toks[0] in ("npm", "pnpm", "yarn"):
+                name = toks[2] if len(toks) > 2 and toks[1] == "run" else toks[1]
+                if name in scripts:
+                    yield from segments(scripts[name], 1)
+                    continue
+            yield toks
+
+    for key in TEST_SCRIPTS:
+        if key not in scripts:
+            continue
+        for toks in segments(scripts[key]):
+            idx = next((i for i, t in enumerate(toks) if re.search(rf"(^|/){p.runner}(\.[cm]?js)?$", t)
+                        or re.search(rf"/{p.runner}/bin/", t)), None)
+            if idx is None:
+                continue
+            env, node_flags, args = {}, [], []
+            for t in toks[:idx]:
+                if re.match(r"^[A-Z_][A-Z0-9_]*=", t):
+                    k, v = t.split("=", 1)
+                    env[k] = v
+                elif t.startswith("--") and not t.startswith(("--inspect", "--debug", "--prof", "--cpu-prof")):
+                    node_flags.append(t)
+            rest = toks[idx + 1:]
+            if p.runner == "vitest" and rest and rest[0] in ("run", "watch", "dev"):
+                rest = rest[1:]
+            i = 0
+            while i < len(rest):
+                t = rest[i]
+                name = t.split("=", 1)[0]
+                if name in SCRIPT_FLAGS:
+                    if "=" in t:
+                        args.append(t)
+                    elif i + 1 < len(rest):
+                        args += [t, rest[i + 1]]
+                        i += 1
+                i += 1
+            if env.get("NODE_OPTIONS"):
+                node_flags.append(env.pop("NODE_OPTIONS"))
+            env = {k: v for k, v in env.items() if k not in ("CI", "PATH", "HOME")}
+            node_flags = [f for f in node_flags if sh([f"{p.node_bin}/node", "-e", "0"],
+                                                      env={**os.environ, "NODE_OPTIONS": f}, timeout=60)[0] == 0]
+            if node_flags:
+                env["NODE_OPTIONS"] = " ".join(["--max-old-space-size=6144", *node_flags])
+            if args or env:
+                p.script = (args, env, key)
+            return
+
+
+def config_dirs(src: Path) -> list:
+    """Directories (depth <= 3, outside node_modules) holding a vitest or jest config, shallowest first."""
+    out = []
+    for pat in ("vitest.config.*", "vitest.workspace.*", "jest.config.*"):
+        for f in src.rglob(pat):
+            rel = f.relative_to(src).parts
+            if "node_modules" in rel or len(rel) > 4 or any(x.startswith(".") for x in rel[:-1]):
+                continue
+            if f.parent != src and f.parent not in out:
+                out.append(f.parent)
+    out.sort(key=lambda d: (len(d.parts), str(d)))
+    return out[:6]
+
+
+def prepare(repo: dict, work: Path, _wheel, _default, max_first_run: float) -> Prepared:
+    global NODE_BIN
+    p = Prepared(name=repo["name"], url=repo["url"], kind=repo.get("kind", "popular"))
+    p.max_run_seconds = max_first_run
+    p.env = repo.get("env", {})
+    p.pytest_args = list(repo.get("args", ["--project=chromium"] if repo.get("runner") == "playwright" else []))
+    if not checkout(p, repo, work):
+        return p
+    major = pick_node(Path(p.src), p.commit_date, repo.get("node"))
+    try:
+        p.node_bin = ensure_node(major)
+    except Exception as e:  # network
+        p.status, p.detail = "node-download-failed", repr(e)
+        return p
+    NODE_BIN = f"{p.node_bin}/node"
+    _, v, _, _ = sh([NODE_BIN, "--version"])
+    p.python_version = f"node {v.strip()}"
+    if not install(p, repo) or not detect_runner(p, repo):
+        return p
+    if p.runner != "playwright":
+        script_setup(p)
+    p.xdist = True  # two workers in the baseline
+    p.has_xdist = True
+    p.status = "ok"
+    return p
+
+
+# ---------------------------------------------------------------------------
+# Runs
+def clean(text: str) -> str:
+    """Lone UTF-16 surrogates (test names built from binary data) -> U+FFFD, as the native core does."""
+    return text.encode("utf-16", "surrogatepass").decode("utf-16", "replace")
+
+
+def parse_report(path: Path, root: str) -> tuple[dict, dict]:
+    """Jest-format JSON report (Jest --json, Vitest --reporter=json) -> outcomes, exceptions."""
+    outcomes, exceptions = {}, {}
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return outcomes, exceptions
+    norm = {"passed": "passed", "failed": "failed", "pending": "skipped", "skipped": "skipped", "todo": "todo",
+            "disabled": "skipped", "focused": "passed"}
+    for f in data.get("testResults", []):
+        fid = os.path.relpath(f.get("name") or "<unknown>", root).replace(os.sep, "/")
+        results = f.get("assertionResults") or []
+        if not results and f.get("status") == "failed":
+            nid = f"{fid}::<file>"
+            outcomes[nid] = "error"
+            msg = (f.get("message") or f.get("failureMessage") or "").strip()
+            exceptions[nid] = _exc(msg, "collect")
+        for a in results:
+            anc = a.get("ancestorTitles") or []
+            anc = [" ".join(map(str, x)) if isinstance(x, list) else ("" if x is None else str(x)) for x in anc]
+            title = a.get("title", "")
+            title = " ".join(map(str, title)) if isinstance(title, list) else ("" if title is None else str(title))
+            nid = clean("::".join([fid, *anc, title]))
+            o = norm.get(a.get("status"), a.get("status") or "unknown")
+            prev = outcomes.get(nid)
+            if prev is None or (o == "failed" and prev != "failed"):
+                outcomes[nid] = o
+            if o == "failed" and nid not in exceptions:
+                exceptions[nid] = _exc("\n".join(str(m) for m in (a.get("failureMessages") or []) if m), "call")
+    return outcomes, exceptions
+
+
+def parse_playwright(path: Path, root: str) -> tuple[dict, dict]:
+    """Playwright JSON reporter -> outcomes, exceptions (id = file::describe::test [project])."""
+    outcomes, exceptions = {}, {}
+    try:
+        data = json.loads(path.read_text())
+    except (OSError, ValueError):
+        return outcomes, exceptions
+    rootdir = data.get("config", {}).get("rootDir") or root
+
+    def walk(suite, titles, file):
+        file = suite.get("file") or file
+        for spec in suite.get("specs", []):
+            for t in spec.get("tests", []):
+                fid = os.path.relpath(os.path.join(rootdir, spec.get("file") or file or ""), root).replace(os.sep, "/")
+                nid = "::".join([fid, *titles, spec.get("title", "")]) + (f" [{t.get('projectName')}]" if t.get("projectName") else "")
+                res = t.get("results") or []
+                st = res[-1].get("status") if res else ("skipped" if t.get("status") == "skipped" else "unknown")
+                o = {"passed": "passed", "failed": "failed", "timedOut": "failed", "interrupted": "error",
+                     "skipped": "skipped"}.get(st, st)
+                outcomes[nid] = o
+                if o in ("failed", "error") and res:
+                    err = (res[-1].get("error") or {}).get("message") or ""
+                    exceptions[nid] = _exc(err, "call")
+        for sub in suite.get("suites", []):
+            walk(sub, titles + ([sub["title"]] if sub.get("title") and not sub.get("file") else []), file)
+
+    for top in data.get("suites", []):
+        walk(top, [], top.get("file"))
+    for e in data.get("errors", []):
+        exceptions.setdefault("<run>", _exc(e.get("message", ""), "collect"))
+    return outcomes, exceptions
+
+
+_ANSI = re.compile(r"\x1b\[[0-9;]*m")
+
+
+def _exc(msg: str, phase: str) -> list:
+    msg = _ANSI.sub("", msg or "").strip()
+    first = msg.splitlines()[0] if msg else ""
+    m = re.match(r"^\s*([A-Za-z_$][\w$.]*(?:Error|Exception|Error\b)?)(?: \[[A-Z_]+\])?: ", first)
+    etype = m.group(1).rsplit(".", 1)[-1] if m else ("AssertionError" if re.search(r"expect\(|toBe|toEqual", first) else
+                                                     "Timeout" if "timed out" in first.lower() or "timeout" in first.lower() else "unknown")
+    where = ""
+    for line in msg.splitlines()[1:]:
+        mm = re.search(r"\(?([^\s()]+):(\d+):\d+\)?\s*$", line.strip())
+        if mm and "node_modules" not in mm.group(1) and "node:" not in mm.group(1):
+            where = f"{mm.group(1)}:{mm.group(2)}"
+            break
+    return [etype, phase, first[:200], where]
+
+
+def command(p: Prepared, mode: str, index: int, seed, disable, report: Path, trace: Path | None) -> list:
+    node = f"{p.node_bin}/node"
+    if p.runner == "playwright":
+        base = [node, p.runner_bin, "test", "--reporter=json", "--retries=0", *p.pytest_args]
+        if mode == "normal":
+            return base  # the project's own parallelism (fullyParallel / workers)
+        return [*base, "--workers=1"]
+    if p.runner == "vitest":
+        rep = ["--reporter=json", f"--outputFile={report}"]
+        major = int(p.runner_version.split(".")[0])
+        workers = ["--maxWorkers=2"] + (["--minWorkers=1"] if major < 4 else [])
+        if mode == "normal":
+            return [node, p.runner_bin, "run", *rep, "--sequence.shuffle", f"--sequence.seed={1000 + index}", *workers, *p.pytest_args]
+        if mode == "timing-serial":
+            return [node, p.runner_bin, "run", *rep, "--no-file-parallelism", "--maxWorkers=1",
+                    *(["--minWorkers=1"] if major < 4 else []), *p.pytest_args]
+        base = [node, str(DETJS), "vitest", "run", *rep]
+    else:
+        rep = ["--ci", "--json", f"--outputFile={report}"]
+        if mode == "normal":
+            rnd = ["--randomize", f"--seed={1000 + index}"] if p.random_order else []
+            return [node, p.runner_bin, *rep, *rnd, "--maxWorkers=2", *p.pytest_args]
+        if mode == "timing-serial":
+            return [node, p.runner_bin, *rep, "--runInBand", *p.pytest_args]
+        base = [node, str(DETJS), "jest", *rep]
+    det = ["--det", f"--det-trace={trace}"]
+    if mode in ("serial",):
+        det.append("--det-disable=" + ",".join(NODE_CONTROLS))
+    if seed is not None:
+        det.append(f"--det-seed={seed}")
+    if disable is not None:
+        det.append(f"--det-disable={disable}")
+    return [*base, *det, *p.pytest_args]
+
+
+def tree_state(root: str) -> tuple:
+    """(untracked or ignored entries, collapsed per directory; modified tracked files) of a checkout."""
+    _, other, _, _ = git(["ls-files", "--others", "--directory"], cwd=root, timeout=300)
+    _, modified, _, _ = git(["diff", "--name-only"], cwd=root, timeout=300)
+    return set(other.splitlines()), set(modified.splitlines())
+
+
+def snapshot_tree(p: Prepared) -> None:
+    """Remember the working tree as installed (and built): every run starts from it (found on tanstack-table:
+    the suite wrote test files under `.cache/` that later runs collected, 36 tests with run-dependent ids)."""
+    code, root, _, _ = git(["rev-parse", "--show-toplevel"], cwd=p.src)
+    if code != 0:
+        return
+    root = root.strip()
+    other, modified = tree_state(root)
+    p.tree = {"root": root, "other": other, "modified": modified, "cleaned": 0}
+
+
+def clean_tree(p: Prepared) -> None:
+    if not p.tree:
+        return
+    root = p.tree["root"]
+    other, modified = tree_state(root)
+    for entry in sorted(other - p.tree["other"]):
+        target = Path(root) / entry
+        if target.is_dir() and not target.is_symlink():
+            shutil.rmtree(target, ignore_errors=True)
+        else:
+            target.unlink(missing_ok=True)
+        p.tree["cleaned"] += 1
+    changed = sorted(modified - p.tree["modified"])
+    if changed:
+        git(["checkout", "--", *changed], cwd=root)
+        p.tree["cleaned"] += len(changed)
+    if p.tree["cleaned"]:
+        DIAG["tree_entries_cleaned"] = p.tree["cleaned"]
+
+
+def run_node(p: Prepared, rundir: Path, mode: str, index: int, timeout: float, seed=None, disable=None):
+    """Same contract as detpy_harness.run_pytest. Modes: normal (baseline), serial (reference for the
+    ablation: --det with every Level 0 control off except order and serial execution), det, seed,
+    ablate, timing-serial (quiet timing: serial runner without --det)."""
+    clean_tree(p)  # every run starts from the installed (and built) tree
+    tag = f"{mode}{'' if seed is None else seed}{'' if disable is None else '-' + disable}_{index}"
+    report = rundir / f"{tag}.json"
+    trace = rundir / f"{tag}.jsonl" if mode not in ("normal", "timing-serial") else None
+    report.unlink(missing_ok=True)
+    cmd = command(p, mode, index, seed, disable, report, trace)
+    extra = {}
+    cwd = p.src
+    if p.runner == "playwright":
+        cwd = p.pw_dir
+        extra["PLAYWRIGHT_JSON_OUTPUT_NAME"] = str(report)
+        if mode not in ("normal", "timing-serial"):
+            off = set(NODE_CONTROLS) if mode == "serial" else set()
+            if disable:
+                off.add(disable)
+            extra.update({"DETJS": "1", "DETJS_SEED": str(seed or 0), "DETJS_SHUFFLE": "0", "DETJS_ROOT": p.src,
+                          "DETJS_DISABLE": ",".join(sorted(off)), "DETJS_NET_MODE": "block",
+                          "NODE_OPTIONS": f"--require {ROOT / 'node' / 'src' / 'register.js'} --max-old-space-size=6144"})
+        trace = None
+    code, out, dur, to = sh_group(cmd, cwd=cwd, env=node_env(p, extra), timeout=timeout)
+    (rundir / f"{tag}.log").write_text(out[-20000:])
+    outcomes, exceptions = (parse_playwright(report, p.src) if p.runner == "playwright" else parse_report(report, p.src))
+    if to and outcomes and report.exists():
+        # The runner wrote its complete report and then did not exit (a handle left open: react-testing-
+        # library under Jest workers). The outcomes are whole; the run counts, the hang is noted.
+        to = False
+        DIAG.setdefault("exit_hang_after_report", []).append(tag)
+        log(f"{p.name}: {tag} wrote its report but did not exit within {timeout:.0f}s (killed; outcomes kept)")
+    if trace is not None and not trace.exists() and not DIAG.get("missing_trace"):
+        DIAG["missing_trace"] = f"{tag}: exit {code}; command {' '.join(map(str, cmd))[-300:]}; output tail: {out[-2500:]}"
+        log(f"{p.name}: WARNING no trace written by {tag}: {out[-1500:]}")
+    if mode == "det" and index == 0:
+        DIAG["first_det_log_tail"] = out[-2500:]
+    return H.RunResult(mode, index, seed, dur, code, to, outcomes,
+                       str(trace) if trace and trace.exists() else None, None, exceptions)
+
+
+H.run_pytest = run_node
+DIAG: dict = {}
+
+_orig_analyze = H.analyze
+
+
+def analyze(p: Prepared, results, explore, outdir: Path) -> dict:
+    """Map the documented flaky files / names onto test ids, then the Python harness analysis."""
+    ids = set().union(*(r.outcomes.keys() for r in results)) if results else set()
+    known = {}
+    for hint, cat in p.documented.items():
+        for nid in ids:
+            fid = nid.split("::", 1)[0]
+            if fid == hint or fid.endswith("/" + hint) or hint.endswith("/" + fid) or (len(hint) > 6 and hint in nid):
+                known[nid] = cat
+    p.known_flaky = known
+    s = _orig_analyze(p, results, explore, outdir)
+    s.update({"runner": f"{p.runner} {p.runner_version}", "node": p.python_version, "documented_source": p.source,
+              "documented_hints": list(p.documented)[:10], "random_order_baseline": p.random_order,
+              "verifier": VERIFIER, "diagnostics": dict(DIAG)})
+    csv_path = outdir / f"{p.name}.csv"
+    if csv_path.exists():
+        text = csv_path.read_text().replace("idoft_category", "documented_flaky", 1)
+        csv_path.write_text(text)
+    causes = classify_not_reproduced(p, outdir)
+    s["not_reproduced_causes"] = causes
+    (outdir / f"{p.name}.summary.json").write_text(json.dumps(s, indent=2))
+    return s
+
+
+H.analyze = analyze
+
+
+# ---------------------------------------------------------------------------
+# Causes of baseline-flaky tests that --det did not reproduce
+A = re.compile(r"(setTimeout|setInterval|setImmediate|nextTick|Promise\.(?:all|race|any)|await |async |waitFor|"
+               r"findBy|act\(|flushPromises|useFakeTimers|advanceTimers|runAllTimers|Date\.now|new Date|"
+               r"performance\.now|requestAnimationFrame|debounce|throttle|timeout|Worker\(|worker_threads|"
+               r"EventEmitter|\.on\(|\.once\(|race|concurren)", re.I)
+B = re.compile(r"(fetch\(|https?://|http\.|https\.|axios|net\.|dns\.|child_process|spawn|exec\(|execa|"
+               r"process\.env|os\.|puppeteer|playwright|chromium|browser|\.listen\(|createServer|redis|postgres|"
+               r"mysql|mongo|sqlite|docker|fs\.|readFile|writeFile|tmp|mkdtemp|process\.platform|navigator)", re.I)
+C = re.compile(r"(jest\.mock|vi\.mock|mockImplementation|mockReturnValue|spyOn|beforeAll|afterAll|global\.|"
+               r"globalThis\.|window\.|document\.|localStorage|module-level|singleton|cache|Math\.random|"
+               r"randomUUID|getRandomValues|readdir|resetModules|isolateModules)")
+EXC_A = {"Timeout", "TimeoutError", "AbortError"}
+EXC_B = {"NetworkBlockedError", "FetchError", "ECONNREFUSED", "ECONNRESET", "ENOTFOUND", "EADDRINUSE", "EACCES",
+         "ENOENT", "EPERM", "SystemError"}
+
+
+def test_source(src: Path, nodeid: str) -> str:
+    parts = nodeid.split("::")
+    f = src / parts[0]
+    if not f.exists():
+        return ""
+    text = f.read_text(errors="replace")
+    title = parts[-1]
+    i = text.find(title[:60])
+    if i < 0:
+        return ""
+    return text[max(0, i - 200): i + 2500]
+
+
+def classify_row(row: dict, src: str) -> tuple[str, str]:
+    reason = row.get("pass_fail_reason", "") or row.get("det_reason", "")
+    exc = row.get("det_exception") or row.get("baseline_exception") or ""
+    msg = row.get("det_exception_message", "")
+    if reason == "net" or exc in EXC_B or B.search(msg or ""):
+        return "external", f"exception {exc or '-'} / diverging event {reason or '-'}"
+    if reason in ("random", "fs", "time"):
+        return "l0-gap", f"diverging event `{reason}`: a controlled source still differs between runs"
+    if exc in EXC_A or "timed out" in (msg or "").lower() or "timeout" in (msg or "").lower():
+        return "concurrency/event-order", f"exception {exc or '-'}: {msg[:80]}"
+    hits_b, hits_a, hits_c = (sorted(set(m.lower() for m in X.findall(src))) for X in (B, A, C))
+    if hits_a:
+        return "concurrency/event-order", f"test source uses {', '.join(hits_a[:4])}" + (
+            f"; also {', '.join(hits_b[:3])}" if hits_b else "")
+    if hits_b:
+        return "external", f"test source uses {', '.join(hits_b[:4])}"
+    if hits_c:
+        return "l0-gap", f"shared state not reset by Level 0: {', '.join(hits_c[:4])}"
+    return "unknown", "no marker in the source, exception or fingerprint" + ("" if src else " (source not found)")
+
+
+def classify_not_reproduced(p: Prepared, outdir: Path) -> dict:
+    rows = list(csv.DictReader(open(outdir / f"{p.name}.csv"))) if (outdir / f"{p.name}.csv").exists() else []
+    out, counts = [], collections.Counter()
+    for r in rows:
+        if r.get("baseline_unstable") != "True" or r.get("reproduced") == "True":
+            continue
+        cls, why = classify_row(r, test_source(Path(p.src), r["nodeid"]))
+        counts[cls] += 1
+        never = all(not x.split("=")[0].startswith(("failed", "error")) for x in r["det_outcomes"].split(";"))
+        out.append({"repo": p.name, "pool": p.kind, "nodeid": r["nodeid"], "class": cls, "evidence": why,
+                    "documented": r.get("documented_flaky", ""), "under_det": "never fails" if never else "fails",
+                    "baseline_outcomes": r["baseline_outcomes"], "det_exception": r.get("det_exception", ""),
+                    "pass_fail_reason": r.get("pass_fail_reason", "")})
+    (outdir / f"{p.name}.causes.json").write_text(json.dumps(out, indent=1))
+    return dict(counts)
+
+
+# ---------------------------------------------------------------------------
+def timing_pass(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    rundir = work / "timing" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    normal, det = [], []
+    for i in range(args.timing_runs):
+        normal.append(run_node(p, rundir, "timing-serial", i, args.run_timeout))
+        det.append(run_node(p, rundir, "det", i, args.run_timeout))
+        log(f"{p.name}: timing #{i} serial {normal[-1].duration:.2f}s det {det[-1].duration:.2f}s")
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "node": p.python_version,
+           "runner": f"{p.runner} {p.runner_version}", "serial_s": [r.duration for r in normal],
+           "det_s": [r.duration for r in det], "tests": len(normal[0].outcomes) if normal else 0,
+           "machine": H.runner_info()}
+    m_n, m_d = statistics.median(res["serial_s"]), statistics.median(res["det_s"])
+    res["slowdown_pct"] = (m_d / m_n - 1) * 100 if m_n > 0 else None
+    (outdir / f"{p.name}.timing.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def first_run(p: Prepared, args, rundir: Path):
+    """First baseline run; when it is unusable (too few outcomes or mostly failing): the flags and
+    variables of the project's own test script (script_setup), then, if the project has a `build`
+    script, build once and run again (many monorepos test their built packages)."""
+    snapshot_tree(p)
+    r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    if p.runner == "playwright" and not r.outcomes and "--project=chromium" in p.pytest_args:
+        p.pytest_args = [a for a in p.pytest_args if a != "--project=chromium"]  # no project of that name
+        r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    min_tests = 10 if p.runner == "playwright" else args.min_tests
+
+    def unusable(r):
+        return len(r.outcomes) < min_tests or sum(H.is_fail(o) for o in r.outcomes.values()) > 0.5 * max(1, len(r.outcomes))
+
+    if unusable(r) and p.script:
+        s_args, s_env, key = p.script
+        old = (list(p.pytest_args), dict(p.env))
+        p.pytest_args, p.env = s_args + p.pytest_args, {**s_env, **p.env}
+        r2 = run_node(p, rundir, "normal", 0, args.run_timeout)
+        ok = len(r2.outcomes) - sum(H.is_fail(o) for o in r2.outcomes.values())
+        log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): with scripts.{key} args={s_args} "
+            f"env={sorted(s_env)}: {len(r2.outcomes)} outcomes, {ok} passing")
+        if ok > len(r.outcomes) - sum(H.is_fail(o) for o in r.outcomes.values()):
+            r = r2
+        else:
+            p.pytest_args, p.env = old
+    if unusable(r):
+        bdir = Path(p.repo_root or p.src)
+        scripts = json.loads((bdir / "package.json").read_text()).get("scripts", {})
+        if "build" in scripts:
+            clean_tree(p)
+            code, out, dur, _ = sh(["npm", "run", "build"], cwd=bdir, env=node_env(p), timeout=1800)
+            snapshot_tree(p)  # the build's outputs belong to the tree every run starts from
+            log(f"{p.name}: first run unusable ({len(r.outcomes)} outcomes): `npm run build` exit={code} {dur:.0f}s")
+            if code == 0:
+                p.install_cmd += " && npm run build"
+                r = run_node(p, rundir, "normal", 0, args.run_timeout)
+    return r
+
+
+def prepare_check(p: Prepared, args, outdir: Path, work: Path) -> dict:
+    rundir = work / "runs" / p.name
+    shutil.rmtree(rundir, ignore_errors=True)
+    rundir.mkdir(parents=True)
+    r = first_run(p, args, rundir)
+    min_tests = 10 if p.runner == "playwright" else args.min_tests
+    res = {"name": p.name, "kind": p.kind, "status": "ok", "node": p.python_version, "runner": p.runner,
+           "runner_version": p.runner_version, "tests": len(r.outcomes), "first_run_s": r.duration,
+           "commit": p.commit, "detail": ""}
+    failing = sum(H.is_fail(o) for o in r.outcomes.values())
+    if r.timed_out or r.duration > p.max_run_seconds:
+        res.update(status="too-slow", detail=f"first baseline run took {r.duration:.0f}s")
+    elif len(r.outcomes) < min_tests:
+        tail = (rundir / "normal_0.log").read_text()[-300:] if (rundir / "normal_0.log").exists() else ""
+        res.update(status="baseline-broken" if not r.outcomes else "too-few-tests",
+                   detail=f"{len(r.outcomes)} test outcomes (exit {r.exit_code}): {tail}")
+    elif failing > 0.5 * len(r.outcomes):
+        res.update(status="baseline-broken", detail=f"{failing}/{len(r.outcomes)} tests fail in the first baseline run")
+    (outdir / f"{p.name}.prepare.json").write_text(json.dumps(res, indent=2))
+    return res
+
+
+def load_pools(cfg: dict) -> tuple[list, list]:
+    popular = [dict(r, kind="popular") for r in cfg["popular"]] + \
+        [dict(r, kind="playwright", runner="playwright") for r in cfg.get("playwright", [])]
+    flaky = []
+    cand = HERE / cfg.get("flaky_candidates", "flaky_candidates.json")
+    if cand.exists():
+        overrides = cfg.get("flaky_overrides", {})
+        for c in json.loads(cand.read_text())["candidates"]:
+            flaky.append(dict(c, kind="flaky", **overrides.get(c["name"], {})))
+    return flaky, popular
+
+
+def main(argv=None) -> int:
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--repos", default=str(HERE / "repos.json"))
+    ap.add_argument("--set", required=True, help="comma separated repository names")
+    ap.add_argument("--mode", choices=("round", "prepare", "timing"), default="round")
+    ap.add_argument("--runs", type=int, default=10)
+    ap.add_argument("--seeds", type=int, default=20)
+    ap.add_argument("--confirm", type=int, default=10)
+    ap.add_argument("--work", default=str(ROOT / ".harness-work" / "node"))
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--run-timeout", type=float, default=900)
+    ap.add_argument("--max-first-run", type=float, default=150)
+    ap.add_argument("--min-tests", type=int, default=50)
+    ap.add_argument("--repo-budget", type=float, default=2700)
+    ap.add_argument("--timing-runs", type=int, default=3)
+    ap.add_argument("--no-ablation", action="store_true")
+    ap.add_argument("--executor", default="local")
+    args = ap.parse_args(argv)
+    cfg = json.loads(Path(args.repos).read_text())
+    flaky, popular = load_pools(cfg)
+    by_name = {r["name"]: r for r in popular + flaky}
+    outdir, work = Path(args.out), Path(args.work)
+    outdir.mkdir(parents=True, exist_ok=True)
+    work.mkdir(parents=True, exist_ok=True)
+    _import_core()
+    rc = 0
+    for name in [n.strip() for n in args.set.split(",") if n.strip()]:
+        repo = by_name[name]
+        try:
+            p = prepare(repo, work, None, None, args.max_first_run)
+            log(f"prepared {p.name} [{p.kind}]: {p.status} {p.python_version} {p.runner} {p.runner_version} "
+                f"{p.commit[:10]} {p.detail[-120:]!r}")
+            if p.status != "ok":
+                r = {"name": p.name, "kind": p.kind, "status": p.status, "detail": p.detail}
+            elif args.mode == "prepare":
+                r = prepare_check(p, args, outdir, work)
+            elif args.mode == "timing":
+                pre = work / "runs" / f"{p.name}-first"
+                pre.mkdir(parents=True, exist_ok=True)
+                first_run(p, args, pre)
+                r = timing_pass(p, args, outdir, work)
+            else:
+                # Same build decision and the same checks as the selection stage (projects added
+                # to a round with `only` are checked here; a failed check skips the measurement).
+                chk = prepare_check(p, args, outdir, work)
+                if chk["status"] != "ok":
+                    r = chk
+                else:
+                    r = H.measure(p, args, outdir, work)
+                if r.get("status") != "ok":
+                    r.setdefault("detail", "")
+        except Exception as e:  # pragma: no cover
+            import traceback
+            r = {"name": name, "kind": repo.get("kind", ""), "status": "harness-error",
+                 "detail": repr(e) + traceback.format_exc()[-600:]}
+            rc = 1
+        r.update({"executor": args.executor, "date": datetime.datetime.now(datetime.timezone.utc).isoformat()})
+        (outdir / f"{name}.{args.mode}.result.json").write_text(json.dumps(r, indent=2, default=str))
+        log(f"done {name}: {r.get('status')} {str(r.get('detail', ''))[-200:]}")
+    return rc
+
+
+if __name__ == "__main__":
+    sys.exit(main())

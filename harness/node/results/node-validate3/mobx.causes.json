@@ -1,0 +1,50 @@
+[
+ {
+  "repo": "mobx",
+  "pool": "popular",
+  "nodeid": "packages/mobx/__tests__/base/action.js::should be possible to change observed state in an action called from computed",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=1",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "mobx",
+  "pool": "popular",
+  "nodeid": "packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should not break internal consistency when exception occurred",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=1;passed=2",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "mobx",
+  "pool": "popular",
+  "nodeid": "packages/mobx/__tests__/base/errorhandling.js::peeking inside autorun doesn't bork (global) state::it should recover from errors",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=1",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ },
+ {
+  "repo": "mobx",
+  "pool": "popular",
+  "nodeid": "packages/mobx/__tests__/base/spy.js::spy output",
+  "class": "unknown",
+  "evidence": "no marker in the source, exception or fingerprint",
+  "documented": "",
+  "under_det": "never fails",
+  "baseline_outcomes": "failed=2;passed=1",
+  "det_exception": "",
+  "pass_fail_reason": ""
+ }
+]

@@ -1,0 +1,87 @@
+{
+  "name": "mermaid-flaky",
+  "kind": "flaky",
+  "status": "ok",
+  "url": "https://github.com/mermaid-js/mermaid",
+  "commit": "89818e854e6e517726e49e6625b3a1ccd62e1935",
+  "commit_date": "2026-05-08T16:07:22+02:00",
+  "python": "node v22.23.5",
+  "install": "pnpm install --frozen-lockfile",
+  "pytest_args": [],
+  "xdist": true,
+  "runs": 10,
+  "baseline_mean_s": 98.93322760200003,
+  "det_mean_s": 158.1485620247,
+  "slowdown_pct": 59.85383865258922,
+  "precompile_first_s": null,
+  "precompile_rest_median_s": null,
+  "tests": 4015,
+  "unstable_baseline": 17,
+  "unstable_det": 0,
+  "became_stable": 17,
+  "outcome_changed_by_det": 16,
+  "covered": 4007,
+  "not_covered": 4,
+  "reproduced": 6,
+  "never_fails_under_det": 7,
+  "always_fails_under_det": 0,
+  "fails_sometimes_under_det": 4,
+  "seeds_needed": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "seeds_explored": 2,
+  "exploration_runs": 18,
+  "exploration_budget_hit": true,
+  "reasons": {
+    "time": 4
+  },
+  "pass_fail_reasons": {
+    "outcome-only": 6
+  },
+  "broken_by_det": 0,
+  "broken_always": 0,
+  "broken_causes": {},
+  "broken_examples": {},
+  "ablation_runs": 0,
+  "known_flaky": 0,
+  "known_present": 0,
+  "known_unstable_baseline": 0,
+  "known_reproduced": 0,
+  "known_categories": {},
+  "examples": {
+    "reproduced": [
+      "packages/mermaid-zenuml/src/zenumlRenderer.spec.ts::draw::should render SVG content into the target element (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/mermaid/src/diagram-api/diagram-orchestration.spec.ts::diagram-orchestration::should register diagrams (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/mermaid/src/diagrams/git/gitGraphRenderer.ts::commitPosition::LR::should give the correct position for commit commitZero (seed 1): identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "not-reproduced": [
+      "packages/mermaid/src/config.spec.ts::getUserDefinedConfig::should return config from directives only (seed 2:8/8) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+      "packages/mermaid/src/diagrams/block/parser/block.spec.ts::Block diagram::prototype properties::should work with a __proto__ property (seed 2:8/8) identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe"
+    ],
+    "changed:failed->passed": [
+      "packages/mermaid/src/config.spec.ts::getUserDefinedConfig::should return empty object when no user config is defined",
+      "packages/mermaid/src/diagrams/class/classDiagram.spec.ts::given a basic class diagram, ::when parsing class definition::should parse diagram with direction"
+    ]
+  },
+  "runner": "vitest 3.2.4",
+  "node": "node v22.23.5",
+  "documented_source": "https://github.com/mermaid-js/mermaid/issues/7729",
+  "documented_hints": [
+    "One visual test for Architecture diagrams is flaky/failing in CI"
+  ],
+  "random_order_baseline": true,
+  "verifier": "Rust verifier through the Python binding (detpy 0.1.0)",
+  "diagnostics": {
+    "first_det_log_tail": "5:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-helpers.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neo-dark.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neo.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-neutral.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-color.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-dark-color.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux-dark.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/packages/mermaid/src/themes/theme-redux.js' because it would overwrite input file.\u001b[39m\n\u001b[2m10:45:52 AM\u001b[22m \u001b[33m\u001b[1m[vite]\u001b[22m\u001b[39m \u001b[33m\u001b[2m(client)\u001b[22m\u001b[39m \u001b[33mwarning: @rollup/plugin-typescript TS5055: Cannot write file '/tmp/work/src/mermaid-flaky/scripts/e2e-diagram-scope.mjs' because it would overwrite input file.\u001b[39m\nJSON report written to /tmp/work/runs/mermaid-flaky/det_0.json\ndetjs: trace ../../runs/mermaid-flaky/det_0.jsonl: 4301 tests, order digest c211e823030e04e85a43ec952bbb55df\n"
+  },
+  "not_reproduced_causes": {
+    "unknown": 4,
+    "concurrency/event-order": 5,
+    "l0-gap": 2
+  }
+}

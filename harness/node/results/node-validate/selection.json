@@ -1,0 +1,62 @@
+{
+ "selected": [
+  "freecodecamp-flaky",
+  "date-fns"
+ ],
+ "discarded": [
+  {
+   "name": "react-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "npm error     at nextTickCallback (/tmp/work/src/react-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T17_01_06_769Z-debug-0.log\n"
+  },
+  {
+   "name": "bootstrap-flaky",
+   "kind": "flaky",
+   "status": "install-failed",
+   "detail": "error     at nextTickCallback (/tmp/work/src/bootstrap-flaky/node_modules/kew/kew.js:47:28)\nnpm error     at process.processTicksAndRejections (node:internal/process/task_queues:77:11)\nnpm error A complete log of this run can be found in: /home/runner/.npm/_logs/2026-11-16T17_00_59_340Z-debug-0.log\n"
+  },
+  {
+   "name": "electron-flaky",
+   "kind": "flaky",
+   "status": "no-runner",
+   "detail": "neither vitest nor jest resolvable from the repository root"
+  },
+  {
+   "name": "node-flaky",
+   "kind": "flaky",
+   "status": "harness-error",
+   "detail": "/3.13.18/x64/lib/python3.13/pathlib/_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: '/tmp/work/src/node-flaky/package.json'\n"
+  },
+  {
+   "name": "material-ui-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "811/811 tests fail in the first baseline run"
+  },
+  {
+   "name": "material-ui-flaky",
+   "kind": "flaky",
+   "status": "baseline-broken",
+   "detail": "811/811 tests fail in the first baseline run"
+  },
+  {
+   "name": "zod",
+   "kind": "popular",
+   "status": "install-failed",
+   "detail": "Unsupported package manager specification (nub@0.8.3)\n"
+  },
+  {
+   "name": "dayjs",
+   "kind": "popular",
+   "status": "harness-error",
+   "detail": "              ~~~~~~~~~~~~^^^^^^^^^^^^^^^\n  File \"/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/harness/node/node_harness.py\", line 325, in parse_report\n    nid = \"::\".join([fid, *a.get(\"ancestorTitles\", []), a.get(\"title\", \"\")])\nTypeError: sequence item 2: expected str instance, list found\n"
+  },
+  {
+   "name": "luxon",
+   "kind": "popular",
+   "status": "baseline-broken",
+   "detail": "0 test outcomes (exit 1): \u25cf Unrecognized CLI Parameter:\n\n  Unrecognized option \"randomize\".\n\n  CLI Options Documentation:\n  https://jestjs.io/docs/cli\n\n"
+  }
+ ]
+}

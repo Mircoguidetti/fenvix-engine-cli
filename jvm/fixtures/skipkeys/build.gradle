@@ -1,0 +1,15 @@
+plugins { id 'java' }
+repositories { mavenCentral() }
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "org.apache.commons:commons-lang3:${System.getProperty('sk.lang3', '3.14.0')}"
+}
+test {
+    useJUnitPlatform()
+    systemProperty 'sk.root', rootDir.absolutePath
+    systemProperty 'sk.prop', System.getProperty('sk.prop', 'one')
+    def extra = System.getProperty('sk.jvmarg')
+    if (extra) jvmArgs extra
+}

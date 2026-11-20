@@ -1,0 +1,1043 @@
+{
+ "spec": {
+  "name": "argo-cd",
+  "repo": "argoproj/argo-cd",
+  "sha": "03e9000aa49871d97a7d170a974b8580e2bbd647",
+  "fix_commit": "856c607e1da2122125d1c8524bd2c621bde72f1e",
+  "fix_date": "2026-10-23T19:37:13.000Z",
+  "title": "test(notification-controller): fix flaky TestInitTimeout (#30401) (#30406)",
+  "tests": [
+   "TestInitTimeout"
+  ],
+  "source": "github commit search 'repo:argoproj/argo-cd flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestInitTimeout": "function"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./notification_controller/controller"
+ ],
+ "imports": [
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller"
+ ],
+ "go_version": "go1.27.0",
+ "build_plain_s": 105.8,
+ "build_det_s": 165.2,
+ "baseline": {
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInit": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestIsAppSyncStatusRefreshed": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_doesNotMutateCachedObject": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestCheckAppNotInAdditionalNamespaces": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_defaultsToDefaultProject": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_invalidProjectNestedString": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_appInDifferentNamespace": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 457.6,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "outcome": 8,
+  "time": 174,
+  "random": 20
+ },
+ "det0_top_tests_by_events": [
+  [
+   109,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInit"
+  ],
+  [
+   87,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestIsAppSyncStatusRefreshed"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_invalidProjectNestedString"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_doesNotMutateCachedObject"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_defaultsToDefaultProject"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_appInDifferentNamespace"
+  ],
+  [
+   1,
+   "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestCheckAppNotInAdditionalNamespaces"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInit",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 10,
+    "window": null,
+    "event_a": {
+     "t": 4,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/clock/clock.go:89",
+     "v": "8000"
+    },
+    "event_b": {
+     "t": 4,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/trace/trace.go:155",
+     "v": "8000"
+    },
+    "reason": "thread",
+    "description": "event #10: [time] time.Now @ /home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/clock/clock.go:89 = 8000 (thread 4)  <>  [time] time.Now @ /home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/trace/trace.go:155 = 8000 (thread 4)"
+   }
+  },
+  {
+   "nodeid": "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 2,
+    "window": null,
+    "event_a": {
+     "t": 2,
+     "s": "random",
+     "o": "math/rand",
+     "at": "/home/runner/go/pkg/mod/k8s.io/apimachinery@v0.37.0/pkg/util/wait/wait.go:96",
+     "v": "8075214470262730647"
+    },
+    "event_b": {
+     "t": 3,
+     "s": "time",
+     "o": "time.Now",
+     "at": "/home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/clock/clock.go:89",
+     "v": "2000"
+    },
+    "reason": "thread",
+    "description": "event #2: [random] math/rand @ /home/runner/go/pkg/mod/k8s.io/apimachinery@v0.37.0/pkg/util/wait/wait.go:96 = 8075214470262730647 (thread 2)  <>  [time] time.Now @ /home/runner/go/pkg/mod/k8s.io/utils@v0.0.0-20260626114624-be93311217bd/clock/clock.go:89 = 2000 (thread 3)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 8,
+  "stable": 6,
+  "diverged": 2,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 2
+  }
+ },
+ "det0": {
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_invalidProjectNestedString": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestCheckAppNotInAdditionalNamespaces": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestIsAppSyncStatusRefreshed": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_appInDifferentNamespace": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_doesNotMutateCachedObject": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInit": [
+   [
+    "passed",
+    "46f463fd84751929d5381537a03c4e95"
+   ],
+   [
+    "passed",
+    "5240e330ffb49030060a948ec96d1105"
+   ],
+   [
+    "passed",
+    "8998f46ddc9c87acff0db8220f54380f"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_defaultsToDefaultProject": [
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  ],
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout": [
+   [
+    "passed",
+    "a72b19f70b746cf0301780d97679b4c6"
+   ],
+   [
+    "passed",
+    "2e6c997cd902728a0a6e8818c6cf53b6"
+   ],
+   [
+    "passed",
+    "cf622c0d70bc1ba274263370e16d0ba7"
+   ]
+  ]
+ },
+ "explore": {
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_invalidProjectNestedString": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "2f315e6343eaf2b4c34c3169e4a3dbb2"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "f5626e33eb276cb6fcb0e0b8b655a9bf"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "d852e51988bab9ef2ce947505e325dc9"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout": {
+   "1": [
+    "passed",
+    "86b4c6bc864a81827d2a8d6143b7be63"
+   ],
+   "2": [
+    "passed",
+    "b9c2043b821e6e579f9daec6250978be"
+   ],
+   "3": [
+    "passed",
+    "652496d3f158512dd0b26c37003dd911"
+   ],
+   "4": [
+    "passed",
+    "3e94ea1228ad0ddabbbb5a25aac09e20"
+   ],
+   "5": [
+    "passed",
+    "aa63fdd6c29be5cad03154023a6b6947"
+   ],
+   "6": [
+    "passed",
+    "c3808c3e655b37e87f069024bb351956"
+   ],
+   "7": [
+    "passed",
+    "8d01b29798d6d1265c5c33d932bba545"
+   ],
+   "8": [
+    "passed",
+    "cdc16d1e4a78cb62b76d970ed499edf8"
+   ],
+   "9": [
+    "passed",
+    "d921c68a098f292135dd5ba096ec0072"
+   ],
+   "10": [
+    "passed",
+    "e95224393b5baadc74cb29840b8d5d54"
+   ],
+   "11": [
+    "passed",
+    "48999b3923779f89fadb6239588aa87e"
+   ],
+   "12": [
+    "passed",
+    "246335a425aed5a9a4f24302c5b9f3ec"
+   ],
+   "13": [
+    "passed",
+    "fae5659ee4aac5d3d0908de171067958"
+   ],
+   "14": [
+    "passed",
+    "a5062428d72079c4d48d30216b703f8b"
+   ],
+   "15": [
+    "passed",
+    "441c109ffd250a059f73c8aad5451c80"
+   ],
+   "16": [
+    "passed",
+    "25251ad4f71865aafdf0c8e0b2547111"
+   ],
+   "17": [
+    "passed",
+    "b1afbc66c0da1c3601059dc621b78c91"
+   ],
+   "18": [
+    "passed",
+    "51d6797a135c4fc1eb84015e01b6fd1d"
+   ],
+   "19": [
+    "passed",
+    "c232c135f71fd319b0c6df1d488e518d"
+   ],
+   "20": [
+    "passed",
+    "4b992850d16fa7a5848e0dae429e6b4f"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_defaultsToDefaultProject": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "9760491ef72fda9eeade5df8c55cfd6d"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "93070c35e60f9c1d30ec37afad42f8d9"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "2d981861b79ab679419a9d7c14990d21"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "db5228985f64b884aa96aeaf787aa278"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInit": {
+   "1": [
+    "passed",
+    "d177fdd612667dcca3e276a03adaa2fa"
+   ],
+   "2": [
+    "passed",
+    "2964de3ed83679b0427cf7e920c17f94"
+   ],
+   "3": [
+    "passed",
+    "0052d3652cf40e3427bae8b7745887b8"
+   ],
+   "4": [
+    "passed",
+    "f5cd25762b3d73195167dad64bf24056"
+   ],
+   "5": [
+    "passed",
+    "a27d626b715a8ba97b31af599565b1b2"
+   ],
+   "6": [
+    "passed",
+    "664ff95a3b745ed11618a0e1df2ad04a"
+   ],
+   "7": [
+    "passed",
+    "63a991dc4a1f838196792c21084ffa25"
+   ],
+   "8": [
+    "passed",
+    "b70603fa77dfa1e004bd3127e8fc0ca3"
+   ],
+   "9": [
+    "passed",
+    "d110de2ab0fb592680441352b9db75c2"
+   ],
+   "10": [
+    "passed",
+    "b6fe32d71d94172a39146112dcd51b0b"
+   ],
+   "11": [
+    "passed",
+    "d8895244939d0c428320b302bb50cc70"
+   ],
+   "12": [
+    "passed",
+    "c62eb92ab71bacf0d7cfb143e587a5ce"
+   ],
+   "13": [
+    "passed",
+    "86199b085ff2a5b67d2d70d0645ee8f4"
+   ],
+   "14": [
+    "passed",
+    "bd3f63458ce834b77f02da7baf309494"
+   ],
+   "15": [
+    "passed",
+    "0d3ef85ece34f122cd7150e953888991"
+   ],
+   "16": [
+    "passed",
+    "8103ffbb7838a49f3427147bddd5876e"
+   ],
+   "17": [
+    "passed",
+    "3931f70d9f4d2e76335b7e83fa798bae"
+   ],
+   "18": [
+    "passed",
+    "f43c039742977acd24ff38993cb63acc"
+   ],
+   "19": [
+    "passed",
+    "c198b5530fff4431bb3e2e9184c7a3b1"
+   ],
+   "20": [
+    "passed",
+    "870734b6ede49270c5e51c6fb725274f"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_doesNotMutateCachedObject": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "c5fdeb9af05a542fe4a52dfc62712a8d"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "8151475c573d345af0512b569aa533c8"
+   ],
+   "19": [
+    "passed",
+    "6a798c1c58ecaad1d0bd36e7e3256619"
+   ],
+   "20": [
+    "passed",
+    "7441ab9fbd01c4da9965d1b7f807f3e1"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestIsAppSyncStatusRefreshed": {
+   "1": [
+    "passed",
+    "d910832d0d9b2b69ee01f44af44de939"
+   ],
+   "2": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "59247968e9a8b648de9e942b78d7b76d"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "b0ac0b17ebcd68c861486b81f223e456"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "142361cacfc2164f050e88ea04acdf31"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestCheckAppNotInAdditionalNamespaces": {
+   "1": [
+    "passed",
+    "4d4599f12f974ea3acea4d7b30a09662"
+   ],
+   "2": [
+    "passed",
+    "923aa4d827e9563f52f8762e5b6b5104"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "c5fdeb9af05a542fe4a52dfc62712a8d"
+   ],
+   "9": [
+    "passed",
+    "ee0b3d17fb6d7f2a9ac617f036f0a658"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "b07b52704067f5a5fb55a886293d997a"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ]
+  },
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestGetAppProj_appInDifferentNamespace": {
+   "1": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "2": [
+    "passed",
+    "f2660f72d0fe446aa5b5a9581e127c15"
+   ],
+   "3": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "4": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "5": [
+    "passed",
+    "f2660f72d0fe446aa5b5a9581e127c15"
+   ],
+   "6": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "7": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "8": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "9": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "10": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "11": [
+    "passed",
+    "f2660f72d0fe446aa5b5a9581e127c15"
+   ],
+   "12": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "13": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "14": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "15": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "16": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "17": [
+    "passed",
+    "e11eb5adcb01df78937bc3dd10165710"
+   ],
+   "18": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "19": [
+    "passed",
+    "31af55e422bc4accd412eab03c7f8ad0"
+   ],
+   "20": [
+    "passed",
+    "f2660f72d0fe446aa5b5a9581e127c15"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "github.com/argoproj/argo-cd/v3/notification_controller/controller::TestInitTimeout": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  6,
+  8
+ ],
+ "timing": {
+  "plain": [
+   0.234,
+   0.235,
+   0.236
+  ],
+  "det": [
+   0.238,
+   0.237,
+   0.24
+  ]
+ },
+ "slowdown": 0.012765957446808522
+}

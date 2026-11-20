@@ -1,0 +1,308 @@
+{
+ "repo": "mockito",
+ "spec": {
+  "url": "https://github.com/mockito/mockito",
+  "tool": "gradle",
+  "jdk": "17",
+  "before": "2026-11-15"
+ },
+ "shard": 2,
+ "shards": 5,
+ "rows": [
+  {
+   "sha": "5a676bcd9ef9a10db46e1dc34e190eb46faa2687",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 411.3,
+   "tests": 2655,
+   "test_ms": 346033,
+   "failed": 49
+  },
+  {
+   "sha": "e7fd06dda31daf0c71ad1dedc76ffc9f8ecf6973",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 262.2,
+   "tests": 2659,
+   "test_ms": 302476,
+   "failed": 30,
+   "prev": "5a676bcd9ef9a10db46e1dc34e190eb46faa2687",
+   "reused": 34,
+   "verified": 34,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0544,
+   "share_tests_skipped": 0.0128,
+   "rerun_reasons": {
+    "config": 2264,
+    "not-passed": 133,
+    "file": 1,
+    "code": 223
+   },
+   "module_cache_hits": 20,
+   "modules": 21,
+   "module_cache_share_time": 0.629
+  },
+  {
+   "sha": "9c5f36fb9f2ad89fbaab828d33d144cd398a4079",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 252.2,
+   "tests": 2660,
+   "test_ms": 294309,
+   "failed": 29,
+   "prev": "e7fd06dda31daf0c71ad1dedc76ffc9f8ecf6973",
+   "reused": 220,
+   "verified": 220,
+   "wrong": [
+    {
+     "test": "mockito-integration-tests/inline-mocks-tests::org.mockitoinline.SingletonMockTest::testSingletonMockEnumDoesNotAffectOtherValues",
+     "module": ":mockito-integration-tests:inline-mocks-tests",
+     "fresh": null,
+     "reruns": [
+      null,
+      null
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.5559,
+   "share_tests_skipped": 0.0827,
+   "rerun_reasons": {
+    "config": 1786,
+    "not-passed": 147,
+    "code": 491,
+    "after": 14,
+    "prop": 1
+   },
+   "module_cache_hits": 21,
+   "modules": 21,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "5a2f0f81cdafc9b34ddb4520db7f8866c787dac0",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 253.5,
+   "tests": 2660,
+   "test_ms": 298985,
+   "failed": 31,
+   "prev": "9c5f36fb9f2ad89fbaab828d33d144cd398a4079",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 2507,
+    "not-passed": 149,
+    "code": 4
+   },
+   "module_cache_hits": 1,
+   "modules": 21,
+   "module_cache_share_time": 0.0158
+  },
+  {
+   "sha": "116a4d6231dc35f90543060af41dcde00fe4e2ae",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 252.2,
+   "tests": 2660,
+   "test_ms": 298258,
+   "failed": 30,
+   "prev": "5a2f0f81cdafc9b34ddb4520db7f8866c787dac0",
+   "reused": 0,
+   "verified": 0,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.0,
+   "share_tests_skipped": 0.0,
+   "rerun_reasons": {
+    "config": 2507,
+    "not-passed": 149,
+    "file": 1,
+    "after": 3
+   },
+   "module_cache_hits": 1,
+   "modules": 21,
+   "module_cache_share_time": 0.0143
+  },
+  {
+   "sha": "126f5663a08c7c956614588091e978376f56a572",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 257.1,
+   "tests": 2660,
+   "test_ms": 301108,
+   "failed": 28,
+   "prev": "116a4d6231dc35f90543060af41dcde00fe4e2ae",
+   "reused": 250,
+   "verified": 250,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.4961,
+   "share_tests_skipped": 0.094,
+   "rerun_reasons": {
+    "config": 1779,
+    "not-passed": 143,
+    "code": 473,
+    "after": 14,
+    "prop": 1
+   },
+   "module_cache_hits": 21,
+   "modules": 21,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "8ac1bef1221385b108cc1cf369b26257eaf067a0",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 275.0,
+   "tests": 2660,
+   "test_ms": 325917,
+   "failed": 29,
+   "prev": "126f5663a08c7c956614588091e978376f56a572",
+   "reused": 220,
+   "verified": 220,
+   "wrong": [
+    {
+     "test": "mockito-integration-tests/inline-mocks-tests::org.mockitoinline.SpyWithConstructorTest::shouldUseConstructor",
+     "module": ":mockito-integration-tests:inline-mocks-tests",
+     "fresh": null,
+     "reruns": [
+      null,
+      null
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.5292,
+   "share_tests_skipped": 0.0827,
+   "rerun_reasons": {
+    "config": 1781,
+    "code": 495,
+    "not-passed": 150,
+    "prop": 1,
+    "after": 13
+   },
+   "module_cache_hits": 21,
+   "modules": 21,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "19fd9c80780b7bc0c697d6d4ae0900cbc801faec",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 312.0,
+   "tests": 2660,
+   "test_ms": 315655,
+   "failed": 29,
+   "prev": "8ac1bef1221385b108cc1cf369b26257eaf067a0",
+   "reused": 184,
+   "verified": 184,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.4447,
+   "share_tests_skipped": 0.0692,
+   "rerun_reasons": {
+    "config": 2268,
+    "not-passed": 144,
+    "prop": 1,
+    "after": 40,
+    "code": 23
+   },
+   "module_cache_hits": 20,
+   "modules": 21,
+   "module_cache_share_time": 0.9836
+  },
+  {
+   "sha": "f2f8351488d51e2c75516b7210f748edc8bdb6be",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 257.0,
+   "tests": 2661,
+   "test_ms": 305851,
+   "failed": 29,
+   "prev": "19fd9c80780b7bc0c697d6d4ae0900cbc801faec",
+   "reused": 244,
+   "verified": 244,
+   "wrong": [
+    {
+     "test": "mockito-integration-tests/inline-mocks-tests::org.mockitoinline.SpyWithConstructorTest::shouldUseConstructor",
+     "module": ":mockito-integration-tests:inline-mocks-tests",
+     "fresh": null,
+     "reruns": [
+      null,
+      null
+     ]
+    }
+   ],
+   "flaky": [],
+   "share_time_skipped": 0.5673,
+   "share_tests_skipped": 0.0917,
+   "rerun_reasons": {
+    "config": 2254,
+    "not-passed": 148,
+    "prop": 1,
+    "after": 5,
+    "code": 8
+   },
+   "module_cache_hits": 21,
+   "modules": 21,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "b55e8dae77c49bc7add0e5ac41dde9da086086bd",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 262.1,
+   "tests": 2660,
+   "test_ms": 312709,
+   "failed": 29,
+   "prev": "f2f8351488d51e2c75516b7210f748edc8bdb6be",
+   "reused": 169,
+   "verified": 169,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.4256,
+   "share_tests_skipped": 0.0635,
+   "rerun_reasons": {
+    "config": 1778,
+    "not-passed": 137,
+    "code": 530,
+    "after": 46,
+    "prop": 1
+   },
+   "module_cache_hits": 21,
+   "modules": 21,
+   "module_cache_share_time": 1.0
+  },
+  {
+   "sha": "613ab039480c8dbf1fe0fe4c0c91022e81cd7b75",
+   "status": "ok",
+   "rc": 1,
+   "seconds": 301.7,
+   "tests": 2660,
+   "test_ms": 311444,
+   "failed": 29,
+   "prev": "b55e8dae77c49bc7add0e5ac41dde9da086086bd",
+   "reused": 88,
+   "verified": 88,
+   "wrong": [],
+   "flaky": [],
+   "share_time_skipped": 0.3378,
+   "share_tests_skipped": 0.0331,
+   "rerun_reasons": {
+    "config": 2273,
+    "not-passed": 139,
+    "prop": 1,
+    "code": 103,
+    "after": 56
+   },
+   "module_cache_hits": 19,
+   "modules": 21,
+   "module_cache_share_time": 0.6452
+  }
+ ]
+}

@@ -1,0 +1,36 @@
+{
+ "project": "rich",
+ "green": "19c67b9a3479841e9133bea94607c89ee931d3fc",
+ "red": "3a109ccdffe5b2d0e30684a304fbd388e99ce57b",
+ "exit": {
+  "base": 1,
+  "tz": 1,
+  "locale": 1,
+  "lang": 1,
+  "no-color": 1,
+  "force-color": 1,
+  "term": 1,
+  "columns": 1,
+  "ci": 1,
+  "optimize": 1,
+  "devmode": 1,
+  "ioenc": 1,
+  "home": 1,
+  "language": 1
+ },
+ "by_change": {
+  "tz": [
+   "tests/test_console.py::test_brokenpipeerror"
+  ],
+  "lang": [
+   "tests/test_console.py::test_brokenpipeerror"
+  ],
+  "columns": [
+   "tests/test_prompt.py::test_prompt_str",
+   "tests/test_prompt.py::test_prompt_str_case_insensitive"
+  ],
+  "home": [
+   "tests/test_console.py::test_brokenpipeerror"
+  ]
+ }
+}

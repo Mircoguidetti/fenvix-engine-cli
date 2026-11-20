@@ -1,0 +1,233 @@
+{
+ "spec": {
+  "name": "grpc-go",
+  "repo": "grpc/grpc-go",
+  "sha": "d619b5d0208981a4c74c418fe03f486ad6595862",
+  "fix_commit": "5210090b567328709f04666131c8c539ea93f5bb",
+  "fix_date": "2026-10-26T22:52:19.000-07:00",
+  "title": "autosharding: fix flaky test TestAggregatedConnectivityStateAndAutoConnect (#9516)",
+  "tests": [
+   "TestAggregatedConnectivityStateAndAutoConnect"
+  ],
+  "source": "github commit search 'repo:grpc/grpc-go flaky' (most recent flaky-test fix since 2025-01-01, pinned to its parent)"
+ },
+ "status": "done",
+ "notes": [],
+ "located": {
+  "TestAggregatedConnectivityStateAndAutoConnect": "method (subtest of Test)"
+ },
+ "module_dir": ".",
+ "packages": [
+  "./balancer/autosharding"
+ ],
+ "imports": [
+  "google.golang.org/grpc/balancer/autosharding"
+ ],
+ "go_version": "go1.26.11",
+ "build_plain_s": 24.7,
+ "build_det_s": 31.9,
+ "baseline": {
+  "google.golang.org/grpc/balancer/autosharding::Test": [
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed",
+   "passed"
+  ]
+ },
+ "baseline_fail_output": {},
+ "seconds": 88.4,
+ "det0_fail_output": {},
+ "det0_events_by_source": {
+  "time": 237,
+  "random": 7200,
+  "outcome": 2,
+  "entropy": 25
+ },
+ "det0_top_tests_by_events": [
+  [
+   7431,
+   "google.golang.org/grpc/balancer/autosharding::Test"
+  ],
+  [
+   33,
+   "google.golang.org/grpc/balancer/autosharding::Test"
+  ]
+ ],
+ "det0_divergences": [
+  {
+   "nodeid": "google.golang.org/grpc/balancer/autosharding::Test",
+   "status": "diverged",
+   "outcomes": [
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "divergence": {
+    "run_a": 0,
+    "run_b": 1,
+    "index": 3729,
+    "window": null,
+    "event_a": {
+     "t": 41,
+     "s": "time",
+     "o": "time.NewTimer",
+     "at": "internal/backoff/backoff.go:88",
+     "v": "0"
+    },
+    "event_b": {
+     "t": 41,
+     "s": "time",
+     "o": "time.afterfunc",
+     "at": "timer",
+     "v": "20068000"
+    },
+    "reason": "thread",
+    "description": "event #3729: [time] time.NewTimer @ internal/backoff/backoff.go:88 = 0 (thread 41)  <>  [time] time.afterfunc @ timer = 20068000 (thread 41)"
+   }
+  }
+ ],
+ "det0_summary": {
+  "runs": 3,
+  "tests": 1,
+  "stable": 0,
+  "diverged": 1,
+  "missing": 0,
+  "outcome_unstable": 0,
+  "order_identical": true,
+  "reasons": {
+   "thread": 1
+  }
+ },
+ "det0": {
+  "google.golang.org/grpc/balancer/autosharding::Test": [
+   [
+    "passed",
+    "6655838302b8faacdffe6067ba61b458"
+   ],
+   [
+    "passed",
+    "b20e180ee723494676d8285b3f73663b"
+   ],
+   [
+    "passed",
+    "b20e180ee723494676d8285b3f73663b"
+   ]
+  ]
+ },
+ "explore": {
+  "google.golang.org/grpc/balancer/autosharding::Test": {
+   "1": [
+    "passed",
+    "1c9cdbf553e36ac8f0a3468007f96a6d"
+   ],
+   "2": [
+    "passed",
+    "efb53c21404cd659aa2a8e28a5f8dda4"
+   ],
+   "3": [
+    "passed",
+    "1990f32500ee6ceb136323284b54f0f0"
+   ],
+   "4": [
+    "passed",
+    "f02a559b0ebc25b1000baf86d8735296"
+   ],
+   "5": [
+    "passed",
+    "1652a01ea7b060644bfe68294479d5ba"
+   ],
+   "6": [
+    "passed",
+    "747e425e4a7327acc88001d1cad41b5a"
+   ],
+   "7": [
+    "passed",
+    "455de3afb9d43445137b59ad7656547f"
+   ],
+   "8": [
+    "passed",
+    "5255acadd0e2b255fcaec067497ca3bb"
+   ],
+   "9": [
+    "passed",
+    "8874c95d786c8a7bb3465ec3c8c9e5cd"
+   ],
+   "10": [
+    "passed",
+    "4369c0c171e374fe9f95523d2f0026a2"
+   ],
+   "11": [
+    "passed",
+    "5e15e6892bc52b6e008e7d35ed8c1f69"
+   ],
+   "12": [
+    "passed",
+    "dbe2ae2429fe0c4b338913a4b2bdb4a9"
+   ],
+   "13": [
+    "passed",
+    "3aee093d726258e73a58ced0c6cec0be"
+   ],
+   "14": [
+    "passed",
+    "e4fff9bd44708534247bd6227e32160d"
+   ],
+   "15": [
+    "passed",
+    "fcb7615759d835e763b005e1b6f916eb"
+   ],
+   "16": [
+    "passed",
+    "7f9c7d50f90b334d242bee8879d14ad9"
+   ],
+   "17": [
+    "passed",
+    "dcb2581e16459adfa339f014312277af"
+   ],
+   "18": [
+    "passed",
+    "8c01f1bea9111aa25f8140eec357ad57"
+   ],
+   "19": [
+    "passed",
+    "9ccb33bcb8f8b0713678227e67a2839a"
+   ],
+   "20": [
+    "passed",
+    "ec5f8d8cc1f2485ae7aa0ca3a5a01759"
+   ]
+  }
+ },
+ "baseline_unstable": [],
+ "confirm": {
+  "google.golang.org/grpc/balancer/autosharding::Test": {
+   "fail_seeds": [],
+   "passes_in_some_seed": true,
+   "reproduced": false
+  }
+ },
+ "broken": [],
+ "fingerprint_coverage": [
+  0,
+  1
+ ],
+ "timing": {
+  "plain": [
+   0.091,
+   0.093,
+   0.093
+  ],
+  "det": [
+   0.128,
+   0.129,
+   0.131
+  ]
+ },
+ "slowdown": 0.38709677419354843
+}

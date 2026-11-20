@@ -1,0 +1,18 @@
+{
+ "name": "runner-django-debug-toolbar",
+ "url": "https://github.com/django-commons/django-debug-toolbar",
+ "head": "53d092c4a15a",
+ "commits": 21,
+ "mode": "suite",
+ "python": "3.13",
+ "runner": "django",
+ "runner_args": [
+  "django-admin",
+  "test",
+  "tests"
+ ],
+ "env": {
+  "DJANGO_SETTINGS_MODULE": "tests.settings"
+ },
+ "note": "tox.ini: python -m django test tests (PYTHONPATH=.); sqlite in memory (DB_BACKEND default sqlite3)"
+}

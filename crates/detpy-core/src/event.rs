@@ -11,9 +11,40 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
 
-/// Bump when [`Event::encode`] changes: fingerprints are only comparable
-/// between traces produced with the same encoding version.
-pub const ENCODING_VERSION: u32 = 1;
+/// Bump when [`Event::encode`] or the event vocabulary changes: fingerprints
+/// are only comparable between traces produced with the same encoding version,
+/// and the verifier refuses to compare traces whose encodings differ.
+///
+/// * 1: Level 0 (Python).
+/// * 2: shared vocabulary for every runtime and level (fenvix-brain-cli
+///   ARCHITECTURE.md, "Shared event vocabulary"): adds [`Source::Sched`]
+///   (tag 9) for the scheduling choices of Level 1. Sched ops:
+///   `sched.ready`, `sched.timer`, `sched.io`, `sched.executor`,
+///   `sched.microtask` (Node), `sched.thread` (later); value
+///   `<chosen index>/<set size>:<stable id>`, stable id = creation site of the
+///   chosen callback plus a per-site counter. Site = `path:line` relative to the
+///   repository root, POSIX separators.
+pub const ENCODING_VERSION: u32 = 2;
+
+/// The operations a [`Source::Sched`] event may carry.
+pub const SCHED_OPS: [&str; 6] =
+    ["sched.ready", "sched.timer", "sched.io", "sched.executor", "sched.microtask", "sched.thread"];
+
+/// Build the value of a sched event: `<chosen index>/<set size>:<stable id>`.
+pub fn sched_value(chosen: usize, size: usize, stable_id: &str) -> String {
+    format!("{chosen}/{size}:{stable_id}")
+}
+
+/// Parse a sched value back into `(chosen index, set size, stable id)`.
+pub fn parse_sched_value(v: &str) -> Option<(usize, usize, &str)> {
+    let (head, id) = v.split_once(':')?;
+    let (i, n) = head.split_once('/')?;
+    let (i, n) = (i.parse().ok()?, n.parse().ok()?);
+    if i >= n {
+        return None;
+    }
+    Some((i, n, id))
+}
 
 /// Category of non-deterministic source an event belongs to.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -35,10 +66,14 @@ pub enum Source {
     Syscall,
     /// Anything else a backend wants to report.
     Other,
+    /// Scheduling choices of the Level 1 runtime (`--det-async`: which ready
+    /// external events an asyncio loop iteration delivered, timers fired,
+    /// clock jumps). Appended after `Other` so existing tags are unchanged.
+    Sched,
 }
 
 impl Source {
-    pub const ALL: [Source; 8] = [
+    pub const ALL: [Source; 9] = [
         Source::Time,
         Source::Random,
         Source::Fs,
@@ -47,6 +82,7 @@ impl Source {
         Source::Outcome,
         Source::Syscall,
         Source::Other,
+        Source::Sched,
     ];
 
     pub fn as_str(self) -> &'static str {
@@ -59,6 +95,7 @@ impl Source {
             Source::Outcome => "outcome",
             Source::Syscall => "syscall",
             Source::Other => "other",
+            Source::Sched => "sched",
         }
     }
 
@@ -73,6 +110,7 @@ impl Source {
             "entropy" => Source::Entropy,
             "outcome" => Source::Outcome,
             "syscall" => Source::Syscall,
+            "sched" => Source::Sched,
             _ => Source::Other,
         }
     }
@@ -87,6 +125,7 @@ impl Source {
             Source::Outcome => 6,
             Source::Syscall => 7,
             Source::Other => 8,
+            Source::Sched => 9,
         }
     }
 }
@@ -184,6 +223,21 @@ mod tests {
         };
         assert_ne!(enc(&a), enc(&b));
         assert_ne!(enc(&a), enc(&c));
+    }
+
+    #[test]
+    fn sched_source_and_values() {
+        assert_eq!(Source::parse("sched"), Source::Sched);
+        assert_eq!(Source::Sched.as_str(), "sched");
+        assert_eq!(Source::Sched.tag(), 9);
+        // Existing tags are unchanged by the new source.
+        assert_eq!(Source::Other.tag(), 8);
+        let v = sched_value(2, 5, "tests/test_a.py:12#3");
+        assert_eq!(v, "2/5:tests/test_a.py:12#3");
+        assert_eq!(parse_sched_value(&v), Some((2, 5, "tests/test_a.py:12#3")));
+        assert_eq!(parse_sched_value("5/5:x"), None);
+        assert_eq!(parse_sched_value("garbage"), None);
+        assert!(SCHED_OPS.contains(&"sched.microtask"));
     }
 
     #[test]

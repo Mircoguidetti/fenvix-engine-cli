@@ -1,0 +1,235 @@
+# head ed66b960 (final engine): Node 22, Bun 1.4.4, Deno 2.9.6 (local)
+# Subtest: tap: R-032 F7
+ok 1 - tap: R-032 F7
+# Subtest: ava: R-032 F7
+ok 2 - ava: R-032 F7
+# Subtest: jasmine: R-032 F7
+ok 3 - jasmine: R-032 F7
+# Subtest: uvu: R-032 F7
+ok 4 - uvu: R-032 F7
+# Subtest: bun: R-032 F6/F7
+ok 5 - bun: R-032 F6/F7
+# Subtest: deno: R-032 F6/F7
+ok 6 - deno: R-032 F6/F7
+# Subtest: cache with proof: vitest
+ok 7 - cache with proof: vitest
+# Subtest: cache with proof: jest
+ok 8 - cache with proof: jest
+# Subtest: cache with proof: Vitest start-up and resolution
+ok 9 - cache with proof: Vitest start-up and resolution
+# Subtest: cache with proof: Jest start-up
+ok 10 - cache with proof: Jest start-up
+# Subtest: cache with proof: projects
+ok 11 - cache with proof: projects
+# Subtest: cache with proof: shared cache service
+ok 12 - cache with proof: shared cache service
+# Subtest: vitest
+ok 13 - vitest
+# Subtest: jest
+ok 14 - jest
+# Subtest: jest jsdom environment: controls apply, outcomes unchanged
+ok 15 - jest jsdom environment: controls apply, outcomes unchanged
+# Subtest: real node-test sessions: the Rust policy equals the JavaScript one
+ok 16 - real node-test sessions: the Rust policy equals the JavaScript one
+# Subtest: real mocha sessions: the Rust policy equals the JavaScript one
+ok 17 - real mocha sessions: the Rust policy equals the JavaScript one
+# Subtest: seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+ok 18 - seeded random inputs: the Rust policy equals the JavaScript one (500 inputs)
+# Subtest: receipt lines: the Rust lines equal the JavaScript ones
+ok 19 - receipt lines: the Rust lines equal the JavaScript ones
+# Subtest: the uncacheable table is the same
+ok 20 - the uncacheable table is the same
+# Subtest: vitest projects: every project runs under --det, failures set the exit code
+ok 21 - vitest projects: every project runs under --det, failures set the exit code
+# Subtest: r021 fixes: vitest
+ok 22 - r021 fixes: vitest
+# Subtest: r021 fixes: jest
+ok 23 - r021 fixes: jest
+# Subtest: r021 fixes: Vitest specific
+ok 24 - r021 fixes: Vitest specific
+# Subtest: r021b fixes: vitest
+ok 25 - r021b fixes: vitest
+# Subtest: r021b fixes: jest
+ok 26 - r021b fixes: jest
+# Subtest: r021b fixes: vitest only
+ok 27 - r021b fixes: vitest only
+# Subtest: r021b fixes: jest only
+ok 28 - r021b fixes: jest only
+# Subtest: regressions
+ok 29 - regressions
+# Subtest: r021 wrong reuse: vitest
+ok 30 - r021 wrong reuse: vitest
+# Subtest: r021 wrong reuse: jest
+ok 31 - r021 wrong reuse: jest
+# Subtest: r021 wrong reuse: Vitest specific
+ok 32 - r021 wrong reuse: Vitest specific
+# Subtest: r021 wrong reuse: Vitest transforms and environment
+ok 33 - r021 wrong reuse: Vitest transforms and environment
+# Subtest: r021 wrong reuse: Jest specific
+ok 34 - r021 wrong reuse: Jest specific
+# Subtest: r021b: vitest
+ok 35 - r021b: vitest
+# Subtest: r021b: jest
+ok 36 - r021b: jest
+# Subtest: r021b: vitest only
+ok 37 - r021b: vitest only
+# Subtest: r021b: jest only
+ok 38 - r021b: jest only
+# Subtest: tap: review r032
+ok 39 - tap: review r032
+# Subtest: ava: review r032
+ok 40 - ava: review r032
+# Subtest: jasmine: review r032
+ok 41 - jasmine: review r032
+# Subtest: uvu: review r032
+ok 42 - uvu: review r032
+# R032-RESULT bun tests/d.test.ts sound
+# R032-RESULT bun tests/t.test.ts sound
+# R032-RESULT bun tests/ff.test.ts sound
+# R032-RESULT bun tests/mm.test.ts sound
+# R032-RESULT bun tests/sl.test.ts sound
+# R032-RESULT bun tests/w.test.ts uncached
+# R032-RESULT bun tests/rs.test.ts sound
+# R032-RESULT bun tests/ffi.test.ts uncached
+# R032-RESULT deno tests/cfg_test.ts uncached
+# R032-RESULT deno tests/p_test.ts uncached
+# R032-RESULT deno tests/rl_test.ts sound
+# R032-RESULT deno tests/ffi_test.ts uncached
+# R032-RESULT deno tests/wk_test.ts uncached
+# R032-RESULT deno tests/nl_test.ts sound
+# Subtest: bun
+ok 43 - bun
+# Subtest: deno
+ok 44 - deno
+# R032-LATE node-test exitCode set at module level: fresh run fails
+# R032-LATE node-test late uncaught exception: fresh run fails
+# R032-LATE node-test late unhandled rejection: fresh run fails
+# R032-LATE node-test process.exit(2) on beforeExit: fresh run fails
+# R032-LATE mocha exitCode set at module level: runner ignores it
+# R032-LATE mocha late uncaught exception: fresh run fails
+# R032-LATE mocha late unhandled rejection: runner ignores it
+# R032-LATE mocha process.exit(2) on beforeExit: runner ignores it
+# Subtest: node-test: absent inputs resolved by Node in C++ (package.json)
+ok 45 - node-test: absent inputs resolved by Node in C++ (package.json)
+# Subtest: node-test: environment read in C (libuv), entropy
+ok 46 - node-test: environment read in C (libuv), entropy
+# Subtest: mocha: absent inputs resolved by Node in C++ (package.json)
+ok 47 - mocha: absent inputs resolved by Node in C++ (package.json)
+# Subtest: mocha: environment read in C (libuv), entropy
+ok 48 - mocha: environment read in C (libuv), entropy
+# Subtest: mocha: configuration file absent then present
+ok 49 - mocha: configuration file absent then present
+# Subtest: failure outside a test body
+ok 50 - failure outside a test body
+# Subtest: adversarial seeded inputs: Rust policy equals the JavaScript one (3000 inputs)
+ok 51 - adversarial seeded inputs: Rust policy equals the JavaScript one (3000 inputs)
+# R032B-RESULT node-test tests/c_intl.test.mjs uncached
+# R032B-RESULT node-test tests/c_timeorigin.test.mjs uncached
+# R032B-RESULT node-test tests/le.test.mjs sound
+# R032B-RESULT node-test tests/gs.test.mjs sound
+# R032B-RESULT node-test tests/fp.test.mjs sound
+# R032B-RESULT node-test tests/tz.test.mjs sound
+# R032B-RESULT node-test tests/ch.test.mjs uncached
+# R032B-RESULT mocha test/c_intl.spec.mjs uncached
+# R032B-RESULT mocha test/c_timeorigin.spec.mjs uncached
+# R032B-RESULT mocha test/le.spec.mjs sound
+# R032B-RESULT mocha test/gs.spec.mjs sound
+# R032B-RESULT mocha test/fp.spec.mjs sound
+# R032B-RESULT mocha test/tz.spec.mjs sound
+# R032B-RESULT mocha test/ch.spec.mjs uncached
+# R032B-RESULT bun tests/c_intl.test.ts uncached
+# R032B-RESULT bun tests/c_timeorigin.test.ts uncached
+# R032B-RESULT bun tests/le.test.ts sound
+# R032B-RESULT bun tests/gs.test.ts sound
+# R032B-RESULT bun tests/fp.test.ts held (a fresh --det run still passes)
+# R032B-RESULT bun tests/tz.test.ts sound
+# R032B-RESULT bun tests/ch.test.ts uncached
+# R032B-RESULT deno tests/c_intl_test.ts uncached
+# R032B-RESULT deno tests/c_timeorigin_test.ts uncached
+# R032B-RESULT deno tests/le_test.ts uncached
+# R032B-RESULT deno tests/gs_test.ts sound
+# R032B-RESULT deno tests/fp_test.ts sound
+# R032B-RESULT deno tests/tz_test.ts sound
+# R032B-RESULT deno tests/ch_test.ts uncached
+# R032B-RESULT bun tests/sp.test.ts uncached
+# R032B-RESULT bun tests/wk.test.ts uncached
+# R032B-RESULT bun tests/g.test.ts held (a fresh --det run still passes)
+# R032B-RESULT deno tests/im_test.ts sound
+# R032B-RESULT deno tests/mf_test.ts sound
+# R032B-RESULT deno tests/da_test.ts sound
+# R032B-RESULT deno tests/tp_test.ts uncached
+# R032B-RESULT deno tests/cm_test.ts uncached
+# R032B-RESULT deno tests/re_test.ts sound
+# Subtest: node-test: R-032b
+ok 52 - node-test: R-032b
+# Subtest: mocha: R-032b
+ok 53 - mocha: R-032b
+# Subtest: bun: R-032b
+ok 54 - bun: R-032b
+# Subtest: deno: R-032b
+ok 55 - deno: R-032b
+# Subtest: bun: R-032b specific
+ok 56 - bun: R-032b specific
+# Subtest: deno: R-032b specific
+ok 57 - deno: R-032b specific
+# Subtest: ava: control
+ok 58 - ava: control
+# Subtest: ava: wrong reuse (shared cases)
+ok 59 - ava: wrong reuse (shared cases)
+# Subtest: ava: wrong reuse (runner specific)
+ok 60 - ava: wrong reuse (runner specific)
+# Subtest: bun: Level 0 controls
+ok 61 - bun: Level 0 controls
+# Subtest: bun: wrong reuse (--det-cache)
+ok 62 - bun: wrong reuse (--det-cache)
+# Subtest: deno: Level 0 controls
+ok 63 - deno: Level 0 controls
+# Subtest: deno: wrong reuse (--det-cache)
+ok 64 - deno: wrong reuse (--det-cache)
+# Subtest: jasmine: control
+ok 65 - jasmine: control
+# Subtest: jasmine: wrong reuse (shared cases)
+ok 66 - jasmine: wrong reuse (shared cases)
+# Subtest: jasmine: wrong reuse (runner specific)
+ok 67 - jasmine: wrong reuse (runner specific)
+# Subtest: mocha: control
+ok 68 - mocha: control
+# Subtest: mocha: adversarial (review r021 translated)
+ok 69 - mocha: adversarial (review r021 translated)
+# Subtest: mocha: adversarial (environment, processes, R-009 / R-017)
+ok 70 - mocha: adversarial (environment, processes, R-009 / R-017)
+# Subtest: mocha: adversarial (configuration, --require, --file, root hooks, --grep, loaders)
+ok 71 - mocha: adversarial (configuration, --require, --file, root hooks, --grep, loaders)
+# Subtest: node-test: control
+ok 72 - node-test: control
+# Subtest: node-test: adversarial (review r021 translated)
+ok 73 - node-test: adversarial (review r021 translated)
+# Subtest: node-test: adversarial (environment, processes, R-009 / R-017)
+ok 74 - node-test: adversarial (environment, processes, R-009 / R-017)
+# Subtest: node-test: adversarial (runner configuration, loaders, node:test features)
+ok 75 - node-test: adversarial (runner configuration, loaders, node:test features)
+# Subtest: tap: control
+ok 76 - tap: control
+# Subtest: tap: wrong reuse (shared cases)
+ok 77 - tap: wrong reuse (shared cases)
+# Subtest: tap: wrong reuse (runner specific)
+ok 78 - tap: wrong reuse (runner specific)
+# Subtest: uvu: control
+ok 79 - uvu: control
+# Subtest: uvu: wrong reuse (shared cases)
+ok 80 - uvu: wrong reuse (shared cases)
+# Subtest: uvu: wrong reuse (runner specific)
+ok 81 - uvu: wrong reuse (runner specific)
+# Subtest: vitest
+ok 82 - vitest
+# Subtest: jest
+ok 83 - jest
+# tests 682
+# suites 75
+# pass 681
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 1329069.44655
+EXIT 0
