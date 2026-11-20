@@ -23,14 +23,14 @@ finished when this report was written), the brain repository delivery (no access
 (`--det-isolate`, the coordinator's variant, round 4) removes the carried set by construction; its first local numbers
 are in "The scheduler" below.
 
-## Gates (MEASURED, final engine, this container: 4 vCPU, Python 3.13.18, pytest 9.2.0, xdist 3.8.0)
+## Gates (MEASURED, engine 21b57571, this container: 4 vCPU, Python 3.13.18, pytest 9.2.0, xdist 3.8.0)
 
 | gate | result | raw file |
 |---|---|---|
-| `tests/test_review_r023b.py` (review R-023b) + `tests/test_review_r023.py` | **77 passed, 4 skipped**, 0 failed (on a13e2dc: 50 failed, 11 passed, 3 skipped, per the review) | `tracks/parallel-proof/gates/r3/review-r023b-and-r023.txt` |
-| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **788 passed, 12 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names; it reads a tracks file no change here touches) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
+| `tests/test_review_r023b.py` + `tests/test_review_r023.py` + review R-032b (`tests/review_r032b/`, `tests/test_r032b_engine.py`) | **107 passed, 21 skipped**, 0 failed (the skips: R-023b's own 4, R-032b's 17 runner-driver cases, which need claude/all-runners-2) | `tracks/parallel-proof/gates/r3/review-r023b-r023-r032b.txt` |
+| full Python suite (`pytest tests -p no:randomly`, without `-n`) | **820 passed, 29 skipped**, 0 failed (1 deselected: `test_review_r017.py::test_h2_...`, the pre-existing failure REPORT-2 names) | `tracks/parallel-proof/gates/r3/pytest-full-summary.txt`, `pytest-full-tail.txt` |
 | `cargo test --release` (workspace) | **113 + 1 passed**, 0 failed (REPORT-2: 94) | `tracks/parallel-proof/gates/r3/cargo-test.txt` |
-| the coordinator's attacks (`tests/test_carried_library_memo.py`: library memo 5 kinds, order dependence, own output outside the repository, quarantine; `tests/test_isolate.py`) | all pass, serial and `-n 2` (part of the full suite) | as above |
+| the coordinator's attacks (`tests/test_carried_library_memo.py`, `tests/test_isolate.py`, `tests/test_r032b_engine.py`) | all pass, serial and `-n 2` (part of the full suite) | as above |
 
 The 4 skips of the review file are the review's own conditions (`HOSTALIASES` ignored by libc here; the `[n2]` variant
 of the session-fixture test, which the review marks as not applicable under `loadfile`).
@@ -122,7 +122,7 @@ sum over all tests (durations now in the outcomes file).
 | repository | shards | commits (warm) | tests per commit | reused, warm commits (count) | reused by test time, warm commits | commits with >= 50 % reused | wrong reuses | flaky rechecks | carried / recorded | a_par wall s (warm median) | truth wall s (median) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | esphome | 5 | 50 (45) | 14331-14446 | 0 of 647556 (0.0 %) | 0.0 % | 0 of 45 | 0 | 0 | 334722 / 83297 | 529.6 | 135.6 |
-| litellm-vertex | 4 | 40 (36) | 4173-4181 | 0 of 150472 (0.0 %) | 0.0 % | 0 of 36 | 0 | 0 | 0 / 0 | 782.4 | 100.1 |
+| litellm-vertex | 5 | 50 (45) | 4165-4181 | 0 of 187973 (0.0 %) | 0.0 % | 0 of 45 | 0 | 0 | 0 / 0 | 838.9 | 105.1 |
 | moto | 5 | 47 (42) | 2480-2501 | 22348 of 104335 (21.4 %) | 19.4 % | 6 of 42 | 0 | 0 | 55944 / 55944 | 162.2 | 197.4 |
 
 
