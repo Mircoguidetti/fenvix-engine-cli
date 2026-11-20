@@ -160,8 +160,6 @@ class DetRun:
         if ns.det_cache and not _proof.AVAILABLE:
             raise UsageError("--det-cache needs Python 3.12+ (sys.monitoring)")
         controls = _level0.controls_of(ns.det_disable)
-        # before the capture starts: once it runs, this write would be a write of the session in the project
-        _level0.mark_state_dir(self.root)
         reexec.SESSION_DEPTH += 1
         self.status = _level0.reexec_status(ns, controls, self.root, [])
         self.cfg = _level0.make_config(ns, self.root, controls)
