@@ -23,13 +23,22 @@ import pytest
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-FAKE = {
-    "3.11": "import sys; sys.version_info = (3, 11, 9, 'final', 0)",
-    "3.9": "import sys; sys.version_info = (3, 9, 25, 'final', 0)",
-    "free-threaded": "import sysconfig; _g = sysconfig.get_config_var; "
-                     "sysconfig.get_config_var = lambda n: 1 if n == 'Py_GIL_DISABLED' else _g(n)",
-    "pypy": "import sys, types; sys.implementation = types.SimpleNamespace(**{**vars(sys.implementation), 'name': 'pypy'})",
+# Each fake changes what detpy._support sees, imports detpy (which decides once, at import, and swaps in the
+# inactive plugin), then restores the interpreter's real values before pytest or a command runs: pytest itself never
+# sees a fake version (it has version-dependent code paths of its own).
+_FAKES = {
+    "3.11": ("import sys; _real = sys.version_info; sys.version_info = (3, 11, 9, 'final', 0)",
+             "sys.version_info = _real"),
+    "3.9": ("import sys; _real = sys.version_info; sys.version_info = (3, 9, 25, 'final', 0)",
+            "sys.version_info = _real"),
+    "free-threaded": ("import sys, sysconfig; _g = sysconfig.get_config_var; "
+                      "sysconfig.get_config_var = lambda n: 1 if n == 'Py_GIL_DISABLED' else _g(n)",
+                      "sysconfig.get_config_var = _g"),
+    "pypy": ("import sys, types; _real = sys.implementation; "
+             "sys.implementation = types.SimpleNamespace(**{**vars(_real), 'name': 'pypy'})",
+             "sys.implementation = _real"),
 }
+FAKE = {k: f"{a}\nimport detpy\n{b}\nassert detpy._support.PROBLEM" for k, (a, b) in _FAKES.items()}
 
 
 def _run(code: str, cwd, env_extra=None):
@@ -44,9 +53,7 @@ def project(tmp_path):
     return tmp_path
 
 
-# pytest itself needs 3.11+ features when sys.version_info says older (exceptiongroup): 3.11 stands for every older
-# version under pytest; the command-line entries below are checked with 3.9
-@pytest.mark.parametrize("kind", ["3.11", "free-threaded", "pypy"])
+@pytest.mark.parametrize("kind", ["3.11", "3.9", "free-threaded", "pypy"])
 def test_unsupported_interpreter_pytest_det_refused_with_message_not_crash(kind, project):
     """G-0547/G-0548/G-0556 family: `pytest --det` on an unsupported interpreter: usage error 4 and one sentence."""
     code = FAKE[kind] + "\nimport pytest, sys\nsys.exit(pytest.main(['-q', '-p', 'no:cacheprovider', '--det', 'test_a.py']))"

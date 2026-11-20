@@ -143,7 +143,15 @@ def node_part(r, a):
     r.sh("vitest-clone", ["git", "clone", "-q", "--depth", "1", "--branch", VITEST_PROJECT["ref"], VITEST_PROJECT["url"], proj])
     rc, _ = r.sh("vitest-project-install", "npm install --no-audit --no-fund --ignore-scripts --no-package-lock", cwd=proj)
     r.check("vitest_project_installed", rc == 0)
-    tarballs = sorted(glob.glob(os.path.join(os.path.abspath(a.npm), "*.tgz")))
+    # the main package and the platform package of this machine (npm refuses another platform's package given by
+    # file: EBADPLATFORM); from a registry npm picks it from the optionalDependencies itself
+    import platform as _pf
+    arch = {"x86_64": "x64", "amd64": "x64", "aarch64": "arm64", "arm64": "arm64"}[_pf.machine().lower()]
+    triple = f"darwin-{arch}" if sys.platform == "darwin" else f"linux-{arch}-gnu"
+    npm_dir = os.path.abspath(a.npm)
+    tarballs = sorted(glob.glob(os.path.join(npm_dir, "fenvix-[0-9]*.tgz")) +
+                      glob.glob(os.path.join(npm_dir, f"fenvix-{triple}-*.tgz")))
+    r.check("npm_tarballs_found", len(tarballs) == 2, tarballs)
     rc, out = r.sh("npm-install-fenvix", ["npm", "install", "--no-audit", "--no-fund", "--no-save", "--no-package-lock",
                                           *tarballs], cwd=proj)
     r.check("npm_install", rc == 0, out.strip().splitlines()[-1:] if out else "")
