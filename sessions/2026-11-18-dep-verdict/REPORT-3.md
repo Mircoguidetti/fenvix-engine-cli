@@ -231,7 +231,7 @@ What moved against REPORT-2, by repository (checked in the rows):
   `/proc` reads at import time again (R-023b N1), so those tests are refused.
 - **esphome 82% → 79%**: the prefix rule.
 
-## Gates (Python 3.13, this container)
+## Gates (Python 3.13, this container, at 9b20f6a)
 
 | gate | result |
 |---|---|
@@ -240,7 +240,7 @@ What moved against REPORT-2, by repository (checked in the rows):
 | `harness/culprit/review_r019c/test_cache_stale_reuse.py` (R-019c, unchanged) | 15 passed (10 failed at 32ebfbb) |
 | `tests/test_review_r023b.py` `test_3_*` (R-023b absent inputs) | 9 passed serially, 9 under `-n 2` |
 | this round's tests: `test_dep_verdict_r020b_fixes.py`, `test_proofcache_import_lookups.py` (serial and `-n 2`), `test_dep_verdict_distid.py`, `test_dep_verdict_r020_fixes.py` | all pass |
-| full suite `pytest tests harness/culprit/review_r019c/test_cache_stale_reuse.py` | 768 passed, 10 skipped, 7 failed (below) |
+| full suite `pytest tests harness/culprit/review_r019c/test_cache_stale_reuse.py` | 769 passed, 10 skipped, 7 failed (below) |
 | `cargo test` | 111 + 1 passed |
 
 The 7 failures:
@@ -256,8 +256,10 @@ The 7 failures:
 
 ## Open
 
-1. The 6 `-n` tests above: the parallel round's carried-set change. This branch is merged into
-   `claude/parallel-proof-3` for it.
+1. The 6 `-n` tests above: the parallel round's carried-set rule. That rule has since landed on
+   `claude/parallel-proof-3` (7dde86f, 6eb328e, 56b2ad3), which merged this branch's ee1d06c onto it (e1f4527).
+   Not yet there: 9b20f6a (the site-packages lookup fix), and the gates of this report are not re-run on that tip
+   (6df4461 at writing).
 2. As in REPORT-2: order dependence through reuse (LIMITS O4); C code installed as a dependency (S1).
 3. The importable digest's coarseness on commits that add or remove modules in a searched directory (measured
    once above). Per-name checks with per-directory compaction were the alternative: they were slower to record.
