@@ -99,6 +99,9 @@ def test_repro_prints_cause_seed_order_and_replay_command(project):
     bundle = line.split("fenvix replay ", 1)[1].strip()
     data = json.loads((project / bundle / "bundle.json").read_text())
     assert data["runner"] == "pytest" and data["status"] == "reproduced"
+    # G-0178 / G-0991: the first divergent event against the passing run names the polluter, not an unrelated event
+    assert data["divergence"]["reason"] == "order", data["divergence"]
+    assert "tests/test_o.py::test_polluter" in data["divergence"]["description"], data["divergence"]
     # the replay command works as printed, and says what it found in a sentence (G-2020)
     r = fx("replay", bundle, "--runs", "3", cwd=project)
     assert r.returncode == 0, r.stdout + r.stderr
