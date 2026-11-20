@@ -18,7 +18,7 @@ verifier shows the exact event where the runs diverge.
 ## Install
 
 The engine ships as one versioned artifact for our machines (Linux x86_64, glibc 2.28+, CPython 3.12-3.14,
-Node 22/24/26), published by the trunk CI on every merge as a GitHub pre-release with its sha256:
+Node 22/24/26), published by every full trunk CI run (nightly or by hand) as a GitHub pre-release with its sha256:
 
 ```bash
 tar xzf fenvix-engine-<version>-<build>-linux-x86_64.tar.gz

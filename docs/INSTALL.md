@@ -1,7 +1,7 @@
 # Installing the fenvix engine
 
 The go-live runs on our machines only. The engine ships as **one versioned artifact** for them, built and tested by
-the trunk CI (`.github/workflows/release-1.yml`) on every merge into `claude/release-1` and published as a GitHub
+the trunk CI (`.github/workflows/release-1.yml`) on every full run of `claude/release-1` (nightly, or by hand) and published as a GitHub
 pre-release with a stable URL:
 
     https://github.com/Mircoguidetti/fenvix-engine-cli/releases/download/engine-<version>-r<run>.<sha7>/fenvix-engine-<version>-r<run>.<sha7>-linux-x86_64.tar.gz

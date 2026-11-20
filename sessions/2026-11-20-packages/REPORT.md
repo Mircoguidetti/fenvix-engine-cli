@@ -29,12 +29,13 @@ True now (code on the branch; CI evidence in section 2):
 - **Platform floor glibc 2.28**: `release/check_floor.py` fails the build if any native file needs a newer glibc
   symbol (MEASURED locally: wheel and addon max `GLIBC_2.28`; the former build method gives `GLIBC_2.34` and is
   rejected by the same check).
-- **Published on every merge**: job `publish-engine` (push to `claude/release-1`, after build, python, node, smoke
-  and install pass) runs `release/engine/publish.sh`, which creates the GitHub pre-release
+- **Published by every FULL run of the trunk** (nightly `schedule`, or "Run workflow" with depth `full` on
+  `claude/release-1`): job `publish-engine` (after build, python, node, smoke and install pass) runs
+  `release/engine/publish.sh`, which creates the GitHub pre-release
   `engine-<version>-r<run>.<sha7>` with the tarball and its `.sha256` at the stable URL
   `https://github.com/Mircoguidetti/fenvix-engine-cli/releases/download/<tag>/<file>`. On every pull request the
-  same script runs with `--dry-run` (job `publish-engine-dry-run`): every check, the tag, URL and notes; only the
-  release is not created.
+  same script runs with `--dry-run`: every check, the tag, URL and notes; only the
+  release is not created. The dry run is a step of the job `build` on every pull request.
 - **Runner image pins URL + sha256 and fails closed**: `release/engine/fetch.sh URL SHA256 DEST` downloads, compares
   the sha256 and only then unpacks; another checksum, no checksum, a download error or an archive with absolute or
   `..` paths installs nothing (test `test_runner_image_fetch_is_pinned_and_fails_closed`; the dry run also proves it
@@ -68,8 +69,16 @@ True now:
   pytest-django) and the tests that need numpy, time-machine, hypothesis or pytest-benchmark run in their own
   environments instead of being skipped (G-0010; each group in its own venv because auto-loaded plugins change
   the main suites: MEASURED: with them all installed into the main environment, 3.13 had 32 failures in run 44719938120, 6 of
-  them from a since-fixed test of this branch, against 1 on the trunk in run 44714888645). Locally (3.13): runner files 143 passed / 1 skipped; numpy + time-machine group 30 passed; hypothesis
-  + benchmark group 3 passed.
+  them from a since-fixed test of this branch, against 1 on the trunk in run 44714888645). Locally (3.13, clean venv
+  as in CI): `tests/test_runners*.py` 205 passed / 2 skipped; numpy + time-machine group 30 passed; hypothesis +
+  benchmark group 3 passed.
+- **Runner tests that failed once their library was installed** (G-0010 exposed them; full run 44756797015, 3.12
+  and 3.13): `test_runners_ward.py::test_module_and_global_fixture_reads_are_inputs_of_their_users` and
+  `::test_a_suite_run_inside_a_test_is_that_tests_code`. Cause (this branch, G-2194): the runner driver wrote
+  `.detpy/.gitignore` after the input capture had started, so the session recorded its own write in the project and
+  nothing was reused. Fixed in `detpy/runners/driver.py` (the state directory is marked before the capture starts);
+  both tests are the regression tests, neither skipped nor xfailed (MEASURED locally: with the write after the capture
+  2 failed / 30 passed, after the fix 32 passed). The pytest plugin already wrote it before its capture.
 - Install test on 3.12 (glibc 2.28, pytest 8.1), 3.13, 3.14.
 - **Below 3.12: refused, never a crash** (`detpy/_support.py`, decided before the native core is imported):
   `install.sh` exits 4 with "fenvix: needs CPython 3.12, 3.13 or 3.14 (default build); … is cpython 3.11"; a copy
@@ -110,10 +119,12 @@ True now:
 
 ### CI load (coordinator tasks of 2026-11-20, founder decisions)
 
-- The gate (`release-1.yml`) runs on pull requests into `claude/release-1` (required before merge), on merges into
-  it (each publishes its engine artifact) and by hand (`workflow_dispatch`); pushes to session branches run no gate.
-  One job per Python version (3.12, 3.13, 3.14) and per Node version (22, 24, 26), each the complete suite: no
-  sharding (founder decision: 20, then 40 concurrent jobs; more jobs would queue more). A sharded variant with a
+- The gate (`release-1.yml`, merged as PR #6 rule) has two depths of the same jobs, no sharding:
+  - LIGHT on every pull request into `claude/release-1` and every merge into it: build, Python 3.13 full suite,
+    Node 24 full suite, smoke python/node (5 jobs);
+  - FULL by hand (`workflow_dispatch`, depth `full`) and nightly (`schedule`): Python 3.12/3.13/3.14, Node 22/24/26,
+    smoke, the 4 install containers and, on the trunk, `publish-engine` (12 jobs);
+  - pushes to session branches run no gate. Sharding (founder decision: 20, then 40 concurrent jobs; more jobs would queue more). A sharded variant with a
   coverage check and a serial-vs-sharded proof was built (commit 3483da1) and withdrawn by that decision before its
   run finished (run 44743656144, cancelled); nothing of it remains.
 - Concurrency: one group per event and ref; on a pull request a new head cancels that pull request's older gate run,
@@ -168,6 +179,7 @@ where known).
 | G-2171, G-2173, G-2174, G-2175, G-2176 Node CLI | FIXED | `node/test/platform.test.js` |
 | G-2172 npm package fields | OUT | no npm package (founder decision) |
 | G-2177, G-2194 state directories dirty the checkout | FIXED | `test_state_directory_keeps_the_checkout_clean`, `platform.test.js` (.detjs) |
+| PY-03 ward tests red once ward is installed (caused by the G-2194 fix in the runner driver) | FIXED | `test_runners_ward.py::test_module_and_global_fixture_reads_are_inputs_of_their_users`, `::test_a_suite_run_inside_a_test_is_that_tests_code` |
 | G-0205, G-0242, G-0561 default branch is a Block 2 tip | FIXED (by the founder) | default branch `claude/release-1` (MEASURED via the repository API, 2026-11-20); section 4 |
 | G-0522, G-1439 names unregistered | FOUNDER / OUT | PyPI `fenvix` reserved by the founder's pending publisher; npm dropped |
 | G-0155, G-0156, G-0157, G-0158, G-0472..G-0477, G-0492..G-0495, G-0415, G-0416, G-0255, G-0526, G-0527, G-0441..G-0443, G-0723, G-1500..G-1506 macOS and Linux arm64 | OUT | founder decision; the Node loader names the supported platform; `detpy_core::host` keeps the loaded-image list of Linux in one place |
@@ -192,7 +204,8 @@ Trunk failures not in these rows (coordinator's assignment): `test_proofcache_fo
 
 Il go-live gira solo sulle nostre macchine: niente PyPI, niente npm, niente macOS/arm64.
 
-1. **Artefatto del motore**: ogni merge in `claude/release-1` pubblica una pre-release GitHub
+1. **Artefatto del motore**: ogni run FULL di `claude/release-1` (notturno, o "Run workflow" con depth `full`)
+   pubblica una pre-release GitHub
    `engine-<versione>-r<run>.<sha7>` con `fenvix-engine-…-linux-x86_64.tar.gz` e il suo `.sha256`. L'immagine del
    runner deve fissare **URL e sha256** di una precisa release (variabili `FENVIX_ENGINE_URL` e
    `FENVIX_ENGINE_SHA256` di `runner/bootstrap.sh`) e installarla con `release/engine/fetch.sh`, che rifiuta
