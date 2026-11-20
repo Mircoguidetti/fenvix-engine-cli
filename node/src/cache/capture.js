@@ -1506,10 +1506,16 @@ const ENV_PROXIES = new WeakMap();
  * `v8.serialize` and `postMessage` retry with the real environment in its place (which reads all of it), so they
  * succeed or fail as without the cache; `util.types.isProxy` answers for the real environment object.
  */
+const ENV_CAPS = new WeakMap(); // recording environment object -> the capture it reports to
 function installEnv(cap, proc) {
   const env = proc.env;
-  if (env && ENV_PROXIES.has(env)) return;
-  const real = env;
+  let real = env;
+  if (env && ENV_PROXIES.has(env)) {
+    // Level 0's own object (--det without the cache, installed first) is replaced by the capture's: both report
+    // through the capture's (STATE.onEnvRead); never the other way round
+    if (ENV_CAPS.get(env) !== LEVEL0_CAP || cap === LEVEL0_CAP) return;
+    real = ENV_PROXIES.get(env);
+  }
   const custom = Symbol.for('nodejs.util.inspect.custom');
   const stand = Object.create(realGetProto(real));
   realDefine(stand, custom, {
@@ -1544,6 +1550,7 @@ function installEnv(cap, proc) {
   try {
     const p = new Proxy(stand, handler);
     ENV_PROXIES.set(p, real);
+    ENV_CAPS.set(p, cap);
     proc.env = p;
     if (proc.env !== p) realDefine(proc, 'env', { value: p, writable: true, configurable: true, enumerable: true });
   } catch { cap.notes.add('process.env not replaceable: environment reads not captured'); }
@@ -1584,7 +1591,7 @@ function unproxyEnv(cap, v) {
   const walk = (x, depth) => {
     if (x === null || typeof x !== 'object' || depth > 1000) return x;
     const realEnv = ENV_PROXIES.get(x);
-    if (realEnv !== undefined) { found = true; cap.env('*'); return realEnv; }
+    if (realEnv !== undefined) { found = true; (ENV_CAPS.get(x) || cap).env('*'); if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', realEnv); return realEnv; }
     if (memo.has(x)) return memo.get(x);
     if (Array.isArray(x)) {
       const out = new Array(x.length);
