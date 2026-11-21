@@ -75,7 +75,8 @@ What the per-file mode guarantees (coordinator's conditions):
   earlier test for any test without an entry) was tried first and MEASURED too costly locally: about 20 tests per
   interpreter of detpy's own suites lost all reuse (one failing test at the end of a file or process reran
   everything before it), so it was not pushed. P1 and P2 copied in, cold and warm, and the polluter fixed:
-  `test_r050_p2_...` (also checks the victim's kept needs), `test_r050_p1_...`;
+  `test_r050_p2_...` (also checks the victim's kept needs), `test_r050_p1_...`,
+  `test_r050_a_late_failure_keeps_the_earlier_independent_tests_reused[serial,n2]` (warm: 2 reused, 1 ran);
   `test_in_process_is_the_default_under_the_cache_and_per_file_is_a_choice`.
   Tests that asserted the unsound reuse of a predecessor of a failing, never-cacheable or new test now expect it to
   run, each with the reason in a comment: `test_py08_a_test_that_starts_a_process_runs_every_time`,

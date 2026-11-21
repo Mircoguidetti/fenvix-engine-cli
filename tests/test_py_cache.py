@@ -1159,3 +1159,20 @@ def test_r050_p1_a_real_failure_stays_failed(tmp_path):
         p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")
         assert p.returncode == 1 and o.get("tests/test_b_client.py::test_use") == "failed", p.stdout[-2000:]
         assert "PLACEMENT FINDINGS" not in p.stdout, p.stdout[-2000:]
+
+
+@pytest.mark.parametrize("par", [(), ("-n", "2")], ids=["serial", "n2"])
+def test_r050_a_late_failure_keeps_the_earlier_independent_tests_reused(tmp_path, par):
+    """Coordinator 2026-11-21 (review R-050 P2, decision (b)): a failing test keeps the carried set it ran with
+    (``loose_needs``); earlier tests outside it stay reused on the next run, serial and under -n (before (b), every
+    earlier test of its process ran again)."""
+    if par:
+        pytest.importorskip("xdist")
+    files = {"tests/test_one.py": "def test_x():\n    assert 1 + 1 == 2\n\ndef test_y():\n    assert 2 * 2 == 4\n",
+             "tests/test_two.py": "def test_late_failure():\n    assert 0\n"}
+    for label in ("cold", "warm"):
+        p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}", *par)
+        assert p.returncode == 1 and o.get("tests/test_two.py::test_late_failure") == "failed", (label, p.stdout[-2000:])
+    assert "reused 2 result(s) with proof, ran 1" in p.stdout, p.stdout[-2000:]
+    store = json.loads((tmp_path / ".c" / "proof-cache.json").read_text())
+    assert store["loose_needs"] == {"tests/test_two.py::test_late_failure": []}, store.get("loose_needs")
