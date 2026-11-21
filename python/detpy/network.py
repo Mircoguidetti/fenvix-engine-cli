@@ -152,19 +152,44 @@ def _recv_upto(peer, n: int) -> bytes:
     return bytes(buf)
 
 
-def _serve(peer, segments, label, mismatches) -> None:
+def _play(peer, segments, label, mismatches) -> bool:
+    """Play one recorded connection on ``peer``; False when the test sent another request than the recorded one."""
+    for direction, data in segments:
+        if direction == "send":
+            got = _recv_upto(peer, len(data))
+            # secret header values are compared masked (a cassette stores them masked: audit G-0167)
+            if _core.net_redact(got) != _core.net_redact(data):
+                mismatches.append((label, len(data), len(got), _core.digest(data), _core.digest(got)))
+                # the test sent another request than the recorded one: the recorded answer is not served
+                # (audit G-0166: a stale cassette answered requests it never saw); the test reads end of file
+                return False
+        else:
+            peer.sendall(data)
+    return True
+
+
+def _next_request(peer) -> bool:
+    """Wait for the client's next bytes on a kept connection without taking them; False at end of file."""
+    peer.settimeout(None)
     try:
-        for direction, data in segments:
-            if direction == "send":
-                got = _recv_upto(peer, len(data))
-                # secret header values are compared masked (a cassette stores them masked: audit G-0167)
-                if _core.net_redact(got) != _core.net_redact(data):
-                    mismatches.append((label, len(data), len(got), _core.digest(data), _core.digest(got)))
-                    # the test sent another request than the recorded one: the recorded answer is not served
-                    # (audit G-0166: a stale cassette answered requests it never saw); the test reads end of file
-                    break
-            else:
-                peer.sendall(data)
+        return bool(peer.recv(1, socket.MSG_PEEK))
+    except OSError:
+        return False
+
+
+def _serve(peer, segments, label, mismatches, continued=False) -> None:
+    try:
+        ok = _play(peer, segments, label, mismatches)
+        # a connection the server kept open (keep-alive), or a later test went on using: the client's next request
+        # belongs to the test that sends it, and is answered from that test's next recording to the same host
+        # (its continuation of the connection, Cassette.continue_in, or a connection it opened itself)
+        while ok and continued and _next_request(peer):
+            host, port = str(label).rsplit("#", 1)[0].rsplit(":", 1)
+            nxt = _core.net_next_replay(host, int(port))
+            if nxt is None:  # the running test recorded nothing more here: it reads end of file
+                break
+            label, segments, continued = nxt
+            ok = _play(peer, segments, label, mismatches)
         try:
             peer.shutdown(socket.SHUT_WR)
         except OSError:
@@ -178,7 +203,7 @@ def _serve(peer, segments, label, mismatches) -> None:
         peer.close()
 
 
-def _attach_replay(sock, segments, label: str, mismatches) -> None:
+def _attach_replay(sock, segments, label: str, mismatches, continued: bool = False) -> None:
     """Re-point ``sock`` to a socketpair whose other end plays ``segments`` (called by the Rust connect once it chose
     the recorded connection)."""
     try:  # (test, connection index) of the replayed socket: its TLS details (G-1522)
@@ -191,7 +216,7 @@ def _attach_replay(sock, segments, label: str, mismatches) -> None:
     ours.close()
     sock.settimeout(timeout)
     _core.net_set_replay(sock, label)
-    threading.Thread(target=_serve, args=(peer, segments, label, mismatches), daemon=True,
+    threading.Thread(target=_serve, args=(peer, segments, label, mismatches, continued), daemon=True,
                      name=f"detpy-replay-{label}").start()
 
 
@@ -362,14 +387,19 @@ PROXY_KEYS = ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PRO
 
 def _record_bytes(sock, direction: str, data) -> None:
     """Append bytes moved by sendmsg / recvmsg of a recorded connection (audit G-0165: they were not recorded)."""
-    if POLICY is None or POLICY.mode != "record" or not data:
+    if POLICY is None or POLICY.mode != "record":
         return
     try:
         entry = _core.net_conn_of(sock)
     except TypeError:
         return
-    if entry is not None:
-        POLICY.cassette.append(entry[0], entry[1], direction, bytes(data))
+    if entry is None:
+        return
+    if not data:
+        if direction == "recv":  # end of file: the server closed the connection, and its replay will too
+            POLICY.cassette.set_closed(entry[0], entry[1])
+        return
+    POLICY.cassette.append(entry[0], entry[1], direction, bytes(data))
 
 
 def _rec_sendmsg(self, buffers, *args, **kwargs):

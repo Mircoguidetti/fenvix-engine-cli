@@ -1103,7 +1103,7 @@ fn start_replay(
         (Some(c), Ok(ns), Ok(h), Ok(p)) => ns.to_cow().ok().map(|ns| (c, ns, h, p)),
         _ => None,
     };
-    let (idx, segments) = match fast {
+    let (idx, segments, continued) = match fast {
         Some((c, ns, h, p)) => {
             let key = (host.to_vec(), p);
             let nth = lock(&pol.maps).counters.get(&key).copied().unwrap_or(0);
@@ -1118,7 +1118,7 @@ fn start_replay(
             }
             let segs: Vec<(&str, Bound<'_, PyBytes>)> =
                 conn.segments.iter().map(|s| (s.dir.as_str(), PyBytes::new(py, &s.data))).collect();
-            (idx, PyList::new(py, segs)?)
+            (idx, PyList::new(py, segs)?, conn.keep())
         }
         None => {
             // what the cassette methods say about arguments they cannot take (or a missing cassette)
@@ -1129,13 +1129,14 @@ fn start_replay(
                 return Ok(false);
             }
             let segs = c.call_method1(intern!(py, "segments"), (nodeid, &idx))?;
-            (idx.extract()?, segs.cast_into::<PyList>().map_err(|e| PyTypeError::new_err(e.to_string()))?)
+            let continued = c.call_method1(intern!(py, "keeps_open"), (nodeid, &idx))?.is_truthy()?;
+            (idx.extract()?, segs.cast_into::<PyList>().map_err(|e| PyTypeError::new_err(e.to_string()))?, continued)
         }
     };
     let pb = fmt_bytes(py, port)?;
     let label = join3(host, &pb, &format!("#{idx}"));
     let mismatches = lock(&pol.mismatches).clone_ref(py);
-    n.g(py, intern!(py, "_attach_replay"))?.call1((sock, segments, from_wtf8(py, &label)?, mismatches))?;
+    n.g(py, intern!(py, "_attach_replay"))?.call1((sock, segments, from_wtf8(py, &label)?, mismatches, continued))?;
     record(py, "socket.connect", join3(host, &pb, &format!(" replay#{idx}")))?;
     Ok(true)
 }
@@ -1236,7 +1237,7 @@ fn payload_bytes(py: Python<'_>, p: Payload<'_, '_>) -> PyResult<Option<Vec<u8>>
 
 /// `_append(sock, direction, data)`.
 fn append(py: Python<'_>, n: &Net, sock: &Bound<'_, PyAny>, dir: Direction, p: Payload<'_, '_>) -> PyResult<()> {
-    let Some(conn) = weak_get(&CONNS, sock) else { return Ok(()) };
+    let Some(mut conn) = weak_get(&CONNS, sock) else { return Ok(()) };
     let Some(data) = payload_bytes(py, p)? else { return Ok(()) };
     let pol = n.policy(py)?;
     let Some(pol) = pol else {
@@ -1244,6 +1245,11 @@ fn append(py: Python<'_>, n: &Net, sock: &Bound<'_, PyAny>, dir: Direction, p: P
         return Ok(());
     };
     let pol = pol.get();
+    // a connection kept alive from an earlier test (requests, urllib3, httpx pools): what this test sends on it is
+    // this test's exchange, recorded under this test, so that the test replays alone or in another order
+    if dir == Direction::Send {
+        conn = continued_conn(py, pol, sock, conn)?;
+    }
     if let (Some(c), Some(ns)) = (&pol.cassette, &conn.nodeid_s) {
         let r = c.bind(py).borrow();
         let mut cas = lock(&r.inner);
@@ -1256,6 +1262,74 @@ fn append(py: Python<'_>, n: &Net, sock: &Bound<'_, PyAny>, dir: Direction, p: P
         (conn.nodeid.bind(py), conn.idx, dir.as_str(), PyBytes::new(py, &data)),
     )?;
     Ok(())
+}
+
+/// The server closed the connection (a read returned end of file): its replay ends with end of file too.
+fn note_eof(py: Python<'_>, n: &Net, sock: &Bound<'_, PyAny>) -> PyResult<()> {
+    let Some(conn) = weak_get(&CONNS, sock) else { return Ok(()) };
+    let Some(pol) = n.policy(py)? else { return Ok(()) };
+    let pol = pol.get();
+    if let (Some(c), Some(ns)) = (&pol.cassette, &conn.nodeid_s) {
+        let r = c.bind(py).borrow();
+        let mut cas = lock(&r.inner);
+        if let Some(k) = cas.connection_mut(ns, conn.idx) {
+            k.kept_open = false;
+        }
+    }
+    Ok(())
+}
+
+fn is_eof(r: &Bound<'_, PyAny>) -> bool {
+    r.cast::<PyBytes>().is_ok_and(|b| b.as_bytes().is_empty()) || exact_int(r) == Some(0)
+}
+
+/// `conn`, or, when the running test is not the one that opened it, its continuation under the running test
+/// (`Cassette::continue_in`), registered for `sock`.
+fn continued_conn(py: Python<'_>, pol: &NetPolicy, sock: &Bound<'_, PyAny>, conn: Conn) -> PyResult<Conn> {
+    let (Some(c), Some(owner)) = (&pol.cassette, &conn.nodeid_s) else { return Ok(conn) };
+    let nodeid = state_attr(py, intern!(py, "nodeid"))?;
+    let Ok(Ok(now)) = nodeid.cast::<PyString>().map(|s| s.to_cow()) else { return Ok(conn) };
+    if now.as_ref() == owner.as_ref() {
+        return Ok(conn);
+    }
+    let idx = {
+        let r = c.bind(py).borrow();
+        let mut cas = lock(&r.inner);
+        match cas.continue_in(owner, conn.idx, &now) {
+            Some(i) => i,
+            None => return Ok(conn),
+        }
+    };
+    let next = Conn { nodeid: Arc::new(nodeid.clone().unbind()), nodeid_s: Some(Arc::from(now.as_ref())), idx };
+    weak_set(&CONNS, sock, next.clone())?;
+    Ok(next)
+}
+
+/// The replay of a connection kept alive across tests (`network._serve`): the next recorded connection of the
+/// running test to `host:port` (counted as a connect would be), as `(label, segments, continued)`; None if there is
+/// none.
+#[pyfunction]
+fn net_next_replay<'py>(py: Python<'py>, host: &str, port: u16) -> PyResult<Option<(String, Bound<'py, PyList>, bool)>> {
+    let n = net()?;
+    let Some(pol) = n.policy(py)? else { return Ok(None) };
+    let pol = pol.get();
+    let Some(c) = &pol.cassette else { return Ok(None) };
+    let nodeid = state_attr(py, intern!(py, "nodeid"))?;
+    let Ok(Ok(ns)) = nodeid.cast::<PyString>().map(|s| s.to_cow()) else { return Ok(None) };
+    let key = (host.as_bytes().to_vec(), port);
+    let nth = lock(&pol.maps).counters.get(&key).copied().unwrap_or(0);
+    let r = c.bind(py).borrow();
+    let cas = lock(&r.inner);
+    let Some((idx, conn)) = cas.find(&ns, host, port, nth) else { return Ok(None) };
+    {
+        let mut m = lock(&pol.maps);
+        if m.counters.insert(key.clone(), nth + 1).is_none() {
+            m.counter_order.push(key);
+        }
+    }
+    let segs: Vec<(&str, Bound<'_, PyBytes>)> =
+        conn.segments.iter().map(|s| (s.dir.as_str(), PyBytes::new(py, &s.data))).collect();
+    Ok(Some((format!("{host}:{port}#{idx}"), PyList::new(py, segs)?, conn.keep())))
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -1381,6 +1455,9 @@ fn m_recv<'py>(py: Python<'py>, a: Args<'_, 'py>) -> PyResult<Bound<'py, PyAny>>
     let flags = flags.unwrap_or_else(|| zero(py));
     let n = net()?;
     let data = n.g(py, intern!(py, "_real_recv"))?.call1((&slf, bufsize, flags))?;
+    if is_eof(&data) {
+        note_eof(py, &n, &slf)?;
+    }
     append(py, &n, &slf, Direction::Recv, Payload::Whole(&data))?;
     Ok(data)
 }
@@ -1392,6 +1469,9 @@ fn m_recv_into<'py>(py: Python<'py>, a: Args<'_, 'py>) -> PyResult<Bound<'py, Py
     let flags = flags.unwrap_or_else(|| zero(py));
     let n = net()?;
     let r = n.g(py, intern!(py, "_real_recv_into"))?.call1((&slf, &buffer, nbytes, flags))?;
+    if is_eof(&r) {
+        note_eof(py, &n, &slf)?;
+    }
     append(py, &n, &slf, Direction::Recv, Payload::Prefix(&buffer, &r))?;
     Ok(r)
 }
@@ -1415,6 +1495,9 @@ fn m_ssl_read<'py>(py: Python<'py>, a: Args<'_, 'py>) -> PyResult<Bound<'py, PyA
     let buffer = buffer.unwrap_or_else(|| py.None().into_bound(py));
     let n = net()?;
     let r = n.g(py, intern!(py, "_real_ssl_read"))?.call1((&slf, len, &buffer))?;
+    if is_eof(&r) {
+        note_eof(py, &n, &slf)?;
+    }
     if buffer.is_none() {
         append(py, &n, &slf, Direction::Recv, Payload::Whole(&r))?;
     } else {
@@ -1871,6 +1954,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
         wrap_pyfunction!(net_conn_tls, m)?,
         wrap_pyfunction!(net_set_replay, m)?,
         wrap_pyfunction!(net_is_replayed, m)?,
+        wrap_pyfunction!(net_next_replay, m)?,
         wrap_pyfunction!(net_is_local_name, m)?,
         wrap_pyfunction!(net_is_ip, m)?,
         wrap_pyfunction!(net_ip_address, m)?,

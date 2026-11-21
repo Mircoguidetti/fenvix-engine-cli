@@ -397,3 +397,67 @@ def test_native_network_clients_are_never_identical(tmp_path):
     assert by["test_db"]["divergence"]["reason"] == "native", by["test_db"]
     assert by["test_curl"]["divergence"]["reason"] == "native", by["test_curl"]
     assert by["test_plain"]["status"] == "stable"
+
+
+class _KeepAlive(http.server.BaseHTTPRequestHandler):
+    """HTTP/1.1 with keep-alive: one connection serves several requests (requests, urllib3 and httpx pools)."""
+
+    protocol_version = "HTTP/1.1"
+
+    def do_GET(self):
+        body = json.dumps({"path": self.path}).encode()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *a):
+        pass
+
+
+KEPT = '''
+import http.client, json, os, urllib.parse
+
+_PROXY = urllib.parse.urlsplit(os.environ["HTTP_PROXY"])
+CONN = {}
+
+def _get(path):
+    # one connection for the module, opened by the first test that needs it and kept alive for the next one
+    if "c" not in CONN:
+        CONN["c"] = http.client.HTTPConnection(_PROXY.hostname, _PROXY.port, timeout=5)
+    c = CONN["c"]
+    c.request("GET", "http://api.example.invalid" + path)
+    return json.loads(c.getresponse().read())["path"]
+
+def test_a():
+    assert _get("/a") == "http://api.example.invalid/a"
+
+def test_b():
+    assert _get("/b") == "http://api.example.invalid/b"
+'''
+
+
+def test_a_connection_kept_alive_across_tests_replays_each_test_alone_and_in_any_order(pytester, run_det, monkeypatch):
+    """exam F-01.probe.cassette: test b's request goes over the connection test a opened. It is recorded under b
+    (the connection continues in b), so b replays alone and the tests replay in another order; the full run still
+    replays over the one kept connection."""
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _KeepAlive)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{srv.server_port}")
+    pytester.makepyfile(test_k=KEPT)
+    cassette = pytester.path / "cassette.json"
+    try:
+        rec, _ = run_det(f"--det-cassette={cassette}", "--det-record")
+        rec.assert_outcomes(passed=2)
+    finally:
+        srv.shutdown()
+        srv.server_close()
+    tests = json.loads(cassette.read_text())["tests"]
+    a, b = tests["test_k.py::test_a"], tests["test_k.py::test_b"]
+    assert len(a) == 1 and a[0].get("continued") is True, a
+    assert len(b) == 1 and not b[0].get("continued") and b"/b" in __import__("base64").b64decode(b[0]["segments"][0]["data"]), b
+    run_det(f"--det-cassette={cassette}")[0].assert_outcomes(passed=2)
+    run_det(f"--det-cassette={cassette}", "test_k.py::test_b")[0].assert_outcomes(passed=1)
+    order = pytester.path / "order.txt"
+    order.write_text("test_k.py::test_b\ntest_k.py::test_a\n")
+    run_det(f"--det-cassette={cassette}", f"--det-order={order}")[0].assert_outcomes(passed=2)
