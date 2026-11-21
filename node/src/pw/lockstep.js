@@ -1376,7 +1376,7 @@ class Coordinator {
         // idle: the same as below
       }
       const a = this.multi ? { kind: 'idle' } : this.sched.next();
-      this.trace(`${a.kind} ${a.kind === 'release' ? (this.msgs.get(a.id) || {}).key : a.kind === 'advance' ? `to=${a.toNs / NS} rs=${rs.state}/${rs.why} calls=${CALLS.inflight}[${[...CALLS.byMethod.keys()]}] rn=${this.clock.nextDue() === null ? '-' : this.clock.nextDue() / NS} srv=${srvNext === null ? '-' : srvNext / NS}/${srvWait} holds=${this.holds.length}` : ''}`);
+      this.trace(`${a.kind} ${a.kind === 'release' ? (this.msgs.get(a.id) || {}).key : a.kind === 'advance' ? `to=${a.toNs / NS} rs=${rs.state}/${rs.why} calls=${CALLS.inflight}[${[...CALLS.byMethod.keys()]}]${CALLS.closing > 0 ? ` cdp=[${[...CDP.out.values()].filter((c) => !c.own).map((c) => c.method)}] act=${ACT.n}` : ''} rn=${this.clock.nextDue() === null ? '-' : this.clock.nextDue() / NS} srv=${srvNext === null ? '-' : srvNext / NS}/${srvWait} holds=${this.holds.length}` : ''}`);
       if (a.kind === 'release') {
         const m = this.msgs.get(a.id);
         const info = { fault: a.fault, latencyNs: a.latencyNs, decision: a.decision };
