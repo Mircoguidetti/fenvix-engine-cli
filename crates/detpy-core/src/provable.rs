@@ -669,6 +669,30 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
         return Accounting::Unaccounted;
     }
     match m {
+        // Context propagation across an async boundary. The module was in the enumerated list with NOT ONE export
+        // named, which means default-deny answered for all of them -- correct by construction and very expensive:
+        // Node's own stream internals construct an `AsyncResource`, so every test that read a file through
+        // `fs.createReadStream` was NOT PROVEN and was never cached. MEASURED on this branch before this arm
+        // (node/test/cache.test.js, "content read, read-write open, stream, listing, existence and link target
+        // are inputs"): "a Level 0 control could not be installed: not accounted for: api:async_hooks.AsyncResource",
+        // one file re-running instead of being reused, on both the Vitest and the Jest leg. `node:test` itself
+        // reaches it through `Test.runInAsyncScope`.
+        //
+        // What these do is carry the CALLER's context into a callback or a continuation: they move a value that is
+        // already in this process from one place in it to another. They read nothing outside the process and they
+        // pin nothing, which is `Pure`.
+        //
+        // What stays refused, and why, because this is the line that matters here: `createHook` observes every
+        // async resource the runtime creates, and `executionAsyncId` / `triggerAsyncId` /
+        // `executionAsyncResource` hand the test the ids the runtime assigned. Those are the engine's own
+        // scheduling, which no run input pins and no event records, so a test that asks for one is NOT PROVEN.
+        "async_hooks" => match export {
+            "AsyncResource" | "AsyncLocalStorage" | "asyncWrapProviders" | "runInAsyncScope" | "emitDestroy"
+            | "bind" | "snapshot" | "run" | "exit" | "enterWith" | "getStore" | "disable" | "enable" => {
+                Accounting::Pure
+            }
+            _ => Accounting::Unaccounted,
+        },
         "os" => match export {
             // the engine's `facts.js` records what these answered, and `--det` pins the volatile ones
             "hostname" | "userInfo" | "homedir" | "tmpdir" | "networkInterfaces" | "availableParallelism"
