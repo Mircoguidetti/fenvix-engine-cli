@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "running",
- "run_id": "44783946608",
- "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
- "setup_s": 718,
+ "run_id": "44909741100",
+ "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
+ "setup_s": 330,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -36,8 +36,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T17:50:00Z",
- "measured_at": "2026-11-20T17:50:27Z",
+ "epoch": "2026-11-21T13:52:00Z",
+ "measured_at": "2026-11-21T13:52:17Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
   "seeds": 8,
@@ -502,6 +502,24 @@
     "replay_errors": [],
     "fingerprints": null,
     "reproduced": false
+   }
+  ],
+  "runs": [
+   {
+    "label": "h-reset-s1",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": " inside circular dependency\n(node:23746) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\nF\u25c7 injected env (0) from ../../.env // tip: \u25c8 secrets for agents [www.dotenvx.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 enable debugging { debug: true }\n\u25c7 injected env (0) from ../../.env.test // tip: \u25c8 secrets for agents [www.dotenvx.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:25341) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:25341) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25341) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n"
+   },
+   {
+    "label": "h-reset-s2",
+    "rc": "timeout",
+    "wall_s": 2701.1,
+    "counts": {},
+    "error": "",
+    "log_tail": "cular dependency\n(node:42544) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\nF\u25c7 injected env (0) from ../../.env // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 override existing { override: true }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2301 auth for agents [www.vestauth.com]\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:43933) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:43933) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:43933) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n"
    }
   ]
  }
