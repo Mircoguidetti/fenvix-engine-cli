@@ -124,6 +124,10 @@ on the earlier tests of its process whose state it may have consumed (its carrie
 ran, and those tests run before it whenever it runs; a new test runs after every earlier test of its process. Cost:
 a failing or never-cacheable test reruns the tests of its carried set, every earlier test of the process when it
 reached a library; the reuse share this costs on moto and litellm is UNKNOWN until measured.
+A test whose test file, or the test file of any earlier test of its process, changed since its result was recorded
+is not reused, and every earlier test of its process runs before it (review R-052: its stored needs were computed
+from the old code). Cost: an edit to a test file reruns every later test of its process (worker), and their
+predecessors.
 
 `--det-isolate` (one child per test file, or per test) is an explicit choice: no in-process state crosses files.
 

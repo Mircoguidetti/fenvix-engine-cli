@@ -65,6 +65,15 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ### F-05 cache with proof (serial and -n), with receipts
 
+* **Review R-052 (blocking, wrong results S1, S3, S5, C3, C5), fixed.** Stored needs (entry or `loose_needs`) were
+  trusted after a test file changed: an earlier test edited to write state (a module's dict, the recursion limit, a
+  file through a child process) left a later test reused as passed; a victim edited to read it ran with its old needs
+  while the writer was reused. Now a per-test digest of the contents of the test files at or before it in its process
+  (`code-prefix.json`, every mode: serial, per file, the -n controller's worker lists) is compared with the one stored
+  when it last ran: changed or unknown, the test is not reused and its needs are every earlier test
+  (`_proof.py: code_prefix_stale`). C5 (a child process's write) is covered by this rule when the writer's code
+  changed; a writer whose code did not change starts a process, so it is never reused and runs every time.
+  `tests/test_review_r052_pycache.py` copied in (S1, S3, C3, C5). Cost in LIMITS 10.
 * **Review R-050 P2 (blocking, wrong result), fixed.** `tests/test_review_r050_pycache.py` (claude/review-p1-packages
   c5f9c39): an earlier file pollutes shared state; plain pytest and `--det` fail the victim, `--det-cache` reported
   "2 passed". Two fixes: (1) the in-process default above; (2) a hole of the in-process mode too, trunk included: a

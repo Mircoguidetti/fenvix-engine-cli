@@ -1288,7 +1288,55 @@ class ProofSession:
             if self._is_hit(n) and self.prefix_stored.get(n) != now[n]:
                 self._demote(n, f"placement: the tests before it in its {where} are not those it was recorded after")
 
+    CODE_PREFIX_FILE = "code-prefix.json"
+
+    def code_prefix_stale(self, lists) -> set:
+        """Review R-052: per test, the digest of the contents of the distinct test files at or before it in its process
+        (``lists``: the tests of each process, in order); the tests whose digest differs from the one stored when they
+        last ran (unknown: stale)."""
+        import hashlib
+
+        content: dict = {}
+
+        def digest_of(rel):
+            if rel not in content:
+                try:
+                    with open(os.path.join(self.root, rel), "rb") as fh:
+                        content[rel] = hashlib.blake2b(fh.read(), digest_size=12).hexdigest()
+                except OSError:
+                    content[rel] = "?"
+            return content[rel]
+
+        def compute():
+            now = {}
+            for lst in lists:
+                h = hashlib.blake2b(digest_size=12)
+                done = set()
+                for n in lst:
+                    rel = n.split("::", 1)[0]
+                    if rel not in done:
+                        done.add(rel)
+                        h.update(f"{rel}\0{digest_of(rel)}\0".encode())
+                    now[n] = h.copy().hexdigest()
+            return now
+
+        now = _core.detpy_probe_call(compute)
+        if getattr(self, "code_prefix_stored", None) is None:
+            stored = self.engine_json_load(os.path.join(self.dir, self.CODE_PREFIX_FILE))
+            self.code_prefix_stored = stored if isinstance(stored, dict) else {}
+        self.code_prefix_now = {**getattr(self, "code_prefix_now", {}), **now}
+        return {n for n, d in now.items() if self.code_prefix_stored.get(n) != d}
+
+    def code_prefix_save(self) -> None:
+        now = getattr(self, "code_prefix_now", None)
+        if not now:
+            return
+        stored = dict(getattr(self, "code_prefix_stored", None) or {})
+        stored.update({n: d for n, d in now.items() if not self._is_hit(n)})
+        self.engine_json_save(os.path.join(self.dir, self.CODE_PREFIX_FILE), stored)
+
     def prefix_save(self) -> None:
+        self.code_prefix_save()
         self.import_effects_save()
         now = getattr(self, "prefix_now", None)
         scope = getattr(self, "prefix_scope", None)
@@ -1318,6 +1366,16 @@ class ProofSession:
             lists = list(files.values())
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
+        # review R-052 (S1, S3, S5, C3, C5): stored needs were computed from the code as it was; when the test file of
+        # the test or of an earlier test of its process changed since, they may be stale (an earlier test now writes
+        # the state this one reads). Such a test is not reused, and its needs are unknown: every earlier test runs.
+        stale = self.code_prefix_stale(lists)
+        for n in ids:
+            if n in stale:
+                needs[n] = None
+                if self._is_hit(n) and self._demote(n, "code: a test file at or before it in its process changed (its "
+                                                       "stored needs may be stale)"):
+                    out.append(n)
         # review R-050 P2: a test with no entry has the needs it had when it last ran (a failure, a refusal), or every
         # earlier test when it never ran (``Store::needs_of``): the polluter of an earlier file was reused, not run,
         # and the victim passed
