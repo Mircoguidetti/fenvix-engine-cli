@@ -13,6 +13,7 @@ const clock = require('./clock');
 const seeds = require('./seeds');
 const fsorder = require('./fsorder');
 const network = require('./network');
+const { ENV_LOADED } = require('./outside');
 
 const PATCHER = new Patcher();
 let processInstalled = false;
@@ -36,6 +37,8 @@ function installProcess() {
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
+  // the installed dependencies the run loads (`inputs.deps`, review R-055 V5)
+  require('./loaded').installProcess(c.dir);
   // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
   volatile.pinEnv();
   PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
@@ -74,10 +77,42 @@ const OWN_ENV = /^(?:DETJS(?:$|_)|FENVIX_CACHE_)/;
 // no test's event: its name goes to <run dir>/envout/<pid>.txt, the header lists it (src/session.js), and the
 // verifier counts it as read by every test (R-054 N1); '*' for an enumeration
 const outsideSeen = new Set();
+// A CI-volatile variable that stays as it is (volatile.KEPT, not pinned), or a proxy variable while the network is
+// closed: its value is no run input, so a test that reads it cannot be proven identical (review R-055 V1, V2,
+// docs/VERIFY-CONTRACT.md section 3). A project's own FENVIX_VOLATILE_ENV names are declared irrelevant by the project
+// and get no mark; engine variables neither.
+const KEPT = new Set(volatile.KEPT.filter((k) => !(k in volatile.PINNED) && k !== 'FENVIX_VOLATILE_ENV'));
+function unproven(name, realEnv) {
+  if (name === '*') return Object.keys(realEnv || process.env).some((n) => unproven(n));
+  if (KEPT.has(name)) return true;
+  const c = STATE.config;
+  return volatile.PROXY_ENV.has(name) && !!c && c.controls.has('net') && String(STATE.netMode) !== 'record';
+}
+function projectSite() {
+  const c = STATE.config;
+  if (!c || !c.sites) return true;
+  const site = sites.resolve();
+  return site !== null && !site.startsWith('<');
+}
+const npSeen = new Set();
+function noteNotProven(entry) {
+  if (npSeen.has(entry)) return;
+  const c = cfg();
+  if (!c || !c.dir) return;
+  npSeen.add(entry);
+  STATE.quietDepth++;
+  try {
+    const dir = path.join(c.dir, 'npout');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${entry}\n`);
+  } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
+}
 function noteOutside(op, k) {
   if (STATE.quietDepth > 0) return;
   const name = op === 'env.list' ? '*' : String(k);
   if (name !== '*' && OWN_ENV.test(name)) return;
+  // only the project's own code (not the runner copying the environment for a test file, not a package)
+  if (STATE.quiet(() => unproven(name) && projectSite())) noteNotProven(`env:${name}`);
   if (outsideSeen.has(name)) return;
   const c = cfg();
   if (!c || !c.dir) return;
@@ -148,13 +183,16 @@ function installEnvRecord(proc) {
         if (op === 'env.list') {
           const names = Object.keys(realEnv).filter((n) => !OWN_ENV.test(n)).sort();
           value = `${names.length}:${native.digest(Buffer.from(names.join('\u0000'))).slice(0, 12)}`;
-        } else if (op === 'env.has') {
-          value = `${k}=${Object.prototype.hasOwnProperty.call(realEnv, k) ? 'set' : 'unset'}`;
+        } else if (ENV_LOADED.has(k) && Object.prototype.hasOwnProperty.call(realEnv, k)) {
+          // set by process.loadEnvFile: no run input, so its value is part of the event (review R-055 V16)
+          value = `${k}=${native.digest(Buffer.from(`${k}=${realEnv[k]}`)).slice(0, 16)}`;
         } else {
           value = `${k}=${Object.prototype.hasOwnProperty.call(realEnv, k) ? 'set' : 'unset'}`;
         }
       } finally { STATE.quietDepth--; }
       STATE.recordAt('other', op, site, value);
+      const name = op === 'env.list' ? '*' : k;
+      if (STATE.quiet(() => unproven(name, realEnv))) STATE.recordAt('other', 'uncontrolled.env', site, name);
     };
   }
   try { require('./cache/capture').installLevel0Env(proc); } catch (e) { level0Gap(`env: ${e && e.message}`, false); }

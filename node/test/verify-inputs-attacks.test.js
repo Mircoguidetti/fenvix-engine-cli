@@ -58,9 +58,35 @@ const CASES = {
   'hostname': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import os from 'node:os';\ntest('x', () => _w(os.hostname()));\n` }, 'controlled', [{}, {}]],
   'cpu count': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import os from 'node:os';\ntest('x', () => _w([os.cpus().length, os.availableParallelism()]));\n` }, 'controlled', 'taskset'],
   'time zone': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', () => _w(new Date(0).toString()));\n` }, 'controlled', [{ TZ: 'UTC' }, { TZ: 'Asia/Tokyo' }]],
+  // review R-055 (docs/VERIFY-CONTRACT.md); review-r055.test.js has the reviewer's cases, these are other ways in
+  // V1: a CI-volatile variable kept as it is (not pinned): the test is NOT PROVEN
+  'volatile GITHUB_WORKSPACE': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', () => _w(process.env.GITHUB_WORKSPACE));\n` }, 'raw', [{ GITHUB_WORKSPACE: '/a' }, { GITHUB_WORKSPACE: '/b' }]],
+  // V2: a lower-case proxy variable at module scope while the network is closed: every test NOT PROVEN
+  'proxy http_proxy at module scope': ['node-test', { 'tests/a.test.mjs': `${NT}${W}const V = process.env.http_proxy;\ntest('x', () => _w(V));\n` }, 'raw', [{ http_proxy: 'http://a:1' }, { http_proxy: 'http://b:2' }]],
+  // V3: a file read in a before hook (no test runs): files_read_outside_tests
+  'file read in a before hook': ['node-test', { 'tests/a.test.mjs': `${NT}${W}let V;\nbefore(async () => { V = await fs.promises.readFile(process.env.ATK_FILE, 'utf8'); });\ntest('x', () => _w(V));\n` }, 'raw', 'file'],
+  // V5: a CommonJS dependency's nested file changes (required, not imported)
+  'dependency nested file (require)': ['node-test', {
+    'tests/a.test.cjs': "const { test } = require('node:test');\nconst fs = require('node:fs');\nconst { V } = require('atkdep');\ntest('x', () => fs.writeFileSync(process.env.ATK_OUT, JSON.stringify(V)));\n",
+    'node_modules/atkdep/package.json': JSON.stringify({ name: 'atkdep', main: 'index.js' }),
+    'node_modules/atkdep/index.js': "exports.V = require('./lib/v.js');\n",
+  }, 'raw', 'dep'],
+  // V6: existence through fs.promises.access
+  'fs.promises.access': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', async () => _w(await fs.promises.access(process.env.ATK_FILE).then(() => true, () => false)));\n` }, 'raw', 'exists'],
+  // V8: UDP through a connected socket
+  'udp connected socket': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import dgram from 'node:dgram';\ntest('x', async () => _w(await new Promise((r) => { const s = dgram.createSocket('udp4'); s.on('message', (m) => { s.close(); r(String(m)); }); s.connect(Number(process.env.ATK_PORT), '127.0.0.1', () => s.send('q')); })));\n` }, 'raw', 'udp'],
+  // V16: process.loadEnvFile inside the test
+  'process.loadEnvFile in the test': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', () => { process.loadEnvFile('cfg.env'); _w(process.env.ATK_E); });\n` }, 'raw', 'dotenv'],
 };
 
 // a server in its own process (the runs are spawned synchronously: one in this process would never answer)
+function udpServer(payload) {
+  const cp = require('node:child_process').spawn(process.execPath, ['-e',
+    `const s = require('node:dgram').createSocket('udp4'); s.on('message', (m, a) => s.send(${JSON.stringify(payload)}, a.port, a.address)); s.bind(0, '127.0.0.1', () => console.log(s.address().port));`],
+  { stdio: ['ignore', 'pipe', 'inherit'] });
+  return new Promise((r) => cp.stdout.once('data', (d) => r({ port: Number(String(d).trim()), close: () => cp.kill() })));
+}
+
 function server(payload) {
   const cp = require('node:child_process').spawn(process.execPath, ['-e',
     `const s = require('node:net').createServer((c) => c.end(${JSON.stringify(payload)})); s.listen(0, '127.0.0.1', () => console.log(s.address().port));`],
@@ -86,6 +112,10 @@ for (const [name, [runner, files0, kind, change, adjust]] of Object.entries(CASE
       else if (change === 'file-inside') fs.writeFileSync(path.join(dir, 'data.txt'), `v${i}`);
       else if (change === 'sleep' && i === 1) await new Promise((r) => setTimeout(r, 1100));
       else if (change === 'server') { srv = await server(`v${i}`); env.ATK_PORT = String(srv.port); }
+      else if (change === 'udp') { srv = await udpServer(`v${i}`); env.ATK_PORT = String(srv.port); }
+      else if (change === 'dep') { fs.mkdirSync(path.join(dir, 'node_modules/atkdep/lib'), { recursive: true }); fs.writeFileSync(path.join(dir, 'node_modules/atkdep/lib/v.js'), `module.exports = 'v${i}';\n`); }
+      else if (change === 'exists') { const f = path.join(os.tmpdir(), `atk-exists-${process.pid}.txt`); if (i === 0) fs.writeFileSync(f, 'x'); else fs.rmSync(f, { force: true }); env.ATK_FILE = f; }
+      else if (change === 'dotenv') fs.writeFileSync(path.join(dir, 'cfg.env'), `ATK_E=v${i}\n`);
       else if (change === 'taskset' && i === 1) prefixTaskset = true;
       if (prefixTaskset && (!fs.existsSync('/usr/bin/taskset') || os.availableParallelism() < 2)) return;
       const r = prefixTaskset

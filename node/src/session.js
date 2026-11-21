@@ -315,6 +315,27 @@ function envReadOutside(dir) {
   return [...names].sort();
 }
 
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
+function runLines(dir, sub) {
+  const out = new Set();
+  const d = path.join(dir, sub);
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) out.add(l);
+    }
+  } catch { /* none */ }
+  return out;
+}
+
+/** Files read while no test ran (src/outside.js; docs/VERIFY-CONTRACT.md `files_read_outside_tests`), sorted. */
+function filesReadOutside(dir) {
+  const out = [];
+  for (const l of runLines(dir, 'filesout')) {
+    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+  }
+  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
+}
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
@@ -348,6 +369,9 @@ function finish(run, opts, files, meta) {
     // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
     env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
     env_read_outside_tests: envReadOutside(run.dir),
+    // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
+    files_read_outside_tests: filesReadOutside(run.dir),
+    not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
@@ -362,6 +386,8 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
+  // the installed dependencies the run loaded (src/loaded.js, review R-055 V5)
+  try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
