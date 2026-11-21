@@ -66,11 +66,14 @@ Note: the existing marks (`uncontrolled.thread`, `uncontrolled.child`, `uncontro
   never counted in `summary.identical`. A test whose events or inputs also differ stays `diverged` / `input-differs`.
 - Headline: `IDENTICAL` only when every test is `stable`. Otherwise `DIVERGENT` if any test is `diverged` or
   `missing`, else `INPUT DIFFERS` if any is `input-differs`, else `NOT PROVEN` (D1: unchanged runs of a test that
-  uses a thread or a child process headline NOT PROVEN, not DIVERGENT). Exit codes: identical 0, divergent 1,
-  not proven 2, input differs 3.
+  uses a thread or a child process headline NOT PROVEN, not DIVERGENT). Exit codes (`fenvix verify`, unchanged
+  meaning): identical 0, divergent or not proven 1, input differs 3, unreadable traces 2. The Node test helpers read
+  `summary.not_proven` (0 when absent in older reports).
 - New reasons (`summary.reasons` keys and `divergence.reason`): `deps`, `code`, and `env` for `uncontrolled.env`.
   The `fs` reason covers `files_read_outside_tests`.
 - `summary.inputs_recorded` stays as today.
+- Implemented in `crates/detpy-core/src/verify.rs` (`Status::NotProven`, `compared_inputs`, `FILE_INPUT_PREFIX`,
+  `Reason::Deps`, `Reason::Code`); unit tests `r055_*`.
 
 ## 5. What each shell owns
 

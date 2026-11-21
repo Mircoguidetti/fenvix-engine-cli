@@ -660,10 +660,10 @@ def cmd_verify(argv: list) -> int:
 
 
 def verify_exit_code(s: dict) -> int:
-    """0: every test identical. 1: a test diverged or is missing, no test ran, or a trace does not record its run
-    inputs (not proven). 3: the only differences are
+    """0: every test identical. 1: a test diverged or is missing, no test ran, a test used an uncontrolled source
+    (not proven, docs/VERIFY-CONTRACT.md), or a trace does not record its run inputs (not proven). 3: the only differences are
     environment variables tests read (input differs, design A). 2: unreadable or incompatible traces."""
-    if s["tests"] == 0 or s["diverged"] or s["missing"]:
+    if s["tests"] == 0 or s["diverged"] or s["missing"] or s.get("not_proven"):
         return 1
     if not s.get("inputs_recorded", True):  # same events, inputs unknown: not proven identical (reviewer #8)
         return 1

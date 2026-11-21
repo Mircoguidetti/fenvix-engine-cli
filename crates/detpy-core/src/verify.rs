@@ -68,6 +68,10 @@ pub enum Reason {
     /// without some of its serial in-process predecessors (`lost_predecessors`): it observed process state that
     /// depends on where it ran (docs/PARALLEL-PROOF-DESIGN.md 2.4). Entropy and thread divergences keep their class.
     Placement,
+    /// The installed dependencies the run loaded differ (`inputs.deps`, docs/VERIFY-CONTRACT.md).
+    Deps,
+    /// The project's own source the run loaded differs (`inputs.code`): an edit, committed or not.
+    Code,
 }
 
 impl Reason {
@@ -97,6 +101,8 @@ impl Reason {
             Reason::Child => "child",
             Reason::Io => "io",
             Reason::Native => "native",
+            Reason::Deps => "deps",
+            Reason::Code => "code",
         }
     }
 
@@ -117,6 +123,8 @@ impl Reason {
             Some("child") => Some(Reason::Child),
             Some("io") => Some(Reason::Io),
             Some("native") => Some(Reason::Native),
+            Some("net") => Some(Reason::Net),
+            Some("env") => Some(Reason::Env),
             Some(_) => Some(Reason::Other),
             None => None,
         }
@@ -133,6 +141,7 @@ impl Reason {
             "io" => Reason::Io,
             "native" => Reason::Native,
             "net" => Reason::Net,
+            "env" => Reason::Env,
             _ => Reason::Other,
         }
     }
@@ -141,6 +150,9 @@ impl Reason {
     pub fn of_input(name: &str) -> Reason {
         if name.starts_with("env:") {
             return Reason::Env;
+        }
+        if name.starts_with(FILE_INPUT_PREFIX) {
+            return Reason::Fs;
         }
         match name {
             "tz" => Reason::Tz,
@@ -154,6 +166,8 @@ impl Reason {
             "entropy" | "urandom" => Reason::Entropy,
             "order" => Reason::Order,
             "runtime" | "runner" => Reason::Runtime,
+            "deps" => Reason::Deps,
+            "code" => Reason::Code,
             "env" => Reason::Env,
             _ => Reason::Config,
         }
@@ -204,6 +218,10 @@ pub enum Status {
     /// The runs differed only in an environment variable the test read (design A, 2026-11-20): the test is not
     /// identical, and not unstable either; the variable is named.
     InputDiffers,
+    /// Same inputs and events, but the test used a source that is not controlled (a thread, a child process, a
+    /// CI-volatile or proxy variable, ...: an `uncontrolled.*` mark, or `not_proven_outside_tests`): it cannot be
+    /// shown identical, and nothing shows it differed (review R-055 D1, docs/VERIFY-CONTRACT.md section 4).
+    NotProven,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -246,6 +264,9 @@ pub struct Summary {
     /// Tests that read an environment variable whose value differs between the runs, and are otherwise identical.
     #[serde(default)]
     pub input_differs: usize,
+    /// Tests that used an uncontrolled source and are otherwise identical (`Status::NotProven`).
+    #[serde(default)]
+    pub not_proven: usize,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -311,6 +332,31 @@ fn input_rank(name: &str) -> (usize, &str) {
     (ORDER.iter().position(|o| *o == base).unwrap_or(ORDER.len()), name)
 }
 
+/// Key prefix of the synthetic run inputs made from `meta.files_read_outside_tests` (docs/VERIFY-CONTRACT.md).
+pub const FILE_INPUT_PREFIX: &str = "file:";
+/// A hash seed nobody fixed: two runs with it never had the same input (review R-055 V13).
+const RANDOM_HASHSEED: &str = "<random>";
+
+/// The run inputs of a trace for comparison: `meta.inputs` plus one `file:<path>` input per file read outside any
+/// test (`meta.files_read_outside_tests`, its digests joined in order). None when the trace records no inputs.
+fn compared_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
+    let mut m = run_inputs(t)?;
+    if let Some(files) = t.header.meta.get("files_read_outside_tests").and_then(|v| v.as_array()) {
+        let mut by: BTreeMap<String, Vec<String>> = BTreeMap::new();
+        for f in files {
+            let (Some(p), Some(d)) = (f.get("path").and_then(|v| v.as_str()), f.get("digest").and_then(|v| v.as_str())) else { continue };
+            by.entry(p.to_string()).or_default().push(d.to_string());
+        }
+        for (p, mut ds) in by {
+            ds.sort();
+            ds.dedup();
+            m.insert(format!("{FILE_INPUT_PREFIX}{p}"), ds.join(","));
+        }
+        m.insert("files_read_outside_tests".into(), "recorded".into());
+    }
+    Some(m)
+}
+
 /// Differing inputs between two runs (empty when equal, or when neither run recorded inputs).
 pub fn diff_inputs(
     a: Option<&BTreeMap<String, String>>,
@@ -335,7 +381,7 @@ pub fn diff_inputs(
     let names: BTreeSet<&String> = a.keys().chain(b.keys()).collect();
     let mut out: Vec<InputDifference> = names
         .into_iter()
-        .filter(|k| a.get(*k) != b.get(*k))
+        .filter(|k| a.get(*k) != b.get(*k) || (k.as_str() == "hashseed" && a.get(*k).map(String::as_str) == Some(RANDOM_HASHSEED)))
         .map(|k| InputDifference {
             name: k.clone(),
             run_a,
@@ -427,6 +473,26 @@ fn order_divergence(id: &str, a: &Predecessors, b: &Predecessors, run_a: usize, 
     })
 }
 
+/// Every test of runs that read an uncontrolled source outside any test (`not_proven_outside_tests`).
+fn outside_not_proven(entries: &[String]) -> Divergence {
+    let kind = entries[0].split(':').next().unwrap_or("");
+    Divergence {
+        run_a: 0,
+        run_b: 0,
+        index: None,
+        window: None,
+        event_a: None,
+        event_b: None,
+        reason: Reason::of_uncontrolled(kind),
+        description: format!(
+            "outside any test the run read sources that are not controlled ({}): every test may have observed them, \
+             so identical fingerprints are no evidence of an identical execution",
+            entries.join(", ")
+        ),
+        lost_predecessors: Vec::new(),
+    }
+}
+
 /// A test with identical fingerprints that used a source Level 0 does not control: never reported covered.
 fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
     r.uncontrolled.first()?;
@@ -443,6 +509,8 @@ fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
         "child" => "started a child process: what the child does",
         "io" => "waited for I/O readiness: the order in which ready I/O is delivered",
         "native" => "used a native network client: its connections (outside the closed network and the cassette)",
+        "env" => "read a CI-volatile or proxy environment variable: its value",
+        "net" => "talked to a live endpoint (UDP, a unix socket, ...): what it answered",
         _ => "used an uncontrolled source: it",
     };
     let at = ev.as_ref().map(|e| format!(" ({} @ {})", e.op, e.site)).unwrap_or_default();
@@ -670,7 +738,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         .collect();
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
-    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(run_inputs).collect();
+    let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(compared_inputs).collect();
     // the first run whose inputs differ from run 0's: its differences are every test's first divergent event
     let input_differences: Vec<InputDifference> =
         (1..n).map(|j| diff_inputs(inputs[0].as_ref(), inputs[j].as_ref(), 0, j)).find(|d| !d.is_empty()).unwrap_or_default();
@@ -701,6 +769,17 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         .flatten()
         .filter_map(|v| v.as_str().map(str::to_string))
         .collect();
+    // uncontrolled reads outside any test (a CI-volatile or proxy variable at module scope, ...): every test is
+    // not proven (docs/VERIFY-CONTRACT.md section 1)
+    let not_proven_outside: Vec<String> = {
+        let s: BTreeSet<String> = traces
+            .iter()
+            .filter_map(|t| t.header.meta.get("not_proven_outside_tests").and_then(|v| v.as_array()))
+            .flatten()
+            .filter_map(|v| v.as_str().map(str::to_string))
+            .collect();
+        s.into_iter().collect()
+    };
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
@@ -737,8 +816,9 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
-            match recs.iter().flatten().find(|r| !r.uncontrolled.is_empty()) {
-                Some(r) => (Status::Diverged, uncontrolled_divergence(r, 0)),
+            match recs.iter().enumerate().find_map(|(i, r)| r.filter(|r| !r.uncontrolled.is_empty()).map(|r| (i, r))) {
+                Some((i, r)) => (Status::NotProven, uncontrolled_divergence(r, i)),
+                None if !not_proven_outside.is_empty() => (Status::NotProven, Some(outside_not_proven(&not_proven_outside))),
                 None => (Status::Stable, None),
             }
         } else {
@@ -762,7 +842,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         // an environment variable the test read differs between the runs: `input-differs`, unless the test also
         // diverged for another reason (order, uncontrolled source, an event other than an environment read)
         let (status, divergence) = match status {
-            Status::Stable | Status::Diverged if !env_diffs.is_empty() => {
+            Status::Stable | Status::Diverged | Status::NotProven if !env_diffs.is_empty() => {
                 let mut read = env_reads(&recs);
                 read.all |= !reads_recorded || outside.contains("*");
                 read.names.extend(outside.iter().cloned());
@@ -771,6 +851,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                     .filter(|d| read.all || read.names.contains(d.name.trim_start_matches("env:")))
                     .collect();
                 let env_only = status == Status::Stable
+                    || status == Status::NotProven
                     || divergence.as_ref().is_some_and(|d| d.reason == Reason::Env);
                 if !hit.is_empty() && env_only {
                     for h in &hit {
@@ -788,6 +869,7 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
             Status::Diverged => summary.diverged += 1,
             Status::Missing => summary.missing += 1,
             Status::InputDiffers => summary.input_differs += 1,
+            Status::NotProven => summary.not_proven += 1,
         }
         if !outcome_stable {
             summary.outcome_unstable += 1;
@@ -945,6 +1027,9 @@ pub const HINTS: &[(&str, &str)] = &[
     ("io", "the order of ready I/O is not controlled by this release: the test cannot be proven identical"),
     ("native", "a native network client (grpcio, pycurl, libpq, ...) opens its sockets in C, outside the closed \
                 network: the test cannot be proven identical (needs the syscall backend)"),
+    ("deps", "the installed dependencies the runs loaded differ (node_modules, site-packages): install the same \
+              lockfile in both runs"),
+    ("code", "the project's source the runs loaded differs (an edit, committed or not): compare runs of one tree"),
     ("outcome-only", "same observed events, different outcome: the cause is outside what is observed (C code, \
                       memory addresses, files or services outside the test); `fenvix repro TEST` searches for it"),
 ];
@@ -961,6 +1046,12 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     }
     let verdict = if s.tests == 0 {
         "NOTHING VERIFIED: no test ran in these runs".to_string()
+    } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 && s.not_proven > 0 {
+        format!(
+            "NOT PROVEN: {} of {} tests used a source this release does not control (named below); no test is shown \
+             to differ",
+            s.not_proven, s.tests
+        )
     } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 && !s.inputs_recorded {
         // reviewer #8 (G-0041, G-0054): same events but no recorded inputs is not "the same inputs"
         format!(
@@ -1026,8 +1117,8 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     );
     let _ = writeln!(
         out,
-        "covered by Level 0: {}  not covered: {}  missing: {}  input differs: {}  outcome-unstable: {}",
-        s.stable, s.diverged, s.missing, s.input_differs, s.outcome_unstable
+        "covered by Level 0: {}  not covered: {}  missing: {}  input differs: {}  not proven: {}  outcome-unstable: {}",
+        s.stable, s.diverged, s.missing, s.input_differs, s.not_proven, s.outcome_unstable
     );
     if !s.reasons.is_empty() {
         let rs: Vec<String> = s.reasons.iter().map(|(k, v)| format!("{k}={v}")).collect();
@@ -1048,6 +1139,7 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
                 let tag = match t.status {
                     Status::Missing => "MISSING ",
                     Status::InputDiffers => "INPUT-DIFFERS",
+                    Status::NotProven => "NOT-PROVEN",
                     _ => "NOT-COVERED",
                 };
                 let outcomes: Vec<&str> = t.outcomes.iter().map(|o| o.as_deref().unwrap_or("-")).collect();
@@ -1464,5 +1556,74 @@ mod tests {
 
     fn r(v: &str) -> Event {
         Event::new(Source::Random, "random.random", "t.py:1", v)
+    }
+
+    // ---- review R-055 (docs/VERIFY-CONTRACT.md) ----
+
+    fn meta_extra(mut t: Trace, key: &str, v: serde_json::Value) -> Trace {
+        t.header.meta.as_object_mut().unwrap().insert(key.into(), v);
+        t
+    }
+
+    /// V3: a file read outside any test with different bytes makes every test diverge (reason fs).
+    #[test]
+    fn r055_files_read_outside_tests_differ() {
+        let f = |d: &str| serde_json::json!([{ "path": "data.txt", "digest": d }]);
+        let mk = |d: &str| meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE), "files_read_outside_tests", f(d));
+        let r = verify(&[mk("2:aa"), mk("2:bb")], &[]);
+        assert_eq!(r.tests[0].status, Status::Diverged);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Fs);
+        assert!(render_text(&r, false).contains("file:data.txt"));
+        let r = verify(&[mk("2:aa"), mk("2:aa")], &[]);
+        assert_eq!(r.tests[0].status, Status::Stable);
+        // a run with the field against one without it: not the same inputs
+        let plain = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);
+        assert_eq!(verify(&[mk("2:aa"), plain], &[]).tests[0].status, Status::Diverged);
+    }
+
+    /// V4, V5: `inputs.code` and `inputs.deps` are run inputs with their own reasons.
+    #[test]
+    fn r055_code_and_deps_inputs() {
+        for (k, reason) in [("deps", Reason::Deps), ("code", Reason::Code)] {
+            let mut a: Vec<(&str, &str)> = BASE.to_vec();
+            let mut b = a.clone();
+            a.push((k, "3 files aa"));
+            b.push((k, "3 files bb"));
+            let ra = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a);
+            let rb = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &b);
+            let r = verify(&[ra, rb], &[]);
+            assert_eq!(r.tests[0].status, Status::Diverged);
+            assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, reason);
+        }
+    }
+
+    /// V13: a hash seed nobody fixed never compares equal.
+    #[test]
+    fn r055_random_hashseed_is_never_equal() {
+        let mut a: Vec<(&str, &str)> = BASE.iter().filter(|(k, _)| *k != "hashseed").copied().collect();
+        a.push(("hashseed", "<random>"));
+        let ra = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a);
+        let rb = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &a);
+        let r = verify(&[ra, rb], &[]);
+        assert_eq!(r.tests[0].status, Status::Diverged);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Hashseed);
+    }
+
+    /// V1, V2 and D1: a mark (or an uncontrolled read outside any test) is NOT PROVEN, never IDENTICAL, never DIVERGENT.
+    #[test]
+    fn r055_marks_are_not_proven() {
+        let m = Event::new(Source::Other, "uncontrolled.env", "t.py:3", "TMPDIR");
+        let a = with_inputs(trace(vec![rec("x", &[m.clone(), t("1")], "passed", 10), rec("y", &[t("1")], "passed", 10)]), &BASE);
+        let b = with_inputs(trace(vec![rec("x", &[m, t("1")], "passed", 10), rec("y", &[t("1")], "passed", 10)]), &BASE);
+        let r = verify(&[a, b], &[]);
+        assert_eq!(r.tests[0].status, Status::NotProven);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Env);
+        assert_eq!((r.summary.stable, r.summary.not_proven, r.summary.diverged), (1, 1, 0));
+        let text = render_text(&r, false);
+        assert!(text.contains("verdict: NOT PROVEN") && text.contains("NOT-PROVEN x"), "{text}");
+        let mk = || meta_extra(with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE), "not_proven_outside_tests", serde_json::json!(["env:HTTPS_PROXY"]));
+        let r = verify(&[mk(), mk()], &[]);
+        assert_eq!(r.tests[0].status, Status::NotProven);
+        assert!(r.tests[0].divergence.as_ref().unwrap().description.contains("env:HTTPS_PROXY"));
     }
 }
