@@ -37,11 +37,30 @@ def test_synthetic_project_and_comparison(tmp_path):
     (sa, _), (sb, _), (pa, ma), (pb, mb) = (traces[k] for k in ("ser-a", "ser-b", "par-a", "par-b"))
     out = fpcompare.compare(sa, sb, pa, pb)
     assert out["tests_in_all"] == 20
-    assert out["serial_noise"] == 0 and out["parallel_noise"] == 0
+    assert out["serial_noise"] == 0
+    # review P1 finding 4: the reader reads the file the writer (on the other worker under loadfile) may or may not
+    # have written yet: a real cross-worker race, now an event (fs.read). It is the only parallel noise allowed, and
+    # its first difference must be that read
+    reader = "tests/test_reader.py::test_reader"
+    par_noise = {n for n in pa if n in pb and pa[n]["fingerprint"] != pb[n]["fingerprint"]}
+    assert par_noise <= {reader}, par_noise
+    for n in par_noise:
+        diff = next((ea, eb) for ea, eb in zip(pa[n]["events"], pb[n]["events"]) if ea != eb)
+        assert "fs.read" in (diff[0].get("o"), diff[1].get("o")), diff
     assert fpcompare.plans_equal(ma, mb) is True
     # the only test whose events depend on placement is the victim (when the plan separates it from its polluter)
     victim_apart = pa["tests/test_victim.py::test_victim"]["worker"] != pa["tests/test_pollute.py::test_polluter"]["worker"]
-    assert out["placement"] == (1 if victim_apart else 0)
+    placed = set(out["placement_examples"])
+    expected = {"tests/test_victim.py::test_victim"} if victim_apart else set()
+    assert expected <= placed, out
+    # review P1 finding 4: the reader's read of the file the writer leaves outside the project is an event (fs.read
+    # with the content's digest, or <absent>); when the split runs the writer before it on the other worker, the
+    # reader's events truthfully depend on placement, and that read is the first difference
+    assert placed - expected <= {"tests/test_reader.py::test_reader"}, out
+    for n in placed - expected:
+        diff = next((ea, eb) for ea, eb in zip(sa[n]["events"], (pa if pa[n]["fingerprint"] != sa[n]["fingerprint"]
+                                                                  else pb)[n]["events"]) if ea != eb)
+        assert "fs.read" in (diff[0].get("o"), diff[1].get("o")), diff
     assert out["outcome_differences"] == 0 and out["new_failures_caused_by_split"] == []
     # detpy verify classifies the victim's divergence as placement and names the polluter it lost
     from detpy import _core

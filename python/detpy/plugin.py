@@ -498,6 +498,39 @@ def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
     return out
 
 
+def _plugin_rewrite_files(limit: int = 20000) -> list[str]:
+    """The modules pytest marks for rewrite in every installed pytest-plugin distribution (a ``pytest11`` entry point:
+    hypothesis, xdist ...), as ``_pytest.config._iter_rewritable_modules`` sees them: every ``.py`` file the
+    distribution lists. Review R-050 D4: the library of such a distribution (``import hypothesis``) was rewritten
+    from source in the first ``--det`` run of every fresh environment, so its second run verified divergent."""
+    if os.environ.get("PYTEST_DISABLE_PLUGIN_AUTOLOAD"):
+        return []
+    import importlib.metadata
+
+    out: list[str] = []
+    seen: set = set()
+    for dist in importlib.metadata.distributions():
+        try:
+            if not any(ep.group == "pytest11" for ep in dist.entry_points):
+                continue
+            files = dist.files or []
+        except Exception:
+            continue
+        for f in files:
+            if not str(f).endswith(".py"):
+                continue
+            try:
+                p = os.path.abspath(str(dist.locate_file(f)))
+            except Exception:
+                continue
+            if p not in seen and os.path.isfile(p):
+                seen.add(p)
+                out.append(p)
+                if len(out) >= limit:
+                    return out
+    return out
+
+
 def prewarm_rewrite_cache(config, env: dict) -> None:
     """Audit G-0168: before the re-exec into the process that runs the tests, write the assertion-rewritten test
     modules into the rewrite cache (``detpy._prewarm``, in a subprocess with that process's environment: hash seed,
@@ -517,7 +550,7 @@ def prewarm_rewrite_cache(config, env: dict) -> None:
         hashed = (b"\x03\x00\x00\x00" in rw._read_pyc.__code__.co_consts
                   and os.environ.get("DETPY_REWRITE_OWN") != "1")
         job = {"key": key, "hashed": hashed, "pass_hook": bool(config.getini("enable_assertion_pass_hook")),
-               "files": _rewrite_candidates(config)}
+               "files": _rewrite_candidates(config) + _plugin_rewrite_files()}
         if not job["files"]:
             return
         child = dict(env)
@@ -1063,6 +1096,10 @@ class _DetSession(_Outcomes):
         if S.controller is not None:  # G-0168: workers that rewrote test modules from source
             _level0.REWRITE["workers"] = sum(int(o.get("detpy_rewrite_cold") or 0)
                                              for o in S.controller.workeroutput.values())
+            # the controller runs no test: what it rewrote (xdist's own modules, imported only by a -n controller,
+            # cold in the first -n run of a cache) lays out no memory a test sees. Review P1 finding 11: counting it
+            # made the first -n run after any serial run fully divergent
+            _level0.REWRITE["cold"] = 0
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
