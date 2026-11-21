@@ -609,6 +609,89 @@ if JOB in ("hunt", "hunt2", "huntp"):
     R["hunt"]["n"] = len(rows)
     save()
 
+if JOB == "par":
+    # Point 2 of P-060 (parallel with proof): a selection of the project (P["args"], else the project's own selection)
+    # under --det with 1 worker (W1 runs), then R runs with N Playwright workers on one schedule (the hub). Proof:
+    # every test has one fingerprint across the N-worker runs, and its outcome equals the 1-worker outcome; how many
+    # tests also have the 1-worker fingerprint is reported. A plain run (the project's own workers) gives the outcomes
+    # the project sees today. Workers used are counted from the trace (worker index of each test).
+    os.environ["DETJS_LS_STATS"] = "1"
+    N = int(P.get("workers", 2))
+    args = P.get("args") or [a for a in PW_ARGS if not a.startswith("--shard")]
+    for k in list(PW_ENV):
+        if k.endswith("_SHARD"):
+            PW_ENV[k] = "1/1"
+    R["par"] = {"workers": N, "args": args, "plain": [], "w1": [], "wn": []}
+    for i in range(int(P.get("plain_runs", 1))):
+        r = run_pw(f"p-plain-{i + 1}", "plain", args=args, timeout_s=P["run_timeout_min"] * 60)
+        R["par"]["plain"].append({"outcomes": r.get("outcomes"), "wall_s": r.get("wall_s"), "rc": r.get("rc")})
+        save()
+    w1_traces, wn_traces = [], []
+    for i in range(int(P.get("w1_runs", 2))):
+        r = run_pw(f"p-w1-{i + 1}", "det", args=args, timeout_s=P["run_timeout_min"] * 60)
+        R["par"]["w1"].append({"outcomes": r.get("outcomes"), "wall_s": r.get("wall_s"), "rc": r.get("rc"),
+                               "log_tail": r.get("log_tail") if not r.get("outcomes") else None})
+        w1_traces.append(r.get("trace"))
+        keep_trace(r.get("trace"), f"p-w1-{i + 1}")
+        save()
+    for i in range(int(P.get("runs", 10))):
+        if not budget_for(P.get("per_run_s", 900)):
+            R["par"]["budget_stop"] = i
+            break
+        r = run_pw(f"p-w{N}-{i + 1}", "det", args=args + [f"--workers={N}"], timeout_s=P["run_timeout_min"] * 60)
+        R["par"]["wn"].append({"outcomes": r.get("outcomes"), "wall_s": r.get("wall_s"), "rc": r.get("rc"),
+                               "log_tail": r.get("log_tail") if not r.get("outcomes") else None})
+        wn_traces.append(r.get("trace"))
+        if i < 2:
+            keep_trace(r.get("trace"), f"p-w{N}-{i + 1}")
+        save()
+
+    def workers_of(label):
+        # parallelIndex of every test result in the Playwright JSON report of the run
+        seen = set()
+        try:
+            d = json.loads((OUT / "json" / f"{label}.json").read_text())
+        except Exception:
+            return []
+
+        def walk(su):
+            for x in su.get("suites", []) or []:
+                walk(x)
+            for sp in su.get("specs", []) or []:
+                for t in sp.get("tests", []) or []:
+                    for res in t.get("results") or []:
+                        if res.get("parallelIndex") is not None:
+                            seen.add(res["parallelIndex"])
+        for su in d.get("suites", []) or []:
+            walk(su)
+        return sorted(seen)
+
+    R["par"]["workers_seen"] = [workers_of(f"p-w{N}-{i + 1}") for i in range(len(R["par"]["wn"]))]
+    vn = verify(wn_traces)
+    v1 = verify(w1_traces)
+    vx = verify([w1_traces[0], wn_traces[0]] if w1_traces and wn_traces and w1_traces[0] and wn_traces[0] else [])
+    def table(v):
+        return {trace_key(t["nodeid"]): {"status": t["status"], "fp": t["distinct_fingerprints"], "runs": len(t["fingerprints"]),
+                                         "divergence": (t.get("divergence") or {}).get("description", "")[:400]}
+                for t in ((v or {}).get("tests", []) if isinstance(v, dict) else [])}
+    R["par"]["verify_wn"] = table(vn)
+    R["par"]["verify_w1"] = table(v1)
+    R["par"]["verify_w1_vs_wn"] = table(vx)
+    base = (R["par"]["w1"][0]["outcomes"] or {}) if R["par"]["w1"] else {}
+    same = [all((x["outcomes"] or {}).get(k) == o for x in R["par"]["wn"]) for k, o in base.items()]
+    R["par"]["summary"] = {
+        "tests": len(base),
+        "wn_runs": len(R["par"]["wn"]),
+        "one_fingerprint_wn": sum(1 for t in R["par"]["verify_wn"].values() if t["fp"] == 1),
+        "tests_in_wn_verify": len(R["par"]["verify_wn"]),
+        "outcome_equal_w1": sum(same),
+        "fingerprint_equal_w1": sum(1 for t in R["par"]["verify_w1_vs_wn"].values() if t["fp"] == 1),
+        "wall_w1_s": [x["wall_s"] for x in R["par"]["w1"]],
+        "wall_wn_s": [x["wall_s"] for x in R["par"]["wn"]],
+        "wall_plain_s": [x["wall_s"] for x in R["par"]["plain"]],
+    }
+    save()
+
 for x in R["runs"]:
     x.pop("trace", None)
 R["status"] = "ok"

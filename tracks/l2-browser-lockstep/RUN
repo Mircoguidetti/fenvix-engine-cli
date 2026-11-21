@@ -1,5 +1,5 @@
 {
- "nonce": 19,
+ "nonce": 20,
  "jobs": [
   {
    "job": "gate",
@@ -40,6 +40,14 @@
   {
    "job": "huntp",
    "name": "documenso"
+  },
+  {
+   "job": "par",
+   "name": "documenso"
+  },
+  {
+   "job": "par",
+   "name": "sveltekit"
   }
  ],
  "params": {
@@ -89,6 +97,29 @@
    "run_timeout_min": 45,
    "per_run_s": 900,
    "workers": 2
+  },
+  "par": {
+   "workers": 2,
+   "runs": 10,
+   "w1_runs": 2,
+   "plain_runs": 1,
+   "budget_min": 340,
+   "run_timeout_min": 45,
+   "per_run_s": 1200
+  },
+  "par:documenso": {
+   "args": [
+    "e2e/api/trpc/admin/delete-recipient.spec.ts",
+    "e2e/api/trpc/admin/admin-find-documents.spec.ts",
+    "e2e/api/trpc/admin/delete-organisation.spec.ts",
+    "e2e/api/trpc/admin/admin-search.spec.ts",
+    "--project=api"
+   ]
+  },
+  "par:sveltekit": {
+   "args": [
+    "client.test.js"
+   ]
   }
  },
  "suites": false

@@ -140,6 +140,25 @@ function patchClientClass(C) {
     if (GATE) return GATE(params || {}, () => orig.call(this, params));
     return orig.call(this, params);
   };
+  // Interactive transactions ($transaction(async (tx) => ...)): Prisma's native engine expires them after `timeout`
+  // ms of REAL time (default 5000; documenso sets 7500). Under lockstep each operation waits for the engine's
+  // schedule, so real time inside a transaction grows with the number of workers and messages, and the transaction
+  // expired where the plain run never does (MEASURED locally, documenso with 2 workers: "Transaction already closed
+  // ... timeout 7500 ms, however 8029 ms passed"): an engine-caused failure. The real-time limits are raised to
+  // DETJS_PRISMA_TX_TIMEOUT_MS (default 10 min); the engine clock, not real time, is what the test observes.
+  if (typeof proto.$transaction === 'function' && process.env.DETJS_PRISMA_TX_TIMEOUT_MS !== '0') {
+    const origTx = proto.$transaction;
+    const limit = Number(process.env.DETJS_PRISMA_TX_TIMEOUT_MS || 600000);
+    proto.$transaction = function $transaction(input, options) {
+      if (typeof input === 'function') {
+        const o = { ...(options || {}) };
+        o.timeout = Math.max(Number(o.timeout) || 0, limit);
+        o.maxWait = Math.max(Number(o.maxWait) || 0, limit);
+        return origTx.call(this, input, o);
+      }
+      return origTx.apply(this, arguments);
+    };
+  }
 }
 
 // The caller's object must not change under it (it may be reused): a shallow copy of every level the shim writes to.

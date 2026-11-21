@@ -118,6 +118,8 @@ function relText(v) {
   return d >= 0 ? `+${d}` : String(d);
 }
 
+const REALDEP_QUIET = process.env.DETJS_FS_REALDEP_RECORD === '0';
+
 function siteOrNull() {
   if (!STATE.config || !STATE.config.sites) return '';
   return STATE.quiet(() => sites.resolve());
@@ -154,7 +156,11 @@ function mappedValue(st, e, k) {
   }
   if (!e.seen.has(k)) {
     e.seen.add(k);
-    if (STATE.testId !== null) STATE.recordAt('fs', `fs.stat.${k}`, e.site, text);
+    // Level 2 browser runs (DETJS_FS_REALDEP_RECORD=0, set by `detjs playwright` / `detjs serve`): a time whose
+    // mapped value depends on when the run happens (a file's real age) is not an event there; the app servers start
+    // in real time after a setup whose duration varies (MEASURED, gate run 44904997963: uptime-kuma's glob of
+    // server/model gave 10 fingerprints in 10 runs). It is still a real-clock input for the cache.
+    if (STATE.testId !== null && !(realDep && REALDEP_QUIET)) STATE.recordAt('fs', `fs.stat.${k}`, e.site, text);
   }
   // (outside a test too: a module-level read belongs to every test of the file). Until a read by the test's code has
   // been flagged: the runner reading the field first (Jest's console printing the Stats) must not hide the test's
