@@ -179,3 +179,22 @@ jobs:
           for i in 1 2 3 4; do git pull -q --rebase origin claude/exam && git push -q origin HEAD:claude/exam && break; sleep $((i*5)); done
       - uses: actions/upload-artifact@v4
         with: {name: exam-results, path: exam/results.json}
+      - name: verdict (red when any check of the rows run failed)
+        env:
+          ROWS: ${{ github.event.inputs.rows }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          d = json.load(open("exam/results.json"))
+          want = [r.strip() for r in os.environ.get("ROWS", "").split(",") if r.strip()] or list(d["rows"])
+          bad = 0
+          lines = ["| row | passed | failed checks |", "|---|---|---|"]
+          for r in want:
+              c = d["rows"].get(r, {}).get("checks", [])
+              f = [x["id"] for x in c if not x.get("ok")]
+              bad += len(f) + (0 if c else 1)
+              lines.append(f"| {r} | {len(c)-len(f)}/{len(c)} | {', '.join(f) or '-'} |")
+          open(os.environ["GITHUB_STEP_SUMMARY"], "a").write("\n".join(lines) + "\n")
+          print("\n".join(lines))
+          raise SystemExit(1 if bad else 0)
+          PY
