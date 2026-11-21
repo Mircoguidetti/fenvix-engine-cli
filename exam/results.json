@@ -1,0 +1,3673 @@
+{
+ "exam": "go-live acceptance exam (exam/PLAN.md)",
+ "run_id": "44925123655",
+ "base_run": null,
+ "rows_rerun_in_run_id": null,
+ "release_run_requested": "44921794369",
+ "artifacts_tested": [
+  {
+   "release_run": "44921794369",
+   "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+   "head_branch": "claude/py-cache",
+   "event": "workflow_dispatch",
+   "selected": "requested",
+   "install_ok": true,
+   "legs": [
+    "PY-05@linux-x64/py3.12/node22 (exam run 44925123655)",
+    "PY-08@linux-x64/py3.12/node22 (exam run 44925123655)",
+    "PY-05@linux-x64/py3.14/node22 (exam run 44925123655)",
+    "PY-08@linux-x64/py3.14/node22 (exam run 44925123655)",
+    "F-05@linux-x64/py3.12/node22 (exam run 44925123655)",
+    "F-05@linux-x64/py3.14/node22 (exam run 44925123655)"
+   ]
+  }
+ ],
+ "installed": {
+  "44925123655": {
+   "ok": true,
+   "source": "ci-artifact",
+   "platform": "linux-x64",
+   "artifact": "engine-artifact",
+   "artifact_id": "14713189756",
+   "release_run": "44921794369",
+   "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+   "head_branch": "claude/py-cache",
+   "event": "workflow_dispatch",
+   "selected": "requested",
+   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r151.2b67ac0-linux-x86_64",
+   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r151.2b67ac0-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+   "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.12.16);artifact fenvix-engine 0.1.0 build r151.2b67ac0 commit 2b67ac02720687e6412306d3853f2472f25eb2b7 (linux-x86_64, glibc 2.28+);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
+   "sha256": {
+    "fenvix-engine-0.1.0-r151.2b67ac0-linux-x86_64.tar.gz": "1cc0f8477c30c1e843314f9f3dfce0673942ee66e6c6ff75af69dbb40b60e585",
+    "fenvix-engine-0.1.0-r151.2b67ac0-linux-x86_64.tar.gz.sha256": "e29944c623270884624735587aa7d0ef1c29b0f19f5545927f72cb9912ff270f",
+    "install_test.py": "40e5ea27180043213c35eae921896b78bd1405a643651023d24f38e33d197750",
+    "fenvix-engine-0.1.0-r151.2b67ac0-linux-x86_64/VERSION.json": "590333aa6040fc53373d4670e199d353420858390b10eaf1576c1e0ae1ed28d4"
+   }
+  }
+ },
+ "decisions": [
+  "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "MCP gaps belong to F-14 (remote MCP server), not examined here"
+ ],
+ "summary": {
+  "rows": 24,
+  "pass": 1,
+  "fail": 23,
+  "checks": 84,
+  "checks_passed": 68,
+  "gaps_in_scope": 207,
+  "gaps_closed": 30,
+  "gaps_out_of_scope": 410,
+  "gaps_unassignable": 7,
+  "gaps_other_row_F14": 15
+ },
+ "rows": {
+  "F-01": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 40,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 40
+   }
+  },
+  "F-02": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 16,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 16
+   }
+  },
+  "F-03": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 11,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 11
+   }
+  },
+  "F-05": {
+   "status": "FAIL",
+   "legs": {
+    "linux-x64/py3.12/node22": {
+     "job": "F-05 linux-x64 py3.12 node22",
+     "job_id": 136909443766,
+     "run_id": "44925123655",
+     "seconds": 269,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.376.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "F-05 linux-x64 py3.14 node22",
+     "job_id": 136909443775,
+     "run_id": "44925123655",
+     "seconds": 208,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "F-05.edit-src.itsdangerous",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-src.itsdangerous.n2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.itsdangerous",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 40 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_changed_value[Serializer-<lambda>1]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.itsdangerous.n2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 40 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_changed_value[Serializer-<lambda>1]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-test.itsdangerous",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 0, ran 298; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-test.itsdangerous.n2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 0, ran 298; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.click",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 9 tests ['tests/test_commands.py::test_auto_shorthelp', 'tests/test_utils.py::test_make_default_short_help[-equal length, no dot]', 'tests/test_utils.py::test_make_default_short_help[-ignore dot in word]']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.click.n2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 9 tests ['tests/test_commands.py::test_auto_shorthelp', 'tests/test_utils.py::test_make_default_short_help[-equal length, no dot]', 'tests/test_utils.py::test_make_default_short_help[-ignore dot in word]']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-conftest.click",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.edit-conftest.click.n2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.no-edit",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": ">= 90% reused on an unchanged checkout, 0 differing outcomes",
+     "observed": "run 2 reused 256 of 1322 passing (needed >= 1189); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.dep-bump",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a dependency version change: the dependent test reruns, outcome equals plain",
+     "observed": "after six 1.16.0 -> 1.17.0: reused 0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0513"
+     ]
+    },
+    {
+     "id": "F-05.wrong-reuse.cpu-count",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "a test depending on cpu-count is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing cpu-count: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_cpu_count.py::test_cpu']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.umask",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test depending on umask is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing umask: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.rlimit",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test depending on rlimit is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing rlimit: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.hostname",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "a test depending on hostname is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing hostname: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_hostname.py::test_host']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.pythonpath",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test depending on pythonpath is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing pythonpath: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.pythonwarnings",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test depending on pythonwarnings is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing pythonwarnings: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.ld-preload",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test depending on ld-preload is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing ld-preload: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "F-05.order-dep",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a passing order-dependent test stays passing under --det-cache when its dependency reruns",
+     "observed": "after an edit of the module: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0173"
+     ]
+    },
+    {
+     "id": "F-05.probe.audit-rerun",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change",
+     "observed": "--det-cache-audit in `fenvix python --help`: True",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0204"
+     ]
+    },
+    {
+     "id": "F-05.probe.blockbuster",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded",
+     "observed": "--det-cache run 1 vs plain: 3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; run 2 vs plain: 3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; run 2 reused 3 (>= 1 test recorded by run 1 needed)",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0004",
+      "G-0101"
+     ]
+    },
+    {
+     "id": "F-05.probe.custom-reporter",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason",
+     "observed": "run 2 vs plain: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; entries recorded (run 2 reused) 2, receipts 2; cache summary reachable: printed NO, summary files ['summary.txt']",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0412"
+     ]
+    },
+    {
+     "id": "F-05.probe.early-stat",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0080"
+     ]
+    },
+    {
+     "id": "F-05.probe.import-side-effect",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain",
+     "observed": "2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0111"
+     ]
+    },
+    {
+     "id": "F-05.probe.numpy",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module",
+     "observed": "reused 2 of 2 numpy tests on an unchanged checkout",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0510"
+     ]
+    },
+    {
+     "id": "F-05.probe.real-clock",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain",
+     "observed": "next UTC day (faketime +1d): reused 0 (expected 0); rc=1",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0020",
+      "G-0089",
+      "G-0094",
+      "G-0159"
+     ]
+    },
+    {
+     "id": "F-05.probe.startup-process",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0016",
+      "G-0018",
+      "G-0019"
+     ]
+    },
+    {
+     "id": "F-05.edit-src.itsdangerous",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-src.itsdangerous.n2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.itsdangerous",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 28 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_loads_unsafe[Serializer]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.itsdangerous.n2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 28 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_loads_unsafe[Serializer]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-test.itsdangerous",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 0, ran 298; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-test.itsdangerous.n2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 0, ran 298; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.click",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 9 tests ['tests/test_commands.py::test_auto_shorthelp', 'tests/test_utils.py::test_make_default_short_help[-equal length, no dot]', 'tests/test_utils.py::test_make_default_short_help[-ignore dot in word]']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-src-flip.click.n2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 9 tests ['tests/test_commands.py::test_auto_shorthelp', 'tests/test_utils.py::test_make_default_short_help[-equal length, no dot]', 'tests/test_utils.py::test_make_default_short_help[-ignore dot in word]']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-conftest.click",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.edit-conftest.click.n2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
+     "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.no-edit",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": ">= 90% reused on an unchanged checkout, 0 differing outcomes",
+     "observed": "run 2 reused 256 of 1321 passing (needed >= 1188); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.dep-bump",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a dependency version change: the dependent test reruns, outcome equals plain",
+     "observed": "after six 1.16.0 -> 1.17.0: reused 0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0513"
+     ]
+    },
+    {
+     "id": "F-05.wrong-reuse.cpu-count",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "a test depending on cpu-count is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing cpu-count: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_cpu_count.py::test_cpu']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.umask",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test depending on umask is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing umask: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.rlimit",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test depending on rlimit is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing rlimit: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.hostname",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "a test depending on hostname is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing hostname: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_hostname.py::test_host']; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.pythonpath",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test depending on pythonpath is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing pythonpath: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.pythonwarnings",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test depending on pythonwarnings is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing pythonwarnings: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.wrong-reuse.ld-preload",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test depending on ld-preload is not reused when it changes (outcome equals plain)",
+     "observed": "run1 ['passed']; after changing ld-preload: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "F-05.order-dep",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a passing order-dependent test stays passing under --det-cache when its dependency reruns",
+     "observed": "after an edit of the module: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0173"
+     ]
+    },
+    {
+     "id": "F-05.probe.audit-rerun",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change",
+     "observed": "--det-cache-audit in `fenvix python --help`: True",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0204"
+     ]
+    },
+    {
+     "id": "F-05.probe.blockbuster",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded",
+     "observed": "--det-cache run 1 vs plain: 3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; run 2 vs plain: 3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; run 2 reused 3 (>= 1 test recorded by run 1 needed)",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0004",
+      "G-0101"
+     ]
+    },
+    {
+     "id": "F-05.probe.custom-reporter",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason",
+     "observed": "run 2 vs plain: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; entries recorded (run 2 reused) 2, receipts 2; cache summary reachable: printed NO, summary files ['summary.txt']",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0412"
+     ]
+    },
+    {
+     "id": "F-05.probe.early-stat",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0080"
+     ]
+    },
+    {
+     "id": "F-05.probe.import-side-effect",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain",
+     "observed": "2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0111"
+     ]
+    },
+    {
+     "id": "F-05.probe.numpy",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module",
+     "observed": "reused 2 of 2 numpy tests on an unchanged checkout",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0510"
+     ]
+    },
+    {
+     "id": "F-05.probe.real-clock",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain",
+     "observed": "next UTC day (faketime +1d): reused 0 (expected 0); rc=1",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0020",
+      "G-0089",
+      "G-0094",
+      "G-0159"
+     ]
+    },
+    {
+     "id": "F-05.probe.startup-process",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "F-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0016",
+      "G-0018",
+      "G-0019"
+     ]
+    }
+   ],
+   "failed": [
+    "F-05.edit-src-flip.click @ linux-x64/py3.12/node22",
+    "F-05.edit-src-flip.click @ linux-x64/py3.14/node22",
+    "F-05.edit-src-flip.click.n2 @ linux-x64/py3.12/node22",
+    "F-05.edit-src-flip.click.n2 @ linux-x64/py3.14/node22",
+    "F-05.edit-test.itsdangerous @ linux-x64/py3.12/node22",
+    "F-05.edit-test.itsdangerous @ linux-x64/py3.14/node22",
+    "F-05.edit-test.itsdangerous.n2 @ linux-x64/py3.12/node22",
+    "F-05.edit-test.itsdangerous.n2 @ linux-x64/py3.14/node22",
+    "F-05.no-edit @ linux-x64/py3.12/node22",
+    "F-05.no-edit @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22"
+   ],
+   "missing_legs": [],
+   "n_checks": 56,
+   "n_passed": 42,
+   "gaps": {
+    "total": 25,
+    "closed": 16,
+    "open": 9,
+    "no_check_ran": 0
+   }
+  },
+  "F-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 6,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 6
+   }
+  },
+  "F-09": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 2,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 2
+   }
+  },
+  "F-18": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "JS-01": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node24",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-02": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/jest29",
+    "linux-x64/py3.13/node22/jest30",
+    "linux-x64/py3.13/node22/vitest3",
+    "linux-x64/py3.13/node22/vitest4"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 13,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 13
+   }
+  },
+  "JS-03": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 12,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 12
+   }
+  },
+  "JS-04": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 27,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 27
+   }
+  },
+  "JS-05": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node24"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 16,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 16
+   }
+  },
+  "JS-07": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-08": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/npm",
+    "linux-x64/py3.13/node22/pnpm",
+    "linux-x64/py3.13/node22/yarn-berry",
+    "linux-x64/py3.13/node22/yarn-classic"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "JS-09": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.13/node26"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "PY-01": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.13/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-02": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.13/node22/pytest8",
+    "linux-x64/py3.13/node22/pytest9"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 1,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 1
+   }
+  },
+  "PY-03": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 8,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 8
+   }
+  },
+  "PY-04": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-05": {
+   "status": "FAIL",
+   "legs": {
+    "linux-x64/py3.12/node22": {
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "job_id": 136909443680,
+     "run_id": "44925123655",
+     "seconds": 124,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "job_id": 136909443718,
+     "run_id": "44925123655",
+     "seconds": 130,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "PY-05.det2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "--det -n 2 twice: traces identical; outcomes equal serial plain",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 1330, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1330, \"input_differs\": 0}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-05.n4",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "--det -n 4 outcomes equal serial",
+     "observed": "1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-05.cache2",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": false,
+     "expected": "--det --det-cache -n 2 twice: reuse, outcomes equal plain",
+     "observed": "run 2 reused 0 of 1322 passing (needed >= 661); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-05.odpair",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "an order-dependent pair has the plain verdict serial, -n 2, -n 4, cache -n 2, --det-isolate",
+     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {}",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0172",
+      "G-0175",
+      "G-0176",
+      "G-0169"
+     ]
+    },
+    {
+     "id": "PY-05.probe.isolate",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0",
+     "observed": "3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0169",
+      "G-0171"
+     ]
+    },
+    {
+     "id": "PY-05.probe.testrun-uid",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid",
+     "observed": "values [\"'a97a96ecf2bd0205cafa16c9073cc77d'\", \"'a97a96ecf2bd0205cafa16c9073cc77d'\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0}",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0174"
+     ]
+    },
+    {
+     "id": "PY-05.probe.tx-popen",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason",
+     "observed": "rc=0; 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; named refusal: False",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0399"
+     ]
+    },
+    {
+     "id": "PY-05.probe.xdist-old",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)",
+     "observed": "rc=4; INTERNALERROR: False; names the xdist version: True",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0530"
+     ]
+    },
+    {
+     "id": "PY-05.det2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "--det -n 2 twice: traces identical; outcomes equal serial plain",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 1330, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1330, \"input_differs\": 0}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-05.n4",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "--det -n 4 outcomes equal serial",
+     "observed": "1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-05.cache2",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": false,
+     "expected": "--det --det-cache -n 2 twice: reuse, outcomes equal plain",
+     "observed": "run 2 reused 0 of 1321 passing (needed >= 660); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-05.odpair",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "an order-dependent pair has the plain verdict serial, -n 2, -n 4, cache -n 2, --det-isolate",
+     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {}",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0172",
+      "G-0175",
+      "G-0176",
+      "G-0169"
+     ]
+    },
+    {
+     "id": "PY-05.probe.isolate",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0",
+     "observed": "3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0169",
+      "G-0171"
+     ]
+    },
+    {
+     "id": "PY-05.probe.testrun-uid",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid",
+     "observed": "values [\"'a97a96ecf2bd0205cafa16c9073cc77d'\", \"'a97a96ecf2bd0205cafa16c9073cc77d'\"]; verify rc=0 summary={\"runs\": 2, \"tests\": 1, \"stable\": 1, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1, \"input_differs\": 0}",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0174"
+     ]
+    },
+    {
+     "id": "PY-05.probe.tx-popen",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason",
+     "observed": "rc=0; 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; named refusal: False",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0399"
+     ]
+    },
+    {
+     "id": "PY-05.probe.xdist-old",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)",
+     "observed": "rc=4; INTERNALERROR: False; names the xdist version: True",
+     "run_id": "44925123655",
+     "job": "PY-05 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0530"
+     ]
+    }
+   ],
+   "failed": [
+    "PY-05.cache2 @ linux-x64/py3.12/node22",
+    "PY-05.cache2 @ linux-x64/py3.14/node22"
+   ],
+   "missing_legs": [],
+   "n_checks": 16,
+   "n_passed": 14,
+   "gaps": {
+    "total": 9,
+    "closed": 8,
+    "open": 1,
+    "no_check_ran": 0
+   }
+  },
+  "PY-06": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 0,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  },
+  "PY-07": {
+   "status": "FAIL",
+   "legs": {},
+   "checks": [],
+   "failed": [],
+   "missing_legs": [
+    "linux-x64/py3.12/node22",
+    "linux-x64/py3.14/node22"
+   ],
+   "n_checks": 0,
+   "n_passed": 0,
+   "gaps": {
+    "total": 13,
+    "closed": 0,
+    "open": 0,
+    "no_check_ran": 13
+   }
+  },
+  "PY-08": {
+   "status": "PASS",
+   "legs": {
+    "linux-x64/py3.12/node22": {
+     "job": "PY-08 linux-x64 py3.12 node22",
+     "job_id": 136909443713,
+     "run_id": "44925123655",
+     "seconds": 54,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "PY-08 linux-x64 py3.14 node22",
+     "job_id": 136909443729,
+     "run_id": "44925123655",
+     "seconds": 64,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.376.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44921794369",
+      "release_commit": "2b67ac02720687e6412306d3853f2472f25eb2b7",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14713189756"
+     }
+    }
+   },
+   "checks": [
+    {
+     "id": "PY-08.child",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test reading a child's output is not reused after the child's input changed",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-08.ctypes-env",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a C getenv read that changed is not reused",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-08.ctypes-clock",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a test reading the C clock is never reused with a stale outcome",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-08.native-file",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "a file outside the root read by the test changed: not reused",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22"
+    },
+    {
+     "id": "PY-08.probe.dlopen-lib",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0079"
+     ]
+    },
+    {
+     "id": "PY-08.probe.native-file",
+     "leg": "linux-x64/py3.12/node22",
+     "ok": true,
+     "expected": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.12 node22",
+     "gaps": [
+      "G-0078"
+     ]
+    },
+    {
+     "id": "PY-08.child",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test reading a child's output is not reused after the child's input changed",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-08.ctypes-env",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a C getenv read that changed is not reused",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-08.ctypes-clock",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a test reading the C clock is never reused with a stale outcome",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-08.native-file",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "a file outside the root read by the test changed: not reused",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22"
+    },
+    {
+     "id": "PY-08.probe.dlopen-lib",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0079"
+     ]
+    },
+    {
+     "id": "PY-08.probe.native-file",
+     "leg": "linux-x64/py3.14/node22",
+     "ok": true,
+     "expected": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain",
+     "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44925123655",
+     "job": "PY-08 linux-x64 py3.14 node22",
+     "gaps": [
+      "G-0078"
+     ]
+    }
+   ],
+   "failed": [],
+   "missing_legs": [],
+   "n_checks": 12,
+   "n_passed": 12,
+   "gaps": {
+    "total": 6,
+    "closed": 6,
+    "open": 0,
+    "no_check_ran": 0
+   }
+  }
+ },
+ "gaps": {
+  "G-0004": {
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.blockbuster @ linux-x64/py3.12/node22",
+    "F-05.probe.blockbuster @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0006": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0010": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0014": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0015": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0016": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.startup-process @ linux-x64/py3.12/node22",
+    "F-05.probe.startup-process @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0018": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.startup-process @ linux-x64/py3.12/node22",
+    "F-05.probe.startup-process @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0019": {
+   "row": "F-05",
+   "check": "F-05.probe.startup-process",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.startup-process @ linux-x64/py3.12/node22",
+    "F-05.probe.startup-process @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0020": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.real-clock @ linux-x64/py3.12/node22",
+    "F-05.probe.real-clock @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0021": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0022": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0023": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0024": {
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0025": {
+   "row": "JS-06",
+   "check": "JS-06.probe.global-shape",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0026": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0027": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0028": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0029": {
+   "row": "JS-06",
+   "check": "JS-06.probe.iframe-realm",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0030": {
+   "row": "JS-06",
+   "check": "JS-06.probe.subtle-key",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0031": {
+   "row": "JS-06",
+   "check": "JS-06.probe.timer-race",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0032": {
+   "row": "JS-06",
+   "check": "JS-06.tz-locale",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0033": {
+   "row": "JS-06",
+   "check": "JS-06.tz-locale",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0034": {
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0035": {
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-tz",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0036": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0037": {
+   "row": "F-03",
+   "check": "F-03.probe.zero-tests",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0038": {
+   "row": "JS-06",
+   "check": "JS-06.probe.jsdom-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0066": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0078": {
+   "row": "PY-08",
+   "check": "PY-08.probe.native-file",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-08.probe.native-file @ linux-x64/py3.12/node22",
+    "PY-08.probe.native-file @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0079": {
+   "row": "PY-08",
+   "check": "PY-08.probe.dlopen-lib",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-08.probe.dlopen-lib @ linux-x64/py3.12/node22",
+    "PY-08.probe.dlopen-lib @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0080": {
+   "row": "F-05",
+   "check": "F-05.probe.early-stat",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.early-stat @ linux-x64/py3.12/node22",
+    "F-05.probe.early-stat @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0081": {
+   "row": "F-01",
+   "check": "F-01.probe.timeit",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0082": {
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0083": {
+   "row": "PY-07",
+   "check": "PY-07.probe.lock-type",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0084": {
+   "row": "F-01",
+   "check": "F-01.probe.c-wait",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0085": {
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0086": {
+   "row": "PY-08",
+   "check": "PY-08.ctypes-clock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-08.ctypes-clock @ linux-x64/py3.12/node22",
+    "PY-08.ctypes-clock @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0087": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-08.child @ linux-x64/py3.12/node22",
+    "PY-08.child @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0088": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-08.child @ linux-x64/py3.12/node22",
+    "PY-08.child @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0089": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.real-clock @ linux-x64/py3.12/node22",
+    "F-05.probe.real-clock @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0090": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0091": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0092": {
+   "row": "PY-02",
+   "check": "PY-02.probe.modifyitems",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0093": {
+   "row": "PY-07",
+   "check": "PY-07.probe.leaked-thread",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0094": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.real-clock @ linux-x64/py3.12/node22",
+    "F-05.probe.real-clock @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0095": {
+   "row": "JS-09",
+   "check": "JS-09.native",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0096": {
+   "row": "F-06",
+   "check": "F-06.probe.early-fs-ref",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0097": {
+   "row": "F-06",
+   "check": "F-06.probe.dir-listing",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0098": {
+   "row": "JS-02",
+   "check": "JS-02.probe.stack-depth",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0099": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0100": {
+   "row": "F-03",
+   "check": "F-03.probe.multi-project",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0101": {
+   "row": "F-05",
+   "check": "F-05.probe.blockbuster",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.blockbuster @ linux-x64/py3.12/node22",
+    "F-05.probe.blockbuster @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0102": {
+   "row": "PY-05",
+   "check": "PY-05.cache2",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.cache2 @ linux-x64/py3.12/node22",
+    "PY-05.cache2 @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0103": {
+   "row": "F-01",
+   "check": "F-01.files.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0104": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0105": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0106": {
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0107": {
+   "row": "JS-03",
+   "check": "JS-03.probe.bun-deno-reuse",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0108": {
+   "row": "JS-03",
+   "check": "JS-03.probe.file-only-failure",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0109": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0110": {
+   "row": "PY-03",
+   "check": "PY-03.probe.django-file-cache",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0111": {
+   "row": "F-05",
+   "check": "F-05.probe.import-side-effect",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.import-side-effect @ linux-x64/py3.12/node22",
+    "F-05.probe.import-side-effect @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0112": {
+   "row": "PY-03",
+   "check": "PY-03.probe.ward-fixture",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0115": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0120": {
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0121": {
+   "row": "F-06",
+   "check": "F-06.probe.virtual-day",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0122": {
+   "row": "F-06",
+   "check": "F-06.fake-timers",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0123": {
+   "row": "F-06",
+   "check": "F-06.disable-time",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0124": {
+   "row": "F-03",
+   "check": "F-03.node-child",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0125": {
+   "row": "F-03",
+   "check": "F-03.node-child",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0126": {
+   "row": "F-01",
+   "check": "F-01.env.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0127": {
+   "row": "F-01",
+   "check": "F-01.probe.http-mock",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0128": {
+   "row": "F-01",
+   "check": "F-01.probe.udp",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0129": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0130": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0131": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0132": {
+   "row": "F-03",
+   "check": "F-03.node-random",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0133": {
+   "row": "F-03",
+   "check": "F-03.node-random",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0134": {
+   "row": "F-01",
+   "check": "F-01.probe.node-vm",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0135": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0136": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0137": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0138": {
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0139": {
+   "row": "F-01",
+   "check": "F-01.tz.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0140": {
+   "row": "F-01",
+   "check": "F-01.locale.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0141": {
+   "row": "F-01",
+   "check": "F-01.probe.node-clock-sources",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0142": {
+   "row": "F-01",
+   "check": "F-01.probe.fake-timers",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0143": {
+   "row": "F-01",
+   "check": "F-01.probe.mtime",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0144": {
+   "row": "F-01",
+   "check": "F-01.probe.timer-consistency",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0145": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0146": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0147": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0148": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0149": {
+   "row": "JS-03",
+   "check": "JS-03.<runner>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0150": {
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0151": {
+   "row": "F-03",
+   "check": "F-03.probe.node-sched",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0152": {
+   "row": "F-03",
+   "check": "F-03.node-thread",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0153": {
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0154": {
+   "row": "F-01",
+   "check": "F-01.probe.service-host",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0159": {
+   "row": "F-05",
+   "check": "F-05.probe.real-clock",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.probe.real-clock @ linux-x64/py3.12/node22",
+    "F-05.probe.real-clock @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0160": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0161": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0162": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0163": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0164": {
+   "row": "F-05",
+   "check": "F-05.wrong-reuse",
+   "status": "OPEN",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.cpu-count @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.ld-preload @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.pythonwarnings @ linux-x64/py3.14/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.12/node22",
+    "F-05.wrong-reuse.rlimit @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0165": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0166": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0167": {
+   "row": "F-01",
+   "check": "F-01.probe.cassette-redact",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0168": {
+   "row": "F-01",
+   "check": "F-01.probe.cold-warm",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0169": {
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.odpair @ linux-x64/py3.12/node22",
+    "PY-05.odpair @ linux-x64/py3.14/node22",
+    "PY-05.probe.isolate @ linux-x64/py3.12/node22",
+    "PY-05.probe.isolate @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0171": {
+   "row": "PY-05",
+   "check": "PY-05.probe.isolate",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.probe.isolate @ linux-x64/py3.12/node22",
+    "PY-05.probe.isolate @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0172": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.odpair @ linux-x64/py3.12/node22",
+    "PY-05.odpair @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0173": {
+   "row": "F-05",
+   "check": "F-05.order-dep",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "F-05.order-dep @ linux-x64/py3.12/node22",
+    "F-05.order-dep @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0174": {
+   "row": "PY-05",
+   "check": "PY-05.probe.testrun-uid",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.probe.testrun-uid @ linux-x64/py3.12/node22",
+    "PY-05.probe.testrun-uid @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0175": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.odpair @ linux-x64/py3.12/node22",
+    "PY-05.odpair @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0176": {
+   "row": "PY-05",
+   "check": "PY-05.odpair",
+   "status": "CLOSED",
+   "severity": "WRONG-RESULT",
+   "checks": [
+    "PY-05.odpair @ linux-x64/py3.12/node22",
+    "PY-05.odpair @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0177": {
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0178": {
+   "row": "F-02",
+   "check": "F-02.probe.numpy-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0179": {
+   "row": "F-03",
+   "check": "F-03.probe.numpy",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0180": {
+   "row": "PY-07",
+   "check": "PY-07.verify-honest",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0181": {
+   "row": "F-03",
+   "check": "F-03.probe.realm-failure",
+   "status": "NO-CHECK-RAN",
+   "severity": "WRONG-RESULT",
+   "checks": []
+  },
+  "G-0204": {
+   "row": "F-05",
+   "check": "F-05.probe.audit-rerun",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-05.probe.audit-rerun @ linux-x64/py3.12/node22",
+    "F-05.probe.audit-rerun @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0208": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0209": {
+   "row": "PY-07",
+   "check": "PY-07.probe-stable",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0210": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0211": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0212": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0213": {
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0214": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0216": {
+   "row": "F-02",
+   "check": "F-02.py-explore",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0234": {
+   "row": "F-02",
+   "check": "F-02.cli",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0251": {
+   "row": "F-09",
+   "check": "F-09.artifact-identity",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0264": {
+   "row": "F-02",
+   "check": "F-02.py-replay",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0268": {
+   "row": "PY-08",
+   "check": "PY-08.child",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "PY-08.child @ linux-x64/py3.12/node22",
+    "PY-08.child @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0269": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0272": {
+   "row": "F-02",
+   "check": "F-02.cli",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0277": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0278": {
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0279": {
+   "row": "JS-06",
+   "check": "JS-06.<env>.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0281": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0283": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0284": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0285": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0286": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0287": {
+   "row": "JS-04",
+   "check": "JS-04.det2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0288": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0289": {
+   "row": "JS-04",
+   "check": "JS-04.probe.cache2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0290": {
+   "row": "JS-04",
+   "check": "JS-04.probe.workers",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0292": {
+   "row": "JS-04",
+   "check": "JS-04.probe.webserver",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0295": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0296": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0297": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0298": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0299": {
+   "row": "JS-04",
+   "check": "JS-04.browser-clock",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0300": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0301": {
+   "row": "JS-04",
+   "check": "JS-04.probe.browser-version",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0302": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0303": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-apis",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0304": {
+   "row": "JS-04",
+   "check": "JS-04.probe.page-network",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0308": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0309": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0310": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0311": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0312": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0313": {
+   "row": "F-02",
+   "check": "F-02.node-explore",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0318": {
+   "row": "F-18",
+   "check": "F-18.detect",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0382": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0384": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0398": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0399": {
+   "row": "PY-05",
+   "check": "PY-05.probe.tx-popen",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "PY-05.probe.tx-popen @ linux-x64/py3.12/node22",
+    "PY-05.probe.tx-popen @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0401": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0402": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0403": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0404": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0406": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0407": {
+   "row": "JS-02",
+   "check": "JS-02.probe.browser-mode",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0408": {
+   "row": "JS-02",
+   "check": "JS-02.probe.jasmine2",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0409": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0412": {
+   "row": "F-05",
+   "check": "F-05.probe.custom-reporter",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-05.probe.custom-reporter @ linux-x64/py3.12/node22",
+    "F-05.probe.custom-reporter @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0413": {
+   "row": "F-09",
+   "check": "F-09.job-venv",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0420": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0424": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0425": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0438": {
+   "row": "F-02",
+   "check": "F-02.node-explore",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0447": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0448": {
+   "row": "F-02",
+   "check": "F-02.node-repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0449": {
+   "row": "F-02",
+   "check": "F-02.node-replay",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0453": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0455": {
+   "row": "JS-04",
+   "check": "JS-04.shell",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0461": {
+   "row": "JS-02",
+   "check": "JS-02.probe.config-variants",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0509": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0510": {
+   "row": "F-05",
+   "check": "F-05.probe.numpy",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-05.probe.numpy @ linux-x64/py3.12/node22",
+    "F-05.probe.numpy @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0513": {
+   "row": "F-05",
+   "check": "F-05.dep-bump",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "F-05.dep-bump @ linux-x64/py3.12/node22",
+    "F-05.dep-bump @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0514": {
+   "row": "F-01",
+   "check": "F-01.env.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0515": {
+   "row": "F-01",
+   "check": "F-01.locale.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0516": {
+   "row": "F-01",
+   "check": "F-01.probe.replay-clients",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0517": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0518": {
+   "row": "PY-07",
+   "check": "PY-07.probe-stable",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0519": {
+   "row": "F-01",
+   "check": "F-01.tz.pinned",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0530": {
+   "row": "PY-05",
+   "check": "PY-05.probe.xdist-old",
+   "status": "CLOSED",
+   "severity": "BLOCKS-USE",
+   "checks": [
+    "PY-05.probe.xdist-old @ linux-x64/py3.12/node22",
+    "PY-05.probe.xdist-old @ linux-x64/py3.14/node22"
+   ]
+  },
+  "G-0532": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0533": {
+   "row": "PY-07",
+   "check": "PY-07.probe.repro-sched",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0534": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0536": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0540": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0542": {
+   "row": "PY-03",
+   "check": "PY-03.<runner>.repro",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  },
+  "G-0546": {
+   "row": "PY-07",
+   "check": "PY-07.options",
+   "status": "NO-CHECK-RAN",
+   "severity": "BLOCKS-USE",
+   "checks": []
+  }
+ },
+ "unassigned_gaps": {
+  "G-0205": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)",
+  "G-0242": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)",
+  "G-0252": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0259": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0260": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0273": "documentation gap of an in-scope feature (explore/quickstart/repro guide): no engine behaviour to test; the feature itself is checked by F-02 / PY-02",
+  "G-0561": "repository default branch / no main: repository hygiene, no engine behaviour to test (the exam installs from the release artifact or registries)"
+ },
+ "out_of_scope_gaps": {
+  "G-0001": "service/app, not an engine go-live row",
+  "G-0002": "service/app, not an engine go-live row",
+  "G-0003": "service/app, not an engine go-live row",
+  "G-0005": "shared cache across machines not in go-live scope",
+  "G-0007": "shared cache across machines not in go-live scope",
+  "G-0008": "shared cache across machines not in go-live scope",
+  "G-0009": "Go not in go-live scope",
+  "G-0011": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0012": "JVM not in go-live scope",
+  "G-0013": "JVM not in go-live scope",
+  "G-0017": "service/app, not an engine go-live row",
+  "G-0039": "Go not in go-live scope",
+  "G-0040": "Go not in go-live scope",
+  "G-0041": "Go not in go-live scope",
+  "G-0042": "Go not in go-live scope",
+  "G-0043": "Go not in go-live scope",
+  "G-0044": "Go not in go-live scope",
+  "G-0045": "Go not in go-live scope",
+  "G-0046": "Go not in go-live scope",
+  "G-0047": "Go not in go-live scope",
+  "G-0048": "Go not in go-live scope",
+  "G-0049": "Go not in go-live scope",
+  "G-0050": "JVM not in go-live scope",
+  "G-0051": "JVM not in go-live scope",
+  "G-0052": "JVM not in go-live scope",
+  "G-0053": "JVM not in go-live scope",
+  "G-0054": "JVM not in go-live scope",
+  "G-0055": "JVM not in go-live scope",
+  "G-0056": "JVM not in go-live scope",
+  "G-0057": "JVM not in go-live scope",
+  "G-0058": "JVM not in go-live scope",
+  "G-0059": "JVM not in go-live scope",
+  "G-0060": "JVM not in go-live scope",
+  "G-0061": "JVM not in go-live scope",
+  "G-0062": "JVM not in go-live scope",
+  "G-0063": "JVM not in go-live scope",
+  "G-0064": "JVM not in go-live scope",
+  "G-0065": "JVM not in go-live scope",
+  "G-0067": "Go not in go-live scope",
+  "G-0068": "JVM not in go-live scope",
+  "G-0069": "JVM not in go-live scope",
+  "G-0070": "JVM not in go-live scope",
+  "G-0071": "JVM not in go-live scope",
+  "G-0072": "JVM not in go-live scope",
+  "G-0073": "JVM not in go-live scope",
+  "G-0074": "JVM not in go-live scope",
+  "G-0075": "JVM not in go-live scope",
+  "G-0076": "JVM not in go-live scope",
+  "G-0077": "JVM not in go-live scope",
+  "G-0113": "Go not in go-live scope",
+  "G-0114": "Go not in go-live scope",
+  "G-0116": "shared cache across machines not in go-live scope",
+  "G-0117": "shared cache across machines not in go-live scope",
+  "G-0118": "shared cache across machines not in go-live scope",
+  "G-0119": "shared cache across machines not in go-live scope",
+  "G-0155": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0156": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0157": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0158": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0170": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0182": "service/app, not an engine go-live row",
+  "G-0183": "service/app, not an engine go-live row",
+  "G-0184": "service/app, not an engine go-live row",
+  "G-0185": "service/app, not an engine go-live row",
+  "G-0186": "service/app, not an engine go-live row",
+  "G-0187": "service/app, not an engine go-live row",
+  "G-0188": "service/app, not an engine go-live row",
+  "G-0189": "service/app, not an engine go-live row",
+  "G-0190": "service/app, not an engine go-live row",
+  "G-0191": "service/app, not an engine go-live row",
+  "G-0192": "service/app, not an engine go-live row",
+  "G-0193": "service/app, not an engine go-live row",
+  "G-0194": "service/app, not an engine go-live row",
+  "G-0195": "service/app, not an engine go-live row",
+  "G-0196": "service/app, not an engine go-live row",
+  "G-0197": "service/app, not an engine go-live row",
+  "G-0198": "service/app, not an engine go-live row",
+  "G-0199": "service/app, not an engine go-live row",
+  "G-0200": "service/app, not an engine go-live row",
+  "G-0201": "service/app, not an engine go-live row",
+  "G-0202": "service/app, not an engine go-live row",
+  "G-0203": "service/app, not an engine go-live row",
+  "G-0206": "service/app, not an engine go-live row",
+  "G-0207": "service/app, not an engine go-live row",
+  "G-0217": "service/app, not an engine go-live row",
+  "G-0218": "shared cache across machines not in go-live scope",
+  "G-0219": "shared cache across machines not in go-live scope",
+  "G-0220": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0221": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0222": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0223": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0224": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0225": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0226": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0227": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0228": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0229": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0230": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0231": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0232": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0233": "CI other than GitHub Actions / hosted-service CI: not in go-live scope",
+  "G-0236": "service/app, not an engine go-live row",
+  "G-0237": "service/app, not an engine go-live row",
+  "G-0238": "service/app, not an engine go-live row",
+  "G-0239": "service/app, not an engine go-live row",
+  "G-0240": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0241": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0243": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0244": "Go not in go-live scope",
+  "G-0245": "JVM/Go not in go-live scope",
+  "G-0246": "JVM/Go not in go-live scope",
+  "G-0247": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0248": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0249": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0250": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0253": "GitHub Action / MCP: service/app, not an engine go-live row",
+  "G-0254": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0255": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0256": "Windows not in go-live scope",
+  "G-0258": "hosted quickstart: service/app, not an engine go-live row",
+  "G-0261": "service/app, not an engine go-live row",
+  "G-0262": "service/app, not an engine go-live row",
+  "G-0263": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0265": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0266": "service/app, not an engine go-live row",
+  "G-0267": "service/app, not an engine go-live row",
+  "G-0270": "shared cache across machines not in go-live scope",
+  "G-0271": "shared cache across machines not in go-live scope",
+  "G-0274": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0275": "Cypress not in go-live scope",
+  "G-0276": "Cypress not in go-live scope",
+  "G-0280": "runner/browser tool not in go-live scope",
+  "G-0282": "runner/browser tool not in go-live scope",
+  "G-0291": "Firefox/WebKit Playwright projects not in go-live scope (Chromium is covered by JS-04)",
+  "G-0293": "Playwright component testing not in go-live scope (Playwright Test e2e only)",
+  "G-0294": "runner/browser tool not in go-live scope",
+  "G-0305": "runner/browser tool not in go-live scope",
+  "G-0306": "runner/browser tool not in go-live scope",
+  "G-0307": "runner/browser tool not in go-live scope",
+  "G-0314": "runner/browser tool not in go-live scope",
+  "G-0315": "runner/browser tool not in go-live scope",
+  "G-0316": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0317": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0319": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0320": "state between jobs / shared storage across machines not in go-live scope",
+  "G-0321": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0322": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0323": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0324": "GitHub Action / service integration: service/app, not an engine go-live row",
+  "G-0325": "Go not in go-live scope",
+  "G-0326": "Go not in go-live scope",
+  "G-0327": "Go not in go-live scope",
+  "G-0328": "Go not in go-live scope",
+  "G-0329": "Go not in go-live scope",
+  "G-0330": "Go not in go-live scope",
+  "G-0331": "Go not in go-live scope",
+  "G-0332": "Go not in go-live scope",
+  "G-0333": "Go not in go-live scope",
+  "G-0334": "Go not in go-live scope",
+  "G-0335": "Go not in go-live scope",
+  "G-0336": "Go not in go-live scope",
+  "G-0337": "Go not in go-live scope",
+  "G-0338": "JVM not in go-live scope",
+  "G-0339": "JVM not in go-live scope",
+  "G-0340": "JVM not in go-live scope",
+  "G-0341": "JVM not in go-live scope",
+  "G-0342": "JVM not in go-live scope",
+  "G-0343": "JVM not in go-live scope",
+  "G-0344": "JVM not in go-live scope",
+  "G-0345": "JVM not in go-live scope",
+  "G-0346": "JVM not in go-live scope",
+  "G-0347": "JVM not in go-live scope",
+  "G-0348": "JVM not in go-live scope",
+  "G-0349": "JVM not in go-live scope",
+  "G-0350": "JVM not in go-live scope",
+  "G-0351": "JVM not in go-live scope",
+  "G-0352": "JVM not in go-live scope",
+  "G-0353": "JVM not in go-live scope",
+  "G-0354": "JVM not in go-live scope",
+  "G-0355": "JVM not in go-live scope",
+  "G-0356": "JVM not in go-live scope",
+  "G-0357": "JVM not in go-live scope",
+  "G-0358": "JVM not in go-live scope",
+  "G-0359": "JVM not in go-live scope",
+  "G-0360": "JVM not in go-live scope",
+  "G-0361": "JVM not in go-live scope",
+  "G-0362": "JVM not in go-live scope",
+  "G-0363": "service/app, not an engine go-live row",
+  "G-0364": "service/app, not an engine go-live row",
+  "G-0365": "service/app, not an engine go-live row",
+  "G-0366": "service/app, not an engine go-live row",
+  "G-0367": "service/app, not an engine go-live row",
+  "G-0368": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0369": "service/app, not an engine go-live row",
+  "G-0370": "service/app, not an engine go-live row",
+  "G-0371": "service/app, not an engine go-live row",
+  "G-0372": "service/app, not an engine go-live row",
+  "G-0373": "service/app, not an engine go-live row",
+  "G-0374": "service/app, not an engine go-live row",
+  "G-0375": "service/app, not an engine go-live row",
+  "G-0376": "service/app, not an engine go-live row",
+  "G-0377": "service/app, not an engine go-live row",
+  "G-0378": "service/app, not an engine go-live row",
+  "G-0380": "service/app, not an engine go-live row",
+  "G-0381": "service/app, not an engine go-live row",
+  "G-0383": "Python runners not listed (behave, trial, green, stestr, robot, ...) not in go-live scope",
+  "G-0385": "L2 deterministic VM not in go-live scope",
+  "G-0386": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0387": "Go not in go-live scope",
+  "G-0388": "Go not in go-live scope",
+  "G-0389": "Go not in go-live scope",
+  "G-0390": "Go not in go-live scope",
+  "G-0391": "Go not in go-live scope",
+  "G-0392": "Go not in go-live scope",
+  "G-0393": "JVM not in go-live scope",
+  "G-0394": "JVM not in go-live scope",
+  "G-0395": "JVM not in go-live scope",
+  "G-0396": "JVM not in go-live scope",
+  "G-0397": "JVM not in go-live scope",
+  "G-0400": "PyPy not in go-live scope",
+  "G-0405": "Cypress not in go-live scope",
+  "G-0410": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0411": "forked-per-test suites (pytest-forked, ansible-test) not in go-live scope",
+  "G-0414": "Python <= 3.11 not in go-live scope",
+  "G-0415": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0416": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0418": "Go/JVM not in go-live scope",
+  "G-0419": "Go/JVM not in go-live scope",
+  "G-0421": "Windows not in go-live scope",
+  "G-0422": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0423": "AVA <= 5 not in go-live scope",
+  "G-0426": "jasmine-browser-runner (browser Jasmine) not in go-live scope",
+  "G-0427": "nose2 multiprocess plugin (-N): multiprocessing not in go-live scope",
+  "G-0428": "tap <= 16 not in go-live scope",
+  "G-0436": "exact culprit is not a go-live row",
+  "G-0437": "dependency-update verdict for Node is not a go-live check (F-06 has none)",
+  "G-0439": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0440": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0441": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0442": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0443": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0444": "Windows not in go-live scope",
+  "G-0445": "Alpine/musl not in go-live scope",
+  "G-0446": "old glibc distributions not in go-live scope",
+  "G-0450": "AVA <= 5 not in go-live scope",
+  "G-0451": "runner not in go-live scope",
+  "G-0452": "runner not in go-live scope",
+  "G-0454": "runner not in go-live scope",
+  "G-0456": "runner not in go-live scope",
+  "G-0457": "runner not in go-live scope",
+  "G-0458": "tap <= 16 not in go-live scope",
+  "G-0459": "runner not in go-live scope",
+  "G-0460": "Vitest < 3 / Jest < 29 not in go-live scope",
+  "G-0462": "runner not in go-live scope",
+  "G-0463": "Node L1 not in go-live scope",
+  "G-0464": "Node L1 not in go-live scope",
+  "G-0465": "shared cache across machines not in go-live scope",
+  "G-0466": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0467": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0468": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0469": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0470": "Python <= 3.11 not in go-live scope",
+  "G-0471": "Python <= 3.11 not in go-live scope",
+  "G-0472": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0473": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0474": "Go/JVM not in go-live scope",
+  "G-0475": "Go/JVM not in go-live scope",
+  "G-0476": "Go/JVM not in go-live scope",
+  "G-0477": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0478": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0479": "old glibc distributions not in go-live scope",
+  "G-0480": "old glibc distributions not in go-live scope",
+  "G-0481": "old glibc distributions not in go-live scope",
+  "G-0482": "Alpine/musl not in go-live scope",
+  "G-0483": "Alpine/musl not in go-live scope",
+  "G-0484": "Alpine/musl not in go-live scope",
+  "G-0485": "Alpine/musl not in go-live scope",
+  "G-0486": "Alpine/musl not in go-live scope",
+  "G-0487": "Alpine/musl not in go-live scope",
+  "G-0488": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0489": "old glibc distributions not in go-live scope",
+  "G-0490": "old glibc distributions not in go-live scope",
+  "G-0491": "old glibc distributions not in go-live scope",
+  "G-0492": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0493": "Go/JVM not in go-live scope",
+  "G-0494": "Go/JVM not in go-live scope",
+  "G-0495": "Go/JVM not in go-live scope",
+  "G-0496": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0497": "Go/JVM not in go-live scope",
+  "G-0498": "macOS Intel not in go-live scope",
+  "G-0499": "Windows not in go-live scope",
+  "G-0500": "Windows not in go-live scope",
+  "G-0501": "Windows not in go-live scope",
+  "G-0502": "Windows not in go-live scope",
+  "G-0503": "Windows not in go-live scope",
+  "G-0504": "Windows not in go-live scope",
+  "G-0505": "Windows not in go-live scope",
+  "G-0506": "Windows not in go-live scope",
+  "G-0507": "Windows not in go-live scope",
+  "G-0508": "Windows not in go-live scope",
+  "G-0511": "Python <= 3.11 not in go-live scope",
+  "G-0512": "exact culprit is not a go-live row",
+  "G-0520": "L2 deterministic VM not in go-live scope",
+  "G-0521": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0522": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0523": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0524": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0525": "Alpine/musl not in go-live scope",
+  "G-0526": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0527": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0528": "Windows not in go-live scope",
+  "G-0529": "pytest 7 not in go-live scope (pytest 8 and 9)",
+  "G-0531": "anyio trio backend not in go-live scope (asyncio only)",
+  "G-0535": "Python runner not in go-live scope",
+  "G-0537": "Python runner not in go-live scope",
+  "G-0538": "Python runner not in go-live scope",
+  "G-0539": "Python runner not in go-live scope",
+  "G-0541": "Python runner not in go-live scope",
+  "G-0543": "Python runner not in go-live scope",
+  "G-0544": "Python runner not in go-live scope",
+  "G-0545": "Python runner not in go-live scope",
+  "G-0547": "Python <= 3.11 not in go-live scope",
+  "G-0548": "Python <= 3.11 not in go-live scope",
+  "G-0549": "Python <= 3.11 not in go-live scope",
+  "G-0550": "Python <= 3.11 not in go-live scope",
+  "G-0551": "Python <= 3.11 not in go-live scope",
+  "G-0552": "Python <= 3.11 not in go-live scope",
+  "G-0553": "free-threaded CPython not in go-live scope",
+  "G-0554": "PyPy not in go-live scope",
+  "G-0555": "free-threaded CPython not in go-live scope",
+  "G-0556": "Python <= 3.11 not in go-live scope",
+  "G-0557": "free-threaded CPython not in go-live scope",
+  "G-0558": "Python <= 3.11 not in go-live scope",
+  "G-0559": "shared cache across machines not in go-live scope",
+  "G-0560": "shared cache across machines not in go-live scope",
+  "G-0562": "founder decision 2026-11-20: go-live runs only on our machines from the single Linux x86_64 artifact (no PyPI/npm packages, no GitHub Action, no macOS/arm64)",
+  "G-0563": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0564": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0565": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0566": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0567": "job wrapper / runner image of the hosted service: service/app, not an engine go-live row",
+  "G-0568": "service/app, not an engine go-live row",
+  "G-0570": "service/app, not an engine go-live row",
+  "G-0571": "service/app, not an engine go-live row",
+  "G-0572": "service/app, not an engine go-live row",
+  "G-0573": "service/app, not an engine go-live row",
+  "G-0574": "service/app, not an engine go-live row",
+  "G-0575": "service/app, not an engine go-live row",
+  "G-0576": "service/app, not an engine go-live row",
+  "G-0577": "service/app, not an engine go-live row",
+  "G-0578": "service/app, not an engine go-live row",
+  "G-0579": "service/app, not an engine go-live row",
+  "G-0580": "service/app, not an engine go-live row",
+  "G-0582": "service/app, not an engine go-live row",
+  "G-0583": "service/app, not an engine go-live row",
+  "G-0584": "service/app, not an engine go-live row",
+  "G-0585": "service/app, not an engine go-live row",
+  "G-0586": "service/app, not an engine go-live row",
+  "G-0587": "service/app, not an engine go-live row",
+  "G-0588": "service/app, not an engine go-live row",
+  "G-0589": "service/app, not an engine go-live row",
+  "G-0590": "service/app, not an engine go-live row",
+  "G-0591": "service/app, not an engine go-live row",
+  "G-0592": "service/app, not an engine go-live row",
+  "G-0593": "service/app, not an engine go-live row",
+  "G-0594": "service/app, not an engine go-live row",
+  "G-0595": "service/app, not an engine go-live row",
+  "G-0596": "service/app, not an engine go-live row",
+  "G-0597": "service/app, not an engine go-live row",
+  "G-0598": "service/app, not an engine go-live row",
+  "G-0599": "service/app, not an engine go-live row",
+  "G-0600": "service/app, not an engine go-live row",
+  "G-0601": "service/app, not an engine go-live row",
+  "G-0602": "service/app, not an engine go-live row",
+  "G-0603": "service/app, not an engine go-live row",
+  "G-0604": "service/app, not an engine go-live row",
+  "G-0605": "service/app, not an engine go-live row",
+  "G-0606": "service/app, not an engine go-live row",
+  "G-0607": "service/app, not an engine go-live row",
+  "G-0608": "service/app, not an engine go-live row",
+  "G-0609": "service/app, not an engine go-live row",
+  "G-0610": "service/app, not an engine go-live row",
+  "G-0611": "service/app, not an engine go-live row",
+  "G-0612": "service/app, not an engine go-live row",
+  "G-0613": "service/app, not an engine go-live row",
+  "G-0614": "service/app, not an engine go-live row",
+  "G-0615": "service/app, not an engine go-live row",
+  "G-0616": "service/app, not an engine go-live row",
+  "G-0617": "service/app, not an engine go-live row",
+  "G-0618": "service/app, not an engine go-live row",
+  "G-0619": "service/app, not an engine go-live row",
+  "G-0620": "service/app, not an engine go-live row",
+  "G-0621": "service/app, not an engine go-live row",
+  "G-0622": "service/app, not an engine go-live row",
+  "G-0623": "service/app, not an engine go-live row",
+  "G-0624": "service/app, not an engine go-live row",
+  "G-0625": "service/app, not an engine go-live row",
+  "G-0626": "service/app, not an engine go-live row",
+  "G-0627": "service/app, not an engine go-live row",
+  "G-0629": "service/app, not an engine go-live row",
+  "G-0630": "service/app, not an engine go-live row",
+  "G-0631": "service/app, not an engine go-live row",
+  "G-0632": "service/app, not an engine go-live row",
+  "G-0633": "service/app, not an engine go-live row",
+  "G-0634": "service/app, not an engine go-live row",
+  "G-0635": "shared cache across machines not in go-live scope",
+  "G-0636": "shared cache across machines not in go-live scope",
+  "G-0637": "state between jobs / shared storage across machines not in go-live scope",
+  "G-0638": "shared cache across machines not in go-live scope",
+  "G-0639": "state between jobs / shared storage across machines not in go-live scope"
+ },
+ "other_row_gaps": {
+  "G-0215": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0235": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0257": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0379": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0417": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0429": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0430": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0431": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0432": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0433": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0434": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0435": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0569": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0581": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  },
+  "G-0628": {
+   "row": "F-14",
+   "note": "F-14 (remote MCP server, founder 2026-11-20) is not in this exam's row list: listed, not examined"
+  }
+ }
+}
