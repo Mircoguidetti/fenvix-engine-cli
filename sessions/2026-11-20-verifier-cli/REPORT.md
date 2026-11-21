@@ -162,6 +162,21 @@ F-18 5/5, F-01 32/33, F-02 16/17, F-03 15/18 (MEASURED, that run). The five fail
 | `F-03.thread` | INCONCLUSIVE: the race never happens on this interpreter, with or without `--det` (plain pytest 3/3 passed, `--det` 3/3 passed, CPython 3.13.18, MEASURED); verify reports the test NOT COVERED [thread] as required | harness limit, not an engine defect |
 | `F-03.node-thread` | the worker's `Math.random` is controlled (equal values) but every test that starts a worker gets `uncontrolled.thread` (node/src/children.js: worker interleaving is not controlled), so verify never says identical; the check wants identical when the values are equal | open: needs a decision (relax for one worker without shared memory, or keep "never identical") |
 
+### R-054 (round 2 on PR #12, `4a30ac4`): fixed, tests in `tests/test_review_r054_verifier.py` (unchanged)
+
+- N1 (regression from `d917b43`, Node): with `env_reads_recorded` declared, a read made outside a test body (module
+  scope, a before/beforeAll hook, a dependency at import) was no event, so a differing variable read there gave
+  IDENTICAL. Such reads now go to the header (`env_read_outside_tests`) and verify counts them as read by every test.
+  The sudo case stays identical: nobody reads `USER`/`LOGNAME` (`F-01.hostname.pinned.node` PASS locally, MEASURED).
+- N2 (Python, same class): a module-level `os.environ` read is listed the same way (reads before the trace opens:
+  test modules, conftest, plugins at import; xdist workers send theirs to the controller).
+- N3: `is_fail` matched `xfailed`, so an `xfail(run=False)` target replayed as REPRODUCED. An expected failure is no
+  failure (core and the reference spec), and a replay of an xfail target is not run (exit 2).
+- `fenvix replay` exits 0 only when every run fails with the bundle's fingerprint (its own `check:` line); a failure
+  with another fingerprint says so.
+- `node/test/verifier-inputs.test.js` "runs differing only in env": its tests now read the variable; the case where
+  nothing reads it is the test added in `d917b43`.
+
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
 - Node 22, 24 and 26: 858/858 each.
