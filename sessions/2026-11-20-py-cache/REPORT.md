@@ -1,11 +1,27 @@
-__STATUS__
+PARTIAL
 
 # py-cache: rows F-05, PY-05, PY-08 (session 2026-11-20)
 
 Branch `claude/py-cache` (from `claude/parallel-proof-3` @ dce6c36e; `claude/release-1` merged at d27c1a59 and
 71b12503). PR #5 into `claude/release-1`.
 
-__WHY__
+**Why PARTIAL.** The coordinator's condition for F-05 (DECISIONS 2026-11-20) is 0 wrong reuses AND cached runs
+faster than uncached on moto, pydantic-ai, litellm and esphome. Wrong reuses: 0 in every measured run. Speed: green on
+unchanged reruns and on moto's serial walk, red on moto's `-n 4` walk (MEASURED, CI run 44825894259, 10 commits):
+
+| moto 96f50b1a walk, 10 commits | cached | uncached |
+|---|---|---|
+| unchanged rerun, -n 4 (commit 0) | 24.8 s | 67.3 s |
+| whole walk, -n 4 | 755 s | 648 s |
+| whole walk, serial | 1,577 s | 1,702 s |
+
+6 of the 10 commits change moto core, so every test misses there and the per-file mode pays its fixed cost. Breakdown
+of one such commit (MEASURED, this container, `-n 4`, 2,496 tests, cached 64 s against 46.5 s): tests themselves run
+~8 s per worker slower (test time 176.5 s against 144.5 s, almost all `test_ec2`: each file's fresh child reloads
+botocore's EC2 service model), recording ~3 s per worker (`record_session_keys` 7.8 s + plan 3 s of CPU over 105
+children), forks and pipes ~1 s per worker, the rest collection and balance. Removing the recording cost entirely would
+leave the walk near 730 s: still red. The founder decides at 08:00 (coordinator, 2026-11-21 01:36); the frozen exam's
+F-05, PY-05 and PY-08 checks are the done-means of the rows (section 4.1).
 
 ## 0. The design decision of this session
 
