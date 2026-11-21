@@ -1,0 +1,436 @@
+{
+ "name": "uptime-kuma",
+ "job": "gate3",
+ "repo": "louislam/uptime-kuma",
+ "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+ "status": "ok",
+ "run_id": "44958432899",
+ "engine_commit": "f4902c1a1f3be935457200f92904043e8ed0e478",
+ "setup_s": 71,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "env": {
+   "DETJS_LS_BARRIER_TYPES": "Script,Stylesheet,Fetch,XHR,Image"
+  },
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 240
+ },
+ "pw_dir": ".",
+ "pw_args": [],
+ "runs": [],
+ "epoch": "2026-11-21T22:56:00Z",
+ "measured_at": "2026-11-21T22:56:14Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+   "file": "monitor-history-settings.spec.js",
+   "grep": "saves the data retention period",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    86.0,
+    82.7,
+    83.6,
+    82.7,
+    82.1,
+    82.4,
+    82.9,
+    83.8,
+    85.3,
+    83.1
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate3-uptime-kuma/g1-det-1.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-2.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-3.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-4.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-5.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-6.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-7.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-8.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-9.jsonl.gz",
+    "gate3-uptime-kuma/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    }
+   ],
+   "verify": {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "status": "not-proven",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 0,
+     "index": null,
+     "window": null,
+     "event_a": null,
+     "event_b": null,
+     "reason": "sensor",
+     "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+    }
+   }
+  },
+  {
+   "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+   "file": "status-page.spec.js",
+   "grep": "RSS feed escapes malicious monitor names",
+   "project": "specs",
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    105.7,
+    103.7,
+    104.4,
+    103.5,
+    103.5,
+    103.4,
+    104.7,
+    103.9,
+    102.2,
+    103.6
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate3-uptime-kuma/g2-det-1.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-2.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-3.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-4.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-5.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-6.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-7.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-8.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-9.jsonl.gz",
+    "gate3-uptime-kuma/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    }
+   ],
+   "verify": {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "status": "not-proven",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 0,
+     "index": null,
+     "window": null,
+     "event_a": null,
+     "event_b": null,
+     "reason": "sensor",
+     "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+    }
+   }
+  }
+ ],
+ "elapsed_min": 32.2
+}
