@@ -317,6 +317,24 @@ async function main(argv) {
   }
   const { lines } = session.finish(run, opts, executed, {
     runner: 'node-test', runner_version: process.version, isolation: header.isolation, serial: !par.plan, cli_args: rest,
+    // What the order comparison may scope by (`isolation_unit`, read by crates/detpy-core/src/verify.rs
+    // `Predecessors`). node:test's own `run({ isolation: 'process' })` -- which src/nodetest/driver.js passes and
+    // this shell therefore knows it asked for -- runs every test file in its own fresh process, so no in-process
+    // state crosses a file boundary and a test's only meaningful predecessors are the earlier tests of its own
+    // file. A test's file is the part of its nodeid before the first `::` (src/fileproc.js idFor:
+    // `<fileId>::<suite>::<test>`, ` #n` for a repeated name).
+    //
+    // Why it matters: without it a serial node:test trace is one undivided sequence, so comparing a subset run (a
+    // shard) against the full run reports every test whose file moved as order-divergent although no test ran
+    // differently (MEASURED on simple-statistics, exam run 44958011775: 151 order / 125 missing on shard 1/2).
+    // Absent means today's whole-run scoping, unchanged: this flag alone changes no verdict until the verifier
+    // reads it, which is Block 1's side (docs/LIMITS.md P4).
+    //
+    // Deliberately NOT set under `--test-isolation=none`: every file then shares the driver process and the claim
+    // would be false. Deliberately not set for Vitest or Jest: a fresh worker per file looks like the same
+    // guarantee, but that a worker is never reused across files in those pools is not measured here, and
+    // declaring it unmeasured is the kind of green on a doubt this engine exists to refuse.
+    ...(isolation === 'none' ? {} : { isolation_unit: 'per-file' }),
     ...(par.result ? { parallel: par.result.meta } : {}),
   });
   for (const l of lines) process.stdout.write(`${l}\n`);

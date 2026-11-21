@@ -28,6 +28,18 @@ async function main(argv) {
   // --det-isolate for Vitest and Jest: one runner session per test (src/isolate.js), which run without it
   if ((cmd === 'vitest' || cmd === 'jest') && !process.env.DETJS_ISOLATE_CHILD
     && rest.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true')) return require('../src/isolate').main(cmd, rest);
+  // P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. When a run's lanes turn
+  // out to have shared a path or a fixed port, the files the hazard names are run again in one lane and the
+  // re-run's outcomes are the ones reported (src/parallel-rerun.js). Engaged only for a `--det` run of a runner
+  // that uses lanes, and it costs a second pass only when a hazard is actually found.
+  {
+    const rerun = require('../src/parallel-rerun');
+    if (rerun.shouldWrap(cmd, rest)) {
+      const r = await rerun.main(cmd, rest);
+      if (r.signal) { process.kill(process.pid, r.signal); return 1; }
+      return r.status;
+    }
+  }
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'playwright') return require('../src/playwright/cli').main(rest);
