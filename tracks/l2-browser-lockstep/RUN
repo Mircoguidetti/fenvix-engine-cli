@@ -1,21 +1,53 @@
 {
- "nonce": 21,
+ "nonce": 22,
  "jobs": [
+  {
+   "job": "gate",
+   "name": "actual"
+  },
+  {
+   "job": "gate",
+   "name": "documenso"
+  },
   {
    "job": "gate",
    "name": "sveltekit"
   },
   {
+   "job": "gate",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "hunt",
+   "name": "actual"
+  },
+  {
+   "job": "hunt",
+   "name": "documenso"
+  },
+  {
+   "job": "hunt",
+   "name": "sveltekit"
+  },
+  {
+   "job": "hunt",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "hunt2",
+   "name": "documenso"
+  },
+  {
+   "job": "huntp",
+   "name": "documenso"
+  },
+  {
    "job": "par",
    "name": "documenso"
   },
   {
    "job": "par",
    "name": "sveltekit"
-  },
-  {
-   "job": "huntp",
-   "name": "documenso"
   }
  ],
  "params": {
