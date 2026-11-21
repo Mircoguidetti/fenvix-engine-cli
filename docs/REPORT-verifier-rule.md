@@ -202,20 +202,25 @@ dataclasses, collections, itertools, hashlib, base64, urllib, decimal, csv, temp
 functools, struct, zlib, pickle, math, random, enum, heapq, uuid, typing, file I/O), two `--det` runs compared with
 `fenvix verify`:
 
-| | before the table was filled in | after |
-|---|---|---|
-| IDENTICAL | 0 of 24 | **22 of 24** |
-| NOT PROVEN | 24 of 24 | **2 of 24** |
+| | before the table was filled in | mid-way | final |
+|---|---|---|---|
+| IDENTICAL | 0 of 24 | 22 of 24 | **23 of 24** |
+| NOT PROVEN | 24 of 24 | 2 of 24 | **1 of 24** |
 
-Both remaining refusals are **genuine**, and neither is noise:
+The one remaining refusal is **not the general rule's**: it is the pre-existing `uncontrolled.env` rule firing on a
+variable `unittest.mock.patch.dict` sets during the run and the test then reads. On this suite the general rule's
+own cost is **0 of 24**, and no test carries an unaccounted entry at all.
 
-* `pwd.getpwuid` — the user-database read behind `posixpath.expanduser`. The home directory genuinely differs
-  between machines, and **nobody had enumerated this channel**. The rule found it on its own. It is on the list in
-  section 8.
-* a variable set during the run and read by the test (the pre-existing `uncontrolled.env` rule).
+**A correction to an earlier figure in this report's own history, because it changes the conclusion.** The mid-way
+column counted `pwd.getpwuid` as a channel the rule had found in a test, and that was wrong: the caller was
+pytest's own `tmp_path` machinery, reached through `getpass.getuser()`, not the test. Once the sensor walked to the
+real caller (section 7b) it disappeared. `pwd.getpwuid` is still a channel the table does not account for, and a
+*test* that calls it is still NOT PROVEN — it stays on the list in section 8 for that reason — but it was never
+evidence of the rule's cost, and the share it inflated was an artifact of the sensor, not of the rule.
 
-So the general rule costs about **4%** of tests on this suite — not a large share. The figure from the engine's own
-full suite and the CI matrix is pending (section 9).
+The honest summary of the cost, then: almost all of the over-refusal seen during this night's work was the sensor
+misattributing the runner's own work to the test. The rule itself refuses very little on ordinary library code.
+The figure that matters for real customer suites is the native-extension decision in section 10, not this one.
 
 ### What the sensor costs in time
 
@@ -363,7 +368,7 @@ fixed:
 
 | channel | where | why it is NOT PROVEN today |
 |---|---|---|
-| `pwd.getpwuid`, `grp.getgrgid` | Python | the user database behind `expanduser`/`getpass`; the home directory differs between machines and no event carries it |
+| `pwd.getpwuid`, `grp.getgrgid` | Python | the user database behind `expanduser`/`getpass`; the home directory differs between machines and no event carries it. A test that calls one is NOT PROVEN; the runner's own call through `getpass.getuser()` is not charged to it (Rule E). |
 | `os.getxattr`, `os.listxattr`, `os.setxattr` | Python | extended attributes have no event |
 | `sys.settrace`, `sys.setprofile`, `sys._current_frames` of other threads | Python | process state the engine makes no claim about |
 | `gc.get_objects`, `gc.get_referrers` | Python | they hand out the heap: object identity and allocation order leak through them |
