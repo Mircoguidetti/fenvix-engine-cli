@@ -1363,6 +1363,11 @@ class Coordinator {
         // later answer in 2 of 6 runs).
         while (this.remoteActions.length && (this.remoteActions[0]._rx || 0) < (ra._rx || Infinity)) this.applyRemote(this.remoteActions.shift(), key);
         if (ra.kind === 'again') continue;
+        // The hub answers "idle" to a question asked while the runner was idle. The runner may have started to wait
+        // meanwhile (a call admitted, a timer): the question is then stale, and the idle wait below would see no new
+        // activity and record a stall (MEASURED locally, lockstep fixture with 2 workers: 1 run in 20 began with
+        // ls.stall after the worker asked idle at 530 ms and its page.goto was admitted before the hub's answer).
+        if (ra.kind === 'idle' && this.runnerState().state !== 'idle') continue;
         if (ra.kind !== 'idle') {
           if (ra.kind === 'advance') { this.trace(`advance to=${ra.toNs / NS} (hub)`); this.stats.advances++; this.flushWindow(); this.saveClock(); if (this.responses.length) await this.deliverResponses(); for (const p of this.pages) this.grant(p, ra.toNs); continue; }
           this.applyRemote(ra, key);
