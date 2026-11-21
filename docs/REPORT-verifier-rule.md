@@ -288,6 +288,42 @@ real finding against my own change — a thread test reported reason `api` inste
 order let the generic sensor hit outrank the specific channel mark. No verdict was wrong (both are NOT PROVEN) but
 the report was worse, and the F-03 exam check requires that wording. Fixed by the clause order of section 2.
 
+## 7b. What the reviewer round and CI found, and why it mattered
+
+A reviewer round over the whole range found nine defects, six of them false greens. The pattern was one thing:
+**the rule is default-deny in the core, but several of the paths feeding it were not**, so the guarantee leaked
+back into IDENTICAL. Those are the blocking class, so they are fixed here rather than recorded.
+
+| defect | why it was a false green |
+|---|---|
+| the Node sensor's per-test set was never cleared (`startTest` exported, never wired) | a gap was reported for the **first test of a worker only**; every later test came out clean. MEASURED: a file with two tests that each call `v8.getHeapStatistics` now marks both. |
+| the Python `check_native` set was process-wide | an unaudited extension marked only the first test, although the module stays loaded for all of them — contradicting that method's own docstring |
+| the cache-only declaration rested on `admit_record`, which nothing called | a fully-cached run declared a sensor on a premise that was never true. Made true: a gap now goes through `STATE.onLevel0Gap`, and a process without a sensor stores nothing. |
+| `judge` never looked at the run's controls | every `Controlled` answer is a promise kept by a control `--det-disable` can switch off. New `required_controls(sensor)` refuses before a single name is looked at. |
+| the Node report filter dropped gaps under `node_modules` | a gap a test reached through an ordinary dependency was invisible |
+| lazy arming hooked `module._load`, which is CJS only | a builtin reached by ESM `import` was never armed. MEASURED: ESM default and named imports of `node:v8` are both caught now. |
+
+Then CI found two things this container could not have:
+
+1. **The native-extension rule was by name, and had to be by path.** On the hosted CPython 3.13 the standard
+   library's extension modules are separate shared objects; in this container they are built into the interpreter
+   binary. **MEASURED** (CI run 44950993706): `native:_asyncio (and 13 more)` on a test that only adds up a range.
+   A list of names refused almost every test there and nothing here. The shells now decide by where the extension
+   lives, using the engine's own `_sites` classification: the interpreter's own extensions are part of the
+   interpreter (pinned by `runtime`), the engine's and the runner's are the declared controlled set, and anything
+   else must be on the audited list. MEASURED that it still bites: `numpy/_multiarray_umath`, `lxml/etree` and a
+   project's own `.so` all classify as user code and are still refused.
+2. **The sensor was charging the test for the runner's own calls**, because it looked at one frame where every
+   other observer in the engine walks. pytest's `tmp_path` machinery reaches `pwd.getpwuid` through
+   `getpass.getuser()`, so the immediate caller is the standard library and only the frame above it says whose
+   call it is. The sensor now uses `_sites.resolve()` — and asks only when a gap is about to be reported, so the
+   walk is off the hot path. **MEASURED**: `tests/test_controls_f01.py` plus `tests/test_fingerprint.py` go from
+   9 failures to 19/19. `test_controls_f01` is the F-01 row's own evidence, so this was the cluster that mattered.
+
+Both of those are worth stating plainly: the general rule's cost is not where it first appeared to be. Almost all
+of the early over-refusal was the sensor misattributing the runner's work to the test, not the rule refusing real
+channels.
+
 ## 8. Channels to cover later
 
 Per the judging rule, a channel where the engine answers NOT PROVEN is not a defect. These are recorded, not
