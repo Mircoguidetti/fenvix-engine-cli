@@ -68,6 +68,17 @@ class Run:
         return _core.repro_outcome(self.outcomes, nid)
 
 
+CONTINUE_ON_COLLECTION_ERRORS = "--continue-on-collection-errors"
+
+
+def with_collection_errors(args: list) -> list:
+    """pytest arguments of a search, minimisation or replay run: a module that fails to import must not stop the
+    collected tests from running (pytest interrupts the whole session otherwise, so the target never runs and every
+    configuration would say nothing about it)."""
+    args = list(args)
+    return args if CONTINUE_ON_COLLECTION_ERRORS in args else [CONTINUE_ON_COLLECTION_ERRORS, *args]
+
+
 @dataclass
 class Runner:
     """Runs pytest --det in a project directory and reads its outcomes file."""
@@ -86,7 +97,8 @@ class Runner:
     log: list = field(default_factory=list)
 
     def _cmd(self, config: str, extra: list) -> list:
-        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det", *self.pytest_args, *extra]
+        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+               *with_collection_errors(self.pytest_args), *extra]
         if config != FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return cmd
@@ -124,7 +136,7 @@ class Runner:
                 {k: data.get(k) for k in ("controls", "seed", "order_missing")})
         self.log.append({"tag": tag, "config": config, "tests": len(r.order), "seconds": round(dur, 3),
                          "exit": code})
-        if p is not None and code != 0 and not r.order:
+        if p is not None and code != 0 and not r.outcomes:
             self.note_problem(p, code)
         return r
 
@@ -271,9 +283,9 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
     (``status`` = reproduced | not-found | not-minimised | replay-unstable)."""
     result, fail_trace, pass_trace = _core.repro_reproduce(runner, target, collected, seeds, known_fail, known_pass,
                                                            confirm, max_runs)
-    if fail_trace is None:  # not collected, not found or not minimised: no bundle
+    if fail_trace is None:  # not collected, not run, not found or not minimised: no bundle
         problem = getattr(runner, "problem", "")  # (any Driver: simulated runners in tests have none)
-        if result.get("status") == "not-collected" and problem:
+        if result.get("status") in ("not-collected", "not-run") and problem:
             result["suite_error"] = problem
         return result
     if out_dir is not None:
@@ -286,6 +298,8 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         if pass_trace is not None and os.path.exists(pass_trace):
             shutil.copy2(pass_trace, b / "pass.trace.jsonl")
         args = list(command_args if command_args is not None else runner.pytest_args)
+        if isinstance(runner, Runner) and not isinstance(runner, ShellRunner):  # the replay runs as the search did
+            args = with_collection_errors(args)
         result.update(_core.repro_bundle_commands(result["config"], str(b), args))
         (b / "bundle.json").write_text(json.dumps(result, indent=2))
     if not runner.keep_traces:

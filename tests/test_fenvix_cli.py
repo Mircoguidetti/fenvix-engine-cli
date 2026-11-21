@@ -156,6 +156,46 @@ def test_repro_on_a_suite_that_does_not_collect_shows_the_collection_error(broke
     assert "no test has this id" not in p.stdout
 
 
+def test_a_module_that_does_not_import_does_not_hide_the_target(project):
+    # exam F-02 py-autodoc: another module fails to import, so a plain pytest session is "Interrupted" and runs no
+    # test. repro's runs continue past collection errors, so the target runs, and the replay command does the same
+    (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
+    out = project / "bundles"
+    p = fx("repro", "tests/test_o.py::test_victim", "--seeds", "2", "--confirm", "2", "--out", str(out), "--json",
+           cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "reproduced" and b["polluters"] == ["tests/test_o.py::test_polluter"], b
+    assert "--continue-on-collection-errors" in b["command"], b["command"]
+    r = fx("replay", b["bundle"], "--runs", "2", cwd=project)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_a_target_that_never_ran_is_not_run_not_searched(project):
+    # a configuration where the target has no outcome is never counted as searched: here it is skipped everywhere,
+    # so nothing was searched (exit 2), not "passed under N configurations"
+    (project / "tests" / "test_s.py").write_text("import pytest\n\n@pytest.mark.skip\ndef test_never():\n    assert 0\n")
+    p = fx("repro", "tests/test_s.py::test_never", "--seeds", "2", "--confirm", "1", "--json", cwd=project)
+    assert p.returncode == 2, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "not-run" and b["configs_searched"] == 0 and b["configs_not_run"] == 3, b
+    assert "not run: none of the 3 configuration(s) tried ran the test" in p.stdout
+    assert "passed" not in p.stdout[:p.stdout.index("\n{\n")]
+
+
+def test_a_runner_that_stops_before_any_test_is_not_run_with_its_error(project):
+    # every run stops before the first test (here a conftest hook raises): not-run, the runner's error lines, exit 2
+    (project / "tests" / "conftest.py").write_text(
+        "def pytest_collection_finish(session):\n"
+        "    if not session.config.option.collectonly:\n"
+        "        raise RuntimeError('fenvix-exam-boom: the session cannot start')\n")
+    p = fx("repro", "tests/test_o.py::test_victim", "--seeds", "1", "--confirm", "1", cwd=project)
+    assert p.returncode == 2, p.stdout + p.stderr
+    assert "not run: none of the 2 configuration(s) tried ran the test" in p.stdout, p.stdout
+    assert "fenvix-exam-boom" in p.stdout, p.stdout
+    assert "not reproduced" not in p.stdout
+
+
 @pytest.mark.parametrize("cmd", [("explore", "--budget", "0.1"), ("repro", "tests/test_o.py::test_victim")])
 def test_a_missing_python_is_one_line_not_a_traceback(project, cmd):
     # reviewer p1-verifier #12

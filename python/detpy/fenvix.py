@@ -319,9 +319,18 @@ def render_repro(b: dict, out: Path) -> str:
                      f"--collect-only -q`, or the nodeid lines of .detpy/trace.jsonl); for unittest, Django, nose2, "
                      f"ward, zope or doctest suites add --runner NAME.")
         return "\n".join(lines)
+    if status == "not-run":
+        lines.append(f"  not run: none of the {b.get('configs_not_run', '?')} configuration(s) tried ran the test, so "
+                     f"nothing was searched (a crash or an error before it, or a skip)")
+        if b.get("suite_error"):
+            lines.append(f"  the runner said ({b['suite_error'].splitlines()[0]}):")
+            lines += ["    " + ln for ln in b["suite_error"].splitlines()[1:]]
+        return "\n".join(lines)
     if status == "not-found":
-        lines.append(f"  not reproduced: it passed in the fixed order and under {b.get('configs_searched', '?')} "
-                     f"configuration(s) searched (raise --seeds, or run `{PROG} explore`)")
+        nr = b.get("configs_not_run")
+        lines.append(f"  not reproduced: it passed in all {b.get('configs_searched', '?')} configuration(s) in which it "
+                     f"ran (raise --seeds, or run `{PROG} explore`)"
+                     + (f"; {nr} more did not run it and are not counted" if nr else ""))
         return "\n".join(lines)
     if status == "not-minimised":
         lines.append(f"  failure found under {b.get('config')} but the run budget ran out while minimising "
@@ -444,6 +453,8 @@ def cmd_repro(argv: list) -> int:
     print(render_repro(b, Path(ns.out)))
     if ns.json:
         print(json.dumps(b, indent=2))
+    if b.get("status") == "not-run":  # nothing was searched: an error, not a verdict on the test
+        return 2
     return 0 if b.get("status") == "reproduced" else 1
 
 
