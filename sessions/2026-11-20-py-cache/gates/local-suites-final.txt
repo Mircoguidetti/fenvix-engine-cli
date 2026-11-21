@@ -29,3 +29,22 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
    191 passed, 9 skipped  /  191 passed, 9 skipped  /  191 passed, 9 skipped
 
 4) cargo test --release (merged head): 0 failed (156 + 19 + 13 + 2 + 1 passed).
+
+5) Final head 600cf868 (adds the carried.jsonl one-write fix and its regression test; Rust rebuilt, wheel
+   reinstalled in all three venvs), full suite again (the container restarted once; the run was redone whole):
+== Python 3.12   4 failed, 1156 passed, 83 skipped, 1 deselected  (2203 s)
+     test_clock_rust::test_cache_matches_reference, test_level0_rust::test_level0_{traces,cache}_matches_reference,
+     test_review_r023b::test_2b_loopback_name_answered_by_dns_is_not_reused[serial]
+== Python 3.13   5 failed, 1155 passed, 83 skipped, 1 deselected  (2171 s)
+     test_review_r023b::test_2b_* (5: loopback/dns, hosts file, HOSTALIASES; serial and n2)
+== Python 3.14   5 failed, 1156 passed, 82 skipped, 1 deselected  (2320 s)
+     test_clock_rust::test_cache_matches_reference and the interpreter's known three (mock_open x2 counted in
+     test_clock_rust, os.getrandom x2), as in 1)
+   Rerun alone (3.12 / 3.13 / 3.14): test_review_r023b -k test_2b: 4 passed, 2 skipped (HOSTALIASES not honoured for
+   this name here) on each; test_clock_rust::test_cache_matches_reference + test_level0_rust x2: 3 passed on each.
+   They are name-resolution and timing comparisons under three parallel suites (the r023b DNS cases failed only
+   after the container restart, under load).
+6) Node 22.23.5, node --test --test-concurrency=1 test/*.test.js, final head, addon rebuilt after the merge:
+   628 tests, 627 pass, 0 fail, 1 skipped. (Before the rebuild, the pre-merge addon failed the 4 verifier-inputs
+   tests release-1 added; they pass with the rebuilt addon.)
+7) cargo test --release, final head: 191 passed, 0 failed.
