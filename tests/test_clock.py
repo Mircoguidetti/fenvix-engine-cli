@@ -494,3 +494,32 @@ def test_clock_read_is_reentrant_from_the_same_thread():
     finally:
         gc.callbacks.remove(cb)
     assert not t.is_alive() and done[-1] == "end" and len(done) > 20
+
+
+def test_time_machine_2x_monotonic_and_move_to(pytester, run_det):
+    """P-064 (time-machine 2.16.0, the exam's pin): 2.x moves time.monotonic with the travel, and move_to() sets a
+    new destination from which the travel ticks again. Under --det both used to be ignored (7 of the project's own
+    tests failed under --det only)."""
+    pytest = __import__("pytest")
+    tm = pytest.importorskip("time_machine")
+    if hasattr(tm, "traveller_stack"):
+        pytest.skip("time-machine 3.x leaves the monotonic clock alone")
+    pytester.makepyfile(
+        test_tm2="""
+        import datetime as dt, time
+        import time_machine
+
+        def test_monotonic_follows_the_travel():
+            with time_machine.travel(0, tick=False):
+                assert time.monotonic() == 0.0
+                assert time.monotonic_ns() == 0
+
+        def test_move_to():
+            with time_machine.travel(0) as t:
+                time.time()
+                t.move_to(dt.datetime(1971, 1, 1, tzinfo=dt.timezone.utc))
+                assert time.time() == 31536000.0
+        """
+    )
+    r, _ = run_det("-p", "no:randomly")
+    r.assert_outcomes(passed=2)

@@ -239,6 +239,12 @@ fn clock_read_fake(py: Python<'_>, which: Fake) -> PyResult<Py<PyAny>> {
     record_from_rust(py, "time", which.op(), rel.to_string(), 0)?;
     let ns = match which {
         Fake::Time | Fake::TimeNs => wall_ns(py, e)?,
+        Fake::Monotonic | Fake::MonotonicNs if time_machine_loaded(py) => {
+            match crate::clock::time_machine_monotonic_ns(py, &int_obj(py, e)?)? {
+                Some(v) => int_arg(&v)?,
+                None => MONO_BASE_NS.saturating_add(e),
+            }
+        }
         _ => MONO_BASE_NS.saturating_add(e),
     };
     Ok(match which {

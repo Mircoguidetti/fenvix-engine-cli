@@ -715,11 +715,28 @@ pub(crate) fn time_machine_ns<'py>(py: Python<'py>, e: &Bound<'py, PyAny>) -> Py
     if !getattr_or(&t, intern!(py, "_tick"), true_)?.is_truthy()? {
         return Ok(dest);
     }
-    let start = t
-        .getattr(intern!(py, "__dict__"))?
-        .call_method1(intern!(py, "setdefault"), (intern!(py, "_detpy_start_elapsed"), e))?;
+    // the tick starts at the first read of this destination: `move_to` / `shift` set a new destination, from which
+    // the travel ticks again (time-machine's own `_requested` reset; P-064, time-machine 2.16's suite)
+    let d = t.getattr(intern!(py, "__dict__"))?;
+    let seen = d.call_method1(intern!(py, "get"), (intern!(py, "_detpy_start_dest"),))?;
+    if seen.is_none() || !seen.eq(&dest)? {
+        d.set_item(intern!(py, "_detpy_start_dest"), &dest)?;
+        d.set_item(intern!(py, "_detpy_start_elapsed"), e)?;
+    }
+    let start = d.get_item(intern!(py, "_detpy_start_elapsed"))?;
     let zero = 0i64.into_pyobject(py)?.into_any();
     getattr_or(&tm, intern!(py, "SYSTEM_EPOCH_TIMESTAMP_NS"), zero)?.add(&dest)?.add(e.sub(&start)?)
+}
+
+/// The monotonic clock during a time-machine **2.x** travel: 2.x patches `time.monotonic` too and returns the
+/// travel's time from it (3.x leaves the monotonic clock alone). None outside such a travel.
+pub(crate) fn time_machine_monotonic_ns<'py>(py: Python<'py>, e: &Bound<'py, PyAny>) -> PyResult<Option<Bound<'py, PyAny>>> {
+    let tm = sys_module(py, &g(py, intern!(py, "sys"))?, intern!(py, "time_machine"))?;
+    if tm.is_none() || !tm.hasattr(intern!(py, "coordinates_stack"))? || tm.hasattr(intern!(py, "traveller_stack"))? {
+        return Ok(None);
+    }
+    let v = time_machine_ns(py, e)?;
+    Ok(if v.is_none() { None } else { Some(v) })
 }
 
 /// `clock._time_machine_ns(e)`.
