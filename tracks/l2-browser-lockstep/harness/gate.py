@@ -511,7 +511,16 @@ if JOB in ("hunt", "hunt2", "huntp"):
     def matches_real(row, o, line, step):
         return o in FAIL and line == first_line(row["real"]) and (row["step"] is None or step == row["step"])
 
-    R["hunt"] = {"seeds": SEEDS, "replays": REPLAYS, "targets": []}
+    R["hunt"] = {"seeds": SEEDS, "replays": REPLAYS, "targets": [], "runs": []}
+
+    def hunt_run_note(r):
+        # every hunt run: rc, wall time, counts; the log tail when it ended without outcomes or with an error (run 17
+        # left "missing" outcomes with nothing to diagnose them)
+        n = {k: r.get(k) for k in ("label", "rc", "wall_s", "counts")}
+        if r.get("error") or not r.get("outcomes") or r.get("rc") == "timeout":
+            n["error"] = (r.get("error") or "")[-800:]
+            n["log_tail"] = (r.get("log_tail") or "")[-2500:]
+        R["hunt"]["runs"].append(n)
     rows = {t["key"]: {"key": t["key"], "real": t["messages"][0][0] if t["messages"] else "", "step": real_step(t), "mechanism": mech(t)[0],
                        "tried": [], "seed": None, "replays": [], "replay_errors": [], "fingerprints": None, "reproduced": False}
             for t in T55}
@@ -538,6 +547,7 @@ if JOB in ("hunt", "hunt2", "huntp"):
             # seed 0: the default schedule (no perturbation)
             r = run_pw(f"h-{g}-s{seed}", "det", seed=seed or None, args=args_for(open_ts), env_extra={**env, **seed_env(g, seed)},
                        timeout_s=P["run_timeout_min"] * 60)
+            hunt_run_note(r)
             for t in open_ts:
                 o, line, step = outcome(t, r)
                 row = rows[t["key"]]
@@ -564,6 +574,7 @@ if JOB in ("hunt", "hunt2", "huntp"):
                     os.environ["DETJS_PW_DIAG_DIR"] = str(dd / "server")  # the app server (server_start) inherits it
                 ex = {**env, **seed_env(g, seed), **({"DETJS_PW_DIAG_DIR": str(dd / "pages")} if dd else {})}
                 r = run_pw(label, "det", seed=seed or None, args=args_for(sts), env_extra=ex, timeout_s=P["run_timeout_min"] * 60)
+                hunt_run_note(r)
                 os.environ.pop("DETJS_PW_DIAG_DIR", None)
                 if dd and dd.exists():
                     total = 0

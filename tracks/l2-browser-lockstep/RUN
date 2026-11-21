@@ -1,5 +1,95 @@
 {
- "nonce": 18,
- "jobs": [],
- "suites": true
+ "nonce": 19,
+ "jobs": [
+  {
+   "job": "gate",
+   "name": "actual"
+  },
+  {
+   "job": "gate",
+   "name": "documenso"
+  },
+  {
+   "job": "gate",
+   "name": "sveltekit"
+  },
+  {
+   "job": "gate",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "hunt",
+   "name": "actual"
+  },
+  {
+   "job": "hunt",
+   "name": "documenso"
+  },
+  {
+   "job": "hunt",
+   "name": "sveltekit"
+  },
+  {
+   "job": "hunt",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "hunt2",
+   "name": "documenso"
+  },
+  {
+   "job": "huntp",
+   "name": "documenso"
+  }
+ ],
+ "params": {
+  "hunt": {
+   "seeds": 8,
+   "replays": 10,
+   "budget_min": 340,
+   "run_timeout_min": 45,
+   "per_run_s": 900
+  },
+  "hunt2": {
+   "seeds": 8,
+   "replays": 10,
+   "budget_min": 340,
+   "run_timeout_min": 45,
+   "per_run_s": 900
+  },
+  "hunt:actual": {
+   "from_step": 20
+  },
+  "hunt:documenso": {
+   "only": [
+    "delete-recipient.spec.ts",
+    "find-inbox.spec.ts",
+    "delete-organisation.spec.ts",
+    "admin-find-documents.spec.ts",
+    "email-transport-claims.spec.ts",
+    "update-envelope-items.spec.ts",
+    "template-field-prefill.spec.ts"
+   ]
+  },
+  "hunt2:documenso": {
+   "only": [
+    "search-documents.spec.ts",
+    "set-envelope-contents-audit-logs.spec.ts",
+    "set-envelope-contents-ids.spec.ts",
+    "set-envelope-contents-limits.spec.ts",
+    "test-unauthorized-analytics-access.spec.ts",
+    "search-templates.spec.ts"
+   ]
+  },
+  "huntp": {
+   "seeds": 7,
+   "seed_from": 0,
+   "replays": 10,
+   "budget_min": 340,
+   "run_timeout_min": 45,
+   "per_run_s": 900,
+   "workers": 2
+  }
+ },
+ "suites": false
 }
