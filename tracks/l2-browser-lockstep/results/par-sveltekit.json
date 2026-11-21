@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "running",
- "run_id": "44909741100",
- "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
- "setup_s": 25,
+ "run_id": "44918753387",
+ "engine_commit": "278aaff76246d051084e0ae6e77e4445a5cdb93f",
+ "setup_s": 32,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -31,8 +31,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T14:13:00Z",
- "measured_at": "2026-11-21T14:13:20Z",
+ "epoch": "2026-11-21T15:30:00Z",
+ "measured_at": "2026-11-21T15:30:30Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "par": {
   "workers": 2,
@@ -309,24 +309,11 @@
      "client.test.js::Load::using window.fetch does not cause false-positive warning [chromium-dev]": "passed",
      "client.test.js::preloadCode::can be called during initial load (#13297) [chromium-dev]": "passed"
     },
-    "wall_s": 190.3,
+    "wall_s": 139.2,
     "rc": 1
    }
   ],
-  "w1": [
-   {
-    "outcomes": {},
-    "wall_s": 2701.1,
-    "rc": "timeout",
-    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 0; epoch 2026-11-21T14:13:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 266 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]\",\"t_ms\":3385,\"settles\":195,\"releases\":3,\"advances\":67,\"fired\":70,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":21,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Caching::caches __data.json requests with invalidated search param [chromium-dev]\",\"t_ms\":6740,\"settles\":176,\"releases\":2,\"advances\":61,\"fired\":70,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":20,\"calls\":[\"Browser.newContext\"]}\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-invalidated=0\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-trailing-slash=0\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-custom=0\n[WebServer] 400 GET /load/url-query-param?%78-sveltekit-custom=0\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::searchParams::rejects reserved query parameters [chromium-dev]\",\"t_ms\":10169,\"settles\":202,\"releases\":6,\"advances\":74,\"fired\":79,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":24,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Endpoints::calls a delete handler [chromium-dev]\",\"t_ms\":13560,\"settles\":170,\"releases\":2,\"advances\":57,\"fired\":71,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":23,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Load::does not refetch cross-origin urls in non-canonical form during hydration [chromium-dev]\",\"t_ms\":16895,\"settles\":160,\"releases\":1,\"advances\":50,\"fired\":60,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":19,\"calls\":[\"Browser.newContext\"]}\n"
-   },
-   {
-    "outcomes": {},
-    "wall_s": 2701.1,
-    "rc": "timeout",
-    "log_tail": "detjs 0.1.0: Level 2 browser prototype; playwright 1.63.0; seed 0; epoch 2026-11-21T14:13:00Z; vtime=paced; net=on; server=on; workers=1\n[WebServer] [WARN] Your node_modules are out of sync with your lockfile. a linked package is out of date\n[WebServer] $ vite dev --force --port 5301 --strictPort\n\nRunning 266 tests using 1 worker, shard 1 of 1\ndetjs: lockstep runs channel 'chrome' on Playwright's chromium headless shell (engine-issued frames)\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::a11y::applies autofocus after an enhanced form submit [chromium-dev]\",\"t_ms\":3385,\"settles\":192,\"releases\":3,\"advances\":67,\"fired\":70,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":21,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Caching::caches __data.json requests with invalidated search param [chromium-dev]\",\"t_ms\":6740,\"settles\":176,\"releases\":2,\"advances\":61,\"fired\":70,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":20,\"calls\":[\"Browser.newContext\"]}\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-invalidated=0\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-trailing-slash=0\n[WebServer] 400 GET /load/url-query-param?x-sveltekit-custom=0\n[WebServer] 400 GET /load/url-query-param?%78-sveltekit-custom=0\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::searchParams::rejects reserved query parameters [chromium-dev]\",\"t_ms\":10169,\"settles\":202,\"releases\":6,\"advances\":74,\"fired\":78,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":24,\"calls\":[\"Browser.newContext\"]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Endpoints::calls a delete handler [chromium-dev]\",\"t_ms\":13560,\"settles\":168,\"releases\":2,\"advances\":55,\"fired\":69,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":22,\"calls\":[]}\n\u00b7detjs lockstep {\"test\":\"test/playwright/client.test.js::Load::does not refetch cross-origin urls in non-canonical form during hydration [chromium-dev]\",\"t_ms\":16895,\"settles\":160,\"releases\":1,\"advances\":50,\"fired\":60,\"stalls\":0,\"probeWaits\":0,\"idleWaits\":0,\"frames\":19,\"calls\":[\"Browser.newContext\"]}\n"
-   }
-  ],
+  "w1": [],
   "wn": []
  }
 }
