@@ -980,3 +980,38 @@ def test_order_dependent_pair_has_the_serial_verdict(pytester, args):
     p, _, _ = run(pytester, "mode", "-rA", *args, "tests", cache=False)
     assert outcome_of(p, "tests/test_od.py::test_b_victim") == "passed", p.stdout
     assert p.returncode == 0, p.stdout + p.stderr
+
+
+RUNTEST_PROTOCOL_PLUGIN = """
+import pytest
+
+STATS = {}
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_protocol(item):
+    STATS[item.nodeid] = []
+    yield
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    STATS[item.nodeid].append(call.when)  # KeyError when the wrapper above did not run (pytest-retry's pattern)
+    yield
+"""
+
+
+@pytest.mark.parametrize("mode", [(), ("-n", "2"), ("--det-isolate", "--det-isolate-scope=test")],
+                         ids=["file", "n2", "test-scope"])
+def test_other_plugins_runtest_protocol_wrappers_run_in_the_childs(pytester, mode):
+    """litellm (parallel-proof run g): pytest-retry creates a test's entry in its pytest_runtest_protocol wrapper and
+    reads it in pytest_runtest_makereport; a per-file child ran runtestprotocol without the other plugins' protocol
+    wrappers, so every test there errored with a KeyError (2,073 failed against 1 in the uncached run). The child
+    runs the test inside those wrappers, as a serial run does."""
+    if mode[:1] == ("-n",):
+        pytest.importorskip("xdist")
+    write(pytester, **{"tests/test_p.py": "def test_a():\n    pass\n\ndef test_b():\n    assert 1\n",
+                       "tests/conftest.py": RUNTEST_PROTOCOL_PLUGIN})
+    # the default per-file children (detpy's own suites run in-process: DETPY_CACHE_IN_PROCESS=1)
+    p, _, outcomes = run(pytester, "w" + "-".join(mode), "-rA", *mode, "tests", env={"DETPY_CACHE_IN_PROCESS": "0"})
+    assert mode[:1] == ("-n",) or "in forked children" in p.stdout, p.stdout[-3000:]  # (the workers print it under -n)
+    assert p.returncode == 0 and "KeyError" not in p.stdout, p.stdout[-3000:]
+    assert set(outcomes.values()) == {"passed"} and len(outcomes) == 2, outcomes

@@ -48,3 +48,20 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
    628 tests, 627 pass, 0 fail, 1 skipped. (Before the rebuild, the pre-merge addon failed the 4 verifier-inputs
    tests release-1 added; they pass with the rebuilt addon.)
 7) cargo test --release, final head: 191 passed, 0 failed.
+
+8) Exam-round head 574bad87 (exam fixes: PYTHONPATH reuse, import-time effects, odpair/isolate default, the
+   --det-cache-audit option, trunk 74d42b3 merged; Rust and Node addon rebuilt, wheel reinstalled in all venvs),
+   MEASURED 2026-11-21, full suite, three suites in parallel on 4 CPUs:
+== Python 3.12   21 failed, 1154 passed, 83 skipped, 1 deselected  (2184 s)
+== Python 3.13   24 failed, 1149 passed, 85 skipped, 1 deselected  (2110 s)
+== Python 3.14   25 failed, 1151 passed, 82 skipped, 1 deselected  (2329 s)
+   (failures are reference-trace, timing and control comparisons: level0/clock/network/repro *_rust, controls_f01,
+   fingerprint, verifier_truth, f01_gaps, test_py_cache::test_g2214; the run was heavier than 5) because each child
+   of the new per-file default isolation is a process)
+   Every failing test rerun alone, per version, at 574bad87:
+   3.12: 21 passed (test_f01_gaps::test_first_run_after_a_checkout... failed in the batch rerun, passed alone: 1 passed)
+   3.13: 24 passed
+   3.14: 21 passed, 4 failed = the interpreter's known four (test_review_r023b::test_2e_os_getrandom_is_entropy
+         [serial,n2]: os.getrandom absent in uv's standalone 3.14; test_clock_rust x2: the mock_open TypeError), as in 1)
+   Runners suites (venv-runners, 3.13): 147 passed, 1 skipped.
+   Node: 628 tests, 627 pass, 0 fail, 1 skipped.  cargo test --release: 191 passed, 0 failed.

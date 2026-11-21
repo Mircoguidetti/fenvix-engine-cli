@@ -37,6 +37,42 @@ import pytest
 STATS = {"tests": 0, "overhead_s": 0.0, "child_s": 0.0, "record_s": 0.0, "failed_children": 0}
 
 
+class _ChildProtocol:
+    """In a child, the test runs inside the pytest_runtest_protocol wrappers of the other plugins, as in a serial
+    run: pytest-retry's per-test stats, pytest-timeout's timer, pytest's own warnings/unraisable wrappers (litellm:
+    pytest-retry's makereport hook raised KeyError for every test of a per-file child, whose protocol skipped the
+    wrapper that creates its entry). detpy's own protocol hooks are left out (the child does their work itself); the
+    innermost call is runtestprotocol(log=False), as before."""
+
+    def __init__(self):
+        self.reports = None
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_runtest_protocol(self, item, nextitem):
+        from _pytest.runner import runtestprotocol
+
+        self.reports = runtestprotocol(item, nextitem=nextitem, log=False)
+        return True
+
+
+def _child_runtestprotocol(item, nextitem):  # pragma: no cover - runs in the child
+    pm = item.config.pluginmanager
+    cp = getattr(pm, "_detpy_child_protocol", None)
+    if cp is None:
+        cp = pm._detpy_child_protocol = _ChildProtocol()
+        own = [p for p in pm.get_plugins() if (getattr(p, "__name__", None) or type(p).__module__ or "").startswith("detpy")]
+        pm.register(cp, "detpy-child-protocol")
+        pm._detpy_child_caller = pm.subset_hook_caller("pytest_runtest_protocol", remove_plugins=own)
+    cp.reports = None
+    pm._detpy_child_caller(item=item, nextitem=nextitem)
+    if cp.reports is None:  # another plugin's tryfirst protocol ran the test itself: run it as before
+        from _pytest.runner import runtestprotocol
+
+        return runtestprotocol(item, nextitem=nextitem, log=False)
+    return cp.reports
+
+
+
 def available() -> bool:
     return hasattr(os, "fork") and sys.platform.startswith("linux")
 
@@ -140,7 +176,7 @@ class Isolate:
         p0 = _perf()
         # the test's own teardown only: the collectors and the fixtures of wider scopes belong to the parent
         # (torn down there once, when their scope ends)
-        reports = runtestprotocol(item, nextitem=_Collectors(item), log=False)
+        reports = _child_runtestprotocol(item, _Collectors(item))
         protocol_s = _perf() - p0
         if pc is not None:
             for rep in reports:
@@ -470,7 +506,7 @@ class FileIsolate(Isolate):
                     t = pc.iso_begin(item) if pc is not None else None
                     p0 = _perf()
                     nextitem = by_id[nxt] if nxt is not None else _Collectors(item)
-                    reports = runtestprotocol(item, nextitem=nextitem, log=False)
+                    reports = _child_runtestprotocol(item, nextitem)
                     protocol_s = _perf() - p0
                     if pc is not None:
                         for rep in reports:
