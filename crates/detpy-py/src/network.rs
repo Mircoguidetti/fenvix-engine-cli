@@ -572,6 +572,14 @@ fn net_set_replay(sock: &Bound<'_, PyAny>, label: &Bound<'_, PyString>) -> PyRes
     weak_set(&REPLAYS, sock, Arc::from(wtf8(label)?.as_ref()))
 }
 
+/// `del _conns[sock]`: the socket's own bytes are no longer recorded (its TLS layer above records the plaintext).
+#[pyfunction]
+fn net_conn_drop(sock: &Bound<'_, PyAny>) {
+    if let Some(w) = lock(&CONNS).as_mut() {
+        w.map.remove(&(sock.as_ptr() as usize));
+    }
+}
+
 /// `sock in _replays`.
 #[pyfunction]
 fn net_is_replayed(sock: &Bound<'_, PyAny>) -> bool {
@@ -1955,6 +1963,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
         wrap_pyfunction!(net_set_replay, m)?,
         wrap_pyfunction!(net_is_replayed, m)?,
         wrap_pyfunction!(net_next_replay, m)?,
+        wrap_pyfunction!(net_conn_drop, m)?,
         wrap_pyfunction!(net_is_local_name, m)?,
         wrap_pyfunction!(net_is_ip, m)?,
         wrap_pyfunction!(net_ip_address, m)?,

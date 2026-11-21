@@ -399,6 +399,11 @@ def _record_bytes(sock, direction: str, data) -> None:
         if direction == "recv":  # end of file: the server closed the connection, and its replay will too
             POLICY.cassette.set_closed(entry[0], entry[1])
         return
+    nodeid = _state.STATE.nodeid
+    if direction == "send" and isinstance(nodeid, str) and isinstance(entry[0], str) and nodeid != entry[0]:
+        # a connection kept alive from an earlier test: this test's exchange, recorded under this test
+        entry = (nodeid, POLICY.cassette.continue_in(entry[0], entry[1], nodeid))
+        _core.net_conn_tls(sock, entry)
     POLICY.cassette.append(entry[0], entry[1], direction, bytes(data))
 
 
@@ -667,6 +672,168 @@ def _stale_tests(cassette, max_age_days: float) -> list:
     return out
 
 
+# TLS over memory BIOs (asyncio: httpx, aiohttp, asyncio streams) ----------------------------------------------
+class DetSSLObject(ssl.SSLObject):
+    """The ``SSLObject`` of ``SSLContext.wrap_bio`` under the network control (audit G-0516, exam
+    F-01.probe.replay-clients). asyncio's TLS layer creates it before it knows the socket; ``SSLProtocol.connection_made``
+    binds it (``_bind_sslobj``). On a recorded connection it records the plaintext it reads and writes (the socket's
+    own bytes, ciphertext with a random handshake, are not recorded); on a replayed connection it is the identity
+    over the replay's plaintext stream and answers what the recorded handshake negotiated."""
+
+    _det_replay = None  # the recorded handshake (dict) once bound to a replayed socket
+    _det_in = _det_out = None
+
+    @classmethod
+    def _create(cls, incoming, outgoing, *args, **kwargs):
+        self = super()._create(incoming, outgoing, *args, **kwargs)
+        self._det_in, self._det_out = incoming, outgoing
+        if POLICY is not None and POLICY.mode in ("record", "replay"):
+            _bind_sslobj(self, _caller_socket())
+        return self
+
+    def do_handshake(self):
+        if self._det_replay is not None:
+            return None
+        r = super().do_handshake()
+        entry = _core.net_conn_of(self) if POLICY is not None and POLICY.mode == "record" else None
+        if entry is not None:
+            _record_tls_info(self, entry)
+        return r
+
+    def read(self, len=1024, buffer=None):
+        if self._det_replay is None:
+            r = super().read(len, buffer)
+            if POLICY is not None and POLICY.mode == "record":
+                _record_bytes(self, "recv", (bytes(memoryview(buffer)[:r]) if buffer is not None else r) or b"")
+            return r
+        data = self._det_in.read(len)
+        if not data:
+            if self._det_in.eof:
+                return 0 if buffer is not None else b""
+            raise ssl.SSLWantReadError("The operation did not complete (read)")
+        if buffer is not None:
+            memoryview(buffer)[:len_(data)] = data
+            return len_(data)
+        return data
+
+    def write(self, data):
+        if self._det_replay is None:
+            n = super().write(data)
+            if POLICY is not None and POLICY.mode == "record":
+                _record_bytes(self, "send", bytes(memoryview(data)[:n]))
+            return n
+        data = bytes(data)
+        self._det_out.write(data)
+        return len_(data)
+
+    def pending(self):
+        return self._det_in.pending if self._det_replay is not None else super().pending()
+
+    def unwrap(self):
+        return None if self._det_replay is not None else super().unwrap()
+
+    def getpeercert(self, binary_form=False):
+        if self._det_replay is None:
+            return super().getpeercert(binary_form)
+        return ReplaySSLSocket.getpeercert(self, binary_form)
+
+    def version(self):
+        return ReplaySSLSocket.version(self) if self._det_replay is not None else super().version()
+
+    def cipher(self):
+        return ReplaySSLSocket.cipher(self) if self._det_replay is not None else super().cipher()
+
+    def shared_ciphers(self):
+        return [self.cipher()] if self._det_replay is not None else super().shared_ciphers()
+
+    def compression(self):
+        return None if self._det_replay is not None else super().compression()
+
+    def selected_alpn_protocol(self):
+        return self._det_replay.get("alpn") if self._det_replay is not None else super().selected_alpn_protocol()
+
+    def get_channel_binding(self, cb_type="tls-unique"):
+        return None if self._det_replay is not None else super().get_channel_binding(cb_type)
+
+    @property
+    def _replay_info(self):  # what ReplaySSLSocket's answers read
+        return self._det_replay or {}
+
+
+len_ = len
+
+
+def _raw(sock):
+    """The socket itself: asyncio hands out a ``TransportSocket`` around it."""
+    inner = getattr(sock, "_sock", None) if type(sock).__name__ == "TransportSocket" else None
+    return inner if inner is not None else sock
+
+
+def _controlled(sock) -> bool:
+    sock = _raw(sock)
+    return isinstance(sock, socket.socket) and (_core.net_is_replayed(sock) or _core.net_conn_of(sock) is not None)
+
+
+def _caller_socket(depth: int = 8):
+    """The recorded or replayed socket a ``wrap_bio`` caller is about to run TLS over: a socket held by one of the
+    calling frames (asyncio's ``_create_connection_transport(sock)``, urllib3's and httpcore's TLS-in-TLS), or the
+    raw socket of a stream they hold (anyio's ``TLSStream.wrap(transport_stream)``, used by httpx)."""
+    import sys
+
+    f = sys._getframe(2)
+    for _ in range(depth):
+        if f is None:
+            return None
+        for v in list(f.f_locals.values()):
+            if _controlled(v):
+                return _raw(v)
+            attrs = getattr(v, "extra_attributes", None)
+            if isinstance(attrs, dict):
+                for get in attrs.values():
+                    try:
+                        r = get()
+                    except Exception:
+                        continue
+                    if _controlled(r):
+                        return _raw(r)
+        f = f.f_back
+    return None
+
+
+def _bind_sslobj(sslobj, sock) -> None:
+    """Tie the TLS object of an asyncio connection to its socket: replayed, or recorded (plaintext)."""
+    if not isinstance(sslobj, DetSSLObject) or sock is None or POLICY is None or sslobj._det_replay is not None:
+        return
+    if _core.net_is_replayed(sock):
+        info = {}
+        where = _REPLAYED.get(sock)
+        if where is not None and POLICY.cassette is not None:
+            try:
+                raw = POLICY.cassette.tls_info(*where)
+                info = json.loads(raw) if raw else {}
+            except Exception:
+                info = {}
+        sslobj._det_replay = info
+        return
+    entry = _core.net_conn_of(sock)
+    if entry is not None:
+        _core.net_conn_tls(sslobj, entry)  # the plaintext above TLS is the recording
+        _core.net_conn_drop(sock)  # not the ciphertext below it
+
+
+def _sslproto_connection_made(real):
+    def connection_made(self, transport):
+        try:
+            raw = transport.get_extra_info("socket")
+            _bind_sslobj(getattr(self, "_sslobj", None), getattr(raw, "_sock", raw))
+        except Exception:  # pragma: no cover - a transport without a socket (pipes)
+            pass
+        return real(self, transport)
+
+    connection_made.__doc__ = real.__doc__
+    return connection_made
+
+
 # Installation ---------------------------------------------------------------
 def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hosts, max_age_days: float = 0) -> str:
     global POLICY
@@ -700,6 +867,13 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
     patcher.set(socket, "gethostbyname", _gethostbyname)
     patcher.set(socket, "gethostbyname_ex", _gethostbyname_ex)
     patcher.set(ssl.SSLContext, "wrap_socket", _wrap_socket)
+    if mode in ("record", "replay"):
+        # asyncio's TLS over memory BIOs (httpx, aiohttp, asyncio streams): plaintext recorded and replayed
+        import asyncio.sslproto as _sslproto
+
+        patcher.set(ssl.SSLContext, "sslobject_class", DetSSLObject)
+        patcher.set(_sslproto.SSLProtocol, "connection_made",
+                    _sslproto_connection_made(_sslproto.SSLProtocol.connection_made))
     if mode == "replay":
         patcher.set(socket.socket, "setsockopt", _setsockopt)
         patcher.set(socket.socket, "getpeername", _getpeername)
