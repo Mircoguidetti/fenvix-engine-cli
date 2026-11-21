@@ -265,3 +265,34 @@ and venvs as the D4 re-check.
     (exit 1). Only the controller's own rewrites (xdist's modules; the controller runs no test) left the input.
 - **Note (non-blocking, not re-checked further):** the "fresh" temporary directory has the fixed name `/tmp/fenvix-det`.
   Whether two `--det` runs at the same time on one machine (two jobs on one runner) can share it was not examined here.
+
+## Re-check Node #1 #2 #6 #7: FAIL (4/4 tests pass; #1 is not fully fixed: N1)
+
+Coordinator re-check round, 2026-11-21. These are Node findings 1, 2, 6 and 7 of `claude/review-p1-verifier`,
+fixed by PR #8, re-checked on `claude/node` @ 888b2ca5 (contains trunk a996b68).
+
+- **Build:** the napi addon (`cargo zigbuild … x86_64-unknown-linux-gnu.2.28`) and the wheel were built from 888b2ca5
+  (both `crates/` and `python/detpy/fenvix_js.py` changed). Then, as in the CI `node` job: the addon copied to
+  `node/`, the wheel in a CPython 3.13 venv first on `PATH`, and `npm ci` in `node/`.
+- **The tests:** `node/test/review-p1-verifier.test.js` on 888b2ca5 is byte-identical to the reviewer's file.
+- **Run** (`node --test --test-concurrency=1 test/review-p1-verifier.test.js`): 4 pass, 0 fail, 0 skipped on Node
+  v22.23.5, v24.22.3 and v26.13.1.
+  - #1: "F-03: no test whose observed value differs …"
+  - #2: "F-03: a concurrent fs.readFile completion order …"
+  - #7: "F-01: --det pins the time zone and the locale …"
+  - #6: "F-02: fenvix repro works for a Vitest, Jest and node:test test"
+- **Does a differing Node run show as DIVERGENT? Not in every case.** Probes under `node-test --det`, two runs each:
+  - A worker returning `Math.random()` is diverged (reason `thread` on 22, `other` on 24/26); the CLI verdict is
+    DIVERGENT, exit 1.
+  - An environment variable `R050_PROBE=1` then `2` gives "run inputs: DIFFER", DIVERGENT, exit 1.
+  - **A file outside the project read as "A" then "B": `fenvix verify` exit 0, "IDENTICAL: all 1 tests ran with the
+    same inputs and observed the same events", on Node 22, 24 and 26.** Finding #1 named exactly this source ("`file`:
+    a file outside the project, `A` vs `B`"), but its test has no such probe, so the test passes while the false
+    IDENTICAL remains. Python records the same read and reports the same pair DIVERGENT (re-check #3 #4 #11 above).
+- **N1 (blocking for finding #1, row F-03 Node; wrong result, a false "same"):**
+  `node/test/review-r050-node-recheck.test.js`, committed on this branch. It FAILS on 888b2ca5 on Node 22, 24 and 26:
+  "verify reported the test identical although it read "A" and then "B"". Its precondition (the two runs really read
+  A and then B) is asserted. Fixed when the read of a file outside the project is an observed event (or the test is
+  marked), as on the Python side.
+- **Not measured:** #2's test asserts only when the observed completion orders differ (`if (orders.size > 1)`). I did
+  not record whether the orders still differ on 888b2ca5, i.e. whether it passed by control or by detection.
