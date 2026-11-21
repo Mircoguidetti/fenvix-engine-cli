@@ -75,12 +75,37 @@ def record(source: str, op: str, value: str, depth: int = 1) -> None:
         listener(source, value)
         if rec is None or STATE.nodeid is None:
             return
-    tid = _get_ident()
+    # --det-async: an executor job's events wait for the loop to deliver its result (detpy.aio)
+    buf = getattr(_tls, "buffer", None)
+    if buf is not None:
+        buf.append((source, op, site, value))
+        return
+    # --det-threads: the scheduler's key for this thread, which is never reused, else the OS ident
+    tid = getattr(_tls, "tkey", None) or _get_ident()
     threads = STATE.threads
     t = threads.get(tid)
     if t is None:
         t = threads[tid] = len(threads)
     rec.record(source, op, site, value, t)
+
+
+def set_tkey(key):
+    """Set this thread's event key; returns the previous one (--det-threads)."""
+    prev = getattr(_tls, "tkey", None)
+    _tls.tkey = key
+    return prev
+
+
+def get_tkey():
+    """This thread's event key, None when it is not a managed thread."""
+    return getattr(_tls, "tkey", None)
+
+
+def set_event_buffer(buf):
+    """Divert this thread's events into ``buf`` (None: record directly); returns the previous one."""
+    prev = getattr(_tls, "buffer", None)
+    _tls.buffer = buf
+    return prev
 
 
 def record_at(source: str, op: str, site: str, value: str) -> None:

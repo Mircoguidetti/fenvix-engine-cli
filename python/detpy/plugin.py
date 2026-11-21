@@ -747,7 +747,8 @@ def pytest_configure(config):
         # audit G-1532, G-1533: a --det option without --det did nothing, silently
         for opt, flag in (("det_seed", "--det-seed"), ("det_isolate", "--det-isolate"), ("det_order", "--det-order"),
                           ("det_record", "--det-record"), ("det_urandom", "--det-urandom"),
-                          ("det_entropy", "--det-entropy")):
+                          ("det_entropy", "--det-entropy"), ("det_async", "--det-async"),
+                          ("det_threads", "--det-threads")):
             if config.getoption(opt, None) not in (None, False):
                 raise pytest.UsageError(f"{flag} needs --det (without it the run is not deterministic; add --det, "
                                         f"or run `fenvix pytest`, which adds it)")

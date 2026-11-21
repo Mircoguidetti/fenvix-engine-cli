@@ -17,8 +17,8 @@ import os
 import platform
 import sys
 
-from . import (__version__, _core, _machine, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec,
-               seeds, sqlvirt, uncontrolled)
+from . import (__version__, _core, _machine, _sites, _state, aio, clock, envobs, frames, fsorder, fstime, network,
+               osstate, reexec, seeds, sqlvirt, threads, uncontrolled)
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale", "os")
@@ -157,6 +157,40 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                 help="never re-exec the interpreter to fix PYTHONHASHSEED")),
     (("--det-max-events",), dict(type=int, default=10_000, metavar="N",
                                  help="events stored verbatim per test (the fingerprint always covers all of them)")),
+    # Level 1 (--det-async, --det-threads): deterministic asyncio and thread scheduling. Both need --det.
+    (("--det-async",), dict(action="store_true", default=False,
+                            help="Level 1: deterministic asyncio scheduling driven by a seed (needs --det)")),
+    (("--det-async-seed",), dict(type=int, default=None, metavar="N",
+                                 help="seed of the asyncio scheduler (default: --det-seed; 0 = calm profile, no "
+                                      "exploration)")),
+    (("--det-async-grace",), dict(type=float, default=1.0, metavar="S",
+                                  help="real seconds an idle loop waits for foreign I/O or threads before its clock "
+                                       "jumps")),
+    (("--det-async-wait",), dict(type=float, default=2.0, metavar="S",
+                                 help="real seconds the loop waits for an executor job before giving up determinism "
+                                      "for it")),
+    (("--det-async-settle",), dict(type=float, default=0.01, metavar="S",
+                                   help="real seconds to batch near-simultaneous foreign wake-ups")),
+    (("--det-threads",), dict(action="store_true", default=False,
+                              help="Level 1: deterministic thread scheduling driven by a seed (needs --det). A test "
+                                   "whose threads the scheduler controls throughout is provable; one where it loses "
+                                   "control of a thread stays NOT PROVEN")),
+    (("--det-threads-seed",), dict(type=int, default=None, metavar="N",
+                                   help="seed of the thread scheduler (default: --det-seed; 0 = calm profile, no "
+                                        "exploration)")),
+    (("--det-threads-grace",), dict(type=float, default=1.0, metavar="S",
+                                    help="real seconds an idle scheduler waits for work outside the process before a "
+                                         "timer fires")),
+    (("--det-threads-deadlock",), dict(type=float, default=5.0, metavar="S",
+                                       help="real seconds with only I/O waiters (or unmanaged threads) left before a "
+                                            "deadlock is declared")),
+    (("--det-threads-stuck",), dict(type=float, default=60.0, metavar="S",
+                                    help="real seconds every managed thread may wait on work outside the scheduler "
+                                         "(an unmanaged thread, a child process, an escaped thread) before a "
+                                         "DeadlockError is raised")),
+    (("--det-threads-preempt",), dict(type=int, default=200, metavar="N",
+                                      help="exploring seeds only: mean number of user-code lines between "
+                                           "preemptions (0 = off)")),
     (("--det-outcomes",), dict(default=None, metavar="PATH",
                                help="write {nodeid: outcome} as JSON (works without --det; used by the harness)")),
     (("--det-cache",), dict(default=None, metavar="DIR",
@@ -712,8 +746,25 @@ def make_config(ns, root: str, controls) -> _state.Config:
         max_events=ns.det_max_events,
     )
     cfg.cassette_max_age = getattr(ns, "det_cassette_max_age", 0.0) or 0.0
+    cfg.det_async, cfg.det_threads = l1_settings(ns)
     _state.STATE.config = cfg
     return cfg
+
+
+def l1_settings(ns):
+    """The ``--det-async`` / ``--det-threads`` settings of the session, each None when the option was not given.
+
+    Both schedulers default to ``--det-seed`` (0 = the calm profile: run until blocked, then FIFO, no exploration).
+    """
+    a = t = None
+    if getattr(ns, "det_async", False):
+        seed = ns.det_async_seed if ns.det_async_seed is not None else (ns.det_seed or 0)
+        a = {"seed": seed, "grace": ns.det_async_grace, "wait": ns.det_async_wait, "settle": ns.det_async_settle}
+    if getattr(ns, "det_threads", False):
+        seed = ns.det_threads_seed if ns.det_threads_seed is not None else (ns.det_seed or 0)
+        t = {"seed": seed, "grace": ns.det_threads_grace, "deadlock": ns.det_threads_deadlock,
+             "preempt": ns.det_threads_preempt, "stuck": ns.det_threads_stuck}
+    return a, t
 
 
 def install_controls(cfg: _state.Config, root: str | None) -> list:
@@ -737,7 +788,19 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
         pin_cpu_count(PATCHER)
     if "os" in controls:
         osstate.install(PATCHER, cfg)  # after fstime: wraps its open
-    uncontrolled.install(PATCHER)
+    # detpy's own frames stay invisible to code that inspects other threads' stacks: a thread sleeping in plain
+    # Python showed detpy's sleep wrapper on top, and easypy's MultiObject logged a detpy location as the place its
+    # worker was waiting (a false failure made by the engine, L1 review R-007).
+    frames.install(PATCHER)
+    if cfg.det_async is not None:
+        a = cfg.det_async
+        aio.install(PATCHER, a["seed"], a["grace"], a["wait"], a["settle"], root or os.getcwd())
+        aio.refresh_prefixes(root or os.getcwd())  # here: every plugin is imported by now (filesystem calls)
+    if cfg.det_threads is not None:
+        t = cfg.det_threads
+        threads.install(PATCHER, t["seed"], t["grace"], t["deadlock"], t["preempt"], t["stuck"])
+    clock._set_l1_hooks()  # after both: tells the Rust time.sleep whether a scheduler now owns a sleep
+    uncontrolled.install(PATCHER)  # last: it asks the scheduler whether a thread it sees is controlled
     return rebound
 
 
@@ -915,12 +978,17 @@ def begin_test(nodeid: str, index: int) -> None:
         seeds.start_test(PATCHER, nodeid)
     if "net" in controls:
         network.start_test()
+    if threads.CFG.enabled:
+        threads.activate()
+        threads.start_test()
 
 
 def end_test(outcome: str):
     """The test that ran ends with ``outcome``: returns its fingerprint (or None)."""
     st = _state.STATE
     controls = st.config.controls
+    if threads.CFG.enabled:
+        threads.end_test()  # before the other controls: it stops the scheduler and joins what it manages
     if "seeds" in controls:
         seeds.end_test()
     if "net" in controls:
@@ -976,7 +1044,12 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
 
 
 def uninstall() -> None:
+    # The schedulers first: every managed thread has to become a plain thread again (and finish its timed waits on
+    # real locks) while the clock it was waiting on is still installed.
+    threads.uninstall()
+    aio.uninstall()
     PATCHER.undo_all()
+    clock._set_l1_hooks()  # the hooks were patched-in attributes: undo_all took them away
     osstate.uninstall()
     envobs.uninstall()
     fstime.uninstall()

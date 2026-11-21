@@ -331,6 +331,10 @@ pub fn sleep<'py>(py: Python<'py>, args: &Bound<'py, PyTuple>, kwargs: Option<&B
     let ns = int_of(&secs.mul(NS)?)?;
     clock_other_event_rs(); // a sleep is not a read: it ends a run of reads
     record_from_rust(py, "time", "time.sleep", ns.str()?.to_cow()?.into_owned(), 0)?;
+    if L1_HOOKS.load(Ordering::Relaxed) {
+        // --det-threads / --det-async: what the rest of a sleep means is the thread scheduler's business.
+        return g(py, intern!(py, "_sleep_l1"))?.call1((secs, &ns)).map(|_| py.None().into_bound(py));
+    }
     clock_advance_rs(int_arg(&ns)?);
     if sleeps_for_real(py)? {
         // Someone observes real time: wait for real as well; the virtual clock still advances.
@@ -343,6 +347,16 @@ pub fn sleep<'py>(py: Python<'py>, args: &Bound<'py, PyTuple>, kwargs: Option<&B
 
 // ---------------------------------------------------------------------------------------------------------------
 // The "a process was started" flag (`_mark_external`)
+
+/// Set while `detpy.threads` / `detpy.aio` have a sleep hook installed (`clock._set_l1_hooks`). While it is false
+/// `sleep` behaves exactly as it does without the Level 1 options, for one relaxed load per sleep.
+static L1_HOOKS: AtomicBool = AtomicBool::new(false);
+
+/// `clock._set_l1_hooks()`: whether `sleep` hands the sleep to `clock._sleep_l1` (--det-threads, --det-async).
+#[pyfunction]
+pub fn clock_set_l1_hooks(on: bool) {
+    L1_HOOKS.store(on, Ordering::Relaxed);
+}
 
 /// `clock._EXTERNAL["started"]` (for the tests).
 #[pyfunction]
@@ -734,6 +748,7 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
         wrap_pyfunction!(clock_in_event_loop, m)?,
         wrap_pyfunction!(clock_children_alive, m)?,
         wrap_pyfunction!(clock_external_started, m)?,
+        wrap_pyfunction!(clock_set_l1_hooks, m)?,
         wrap_pyfunction!(clock_mark_external, m)?,
         wrap_pyfunction!(clock_external_stand_in, m)?,
         wrap_pyfunction!(clock_wall_secs, m)?,

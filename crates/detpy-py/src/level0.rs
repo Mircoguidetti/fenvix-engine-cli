@@ -24,7 +24,7 @@ use pyo3::ffi;
 use pyo3::intern;
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyFloat, PyString, PyTuple};
-use std::cell::Cell;
+use std::cell::{Cell, RefCell};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex, MutexGuard};
 
@@ -446,6 +446,17 @@ static HUB: Mutex<Option<Arc<Hub>>> = Mutex::new(None);
 thread_local! {
     /// `_state._tls.busy`: patched APIs called inside `_state.quiet()` do not record events.
     static BUSY: Cell<bool> = const { Cell::new(false) };
+
+    /// `--det-threads`: this thread's event key (`threads.Thread.key`, a `("detpy-t", idx)` tuple). The OS thread
+    /// ident this function uses otherwise is handed out again once a thread ends, so a later thread would take the
+    /// finished one's event column and the trace would differ between runs for no reason in the test; the scheduler
+    /// gives every managed thread a key it never reuses. None: not managed, key by the OS ident.
+    static TKEY: RefCell<Option<Py<PyAny>>> = const { RefCell::new(None) };
+
+    /// `--det-async`: while this is a list, the events of an executor job are appended to it instead of recorded,
+    /// and `detpy.aio` records them with `record_at` at the virtual time the loop delivers the job's result. The
+    /// pool runs the job whenever it likes; its events must not sit in the trace at that moment.
+    static EVBUF: RefCell<Option<Py<PyAny>>> = const { RefCell::new(None) };
 }
 
 /// The cache with proof's listener (`Capture.event`) flags the context with the event's source; once it said so
@@ -554,6 +565,25 @@ pub fn l0_set_busy(v: bool) -> bool {
 #[pyfunction]
 pub fn l0_is_busy() -> bool {
     BUSY.with(|b| b.get())
+}
+
+/// Set this thread's event key; returns the previous one (`_state.set_tkey`, `--det-threads`).
+#[pyfunction]
+pub fn l0_set_tkey(_py: Python<'_>, key: Option<Py<PyAny>>) -> Option<Py<PyAny>> {
+    TKEY.with(|c| c.replace(key)) // the previous key goes back to the caller, who holds the GIL
+}
+
+/// This thread's event key, None when it is not a managed thread (`_state.get_tkey`).
+#[pyfunction]
+pub fn l0_get_tkey(py: Python<'_>) -> Option<Py<PyAny>> {
+    TKEY.with(|c| c.borrow().as_ref().map(|k| k.clone_ref(py)))
+}
+
+/// Divert this thread's events into `buf` (None: record them directly); returns the previous one
+/// (`_state.set_event_buffer`, `--det-async`).
+#[pyfunction]
+pub fn l0_set_event_buffer(_py: Python<'_>, buf: Option<Py<PyAny>>) -> Option<Py<PyAny>> {
+    EVBUF.with(|c| c.replace(buf))
 }
 
 pub(crate) fn hub() -> PyResult<Arc<Hub>> {
@@ -727,8 +757,22 @@ fn record_impl(py: Python<'_>, source: Text<'_, '_>, op: Text<'_, '_>, value: Te
             return Ok(());
         }
     }
-    let tid = unsafe { ffi::PyThread_get_thread_ident() };
-    let tid = tid.into_pyobject(py)?;
+    // `--det-async`: an executor job's events wait for the loop to deliver its result (`detpy.aio`). After the
+    // listener, which captures dependencies as they happen and does not care where the event lands in the trace.
+    if let Some(buf) = EVBUF.with(|c| c.borrow().as_ref().map(|o| o.clone_ref(py))) {
+        let site = site?;
+        let ev = (source.obj(py), op.obj(py), site, value.obj(py));
+        buf.bind(py).call_method1(intern!(py, "append"), (ev,))?;
+        return Ok(());
+    }
+    // `--det-threads`: the scheduler's key for this thread, which is never reused, else the OS ident.
+    let tid = match TKEY.with(|c| c.borrow().as_ref().map(|k| k.clone_ref(py))) {
+        Some(k) => k.into_bound(py),
+        None => {
+            let tid = unsafe { ffi::PyThread_get_thread_ident() };
+            tid.into_pyobject(py)?.into_any()
+        }
+    };
     let threads = hub.get(py, intern!(py, "threads"))?;
     let t = match threads.cast::<PyDict>() {
         Ok(d) => match d.get_item(&tid)? {
@@ -847,6 +891,9 @@ pub fn register(m: &Bound<'_, PyModule>) -> PyResult<()> {
         wrap_pyfunction!(l0_sites_cleared, m)?,
         wrap_pyfunction!(l0_set_busy, m)?,
         wrap_pyfunction!(l0_is_busy, m)?,
+        wrap_pyfunction!(l0_set_tkey, m)?,
+        wrap_pyfunction!(l0_get_tkey, m)?,
+        wrap_pyfunction!(l0_set_event_buffer, m)?,
         wrap_pyfunction!(l0_record, m)?,
         wrap_pyfunction!(l0_resolve, m)?,
         wrap_pyfunction!(l0_listener_memo, m)?,
