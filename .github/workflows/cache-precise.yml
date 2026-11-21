@@ -1,0 +1,69 @@
+name: cache-precise
+
+# P-061: reuse of the Python proof cache when a test fails, is new, or sits in an edited file, and 0 wrong results
+# (docs/CACHE-PRECISE.md section 9). Manual dispatch only. One job per (project, mode): harness/cache_precise/measure.py;
+# the JSON results are uploaded as artifacts and tabled by harness/cache_precise/aggregate.py.
+
+on:
+  workflow_dispatch:
+    inputs:
+      projects: {description: "specs under harness/cache_precise/specs", default: '["attrs","itsdangerous","moto"]'}
+      modes: {description: "serial, n4", default: '["serial","n4"]'}
+      scenarios: {description: "comma-separated", default: "unchanged,add-test,edit-test,failing-test"}
+
+env:
+  PYTHONUNBUFFERED: "1"
+  UV_PYTHON_PREFERENCE: managed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: wheel, path: dist/*.whl}
+
+  measure:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(inputs.projects) }}
+        mode: ${{ fromJSON(inputs.modes) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with: {name: wheel, path: "${{ runner.temp }}/dist"}
+      - name: strace (children followed by the cache)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq strace > /dev/null
+      - name: measure
+        run: |
+          python3 harness/cache_precise/measure.py --spec "harness/cache_precise/specs/${{ matrix.project }}.json" \
+            --mode "${{ matrix.mode }}" --scenarios "${{ inputs.scenarios }}" --work "$RUNNER_TEMP/w" \
+            --wheel "$(ls $RUNNER_TEMP/dist/*.whl)" --out "results/${{ matrix.project }}-${{ matrix.mode }}.json"
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cache-precise-${{ matrix.project }}-${{ matrix.mode }}
+          path: |
+            results/
+            ${{ runner.temp }}/w/*.log
+
+  table:
+    needs: measure
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with: {pattern: "cache-precise-*", path: all, merge-multiple: true}
+      - run: python3 harness/cache_precise/aggregate.py $(find all -name '*.json' -path '*results*') | tee -a "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,11 @@
+{
+ "name": "itsdangerous",
+ "url": "https://github.com/pallets/itsdangerous",
+ "sha": "096c8d42545d3b68ea21a4f890fb2b2d8979c0bd",
+ "note": "the exam's pin (2.2.0) and its F-05.edit-test edit (a new failing test before test_base64_bad)",
+ "install": ["-e", ".", "pytest", "freezegun"],
+ "args": ["tests", "-p", "no:randomly"],
+ "add_dir": "tests/test_itsdangerous",
+ "edit_file": "tests/test_itsdangerous/test_encoding.py",
+ "edit_anchor": "def test_base64_bad():"
+}

@@ -1,0 +1,15 @@
+{
+ "name": "moto",
+ "url": "https://github.com/getmoto/moto",
+ "sha": "96f50b1aa902eccb0a3763b80f37d7af265d9130",
+ "note": "the py-cache walks' pin and environment (tracks/parallel-proof/run.json), a smaller selection",
+ "install_cmd": "uv pip install -q --python \"$PY\" -e '.[all,server]' -r requirements-tests.txt",
+ "env": {"MOTO_CALL_RESET_API": "false", "COLUMNS": "400"},
+ "det_args": ["--det-urandom"],
+ "dist": "loadscope",
+ "python": "3.12",
+ "args": ["tests/test_s3/", "./tests/test_sqs", "-m", "not requires_clean_slate", "-p", "no:randomly",
+          "--timeout=600", "-rf", "--tb=line"],
+ "add_dir": "tests/test_s3",
+ "edit_file": "tests/test_sqs/test_sqs.py"
+}
