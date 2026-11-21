@@ -253,15 +253,19 @@ describe('Jest: the reuse decision is made after globalSetup (G-1290)', () => {
       'data.txt': 'v1\n',
       't/a.test.js': "test('a', () => { expect(process.env.GS_VALUE).toBe('v1'); });\n",
     });
-    const r1 = jrun(dir, [], { cache: true });
+    // one lane: the subject is the order (the reuse decision after globalSetup), not the placement. `--det` is
+    // parallel by default since G-1044, and a globalSetup that runs a process does not reuse in lanes at all
+    // (pre-existing: the entry is recorded with a worker's start-up digest, checked against the main process's).
+    const S = ['--det-workers=1'];
+    const r1 = jrun(dir, S, { cache: true });
     assert.equal(r1.status, 0, show(r1));
-    const r2 = jrun(dir, [], { cache: true });
+    const r2 = jrun(dir, S, { cache: true });
     assert.equal(r2.status, 0, show(r2));
     assert.ok(reused(r2).includes('t/a.test.js'), `run 2 must reuse\n${show(r2)}`);
     write(dir, { 'data.txt': 'v2\n' });
-    const fresh = jrun(dir);
+    const fresh = jrun(dir, S);
     assert.notEqual(fresh.status, 0, show(fresh));
-    const r3 = jrun(dir, [], { cache: true });
+    const r3 = jrun(dir, S, { cache: true });
     assert.ok(!reused(r3).includes('t/a.test.js'), `WRONG REUSE\n${show(r3)}`);
     assert.notEqual(r3.status, 0, show(r3));
   });
@@ -273,12 +277,14 @@ describe('Jest: exit without --forceExit (G-2180)', () => {
       'jest.config.js': "module.exports = { testMatch: ['**/t/**/*.test.js'], testEnvironment: 'node' };\n",
       't/a.test.js': "test('a', () => {});\n",
     });
-    const r1 = jrun(dir);
+    // in band (one lane): the behaviour under audit is the in-band one. Jest's worker mode kills its workers, so a
+    // handle left open there never keeps the process alive; `--det` is parallel by default since G-1044.
+    const r1 = jrun(dir, ['--det-workers=1']);
     assert.equal(r1.status, 0, show(r1));
     assert.doesNotMatch(r1.stderr + r1.stdout, /Force exiting Jest/, show(r1));
     assert.doesNotMatch(r1.stderr, /open handles/);
     write(dir, { 't/b.test.js': "const http = require('http'); test('leak', async () => { await new Promise((r) => http.createServer().listen(0, '127.0.0.1', r)); });\n" });
-    const r2 = jrun(dir, [], { timeout: 120000 });
+    const r2 = jrun(dir, ['--det-workers=1'], { timeout: 120000 });
     assert.equal(r2.status, 0, show(r2));
     assert.match(r2.stderr, /open handles .*TCPServerWrap/, show(r2));
     assert.doesNotMatch(r2.stderr + r2.stdout, /Force exiting Jest/);
