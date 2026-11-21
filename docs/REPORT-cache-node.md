@@ -1,6 +1,6 @@
 # Block 4 — cache with proof for Node (row F-06)
 
-Branch `claude/cache-node`, rebased onto `origin/claude/verifier-cli` @ `fbafafdc`.
+Branch `claude/cache-node`, on `origin/claude/verifier-cli` @ `1bef36d8`.
 
 **Headline: the Node cache had a reuse rule of its own and never called `judge()`. It reused tests
 the engine's own predicate says must be rerun, and erased the evidence on the way. Fixed in
@@ -14,19 +14,22 @@ DECLARED (from a brief or another session's report, not re-run here) or UNKNOWN.
 
 ### 1.1 The single predicate exists, and the Node cache was not calling it
 
-A correction to the first version of this report, which said `provable.rs` did not exist. It did not
-exist in the tree I had: I branched from `origin/claude/verifier-cli` @ `bbb7a8a1`, and Block 1
-landed the predicate on that branch at 20:47-21:20 the same evening. This branch is now rebased
-onto `fbafafdc`, which carries:
+A correction to the first version of this report, which said `provable.rs` did not exist, and a
+second correction to the claim that the brief's base commit `2b2f8e6a` was not a valid object.
+Both were artefacts of a stale clone: this container was cloned at 20:44, Block 1 pushed the
+predicate at 20:47-21:20, and `2b2f8e6a` is a valid commit on that branch (it is the Python half,
+"the general rule in the shared Rust core"). The brief was right on both counts and I was reading
+an old tree. The branch now carries:
 
-* `crates/detpy-core/src/provable.rs` (66,038 bytes): `account(module, qualname)` (line 242),
-  `account_node(module, export)` (625), `enum Verdict` (896), `judge(&Attestation) -> Verdict`
-  (926), `judge_record(record, header, outside)` (995);
-* `node/src/provable.js` (13,238 bytes): the Node sensor.
+* `crates/detpy-core/src/provable.rs`: `account(module, qualname)`, `account_node(module, export)`,
+  `enum Verdict`, `judge(&Attestation) -> Verdict`, `judge_record(record, header, outside)`,
+  `required_controls(sensor)`;
+* `node/src/provable.js`: the Node sensor.
 
 `judge()` is default-deny by construction: no sensor, a sensor built against another accounting
-table, an unaudited runtime, a channel mark, anything the sensor could not place, or anything
-outside the tests, and the verdict is `NotProven`.
+table, an unaudited runtime, **a control the accounting rests on switched off**, a channel mark,
+anything the sensor could not place, or anything outside the tests, and the verdict is `NotProven`.
+For a `node-` sensor `required_controls` is `time, seeds, fs, net, timers`.
 
 **The Node cache was not calling it.** That is section 2, and it was the real defect in this row.
 `node_session.rs::UNCACHEABLE` (29 channels) is a separate, older per-channel table; it is now the
@@ -76,8 +79,8 @@ The brief's "today 60%" is DECLARED and unverifiable here. The exam also tests a
 release artifact** (that run used one built from `claude/py-cache` @ 2b67ac02), not a worktree, so
 green F-06 needs a release build of this branch through Actions.
 
-Also MEASURED: the base commit the brief names, `2b2f8e6a`, is not a valid object in this
-repository.
+The base commit the brief names, `2b2f8e6a`, is valid (see 1.1); my earlier claim that it was not
+came from the stale clone.
 
 ## 2. The wrong reuse: the Node cache had a reuse rule of its own (FIXED)
 
@@ -130,9 +133,13 @@ The sensor's findings now reach the policy and the policy calls the predicate:
   `testEnd` attaches them; `fileCapture` attaches the sensor declaration of the process that ran
   the file.
 * `crates/detpy-core/src/node_session.rs`: `CapturedTest.unaccounted`, `Capture.provable` /
-  `provable_absent`, and `why_not_cached`, which builds a `provable::Attestation` and calls
-  `provable::judge`. The file's entry answers for every test in it, so it takes the union of their
-  findings.
+  `provable_absent`, `RecordInput.controls`, and `why_not_cached`, which builds a
+  `provable::Attestation` and calls `provable::judge`. The file's entry answers for every test in
+  it, so it takes the union of their findings.
+* `node/src/cache/proof.js`: the run's `--det` controls go into the record input, so a run missing
+  a control the accounting rests on stores nothing (audit G-0123). `--det-disable=time` was already
+  caught by an earlier guard ("cache off for this session"); this is a second, deeper line of
+  defence in the policy itself.
 
 `provable.rs` and `verify.rs` are untouched, and there is no JavaScript copy of `judge`.
 
@@ -147,21 +154,27 @@ differs — and the three tests pass again unmodified.
 After (MEASURED): the recording run reports `not cached: api 3` (two tests and the file entry) and
 run 2 runs both tests again.
 
-### 2.4 One open item, for Block 1 (`provable.rs` is not mine to edit)
+### 2.4 One open item, now owned by Block 1
 
-`native.provableAccount('async_hooks', k)` returns `unaccounted` for every export:
-`AsyncLocalStorage`, `AsyncResource`, `createHook`, `executionAsyncId`, `triggerAsyncId`,
-`executionAsyncResource`, `asyncWrapProviders`. `AsyncResource` and `AsyncLocalStorage` look
-misclassified — they are in-process bookkeeping and expose no outside state, unlike the
-run-dependent ids or `createHook`. The cost is concrete: Node constructs an `AsyncResource` inside
-`fs.createReadStream`, so **a test that reads a file through a stream is no longer reusable**. This
-is the one failing test in section 3, left failing rather than worked around. Fleet impact UNKNOWN
-(zustand does not hit it); streams are common, so I expect it to cost real reuse share.
+`native.provableAccount('async_hooks', k)` returns `unaccounted` for every export. `AsyncResource`
+and `AsyncLocalStorage` are in-process bookkeeping and expose no outside state, unlike the
+run-dependent ids or `createHook` — and the cost is concrete: Node constructs an `AsyncResource`
+inside `fs.createReadStream`, so **a test that reads a file through a stream is not reusable**.
 
-Also open, found while building the reproduction: the ESM form `import v8 from 'node:v8'` is **not**
-marked, while the `createRequire` form is. Vitest and Jest transform test files to ESM, so the
-unmarked form is the common one and the sensor is likely missing most real occurrences. My fix
-carries whatever the sensor reports, so it inherits that gap exactly.
+Raised rather than classified here, because the accounting table is `provable.rs`. The coordinator
+has since arbitrated it with Block 1, per member rather than per export: `AsyncLocalStorage` and
+`AsyncResource`'s constructor, `runInAsyncScope`, `bind` and `emitDestroy` become accounted, while
+`asyncId`/`triggerAsyncId`, `executionAsyncId`, `executionAsyncResource`, `createHook` and
+`asyncWrapProviders` stay unaccounted, which is where the run-dependent information actually is.
+Until that lands, the two failures in section 3 stay red with this as the reason: not skipped, not
+edited, and not worked around in this layer.
+
+**The ESM gap is closed upstream.** I had reported that `import v8 from 'node:v8'` was not marked
+while the `createRequire` form was — lazy arming hooked `module._load`, which is CJS only. Block 1's
+reviewer round pre-arms before any test file loads so `syncBuiltinESMExports` carries the wrappers
+into the ESM bindings. Re-measured here on `1bef36d8`: the plain `import` form now reports
+`unaccounted: ["api:v8.getHeapStatistics"]`. Whether the fix is general or only covers the curated
+list is Block 1's to confirm.
 
 ### 2.5 The fake-timers check is a separate question, still open
 
@@ -190,19 +203,20 @@ to measure (1)'s blast radius first.
 | `test/verify-inputs-attacks.test.js` | 34 | 34 | 0 |
 | `test/review-r055.test.js` | 8 | 8 | 0 |
 | `test/cache-p041.test.js` | 36 | 36 | 0 |
-| `test/policy-equivalence.test.js` | 11 | 11 | 0 |
-| `test/cache.test.js` | 47 | 46 | **1** |
-| **total** | **136** | **135** | **1** |
+| `test/policy-equivalence.test.js` | 12 | 12 | 0 |
+| `test/cache.test.js` | 47 | 45 | **2** |
+| **total** | **137** | **135** | **2** |
 
-The one failure is section 2.4 (`async_hooks.AsyncResource`), not skipped and not edited.
+Both failures are section 2.4 (`async_hooks.AsyncResource`, the same subtest under vitest and under
+jest; the only channel in either is `api:async_hooks.AsyncResource`), not skipped and not edited.
 
-`policy-equivalence` went from 5 tests to 11. Two changes, neither a weakening: the 500-input
-generator now emits the sensor declaration every real capture carries (without one the policy
-rightly stores nothing, so the generator had been producing sessions that cannot occur), and six
-new tests cover the judge layer against the Rust policy directly — a clean test stored, an
-unaccounted channel refused, no sensor refused, a wrong surface digest refused, an unaudited runtime
-refused, and the clause-order preference. There is deliberately **no** JavaScript mirror of
-`judge`, so the rule keeps one implementation.
+`policy-equivalence` went from 5 tests to 12. Two changes, neither a weakening: the 500-input
+generator now emits the sensor declaration and the `--det` controls every real capture carries
+(without them the policy rightly stores nothing, so the generator had been producing sessions that
+cannot occur), and seven new tests cover the judge layer against the Rust policy directly — a clean
+test stored, an unaccounted channel refused, no sensor refused, a wrong surface digest refused, an
+unaudited runtime refused, a required control switched off refused, and the clause-order preference.
+There is deliberately **no** JavaScript mirror of `judge`, so the rule keeps one implementation.
 
 ## 4. Measurements on a real project (MEASURED)
 
@@ -224,9 +238,10 @@ So **0 wrong reuses on this project, verified against a fresh full run**, and `F
 >= 90% threshold is met with margin here (100%). That is one project, not the fleet: the share on
 larger suites is UNKNOWN until section 5 runs, and the tension in 1.2 is not settled by it.
 
-**Re-measured after the section 2 fix: identical — 135/135 tests reused in 8 files, 143 verified,
-0 differ.** So routing admission through `judge()` cost zero reuse on this project. That is one
-project and it does not hit `async_hooks`; the fleet cost is UNKNOWN.
+**Re-measured after the section 2 fix, and again on `1bef36d8` with the broader ESM arming: identical
+both times — 135/135 tests reused in 8 files, 143 verified, 0 differ.** So closing a structural
+wrong reuse cost zero reuse on a real project. That is the answer to the fear that correctness costs
+the product. It is one project and it does not hit `async_hooks`; the fleet cost is UNKNOWN.
 
 ### 4.2 Wall-clock, cached vs uncached, serial and parallel
 
@@ -258,6 +273,14 @@ both sides.
 * **No Actions matrix run (Node 22/24/26) launched.** The exam tests an installed release artifact,
   so a matrix run needs a release build of this branch; and both it and the three projects would
   measure an engine that the decision in 2.4 is about to change. They come after that decision.
+## 5a. A note on this branch's history
+
+Two merge commits in this branch are housekeeping, not mistakes. After rebasing onto the branch that
+carries `provable.rs`, the force-push was refused by this session's safety classifier; rather than
+work around a safety refusal I merged the pre-rebase copies of my own three commits back in, so the
+push stayed a fast-forward. The second merge brings in `1bef36d8`. Nothing was lost and no other
+session had commits on this branch.
+
 ## 6. Reproduction
 
 ```bash

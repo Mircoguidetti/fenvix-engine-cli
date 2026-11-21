@@ -694,6 +694,9 @@ class ProofSession {
     }
     const input = {
       global, spec_keys: [...this.specKeys], captures, cur_env: curEnv,
+      // the controls this run had on: provable::judge refuses a run missing any control the accounting rests
+      // on, so --det-disable stores nothing (audit G-0123)
+      controls: [...this.run.cfg.controls],
       urandom: Boolean(this.run.cfg.urandom), epoch_ms: this.epochMs === undefined ? null : this.epochMs,
       run_id: this.runId, runtime: this.runtimeDigest, startup: this.startupDigest(), config_for: configFor,
       uncacheable_projects: [...this.uncacheableProjects.keys()].map((p) => this.scoped(p)), verify: Boolean(this.verify), hits,

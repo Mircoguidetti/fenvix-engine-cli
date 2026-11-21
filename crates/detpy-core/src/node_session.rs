@@ -80,6 +80,7 @@ pub fn uncacheable(flags: &[(String, String)], outcome: &str) -> Option<String> 
 /// result is not cached, or None when it may be.
 fn not_provable(
     provable: Option<&Value>,
+    controls: &[String],
     unaccounted: &[String],
     marks: &[String],
     outside: &[String],
@@ -90,6 +91,7 @@ fn not_provable(
         contract: provable.and_then(|h| h.get("contract")).and_then(|v| v.as_u64()).map(|v| v as u32),
         surface: get("surface"),
         runtime: get("runtime"),
+        controls,
         unaccounted,
         marks,
         outside,
@@ -110,13 +112,14 @@ fn not_provable(
 /// exists for). Either way the verdict is the predicate's: if it says NOT PROVEN, nothing is stored.
 fn why_not_cached(
     provable: Option<&Value>,
+    controls: &[String],
     unaccounted: &[String],
     flags: &[(String, String)],
     outcome: &str,
 ) -> Option<String> {
-    let judged = not_provable(provable, unaccounted, &[], &[]);
+    let judged = not_provable(provable, controls, unaccounted, &[], &[]);
     if let Some((kind, detail)) = &judged {
-        if kind == "sensor" || kind == "runtime" {
+        if kind == "sensor" || kind == "runtime" || kind == "config" {
             return Some(format!("{kind}: {detail}"));
         }
     }
@@ -180,6 +183,10 @@ pub struct RecordInput {
     /// Test files known to the runner (`specKeys`): infrastructure's reads of them are not global inputs.
     #[serde(default)]
     pub spec_keys: Vec<String>,
+    /// `meta.controls`: the `--det` controls this run had on. [`crate::provable::judge`] refuses a run missing
+    /// any control the accounting rests on, so a disabled control stores nothing (audit G-0123).
+    #[serde(default)]
+    pub controls: Vec<String>,
     #[serde(default)]
     pub captures: Vec<Capture>,
     /// The environment at session start (own string values only).
@@ -591,7 +598,7 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
             let o = snaps[i].as_ref().expect("snapshot");
             // the one predicate first: a channel the sensor could not place refuses reuse whatever the
             // channel list below says (crates/detpy-core/src/provable.rs judge)
-            let why = why_not_cached(c.provable.as_ref(), &t.unaccounted, &o.flags, &t.outcome);
+            let why = why_not_cached(c.provable.as_ref(), &input.controls, &t.unaccounted, &o.flags, &t.outcome);
             verify_one(&mut out, &nid, &t.outcome);
             if let Some(w) = why {
                 store.remove(&nid);
@@ -615,7 +622,8 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
             v.dedup();
             v
         };
-        let file_why = why_not_cached(c.provable.as_ref(), &file_unaccounted, &o.flags, outcome);
+        let file_why =
+            why_not_cached(c.provable.as_ref(), &input.controls, &file_unaccounted, &o.flags, outcome);
         if let Some(w) = file_why {
             store.remove(&mid);
             nc.set(&mid, &w);

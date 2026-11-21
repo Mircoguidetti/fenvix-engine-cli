@@ -156,11 +156,15 @@ function randomInput(seed) {
     global: Array.from({ length: Math.floor(r() * 6) }, item), spec_keys: ['a.txt', 'f0.test.js'], captures, cur_env: env,
     urandom: r() < 0.5, epoch_ms: r() < 0.5 ? 1700000000000 : null, run_id: `run${seed}`, runtime: 'RT', startup: r() < 0.5 ? 'S' : '',
     config_for: { '': 'C0', p1: 'C1', p2: 'C2' }, uncacheable_projects: r() < 0.2 ? ['p2'] : [], verify: r() < 0.5, hits,
+    controls: CONTROLS,
   };
 }
 
 // a valid declaration, as the sensor writes it for this build
 const PROVABLE = JSON.parse(native.provableHeader('node-surface/1', 'node22'));
+// the controls the accounting rests on (provable.rs `required_controls` for a node- sensor); a real --det run has
+// them on, and judge() refuses a run missing any of them before it looks at a single name
+const CONTROLS = ['time', 'seeds', 'fs', 'net', 'timers', 'order', 'isolation'];
 
 function legacyKey(testId, project) {
   if (!project) return testId;
@@ -199,15 +203,17 @@ test('the uncacheable table is the same', () => {
 // that cannot say what it watched, are never stored. These assert against the Rust policy directly -- there is no
 // JavaScript mirror of judge() on purpose, so that the rule has one implementation and not two.
 
-function oneTest(extra = {}, testExtra = {}) {
+function oneTest(extra = {}, testExtra = {}, session = {}) {
   return {
     global: [], spec_keys: ['f0.test.js'], cur_env: {}, urandom: false, epoch_ms: null,
     run_id: 'r', runtime: 'RT', startup: '', config_for: { '': 'C0' }, uncacheable_projects: [], verify: false, hits: {},
+    controls: CONTROLS,
     captures: [{
       label: 'L1', fileId: 'f0.test.js', duration: 0.1, ok: true, notes: [], items: [],
       tests: [{ id: 'f0.test.js::t', upto: 0, outcome: 'passed', fingerprint: 'fp', ...testExtra }],
       provable: PROVABLE, ...extra,
     }],
+    ...session,
   };
 }
 
@@ -258,4 +264,10 @@ test('a channel rule that names the gap is preferred over the generic finding', 
   const out = recorded(inp);
   assert.equal(out.recorded, 0);
   assert.match(Object.fromEntries(out.not_cached)['f0.test.js::t'], /network connection/);
+});
+
+test('a run with a control the accounting rests on switched off stores nothing', () => {
+  const out = recorded(oneTest({}, {}, { controls: ['seeds', 'fs', 'net', 'timers'] })); // time off
+  assert.equal(out.recorded, 0);
+  assert.match(Object.fromEntries(out.not_cached)['f0.test.js::t'], /control `time` off/);
 });
