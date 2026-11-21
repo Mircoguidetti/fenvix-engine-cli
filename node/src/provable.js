@@ -85,16 +85,25 @@ function startTest() {
   seen.clear();
 }
 
-/** Copy a function's own properties onto its wrapper, as facts.js does, so the surface looks unchanged. */
-function like(real, w) {
-  for (const k of Reflect.ownKeys(real)) {
-    if (['length', 'name', 'prototype', 'arguments', 'caller'].includes(k)) continue;
-    try { Object.defineProperty(w, k, Object.getOwnPropertyDescriptor(real, k)); } catch { /* ignore */ }
-  }
-  try { Object.defineProperty(w, 'name', { value: real.name, configurable: true }); } catch { /* ignore */ }
-  try { Object.defineProperty(w, '__detjsUnaccounted', { value: true }); } catch { /* ignore */ }
+/**
+ * Wrap `real` so that calling or constructing it marks the running test, and nothing else about it changes.
+ *
+ * A Proxy and not a plain function: `new Worker(...)` must keep working, and a hand-written wrapper that calls
+ * `real.apply(this, args)` throws "Class constructor cannot be invoked without 'new'". The Proxy also keeps the
+ * name, the length, the prototype and every own property without copying any of them.
+ */
+function wrap(real, name, key, projectSite) {
+  const mark = () => report('api', `${name}.${key}`, projectSite);
+  const w = new Proxy(real, {
+    apply(t, thisArg, args) { mark(); return Reflect.apply(t, thisArg, args); },
+    construct(t, args, newTarget) { mark(); return Reflect.construct(t, args, newTarget); },
+  });
+  WRAPPED.add(w);
   return w;
 }
+
+/** Wrappers this sensor made, so a second pass does not wrap one of its own. */
+const WRAPPED = new WeakSet();
 
 /**
  * Wrap every unaccounted function export of `mod` so that calling one marks the running test.
@@ -102,6 +111,20 @@ function like(real, w) {
  * Returns the number of exports wrapped, and -1 when the table has no rule for the module at all (every export
  * unaccounted): the caller then marks on load instead of wrapping a whole module's surface.
  */
+/**
+ * Keys of `obj` the engine has already patched.
+ *
+ * The engine's own wrapper is what accounts for a channel -- `children.js` replaces `worker_threads.Worker` so
+ * that creating one marks the test `uncontrolled.thread`, which is a better answer than this sensor's generic
+ * one. Wrapping over it would add noise and, worse, hide the engine's own patch behind another layer. So the
+ * patch list is the authority: what the engine touched is left exactly as it is.
+ */
+function patchedKeys(patcher, obj) {
+  const out = new Set();
+  for (const [o, k] of patcher.saved || []) if (o === obj) out.add(String(k));
+  return out;
+}
+
 function arm(patcher, name, exports_, projectSite) {
   let policy;
   try { policy = native.provableModulePolicy(name); } catch { policy = 'unknown'; }
@@ -112,19 +135,17 @@ function arm(patcher, name, exports_, projectSite) {
   if (!exports_ || (typeof exports_ !== 'object' && typeof exports_ !== 'function')) return 0;
   let keys;
   try { keys = Reflect.ownKeys(exports_).filter((k) => typeof k === 'string'); } catch { return 0; }
+  const engine = patchedKeys(patcher, exports_);
   let n = 0;
   for (const k of keys) {
+    if (engine.has(k)) continue;                      // the engine's own patch accounts for it
     let verdict;
     try { verdict = native.provableAccount(name, k); } catch { verdict = 'unaccounted'; }
     if (verdict !== 'unaccounted') continue;
     let real;
     try { real = exports_[k]; } catch { continue; }   // a getter that throws: left alone
-    if (typeof real !== 'function' || real.__detjsUnaccounted) continue;
-    const w = like(real, function (...a) {
-      report('api', `${name}.${k}`, projectSite);
-      return real.apply(this, a);
-    });
-    if (patcher.set(exports_, k, w)) n++;
+    if (typeof real !== 'function' || WRAPPED.has(real)) continue;
+    if (patcher.set(exports_, k, wrap(real, name, k, projectSite))) n++;
   }
   return n;
 }

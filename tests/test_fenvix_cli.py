@@ -430,3 +430,23 @@ def test_repro_finds_a_test_that_crashes_the_process(tmp_path):
     assert p.returncode == 0, p.stdout + p.stderr
     b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
     assert b["status"] == "reproduced" and b["polluters"] == ["tests/test_a.py::test_a"], b
+
+
+def test_explore_finds_the_target_when_another_module_does_not_import(project):
+    """exam F-02 py-autodoc, the explore half of `test_a_module_that_does_not_import_does_not_hide_the_target`.
+
+    Two of that project's modules do not import (a dependency is missing), so a plain pytest session is
+    "Interrupted" and runs no test at all. `fenvix repro` was fixed for that in the previous round; `fenvix
+    explore` has to behave the same way, or it reports a clean suite for a project whose flaky test it never ran.
+    The collection errors must still be named -- the suite genuinely does not collect cleanly -- but they must
+    not hide the target.
+    """
+    (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
+    out = project / "ex"
+    p = fx("explore", "--budget", "20", "--out", str(out), "--json", cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    s = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert "tests/test_o.py::test_victim" in json.dumps(s), s
+    # the suite does not collect cleanly, and explore says so without letting it hide the target
+    assert s.get("collection_errors"), s
+    assert not s.get("crashed_seeds"), s
