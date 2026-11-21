@@ -4,9 +4,9 @@
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
  "status": "ok",
- "run_id": "44909741100",
- "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
- "setup_s": 83,
+ "run_id": "44921091693",
+ "engine_commit": "d5757847fe8b6e93494577452388e2eb4c083c83",
+ "setup_s": 106,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -24,8 +24,8 @@
  "pw_dir": ".",
  "pw_args": [],
  "runs": [],
- "epoch": "2026-11-21T13:47:00Z",
- "measured_at": "2026-11-21T13:47:26Z",
+ "epoch": "2026-11-21T15:56:00Z",
+ "measured_at": "2026-11-21T15:56:05Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -62,16 +62,16 @@
     ""
    ],
    "walls": [
-    61.0,
-    61.0,
-    60.2,
-    60.0,
-    60.2,
-    60.4,
-    60.3,
-    60.3,
-    60.2,
-    60.5
+    81.3,
+    81.3,
+    81.8,
+    81.4,
+    81.4,
+    81.4,
+    81.3,
+    81.2,
+    81.1,
+    81.2
    ],
    "stats": [
     null,
@@ -190,16 +190,16 @@
     ""
    ],
    "walls": [
-    82.7,
-    83.1,
-    81.6,
-    81.8,
-    81.3,
-    81.0,
-    81.7,
-    83.3,
-    83.0,
-    82.6
+    102.9,
+    103.1,
+    103.1,
+    102.8,
+    102.8,
+    102.9,
+    102.6,
+    102.4,
+    103.1,
+    102.7
    ],
    "stats": [
     null,
@@ -228,143 +228,38 @@
    "verify_all": [
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 19,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpctwv7m -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpcufv7m -"
-      },
-      "reason": "sched",
-      "description": "event #19: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpctwv7m - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpcufv7m - @ "
-     }
+     "divergence": null
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpf9pck1 -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpfa8ck1 -"
-      },
-      "reason": "sched",
-      "description": "event #4: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpf9pck1 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpfa8ck1 - @ "
-     }
+     "divergence": null
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gphutph4 -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gphvcph4 -"
-      },
-      "reason": "sched",
-      "description": "event #4: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gphutph4 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gphvcph4 - @ "
-     }
+     "divergence": null
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpkggcf2 -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpkgzcf2 -"
-      },
-      "reason": "sched",
-      "description": "event #4: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpkggcf2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpkgzcf2 - @ "
-     }
+     "divergence": null
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpn0u2ts -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpn182ts -"
-      },
-      "reason": "sched",
-      "description": "event #4: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpn0u2ts - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpn182ts - @ "
-     }
+     "divergence": null
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
@@ -375,62 +270,20 @@
     },
     {
      "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 4,
-      "index": 8,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpttxqs2 -"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gptuvqs2 -"
-      },
-      "reason": "sched",
-      "description": "event #8: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpttxqs2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gptuvqs2 - @ "
-     }
+     "divergence": null
     }
    ],
    "verify": {
     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-    "status": "diverged",
-    "distinct_fingerprints": 2,
+    "status": "stable",
+    "distinct_fingerprints": 1,
     "runs": 10,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 4,
-     "index": 8,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "sched",
-      "o": "sched.io",
-      "at": "",
-      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpttxqs2 -"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "sched",
-      "o": "sched.io",
-      "at": "",
-      "v": "0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gptuvqs2 -"
-     },
-     "reason": "sched",
-     "description": "event #8: first diverging scheduling choice: sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gpttxqs2 - @   <>  sched.io 0/1:browser GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=gptuvqs2 - @ "
-    }
+    "divergence": null
    }
   }
  ],
- "elapsed_min": 24.8
+ "elapsed_min": 31.8
 }
