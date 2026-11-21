@@ -324,6 +324,38 @@ Both of those are worth stating plainly: the general rule's cost is not where it
 of the early over-refusal was the sensor misattributing the runner's work to the test, not the rule refusing real
 channels.
 
+### The defect that mattered most, and what caught it
+
+Fixing the over-attribution above, I made the Python sensor ask whose call it is through `_sites.resolve(depth)`.
+That was right. The depth was not: `resolve` counts from its own frame, so from inside a `sys.monitoring` callback
+the frame making the call is at depth **2**, and I passed **1**.
+
+With 1 the sensor saw its own frame, which is the engine's, concluded "infrastructure", and reported **nothing**.
+The general rule was dead — and every suite went green, which is the worst way for this to fail: a rule whose
+whole purpose is to refuse would have shipped refusing nothing, and nothing in the channel-specific tests could
+have noticed, because they each test a channel that has its own rule.
+
+What caught it was `test_a_channel_derived_from_the_engines_own_table_is_not_proven` — the test whose entire job
+is to notice this, because it asks the engine which callable it cannot account for, calls that one, and asserts
+the engine says so. That is the argument for writing the general test the way this block was asked to, rather
+than adding more channel tests. **MEASURED** from inside the callback: `resolve(0)` and `resolve(1)` answer
+`None`, `resolve(2)` answers the frame making the call. The depth is now a named constant with that measurement
+beside it, and the fix is confirmed from both sides: the derived channel is reported again **and** pytest's own
+`pwd.getpwuid` call is still suppressed.
+
+### "Reused" is the same claim as "identical"
+
+A reviewer found that `record.rs`'s `uncacheable()` had an `unacc` clause that nothing ever set, so the Python
+cache could store and later reuse a result the rule refuses. That is the blocking class too — the founder's rule
+covers `reused` as well as `identical`, and the decision quoted to the parallel measurement session says
+whatever the cache cannot observe with certainty forces a rerun.
+
+The sensor now calls a hook the cache installs (`provable.ON_GAP` → `Capture._note_unaccounted` → flag `unacc`),
+which is the clause that was dead; a run with no sensor flags every test the same way, so nothing from it is
+stored either. The Node side reaches the same refusal through `STATE.onLevel0Gap`, the engine's existing signal.
+`test_the_cache_never_reuses_a_test_the_rule_refuses` covers it, with the channel derived from the table so the
+test names none.
+
 ## 8. Channels to cover later
 
 Per the judging rule, a channel where the engine answers NOT PROVEN is not a defect. These are recorded, not
