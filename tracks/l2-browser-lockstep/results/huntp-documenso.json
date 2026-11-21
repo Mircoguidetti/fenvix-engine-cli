@@ -3,10 +3,10 @@
  "job": "huntp",
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
- "status": "running",
- "run_id": "44909741100",
- "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
- "setup_s": 337,
+ "status": "ok",
+ "run_id": "44921091693",
+ "engine_commit": "d5757847fe8b6e93494577452388e2eb4c083c83",
+ "setup_s": 286,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -29,8 +29,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-21T13:52:00Z",
- "measured_at": "2026-11-21T13:52:29Z",
+ "epoch": "2026-11-21T16:00:00Z",
+ "measured_at": "2026-11-21T16:00:09Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
   "seeds": 7,
@@ -62,6 +62,30 @@
      ],
      [
       3,
+      "passed",
+      "",
+      null
+     ],
+     [
+      4,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      5,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      6,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      7,
       "passed",
       "",
       null
@@ -102,6 +126,30 @@
       "passed",
       "",
       null
+     ],
+     [
+      4,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
+     ],
+     [
+      5,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      6,
+      "timedOut",
+      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
+      null
+     ],
+     [
+      7,
+      "failed",
+      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
+      null
      ]
     ],
     "seed": null,
@@ -136,10 +184,45 @@
      ]
     ],
     "seed": 2,
-    "replays": [],
-    "replay_errors": [],
-    "fingerprints": null,
-    "reproduced": false
+    "replays": [
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed",
+     "failed"
+    ],
+    "replay_errors": [
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed",
+     "Error: expect(locator).toBeVisible() failed"
+    ],
+    "fingerprints": 1,
+    "reproduced": true,
+    "replay_match": [
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true,
+     true
+    ],
+    "divergence": null
    },
    {
     "key": "update-envelope-items.spec.ts::Update envelope items::should reject combined title and order change on a PENDING envelope [api]",
@@ -167,6 +250,30 @@
      ],
      [
       3,
+      "passed",
+      "",
+      null
+     ],
+     [
+      4,
+      "passed",
+      "",
+      null
+     ],
+     [
+      5,
+      "passed",
+      "",
+      null
+     ],
+     [
+      6,
+      "passed",
+      "",
+      null
+     ],
+     [
+      7,
       "passed",
       "",
       null
@@ -207,6 +314,30 @@
       "passed",
       "",
       null
+     ],
+     [
+      4,
+      "passed",
+      "",
+      null
+     ],
+     [
+      5,
+      "passed",
+      "",
+      null
+     ],
+     [
+      6,
+      "passed",
+      "",
+      null
+     ],
+     [
+      7,
+      "passed",
+      "",
+      null
      ]
     ],
     "seed": null,
@@ -220,7 +351,7 @@
    {
     "label": "h-latency-s0",
     "rc": 1,
-    "wall_s": 1772.2,
+    "wall_s": 1580.7,
     "counts": {
      "failed": 4,
      "passed": 19,
@@ -230,32 +361,166 @@
    {
     "label": "h-latency-s1",
     "rc": 1,
-    "wall_s": 1495.0,
+    "wall_s": 1061.8,
     "counts": {
      "failed": 6,
-     "passed": 19,
-     "timedOut": 1
+     "passed": 17,
+     "timedOut": 3
     }
    },
    {
     "label": "h-latency-s2",
     "rc": 1,
-    "wall_s": 1676.0,
+    "wall_s": 1569.1,
     "counts": {
      "failed": 4,
-     "passed": 20,
-     "timedOut": 2
+     "passed": 19,
+     "timedOut": 3
     }
    },
    {
     "label": "h-latency-s3",
     "rc": 1,
-    "wall_s": 1493.9,
+    "wall_s": 1429.1,
     "counts": {
      "passed": 17,
      "timedOut": 1
     }
+   },
+   {
+    "label": "h-latency-s4",
+    "rc": 1,
+    "wall_s": 422.5,
+    "counts": {
+     "passed": 14,
+     "failed": 2,
+     "timedOut": 2
+    }
+   },
+   {
+    "label": "h-latency-s5",
+    "rc": 1,
+    "wall_s": 781.5,
+    "counts": {
+     "passed": 15,
+     "timedOut": 2,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s6",
+    "rc": 1,
+    "wall_s": 785.9,
+    "counts": {
+     "passed": 15,
+     "timedOut": 2,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s7",
+    "rc": 1,
+    "wall_s": 1072.4,
+    "counts": {
+     "passed": 16,
+     "failed": 1,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-latency-s2-r1",
+    "rc": 1,
+    "wall_s": 695.4,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r2",
+    "rc": 1,
+    "wall_s": 608.1,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r3",
+    "rc": 1,
+    "wall_s": 696.1,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r4",
+    "rc": 1,
+    "wall_s": 690.4,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r5",
+    "rc": 1,
+    "wall_s": 690.6,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r6",
+    "rc": 1,
+    "wall_s": 685.4,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r7",
+    "rc": 1,
+    "wall_s": 691.1,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r8",
+    "rc": 1,
+    "wall_s": 683.7,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r9",
+    "rc": 1,
+    "wall_s": 688.5,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
+   },
+   {
+    "label": "h-latency-s2-r10",
+    "rc": 1,
+    "wall_s": 603.4,
+    "counts": {
+     "failed": 4,
+     "passed": 4
+    }
    }
-  ]
- }
+  ],
+  "reproduced": 1,
+  "found_seed": 1,
+  "n": 5
+ },
+ "elapsed_min": 258.9
 }
