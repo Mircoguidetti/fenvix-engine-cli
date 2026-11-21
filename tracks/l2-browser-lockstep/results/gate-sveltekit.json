@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44921091693",
- "engine_commit": "d5757847fe8b6e93494577452388e2eb4c083c83",
- "setup_s": 36,
+ "run_id": "44953971010",
+ "engine_commit": "5359adff409d65833a1e09fa3027bc04f3a850f4",
+ "setup_s": 26,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T15:54:00Z",
- "measured_at": "2026-11-21T15:54:52Z",
+ "epoch": "2026-11-21T22:02:00Z",
+ "measured_at": "2026-11-21T22:02:19Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    22.6,
-    22.4,
-    22.5,
-    22.4,
-    22.4,
-    22.4,
-    22.3,
-    22.5,
-    22.5,
-    22.4
+    25.2,
+    25.1,
+    25.3,
+    25.7,
+    25.0,
+    24.9,
+    24.8,
+    24.8,
+    24.8,
+    24.7
    ],
    "stats": [
     null,
@@ -102,18 +102,36 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-     "status": "stable",
+     "status": "not-proven",
      "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
     }
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-    "status": "stable",
+    "status": "not-proven",
     "distinct_fingerprints": 1,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 0,
+     "index": null,
+     "window": null,
+     "event_a": null,
+     "event_b": null,
+     "reason": "sensor",
+     "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+    }
    }
   },
   {
@@ -150,16 +168,16 @@
     ""
    ],
    "walls": [
-    131.7,
-    132.5,
-    134.4,
-    136.8,
-    131.6,
-    131.7,
-    130.4,
-    130.5,
-    130.6,
-    131.2
+    179.1,
+    178.4,
+    180.9,
+    182.3,
+    182.5,
+    182.1,
+    181.4,
+    181.3,
+    183.3,
+    181.8
    ],
    "stats": [
     null,
@@ -188,34 +206,94 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 2,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 31,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 2899a68767b417dcccb0f52a13370fd7 15515"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515"
+      },
+      "reason": "other",
+      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 2899a68767b417dcccb0f52a13370fd7 15515\" vs \"http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515\""
+     }
     },
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
-     "status": "stable",
+     "status": "not-proven",
      "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
     },
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
-     "status": "stable",
+     "status": "not-proven",
      "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
     }
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 2,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 31,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 2899a68767b417dcccb0f52a13370fd7 15515"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515"
+     },
+     "reason": "other",
+     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 2899a68767b417dcccb0f52a13370fd7 15515\" vs \"http://localhost:5301 b39e5e5ad1a71d71300d8defb18982db 15515\""
+    }
    }
   }
  ],
- "elapsed_min": 26.5
+ "elapsed_min": 35.1
 }
