@@ -189,11 +189,18 @@ const INFRA_PREFIXES: &[&str] = &[
     "detpy", "_pytest", "pytest", "pluggy", "iniconfig", "_distutils_hack", "exceptiongroup", "detjs",
 ];
 
-/// Native extension modules whose own C code the engine has reasoned about.
+/// Native extension modules whose own C code the engine has reasoned about, **by name**.
 ///
-/// A test that loads any other extension module is NOT PROVEN: its C code could read a file or the real clock
-/// without emitting anything a sensor can see (the declared residual). The list is deliberately short; it grows
-/// only by someone auditing an extension and saying so here.
+/// This list is only for extensions that are not already covered by where they live. The shells decide the rest
+/// by path, which is what makes the rule portable: the interpreter's own extension modules are part of the
+/// interpreter and pinned by the `runtime` input, and the engine's and the runner's are the declared controlled
+/// set (Rule E). Which standard-library modules are separate shared objects at all depends on how the
+/// interpreter was built -- MEASURED: `_asyncio` and thirteen others are separate `.so` files on the hosted
+/// CPython 3.13 that CI uses and built into the binary in the development container -- so a list of names is the
+/// wrong instrument for them.
+///
+/// A test that loads an extension covered by neither is NOT PROVEN: its C code could read a file or the real
+/// clock without emitting anything a sensor can see (the declared residual).
 pub const CONTROLLED_NATIVE: &[&str] = &[
     // the engine's own extension and the accelerators of the pure modules above
     "detpy._core",

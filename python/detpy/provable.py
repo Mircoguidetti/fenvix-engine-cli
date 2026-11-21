@@ -264,6 +264,10 @@ class Sensor:
         A C extension's own reads raise neither a call nor an audit event, so the only honest rule is to refuse
         a test that loaded one nobody audited. Called at the end of every test: an extension imported inside the
         test counts for that test, one imported earlier for all of them.
+
+        What counts as audited: the interpreter's own extension modules (they are part of the interpreter, which
+        the ``runtime`` run input pins), the engine's and the runner's (Rule E), and the names the core lists in
+        ``CONTROLLED_NATIVE``. Anything else -- a package's compiled module, a project's own -- is a gap.
         """
         for name, m in list(sys.modules.items()):
             if name in self._native_seen:
@@ -272,8 +276,18 @@ class Sensor:
             f = getattr(m, "__file__", None)
             if not f or not (f.endswith(".so") or f.endswith(".pyd") or f.endswith(".dylib")):
                 continue
-            if name not in self._native_ok:
-                self._native_bad.append(name)
+            if name in self._native_ok:
+                continue
+            # The interpreter's own extension modules are part of the interpreter, which the `runtime` run input
+            # pins, and the engine's and the runner's are the declared controlled set (Rule E). Deciding this by
+            # PATH and not by name matters: which standard-library modules are separate shared objects depends on
+            # how the interpreter was built. MEASURED on CI: `_asyncio` and thirteen others are separate .so files
+            # on the hosted CPython 3.13 and built into the binary in this container, so a list of names refused
+            # almost every test there and nothing here.
+            kind = _sites._classify(f)[0]
+            if kind in (_sites._STDLIB, _sites._INFRA):
+                continue
+            self._native_bad.append(name)
         # every unaudited extension loaded at any point so far, for THIS test: the module is still loaded, so its
         # C code could have run inside this test too. Scanning only what is new keeps the cost to the modules
         # imported since the last test; reporting all of them keeps the answer right for every test, which is what
