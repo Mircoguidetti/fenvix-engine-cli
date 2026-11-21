@@ -1,0 +1,61 @@
+OK    I1 pytest.ini filterwarnings=error added [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.009s, record 0.024s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.024s); config 736bbae3c75155cfca29695df88ca012, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I2 pyproject.toml ini options changed (no pytest.ini) [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.024s); config 2cbc33518495788685ec4159de66238f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.014s); config 674c982444e19f54e13108f208d17db4, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I3 setup.cfg [tool:pytest] changed [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.008s); config 4dd2f1012f94e66fbc61ba8934942196, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.016s); config 4a3d7226d8524aee2b98399bd650cf76, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I4 tox.ini [pytest] addopts changed [serial] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.008s); config f832db925768997158c955d4500b6116, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.02s); config 10dac4956e5a9d44736cd3caf9a2c4ba, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    L1 LANG [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.029s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.015s); config d48f41f6df037ab830c3d07ba63a1bd5, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    T1 TZ [serial] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 1, recorded 1 (check 0.001s, record 0.01s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 1 result(s) with proof, ran 0, recorded 0 (check 0.027s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I1 pytest.ini filterwarnings=error added [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.0s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 736bbae3c75155cfca29695df88ca012, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I2 pyproject.toml ini options changed (no pytest.ini) [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.01s); config 2cbc33518495788685ec4159de66238f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.001s, record 0.001s); config 674c982444e19f54e13108f208d17db4, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I3 setup.cfg [tool:pytest] changed [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.0s); config 4dd2f1012f94e66fbc61ba8934942196, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.011s); config 4a3d7226d8524aee2b98399bd650cf76, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    I4 tox.ini [pytest] addopts changed [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.0s); config f832db925768997158c955d4500b6116, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 0 (check 0.0s, record 0.0s); config 10dac4956e5a9d44736cd3caf9a2c4ba, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    L1 LANG [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.0s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.001s); config d48f41f6df037ab830c3d07ba63a1bd5, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    T1 TZ [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=1/1, gw1=0/0), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 1, recorded 1 (check 0.0s, record 0.0s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan f8187a6941f1cd54d97089c354e89716: 2 workers (ran/planned gw0=0/1, gw1=0/0), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 0, recorded 0 (check 0.024s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'failed'} rc=1
+== 12 OK, 0 WRONG: []

@@ -1,0 +1,301 @@
+OK    D1 recursion limit [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.009s, record 0.02s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.025s, record 0.017s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D1 recursion limit [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.035s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D1 recursion limit [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.029s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D2 control: repository module global [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.009s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.031s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D2 control: repository module global [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.009s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.039s, record 0.012s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D2 control: repository module global [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.02s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D3 os.environ write [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.024s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D3 os.environ write [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.029s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D3 os.environ write [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.047s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D4 cwd (chdir) [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.018s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.061s, record 0.029s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D4 cwd (chdir) [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.027s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D4 cwd (chdir) [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.038s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D5 umask [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.026s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.012s, record 0.012s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D5 umask [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.021s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D5 umask [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.013s, record 0.012s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D6 signal handler [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.014s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.024s, record 0.012s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D6 signal handler [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.035s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D6 signal handler [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.024s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D7 logging.disable [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.029s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.015s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D7 logging.disable [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.027s, record 0.006s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D7 logging.disable [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.034s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D8 decimal context (C) [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.037s, record 0.017s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D8 decimal context (C) [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.04s, record 0.009s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D8 decimal context (C) [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.027s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D9 sys.modules injection [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.021s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.031s, record 0.012s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D9 sys.modules injection [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.044s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D9 sys.modules injection [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.044s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D10 sys.path append [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.025s, record 0.035s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D10 sys.path append [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.051s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D10 sys.path append [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.038s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D12 rlimit NOFILE [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.009s, record 0.015s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.029s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D12 rlimit NOFILE [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.023s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D12 rlimit NOFILE [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.021s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D14 gc.disable [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.037s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.047s, record 0.025s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D14 gc.disable [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.0s, record 0.014s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.047s, record 0.008s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D14 gc.disable [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.033s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D22 builtins attribute [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.043s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.033s, record 0.017s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D22 builtins attribute [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.009s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.035s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D22 builtins attribute [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.008s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.013s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D23 int max str digits [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.013s, record 0.044s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.035s, record 0.035s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D23 int max str digits [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 37fa72da2444950f78ef696db8106d87: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.04s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D23 int max str digits [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.031s, record 0.003s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D26 socket default timeout [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.06s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.013s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D26 socket default timeout [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.025s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D26 socket default timeout [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.03s, record 0.008s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D27 locale.setlocale [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.053s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.033s, record 0.026s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D27 locale.setlocale [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.029s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D27 locale.setlocale [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.005s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.025s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D28 written file (in-process write) [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.005s, record 0.022s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.016s, record 0.037s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D28 written file (in-process write) [n2] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 4, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.015s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D28 written file (in-process write) [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.028s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D29 sys.setswitchinterval [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.005s, record 0.016s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.024s, record 0.017s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D29 sys.setswitchinterval [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.002s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.046s, record 0.014s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0
+OK    D29 sys.setswitchinterval [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.046s, record 0.004s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D30 os.environ delete [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['reused 0 result(s) with proof, ran 2, recorded 2 (check 0.009s, record 0.017s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.037s, record 0.011s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D30 os.environ delete [n2] (vs plain: same)
+  run1 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.002s, record 0.013s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=0/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 1', 'reused 1 result(s) with proof, ran 1, recorded 1 (check 0.05s, record 0.006s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D30 os.environ delete [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'passed'} rc=0 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 2 (check 0.001s, record 0.007s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.032s, record 0.007s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D31 sys.stdout replaced (C-level print target) [serial] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.038s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['reused 0 result(s) with proof, ran 2, recorded 1 (check 0.034s, record 0.021s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+OK    D31 sys.stdout replaced (C-level print target) [n2] (vs plain: DIFFERS)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 7eff8da2637e1001144a8c02b3ad396c: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 1.0s (LPT 1.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan 37fa72da2444950f78ef696db8106d87: 2 workers (ran/planned gw0=1/1, gw1=1/1), planned makespan 0.0s (LPT 0.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.016s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/b/test_b.py::test_victim': 'passed', 'tests/a/test_a.py::test_a': 'passed'} rc=0
+OK    D31 sys.stdout replaced (C-level print target) [n1] (vs plain: same)
+  run1 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 2.0s (LPT 2.0s); reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.001s, record 0.0s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  run2 cache={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1 ['plan fccdb8f0d74e49aeb414919c06810e4c: 1 workers (ran/planned gw0=2/2), planned makespan 0.0s (LPT 0.0s), sticky; reused by the controller: 0', 'reused 0 result(s) with proof, ran 2, recorded 1 (check 0.015s, record 0.001s); config 872265980b9f3d493ade67f6c8cb228f, runtime fc13b0dbc2a571ae2c7c5a45303efcaf']
+  --det     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+  plain     ={'tests/a/test_a.py::test_a': 'passed', 'tests/b/test_b.py::test_victim': 'failed'} rc=1
+== 60 OK, 0 WRONG: []

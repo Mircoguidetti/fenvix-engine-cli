@@ -1,0 +1,33 @@
+ok              getpid                 reused=True fresh_vary=False fresh=['10000', '10000', '10000'] cold=['10000'] ['not reused: new 1'] rc1=0
+ok              getppid                reused=True fresh_vary=False fresh=['9999', '9999', '9999'] cold=['9999'] ['not reused: new 1'] rc1=0
+ok              id_object              reused=True fresh_vary=False fresh=['140737349433776', '140737349433776', '140737349433776'] cold=['140737349434528'] ['not reused: new 1'] rc1=0
+ok              hash_object            reused=True fresh_vary=False fresh=['8796084339611', '8796084339611', '8796084339611'] cold=['8796084339658'] ['not reused: new 1'] rc1=0
+WRONG (frozen)  c_random_seed          reused=True fresh_vary=True fresh=['0.31534736713364464', '0.6109106398995497', '0.6922004731038909'] cold=['0.9048023505145798'] ['not reused: new 1'] rc1=0
+ok              py_random_new          reused=True fresh_vary=False fresh=['0.7657843727350475', '0.7657843727350475', '0.7657843727350475'] cold=['0.7657843727350475'] ['not reused: new 1'] rc1=0
+ok              random_module          reused=True fresh_vary=False fresh=['0.356942018516079', '0.356942018516079', '0.356942018516079'] cold=['0.356942018516079'] ['not reused: new 1'] rc1=0
+ok              ssl_RAND_bytes         reused=True fresh_vary=False fresh=['e904b95fbafc9516', 'e904b95fbafc9516', 'e904b95fbafc9516'] cold=['e904b95fbafc9516'] ['not reused: new 1'] rc1=0
+ok              uuid1                  reused=True fresh_vary=False fresh=['57fd000a-c7d3-11ef-b8b7-59b00cd0ff6c', '57fd000a-c7d3-11ef-b8b7-59b00cd0ff6c', '57fd000a-c7d3-11ef-b8b7-59b00cd0ff6c'] cold=['7e9ac00a-e53e-11f1-b8b7-59b00cd0ff6c'] ['not reused: new 1'] rc1=0
+ok              uuid4                  reused=True fresh_vary=False fresh=['e904b95f-bafc-4516-abe2-eb389a9d1c98', 'e904b95f-bafc-4516-abe2-eb389a9d1c98', 'e904b95f-bafc-4516-abe2-eb389a9d1c98'] cold=['e904b95f-bafc-4516-abe2-eb389a9d1c98'] ['not reused: new 1'] rc1=0
+ok              thread_ident           reused=True fresh_vary=False fresh=['140737352755008', '140737352755008', '140737352755008'] cold=['140737352755008'] ['not reused: new 1'] rc1=0
+ok              thread_time            reused=True fresh_vary=False fresh=['1000', '1000', '1000'] cold=['1000'] ['not reused: new 1'] rc1=0
+ok              process_time           reused=True fresh_vary=False fresh=['1000', '1000', '1000'] cold=['1000'] ['not reused: new 1'] rc1=0
+WRONG (frozen)  rusage                 reused=True fresh_vary=True fresh=['46608', '46736', '46692'] cold=['47160'] ['not reused: new 1'] rc1=0
+ok              os_times               reused=True fresh_vary=False fresh=['1e-06', '1e-06', '1e-06'] cold=['1e-06'] ['not reused: new 1'] rc1=0
+WRONG (frozen)  mktemp                 reused=True fresh_vary=True fresh=['/tmp/fenvix-det/tmp2ss6sg3o', '/tmp/fenvix-det.1/tmp2ss6sg3o', '/tmp/fenvix-det/tmp2ss6sg3o'] cold=['/tmp/fenvix-det/tmp2ss6sg3o'] ['not reused: new 1'] rc1=0
+WRONG (frozen)  allocated_blocks       reused=True fresh_vary=True fresh=['185083', '185066', '185066'] cold=['191416'] ['not reused: new 1'] rc1=0
+WRONG (frozen)  loadavg                reused=True fresh_vary=True fresh=['(5.73095703125, 5.26220703125, 3.40380859375)', '(5.73095703125, 5.26220703125, 3.40380859375)', '(5.9130859375, 5.30810546875, 3.4287109375)'] cold=['(5.35888671875, 5.18212890625, 3.3681640625)'] ['not reused: new 1'] rc1=0
+ok              dev_urandom            reused=False fresh_vary=False fresh=['1eb6262a5d1beaca', '1eb6262a5d1beaca', '1eb6262a5d1beaca'] cold=['1eb6262a5d1beaca'] ['not reused: new 1'] rc1=0
+ok              posix_urandom          reused=True fresh_vary=False fresh=['e904b95fbafc9516', 'e904b95fbafc9516', 'e904b95fbafc9516'] cold=['e904b95fbafc9516'] ['not reused: new 1'] rc1=0
+ok              posix_getrandom        reused=True fresh_vary=False fresh=['e904b95fbafc9516', 'e904b95fbafc9516', 'e904b95fbafc9516'] cold=['e904b95fbafc9516'] ['not reused: new 1'] rc1=0
+ok              secrets                reused=True fresh_vary=False fresh=['e904b95fbafc9516', 'e904b95fbafc9516', 'e904b95fbafc9516'] cold=['e904b95fbafc9516'] ['not reused: new 1'] rc1=0
+ok              sysrandom              reused=True fresh_vary=False fresh=['0.9102283343641668', '0.9102283343641668', '0.9102283343641668'] cold=['0.9102283343641668'] ['not reused: new 1'] rc1=0
+ok              proc_self_stat         reused=False fresh_vary=True fresh=['92378', '92595', '92788'] cold=['91872'] ['not reused: new 1'] rc1=0
+ok              set_order_objects      reused=True fresh_vary=False fresh=['[0, 6, 2]', '[0, 6, 2]', '[0, 6, 2]'] cold=['[2, 5, 6]'] ['not reused: new 1'] rc1=0
+ok              monotonic_ns           reused=True fresh_vary=False fresh=['1000000001000', '1000000001000', '1000000001000'] cold=['1000000001000'] ['not reused: new 1'] rc1=0
+ok              perf_counter           reused=True fresh_vary=False fresh=['1000000001000', '1000000001000', '1000000001000'] cold=['1000000001000'] ['not reused: new 1'] rc1=0
+ok              clock_gettime_raw      reused=True fresh_vary=False fresh=['1000000001000', '1000000001000', '1000000001000'] cold=['1000000001000'] ['not reused: new 1'] rc1=0
+ok              clock_boottime         reused=True fresh_vary=False fresh=['1000000001000', '1000000001000', '1000000001000'] cold=['1000000001000'] ['not reused: new 1'] rc1=0
+ok              clock_realtime_posix   reused=True fresh_vary=False fresh=['1735689600000001000', '1735689600000001000', '1735689600000001000'] cold=['1795219200000001000'] ['not reused: new 1'] rc1=0
+ok              ctypes_time            reused=False fresh_vary=True fresh=['1795279715', '1795279717', '1795279719'] cold=['1795279710'] ['not reused: new 1'] rc1=0
+ok              fd_number_socket       reused=True fresh_vary=False fresh=['7', '7', '7'] cold=['7'] ['not reused: new 1'] rc1=0
+ok              hash_str               reused=True fresh_vary=False fresh=['-4594863902769663758', '-4594863902769663758', '-4594863902769663758'] cold=['-4594863902769663758'] ['not reused: new 1'] rc1=0
