@@ -1,0 +1,302 @@
+{
+ "name": "sveltekit",
+ "job": "gate3",
+ "repo": "sveltejs/kit",
+ "ref": "7a1296872cde5e807832f7714c635df956d37643",
+ "status": "ok",
+ "run_id": "44958432899",
+ "engine_commit": "f4902c1a1f3be935457200f92904043e8ed0e478",
+ "setup_s": 29,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 330,
+  "run_timeout_min": 45,
+  "target_timeout_min": 10,
+  "env": {
+   "DETJS_LS_BARRIER_TYPES": "Script,Stylesheet,Fetch,XHR,Image"
+  },
+  "runs": 10,
+  "plain_runs": 2,
+  "per_run_s": 240
+ },
+ "pw_dir": "packages/kit/test/apps/basics",
+ "pw_args": [
+  "test/playwright"
+ ],
+ "runs": [],
+ "epoch": "2026-11-21T22:55:00Z",
+ "measured_at": "2026-11-21T22:55:57Z",
+ "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
+ "gate": [
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-code",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    25.9,
+    25.5,
+    25.5,
+    25.5,
+    25.7,
+    25.4,
+    25.5,
+    25.7,
+    25.6,
+    25.6
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate3-sveltekit/g1-det-1.jsonl.gz",
+    "gate3-sveltekit/g1-det-2.jsonl.gz",
+    "gate3-sveltekit/g1-det-3.jsonl.gz",
+    "gate3-sveltekit/g1-det-4.jsonl.gz",
+    "gate3-sveltekit/g1-det-5.jsonl.gz",
+    "gate3-sveltekit/g1-det-6.jsonl.gz",
+    "gate3-sveltekit/g1-det-7.jsonl.gz",
+    "gate3-sveltekit/g1-det-8.jsonl.gz",
+    "gate3-sveltekit/g1-det-9.jsonl.gz",
+    "gate3-sveltekit/g1-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+     "status": "diverged",
+     "distinct_fingerprints": 2,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 4,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 6b1a1af93aa0ee32991524f0608735ff 14262"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:5301 df9a887ac693026720b8ad59df0e4ece 14262"
+      },
+      "reason": "other",
+      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 6b1a1af93aa0ee32991524f0608735ff 14262\" vs \"http://localhost:5301 df9a887ac693026720b8ad59df0e4ece 14262\""
+     }
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
+    "status": "diverged",
+    "distinct_fingerprints": 2,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 4,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 6b1a1af93aa0ee32991524f0608735ff 14262"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:5301 df9a887ac693026720b8ad59df0e4ece 14262"
+     },
+     "reason": "other",
+     "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 6b1a1af93aa0ee32991524f0608735ff 14262\" vs \"http://localhost:5301 df9a887ac693026720b8ad59df0e4ece 14262\""
+    }
+   }
+  },
+  {
+   "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+   "file": "client.test.js",
+   "grep": "data-sveltekit attributes data-sveltekit-preload-data",
+   "project": null,
+   "plain": [
+    "passed",
+    "passed"
+   ],
+   "runs": [
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed",
+    "passed"
+   ],
+   "errors": [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+   ],
+   "walls": [
+    188.0,
+    182.4,
+    178.8,
+    188.2,
+    188.6,
+    181.8,
+    182.2,
+    182.4,
+    182.7,
+    181.0
+   ],
+   "stats": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "traces": [
+    "gate3-sveltekit/g2-det-1.jsonl.gz",
+    "gate3-sveltekit/g2-det-2.jsonl.gz",
+    "gate3-sveltekit/g2-det-3.jsonl.gz",
+    "gate3-sveltekit/g2-det-4.jsonl.gz",
+    "gate3-sveltekit/g2-det-5.jsonl.gz",
+    "gate3-sveltekit/g2-det-6.jsonl.gz",
+    "gate3-sveltekit/g2-det-7.jsonl.gz",
+    "gate3-sveltekit/g2-det-8.jsonl.gz",
+    "gate3-sveltekit/g2-det-9.jsonl.gz",
+    "gate3-sveltekit/g2-det-10.jsonl.gz"
+   ],
+   "verify_all": [
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    },
+    {
+     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
+     "runs": 10,
+     "divergence": {
+      "run_a": 0,
+      "run_b": 0,
+      "index": null,
+      "window": null,
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+     }
+    }
+   ],
+   "verify": {
+    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
+    "status": "not-proven",
+    "distinct_fingerprints": 1,
+    "runs": 10,
+    "divergence": {
+     "run_a": 0,
+     "run_b": 0,
+     "index": null,
+     "window": null,
+     "event_a": null,
+     "event_b": null,
+     "reason": "sensor",
+     "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
+    }
+   }
+  }
+ ],
+ "elapsed_min": 35.5
+}
