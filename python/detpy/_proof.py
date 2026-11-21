@@ -1079,6 +1079,35 @@ class ProofSession:
     # -- the tests a reused result was recorded after (in-process) ---------------------------------------------------
     PREFIX_FILES = {"file": "prefix-file.json", "session": "prefix-session.json"}
 
+    @staticmethod
+    def engine_json_load(path):
+        """The engine's own state file, read as detpy's probe: the capture never takes it for a test's input (the
+        runner shells decide while the capture runs; prefix-session.json was a data input of every unittest test)."""
+
+        def load():
+            try:
+                with open(path) as fh:
+                    return json.load(fh)
+            except (OSError, ValueError):
+                return None
+
+        return _core.detpy_probe_call(load)
+
+    @staticmethod
+    def engine_json_save(path, data, **kw) -> None:
+        """Written as detpy's probe, atomically (see ``engine_json_load``)."""
+
+        def save():
+            try:
+                tmp = path + f".tmp{os.getpid()}"
+                with open(tmp, "w") as fh:
+                    json.dump(data, fh, **kw)
+                os.replace(tmp, path)
+            except OSError:
+                pass
+
+        _core.detpy_probe_call(save)
+
     def _prefix_scope(self):
         """'file' (--det-isolate-scope=file: a file's tests share one child), 'session' (a serial session without
         isolation: every earlier test of the process), None (one child per test: no earlier test; the xdist
@@ -1113,11 +1142,7 @@ class ProofSession:
             return
         now = self._prefixes(nids, scope)
         self.prefix_now = now
-        try:
-            with open(os.path.join(self.dir, self.PREFIX_FILES[scope])) as fh:
-                stored = json.load(fh)
-        except (OSError, ValueError):
-            stored = {}
+        stored = self.engine_json_load(os.path.join(self.dir, self.PREFIX_FILES[scope]))
         self.prefix_stored = stored if isinstance(stored, dict) else {}
         where = "file" if scope == "file" else "session"
         for n in nids:
@@ -1131,14 +1156,7 @@ class ProofSession:
             return
         stored = dict(getattr(self, "prefix_stored", {}))
         stored.update({n: d for n, d in now.items() if not self._is_hit(n)})
-        try:
-            path = os.path.join(self.dir, self.PREFIX_FILES[scope])
-            tmp = path + f".tmp{os.getpid()}"
-            with open(tmp, "w") as fh:
-                json.dump(stored, fh)
-            os.replace(tmp, path)
-        except OSError:
-            pass
+        self.engine_json_save(os.path.join(self.dir, self.PREFIX_FILES[scope]), stored)
 
     def demote_for_running(self, lists) -> list:
         """Review R-023c E7: a test that runs in this session runs after the earlier tests of its process whose

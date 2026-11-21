@@ -318,12 +318,8 @@ class ProofCachePlugin(ProofSession):
     FINDINGS = "placement-findings.json"
 
     def _pending_findings(self) -> dict:
-        try:
-            with open(os.path.join(self.dir, self.FINDINGS)) as fh:
-                d = json.load(fh)
-            return d if isinstance(d, dict) else {}
-        except (OSError, ValueError):
-            return {}
+        d = self.engine_json_load(os.path.join(self.dir, self.FINDINGS))
+        return d if isinstance(d, dict) else {}
 
     def _save_findings(self) -> None:
         """Placement findings persist until resolved (coordinator condition 2: never silent; the store keeps one entry
@@ -349,13 +345,7 @@ class ProofCachePlugin(ProofSession):
                 if nid in got and got[nid] == pending[nid].get("here"):
                     pending.pop(nid)
         if pending != before:
-            try:
-                tmp = os.path.join(self.dir, self.FINDINGS + f".tmp{os.getpid()}")
-                with open(tmp, "w") as fh:
-                    json.dump(pending, fh, sort_keys=True)
-                os.replace(tmp, os.path.join(self.dir, self.FINDINGS))
-            except OSError:
-                pass
+            self.engine_json_save(os.path.join(self.dir, self.FINDINGS), pending, sort_keys=True)
 
     @pytest.hookimpl(trylast=True)
     def pytest_sessionfinish(self, session):
