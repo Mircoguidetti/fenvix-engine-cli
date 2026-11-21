@@ -58,7 +58,8 @@ def reused(c):
     return set(c.get("reused_ids", ()))
 
 
-def recorded_then_changed(pytester, nid, change_prefix=(), change_env=None, before=None, args=("-rA", "tests")):
+def recorded_then_changed(pytester, nid, change_prefix=(), change_env=None, before=None, args=("-rA", "tests"),
+                          may_reuse=False):
     for label in ("r1", "r2"):
         p, c, _ = run(pytester, label, *args)
         assert p.returncode == 0, p.stdout + p.stderr
@@ -68,7 +69,8 @@ def recorded_then_changed(pytester, nid, change_prefix=(), change_env=None, befo
         before()
     truth, _, _ = run(pytester, "truth", *args, prefix=change_prefix, cache=False, env=change_env)
     p, c, _ = run(pytester, "after", *args, prefix=change_prefix, env=change_env)
-    assert nid not in reused(c), ("WRONG REUSE", p.stdout)
+    if not may_reuse:  # may_reuse: --det pins the value the test sees, so the change cannot change its outcome
+        assert nid not in reused(c), ("WRONG REUSE", p.stdout)
     assert outcome_of(p, nid) == outcome_of(truth, nid), (p.stdout, truth.stdout)
     return truth, p
 
@@ -81,13 +83,16 @@ def _probe(pytester, body):
 @pytest.mark.skipif(not hasattr(os, "sched_getaffinity") or len(os.sched_getaffinity(0)) < 2 or not shutil.which(
     "taskset"), reason="needs 2+ CPUs and taskset")
 def test_g0160_usable_cpus_are_an_input(pytester):
-    n = len(os.sched_getaffinity(0))
+    # trunk 9e3663a (F-01 design A): --det pins the CPU count a test sees (_level0.PINNED_CPU_COUNT); a run on fewer
+    # CPUs gives the same outcome as a fresh run, so a reuse there is sound
+    from detpy._level0 import PINNED_CPU_COUNT
+
     _probe(pytester, f"""
         import os
         def test_cpus():
-            assert len(os.sched_getaffinity(0)) == {n}
+            assert len(os.sched_getaffinity(0)) == {PINNED_CPU_COUNT}
         """)
-    recorded_then_changed(pytester, "tests/test_p.py::test_cpus", change_prefix=("taskset", "-c", "0"))
+    recorded_then_changed(pytester, "tests/test_p.py::test_cpus", change_prefix=("taskset", "-c", "0"), may_reuse=True)
 
 
 def test_g0161_umask_is_an_input(pytester):
@@ -127,15 +132,16 @@ def test_g0162_resource_limits_are_an_input(pytester):
 
 @pytest.mark.skipif(os.geteuid() != 0 or not shutil.which("unshare"), reason="needs root and unshare")
 def test_g0163_host_name_is_an_input(pytester):
-    import socket
+    # trunk 9e3663a (F-01 design A): --det pins the host name a test sees (_level0.PINNED_HOSTNAME); another host
+    # name gives the same outcome as a fresh run, so a reuse there is sound
+    from detpy._level0 import PINNED_HOSTNAME
 
-    host = socket.gethostname()
     _probe(pytester, f"""
         import socket
         def test_host():
-            assert socket.gethostname() == {host!r}
+            assert socket.gethostname() == {PINNED_HOSTNAME!r}
         """)
-    recorded_then_changed(pytester, "tests/test_p.py::test_host",
+    recorded_then_changed(pytester, "tests/test_p.py::test_host", may_reuse=True,
                           change_prefix=("unshare", "--uts", "sh", "-c", 'hostname otherbox-py-cache; exec "$@"', "sh"))
 
 
@@ -475,9 +481,14 @@ def test_g0510_entropy_read_by_the_test_itself_still_refuses(pytester):
         def test_entropy():
             assert len(os.urandom(4)) == 4
         """)
+    # trunk 9e3663a: OS entropy is controlled by default under --det (deterministic: cacheable); observed
+    # (--det-entropy=observe), a test that reads it is still refused
     for label in ("r1", "r2"):
-        p, c, _ = run(pytester, label, "-rA", "tests")
+        p, c, _ = run(pytester, label, "-rA", "--det-entropy=observe", "tests")
     assert reused(c) == set() and "os entropy" in c["not_cached_ids"]["tests/test_p.py::test_entropy"]
+    for label in ("d1", "d2"):
+        p, c, _ = run(pytester, label, "-rA", "tests")
+    assert "tests/test_p.py::test_entropy" in reused(c), c
 
 
 def test_g2211_isolate_sets_up_unittest_classes_without_the_teardown_deprecation(pytester):
