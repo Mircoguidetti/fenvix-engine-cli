@@ -150,6 +150,18 @@ after these fixes (MEASURED, Python 3.13, local):
 - A NOT REPRODUCIBLE bundle no longer prints `replay:` or `rerun:` lines (no command reproduces it); the `[entropy]`
   hint names `--det-entropy=observe` for Python and `--det-urandom` for Node.
 
+### After PR #11 merged (exam run 44902718930 on `57d76c4`, results `claude/exam` `f303716`)
+
+F-18 5/5, F-01 32/33, F-02 16/17, F-03 15/18 (MEASURED, that run). The five failing checks, each run locally:
+
+| check | cause | status |
+|---|---|---|
+| `F-01.hostname.pinned.node` | the Node header did not say that the tests' environment reads are recorded, so verify counted every differing variable as read: the second run (under sudo: other `USER`, `LOGNAME`) was INPUT DIFFERS although no test read them | fixed (`d917b43`): the header carries `env_reads_recorded` (not for Bun and Deno, whose own environment APIs are not recorded); PASS locally |
+| `F-02.py-explore.idoft-py-autodoc` | V10 (R-050) made explore exit 2 whenever the suite did not collect cleanly, also when it found the flaky test | fixed (`94f41d5`): findings exit 0 with the collection errors named; finding nothing in such a suite exits 2; PASS locally, V10 still passes |
+| `F-03.random` | the check expects two `--det` runs reading `os.urandom` to diverge; under the founder's decision OS entropy is controlled by default, so the values are equal and verify is IDENTICAL, which is correct | not an engine defect: a conflict between the frozen check and the decision (the Node check `F-03.node-random` accepts "values equal: controlled") |
+| `F-03.thread` | INCONCLUSIVE: the race never happens on this interpreter, with or without `--det` (plain pytest 3/3 passed, `--det` 3/3 passed, CPython 3.13.18, MEASURED); verify reports the test NOT COVERED [thread] as required | harness limit, not an engine defect |
+| `F-03.node-thread` | the worker's `Math.random` is controlled (equal values) but every test that starts a worker gets `uncontrolled.thread` (node/src/children.js: worker interleaving is not controlled), so verify never says identical; the check wants identical when the values are equal | open: needs a decision (relax for one worker without shared memory, or keep "never identical") |
+
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
 - Node 22, 24 and 26: 858/858 each.
