@@ -1,4 +1,4 @@
-MERGE OK: F-01 no, F-02 yes, F-03 no. 23 wrong IDENTICAL results in 16 channels (V1-V16), each with a failing test.
+MERGE OK: F-01 no, F-02 yes, F-03 no. 26 wrong IDENTICAL results in 16 channels (V1-V16), each with a failing test.
 Explore also has one wrong exit 0 (E1).
 
 # Review R-055: full review of Block 1 (Verifier), PR #12 (claude/verifier-cli @ 688e4fe, code 2023045)
@@ -64,7 +64,7 @@ the same events`, while the test saw two different values. This is the worst cla
 | V13 | **`str` hash without the re-exec** (`--det-no-reexec`, or a machine where the re-exec is not possible) | `V13-hash-without-reexec` two different `hash('abc')` | n/a | Both headers say `hashseed: "<random>"`, which compares equal. A random seed should never compare equal. |
 | V14 | **Resource usage** (`resource.getrusage().ru_maxrss`) | `V14-rusage` `43076`/`42996` | Node `memoryUsage`/`cpuUsage` are controlled and pass | Not controlled and not observed. It is rare in assertions. |
 
-Counted: 16 channels, 23 failing cases. Python has 17 verify cases (V1-V15, where V3 has 3 cases and V6 has 2) plus
+Counted: 16 channels, 26 failing verify cases. Python has 18 verify cases (V1-V15, where V3 has 3 cases and V6 has 2) plus
 the explore case E1. Node has 8.
 
 ### Other defects
