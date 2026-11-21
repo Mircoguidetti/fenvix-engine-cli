@@ -135,7 +135,18 @@ for (const runner of RUNNERS) {
         'data/blob.bin': 'abc',
         ...tfile(runner, 'fmt', "test('fmt', async () => { const st = await fs.promises.stat('data/blob.bin'); console.log(st); expect(util.format('%o', st)).toContain('size: 3'); });"),
       });
-      noWrongReuse(runner, dir, F('fmt'), { 'data/blob.bin': 'abcd' });
+      // printing the whole Stats prints its file times too, read on the virtual clock as their age at the test start:
+      // a value that depends on when the run happens, so the test is never reused (Jest included: its console
+      // reading the fields first does not hide the test's own read); the size change is still never missed
+      assert.equal(noWrongReuse(runner, dir, F('fmt'), { 'data/blob.bin': 'abc' }, { mayRefuse: true }), 'refused');
+      const r = crun(runner, dir);
+      assert.match(JSON.stringify(r.summary && r.summary.not_cached_detail), /file time on the virtual clock/, show(r));
+      write(dir, { 'data/blob.bin': 'abcd' });
+      const fresh = crun(runner, dir, { cache: false });
+      assert.notEqual(fresh.status, 0, show(fresh));
+      const r3 = crun(runner, dir);
+      assert.ok(!reusedFiles(r3).includes(F('fmt')), show(r3));
+      assert.equal(r3.status, fresh.status, show(r3));
     });
 
     t('G2 same: a Stats object is a plain fs.Stats (prototype, isProxy, inspect, clone, serialize, descriptors)', T, () => {
@@ -166,24 +177,29 @@ for (const runner of RUNNERS) {
       sameOutcome(runner, dir);
     });
 
-    t('G1 an mtime read is keyed by its value: utimes changes it', T, () => {
+    // Level 0's file times (src/fstime.js, G-0143): an mtime the test did not set is its age at the test start on the
+    // virtual clock, which depends on when the run happens: never reused (the order of two files' times is kept)
+    t('G1 an mtime read is a real-clock read: never reused, utimes changes the fresh result', T, () => {
       const dir = fixture(runner, 'mtime', {
-        'data/f.txt': 'x',
-        ...tfile(runner, 'mt', "test('mt', () => { expect(fs.statSync('data/f.txt').mtimeMs).toBe(1000000000); });"),
+        'data/f.txt': 'x', 'data/g.txt': 'y',
+        ...tfile(runner, 'mt', "test('mt', () => { expect(fs.statSync('data/f.txt').mtimeMs < fs.statSync('data/g.txt').mtimeMs).toBe(true); });"),
       });
       fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 1000000);
-      noWrongReuse(runner, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 2000000));
+      fs.utimesSync(path.join(dir, 'data/g.txt'), 1500000, 1500000);
+      assert.equal(noWrongReuse(runner, dir, F('mt'), () => fs.utimesSync(path.join(dir, 'data/f.txt'), 1000000, 2000000), { mayRefuse: true }), 'refused');
     });
 
-    t('G1 lstat: the inode of a link (not of its target) is keyed', T, () => {
+    // inode numbers are virtual (src/fstime.js: numbered by first sight, equal files equal numbers); the cache keys
+    // the real one, so a link pointing elsewhere reruns
+    t('G1 lstat/stat: which file a link reaches is keyed (virtual inode numbers)', T, () => {
       const dir = fixture(runner, 'lino', {
         'data/a.txt': 'a', 'data/b.txt': 'b',
-        ...tfile(runner, 'lino', "test('lino', () => { expect(fs.lstatSync('data/cur').ino).toBe(Number(fs.readFileSync('ino.txt', 'utf8'))); });"),
+        ...tfile(runner, 'lino', "test('lino', () => { expect(fs.lstatSync('data/cur').ino !== fs.lstatSync('data/a.txt').ino).toBe(true); expect(fs.statSync('data/cur').ino).toBe(fs.statSync('data/a.txt').ino); });"),
       });
       fs.symlinkSync('a.txt', path.join(dir, 'data/cur'));
-      fs.writeFileSync(path.join(dir, 'ino.txt'), String(fs.lstatSync(path.join(dir, 'data/cur')).ino));
       noWrongReuse(runner, dir, F('lino'), () => {
-        // a new link with another inode (a filesystem may hand the freed inode straight back: retry until it differs)
+        // the link now reaches b.txt; a new link with another inode (a filesystem may hand the freed inode straight
+        // back: retry until it differs)
         const cur = path.join(dir, 'data/cur');
         const old = fs.lstatSync(cur).ino;
         fs.rmSync(cur);

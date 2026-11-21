@@ -13,7 +13,18 @@
 const controls = require('../controls');
 
 const c = controls.cfg();
-const fileId = process.env.DETJS_FILE;
+// one file per process (--det-isolate), or every file in one `deno test` process (Deno's own model, DETJS_FILES):
+// Deno gives each test module an isolate of its own, where this setup runs again; the module is the main module
+const fileId = process.env.DETJS_FILE || (process.env.DETJS_FILES ? sharedFileId() : null);
+
+function sharedFileId() {
+  try {
+    const path = require('node:path');
+    const abs = require('node:url').fileURLToPath(Deno.mainModule);
+    const id = path.relative(c.root, abs).split(path.sep).join('/');
+    return JSON.parse(process.env.DETJS_FILES).includes(id) ? id : null;
+  } catch { return null; }
+}
 if (c.active && fileId && !globalThis[Symbol.for('detjs.deno.setup')]) {
   globalThis[Symbol.for('detjs.deno.setup')] = true;
   const notes = [];

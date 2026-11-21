@@ -1,0 +1,198 @@
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run)  # exit 0, 10.35 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:30:57
+   Duration  9.67s (import 36%, tests 36%, typecheck 24%, transform 3%, worker 1%)
+
+    Isolate  15 workers spawned · ~410ms startup each (spawn + environment, per file)
+             at least ~1.64s faster with isolate: false — reuses workers across files instead of one per file
+
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 10.30 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:31:08
+   Duration  9.87s (typecheck 49%, tests 22%, import 21%, worker 6%, transform 1%)
+
+    Isolate  15 workers spawned · ~164ms startup each (spawn + environment, per file)
+             at least ~2.30s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 11.83 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:31:18
+   Duration  11.23s (import 34%, tests 29%, typecheck 25%, worker 9%, transform 3%)
+
+    Isolate  15 workers spawned · ~532ms startup each (spawn + environment, per file)
+             at least ~1.46s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: parallel: 4 lanes, plan 94a3f4c55745cfbeb39431afbc47b468; 14 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 10.91 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:31:30
+   Duration  10.18s (import 33%, tests 28%, typecheck 24%, worker 10%, transform 5%)
+
+    Isolate  15 workers spawned · ~462ms startup each (spawn + environment, per file)
+             at least ~1.27s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: parallel: 4 lanes, plan 94a3f4c55745cfbeb39431afbc47b468 (sticky); 14 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache)  # exit 0, 12.26 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:31:41
+   Duration  11.27s (import 31%, tests 29%, typecheck 23%, worker 10%, transform 7%)
+
+    Isolate  15 workers spawned · ~497ms startup each (spawn + environment, per file)
+             at least ~1.37s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: parallel: 4 lanes, plan 94a3f4c55745cfbeb39431afbc47b468 (sticky); 14 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 14 files; recorded 816 tests; check 0 s, identity 0.632 s, record 0.036 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 15
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache)  # exit 0, 1.82 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+Type Errors  no errors
+   Start at  12:31:53
+   Duration  731ms (tests 51%, import 36%, worker 7%, transform 7%)
+
+detjs: parallel: 4 lanes, plan c42a6b0c7125d029d8aa1384f067feb9 (sticky); 1 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: reused with proof 816 tests in 13 files (12.757 s recorded); ran 1 files; recorded 0 tests; check 0.021 s, identity 0.082 s, record 0.01 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 15
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 14 tests, order digest 5f8d1ebd145ca9f47bdbb82c20d82e09
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 11.43 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:31:55
+   Duration  10.86s (typecheck 47%, tests 23%, import 22%, worker 6%, transform 2%)
+
+    Isolate  15 workers spawned · ~153ms startup each (spawn + environment, per file)
+             at least ~2.15s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache --det-cache-verify)  # exit 0, 9.60 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  15 passed (15)
+      Tests  846 passed (846)
+Type Errors  no errors
+   Start at  12:32:06
+   Duration  8.63s (import 36%, tests 25%, typecheck 23%, worker 11%, transform 5%)
+
+    Isolate  15 workers spawned · ~381ms startup each (spawn + environment, per file)
+             at least ~1.05s faster with isolate: false — reuses workers across files instead of one per file
+
+detjs: parallel: 4 lanes, plan 2b21574a6e0238a15433e901cbcdb504 (sticky); 14 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: would reuse (verify mode: run anyway) 816 tests in 13 files (12.757 s recorded); ran 1 files; recorded 816 tests; check 0.015 s, identity 0.086 s, record 0.069 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 15
+detjs cache: verified 829 results, 0 differ
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 830 tests, order digest e68a8c3a08fdf8c6a7d9f7f71bc6f3a5
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio/.detjs-par-cache)  # exit 0, 1.73 s
+Testing types with tsc and vue-tsc is an experimental feature.
+Breaking changes might not follow SemVer, please pin Vitest's version when using it.
+detjs 0.1.0: Level 0 active; runner=vitest 5.1.0; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v5.1.0 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/cheerio
+
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+Type Errors  no errors
+   Start at  12:32:16
+   Duration  921ms (import 41%, tests 39%, transform 13%, worker 6%)
+
+detjs cache: reused with proof 816 tests in 13 files (11.09 s recorded); ran 1 files; recorded 0 tests; check 0.012 s, identity 0.066 s, record 0.004 s
+detjs cache: not cached: reads the worker or pool id the runner gives its process (depends on placement) 15
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 14 tests, order digest 5f8d1ebd145ca9f47bdbb82c20d82e09
+

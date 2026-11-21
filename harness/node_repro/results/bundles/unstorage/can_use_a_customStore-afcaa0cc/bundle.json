@@ -1,0 +1,76 @@
+{
+  "test": "test/drivers/indexedb.test.ts::drivers: indexeddb::can use a customStore",
+  "configs_searched": 3,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "order",
+  "prefix_length": 81,
+  "minimal_length": 2,
+  "polluters": [
+    "test/drivers/indexedb.test.ts::drivers: indexeddb::properly handle raw items"
+  ],
+  "setters": [],
+  "order": [
+    "test/drivers/indexedb.test.ts::drivers: indexeddb::properly handle raw items",
+    "test/drivers/indexedb.test.ts::drivers: indexeddb::can use a customStore"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "expected [ 'unstorage:boolean', \u2026(6) ] to match object [ 'unstorage:second' ]",
+    "test/drivers/indexedb.test.ts:23"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "bd7f53e4dcd2b290207ed4ba9b808c96"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "other",
+    "description": "event #0: [other] env.get @ <node> = WATCH_REPORT_DEPENDENCIES=unset  <>  [time] setImmediate @ <deps>/fake-indexeddb/build/esm/lib/scheduling.js:38 = ",
+    "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "env.get",
+      "at": "<node>",
+      "v": "WATCH_REPORT_DEPENDENCIES=unset"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "time",
+      "o": "setImmediate",
+      "at": "<deps>/fake-indexeddb/build/esm/lib/scheduling.js:38",
+      "v": ""
+    },
+    "fingerprints": [
+      "092d9cbd7aac860431f13d1cc64c9d1f",
+      "bd7f53e4dcd2b290207ed4ba9b808c96"
+    ]
+  },
+  "runs": 27,
+  "seconds": 146.85,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=2 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/unstorage/can_use_a_customStore-afcaa0cc/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/unstorage/can_use_a_customStore-afcaa0cc",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/unstorage/can_use_a_customStore-afcaa0cc",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/unstorage",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

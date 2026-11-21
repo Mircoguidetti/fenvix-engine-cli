@@ -1,0 +1,75 @@
+{
+  "test": "test/happydom.test.ts::happydom::render works",
+  "configs_searched": 3,
+  "status": "reproduced",
+  "config": "2",
+  "seed": 2,
+  "kind": "brittle",
+  "prefix_length": 1968,
+  "minimal_length": 1,
+  "polluters": [],
+  "setters": [
+    "test/happydom.test.ts::happydom::import h3"
+  ],
+  "order": [
+    "test/happydom.test.ts::happydom::render works"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "TypeError",
+    "call",
+    "Cannot read properties of undefined (reading 'H3')",
+    "test/happydom.test.ts:25"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "214284b09894c726bb4150da8040cc9e"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 0,
+    "reason": "time",
+    "description": "event #0: [time] setTimeout @ <deps>/happy-dom/lib/async-task-manager/AsyncTaskManager.js:217 = schedule:1000000  <>  [outcome] outcome @  = failed",
+    "event_a": {
+      "t": 0,
+      "s": "time",
+      "o": "setTimeout",
+      "at": "<deps>/happy-dom/lib/async-task-manager/AsyncTaskManager.js:217",
+      "v": "schedule:1000000"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "4705183ede05969c91191e61938ea79c",
+      "214284b09894c726bb4150da8040cc9e"
+    ]
+  },
+  "runs": 35,
+  "seconds": 306.09,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=2 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/render_works-ba4d8498/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/render_works-ba4d8498",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/h3/render_works-ba4d8498",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/h3",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

@@ -1,0 +1,320 @@
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run)  # exit 0, 15.85 s
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/produce.ts (37 tests) 31ms
+ ✓ __tests__/patch.js (228 tests) 231ms
+ ✓ __tests__/updateScenarios.js (17 tests) 404ms
+ ✓ __tests__/map-set.js (52 tests) 31ms
+ ✓ __tests__/current.js (25 tests) 64ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 20ms
+ ✓ __tests__/draft.ts (6 tests) 29ms
+ ✓ __tests__/frozen.js (20 tests) 54ms
+ ✓ __tests__/readme.js (8 tests) 55ms
+ ✓ __tests__/redux.ts (5 tests) 8ms
+ ✓ __tests__/base.js (3683 tests) 4798ms
+   ✓ base functionality - auto-freeze=true:shallow-copy=false:use-listener=false > map drafts > returns 'size'  307ms
+ ✓ __tests__/empty.ts (8 tests) 11ms
+ ✓ __tests__/isModified.js (10 tests) 156ms
+ ✓ __tests__/manual.js (10 tests) 57ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 32ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 21ms
+ ✓ __tests__/immutable.ts (4 tests) 3ms
+ ✓ __tests__/curry.js (6 tests) 19ms
+ ✓ __tests__/original.js (4 tests) 16ms
+ ✓ __tests__/spec_ts.ts (1 test) 2ms
+ ✓ __tests__/type-external.ts (6 tests) 4ms
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 39ms
+ ✓ __tests__/null.js (1 test) 15ms
+ ✓ __tests__/plugins.js (4 tests) 9ms
+ ✓ __tests__/isDraftable.js (1 test) 3ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:16:40
+   Duration  14.12s (transform 3.37s, setup 0ms, collect 7.02s, tests 6.11s, environment 5ms, prepare 8.25s)
+
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 18.42 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 13ms
+ ✓ __tests__/base.js (3683 tests) 1786ms
+ ✓ __tests__/current.js (25 tests) 25ms
+ ✓ __tests__/curry.js (6 tests) 13ms
+ ✓ __tests__/draft.ts (6 tests) 4ms
+ ✓ __tests__/empty.ts (8 tests) 13ms
+ ✓ __tests__/frozen.js (20 tests) 13ms
+ ✓ __tests__/immutable.ts (4 tests) 4ms
+ ✓ __tests__/isDraftable.js (1 test) 2ms
+ ✓ __tests__/isModified.js (10 tests) 7ms
+ ✓ __tests__/manual.js (10 tests) 17ms
+ ✓ __tests__/map-set.js (52 tests) 42ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 9ms
+ ✓ __tests__/null.js (1 test) 3ms
+ ✓ __tests__/original.js (4 tests) 59ms
+ ✓ __tests__/patch.js (228 tests) 118ms
+ ✓ __tests__/plugins.js (4 tests) 6ms
+ ✓ __tests__/produce.ts (37 tests) 21ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 8ms
+ ✓ __tests__/readme.js (8 tests) 20ms
+ ✓ __tests__/redux.ts (5 tests) 6ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 26ms
+ ✓ __tests__/spec_ts.ts (1 test) 3ms
+ ✓ __tests__/type-external.ts (6 tests) 6ms
+ ✓ __tests__/updateScenarios.js (17 tests) 153ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:16:55
+   Duration  16.99s (transform 1.47s, setup 0ms, collect 2.75s, tests 2.38s, environment 11ms, prepare 3.39s)
+
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 11.91 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 72ms
+ ✓ __tests__/empty.ts (8 tests) 68ms
+ ✓ __tests__/current.js (25 tests) 83ms
+ ✓ __tests__/immutable.ts (4 tests) 4ms
+ ✓ __tests__/isDraftable.js (1 test) 9ms
+ ✓ __tests__/curry.js (6 tests) 37ms
+ ✓ __tests__/draft.ts (6 tests) 20ms
+ ✓ __tests__/manual.js (10 tests) 48ms
+ ✓ __tests__/original.js (4 tests) 25ms
+ ✓ __tests__/frozen.js (20 tests) 29ms
+ ✓ __tests__/map-set.js (52 tests) 54ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 54ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 43ms
+ ✓ __tests__/null.js (1 test) 3ms
+ ✓ __tests__/base.js (3683 tests) 4379ms
+   ✓ base functionality - auto-freeze=false:shallow-copy=true:use-listener=true > base state type > empty string > does not create a draft  456ms
+ ✓ __tests__/isModified.js (10 tests) 39ms
+ ✓ __tests__/redux.ts (5 tests) 6ms
+ ✓ __tests__/patch.js (228 tests) 163ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 17ms
+ ✓ __tests__/plugins.js (4 tests) 27ms
+ ✓ __tests__/spec_ts.ts (1 test) 2ms
+ ✓ __tests__/produce.ts (37 tests) 175ms
+ ✓ __tests__/type-external.ts (6 tests) 25ms
+ ✓ __tests__/updateScenarios.js (17 tests) 340ms
+ ✓ __tests__/readme.js (8 tests) 22ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:17:13
+   Duration  10.53s (transform 1.96s, setup 0ms, collect 7.00s, tests 5.75s, environment 15ms, prepare 8.85s)
+
+detjs: parallel: 4 lanes, plan 8aa4131a8a18553faa0e416a30b70935; 25 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 12.11 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 31ms
+ ✓ __tests__/empty.ts (8 tests) 39ms
+ ✓ __tests__/current.js (25 tests) 49ms
+ ✓ __tests__/immutable.ts (4 tests) 11ms
+ ✓ __tests__/frozen.js (20 tests) 33ms
+ ✓ __tests__/isDraftable.js (1 test) 2ms
+ ✓ __tests__/curry.js (6 tests) 26ms
+ ✓ __tests__/manual.js (10 tests) 26ms
+ ✓ __tests__/isModified.js (10 tests) 72ms
+ ✓ __tests__/draft.ts (6 tests) 6ms
+ ✓ __tests__/map-set.js (52 tests) 297ms
+ ✓ __tests__/original.js (4 tests) 8ms
+ ✓ __tests__/plugins.js (4 tests) 16ms
+ ✓ __tests__/produce.ts (37 tests) 22ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 32ms
+ ✓ __tests__/base.js (3683 tests) 4636ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 26ms
+ ✓ __tests__/null.js (1 test) 5ms
+ ✓ __tests__/redux.ts (5 tests) 6ms
+ ✓ __tests__/type-external.ts (6 tests) 11ms
+ ✓ __tests__/patch.js (228 tests) 65ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 42ms
+ ✓ __tests__/spec_ts.ts (1 test) 2ms
+ ✓ __tests__/readme.js (8 tests) 41ms
+ ✓ __tests__/updateScenarios.js (17 tests) 489ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:17:25
+   Duration  11.05s (transform 1.71s, setup 0ms, collect 6.73s, tests 5.99s, environment 7ms, prepare 9.45s)
+
+detjs: parallel: 4 lanes, plan 8aa4131a8a18553faa0e416a30b70935 (sticky); 25 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache)  # exit 0, 17.18 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 21ms
+ ✓ __tests__/empty.ts (8 tests) 61ms
+ ✓ __tests__/current.js (25 tests) 57ms
+ ✓ __tests__/curry.js (6 tests) 47ms
+ ✓ __tests__/frozen.js (20 tests) 119ms
+ ✓ __tests__/immutable.ts (4 tests) 50ms
+ ✓ __tests__/draft.ts (6 tests) 15ms
+ ✓ __tests__/isDraftable.js (1 test) 9ms
+ ✓ __tests__/isModified.js (10 tests) 64ms
+ ✓ __tests__/manual.js (10 tests) 38ms
+ ✓ __tests__/original.js (4 tests) 8ms
+ ✓ __tests__/map-set.js (52 tests) 33ms
+ ✓ __tests__/plugins.js (4 tests) 31ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 72ms
+ ✓ __tests__/produce.ts (37 tests) 187ms
+ ✓ __tests__/redux.ts (5 tests) 25ms
+ ✓ __tests__/base.js (3683 tests) 6549ms
+ ✓ __tests__/type-external.ts (6 tests) 23ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 19ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 40ms
+ ✓ __tests__/spec_ts.ts (1 test) 4ms
+ ✓ __tests__/null.js (1 test) 10ms
+ ✓ __tests__/updateScenarios.js (17 tests) 262ms
+ ✓ __tests__/patch.js (228 tests) 75ms
+ ✓ __tests__/readme.js (8 tests) 33ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:17:38
+   Duration  14.73s (transform 2.53s, setup 0ms, collect 9.08s, tests 7.85s, environment 41ms, prepare 12.70s)
+
+detjs: parallel: 4 lanes, plan 8aa4131a8a18553faa0e416a30b70935 (sticky); 25 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 25 files; recorded 4221 tests; check 0.001 s, identity 1.376 s, record 0.517 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache)  # exit 0, 3.77 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+No test files found, exiting with code 0
+
+include: **/__tests__/**/*.[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+detjs cache: reused with proof 4221 tests in 25 files (29.672 s recorded); ran 0 files; recorded 0 tests; check 0.167 s, identity 0.096 s, record 0.012 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 18.32 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 10ms
+ ✓ __tests__/base.js (3683 tests) 1664ms
+ ✓ __tests__/current.js (25 tests) 20ms
+ ✓ __tests__/curry.js (6 tests) 11ms
+ ✓ __tests__/draft.ts (6 tests) 4ms
+ ✓ __tests__/empty.ts (8 tests) 8ms
+ ✓ __tests__/frozen.js (20 tests) 19ms
+ ✓ __tests__/immutable.ts (4 tests) 5ms
+ ✓ __tests__/isDraftable.js (1 test) 3ms
+ ✓ __tests__/isModified.js (10 tests) 8ms
+ ✓ __tests__/manual.js (10 tests) 21ms
+ ✓ __tests__/map-set.js (52 tests) 19ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 6ms
+ ✓ __tests__/null.js (1 test) 3ms
+ ✓ __tests__/original.js (4 tests) 8ms
+ ✓ __tests__/patch.js (228 tests) 204ms
+ ✓ __tests__/plugins.js (4 tests) 11ms
+ ✓ __tests__/produce.ts (37 tests) 23ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 16ms
+ ✓ __tests__/readme.js (8 tests) 26ms
+ ✓ __tests__/redux.ts (5 tests) 11ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 30ms
+ ✓ __tests__/spec_ts.ts (1 test) 3ms
+ ✓ __tests__/type-external.ts (6 tests) 6ms
+ ✓ __tests__/updateScenarios.js (17 tests) 160ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:17:58
+   Duration  17.20s (transform 1.66s, setup 0ms, collect 3.51s, tests 2.30s, environment 9ms, prepare 3.80s)
+
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache --det-cache-verify)  # exit 0, 17.50 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+ ✓ __tests__/empty.ts (8 tests) 36ms
+ ✓ __tests__/current.js (25 tests) 82ms
+ ✓ __tests__/array-methods-filter-length.js (4 tests) 92ms
+ ✓ __tests__/curry.js (6 tests) 12ms
+ ✓ __tests__/frozen.js (20 tests) 55ms
+ ✓ __tests__/immutable.ts (4 tests) 49ms
+ ✓ __tests__/draft.ts (6 tests) 29ms
+ ✓ __tests__/isDraftable.js (1 test) 16ms
+ ✓ __tests__/isModified.js (10 tests) 55ms
+ ✓ __tests__/manual.js (10 tests) 35ms
+ ✓ __tests__/base.js (3683 tests) 3415ms
+ ✓ __tests__/original.js (4 tests) 12ms
+ ✓ __tests__/prototype-inspection.js (9 tests) 14ms
+ ✓ __tests__/plugins.js (4 tests) 16ms
+ ✓ __tests__/map-set.js (52 tests) 182ms
+ ✓ __tests__/not-strict-copy.ts (7 tests) 30ms
+ ✓ __tests__/produce.ts (37 tests) 32ms
+ ✓ __tests__/redux.ts (5 tests) 6ms
+ ✓ __tests__/type-external.ts (6 tests) 8ms
+ ✓ __tests__/null.js (1 test) 25ms
+ ✓ __tests__/regressions.js (65 tests | 8 skipped) 149ms
+ ✓ __tests__/spec_ts.ts (1 test) 5ms
+ ✓ __tests__/patch.js (228 tests) 313ms
+ ✓ __tests__/updateScenarios.js (17 tests) 491ms
+ ✓ __tests__/readme.js (8 tests) 40ms
+
+ Test Files  25 passed (25)
+      Tests  4213 passed | 8 skipped (4221)
+   Start at  12:18:17
+   Duration  14.03s (transform 3.54s, setup 0ms, collect 11.43s, tests 5.20s, environment 54ms, prepare 14.27s)
+
+detjs: parallel: 4 lanes, plan 8aa4131a8a18553faa0e416a30b70935 (sticky); 25 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs cache: would reuse (verify mode: run anyway) 4221 tests in 25 files (29.672 s recorded); ran 0 files; recorded 4221 tests; check 0.112 s, identity 0.067 s, record 0.609 s
+detjs cache: verified 4246 results, 0 differ
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 4221 tests, order digest df05705ba3afa5754a9afff44bdb5a90
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer/.detjs-par-cache)  # exit 0, 3.31 s
+detjs 0.1.0: Level 0 active; runner=vitest 3.2.6; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v3.2.6 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/immer
+
+No test files found, exiting with code 0
+
+include: **/__tests__/**/*.[jt]s?(x)
+exclude:  **/node_modules/**, **/dist/**, **/cypress/**, **/.{idea,git,cache,output,temp}/**, **/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build,eslint,prettier}.config.*
+
+detjs cache: reused with proof 4221 tests in 25 files (30.954 s recorded); ran 0 files; recorded 0 tests; check 0.146 s, identity 0.086 s, record 0.013 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 0 tests, order digest af1349b9f5f9a1a6a0404dea36dcc949
+

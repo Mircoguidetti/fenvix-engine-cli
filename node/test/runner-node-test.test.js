@@ -241,7 +241,7 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
 
   test('time zone (read by ICU, not through process.env)', T, () => {
     const dir = proj('tz', tf('z', "test('z', () => { assert.equal(new Date(0).getHours(), 0); });"));
-    noWrongReuse(R, dir, F('z'), null, { env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
+    noWrongReuse(R, dir, F('z'), null, { args: ['--det-tz=keep'], env: { TZ: 'UTC' }, env3: { TZ: 'Asia/Tokyo' } });
   });
 
   test('child process: not cacheable', T, () => {
@@ -262,12 +262,20 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     notCached(R, dir, F('b'), 'written by tests/a.test.mjs');
   });
 
-  test('stat().mtimeMs read by the test: keyed by its value', T, () => {
-    // claude/all-runners-2: claude/node-cache-proof's review r021b fixes key a Stats field by its value (V:), so a
-    // test that reads mtimeMs is cached and reruns when the value changes (claude/all-runners: never cached)
-    const dir = proj('mtime', { 'data/a.txt': 'a', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < 1e12); });") });
-    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 6e8, 6e8);
-    noWrongReuse(R, dir, F('m'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 2e9, 2e9));
+  // claude/node (P-041, Level 0's file times, src/fstime.js G-0143): a file time the test did not set is read on the
+  // virtual clock as its age at the test start, a value that depends on when the run happens. The sound contract:
+  // never reused (r021-fixes.test.js has the same case for Vitest and Jest); a touch changes the fresh result.
+  test('stat().mtimeMs read by the test: a real-clock read, never reused; a touch changes the fresh result', T, () => {
+    const dir = proj('mtime', { 'data/a.txt': 'a', 'data/b.txt': 'b', ...tf('m', "test('m', () => { assert.ok(fs.statSync('data/a.txt').mtimeMs < fs.statSync('data/b.txt').mtimeMs); });") });
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 5000);
+    fs.utimesSync(path.join(dir, 'data', 'b.txt'), 6000, 6000);
+    notCached(R, dir, F('m'), 'reads a clock Level 0 does not virtualize');
+    fs.utimesSync(path.join(dir, 'data', 'a.txt'), 7000, 7000);
+    const fresh = crun(R, dir, [], { cache: false });
+    assert.notEqual(fresh.status, 0, `the touch makes a fresh run fail\n${show(fresh)}`);
+    const r3 = crun(R, dir, []);
+    assert.ok(!reused(r3).includes(F('m')), show(r3));
+    assert.equal(r3.status, fresh.status);
   });
 
   test('R-009 exclusive create (wx): the path appears before the run', T, () => {
@@ -307,18 +315,25 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
     noWrongReuse(R, dir, F('u'), { 'data/a.txt': 'two' }, { env: { NODE_OPTIONS: '--require ./early.cjs' } });
   });
 
-  test('R-009 real clocks Level 0 does not virtualize (uptime, performance.timeOrigin, Intl format of now): not cacheable', T, () => {
+  // R-009 made these real-clock reads not cacheable; since P-041 (audit G-0135, G-0136) Level 0 virtualizes them, so
+  // they are clock reads keyed by the epoch: reused on the same epoch, never across a change of the epoch.
+  test('R-009 uptime, performance.timeOrigin, Intl format of now: virtual, keyed by the epoch', T, () => {
     const dir = proj('real-clock', {
       ...tf('u', "test('u', () => { assert.ok(process.uptime() >= 0); });"),
-      ...tf('o', "test('o', () => { assert.ok(performance.timeOrigin > 0); });"),
-      ...tf('i', "test('i', () => { assert.ok(new Intl.DateTimeFormat('en', { year: 'numeric' }).format().length >= 4); });"),
+      ...tf('o', "test('o', () => { assert.ok(performance.timeOrigin < Date.parse('2026-01-01')); });"),
+      ...tf('i', "test('i', () => { assert.equal(new Intl.DateTimeFormat('en', { year: 'numeric', timeZone: 'UTC' }).format(), '2025'); });"),
     });
-    notCached(R, dir, F('u'), 'process.uptime');
-    const r = crun(R, dir);
-    for (const [f, why] of [[F('o'), 'performance.timeOrigin'], [F('i'), 'Intl.DateTimeFormat']]) {
-      assert.ok(!reused(r).includes(f), `${f} must not be reused\n${show(r)}`);
-      assert.match(JSON.stringify(r.summary.not_cached_detail), new RegExp(why.replace('.', '\\.')));
-    }
+    const A = ['--det', '--det-epoch=2025-03-01T00:00:00Z'];
+    const B = ['--det', '--det-epoch=2026-03-01T00:00:00Z'];
+    const r1 = crun(R, dir, [], { det: A });
+    assert.equal(r1.status, 0, show(r1));
+    const r2 = crun(R, dir, [], { det: A });
+    for (const f of [F('u'), F('o'), F('i')]) assert.ok(reused(r2).includes(f), `${f} reused on the same epoch\n${show(r2)}`);
+    const fresh = crun(R, dir, [], { cache: false, det: B });
+    assert.notEqual(fresh.status, 0, `the epoch decides o and i\n${show(fresh)}`);
+    const r3 = crun(R, dir, [], { det: B });
+    for (const f of [F('o'), F('i')]) assert.ok(!reused(r3).includes(f), `WRONG REUSE of ${f} across epochs\n${show(r3)}`);
+    assert.notEqual(r3.status, 0, show(r3));
   });
 
   test('R-009 /dev/shm listed by the test: not cacheable', T, () => {

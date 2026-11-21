@@ -32,6 +32,8 @@ function fromEnv(env = process.env) {
   return {
     active,
     seed: BigInt(int(env.DETJS_SEED, 0)),
+    // the seed of the order (shuffle) apart from the generators' (--det-order-seed; default: --det-seed)
+    orderSeed: BigInt(int(env.DETJS_ORDER_SEED === undefined || env.DETJS_ORDER_SEED === '' ? env.DETJS_SEED : env.DETJS_ORDER_SEED, 0)),
     shuffle: env.DETJS_SHUFFLE === '1',
     controls: new Set(controls(env.DETJS_DISABLE)),
     epochNs: parseEpoch(env.DETJS_EPOCH || DEFAULT_EPOCH),
@@ -45,6 +47,7 @@ function fromEnv(env = process.env) {
     cassette: env.DETJS_CASSETTE || null,
     allowHosts: String(env.DETJS_ALLOW_HOSTS || '').split(',').map((s) => s.trim().toLowerCase()).filter(Boolean),
     urandom: env.DETJS_URANDOM === '1',
+    cassetteMaxAge: Number(env.DETJS_CASSETTE_MAX_AGE) || 0,
     maxEvents: int(env.DETJS_MAX_EVENTS, 10000),
     sites: env.DETJS_SITES !== '0',
     runner: env.DETJS_RUNNER || null,

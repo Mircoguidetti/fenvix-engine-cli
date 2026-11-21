@@ -32,7 +32,7 @@ per-test events):
 | test order | C: collection order, or a reproducible shuffle (`--det-seed`), or `--det-order FILE` | per test: the tests before it |
 | network | C: closed; `--det-record` / cassette replay; `--det-allow-host` | input `network` (mode, allowed hosts, cassette digest); events `net.*` |
 | file-system order | C: listings sorted | input `fs`; events `os.listdir` & co. |
-| time zone | C: `TZ` pinned (`--det-tz`, default `UTC`; `keep` = the machine's, recorded) | input `tz` |
+| time zone | C: `TZ` pinned (`--det-tz`, default `UTC` whatever the environment sets, Python and Node alike; `keep` = the environment's, recorded and keyed) | input `tz` |
 | locale | C: `LC_ALL` and `LANG` pinned, `LANGUAGE` removed (`--det-locale`, default `C.UTF-8`; `keep`) | input `locale` |
 | environment | O: every `os.environ` read is an event (`env.get NAME=<digest>`); every variable is an input (`env:NAME`, value digest) | input `env:*`; events `env.*` |
 | OS entropy | O (C with `--det-urandom`) | input `urandom`; events `os.urandom` & co. |

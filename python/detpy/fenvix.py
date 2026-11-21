@@ -220,6 +220,11 @@ ADAPTERS: dict[str, Adapter] = {
                                  ("playwright.config.ts", "playwright.config.js")),
 }
 
+# Vitest, Jest and Playwright Test (F-02 Node): the detjs adapters replace the planned ones
+from .fenvix_js import register  # noqa: E402
+
+register(ADAPTERS)
+
 
 def _finish_explore(s: dict, ns, runner: str) -> None:
     from . import repro as _repro
@@ -450,7 +455,7 @@ def cmd_repro(argv: list) -> int:
         return 2
     if not ns.keep_work:  # audit G-2021: the runs' work files (outcomes, traces, orders) are not left behind
         shutil.rmtree(Path(ns.out) / ".work", ignore_errors=True)
-    print(render_repro(b, Path(ns.out)))
+    print((getattr(a, "render_repro", None) or render_repro)(b, Path(ns.out)))
     if ns.json:
         print(json.dumps(b, indent=2))
     if b.get("status") == "not-run":  # nothing was searched: an error, not a verdict on the test

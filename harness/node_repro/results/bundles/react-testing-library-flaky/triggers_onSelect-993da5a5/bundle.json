@@ -1,0 +1,76 @@
+{
+  "test": "src/__tests__/events.js::Selection Events::triggers onSelect",
+  "configs_searched": 8,
+  "status": "reproduced",
+  "config": "7",
+  "seed": 7,
+  "kind": "order",
+  "prefix_length": 212,
+  "minimal_length": 2,
+  "polluters": [
+    "src/__tests__/events.js::Native Mouse Events::triggers native mousedown"
+  ],
+  "setters": [],
+  "order": [
+    "src/__tests__/events.js::Native Mouse Events::triggers native mousedown",
+    "src/__tests__/events.js::Selection Events::triggers onSelect"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Error",
+    "call",
+    "expect(jest.fn()).toHaveBeenCalledTimes(expected) / Expected number of calls: 1 / Received number of calls: 0",
+    "src/__tests__/events.js:166"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "6b163f644b7cba095d37896c7f487c7c"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 37,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "7d388d72fe6b8410907e7a35b94c8d33",
+      "6b163f644b7cba095d37896c7f487c7c"
+    ]
+  },
+  "runs": 33,
+  "seconds": 318.97,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs jest --det --det-seed=7 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/react-testing-library-flaky/triggers_onSelect-993da5a5/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/react-testing-library-flaky/triggers_onSelect-993da5a5",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/react-testing-library-flaky/triggers_onSelect-993da5a5",
+  "runner": "jest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/react-testing-library-flaky",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

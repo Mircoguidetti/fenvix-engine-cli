@@ -4,12 +4,14 @@
 // Without --det (and without DETJS=1) `bun test` runs unchanged. With --det:
 // * discovery: Bun's own (a `bun test` with the same filters and a preload whose loader hook returns an empty module
 //   for every file and lists it: no test code runs), so the files are exactly those `bun test` would run;
-// * one `bun test` process per file, in detjs' order (sorted, or shuffled with --det-seed by the core); inside a file,
-//   declaration order, or Bun's own `--randomize --seed=<derived>` with --det-seed (the seed derived per file by the
+// * one `bun test` process for every file (Bun's own model: one global object; audit G-0145), files in detjs' order
+//   (sorted, or shuffled with --det-seed by the core); with --det-isolate one `bun test` process per file; inside a
+//   file, declaration order, or Bun's own `--randomize --seed=<derived>` with --det-seed (the seed derived by the
 //   core); `--max-concurrency=1` (test.concurrent runs one test at a time);
 // * bunfig.toml: its preloads would run before detjs' preload (Bun loads them first), so detjs passes a copy of the
 //   configuration without them (`--config=`) and passes them after its own preload;
-// * --det-cache: a file is reused only when all its tests and its manifest prove reuse (src/cache/proof.js); the
+// * --det-cache: the process is the unit (every file reused, or all run in one process); with --det-isolate a file
+//   is reused only when all its tests and its manifest prove reuse (src/cache/proof.js); the
 //   configuration digest covers Bun's binary and version, bunfig.toml (and the global one), the options (filters
 //   excepted), the `BUN_*` and `NODE_ENV` variables, `--env-file` files and the shared configuration files.
 const fs = require('node:fs');
@@ -191,9 +193,28 @@ async function main(argv) {
     args.push(...runOptions, path.resolve(root, fileId));
     return common.runInherit(bin, args, { cwd: root, env: { ...process.env, ...extraEnv, DETJS_PRELOADS: preloads.join(path.delimiter) } });
   };
+  if (!opts.isolate) {
+    // Bun's own model: every file in one `bun test` process, in detjs' order (Bun runs the files in command-line
+    // order, each loaded and run before the next); inside a file, Bun's --randomize with the run's derived seed
+    const spawnAll = (ids, extraEnv) => {
+      const args = ['test', `--config=${cfgPath}`, '--preload', preload];
+      for (const p of preloads) args.push('--preload', p);
+      args.push('--max-concurrency=1');
+      if (run.cfg.shuffle && run.cfg.controls.has('order')) args.push('--randomize', `--seed=${common.fileSeed(run.cfg, '<bun>')}`);
+      if (reporter) args.push(`--reporter=${reporter}`);
+      if (reporterOut) args.push(`--reporter-outfile=${path.resolve(root, reporterOut)}`);
+      args.push(...runOptions, ...ids.map((f) => path.resolve(root, f)));
+      return common.runInherit(bin, args, { cwd: root, env: { ...process.env, ...extraEnv, DETJS_PRELOADS: preloads.join(path.delimiter) } });
+    };
+    return common.runSharedProcess({
+      runner: 'bun', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnAll,
+      isolation: 'bun test: one process for every test file (Bun\'s model, detjs order); --max-concurrency=1', isolationShort: 'one process',
+      cliArgs: rest, meta: { bunfig_preloads: preloads.map((p) => path.relative(root, p)) },
+    });
+  }
   const code = await common.runFileProcesses({
     runner: 'bun', runnerVersion: version, root, opts, run, pc, fileIds: order, spawnFile,
-    isolation: 'bun test: one process per test file (detjs order); --max-concurrency=1', isolationShort: 'process per file',
+    isolation: 'bun test: one process per test file (--det-isolate, detjs order); --max-concurrency=1', isolationShort: 'process per file',
     cliArgs: rest, meta: { bunfig_preloads: preloads.map((p) => path.relative(root, p)) },
     afterRun: () => { if (reporter === 'junit' && reporterOut) common.mergeJunit(junitParts, path.resolve(root, reporterOut), 'bun test'); },
   });

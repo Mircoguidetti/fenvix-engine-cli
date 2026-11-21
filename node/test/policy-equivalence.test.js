@@ -81,7 +81,9 @@ function project(runner) {
 function session(runner, dir, dump, extra = []) {
   const env = { ...process.env, DETJS_POLICY_DUMP: dump, POLICY_EQ_X: 'x' };
   for (const k of Object.keys(env)) if (k.startsWith('DETJS_') && k !== 'DETJS_POLICY_DUMP') delete env[k];
-  return spawnSync(process.execPath, [BIN, runner, '--det', `--det-cache=${path.join(dir, '.cache')}`, ...extra],
+  // Mocha: one capture per spec file (--det-isolate); its default is one capture for the whole process (G-0148)
+  const iso = runner === 'mocha' ? ['--det-isolate'] : [];
+  return spawnSync(process.execPath, [BIN, runner, '--det', ...iso, `--det-cache=${path.join(dir, '.cache')}`, ...extra],
     { cwd: dir, encoding: 'utf8', env, timeout: 600000 });
 }
 

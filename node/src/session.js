@@ -14,10 +14,18 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det                    enable deterministic execution (Level 0); also DETJS=1
   --det-seed=N             reproducible shuffle of files and tests, seed of every generator
                            (default: fixed order, seed 0)
+  --det-order-seed=N       shuffle the order with N, keep the generators on --det-seed (default: --det-seed): a new
+                           order with the same Math.random / randomUUID values, or new values in the same order
   --det-trace=PATH         trace file (default: <root>/.detjs/trace.jsonl)
+  --det-order=FILE         run exactly the test ids listed in FILE (one per line), in that order; files run in the
+                           order of their first listed test, describe blocks likewise (docs/NODE.md, "Repro")
+  --det-outcomes=PATH      write order, outcomes, fingerprints and exceptions of the run as JSON (repro drivers)
+  --det-collect            collection only: write the order this run would use to --det-outcomes; run no test
   --det-compare=TRACE      compare fingerprints with a previous trace
   --det-record             allow external network access and record it into the cassette
   --det-cassette=PATH      network cassette (default: <root>/.detjs/cassette.json); replayed when present
+  --det-cassette-max-age=D do not replay recordings older than D days (refused like an unrecorded connection; default
+                           0 = no limit; recordings older than 30 days are always reported)
   --det-allow-host=HOST    external host that may be reached (repeatable)
   --det-epoch=ISO          wall clock at the start of every test (default ${config.DEFAULT_EPOCH})
   --det-tick=NS            nanoseconds per clock read (default 1000)
@@ -25,14 +33,29 @@ const HELP = `detjs options (all others are passed to the test runner):
   --det-timers=real        timers wait for real (default: virtual, fast while no I/O is pending)
   --det-timer-budget=N     fast timer firings per test before falling back to real waits (default 100000)
   --det-disable=LIST       controls to turn off: ${config.CONTROLS.join(',')}
-  --det-urandom            also make crypto.randomBytes/randomFillSync/randomInt deterministic (NOT for crypto tests)
+  --det-urandom[=on|off]   on: also make crypto.randomBytes/randomFillSync/randomInt deterministic (NOT for crypto
+                           tests); off (default): observed only, recorded as entropy events and reported at the end
+                           (the WebSocket handshake keys and frame masks are deterministic either way)
   --det-max-events=N       events stored verbatim per test (default 10000)
   --det-sites=off          do not resolve call sites (faster; runner frames are then not told apart)
   --det-cache=DIR|URL      cache with proof: skip test files whose every recorded input is unchanged
                            (a directory, or a shared cache service https://host/<namespace>)
   --det-cache-verify       decide reuse but run every file anyway and compare (receipts say what would be reused)
+  --det-tz=ZONE|keep       time zone of the run (default: TZ when set, else UTC; recorded)
+  --det-locale=LOC|keep    LC_ALL and LANG of the run (default: LC_ALL/LANG when set, else C.UTF-8)
+  --det-cache-max-age=D    never reuse a result recorded more than D days ago (default 30; 0 = no limit)
+  --det-cache-real-clock   nightly check: run every file on the real clock (no reuse, nothing recorded) and report
+                           each test whose cached result differs (an expiry); its cache entries are removed
+                           With --det-cache and no --det-epoch the epoch is today 00:00 UTC (the virtual day): a
+                           test that reads the clock is reused only on the UTC day it was recorded
+  --det-isolate            a fresh process per test (Vitest, Jest) or per test file (Mocha, Jasmine, uvu, Bun, Deno):
+                           no in-memory state crosses that boundary; with --det-cache, a test (file) is reused or run
+                           on its own inputs only (docs/NODE-CACHE.md)
   --det-cache-receipts=P   receipts file (default <root>/.detjs/receipts.jsonl)
   --det-cache-summary=P    summary JSON (default <root>/.detjs/cache-summary.json)
+  --det-workers=N|N%|auto  run test files in N parallel lanes with a fixed plan (default: serial, or the
+                           runner's own --maxWorkers / -w / --fileParallelism when given on the command line)
+  --det-plan=TRACE|JSON    replay the lane plan of an earlier parallel run (its trace's meta.parallel.plan)
 `;
 
 /** Split argv into detjs options and runner arguments. */
@@ -41,15 +64,18 @@ function parseArgs(argv, env = process.env) {
     det: env.DETJS === '1' || env.DETJS === 'true',
     seed: null, trace: null, compare: null, record: false, cassette: null, allowHosts: [],
     epoch: config.DEFAULT_EPOCH, tick: 1000, tickAdapt: 1000, timers: 'virtual', timerBudget: 100000,
-    disable: '', urandom: false, maxEvents: 10000, sites: true,
-    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null,
+    disable: '', urandom: false, cassetteMaxAge: 0, maxEvents: 10000, sites: true,
+    cache: null, cacheVerify: false, cacheReceipts: null, cacheSummary: null, cacheRealClock: false, epochExplicit: false,
+    workers: null, plan: null,
+    order: null, outcomes: null, collect: false, orderSeed: null,
+    isolate: env.DETJS_ISOLATE === '1',
   };
   if (env.DETJS_CACHE_DIR) opts.cache = env.DETJS_CACHE_DIR;
   if (env.DETJS_SEED !== undefined && env.DETJS_SEED !== '') opts.seed = config.int(env.DETJS_SEED, 0);
   const rest = [];
-  const takes = new Set(['--det-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
+  const takes = new Set(['--det-cassette-max-age', '--det-cache-max-age', '--det-tz', '--det-locale', '--det-seed', '--det-order-seed', '--det-trace', '--det-compare', '--det-cassette', '--det-allow-host', '--det-epoch',
     '--det-tick', '--det-tick-adapt', '--det-timers', '--det-timer-budget', '--det-disable', '--det-max-events', '--det-sites',
-    '--det-cache', '--det-cache-receipts', '--det-cache-summary']);
+    '--det-cache', '--det-cache-receipts', '--det-cache-summary', '--det-workers', '--det-plan', '--det-order', '--det-outcomes']);
   for (let i = 0; i < argv.length; i++) {
     let a = argv[i];
     if (!a.startsWith('--det')) { rest.push(a); continue; }
@@ -59,29 +85,62 @@ function parseArgs(argv, env = process.env) {
     switch (a) {
       case '--det': opts.det = true; break;
       case '--det-seed': opts.seed = config.int(value, 0); break;
+      case '--det-order-seed': opts.orderSeed = config.int(value, 0); break;
       case '--det-trace': opts.trace = value; break;
       case '--det-compare': opts.compare = value; break;
       case '--det-record': opts.record = true; break;
       case '--det-cassette': opts.cassette = value; break;
       case '--det-allow-host': opts.allowHosts.push(value); break;
-      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; break;
+      case '--det-epoch': config.parseEpoch(value); opts.epoch = value; opts.epochExplicit = true; break;
       case '--det-tick': opts.tick = config.int(value, 1000); break;
       case '--det-tick-adapt': opts.tickAdapt = config.int(value, 1000); break;
       case '--det-timers': opts.timers = value === 'real' ? 'real' : 'virtual'; break;
       case '--det-timer-budget': opts.timerBudget = config.int(value, 100000); break;
       case '--det-disable': config.controls(value); opts.disable = value; break;
-      case '--det-urandom': opts.urandom = true; break;
+      case '--det-urandom':
+        if (value === undefined || ['on', '1', 'true', 'yes'].includes(value)) opts.urandom = true;
+        else if (['off', '0', 'false', 'no'].includes(value)) opts.urandom = false;
+        else throw new Error(`detjs: --det-urandom: on or off, got ${value}`);
+        break;
+      case '--det-cassette-max-age':
+        opts.cassetteMaxAge = Number(value);
+        if (!(opts.cassetteMaxAge >= 0)) throw new Error(`detjs: --det-cassette-max-age: not a number of days: ${value}`);
+        break;
       case '--det-max-events': opts.maxEvents = config.int(value, 10000); break;
       case '--det-sites': opts.sites = value !== 'off' && value !== '0'; break;
       case '--det-cache': opts.cache = value; break;
       case '--det-cache-verify': opts.cacheVerify = value === undefined || value === '1' || value === 'true'; break;
+      case '--det-cache-real-clock': opts.cacheRealClock = true; break;
+      case '--det-isolate': opts.isolate = value === undefined || value === '1' || value === 'true'; break;
+      case '--det-cache-max-age': opts.cacheMaxAge = Number(value); if (!(opts.cacheMaxAge >= 0)) throw new Error(`detjs: --det-cache-max-age: not a number of days: ${value}`); break;
+      case '--det-tz': case '--det-locale': break; // applied by bin/detjs.js before the runner starts
       case '--det-cache-receipts': opts.cacheReceipts = value; break;
       case '--det-cache-summary': opts.cacheSummary = value; break;
+      case '--det-workers': opts.workers = value; break;
+      case '--det-plan': opts.plan = value; break;
+      case '--det-order': opts.order = value; break;
+      case '--det-outcomes': opts.outcomes = value; break;
+      case '--det-collect': opts.collect = value === undefined || value === '1' || value === 'true'; break;
       case '--det-help': process.stdout.write(HELP); process.exit(0); break;
       default: throw new Error(`detjs: unknown option ${a}\n${HELP}`);
     }
   }
+  if (opts.cache && !opts.epochExplicit) opts.epoch = virtualDay();
+  if (opts.cacheRealClock) {
+    if (!opts.cache) throw new Error('detjs: --det-cache-real-clock needs --det-cache=DIR|URL');
+    // run on the real clock; the reuse decision is still the one of the virtual day (src/cache/proof.js)
+    opts.cacheVerify = true;
+    const off = new Set(String(opts.disable || '').split(',').filter(Boolean));
+    off.add('time');
+    opts.disable = [...off].join(',');
+  }
   return { opts, rest };
+}
+
+/** Today 00:00 UTC on the real clock (DECISIONS 2026-11-19: the virtual day of skip with proof). */
+function virtualDay(now = Date.now()) {
+  const d = new Date(now);
+  return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())).toISOString().replace('.000Z', 'Z');
 }
 
 /** Prepare the run directory and the DETJS_* environment inherited by the workers. */
@@ -97,7 +156,8 @@ function prepare(opts, root, runner) {
   const env = {
     DETJS: '1',
     DETJS_SEED: String(opts.seed ?? 0),
-    DETJS_SHUFFLE: opts.seed !== null ? '1' : '0',
+    DETJS_SHUFFLE: opts.seed !== null || opts.orderSeed !== null ? '1' : '0',
+    DETJS_ORDER_SEED: opts.orderSeed !== null ? String(opts.orderSeed) : '',
     DETJS_DIR: dir,
     DETJS_ROOT: root,
     DETJS_EPOCH: opts.epoch,
@@ -110,24 +170,68 @@ function prepare(opts, root, runner) {
     DETJS_CASSETTE: cassette,
     DETJS_ALLOW_HOSTS: opts.allowHosts.join(','),
     DETJS_URANDOM: opts.urandom ? '1' : '0',
+    DETJS_CASSETTE_MAX_AGE: String(opts.cassetteMaxAge || 0),
     DETJS_MAX_EVENTS: String(opts.maxEvents),
     DETJS_SITES: opts.sites ? '1' : '0',
     DETJS_RUNNER: runner,
+    DETJS_ORDER: opts.order ? path.resolve(opts.order) : '',
+    DETJS_COLLECT: opts.collect ? '1' : '',
   };
+  if (opts.order && !fs.existsSync(env.DETJS_ORDER)) throw new Error(`detjs: --det-order: no such file ${opts.order}`);
   Object.assign(process.env, env);
   // the capture's loader mode is chosen per shell for its own test processes (runners/common.js childEnv sets
   // `register` for the tap, AVA, Jasmine and uvu shells): never inherited from an outer process
   delete process.env.DETJS_CAPTURE_LOADER;
   const cfg = config.fromEnv(process.env);
-  return { dir, cassette, netMode, cfg, tracePath: path.resolve(root, opts.trace || path.join('.detjs', 'trace.jsonl')) };
+  const run = { dir, cassette, netMode, cfg, tracePath: path.resolve(root, opts.trace || path.join('.detjs', 'trace.jsonl')) };
+  if (netMode === 'replay') cassetteStaleness(run, opts);
+  // the main process (globalSetup, start-up code): external connections closed, recorded or replayed (G-1419)
+  if (cfg.active && cfg.controls.has('net')) {
+    try { require('./network').installStartup(new (require('./patch').Patcher)(), cfg); } catch (e) { process.stderr.write(`detjs: WARNING: the network control could not be installed in the main process: ${e && e.message}\n`); }
+  }
+  // Jest runs the tests in this process, and its test environment loads Node's bundled undici (it copies the
+  // global descriptors) before the detjs test runner installs Level 0; from Node 24 undici keeps the
+  // `crypto.randomFillSync` / `randomInt` it finds when it loads (WebSocket masks, FormData boundaries). The OS entropy
+  // controls are installed now, so that what undici keeps is detjs' (G-1421, G-1426).
+  if (runner === 'jest' && cfg.active && cfg.controls.has('seeds')) {
+    try {
+      const controls = require('./controls');
+      require('./seeds').installProcess(controls.PATCHER, controls.cfg());
+    } catch (e) { process.stderr.write(`detjs: WARNING: the entropy control could not be installed early: ${e && e.message}\n`); }
+  }
+  return run;
+}
+
+const CASSETTE_WARN_DAYS = 30;
+/**
+ * Age of the replayed recordings (G-1418): recordings older than --det-cassette-max-age are not replayed; older than
+ * 30 days (or of unknown age) are reported. The cache key of the cassette covers which recordings are stale today.
+ */
+function cassetteStaleness(run, opts) {
+  const network = require('./network');
+  const max = Number(opts.cassetteMaxAge) || 0;
+  const ages = network.cassetteAges(run.cassette, max);
+  run.cassetteStale = ages.stale;
+  run.cassetteKey = `${native.fileDigest(run.cassette) || 'missing'}${max > 0 ? `|max-age=${max}|stale=${native.digest(Buffer.from(ages.stale.join('\n'))).slice(0, 16)}` : ''}`;
+  run.cassetteOldestDays = ages.oldest ? Math.floor(ages.oldest.days) : null;
+  const rel = path.relative(process.cwd(), run.cassette) || run.cassette;
+  if (max > 0 && ages.stale.length) {
+    process.stderr.write(`detjs: cassette ${rel}: ${ages.stale.length} recorded test(s) older than ${max} days or of unknown age are not replayed (--det-cassette-max-age); re-record them with --det-record\n`);
+  } else if (ages.oldest && ages.oldest.days > CASSETTE_WARN_DAYS) {
+    process.stderr.write(`detjs: WARNING: cassette ${rel}: recordings up to ${Math.floor(ages.oldest.days)} days old (${ages.oldest.key}); replayed responses may be stale: re-record with --det-record, or refuse old ones with --det-cassette-max-age=D\n`);
+  }
+  if (ages.unknown && !(max > 0)) {
+    process.stderr.write(`detjs: WARNING: cassette ${rel}: ${ages.unknown} recorded connection(s) of unknown age (recorded before detjs stored recording dates); re-record with --det-record\n`);
+  }
 }
 
 function header(run, opts, extra) {
   const c = run.cfg;
-  const order = opts.seed !== null ? `shuffled with seed ${opts.seed}` : 'fixed (sorted files, declaration order)';
+  const shuffleSeed = opts.orderSeed !== null ? opts.orderSeed : opts.seed;
+  const order = shuffleSeed !== null ? `shuffled with seed ${shuffleSeed}${opts.orderSeed !== null ? ` (--det-order-seed; generators: seed ${opts.seed ?? 0})` : ''}` : 'fixed (sorted files, declaration order)';
   return [
     `detjs ${VERSION}: Level 0 active; runner=${extra.runner} ${extra.runnerVersion}; controls=${[...c.controls].sort().join(',')}; order ${order}`,
-    `detjs: serial execution (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; node ${process.version}`,
+    `detjs: ${extra.parallel || 'serial execution'} (${extra.isolation}); network=${run.netMode}; timers=${c.timers}; entropy=${c.urandom ? 'controlled (--det-urandom)' : 'observed (--det-urandom to control)'}; node ${process.version}`,
   ];
 }
 
@@ -195,7 +299,11 @@ function runInputs(run, meta) {
 
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
-  const parts = files.map((f) => path.join(run.dir, 'parts', f.part)).filter((p) => fs.existsSync(p));
+  // what the main process (globalSetup) recorded
+  try { require('./network').saveRecordings(); } catch (e) { process.stderr.write(`detjs: could not save the start-up recordings: ${e && e.message}\n`); }
+  const executed = files.map((f) => ({ fileId: f.fileId, path: path.join(run.dir, 'parts', f.part) })).filter((p) => fs.existsSync(p.path));
+  // --det-cache: the reused tests are in the trace too, with their recorded fingerprints (G-1402)
+  const { paths: parts, reusedTests } = require('./cache/trace-reused').withReused(run, executed);
   // Parts not claimed by the sequencer order (should not happen) go last, sorted.
   const known = new Set(parts);
   const extra = fs.readdirSync(path.join(run.dir, 'parts')).map((p) => path.join(run.dir, 'parts', p)).filter((p) => !known.has(p)).sort();
@@ -207,6 +315,7 @@ function finish(run, opts, files, meta) {
     runtime_version: process.versions.node,
     detjs: VERSION,
     seed: Number(run.cfg.seed),
+    order_seed: Number(run.cfg.orderSeed),
     shuffle: run.cfg.shuffle,
     controls: [...run.cfg.controls].sort(),
     epoch_ns: run.cfg.epochNs.toString(),
@@ -215,17 +324,31 @@ function finish(run, opts, files, meta) {
     timers: run.cfg.timers,
     network: run.netMode,
     urandom_controlled: run.cfg.urandom,
+    entropy: run.cfg.urandom ? 'controlled' : 'observed',
+    cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
+    cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
     platform: process.platform,
     files: files.map((f) => f.fileId),
+    ...(reusedTests.length ? { reused_tests: reusedTests } : {}),
     unordered_parts: extra.length,
     notes: [...new Set(all.flatMap(partNotes))],
+    // time zone and locale of the run: pinned by bin/detjs.js unless --det-tz/--det-locale=keep (G-0139, G-0140)
+    pinned: process.env.DETJS_PINNED || 'no',
+    tz: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().timeZone} TZ=${process.env.TZ === undefined ? '<unset>' : process.env.TZ}`; } catch { return '?'; } })(),
+    locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
+  let reproLines = [];
+  try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }
   fs.rmSync(run.dir, { recursive: true, force: true });
   const lines = [`detjs: trace ${path.relative(process.cwd(), run.tracePath) || run.tracePath}: ${res.nTests} tests, order digest ${res.orderDigest}`];
   if (res.skipped.length) lines.push(`detjs: unreadable trace parts: ${res.skipped.join('; ')}`);
+  const ent = realEntropyTests(run.tracePath, run.cfg.urandom);
+  if (ent.length) {
+    lines.push(`detjs: ${ent.length} test(s) used real OS entropy, observed but not controlled (${[...new Set(ent.flatMap((e) => e.ops))].sort().join(', ')}): their results can differ between runs${run.cfg.urandom ? ' (native key generation)' : '; --det-urandom makes crypto.randomBytes & co. deterministic (not for tests of cryptography)'}, e.g. ${ent[0].nodeid}`);
+  }
   if (opts.compare) {
     try {
       const rep = JSON.parse(native.verify([opts.compare, run.tracePath]));
@@ -241,7 +364,31 @@ function finish(run, opts, files, meta) {
       lines.push(`detjs: compare failed: ${e.message}`);
     }
   }
+  lines.push(...reproLines);
   return { lines, result: res };
 }
 
-module.exports = { parseArgs, prepare, header, finish, partIds, HELP, VERSION };
+// OS entropy Level 0 only observes: crypto.randomBytes & co. without --det-urandom, native key generation always
+const URANDOM_OPS = /^crypto\.(?:randomBytes|randomFillSync|randomFill|randomInt|pseudoRandomBytes)$/;
+/** Tests of the merged trace that drew real OS entropy: [{nodeid, ops}] (G-1426: the default is never silent). */
+function realEntropyTests(tracePath, urandom) {
+  const out = [];
+  let text;
+  try { text = fs.readFileSync(tracePath, 'utf8'); } catch { return out; }
+  for (const line of text.split('\n')) {
+    if (!line.startsWith('{"type":"test"') || !line.includes('"entropy"')) continue;
+    let t;
+    try { t = JSON.parse(line); } catch { continue; }
+    const ops = new Set();
+    for (const e of t.events || []) {
+      if (e.s !== 'entropy') continue;
+      if (urandom && URANDOM_OPS.test(e.o)) continue;
+      ops.add(e.o);
+    }
+    if (!ops.size && t.counts && t.counts.entropy && !urandom && !(t.events || []).length) ops.add('entropy');
+    if (ops.size) out.push({ nodeid: t.nodeid, ops: [...ops] });
+  }
+  return out;
+}
+
+module.exports = { realEntropyTests, parseArgs, prepare, header, finish, partIds, HELP, VERSION };

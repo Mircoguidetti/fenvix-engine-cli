@@ -6,7 +6,7 @@
 const path = require('node:path');
 
 const SHELL_DIR = path.resolve(__dirname) + path.sep; // node/src/
-const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|mocha|tap|@tapjs|tap-parser|tap-yaml|tcompare|async-hook-domain|ava|@ava|emittery|p-map|currently-unhandled|jasmine|jasmine-core|@jasminejs|uvu|sade|kleur)[\\/]/;
+const INFRA = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:vitest|@vitest|vite|vite-node|tinypool|playwright|playwright-core|@playwright|tinyspy|jest-[a-z0-9-]+|@jest|jest|expect|babel-jest|ts-jest|@swc|source-map-support|pretty-format|mocha|tap|@tapjs|tap-parser|tap-yaml|tcompare|async-hook-domain|ava|@ava|emittery|p-map|currently-unhandled|jasmine|jasmine-core|@jasminejs|uvu|sade|kleur)[\\/]/;
 const RUNNER_INTERNAL = /^(?:node:)?internal\/test_runner\//;
 const DEPS = /^(.*[\\/]node_modules[\\/])((?:@[^\\/]+[\\/])?[^\\/]+)[\\/](.*)$/;
 
@@ -72,6 +72,28 @@ function resolveFormatted() {
 }
 
 const structured = (_e, cs) => cs;
+
+// Jest words a "module not found" error by listing the siblings of the missing file with `glob` (jest-resolve's
+// findSiblingsWithFileExtension): a package's optional `require` (ws -> bufferutil) then makes glob stat files in the
+// test window. That is the runner's own work (the cache capture already says so), not the test's.
+const GLOB_DEPS = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:glob|minimatch|path-scurry)[\\/]/;
+function runnerLookup() {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = 40;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, runnerLookup);
+    return Array.isArray(holder.stack) && holder.stack.some((cs) => (cs.getFunctionName && cs.getFunctionName()) === 'findSiblingsWithFileExtension');
+  } catch {
+    return false;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+}
 const CACHE = new Map(); // raw "file:line:column" of the first relevant frame -> site (or null)
 const CACHE_MAX = 200000;
 
@@ -122,6 +144,7 @@ function resolveDepth(depth) {
     if (RUNNER_INTERNAL.test(f)) return null; // node:test's own machinery (durations, timeouts)
     if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
     if (INFRA.test(f)) return null;
+    if (GLOB_DEPS.test(f) && runnerLookup()) return null;
     const key = `${f}:${cs.getLineNumber()}:${cs.getColumnNumber()}`;
     let site = CACHE.get(key);
     if (site === undefined) {
@@ -133,4 +156,49 @@ function resolveDepth(depth) {
   return frames.length < depth ? '<node>' : undefined;
 }
 
-module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR };
+/**
+ * Whether the call was made for the runner: walking out from the caller past Node, detjs and installed libraries,
+ * a runner frame (INFRA) comes before any project frame. A library working for the runner (source-map parsing a
+ * map while Jest formats a stack) is then the runner's; a library a test calls is the test's.
+ */
+function runnerInitiated() {
+  // a shallow capture first; a library's recursion (source-map's quick-sort) can fill it with library frames before
+  // the runner's: then the whole stack decides (dom-testing-library: such draws were taken as the test's)
+  const r = runnerInitiatedAt(40);
+  return r === null ? runnerInitiatedAt(Infinity) === true : r;
+}
+
+/** true / false as decided by the first `limit` frames; null when they hold only library and Node frames. */
+function runnerInitiatedAt(limit) {
+  const E = Error;
+  const prevPrepare = E.prepareStackTrace;
+  const prevLimit = E.stackTraceLimit;
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = limit;
+  const holder = {};
+  try {
+    E.captureStackTrace(holder, runnerInitiated);
+    // eslint-disable-next-line no-unused-expressions
+    holder.stack;
+  } finally {
+    E.prepareStackTrace = prevPrepare;
+    E.stackTraceLimit = prevLimit;
+  }
+  // inside an Error.prepareStackTrace hook (source-map-support formatting a stack for Jest) V8 does not call the hook
+  // again: the nested capture is the default text, read line by line
+  const st = holder.stack;
+  const files = Array.isArray(st) ? st.map(rawFile)
+    : typeof st === 'string' ? st.split('\n').slice(1).map((l) => { const m = FRAME.exec(l); return m ? rawFile({ getFileName: () => m[1] }) : (/^\s*at (?:.*? \()?(node:[^)]*|native|<anonymous>)\)?$/.test(l) ? 'node:' : ''); })
+      : null;
+  if (!files) return false;
+  for (const f of files) {
+    if (RUNNER_INTERNAL.test(f)) return true;
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+    if (INFRA.test(f)) return true;
+    if (f.includes(`${path.sep}node_modules${path.sep}`)) continue;
+    return false;
+  }
+  return files.length >= limit ? null : false;
+}
+
+module.exports = { resolve, normPath, setRoot, setRealmError, SHELL_DIR, INFRA, runnerInitiated };

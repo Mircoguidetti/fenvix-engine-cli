@@ -189,7 +189,7 @@ const jasmine = [
       assert.equal(r.status, 0, show(r));
     }
   }],
-  ['--det-cache runs each spec file in its own process: cross-file state is reported, never reused', () => {
+  ['G-0147: --det-cache keeps Jasmine\'s one process (cross-file state passes as plain, the process is the unit); --det-isolate: a process per spec file', () => {
     const dir = fixture('jasmine', 'isolation', {
       'spec/aSpec.js': "it('sets', () => { globalThis.RB_SHARED = 1; expect(1).toBe(1); });\n",
       'spec/bSpec.js': "it('reads', () => { expect(globalThis.RB_SHARED).toBe(1); });\n",
@@ -197,9 +197,20 @@ const jasmine = [
     const single = crun('jasmine', dir, { cache: false });
     assert.equal(single.status, 0, `one process: b sees a's global\n${show(single)}`);
     const r1 = crun('jasmine', dir);
-    assert.notEqual(r1.status, 0, `process per file: b fails and is reported\n${show(r1)}`);
+    assert.equal(r1.status, 0, `--det-cache: the verdict of Jasmine's own process model (no false failure)\n${show(r1)}`);
     const r2 = crun('jasmine', dir);
-    assert.ok(!reused(r2).includes('spec/bSpec.js'), show(r2));
+    assert.deepEqual(reused(r2).sort(), ['spec/aSpec.js', 'spec/bSpec.js'], show(r2));
+    // a's change reruns b too: b ran with the state a left (the process is the unit)
+    write(dir, { 'spec/aSpec.js': "it('sets', () => { globalThis.RB_SHARED = 2; expect(1).toBe(1); });\n" });
+    const r3 = crun('jasmine', dir);
+    assert.notEqual(r3.status, 0, `b must run again and fail: it read a's state\n${show(r3)}`);
+    assert.ok(!reused(r3).includes('spec/bSpec.js'), show(r3));
+    write(dir, { 'spec/aSpec.js': "it('sets', () => { globalThis.RB_SHARED = 1; expect(1).toBe(1); });\n" });
+    const i1 = crun('jasmine', dir, { det: ['--det-isolate'] });
+    assert.notEqual(i1.status, 0, `--det-isolate: a process per file, b fails alone and is reported\n${show(i1)}`);
+    const i2 = crun('jasmine', dir, { det: ['--det-isolate'] });
+    assert.ok(!reused(i2).includes('spec/bSpec.js'), show(i2));
+    assert.ok(reused(i2).includes('spec/aSpec.js'), `--det-isolate: the file is the unit\n${show(i2)}`);
   }],
 ];
 
@@ -234,7 +245,7 @@ const uvu = [
     });
     noWrongReuse('uvu', dir, 'tests/suite.js', { 'data/v.txt': 'two' });
   }],
-  ['--det-cache runs each file in its own process: cross-file state is reported, never reused', () => {
+  ['G-0149: --det-cache keeps uvu\'s one process (cross-file state passes as plain, the process is the unit); --det-isolate: a process per file', () => {
     const dir = fixture('uvu', 'isolation', {
       'tests/a.js': `${UVUHEAD}\nglobalThis.RB_SHARED = 1;\ntest('sets', () => { assert.ok(true); });\ntest.run();\n`,
       'tests/b.js': `${UVUHEAD}\ntest('reads', () => { assert.is(globalThis.RB_SHARED, 1); });\ntest.run();\n`,
@@ -242,9 +253,19 @@ const uvu = [
     const single = crun('uvu', dir, { cache: false });
     assert.equal(single.status, 0, `one process: b sees a's global\n${show(single)}`);
     const r1 = crun('uvu', dir);
-    assert.notEqual(r1.status, 0, `process per file: b fails and is reported\n${show(r1)}`);
+    assert.equal(r1.status, 0, `--det-cache: the verdict of uvu's own process model (no false failure)\n${show(r1)}`);
     const r2 = crun('uvu', dir);
-    assert.ok(!reused(r2).includes('tests/b.js'), show(r2));
+    assert.deepEqual(reused(r2).sort(), ['tests/a.js', 'tests/b.js'], show(r2));
+    write(dir, { 'tests/a.js': `${UVUHEAD}\nglobalThis.RB_SHARED = 2;\ntest('sets', () => { assert.ok(true); });\ntest.run();\n` });
+    const r3 = crun('uvu', dir);
+    assert.notEqual(r3.status, 0, `b must run again and fail: it read a's state\n${show(r3)}`);
+    assert.ok(!reused(r3).includes('tests/b.js'), show(r3));
+    write(dir, { 'tests/a.js': `${UVUHEAD}\nglobalThis.RB_SHARED = 1;\ntest('sets', () => { assert.ok(true); });\ntest.run();\n` });
+    const i1 = crun('uvu', dir, { det: ['--det-isolate'] });
+    assert.notEqual(i1.status, 0, `--det-isolate: a process per file, b fails alone and is reported\n${show(i1)}`);
+    const i2 = crun('uvu', dir, { det: ['--det-isolate'] });
+    assert.ok(!reused(i2).includes('tests/b.js'), show(i2));
+    assert.ok(reused(i2).includes('tests/a.js'), `--det-isolate: the file is the unit\n${show(i2)}`);
   }],
 ];
 

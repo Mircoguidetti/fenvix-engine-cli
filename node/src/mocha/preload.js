@@ -112,7 +112,7 @@ if (role) {
       for (const k of ['tests', 'suites']) {
         const list = suite[k];
         if (!Array.isArray(list) || list.length < 2) continue;
-        const perm = native.shuffleIndices(list.length, c.seed, `${key}\u0000${k}`);
+        const perm = native.shuffleIndices(list.length, c.orderSeed, `${key}\u0000${k}`);
         const out = perm.map((i) => list[i]);
         list.splice(0, list.length, ...out);
       }
