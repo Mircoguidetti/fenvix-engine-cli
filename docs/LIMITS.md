@@ -115,22 +115,32 @@ partial key. Each row has a test that changes only that input and requires the t
 | A3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose probes the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
 | A4 | `os.lstat` / `os.path.lexists` / `islink` of a dangling symlink: following the link, it reads as missing either way. | D (coordinator) | `os.lstat` (and `follow_symlinks=False`) records the kind without following a final symlink (`l:<kind>`, kinds `link`, `file`, `dir`, `other`, `missing`). | `test_dangling_symlink_that_goes_away` |
 
-## 10. Cache with proof (`--det-cache`): one process per test file, speed
+## 10. Cache with proof (`--det-cache`): one process, as the user runs the suite; speed
 
-Under `--det-cache` (Linux), the tests of a file run in their own process, forked from the session after
-collection (`--det-cache-in-process` keeps one process).
+Under `--det-cache` the tests run in the session's process(es), as plain `pytest` (or `pytest -n`) runs them
+(coordinator decision 2026-11-21, review R-050 P2): the reported outcome of every test is that run's. A test is keyed
+on the earlier tests of its process whose state it may have consumed (its carried set); a test with no stored result
+(new, failed, or never cacheable: it starts a process, reads file times, ...) runs after every earlier test of its
+process, so those are not reused in that session. Cost: a failing or never-cacheable test late in a process
+(worker) reruns its predecessors; the reuse share this costs on moto and litellm is UNKNOWN until measured.
 
-* **Outcomes of tests that depend on earlier files.** A test that works only after another file's tests have left
-  state in memory (moto 96f50b1a: `TestS3FileHandleClosuresUsingMocks.setUp` builds a boto3 client outside the mock
-  and needs the credentials or session an earlier file left behind) can fail in its file's own process. fenvix
-  detects it and reports it. When a test fails in its file's process and the store has no in-process result to
-  compare with, fenvix replays it in one process after the earlier tests of the session (or the worker). If it passes
-  there, the run reports the pass, the user's normal outcome, and a `PLACEMENT FINDING` naming the earlier files. A test
-  whose outcome differs from a stored in-process result is reported the same way. The replay reruns every earlier
-  test once per failing file, and only for failures: moto `tests/test_s3/` with 5 failures that also fail without
-  the cache took 118 s against 45 s (MEASURED, 4 CPUs). `DETPY_PLACEMENT_REPLAY=0` turns the replay off;
+`--det-isolate` (one child per test file, or per test) is an explicit choice: no in-process state crosses files.
+
+* **Outcomes under `--det-isolate` of tests that depend on earlier files.** A test that works only after another
+  file's tests have left state in memory (moto 96f50b1a: `TestS3FileHandleClosuresUsingMocks.setUp` builds a boto3
+  client outside the mock and needs the credentials or session an earlier file left behind) can fail in its file's
+  own process. fenvix detects it and reports it. When a test fails in its file's process and the store has no
+  in-process result to compare with, fenvix replays it in one process after the earlier tests of the session (or the
+  worker). If it passes there, the run reports the pass, the user's normal outcome, and a `PLACEMENT FINDING` naming
+  the earlier files. A test whose outcome differs from a stored in-process result is reported the same way. A test
+  that passes only in its own process (an earlier file breaks it in one process) is reported as passed under
+  `--det-isolate` unless an in-process result is stored: the isolation the user asked for. The replay reruns every
+  earlier test once per failing file, and only for failures: moto `tests/test_s3/` with 5 failures that also fail
+  without the isolation took 118 s against 45 s (MEASURED, 4 CPUs). `DETPY_PLACEMENT_REPLAY=0` turns the replay off;
   `DETPY_PLACEMENT_REPLAY_S` bounds it (default 900 s; past it the failure stands). Under `-n`, the replay runs the
   earlier tests of the same worker, as plain `pytest -n` does.
+* **Speed numbers below were MEASURED with the earlier per-file default** (one child per test file, before
+  2026-11-21); with the in-process default they are UNKNOWN until remeasured.
 * **Speed when most tests miss** (founder decision 2026-11-21). On commits that change code most tests depend on, a
   cached `-n 4` run is slower than the uncached one, with no wrong result: moto 96f50b1a, 10 commits, 6 of them
   changing moto core: 755 s cached against 648 s uncached at `-n 4` (MEASURED, CI). Each file's process reloads the

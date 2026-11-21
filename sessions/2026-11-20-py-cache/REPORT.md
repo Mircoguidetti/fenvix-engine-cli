@@ -28,6 +28,13 @@ F-05, PY-05 and PY-08 checks are the done-means of the rows (section 4.1).
 
 ## 0. The design decision of this session
 
+**Reverted 2026-11-21 (coordinator decision, review R-050 P2).** `--det-cache` runs the tests in the session's
+process(es) again, as the user runs the suite, and reports that run's outcome for every test; one child per test file
+only under an explicit `--det-isolate`. Cause: a per-file child never sees what earlier files left in memory, so a
+test an earlier file breaks passed in its child (2 passed, exit 0, where plain pytest fails it), and its entry held
+no cross-file need. What follows in this section and the per-file numbers of 4.3 and 4.4 describe the reverted
+default (MEASURED with it).
+
 Coordinator, 2026-11-20 14:46 and 15:04 (founder's decision, recorded in DECISIONS): under `--det-cache` the Python
 cache isolates per test file, a fork per file, as Jest/Vitest do. On Linux this is now the default, serial and `-n`;
 `--det-cache-in-process` (or `DETPY_CACHE_IN_PROCESS=1`) keeps the session's process and its carried-set rule, and
@@ -58,7 +65,19 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ### F-05 cache with proof (serial and -n), with receipts
 
-* **Per-file default** (section 0; `python/detpy/isolate.py: FileIsolate`, `plugin.py`): one child per test file;
+* **Review R-050 P2 (blocking, wrong result), fixed.** `tests/test_review_r050_pycache.py` (claude/review-p1-packages
+  c5f9c39): an earlier file pollutes shared state; plain pytest and `--det` fail the victim, `--det-cache` reported
+  "2 passed". Two fixes: (1) the in-process default above; (2) a hole of the in-process mode too, trunk included: a
+  test with no stored result (new, failed, never cacheable) was given no needs, so on the next warm run its
+  predecessors were reused, not run, and the victim passed. It now runs after every earlier test of its process
+  (`_proof.py: demote_for_running`, coordinator decision (a)). P1 and P2 copied in, cold and warm, and the polluter
+  fixed: `test_r050_p2_...`, `test_r050_p1_...`; `test_in_process_is_the_default_under_the_cache_and_per_file_is_a_choice`.
+  Two tests asserted the unsound reuse and now expect the sound order: `test_py08_a_test_that_starts_a_process_runs_every_time`
+  (`test_pure`, before a never-recorded test, runs every time, reason `placement: a predecessor of ...`) and
+  `test_status_of_an_unlinked_temporary_file_is_not_a_refusal` (`test_size` before the never-cacheable `test_time`
+  runs with the whole file; selected alone it is reused). Cost: a failing or never-cacheable test reruns the earlier
+  tests of its process; the reuse share on moto and litellm is UNKNOWN until the coordinator's targeted dispatch.
+* **Per-file default (reverted 2026-11-21: now `--det-isolate` only)** (section 0; `python/detpy/isolate.py: FileIsolate`, `plugin.py`): one child per test file;
   the file's tests run in it in order and the cache records them at the end of the child; children's shards are folded
   into one per process (`Shard::absorb`). A file whose tests are all reused forks no child. Under -n the files are the
   plan's atoms, balanced by recorded durations on the tests that run; files of tests that read the worker id
@@ -174,7 +193,7 @@ difference, as `fenvix verify` names it: `env:EXAM_OUT`). Reported to the coordi
    ...])` in `pytest_runtest_setup`, a name resolution in every test, and a resolved name is a network input
    (release-1's rule, `test_review_r023b::test_2b_*`): 4,126 of 4,181 tests "not cacheable: network connection",
    MEASURED locally. Cached runs pay the per-file cost for nothing there: 220-240 s against 48 s at -n 4.
-9. **moto, run g: 8 outcomes differed from one process, silently: fixed (coordinator decision (b), 2026-11-21).**
+9. **moto, run g: 8 outcomes differed from one process, silently: fixed (coordinator decision (b), 2026-11-21); with the in-process default they run in one process, as plain pytest; the replay below applies under `--det-isolate`.**
    The 8 tests of `tests/test_s3/test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks` failed cached and passed
    uncached on every commit (MEASURED, run g). Cause (MEASURED, run h and locally with AWS_* unset): their `setUp`
    builds `boto3.client("s3")` outside `mock_aws` and works only after an earlier test file of the same process left
@@ -208,8 +227,8 @@ difference, as `fenvix verify` names it: `env:EXAM_OUT`). Reported to the coordi
 | G-0510 numpy: nothing reused | fixed | test_g0510_* (2) |
 | G-0708 worksteal NotImplementedError | fixed | test_g0708_work_stealing_callback_keeps_the_plan |
 | G-1284, G-1540 children and C uncontrolled | fixed for the cache (PY-08) | test_py08_* (3); test_file_scope_a_subprocess_in_a_files_child_runs_and_is_never_reused |
-| G-1507, G-1511, G-1537, G-1563 carried refusal | fixed by the per-file default (a refusal is carried within its file only) | test_file_scope_tests_of_a_file_share_their_child_and_no_other_file_sees_it; reuse numbers 4.4 |
-| G-1508 prefix over-invalidation | fixed by the per-file default (a change reruns its file, not the process) | test_proofcache.py::test_new_test_in_one_module_keeps_the_other_modules_only_when_files_are_isolated[file] |
+| G-1507, G-1511, G-1537, G-1563 carried refusal | fixed under `--det-isolate` per file (the default reverted, R-050) (a refusal is carried within its file only) | test_file_scope_tests_of_a_file_share_their_child_and_no_other_file_sees_it; reuse numbers 4.4 |
+| G-1508 prefix over-invalidation | fixed under `--det-isolate` per file (the default reverted, R-050) (a change reruns its file, not the process) | test_proofcache.py::test_new_test_in_one_module_keeps_the_other_modules_only_when_files_are_isolated[file] |
 | G-1509 receipts are counters | fixed in part (config misses name the parts; `detpy cache explain`) | test_g2197_..., test_g1510_... |
 | G-1510 no cache command | fixed | test_g1510_cache_command_stats_explain_gc_clear |
 | G-1539 isolate in runner shells | fixed (refused with the reason) | test_g1539_runner_shells_refuse_pytest_only_options |
@@ -288,6 +307,8 @@ E7), per-file recording. Cold: ~1.7 ms of recording per test plus a fork per fil
 Serial subset (30 files, 2,375 tests): no cache 13.7 s; per-file cold 25.9 s, warm 9.5 s.
 
 ### 4.4 Reuse and time on real repositories (CI run 44825894259, run g, engine b8444007)
+
+MEASURED with the reverted per-file default; with the in-process default (2026-11-21) UNKNOWN until remeasured.
 
 | repository, walk | mode | cached | uncached | reused | wrong reuses |
 |---|---|---|---|---|---|
