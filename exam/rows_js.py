@@ -319,6 +319,60 @@ def JS_07(ctx: Ctx):
     det2(ctx, "JS-07.det2", "ufo")
     cache2(ctx, "JS-07.cache2", "ufo")
 
+    # node:test is a launch runner (founder, 2026-11-21) and the pilot project runs on it, so its own parallel
+    # modes are examined like Vitest's and Jest's. What the product promises is not "it runs in parallel" but
+    # "the parallel run gives the same result as the serial one, proven": these two checks compare a serial --det
+    # run against the runner's own parallel mode and require `fenvix verify` to prove them identical.
+    def _nt_same_as_serial(tag: str, par_args: str):
+        def fn():
+            d, runner, args = proj(ctx, "simple-statistics")
+            t = [ctx.work / f"js07-{tag}-serial.jsonl", ctx.work / f"js07-{tag}-par.jsonl"]
+            for f in t:
+                if f.exists():
+                    f.unlink()
+            rc_s, out_s, o_s = fam.js_run(ctx, d, runner, args, f"js07-{tag}-serial", True,
+                                          f"--det --det-trace={t[0]}")
+            rc_p, out_p, o_p = fam.js_run(ctx, d, runner, f"{par_args} {args}", f"js07-{tag}-par", True,
+                                          f"--det --det-trace={t[1]}")
+            vok, vdesc, rep = lib.verify(ctx, d, {}, t[0], t[1], f"js07-{tag}-verify")
+            cok, cdesc = fam.js_cmp(o_p, o_s)
+            return vok and cok and rc_p == rc_s, \
+                f"verify serial vs {par_args}: {vdesc}; outcomes: {cdesc}; rc serial={rc_s} parallel={rc_p}"
+        return fn
+
+    ctx.run_check("JS-07.node-test-concurrency",
+                  "node:test with --test-concurrency=4 gives the same result as serial, proven identical",
+                  _nt_same_as_serial("ntconc", "--test-concurrency=4"), gaps=["G-1044"])
+
+    def nt_shards():
+        """Both shards together must cover exactly the serial run's tests, each proven against it."""
+        d, runner, args = proj(ctx, "simple-statistics")
+        ts = ctx.work / "js07-ntshard-serial.jsonl"
+        if ts.exists():
+            ts.unlink()
+        rc_s, out_s, o_s = fam.js_run(ctx, d, runner, args, "js07-ntshard-serial", True,
+                                      f"--det --det-trace={ts}")
+        total = (o_s.get("counts") or {}).get("passed") or 0
+        seen, oks, descs = 0, [], []
+        for i in (1, 2):
+            tp = ctx.work / f"js07-ntshard-{i}.jsonl"
+            if tp.exists():
+                tp.unlink()
+            rc, out, o = fam.js_run(ctx, d, runner, f"--test-shard={i}/2 {args}", f"js07-ntshard-{i}", True,
+                                    f"--det --det-trace={tp}")
+            seen += (o.get("counts") or {}).get("passed") or 0
+            vok, vdesc, _ = lib.verify(ctx, d, {}, ts, tp, f"js07-ntshard-{i}-verify")
+            # a shard runs a subset, so verify may report tests missing from one side; what must never happen is
+            # a test the two runs ran differently
+            oks.append(rc == 0 and "diverged" not in vdesc)
+            descs.append(f"shard {i}/2: rc={rc}, verify={vdesc}")
+        covered = total > 0 and seen == total
+        return all(oks) and covered, \
+            f"serial passed={total}, shards passed={seen} (covered: {covered}); " + "; ".join(descs)
+    ctx.run_check("JS-07.node-test-shard",
+                  "node:test --test-shard halves cover the serial run and never diverge from it",
+                  nt_shards, gaps=["G-1044"])
+
 
 def JS_08(ctx: Ctx):
     pm = os.environ.get("EXAM_VARIANT") or "npm"
