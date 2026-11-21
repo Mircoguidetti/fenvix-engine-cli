@@ -140,9 +140,12 @@ function randomInput(seed) {
       outcome: pick(['passed', 'passed', 'skipped', 'todo', 'failed', 'cancelled']),
       ...(r() < 0.5 ? { fingerprint: `fp${j}` } : {}), ...(r() < 0.5 ? { duration: r() } : {}),
     }));
+    // Every real capture carries the sensor declaration of the process that ran the file (src/provable.js
+    // `header`); without one the policy refuses to store anything, which is the clause the dedicated tests
+    // below cover. The flag-and-outcome layer these 500 inputs compare is only reached with a valid one.
     captures.push({ label: pick(labels), fileId: `f${i}.test.js`, ...(r() < 0.4 ? { project: pick(['p1', 'p2']) } : {}),
       duration: r(), ok: r() < 0.7, notes: r() < 0.2 ? ['process.env not replaceable: environment reads not captured'] : [],
-      tests, items });
+      tests, items, provable: PROVABLE });
   }
   const hits = {};
   for (const c of captures) {
@@ -155,6 +158,9 @@ function randomInput(seed) {
     config_for: { '': 'C0', p1: 'C1', p2: 'C2' }, uncacheable_projects: r() < 0.2 ? ['p2'] : [], verify: r() < 0.5, hits,
   };
 }
+
+// a valid declaration, as the sensor writes it for this build
+const PROVABLE = JSON.parse(native.provableHeader('node-surface/1', 'node22'));
 
 function legacyKey(testId, project) {
   if (!project) return testId;
@@ -186,4 +192,70 @@ test('receipt lines: the Rust lines equal the JavaScript ones', () => {
 
 test('the uncacheable table is the same', () => {
   assert.deepEqual(native.uncacheableTable(), legacy.UNCACHEABLE);
+});
+
+// -- 3. the one predicate gates storing (crates/detpy-core/src/provable.rs judge) ---------------------------------
+// The Node cache must not have a reuse rule of its own: a test the sensor could not fully account for, and a run
+// that cannot say what it watched, are never stored. These assert against the Rust policy directly -- there is no
+// JavaScript mirror of judge() on purpose, so that the rule has one implementation and not two.
+
+function oneTest(extra = {}, testExtra = {}) {
+  return {
+    global: [], spec_keys: ['f0.test.js'], cur_env: {}, urandom: false, epoch_ms: null,
+    run_id: 'r', runtime: 'RT', startup: '', config_for: { '': 'C0' }, uncacheable_projects: [], verify: false, hits: {},
+    captures: [{
+      label: 'L1', fileId: 'f0.test.js', duration: 0.1, ok: true, notes: [], items: [],
+      tests: [{ id: 'f0.test.js::t', upto: 0, outcome: 'passed', fingerprint: 'fp', ...testExtra }],
+      provable: PROVABLE, ...extra,
+    }],
+  };
+}
+
+function recorded(input) {
+  const dir = fs.mkdtempSync(path.join(TMP, 'judge-'));
+  const store = new native.ProofCache(dir, '/project');
+  return JSON.parse(store.recordSession(JSON.stringify(input)));
+}
+
+test('a clean test with a valid sensor declaration is stored', () => {
+  const out = recorded(oneTest());
+  assert.equal(out.recorded, 1, JSON.stringify(out.not_cached));
+  assert.deepEqual(out.not_cached, []);
+});
+
+test('a channel the sensor could not place is never stored', () => {
+  const out = recorded(oneTest({}, { unaccounted: ['api:v8.getHeapStatistics'] }));
+  assert.equal(out.recorded, 0);
+  const why = Object.fromEntries(out.not_cached);
+  assert.match(why['f0.test.js::t'], /api:v8\.getHeapStatistics/);
+  // the file's entry stands for every test in it, so it is refused too
+  assert.match(why['f0.test.js'], /api:v8\.getHeapStatistics/);
+});
+
+test('a run that declared no sensor stores nothing', () => {
+  const out = recorded(oneTest({ provable: null, provable_absent: 'switched off' }));
+  assert.equal(out.recorded, 0);
+  const why = Object.fromEntries(out.not_cached);
+  assert.match(why['f0.test.js::t'], /sensor/);
+});
+
+test('a sensor built against another accounting table stores nothing', () => {
+  const out = recorded(oneTest({ provable: { ...PROVABLE, surface: 'deadbeef' } }));
+  assert.equal(out.recorded, 0);
+  assert.match(Object.fromEntries(out.not_cached)['f0.test.js::t'], /accounting table/);
+});
+
+test('a runtime the table was not audited against stores nothing', () => {
+  const out = recorded(oneTest({ provable: { ...PROVABLE, runtime: 'node99' } }));
+  assert.equal(out.recorded, 0);
+  assert.match(Object.fromEntries(out.not_cached)['f0.test.js::t'], /audited/);
+});
+
+test('a channel rule that names the gap is preferred over the generic finding', () => {
+  // both are true; "network connection" tells the reader more than "api:net._normalizeArgs" (judge()'s own
+  // reasoning about clause order, applied to the two layers here)
+  const inp = oneTest({ items: [['flag', 'connect', '127.0.0.1:1']] }, { unaccounted: ['api:net._normalizeArgs'], upto: 1 });
+  const out = recorded(inp);
+  assert.equal(out.recorded, 0);
+  assert.match(Object.fromEntries(out.not_cached)['f0.test.js::t'], /network connection/);
 });

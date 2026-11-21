@@ -149,6 +149,7 @@ class Capture {
     this.cpInFlight = 0; // asynchronous cp calls running (their internal fs calls are not the caller's reads)
     this.busy = 0;
     this.tests = [];
+    this.testUnaccounted = []; // the sensor's findings for the test now running (src/provable.js)
     this.fileStart = 0;
     this.mainAnyReads = false; // Vitest main process: in-root reads by any caller are global candidates
     this.startup = []; // finished start-up processes [argv, cwd, status, stdout digest, stderr digest]
@@ -227,7 +228,7 @@ class Capture {
     installCloneRetry(this);
     installNativeEntropy(this);
     if (hooks) installLoaderHooks(this, hooks === 'resolve');
-    STATE.onEvent = (source, value) => this.levelEvent(source, value);
+    STATE.onEvent = (source, value, op) => this.levelEvent(source, value, op);
     require('node:module').syncBuiltinESMExports();
     if (early) {
       this.preload = true;
@@ -278,6 +279,7 @@ class Capture {
     this.log = [];
     this.seen = new Set();
     this.tests = [];
+    this.testUnaccounted = [];
     this.modsSeen = new Set();
     this.modsRaw = new Set();
     this.lastScan = null;
@@ -858,8 +860,17 @@ class Capture {
     this.add(['env', name], global);
   }
 
-  levelEvent(source, value) {
+  levelEvent(source, value, op) {
     if (!this.active || this.isGlobal) return;
+    // The general sensor's findings (src/provable.js `report`): what it saw and could not place, as
+    // `unaccounted.<kind>` with the callable's name. Carried per test to the policy, which hands them to
+    // provable::judge -- the cache must not decide reuse on its own channel list (the founder's rule; the
+    // wrong reuse this closes is in docs/REPORT-cache-node.md section 2).
+    if (typeof op === 'string' && op.startsWith('unaccounted.')) {
+      const key = `${op.slice('unaccounted.'.length)}:${value}`;
+      if (!this.testUnaccounted.includes(key)) this.testUnaccounted.push(key);
+      return;
+    }
     if (source === 'time') this.add(['clock'], false);
     else if (source === 'entropy') this.add(['flag', 'entropy', ''], false);
     else if (source === 'net' && typeof value === 'string' && value.includes('record#')) this.add(['flag', 'net-record', value], false);
@@ -996,17 +1007,30 @@ class Capture {
   // -- tests ---------------------------------------------------------------------------------------------------
   testEnd(id, outcome, duration, fingerprint, extraModules) {
     this.scanModules(extraModules);
-    this.tests.push({ id, outcome, duration, fingerprint: fingerprint || '', upto: this.log.length });
+    this.tests.push({
+      id, outcome, duration, fingerprint: fingerprint || '', upto: this.log.length,
+      unaccounted: this.testUnaccounted.slice(),
+    });
+    this.testUnaccounted = [];
   }
 
   /** The log of the file just finished, for the main side. */
   fileCapture(info, extraModules) {
     this.scanModules(extraModules);
-    return { ...info, items: this.log.slice(), tests: this.tests.slice(), upto: this.log.length, pid: process.pid, notes: [...this.notes] };
+    const prov = require('../provable');
+    let header = null;
+    let absent = null;
+    try { header = prov.header(); } catch { header = null; }
+    if (header === null) absent = prov.reason || 'the process declared no sensor';
+    return {
+      ...info, items: this.log.slice(), tests: this.tests.slice(), upto: this.log.length, pid: process.pid,
+      notes: [...this.notes], provable: header, provable_absent: absent,
+    };
   }
 
   beginFileTests() {
     this.tests = [];
+    this.testUnaccounted = [];
   }
 }
 

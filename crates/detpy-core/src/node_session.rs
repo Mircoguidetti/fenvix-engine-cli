@@ -71,6 +71,61 @@ pub fn uncacheable(flags: &[(String, String)], outcome: &str) -> Option<String> 
     flags.iter().find_map(|(f, detail)| uncacheable_flag(f).map(|d| format!("{d}: {detail}")))
 }
 
+/// The founder's rule for the Node cache: a result may be stored (and so reused) only when
+/// [`crate::provable::judge`] calls the test provable. The cache must not have a reuse rule of its own, so this is
+/// the only place the Node policy decides provability, and it decides it by calling the one predicate.
+///
+/// `provable` is the `meta.provable` the process that ran the file declared (`None` = none, which judge() answers
+/// NOT PROVEN for every test). `unaccounted` and `marks` are that test's own findings. Returns the reason the
+/// result is not cached, or None when it may be.
+fn not_provable(
+    provable: Option<&Value>,
+    unaccounted: &[String],
+    marks: &[String],
+    outside: &[String],
+) -> Option<(String, String)> {
+    let get = |k: &str| provable.and_then(|h| h.get(k)).and_then(|v| v.as_str());
+    let att = crate::provable::Attestation {
+        sensor: get("sensor"),
+        contract: provable.and_then(|h| h.get("contract")).and_then(|v| v.as_u64()).map(|v| v as u32),
+        surface: get("surface"),
+        runtime: get("runtime"),
+        unaccounted,
+        marks,
+        outside,
+    };
+    match crate::provable::judge(&att) {
+        crate::provable::Verdict::Provable => None,
+        crate::provable::Verdict::NotProven { kind, detail } => Some((kind, detail)),
+    }
+}
+
+/// The reason a result is not cached, or None when it may be: the one predicate decides *whether*, this decides
+/// only which of two true descriptions to print.
+///
+/// The order follows [`crate::provable::judge`]'s own reasoning about clause order. A missing or mismatched sensor
+/// ("sensor", "runtime") is the most fundamental gap and comes first. Otherwise the channel rule below is
+/// preferred when it names the gap, because "network connection" tells the reader more than "not accounted for:
+/// api:net._normalizeArgs"; the sensor's own finding answers when no channel rule names it (the case this wiring
+/// exists for). Either way the verdict is the predicate's: if it says NOT PROVEN, nothing is stored.
+fn why_not_cached(
+    provable: Option<&Value>,
+    unaccounted: &[String],
+    flags: &[(String, String)],
+    outcome: &str,
+) -> Option<String> {
+    let judged = not_provable(provable, unaccounted, &[], &[]);
+    if let Some((kind, detail)) = &judged {
+        if kind == "sensor" || kind == "runtime" {
+            return Some(format!("{kind}: {detail}"));
+        }
+    }
+    if let Some(w) = uncacheable(flags, outcome) {
+        return Some(w);
+    }
+    judged.map(|(kind, detail)| format!("{kind}: {detail}"))
+}
+
 /// A test as a capture reports it.
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct CapturedTest {
@@ -83,6 +138,10 @@ pub struct CapturedTest {
     pub fingerprint: Option<String>,
     #[serde(default)]
     pub duration: Option<f64>,
+    /// What the general sensor saw and could not place, as `kind:name` (`api:v8.getHeapStatistics`). Handed to
+    /// [`crate::provable::judge`]; the cache has no say of its own over these.
+    #[serde(default)]
+    pub unaccounted: Vec<String>,
 }
 
 /// The capture of one test file (one process or realm of a runner shell).
@@ -103,6 +162,13 @@ pub struct Capture {
     pub tests: Vec<CapturedTest>,
     #[serde(default)]
     pub items: Vec<Vec<Value>>,
+    /// `meta.provable` of the process that ran this file (src/provable.js `header`): sensor, contract, surface,
+    /// runtime. `None` = that process declared no sensor, which makes every test of the file NOT PROVEN.
+    #[serde(default)]
+    pub provable: Option<Value>,
+    /// Why there is no declaration, for the report.
+    #[serde(default)]
+    pub provable_absent: Option<String>,
 }
 
 /// Everything [`record_session`] needs from the JavaScript session.
@@ -523,7 +589,9 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
             let nid = test_key(&t.id, &proj);
             ids.push(Value::String(t.id.clone()));
             let o = snaps[i].as_ref().expect("snapshot");
-            let why = uncacheable(&o.flags, &t.outcome);
+            // the one predicate first: a channel the sensor could not place refuses reuse whatever the
+            // channel list below says (crates/detpy-core/src/provable.rs judge)
+            let why = why_not_cached(c.provable.as_ref(), &t.unaccounted, &o.flags, &t.outcome);
             verify_one(&mut out, &nid, &t.outcome);
             if let Some(w) = why {
                 store.remove(&nid);
@@ -540,7 +608,15 @@ pub fn record_session(store: &mut Store, input: &RecordInput) -> RecordOutput {
         let o = obs.at(&c.items, c.items.len(), &mut ctx, store);
         let outcome = if c.ok { "passed" } else { "failed" };
         verify_one(&mut out, &mid, outcome);
-        if let Some(w) = uncacheable(&o.flags, outcome) {
+        // the file's entry lets the whole file be skipped, so it answers for every test in it
+        let file_unaccounted: Vec<String> = {
+            let mut v: Vec<String> = c.tests.iter().flat_map(|t| t.unaccounted.iter().cloned()).collect();
+            v.sort();
+            v.dedup();
+            v
+        };
+        let file_why = why_not_cached(c.provable.as_ref(), &file_unaccounted, &o.flags, outcome);
+        if let Some(w) = file_why {
             store.remove(&mid);
             nc.set(&mid, &w);
             continue;
