@@ -349,7 +349,8 @@ def F_03(ctx: Ctx):
         rc, out = ctx.sh("vthr-verify", ["fenvix", "verify"] + [str(t) for t in traces], cwd=d, env=env)
         if len(set(outs)) == 1:
             # founder 2026-11-21: race not exercised; passes only if verify refuses to call the runs identical (rc != 0)
-            return rc != 0, f"one outcome over 6 runs (race not exercised); verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
+            # tightened after R-054: a crash or missing trace (rc 2) must not pass; the refusal must name thread
+            return rc == 1 and "thread" in out, f"one outcome over 6 runs (race not exercised); verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
         return rc != 0, f"{len(set(outs))} outcomes over 6 runs; verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
     ctx.run_check("F-03.thread", "runs whose thread order differed are never 'identical'", thread_py)
 
