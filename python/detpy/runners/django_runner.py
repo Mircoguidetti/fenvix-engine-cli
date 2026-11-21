@@ -85,6 +85,10 @@ class DjangoHooks:
         p.set(DiscoverRunner, "run_tests", run_tests)
         if "__call__" in vars(SimpleTestCase):
             self.shell.bracket(SimpleTestCase)
+        if self.run.det and getattr(self.run.ns, "det_db", "reuse") == "reuse":
+            from .. import _djangodb  # the test databases: a sealed template, proven (row PY-04)
+
+            _djangodb.enable(self.run.root)
         return self
 
 

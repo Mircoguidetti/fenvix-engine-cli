@@ -417,6 +417,9 @@ class DetRun:
           f"{' (shuffled)' if cfg.shuffle else ''}")
         if self.saved_cassette:
             w(f"network: recorded {self.saved_cassette} test(s) into {cfg.cassette_path}")
+        if "detpy._djangodb" in sys.modules:
+            for line in sys.modules["detpy._djangodb"].NOTES:
+                w(f"detpy: {line}")
         if self.proof is not None:
             w(f"{'=' * 20} detpy cache with proof {'=' * 20}")
             for text, _markup in self.proof.summary_lines(1 if os.environ.get("DETPY_VERBOSE") else 0):

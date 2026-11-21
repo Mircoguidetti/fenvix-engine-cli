@@ -998,6 +998,10 @@ class _DetSession(_Outcomes):
         items[:] = ordered
 
     def pytest_collection_finish(self, session):
+        if "django" in sys.modules and getattr(session.config.option, "det_db", "reuse") == "reuse":
+            from . import _djangodb  # pytest-django's test databases: a sealed template, proven (row PY-04)
+
+            _djangodb.enable(str(session.config.rootpath))
         S.order = [i.nodeid for i in session.items]
         S.order_digest = _core.order_digest(S.order)
         meta = _level0.trace_meta(S.reexec_status, S.net_mode, len(S.rebound), S.order_digest, "pytest",
@@ -1108,6 +1112,9 @@ class _DetSession(_Outcomes):
                 tr.write_line(line)
         if S.saved_cassette:
             tr.write_line(f"network: recorded {S.saved_cassette} test(s) into {cfg.cassette_path}")
+        if "detpy._djangodb" in sys.modules:
+            for line in sys.modules["detpy._djangodb"].NOTES:
+                tr.write_line(f"detpy: {line}")
         if getattr(network, "REFUSED", None):
             tests = sorted({t for t, _ in network.REFUSED if t})
             tr.write_line(f"network: replay refused for {len(tests)} test(s): the request differs from the recorded "

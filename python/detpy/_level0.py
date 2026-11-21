@@ -130,6 +130,11 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
     (("--det-tick-adapt",), dict(type=int, default=8, metavar="N",
                                  help="double the tick after N consecutive clock reads with no other event (0 = "
                                       "fixed tick)")),
+    (("--det-db",), dict(choices=("reuse", "fresh"), default="reuse",
+                         help="Django test databases under --det: reuse = a clean copy of a template sealed by the "
+                              "engine, proven by a fingerprint of the migrations, models, database version, settings "
+                              "and every file the build used (rebuilt when any of it changes); fresh = built every "
+                              "time as Django does")),
     (("--det-sleep",), dict(choices=("virtual", "real"), default="virtual",
                             help="virtual: time.sleep only advances the clock; real: it also waits")),
     (("--det-disable",), dict(default="", metavar="LIST",
