@@ -120,7 +120,7 @@ class Sensor:
     """
 
     __slots__ = ("tool", "active", "_verdicts", "_keep", "_seen", "outside", "_native_ok", "_native_seen",
-                 "_reason", "_transparent_memo", "_infra_memo", "_seen_for", "_native_bad")
+                 "_reason", "_transparent_memo", "_seen_for", "_native_bad")
 
     def __init__(self) -> None:
         self.tool: int | None = None
@@ -129,7 +129,6 @@ class Sensor:
         # call: the table is a pure function, so its answer can be remembered for the life of the process.
         self._verdicts: dict = {}
         self._transparent_memo: dict = {}   # module name -> its code is Python
-        self._infra_memo: dict = {}          # caller file -> it is the runner's own machinery
         # every callable this sensor has classified, kept alive on purpose. Without the reference, CPython could
         # free the object and hand its address to a different callable, and a cache keyed on identity would then
         # answer for the wrong one.
@@ -202,17 +201,6 @@ class Sensor:
             f = getattr(c, "__func__", None)  # a bound Python method, a classmethod
             if f is not None and getattr(f, "__code__", None) is not None:
                 return None
-            # 2. A call the test runner makes for its own bookkeeping is not something the test observed: the
-            #    runner's identity and version are run inputs, and nothing writes its environment during a run
-            #    (Rule E of the PROVABLE measurement). Only the runner itself and the engine count as
-            #    infrastructure here -- a library in site-packages is user code and is watched like any other.
-            fn = code.co_filename
-            infra = self._infra_memo.get(fn)
-            if infra is None:
-                infra = _sites._classify(fn)[0] == _sites._INFRA
-                self._infra_memo[fn] = infra
-            if infra:
-                return None
             mod = getattr(c, "__module__", None)
             qual = getattr(c, "__qualname__", None) or getattr(c, "__name__", None)
             if mod is None or qual is None:
@@ -241,7 +229,19 @@ class Sensor:
                 self._verdicts[k] = ok
                 self._keep.append(c)
             if not ok:
-                self._report("api", f"{k[0]}.{k[1]}", _site(code, offset))
+                # Only now, when a gap is about to be reported, is it worth asking whose call this is. A call the
+                # runner makes for its own bookkeeping is not something the test observed (Rule E), and finding
+                # that out means walking past the standard library: pytest's tmp_path machinery reaches
+                # pwd.getpwuid through getpass.getuser(), so the immediate caller is the standard library and
+                # only the frame above it says whose call it really is. `_sites.resolve` is the walk every other
+                # observer in the engine uses, and it answers None for infrastructure.
+                #
+                # The verdict cache above still says "unaccounted", so the same callable reached from a test is
+                # reported as it should be: what is suppressed here is the report, not the classification.
+                site = _sites.resolve(1)
+                if site is None:
+                    return None
+                self._report("api", f"{k[0]}.{k[1]}", site or _site(code, offset))
         except Exception:
             # a sensor that raises would take the test down with it. A sensor that cannot classify must not
             # answer "accounted": it says so, and the test is NOT PROVEN.
@@ -253,7 +253,14 @@ class Sensor:
 
     # -- sensor 2: the audit hook, for what calls do not show -----------------------------------------
     def _on_audit(self, event, args) -> None:
-        if event in _AUDIT_KNOWN:
+        # CPython raises `name/N` for the argument-list variants of one event (`glob.glob/2`, `ctypes.dlsym/handle`
+        # and so on): the same operation, so the rule is the same and the suffix is dropped before the lookup.
+        base = event.rsplit("/", 1)[0] if "/" in event else event
+        if event in _AUDIT_KNOWN or base in _AUDIT_KNOWN:
+            return
+        # the same question as for a call: whose operation is this? The runner's own bookkeeping is not something
+        # the test observed (Rule E), and only the frame above the standard library says so.
+        if _sites.resolve(1) is None:
             return
         self._report("audit", event)
 

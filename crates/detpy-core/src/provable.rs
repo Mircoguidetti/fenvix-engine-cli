@@ -278,6 +278,9 @@ pub fn account(module: &str, qualname: &str) -> Accounting {
             import_account(name)
         }
         "_warnings" | "atexit" | "_tracemalloc" | "faulthandler" => Accounting::Pure,
+        // the locale is pinned by `--det-locale` and is a run input the verifier compares, so what these answer
+        // is the same in every run of a comparison
+        "_locale" | "locale" => Accounting::Input,
         // the C tokenizer and the AST builder read source text they are handed, nothing else
         "_tokenize" => Accounting::Pure,
         "_ssl" => ssl_account(name),
@@ -302,8 +305,8 @@ fn module_policy(module: &str, top: &str) -> ModulePolicy {
         "builtins", "posix", "os", "nt", "time", "_io", "io", "_socket", "socket", "_thread", "threading",
         "_random", "random", "select", "_selectors", "selectors", "_sqlite3", "sqlite3", "sys", "gc", "resource",
         "_imp", "_frozen_importlib", "_frozen_importlib_external", "importlib", "marshal", "zipimport",
-        "_warnings", "atexit", "_tracemalloc", "faulthandler", "_tokenize", "_ssl", "fcntl", "termios", "mmap",
-        "signal",
+        "_warnings", "atexit", "_tracemalloc", "faulthandler", "_tokenize", "_locale", "locale", "_ssl", "fcntl",
+        "termios", "mmap", "signal",
         "_posixsubprocess", "_multiprocessing", "_curses", "pwd", "grp", "spwd", "crypt", "syslog", "_uuid",
         "_scproxy", "msvcrt", "winreg", "nis",
     ];
