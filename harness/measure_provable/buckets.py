@@ -24,26 +24,30 @@ CONTROLLED_E = {"engine", "runner_cache", "stdlib", "syslib", "sitepackages_code
                 "locale_data", "null_dev", *PROBES}
 CONTROLLED_S = {"engine", "runner_cache", "locale_data", "null_dev", *PROBES}
 
-# category -> (bucket, cause) for a read / stat / listing that is not in the controlled set
-CAT_CAUSE = {
-    "project_source": ("coverable", "project source file read (content is not a run input)"),
-    "project_data": ("coverable", "project data file read (content is not a run input)"),
-    "sitepackages_data": ("coverable", "installed dependency data file read"),
-    "sitepackages_native": ("coverable", "native extension file loaded (content is not a run input)"),
-    "stdlib": ("coverable", "standard library file read (content is not a run input)"),
-    "syslib": ("coverable", "system library file read (content is not a run input)"),
-    "sitepackages_code": ("coverable", "installed dependency code read (content is not a run input)"),
-    "runner_cache": ("coverable", "runner bytecode cache file read"),
-    "locale_data": ("coverable", "locale or zoneinfo data file read"),
-    "tmp": ("coverable", "temporary file read"),
-    "proc": ("coverable", "/proc read"),
-    "sys": ("coverable", "/sys read"),
-    "etc": ("coverable", "/etc read"),
-    "home": ("coverable", "file read under the home directory outside the engine's cache"),
-    "dev": ("coverable", "device file read"),
-    "entropy_dev": ("coverable", "OS entropy device read with no engine event"),
-    "other": ("coverable", "file read outside the engine's controlled set"),
+# category -> what the path is, for the cause label. The label also names *how* it was
+# touched (content read / metadata stat / directory listing), because recording a content
+# digest and recording a stat result are different pieces of work.
+AREA = {
+    "project_source": "a project source file",
+    "project_data": "a project data file",
+    "sitepackages_data": "an installed dependency's data file",
+    "sitepackages_native": "a native extension file",
+    "stdlib": "a standard library file",
+    "syslib": "a system library file",
+    "sitepackages_code": "an installed dependency's code",
+    "runner_cache": "a runner bytecode cache file",
+    "locale_data": "a locale or zoneinfo file",
+    "tmp": "a temporary file",
+    "proc": "/proc",
+    "sys": "/sys",
+    "etc": "a file under /etc",
+    "home": "a file under the home directory",
+    "dev": "a device file",
+    "entropy_dev": "the OS entropy device",
+    "other": "a file outside the engine's controlled set",
 }
+HOW = {"fs.read.": "content read of", "fs.stat.": "metadata read (stat) of",
+       "fs.statfs.": "filesystem metadata read of", "fs.listdir.": "directory listing of"}
 
 NON_VIRTUAL_CLOCKS = {
     "clock.rusage": "getrusage (CPU time, not virtualised)",
@@ -76,16 +80,16 @@ def classify(channels: dict, engine: dict, native_reads: list, rule: str = "E") 
     for ch, n in channels.items():
         if not n or ch in ACCOUNTED_ALWAYS or ch.startswith("fs.write."):
             continue
-        if ch.startswith(("fs.read.", "fs.stat.", "fs.statfs.", "fs.listdir.")):
-            cat = ch.rsplit(".", 1)[-1]
+        if ch.startswith(tuple(HOW)):
+            how = next(k for k in HOW if ch.startswith(k))
+            cat = ch[len(how):]
             if cat in controlled:
                 continue
             if cat == "entropy_dev" and engine_entropy:
                 continue
-            if ch.startswith("fs.listdir.") and engine_fs:
+            if how == "fs.listdir." and engine_fs:
                 continue
-            b, cause = CAT_CAUSE.get(cat, ("coverable", f"read of {cat}"))
-            (nature if b == "by-nature" else cover).append(cause)
+            cover.append(f"{HOW[how]} {AREA.get(cat, cat)}")
         elif ch == "entropy.getrandom":
             if not engine_entropy:
                 cover.append("getrandom with no engine entropy event")

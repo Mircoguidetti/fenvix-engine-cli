@@ -22,7 +22,13 @@ become NOT PROVEN, and which channels are responsible.
 
 ## The short answer
 
-<!--RESULTS-HEADLINE-->
+**INTERMEDIATE (three of four projects).** flask, rich and anyio are measured (660 tests);
+the Node project valibot is still running. Under the rule as stated — every
+information-carrying syscall of the whole run must be accounted for — **0.0% of 660 real
+tests stay PROVABLE** (MEASURED). 82.0% are NOT PROVEN for channels that could be recorded
+with ordinary work, 18.0% for channels that need the syscall backend. Counting only what
+happens between the start and the end of the test, 14.8% stay PROVABLE. The full tables,
+the ranked causes and the Node numbers follow when valibot finishes.
 
 ## What the engine records today (MEASURED)
 

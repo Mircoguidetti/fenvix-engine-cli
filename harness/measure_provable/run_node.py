@@ -186,6 +186,9 @@ def main() -> int:
                          "engine_dirs": ["/home/user/fenvix-engine-cli",
                                          str(Path(src) / MARKER), str(root / "out"),
                                          str(root / "work"), str(root / "raw")]}}
+    # the runner's own channels, measured by a baseline run in which no test runs at all
+    base = HERE / "node_infra_baseline.json"
+    cfg["infra"] = frozenset(json.loads(base.read_text())) if base.exists() else frozenset()
     shutil.rmtree(cfg["workdir"], ignore_errors=True)
     shutil.rmtree(cfg["keep_dir"], ignore_errors=True)
 

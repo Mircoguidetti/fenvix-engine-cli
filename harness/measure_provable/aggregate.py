@@ -114,6 +114,40 @@ def main() -> int:
         print(f"  + {c[:62]:62s} -> {now:5d} {pct(now, tot):>7s}")
     summary["cumulative_testphase"] = cum
 
+    # What the engine already refuses today vs what the rule would add.
+    # A test with a non-empty `uncontrolled` list is already never reported identical.
+    print("\n=== already refused today (uncontrolled.* mark) vs the rule's verdict ===")
+    print(f"{'project':14s} {'n':>5s} {'marked today':>13s} {'by nature':>10s} "
+          f"{'by nature, not marked':>22s} {'coverable':>10s}")
+    xtab = {}
+    for proj in [*a.projects, "ALL"]:
+        rs = [r for r in recs if r.get("bucket") != "EXCLUDED"
+              and (proj == "ALL" or r["project"] == proj)]
+        if not rs:
+            continue
+        n = len(rs)
+        marked = sum(1 for r in rs if r.get("engine_uncontrolled"))
+        nat = sum(1 for r in rs if r["bucket_E"] == "NOT PROVEN, by nature")
+        nat_unmarked = sum(1 for r in rs if r["bucket_E"] == "NOT PROVEN, by nature"
+                           and not r.get("engine_uncontrolled"))
+        cov = sum(1 for r in rs if r["bucket_E"] == "NOT PROVEN, coverable")
+        print(f"{proj:14s} {n:5d} {str(marked) + ' (' + pct(marked, n) + ')':>13s} "
+              f"{str(nat) + ' (' + pct(nat, n) + ')':>10s} "
+              f"{str(nat_unmarked) + ' (' + pct(nat_unmarked, n) + ')':>22s} "
+              f"{str(cov) + ' (' + pct(cov, n) + ')':>10s}")
+        xtab[proj] = {"n": n, "marked_today": marked, "by_nature": nat,
+                      "by_nature_not_marked": nat_unmarked, "coverable": cov}
+    summary["already_refused"] = xtab
+
+    # per-project cause rankings, printed
+    for proj in a.projects:
+        cs, n = causes(recs, "causes_testphase_E", "bucket_testphase_E", proj)
+        if not n:
+            continue
+        print(f"\n=== {proj}: top causes, test-phase view (n={n}) ===")
+        for cause, k, sh in cs[:10]:
+            print(f"    {sh:>7s}  {k:5d}  {cause}")
+
     if a.csv:
         with open(a.csv, "w", newline="") as fh:
             w = csv.writer(fh)

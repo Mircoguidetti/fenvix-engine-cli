@@ -132,10 +132,13 @@ class Paths:
         if any(self._under(p, d) for d in self.site):
             if "/detpy/" in p or "/detjs/" in p:
                 return "engine"
+            # an installed distribution's own record (METADATA, RECORD, WHEEL, entry_points)
+            # has no file extension, so it is matched before the directory rule
+            if ".dist-info/" in p or ".egg-info/" in p:
+                return "sitepackages_code"
             if not f:
                 return "sitepackages_probe"
-            if p.endswith((".py", ".pyc", ".pth", ".pyi", ".egg-link")) \
-                    or ".dist-info/" in p or ".egg-info/" in p:
+            if p.endswith((".py", ".pyc", ".pth", ".pyi", ".egg-link")):
                 return "sitepackages_code"
             if p.endswith(".so") or ".so." in p or ".abi3.so" in p:
                 return "sitepackages_native"

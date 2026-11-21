@@ -1,0 +1,18 @@
+[
+ "clock.rusage",
+ "entropy.getrandom",
+ "machine.cpu",
+ "machine.sysinfo",
+ "machine.uname",
+ "net.bind.inet",
+ "net.connect.unix",
+ "net.getpeername.unix",
+ "net.getsockname.inet",
+ "net.getsockname.unix",
+ "net.recvmsg.inet",
+ "net.recvmsg.local",
+ "net.sendto.inet",
+ "net.socket",
+ "proc.exec",
+ "tty.ioctl"
+]
