@@ -184,15 +184,57 @@ engine still reports a green that a plain run calls red. A regression test for i
 `test/cache.test.js`, but its expected outcome depends on which option above you pick, so I have
 not written one yet — writing it now would bake in a decision that is yours.
 
-## 4. Not done
+## 4. Measurements on a real project (MEASURED)
 
-Item 5 of the brief (reuse share and wall-clock, cached vs uncached, serial and parallel, on
-docusaurus / TanStack / vue-core) is not started, and no GitHub Actions matrix run (Node 22/24/26)
-has been launched. Both measure an engine that section 2.4 is about to change, so they come after
-that decision. `node/node_modules` was absent at session start (MEASURED); a local run needs
-`npm ci` plus `node scripts/build.js` (~27 s for the Rust addon here).
+zustand @ `3f9127f4` (the project `F-06.no-edit` itself uses), vitest 3 + jsdom 25 as the exam
+installs it, 12 test files / 135 tests, Node 22.23.5, 4 vCPU shared container. Wall-clock is the
+median of 3 repetitions (2 for the parallel rows); ranges in brackets.
 
-## 5. Reproduction
+### 4.1 Reuse share and correctness
+
+| | value |
+|---|---|
+| tests reused on an unchanged checkout | **135 of 135 (100%)** |
+| files reused | 8 of 12 |
+| files correctly **not** reused | 4 — `not cached: outcome failed 4` (a failing outcome is never cached) |
+| `--det-cache-verify` (reuse decided, **every file run anyway and compared**) | **verified 143 results, 0 differ** |
+| `verify_mismatches` in `cache-summary.json` | 0 |
+
+So **0 wrong reuses on this project, verified against a fresh full run**, and `F-06.no-edit`'s
+>= 90% threshold is met with margin here (100%). That is one project, not the fleet: the share on
+larger suites is UNKNOWN until section 5 runs, and the tension in 1.2 is not settled by it.
+
+### 4.2 Wall-clock, cached vs uncached, serial and parallel
+
+| mode | plain vitest | `--det`, no cache | `--det` + warm cache |
+|---|---|---|---|
+| **serial** (one worker) | 5.97 s [5.68–6.16] | 7.10 s [6.81–7.20] | **3.15 s** [2.93–3.27] |
+| **parallel** (4 lanes) | 2.73 s [2.68–2.78] | 3.11 s [2.98–3.23] | **1.81 s** [1.65–1.98] |
+
+* capture overhead (`--det` vs plain, same parallelism): **+19% serial, +14% parallel** — the same
+  family as the DECLARED +11.4% / +6.0% / +5.8% from `claude/node-cache-proof`.
+* cached vs uncached: **−47% serial, −34% parallel**. Cold cache: 8.39 s serial, 3.69 s parallel.
+* **No cached run was slower than its uncached counterpart**, so the defect condition in the brief
+  does not occur here.
+
+A correction worth recording, because I nearly reported the opposite: comparing `--det` against a
+bare `npx vitest run` is **not** apples to apples. `--det` forces one worker by default, while
+plain vitest defaults to multi-worker. Against that confounded baseline the warm cache looked like
+a +2.6% regression; forcing plain to one worker (`--no-file-parallelism`, confirmed with
+`--maxWorkers=1`) shows it is a 47% improvement. Any future measurement must pin parallelism on
+both sides.
+
+## 5. Not done, and why
+
+* **docusaurus, TanStack query, vue-core** (the three with history) are **not attempted**. They are
+  CI-scale: `harness/node_cache/specs/tanstack-query.json` needs corepack + pnpm, Node 24, a
+  27-package Nx monorepo and **3 shards**, and the prior branch measured them in GitHub Actions
+  (runs 44644365780, 44615968050), not locally. The brief's own rule — Actions for the matrix,
+  local for one version — puts them on CI.
+* **No Actions matrix run (Node 22/24/26) launched.** The exam tests an installed release artifact,
+  so a matrix run needs a release build of this branch; and both it and the three projects would
+  measure an engine that the decision in 2.4 is about to change. They come after that decision.
+## 6. Reproduction
 
 ```bash
 cd node && npm ci --no-audit --no-fund && node scripts/build.js
