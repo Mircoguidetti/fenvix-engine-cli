@@ -335,10 +335,18 @@ function provableField(dir, reusedTests, order) {
   if (decls.size > 1) {
     return { provable_absent: `the run's processes declared ${decls.size} different sensors` };
   }
-  // No process declared anything. That is right for a run in which nothing ran: every test came from the cache,
-  // which admits a test only when the rule proved it at the time it was recorded (crates/detpy-core/src/cache.rs
-  // admit_record -> provable::judge). There was nothing for this run to watch, and the fingerprints it compares
-  // are the ones the recording run was held to, so the run declares the build's own table.
+  // No process declared anything. That is right for a run in which nothing ran: every test came from the cache.
+  // The claim this declaration rests on is that the RECORDING run could not have stored a test the rule refuses,
+  // and it is kept by two paths that exist and are called (R-058 found this comment citing `admit_record`, which
+  // has no caller outside its own test -- a premise nothing implemented, the same shape as the fail-open hole it
+  // sat above, so it is replaced by what actually runs):
+  //   * src/provable.js, on a gap -> STATE.onLevel0Gap, the engine's "never reuse this test" signal;
+  //   * src/controls.js level0Gap, which fires when a sensor could not start, so a process without one makes the
+  //     whole run store nothing.
+  // There was nothing for this run to watch, and the fingerprints it compares are the ones the recording run was
+  // held to, so the run declares the build's own table under `cache-reuse/1`. That name is in the core's known
+  // set and carries the Node shell's required controls (crates/detpy-core/src/provable.rs: `sensor_known`,
+  // `required_controls`), so a run that switched a control off is refused rather than waved through.
   const reused = (reusedTests || []).length;
   if (reused > 0 && reused === (order || []).length) {
     try {

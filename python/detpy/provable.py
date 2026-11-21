@@ -276,7 +276,12 @@ class Sensor:
                 # A call on a standard input stream, which the `_io` entry's claim does not cover: there is no
                 # `fs.read` event behind it, so nothing records what the test read. Asked only for `_io`, so a
                 # test reading ordinary files pays one set lookup and nothing else.
+                # For a method of a C type the callable is the method DESCRIPTOR (`_io.TextIOWrapper.readline`)
+                # and the instance arrives as `arg0`; only a bound builtin method carries `__self__`. Both forms
+                # reach here, so both are asked.
                 strm = getattr(c, "__self__", None)
+                if strm is None:
+                    strm = arg0
                 if strm is not None and id(strm) in self._stdin_ids:
                     if _sites.resolve(_CALLER) is not None:
                         self._report("io", "standard input")

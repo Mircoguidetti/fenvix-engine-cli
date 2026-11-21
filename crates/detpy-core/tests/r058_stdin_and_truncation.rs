@@ -3,61 +3,56 @@
 use detpy_core::event::{Event, Source};
 use detpy_core::fingerprint::Fingerprinter;
 use detpy_core::provable::{
-    account, judge, required_controls, surface_digest, Accounting, Attestation, Verdict,
-    SENSOR_CONTRACT,
+    judge, required_controls, surface_digest, Attestation, Verdict, SENSOR_CONTRACT,
 };
 
 // -- CONFIRMED: the documented weak claim is a real false-green channel ----------------------------
 
-/// The `_io` doc comment (provable.rs:427) states the gap itself: "a stream that is not a file has
-/// no such `open` behind it. A test that reads `sys.stdin` goes through the same `_io` methods, and
-/// nothing records what it read."
+/// R-058 #5, fixed: a test that reads standard input is NOT PROVEN.
 ///
-/// This test pins the consequence, which the doc comment stops short of: because `_io.read` is
-/// `Recorded` rather than `Unaccounted`, a stdin read puts NOTHING in the record's `unaccounted`
-/// list, so clause 5 of `judge` has nothing to refuse and the test is `Provable`. Two runs fed
-/// different standard input therefore compare equal on every field the verifier looks at, and the
-/// report says "observed the same events".
+/// The reviewer's own two tests asserted one particular remedy -- `account("_io", "read")` answering
+/// `Unaccounted` -- and that remedy is the wrong one, so they are replaced here by the guarantee
+/// itself rather than deleted. Two reasons, both measured:
 ///
-/// Scope, stated honestly: this is MEASURED at the level of the accounting table and `judge`. I did
-/// NOT run it end to end through the pytest plugin (the extension is not built in this container and
-/// maturin is not installed), so the end-to-end behaviour is UNKNOWN -- it rests on the doc
-/// comment's own statement that nothing records what stdin returned.
+/// 1. The table answers for a NAME, and the name is the same for a file and for standard input
+///    (`_io.TextIOWrapper.readline` either way). Making it `Unaccounted` would refuse every test
+///    that reads an ordinary file -- which the `fs.read` event behind `open` genuinely accounts for
+///    -- and the provable share is what the customer is sold in skipped tests and spread cores.
+/// 2. `judge` cannot see a channel nobody reported: the reviewer's second test asserted that a
+///    clean attestation is not provable, which would refuse every test in existence.
+///
+/// The fix belongs where the stream object is, which is the sensor:
+/// `python/detpy/provable.py`, `_refresh_standard_streams` + the `_IO_MODULES` branch of `_on_call`.
+/// A call on `sys.stdin`, its buffer, or `sys.__stdin__` is reported as `io:standard input`.
+///
+/// The end-to-end proof the reviewer could not run (no built extension in a review container) is
+/// `tests/test_provable_general_rule.py::test_a_test_that_reads_standard_input_is_not_identical`:
+/// two runs fed different bytes on stdin, which were IDENTICAL before this fix and are NOT PROVEN
+/// after it, with a control leg that is still IDENTICAL without the read. MEASURED.
+///
+/// What this test pins is the core's half of that: the entry the sensor writes must reach a refusal.
 #[test]
-fn reading_standard_input_is_not_accounted_for() {
-    // The table's answer for the call a `sys.stdin.read()` lands on.
-    assert_eq!(
-        account("_io", "BufferedReader.read"),
-        Accounting::Unaccounted,
-        "`_io.read` is `Recorded` on the strength of an `fs.read` event behind it; sys.stdin has no \
-         such event, so this answer hands the verdict a channel nobody recorded"
-    );
-}
-
-/// The same point one level up, where it turns into the verdict: nothing a stdin read does reaches
-/// `judge`, so the test is provable and the runs are reported identical.
-#[test]
-fn a_test_that_read_stdin_is_not_provable() {
+fn a_reported_standard_input_read_is_not_proven() {
     let controls: Vec<String> =
         required_controls("py-monitoring/1").iter().map(|s| s.to_string()).collect();
-    // What the recorder stores for a test whose only uncontrolled input was standard input: the
-    // `_io` entry answered `Recorded`, so there is no mark and no unaccounted entry.
+    let unaccounted = vec!["io:standard input".to_string()];
     let v = judge(&Attestation {
         sensor: Some("py-monitoring/1"),
         contract: Some(SENSOR_CONTRACT),
         surface: Some(&surface_digest()),
         runtime: Some("cpython3.13"),
         controls: &controls,
-        unaccounted: &[],
+        unaccounted: &unaccounted,
         marks: &[],
         outside: &[],
     });
-    assert_ne!(
-        v,
-        Verdict::Provable,
-        "a test that read standard input leaves no trace in the attestation, so judge calls it \
-         provable; two runs given different stdin are then reported IDENTICAL"
-    );
+    match v {
+        Verdict::NotProven { kind, detail } => {
+            assert_eq!(kind, "io", "the refusal names the channel: {detail}");
+            assert!(detail.contains("standard input"), "{detail}");
+        }
+        Verdict::Provable => panic!("a reported standard input read must never be provable"),
+    }
 }
 
 // -- SURVIVED: attacks that did NOT produce a wrong result -----------------------------------------
