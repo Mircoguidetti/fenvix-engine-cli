@@ -122,14 +122,32 @@ async function main(cmd, argv) {
   fs.mkdirSync(work, { recursive: true });
   const t2path = path.join(work, 'rerun.jsonl');
   // The argument form of src/isolate.js: the user's own arguments, then the files. Jest needs --runTestsByPath for
-  // paths to be paths; Vitest and node:test take them as they are. The affected files are a subset of what the
-  // user's own filters selected, so adding them narrows the run (and, where the user passed filters of their own,
-  // leaves it as wide as theirs -- correct, only less of a saving).
+  // paths to be paths; Vitest and node:test take them as they are.
+  //
+  // node:test needs the user's own file patterns dropped first. Its patterns and my paths are a UNION, so
+  // `t/*.test.js` plus the explicit path of a file in it makes node:test run that file TWICE -- measured: the
+  // merged trace held every record of the affected files twice, and the second copy of a file had seen the state
+  // the first one left. `parseNodeArgs` is the same splitter the node:test shell itself uses, so flags that take a
+  // separate value (`--test-reporter foo`) keep theirs instead of being read as patterns.
   const fileArgs = cmd === 'jest'
     ? ['--runTestsByPath', ...affected.map((f) => path.resolve(root, f))]
     : affected.map((f) => path.resolve(root, f));
-  const args2 = [...process.execArgv, BIN, cmd, ...rerunArgs(argv), '--det-workers=1', `--det-trace=${t2path}`,
-    ...(cmd === 'vitest' && !argv.includes('run') ? ['run'] : []), ...fileArgs];
+  const dropPatterns = (a) => {
+    if (cmd !== 'node-test') return a;
+    try {
+      const { parseNodeArgs } = require('./nodetest/cli');
+      const { patterns } = parseNodeArgs(a);
+      const drop = new Set(patterns);
+      return a.filter((x) => !drop.has(x));
+    } catch { return a; }
+  };
+  // Vitest's subcommand is positional: drop whatever the user wrote (`run`, `watch`, `dev`) and always re-run with
+  // `run`, as src/isolate.js does. Appending `run` to a `watch` would have produced `watch ... run`.
+  const kept = dropPatterns(rerunArgs(argv));
+  const args2 = cmd === 'vitest'
+    ? [...process.execArgv, BIN, cmd, 'run', ...(['run', 'watch', 'dev'].includes(kept[0]) ? kept.slice(1) : kept),
+      '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs]
+    : [...process.execArgv, BIN, cmd, ...kept, '--det-workers=1', `--det-trace=${t2path}`, ...fileArgs];
   const p2 = spawnSync(process.execPath, args2, { cwd: root, env: childEnv, stdio: 'inherit' });
   if (p2.signal) { fs.rmSync(work, { recursive: true, force: true }); return { signal: p2.signal }; }
   const status2 = p2.status ?? 1;
@@ -146,7 +164,12 @@ async function main(cmd, argv) {
   let records;
   if (complete) {
     const byFile = new Map();
+    // one record per nodeid: the first the re-run wrote. A runner that ran a file twice (see dropPatterns above)
+    // must not put two records of one test in the merged trace, whatever the argument handling did.
+    const seen = new Set();
     for (const r of t2.tests) {
+      if (seen.has(r.nodeid)) continue;
+      seen.add(r.nodeid);
       const f = fileOf(r.nodeid);
       if (!byFile.has(f)) byFile.set(f, []);
       byFile.get(f).push(r);
