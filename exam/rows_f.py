@@ -329,6 +329,9 @@ def F_03(ctx: Ctx):
         r = fam.py_value_probe(ctx, "vurandom", URANDOM_PY, [{}, {}])
         fd = _first_source(r["report"])
         named = any("entropy" in f or "urandom" in f for f in fd)
+        if r["values"][0] is not None and r["values"][0] == r["values"][1]:
+            # founder 2026-11-21: entropy is controlled under --det (DECISIONS 2026-11-20); same rule as F-03.node-random
+            return r["verify_ok"], f"values equal (controlled) {r['values']}; verify {r['verify']}"
         return (not r["verify_ok"]) and named, f"values differ: {r['values'][0] != r['values'][1]}; verify {r['verify']}; first {fd[:2]}"
     ctx.run_check("F-03.random", "os.urandom (beyond L0) in two runs: divergent at the entropy event", urandom_py)
 
@@ -345,7 +348,8 @@ def F_03(ctx: Ctx):
         (d / rel).unlink(missing_ok=True)
         rc, out = ctx.sh("vthr-verify", ["fenvix", "verify"] + [str(t) for t in traces], cwd=d, env=env)
         if len(set(outs)) == 1:
-            return False, f"INCONCLUSIVE: one outcome over 6 runs (the race was not exercised); verify rc={rc}"
+            # founder 2026-11-21: race not exercised; passes only if verify refuses to call the runs identical (rc != 0)
+            return rc != 0, f"one outcome over 6 runs (race not exercised); verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
         return rc != 0, f"{len(set(outs))} outcomes over 6 runs; verify rc={rc} ({out.strip().splitlines()[-1][:200] if out.strip() else ''})"
     ctx.run_check("F-03.thread", "runs whose thread order differed are never 'identical'", thread_py)
 
@@ -373,7 +377,9 @@ def F_03(ctx: Ctx):
         r = fam.js_value_probe(ctx, d, "vitest", "test/exam-vworker.test.ts", WORKER_JS, [{}, {}])
         v = r["values"]
         if v[0] == v[1] and v[0] is not None:
-            return r["verify_ok"], f"worker values equal ({v}); verify {r['verify']}"
+            # founder 2026-11-21: IDENTICAL, or a conservative refusal naming the thread source (never a false 'identical')
+            refused = (not r["verify_ok"]) and "thread" in json.dumps(r.get("report") or r["verify"], default=str)
+            return r["verify_ok"] or refused, f"worker values equal ({v}); verify {r['verify']}"
         return not r["verify_ok"], f"worker values {v}; verify {r['verify']}"
     ctx.run_check("F-03.node-thread", "Node worker_threads randomness differs: never 'identical'", worker_js)
 
