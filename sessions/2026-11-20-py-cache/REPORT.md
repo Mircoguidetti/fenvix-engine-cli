@@ -6,7 +6,9 @@ Branch `claude/py-cache` (from `claude/parallel-proof-3` @ dce6c36e; `claude/rel
 71b12503). PR #5 into `claude/release-1`.
 
 **Why PARTIAL.** The coordinator's condition for F-05 (DECISIONS 2026-11-20) is 0 wrong reuses AND cached runs
-faster than uncached on moto, pydantic-ai, litellm and esphome. Wrong reuses: 0 in every measured run. Speed: green on
+faster than uncached on moto, pydantic-ai, litellm and esphome. Wrong reuses: 0 in every measured run. Tests that
+ran under the cache with another outcome than uncached: litellm 2,073 per commit in run g (a child-protocol bug, fixed
+and MEASURED equal locally since, section 1) and moto 8 per commit (open, section 2.9). Speed: green on
 unchanged reruns and on moto's serial walk, red on moto's `-n 4` walk (MEASURED, CI run 44825894259, 10 commits):
 
 | moto 96f50b1a walk, 10 commits | cached | uncached |
@@ -103,6 +105,35 @@ What the per-file mode guarantees (coordinator's conditions):
   fails records nothing (failures are never recorded), and wherever its outcome differed from the uncached run it had
   run, not been reused (MEASURED, local walks 4.4). Thread scheduling itself belongs to PY-07.
 
+### Exam round (frozen exam `claude/exam` 36397ec8, run 44851972153 on 85583d63) and after
+
+Fixed with a regression test copied from each probe (each fails without its fix):
+* **F-05.wrong-reuse.pythonpath**: a module outside the root imported from a file's child is an input
+  (`iso_record` collects the outside modules before the capture stops; G-0164 in children).
+  `test_g0164_module_outside_the_root_in_a_files_child_is_an_input`.
+* **F-05.probe.import-side-effect**: the import-time code of every collected test module runs before every test; its
+  digest (`import-effects.json`) is checked with the prefix and a change reruns the hit
+  (`code: import-time code of the collected test modules changed`).
+  `test_import_time_code_of_another_test_module_is_an_input`.
+* **PY-05.odpair, PY-05.probe.isolate**: `--det-isolate` alone isolates per file (the scope default is `file`);
+  under -n without `--dist` a file's tests stay together in the serial order (`loadfile`, said in the header).
+  `test_order_dependent_pair_has_the_serial_verdict`.
+* **F-05.probe.audit-rerun**: `--det-cache-audit FRACTION` (alias of `--det-cache-verify`) is listed in
+  `fenvix python --help`. `test_g0204_cache_audit_option_is_listed_and_reruns_reusable_tests`.
+* **litellm, parallel-proof run g** (after the exam): every test after the first of a file's child errored (2,073
+  failed against 1 uncached): pytest-retry creates a test's entry in its `pytest_runtest_protocol` wrapper, which the
+  child skipped. The child now runs each test inside the other plugins' protocol wrappers (pytest-timeout,
+  pytest-retry, pytest's own), detpy's left out. MEASURED locally after the fix, litellm 17e6ea8c
+  `tests/unit/llms/vertex_ai`, -n 4: cached cold and warm 9 failed / 4,171 passed, uncached the same 9 failed / 4,171
+  passed. `test_other_plugins_runtest_protocol_wrappers_run_in_the_childs`.
+* Trunk 74d42b3 merged (PY-05.det2's `config` divergence: two -n 2 runs digested a cold rewrite cache differently;
+  `test_harness_parallel_proof` passes after the merge).
+
+Not mine per coordinator: F-05.edit-src-flip.click, F-05.wrong-reuse.hostname and the probes the exam marks NOT
+IMPLEMENTED (blockbuster, custom-reporter). PY-05.probe.testrun-uid: the two values are equal; verify reports an
+`env` divergence because the probe hands each run a different `EXAM_OUT` path that the test reads (a true input
+difference, as `fenvix verify` names it: `env:EXAM_OUT`). Reported to the coordinator as a probe issue.
+
 ## 2. What is not true
 
 1. **Placement findings need an in-process result in the store.** A plain `--det` run without the cache records
@@ -121,6 +152,22 @@ What the per-file mode guarantees (coordinator's conditions):
 6. **macOS** (Apple Silicon is in the go-live scope) is not exercised: the `other-os (macos-14)` job of the release-1
    workflow is cancelled within a second on every run of this repository, trunk included (it has
    `continue-on-error`); Linux x86_64 and arm64 run.
+
+7. **Zope layer set-up contexts (known reuse limit, coordinator 2026-11-21).** A layer's set-up is a carried context
+   that runs only with tests, so under serial E7 a test of the layer needs every earlier test: when one of them runs,
+   the earlier ones run too (`U::test_unit` reruns with the reason `placement: a predecessor of ...LT::test_layer,
+   which runs in this session`). A conservative miss, never a wrong reuse.
+8. **litellm reuses nothing**: its `tests/unit/conftest.py` calls pytest-socket's `socket_allow_hosts(["localhost",
+   ...])` in `pytest_runtest_setup`, a name resolution in every test, and a resolved name is a network input
+   (release-1's rule, `test_review_r023b::test_2b_*`): 4,126 of 4,181 tests "not cacheable: network connection",
+   MEASURED locally. Cached runs pay the per-file cost for nothing there: 220-240 s against 48 s at -n 4.
+9. **moto, run g: 8 outcomes changed in tests that ran (not reused).** The 8 `ResourceWarning` checks of
+   `tests/test_s3/test_s3_file_handles.py` (`gc.collect()`, then assert no ResourceWarning) failed cached and passed
+   uncached on every commit, -n 4 and serial (MEASURED, run g, engine b8444007, Python 3.12). Not reproduced on this
+   head locally (moto 38a79b903, Python 3.13, cached: `tests/test_s3/` alone, and the file with the walk's whole
+   collection: 24 / 24 passed, with and without the child-protocol fix). Likely cause, not proven: the file's child
+   inherits the parent's uncollected garbage at the fork, and its finalizers warn inside these tests. UNKNOWN until
+   the next CI walk on this head; it is not a wrong reuse, and it is not reported as a placement finding.
 
 ## 3. Audit gaps of these rows (audit 2026-11-20), one line each
 
@@ -171,7 +218,23 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ### 4.1 Gates
 
-__GATES__
+**Frozen exam** (`claude/exam` 36397ec8 `exam/PLAN.md`; MEASURED, exam run 44851972153 on 85583d63, legs py3.12
+and py3.14; the same result on both legs):
+
+| row | checks passed | failed |
+|---|---|---|
+| PY-08 | 6 / 6 | PASS |
+| PY-05 | 4 / 8 | det2, odpair, probe.isolate, probe.testrun-uid |
+| F-05 | 20 / 28 | edit-src-flip.click (x2), wrong-reuse.hostname, wrong-reuse.pythonpath, probe.audit-rerun, probe.blockbuster, probe.custom-reporter, probe.import-side-effect |
+
+Fixed since (section 1, exam round; each with a regression test, MEASURED locally): pythonpath, import-side-effect,
+odpair, probe.isolate, audit-rerun, det2 (trunk merge). Expected on the rerun: PY-05 7/8 (testrun-uid: probe issue),
+F-05 24/28 (click flip, hostname: not mine; blockbuster, custom-reporter: NOT IMPLEMENTED in this exam version).
+UNKNOWN until the coordinator reruns the exam on the pushed head.
+
+**Local suites** at the pushed head: `gates/local-suites-final.txt` (section 9). Every failure of the full parallel
+runs passes alone, except the 3.14 interpreter's known four (`os.getrandom` absent, `mock_open` TypeError), which
+fail the same with the trunk engine in that interpreter.
 
 ### 4.2 Memory, synthetic suite (MEASURED, this container, 4 CPUs)
 
@@ -204,9 +267,22 @@ E7), per-file recording. Cold: ~1.7 ms of recording per test plus a fork per fil
 
 Serial subset (30 files, 2,375 tests): no cache 13.7 s; per-file cold 25.9 s, warm 9.5 s.
 
-### 4.4 Reuse and time on real repositories (CI run __WALK_RUN__)
+### 4.4 Reuse and time on real repositories (CI run 44825894259, run g, engine b8444007)
 
-__REUSE_TABLE__
+| repository, walk | mode | cached | uncached | reused | wrong reuses |
+|---|---|---|---|---|---|
+| moto 96f50b1a, 10 commits | -n 4 | 755 s | 648 s | 8,561 of 24,924 | 0 (0 mismatches); 8 ran tests changed, 2.9 |
+| moto, same | serial | 1,577 s | 1,702 s | 8,561 of 24,924 | 0; the same 8 changed |
+| moto, unchanged rerun (commit 0) | -n 4 | 24.8 s | 67.3 s | (in the walk's unchanged step) | 0 |
+| litellm 17e6ea8c `tests/unit/llms/vertex_ai`, 10 commits | -n 4 | 458-970 s per commit | 62-77 s | 0 | 0, but 2,073 outcomes changed per commit (fixed after the run, section 1) |
+| litellm, same | serial | 841-882 s per commit | 92-102 s | 0 | 0, the same 2,073 changed |
+| litellm, local after the fix (MEASURED, this container) | -n 4 | 240 s cold, 220 s warm | 48 s | 0 (section 2.8) | 0; outcomes equal |
+| pydantic-ai 62e7b66c | -n 4, serial | UNKNOWN: job still running | | | |
+| esphome 141789d2 | -n 4 | UNKNOWN: the job's walk ended after 6 min with no results committed | | | |
+
+All of run g is MEASURED (from `tracks/parallel-proof/results/py-cache-2026-11-20g/`). moto's reuse counts per commit
+are in its `walk.json`; the walk ran before the exam-round and litellm fixes. esphome's numbers on this engine family
+are the local ones in 4.3.
 
 Local (MEASURED, this container), moto 96f50b1a `tests/test_sqs tests/test_batch` (292 tests), -n 4: no cache
 13.9 s; per file: cold 18.0 s, then 11.6 s with 264 reused (90%); in-process: 15.0 s, 20.1 s (32 reused), then 12.6 s
