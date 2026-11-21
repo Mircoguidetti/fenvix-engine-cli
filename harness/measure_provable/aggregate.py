@@ -8,9 +8,15 @@ import json
 from pathlib import Path
 
 BUCKETS = ["PROVABLE", "NOT PROVEN, coverable", "NOT PROVEN, by nature"]
+# a run that did not execute exactly one test, or whose sensors failed, is not classified
+EXCLUDE_STATUS = {"error", "no-strace", "no-test-ran", "several-tests-ran", "no-engine-record"}
 VIEWS = [("bucket_E", "causes_E", "Rule E, whole run (primary)"),
          ("bucket_testphase_E", "causes_testphase_E", "Rule E, test phase only"),
          ("bucket_S", "causes_S", "Rule S, whole run (sensitivity)")]
+
+
+def excluded(r: dict) -> bool:
+    return r.get("bucket") == "EXCLUDED" or r.get("status") in EXCLUDE_STATUS
 
 
 def pct(n: int, d: int) -> str:
@@ -20,7 +26,7 @@ def pct(n: int, d: int) -> str:
 def table(recs: list, bkey: str) -> dict:
     by = collections.defaultdict(collections.Counter)
     for r in recs:
-        if r.get("bucket") == "EXCLUDED":
+        if excluded(r):
             continue
         by[r["project"]][r[bkey]] += 1
         by["ALL"][r[bkey]] += 1
@@ -31,7 +37,7 @@ def causes(recs: list, ckey: str, bkey: str, project: str | None = None) -> list
     c = collections.Counter()
     n = 0
     for r in recs:
-        if r.get("bucket") == "EXCLUDED" or (project and r["project"] != project):
+        if excluded(r) or (project and r["project"] != project):
             continue
         n += 1
         if r[bkey] == "PROVABLE":
@@ -56,7 +62,8 @@ def main() -> int:
             print(f"(missing {f})")
             continue
         recs += [json.loads(ln) for ln in f.open() if ln.strip()]
-    print(f"records: {len(recs)}  excluded: {sum(1 for r in recs if r.get('bucket') == 'EXCLUDED')}")
+    print(f"records: {len(recs)}  excluded (not exactly one test, or sensor failed): "
+          f"{sum(1 for r in recs if excluded(r))}")
     print(f"status: {dict(collections.Counter(r.get('status') for r in recs))}")
     print(f"engine outcome: {dict(collections.Counter(r.get('engine_outcome') for r in recs))}")
 
@@ -95,20 +102,20 @@ def main() -> int:
     print("\n=== what recording one more channel would buy (test-phase view) ===")
     fams = collections.Counter()
     for r in recs:
-        if r.get("bucket") == "EXCLUDED":
+        if excluded(r):
             continue
         for c in set(r["causes_testphase_E"]):
             fams[c] += 1
-    base = sum(1 for r in recs if r.get("bucket") != "EXCLUDED"
+    base = sum(1 for r in recs if not excluded(r)
                and r["bucket_testphase_E"] == "PROVABLE")
-    tot = sum(1 for r in recs if r.get("bucket") != "EXCLUDED")
+    tot = sum(1 for r in recs if not excluded(r))
     print(f"  baseline PROVABLE (test phase): {base}/{tot} = {pct(base, tot)}")
     cum: list = []
     covered: set = set()
     order = [c for c, _ in fams.most_common()]
     for c in order:
         covered.add(c)
-        now = sum(1 for r in recs if r.get("bucket") != "EXCLUDED"
+        now = sum(1 for r in recs if not excluded(r)
                   and not (set(r["causes_testphase_E"]) - covered))
         cum.append((c, now, pct(now, tot)))
         print(f"  + {c[:62]:62s} -> {now:5d} {pct(now, tot):>7s}")
@@ -121,7 +128,7 @@ def main() -> int:
           f"{'by nature, not marked':>22s} {'coverable':>10s}")
     xtab = {}
     for proj in [*a.projects, "ALL"]:
-        rs = [r for r in recs if r.get("bucket") != "EXCLUDED"
+        rs = [r for r in recs if not excluded(r)
               and (proj == "ALL" or r["project"] == proj)]
         if not rs:
             continue

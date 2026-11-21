@@ -222,7 +222,8 @@ def _scan1(path: Path):
 
 
 def parse_strace(path: Path, paths: Paths, spawns_before_test: bool = True,
-                 infra_collection: frozenset = frozenset()) -> dict:
+                 infra_collection: frozenset = frozenset(),
+                 infra_outside_test: bool = False) -> dict:
     """-> {'phases': {phase: {channel: count}}, 'opened': {phase: set(path)}, ...}
 
     Phases: `collection` (the real session's imports, collection and fixture setup),
@@ -239,11 +240,13 @@ def parse_strace(path: Path, paths: Paths, spawns_before_test: bool = True,
     suppressed: dict = {}
 
     def bump(ch: str) -> None:
-        # `infra_collection`: channels the runtime and the runner open in every run whatever
-        # test is selected, measured by a baseline run in which no test runs at all. Before the
-        # test body they are runner infrastructure, not something the test observed. File
-        # channels are never suppressed this way.
-        if phase == "collection" and ch in infra_collection and not ch.startswith("fs."):
+        # Channels the runtime and the runner open in every run whatever test is selected,
+        # measured by a baseline run in which no test runs at all. Outside the test body they
+        # are runner infrastructure, not something the test observed: for Node the worker
+        # talks to the Vite server over a socket before the test and reports the result over
+        # it afterwards. File channels are never suppressed this way.
+        if not ch.startswith("fs.") and phase != "test" and (
+                (infra_outside_test) or (phase == "collection" and ch in infra_collection)):
             suppressed[ch] = suppressed.get(ch, 0) + 1
             return
         out[phase][ch] = out[phase].get(ch, 0) + 1

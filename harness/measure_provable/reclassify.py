@@ -65,7 +65,8 @@ def main() -> int:
                 tmp = Path(tf.name)
             try:
                 parsed = C.parse_strace(tmp, paths, spawns_before_test=not node,
-                                        infra_collection=infra if node else frozenset())
+                                        infra_collection=infra if node else frozenset(),
+                                        infra_outside_test=node)
             finally:
                 tmp.unlink(missing_ok=True)
             nodeid = (d / "nodeid.txt").read_text().strip()

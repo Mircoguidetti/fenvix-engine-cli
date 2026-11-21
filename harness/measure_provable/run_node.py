@@ -78,7 +78,8 @@ def run_one(nodeid: str, cfg: dict, idx: int) -> dict:
         return rec
     paths = C.Paths(cfg["paths_cfg"])
     parsed = C.parse_strace(strace_out, paths, spawns_before_test=False,
-                            infra_collection=cfg['infra'])
+                            infra_collection=cfg['infra'],
+                            infra_outside_test=True)
     engine = load_engine_ran(trace_out, nodeid)
     allch: dict = {}
     for ph in ("collection", "test", "after"):
