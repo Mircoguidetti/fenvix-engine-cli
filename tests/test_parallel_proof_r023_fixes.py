@@ -152,7 +152,8 @@ def test_plan_worker_replay_records_parallel_entries(pytester, no_outer_xdist):
 # -- F3: the previous plan of another --dist is not used ---------------------------------------------------------------
 def test_previous_plan_of_another_dist_is_ignored(pytester, no_outer_xdist):
     write(pytester, **{"tests/test_x.py": "def test_1(): pass\n", "tests/test_y.py": "def test_2(): pass\n"})
-    fresh_run(pytester, 2, "tests").assert_outcomes(passed=2)
+    # --dist load named: with no --dist asked the plan keeps a file's tests together (loadfile) since the exam round
+    fresh_run(pytester, 2, "--dist", "load", "tests").assert_outcomes(passed=2)
     fresh_run(pytester, 2, "--dist", "loadfile", "tests").assert_outcomes(passed=2)
     assert plan_of(pytester)["previous_ignored"] == "another --dist"
     fresh_run(pytester, 2, "--dist", "loadfile", "tests").assert_outcomes(passed=2)

@@ -152,8 +152,8 @@ class ProofCachePlugin(ProofSession):
         self.open(str(config.rootpath), *config_identity(config))
         # audit G-0169: the configuration of the same session without --det-isolate, under which the serial results
         # of these tests are stored (_expect_serial compares an isolated outcome with them)
-        # (the in-process session: --det-cache-in-process, without isolation)
-        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False, "det_isolate_scope": "test",
+        # (the in-process session: --det-cache-in-process, without isolation; --det-isolate-scope at its default)
+        self.serial_config_digest = (config_identity(config, as_if={"det_isolate": False, "det_isolate_scope": "file",
                                                                     "det_cache_in_process": True})[0]
                                      if config.getoption("det_isolate", False) else None)
         # audit G-0159: the nightly real-clock check compares with the results recorded on the virtual day
