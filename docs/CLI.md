@@ -77,7 +77,8 @@ temp and workspace paths, per-step files, CI tokens and session variables (`RUNN
 `FENVIX_VOLATILE_ENV=NAME,PREFIX*` (a per-run output path, say).
 
 Exit codes: 0 every test identical; 3 the only differences are environment variables tests read (input differs);
-1 a test diverged or is missing, or no test ran; 2 a trace is missing or unreadable.
+1 a test diverged or is missing, no test ran, or the traces do not record their run inputs; 2 a trace is missing or
+unreadable.
 
 ```
 fenvix verify: 2 runs, 5 tests
@@ -89,8 +90,8 @@ NOT-COVERED tests/test_x.py::test_env  [env] outcomes=passed,failed
 ```
 
 `--ignore-env NAME` (or `PREFIX*`) leaves out a variable you declare irrelevant; the report lists it. Traces without
-`inputs` (older engines, shells that do not record them yet) are reported as `run inputs: NOT RECORDED`.
-Exit: 0 every test identical, 1 otherwise, 2 unreadable or missing trace.
+`inputs` (older engines, shells that do not record them yet) are reported as `run inputs: NOT RECORDED` and are never
+identical: same events give `verdict: NOT PROVEN` (exit 1), since the runs cannot be shown to have had the same inputs.
 
 ## Flaky test to reproducible defect
 
@@ -123,7 +124,9 @@ fingerprint.
 
 Causes: `test order` (polluters, or state setters), `seed` (fails alone under one seed, passes under another), or the
 first divergent event against a passing run. A failure that does not replay N/N with one fingerprint is reported
-`NOT REPRODUCIBLE under fenvix`, with the uncontrolled source when the test used one.
+`NOT REPRODUCIBLE under fenvix`, with the uncontrolled source when the test used one, and its cause is `not
+established`: the tests and seed it was found with are not named as its cause, since the configuration does not fail
+every time.
 
 Options: `--seeds N`, `--seed fixed|N` (skip the search), `--confirm N`, `--max-runs N`, `--timeout S`, `--out DIR`,
 `--runner NAME`, `--python PATH`, `--json`; runner arguments after `--`.
@@ -140,8 +143,10 @@ does not exist): no test ran under any seed, so nothing was explored, and the ru
 
 ### `fenvix replay BUNDLE`
 
-Replays the bundle `--runs` times (default 10). Exit 0 when it failed every time with one fingerprint. The bundle's
-`runner` field picks the adapter.
+Replays the bundle `--runs` times (default 10). Exit 0 when it failed every time with one fingerprint, 1 when it did
+not (fixed, or something the bundle does not hold changed). Run it from the project root, the directory `fenvix repro`
+ran in (the bundle records it as `project`): from elsewhere, or when the test is no longer collected, it exits 2 and
+says the test did not run, never that the defect is fixed. The bundle's `runner` field picks the adapter.
 
 ## Runner adapters (how Vitest, Jest and Playwright plug in)
 

@@ -941,6 +941,13 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
     }
     let verdict = if s.tests == 0 {
         "NOTHING VERIFIED: no test ran in these runs".to_string()
+    } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 && !s.inputs_recorded {
+        // reviewer #8 (G-0041, G-0054): same events but no recorded inputs is not "the same inputs"
+        format!(
+            "NOT PROVEN: all {} tests observed the same events, but the traces do not record the run inputs, so \
+             the runs cannot be shown to have had the same inputs",
+            s.tests
+        )
     } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 {
         format!("IDENTICAL: all {} tests ran with the same inputs and observed the same events", s.tests)
     } else if s.diverged == 0 && s.missing == 0 {
@@ -1320,7 +1327,9 @@ mod tests {
         assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Config);
         let r = verify(&[trace(vec![rec("x", &[], "passed", 10)]), trace(vec![rec("x", &[], "passed", 10)])], &[]);
         assert!(!r.summary.inputs_recorded);
-        assert!(render_text(&r, false).contains("run inputs: NOT RECORDED"));
+        let text = render_text(&r, false);
+        assert!(text.contains("run inputs: NOT RECORDED"));
+        assert!(text.contains("verdict: NOT PROVEN") && !text.contains("IDENTICAL"), "{text}");
     }
 
     #[test]

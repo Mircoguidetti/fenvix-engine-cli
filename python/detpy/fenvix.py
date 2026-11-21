@@ -291,10 +291,20 @@ def _uncontrolled_of(bundle_dir: Path, test: str) -> list:
 
 
 def cause_of(b: dict) -> str:
-    """One sentence: why the test fails (from the bundle)."""
+    """One sentence: why the test fails (from the bundle). A cause is claimed only for a reproduced bundle: the
+    polluters, setters or seed found while searching are a cause only when the failure then replays every time
+    (reviewer #5: a failure decided outside the process was blamed on the test that happened to run before it)."""
     kind = b.get("kind")
     cfg = b.get("config")
     where = "the fixed order" if cfg == "fixed" else f"--det-seed={cfg}"
+    if b.get("status") != "reproduced":
+        rp = b.get("replay") or {}
+        tried = b.get("polluters") or b.get("setters") or []
+        return (f"not established: the configuration it failed under does not fail every time "
+                f"({rp.get('fails', '?')}/{rp.get('runs', '?')} replays), so neither the test order nor the seed "
+                f"explains it: the outcome depends on something fenvix does not control (state outside the process, "
+                f"another source)" + (f"; the tests it ran with ({', '.join(tried)}) are not shown to be the cause"
+                                       if tried else ""))
     if kind == "order" and b.get("polluters"):
         return (f"test order: it fails when run after {', '.join(b['polluters'])} "
                 f"(state left behind by {'that test' if len(b['polluters']) == 1 else 'those tests'})")
@@ -393,6 +403,11 @@ def _slug(test: str) -> str:
 
 
 def render_replay(res: dict, bundle: Path) -> str:
+    if res.get("status") == "not-collected":
+        err = res.get("suite_error") or ""
+        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: the test was not collected, so the replay "
+                          f"says nothing about the defect ({err.splitlines()[0] if err else 'no output'})"]
+                         + ["    " + ln for ln in err.splitlines()[1:]])
     ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint")
     head = "REPRODUCED" if ok else "NOT REPRODUCED"
     lines = [f"{PROG} replay: {res.get('test')}: {head}: failed {res.get('fails')}/{res.get('runs')} runs, "
@@ -549,6 +564,15 @@ def cmd_explore(argv: list) -> int:
         for ln in err.splitlines()[1:]:
             print("    " + ln, file=sys.stderr)
         return 2
+    if s.get("collection_errors"):
+        # R-050 V10: plain pytest cannot run this suite (it stops at collection): the exploration above covers the
+        # tests that collected, and the suite is not reported clean
+        err = s["collection_errors"]
+        print(f"{PROG} explore: the suite does not collect cleanly ({err.splitlines()[0]}): only the "
+              f"{s.get('collected', 0)} test(s) that collected were explored. The runner said:", file=sys.stderr)
+        for ln in err.splitlines()[1:]:
+            print("    " + ln, file=sys.stderr)
+        return 2
     return 0
 
 
@@ -580,8 +604,14 @@ def cmd_replay(argv: list) -> int:
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
-    res = a.replay(bundle, ns.runs, ns.python)
+    try:
+        res = a.replay(bundle, ns.runs, ns.python)
+    except (ValueError, RuntimeError, OSError) as e:  # not the project root, a suite that cannot be collected
+        print(f"{PROG} replay: {e}", file=sys.stderr)
+        return 2
     print(json.dumps(res, indent=2) if ns.json else render_replay(res, bundle))
+    if res.get("status") == "not-collected":
+        return 2
     return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
 
 
@@ -620,9 +650,12 @@ def cmd_verify(argv: list) -> int:
 
 
 def verify_exit_code(s: dict) -> int:
-    """0: every test identical. 1: a test diverged or is missing, or no test ran. 3: the only differences are
+    """0: every test identical. 1: a test diverged or is missing, no test ran, or a trace does not record its run
+    inputs (not proven). 3: the only differences are
     environment variables tests read (input differs, design A). 2: unreadable or incompatible traces."""
     if s["tests"] == 0 or s["diverged"] or s["missing"]:
+        return 1
+    if not s.get("inputs_recorded", True):  # same events, inputs unknown: not proven identical (reviewer #8)
         return 1
     return 3 if s.get("input_differs") else 0
 
