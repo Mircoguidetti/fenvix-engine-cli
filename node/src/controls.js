@@ -62,8 +62,22 @@ function installProcess() {
   }
   // worker threads, child processes and vm contexts started by tests (src/children.js)
   require('./children').installProcess(PATCHER, (g) => installRealm(g, { sameRealm: false, vm: true }));
+  // The general rule's wide sensor, last of the controls: it wraps every builtin export the engine's accounting
+  // table cannot account for, so it must see the engine's own patches already in place (those answer
+  // "accounted" and are left alone). A run that cannot start it declares no sensor in the trace header, and then
+  // every test of the run is NOT PROVEN, never IDENTICAL -- crates/detpy-core/src/provable.rs.
+  try {
+    if (!require('./provable').install(PATCHER, noteNotProven, projectSite)) {
+      STATE.__provableReason = require('./provable').reason;
+      try { require('./provable').declare(); } catch { /* the run directory is gone */ }
+    }
+  } catch (e) {
+    STATE.__provableReason = `the sensor could not be installed: ${e && e.message}`;
+    try { require('./provable').declare(); } catch { /* the run directory is gone */ }
+  }
   // ESM named imports of builtins (`import { readdirSync } from 'node:fs'`)
-  // are separate bindings: bring them in line with the patched objects.
+  // are separate bindings: bring them in line with the patched objects. After the sensor, so that an import of an
+  // unaccounted export gets the marking wrapper too.
   require('node:module').syncBuiltinESMExports();
   STATE.installed.push(`process:${process.pid}`);
   return true;
@@ -333,5 +347,5 @@ function writeJson(file, obj) {
 
 module.exports = {
   cfg, installProcess, installRealm, openFile, closeFile, partName, uniqueIds, shuffleTree, writeJson,
-  installMainEnvRecord, PATCHER, STATE,
+  installMainEnvRecord, projectSite, PATCHER, STATE,
 };

@@ -316,6 +316,26 @@ function envReadOutside(dir) {
 }
 
 /** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
+/**
+ * `meta.provable` for the run, assembled from what every process declared (`prov/<pid>.txt`).
+ *
+ * The run declares a sensor only when every part declared the same one. A part that could not start a sensor, or
+ * a part that wrote nothing, makes the run declare none -- and then the verifier reports every test NOT PROVEN,
+ * which is the honest answer: that part's tests were not watched. Node runs tests in worker processes and merges
+ * their traces here, so a worker's sensor is not otherwise visible where the header is built.
+ */
+function provableField(dir) {
+  const lines = [...runLines(dir, 'prov')];
+  if (!lines.length) return {};
+  const absent = lines.find((l) => l.startsWith('absent '));
+  if (absent) return { provable_absent: absent.slice('absent '.length) };
+  const decls = new Set(lines.filter((l) => l.startsWith('ok ')).map((l) => l.slice('ok '.length)));
+  if (decls.size !== 1) {
+    return { provable_absent: `the run's processes declared ${decls.size} different sensors` };
+  }
+  try { return { provable: JSON.parse([...decls][0]) }; } catch { return {}; }
+}
+
 function runLines(dir, sub) {
   const out = new Set();
   const d = path.join(dir, sub);
@@ -372,6 +392,10 @@ function finish(run, opts, files, meta) {
     // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
     files_read_outside_tests: filesReadOutside(run.dir),
     not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
+    // The general rule (crates/detpy-core/src/provable.rs): what this run watched. The verifier reports a test
+    // IDENTICAL only when the run declared a sensor it knows, so leaving this out is not a cosmetic omission --
+    // it is the run saying "I cannot show anything identical", which is what a run without a sensor must say.
+    ...provableField(run.dir),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,

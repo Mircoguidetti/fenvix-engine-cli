@@ -16,6 +16,7 @@
 #            and, on a pull request, the publication dry run (release/engine/publish.sh --dry-run).
 # python     every Python suite (tests/, reviewer files), one job per version; test_review_results.py informational.
 # node       every detjs suite (node/test, reviewer files), one job per version.
+# attacks    every attack on the verifier through the one entry point (tests/attacks.py), Python x Node.
 # smoke      one small real repository per language (Python, Node) under --det (x2, traces verified) and skip with
 #            proof (x2), installed as the runner image does.
 # install    FULL only: the engine artifact alone in clean containers (glibc 2.28 / CPython 3.12 / pytest 8.1 / Node 22,
@@ -153,6 +154,43 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: {name: "python-${{ matrix.python }}-s${{ matrix.shard }}", path: "py-${{ matrix.python }}*"}
+
+  # Every attack on the verifier, through the one entry point (tests/attacks.py), so no change can be made
+  # without running all of them. The registry is checked for completeness by tests/test_attack_suite.py, which
+  # fails if an attack file exists in the tree that the entry point does not name.
+  attacks:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
+        node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
+    name: attacks (py ${{ matrix.python }}, node ${{ matrix.node }})
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - uses: actions/setup-node@v4
+        with: {node-version: "${{ matrix.node }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: engine-linux-x64, path: dist}
+      - name: install the engine (wheel, its extension in python/detpy, the napi addon)
+        run: |
+          pip install pytest pytest-xdist && pip install --no-deps dist/fenvix-*.whl
+          cp "$(python -c 'import detpy._core as c; print(c.__file__)')" python/detpy/
+          cp dist/detjs.linux-x64.node node/
+          (cd node && npm ci --no-audit --no-fund)
+      - name: every attack, Python and Node
+        run: |
+          python3 tests/attacks.py 2>&1 | tee attacks-py${{ matrix.python }}-node${{ matrix.node }}.log
+          exit ${PIPESTATUS[0]}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: attacks-py${{ matrix.python }}-node${{ matrix.node }}
+          path: attacks-*.log
 
   node:
     needs: build

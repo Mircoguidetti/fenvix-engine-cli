@@ -555,26 +555,244 @@ fn ssl_account(name: &str) -> Accounting {
     }
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// The Node half of the same table.
+//
+// The argument is the one above, with JavaScript's boundary in place of Python's: a test can only reach outside
+// state through a builtin module (`node:fs`, `node:os`, ...), a global the engine controls (`Date`, `Math`,
+// `crypto`, `performance`, `process`), or a native addon. Which builtin modules exist, and what they export, is
+// fixed by the `runtime` input (the Node version), so the surface is finite and auditable, and
+// `AUDITED_RUNTIMES` refuses a version nobody checked.
+//
+// The difference from Python is where the per-name wrapping happens: Node's builtin exports are writable, so the
+// shell can replace the ones this table does not account for with a wrapper that marks the test. CPython's C
+// types are immutable, which is why the Python side watches calls instead.
+// ---------------------------------------------------------------------------------------------------------------
+
+/// Builtin modules whose whole surface is a function of its arguments: text, numbers, containers, streams over
+/// data already in the process, serialisation, compression, assertions, events.
+const NODE_PURE_MODULES: &[&str] = &[
+    "assert", "assert/strict", "buffer", "console", "constants", "diagnostics_channel", "events", "path",
+    "path/posix", "path/win32", "punycode", "querystring", "stream", "stream/consumers", "stream/promises",
+    "stream/web", "string_decoder", "url", "util", "util/types", "zlib",
+];
+
+/// Builtin modules that reach outside state: every export must be named below, and anything unnamed makes the
+/// test NOT PROVEN.
+const NODE_ENUMERATED_MODULES: &[&str] = &[
+    "async_hooks", "child_process", "cluster", "crypto", "dgram", "dns", "dns/promises", "fs", "fs/promises",
+    "http", "http2", "https", "inspector", "inspector/promises", "module", "net", "os", "perf_hooks", "process",
+    "readline", "readline/promises", "repl", "sqlite", "test", "timers", "timers/promises", "tls", "trace_events",
+    "tty", "v8", "vm", "wasi", "worker_threads",
+];
+
+/// How a Node builtin module is treated as a whole: `pure`, `enumerated` or `unknown`.
+///
+/// The shell needs this as well as [`account_node`], because the two call for different action. An `unknown`
+/// module is one the table has no rule for at all, so reaching it is itself the gap and the shell marks the test
+/// on load. An `enumerated` module has rules, and the shell wraps only the exports that come back unaccounted --
+/// `child_process` is entirely unaccounted by design (any child process is), but merely loading it is not yet
+/// using it, and the runner loads it for its own reasons.
+pub fn node_module_policy(module: &str) -> &'static str {
+    let m = module.strip_prefix("node:").unwrap_or(module);
+    if NODE_PURE_MODULES.contains(&m) {
+        "pure"
+    } else if NODE_ENUMERATED_MODULES.contains(&m) {
+        "enumerated"
+    } else {
+        "unknown"
+    }
+}
+
+/// Classify one export of one Node builtin module (`os`, `hostname`), the `node:` prefix already removed.
+///
+/// Same contract as [`account`]: anything this table does not list is [`Accounting::Unaccounted`], and the shell
+/// wraps those so that calling one marks the test.
+pub fn account_node(module: &str, export: &str) -> Accounting {
+    let m = module.strip_prefix("node:").unwrap_or(module);
+    if NODE_PURE_MODULES.contains(&m) {
+        return Accounting::Pure;
+    }
+    if !NODE_ENUMERATED_MODULES.contains(&m) {
+        return Accounting::Unaccounted;
+    }
+    match m {
+        "os" => match export {
+            // the engine's `facts.js` records what these answered, and `--det` pins the volatile ones
+            "hostname" | "userInfo" | "homedir" | "tmpdir" | "networkInterfaces" | "availableParallelism"
+            | "totalmem" | "freemem" | "loadavg" | "uptime" | "release" | "version" | "machine" | "type"
+            | "arch" | "endianness" | "platform" | "cpus" | "getPriority" | "setPriority" | "setDefaultAutoSelectFamily"
+            | "getDefaultAutoSelectFamily" => Accounting::Recorded,
+            "EOL" | "constants" | "devNull" => Accounting::Pure,
+            _ => Accounting::Unaccounted,
+        },
+        "fs" | "fs/promises" => match export {
+            // reads and metadata: an `fs.read` / `fs.stat` event with the path and the digest of the bytes
+            "readFile" | "readFileSync" | "read" | "readSync" | "readv" | "readvSync" | "open" | "openSync"
+            | "openAsBlob" | "createReadStream" | "readdir" | "readdirSync" | "opendir" | "opendirSync"
+            | "stat" | "statSync" | "lstat" | "lstatSync" | "fstat" | "fstatSync" | "statfs" | "statfsSync"
+            | "exists" | "existsSync" | "access" | "accessSync" | "realpath" | "realpathSync" | "readlink"
+            | "readlinkSync" | "glob" | "globSync" | "close" | "closeSync" | "fsync" | "fsyncSync"
+            | "fdatasync" | "fdatasyncSync" | "lchmod" | "promises" => Accounting::Recorded,
+            // writes and the rest of the mutations: they carry nothing from outside into the test
+            "writeFile" | "writeFileSync" | "write" | "writeSync" | "writev" | "writevSync" | "appendFile"
+            | "appendFileSync" | "createWriteStream" | "mkdir" | "mkdirSync" | "mkdtemp" | "mkdtempSync"
+            | "rm" | "rmSync" | "rmdir" | "rmdirSync" | "unlink" | "unlinkSync" | "rename" | "renameSync"
+            | "copyFile" | "copyFileSync" | "cp" | "cpSync" | "truncate" | "truncateSync" | "ftruncate"
+            | "ftruncateSync" | "chmod" | "chmodSync" | "fchmod" | "fchmodSync" | "chown" | "chownSync"
+            | "fchown" | "fchownSync" | "lchown" | "lchownSync" | "utimes" | "utimesSync" | "futimes"
+            | "futimesSync" | "lutimes" | "lutimesSync" | "link" | "linkSync" | "symlink" | "symlinkSync"
+            | "constants" | "Dirent" | "Stats" | "Dir" | "ReadStream" | "WriteStream" | "FileReadStream"
+            | "FileWriteStream" | "F_OK" | "R_OK" | "W_OK" | "X_OK" => Accounting::Pure,
+            // the file system as an event source: when a change arrives is not controlled
+            "watch" | "watchFile" | "unwatchFile" => Accounting::Unaccounted,
+            _ => Accounting::Unaccounted,
+        },
+        "net" | "tls" | "http" | "https" | "http2" | "dgram" => match export {
+            // the closed network: a connection is an event and so is its stream
+            "connect" | "createConnection" | "createServer" | "createSecureServer" | "createSecureContext"
+            | "Socket" | "Server" | "TLSSocket" | "Agent" | "request" | "get" | "createSocket" | "ClientRequest"
+            | "ServerResponse" | "IncomingMessage" | "OutgoingMessage" | "globalAgent" | "STATUS_CODES"
+            | "METHODS" | "maxHeaderSize" | "setDefaultAutoSelectFamily" | "getDefaultAutoSelectFamily"
+            | "setDefaultAutoSelectFamilyAttemptTimeout" | "getDefaultAutoSelectFamilyAttemptTimeout"
+            | "validateHeaderName" | "validateHeaderValue" | "connectSync" | "BlockList" | "SocketAddress"
+            | "rootCertificates" | "DEFAULT_CIPHERS" | "DEFAULT_ECDH_CURVE" | "DEFAULT_MAX_VERSION"
+            | "DEFAULT_MIN_VERSION" | "checkServerIdentity" | "constants" | "sessionIdContext" => {
+                Accounting::Recorded
+            }
+            "isIP" | "isIPv4" | "isIPv6" | "getheapsnapshot" => Accounting::Pure,
+            _ => Accounting::Unaccounted,
+        },
+        "dns" | "dns/promises" => match export {
+            "lookup" | "lookupService" | "resolve" | "resolve4" | "resolve6" | "resolveAny" | "resolveCname"
+            | "resolveMx" | "resolveNaptr" | "resolveNs" | "resolvePtr" | "resolveSoa" | "resolveSrv"
+            | "resolveTxt" | "resolveCaa" | "reverse" | "Resolver" | "promises" => Accounting::Recorded,
+            "getServers" | "setServers" | "setDefaultResultOrder" | "getDefaultResultOrder" => Accounting::Input,
+            _ => Accounting::Unaccounted,
+        },
+        "crypto" => match export {
+            // entropy: controlled by `--det`, or observed with an event under `--det-entropy=observe`
+            "randomBytes" | "randomFillSync" | "randomFill" | "randomInt" | "randomUUID" | "getRandomValues"
+            | "pseudoRandomBytes" | "prng" | "rng" => Accounting::Controlled,
+            // key generation draws from the same entropy; the engine marks what it cannot control
+            "generateKey" | "generateKeyPair" | "generateKeySync" | "generateKeyPairSync" | "generatePrime"
+            | "generatePrimeSync" | "webcrypto" | "subtle" => Accounting::Recorded,
+            // everything else is a function of its input: digests, ciphers, signatures, key import and export
+            "createHash" | "createHmac" | "createCipheriv" | "createDecipheriv" | "createSign" | "createVerify"
+            | "createDiffieHellman" | "createDiffieHellmanGroup" | "createECDH" | "createPrivateKey"
+            | "createPublicKey" | "createSecretKey" | "sign" | "verify" | "publicEncrypt" | "publicDecrypt"
+            | "privateEncrypt" | "privateDecrypt" | "diffieHellman" | "hash" | "hkdf" | "hkdfSync" | "pbkdf2"
+            | "pbkdf2Sync" | "scrypt" | "scryptSync" | "timingSafeEqual" | "checkPrime" | "checkPrimeSync"
+            | "getCiphers" | "getCurves" | "getHashes" | "getCipherInfo" | "getFips" | "setFips"
+            | "constants" | "Certificate" | "X509Certificate" | "KeyObject" | "Hash" | "Hmac" | "Cipher"
+            | "Decipher" | "Sign" | "Verify" | "DiffieHellman" | "ECDH" | "secureHeapUsed"
+            | "setEngine" | "fips" => Accounting::Pure,
+            _ => Accounting::Unaccounted,
+        },
+        // a child process or a thread: `uncontrolled.child` / `uncontrolled.thread`, already NOT PROVEN
+        "child_process" | "cluster" => Accounting::Unaccounted,
+        "worker_threads" => match export {
+            "threadId" | "isMainThread" | "isInternalThread" | "resourceLimits" | "SHARE_ENV" => {
+                Accounting::Controlled
+            }
+            _ => Accounting::Unaccounted,
+        },
+        "process" => match export {
+            // the environment: every read is an event, and the value is a run input
+            "env" | "loadEnvFile" => Accounting::Recorded,
+            // real counters, recorded as events (`facts.js`)
+            "cpuUsage" | "memoryUsage" | "resourceUsage" | "constrainedMemory" | "availableMemory"
+            | "getActiveResourcesInfo" => Accounting::Recorded,
+            // pinned or virtual under `--det`
+            "hrtime" | "uptime" | "pid" | "ppid" | "cwd" | "chdir" | "umask" | "getuid" | "geteuid" | "getgid"
+            | "getegid" | "getgroups" | "setuid" | "setgid" | "title" => Accounting::Controlled,
+            // the run's identity, compared as run inputs
+            "argv" | "argv0" | "execPath" | "execArgv" | "version" | "versions" | "platform" | "arch"
+            | "config" | "release" | "features" | "allowedNodeEnvironmentFlags" | "debugPort" => Accounting::Input,
+            // bookkeeping that carries nothing from outside
+            "nextTick" | "on" | "once" | "off" | "emit" | "removeListener" | "removeAllListeners" | "exit"
+            | "exitCode" | "emitWarning" | "stdout" | "stderr" | "hasUncaughtExceptionCaptureCallback"
+            | "setUncaughtExceptionCaptureCallback" | "listeners" | "listenerCount" | "eventNames"
+            | "prependListener" | "prependOnceListener" | "setMaxListeners" | "getMaxListeners"
+            | "addListener" | "kill" | "abort" | "noDeprecation" | "throwDeprecation" | "traceDeprecation"
+            | "finalization" | "permission" => Accounting::Pure,
+            // the runner's own plumbing: the worker channel it talks to its parent over, and the handle lists it
+            // uses to decide when a file is done. The runner's identity is a run input and nothing writes its
+            // environment during a run (Rule E), so these are the declared controlled set, not a test's channel.
+            "_send" | "_getActiveHandles" | "_getActiveRequests" | "_tickCallback" | "channel" | "connected"
+            | "disconnect" | "send" => Accounting::Controlled,
+            // the standard input, a native addon, the internal bindings, a diagnostic report: nothing covers them
+            "stdin" | "dlopen" | "binding" | "_linkedBinding" | "report" | "setSourceMapsEnabled"
+            | "sourceMapsEnabled" | "initgroups" | "setgroups" | "ref" | "unref" | "_debugProcess"
+            | "_debugEnd" | "_rawDebug" | "reallyExit" | "_kill" | "_fatalException"
+            | "_stopProfilerIdleNotifier" | "_startProfilerIdleNotifier" => Accounting::Unaccounted,
+            _ => Accounting::Unaccounted,
+        },
+        "timers" | "timers/promises" => match export {
+            // the virtual clock drives the timers
+            "setTimeout" | "setInterval" | "setImmediate" | "clearTimeout" | "clearInterval" | "clearImmediate"
+            | "scheduler" | "promises" | "active" | "unenroll" | "enroll" => Accounting::Controlled,
+            _ => Accounting::Unaccounted,
+        },
+        "perf_hooks" => match export {
+            "performance" | "now" | "timeOrigin" | "timerify" | "mark" | "measure" | "clearMarks"
+            | "clearMeasures" | "constants" => Accounting::Controlled,
+            // the event loop's own timing and the observer stream: scheduling, which Level 0 does not control
+            "monitorEventLoopDelay" | "PerformanceObserver" | "createHistogram" | "eventLoopUtilization" => {
+                Accounting::Unaccounted
+            }
+            _ => Accounting::Unaccounted,
+        },
+        "module" => match export {
+            // the loader's own internals, which the runner and Node itself call constantly: what they resolve and
+            // load is `inputs.code` and `inputs.deps`, the run inputs the verifier compares
+            "_load" | "_resolveFilename" | "_resolveLookupPaths" | "_findPath" | "_nodeModulePaths" | "_stat"
+            | "_initPaths" | "_preloadModules" | "_extensions" | "_cache" | "_pathCache" | "_debug"
+            | "globalPaths" | "runMain" | "wrapper" => Accounting::Input,
+            // what was loaded is `inputs.code` and `inputs.deps`
+            "builtinModules" | "createRequire" | "isBuiltin" | "syncBuiltinESMExports" | "findSourceMap"
+            | "SourceMap" | "Module" | "register" | "registerHooks" | "wrap" | "getCompileCacheDir"
+            | "enableCompileCache" | "flushCompileCache" | "stripTypeScriptTypes" | "findPackageJSON"
+            | "constants" | "getSourceMapsSupport" | "setSourceMapsSupport" => Accounting::Input,
+            _ => Accounting::Unaccounted,
+        },
+        // the heap, another realm, the debugger, the tracer, a terminal, an interactive loop, a bundled
+        // database, the test runner's own hooks and the async scheduling graph: no event covers any of them
+        _ => Accounting::Unaccounted,
+    }
+}
+
 /// Digest of everything this table claims, so a shell cannot be built against one version of it and judged
 /// against another. The shell writes the value it was built with into the trace header; [`judge`] refuses a trace
 /// whose digest is not this one.
 pub fn surface_digest() -> String {
     let mut buf = Vec::new();
     buf.extend_from_slice(&SENSOR_CONTRACT.to_le_bytes());
-    for part in [AUDITED_RUNTIMES, PURE_MODULES, INFRA_PREFIXES, CONTROLLED_NATIVE] {
+    for part in [AUDITED_RUNTIMES, PURE_MODULES, INFRA_PREFIXES, CONTROLLED_NATIVE, NODE_PURE_MODULES,
+                 NODE_ENUMERATED_MODULES]
+    {
         buf.extend_from_slice(&(part.len() as u64).to_le_bytes());
         for s in part {
             buf.extend_from_slice(s.as_bytes());
             buf.push(0);
         }
     }
-    // the per-name arms, probed through the public entry point so the digest follows any change to them
+    // the per-name arms, probed through the public entry points so the digest follows any change to them
     for (m, q) in PROBE_NAMES {
         buf.extend_from_slice(m.as_bytes());
         buf.push(b'.');
         buf.extend_from_slice(q.as_bytes());
         buf.push(b'=');
         buf.extend_from_slice(account(m, q).as_str().as_bytes());
+        buf.push(0);
+    }
+    for (m, q) in NODE_PROBE_NAMES {
+        buf.extend_from_slice(b"node:");
+        buf.extend_from_slice(m.as_bytes());
+        buf.push(b'.');
+        buf.extend_from_slice(q.as_bytes());
+        buf.push(b'=');
+        buf.extend_from_slice(account_node(m, q).as_str().as_bytes());
         buf.push(0);
     }
     digest_bytes(&buf).short()
@@ -609,6 +827,32 @@ const PROBE_NAMES: &[(&str, &str)] = &[
     ("_ssl", "RAND_bytes"),
     ("pwd", "getpwuid"),
     ("datetime", "now"),
+];
+
+/// The same, for the Node half.
+const NODE_PROBE_NAMES: &[(&str, &str)] = &[
+    ("os", "hostname"),
+    ("os", "EOL"),
+    ("fs", "readFileSync"),
+    ("fs", "writeFileSync"),
+    ("fs", "watch"),
+    ("net", "connect"),
+    ("dns", "lookup"),
+    ("crypto", "randomBytes"),
+    ("crypto", "createHash"),
+    ("child_process", "spawn"),
+    ("worker_threads", "Worker"),
+    ("worker_threads", "threadId"),
+    ("process", "env"),
+    ("process", "dlopen"),
+    ("process", "hrtime"),
+    ("timers", "setTimeout"),
+    ("perf_hooks", "monitorEventLoopDelay"),
+    ("module", "createRequire"),
+    ("path", "join"),
+    ("v8", "serialize"),
+    ("vm", "runInNewContext"),
+    ("inspector", "open"),
 ];
 
 /// What one shell reports about one test, and what the run as a whole declared about its sensor.
@@ -661,9 +905,10 @@ fn not_proven(kind: &str, detail: String) -> Verdict {
 /// The one predicate. A test is provable only when every clause below holds.
 ///
 /// The order of the clauses is the order of the questions: did this run have a sensor the core understands; was it
-/// a runtime the table was audited against; did the sensor see anything it could not place; is there an older
-/// channel mark; did something happen outside the tests. The first clause that fails is the answer, so the report
-/// names the most fundamental gap rather than a symptom of it.
+/// a runtime the table was audited against; is there a channel rule that already names the gap; did the wide
+/// sensor see anything it could not place; did something happen outside the tests. The first clause that fails is
+/// the answer, so the report names the most fundamental gap rather than a symptom of it, and the most specific
+/// name the engine has rather than the generic one.
 pub fn judge(att: &Attestation<'_>) -> Verdict {
     // 1. No sensor, or one built against a different table: the core will not guess what was looked at.
     let Some(sensor) = att.sensor.filter(|s| !s.is_empty()) else {
@@ -704,16 +949,20 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
         }
         None => return not_proven("runtime", "the run named no runtime for the accounting table".into()),
     }
-    // 3. What the sensor saw and could not place. This is the clause that covers channel number 27.
+    // 3. The channel rules that were already there. These come before the wide sensor's own findings on purpose:
+    //    both answers are NOT PROVEN, but "the test started a thread" tells the reader more than
+    //    "it called _thread.start_joinable_thread, which is not accounted for". The specific name wins over the
+    //    generic one whenever the engine has it.
+    if let Some(first) = att.marks.first() {
+        return not_proven(first.split(':').next().unwrap_or(first), format!("uncontrolled source: {first}"));
+    }
+    // 4. What the sensor saw and could not place. This is the clause that covers channel number 27: nothing in
+    //    the engine knows the name, and the verdict is NOT PROVEN all the same.
     if let Some(first) = att.unaccounted.first() {
         let kind = first.split(':').next().unwrap_or("api");
         let rest = att.unaccounted.len() - 1;
         let more = if rest > 0 { format!(" (and {rest} more)") } else { String::new() };
         return not_proven(kind, format!("not accounted for: {first}{more}"));
-    }
-    // 4. The channel rules that were already there.
-    if let Some(first) = att.marks.first() {
-        return not_proven(first.split(':').next().unwrap_or(first), format!("uncontrolled source: {first}"));
     }
     // 5. Something outside any test.
     if let Some(first) = att.outside.first() {
@@ -835,6 +1084,30 @@ mod tests {
     }
 
     #[test]
+    fn a_named_channel_is_reported_before_the_sensors_generic_finding() {
+        // a test that starts a thread also calls _thread.start_joinable_thread, which the table does not account
+        // for. Both answers are NOT PROVEN; the report must say "thread", which tells the reader what happened.
+        let s = surface_digest();
+        let u = vec!["api:_thread.start_joinable_thread".to_string()];
+        let m = vec!["thread".to_string()];
+        match judge(&good(&u, &m, &s)) {
+            Verdict::NotProven { kind, detail } => {
+                assert_eq!(kind, "thread", "{detail}");
+                assert!(detail.contains("thread"), "{detail}");
+            }
+            v => panic!("expected NotProven, got {v:?}"),
+        }
+        // with no mark, the sensor's own finding is the answer: the general rule still bites
+        match judge(&good(&u, &[], &s)) {
+            Verdict::NotProven { kind, detail } => {
+                assert_eq!(kind, "api");
+                assert!(detail.contains("_thread.start_joinable_thread"), "{detail}");
+            }
+            v => panic!("expected NotProven, got {v:?}"),
+        }
+    }
+
+    #[test]
     fn something_outside_any_test_is_not_proven() {
         let s = surface_digest();
         let outside = vec!["env:TMPDIR".to_string()];
@@ -923,6 +1196,50 @@ mod tests {
         for (m, q) in PROBE_NAMES {
             let _ = account(m, q);
         }
+    }
+
+    // ---- the Node half -------------------------------------------------------------------------
+
+    #[test]
+    fn a_node_module_or_export_the_table_does_not_know_is_unaccounted() {
+        // channel 27 on the Node side: a builtin nobody wrote a rule for, and an export nobody listed
+        assert_eq!(account_node("sqlite", "DatabaseSync"), Accounting::Unaccounted);
+        assert_eq!(account_node("inspector", "open"), Accounting::Unaccounted);
+        assert_eq!(account_node("v8", "getHeapStatistics"), Accounting::Unaccounted);
+        assert_eq!(account_node("os", "somethingNodeAddsIn2027"), Accounting::Unaccounted);
+        assert_eq!(account_node("a_module_that_does_not_exist", "x"), Accounting::Unaccounted);
+        assert_eq!(account_node("fs", "watch"), Accounting::Unaccounted);
+        assert_eq!(account_node("process", "dlopen"), Accounting::Unaccounted);
+        assert_eq!(account_node("perf_hooks", "monitorEventLoopDelay"), Accounting::Unaccounted);
+    }
+
+    #[test]
+    fn the_node_channels_the_engine_does_account_for() {
+        assert_eq!(account_node("os", "hostname"), Accounting::Recorded);
+        assert_eq!(account_node("fs", "readFileSync"), Accounting::Recorded);
+        assert_eq!(account_node("fs", "writeFileSync"), Accounting::Pure);
+        assert_eq!(account_node("net", "connect"), Accounting::Recorded);
+        assert_eq!(account_node("dns", "lookup"), Accounting::Recorded);
+        assert_eq!(account_node("crypto", "randomBytes"), Accounting::Controlled);
+        assert_eq!(account_node("crypto", "createHash"), Accounting::Pure);
+        assert_eq!(account_node("process", "env"), Accounting::Recorded);
+        assert_eq!(account_node("process", "hrtime"), Accounting::Controlled);
+        assert_eq!(account_node("process", "argv"), Accounting::Input);
+        assert_eq!(account_node("timers", "setTimeout"), Accounting::Controlled);
+        assert_eq!(account_node("worker_threads", "threadId"), Accounting::Controlled);
+        // a thread and a child process stay refused, as the older marks already said
+        assert_eq!(account_node("worker_threads", "Worker"), Accounting::Unaccounted);
+        assert_eq!(account_node("child_process", "spawn"), Accounting::Unaccounted);
+    }
+
+    #[test]
+    fn the_node_pure_modules_need_no_entry() {
+        for m in ["path", "url", "querystring", "buffer", "events", "stream", "util", "assert", "zlib"] {
+            assert_eq!(account_node(m, "anything"), Accounting::Pure, "{m}");
+        }
+        // the `node:` prefix is accepted on either form
+        assert_eq!(account_node("node:path", "join"), Accounting::Pure);
+        assert_eq!(account_node("node:os", "hostname"), Accounting::Recorded);
     }
 
     #[test]
