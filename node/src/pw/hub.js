@@ -39,6 +39,16 @@ function start(opts) {
     if (startTimer.unref) startTimer.unref();
   };
 
+  // DETJS_LS_HUB_QUIET_MS (default 0): decide only after no worker message arrived for that long (a diagnosis switch;
+  // the split it was written for came from pid-numbered workers, see RemoteScheduler.ensureHello).
+  const QUIET_MS = Number(process.env.DETJS_LS_HUB_QUIET_MS || 0);
+  let quietTimer = null;
+  const DBG = []; // DETJS_LS_HUB_DEBUG: kept in memory (writing each line slowed the hub enough to hide the race)
+  const decideSoon = () => {
+    if (QUIET_MS <= 0) { decide(); return; }
+    if (quietTimer) clearTimeout(quietTimer);
+    quietTimer = setTimeout(() => { quietTimer = null; decide(); }, QUIET_MS);
+  };
   const send = (w, obj) => { const s = workers.get(w); if (s && s.conn && !s.conn.destroyed) s.conn.write(`${JSON.stringify(obj)}\n`); };
 
   function decide() {
@@ -106,6 +116,7 @@ function start(opts) {
 
   // The owner gets the action; every other asking worker re-settles ("again") and asks again.
   function answerAll(action, owner) {
+    if (process.env.DETJS_LS_HUB_DEBUG) DBG.push(`hub -> w${owner} ${JSON.stringify(action).slice(0, 160)} T=${sched.now() / NS}`);
     let ownerAsked = false;
     for (const [w, s] of workers) {
       if (!s.ask) continue;
@@ -128,7 +139,7 @@ function start(opts) {
         const line = buf.slice(0, i); buf = buf.slice(i + 1);
         let m;
         try { m = JSON.parse(line); } catch { continue; }
-        if (process.env.DETJS_LS_HUB_DEBUG && !/"op":"(deadline|waiting|enqueue)"/.test(line)) fs.appendFileSync(process.env.DETJS_LS_HUB_DEBUG, `hub <- w${w} ${line.slice(0, 120)}\n`);
+        if (process.env.DETJS_LS_HUB_DEBUG && (process.env.DETJS_LS_HUB_DEBUG_ALL || !/"op":"(deadline|waiting|enqueue)"/.test(line))) DBG.push(`hub <- w${w} ${line.slice(0, 160)} T=${sched.now() / NS}`);
         if (m.op === 'hello') {
           w = m.w;
           workers.set(w, { conn, active: false, ask: null });
@@ -138,6 +149,7 @@ function start(opts) {
         }
         const s = workers.get(w);
         if (!s) continue;
+        if (quietTimer && m.op !== 'next') decideSoon();
         switch (m.op) {
           case 'active':
             s.active = !!m.on;
@@ -157,19 +169,19 @@ function start(opts) {
           case 'waiting': (s.names = s.names || new Set()).add(`${m.name}@${w}`); sched.setWaiting(`${m.name}@${w}`, !!m.on); break;
           case 'next':
             s.ask = { seq: m.seq, waiting: !!m.waiting, reply: (action) => send(w, { op: 'action', seq: m.seq, action }) };
-            decide();
+            decideSoon();
             break;
           case 'unask': if (s.ask && s.ask.seq === m.seq) s.ask = null; break;
           default: break;
         }
       }
     });
-    conn.on('close', () => { if (w !== null) { const s = workers.get(w); if (s) { s.active = false; s.ask = null; for (const n of s.names || []) sched.removeParticipant(n); } decide(); } });
+    conn.on('close', () => { if (w !== null) { const s = workers.get(w); if (s && s.conn === conn) { s.active = false; s.ask = null; for (const n of s.names || []) sched.removeParticipant(n); } decide(); } });
     conn.on('error', () => {});
   });
   server.listen(sock);
   server.unref();
-  return { close: () => { try { server.close(); } catch { /* closed */ } try { fs.rmSync(sock, { force: true }); } catch { /* gone */ } } };
+  return { close: () => { if (process.env.DETJS_LS_HUB_DEBUG) { try { fs.writeFileSync(process.env.DETJS_LS_HUB_DEBUG, `${DBG.join('\n')}\n`); } catch { /* ignore */ } } try { server.close(); } catch { /* closed */ } try { fs.rmSync(sock, { force: true }); } catch { /* gone */ } } };
 }
 
 /** Worker side: the scheduler API of native.Lockstep, answered by the hub. now() is a local mirror of T. */
@@ -202,10 +214,34 @@ class RemoteScheduler {
       });
     });
     this.sock.on('error', () => {});
-    this.write({ op: 'hello', w });
+    this.hello = false;
+    this.queued = [];
   }
 
-  write(o) { try { this.sock.write(`${JSON.stringify(o)}\n`); } catch { /* hub gone */ } }
+  /**
+   * The worker's id at the hub is its Playwright parallel index (the slot), known once Playwright's worker main ran
+   * (TEST_PARALLEL_INDEX); the process id before it. Ids namespace the messages and name the deadlines, so the OS's
+   * pid order decided ties (MEASURED locally, lockstep fixture with 2 workers: 1 run in 6 with other fingerprints,
+   * the one where the higher pid said hello first).
+   */
+  ensureHello() {
+    if (this.hello) return;
+    const pi = process.env.TEST_PARALLEL_INDEX;
+    if (pi === undefined) return;
+    this.hello = true;
+    this.w = Number(pi);
+    this.sock.write(`${JSON.stringify({ op: 'hello', w: this.w })}\n`);
+    for (const o of this.queued) this.sock.write(`${JSON.stringify(o)}\n`);
+    this.queued = [];
+  }
+
+  write(o) {
+    try {
+      this.ensureHello();
+      if (!this.hello) { this.queued.push(o); return; }
+      this.sock.write(`${JSON.stringify(o)}\n`);
+    } catch { /* hub gone */ }
+  }
   now() { return this.t; }
   setSpace() { /* the hub's scheduler carries the seed space */ }
   setFocus() { /* idem */ }

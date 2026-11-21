@@ -1244,7 +1244,7 @@ class Coordinator {
         if (this.lastKey) this.endTest(this.lastKey);
         this.lastKey = key;
         if (key && this.o.onTest) { try { this.o.onTest(key); } catch { /* ignore */ } }
-        if (this.multi) { await this.sched.ready; this.sched.active(!!key); }
+        if (this.multi) { this.sched.ensureHello(); await this.sched.ready; this.sched.active(!!key); }
       }
       if (this.multi && this.remoteActions.length) { this.applyRemote(this.remoteActions.shift(), key); continue; }
       if (!key) { await new Promise((r) => { this.wake = r; const h = REAL.setTimeout(r, 5); if (h.unref) h.unref(); }); continue; }
