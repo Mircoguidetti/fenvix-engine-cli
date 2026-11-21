@@ -296,3 +296,29 @@ fixed by PR #8, re-checked on `claude/node` @ 888b2ca5 (contains trunk a996b68).
   marked), as on the Python side.
 - **Not measured:** #2's test asserts only when the observed completion orders differ (`if (orders.size > 1)`). I did
   not record whether the orders still differ on 888b2ca5, i.e. whether it passed by control or by detection.
+
+## Re-check Node #1 (N1): PASS
+
+Coordinator re-check round, 2026-11-21. N1 is fixed on `claude/node` @ 825aef2c (descends from 888b2ca5; fix commit
+67f2eba, `node/src/outside.js`). Reads of files outside the project are recorded as the event `fs.read.outside` (path
+and content digest).
+
+- **Build:** no `crates/` change since 888b2ca5, so the 888b2ca5 napi addon is current.
+  - `verify` is computed in the Rust core; the CLI checks used the 888b2ca5 wheel.
+  - The Python files changed since then (the PR #10 merge) do not touch `verify`.
+  - `node/package*.json` are unchanged, so the same `node_modules` was used.
+- **The tests are unchanged:**
+  - `node/test/review-r050-node-recheck.test.js` on 825aef2c is byte-identical to the N1 test on this branch (0411332).
+  - `node/test/review-p1-verifier.test.js` is byte-identical to the reviewer's file.
+- **Run** (`node --test --test-concurrency=1`, N1 and "F-03: no test whose observed value differs …", i.e. finding #1's
+  test): 2 pass, 0 fail, 0 skipped on Node v22.23.5, v24.22.3 and v26.13.1.
+- **Differing vs identical runs (CLI `fenvix verify`, `node-test --det`, two runs, a file outside the project):**
+
+  | | contents A then B | contents A then A |
+  |---|---|---|
+  | Node 22 | DIVERGENT 1 of 1, exit 1 | IDENTICAL, exit 0 |
+  | Node 24 | DIVERGENT 1 of 1, exit 1 | IDENTICAL, exit 0 |
+  | Node 26 | DIVERGENT 1 of 1, exit 1 | IDENTICAL, exit 0 |
+
+  Run inputs are "identical in every run" in both cases. The difference is named as a test event, not hidden in the
+  run header, and unchanged files do not cause false divergence.
