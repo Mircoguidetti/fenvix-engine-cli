@@ -46,7 +46,9 @@ def test_synthetic_project_and_comparison(tmp_path):
     assert par_noise <= {reader}, par_noise
     for n in par_noise:
         diff = next((ea, eb) for ea, eb in zip(pa[n]["events"], pb[n]["events"]) if ea != eb)
-        assert "fs.read" in (diff[0].get("o"), diff[1].get("o")), diff
+        # the read of the shared file, or (R-055 V6) the existence check of that same file just before it
+        assert any(e.get("o") in ("fs.read", "fs.read.outside", "fs.stat") and "shared.txt" in e.get("v", "")
+                   for e in diff), diff
     assert fpcompare.plans_equal(ma, mb) is True
     # the only test whose events depend on placement is the victim (when the plan separates it from its polluter)
     victim_apart = pa["tests/test_victim.py::test_victim"]["worker"] != pa["tests/test_pollute.py::test_polluter"]["worker"]
@@ -60,7 +62,9 @@ def test_synthetic_project_and_comparison(tmp_path):
     for n in placed - expected:
         diff = next((ea, eb) for ea, eb in zip(sa[n]["events"], (pa if pa[n]["fingerprint"] != sa[n]["fingerprint"]
                                                                   else pb)[n]["events"]) if ea != eb)
-        assert "fs.read" in (diff[0].get("o"), diff[1].get("o")), diff
+        # the read of the shared file, or (R-055 V6) the existence check of that same file just before it
+        assert any(e.get("o") in ("fs.read", "fs.read.outside", "fs.stat") and "shared.txt" in e.get("v", "")
+                   for e in diff), diff
     assert out["outcome_differences"] == 0 and out["new_failures_caused_by_split"] == []
     # detpy verify classifies the victim's divergence as placement and names the polluter it lost
     from detpy import _core

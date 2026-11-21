@@ -547,6 +547,32 @@ def _stat_observed(real, op: str):
     return wrapper
 
 
+def _rebind_stat(patcher, name, wrapper) -> None:
+    """Install ``wrapper`` as ``os.<name>`` and wherever the function it replaces was bound before the session (``from
+    os import stat`` in a plugin loaded at startup, rebound by fstime): one object for every binding, so the cache
+    with proof, which rebinds by identity after this, finds every reference (LIMITS K3). The import system's
+    ``posix`` module and detpy's own modules are left alone."""
+    import sys
+
+    from ._patch import nonbinding
+
+    prev = getattr(os, name)
+    wrapper = nonbinding(wrapper, "os", name)  # one object: patcher.set would make one per module from a function
+    patcher.set(os, name, wrapper)
+    own = os.path.dirname(os.path.abspath(__file__)) + os.sep
+    for mod in list(sys.modules.values()):
+        d = getattr(mod, "__dict__", None)
+        if not isinstance(d, dict) or mod is os or getattr(mod, "__name__", "") in ("posix", "nt") \
+                or str(getattr(mod, "__file__", "") or "").startswith(own):
+            continue
+        for k, v in list(d.items()):
+            if v is prev:
+                try:
+                    patcher.set(mod, k, wrapper)
+                except Exception:
+                    pass
+
+
 _EXISTS = frozenset(("exists", "lexists", "isfile", "isdir", "islink", "is_file", "is_dir", "is_symlink",
                      "is_fifo", "is_socket", "is_block_device", "is_char_device", "ismount", "samefile", "_is_dir"))
 
@@ -659,8 +685,8 @@ def install(patcher, cfg) -> None:
 
         patcher.set(_thread, "get_native_id", get_native_id)
     _prev_open = io.open
-    patcher.set(os, "stat", _stat_observed(os.stat, "fs.stat"))
-    patcher.set(os, "lstat", _stat_observed(os.lstat, "fs.lstat"))
+    for name in ("stat", "lstat"):
+        _rebind_stat(patcher, name, _stat_observed(getattr(os, name), f"fs.{name}"))
     patcher.set(io, "open", open_)
     patcher.set(builtins, "open", open_)
     if TMPDIR is None:
