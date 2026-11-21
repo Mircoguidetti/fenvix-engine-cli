@@ -1,37 +1,36 @@
 # Block 4 — cache with proof for Node (row F-06)
 
-Branch `claude/cache-node`, based on `origin/claude/verifier-cli` @ `bbb7a8a1`.
+Branch `claude/cache-node`, rebased onto `origin/claude/verifier-cli` @ `fbafafdc`.
 
-**Headline: the defect I was sent to fix is not a cache defect.** It reproduces with the cache
-switched off entirely (section 2, MEASURED). No change to the cache can make the exam check
-`F-06.fake-timers` pass; the clock control has to change, and that trade is a founder decision.
+**Headline: the Node cache had a reuse rule of its own and never called `judge()`. It reused tests
+the engine's own predicate says must be rerun, and erased the evidence on the way. Fixed in
+section 2.** The fake-timers check named in the brief is a different, still-open question that no
+cache change can close (section 2.5).
 
 Numbers are labelled MEASURED (a command run in this container, Node 22.23.5, Vitest 5.1.0),
 DECLARED (from a brief or another session's report, not re-run here) or UNKNOWN.
 
 ## 1. The engine state vs the brief
 
-### 1.1 The single predicate exists — under a different name than the brief gives
+### 1.1 The single predicate exists, and the Node cache was not calling it
 
-The brief names `judge(attestation) -> Verdict` and `account(module, qualname)` in
-`crates/detpy-core/src/provable.rs`, owned by Block 1. MEASURED, across all 84 remote branches:
-no tree contains `provable.rs`; no Rust file contains `fn judge` or `fn account(`.
+A correction to the first version of this report, which said `provable.rs` did not exist. It did not
+exist in the tree I had: I branched from `origin/claude/verifier-cli` @ `bbb7a8a1`, and Block 1
+landed the predicate on that branch at 20:47-21:20 the same evening. This branch is now rebased
+onto `fbafafdc`, which carries:
 
-But the thing the brief *describes* is real and already built, in
-**`crates/detpy-core/src/node_session.rs`**:
+* `crates/detpy-core/src/provable.rs` (66,038 bytes): `account(module, qualname)` (line 242),
+  `account_node(module, export)` (625), `enum Verdict` (896), `judge(&Attestation) -> Verdict`
+  (926), `judge_record(record, header, outside)` (995);
+* `node/src/provable.js` (13,238 bytes): the Node sensor.
 
-* `UNCACHEABLE: &[(&str, &str)]` — the accounting table, 29 channels, flag -> description;
-* `uncacheable_flag()` / `uncacheable(flags, outcome)` — the single predicate;
-* `const UNKNOWN_FLAG: &str = "an input the engine cannot key"` — **default-deny**: a flag the
-  table does not know still refuses reuse. The comment states the rule outright: "a source the
-  engine cannot attribute refuses reuse."
-* reached from JS through one call, `native.uncacheableTable()` (`node/src/cache/proof.js:39`).
+`judge()` is default-deny by construction: no sensor, a sensor built against another accounting
+table, an unaudited runtime, a channel mark, anything the sensor could not place, or anything
+outside the tests, and the verdict is `NotProven`.
 
-The table already carries `("clock-real", "reads a clock Level 0 does not virtualize")`.
-
-So there is nothing to reimplement and nothing blocking on Block 1: Node's work is **sensor**
-work — raising the right existing flag — and the verdict stays in Rust. I did not add a predicate.
-Worth correcting in the brief so the next block is not sent to a file that does not exist.
+**The Node cache was not calling it.** That is section 2, and it was the real defect in this row.
+`node_session.rs::UNCACHEABLE` (29 channels) is a separate, older per-channel table; it is now the
+second layer below `judge`, not the rule.
 
 ### 1.2 The 90% reuse target and default-deny are in tension (open)
 
@@ -80,109 +79,130 @@ green F-06 needs a release build of this branch through Actions.
 Also MEASURED: the base commit the brief names, `2b2f8e6a`, is not a valid object in this
 repository.
 
-## 2. The fake-timers defect: reproduced, and it is not in the cache
+## 2. The wrong reuse: the Node cache had a reuse rule of its own (FIXED)
 
-Reproduced with the exam's own probe (`exam/rows_f.py`, `FAKE_TIMERS`), Vitest 5.1.0:
+### 2.1 What was wrong
+
+`node_session.rs::record_session` admitted a test on `uncacheable(flags, outcome)` alone and never
+called the one predicate. Verified by reading the code at `fbafafdc`:
+
+* grep for `judge`, `judge_record`, `Verdict` or `provable` in `node_session.rs`: **zero hits**;
+* `CapturedTest` had fields `id, upto, outcome, fingerprint, duration` — **no `unaccounted`**, so
+  the sensor's per-test findings could not reach the policy even in principle;
+* `cache.rs::admit_record` — whose own doc says *"This is the second caller of
+  `crate::provable::judge` the founder's rule asks for: the cache must not have a reuse rule of its
+  own"* — **has no callers**. An exhaustive grep for `admit_record` across the repository returns
+  its definition and one comment. The only production caller of `judge_record` anywhere is
+  `verify.rs:908`.
+* `node/src/session.js:340` declares sensor `cache-reuse/1` for a fully reused run, and the comment
+  justifying it cites that dead function.
+
+### 2.2 The demonstration (MEASURED)
+
+Two tests calling builtin exports the accounting table does not account for:
 
 ```js
-test('fake timers real clock', () => { vi.useFakeTimers(); const t = Date.now(); vi.useRealTimers();
-  expect(t).toBeLessThan(Number(process.env.EXAM_DEADLINE)); });
+import { createRequire } from 'node:module'; const req = createRequire(import.meta.url);
+test('a', () => { expect(req('node:v8').getHeapStatistics().heap_size_limit).toBeGreaterThan(0); });
+test('b', () => { expect(typeof req('node:tty').isatty(1)).toBe('boolean'); });
 ```
 
-### 2.1 With the cache: a green that a real run calls red (MEASURED)
+Same engine, same build, two answers:
 
-| step | result |
+| | result |
 |---|---|
-| run 1, `--det --det-cache`, deadline = now + 4 s | 1 passed; "recorded 1 tests" |
-| sleep 5 s (deadline now past) | |
-| run 2, `--det --det-cache`, same deadline | **"reused with proof 1 tests in 1 files"** -> 1 passed |
-| plain `vitest run`, same deadline, same moment | **1 failed** |
+| `fenvix verify`, two full `--det` runs | **NOT PROVEN: 2 of 2** — *"not accounted for: api:v8.getHeapStatistics ... Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"* |
+| `--det-cache`, run 1 then run 2 | run 1 "recorded 2 tests"; run 2 **"reused with proof 2 tests in 1 files"** |
 
-The reused test's trace record carries `"n_events": 0, "counts": {}, "events": []` — the engine
-recorded no observation at all for it.
+It also **erased the evidence**. In the fully reused run's trace: the header declared
+`{"sensor":"cache-reuse/1","contract":1,"runtime":"node22","surface":"71284ad1…"}` — well-formed,
+carrying the build's own surface digest, so `judge()`'s clauses 1-2 pass — while each reused test
+record carried `unaccounted: null`. The recording run's finding was gone, so a later `verify` of two
+reused runs would call those tests Provable. The cache did not merely skip the predicate; it
+produced an attestation that satisfies it.
 
-### 2.2 The cache is not the cause (MEASURED)
+### 2.3 The fix
 
-Same probe, **cache switched off entirely** (`--det`, no `--det-cache`), `.detjs` removed between
-runs so nothing is carried:
+The sensor's findings now reach the policy and the policy calls the predicate:
 
-| run | result |
-|---|---|
-| `--det`, before the deadline | 1 passed |
-| `--det`, after the deadline | **1 passed** |
-| plain, after the deadline | **1 failed** |
+* `node/src/state.js`: the capture's existing `onEvent` hook carries the event's `op`.
+* `node/src/cache/capture.js`: `levelEvent` collects `unaccounted.<kind>` findings per test;
+  `testEnd` attaches them; `fileCapture` attaches the sensor declaration of the process that ran
+  the file.
+* `crates/detpy-core/src/node_session.rs`: `CapturedTest.unaccounted`, `Capture.provable` /
+  `provable_absent`, and `why_not_cached`, which builds a `provable::Attestation` and calls
+  `provable::judge`. The file's entry answers for every test in it, so it takes the union of their
+  findings.
 
-The engine already disagrees with reality with no cache in the picture. The cache faithfully
-preserved a verdict the engine gets wrong on its own.
+`provable.rs` and `verify.rs` are untouched, and there is no JavaScript copy of `judge`.
 
-### 2.3 Root cause: the fake clock starts from a pinned past epoch
+**Clause order.** My first attempt put the sensor's finding first and broke three tests that assert
+the reason text. `judge()`'s own documentation explains why that is wrong: a channel rule that names
+the gap is reported before the wide sensor's finding, because "the test started a thread" tells the
+reader more than the callable's name. So the order is: an absent or mismatched sensor first (the
+most fundamental gap), then the Node channel rule when it names the gap, then the sensor's own
+finding for the channels no rule names. The verdict is the same either way — only the wording
+differs — and the three tests pass again unmodified.
 
-Instrumenting the real `Date.now` across `vi.useFakeTimers()` (MEASURED):
+After (MEASURED): the recording run reports `not cached: api 3` (two tests and the file entry) and
+run 2 runs both tests again.
 
-* calls to the real `Date.now` during install: **0**;
-* `Date.now()` immediately after install: **1735689600000** = 2025-01-01T00:00:00Z;
-* real clock at that moment: 1795294681189.
+### 2.4 One open item, for Block 1 (`provable.rs` is not mine to edit)
 
-That value is `DEFAULT_EPOCH = '2025-01-01T00:00:00Z'` (`node/src/config.js:7`); under
-`--det-cache` it is the virtual day instead (the trace header showed `epoch_ns`
-1795219200000000000 = 2026-11-21T00:00:00Z). Either way the engine's wall clock is **pinned and in
-the past**, so `Date.now() < now + 4000` is true under the engine forever and false plainly once
-4 s have passed. Hence `n_events: 0`: nothing is read from a sensor, the fake clock serves a
-constant that is already a pinned run input.
+`native.provableAccount('async_hooks', k)` returns `unaccounted` for every export:
+`AsyncLocalStorage`, `AsyncResource`, `createHook`, `executionAsyncId`, `triggerAsyncId`,
+`executionAsyncResource`, `asyncWrapProviders`. `AsyncResource` and `AsyncLocalStorage` look
+misclassified — they are in-process bookkeeping and expose no outside state, unlike the
+run-dependent ids or `createHook`. The cost is concrete: Node constructs an `AsyncResource` inside
+`fs.createReadStream`, so **a test that reads a file through a stream is no longer reusable**. This
+is the one failing test in section 3, left failing rather than worked around. Fleet impact UNKNOWN
+(zustand does not hit it); streams are common, so I expect it to cost real reuse share.
 
-This virtualization is deliberate — audit G-0122 / G-0142, so that a fake clock does not start
-from the machine's time and become unkeyable. My earlier hypothesis (an unrecorded real-clock read
-leaking through the `FAKE_CLOCK_FRAME` stack regex at `clock.js:135` with `Error.stackTraceLimit =
-6`) is **refuted** by the 0-call measurement above. The regex is still a guess about provenance and
-worth hardening, but it is not this defect.
+Also open, found while building the reproduction: the ESM form `import v8 from 'node:v8'` is **not**
+marked, while the `createRequire` form is. Vitest and Jest transform test files to ESM, so the
+unmarked form is the common one and the sensor is likely missing most real occurrences. My fix
+carries whatever the sensor reports, so it inherits that gap exactly.
 
-### 2.4 Why no cache change can make the check pass — founder decision
+### 2.5 The fake-timers check is a separate question, still open
 
-`F-06.fake-timers` compares run 2's outcomes against a **plain rerun**. Plain fails after the
-deadline. Under a pinned past epoch the engine passes whether it reuses or reruns. So:
+`F-06.fake-timers` is **not** this defect, and no cache change makes it pass. Measured: with the
+cache switched off entirely (`--det`, `.detjs` removed between runs) the probe passes before and
+after the deadline, while a plain run fails — so the engine disagrees with reality with no cache in
+the picture. `vi.useFakeTimers()` makes **zero** calls to the real `Date.now`; `Date.now()` right
+after it returns `1735689600000` (2025-01-01, `DEFAULT_EPOCH`, `node/src/config.js:7`), or the
+virtual day under `--det-cache`. The epoch **is** part of the cache key (same epoch reuses;
+`--det-epoch=2026-06-01` does not), so the reuse is sound on the engine's own terms.
 
-* refusing reuse (flagging `clock-real`) makes the test **rerun and still pass** -> check still red;
-* the only way to match plain is for the test to observe the **real** clock, i.e. not to virtualize
-  a fake-timer base the engine cannot account for — and then flag `clock-real` so it is never
-  reused.
+The check compares run 2 against a *plain* rerun, so making it green needs the real clock to reach
+the test for fake-timer installs **and** a `clock-real` refusal — which partly undoes G-0122/G-0142.
+That is a founder decision, not a cache fix. Options: (1) let the real clock through and never
+reuse; (2) keep virtualizing and accept the check red with the reason written out; (3) the check's
+premise is wrong, which only the founder can decide since the exam is frozen. My recommendation is
+to measure (1)'s blast radius first.
 
-That second option is the brief's own rule applied honestly ("if the engine cannot be certain, it
-reruns"), but it partly undoes G-0122/G-0142 and will make time-dependent tests across many suites
-non-reusable and, in some cases, newly failing. I am not making that trade unilaterally.
-
-**Decision needed.** Options as I see them:
-
-1. **Let the real clock through for fake-timer installs, flag `clock-real`, never reuse.** Honest
-   under the rule; check goes green; cost is reuse share and some suites turning red. Blast radius
-   UNKNOWN until measured — I can measure it on docusaurus / TanStack / vue-core before you decide.
-2. **Keep virtualizing, flag `clock-real` anyway so it is never reused.** Removes the stale-green
-   half (the cache no longer certifies it) but the engine still passes where plain fails, so
-   `F-06.fake-timers` stays red and the exam records a known-red check with a written reason.
-3. **The check's premise is wrong** — a pinned clock is the point of `--det`, and comparing against
-   a plain run that reads the real clock is not a fair comparison. Then the check needs changing,
-   and the exam is frozen, so that is your call, not mine.
-
-My recommendation is to measure option 1's blast radius first, then choose between 1 and 2. I lean
-to 1 on principle: a value the engine invents for a channel it cannot account for is exactly the
-"certainty the engine does not have" the rule exists to refuse.
-
-## 3. Attack suites: all green (MEASURED)
+## 3. Suites (MEASURED)
 
 `cd node && node --test --test-concurrency=1 <file>`, Node 22.23.5, after `npm ci` and
 `node scripts/build.js`:
 
-| suite | tests | pass | fail | duration |
-|---|---|---|---|---|
-| `test/verify-inputs-attacks.test.js` | 34 | 34 | 0 | 21.5 s |
-| `test/review-r055.test.js` | 8 | 8 | 0 | 4.4 s |
-| `test/cache.test.js` | 47 | 47 | 0 | 124.7 s |
-| `test/cache-p041.test.js` | 36 | 36 | 0 | 116.7 s |
-| **total** | **125** | **125** | **0** | |
+| suite | tests | pass | fail |
+|---|---|---|---|
+| `test/verify-inputs-attacks.test.js` | 34 | 34 | 0 |
+| `test/review-r055.test.js` | 8 | 8 | 0 |
+| `test/cache-p041.test.js` | 36 | 36 | 0 |
+| `test/policy-equivalence.test.js` | 11 | 11 | 0 |
+| `test/cache.test.js` | 47 | 46 | **1** |
+| **total** | **136** | **135** | **1** |
 
-Note: **none of these 125 tests catches the defect in section 2.** The suites are green and the
-engine still reports a green that a plain run calls red. A regression test for it belongs in
-`test/cache.test.js`, but its expected outcome depends on which option above you pick, so I have
-not written one yet — writing it now would bake in a decision that is yours.
+The one failure is section 2.4 (`async_hooks.AsyncResource`), not skipped and not edited.
+
+`policy-equivalence` went from 5 tests to 11. Two changes, neither a weakening: the 500-input
+generator now emits the sensor declaration every real capture carries (without one the policy
+rightly stores nothing, so the generator had been producing sessions that cannot occur), and six
+new tests cover the judge layer against the Rust policy directly — a clean test stored, an
+unaccounted channel refused, no sensor refused, a wrong surface digest refused, an unaudited runtime
+refused, and the clause-order preference. There is deliberately **no** JavaScript mirror of
+`judge`, so the rule keeps one implementation.
 
 ## 4. Measurements on a real project (MEASURED)
 
@@ -203,6 +223,10 @@ median of 3 repetitions (2 for the parallel rows); ranges in brackets.
 So **0 wrong reuses on this project, verified against a fresh full run**, and `F-06.no-edit`'s
 >= 90% threshold is met with margin here (100%). That is one project, not the fleet: the share on
 larger suites is UNKNOWN until section 5 runs, and the tension in 1.2 is not settled by it.
+
+**Re-measured after the section 2 fix: identical — 135/135 tests reused in 8 files, 143 verified,
+0 differ.** So routing admission through `judge()` cost zero reuse on this project. That is one
+project and it does not hit `async_hooks`; the fleet cost is UNKNOWN.
 
 ### 4.2 Wall-clock, cached vs uncached, serial and parallel
 
