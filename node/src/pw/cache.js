@@ -24,7 +24,11 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const native = require('../native');
 
-const FORMAT = 1;
+const FORMAT = 2;
+const ENGINE_ROOT = path.resolve(__dirname, '..', '..', '..') + path.sep; // detjs' own native core (node/ or target/)
+// Native addons whose code does not read project files on its own (database drivers that talk over TCP, hashing,
+// WebSocket helpers): their loads are inputs like any file, nothing more.
+const NATIVE_OK = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:@prisma|\.prisma|prisma|bcrypt|argon2|@node-rs|bufferutil|utf-8-validate|fsevents|cpu-features|ssh2)[\\/]/;
 const VOLATILE_ENV = /^(?:DETJS.*|PLAYWRIGHT_JSON_OUTPUT_NAME|PLAYWRIGHT_HTML_.*|GITHUB_.*|RUNNER_.*|ACTIONS_.*|INVOCATION_ID|JOURNAL_STREAM|SHLVL|OLDPWD|PWD|_|TERM|TERM_.*|COLORTERM|SSH_.*|TMUX.*|STY|WINDOWID|DISPLAY|XDG_SESSION_.*|XDG_RUNTIME_DIR|DBUS_SESSION_BUS_ADDRESS|LS_COLORS|HOSTNAME|LINES|COLUMNS|NODE_OPTIONS|FORCE_COLOR|NO_COLOR|L2_.*|ENGINE_SHA|PYTHONUNBUFFERED|CLAUDE.*)$/;
 
 function sha(s) { return crypto.createHash('sha256').update(s).digest('hex'); }
@@ -55,7 +59,9 @@ function stateKey(specFile) {
   let saved = null;
   try { saved = JSON.parse(fs.readFileSync(path.join(spec.dir, 'meta.json'), 'utf8')).saved; } catch { /* none yet */ }
   const ports = spec.postgres.map((u) => { const x = new URL(u); return `${x.hostname}:${x.port || '5432'}`; });
-  return { digest: snap.digest(spec), saved, ports };
+  let native = [];
+  try { native = JSON.parse(fs.readFileSync(path.resolve(specFile), 'utf8')).native || []; } catch { /* none */ }
+  return { digest: snap.digest(spec), saved, ports, native };
 }
 
 class PwCache {
@@ -113,6 +119,9 @@ class PwCache {
     const conns = new Set();
     const listens = new Set();
     const children = new Set();
+    const written = new Map(); // path -> content before the run's first write (inputs.js "w")
+    const conflicts = new Set();
+    const natives = new Set();
     const roles = {};
     for (const d of inputsDirs) {
       let names = [];
@@ -131,6 +140,11 @@ class PwCache {
           else if (r[0] === 'c') conns.add(`${r[1]}:${r[2]}`);
           else if (r[0] === 'l') listens.add(r[1]);
           else if (r[0] === 'x') children.add(r[1]);
+          else if (r[0] === 'n') natives.add(r[1]);
+          else if (r[0] === 'w') {
+            if (written.has(r[1]) && written.get(r[1]) !== r[2]) conflicts.add(r[1]);
+            else written.set(r[1], r[2]);
+          }
         }
       }
     }
@@ -151,15 +165,40 @@ class PwCache {
       if (/(?:^|[\\/])(chrome|chrome-headless-shell|chromium|headless_shell)$/.test(x) && /ms-playwright|pw-browsers|chromium/.test(x)) { files.add(path.resolve(x)); continue; }
       why.push(`child process ${x} (not Node: its reads are not recorded)`);
     }
+    // Prisma's query engine opens its own database connections (not through Node's net): the database must be part
+    // of the declared start state, or the run is not provably complete.
+    if ([...natives].some((n) => /[\\/](?:@prisma|\.prisma|prisma)[\\/]/.test(n)) && !(ctx.statePorts || []).length) {
+      why.push('Prisma query engine loaded: its database connections are not seen; declare the database in the start state (--det-state or --det-cache-state)');
+    }
+    for (const n of natives) {
+      if (NATIVE_OK.test(n) || n.startsWith(ENGINE_ROOT)) continue;
+      if ((ctx.stateNative || []).some((x) => n.includes(`${path.sep}node_modules${path.sep}${x}${path.sep}`))) continue;
+      why.push(`native addon ${n} (its own file reads are not seen; a start state that covers them may name it in "native")`);
+    }
+    for (const c of conflicts) if (files.has(c) || dirs.has(c)) why.push(`${c} written by several processes (its content before the run is not known)`);
     if (ctx.browser) files.add(path.resolve(ctx.browser));
-    return { files, dirs, why, roles, conns: [...conns].sort(), listens: [...listens].sort() };
+    return { files, dirs, written, why, roles, conns: [...conns].sort(), listens: [...listens].sort() };
   }
 
   record(key, inputs, result) {
+    // Inputs are the state BEFORE the run: a file the run wrote is taken with its content before the first write,
+    // a directory's listing without the entries the run created and with the ones it removed.
+    const w = inputs.written || new Map();
     const f = {};
-    for (const p of [...inputs.files].sort()) f[p] = fileDigest(p);
+    for (const p of [...inputs.files].sort()) f[p] = w.has(p) ? (w.get(p) === 'dir' ? 'dir' : w.get(p)) : fileDigest(p);
     const d = {};
-    for (const p of [...inputs.dirs].sort()) d[p] = listingDigest(p);
+    for (const p of [...inputs.dirs].sort()) {
+      if (w.get(p) === 'missing') { d[p] = 'missing'; continue; }
+      let names = null;
+      try { names = new Set(fs.readdirSync(p)); } catch { names = null; }
+      if (names === null) { d[p] = 'missing'; continue; }
+      for (const [q, b] of w) {
+        if (path.dirname(q) !== p) continue;
+        if (b === 'missing') names.delete(path.basename(q));
+        else names.add(path.basename(q));
+      }
+      d[p] = sha([...names].sort().join('\0')).slice(0, 32);
+    }
     const traceCopy = path.join(this.dir, 'pw', `${key.id}.trace.jsonl`);
     try { fs.copyFileSync(result.trace, traceCopy); } catch { /* no trace */ }
     const e = {

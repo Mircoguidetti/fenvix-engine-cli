@@ -233,7 +233,7 @@ async function main(argv) {
       env: C.envKey(process.env),
     });
     const verdict = opts.cacheVerify ? { miss: '--det-cache-verify: run anyway' } : pc.check(key);
-    cache = { pc, key, verdict, statePorts: st ? st.ports : [], C, opts };
+    cache = { pc, key, verdict, statePorts: st ? st.ports : [], stateNative: st ? st.native : [], C, opts };
     if (verdict.hit) {
       fs.rmSync(wrapper, { force: true });
       if (hub) hub.close();
@@ -317,10 +317,17 @@ function cacheAfterRun(cache, runEnv, cwd, code, env) {
       if (alive) { dirs.push(path.join(live, n)); external++; }
     }
   } catch { /* none */ }
-  const inputs = pc.collect(dirs, { statePorts: cache.statePorts, browser: process.env.DETJS_PW_EXECUTABLE || null, externalServers: external });
-  const drop = (p) => /[\\/](?:test-results|playwright-report|blob-report|\.detjs)(?:[\\/]|$)/.test(p) || p.startsWith(pc.dir) || p.startsWith(require('node:os').tmpdir());
-  for (const p of [...inputs.files]) if (drop(p) && !p.startsWith(require('node:os').tmpdir())) inputs.files.delete(p);
+  const inputs = pc.collect(dirs, { statePorts: cache.statePorts, browser: process.env.DETJS_PW_EXECUTABLE || null, externalServers: external, stateNative: cache.stateNative });
+  const drop = (p) => /[\\/](?:[^\\/]*(?:test-results|playwright-report|blob-report)|\.detjs)(?:[\\/]|$)/.test(p) || p.startsWith(pc.dir) || p.startsWith(require('node:os').tmpdir());
+  // The temporary directory is left out: Playwright's transform cache there is keyed by the sources (recorded), and
+  // the wrapper config's name changes with every run; other temporary files are the run's own.
+  for (const p of [...inputs.files]) if (drop(p)) inputs.files.delete(p);
   for (const p of [...inputs.dirs]) if (drop(p)) inputs.dirs.delete(p);
+  // the network cassette (read by the native core, not through fs): replayed external answers are inputs
+  const cassette = path.resolve(cwd, cache.opts.cassette || path.join('.detjs', 'cassette.json'));
+  if (fs.existsSync(cassette)) inputs.files.add(cassette);
+  for (const c of [...inputs.written.keys()]) if (drop(c)) inputs.written.delete(c);
+  inputs.why = inputs.why.filter((w) => !/ written by several processes/.test(w) || !drop(w.split(' written by')[0]));
   const res = C.traceResults(runEnv.tracePath);
   const n = Object.keys(res.outcomes).length;
   let recorded = false;

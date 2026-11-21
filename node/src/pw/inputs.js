@@ -11,6 +11,11 @@
 //   ["c", host, port]  a TCP connection opened
 //   ["l", port]        a TCP port listened on (an app server)
 //   ["x", file]        a child process that is not Node (its own reads are not recorded: the run is not cacheable)
+//   ["w", path, before] the first write of the run to a path (file write, append, write open, rename target,
+//                      unlink, mkdir, rm), with the content it had before: "missing", "dir", or the content digest.
+//                      A file the run reads after writing it is an input by its content BEFORE the run (a database
+//                      file the app creates must be absent at the start of the next run too)
+//   ["n", file]        a native addon loaded (its own file reads are not seen; cache.js decides)
 // The main side (cache.js) turns these into the run's inputs and decides whether the run may be reused.
 const fs = require('node:fs');
 const path = require('node:path');
@@ -21,6 +26,7 @@ const SEEN = new Set();
 const REAL = {
   appendFileSync: fs.appendFileSync,
   mkdirSync: fs.mkdirSync,
+  readFileSync: fs.readFileSync,
 };
 
 function emit(rec) {
@@ -45,6 +51,26 @@ function file(p) {
   if (!a || a.startsWith('/proc/') || a.startsWith('/dev/') || a.startsWith('/sys/')) return;
   if (DIR && a.startsWith(DIR)) return;
   emit(['f', a]);
+}
+
+const WRITTEN = new Set();
+function before(p) {
+  const a = toPath(p);
+  if (!a || WRITTEN.has(a) || a.startsWith('/proc/') || a.startsWith('/dev/') || (DIR && a.startsWith(DIR))) return;
+  WRITTEN.add(a);
+  let b = 'missing';
+  try {
+    const st = fs.statSync(a);
+    if (st.isDirectory()) b = 'dir';
+    else b = require('node:crypto').createHash('sha256').update(REAL.readFileSync(a)).digest('hex').slice(0, 32);
+  } catch { /* missing */ }
+  emit(['w', a, b]);
+}
+
+function longStack() {
+  const lim = Error.stackTraceLimit;
+  Error.stackTraceLimit = 100;
+  try { return new Error().stack || ''; } finally { Error.stackTraceLimit = lim; }
 }
 
 function readFlags(flags) {
@@ -85,21 +111,42 @@ function install(role) {
       Module.registerHooks({ load(url, context, next) { if (url.startsWith('file:')) file(url); return next(url, context); } });
     } catch { /* older Node: CommonJS only, ESM files are read with fs by the loaders that matter (tsx) */ }
   }
-  wrap(process, 'dlopen', (a) => file(a[1]));
+  // writes: the content before the run's first write (see the header)
+  for (const n of ['writeFileSync', 'writeFile', 'appendFileSync', 'appendFile', 'createWriteStream', 'truncateSync', 'truncate',
+    'unlinkSync', 'unlink', 'rmSync', 'rm', 'rmdirSync', 'rmdir', 'mkdirSync', 'mkdir', 'copyFileSync', 'copyFile']) {
+    wrap(fs, n, (a) => before(n.startsWith('copyFile') ? a[1] : a[0]));
+  }
+  for (const n of ['renameSync', 'rename']) wrap(fs, n, (a) => { before(a[0]); before(a[1]); });
+  for (const n of ['openSync', 'open']) wrap(fs, n, (a) => { if (a[1] !== undefined && !(typeof a[1] === 'string' && a[1] === 'r') && !(typeof a[1] === 'number' && (a[1] & 3) === 0)) before(a[0]); });
+  for (const n of ['writeFile', 'appendFile', 'unlink', 'rm', 'rmdir', 'mkdir', 'truncate']) wrap(fs.promises, n, (a) => before(a[0]));
+  wrap(fs.promises, 'rename', (a) => { before(a[0]); before(a[1]); });
+  wrap(fs.promises, 'copyFile', (a) => before(a[1]));
+  wrap(process, 'dlopen', (a) => { file(a[1]); const f = toPath(a[1]); if (f) emit(['n', f]); });
   // connections and listening ports
   const net = require('node:net');
-  wrap(net.Socket.prototype, 'connect', (a) => {
-    let o = a[0];
-    if (Array.isArray(o)) o = o[0];
-    if (o && typeof o === 'object') { if (o.path) emit(['u', String(o.path)]); else if (o.port !== undefined) emit(['c', String(o.host || 'localhost'), String(o.port)]); }
-    else if (typeof o === 'number' || /^\d+$/.test(String(o))) emit(['c', String(a[1] || 'localhost'), String(o)]);
-    else if (typeof o === 'string') emit(['u', o]);
-  });
-  wrap(net.Server.prototype, 'listen', (a) => {
-    const o = a[0];
-    const port = o && typeof o === 'object' ? o.port : o;
-    if (port !== undefined && port !== null && /^\d+$/.test(String(port))) emit(['l', String(port)]);
-  });
+  // Connections that were established (a connection the network control blocked never connects; a replayed one
+  // connects to the replay server of the process, a port it listened on): the remote end as the socket saw it.
+  const origConnect = net.Socket.prototype.connect;
+  net.Socket.prototype.connect = function connect(...a) {
+    try {
+      this.once('connect', () => {
+        try {
+          if (this.remotePort) emit(['c', String(this.remoteAddress || 'localhost'), String(this.remotePort)]);
+          else emit(['u', String(this._pipeName || this.remoteAddress || '?')]);
+        } catch { /* gone */ }
+      });
+    } catch { /* never break the caller */ }
+    return origConnect.apply(this, a);
+  };
+  const origListen = net.Server.prototype.listen;
+  net.Server.prototype.listen = function listen(...a) {
+    try {
+      this.once('listening', () => {
+        try { const ad = this.address(); if (ad && typeof ad === 'object' && ad.port) emit(['l', String(ad.port)]); } catch { /* closed */ }
+      });
+    } catch { /* never break the caller */ }
+    return origListen.apply(this, a);
+  };
   // child processes: Node children inherit NODE_OPTIONS (boot.js) and record their own reads; others do not
   const cp = require('node:child_process');
   const isNode = (f) => { const b = path.basename(String(f || '')); return b === 'node' || b === path.basename(process.execPath) || /^(npm|npx|pnpm|yarn|corepack)$/.test(b); };
@@ -108,7 +155,14 @@ function install(role) {
     wrap(cp, n, (a) => {
       const opts = a.find((x, i) => i > 0 && x && typeof x === 'object' && !Array.isArray(x)) || {};
       const cmd = opts.shell ? shellCmd(a[0]) : a[0];
-      if (!isNode(cmd)) emit(['x', String(cmd)]);
+      if (isNode(cmd)) return;
+      // tsx's esbuild service: transform requests carry the source through a pipe; the binary reads no file
+      // itself (esbuild's build API would; it is not what tsx uses). Its binary is an input.
+      if (/[\\/]esbuild$/.test(String(cmd)) && /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?tsx[\\/]/.test(longStack())) {
+        file(cmd);
+        return;
+      }
+      emit(['x', String(cmd)]);
     });
   }
   for (const n of ['exec', 'execSync']) wrap(cp, n, (a) => { if (!isNode(shellCmd(a[0]))) emit(['x', `sh: ${String(a[0]).slice(0, 200)}`]); });
