@@ -1,0 +1,98 @@
+{
+ "name": "documenso",
+ "job": "par",
+ "repo": "documenso/documenso",
+ "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+ "status": "running",
+ "run_id": "44918753387",
+ "engine_commit": "278aaff76246d051084e0ae6e77e4445a5cdb93f",
+ "setup_s": 347,
+ "params": {
+  "plain": 20,
+  "stress": 10,
+  "base": 0,
+  "det": 0,
+  "freeze": 0,
+  "freeze_control": 0,
+  "budget_min": 340,
+  "run_timeout_min": 45,
+  "target_timeout_min": 8,
+  "workers": 2,
+  "runs": 10,
+  "w1_runs": 2,
+  "plain_runs": 1,
+  "per_run_s": 1200,
+  "args": [
+   "e2e/api/trpc/admin/delete-recipient.spec.ts",
+   "e2e/api/trpc/admin/admin-find-documents.spec.ts",
+   "e2e/api/trpc/admin/delete-organisation.spec.ts",
+   "e2e/api/trpc/admin/admin-search.spec.ts",
+   "--project=api"
+  ]
+ },
+ "pw_dir": "packages/app-tests",
+ "pw_args": [
+  "--project=api",
+  "--project=license"
+ ],
+ "runs": [],
+ "epoch": "2026-11-21T15:36:00Z",
+ "measured_at": "2026-11-21T15:36:47Z",
+ "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
+ "par": {
+  "workers": 2,
+  "args": [
+   "e2e/api/trpc/admin/delete-recipient.spec.ts",
+   "e2e/api/trpc/admin/admin-find-documents.spec.ts",
+   "e2e/api/trpc/admin/delete-organisation.spec.ts",
+   "e2e/api/trpc/admin/admin-search.spec.ts",
+   "--project=api"
+  ],
+  "plain": [
+   {
+    "outcomes": {
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient email [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix matches by recipient name case-insensitively [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with empty value returns no results [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with no matches returns no results [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with nonexistent recipient ID returns no results [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with oversized number falls back to text search [api]": "passed",
+     "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: user and team prefixes with oversized numbers return no results [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: unauthenticated request is rejected with 401 [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query returns verified user and team rows [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query returns verified document and recipient rows [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: numeric query with no matches returns no groups [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: oversized number does not error and falls back to text search [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: envelope_ and org_ prefixes resolve exact matches [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: text query matches documents by title and users by email [api]": "passed",
+     "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: gibberish query returns no groups [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: unauthenticated request is rejected with 401 [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: non-admin authenticated user is rejected with 401 [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call with mismatched name is rejected and org is preserved [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call against non-existent organisation returns NOT_FOUND [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: zod schema rejects malformed input [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unauthenticated request is rejected with 401 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unknown recipient returns 404 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document is sealed when every remaining signer has already signed [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]": "passed"
+    },
+    "wall_s": 53.3,
+    "rc": 0
+   }
+  ],
+  "w1": [],
+  "wn": []
+ }
+}
