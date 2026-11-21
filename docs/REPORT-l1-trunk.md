@@ -30,6 +30,40 @@ Reported to the coordinator before any code was written.
 `claude/l1-threads-fix` and `claude/l1-asyncio-study` share **no common ancestor** with this lineage (empty
 merge-base; the trunk has 14 disjoint roots). So this is a content port, not a merge.
 
+## provable.rs landed mid-session, and it blocks the row
+
+MEASURED, after the three missing anchors above were reported: `crates/detpy-core/src/provable.rs` and
+`python/detpy/provable.py` **now exist**. Block 1 landed them on `claude/verifier-cli` during this session, 9
+commits after the branch point `bbb7a8a1`; the trunk head is `ee4d5de0`. So the brief was describing work that had
+not landed yet, and the file it named is real now.
+
+That changes the answer for this row, and not in my favour. `provable.py` takes `sys.monitoring`'s CALL event,
+which fires for every callable invoked, and looks each name up in `account()`. In `provable.rs`:
+
+```rust
+fn thread_account(name: &str) -> Accounting {
+    // a thread: `uncontrolled.thread`, already NOT PROVEN. Named so the report says "thread".
+    "start_new_thread" | "start_joinable_thread" | "start" | ... => Accounting::Unaccounted,
+```
+
+and `Accounting::Unaccounted` is documented as "The test is NOT PROVEN." So on the current trunk head the **call**
+to `threading.Thread.start` makes a test NOT PROVEN whatever the events say. The work below suppresses the
+`uncontrolled.thread` *event*, which feeds `Attestation.marks`; the sensor path does not look at the marks. A
+deterministically scheduled test is therefore still NOT PROVEN on that head, and nothing I can do on this side of
+the line changes it.
+
+The brief says that if `judge()` lacks something I need I must ask rather than write a second implementation, so
+that is what I did. The hook already exists: `Attestation.controls` is "the `--det` controls the run had on", and
+`required_controls(sensor)` already makes a per-sensor controls requirement part of the rule. The change asked of
+Block 1 is that `thread_account` answer `Controlled` for `start`, `start_new_thread` and `start_joinable_thread`
+**only when the run's controls contain `threads`**, and `Unaccounted` otherwise. The withdrawal path then needs no
+new code at all: an escaped thread already records `uncontrolled.thread`, that lands in `Attestation.marks`, and
+`judge` already turns a mark into NOT PROVEN.
+
+My half of that contract is `meta.controls` carrying `threads` and `async`, since `judge` can only see the control
+if the header names it. DECLARED: I will not suppress the sensor from this side to get a green. That would be a
+second implementation of their rule, which is the one thing this row was told not to build.
+
 ## How a scheduled thread becomes provable without touching the verdict
 
 `python/detpy/uncontrolled.py` is the only producer of the thread mark: it patches `threading.Thread.start` and

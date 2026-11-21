@@ -148,73 +148,11 @@ def _mark(kind: str, value: str, depth: int) -> None:
         pass
 
 
-def _scheduled_thread() -> bool:
-    """``--det-threads``: a thread started now is scheduled, so it is not an uncontrolled source.
-
-    The scheduler hands the baton to one managed thread at a time and records every choice among runnable threads
-    as a ``sched.thread`` event, so the interleaving is a run input like any other and the test can be proven
-    identical. It is not a promise: if the scheduler loses control of a thread (it blocks in C code, spins without
-    reaching a scheduling point, or runs outside the scheduler) it calls ``mark_thread_escaped`` below and the test
-    is NOT PROVEN again. Anything that goes wrong here answers False, which marks the test, as before.
-    """
-    try:
-        from . import threads
-
-        return threads.will_manage()
-    except Exception:
-        return False
-
-
-def mark_thread_escaped(why: str) -> None:
-    """``--det-threads`` lost control of a thread: mark the test ``uncontrolled.thread`` after all.
-
-    A fixed site, as in ``_mark_io``: an escape happens inside the scheduler, so there is no user frame that asked
-    for it. ``why`` names what escaped (the thread and what it was doing).
-    """
-    st = _state.STATE
-    if st.recorder is None or st.nodeid is None or "thread" in _seen or _state.is_quiet():
-        return
-    try:
-        _seen.add("thread")
-        _state.record_at("other", "uncontrolled.thread", "<scheduler escape>", why)
-    except Exception:  # never break the code under test
-        pass
-
-
-def _scheduled_io() -> bool:
-    """``--det-async``: the loop whose ready I/O this is belongs to the scheduler, so the order is a run input.
-
-    As with ``_scheduled_thread``, this is not a promise: a wake-up the scheduler had to take from the real world
-    is recorded as ``asyncio.uncontrolled`` and marks the test through ``mark_io_escaped``. Anything that goes
-    wrong here answers False, which marks the test, as before.
-    """
-    try:
-        from . import aio
-
-        return aio.controls_io()
-    except Exception:
-        return False
-
-
-def mark_io_escaped(why: str) -> None:
-    """``--det-async`` took a wake-up from the real world: mark the test ``uncontrolled.io`` after all."""
-    st = _state.STATE
-    if st.recorder is None or st.nodeid is None or "io" in _seen or _state.is_quiet():
-        return
-    try:
-        _seen.add("io")
-        _state.record_at("other", "uncontrolled.io", "<scheduler escape>", why)
-    except Exception:  # never break the code under test
-        pass
-
-
 def _mark_io() -> None:
     """I/O readiness on the test's own thread: an event loop the test runs, directly or through a plugin such as
     pytest-asyncio (whose frames are infrastructure), hence a fixed site."""
     st = _state.STATE
     if st.recorder is None or st.nodeid is None or "io" in _seen or _state.is_quiet():
-        return
-    if _scheduled_io():  # --det-async: the scheduler chooses the delivery order and records every choice
         return
     try:
         _seen.add("io")
@@ -337,8 +275,7 @@ def install(patcher) -> None:
     real_start = threading.Thread.start
 
     def start(self):
-        if not _scheduled_thread():  # --det-threads: the scheduler controls the interleaving, so it is a run input
-            _mark("thread", _target_name(self), 1)
+        _mark("thread", _target_name(self), 1)
         return real_start(self)
 
     patcher.set(threading.Thread, "start", start)
@@ -353,8 +290,7 @@ def install(patcher) -> None:
             continue
 
         def raw_start(function, *a, _real=real_raw, **kw):
-            if not _scheduled_thread():
-                _mark("thread", getattr(function, "__qualname__", None) or repr(function), 1)
+            _mark("thread", getattr(function, "__qualname__", None) or repr(function), 1)
             return _real(function, *a, **kw)
 
         raw_start.__name__ = name
