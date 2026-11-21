@@ -752,7 +752,7 @@ class Coordinator {
     // Only requests that drive the page's code are waited for: scripts, styles, fetch/XHR. Navigations have their
     // own accounting (navigation marks, p.navs); fonts and images may be started late by the renderer or not
     // intercepted at all (found on documenso: a preloaded web font and a redirected document held the barrier).
-    const BARRIER_TYPES = new Set(['Script', 'Stylesheet', 'Fetch', 'XHR']);
+    const BARRIER_TYPES = new Set(ENV.DETJS_LS_BARRIER_TYPES ? ENV.DETJS_LS_BARRIER_TYPES.split(',') : ['Script', 'Stylesheet', 'Fetch', 'XHR']);
     cdp.on('Network.requestWillBeSent', (e) => {
       if (!(e && e.request && /^https?:/.test(e.request.url))) return;
       if (!BARRIER_TYPES.has(e.type)) return;

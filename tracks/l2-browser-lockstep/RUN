@@ -1,38 +1,52 @@
 {
- "nonce": 25,
+ "nonce": 26,
  "jobs": [
   {
-   "job": "gate3",
-   "name": "documenso"
+   "job": "gate",
+   "name": "sveltekit"
   },
   {
-   "job": "gate4",
-   "name": "documenso"
+   "job": "gate",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "gate2",
+   "name": "sveltekit"
+  },
+  {
+   "job": "gate2",
+   "name": "uptime-kuma"
+  },
+  {
+   "job": "gate3",
+   "name": "sveltekit"
+  },
+  {
+   "job": "gate3",
+   "name": "uptime-kuma"
   }
  ],
  "params": {
-  "gate3": {
-   "runs": 2,
-   "plain_runs": 0,
-   "diag_runs": 0,
-   "budget_min": 120,
-   "per_run_s": 500,
-   "target_timeout_min": 10,
+  "gate": {},
+  "gate2": {
    "env": {
-    "DETJS_LS_TRACE": "/tmp/ls.trace"
-   }
+    "DETJS_LS_FRAME_STOPS": "0"
+   },
+   "runs": 10,
+   "plain_runs": 2,
+   "per_run_s": 240,
+   "budget_min": 330,
+   "target_timeout_min": 10
   },
-  "gate4": {
-   "runs": 2,
-   "plain_runs": 0,
-   "diag_runs": 0,
-   "budget_min": 120,
-   "per_run_s": 500,
-   "target_timeout_min": 10,
+  "gate3": {
    "env": {
-    "DETJS_LS_TRACE": "/tmp/ls.trace",
-    "DETJS_LS_CLOSE_BUSY": "0"
-   }
+    "DETJS_LS_BARRIER_TYPES": "Script,Stylesheet,Fetch,XHR,Image"
+   },
+   "runs": 10,
+   "plain_runs": 2,
+   "per_run_s": 240,
+   "budget_min": 330,
+   "target_timeout_min": 10
   }
  },
  "suites": false
