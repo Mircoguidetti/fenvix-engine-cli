@@ -58,8 +58,9 @@ function record(where, data, n) {
 // docs/VERIFY-CONTRACT.md); the verifier makes every test diverge when they differ. The module loader's own reads of
 // source files are not entries (`inputs.code` / `inputs.deps` cover them).
 const MODULE_LOADER = /\((?:node:)?internal\/modules\/|at (?:node:)?internal\/modules\//;
+const LOADING = /(?:node:)?internal\/modules\/(?:cjs\/loader|esm\/(?:module_job|loader|translators))/;
 const filesSeen = new Set();
-function byProjectOutside() {
+function byProjectOutside(where, stat = false) {
   if (STATE.testId !== null || STATE.quietDepth > 0) return false;
   const c = STATE.config;
   if (!c || !c.dir) return false;
@@ -71,10 +72,15 @@ function byProjectOutside() {
   // the caller of the fs function (the first frame outside detjs): the module loader reading a source file, or code
   if (MODULE_LOADER.test(stack.split('\n').slice(1).find((l) => !l.includes(sites.SHELL_DIR)) || '')) return false;
   if (!c.sites) return true;
-  // the project's own code (a test file, a setup file, a project module): not a package's (the runner's caches, a
-  // transformer's files), whose reads are the same tool work in every run
+  // the project's own code (a test file, a setup file, a project module), or a dependency reading a file of the
+  // project at import (dotenv/config reading .env, a config loader); not a package reading its own or the runner's
+  // files elsewhere (the runner's caches in <tmp>, a transformer's files): the same tool work in every run
   const site = STATE.quiet(() => sites.resolve());
-  return site !== null && !site.startsWith('<');
+  if (site === null) return false;
+  if (!site.startsWith('<')) return true;
+  // a dependency: only a read of a project file while a module is being loaded (its import), never a stat; Babel's
+  // configuration lookup and the runner's transform cache run while transforming, in some runs only
+  return !stat && site.startsWith('<deps>/') && typeof where === 'string' && !where.startsWith('<') && LOADING.test(stack);
 }
 function noteFile(where, digest) {
   const key = `${where}\u0000${digest}`;
@@ -91,27 +97,35 @@ function noteFile(where, digest) {
 function onRead(where, data, n) {
   if (!where) return;
   if (byTest()) record(where, data, n);
-  else if (byProjectOutside()) { const d = contentDigest(data, n); if (d !== null) noteFile(where, d); }
+  else if (byProjectOutside(where)) { const d = contentDigest(data, n); if (d !== null) noteFile(where, d); }
 }
 
-// File metadata (review R-055 V6): existence and the kind of file seen by the test are `fs.stat` events
-// (docs/VERIFY-CONTRACT.md section 2: `<path>|missing`, `<path>|present` (existence, access) or `<path>|<type>`
-// (stat, lstat)). Times are not part of the value: they are virtual and recorded by src/fstime.js.
+// File metadata (review R-055 V6): existence, kind and size seen by the test are `fs.stat` events
+// (docs/VERIFY-CONTRACT.md section 2: `<path>|missing`, `<path>|present` (existence, access), `<path>|<type>`, and
+// ` size=<n>` for a file (stat, lstat)). Times are not part of the value: they are virtual and recorded by
+// src/fstime.js.
 function typeOf(st) {
   if (!st) return 'missing';
   return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : st.isSymbolicLink() ? 'link' : 'other';
 }
 // the kind only: is*() are keyed by the call for the cache (src/cache/capture.js), a field such as `size` would be
 // a dependency of the test; existence calls record `present` (no second stat)
+const { CAPTURE } = require('./cache/capture');
 function statValue(st) {
-  return typeOf(st);
+  const t = typeOf(st);
+  if (t !== 'file') return t;
+  // the size the call returned (docs/VERIFY-CONTRACT.md section 2), read past the cache capture: the test reading
+  // only isFile() does not make the size a dependency of its cached result (r021b). Times stay with src/fstime.js
+  // (virtual; the real ones of a file the test wrote differ in every run)
+  CAPTURE.busy++;
+  try { return `${t} size=${st.size}`; } catch { return t; } finally { CAPTURE.busy--; }
 }
 function onStat(p, value) {
   if (typeof p === 'number') return;
   const where = outsidePath(p);
   if (!where) return;
   if (byTest()) STATE.record('fs', 'fs.stat', `${where}|${value}`);
-  else if (byProjectOutside()) noteFile(where, `stat:${value}`);
+  else if (byProjectOutside(where, true)) noteFile(where, `stat:${value}`);
 }
 
 function installProcess(patcher) {
@@ -129,7 +143,7 @@ function installProcess(patcher) {
     if (o && byTest()) {
       const id = STATE.testId;
       a[a.length - 1] = function done(e, data) { if (!e && STATE.testId === id) record(o, data); return cb.apply(this, arguments); };
-    } else if (o && byProjectOutside()) {
+    } else if (o && byProjectOutside(o)) {
       a[a.length - 1] = function done(e, data) { if (!e) { const d = contentDigest(data); if (d !== null) noteFile(o, d); } return cb.apply(this, arguments); };
     }
     return real.call(this, p, ...a);
@@ -137,9 +151,10 @@ function installProcess(patcher) {
   w(fs.promises, 'readFile', (real) => async function readFile(p, ...a) {
     const o = STATE.quietDepth === 0 ? outsidePath(p) : null;
     const mine = o && byTest();
-    const outside = o && !mine && byProjectOutside();
+    const outside = o && !mine && byProjectOutside(o);
+    const id = STATE.testId;
     const r = await real.call(this, p, ...a);
-    if (mine) record(o, r);
+    if (mine && STATE.testId === id) record(o, r);
     else if (outside) { const d = contentDigest(r); if (d !== null) noteFile(o, d); }
     return r;
   });
