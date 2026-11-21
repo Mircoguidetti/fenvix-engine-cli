@@ -65,6 +65,12 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ### F-05 cache with proof (serial and -n), with receipts
 
+* **Review R-053 (wrong results K1, P, E), fixed.** K1: the conftest.py and __init__.py files of every test file's
+  directory chain (existence and content) are in the code prefix. P: the key holds the machine's real CPU set, CPU
+  count and host name (`_machine`, `posix.uname`), not the values --det pins for tests (trunk 9e3663a). E:
+  `posix.urandom` and `posix.getrandom` are controlled like `os.urandom`. `tests/test_review_r053_pycache.py` (9)
+  copied in. The systematic pass over every input channel is a separate session:
+  `sessions/2026-11-20-py-cache/PROMPT-cache-inputs.md`.
 * **Review R-052 (blocking, wrong results S1, S3, S5, C3, C5), fixed.** Stored needs (entry or `loose_needs`) were
   trusted after a test file changed: an earlier test edited to write state (a module's dict, the recursion limit, a
   file through a child process) left a later test reused as passed; a victim edited to read it ran with its old needs
