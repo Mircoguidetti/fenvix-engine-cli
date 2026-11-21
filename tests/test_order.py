@@ -41,7 +41,24 @@ def test_seed_shuffles_reproducibly(pytester, run_det):
     assert len([m for i, m in enumerate(mods) if i == 0 or mods[i - 1] != m]) == 3
 
 
-def test_other_plugins_cannot_reorder(pytester, run_det):
+def test_a_reordering_that_draws_randomness_is_undone(pytester, run_det):
+    pytester.makepyfile(**MODULES)
+    pytester.makeconftest(
+        """
+        import random
+        def pytest_collection_modifyitems(items):
+            random.SystemRandom().shuffle(items)
+        """
+    )
+    _, t = run_det()
+    assert executed(t)[0] == "test_m0.py::test_f0"
+    _, t2 = run_det()
+    assert executed(t2) == executed(t)
+
+
+def test_a_reordering_that_is_a_function_of_the_tests_is_kept(pytester, run_det):
+    """P-064 (exam PY-02.probe.modifyitems): a conftest that sorts its tests is the suite as the customer runs it;
+    undoing it made a test that passes plain fail under --det."""
     pytester.makepyfile(**MODULES)
     pytester.makeconftest(
         """
@@ -49,8 +66,10 @@ def test_other_plugins_cannot_reorder(pytester, run_det):
             items.reverse()
         """
     )
+    plain = pytester.runpytest_subprocess("-p", "no:detpy", "-p", "no:cacheprovider", "--collect-only", "-q")
+    first_plain = [line for line in plain.outlines if "::" in line][0]
     _, t = run_det()
-    assert executed(t)[0] == "test_m0.py::test_f0"
+    assert executed(t)[0] == first_plain
 
 
 def test_deselection_is_respected(pytester, run_det):

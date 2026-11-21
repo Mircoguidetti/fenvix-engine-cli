@@ -180,7 +180,15 @@ async function main(argv) {
     if (opts.workers == null) opts.workers = String(parallel.readReplay(opts.plan).lanes.length);
   }
   const tc = values(flags, '--test-concurrency').pop();
-  const want = parallel.resolveWorkers(opts, { workers: tc !== undefined ? parallel.workerCount(tc) : null, source: '--test-concurrency' });
+  // without --test-concurrency, `node --test` itself runs os.availableParallelism() - 1 files at a time (process
+  // isolation; one with --test-isolation=none): the same default under --det, so a run is never slower than the
+  // customer's plain one (founder 2026-11-21; it used to be serial unless the flag was given)
+  const os = require('node:os');
+  const nodeDefault = userIso === 'none' ? 1
+    : Math.max((typeof os.availableParallelism === 'function' ? os.availableParallelism() : os.cpus().length) - 1, 1);
+  const want = parallel.resolveWorkers(opts, tc !== undefined
+    ? { workers: parallel.workerCount(tc), source: '--test-concurrency' }
+    : { workers: nodeDefault, source: 'node --test default (availableParallelism - 1)' });
   const par = { workers: want.workers, source: want.source, refused: null, plan: null, result: null };
   if (par.workers > 1) {
     const reasons = [];

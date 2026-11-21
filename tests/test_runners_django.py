@@ -4,6 +4,8 @@ module, migrations, ``--parallel``, the group order under a shuffle)."""
 
 from __future__ import annotations
 
+import json
+import subprocess
 import sys
 import textwrap
 
@@ -116,12 +118,43 @@ def test_seeded_shuffle_keeps_django_groups(tmp_path):
         assert groups[:2] == ["Db", "Db"], o
 
 
-def test_parallel_is_forced_to_one(tmp_path):
+def test_parallel_runs_in_lanes_with_a_fixed_plan(tmp_path):
+    """P-064: Django's own parallel mode under --det: one engine process per lane, a test class never split, the
+    same plan and the same fingerprints in every run, the outcomes of the serial run."""
     root = tmp_path / "p"
     project(root, CONTROL_TESTS)
-    r = dj(root, "--parallel", "2", cache=False, det_args=["--det-epoch=2030-01-01T00:00:00"])
-    assert "Django --parallel 2 -> 1 under --det" in r.out, r
+    ep = ["--det-epoch=2030-01-01T00:00:00"]
+    serial = dj(root, cache=False, det_args=ep)
+    a = dj(root, "--parallel", "2", cache=False, det_args=ep)
+    b = dj(root, "--parallel=2", cache=False, det_args=ep)
+    assert "Django --parallel 2: 2 lanes with a fixed plan" in a.out, a
+    assert "detpy: lane 1/2" in a.out and "detpy: lane 2/2" in a.out, a
+    assert a.outcomes == serial.outcomes and len(a.outcomes) == 6, (a, serial)
+    assert a.fingerprints == b.fingerprints and len(a.fingerprints) == 6, (a.fingerprints, b.fingerprints)
+    assert a.order == serial.order, (a.order, serial.order)
+    v = subprocess.run([sys.executable, "-m", "detpy", "verify", "--json", a.data["trace"], b.data["trace"]],
+                       capture_output=True, text=True)
+    rep = json.loads(v.stdout)
+    assert rep["summary"]["diverged"] == 0 and rep["summary"]["missing"] == 0, v.stdout[:3000]
+    # a test class stays in one lane (its setUpClass / setUpTestData run once)
+    lanes = [set(l.split("::")[1] for l in (root / ".detpy" / "django-lanes" / f"lane{k}.order").read_text().split())
+             for k in (1, 2)]
+    assert not (lanes[0] & lanes[1]), lanes
+
+
+def test_parallel_with_the_cache_is_serial_and_says_why(tmp_path):
+    root = tmp_path / "p"
+    project(root, CONTROL_TESTS)
+    r = dj(root, "--parallel", "2", det_args=["--det-epoch=2030-01-01T00:00:00"])
+    assert "Django --parallel 2 -> 1 under --det (--det-cache" in r.out, r
     assert len(r.fingerprints) == 6 and set(r.outcomes.values()) == {"passed"}, r
+
+
+def test_a_failure_in_a_lane_fails_the_run(tmp_path):
+    root = tmp_path / "p"
+    project(root, CONTROL_TESTS + "\n\nclass Broken(SimpleTestCase):\n    def test_no(self):\n        self.fail('x')\n")
+    r = dj(root, "--parallel", "2", cache=False, det_args=["--det-epoch=2030-01-01T00:00:00"])
+    assert r.code != 0 and r.outcomes["site/app/tests.py::Broken::test_no"] == "failed", r
 
 
 # -- shared adversarial cases ----------------------------------------------------------------------------------------

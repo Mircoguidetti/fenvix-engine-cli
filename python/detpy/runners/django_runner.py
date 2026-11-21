@@ -3,8 +3,8 @@ and ``django-admin test [args]``): Django's ``DiscoverRunner`` under the driver.
 
 Django's runner builds unittest suites, so the unittest shell (``unittest_shell``) does the work; this module adds:
 
-* ``--parallel`` is forced to 1 under ``--det`` (one process: the order, the clock and the capture are this
-  process's; Django's parallel runner forks workers that run outside the driver). Said in the summary.
+* ``--parallel N`` runs in N lanes with a fixed plan (``django_lanes``): one engine process per lane, Django's unit
+  (a test class) kept, traces and outcomes merged. Serial, said in the summary, under ``--det-cache``.
 * Django's group order is kept: ``reorder_by`` (TestCase, then SimpleTestCase and TransactionTestCase, then other
   unittest tests); a ``--det-seed`` shuffle stays inside each group (TestCase tests after a transactional test
   that flushed the database would fail only under the shuffle).
@@ -67,9 +67,6 @@ class DjangoHooks:
 
         def run_tests(runner, *args, **kw):
             if hooks.run.det:
-                if getattr(runner, "parallel", 1) not in (0, 1):
-                    hooks.run.adjust(f"Django --parallel {runner.parallel} -> 1 under --det (one process)")
-                runner.parallel = 1
                 order = tuple(getattr(runner, "reorder_by", ()) or ())
 
                 def group_key(t, order=order):
@@ -79,16 +76,29 @@ class DjangoHooks:
                     return len(order)
 
                 hooks.shell.group_key = group_key
+                want = getattr(runner, "parallel", 1) or 1
+                if want > 1 and not os.environ.get("DETPY_DJANGO_LANE"):
+                    from . import django_lanes
+
+                    why = django_lanes.refusal(hooks.run)
+                    if why is None:
+                        labels = args[0] if args else kw.get("test_labels")
+                        bad = django_lanes.run_lanes(hooks, runner, labels, want)
+                        if bad is not None:
+                            return bad
+                    else:
+                        hooks.run.adjust(f"Django --parallel {want} -> 1 under --det ({why})")
+                runner.parallel = 1
             return real_run_tests(runner, *args, **kw)
 
         run_tests.__wrapped__ = real_run_tests
         p.set(DiscoverRunner, "run_tests", run_tests)
         if "__call__" in vars(SimpleTestCase):
             self.shell.bracket(SimpleTestCase)
-        if self.run.det and getattr(self.run.ns, "det_db", "reuse") == "reuse":
-            from .. import _djangodb  # the test databases: a sealed template, proven (row PY-04)
+        if self.run.det:
+            from .. import _djangodb  # the test databases: a sealed template, proven (row PY-04); lanes' own names
 
-            _djangodb.enable(self.run.root)
+            _djangodb.enable(self.run.root, reuse=getattr(self.run.ns, "det_db", "reuse") == "reuse")
         return self
 
 

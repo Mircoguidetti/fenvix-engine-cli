@@ -511,6 +511,47 @@ def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
     return out
 
 
+class _RandomnessWatch:
+    """Whether the code that ran between start and ``stop`` drew from a random source: the ``random`` module's
+    generator, the engine's seeded streams, or OS entropy (``os.urandom`` / ``random._urandom``: SystemRandom,
+    secrets, uuid4)."""
+
+    def __init__(self) -> None:
+        import random
+
+        self.drew = False
+        self._random = random
+        self._state = random.getstate()
+        try:
+            self._seeds = _core.seeds_counter()
+        except Exception:
+            self._seeds = None
+        self._saved = (os.urandom, getattr(random, "_urandom", None))
+        watch = self
+
+        def wrap(real):
+            def urandom(*a, **kw):
+                watch.drew = True
+                return real(*a, **kw)
+            return urandom
+
+        os.urandom = wrap(self._saved[0])
+        if self._saved[1] is not None:
+            random._urandom = wrap(self._saved[1])
+
+    def stop(self) -> None:
+        os.urandom = self._saved[0]
+        if self._saved[1] is not None:
+            self._random._urandom = self._saved[1]
+        if self._random.getstate() != self._state:
+            self.drew = True
+        try:
+            if self._seeds is not None and _core.seeds_counter() != self._seeds:
+                self.drew = True
+        except Exception:
+            pass
+
+
 def _plugin_rewrite_files(limit: int = 20000) -> list[str]:
     """The modules pytest marks for rewrite in every installed pytest-plugin distribution (a ``pytest11`` entry point:
     hypothesis, xdist ...), as ``_pytest.config._iter_rewritable_modules`` sees them: every ``.py`` file the
@@ -914,7 +955,8 @@ def _keep_django_groups(config, ordered):
     stable sort, a pure function of its input: calling pytest-django's own hook on
     detpy's (fixed or seeded) order keeps the group order as a constraint, keeps
     detpy's order inside each group, and stays deterministic. Returns True when
-    the grouping moved a test."""
+    the grouping was applied (P-064: the order pytest-django made is kept as it
+    is, so the grouping may have nothing left to move)."""
     plugin = config.pluginmanager.get_plugin("django")
     hook = getattr(plugin, "pytest_collection_modifyitems", None)
     if hook is None:
@@ -926,9 +968,8 @@ def _keep_django_groups(config, ordered):
         return False
     if sorted(map(id, grouped)) != sorted(map(id, ordered)):  # pragma: no cover - not a pure reorder
         return False
-    changed = any(a is not b for a, b in zip(grouped, ordered))
     ordered[:] = grouped
-    return changed
+    return True
 
 
 class _DetSession(_Outcomes):
@@ -989,14 +1030,27 @@ class _DetSession(_Outcomes):
     @pytest.hookimpl(hookwrapper=True)
     def pytest_collection_modifyitems(self, session, config, items):
         original = list(items)
-        yield
+        drew = _RandomnessWatch()
+        try:
+            yield
+        finally:
+            drew.stop()
         if "order" not in _state.STATE.config.controls:
             return
-        # Undo reorderings done by other plugins, keep their deselection.
-        remaining = {id(i) for i in items}
-        ordered = [i for i in original if id(i) in remaining]
-        known = {id(i) for i in ordered}
-        ordered += [i for i in items if id(i) not in known]
+        if drew.drew:
+            # a reordering that drew randomness (pytest-randomly-like shuffles): undone, its deselection kept
+            remaining = {id(i) for i in items}
+            ordered = [i for i in original if id(i) in remaining]
+            known = {id(i) for i in ordered}
+            ordered += [i for i in items if id(i) not in known]
+            if [i.nodeid for i in ordered] != [i.nodeid for i in items]:
+                note = "a reordering of the collected tests that drew randomness was undone (collection order kept)"
+                if note not in S.adjustments:
+                    S.adjustments.append(note)
+        else:
+            # a reordering that is a function of the tests alone (a conftest sorting slow tests last, pytest-order,
+            # pytest-django's groups) is the suite as the customer runs it: kept (exam PY-02.probe.modifyitems, P-064)
+            ordered = list(items)
         cfg = _state.STATE.config
         if cfg.shuffle:
             perm = _core.shuffle_order([i.nodeid for i in ordered], cfg.seed)

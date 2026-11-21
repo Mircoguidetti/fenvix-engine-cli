@@ -60,10 +60,15 @@ _ADDR = re.compile(r" at 0x[0-9a-fA-F]+")
 _TEST_FILE = re.compile(r"(^test_.*|.*_tests?|^tests|^conftest)\.py$")
 
 
-def enable(root: str) -> None:
-    """Wrap Django's test-database creation (idempotent). Imports nothing of Django that is not imported already."""
-    global _ROOT, _ENABLED, _REAL
+_REUSE = True
+
+
+def enable(root: str, reuse: bool = True) -> None:
+    """Wrap Django's test-database creation (idempotent). Imports nothing of Django that is not imported already.
+    ``reuse=False`` (``--det-db=fresh``): only the engine's parallel lanes get their own database names."""
+    global _ROOT, _ENABLED, _REAL, _REUSE
     _ROOT = os.path.abspath(root)
+    _REUSE = reuse
     if _ENABLED:
         return
     try:
@@ -157,7 +162,14 @@ def _settings_digest() -> str:
             warnings.simplefilter("ignore")
             for name in sorted(n for n in dir(settings) if n.isupper()):
                 try:
-                    parts.append(f"{name}={_norm(getattr(settings, name))}")
+                    v = getattr(settings, name)
+                    if name == "DATABASES" and isinstance(v, dict):
+                        # each alias' name and its test database's name change per process (create_test_db renames
+                        # the alias; lanes and xdist workers get their own test database): not what the build uses
+                        v = {a: {k: ({tk: tv for tk, tv in x.items() if tk != "NAME"} if k == "TEST" and
+                                     isinstance(x, dict) else x) for k, x in d.items() if k != "NAME"}
+                             if isinstance(d, dict) else d for a, d in v.items()}
+                    parts.append(f"{name}={_norm(v)}")
                 except Exception as e:
                     parts.append(f"{name}=<error {type(e).__name__}>")
         _SETTINGS_DIGEST = _sha("\n".join(parts).encode())
@@ -215,6 +227,8 @@ def _server_version(creation) -> str:
 
 def _alias_settings(conn) -> str:
     d = {k: v for k, v in conn.settings_dict.items() if k not in ("NAME", "PASSWORD")}
+    if isinstance(d.get("TEST"), dict):  # the test database's own name: per process (lanes, xdist workers)
+        d["TEST"] = {k: v for k, v in d["TEST"].items() if k != "NAME"}
     return _sha(_norm(d).encode())
 
 
@@ -509,10 +523,12 @@ def _create(creation, args, kw):
     if lane:
         # an engine parallel lane (django_runner): its own test database, created from the same template
         test = conn.settings_dict.setdefault("TEST", {})
-        base = test.get("NAME") or ("test_" + (conn.settings_dict.get("NAME") or ""))
-        if conn.vendor != "sqlite" or not creation.is_in_memory_db(base):
+        base = creation._get_test_db_name()  # Django's own rule (SQLite: in memory unless TEST NAME says otherwise)
+        if not (conn.vendor == "sqlite" and creation.is_in_memory_db(base)) and not base.endswith(f"_lane{lane}"):
             root, ext = os.path.splitext(base)
             test["NAME"] = f"{root}_lane{lane}{ext}"
+    if not _REUSE:
+        return _REAL(creation, *args, **kw)
     if keepdb:
         NOTES.append(f"test database '{conn.alias}': --keepdb / --reuse-db given, the user's database is used as is "
                      f"(not proven by the engine)")

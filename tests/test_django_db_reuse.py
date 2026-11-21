@@ -152,7 +152,7 @@ def test_two_reusing_runs_verify_identical(tmp_path):
     t = [tmp_path / "v1.jsonl", tmp_path / "v2.jsonl"]
     for p in t:
         r = dj(root, det_args=[f"--det-trace={p}"])
-        assert reused(r), r
+        assert reused(r), r.out[-8000:]
     v = subprocess.run([sys.executable, "-m", "detpy", "verify", "--json", str(t[0]), str(t[1])],
                        capture_output=True, text=True, cwd=root)
     rep = json.loads(v.stdout)
@@ -340,4 +340,4 @@ def test_postgres_parallel_workers_get_their_own_copy(tmp_path, pg):
     dj(root)
     r = dj(root, "--parallel", "2")
     assert_all_pass(r)
-    assert reused(r), r
+    assert reused(r), r.out[-8000:]

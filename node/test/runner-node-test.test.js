@@ -259,7 +259,12 @@ describe('node-test: adversarial (environment, processes, R-009 / R-017)', () =>
       ...tf('a', "test('a', () => { fs.mkdirSync('out', { recursive: true }); fs.writeFileSync('out/shared.txt', 'v'); });"),
       ...tf('b', "test('b', () => { assert.equal(fs.readFileSync('out/shared.txt', 'utf8'), 'v'); });"),
     });
-    notCached(R, dir, F('b'), 'written by tests/a.test.mjs');
+    // serial (--test-concurrency=1): the later file read what the earlier one wrote
+    notCached(R, dir, F('b'), 'written by tests/a.test.mjs', { args: ['--test-concurrency=1'] });
+    // node --test's default runs files in parallel (availableParallelism - 1), as plain node --test does: the two
+    // files touch the same path from different lanes, a race the engine refuses to cache (P-064)
+    fs.rmSync(path.join(dir, '.cache'), { recursive: true, force: true });
+    if (require('node:os').availableParallelism() > 2) notCached(R, dir, F('b'), 'another test file running in parallel also touched');
   });
 
   // claude/node (P-041, Level 0's file times, src/fstime.js G-0143): a file time the test did not set is read on the
