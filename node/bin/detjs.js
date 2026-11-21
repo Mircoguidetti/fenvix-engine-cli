@@ -17,6 +17,8 @@ const RUNNERS = ['vitest', 'jest', 'playwright', 'node-test', 'mocha', 'bun-test
 const PROG = require('node:path').basename(process.argv[1] || 'detjs').replace(/\.js$/, '');
 const VERSION = require('../package.json').version;
 const USAGE = `usage: detjs vitest|jest|playwright|node-test|mocha|bun-test|deno-test|tap|ava|jasmine|uvu [--det options] [runner args]
+       detjs serve [--det options] -- COMMAND [ARGS]   (app server for detjs playwright)
+       detjs state save|restore|status --det-state=FILE (start state of detjs playwright runs)
        detjs verify TRACE TRACE [...] [--json] [--show-stable]
        detjs repro TEST [options] [-- runner args]     flaky Vitest / Jest / node:test / Playwright test -> reproducible defect
        detjs explore --budget MIN [options] [-- runner args]
@@ -30,7 +32,9 @@ async function main(argv) {
     && rest.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true')) return require('../src/isolate').main(cmd, rest);
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
-  if (cmd === 'playwright') return require('../src/playwright/cli').main(rest);
+  if (cmd === 'playwright') return require('../src/pw/cli').main(rest);
+  if (cmd === 'serve') return require('../src/pw/cli').serve(rest);
+  if (cmd === 'state') return require('../src/pw/snapshot').cli(rest);
   if (cmd === 'repro' || cmd === 'explore' || cmd === 'replay') return reproDriver(cmd, rest);
   if (cmd === 'bun-test') return require('../src/runners/bun').main(rest);
   if (cmd === 'deno-test') return require('../src/runners/deno').main(rest);

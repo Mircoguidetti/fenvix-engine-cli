@@ -1,0 +1,340 @@
+engine ff6ff42bcee808f4d3064ed81ee436f8e304f63e run 44794750078
+✖ --det-state: every replay starts from the saved files (a seeded registration replays 3/3 with one fingerprint) (5479.346281ms)
+✔ detjs state: a Postgres database is restored to its snapshot (rows written after the save are gone) (3264.929742ms)
+✔ server scope: a server with a background job gives one fingerprint in 4 runs (S1+S2; round 1 behaviour with DETJS_PW_SCOPE=0 diverges) (28463.358645ms)
+✔ web workers: ids drawn in a dedicated worker are the same in 3 runs, one fingerprint (S4) (12736.845517ms)
+✖ server pushes: push frames and responses reach the page in one order, one browser-side sequence in 6 runs (S5) (34325.893253ms)
+✖ worker clock: dates made by the test code are the same in every run (round 1: real clock, 3 fingerprints) (7487.710247ms)
+✔ paced virtual time: a 1.5 s page timer fires within 10 s while test code reads the virtual clock (7016.7241ms)
+✖ unique test data: crypto draws after a worker restart and Date.now() names do not repeat across tests (1994.876171ms)
+✔ H3: the printed replay command runs its test when the run used --browser (config without projects) (2274.222031ms)
+✖ E6: a seed space reaching the deadline reproduces a slow-response failure with one fingerprint (round 2 list: no seed fails) (40741.739834ms)
+✔ E2: freeze-before-observe takes the final state at the end of the test function and does not stall (3 runs) (8553.621795ms)
+✔ unread fetch body: a response whose body the page never reads does not hold the queue (passes plain and under --det) (3716.74226ms) # known defect (round 3): queue waits for requestfinished
+✔ worker clock: a clock read outside any test does not move the test-code clock to epoch + real time (1090.160769ms)
+✔ playwright without --det: server and page randomness differ between runs (3871.56241ms)
+✖ playwright --det: three runs, identical fingerprints and values for every test (181091.278434ms)
+✖ playwright --det-seed: a seed replays its outcome, seeds explore both outcomes of the race (475.801923ms)
+✖ playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint) (3083.352666ms)
+✖ playwright --det: a runner API request and a page.goto issued together are ordered the same way in every run (3061.396746ms)
+✖ R1: an elapsed-time budget that fails without detjs also fails under --det (the test-code clock must not hide it) (5294.50469ms)
+✔ R2: test code and app server share one notion of "now" under --det (skew under one hour) (2111.111079ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 9
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 356312.844541
+✖ failing tests:
+✖ --det-state: every replay starts from the saved files (a seeded registration replays 3/3 with one fingerprint) (5479.346281ms)
+✖ server pushes: push frames and responses reach the page in one order, one browser-side sequence in 6 runs (S5) (34325.893253ms)
+✖ worker clock: dates made by the test code are the same in every run (round 1: real clock, 3 fingerprints) (7487.710247ms)
+✖ unique test data: crypto draws after a worker restart and Date.now() names do not repeat across tests (1994.876171ms)
+✖ E6: a seed space reaching the deadline reproduces a slow-response failure with one fingerprint (round 2 list: no seed fails) (40741.739834ms)
+✖ playwright --det: three runs, identical fingerprints and values for every test (181091.278434ms)
+✖ playwright --det-seed: a seed replays its outcome, seeds explore both outcomes of the race (475.801923ms)
+✖ playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint) (3083.352666ms)
+✖ playwright --det: a runner API request and a page.goto issued together are ordered the same way in every run (3061.396746ms)
+✖ R1: an elapsed-time budget that fails without detjs also fails under --det (the test-code clock must not hide it) (5294.50469ms)
+
+---- failures (tail)
+✖ --det-state: every replay starts from the saved files (a seeded registration replays 3/3 with one fingerprint) (5479.346281ms)
+✔ detjs state: a Postgres database is restored to its snapshot (rows written after the save are gone) (3264.929742ms)
+✔ server scope: a server with a background job gives one fingerprint in 4 runs (S1+S2; round 1 behaviour with DETJS_PW_SCOPE=0 diverges) (28463.358645ms)
+✔ web workers: ids drawn in a dedicated worker are the same in 3 runs, one fingerprint (S4) (12736.845517ms)
+✖ server pushes: push frames and responses reach the page in one order, one browser-side sequence in 6 runs (S5) (34325.893253ms)
+✖ worker clock: dates made by the test code are the same in every run (round 1: real clock, 3 fingerprints) (7487.710247ms)
+✔ paced virtual time: a 1.5 s page timer fires within 10 s while test code reads the virtual clock (7016.7241ms)
+✖ unique test data: crypto draws after a worker restart and Date.now() names do not repeat across tests (1994.876171ms)
+E6 fixture: round-2 list pppppppp; with D pppppppp (seeds 1-8)
+E2 fixture (page ticking during real-time polling): 1 fingerprints in 3 runs
+✔ H3: the printed replay command runs its test when the run used --browser (config without projects) (2274.222031ms)
+✖ E6: a seed space reaching the deadline reproduces a slow-response failure with one fingerprint (round 2 list: no seed fails) (40741.739834ms)
+✔ E2: freeze-before-observe takes the final state at the end of the test function and does not stall (3 runs) (8553.621795ms)
+✔ unread fetch body: a response whose body the page never reads does not hold the queue (passes plain and under --det) (3716.74226ms) # known defect (round 3): queue waits for requestfinished
+✔ worker clock: a clock read outside any test does not move the test-code clock to epoch + real time (1090.160769ms)
+✔ playwright without --det: server and page randomness differ between runs (3871.56241ms)
+✖ playwright --det: three runs, identical fingerprints and values for every test (181091.278434ms)
+✖ playwright --det-seed: a seed replays its outcome, seeds explore both outcomes of the race (475.801923ms)
+✖ playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint) (3083.352666ms)
+✖ playwright --det: a runner API request and a page.goto issued together are ordered the same way in every run (3061.396746ms)
+✖ R1: an elapsed-time budget that fails without detjs also fails under --det (the test-code clock must not hide it) (5294.50469ms)
+✔ R2: test code and app server share one notion of "now" under --det (skew under one hour) (2111.111079ms)
+ℹ tests 20
+ℹ suites 0
+ℹ pass 9
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 1
+ℹ duration_ms 356312.844541
+
+✖ failing tests:
+
+test at test/l2r2.test.js:106:1
+✖ --det-state: every replay starts from the saved files (a seeded registration replays 3/3 with one fingerprint) (5479.346281ms)
+  AssertionError [ERR_ASSERTION]: {"run_a":0,"run_b":1,"index":2,"window":null,"event_a":{"t":0,"s":"outcome","o":"outcome","at":"","v":"passed"},"event_b":{"t":0,"s":"net","o":"api.done","at":"","v":"POST http://localhost:4611/api/register 201 24ca58f38980bd5f8b434468b5df6d4d"},"reason":"net","description":"event #2: [outcome] outcome @  = passed  <>  [net] api.done @  = POST http://localhost:4611/api/register 201 24ca58f38980bd5f8b434468b5df6d4d"}
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/l2r2.test.js:120:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/l2r2.test.js:311:1
+✖ server pushes: push frames and responses reach the page in one order, one browser-side sequence in 6 runs (S5) (34325.893253ms)
+  AssertionError [ERR_ASSERTION]: push ack hello / response ok / push saved | push ack hello / response ok / push saved | push ack hello / response ok / push saved | push ack hello / response ok / push saved | push ack hello / response ok / push saved | push ack hello / push saved / response ok
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/l2r2.test.js:324:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/l2r2.test.js:346:1
+✖ worker clock: dates made by the test code are the same in every run (round 1: real clock, 3 fingerprints) (7487.710247ms)
+  AssertionError [ERR_ASSERTION]: {"run_a":0,"run_b":1,"index":0,"window":null,"event_a":{"t":0,"s":"sched","o":"sched.io","at":"","v":"0/1:api POST http://localhost:4615/api/rows 9c4b0ecce491516983668e887a21cf58"},"event_b":{"t":0,"s":"sched","o":"sched.io","at":"","v":"0/1:api POST http://localhost:4615/api/rows af6e5cab907367d85164a8036bba089b"},"reason":"sched","description":"event #0: first diverging scheduling choice: sched.io 0/1:api POST http://localhost:4615/api/rows 9c4b0ecce491516983668e887a21cf58 @   <>  sched.io 0/1:api POST http://localhost:4615/api/rows af6e5cab907367d85164a8036bba089b @ "}
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/l2r2.test.js:354:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/l2r2.test.js:427:1
+✖ unique test data: crypto draws after a worker restart and Date.now() names do not repeat across tests (1994.876171ms)
+  AssertionError [ERR_ASSERTION]: 
+  Running 5 tests using 1 worker
+  
+    ✓  1 tests/dates.spec.js:4:3 › user stamped with Date.now(): first (1ms)
+    ✓  2 tests/dates.spec.js:4:3 › user stamped with Date.now(): second (0ms)
+    ✓  3 tests/dates.spec.js:4:3 › user stamped with Date.now(): third (0ms)
+    ✘  4 tests/restart.spec.js:4:1 › a failing test seeds a user first (0ms)
+    ✘  5 tests/restart.spec.js:8:1 › the next test seeds its own user (1ms)
+  
+  
+    1) tests/restart.spec.js:4:1 › a failing test seeds a user first ─────────────────────────────────
+  
+      Error: expect(received).toBe(expected) // Object.is equality
+  
+      Expected: "so that Playwright starts a new worker"
+      Received: "this test fails on purpose"
+  
+        4 | test('a failing test seeds a user first', async ({ request }) => {
+        5 |   expect((await seedUser(request, crypto.randomUUID() + '@test.example')).status()).toBe(200);
+      > 6 |   expect('this test fails on purpose').toBe('so that Playwright starts a new worker');
+          |                                        ^
+        7 | });
+        8 | test('the next test seeds its own user', async ({ request }) => {
+        9 |   expect((await seedUser(request, crypto.randomUUID() + '@test.example')).status()).toBe(200);
+          at /home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/.tmp/l2r2/unique/tests/restart.spec.js:6:40
+  
+      Error Context: test-results/restart-a-failing-test-seeds-a-user-first/error-context.md
+  
+    2) tests/restart.spec.js:8:1 › the next test seeds its own user ──────────────────────────────────
+  
+      Error: expect(received).toBe(expected) // Object.is equality
+  
+      Expected: 200
+      Received: 409
+  
+         7 | });
+         8 | test('the next test seeds its own user', async ({ request }) => {
+      >  9 |   expect((await seedUser(request, crypto.randomUUID() + '@test.example')).status()).toBe(200);
+           |                                                                                     ^
+        10 | });
+        11 |
+          at /home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/.tmp/l2r2/unique/tests/restart.spec.js:9:85
+  
+      Error Context: test-results/restart-the-next-test-seeds-its-own-user/error-context.md
+  
+    2 failed
+      tests/restart.spec.js:4:1 › a failing test seeds a user first ──────────────────────────────────
+      tests/restart.spec.js:8:1 › the next test seeds its own user ───────────────────────────────────
+    3 passed (1.5s)
+  detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+  detjs: replay tests/restart.spec.js::a failing test seeds a user first:
+    npx detjs playwright --det --det-epoch=2025-01-01T00:00:00Z test tests/restart.spec.js:4
+  detjs: replay tests/restart.spec.js::the next test seeds its own user:
+    npx detjs playwright --det --det-epoch=2025-01-01T00:00:00Z test tests/restart.spec.js:8
+  detjs: trace .detjs/trace.jsonl
+  
+  
+  'passed' !== 'failed'
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/l2r2.test.js:433:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'passed',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/l2r3.test.js:109:1
+✖ E6: a seed space reaching the deadline reproduces a slow-response failure with one fingerprint (round 2 list: no seed fails) (40741.739834ms)
+  AssertionError [ERR_ASSERTION]: no seed of 1-8 reaches the deadline: passed,passed,passed,passed,passed,passed,passed,passed
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/l2r3.test.js:118:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/playwright.test.js:134:1
+✖ playwright --det: three runs, identical fingerprints and values for every test (181091.278434ms)
+  AssertionError [ERR_ASSERTION]: 
+  Running 3 tests using 1 worker
+  
+    ✘  1 tests/races.spec.js:4:1 › race: the last response wins (5.3s)
+    ✓  2 tests/races.spec.js:10:1 › ids (241ms)
+  detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+  detjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)
+  detjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/playwright.test.js:137:32)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/playwright.test.js:150:1
+✖ playwright --det-seed: a seed replays its outcome, seeds explore both outcomes of the race (475.801923ms)
+  TypeError: Cannot read properties of undefined (reading 'outcome')
+      at outcome (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/playwright.test.js:122:84)
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/playwright.test.js:157:14)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+
+test at test/playwright.test.js:169:1
+✖ playwright --det: a run whose first action is a navigation never deadlocks (6 single-test runs, one fingerprint) (3083.352666ms)
+  AssertionError [ERR_ASSERTION]: Error: http://localhost:4597/api/notes is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.
+  
+  detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+  detjs: trace .detjs/trace.jsonl
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/playwright.test.js:174:43)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: undefined,
+    operator: 'fail',
+    diff: 'simple'
+  }
+
+test at test/playwright.test.js:181:1
+✖ playwright --det: a runner API request and a page.goto issued together are ordered the same way in every run (3061.396746ms)
+  AssertionError [ERR_ASSERTION]: Error: http://localhost:4597/api/notes is already used, make sure that nothing is running on the port/url or set reuseExistingServer:true in config.webServer.
+  
+  detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+  detjs: trace .detjs/trace.jsonl
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/playwright.test.js:188:32)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+      at Test.postRun (node:internal/test_runner/test:1173:19)
+      at Test.run (node:internal/test_runner/test:1101:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:744:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at test/review-r011.test.js:73:1
+✖ R1: an elapsed-time budget that fails without detjs also fails under --det (the test-code clock must not hide it) (5294.50469ms)
+  AssertionError [ERR_ASSERTION]: --det changed the outcome from failed to passed (ELAPSED_MS=1 under --det)
+  
+  Running 1 test using 1 worker
+  
+  ELAPSED_MS=1
+    ✓  1 tests/slow.spec.js:3:1 › the report endpoint answers within its 1 s budget (1ms)
+  
+    1 passed (2.2s)
+  detjs 0.1.0: Level 2 browser prototype; playwright 1.65.1; seed 0; epoch 2025-01-01T00:00:00Z; vtime=paced; net=on; server=on; workers=1
+  detjs: trace .detjs/trace.jsonl
+  
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/home/runner/work/fenvix-engine-cli/fenvix-engine-cli/engine/node/test/review-r011.test.js:79:10)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1047:25)
+      at Test.start (node:internal/test_runner/test:944:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
