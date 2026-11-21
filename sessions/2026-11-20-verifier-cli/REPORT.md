@@ -193,6 +193,27 @@ The attacks found five channels where verify said IDENTICAL although the test ob
 and Node reads of project files. The remaining gaps (C `getenv` in extensions, Python reads after the trace opened,
 the Node configuration's dependencies, Deno/Bun untested here, `sys.argv`/cwd on Python) are listed in the document.
 
+### R-055 integration with the Node session (docs/VERIFY-CONTRACT.md)
+
+The R-055 work was split by the coordinator: the Node session wrote `node/src` and the contract, this session the
+Rust core and Python. Merged here with one implementation per side:
+
+- `verify.rs` is the contract's (`Status::NotProven`, `files_read_outside_tests`, reasons `deps` / `code`, `<random>`
+  hash seed), plus the trace footer `late` with the header's field names (Python reads after the header, V12).
+- Python writes `files_read_outside_tests` (`{path, digest}`), `not_proven_outside_tests` (`env:<NAME>` for a
+  volatile or proxy variable read outside a test, `native:<library>` for ctypes), `code` / `deps` as
+  `"<n> files <digest>"`, `fs.stat` as `<path>|missing` / `<path>|<type>` plus ` size=` / ` mtime_ns=` when the call
+  returns them. Deviation from the Node side, kept on purpose: Python keeps `mtime_ns` on a direct `os.stat` because
+  the reviewer's V6-file-mtime case reads `st_mtime` (Node records type and size only).
+- `--det-compare` output counts `not-proven` and names those tests.
+
+Local, targeted (MEASURED): Rust 158/158; Python verifier suites (R-055, attacks, R-050/051/054, truth, absent
+inputs, F-01 gaps, fingerprint) 149 tests, all pass except V14 (its precondition, maxrss differing between the two
+runs, does not hold on this machine) and one timing test that fails only under `-n 3` load (passes alone); Node
+targeted (review-r055, verify-inputs-attacks, network-p041, controls, r021b-fixes) 120/121: `r021b fixes: jest`
+"keeps: isFile() of a Stats object does not make its size an input" fails, because the Node `fs.stat` event carries
+the size even when the code only asks `isFile()` (in `node/src`, the Node session's part: reported to it).
+
 ### R-055 (full review of `688e4fe`): every defect fixed
 
 R-055 found 26 wrong IDENTICAL verdicts in 16 channels (F-01 no, F-03 no), and E1, D1, D3. Its tests
