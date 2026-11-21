@@ -225,8 +225,8 @@ def test_a():
 def test_entropy_divergence_hints_at_det_urandom(tmp_path):
     """G-2210."""
     proj = project(tmp_path, "import uuid\n\ndef test_u():\n    uuid.uuid4()\n")
-    _, a = det(proj, "a")
-    _, b = det(proj, "b")
+    _, a = det(proj, "a", "--det-entropy=observe")  # observed (the default controls it)
+    _, b = det(proj, "b", "--det-entropy=observe")
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
                        text=True)
     assert p.returncode == 1 and "hint [entropy]" in p.stdout and "--det-urandom" in p.stdout, p.stdout

@@ -52,6 +52,9 @@ VOLATILE_KEPT = (
     "WINDOWID", "XDG_SESSION_ID", "XDG_RUNTIME_DIR", "SYSTEMD_EXEC_PID", "FENVIX_VOLATILE_ENV",
     "SUDO_USER", "SUDO_UID", "SUDO_GID", "SUDO_COMMAND", "SUDO_HOME",  # session of a sudo wrapper
 )
+# the proxy variables the closed network sets for children (network._child_env, network.PROXY_KEYS)
+PROXY_ENV = frozenset(("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "all_proxy", "NO_PROXY",
+                       "no_proxy"))
 PINNED_CPU_COUNT = 2  # os.cpu_count & co. under --det: CI runners differ in CPUs (the engine keeps the real one)
 PINNED_HOSTNAME = "localhost"  # socket.gethostname / platform.node / os.uname().nodename under --det (resolvable)
 
@@ -205,12 +208,9 @@ CONFIG_KEYS["entropy"] = "--det-entropy"
 def entropy_controlled(ns) -> bool:
     """Coordinator decision 2026-11-21 (the frozen exam's F-01.random.pinned): OS entropy is controlled by default
     under --det, like Node's crypto; ``--det-entropy=observe`` keeps it real and observed."""
-    choice = getattr(ns, "det_entropy", None)
-    if choice == "observe":
-        if getattr(ns, "det_urandom", False):
-            raise UsageError("--det-urandom and --det-entropy=observe contradict each other")
-        return False
-    return True
+    if getattr(ns, "det_urandom", False):  # what the [entropy] hint names: it controls in every case
+        return True
+    return getattr(ns, "det_entropy", None) != "observe"
 
 
 def config_args(root: str | None, given: list) -> list:
@@ -495,7 +495,7 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     # the closed network replaces the proxy variables (children get the discard port, network._child_env): while it is
     # closed they are its part, not inputs; while recording (the real network) they are inputs
     closed = "net" in c and not cfg.record_net
-    inputs.update(env_inputs(skip=network.PROXY_ENV if closed else ()))
+    inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
     return inputs
 
 

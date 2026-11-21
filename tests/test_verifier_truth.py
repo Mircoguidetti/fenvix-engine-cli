@@ -137,7 +137,7 @@ FAMILY = [
     ("locale-pinned", (["--det-locale=C.UTF-8"], {}), (["--det-locale=C"], {}), "locale"),
     ("locale-kept", (["--det-locale=keep"], {"LC_ALL": "C.UTF-8"}), (["--det-locale=keep"], {"LC_ALL": "C"}),
      "locale"),
-    ("urandom", ([], {}), (["--det-urandom"], {}), "entropy"),
+    ("urandom", (["--det-entropy=observe"], {}), ([], {}), "entropy"),  # observed vs controlled (the default)
 ]
 
 

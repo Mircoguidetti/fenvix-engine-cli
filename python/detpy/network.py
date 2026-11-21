@@ -358,7 +358,6 @@ REFUSED: list = []  # (test, label) whose replay was refused (the request differ
 STALE: list = []  # tests whose recording is older than --det-cassette-max-age (not replayed)
 BLACKHOLE_PROXY = "http://127.0.0.1:9"  # the discard port: nothing listens, a connection is refused at once
 PROXY_KEYS = ("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "all_proxy")
-PROXY_ENV = frozenset((*PROXY_KEYS, "NO_PROXY", "no_proxy"))  # what the closed network sets for children
 
 
 def _record_bytes(sock, direction: str, data) -> None:
