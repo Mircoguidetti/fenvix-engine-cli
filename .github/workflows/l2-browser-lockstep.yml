@@ -9,7 +9,7 @@ name: l2-browser-lockstep
 
 on:
   push:
-    branches: [claude/l2-browser-lockstep-ytoqnv]
+    branches: [claude/playwright-p2]
     paths: [tracks/l2-browser-lockstep/RUN]
 
 permissions:

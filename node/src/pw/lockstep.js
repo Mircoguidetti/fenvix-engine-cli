@@ -245,7 +245,12 @@ class Coordinator {
     this.vtPolicy = ENV.DETJS_LS_VT_POLICY || 'advance';
     this.clockFile = path.join(o.dir, 'lockstep-clock.json');
     let start = 0;
-    try { start = Number(JSON.parse(fs.readFileSync(this.clockFile, 'utf8')).t) || 0; } catch { start = 0; }
+    let savedAlign = null; // the alignment a previous worker of this run left (its test failed: Playwright replaced it)
+    try {
+      const j = JSON.parse(fs.readFileSync(this.clockFile, 'utf8'));
+      start = Number(j.t) || 0;
+      if (j.align !== undefined && j.align !== null) savedAlign = Number(j.align);
+    } catch { start = 0; }
     // Point 3: with a hub (several Playwright workers, DETJS_LS_HUB), the scheduler and the clock T are the hub's.
     this.multi = !!ENV.DETJS_LS_HUB;
     if (this.multi) {
@@ -299,13 +304,28 @@ class Coordinator {
     // passed (MEASURED locally: the next test started 20 ms later in one of two replays, so every row it created
     // carried another timestamp). Time still moves for what the teardown's test code waits on (a sleep, a message);
     // a hold without any runner activity for DETJS_LS_TEARDOWN_HOLD_MS real ms is given up (recorded).
-    this.teardownHold = ENV.DETJS_LS_TEARDOWN !== '0';
+    // The hold is opt-in (DETJS_LS_TEARDOWN=1): it settled the pages every 10 ms of real time while it waited, and a
+    // settle pumps page frames, so a final DOM captured mid-animation depended on real time (MEASURED, gate run
+    // 44783946608: actual "[Tracking] applies budget template" gave 6 fingerprints in 10 runs). Test start alignment
+    // replaces it by default.
+    this.teardownHold = ENV.DETJS_LS_TEARDOWN === '1';
+    // Test start alignment: the next test starts at T(end of the previous test function) + DETJS_LS_TEST_GAP_MS
+    // (default 3000) of engine time, whatever the teardown in between did (its runner calls still advance T in
+    // ACTION-ms steps, a number that depends on real time). A teardown that runs past the gap is recorded as a stall
+    // (ls.stall teardown-gap), so a replay that differs there says why. One worker only (with the hub the clock is
+    // shared by the workers).
+    this.testGapNs = Number(ENV.DETJS_LS_TEST_GAP_MS === undefined ? 3000 : ENV.DETJS_LS_TEST_GAP_MS) * NS;
+    // { from, at } set when a test function finishes; kept in the clock file, so the worker Playwright starts after
+    // a failed test (a new process) aligns its first test the same way (MEASURED locally, documenso delete-recipient
+    // seed-2 group: the second test's first row at T=879 or 899 ms in four replays before this).
+    this.alignAt = savedAlign !== null ? { from: '<previous worker>', at: savedAlign } : null;
+    this.alignedKey = null; // the test whose start was aligned (or seen)
     this.teardownMaxMs = Number(ENV.DETJS_LS_TEARDOWN_HOLD_MS || 5000);
     this.teardown = null; // { key, since, act, released }
     this.clock = new RunnerClock({
       currentTest: () => o.currentTest(),
       epochMs: o.epochMs,
-      now: () => this.sched.now(),
+      now: () => { this.maybeAlign(); return this.sched.now(); },
       onActivity: () => { activity(); this.poke(); },
     });
     this.wake = null;
@@ -323,7 +343,7 @@ class Coordinator {
   now() { return this.sched.now(); }
 
   saveClock() {
-    try { fs.writeFileSync(this.clockFile, JSON.stringify({ t: this.sched.now() })); } catch { /* best effort */ }
+    try { fs.writeFileSync(this.clockFile, JSON.stringify({ t: this.sched.now(), align: this.alignAt ? this.alignAt.at : null })); } catch { /* best effort */ }
   }
 
   poke() {
@@ -416,6 +436,10 @@ class Coordinator {
   // -------------------------------------------------------------- teardown hold
   /** The test function of `key` has finished: its teardown begins (worker.js hooks Playwright's TestInfo). */
   beginTeardown(key) {
+    if (key && this.testGapNs > 0 && !this.multi) {
+      this.alignAt = { from: key, at: this.sched.now() + this.testGapNs };
+      this.saveClock();
+    }
     if (!this.teardownHold || !key) return;
     this.teardown = { key, since: realNow(), act: ACT.n, released: false };
     this.trace(`teardown ${key}`);
@@ -423,6 +447,25 @@ class Coordinator {
     if (this.admits.length) { const a = this.admits; this.admits = []; for (const x of a) x.resolve(); }
     for (const g of this.gatedResults) g.due = Math.min(g.due, this.sched.now());
     this.poke();
+  }
+
+  /** Test start alignment (see the constructor): called before the engine clock is read or used for a new test. */
+  maybeAlign() {
+    const k = this.o.currentTest();
+    if (!k || k === this.alignedKey) return;
+    this.alignedKey = k;
+    const a = this.alignAt;
+    this.alignAt = null;
+    if (!a) return;
+    const T = this.sched.now();
+    if (T <= a.at) {
+      this.sched.advanceTo(a.at);
+      this.trace(`align ${k} to=${a.at / NS} from=${T / NS}`);
+    } else {
+      this.stats.stalls++;
+      this.decision(k, 'ls.stall', 'teardown-gap');
+      this.trace(`align ${k}: teardown past the gap (T=${T / NS} > ${a.at / NS})`);
+    }
   }
 
   inTeardown() {
@@ -1196,6 +1239,7 @@ class Coordinator {
   async loop() {
     for (;;) {
       const key = this.clock.sync();
+      if (key) this.maybeAlign();
       if (key !== this.lastKey) {
         if (this.lastKey) this.endTest(this.lastKey);
         this.lastKey = key;

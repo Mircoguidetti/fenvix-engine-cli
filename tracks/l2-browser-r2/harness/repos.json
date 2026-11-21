@@ -1,0 +1,283 @@
+{
+ "etherpad": {
+  "repo": "ether/etherpad-lite",
+  "ref": "263e4a5b5977c0abffbc70d2aea243a721e9c053",
+  "node": "24",
+  "why": "known flaky (idle study: embed_value.spec.ts, 1 of 6 runs); CI retries 2; server started before the runner",
+  "ci_retries": 2,
+  "ci_trace": "on-first-retry",
+  "known_flaky": [
+   {
+    "file": "embed_value.spec.ts",
+    "grep": "the embed as iframe code is a",
+    "project": "chromium",
+    "source": "idle study 2026-11-16: 1 of 6 runs"
+   }
+  ],
+  "params": {
+   "baseline": 4,
+   "stress": 2,
+   "serial": 1,
+   "det": 2,
+   "seeds": 4,
+   "target_plain": 3,
+   "max_targets": 3
+  },
+  "targets": [
+   {
+    "key": "embed_value.spec.ts::embed links::when read only option is set::the embed as iframe code is an iframe with the correct url parameters and correct size [chromium]",
+    "file": "embed_value.spec.ts",
+    "grep": "the embed as iframe code is an iframe with the correct url parameters and correct size",
+    "project": "chromium",
+    "known": true
+   },
+   {
+    "key": "embed_value.spec.ts::embed links::URL encoding of pad names::share link encodes special characters in pad name [chromium]",
+    "file": "embed_value.spec.ts",
+    "grep": "share link encodes special characters in pad name",
+    "project": "chromium",
+    "known": false
+   }
+  ]
+ },
+ "uptime-kuma": {
+  "repo": "louislam/uptime-kuma",
+  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
+  "node": "26",
+  "why": "CI retries 2; socket.io app server in webServer; real sleeps (idle 31%)",
+  "ci_retries": 2,
+  "ci_trace": "on-first-retry",
+  "known_flaky": [
+   {
+    "file": "monitor-history-settings.spec.js",
+    "grep": "saves the data retention period",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF"
+   },
+   {
+    "file": "monitor-list-actions.spec.js",
+    "grep": "creates a group from the monitor form",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/FPP"
+   },
+   {
+    "file": "status-page.spec.js",
+    "grep": "RSS feed escapes malicious monitor names",
+    "project": "specs",
+    "source": "flaky in batch 6 (run 44049271859): 5 baseline + 3 stressed runs, PPPPP/PPF"
+   }
+  ],
+  "params": {
+   "baseline": 2,
+   "stress": 2,
+   "serial": 0,
+   "det": 2,
+   "max_targets": 3,
+   "seeds": 4,
+   "target_plain": 3
+  },
+  "targets": [
+   {
+    "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
+    "file": "monitor-history-settings.spec.js",
+    "grep": "saves the data retention period",
+    "project": "specs",
+    "known": true
+   },
+   {
+    "key": "monitor-list-actions.spec.js::Monitor list actions::creates a group from the monitor form [specs]",
+    "file": "monitor-list-actions.spec.js",
+    "grep": "creates a group from the monitor form",
+    "project": "specs",
+    "known": true
+   },
+   {
+    "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
+    "file": "status-page.spec.js",
+    "grep": "RSS feed escapes malicious monitor names",
+    "project": "specs",
+    "known": true
+   }
+  ]
+ },
+ "documenso": {
+  "repo": "documenso/documenso",
+  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
+  "node": "24",
+  "os": "ubuntu-22.04",
+  "free_disk": true,
+  "why": "known flaky (idle study: 3 API tests ECONNRESET under load, 1 UI); CI retries 4, local retries 1",
+  "ci_retries": 4,
+  "ci_trace": "retain-on-failure",
+  "known_flaky": [
+   {
+    "file": "admin-find-documents.spec.ts",
+    "grep": "non-admin user is rejected with 401",
+    "project": "api",
+    "source": "idle study: 1 of 5 runs, ECONNRESET under 10 API workers"
+   },
+   {
+    "file": "admin-find-documents.spec.ts",
+    "grep": "recipient prefix with numeric value matches",
+    "project": "api",
+    "source": "idle study: 1 of 4 runs, ECONNRESET"
+   },
+   {
+    "file": "admin-search.spec.ts",
+    "grep": "non-admin authenticated user is rejected with 401",
+    "project": "api",
+    "source": "idle study: 1 of 4 runs, ECONNRESET"
+   },
+   {
+    "file": "email-transport-claims.spec.ts",
+    "grep": "updating a subscription claim WITH back",
+    "project": "ui",
+    "source": "idle study: 2 of 5 runs, element outside the viewport"
+   }
+  ],
+  "params": {
+   "baseline": 4,
+   "stress": 2,
+   "serial": 0,
+   "det": 2,
+   "seeds": 4,
+   "target_plain": 3,
+   "max_targets": 5
+  },
+  "targets": [
+   {
+    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401 [api]",
+    "file": "admin-find-documents.spec.ts",
+    "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: non-admin user is rejected with 401",
+    "project": "api",
+    "known": true
+   },
+   {
+    "key": "admin-find-documents.spec.ts::[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID [api]",
+    "file": "admin-find-documents.spec.ts",
+    "grep": "[ADMIN][TRPC][FIND_DOCUMENTS]: recipient prefix with numeric value matches by exact recipient ID",
+    "project": "api",
+    "known": true
+   },
+   {
+    "key": "admin-search.spec.ts::[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401 [api]",
+    "file": "admin-search.spec.ts",
+    "grep": "[ADMIN][TRPC][SEARCH]: non-admin authenticated user is rejected with 401",
+    "project": "api",
+    "known": true
+   },
+   {
+    "key": "email-transport-claims.spec.ts::[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims [ui]",
+    "file": "email-transport-claims.spec.ts",
+    "grep": "[ADMIN][EMAIL_TRANSPORT]: updating a subscription claim WITH backport propagates to organisation claims",
+    "project": "ui",
+    "known": true
+   },
+   {
+    "key": "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]",
+    "file": "delete-recipient.spec.ts",
+    "grep": "[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400",
+    "project": "api",
+    "known": false
+   }
+  ]
+ },
+ "actual": {
+  "repo": "actualbudget/actual",
+  "ref": "abe8ea7851518a88245fd78b53b427b54eba734e",
+  "node": "24.22.1",
+  "why": "CI and local retries 1; app logic in the browser and a web worker (limit B3)",
+  "ci_retries": 1,
+  "known_flaky": [
+   {
+    "file": "accounts.mobile.test.ts",
+    "grep": "keeps the search after opening a transaction and going back",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPP/FFF"
+   },
+   {
+    "file": "budget.mobile.test.ts",
+    "grep": "applies budget template",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, Tracking PPFPP/FFF and Envelope PPPPP/PPF (the grep selects both)"
+   },
+   {
+    "file": "automatic-budget-range.test.ts",
+    "grep": "extends after budgeting the last month",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPF/PPP"
+   },
+   {
+    "file": "accounts.mobile.test.ts",
+    "grep": "reconciles an account",
+    "source": "flaky in batch 3 (run 44043803663): 5 baseline + 3 stressed runs, PPPPP/FFF"
+   }
+  ],
+  "params": {
+   "baseline": 3,
+   "stress": 2,
+   "serial": 0,
+   "det": 2,
+   "max_targets": 4,
+   "seeds": 4,
+   "target_plain": 3
+  },
+  "targets": [
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::keeps the search after opening a transaction and going back [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "grep": "keeps the search after opening a transaction and going back",
+    "project": null,
+    "known": true
+   },
+   {
+    "key": "budget.mobile.test.ts::Mobile Budget [Envelope]::applies budget template [chromium]",
+    "file": "budget.mobile.test.ts",
+    "grep": "applies budget template",
+    "project": null,
+    "known": true
+   },
+   {
+    "key": "automatic-budget-range.test.ts::Automatic budget range (desktop)::extends after budgeting the last month and shrinks on reload [chromium]",
+    "file": "automatic-budget-range.test.ts",
+    "grep": "extends after budgeting the last month and shrinks on reload",
+    "project": null,
+    "known": true
+   },
+   {
+    "key": "accounts.mobile.test.ts::Mobile Accounts::reconciles an account [chromium]",
+    "file": "accounts.mobile.test.ts",
+    "grep": "reconciles an account",
+    "project": null,
+    "known": true
+   }
+  ]
+ },
+ "rallly": {
+  "repo": "lukevella/rallly",
+  "ref": "e96c4c5c1d92f4db14e59c8e1f0cde934c94c419",
+  "node": "24",
+  "why": "Next.js server on Postgres + Mailpit (limit B2)"
+ },
+ "solid-start": {
+  "repo": "solidjs/solid-start",
+  "ref": "68784294b16692adf687c25bcd58c16c8a625cb3",
+  "node": "22",
+  "why": "Node harness pw-solid-start: Vite dev server, 47 tests, baseline stable",
+  "params": {
+   "baseline": 3,
+   "stress": 1,
+   "serial": 1,
+   "det": 3,
+   "max_targets": 2,
+   "seeds": 4,
+   "target_plain": 3
+  },
+  "targets": [
+   {
+    "key": "hydration-navigation.test.ts::handles a hash-only change before hydration [chromium]",
+    "file": "hydration-navigation.test.ts",
+    "grep": "handles a hash-only change before hydration",
+    "project": "chromium",
+    "known": false
+   }
+  ]
+ }
+}

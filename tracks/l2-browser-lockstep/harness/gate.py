@@ -53,7 +53,7 @@ P.update((RUN.get("params") or {}).get(JOB, {}))
 P.update((RUN.get("params") or {}).get(f"{JOB}:{NAME}", {}))
 DEADLINE = T0 + P["budget_min"] * 60
 os.environ.update({k: str(v) for k, v in (P.get("env") or {}).items()})  # A/B switches of the engine (e.g. "ab" jobs)
-EPOCH = time.strftime("%Y-%m-%dT%H:%M:00Z", time.gmtime(T0))
+EPOCH = os.environ.get("L2_FIXED_EPOCH") or time.strftime("%Y-%m-%dT%H:%M:00Z", time.gmtime(T0))  # fixed: local A/B across jobs
 os.environ["L2_EPOCH"] = EPOCH
 LOG = open(OUT / "exp.log", "a")
 FAIL = {"failed", "timedOut"}
