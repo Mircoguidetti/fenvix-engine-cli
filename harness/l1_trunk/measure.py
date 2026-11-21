@@ -170,9 +170,28 @@ def measure(suite: Path, name: str, args: list, runs: int, out: Path, timeout: f
                {"rc": None, "report": None, "error": f"{len(traces[m])} trace(s): verify needs two or more"})
            for m in ("det", "l1")}
     det_s, l1_s = statuses(ver["det"].get("report")), statuses(ver["l1"].get("report"))
+    # A measurement that could not run is not a measurement. pytest answers 2 interrupted, 3 internal error,
+    # 4 usage error, 5 nothing collected: any of those, a hang, or nothing to compare means the numbers below
+    # describe a broken job, not the engine, and must not be read as "no movement".
+    concerns = []
+    for m, rl in runs_log.items():
+        bad = [r["rc"] for r in rl if r["rc"] is not None and r["rc"] >= 2]
+        if bad:
+            concerns.append(f"{m}: pytest returned {sorted(set(bad))} (2 interrupted, 3 internal, 4 usage, 5 "
+                            f"nothing collected)")
+        if any(r["timed_out"] for r in rl):
+            concerns.append(f"{m}: {sum(r['timed_out'] for r in rl)} run(s) reached the {timeout:.0f}s budget "
+                            f"(reported as a hang, not retried)")
+    for m in ("det", "l1"):
+        if ver[m]["rc"] is None or ver[m].get("report") is None:
+            concerns.append(f"{m}: fenvix verify gave no report ({ver[m].get('error') or ver[m]['rc']})")
+    if not movement(det_s, l1_s, {}, {})["tests_compared"]:
+        concerns.append("no test is in both modes: nothing was compared")
     return {
         "name": name,
         "suite": str(suite),
+        "valid": not concerns,
+        "concerns": concerns,
         "warmup": {"seconds": round(warmup["seconds"], 3), "rc": warmup["rc"], "timed_out": warmup["timed_out"]},
         "args": args,
         "runs": runs,
@@ -235,6 +254,12 @@ def main() -> int:
     m, c = res["movement"], res["cost"]
     print(f"{a.name}: {m['n_moved']} tests moved to IDENTICAL, {m['n_lost']} lost it, {m['n_broken']} broken; "
           f"L1 over --det {c['slowdown_l1_over_det']}, worst {c['worst_slowdown_l1_over_det']}")
+    print(f"transitions: {m['transitions']}")
+    if not res["valid"]:
+        print("\nTHIS MEASUREMENT IS NOT USABLE:", file=sys.stderr)
+        for x in res["concerns"]:
+            print("  - " + x, file=sys.stderr)
+        return 1
     return 0
 
 

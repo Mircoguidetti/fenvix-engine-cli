@@ -20,8 +20,23 @@ HERE = Path(__file__).resolve().parent
 CORPUS = HERE / "threads-corpus.json"
 
 
+# What a suite's own tests need, which the corpus did not record for every suite: with anyio's empty install list
+# almost every test errored at import and the whole measurement finished in 5 seconds looking like "no movement".
+# The anyio list is the one the frozen exam uses for the same project (exam/projects.py).
+TEST_REQUIREMENTS = {
+    "anyio": ["trustme", "exceptiongroup", "hypothesis", "psutil", "trio", "blockbuster", "truststore"],
+    "requests": ["pytest-httpbin", "trustme"],
+}
+
+
 def suites() -> dict:
-    return {s["name"]: s for s in json.loads(CORPUS.read_text())["suites"]}
+    out = {}
+    for s in json.loads(CORPUS.read_text())["suites"]:
+        s = dict(s)
+        extra = [r for r in TEST_REQUIREMENTS.get(s["name"], []) if r not in (s.get("install") or [])]
+        s["install"] = list(s.get("install") or []) + extra
+        out[s["name"]] = s
+    return out
 
 
 def run(cmd: list, **kw) -> None:
@@ -40,6 +55,15 @@ def prepare(spec: dict, root: Path) -> Path:
         run(["git", "checkout", "-q", spec["sha"]], cwd=d)
     pkgs = ["pytest", *spec.get("install", [])]
     run([sys.executable, "-m", "pip", "install", "-q", "-e", ".", *pkgs], cwd=d)
+    # Prove it collects before anything is measured. A suite whose tests error at import still "runs", very fast,
+    # and every mode then looks identical and unmoved: a wrong number that reads like a real one.
+    p = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider",
+                        *args_of(spec)], cwd=d, capture_output=True, text=True)
+    tail = ((p.stdout or "") + (p.stderr or "")).strip().splitlines()[-15:]
+    if p.returncode != 0:
+        raise SystemExit(f"{spec['name']}: collection failed (rc {p.returncode}), so nothing can be measured:\n"
+                         + "\n".join(tail))
+    print(f"{spec['name']}: collection ok -> {tail[-1] if tail else '?'}", flush=True)
     return d
 
 
