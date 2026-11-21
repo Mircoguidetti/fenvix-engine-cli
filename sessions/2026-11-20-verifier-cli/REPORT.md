@@ -105,13 +105,16 @@ Still failing locally, with owner:
 
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
-- Node 22, 24 and 26: 632/632 each.
-- Python 3.13 (full suite): 1097 passed, 69 skipped, 1 xfailed, 0 failed.
-- Python 3.12 (full suite): 1093 passed, 73 skipped, 1 xfailed, 0 failed.
-- Python 3.14 (full suite, a local 3.14.6 build without `os.getrandom`): 1090 passed, 4 failed. The four fail on the
+- Node 22, 24 and 26: 858/858 each.
+- Python 3.12 (full suite): 1096 passed, 94 skipped, 1 xfailed, 0 failed.
+- Python 3.13 (full suite): 1099 passed, 1 failed: `test_level0_seeds_fsorder_rust::test_rust_stand_ins_are_faster_than_the_reference`,
+  a timing comparison run while the Node suite and a local exam run shared the CPU; it passes alone.
+- Python 3.14 (full suite, a local 3.14.6 build without `os.getrandom`): 1092 passed, 5 failed. Four fail on the
   trunk on this machine too: two `test_clock_rust` reference tests and the two
   `test_review_r023b::test_2e_os_getrandom_is_entropy` cases (the probe test calls `os.getrandom`, which this build
-  lacks). The CI's 3.14 has it.
+  lacks; the CI's 3.14 has it). `test_capture_rust::test_capture_sessions_match_reference` fails only inside the full
+  run and passes alone.
+- Rust (`cargo test -p detpy-core`): 153 passed.
 - This report is a separate `[skip ci]` commit containing only this file.
 
 ## F-01 deterministic runs
