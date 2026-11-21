@@ -1365,6 +1365,7 @@ class ProofSession:
         out: list = []
         file_scope = getattr(self, "iso_scope", "test") == "file"
         if getattr(self, "isolate", False) and not file_scope:
+            self.code_prefix_stale(lists)  # recorded in every mode: a later session in another mode compares with it
             return out
         if file_scope:
             # --det-isolate-scope=file: a file's tests share one child, in order; the process is the file
