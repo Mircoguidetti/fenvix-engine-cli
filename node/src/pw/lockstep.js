@@ -1320,6 +1320,11 @@ class Coordinator {
           ra = await Promise.race([ask.promise, realSleep(20).then(() => null)]);
           if (!ra && (this.clock.sync() !== key || this.remoteActions.length)) { this.sched.unask(ask.seq); ra = { kind: 'again' }; }
         }
+        // Actions the hub pushed before this answer (for this worker's messages while it was not asking) are
+        // applied first: in arrival order, the decisions are recorded as the hub took them (MEASURED locally,
+        // lockstep fixture with 2 workers: the hub's 180 actions identical, but a pushed release recorded after a
+        // later answer in 2 of 6 runs).
+        while (this.remoteActions.length && (this.remoteActions[0]._rx || 0) < (ra._rx || Infinity)) this.applyRemote(this.remoteActions.shift(), key);
         if (ra.kind === 'again') continue;
         if (ra.kind !== 'idle') {
           if (ra.kind === 'advance') { this.trace(`advance to=${ra.toNs / NS} (hub)`); this.stats.advances++; this.flushWindow(); this.saveClock(); if (this.responses.length) await this.deliverResponses(); for (const p of this.pages) this.grant(p, ra.toNs); continue; }

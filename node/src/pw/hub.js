@@ -206,6 +206,8 @@ class RemoteScheduler {
           try { m = JSON.parse(line); } catch { continue; }
           if (m.op === 'hello') { this.t = m.t; resolve(); continue; }
           if (m.op === 'action') {
+            // arrival order of every action (answers and pushes): the worker applies them in this order
+            m.action._rx = ++this.rx;
             if (typeof m.action.t === 'number' && m.action.t > this.t) this.t = m.action.t;
             const r = this.waitingFor.get(m.seq);
             if (r) { this.waitingFor.delete(m.seq); r(m.action); } else if (this.onAction) this.onAction(m.action);
@@ -216,6 +218,7 @@ class RemoteScheduler {
     this.sock.on('error', () => {});
     this.hello = false;
     this.queued = [];
+    this.rx = 0;
   }
 
   /**
