@@ -140,9 +140,14 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                   f"$FENVIX_LOCALE, else {DEFAULT_LOCALE}, else the first of "
                                   f"{', '.join(LOCALE_FALLBACKS[1:])} that exists). 'keep' keeps the machine's "
                                   "(recorded as a run input)")),
+    (("--det-entropy",), dict(default=None, choices=("control", "observe"), metavar="control|observe",
+                              help="OS entropy (os.urandom, os.getrandom, ssl.RAND_bytes, uuid4, secrets): 'control' "
+                                   "(the default) seeds it per test from --det-seed; 'observe' keeps the real entropy "
+                                   "and records every draw (a test that draws it is never identical; NOT seeded: for "
+                                   "crypto tests)")),
     (("--det-urandom",), dict(action="store_true", default=False,
-                              help="also make os.urandom/uuid4/secrets deterministic (beyond Level 0; NOT for crypto "
-                                   "tests)")),
+                              help="OS entropy controlled (the default since 2026-11-21; kept for older command "
+                                   "lines: see --det-entropy)")),
     (("--det-keep-aslr",), dict(action="store_true", default=False,
                                 help="do not disable address space randomisation when re-executing")),
     (("--det-no-reexec",), dict(action="store_true", default=False,
@@ -194,6 +199,18 @@ CONFIG_KEYS = {"seed": "--det-seed", "tz": "--det-tz", "locale": "--det-locale",
                "tick": "--det-tick", "cassette": "--det-cassette", "cassette_max_age": "--det-cassette-max-age",
                "disable": "--det-disable", "trace": "--det-trace"}
 CONFIG_FLAGS = {"urandom": "--det-urandom", "keep_aslr": "--det-keep-aslr"}
+CONFIG_KEYS["entropy"] = "--det-entropy"
+
+
+def entropy_controlled(ns) -> bool:
+    """Coordinator decision 2026-11-21 (the frozen exam's F-01.random.pinned): OS entropy is controlled by default
+    under --det, like Node's crypto; ``--det-entropy=observe`` keeps it real and observed."""
+    choice = getattr(ns, "det_entropy", None)
+    if choice == "observe":
+        if getattr(ns, "det_urandom", False):
+            raise UsageError("--det-urandom and --det-entropy=observe contradict each other")
+        return False
+    return True
 
 
 def config_args(root: str | None, given: list) -> list:
@@ -518,7 +535,7 @@ def make_config(ns, root: str, controls) -> _state.Config:
         controls=controls,
         record_net=ns.det_record,
         allow_hosts=tuple(ns.det_allow_host),
-        control_urandom=ns.det_urandom,
+        control_urandom=entropy_controlled(ns),
         max_events=ns.det_max_events,
     )
     cfg.cassette_max_age = getattr(ns, "det_cassette_max_age", 0.0) or 0.0
