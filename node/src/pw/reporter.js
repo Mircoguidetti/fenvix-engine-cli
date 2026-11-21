@@ -90,7 +90,41 @@ class DetjsReporter {
       rec.endTest(r ? OUTCOME[r.status] || r.status : 'error');
     }
     rec.close();
+    if (Number(process.env.DETJS_PW_NWORKERS || 1) > 1) this.markWorkers(ids);
     this.printReplays();
+  }
+
+  /**
+   * Several workers (the hub): the trace says which worker process ran each test and its position there (`worker`,
+   * `worker_index`, as merged parallel traces of the other runners do), so the verifier compares each test's
+   * in-process predecessors, not the interleaving of the workers; test lines are in node-id order.
+   */
+  markWorkers(ids) {
+    const byTest = new Map();
+    const perWorker = new Map();
+    // begin order inside a worker is its serial order
+    for (let i = 0; i < this.order.length; i++) {
+      const r = this.results.get(this.order[i].id);
+      const w = r && r.workerIndex !== undefined ? String(r.workerIndex) : '?';
+      const n = perWorker.get(w) || 0;
+      perWorker.set(w, n + 1);
+      byTest.set(ids[i], { worker: w, worker_index: n, parallel_index: r ? r.parallelIndex : null });
+    }
+    const lines = fs.readFileSync(this.trace, 'utf8').split('\n');
+    const head = [];
+    const tests = [];
+    const tail = [];
+    for (const l of lines) {
+      if (!l) continue;
+      if (l.startsWith('{"type":"test"')) tests.push(l); else if (tests.length) tail.push(l); else head.push(l);
+    }
+    const out = tests.map((l) => {
+      const t = JSON.parse(l);
+      const w = byTest.get(t.nodeid);
+      if (w) { t.worker = w.worker; t.worker_index = w.worker_index; }
+      return t;
+    }).sort((a, b) => (a.nodeid < b.nodeid ? -1 : a.nodeid > b.nodeid ? 1 : 0)).map((t) => JSON.stringify(t));
+    fs.writeFileSync(this.trace, `${[...head, ...out, ...tail].join('\n')}\n`);
   }
 
   /** One replay command per failing test: same seed, epoch, state and controls, that test only. */

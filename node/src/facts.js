@@ -21,8 +21,15 @@ const native = require('./native');
 
 const dig = (v) => native.digest(Buffer.from(typeof v === 'string' ? v : JSON.stringify(v) || String(v))).slice(0, 12);
 
+// Level 2 browser runs (DETJS_LEVEL2=1, set by `detjs playwright` / `detjs serve`): machine and process facts are
+// not events there. App servers read them outside any test (process ids, uptimes); under lockstep their "test" is a
+// message scope, and a fact that differs per process made every replay differ (MEASURED, gate run 44909741100:
+// sveltekit's OpenTelemetry process detector, process.pid, 10 fingerprints in 10 runs). Entropy stays recorded.
+const L2_QUIET = process.env.DETJS_LEVEL2 === '1';
+
 function rec(op, v, source = 'other') {
   if (STATE.testId === null || STATE.quietDepth > 0) return;
+  if (L2_QUIET && source === 'other') return;
   let s;
   try { s = dig(v); } catch { s = '?'; }
   STATE.record(source, op, s);

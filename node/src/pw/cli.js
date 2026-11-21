@@ -202,7 +202,7 @@ async function main(argv) {
     DETJS_PW_REPORTER: hasReporter ? '' : reporter,
     DETJS_PW_REPLAY: JSON.stringify(replay),
     DETJS_PW_NWORKERS: String(nWorkers),
-    DETJS_FS_REALDEP_RECORD: '0', // fstime.js: file ages are real-time values in app servers
+    DETJS_LEVEL2: '1', // fstime.js, facts.js, ioorder.js: real-time and per-process facts are not events in Level 2 runs
     DETJS_PW_REPLAY_PW: JSON.stringify(replayPw),
     DETJS_PW_CWD: cwd,
     DETJS_PW_TRACE: runEnv.tracePath,
@@ -356,7 +356,7 @@ async function serve(argv) {
   const root = process.env.DETJS_ROOT || process.cwd();
   const runEnv = session.prepare(opts, root, 'server');
   const env = {
-    ...process.env, ...pwEnv, DETJS_ROOT: root, DETJS_FS_REALDEP_RECORD: '0',
+    ...process.env, ...pwEnv, DETJS_ROOT: root, DETJS_LEVEL2: '1',
     DETJS_DIR: path.join(root, '.detjs', 'serve'),
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require ${path.join(__dirname, 'boot.js')}`.trim(),
   };
