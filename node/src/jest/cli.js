@@ -204,7 +204,7 @@ async function main(argv) {
   // frame in the async stack traces the tests see (found on babel: stack-trace
   // inline snapshots); Jest's own bin does not await run() either.
   return new Promise((resolve, reject) => {
-    jestCli.run([...stripWorkerArgs(rest, par.workers > 1), ...extra], undefined).then(async () => {
+    jestCli.run([...stripWorkerArgs(rest), ...extra], undefined).then(async () => {
       collectParallel();
       if (pc) await pc.finish();
       finalize();
@@ -227,14 +227,19 @@ function jestWorkersArg(args) {
   return { workers, source, serial };
 }
 
-/** The runner arguments without Jest's own worker options (detjs sets them from the plan). */
-function stripWorkerArgs(args, parallelRun) {
-  if (!parallelRun) return args;
+/**
+ * The runner arguments without Jest's own worker options: detjs always sets its own, from the plan
+ * (`--maxWorkers=N`) or for one lane (`--runInBand`). Both must be stripped whichever way the run goes: leaving the
+ * user's `-w 1` in place next to detjs' `--runInBand` made Jest exit with "Both --runInBand and --maxWorkers were
+ * specified, only one is allowed" (so `fenvix node jest --det -w 1` ran nothing at all).
+ */
+function stripWorkerArgs(args) {
   const out = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (/^(?:--maxWorkers|--max-workers|-w)=/.test(a)) continue;
     if (a === '--maxWorkers' || a === '--max-workers' || a === '-w') { i++; continue; }
+    if (a === '--runInBand' || a === '-i' || a === '--runInBand=true') continue;
     out.push(a);
   }
   return out;

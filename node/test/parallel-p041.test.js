@@ -16,6 +16,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const os = require('node:os');
 const { BIN, TMP, readTrace } = require('./helpers');
 
 const T = { timeout: 900000 };
@@ -139,10 +140,21 @@ for (const runner of RUNNERS) {
     let serial;
     before(() => {
       dir = fixture(runner, 'iso', isolatedSuite());
-      serial = det(runner, dir);
+      // One lane is the serial baseline every test below compares against. It is asked for explicitly:
+      // since row JS-07 (gap G-1044) `--det` is PARALLEL by default, so the default no longer means serial.
+      serial = det(runner, dir, ['--det-workers=1']);
       assert.equal(serial.status, 0, show(serial));
-      assert.equal(plan(serial), undefined, 'serial by default');
+      assert.equal(plan(serial), undefined, 'one lane runs serially');
       assert.equal(serial.trace.header.meta.serial, true);
+      // the new default: no worker option at all is parallel, on a machine with more than one CPU
+      const def = det(runner, dir);
+      assert.equal(def.status, 0, show(def));
+      if (os.availableParallelism() > 1) {
+        assert.ok(plan(def), `parallel by default (G-1044): ${show(def)}`);
+        assert.equal(plan(def).workers, os.availableParallelism());
+        assert.match(def.stdout, /detjs: parallel execution in \d+ lanes with a fixed plan \(default \(this machine's CPUs\)\)/);
+        assert.match(def.stderr, /detjs: parallel: \d+ lanes, plan [0-9a-f]+/);
+      }
     });
 
     test('the plan is identical across runs, recorded in the trace and replayed from it; lanes overlap in time', T, () => {
@@ -272,15 +284,16 @@ for (const runner of RUNNERS) {
       assert.ok(!reusedFiles(r2).includes(a), show(r2));
       assert.ok(reusedFiles(r2).includes(`tests/d${EXT[runner]}`), show(r2));
       // serially every test sees 1: the read is keyed with that value, and the entry is reused
-      const s1 = det(runner, dir, [`--det-cache=${cache}`]);
+      // (one lane asked for explicitly: `--det` itself is parallel by default since G-1044)
+      const s1 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
       assert.equal(s1.status, 0, show(s1));
       assert.ok(!notCached(s1)[a], show(s1));
-      const s2 = det(runner, dir, [`--det-cache=${cache}`]);
+      const s2 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
       assert.ok(reusedFiles(s2).includes(a), show(s2));
       if (runner === 'vitest') {
         // VITEST_WORKER_ID counts the files before it, serially too: never reused
         write(dir, { [`tests/e${EXT[runner]}`]: `${HEAD[runner]}\ntest('wid', () => { expect(Number(process.env.VITEST_WORKER_ID)).toBeGreaterThan(0); });\n` });
-        const s3 = det(runner, dir, [`--det-cache=${cache}`]);
+        const s3 = det(runner, dir, ['--det-workers=1', `--det-cache=${cache}`]);
         assert.match(notCached(s3)[`tests/e${EXT[runner]}`] || '', /VITEST_WORKER_ID/, show(s3));
       }
     });
@@ -295,7 +308,7 @@ for (const runner of RUNNERS) {
         });
         write(dir, { 'plan.json': JSON.stringify({ lanes: [['tests/a_leaker.test.js', 'tests/b_victim.test.js'], ['tests/c_other.test.js', 'tests/d_other.test.js']] }) });
         const cache = path.join(dir, '.cache');
-        for (const args of [['--det-plan=plan.json'], []]) {
+        for (const args of [['--det-plan=plan.json'], ['--det-workers=1']]) {
           fs.rmSync(cache, { recursive: true, force: true });
           const r = det(runner, dir, [...args, `--det-cache=${cache}`]);
           assert.equal(r.status, 0, show(r));
@@ -303,7 +316,8 @@ for (const runner of RUNNERS) {
           const carried = r.trace.header.meta.parallel.carried.map((c) => c.file).sort();
           assert.match(notCached(r)['tests/b_victim.test.js'] || '', /left process-wide state changed/, show(r));
           // in parallel, the other lane's process never saw the change; serially (in band) every later file did
-          if (args.length) {
+          // (both arg lists are non-empty now, so the branch tests for the replayed plan itself)
+          if (args.some((a) => a.startsWith('--det-plan'))) {
             assert.deepEqual(carried, ['tests/b_victim.test.js']);
             assert.ok(!notCached(r)['tests/d_other.test.js'], show(r));
           } else {
@@ -324,8 +338,8 @@ for (const runner of RUNNERS) {
           c: "test('origin', () => { const o = window.performance.timeOrigin; expect(o).toBe(performance.timeOrigin); require('node:fs').writeFileSync(require('node:path').join(process.cwd(), 'origin.txt'), String(o)); });",
         }, { jest: { testEnvironment: 'jsdom' } });
         const origins = [];
-        for (const args of [[], ['-w', '2']]) {
-          const cache = path.join(dir, `.cache${args.length}`);
+        for (const args of [['--det-workers=1'], ['-w', '2']]) {
+          const cache = path.join(dir, `.cache${args.join('')}`);
           fs.rmSync(path.join(dir, 'origin.txt'), { force: true });
           const r1 = det(runner, dir, [...args, `--det-cache=${cache}`]);
           assert.equal(r1.status, 0, show(r1));
@@ -361,7 +375,7 @@ for (const runner of RUNNERS) {
 
     test('the cost of serial is shown: test-file time and an estimate for --det-workers', T, () => {
       const dir = fixture(runner, 'cost', isolatedSuite(3));
-      const s = det(runner, dir);
+      const s = det(runner, dir, ['--det-workers=1']);  // the serial cost message: one lane, asked for explicitly
       assert.match(s.stdout, /--det-workers=N/);
       assert.match(s.stderr, /detjs: serial run: 3 files, [\d.]+ s of test-file time \(MEASURED\); with --det-workers=\d+ \(this machine's CPUs\) about [\d.]+ s \(ESTIMATED/);
       assert.equal(s.trace.header.meta.parallel.timing.files, 3);
