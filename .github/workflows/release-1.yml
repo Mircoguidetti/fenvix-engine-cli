@@ -126,9 +126,10 @@ jobs:
         if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result; once per version
         run: |
           python -m venv .venv-runners && . .venv-runners/bin/activate
-          pip install -q pytest pytest-xdist django pytest-django nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
+          pip install -q pytest pytest-xdist django pytest-django "psycopg[binary]" nose2 ward zope.testrunner && pip install -q --no-deps dist/fenvix-*.whl
           python -m pytest -q -p no:randomly -rfE tests/test_runners_django.py tests/test_runners_nose2.py \
             tests/test_runners_ward.py tests/test_runners_zope.py tests/test_django_order.py tests/test_django_pytest_cache.py \
+            tests/test_django_db_reuse.py \
             2>&1 | tee py-${{ matrix.python }}.runners.log | tail -30; exit ${PIPESTATUS[0]}
       - name: suites that need numpy and time-machine (no pytest plugin of their own)
         if: matrix.shard == 0 && (success() || failure())  # independent of the main suites' result; once per version
