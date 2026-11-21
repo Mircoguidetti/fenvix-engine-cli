@@ -4,8 +4,8 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "running",
- "run_id": "44918753387",
- "engine_commit": "278aaff76246d051084e0ae6e77e4445a5cdb93f",
+ "run_id": "44909741100",
+ "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
  "setup_s": 347,
  "params": {
   "plain": 20,
@@ -36,8 +36,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-21T15:36:00Z",
- "measured_at": "2026-11-21T15:36:47Z",
+ "epoch": "2026-11-21T14:19:00Z",
+ "measured_at": "2026-11-21T14:19:03Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "par": {
   "workers": 2,
@@ -74,25 +74,32 @@
      "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: organisation owner (non-admin) cannot delete their own org via admin route [api]": "passed",
      "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call with mismatched name is rejected and org is preserved [api]": "passed",
      "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin call against non-existent organisation returns NOT_FOUND [api]": "passed",
-     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: zod schema rejects malformed input [api]": "passed",
+     "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: zod schema rejects malformed input [api]": "failed",
      "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: admin can delete via the tRPC endpoint directly [api]": "passed",
      "delete-organisation.spec.ts::[ADMIN][TRPC][DELETE_ORG]: a second delete call after deletion is harmless (NOT_FOUND or no-op) [api]": "passed",
      "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unauthenticated request is rejected with 401 [api]": "passed",
-     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: non-admin authenticated user is rejected with 401 [api]": "failed",
      "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin can remove a recipient who has opened the document and inserted fields [api]": "passed",
-     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]": "passed",
-     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]": "passed",
-     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unknown recipient returns 404 [api]": "passed",
-     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]": "passed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient who has completed signing [api]": "failed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: admin cannot remove a recipient from a completed document [api]": "failed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: unknown recipient returns 404 [api]": "failed",
+     "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: a missing reason is rejected with 400 [api]": "failed",
      "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document is sealed when every remaining signer has already signed [api]": "passed",
      "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: document with no remaining signers is not sealed [api]": "passed",
      "delete-recipient.spec.ts::[ADMIN][TRPC][DELETE_RECIPIENT]: sequential signing advances to the next recipient [api]": "passed"
     },
-    "wall_s": 53.3,
-    "rc": 0
+    "wall_s": 59.7,
+    "rc": 1
    }
   ],
-  "w1": [],
+  "w1": [
+   {
+    "outcomes": {},
+    "wall_s": 2701.1,
+    "rc": "timeout",
+    "log_tail": "module exports inside circular dependency\n(node:25451) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25451) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:25451) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:25451) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:25451) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\nT\u25c7 injected env (0) from ../../.env // tip: \u2301 auth for agents [www.vestauth.com]\n\u25c7 injected env (0) from ../../.env.local // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n\u25c7 injected env (0) from ../../.env.test // tip: \u2318 custom filepath { path: '/custom/path/.env' }\n[JOBS]: Registered cron job internal.seal-document-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.expire-recipients-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.send-signing-reminders-sweep (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-rate-limits (*/15 * * * *)\n[JOBS]: Registered cron job internal.cleanup-auth-handoffs (*/15 * * * *)\n[JOBS]: Registered cron job internal.sync-email-domains (0 * * * *)\n[JOBS]: Registered cron job internal.alert-organisation-seat-drift (0 0 * * *)\n(node:27101) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(Use `node --trace-warnings ...` to show where the warning was created)\n(node:27101) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'PrismaClient' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'DispatcherConnection' of module exports inside circular dependency\n(node:27101) Warning: Accessing non-existent property 'server' of module exports inside circular dependency\ndetjs: lockstep blocks service workers (DETJS_LS_SW=allow keeps them)\n"
+   }
+  ],
   "wn": []
  }
 }
