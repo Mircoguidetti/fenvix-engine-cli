@@ -3,10 +3,10 @@
  "job": "gate",
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
- "status": "ok",
- "run_id": "44909741100",
- "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
- "setup_s": 29,
+ "status": "running",
+ "run_id": "44918753387",
+ "engine_commit": "278aaff76246d051084e0ae6e77e4445a5cdb93f",
+ "setup_s": 35,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T13:46:00Z",
- "measured_at": "2026-11-21T13:46:36Z",
+ "epoch": "2026-11-21T15:30:00Z",
+ "measured_at": "2026-11-21T15:30:18Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    18.0,
-    18.1,
-    18.4,
-    17.4,
-    18.4,
-    17.5,
-    18.4,
-    18.4,
-    18.6,
-    18.2
+    14.3,
+    13.9,
+    13.9,
+    13.9,
+    13.7,
+    13.8,
+    13.6,
+    13.7,
+    13.8,
+    14.0
    ],
    "stats": [
     null,
@@ -102,60 +102,18 @@
    "verify_all": [
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-     "status": "diverged",
-     "distinct_fingerprints": 10,
+     "status": "stable",
+     "distinct_fingerprints": 1,
      "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 1,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612"
-      },
-      "reason": "other",
-      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612\" vs \"http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612\""
-     }
+     "divergence": null
     }
    ],
    "verify": {
     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-code [chromium-dev]",
-    "status": "diverged",
-    "distinct_fingerprints": 10,
+    "status": "stable",
+    "distinct_fingerprints": 1,
     "runs": 10,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 4,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612"
-     },
-     "reason": "other",
-     "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612\" vs \"http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612\""
-    }
+    "divergence": null
    }
   },
   {
@@ -174,9 +132,6 @@
     "passed",
     "passed",
     "passed",
-    "passed",
-    "passed",
-    "passed",
     "passed"
    ],
    "errors": [
@@ -186,27 +141,18 @@
     "",
     "",
     "",
-    "",
-    "",
-    "",
     ""
    ],
    "walls": [
-    124.4,
-    126.4,
-    129.0,
-    125.4,
-    125.1,
-    124.6,
-    128.9,
-    125.4,
-    127.0,
-    125.5
+    116.8,
+    116.7,
+    117.3,
+    117.4,
+    117.6,
+    117.8,
+    117.3
    ],
    "stats": [
-    null,
-    null,
-    null,
     null,
     null,
     null,
@@ -222,105 +168,8 @@
     "gate-sveltekit/g2-det-4.jsonl.gz",
     "gate-sveltekit/g2-det-5.jsonl.gz",
     "gate-sveltekit/g2-det-6.jsonl.gz",
-    "gate-sveltekit/g2-det-7.jsonl.gz",
-    "gate-sveltekit/g2-det-8.jsonl.gz",
-    "gate-sveltekit/g2-det-9.jsonl.gz",
-    "gate-sveltekit/g2-det-10.jsonl.gz"
-   ],
-   "verify_all": [
-    {
-     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-     "status": "diverged",
-     "distinct_fingerprints": 10,
-     "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 1,
-      "index": 31,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814"
-      },
-      "reason": "other",
-      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809\" vs \"http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814\""
-     }
-    },
-    {
-     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data failure does not trigger an unhandled rejection [chromium-dev]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
-     "runs": 10,
-     "divergence": null
-    },
-    {
-     "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
-     "status": "diverged",
-     "distinct_fingerprints": 3,
-     "runs": 10,
-     "divergence": {
-      "run_a": 0,
-      "run_b": 3,
-      "index": 4,
-      "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 36338b55cb9d3fef710608f12793de54 175"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "other",
-       "o": "server.fingerprint",
-       "at": "",
-       "v": "http://localhost:5301 4cf07c4fa57645427db311a9226f90d2 179"
-      },
-      "reason": "other",
-      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 36338b55cb9d3fef710608f12793de54 175\" vs \"http://localhost:5301 4cf07c4fa57645427db311a9226f90d2 179\""
-     }
-    }
-   ],
-   "verify": {
-    "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data [chromium-dev]",
-    "status": "diverged",
-    "distinct_fingerprints": 10,
-    "runs": 10,
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 31,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814"
-     },
-     "reason": "other",
-     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809\" vs \"http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814\""
-    }
-   }
+    "gate-sveltekit/g2-det-7.jsonl.gz"
+   ]
   }
- ],
- "elapsed_min": 25.0
+ ]
 }
