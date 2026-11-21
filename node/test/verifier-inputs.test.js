@@ -140,3 +140,33 @@ for (const runner of ['node-test', 'vitest', 'jest']) {
     assert.equal(diff.summary.stable, 0, JSON.stringify(diff.summary));
   });
 }
+
+// exam F-01.hostname.pinned.node: the second run under sudo has other USER/LOGNAME, which no test reads. The header
+// says the tests' environment reads are recorded, so only the tests that read a differing variable are
+// input-differs; the others stay identical
+for (const runner of ['node-test', 'vitest']) {
+  test(`${runner}: a variable that differs between the runs but no test reads keeps the tests identical`, T, () => {
+    const files = runner === 'node-test'
+      ? { 'tests/e.test.mjs': "import { test } from 'node:test';\ntest('reads', () => { void process.env.EXAM_READ; });\ntest('plain', () => {});\n" }
+      : { 'tests/e.test.mjs': "import { test } from 'vitest';\ntest('reads', () => { void process.env.EXAM_READ; });\ntest('plain', () => {});\n",
+        'vitest.config.mjs': "export default { test: { include: ['tests/**/*.test.mjs'] } };\n" };
+    const dir = fixture('verifier-inputs', `unread-${runner}`, files);
+    const run = (name, env) => {
+      const r = crun(runner, dir, runner === 'vitest' ? ['run'] : [], { cache: false, env: { TZ: 'UTC', ...env } });
+      assert.equal(r.status, 0, show(r));
+      const dst = path.join(dir, `${name}.jsonl`);
+      fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), dst);
+      return dst;
+    };
+    const a = run('a', { EXAM_READ: '1', EXAM_UNREAD: 'x' });
+    const b = run('b', { EXAM_READ: '1', EXAM_UNREAD: 'y' });
+    assert.equal(JSON.parse(fs.readFileSync(a, 'utf8').split('\n')[0]).meta.env_reads_recorded, true);
+    const same = JSON.parse(native.verify([a, b]));
+    assert.equal(same.summary.stable, same.summary.tests, JSON.stringify(same.tests));
+    const c = run('c', { EXAM_READ: '2', EXAM_UNREAD: 'x' });
+    const diff = JSON.parse(native.verify([a, c]));
+    const by = Object.fromEntries(diff.tests.map((t) => [t.nodeid.split('::').pop(), t.status]));
+    assert.equal(by.plain, 'stable', JSON.stringify(diff.tests));
+    assert.equal(by.reads, 'input-differs', JSON.stringify(diff.tests));
+  });
+}

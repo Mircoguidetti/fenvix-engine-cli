@@ -296,6 +296,8 @@ function runInputs(run, meta) {
   return inputs;
 }
 
+const ENV_UNRECORDED_RUNNERS = new Set(['bun', 'deno']);
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
@@ -324,6 +326,10 @@ function finish(run, opts, files, meta) {
     network: run.netMode,
     urandom_controlled: run.cfg.urandom,
     entropy: run.cfg.urandom ? 'controlled' : 'observed',
+    // the tests' environment reads are events (src/controls.js installEnvRecord) in Node processes; Bun's and
+    // Deno's own environment APIs are not recorded. Without this the verifier counts every differing variable as
+    // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
+    env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
