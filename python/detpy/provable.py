@@ -71,6 +71,9 @@ _CALLER = 2
 #: certainty forces a rerun). It is what sets the ``unacc`` flag that ``record.rs``'s ``uncacheable`` refuses on.
 ON_GAP = None
 
+#: The modules whose entries rest on the engine's observer at ``open`` (see :func:`_refresh_standard_streams`).
+_IO_MODULES = ("_io", "io")
+
 #: Audit events the engine has a rule for. Every one of them is already covered by a channel rule (a file read is
 #: an ``fs.read`` event, a child process is ``uncontrolled.child``, an import is an ``inputs.code`` / ``deps``
 #: entry), so seeing them adds nothing. Anything else the audit hook reports is a gap: the hook is asked for
@@ -134,7 +137,7 @@ class Sensor:
     """
 
     __slots__ = ("tool", "active", "_verdicts", "_seen", "outside", "_native_ok", "_native_seen",
-                 "_reason", "_transparent_memo", "_seen_for", "_native_bad")
+                 "_reason", "_transparent_memo", "_seen_for", "_native_bad", "_stdin_ids")
 
     def __init__(self) -> None:
         self.tool: int | None = None
@@ -150,6 +153,7 @@ class Sensor:
         self._native_ok: frozenset = frozenset()
         self._native_seen: set = set()
         self._reason: str | None = None  # why there is no sensor, when there is none
+        self._stdin_ids: set = set()     # the standard input streams: see _refresh_standard_streams
 
     # -- the ledger ----------------------------------------------------------------------------------
     def _report(self, kind: str, name: str, site: str = "<sensor>") -> None:
@@ -174,9 +178,33 @@ class Sensor:
             except Exception:
                 pass   # the cache's bookkeeping must not take the test down
 
+    # -- the streams that have no `open` behind them ---------------------------------------------------
+    def _refresh_standard_streams(self) -> None:
+        """The identities of the standard input streams, for :meth:`_on_call`.
+
+        The `_io` entry of the accounting table answers `Recorded` because the engine's observer at ``open``
+        already recorded the path and the digest of what was read, so the stream methods that hand those bytes to
+        the test add nothing the verifier does not already compare. A stream that is not a file has no such
+        ``open`` behind it: standard input goes through the SAME `_io` methods with nothing recorded, which R-058
+        confirmed is a false IDENTICAL -- two runs fed different bytes on stdin compared equal on every field.
+
+        The table cannot tell the two apart, because it answers for a name and not for a stream. The sensor can:
+        it holds the stream objects. Collected once per test rather than once per session, because a runner
+        replaces ``sys.stdin`` (pytest's capture plugin puts its own object there) and may do it per test.
+        """
+        ids = set()
+        for attr in ("stdin", "__stdin__"):
+            st = getattr(sys, attr, None)
+            buf = getattr(st, "buffer", None)
+            for obj in (st, buf, getattr(buf, "raw", None)):
+                if obj is not None:
+                    ids.add(id(obj))
+        self._stdin_ids = ids
+
     def start_test(self) -> None:
         self._seen = set()
         self._seen_for = _state.STATE.nodeid
+        self._refresh_standard_streams()
         # No sensor means nothing in this run can be shown identical, so nothing in it may be stored for reuse
         # either: a later run that reused one of these results would have no ground to call it provable.
         if not self.active and ON_GAP is not None:
@@ -244,6 +272,15 @@ class Sensor:
                     t = type(c)
                     mod, qual = mod or getattr(t, "__module__", None), getattr(t, "__qualname__", "?")
             k = (mod or "", qual or "?")
+            if k[0] in _IO_MODULES and self._stdin_ids:
+                # A call on a standard input stream, which the `_io` entry's claim does not cover: there is no
+                # `fs.read` event behind it, so nothing records what the test read. Asked only for `_io`, so a
+                # test reading ordinary files pays one set lookup and nothing else.
+                strm = getattr(c, "__self__", None)
+                if strm is not None and id(strm) in self._stdin_ids:
+                    if _sites.resolve(_CALLER) is not None:
+                        self._report("io", "standard input")
+                    return None
             ok = self._verdicts.get(k)
             if ok is None:
                 # a Python-level callable is not a boundary crossing at all; everything else must be in the table
@@ -357,6 +394,7 @@ class Sensor:
         # slot 1: the cache with proof keeps slot 0 for its own event list. () = every event reaches us,
         # because an event this sensor has no rule for is itself the gap it looks for.
         _core.set_audit_hook(self._on_audit, (), 1)
+        self._refresh_standard_streams()
         self.active = True
         return True
 

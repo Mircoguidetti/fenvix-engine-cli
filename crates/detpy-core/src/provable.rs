@@ -920,12 +920,32 @@ pub fn required_controls(sensor: &str) -> &'static [&'static str] {
         // env: environment reads, the host name, the CPU count, the terminal size. os: the stat observer, the
         // pinned process id and working directory. tz / locale: pinned. hashseed: `builtins.hash`.
         &["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed"]
-    } else if sensor.starts_with("node-") {
+    } else if sensor.starts_with("node-") || sensor == SENSOR_CACHE_REUSE {
+        // `cache-reuse/1` runs no test of its own, but the entries it serves were keyed under the controls of
+        // the session that recorded them, so a run that switched one off is not the run those entries stand for.
         &["time", "seeds", "fs", "net", "timers"]
     } else {
-        // a sensor the core does not know: clause 1 of `judge` has already refused it
-        &[]
+        // A sensor the core has no rule for. `judge` refuses it by name in clause 1, and this branch is written
+        // to fail CLOSED all the same: R-058 #4 was exactly a permissive fallback whose safety argument was a
+        // comment about a check that did not exist. Asking for every control both shells rest on means that if
+        // this list is ever reached, the answer is a refusal and not a free pass.
+        &["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed", "timers"]
     }
+}
+
+/// The sensor a Node run declares when every test came from the cache, so no process watched anything
+/// (`node/src/session.js`, `provableField`).
+pub const SENSOR_CACHE_REUSE: &str = "cache-reuse/1";
+
+/// Does this core have a rule for this sensor?
+///
+/// The accounting table is written against a known set of shells: `account`/`account_node` answer for the
+/// callables THOSE shells can report, and [`required_controls`] names the controls THOSE shells' `Controlled`
+/// answers rest on. A name outside the set is a shell this core knows nothing about, so nothing it reports can be
+/// read as evidence -- the answer is NOT PROVEN, which is what `docs/` and `prompts/COMMON-BLOCKS.md` have always
+/// declared and what R-058 #4 found was not true in the code.
+pub fn sensor_known(sensor: &str) -> bool {
+    sensor.starts_with("py-") || sensor.starts_with("node-") || sensor == SENSOR_CACHE_REUSE
 }
 
 /// What one shell reports about one test, and what the run as a whole declared about its sensor.
@@ -992,6 +1012,15 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
             "the run declared no sensor: nothing shows what the test did, so it cannot be shown identical".into(),
         );
     };
+    if !sensor_known(sensor) {
+        return not_proven(
+            "sensor",
+            format!(
+                "sensor {sensor} is not one this core has a rule for: the accounting table was not written \
+                 against it, so what it reports cannot be read as evidence"
+            ),
+        );
+    }
     match att.contract {
         Some(SENSOR_CONTRACT) => {}
         Some(other) => {
@@ -1073,6 +1102,43 @@ pub fn judge_record(
     controls: &[String],
     outside: &[String],
 ) -> Verdict {
+    // The two evidence clauses. They come before the attestation, because a verdict can only rest on evidence
+    // the record actually holds, and both of these are a record that holds none. R-058 #1 and #2.
+    //
+    // An empty fingerprint is what every shell writes when it has NO evidence about a test: a test that never
+    // reached the runner's hooks, a test an isolate lost, a reused test whose receipt held none
+    // (`node/src/vitest/shell.js`, `node/src/jest/runner.js`, `node/src/isolate.js`,
+    // `node/src/cache/trace-reused.js`). Two of those compare equal -- `"" == ""` -- and the verifier used to
+    // call that an identical execution. It is two absences agreeing.
+    if record.fingerprint.is_empty() {
+        return not_proven(
+            "evidence",
+            "the run recorded no fingerprint for this test: there is nothing to compare, so it cannot be shown \
+             identical"
+                .into(),
+        );
+    }
+    // The record's fingerprint must be the fingerprint OF the record's own events. Nothing in the trace format
+    // signs a record, `concat_traces` copies records verbatim out of parts it did not produce, and the verifier
+    // reached `diff_records` only when the stored strings DIFFERED -- so when they agreed the events were never
+    // read, and a record whose fingerprint does not belong to its events was reported as "observed the same
+    // events". Only a complete record can be checked this way: a truncated one does not hold every event it
+    // chained. `fingerprint_of` carried the doc comment "used by the verifier to validate traces" and had no
+    // caller; this is that caller.
+    if !record.truncated {
+        let recomputed = crate::fingerprint::fingerprint_of(&record.events);
+        if recomputed != record.fingerprint {
+            return not_proven(
+                "trace",
+                format!(
+                    "the record's fingerprint does not match its own events ({} event(s) recomputing to \
+                     {recomputed}, stored as {}): this trace does not describe its own run",
+                    record.events.len(),
+                    record.fingerprint
+                ),
+            );
+        }
+    }
     let get = |k: &str| header.and_then(|h| h.get(k)).and_then(|v| v.as_str());
     let unaccounted = record.unaccounted.clone();
     let att = Attestation {
@@ -1190,7 +1256,30 @@ mod tests {
         // Node pins the host name and the CPU count unconditionally, so it needs no `env` control for them
         assert!(!required_controls("node-surface/1").contains(&"env"));
         assert!(required_controls("node-surface/1").contains(&"timers"));
-        assert!(required_controls("something-else/9").is_empty());
+        // R-058 #4: this assertion used to read `is_empty()`, which is what made clause 3 fail OPEN for a
+        // sensor the core has no rule for -- the bug and its test agreed with each other. A name outside the
+        // known set is refused by `judge` on the name alone, and the list it would have iterated asks for
+        // every control both shells rest on, so even reaching it is a refusal.
+        assert!(!sensor_known("something-else/9"));
+        assert!(!required_controls("something-else/9").is_empty());
+        assert!(sensor_known("py-monitoring/1") && sensor_known("node-surface/1"));
+        assert!(sensor_known(SENSOR_CACHE_REUSE));
+    }
+
+    #[test]
+    fn a_sensor_this_core_has_no_rule_for_is_not_proven() {
+        // The whole of R-058 #4, at the predicate: a run whose header is otherwise perfect -- this core's
+        // contract, this core's table, an audited runtime, every control on -- is still NOT PROVEN when the
+        // sensor is one the accounting table was not written against.
+        let s = surface_digest();
+        let c = all_controls();
+        for sensor in ["cache-reuse/2", "totally-made-up/9", "x", "py", "node", "deno-whatever/1"] {
+            let a = Attestation { sensor: Some(sensor), ..good(&[], &[], &s, &c) };
+            match judge(&a) {
+                Verdict::NotProven { kind, .. } => assert_eq!(kind, "sensor", "sensor {sensor}"),
+                v => panic!("sensor {sensor}: expected NotProven, got {v:?}"),
+            }
+        }
     }
 
     #[test]
