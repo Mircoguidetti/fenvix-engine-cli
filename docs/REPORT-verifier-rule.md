@@ -312,10 +312,37 @@ fixed:
 | item | state |
 |---|---|
 | `F-02.py-explore.idoft-py-autodoc` | **blocked here, not by the engine.** The check needs the real project cloned with its dependencies installed, and this container's guardrail refuses to build a freshly cloned third-party project. The *class* is covered instead by a new regression test (`tests/test_fenvix_cli.py::test_explore_finds_the_target_when_another_module_does_not_import`), mirroring the one the previous round added for `fenvix repro`. The real check is decided by the CI exam. |
-| `test_capture_sessions_match_reference` | the previous round's diagnosis holds: the reference capture (`tests/rust_hotpaths_ref/_ref_proofcache.py`, installed as `detpy.proofcache`) makes its own `os.stat` / `os.path.exists` calls from Python, which the `fs.stat` observer records as the test's, while the Rust capture makes the same checks in C where nothing is observed. A stale reference, not a capture regression. |
+| `test_capture_sessions_match_reference` | **fixed, with one pre-existing flake left.** See section 11. |
 | the full local suites and the CI matrix | the full `release-1` workflow is dispatched on this branch at depth `full`; local full-suite figures are not yet in this report. |
 | the reviewer round | not yet done. |
 | **a founder decision** | see below. |
+
+## 11. The open engine test: what it actually was
+
+The previous round's diagnosis was right in kind — a stale reference, not a capture regression — and there were
+two causes, both in the fixture.
+
+1. The reference capture (`tests/rust_hotpaths_ref/_ref_proofcache.py`, installed as `detpy.proofcache`) makes its
+   own metadata checks from Python, where the Rust capture makes them in C and Level 0 sees nothing. After R-055
+   added the `fs.stat` observer, those became `fs.stat` events of whichever test happened to be running. The
+   reference now asks through the functions detpy captured before installing its observer (`osstate._real_stat`
+   and `_real_lstat`, the latter added for this). What it records as cache dependencies is unchanged — `note()`
+   still runs — only the Level 0 event is gone, which is exactly what the Rust capture does.
+
+2. One test still differed after that, and the cause was not stat observation at all. **MEASURED** by diffing the
+   two event chains for `test_m.py::test_dns_loopback`: the reference run's test produced 2 events, the Rust run's
+   4, the extra two being `fs.stat /usr|dir`. The test calls `socket.getaddrinfo`, which imports
+   `encodings.idna` the first time a host name is resolved; that import makes `posixpath.realpath` stat `/usr`.
+   The two capture implementations do not import the same modules, so the lazy import landed inside the test in
+   one run and before it in the other. The harness plugin (`_capref.py`, loaded in both modes) now warms that
+   import. It is a property of the harness: the comparison is about what the captures record, not about which
+   modules they happen to pull in.
+
+**MEASURED** after both: sessions 1 to 4 match on every compared facet (stores, receipts, outcomes, summaries,
+keys, terminal output). Session 5 differs on `child_entropy_draws`, 3 against 2 — the load-sensitive flake already
+recorded in `sessions/2026-11-19-parallel-proof/REPORT.md` ("session 5 counted 2 instead of 3 child entropy draws
+while the walk ran on the same 4 cores; it passed 2 of 2 times alone afterwards"). It ran here with the Node suite
+on the same 4 cores at load average 3, and is to be re-run alone.
 
 ## 10. For the founder to decide
 
