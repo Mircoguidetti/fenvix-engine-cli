@@ -1,26 +1,11 @@
 {
- "nonce": 27,
+ "nonce": 28,
  "jobs": [
   {
    "job": "gate",
-   "name": "documenso"
+   "name": "sveltekit"
   }
  ],
- "params": {
-  "gate": {
-   "runs": 1,
-   "plain_runs": 0,
-   "diag_runs": 0,
-   "budget_min": 60,
-   "per_run_s": 600,
-   "target_timeout_min": 12,
-   "env": {
-    "DETJS_LS_TRACE": "/tmp/ls.trace",
-    "DETJS_LS_TRACE_REAL": "1",
-    "DEBUG": "pw:browser*,pw:api,pw:protocol",
-    "L2_LOG_GREP": "ffmpeg|video|[Tt]rac|close|Close|dispose|artifact|Artifact|screencast|Screencast"
-   }
-  }
- },
+ "params": {},
  "suites": false
 }
