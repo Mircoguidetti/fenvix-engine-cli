@@ -121,11 +121,51 @@ have. It now asks `_me()`, the same question the gate asks. `tests/test_l1_prova
   engage for exploring seeds (`CFG.seed and CFG.preempt`), not for the calm seed 0 that `--det-threads` uses by
   default. UNKNOWN: the cost of the Python fallback for exploring seeds on this lineage.
 
+## Why the numbers below are believable: three bugs in my own harness
+
+Found by running the harness on a real suite before trusting it, not by it failing.
+
+* The movement counter compared each test's status against `"identical"`. `fenvix verify --json` gives
+  `verify.rs`'s `Status` in kebab-case — `stable | diverged | missing | input-differs | not-proven` — and `stable`
+  is the proof the report prints as IDENTICAL. Nothing ever equalled `"identical"`, so "tests moved" and "proofs
+  lost" were pinned at zero and the proven share read 0.0 whatever the runs did.
+* The first `--det` run of an environment compiles the standard library and site-packages under
+  `PYTHONHASHSEED=0` into a shared cache. MEASURED: 5.4 s of a 5.4 s run. Whichever mode ran first carried that
+  one-off, and the slowdown read **-66%**. There is now a discarded warm-up run.
+* The first suites job that reached the measurement finished anyio in 5 seconds and reported a tidy "0 moved, 0
+  lost, 0 broken". The corpus records no test dependencies for anyio, so nearly every test errored at import:
+  three modes of nothing, which compare equal. Nothing in the harness objected.
+
+**All three were wrong in the flattering direction.** That is the single most useful thing to know about these
+numbers, and the reason the guards below exist rather than being left to care.
+
+So the harness now refuses to report a job it could not run: `suites.py` installs what a suite's own tests need
+and runs `--collect-only` as a gate (MEASURED: anyio collects 2490 tests where it had been measuring
+approximately none), and `measure.py` marks a result invalid and exits nonzero on pytest rc 2, 3, 4 or 5
+(interrupted, internal error, usage, nothing collected), on a run that reached its budget, on a missing
+`fenvix verify` report, or when no test was in both modes. Every transition is reported by name, so a move to
+`diverged` cannot hide inside "not proven any more".
+
+## Speed: the first thing this control does is make a suite faster
+
+MEASURED on this container, Python 3.13.18, anyio `tests/test_synchronization.py -k asyncio`, 2 rounds per mode
+after a discarded warm-up: `--det` median 3.37 s, Level 1 median 2.20 s — **Level 1 ran 35-40% FASTER than
+`--det`** (-40% on the run reported below, -35% on the second). The reason is structural, not noise: under
+`--det` alone an asyncio loop forces `time.sleep` to wait for real, because the loop keeps real time and its
+deadlines must see the sleep; under `--det-async` the scheduler owns the loop's time and the sleeps stop waiting.
+
+Stated honestly in both directions: on that same selection **no movement was available**, because all 165 tests
+were already `stable` under `--det` — nothing was NOT PROVEN to begin with. The speed figure does not hide that,
+and the absence of movement there does not hide the speed figure.
+
 ## The two numbers
 
 ### Movement, MEASURED on probes
 
-On this container, Python 3.13.18, the exam's `executor_race` probe, 8 runs per mode:
+On this container, Python 3.13.18, the exam's `executor_race` probe, 8 runs per mode. **MEASURED at the
+branch point `bbb7a8a1`, before `provable.rs` landed** — it is evidence that the mechanism works, not a
+claim about the current trunk, and it will be re-measured once Block 1's clause and their `marshal.load`
+classification fix are in:
 
 | | outcome | `fenvix verify` |
 | --- | --- | --- |
@@ -150,6 +190,41 @@ so these numbers can be compared with the ones that study reported.
 
 UNKNOWN until those jobs land: the provable-share movement and the slowdown on real suites. They are what the row
 is judged on and they are not in hand yet. Nothing here should be read as if they were.
+
+## A hang on the trunk, found while measuring, and not this row's
+
+MEASURED on this container, anyio at the pinned corpus commit, `pytest tests/test_from_thread.py -k asyncio`:
+
+| mode | result |
+| --- | --- |
+| plain pytest | 87 passed in 2.0 s |
+| `--det` | **HANGS** — 10 min elapsed, 1 s of CPU, single-threaded, sleeping |
+| `--det --det-threads --det-async` | completes in 3 s |
+
+Verified not to be this work before reporting it: the trunk's own `_level0.py`, `_state.py`, `clock.py`,
+`plugin.py` and `uncontrolled.py` were restored from `claude/verifier-cli`, the three new modules moved aside, and
+the hang reproduced identically; `frames.install`, the one change here that touches plain `--det`, was ruled out
+separately; the working tree was then checked clean against HEAD. Reported as a hang rather than given a longer
+budget.
+
+Assigned to Block 2 by the coordinator with that reproduction. Level 1 happens to unblock it, which is not a fix
+and is not claimed as one.
+
+## Three tests Level 1 breaks, and the fix
+
+MEASURED, same selection, `--det --det-threads --det-async`: 3 failed, 84 passed, 1 error, against 87 passed
+plain. All three are `TestBlockingPortal::test_from_async`, parametrised `[asyncio-trio]`, `[asyncio+eager-trio]`
+and `[trio-asyncio]`, failing with `RuntimeError: This portal is not running`.
+
+Cause: anyio's blocking portal runs a **trio** loop in a worker thread. `--det-threads` manages that thread, but
+trio's own synchronization primitives are not scheduling points this scheduler can see, so the portal thread never
+gets the baton while the main thread walks on and finds the portal not running. Breaking a passing test is worse
+than failing to prove one, so this is a defect of the port and not a limit to document.
+
+The fix is the mechanism L1 already uses for uvloop: `threads._wrap_outside_run` makes the thread leave the
+scheduler for the whole loop run, records `threads.uncontrolled`, and rejoins afterwards. `trio.run` is looked up
+on the module at call time by anyio's backend, so the existing late-import hook wraps it the same way. Those three
+tests then pass as they do plain and are honestly reported NOT PROVEN.
 
 ## The exam
 
@@ -199,7 +274,7 @@ a branch. Running PY-07 against this work therefore needs a `release-1.yml` run 
 either a push to `claude/exam`'s own `rerun.json` or someone with that authority. I have not pushed to the exam
 branch.
 
-## One judgment call the founder should see
+## The io line: settled strict, and what it costs
 
 Suppressing `uncontrolled.io` makes an in-process asyncio client/server pair over real loopback come out
 IDENTICAL. MEASURED: no escape fires, because the loop never had to wait — the kernel always had something ready.
@@ -209,21 +284,31 @@ ids), so a run where the real world differed diverges rather than passing for id
 holds that an in-process listener is not an uncontrolled source (`network._note_live`: "Its own server ... is
 not"). It is consistent with how `--det` already treats loopback.
 
-What I will not do is call that certain. The verdict rests on kernel loopback timing having been **recorded**
-rather than **controlled**. If the stricter line is wanted, it is one condition: keep `uncontrolled.io` whenever
-the test's loop ever polled a real descriptor, and suppress it only for loops whose wake-ups are all internal
-(timers, executor results, the self-pipe). That is narrower and would cost some of the movement. I have not taken
-it, because the founder's rule is his to apply here.
+I wrote that I was "not comfortable calling it certain", and the coordinator ruled that this settles it without
+going to the founder, because the founder's rule already covers it: never a green on a doubt, and speed never
+buys an exception. Recording the readiness sequence is a good defence and it is not the same thing as controlling
+it; "defensible" is not the bar.
+
+**So the strict line is taken.** `uncontrolled.io` is kept whenever the test's loop ever watched a descriptor that
+is not the loop's own wake-up pipe, and suppressed only for loops whose wake-ups are all internal — timers,
+executor results, the self-pipe. The loopback pair above therefore stays NOT PROVEN. Loopback goes on the list of
+channels to cover later rather than being claimed now.
+
+UNKNOWN: the movement this costs on real suites. It will be reported as a number, not as a remark.
 
 ## What runs where
 
 `.github/workflows/l1-trunk.yml`, on a push to this branch, Python 3.12 / 3.13 / 3.14:
 
 * `build` — the wheel. MEASURED: green on all three.
-* `engine` — the engine's own suite, the regression gate for this work (it changed the Rust record hot path,
-  `time.sleep` and the uncontrolled marking).
-* `probes` — the PY-07 conditions. MEASURED: green on all three, with the INCONCLUSIVE notes above.
-* `suites` — the measurement on anyio, requests and networkx.
+* `engine` — **GATE.** The engine's own suite, the regression gate for this work (it changed the Rust record hot
+  path, `time.sleep` and the uncontrolled marking). `fail-fast: true`, per the founder's rule that a red gate ends
+  the run: there is nothing to learn from the other versions once one says the port broke something.
+* `probes` — **MEASUREMENT.** The PY-07 conditions. `fail-fast: false`: what a probe does on 3.14 is evidence even
+  when 3.12 is red, and these report INCONCLUSIVE rather than passing or failing where the host does not race.
+  MEASURED: green on all three, with the INCONCLUSIVE notes above.
+* `suites` — **MEASUREMENT.** The two numbers, over hours. `fail-fast: false` and `cancel-in-progress: false`: one
+  suite failing must not throw the others away, and a later push must not cancel them.
 
 No step raises a timeout to get green. A run that reaches its budget is reported as a hang.
 
