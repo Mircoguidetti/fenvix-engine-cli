@@ -388,6 +388,11 @@ fn posix_account(name: &str) -> Accounting {
         | "unlink" | "rename" | "replace" | "link" | "symlink" | "chmod" | "chown" | "lchown" | "fchmod"
         | "fchown" | "utime" | "mkfifo" | "mknod" | "set_inheritable"
         | "get_inheritable" | "set_blocking" | "get_blocking" | "fspath" | "strerror" => Accounting::Pure,
+        // Registering a callback for fork reads nothing and returns nothing: it only has an effect if the process
+        // forks, and `fork` itself is Unaccounted above, so the channel is refused where it actually opens. Named
+        // here because the standard library registers these on import (`random`, `threading`, `logging`), which
+        // put `api:posix.register_at_fork` on ordinary tests -- MEASURED on the smoke project (itsdangerous).
+        "register_at_fork" => Accounting::Pure,
         // whether a descriptor is a terminal, and the encoding that implies, differ between a terminal and a pipe
         // and between machines, and `--det` pins neither
         "isatty" | "device_encoding" | "ttyname" => Accounting::Unaccounted,
@@ -479,11 +484,34 @@ fn thread_account(name: &str) -> Accounting {
         "start_new_thread" | "start_joinable_thread" | "start" | "_set_sentinel" | "interrupt_main" => {
             Accounting::Unaccounted
         }
-        // locks and thread-local storage carry no outside information; the identifier is pinned
+        // locks and thread-local storage carry no outside information; the identifier is pinned.
+        //
+        // `lock` and `_ThreadHandle` are the TYPES, and they are here because CPython's `threading.Lock` IS the
+        // class `_thread.lock` (MEASURED on 3.13: `threading.Lock is <class '_thread.lock'>`), so a test writing
+        // the most ordinary `threading.Lock()` calls the type itself and the sensor reports the type's qualified
+        // name. Only the methods were listed, so constructing a lock was unaccounted and every test that took one
+        // came out NOT PROVEN -- MEASURED on the smoke project (CI 44959416348: "not accounted for:
+        // api:_thread.lock" on every test of itsdangerous). Creating a lock reads nothing from outside the
+        // process: what a lock can make non-deterministic is the ORDER of threads, which is a different claim and
+        // is refused by its own mark (`start_new_thread` above is Unaccounted, so a test that starts a thread is
+        // NOT PROVEN whatever it does with locks).
         "allocate_lock" | "RLock" | "LockType" | "acquire" | "release" | "locked" | "__enter__" | "__exit__"
-        | "get_ident" | "get_native_id" | "stack_size" | "_count" | "_local" | "TIMEOUT_MAX" | "daemon_threads_allowed" => {
-            Accounting::Controlled
-        }
+        | "get_ident" | "get_native_id" | "stack_size" | "_count" | "_local" | "TIMEOUT_MAX"
+        | "daemon_threads_allowed" => Accounting::Controlled,
+        // The lock TYPE itself, because `threading.Lock` IS `_thread.lock` in CPython (MEASURED on 3.13:
+        // `threading.Lock is <class '_thread.lock'>`), so the most ordinary `threading.Lock()` calls the type and
+        // the sensor reports the type's name, not a method's. Only the methods were listed, so creating a lock
+        // was unaccounted and every test that took one came out NOT PROVEN -- MEASURED on the smoke project (CI
+        // 44959416348: "not accounted for: api:_thread.lock" on every test of itsdangerous).
+        //
+        // `Pure` and not `Controlled`, because no control pins anything here: allocating a lock is a function of
+        // what is already in the process and reads nothing from outside it. What a lock can make
+        // non-deterministic is the ORDER of threads, which is a different claim and is refused by its own name:
+        // `start_new_thread` and `start_joinable_thread` are Unaccounted above, so a test that starts a thread is
+        // NOT PROVEN whatever it then does with locks. `_ThreadHandle` is deliberately NOT listed: its `is_done`
+        // reports whether another thread has finished, which is timing, and a handle can reach a test from a
+        // thread the runner started.
+        "lock" => Accounting::Pure,
         _ => Accounting::Unaccounted,
     }
 }

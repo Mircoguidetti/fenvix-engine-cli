@@ -451,3 +451,53 @@ def test_a_test_that_reads_standard_input_is_not_identical(tmp_path):
         traces.append(t)
     v = _verify(pure, traces)
     assert v.returncode == 0, f"the control leg must be IDENTICAL, got {v.returncode}\n{v.stdout}"
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# 6. The other side of the rule: what it must NOT refuse
+# ---------------------------------------------------------------------------------------------------------------
+
+def test_an_ordinary_lock_does_not_make_a_test_not_proven(tmp_path):
+    """A test that takes a `threading.Lock` is still IDENTICAL.
+
+    The rule's cost is the product: a test the engine refuses is a test the customer cannot skip and cannot spread
+    across cores. This is the cheapest and commonest way to pay that cost for nothing, and it was real --
+    MEASURED, CI 44959416348 on itsdangerous: "not accounted for: api:_thread.lock" on every test of the suite,
+    because `threading.Lock` IS the class `_thread.lock` in CPython, so `threading.Lock()` calls the TYPE and the
+    accounting table listed only the methods.
+
+    What must still be refused is the order of threads, not the lock: `test_a_channel_derived_from_the_engines_own_table_is_not_proven`
+    and the `_thread.start_new_thread` entry cover that, and this test does not weaken them -- it starts no thread.
+    """
+    assert _core.provable_account("_thread", "lock") != "unaccounted", (
+        "threading.Lock is the class _thread.lock: if the table does not account for the type, every test that "
+        "takes a lock is NOT PROVEN")
+
+    proj = _project(tmp_path, {"tests/test_x.py": """
+        import threading
+
+        LOCK = threading.Lock()
+
+        def test_with_a_lock():
+            with LOCK:
+                total = sum(range(100))
+            assert total == 4950
+            assert not LOCK.locked()
+
+        def test_lock_made_inside_the_test():
+            l = threading.Lock()
+            assert l.acquire(blocking=False)
+            l.release()
+    """})
+    traces = []
+    for i in (1, 2):
+        t = tmp_path / f"lock{i}.jsonl"
+        r = _run(proj, t, _env())
+        assert t.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        assert "2 passed" in r.stdout, r.stdout[-3000:]
+        traces.append(t)
+    v = _verify(proj, traces)
+    assert v.returncode == 0, (
+        f"two identical runs of a test that only takes a lock must be IDENTICAL, got {v.returncode}\n{v.stdout}")
+    assert "not proven: 0" in v.stdout, v.stdout
+    assert "covered by Level 0: 2" in v.stdout, v.stdout
