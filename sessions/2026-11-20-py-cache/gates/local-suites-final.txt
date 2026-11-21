@@ -65,3 +65,16 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
          [serial,n2]: os.getrandom absent in uv's standalone 3.14; test_clock_rust x2: the mock_open TypeError), as in 1)
    Runners suites (venv-runners, 3.13): 147 passed, 1 skipped.
    Node: 628 tests, 627 pass, 0 fail, 1 skipped.  cargo test --release: 191 passed, 0 failed.
+
+9) Pushed head (ca7b647f: a file's child runs each test inside the other plugins' pytest_runtest_protocol wrappers;
+   wheel rebuilt and reinstalled in every venv), MEASURED 2026-11-21, full suite, three suites in parallel:
+== Python 3.12   29 failed, 1149 passed, 83 skipped, 1 deselected  (2271 s)
+== Python 3.13   26 failed, 1150 passed, 85 skipped, 1 deselected  (2193 s)
+== Python 3.14   26 failed, 1153 passed, 82 skipped, 1 deselected  (2411 s)
+   (the same classes as 8): reference-trace, timing and control comparisons under three parallel suites)
+   Every failing test rerun alone, per version:
+   3.12: 28 passed + test_f01_gaps::test_first_run_after_a_checkout... alone: 1 passed
+   3.13: 26 passed
+   3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   Node unchanged since 8) (no JS or addon change): 628 tests, 627 pass, 0 fail, 1 skipped.
