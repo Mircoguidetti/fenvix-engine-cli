@@ -70,6 +70,7 @@ _real_os_read = os.read
 _real_close = os.close
 _real_fstat = os.fstat
 _real_stat = os.stat
+_real_lstat = os.lstat
 _getframe = sys._getframe
 
 # devices whose content is fixed or is the test's own stream: opening them observes nothing
