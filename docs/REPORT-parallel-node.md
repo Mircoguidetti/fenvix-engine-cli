@@ -277,8 +277,24 @@ two files sharing `shared.log` both **pass** under `--det` serial and both **fai
 ("2 test(s) failed under --det"). The engine then reports
 `CROSS-WORKER read-write shared.log: tests/x (lane 1) / tests/y (lane 2); the next plan puts them in one lane`.
 
-The hazard is found only *after* the run, from the recorded footprints. The placement is corrected for the next run;
-the first run has already reported a wrong result. `docs/PARALLEL-PROOF-DESIGN.md` (design P6) lists
+A second instance, a different conflict class and the one real suites hit most often — two files binding the same
+fixed port. **MEASURED** on a two-file fixture binding `127.0.0.1:45321`:
+
+| run | result |
+|---|---|
+| `--det --det-workers=1` | 2 passed |
+| `--det --det-workers=2`, first run | **1 failed** — `Error: listen EADDRINUSE: address already in use 127.0.0.1:45321` |
+| | detected: `CROSS-WORKER port 45321: test/a.test.mjs (lane 1) / test/b.test.mjs (lane 2); the next plan puts them in one lane` |
+| `--det --det-workers=2`, second run | 2 passed |
+| `--det --det-workers=2`, third run | 2 passed |
+
+So detection is not the weak part — it names the exact port and the exact pair, and it covers both conflict classes
+(a shared path and a fixed port). The weak part is *when*: the hazard is found only after the run, from the recorded
+footprints. The placement is corrected for the next run; the first run has already reported a wrong result.
+
+**The resulting signature is run 1 red, runs 2 and later green.** That is precisely the "flaky on the first run,
+passes on a retry" behaviour this product exists to eliminate, and it would be a customer's first impression of it.
+That, more than the abstract breach of the guarantee, is why this should be fixed before the parallel default ships. `docs/PARALLEL-PROOF-DESIGN.md` (design P6) lists
 "two tests writing one path never overlap" and "**0 new failures caused by the split**" as acceptance criteria, and
 specifies preventing this a priori from recorded footprints — which the Python/xdist path does and the Node path
 does not. There is no re-run-on-hazard mechanism in `node/src/parallel.js`.
