@@ -322,3 +322,42 @@ and content digest).
 
   Run inputs are "identical in every run" in both cases. The difference is named as a test event, not hidden in the
   run header, and unchanged files do not cause false divergence.
+
+## Re-check PR #5: FAIL (its 13 regression cases pass; P2: a real failure is reported passed under --det-cache)
+
+Coordinator re-check round, 2026-11-21. PR #5 is `claude/py-cache` @ 2a7f0d1e (contains trunk cec096c). The wheel was
+built from 2a7f0d1e (its `crates/detpy-py` changed). A fresh venv per version held pytest, pytest-xdist and the wheel,
+with `_core` copied into `python/detpy` as in the CI `python` job; strace was present.
+
+- **The fixes' regression tests** (named in `sessions/2026-11-20-py-cache/REPORT.md`, all in `tests/test_py_cache.py`):
+  13 passed, 0 skipped, on CPython 3.12.13, 3.13.18 and 3.14.6.
+  - PYTHONPATH outside the root: `test_g0164_module_outside_the_root_in_a_files_child_is_an_input` [default,
+    default-n2, fenvix-python].
+  - Import-time side effect: `test_import_time_code_of_another_test_module_is_an_input` [in-process, default,
+    default-n2].
+  - Order-dependent pair and `--det-isolate` defaults: `test_order_dependent_pair_has_the_serial_verdict` [-n 2, -n 4,
+    --det-isolate, --det-cache -n 2].
+  - Placement replay: `test_a_failure_only_the_per_file_isolation_causes_is_reported_not_the_result`.
+  - Custom reporter: `test_g0412_cache_summary_is_written_when_a_project_reporter_swallows_it` [project, none].
+- **Do the fixes hide nothing?**
+  - **Outside-root module and import-time effect:** the tests themselves change the module or effect after the cache
+    is warm, and assert the hit is not reused (and that the import-time case fails like a plain run). Both pass, so a
+    change still invalidates.
+  - **Placement replay with a real failure everywhere (P1, guard):** a test that fails in its child and in one process
+    after the earlier files stays failed, exit 1, no finding, on both runs. PASS on 3.12, 3.13 and 3.14.
+  - **P2, a real failure hidden (blocking; wrong result):** an earlier test file changes shared state, so the user's
+    normal run fails a later file's test.
+    - Plain `pytest` and `pytest --det` both report `1 failed, 1 passed`.
+    - `pytest --det --det-cache=DIR` and `fenvix python --det --det-cache=DIR` on a fresh cache, with the real defaults
+      (no `DETPY_CACHE_IN_PROCESS`), report "detpy --det-isolate: 2 tests in forked children … 0 children failed",
+      `2 passed`, exit 0, and no placement finding.
+    - The same on 3.12, 3.13 and 3.14 (MEASURED).
+    - Cause: PR #5 makes "one child per test file" the default under `--det-cache` (1b6179d). The placement replay
+      (b23026c) replays only tests that *fail* in their child; a test that *passes* only because its file was
+      isolated from an earlier polluter is reported as the result.
+    - The trunk code (fdf6029 build) reports the failure for the same command (`1 failed, 1 passed`). So this
+      regression comes from PR #5.
+  - Test: `tests/test_review_r050_pycache.py::test_p2_a_failure_an_earlier_file_causes_in_the_normal_run_is_not_reported_passed`
+    on this branch. It FAILS on 2a7f0d1e (3.12, 3.13, 3.14) and passes on fdf6029. It asserts its preconditions
+    (plain and `--det` fail the victim). It passes once the victim is reported failed, or reported with a placement
+    finding.
