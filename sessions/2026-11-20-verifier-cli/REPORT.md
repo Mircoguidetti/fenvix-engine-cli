@@ -3,15 +3,20 @@ PARTIAL
 # F-01 / F-02 / F-03 / F-18: deterministic runs, flaky test to reproducible defect, verifier, one `fenvix` command
 
 Branch `claude/verifier-cli` (cut from `claude/release-1`). PR #4 merged (CI green on `1c4aa01`, release-1 run
-44781855441, MEASURED). PR #11 (F-18 complete, design A) open into `claude/release-1`, head `a7fd7e9`.
+44781855441, MEASURED). PR #11 (F-18 complete, design A, the exam-round fixes) open into `claude/release-1`; its code head is the commit
+before this report.
 Every number is labelled MEASURED (from a run named here), ESTIMATED, DECLARED or UNKNOWN.
 
 ## Verdict
 
 PARTIAL. All four rows work on real projects. Why not DONE:
 
-- PR #11 is open. It holds F-18 complete and design A for the environment and the CPU count. It has not been
-  through the full CI, the exam or the reviewer yet.
+- PR #11 is open. It holds F-18 complete, design A for the environment and the CPU count, and the fixes from a
+  local run of the frozen exam (`claude/exam` `a6d8824`). It has not been through the CI on its head, the CI exam or
+  the reviewer yet.
+- Exam checks still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
+  network, runs in the CI exam) and the F-02 `py-autodoc` target (not found; cause UNKNOWN at this push, under
+  investigation). The Node checks of F-01/F-02/F-03 belong to the Node session.
 - Reviewer p1-verifier findings #5, #8 and #9 are fixed in PR 2. The reviewer's own tests pass, but PR 2 is not open yet:
   - #5: a polluter was named although the replays did not confirm it
   - #8: traces without run inputs were called IDENTICAL
@@ -30,22 +35,59 @@ Status by row:
   - `replay:` is the failing run as a product command.
   - explore exits 2 when the suite cannot run (reviewer #10).
   - Collection errors and a missing `--python` are clear one-line errors (reviewer #12).
-- **G-1523:** an audit DECIDE, not a defect. OS entropy under `--det` is observed and never hidden. A test that reads it
-  is reported `[entropy]` with a hint to `--det-urandom`, which controls it. Whether `--det` should control it by
-  default is the founder's product decision.
+- **G-1523, decided:** OS entropy is CONTROLLED by default under `--det` (`os.urandom`, `os.getrandom`,
+  `secrets`, `ssl.RAND_bytes`, `/dev/urandom` reads). `--det-entropy=observe` is the opt-out: entropy is then real,
+  each read is an `[entropy]` event, and the verifier reports it with a hint. `--det-urandom` is kept as an alias of
+  the default. The reviewer's tests were updated to assert both modes, not weakened:
+  `tests/test_review_r023b.py` (getrandom, RAND_bytes: reused by default, not reused under observe) and the
+  `urandom` case of `tests/test_verifier_truth.py::test_runs_differing_in_one_source_are_divergent_and_name_it`
+  (identical by default, divergent and named under observe).
 
-## Local suites before the PR #11 push (MEASURED, this container, head `a7fd7e9` = the branch merged with
-release-1 `a996b68`)
+## Exam rows run locally (MEASURED, frozen exam `claude/exam` `a6d8824`, `exam/run.py --rows F-01,F-02,F-03,F-18`, this container)
+
+First pass on the branch before this round: F-01 17/34, F-02 8/17, F-03 11/18, F-18 5/5 checks passed. On the trunk
+without this branch, F-01 passed 3/33. Fixed in this round, each as a class with a regression test:
+
+- **CPU count** (F-01): `os.cpu_count`, `os.process_cpu_count`, `os.sched_getaffinity`, `multiprocessing.cpu_count`
+  and Node `os.cpus`/`availableParallelism` answer 2 under `--det`. The engine keeps the real count (`detpy._machine`,
+  `volatile.realParallelism()`), and `-n auto` is sized on the real machine
+  (`test_cpu_count_is_pinned_and_the_engine_keeps_the_real_one`, `test_n_auto_is_sized_on_the_real_machine_under_det`).
+- **Proxy and sudo variables** (F-01/F-03): when the network is closed, `HTTP(S)_PROXY`, `ALL_PROXY` and `NO_PROXY`
+  are set by the engine and are never run inputs. `SUDO_USER/UID/GID/COMMAND/HOME` are CI-volatile and kept (Python
+  and Node; the volatile cases of `test_ci_volatile_variables_are_pinned_or_never_inputs` and
+  `node/test/verifier-inputs.test.js`).
+- **OS input text** (F-03): the `os` input named the run's temporary directory (`fenvix-det.1` when another run held
+  `fenvix-det`), so two concurrent runs on one machine were INPUT DIFFERS. It now names the control ("temporary
+  directory: fresh per run") (`test_two_concurrent_runs_on_one_machine_are_identical`).
+- **Timed waits** (F-01): `select.select` with nothing ready, socket operations that time out, and `timeit` now
+  advance the virtual clock by their timeout or measured time
+  (`test_waits_that_time_out_and_timeit_follow_the_virtual_clock`).
+- **Entropy default** (G-1523, above).
+- **F-18**: explore exits 2 on a suite that cannot run; repro shows the collection error; a missing `--python` is one
+  line.
+
+Targeted rerun after the fixes (MEASURED): PASS for `random.pinned` (Python, Node), `network.pinned` (Python,
+Node), `hostname.pinned.python`, and the F-02 mdutils/krllint repro and replay checks. Not re-run locally after
+their last fix: the timed-wait and `timeit` checks and `numpy-repro` (the CI exam measures them).
+
+Still failing locally, with owner:
+
+| check | why | owner |
+|---|---|---|
+| `cassette-redact` | needs the network; this container has none | runs in the CI exam |
+| F-02 `py-autodoc` | target `examples/test_gen_each_case.py::TestUnittest::test_foo_bar` not found in 51 runs; cause UNKNOWN at this push | this session (one bounded investigation) |
+| `hostname.pinned.node` (locale), tz/luxon, fake-timers, node clock sources, node vm, timer consistency, mtime node | Node controls | Node session |
+| F-02/F-03 Node checks | Node adapters | Node session |
+
+## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push)
 
 - Node 22, 24 and 26: 632/632 each.
-- Python 3.12 and 3.13 (full suite):
-  - The only failures were the help listing (fixed) and stale local packaging metadata (`detpy-0.1.0` installed
-    before the trunk renamed the distribution to `fenvix`).
-  - After the fix and a reinstall, the affected files pass: 57 passed, 1 skipped on each.
-- Python 3.14 (a local 3.14.6 build without `os.getrandom`):
-  - Four failures fail on the trunk `a996b68` itself on this machine: two `test_clock_rust` reference tests and two
-    `test_review_r023b::test_2e_os_getrandom_is_entropy` cases.
-  - `test_capture_sessions_match_reference` fails only inside the full run and passes alone.
+- Python 3.13 (full suite): 1097 passed, 69 skipped, 1 xfailed, 0 failed.
+- Python 3.12 (full suite): 1093 passed, 73 skipped, 1 xfailed, 0 failed.
+- Python 3.14 (full suite, a local 3.14.6 build without `os.getrandom`): 1090 passed, 4 failed. The four fail on the
+  trunk on this machine too: two `test_clock_rust` reference tests and the two
+  `test_review_r023b::test_2e_os_getrandom_is_entropy` cases (the probe test calls `os.getrandom`, which this build
+  lacks). The CI's 3.14 has it.
 - This report is a separate `[skip ci]` commit containing only this file.
 
 ## F-01 deterministic runs
@@ -219,7 +261,7 @@ message until then.
 ## Next round (explicit gaps, not done here)
 
 - F-01, CPU count:
-  - `psutil.cpu_count` is not pinned (planned in PR 2).
+  - `psutil.cpu_count` is not pinned (planned in PR 2; it reads `/proc` and `sched_getaffinity` natively).
   - Child processes see the real count.
   - Class rule: a read of the real CPU count that is not pinned must be recorded as an event (the verifier never
     stays silent about it).
@@ -295,7 +337,7 @@ message until then.
 | G-1520 | FIXED | Python / det network | tests/test_network_gaps.py::test_child_processes_meet_the_closed_network (children that honour proxy variables; others are uncontrolled.child, never identical) |
 | G-1521 | FIXED | Python / det network | tests/test_network_gaps.py::test_native_network_clients_are_never_identical (marked uncontrolled.native, never identical; blocking/recording them needs the syscall backend) |
 | G-1522 | FIXED | Python / det network | tests/test_network_gaps.py::test_tls_replay_answers_what_the_handshake_negotiated |
-| G-1523 | DECIDE (founder) | Python / det randomness | audit class DECIDE: OS entropy is observed under --det, controlled with --det-urandom; the verifier reports it [entropy] with a hint to --det-urandom (G-2210) |
+| G-1523 | FIXED (founder decision) | Python / det randomness | OS entropy controlled by default under --det, opt-out --det-entropy=observe: tests/test_review_r023b.py, tests/test_verifier_truth.py (urandom case), tests/test_proofcache.py::test_os_entropy_is_cached_only_when_controlled |
 | G-1524 | FIXED | Python / det randomness | tests/test_f01_gaps.py::test_uuid1_is_deterministic |
 | G-1525 | FIXED | Python / det randomness | tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators (real numpy, pip-installed by the test) |
 | G-1526 | FIXED | Python / det randomness | tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators |
