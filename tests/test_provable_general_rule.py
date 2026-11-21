@@ -24,6 +24,7 @@ The four shapes, weakest to strongest:
 
 from __future__ import annotations
 
+import json
 import os
 import random
 import shutil
@@ -336,3 +337,47 @@ def test_the_invented_native_channel_is_refused_even_when_nothing_differs(tmp_pa
     assert v.returncode == 1, f"expected NOT PROVEN (exit 1), got {v.returncode}\n{v.stdout}"
     assert "NOT PROVEN" in v.stdout, v.stdout
     assert name in v.stdout, v.stdout
+
+
+# ---------------------------------------------------------------------------------------------------------------
+# 5. The cache must not reuse what the rule refuses
+# ---------------------------------------------------------------------------------------------------------------
+
+def test_the_cache_never_reuses_a_test_the_rule_refuses(tmp_path):
+    """A result the rule will not call identical must not come back as "reused" either.
+
+    "Reused" is as much a claim about the engine's certainty as "identical" is, and the founder's rule covers
+    both: whatever the cache cannot observe with certainty forces a rerun. The channel here is derived from the
+    engine's own table, as in :func:`test_a_channel_derived_from_the_engines_own_table_is_not_proven`, so this
+    test names none either.
+    """
+    mod, name = _an_unaccounted_stdlib_callable()
+    proj = _project(tmp_path, {"tests/test_x.py": f"""
+        import {mod}
+
+        def test_clean():
+            assert sum(range(10)) == 45
+
+        def test_reaches_what_the_engine_cannot_account_for(tmp_path):
+            p = tmp_path / "f"
+            p.write_bytes(b"x")
+            try:
+                {mod}.{name}(str(p))
+            except Exception:
+                pass
+    """})
+    cache = tmp_path / "cache"
+    out = tmp_path / "o.json"
+    for i in (1, 2):
+        r = subprocess.run(
+            [PY, "-m", "pytest", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+             f"--det-cache={cache}", f"--det-outcomes={out}", "tests"],
+            cwd=proj, env=_env(), capture_output=True, text=True, timeout=900)
+        assert out.exists(), r.stdout[-3000:] + r.stderr[-3000:]
+        data = json.loads(out.read_text())
+        cache_part = data.get("cache") or {}
+        reused = set(cache_part.get("reused_ids") or [])
+        if i == 2:
+            # the clean test may be reused; the one that reached an unaccounted callable must not be
+            bad = [t for t in reused if "cannot_account_for" in t]
+            assert not bad, f"the cache reused a test the rule refuses: {bad}\n{json.dumps(cache_part)[:1500]}"

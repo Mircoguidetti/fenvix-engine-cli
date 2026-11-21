@@ -57,6 +57,20 @@ _mon = getattr(sys, "monitoring", None)
 #: does not know, so this string and the contract version travel together.
 SENSOR = "py-monitoring/1"
 
+#: Frames between a sensor callback and the frame that caused the operation, for ``_sites.resolve``.
+#:
+#: MEASURED, not guessed: from inside the ``sys.monitoring`` callback, ``resolve(0)`` and ``resolve(1)`` answer
+#: None (the callback's own frame is the engine's) and ``resolve(2)`` answers the frame making the monitored
+#: call. Getting this wrong by one silenced the sensor completely -- every gap looked like infrastructure -- which
+#: is why it is a named constant with the measurement next to it.
+_CALLER = 2
+
+#: Set by the cache with proof (``_proof.Capture.start``) to be called with every gap this sensor finds, so that
+#: the test is never stored and never reused. Without it the cache could reuse a result the rule refuses, and
+#: "reused" would be as false a claim as "identical" (founder, 2026-11-21: whatever the cache cannot observe with
+#: certainty forces a rerun). It is what sets the ``unacc`` flag that ``record.rs``'s ``uncacheable`` refuses on.
+ON_GAP = None
+
 #: Audit events the engine has a rule for. Every one of them is already covered by a channel rule (a file read is
 #: an ``fs.read`` event, a child process is ``uncontrolled.child``, an import is an ``inputs.code`` / ``deps``
 #: entry), so seeing them adds nothing. Anything else the audit hook reports is a gap: the hook is asked for
@@ -158,10 +172,22 @@ class Sensor:
             return
         self._seen.add(key)
         _state.record_at("other", f"unaccounted.{kind}", site, name)
+        if ON_GAP is not None:
+            try:
+                ON_GAP(key)
+            except Exception:
+                pass   # the cache's bookkeeping must not take the test down
 
     def start_test(self) -> None:
         self._seen = set()
         self._seen_for = _state.STATE.nodeid
+        # No sensor means nothing in this run can be shown identical, so nothing in it may be stored for reuse
+        # either: a later run that reused one of these results would have no ground to call it provable.
+        if not self.active and ON_GAP is not None:
+            try:
+                ON_GAP(f"sensor:{self._reason or 'the sensor is not running'}")
+            except Exception:
+                pass
 
     # -- sensor 1: every call crossing out of Python ---------------------------------------------------
     def _transparent(self, mod: str) -> bool:
@@ -238,7 +264,7 @@ class Sensor:
                 #
                 # The verdict cache above still says "unaccounted", so the same callable reached from a test is
                 # reported as it should be: what is suppressed here is the report, not the classification.
-                site = _sites.resolve(1)
+                site = _sites.resolve(_CALLER)
                 if site is None:
                     return None
                 self._report("api", f"{k[0]}.{k[1]}", site or _site(code, offset))
@@ -260,7 +286,7 @@ class Sensor:
             return
         # the same question as for a call: whose operation is this? The runner's own bookkeeping is not something
         # the test observed (Rule E), and only the frame above the standard library says so.
-        if _sites.resolve(1) is None:
+        if _sites.resolve(_CALLER) is None:
             return
         self._report("audit", event)
 
