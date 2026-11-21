@@ -56,6 +56,7 @@ function cdpWrite(sock, chunk) {
   // paused page while the engine waited for it). They wait on page time like the in-page waits.
   const frameInput = (m[2] === 'Input.dispatchMouseEvent' && chunk.includes('"type":"mouseMoved"'))
     || (m[2] === 'Input.dispatchTouchEvent' && chunk.includes('"type":"touchMove"'));
+  if (LS && ENV.DETJS_LS_TRACE_INPUT && m[2].startsWith('Input.') && !chunk.includes('mouseMoved')) LS.trace(`input-out ${m[2]} ${(/"type":"(\w+)"/.exec(chunk) || [])[1]} pages=${[...LS.pages].map((p) => `[run=${!!p.running} inb=${p.inBudget} pageT=${p.pageT / NS} tgt=${p.target / NS}]`)}`);
   CDP.out.set(id, { method: m[2], wait: frameInput || chunk.includes('"awaitPromise":true'), own: ACT.ownDepth > 0, t: realNow() });
   CDP.lastChange = realNow();
 }
@@ -145,7 +146,11 @@ const GATED_TYPES = new Set(['Frame', 'Page', 'ElementHandle', 'JSHandle', 'Work
 // Calls the engine makes itself (route.fetch of a page request, its body, CDP sessions): marked by async context.
 const { AsyncLocalStorage } = require('node:async_hooks');
 const OWN = new AsyncLocalStorage();
-const CALLS = { inflight: 0, byMethod: new Map(), patched: new WeakSet(), waits: new Set(), gated: new Map() };
+const CALLS = { inflight: 0, byMethod: new Map(), patched: new WeakSet(), waits: new Set(), gated: new Map(), closing: 0, closeSince: 0, closeAct: 0 };
+// The runner closing pages (a test's context at teardown, or a page): real work in the browser, not a wait on time.
+// Once close was called, Playwright drops every route event of those pages (client _onRoute returns when
+// _closeWasCalled): a request the page starts then never reaches the engine, and is never failed either.
+const CLOSE_CALLS = /^(BrowserContext\.close|Page\.close)$/;
 function patchDispatcher(DC) {
   if (!DC || !DC.prototype || CALLS.patched.has(DC.prototype)) return false;
   CALLS.patched.add(DC.prototype);
@@ -176,6 +181,8 @@ function patchDispatcher(DC) {
       // A navigation the runner starts must reach the queue (its document request) before the next decision.
       if (/^(goto|reload|goBack|goForward)$/.test(message.method)) { navMark = { open: true }; LS.navPending.push(navMark); }
     }
+    const closing = CLOSE_CALLS.test(k);
+    if (closing && CALLS.closing++ === 0) { CALLS.closeSince = realNow(); CALLS.closeAct = ACT.n; }
     CALLS.inflight++;
     CALLS.byMethod.set(k, (CALLS.byMethod.get(k) || 0) + 1);
     activity();
@@ -184,6 +191,7 @@ function patchDispatcher(DC) {
     } finally {
       if (navMark && navMark.open) { navMark.open = false; const i = LS.navPending.indexOf(navMark); if (i >= 0) LS.navPending.splice(i, 1); }
       if (REALWORK.test(k)) CALLS.realwork--;
+      if (closing) CALLS.closing--;
       CALLS.inflight--;
       const c = CALLS.byMethod.get(k) - 1;
       if (c) CALLS.byMethod.set(k, c); else CALLS.byMethod.delete(k);
@@ -920,6 +928,16 @@ class Coordinator {
     } catch { /* navigating */ } finally { ACT.ownDepth--; }
   }
 
+  /** The next animation frame boundary after T while a page with engine frames is open; null otherwise. */
+  framesDue() {
+    if (!this.frames || ENV.DETJS_LS_FRAME_STOPS === '0') return null;
+    let open = false;
+    for (const p of this.pages) if (!p.closed && !p.noFrames) { open = true; break; }
+    if (!open) return null;
+    const F = this.frameMs * NS;
+    return (Math.floor(this.sched.now() / F) + 1) * F;
+  }
+
   /** Engine time as the pages' clocks read it (epoch + T, ms). */
   pageClockMs() {
     return this.o.epochMs + this.sched.now() / NS;
@@ -1047,6 +1065,8 @@ class Coordinator {
   async probePages() {
     // Every fetch/XHR/WebSocket frame a page started must have reached the engine (exact barrier through the
     // pages' own counters; WebSocket frames cannot be told apart by page, so the barrier is over all pages).
+    // Pages being closed: their new requests can never reach the engine (see CLOSE_CALLS); nothing to wait for.
+    if (CALLS.closing > 0) return;
     let started = 0;
     let probed = false;
     for (const p of [...this.pages]) {
@@ -1183,7 +1203,7 @@ class Coordinator {
 
   trace(text) {
     if (!ENV.DETJS_LS_TRACE) return;
-    try { fs.appendFileSync(ENV.DETJS_LS_TRACE, `${(this.sched.now() / NS).toFixed(3)} ${text}${ENV.DETJS_LS_TRACE_REAL ? ` @${Math.round(realNow())}` : ""}\n`); } catch { /* ignore */ }
+    try { fs.appendFileSync(ENV.DETJS_LS_TRACE, `${this.multi ? `w${process.env.TEST_PARALLEL_INDEX} ` : ''}${(this.sched.now() / NS).toFixed(3)} ${text}${ENV.DETJS_LS_TRACE_REAL ? ` @${Math.round(realNow())}` : ""}\n`); } catch { /* ignore */ }
   }
 
   diag(op, text) {
@@ -1199,6 +1219,15 @@ class Coordinator {
     const c = cdpState();
     const now = realNow();
     if (CALLS.realwork > 0) return { state: 'busy', why: 'realwork' };
+    // A close in flight is real work: engine time does not move while it runs (MEASURED, gate run 44931073657,
+    // documenso on GitHub Actions: time advanced in 20 ms steps during BrowserContext.close, the page's own timers
+    // fired and started a request Playwright no longer routes, and the close never ended before the test's 60 s
+    // deadline in 20 of 20 runs). A close with no activity for STALL ms is counted as waiting (recorded stall).
+    if (CALLS.closing > 0 && ENV.DETJS_LS_CLOSE_BUSY !== '0') {
+      if (ACT.n !== CALLS.closeAct) { CALLS.closeAct = ACT.n; CALLS.closeSince = now; }
+      if (now - CALLS.closeSince > this.stallMs) return { state: 'waiting', why: 'close-stall', stall: true };
+      return { state: 'busy', why: 'close' };
+    }
     if (this.admits.length) return { state: 'waiting', why: `admit:${this.admits.length}` };
     if (c.busy > 0) {
       if (now - c.oldest > this.stallMs && now - CDP.lastChange > this.stallMs) return { state: 'waiting', why: `cdp-stall:${c.methods.join(',')}`, stall: true };
@@ -1312,6 +1341,14 @@ class Coordinator {
       }
       this.sched.setDeadline('servers', srvNext);
       this.sched.setWaiting('servers', false); // only the runner's wait moves time (see runnerState)
+      // Every animation frame of an open page is a decision point: an advance never spans a frame boundary. The
+      // runner reacts to what a frame produced (Playwright's "stable" check, an in-page wait resolving) in real
+      // time; with several frames in one grant its next input reached the page at a real-time dependent point of
+      // that grant (MEASURED locally, lockstep fixture with 2 workers: the click left the runner at pageT=224 of a
+      // grant to 232 in 10 of 10 traced runs, and landed before or after the page's own poll timer: 2 fingerprints
+      // in about 1 run of 5). Stopped at the boundary, the engine settles there and sees the runner busy first.
+      this.sched.setDeadline('frames', this.framesDue());
+      this.sched.setWaiting('frames', false);
       if (this.multi) {
         // The question is withdrawn when this worker's test ends meanwhile (its end must be recorded and flushed).
         const ask = this.sched.nextAsync(rs.state === 'waiting');
