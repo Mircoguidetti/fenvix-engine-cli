@@ -1064,24 +1064,29 @@ function installDgram(patcher) {
   STATE.onTestEnd.push(() => {
     // one `net.stream` per UDP peer, in the order of first use (docs/VERIFY-CONTRACT.md section 2, review R-055 V8)
     const dig = (d) => `${d.n}:${d.h.copy().digest('hex').slice(0, 16)}`;
-    for (const [label, e] of UDP) STATE.recordAt('net', 'net.stream', e.site, `udp ${label} sent=${dig(e.send)} recv=${dig(e.recv)}`);
+    for (const e of UDP.values()) STATE.recordAt('net', 'net.stream', e.site, `udp ${e.label} sent=${dig(e.send)} recv=${dig(e.recv)}`);
     UDP.clear();
   });
 }
 
 // UDP to a live local endpoint (review R-055 V8): like a local TCP connection, a `net.connect` event when the test
 // first sends to a peer, and at its end a `net.stream` with the digests of the datagrams sent and received
-const UDP = new Map(); // `<host>:<port label>` -> { site, send, recv }
+const UDP = new Map(); // `<host>:<port>` (local names as localhost) -> { site, label, send, recv }
 const UDP_PEER = Symbol('detjs.udpPeer');
 function udpEntry(host, port, create) {
-  const label = `${host}:${portLabel(port)}`;
-  let e = UDP.get(label);
+  // one peer whatever name the test used for it: a reply comes from the address (127.0.0.1), the send went to the
+  // name (localhost)
+  const h = isLocalName(String(host)) ? 'localhost' : String(host);
+  const key = `${h}:${Number(port)}`;
+  let e = UDP.get(key);
   if (!e && create) {
-    const site = siteHere();
+    const label = `${h}:${portLabel(port)}`;
+    // a datagram from a peer the test never sent to (create === 'recv'): no site of the test on the stack
+    const site = create === 'recv' ? '<udp>' : siteHere();
     if (site === null) return null; // the runner's own datagrams
-    e = { site, send: newDir(), recv: newDir() };
-    UDP.set(label, e);
-    STATE.record('net', 'net.connect', `${label} udp local`);
+    e = { site, label, send: newDir(), recv: newDir() };
+    UDP.set(key, e);
+    STATE.record('net', 'net.connect', `${label} udp ${create === 'recv' ? 'incoming' : 'local'}`);
   }
   return e || null;
 }
@@ -1103,7 +1108,8 @@ function udpSent(host, port, msg, a) {
   e.send.h.update(b);
 }
 function udpRecv(host, port, msg) {
-  const e = udpEntry(host, port, false);
+  if (STATE.quietDepth > 0) return;
+  const e = udpEntry(host, port, 'recv');
   if (!e || !Buffer.isBuffer(msg)) return;
   e.recv.n += msg.length;
   e.recv.h.update(msg);

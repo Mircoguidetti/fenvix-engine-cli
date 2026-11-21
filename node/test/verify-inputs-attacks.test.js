@@ -75,6 +75,17 @@ const CASES = {
   'fs.promises.access': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', async () => _w(await fs.promises.access(process.env.ATK_FILE).then(() => true, () => false)));\n` }, 'raw', 'exists'],
   // V8: UDP through a connected socket
   'udp connected socket': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import dgram from 'node:dgram';\ntest('x', async () => _w(await new Promise((r) => { const s = dgram.createSocket('udp4'); s.on('message', (m) => { s.close(); r(String(m)); }); s.connect(Number(process.env.ATK_PORT), '127.0.0.1', () => s.send('q')); })));\n` }, 'raw', 'udp'],
+  // review of the R-055 Node half (coordinator, bf13934): five wrong IDENTICALs
+  // V8: a reply from 127.0.0.1 to a socket connected to 'localhost'
+  'udp to localhost': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import dgram from 'node:dgram';\ntest('x', async () => _w(await new Promise((r) => { const s = dgram.createSocket('udp4'); s.on('message', (m) => { s.close(); r(String(m)); }); s.connect(Number(process.env.ATK_PORT), 'localhost', () => s.send('q')); })));\n` }, 'raw', 'udp'],
+  // V6: only the size of a file differs
+  'stat size only': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', () => _w(fs.statSync(process.env.ATK_FILE).size));\n` }, 'raw', 'filesize'],
+  // V3: a dependency reads a project file at import (dotenv/config)
+  'dependency reads a project file at import': ['node-test', { 'tests/a.test.mjs': `${NT}${W}import { V } from 'atkenv';\ntest('x', () => _w(V));\n`, 'node_modules/atkenv/package.json': JSON.stringify({ name: 'atkenv', main: 'index.js' }), 'node_modules/atkenv/index.js': "exports.V = require('node:fs').readFileSync(require('node:path').join(process.cwd(), 'data.txt'), 'utf8');\n" }, 'raw', 'file-inside'],
+  // V5: generated code in a dot directory of node_modules
+  'generated client in node_modules/.prisma': ['node-test', { 'tests/a.test.cjs': "const { test } = require('node:test');\nconst fs = require('node:fs');\nconst { V } = require('@prisma/client');\ntest('x', () => fs.writeFileSync(process.env.ATK_OUT, JSON.stringify(V)));\n", 'node_modules/@prisma/client/package.json': JSON.stringify({ name: '@prisma/client', main: 'index.js' }), 'node_modules/@prisma/client/index.js': "module.exports = require('.prisma/client');\n" }, 'raw', 'prisma'],
+  // V5: a dependency file changes with the same size and npm's fixed mtime
+  'dependency same size same mtime': ['node-test', { 'tests/a.test.cjs': "const { test } = require('node:test');\nconst fs = require('node:fs');\nconst { V } = require('atkdep');\ntest('x', () => fs.writeFileSync(process.env.ATK_OUT, JSON.stringify(V)));\n", 'node_modules/atkdep/package.json': JSON.stringify({ name: 'atkdep', main: 'index.js' }), 'node_modules/atkdep/index.js': "exports.V = require('./lib/v.js');\n" }, 'raw', 'depsame'],
   // V16: process.loadEnvFile inside the test
   'process.loadEnvFile in the test': ['node-test', { 'tests/a.test.mjs': `${NT}${W}test('x', () => { process.loadEnvFile('cfg.env'); _w(process.env.ATK_E); });\n` }, 'raw', 'dotenv'],
 };
@@ -115,6 +126,9 @@ for (const [name, [runner, files0, kind, change, adjust]] of Object.entries(CASE
       else if (change === 'udp') { srv = await udpServer(`v${i}`); env.ATK_PORT = String(srv.port); }
       else if (change === 'dep') { fs.mkdirSync(path.join(dir, 'node_modules/atkdep/lib'), { recursive: true }); fs.writeFileSync(path.join(dir, 'node_modules/atkdep/lib/v.js'), `module.exports = 'v${i}';\n`); }
       else if (change === 'exists') { const f = path.join(os.tmpdir(), `atk-exists-${process.pid}.txt`); if (i === 0) fs.writeFileSync(f, 'x'); else fs.rmSync(f, { force: true }); env.ATK_FILE = f; }
+      else if (change === 'filesize') { const f = path.join(os.tmpdir(), `atk-size-${process.pid}.txt`); fs.writeFileSync(f, 'x'.repeat(i + 1)); env.ATK_FILE = f; }
+      else if (change === 'prisma') { fs.mkdirSync(path.join(dir, 'node_modules/.prisma/client'), { recursive: true }); fs.writeFileSync(path.join(dir, 'node_modules/.prisma/client/index.js'), `exports.V = 'v${i}';\n`); }
+      else if (change === 'depsame') { const f = path.join(dir, 'node_modules/atkdep/lib/v.js'); fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, `module.exports = 'v${i}';\n`); fs.utimesSync(f, new Date('1985-10-26T08:15:00Z'), new Date('1985-10-26T08:15:00Z')); }
       else if (change === 'dotenv') fs.writeFileSync(path.join(dir, 'cfg.env'), `ATK_E=v${i}\n`);
       else if (change === 'taskset' && i === 1) prefixTaskset = true;
       if (prefixTaskset && (!fs.existsSync('/usr/bin/taskset') || os.availableParallelism() < 2)) return;
