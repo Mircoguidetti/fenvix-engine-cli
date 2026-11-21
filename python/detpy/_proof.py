@@ -1318,12 +1318,9 @@ class ProofSession:
             lists = list(files.values())
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
-        # a test with no entry (new, or its last outcome not cacheable: a failure) may consume what every earlier test
-        # of its process leaves: they run before it, as in the user's run (review R-050 P2: the polluter of an earlier
-        # file was reused, not run, and the victim passed; before, only under the per-file scope)
-        for n, d in zip(ids, self.store.durations(ids)):
-            if d is None:
-                needs[n] = None
+        # review R-050 P2: a test with no entry has the needs it had when it last ran (a failure, a refusal), or every
+        # earlier test when it never ran (``Store::needs_of``): the polluter of an earlier file was reused, not run,
+        # and the victim passed
         present = set(ids)
         changed = True
         while changed:

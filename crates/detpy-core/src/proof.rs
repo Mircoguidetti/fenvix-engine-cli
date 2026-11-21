@@ -199,6 +199,11 @@ pub struct Store {
     /// a serial session gives it (not the race of two processes).
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
     pub edges: BTreeSet<(String, String)>,
+    /// Review R-050 P2: the needs ([`Entry::needs`]) of tests that ran and have no entry (failed, or not
+    /// cacheable): the earlier tests they may have consumed in-process state from. A test with neither an entry nor
+    /// a row here (new) needs every earlier test.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub loose_needs: BTreeMap<String, Option<Vec<String>>>,
     /// The data chunks of every entry, by address (written by [`Store::save`]; resolved and emptied on load).
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub chunks: BTreeMap<String, crate::datachunks::Chunk>,
@@ -1061,6 +1066,7 @@ impl Store {
 
     /// Record (replace) the entry of `nodeid`; returns its key.
     pub fn record(&mut self, nodeid: &str, mut o: Observed) -> String {
+        self.loose_needs.remove(nodeid);
         o.env.sort();
         o.env.dedup();
         o.data.sort();
@@ -1109,6 +1115,21 @@ impl Store {
 
     pub fn remove(&mut self, nodeid: &str) -> bool {
         self.tests.remove(nodeid).is_some()
+    }
+
+    /// Remove the entry of a test that ran and is not stored, keeping its needs (`loose_needs`).
+    pub fn remove_keeping_needs(&mut self, nodeid: &str, needs: Option<Vec<String>>) {
+        self.tests.remove(nodeid);
+        self.loose_needs.insert(nodeid.to_string(), needs);
+    }
+
+    /// Review R-050 P2: the earlier tests a test may consume in-process state from: its entry's needs, else the
+    /// needs it had when it last ran without an entry, else (never ran) every earlier test (`None`).
+    pub fn needs_of(&self, nodeid: &str) -> Option<Vec<String>> {
+        match self.tests.get(nodeid) {
+            Some(e) => e.needs.clone(),
+            None => self.loose_needs.get(nodeid).cloned().unwrap_or(None),
+        }
     }
 
     /// The receipt digest of an entry: every recorded input at the level it is
@@ -1264,6 +1285,14 @@ impl Store {
         };
         let mut smap: BTreeMap<u32, u32> = BTreeMap::new();
         for nid in touched {
+            match self.loose_needs.get(nid) {
+                Some(n) if !self.tests.contains_key(nid) => {
+                    disk.loose_needs.insert(nid.clone(), n.clone());
+                }
+                _ => {
+                    disk.loose_needs.remove(nid);
+                }
+            }
             match self.tests.get(nid) {
                 None => {
                     disk.tests.remove(nid);

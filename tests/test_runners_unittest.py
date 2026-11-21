@@ -324,7 +324,8 @@ def test_new_test_module_runs_and_the_others_are_reused(tmp_path):
     write(root, {"test_two.py": "import unittest\n\nclass Two(unittest.TestCase):\n    def test_2(self):\n"
                                 "        self.fail('new')\n"})
     r = ut(root)
-    assert r.outcomes["test_two.py::Two::test_2"] == "failed" and r.reused == {"test_one.py::One::test_1"}, r
+    # review R-050 P2 (b): a new test may consume what every earlier test of its process leaves: test_1 runs first
+    assert r.outcomes["test_two.py::Two::test_2"] == "failed" and r.reused == set(), r
     assert r.code == 1
 
 

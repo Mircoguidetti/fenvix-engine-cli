@@ -58,9 +58,9 @@ def test_key_dump_does_not_change_the_cache(pytester, run_cache):
     run_cache(f"--det-cache-keys={pytester.path / 'k1.json'}")
     # the dump path is not configuration: a run with another path (or none) reuses the passing test
     r, reused, _ = run_cache(f"--det-cache-keys={pytester.path / 'k2.json'}")
-    assert reused == ids("test_f")
+    assert reused == set()  # review R-050 P2 (b): it runs before a test that may consume its state (never cached, failed or new) (test_g_fails carries test_f)
     r, reused, _ = run_cache()
-    assert reused == ids("test_f")
+    assert reused == set()  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
 
 
 def test_key_dump_records_startup_python_variables(pytester, run_cache, monkeypatch):

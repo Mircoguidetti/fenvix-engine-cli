@@ -1131,6 +1131,7 @@ def _r050(root, files, *args):
 
 def test_r050_p2_a_failure_an_earlier_file_causes_in_the_normal_run_is_not_reported_passed(tmp_path):
     files = {"tests/helper.py": "STATE = {'mode': 'good'}\n",
+             "tests/test_0_other.py": "def test_other():\n    assert 1 + 1 == 2\n",
              "tests/test_a_setup.py": "from helper import STATE\n\ndef test_pollutes():\n    STATE['mode'] = 'bad'\n",
              "tests/test_b_client.py": "from helper import STATE\n\ndef test_victim():\n    assert STATE['mode'] == 'good'\n"}
     victim = "tests/test_b_client.py::test_victim"
@@ -1141,6 +1142,9 @@ def test_r050_p2_a_failure_an_earlier_file_causes_in_the_normal_run_is_not_repor
     for label in ("cold", "warm"):
         p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")
         assert p.returncode == 1 and o.get(victim) == "failed", (label, p.stdout[-2000:])
+    # decision (b): the failed victim has no entry; its needs are kept (``loose_needs``), so the polluter runs first
+    store = json.loads((tmp_path / ".c" / "proof-cache.json").read_text())
+    assert victim in store.get("loose_needs", {}) and victim not in store["tests"], sorted(store)
     # the polluter fixed: the victim's input changed (its carried set), it reruns and passes
     files["tests/test_a_setup.py"] = "from helper import STATE\n\ndef test_pollutes():\n    STATE['other'] = 'bad'\n"
     p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")

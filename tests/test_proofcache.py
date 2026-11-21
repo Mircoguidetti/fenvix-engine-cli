@@ -313,7 +313,7 @@ def test_network_connection_and_subprocess_are_never_cached(pytester, run_cache,
         """})
     run_cache("--det-cache-no-follow")
     _, reused, data = run_cache("--det-cache-no-follow")
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_loopback"] == "network connection"
     assert nc["test_m.py::test_spawn"] == "subprocess"
@@ -366,7 +366,7 @@ def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=1, failed=1)
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "outcome failed"
     # without the proxy the same loopback port is "localhost" to Level 0 and the test passes, but a service the
     # test process tree did not start is outside too: a connection, loopback or not, is never cached
@@ -377,7 +377,7 @@ def test_external_service_through_a_loopback_proxy_is_never_cached(pytester, run
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=2)
-    assert reused == ids("test_plain")
+    assert reused == set()  # review R-050 P2 (b): it runs before a later test that may consume its state (never cached or failed)
     assert data["cache"]["not_cached_ids"]["test_m.py::test_external"] == "network connection"
 
 
@@ -423,7 +423,7 @@ def test_name_lookup_and_c_level_sockets_are_never_cached(pytester, run_cache, o
     run_cache()
     r, reused, data = run_cache()
     r.assert_outcomes(passed=5)
-    assert reused == ids("test_numeric_address_is_not_a_lookup", "test_loopback_name_is_read_from_the_hosts_file")
+    assert reused == set()  # review R-050 P2 (b): a never-cached or failing test's needs hold the earlier tests of its file; they run before it
     nc = data["cache"]["not_cached_ids"]
     assert nc["test_m.py::test_lookup"] == "host name lookup"
     assert nc["test_m.py::test_c_socket"] == "network socket opened outside Python (C extension)"

@@ -868,12 +868,10 @@ pub fn record_session_keys(
                 out.reads.insert(nid.to_string(), keys.into_iter().map(|k| k.to_string()).collect());
             }
         }
+        // review R-050 P2: a test whose outcome is not stored (a failure) still gets its carried set below, kept as
+        // its needs without an entry (`Store::loose_needs`): the earlier tests it may have consumed state from run
+        // before it whenever it runs
         let not_reusable = !reusable_outcome(&t.outcome);
-        if not_reusable && keys.is_none() {
-            store.remove(nid);
-            out.not_cached.push((nid.to_string(), format!("outcome {}", t.outcome), Vec::new()));
-            continue;
-        }
         let own = ctx_file(nid);
         let mut ctxs: Vec<u32> = Vec::new();
         let tname = format!("t|{nid}");
@@ -1071,7 +1069,7 @@ pub fn record_session_keys(
             );
         }
         if not_reusable {
-            store.remove(nid);
+            store.remove_keeping_needs(nid, needs.clone());
             out.not_cached.push((nid.to_string(), format!("outcome {}", t.outcome), Vec::new()));
             continue;
         }
@@ -1146,7 +1144,7 @@ pub fn record_session_keys(
             store.add_edge(&w, &r);
         }
         if let Some(w) = why {
-            store.remove(nid);
+            store.remove_keeping_needs(nid, needs.clone());
             out.not_cached.push((nid.to_string(), w, where_ctx));
             continue;
         }
@@ -1179,13 +1177,13 @@ pub fn record_session_keys(
         }
         let all_ctxs: Vec<u32> = ctxs.iter().chain(c_ctxs.iter()).copied().collect();
         if let Some(w) = code_changed(t, &all_ctxs) {
-            store.remove(nid);
+            store.remove_keeping_needs(nid, needs.clone());
             out.not_cached.push((nid.to_string(), w, Vec::new()));
             continue;
         }
         let clock = flags.contains("time");
         if clock && !plan.time_controlled {
-            store.remove(nid);
+            store.remove_keeping_needs(nid, needs.clone());
             out.not_cached.push((nid.to_string(), "real clock".to_string(), Vec::new()));
             continue;
         }
