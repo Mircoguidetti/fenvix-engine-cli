@@ -313,6 +313,10 @@ def _recv(fh):
     return pickle.loads(data)
 
 
+def _payload_failed(payload) -> bool:
+    return any((d or {}).get("outcome") == "failed" for d in payload.get("reports") or ())
+
+
 class _Upto:
     """A ``nextitem`` whose chain is ``nodes``: teardown_exact keeps exactly those."""
 
@@ -350,6 +354,9 @@ class FileIsolate(Isolate):
         self._gated: str | None = None
         self._files: dict | None = None
         self._order: list | None = None
+        self.seen: list = []  # the items this process's protocol was given, in order (reused ones too)
+        self.replayed: dict = {}  # file key -> {nodeid: {"outcome", "reports"}} of the in-process replay
+        self.pending: list = []  # (item, payload) of failures waiting for their file's replay (after its child closed)
 
     def _file_gate(self, item, key, pc) -> None:
         """Before a test file starts (serial; under -n the controller withdraws after the run, F2): a reused result of
@@ -382,6 +389,7 @@ class FileIsolate(Isolate):
 
         pc = proofcache.PLUGIN
         key = _file_key(item)
+        self.seen.append(item)
         if self.child is not None and self.child.key != key:
             self._close(item)
         if key != self._gated:
@@ -406,7 +414,12 @@ class FileIsolate(Isolate):
         self.child.last = item.nodeid
         wall = _perf() - t0
         crashed = "error" in payload
-        self._parent(item, pc, payload)
+        if not crashed and _payload_failed(payload) and self._needs_replay(item, pc):
+            # replayed once the file's child has closed (a server or a port the child holds would block the replay);
+            # its report waits until then
+            self.pending.append((item, payload))
+        else:
+            self._parent(item, pc, payload)
         STATS["tests"] += 1
         STATS["overhead_s"] += max(0.0, wall - payload.get("protocol_s", 0.0))
         if crashed:
@@ -414,6 +427,134 @@ class FileIsolate(Isolate):
         elif not same:
             self._close(nextitem)
         return True
+
+    # -- coordinator decision 2026-11-21 (b): a failure only the per-file isolation causes is never the result ---------
+    def _flush_pending(self) -> None:
+        from . import proofcache
+
+        pending, self.pending = self.pending, []
+        for item, payload in pending:
+            try:
+                payload = self._placement_replay(item, _file_key(item), payload)
+            except Exception:  # noqa: BLE001 - the child's failure stands
+                pass
+            self._parent(item, proofcache.PLUGIN, payload)
+
+    def _needs_replay(self, item, pc) -> bool:
+        """A test that failed in its file's child and has no in-process result to compare with (the store's proof:
+        ``serial_expect``) is replayed in one process after the earlier tests of this process."""
+        if os.environ.get("DETPY_PLACEMENT_REPLAY") == "0":
+            return False
+        key = _file_key(item)
+        if all(_file_key(it) == key for it in self.seen):
+            return False  # no earlier file: one process gives what the child gave
+        if pc is not None and item.nodeid in (getattr(pc, "serial_expect", None) or {}):
+            return False  # compared with the stored in-process outcome (placement findings)
+        return True
+
+    def _placement_replay(self, item, key, payload) -> dict:
+        nid = item.nodeid
+        got = self.replayed.get(key)
+        if got is None or nid not in got:
+            got = self.replayed[key] = self._replay(item, key) or {}
+        alt = got.get(nid)
+        if alt is None or alt["outcome"] in ("failed", "error"):
+            return payload  # it fails in one process too (or the replay could not tell): the failure stands
+        first = next(i for i, it in enumerate(self.seen) if _file_key(it) == key)
+        earlier = self.seen[:first]
+        files = list(dict.fromkeys(_file_key(it) for it in earlier))
+        text = (f"{nid}: failed when its file runs in its own process (the cache's per-file default), "
+                f"{alt['outcome']} in one process after the {len(earlier)} earlier tests of this process "
+                f"({len(files)} earlier file(s)" + (f", {files[0]} .. {files[-1]}" if files else "") + "): it "
+                f"depends on state an earlier test leaves in memory; reported: {alt['outcome']}, the outcome of a "
+                f"run in one process")
+        reports = []
+        for d in alt["reports"]:
+            d = dict(d)
+            d["user_properties"] = list(d.get("user_properties") or ()) + [("detpy_placement", text)]
+            reports.append(d)
+        STATS["placement_replays_changed"] = STATS.get("placement_replays_changed", 0) + 1
+        return dict(payload, reports=reports, fingerprint=None)
+
+    def _replay(self, item, key):
+        """Fork the parent; in the fork, run every earlier test of this process and the tests of ``item``'s file in
+        one process, in order, as a run without the per-file isolation does; return the outcomes and reports of the
+        file's tests. Nothing is recorded (failures are never recorded; the replay's passes are not either). None
+        when the replay fails or exceeds DETPY_PLACEMENT_REPLAY_S (default 900 s)."""
+        import select
+        import signal
+
+        last = max(i for i, it in enumerate(self.seen) if _file_key(it) == key)
+        seq = self.seen[:last + 1]
+        mine = {it.nodeid for it in seq if _file_key(it) == key}
+        r, w = os.pipe()
+        sys.stdout.flush()
+        sys.stderr.flush()
+        STATS["placement_replays"] = STATS.get("placement_replays", 0) + 1
+        t0 = _perf()
+        pid = os.fork()
+        if pid == 0:  # pragma: no cover - the replay
+            os.close(r)
+            code = 0
+            try:
+                nul = os.open(os.devnull, os.O_WRONLY)
+                os.dup2(nul, 1)
+                os.dup2(nul, 2)
+                with os.fdopen(w, "wb") as fout:
+                    _send(fout, self._replay_child(seq, mine))
+            except BaseException:  # noqa: BLE001
+                code = 1
+            os._exit(code)
+        os.close(w)
+        limit = float(os.environ.get("DETPY_PLACEMENT_REPLAY_S") or 900)
+        out = None
+        with os.fdopen(r, "rb") as fin:
+            ready, _, _ = select.select([fin], [], [], limit)
+            if ready:
+                try:
+                    out = _recv(fin)
+                except (OSError, EOFError, pickle.PickleError):
+                    out = None
+            else:
+                try:
+                    os.kill(pid, signal.SIGKILL)
+                except OSError:
+                    pass
+        try:
+            os.waitpid(pid, 0)
+        except OSError:
+            pass
+        STATS["placement_replay_s"] = STATS.get("placement_replay_s", 0.0) + (_perf() - t0)
+        return out
+
+    def _replay_child(self, seq, mine) -> dict:  # pragma: no cover - runs in the replay
+        from . import plugin, proofcache
+
+        pc = proofcache.PLUGIN
+        if pc is not None:
+            pc.iso_child = True
+            cap = getattr(pc, "cap", None)
+            if cap is not None:
+                cap.active = False
+            fo = getattr(cap, "follower", None) if cap is not None else None
+            if fo is not None and fo.why_not is None:
+                fo.why_not = "in a placement replay"
+        # the replay starts from the session's state after collection: the parent's collectors above the file are set
+        # up again here, in order, as in a run of one process (their finalizers belong to the parent: not run)
+        item0 = seq[0]
+        item0.session._setupstate.stack.clear()
+        hook = self.config.hook
+        res = {}
+        for i, it in enumerate(seq):
+            nxt = seq[i + 1] if i + 1 < len(seq) else _Collectors(it)
+            plugin.level0_begin(it)
+            reports = _child_runtestprotocol(it, nxt)
+            out = _det_outcome(reports)
+            plugin.level0_end(it, out)
+            if it.nodeid in mine:
+                res[it.nodeid] = {"outcome": out, "reports": [
+                    hook.pytest_report_to_serializable(config=self.config, report=rep) for rep in reports]}
+        return res
 
     def _open(self, item, pc, key) -> None:
         s0 = _perf()
@@ -573,6 +714,7 @@ class FileIsolate(Isolate):
                 self._teardown_failure(c.last, payload["teardown_error"])
         else:
             STATS["failed_children"] += 1
+        self._flush_pending()
         if nextitem is not None or True:
             self._parent_teardown(nextitem)
 
@@ -591,6 +733,7 @@ class FileIsolate(Isolate):
         except ChildProcessError:
             pass
         STATS["failed_children"] += 1
+        self._flush_pending()
 
     def _parent_teardown(self, nextitem) -> None:
         import _pytest.main  # noqa: F401

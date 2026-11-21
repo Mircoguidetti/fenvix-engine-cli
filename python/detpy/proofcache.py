@@ -538,6 +538,9 @@ class ProofCachePlugin(ProofSession):
 
     def pytest_runtest_logreport(self, report):
         if self.role != "worker" and not self.iso_child:
+            for k, v in getattr(report, "user_properties", None) or ():
+                if k == "detpy_placement":  # a failure only the per-file isolation caused (isolate.FileIsolate)
+                    self.__dict__.setdefault("replay_findings", {})[report.nodeid] = v
             self._note_outcome(report)  # findings (and their resolution by an in-process session)
         if self.isolate and not self.iso_child and report.nodeid in self.iso_forked:
             return  # the child reported it to its own session
@@ -638,6 +641,12 @@ class ProofCachePlugin(ProofSession):
                 for nid, want, got in found:
                     tr.write_line(f"placement: {nid}: {got} here, {want} in a serial session with the same inputs "
                                   f"(it depends on another test's in-process state or on its worker)", red=True)
+        rf = getattr(self, "replay_findings", None) or {}
+        if rf:
+            tr.section("detpy PLACEMENT FINDINGS: tests that fail only when their file runs in its own process",
+                       yellow=True)
+            for nid in sorted(rf):
+                tr.write_line(f"placement: {rf[nid]}", yellow=True)
         tr.section("detpy cache with proof")
         for text, markup in self.summary_lines(tr.config.option.verbose):
             tr.write_line(text, **({markup: True} if markup else {}))

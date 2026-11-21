@@ -1015,3 +1015,42 @@ def test_other_plugins_runtest_protocol_wrappers_run_in_the_childs(pytester, mod
     assert mode[:1] == ("-n",) or "in forked children" in p.stdout, p.stdout[-3000:]  # (the workers print it under -n)
     assert p.returncode == 0 and "KeyError" not in p.stdout, p.stdout[-3000:]
     assert set(outcomes.values()) == {"passed"} and len(outcomes) == 2, outcomes
+
+
+EARLIER_FILE_STATE = {
+    "tests/helper.py": "STATE = {}\n",
+    "tests/test_a_setup.py": "from helper import STATE\n\ndef test_sets_credentials():\n    STATE['creds'] = 'x'\n",
+    # moto 96f50b1a test_s3_file_handles.py::TestS3FileHandleClosuresUsingMocks (parallel-proof run g/h): setUp builds
+    # a client outside the mock and works only after an earlier test file of the same process left state behind
+    "tests/test_b_client.py": (
+        "import unittest\nfrom helper import STATE\n\n"
+        "class UsingMocks(unittest.TestCase):\n"
+        "    def setUp(self):\n        self.client = STATE['creds']  # KeyError when no earlier file set it\n\n"
+        "    def test_use(self):\n        self.assertEqual(self.client, 'x')\n\n"
+        "    def test_use_again(self):\n        self.assertEqual(self.client, 'x')\n"),
+}
+
+
+def test_a_failure_only_the_per_file_isolation_causes_is_reported_not_the_result(pytester):
+    """Coordinator decision 2026-11-21 (b): a test that fails in its file's child and has no in-process result to
+    compare with is replayed in one process after the earlier tests; when it passes there the run reports the pass
+    (the user's normal run) and a PLACEMENT FINDING naming the earlier-file dependency, never the isolated failure."""
+    write(pytester, **{**EARLIER_FILE_STATE, "tests/conftest.py": "import sys, os\nsys.path.insert(0, os.path.dirname(__file__))\n"})
+    env = {"DETPY_CACHE_IN_PROCESS": "0"}
+    plain = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:randomly", "-p", "no:cacheprovider", "tests"],
+                           cwd=pytester.path, capture_output=True, text=True, timeout=300)
+    assert plain.returncode == 0, plain.stdout[-2000:]
+    p, _, outcomes = run(pytester, "pf", "-rA", "tests", env=env)
+    assert "in forked children" in p.stdout, p.stdout[-3000:]
+    assert p.returncode == 0, p.stdout[-3000:]
+    assert set(outcomes.values()) == {"passed"} and len(outcomes) == 3, outcomes
+    assert "PLACEMENT FINDINGS: tests that fail only when their file runs in its own process" in p.stdout, p.stdout
+    assert ("placement: tests/test_b_client.py::UsingMocks::test_use: failed when its file runs in its own process"
+            in p.stdout), p.stdout
+    assert "after the 1 earlier tests of this process (1 earlier file(s), tests/test_a_setup.py" in p.stdout, p.stdout
+    # the file alone fails in one process too: its failure stands, no finding
+    alone, _, out2 = run(pytester, "alone", "-rA", "tests/test_b_client.py", env=env)
+    assert set(out2.values()) == {"failed"} and "PLACEMENT FINDINGS" not in alone.stdout, alone.stdout[-3000:]
+    # serial without the isolation (in-process) gives the pass with no finding
+    inproc, _, out3 = run(pytester, "inproc", "-rA", "tests", env={"DETPY_CACHE_IN_PROCESS": "1"})
+    assert set(out3.values()) == {"passed"} and "PLACEMENT FINDINGS" not in inproc.stdout, inproc.stdout[-3000:]

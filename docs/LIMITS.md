@@ -114,3 +114,28 @@ partial key. Each row has a test that changes only that input and requires the t
 | A2 | A library `dlopen()`ed and `dlclose()`d within one context leaves no mapping to scan. | D (dependency verdict REPORT-2) | Through `ctypes`, the `ctypes.dlopen` audit event names the path: refused as A1 when it is in the project root. A load by C code without an event is A1 or S1 (that C code is itself mapped). | `test_library_loaded_and_unloaded_within_one_test` |
 | A3 | `os.stat` / `os.lstat` / `os.access` bound before the session (`from os import stat` in a plugin loaded with `-p` at startup). | D (coordinator) | At capture start every module global that is the original function is rebound to the recording wrapper (except `posix`, the import system's own module, whose probes the module-lookup finder records). References in closures, default arguments or C code stay unseen (S3, S1). | `test_stat_bound_before_the_session` |
 | A4 | `os.lstat` / `os.path.lexists` / `islink` of a dangling symlink: following the link, it reads as missing either way. | D (coordinator) | `os.lstat` (and `follow_symlinks=False`) records the kind without following a final symlink (`l:<kind>`, kinds `link`, `file`, `dir`, `other`, `missing`). | `test_dangling_symlink_that_goes_away` |
+
+## 10. Cache with proof (`--det-cache`): one process per test file, speed
+
+Under `--det-cache` (Linux), the tests of a file run in their own process, forked from the session after
+collection (`--det-cache-in-process` keeps one process).
+
+* **Outcomes of tests that depend on earlier files.** A test that works only after another file's tests have left
+  state in memory (moto 96f50b1a: `TestS3FileHandleClosuresUsingMocks.setUp` builds a boto3 client outside the mock
+  and needs the credentials or session an earlier file left behind) can fail in its file's own process. fenvix
+  detects it and reports it. When a test fails in its file's process and the store has no in-process result to
+  compare with, fenvix replays it in one process after the earlier tests of the session (or the worker). If it passes
+  there, the run reports the pass, the user's normal outcome, and a `PLACEMENT FINDING` naming the earlier files. A test
+  whose outcome differs from a stored in-process result is reported the same way. The replay reruns every earlier
+  test once per failing file, and only for failures: moto `tests/test_s3/` with 5 failures that also fail without
+  the cache took 118 s against 45 s (MEASURED, 4 CPUs). `DETPY_PLACEMENT_REPLAY=0` turns the replay off;
+  `DETPY_PLACEMENT_REPLAY_S` bounds it (default 900 s; past it the failure stands). Under `-n`, the replay runs the
+  earlier tests of the same worker, as plain `pytest -n` does.
+* **Speed when most tests miss** (founder decision 2026-11-21). On commits that change code most tests depend on, a
+  cached `-n 4` run is slower than the uncached one, with no wrong result: moto 96f50b1a, 10 commits, 6 of them
+  changing moto core: 755 s cached against 648 s uncached at `-n 4` (MEASURED, CI). Each file's process reloads the
+  libraries' caches (botocore's service models) and the cache records every test. Unchanged reruns and the serial
+  walk are faster cached: 24.8 s against 67.3 s, and 1,577 s against 1,702 s.
+* **No reuse where every test resolves a name.** A name resolution is a network input, so a suite whose setup
+  resolves `localhost` in every test (litellm's pytest-socket `socket_allow_hosts`) reuses nothing and pays the
+  per-file cost: 220-240 s against 48 s at `-n 4` (MEASURED, litellm 17e6ea8c `tests/unit/llms/vertex_ai`).
