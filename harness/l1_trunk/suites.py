@@ -33,11 +33,11 @@ def prepare(spec: dict, root: Path) -> Path:
     d = root / spec["name"]
     root.mkdir(parents=True, exist_ok=True)
     if not d.exists():
-        # a shallow clone cannot be checked out at an arbitrary sha: fetch that commit by name
-        run(["git", "init", "-q", str(d)])
-        run(["git", "remote", "add", "origin", spec["url"]], cwd=d)
-        run(["git", "fetch", "-q", "--depth", "1", "origin", spec["sha"]], cwd=d)
-        run(["git", "checkout", "-q", "FETCH_HEAD"], cwd=d)
+        # The corpus pins abbreviated shas, and a server will not serve `fetch <abbrev>` (nor an exact sha that is
+        # not a ref tip on some hosts). So: a blobless clone of the refs, which is quick, then check the sha out
+        # locally, where an abbreviation resolves. Blobs of the checked-out tree are fetched on demand.
+        run(["git", "clone", "-q", "--filter=blob:none", "--no-checkout", spec["url"], str(d)])
+        run(["git", "checkout", "-q", spec["sha"]], cwd=d)
     pkgs = ["pytest", *spec.get("install", [])]
     run([sys.executable, "-m", "pip", "install", "-q", "-e", ".", *pkgs], cwd=d)
     return d
