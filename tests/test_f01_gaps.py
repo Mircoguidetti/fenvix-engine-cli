@@ -102,10 +102,22 @@ import os, resource, time
 
 def test_cpu():
     sum(range(200000))
+    print("CPU", time.process_time(), time.process_time_ns(), time.thread_time(), tuple(os.times()))
+
+def test_rusage():
     r = resource.getrusage(resource.RUSAGE_SELF)
-    print("CPU", time.process_time(), time.process_time_ns(), time.thread_time(), tuple(os.times()), r.ru_utime, r.ru_stime)
+    print("RUSAGE", r.ru_utime, r.ru_stime)
 ''')
-    twice(proj, "CPU")
+    pa, ta = det(proj, "a")
+    pb, tb = det(proj, "b")
+    for key in ("CPU", "RUSAGE"):
+        assert values(pa, key) and values(pa, key) == values(pb, key), key
+    # getrusage's memory and I/O counters stay real: the test that read them is never identical (R-055 V14)
+    v = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", "--json", str(ta), str(tb)], cwd=proj,
+                       capture_output=True, text=True, timeout=300)
+    by = {t["nodeid"].split("::")[-1]: t for t in json.loads(v.stdout[v.stdout.index("{"):])["tests"]}
+    assert by["test_cpu"]["status"] == "stable", by
+    assert by["test_rusage"]["status"] != "stable" and by["test_rusage"]["divergence"]["event_a"]["o"] == "resource.getrusage"
 
 
 def test_times_of_files_the_test_wrote_are_virtual(tmp_path):
@@ -230,6 +242,7 @@ def test_entropy_divergence_hints_at_det_urandom(tmp_path):
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
                        text=True)
     assert p.returncode == 1 and "hint [entropy]" in p.stdout and "--det-urandom" in p.stdout, p.stdout
+    assert "--det-entropy=observe" in p.stdout, p.stdout  # the Python control is named (R-051)
 
 
 # ------------------------------------------------------------------------------------------------------ first use

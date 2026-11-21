@@ -99,6 +99,13 @@ impl Recorder {
         Ok(lock(&self.inner).end_test(outcome)?.map(|r| r.fingerprint))
     }
 
+    /// What the run read after the header, outside any test (JSON object): written in the footer.
+    fn set_late(&self, late: &str) -> PyResult<()> {
+        let v: serde_json::Value = serde_json::from_str(late).map_err(|e| PyValueError::new_err(e.to_string()))?;
+        lock(&self.inner).set_late(v);
+        Ok(())
+    }
+
     /// Close the trace; returns the digest of the executed order.
     fn close(&self) -> PyResult<Option<String>> {
         Ok(lock(&self.inner).close()?.map(|f| f.order_digest))
@@ -193,6 +200,15 @@ impl Cassette {
     /// `nodeid` goes on with connection `idx` of `from` (kept alive across tests): the index of its continuation.
     fn continue_in(&self, from: &str, idx: usize, nodeid: &str) -> PyResult<usize> {
         lock(&self.inner).continue_in(from, idx, nodeid).ok_or_else(|| PyKeyError::new_err(format!("{from}#{idx}")))
+    }
+
+    /// Forget what was recorded on a connection so far (the TLS handshake's ciphertext, once the TLS object above
+    /// it is known to record the plaintext).
+    fn clear_segments(&self, nodeid: &str, idx: usize) -> PyResult<()> {
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.segments.clear();
+        Ok(())
     }
 
     /// The server closed this connection (a read returned end of file): its replay ends with end of file.

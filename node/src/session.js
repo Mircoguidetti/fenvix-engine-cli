@@ -189,6 +189,11 @@ function prepare(opts, root, runner) {
   if (cfg.active && cfg.controls.has('net')) {
     try { require('./network').installStartup(new (require('./patch').Patcher)(), cfg); } catch (e) { process.stderr.write(`detjs: WARNING: the network control could not be installed in the main process: ${e && e.message}\n`); }
   }
+  // the project's own reads in this process (the runner's configuration, globalSetup) are reads outside any test
+  // (docs/VERIFY-INPUTS.md)
+  if (cfg.active) {
+    try { require('./controls').installMainEnvRecord(root); } catch (e) { process.stderr.write(`detjs: WARNING: environment reads of the main process are not recorded: ${e && e.message}\n`); }
+  }
   // Jest runs the tests in this process, and its test environment loads Node's bundled undici (it copies the
   // global descriptors) before the detjs test runner installs Level 0; from Node 24 undici keeps the
   // `crypto.randomFillSync` / `randomInt` it finds when it loads (WebSocket masks, FormData boundaries). The OS entropy
@@ -296,6 +301,41 @@ function runInputs(run, meta) {
   return inputs;
 }
 
+const ENV_UNRECORDED_RUNNERS = new Set(['bun', 'deno']);
+
+/** The variables the run's processes read outside any test (src/controls.js noteOutside), sorted. */
+function envReadOutside(dir) {
+  const names = new Set();
+  const d = path.join(dir, 'envout');
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) names.add(l);
+    }
+  } catch { /* none read */ }
+  return [...names].sort();
+}
+
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
+function runLines(dir, sub) {
+  const out = new Set();
+  const d = path.join(dir, sub);
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) out.add(l);
+    }
+  } catch { /* none */ }
+  return out;
+}
+
+/** Files read while no test ran (src/outside.js; docs/VERIFY-CONTRACT.md `files_read_outside_tests`), sorted. */
+function filesReadOutside(dir) {
+  const out = [];
+  for (const l of runLines(dir, 'filesout')) {
+    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+  }
+  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
+}
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
@@ -324,6 +364,14 @@ function finish(run, opts, files, meta) {
     network: run.netMode,
     urandom_controlled: run.cfg.urandom,
     entropy: run.cfg.urandom ? 'controlled' : 'observed',
+    // the tests' environment reads are events (src/controls.js installEnvRecord) in Node processes; Bun's and
+    // Deno's own environment APIs are not recorded. Without this the verifier counts every differing variable as
+    // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
+    env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
+    env_read_outside_tests: envReadOutside(run.dir),
+    // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
+    files_read_outside_tests: filesReadOutside(run.dir),
+    not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
@@ -338,6 +386,8 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
+  // the installed dependencies of the project (src/loaded.js, review R-055 V5)
+  try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }

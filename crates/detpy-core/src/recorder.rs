@@ -95,6 +95,13 @@ impl Recorder {
         &self.finished
     }
 
+    /// What the run read after the header, outside any test: written in the footer (`Footer::late`).
+    pub fn set_late(&mut self, late: serde_json::Value) {
+        if let Some(w) = self.writer.as_mut() {
+            w.late = Some(late);
+        }
+    }
+
     pub fn close(&mut self) -> io::Result<Option<Footer>> {
         if self.current.is_some() {
             self.end_test("interrupted")?;

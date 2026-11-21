@@ -194,9 +194,87 @@ def _target(sock, address):
     return POLICY.hostname(host), port
 
 
+_real_listen = socket.socket.listen
+_LISTENERS = weakref.WeakSet()
+
+
+def _listen(self, *args):
+    r = _real_listen(self, *args)
+    _LISTENERS.add(self)
+    return r
+
+
+_real_bind = socket.socket.bind
+
+
+def _bind(self, *args):
+    r = _real_bind(self, *args)
+    try:
+        if self.type == socket.SOCK_DGRAM:
+            _LISTENERS.add(self)
+    except OSError:
+        pass
+    return r
+
+
+def _own_listener(family, address) -> bool:
+    for s in list(_LISTENERS):
+        try:
+            if s.family != family:
+                continue
+            name = s.getsockname()
+        except OSError:
+            continue
+        if family == socket.AF_UNIX:
+            if name == address:
+                return True
+        elif isinstance(address, tuple) and len(address) >= 2 and name[1] == address[1]:
+            return True
+    return False
+
+
+def _caller_depth() -> int:
+    import sys
+
+    from detpy import _sites
+
+    stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+    depth, f = 1, sys._getframe(2)
+    while f is not None and (f.f_code.co_filename.startswith(stdlib) or f.f_code.co_filename == __file__):
+        f = f.f_back
+        depth += 1
+    return depth
+
+
+def _note_live(sock, address, depth: int = 4) -> None:
+    """claude/verifier-cli (docs/VERIFY-INPUTS.md): a live endpoint the closed network lets through marks the test
+    uncontrolled.net, unless it is this process's own listener."""
+    if _state.STATE.nodeid is None or _state.is_quiet():
+        return
+    try:
+        fam = sock.family
+    except Exception:
+        return
+    if fam not in (socket.AF_INET, socket.AF_INET6, getattr(socket, "AF_UNIX", -1)):
+        return
+    if _own_listener(fam, address):
+        return
+    from detpy import uncontrolled
+
+    if isinstance(address, str):
+        where = address
+    else:  # a loopback server's port is ephemeral (bound to 0): not what the test observed (Node: `<port>` too)
+        host = str(address[0])
+        loop = host in ("localhost", "::1") or host.startswith("127.")
+        where = f"{host}:{'<port>' if loop else address[1]}"
+    uncontrolled._mark("net", f"live endpoint {where}", _caller_depth())
+
+
 def _connect_common(sock, address, real):
     target = _target(sock, address)
     if target is None:
+        if POLICY is not None:
+            _note_live(sock, address)
         return real(sock, address)
     host, port = target
     mode = POLICY.mode
@@ -232,6 +310,8 @@ def _connect_ex(self, address):
 def _sendto(self, data, *args):
     address = args[-1] if args else None
     target = _target(self, address) if address is not None else None
+    if target is None and address is not None and POLICY is not None:
+        _note_live(self, address, 3)  # R-055 V8
     if target is not None and POLICY.mode != "record":
         _state.record("net", "socket.sendto", f"{target[0]}:{target[1]} blocked")
         raise _blocked(f"{target[0]}:{target[1]} (udp)")
@@ -575,6 +655,8 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
         mode, cassette = "block", None
     POLICY = _Policy(mode, cassette, allow_hosts)
     patcher.set(socket.socket, "connect", _connect)
+    patcher.set(socket.socket, "listen", _listen)
+    patcher.set(socket.socket, "bind", _bind)
     patcher.set(socket.socket, "connect_ex", _connect_ex)
     patcher.set(socket.socket, "sendto", _sendto)
     patcher.set(socket, "getaddrinfo", _getaddrinfo)

@@ -393,3 +393,40 @@ def test_image_help_lists_every_product_command_on_its_own_line():
 
     for cmd in ("python", "node", "repro", "explore", "replay", "verify", "version", "pytest"):
         assert re.search(rf"^\s+fenvix {cmd}\b", p.stdout, re.M), (cmd, p.stdout)
+
+
+def test_a_not_reproducible_bundle_prints_no_command_that_would_reproduce_it(tmp_path):
+    # R-051: a failure that does not replay every time has no command that reproduces it: no `replay:` or `rerun:`
+    # line, only the check (which says whether it does now)
+    from detpy.fenvix import render_repro
+
+    b = {"test": "t.py::x", "status": "replay-unstable", "config": "fixed", "order": ["t.py::x"],
+         "replay": {"fails": 1, "runs": 2, "identical_fingerprint": False},
+         "command": "pytest --det --det-order=.detpy/repro/x/order.txt"}
+    out = render_repro(b, tmp_path)
+    assert "NOT REPRODUCIBLE" in out and "  check: fenvix replay" in out, out
+    assert "\n  replay: " not in out and "rerun:" not in out, out
+
+
+def test_explore_reports_what_it_found_although_a_module_does_not_import(project):
+    # exam F-02.py-explore (py-autodoc: modules that need an uninstalled library): the failing tests it found are
+    # reported and the run exits 0, with the collection errors named; finding nothing there exits 2 (R-050 V10)
+    (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
+    p = fx("explore", "--budget", "60", "--max-seeds", "3", "--out", str(project / "ex"), cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_o.py::test_victim" in p.stdout, p.stdout
+    assert "does not collect cleanly" in p.stderr and "no_such_module_fenvix" in p.stderr, p.stderr
+
+
+def test_repro_finds_a_test_that_crashes_the_process(tmp_path):
+    # R-055 D3: a test that kills the process after another one (os._exit) is a failure, not a run with no result
+    proj = tmp_path / "p"
+    (proj / "tests").mkdir(parents=True)
+    (proj / "tests" / "__init__.py").write_text("")
+    (proj / "tests" / "test_a.py").write_text("STATE = []\ndef test_a():\n    STATE.append(1)\n")
+    (proj / "tests" / "test_b.py").write_text("import os\nfrom tests.test_a import STATE\ndef test_b():\n"
+                                              "    if STATE:\n        os._exit(1)\n")
+    p = fx("repro", "tests/test_b.py::test_b", "--seeds", "2", "--confirm", "2", "--json", cwd=proj)
+    assert p.returncode == 0, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "reproduced" and b["polluters"] == ["tests/test_a.py::test_a"], b

@@ -496,7 +496,129 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     # closed they are its part, not inputs; while recording (the real network) they are inputs
     closed = "net" in c and not cfg.record_net
     inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
+    inputs.update(code_inputs(_CODE_EXTRA))
+    inputs["argv"] = argv_input()
     return inputs
+
+
+def outside_fields(files=(), env=(), not_proven=()) -> dict:
+    """The header fields of what the run did outside any test (docs/VERIFY-CONTRACT.md section 1): the files it read
+    (module scope, conftest, a dependency at import: R-055 V3), the variables it read (R-054 N2) and the uncontrolled
+    sources it used (a CI-volatile or proxy variable, a native library loaded through ctypes: R-055 V1 V2 V7 V15).
+    ``files`` / ``env`` / ``not_proven``: the xdist workers' (plugin._controller_meta)."""
+    fl = {(p, v) for p, v in osstate.OUTSIDE_FILES.items()}
+    for f in files:
+        fl.update(f.items() if isinstance(f, dict) else f)
+    return {
+        "files_read_outside_tests": [{"path": p, "digest": v} for p, v in sorted(fl)],
+        "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env)),
+        "not_proven_outside_tests": sorted({f"native:{n}" for n in osstate.NATIVE_OUTSIDE}
+                                           | set(envobs.NOT_PROVEN_OUTSIDE).union(*not_proven)),
+    }
+
+
+def late_inputs() -> dict:
+    """What the run did outside any test until its end (the footer `late`: same field names as the header, the
+    verifier merges them, R-055 V12). Empty fields are left out: an empty dict when nothing was read."""
+    return {k: v for k, v in outside_fields().items() if v}
+
+
+_CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)
+
+
+ARGV_PATHS = ("--det-trace", "--det-outcomes", "--det-order", "--det-plan", "--det-compare", "--det-cassette",
+              "--basetemp", "--junitxml",
+              "--junit-xml", "--result-log", "--resultlog")
+
+
+ARGV_PARALLEL = ("-n", "--numprocesses", "--dist", "--maxprocesses", "--max-worker-restart", "-p")
+
+
+def argv_input() -> str:
+    """The command line's options (R-055 V10: a test can read sys.argv; runner options change what runs), without
+    the per-run output paths (traces, outcomes, the order file: their content is an input of its own), the parallel
+    options (the plan is its own input) and plugin switches."""
+    out, skip = [], False
+    for a in sys.argv[1:]:
+        if skip:
+            skip = False
+            continue
+        if a.startswith(ARGV_PATHS):
+            skip = "=" not in a
+            continue
+        if a in ARGV_PARALLEL:
+            skip = True
+            continue
+        if a.startswith(tuple(f"{x}=" for x in ARGV_PARALLEL if x.startswith("--"))) or (a.startswith("-n") and a[2:].isdigit()) \
+                or (a.startswith("-p") and len(a) > 2):
+            continue
+        out.append(a)
+    return _core.digest("\0".join(out).encode("utf-8", "surrogateescape"))[:16] + f" ({len(out)} args)"
+
+
+def _module_files():
+    for m in list(sys.modules.values()):
+        f = getattr(m, "__file__", None)
+        if isinstance(f, str) and f:
+            yield os.path.abspath(f)
+
+
+def _file_identity(path: str) -> str | None:
+    """Content digest of a Python source; size and mtime of anything else (a native extension)."""
+    try:
+        if path.endswith(".py"):
+            with open(path, "rb") as fh:
+                return _core.digest(fh.read())[:16]
+        st = os.stat(path)
+        return f"{st.st_size}:{st.st_mtime_ns}"
+    except OSError:
+        return None
+
+
+def code_inputs(extra: list | None = None) -> dict:
+    """The code that ran, as two run inputs: ``code`` (the project's modules and test files imported so far: an
+    uncommitted edit counts, R-055 V4) and ``deps`` (every other non-standard-library module: an installed dependency
+    changed, R-055 V5); the runner's own packages (pytest, its plugins, detpy) are the ``runner`` input. ``extra``:
+    the lists of xdist workers (the controller imports no test). Modules imported later inside a test are not in it
+    (docs/VERIFY-INPUTS.md, gap)."""
+    code, deps = code_files()
+    for c, d in extra or []:
+        code, deps = sorted(set(code) | set(c)), sorted(set(deps) | set(d))
+    dig = lambda xs: f"{len(xs)} files " + _core.digest("\n".join(xs).encode("utf-8", "surrogateescape"))[:16]
+    return {"code": dig(code), "deps": dig(deps)}
+
+
+def code_files() -> tuple:
+    with _state.quiet():
+        root = _sites._rootdir or os.getcwd()
+        stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+        site = tuple(d + os.sep for d in _sites._site_dirs)  # (site-packages sits inside the stdlib directory)
+        own = os.path.dirname(os.path.abspath(__file__)) + os.sep
+        code, deps = [], []
+        for f in sorted(set(_module_files())):
+            if f.startswith(own) or (f.startswith(stdlib) and not f.startswith(site)):
+                continue
+            if _sites._classify(f)[0] == _sites._INFRA or _infra_module_file(f):
+                continue  # the runner (pytest, its plugins, xdist): the `runner` input
+            ident = _file_identity(f)
+            if ident is None:
+                continue
+            if f.startswith(root + os.sep) and "site-packages" not in f and f"{os.sep}.venv{os.sep}" not in f:
+                code.append(f"{os.path.relpath(f, root)}={ident}")
+            else:
+                deps.append(f"{_sites.norm_path(f)}={ident}")
+    return sorted(set(code)), sorted(set(deps))
+
+
+_RUNNER_TOPS = ("pytest", "_pytest", "pluggy", "xdist", "execnet", "iniconfig", "py", "pytest_")
+
+
+def _infra_module_file(f: str) -> bool:
+    parts = f.replace(os.sep, "/").split("/site-packages/", 1)
+    if len(parts) != 2:
+        return False
+    top = parts[1].split("/", 1)[0].removesuffix(".py")
+    return top in _RUNNER_TOPS or top.startswith("pytest_") or top.startswith("_pytest") or top in INFRA_PACKAGES
 
 
 def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -> str:
@@ -795,6 +917,9 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     # every os.environ read by a test is an event (envobs): the verifier then reports a differing variable only for
     # the tests that read it (design A)
     meta["env_reads_recorded"] = "env" in cfg.controls
+    # the variables read outside any test before the trace opened (module scope, conftest, plugins at import):
+    # read by every test as far as the verifier knows (R-054 N2)
+    meta.update(outside_fields())
     return meta
 
 
