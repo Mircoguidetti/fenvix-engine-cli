@@ -463,7 +463,7 @@ class FileIsolate(Isolate):
         first = next(i for i, it in enumerate(self.seen) if _file_key(it) == key)
         earlier = self.seen[:first]
         files = list(dict.fromkeys(_file_key(it) for it in earlier))
-        text = (f"{nid}: failed when its file runs in its own process (the cache's per-file default), "
+        text = (f"{nid}: failed when its file runs in its own process (--det-isolate per file), "
                 f"{alt['outcome']} in one process after the {len(earlier)} earlier tests of this process "
                 f"({len(files)} earlier file(s)" + (f", {files[0]} .. {files[-1]}" if files else "") + "): it "
                 f"depends on state an earlier test leaves in memory; reported: {alt['outcome']}, the outcome of a "

@@ -44,8 +44,8 @@ def pytest_addoption(parser, pluginmanager):
                      "(Linux; elsewhere the carried-set rule applies). Higher-scoped fixtures are set up per test")
     g.addoption("--det-cache-in-process", action="store_true", default=False,
                 help="with --det-cache: run the tests in the session's process(es) as without the cache (the carried-set "
-                     "rule keys a test on the earlier tests of its process) instead of one child per test file, the "
-                     "default on Linux")
+                     "rule keys a test on the earlier tests of its process); the default (one child per test file "
+                     "only with --det-isolate)")
     g.addoption("--det-isolate-scope", default="file", choices=("test", "file"),
                 help="with --det-isolate: 'file' (default) forks one child per test file, whose tests share that child "
                      "in order (in-process state is carried within the file only, as in the serial run); 'test' forks "
@@ -800,17 +800,12 @@ def _configure_det(config) -> None:
         # the review gates with uncached runs isolated like the cached ones: the oracle of a per-file result)
         opt.det_isolate = True
         opt.det_isolate_scope = os.environ["DETPY_ISOLATE"]
-    if (opt.det_cache and not getattr(opt, "det_isolate", False) and not getattr(opt, "det_cache_in_process", False)
-            and not getattr(opt, "det_plan_worker", None)):
-        # coordinator decision 2026-11-20 (py-cache, F-05): under --det-cache the tests of a file run in one child
-        # forked from the session after collection (as Jest/Vitest isolate per file): no in-process state crosses
-        # files, so a result's key holds the earlier tests of its file only. Before the cache's configuration digest:
-        # the mode is part of every key. --det-cache-in-process keeps the session's process.
-        from . import isolate as _isolate
-
-        if _isolate.available():
-            opt.det_isolate = True
-            opt.det_isolate_scope = "file"
+    if opt.det_cache and not getattr(opt, "det_isolate", False):
+        # coordinator decision 2026-11-21 (review R-050 P2): under --det-cache the tests run in the session's
+        # process(es), as the user runs the suite: the reported outcome is that run's, for every test; the carried-set
+        # rule (E7) keys a test on the earlier tests of its process. One child per test file only under an explicit
+        # --det-isolate. --det-cache-in-process names this default (the same key with or without it).
+        opt.det_cache_in_process = True
     if opt.det_cache:
         proofcache.install(config)
     if (getattr(opt, "det_isolate", False) and getattr(opt, "det_isolate_scope", "test") == "file"

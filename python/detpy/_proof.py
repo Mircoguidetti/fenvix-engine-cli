@@ -1318,12 +1318,12 @@ class ProofSession:
             lists = list(files.values())
         ids = [n for lst in lists for n in lst]
         needs = dict(zip(ids, self.store.needs(ids)))
-        if file_scope:
-            # a test with no entry may consume what the earlier tests of its file leave (strict: they run before it;
-            # the cost is bounded by the file)
-            for n, d in zip(ids, self.store.durations(ids)):
-                if d is None:
-                    needs[n] = None
+        # a test with no entry (new, or its last outcome not cacheable: a failure) may consume what every earlier test
+        # of its process leaves: they run before it, as in the user's run (review R-050 P2: the polluter of an earlier
+        # file was reused, not run, and the victim passed; before, only under the per-file scope)
+        for n, d in zip(ids, self.store.durations(ids)):
+            if d is None:
+                needs[n] = None
         present = set(ids)
         changed = True
         while changed:

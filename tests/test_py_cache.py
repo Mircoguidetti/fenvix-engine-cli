@@ -223,7 +223,7 @@ def test_g0164_module_outside_the_root_in_a_files_child_is_an_input(pytester, tm
         def test_outside():
             assert exam_outside.VALUE == 1
         """)
-    env = {"PYTHONPATH": str(ext), "DETPY_CACHE_IN_PROCESS": "0"}
+    env = {"PYTHONPATH": str(ext), "DETPY_ISOLATE": "file"}
     args = ("-n", "2", "tests") if mode == "default-n2" else ("tests",)
     prefix = ()
     if mode == "fenvix-python":
@@ -343,7 +343,7 @@ def test_placement_difference_is_a_finding(pytester, mode):
     extra = {"n2": ("-n", "2", "--dist", "loadfile"), "isolate": ("--det-isolate",),
              "file": ("--det-isolate", "--det-isolate-scope=file"), "default": (),
              "default-n2": ("-n", "2")}[mode]
-    env = {"DETPY_CACHE_IN_PROCESS": "0"} if mode.startswith("default") else None
+    env = None  # the default runs in-process (review R-050 P2)
     # every test runs (verified against its entry): the store holds each one's serial outcome under unchanged inputs
     p, c, _ = run(pytester, "par", "-rA", "--det-cache-verify=1", *extra, "tests", env=env)
     got = outcome_of(p, "tests/test_b.py::test_b_needs")
@@ -831,9 +831,10 @@ def test_a_directory_on_sys_path_twice_is_not_another_runtime_under_n(pytester):
 
 
 @pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
-def test_per_file_is_the_default_under_the_cache_and_in_process_is_a_choice(pytester, monkeypatch):
-    """Coordinator decision 2026-11-20: --det-cache alone runs one child per test file (state left by file A never
-    reaches file B); --det-cache-in-process keeps the session's process."""
+def test_in_process_is_the_default_under_the_cache_and_per_file_is_a_choice(pytester, monkeypatch):
+    """Coordinator decision 2026-11-21 (review R-050 P2): --det-cache alone runs the tests in the session's process,
+    as the user runs the suite (state left by file A reaches file B, as in plain pytest); one child per test file only
+    under an explicit --det-isolate (decision 2026-11-20 reverted)."""
     monkeypatch.delenv("DETPY_CACHE_IN_PROCESS", raising=False)
     write(pytester, **{"pkg/__init__.py": "", "pkg/state.py": "L = []\n", "tests/conftest.py": "",
                        "tests/test_a.py": """
@@ -848,10 +849,12 @@ def test_per_file_is_the_default_under_the_cache_and_in_process_is_a_choice(pyte
             assert state.L == []
         """})
     p, c, _ = run(pytester, "default", "-rA", "tests")
-    assert outcome_of(p, "tests/test_b.py::test_b") == "passed", p.stdout  # file A's state does not reach file B
-    assert "forked children" in p.stdout or "--det-isolate" in p.stdout
+    assert outcome_of(p, "tests/test_b.py::test_b") == "failed", p.stdout  # one process: as plain pytest
+    assert "forked children" not in p.stdout, p.stdout
     p, c, _ = run(pytester, "inproc", "-rA", "tests", "--det-cache-in-process")
-    assert outcome_of(p, "tests/test_b.py::test_b") == "failed", p.stdout  # one process: it does
+    assert outcome_of(p, "tests/test_b.py::test_b") == "failed", p.stdout
+    p, c, _ = run(pytester, "iso", "-rA", "tests", "--det-isolate")
+    assert "forked children" in p.stdout, p.stdout  # the isolation the user asks for
 
 
 @pytest.mark.skipif(not sys.platform.startswith("linux"), reason="fork per file: Linux")
@@ -921,22 +924,22 @@ def test_carried_lines_of_test_files_children_stay_whole(pytester, n):
         files[f"tests/test_f{i}.py"] = "".join(f"def test_{j}():\n    assert {j} >= 0\n" for j in range(30))
     write(pytester, **files)
     args = ("-n", "2", "tests") if n == "n2" else ("tests",)
-    p, c, _ = run(pytester, "r1", *args, env={"DETPY_CACHE_IN_PROCESS": "0"})
+    p, c, _ = run(pytester, "r1", *args, env={"DETPY_ISOLATE": "file"})
     assert p.returncode == 0, p.stdout + p.stderr
     lines = (pytester.path / ".c" / "carried.jsonl").read_text().splitlines()
     rows = [json.loads(x) for x in lines if x.strip()]  # a cut line fails here
     assert sum(r["tests"] for r in rows) == 12 * 30, rows
 
 
-@pytest.mark.parametrize("mode", ["in-process", "default", "default-n2"])
+@pytest.mark.parametrize("mode", ["in-process", "file", "file-n2"])
 def test_import_time_code_of_another_test_module_is_an_input(pytester, mode):
     """Exam F-05.probe.import-side-effect (run 44851972153): test_a's module patches json.dumps at import (collection,
     before every test of the process); test_b was reused as passed after that line was added, while a plain run fails
     it. A body-only edit of test_a keeps test_b reused (definitions are not import-time effects)."""
-    if mode == "default-n2":
+    if mode == "file-n2":
         pytest.importorskip("xdist")
-    env = {"DETPY_CACHE_IN_PROCESS": "1" if mode == "in-process" else "0"}
-    args = ("-n", "2", "tests") if mode == "default-n2" else ("tests",)
+    env = None if mode == "in-process" else {"DETPY_ISOLATE": "file"}  # file: --det-isolate per file
+    args = ("-n", "2", "tests") if mode == "file-n2" else ("tests",)
     b = "tests/test_b.py::test_dump"
     write(pytester, **{"tests/conftest.py": "", "tests/test_a.py": "def test_nothing():\n    pass\n",
                        "tests/test_b.py": "import json\n\ndef test_dump():\n    assert json.dumps([1, 2]) == '[1, 2]'\n"})
@@ -1010,8 +1013,8 @@ def test_other_plugins_runtest_protocol_wrappers_run_in_the_childs(pytester, mod
         pytest.importorskip("xdist")
     write(pytester, **{"tests/test_p.py": "def test_a():\n    pass\n\ndef test_b():\n    assert 1\n",
                        "tests/conftest.py": RUNTEST_PROTOCOL_PLUGIN})
-    # the default per-file children (detpy's own suites run in-process: DETPY_CACHE_IN_PROCESS=1)
-    p, _, outcomes = run(pytester, "w" + "-".join(mode), "-rA", *mode, "tests", env={"DETPY_CACHE_IN_PROCESS": "0"})
+    # per-file children (--det-isolate per file)
+    p, _, outcomes = run(pytester, "w" + "-".join(mode), "-rA", *mode, "tests", env={"DETPY_ISOLATE": "file"})
     assert mode[:1] == ("-n",) or "in forked children" in p.stdout, p.stdout[-3000:]  # (the workers print it under -n)
     assert p.returncode == 0 and "KeyError" not in p.stdout, p.stdout[-3000:]
     assert set(outcomes.values()) == {"passed"} and len(outcomes) == 2, outcomes
@@ -1036,7 +1039,7 @@ def test_a_failure_only_the_per_file_isolation_causes_is_reported_not_the_result
     compare with is replayed in one process after the earlier tests; when it passes there the run reports the pass
     (the user's normal run) and a PLACEMENT FINDING naming the earlier-file dependency, never the isolated failure."""
     write(pytester, **{**EARLIER_FILE_STATE, "tests/conftest.py": "import sys, os\nsys.path.insert(0, os.path.dirname(__file__))\n"})
-    env = {"DETPY_CACHE_IN_PROCESS": "0"}
+    env = {"DETPY_ISOLATE": "file"}  # --det-isolate per file
     plain = subprocess.run([sys.executable, "-m", "pytest", "-q", "-p", "no:randomly", "-p", "no:cacheprovider", "tests"],
                            cwd=pytester.path, capture_output=True, text=True, timeout=300)
     assert plain.returncode == 0, plain.stdout[-2000:]
@@ -1052,7 +1055,7 @@ def test_a_failure_only_the_per_file_isolation_causes_is_reported_not_the_result
     alone, _, out2 = run(pytester, "alone", "-rA", "tests/test_b_client.py", env=env)
     assert set(out2.values()) == {"failed"} and "PLACEMENT FINDINGS" not in alone.stdout, alone.stdout[-3000:]
     # serial without the isolation (in-process) gives the pass with no finding
-    inproc, _, out3 = run(pytester, "inproc", "-rA", "tests", env={"DETPY_CACHE_IN_PROCESS": "1"})
+    inproc, _, out3 = run(pytester, "inproc", "-rA", "tests")
     assert set(out3.values()) == {"passed"} and "PLACEMENT FINDINGS" not in inproc.stdout, inproc.stdout[-3000:]
 
 
@@ -1093,3 +1096,51 @@ def test_g0412_cache_summary_is_written_when_a_project_reporter_swallows_it(pyte
     assert "cache with proof" not in p.stdout  # swallowed, as in the project
     text = (pytester.path / ".c" / "summary.txt").read_text()
     assert "detpy cache with proof" in text and "reused 2 result(s) with proof" in text, text
+
+
+# review R-050 (claude/review-p1-packages c5f9c39, tests/test_review_r050_pycache.py): P2 the mirror of the moto case,
+# a pass that only the per-file child gives; P1 a failure in every placement stays failed
+R050_CONF = "import sys, os\nsys.path.insert(0, os.path.dirname(__file__))\n"
+
+
+def _r050(root, files, *args):
+    for rel, text in {"tests/conftest.py": R050_CONF, **files}.items():
+        f = root / rel
+        f.parent.mkdir(parents=True, exist_ok=True)
+        f.write_text(text)
+    env = {k: v for k, v in os.environ.items() if k not in ("PYTEST_ADDOPTS", "DETPY_CACHE_IN_PROCESS")}
+    p = subprocess.run([sys.executable, "-m", "pytest", "-q", "-rA", "-p", "no:cacheprovider", "-p", "no:randomly",
+                        *args, "tests"], cwd=root, capture_output=True, text=True, env=env, timeout=600)
+    out = {}
+    for line in p.stdout.splitlines():
+        if line.startswith(("PASSED ", "FAILED ", "ERROR ")):
+            out[line.split()[1]] = line.split()[0].lower()
+    return p, out
+
+
+def test_r050_p2_a_failure_an_earlier_file_causes_in_the_normal_run_is_not_reported_passed(tmp_path):
+    files = {"tests/helper.py": "STATE = {'mode': 'good'}\n",
+             "tests/test_a_setup.py": "from helper import STATE\n\ndef test_pollutes():\n    STATE['mode'] = 'bad'\n",
+             "tests/test_b_client.py": "from helper import STATE\n\ndef test_victim():\n    assert STATE['mode'] == 'good'\n"}
+    victim = "tests/test_b_client.py::test_victim"
+    plain, po = _r050(tmp_path, files)
+    assert plain.returncode == 1 and po.get(victim) == "failed", plain.stdout[-1500:]  # the user's normal run
+    det, do = _r050(tmp_path, files, "--det")
+    assert det.returncode == 1 and do.get(victim) == "failed", det.stdout[-1500:]
+    for label in ("cold", "warm"):
+        p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")
+        assert p.returncode == 1 and o.get(victim) == "failed", (label, p.stdout[-2000:])
+    # the polluter fixed: the victim's input changed (its carried set), it reruns and passes
+    files["tests/test_a_setup.py"] = "from helper import STATE\n\ndef test_pollutes():\n    STATE['other'] = 'bad'\n"
+    p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")
+    assert p.returncode == 0 and o.get(victim) == "passed", p.stdout[-2000:]
+
+
+def test_r050_p1_a_real_failure_stays_failed(tmp_path):
+    files = {"tests/helper.py": "STATE = {}\n",
+             "tests/test_a_setup.py": "from helper import STATE\n\ndef test_sets():\n    STATE['creds'] = 'x'\n",
+             "tests/test_b_client.py": "from helper import STATE\n\ndef test_use():\n    assert STATE.get('creds') == 'y'\n"}
+    for _ in (1, 2):
+        p, o = _r050(tmp_path, files, "--det", f"--det-cache={tmp_path / '.c'}")
+        assert p.returncode == 1 and o.get("tests/test_b_client.py::test_use") == "failed", p.stdout[-2000:]
+        assert "PLACEMENT FINDINGS" not in p.stdout, p.stdout[-2000:]
