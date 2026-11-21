@@ -50,6 +50,7 @@ VOLATILE_KEPT = (
     "ACTIONS_ORCHESTRATION_ID", "TMPDIR", "TEMP", "TMP", "PWD", "OLDPWD", "_", "SHLVL", "INVOCATION_ID",
     "JOURNAL_STREAM", "SSH_AUTH_SOCK", "SSH_CLIENT", "SSH_CONNECTION", "SSH_TTY", "TERM_SESSION_ID",
     "WINDOWID", "XDG_SESSION_ID", "XDG_RUNTIME_DIR", "SYSTEMD_EXEC_PID", "FENVIX_VOLATILE_ENV",
+    "SUDO_USER", "SUDO_UID", "SUDO_GID", "SUDO_COMMAND", "SUDO_HOME",  # session of a sudo wrapper
 )
 PINNED_CPU_COUNT = 2  # os.cpu_count & co. under --det: CI runners differ in CPUs (the engine keeps the real one)
 PINNED_HOSTNAME = "localhost"  # socket.gethostname / platform.node / os.uname().nodename under --det (resolvable)
@@ -406,7 +407,7 @@ def _digest_text(t: str) -> str:
     return _core.digest(t.encode("utf-8", "surrogateescape"))[:16]
 
 
-def env_inputs() -> dict:
+def env_inputs(skip=()) -> dict:
     """One run input per environment variable (``env:NAME``: a digest of NAME=value, so secrets never reach the
     trace), engine-internal and CI-volatile variables excepted (``VOLATILE_PINNED``, ``VOLATILE_KEPT``,
     ``FENVIX_VOLATILE_ENV``). The verifier reports a test that read one whose value differs as ``input-differs``."""
@@ -419,7 +420,7 @@ def env_inputs() -> dict:
     items = list(e.items()) if data is None else [(e.decodekey(k), e.decodevalue(v)) for k, v in dict.items(data)]
     patterns = volatile_env_patterns()
     for k, v in items:
-        if k.startswith(ENGINE_ENV_PREFIXES) or is_volatile_env(k, patterns):  # engine's own, or CI-volatile
+        if k.startswith(ENGINE_ENV_PREFIXES) or is_volatile_env(k, patterns) or k in skip:  # engine's, CI-volatile
             continue
         # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
         # is JSON, and its digest still covers the exact bytes
@@ -474,7 +475,10 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
         "order": "fixed" if "order" in c else "runner order (order control off)",
         "os": osstate.input_text() if "os" in c else "real (os control off)",
     }
-    inputs.update(env_inputs())
+    # the closed network replaces the proxy variables (children get the discard port, network._child_env): while it is
+    # closed they are its part, not inputs; while recording (the real network) they are inputs
+    closed = "net" in c and not cfg.record_net
+    inputs.update(env_inputs(skip=network.PROXY_ENV if closed else ()))
     return inputs
 
 

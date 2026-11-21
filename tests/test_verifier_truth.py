@@ -202,10 +202,11 @@ def test_env_difference_no_test_read_is_identical_and_listed(project):
     assert "not compared: environment variables that differ but no test read: TRUTH_OTHER" in text
 
 
-@pytest.mark.parametrize("var", ["GITHUB_RUN_ID", "RUNNER_TEMP", "EXAM_OUT"])
+@pytest.mark.parametrize("var", ["GITHUB_RUN_ID", "RUNNER_TEMP", "EXAM_OUT", "SUDO_USER", "HTTPS_PROXY"])
 def test_ci_volatile_variables_are_pinned_or_never_inputs(project, var):
     """Design A: run and attempt ids, runner and host names are pinned under --det; temp and workspace paths keep
-    their values but are never inputs; FENVIX_VOLATILE_ENV adds a project's own (here a per-run output path)."""
+    their values but are never inputs; FENVIX_VOLATILE_ENV adds a project's own (here a per-run output path); a sudo
+    wrapper's session variables are never inputs; while the network is closed the proxy variables are its part."""
     extra = {"FENVIX_VOLATILE_ENV": "EXAM_*"} if var == "EXAM_OUT" else {}
     ta = run_det(project, "a", env=_env(**{var: "/run/1", **extra}))
     tb = run_det(project, "b", env=_env(**{var: "/run/2", **extra}))
