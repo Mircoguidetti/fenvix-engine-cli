@@ -486,7 +486,7 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
         "network": (f"{net_mode} allow={','.join(sorted(cfg.allow_hosts))} cassette={cas}" if "net" in c
                     else "open (net control off)"),
         "fs": "sorted" if "fs" in c else "real (fs control off)",
-        "urandom": "controlled" if cfg.control_urandom else "observed",
+        "entropy": "controlled" if cfg.control_urandom else "observed",
         "bytecode": ("precompiled" if reexec.bytecode_active(hashseed_value()) else "default") + _rewrite_input(),
         "aslr": {True: "off", False: "on", None: "unknown"}[reexec.aslr_disabled()],
         "order": "fixed" if "order" in c else "runner order (order control off)",

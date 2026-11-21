@@ -28,7 +28,7 @@ test('the header records the run inputs; same inputs are identical', T, () => {
   const a = runTo(dir, 'a', { TZ: 'UTC' });
   const b = runTo(dir, 'b', { TZ: 'UTC' });
   const hdr = JSON.parse(fs.readFileSync(a, 'utf8').split('\n')[0]).meta;
-  for (const k of ['runtime', 'runner', 'seed', 'clock', 'tz', 'locale', 'network', 'urandom']) assert.ok(k in hdr.inputs, k);
+  for (const k of ['runtime', 'runner', 'seed', 'clock', 'tz', 'locale', 'network', 'entropy']) assert.ok(k in hdr.inputs, k);
   assert.ok(Object.keys(hdr.inputs).some((k) => k.startsWith('env:')));
   const rep = JSON.parse(native.verify([a, b]));
   assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.input_differences));

@@ -149,7 +149,8 @@ impl Reason {
             "clock" => Reason::Time,
             "network" => Reason::Net,
             "fs" => Reason::Fs,
-            "urandom" => Reason::Entropy,
+            // the entropy control ("urandom" in traces written before it was named after the control)
+            "entropy" | "urandom" => Reason::Entropy,
             "order" => Reason::Order,
             "runtime" | "runner" => Reason::Runtime,
             "env" => Reason::Env,
@@ -293,9 +294,9 @@ pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
 /// The order in which differing inputs are named: what decides the most first (the interpreter and the runner,
 /// the hash seed, the seed, the clock, the time zone, the locale, the environment, then the other controls).
 fn input_rank(name: &str) -> (usize, &str) {
-    const ORDER: [&str; 13] = [
+    const ORDER: [&str; 14] = [
         "runtime", "runner", "seed", "shuffle", "hashseed", "clock", "tz", "locale", "env", "network", "fs",
-        "urandom", "bytecode",
+        "entropy", "urandom", "bytecode",
     ];
     let base = name.split(':').next().unwrap_or(name);
     (ORDER.iter().position(|o| *o == base).unwrap_or(ORDER.len()), name)
@@ -1213,7 +1214,7 @@ mod tests {
     #[test]
     fn every_recorded_input_is_compared_and_named() {
         // environment variables: design A (input-differs for the tests that read them), see env_* tests below
-        let cases: [(&str, &str, Reason); 9] = [
+        let cases: [(&str, &str, Reason); 10] = [
             ("runtime", "CPython 3.12.0 linux x86_64", Reason::Runtime),
             ("hashseed", "7", Reason::Hashseed),
             ("seed", "3", Reason::Seed),
@@ -1222,7 +1223,8 @@ mod tests {
             ("locale", "de_DE.UTF-8 (pinned)", Reason::Locale),
             ("network", "record", Reason::Net),
             ("fs", "real", Reason::Fs),
-            ("urandom", "controlled", Reason::Entropy),
+            ("entropy", "controlled", Reason::Entropy),
+            ("urandom", "controlled", Reason::Entropy), // traces written before the input was renamed
         ];
         for (name, value, reason) in cases {
             let a = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 10)]), &BASE);

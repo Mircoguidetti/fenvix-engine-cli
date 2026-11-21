@@ -118,7 +118,7 @@ def test_same_inputs_are_identical(project):
     # the header carries the shared vocabulary's fields and every input (G-2218)
     hdr = json.loads(a.read_text().splitlines()[0])["meta"]
     assert hdr["runtime"] == "CPython" and hdr["runtime_version"]
-    for k in ("runtime", "runner", "hashseed", "seed", "clock", "tz", "locale", "env", "network", "fs", "urandom",
+    for k in ("runtime", "runner", "hashseed", "seed", "clock", "tz", "locale", "env", "network", "fs", "entropy",
               "bytecode", "order"):
         assert k in hdr["inputs"], k
     assert any(k.startswith("env:") for k in hdr["inputs"])

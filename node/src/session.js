@@ -281,7 +281,7 @@ function runInputs(run, meta) {
     tz: `${tz} offset=${offset} TZ=${process.env.TZ === undefined ? '<unset>' : process.env.TZ} (not pinned)`,
     locale: `${loc} ${lc} (not pinned)`,
     network: has('net') ? String(run.netMode) : 'open (net control off)',
-    urandom: cfg.urandom ? 'controlled' : 'observed',
+    entropy: cfg.urandom ? 'controlled' : 'observed',
   };
   // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; a
   // differing one is reported `input-differs` for the tests that read it (their `env.get` events, src/controls.js)
