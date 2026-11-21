@@ -23,9 +23,11 @@ times included): the helper list is in the configuration digest instead, and eve
 
 ## Not cached / limits
 
-* cross-file state: a spec that depends on another file's globals passes in one process and fails in a process of
-  its own: under `--det-cache` it is reported as a failure, never reused (test
-  `--det-cache runs each spec file in its own process`);
+* process model (audit G-0147): `--det` and `--det-cache` keep Jasmine's one process for every spec file, so a spec
+  that depends on another file's globals passes as it does plain. With the cache the process is the unit
+  (`<jasmine>`, entries `<file>@@process::<spec>`): every spec file reused, or every one run; a change of a file
+  reruns the files that ran with its state. `--det-isolate`: one fresh process per spec file, the file is the unit,
+  and such a spec fails there (test "G-0147" in runner-b-specific.js);
 * an `fdescribe` / `fit` makes Jasmine's overall status `incomplete`: such a file is never recorded as a pass.
 
 Tests: `node/test/runner-jasmine.test.js`.

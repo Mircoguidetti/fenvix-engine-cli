@@ -1,0 +1,5 @@
+{"repo": "h3", "test": "test/happydom.test.ts::happydom::render works", "exit": 0, "wall_s": 18.1, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}
+{"repo": "h3", "test": "test/session.test.ts::session::node::gets same session back (node)", "exit": 0, "wall_s": 17.6, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}
+{"repo": "h3", "test": "test/session.test.ts::session::node::set session data (node)", "exit": 0, "wall_s": 19.4, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}
+{"repo": "h3", "test": "test/session.test.ts::session::web::gets same session back (web)", "exit": 0, "wall_s": 23.8, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}
+{"repo": "h3", "test": "test/session.test.ts::session::web::set session data (web)", "exit": 0, "wall_s": 24.5, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}

@@ -119,14 +119,23 @@ for (const runner of RUNNERS) {
       noWrongReuse(runner, dir, F('asize'), { 'data/blob.bin': 'abcd' });
     });
 
-    // review r021b G1b: times and the other volatile fields are keyed by their exact value (they were not cacheable)
-    test('stat() mtime read by the test: keyed by its value, a touch reruns', T, () => {
+    // review r021b G1b, then Level 0's file times (src/fstime.js, G-0143): a file time the test did not set is read on
+    // the virtual clock as its age at the test start, a value that depends on when the run happens: never reused,
+    // so a touch can never be missed (the order of two files' times is kept by the mapping)
+    test('stat() mtime read by the test: a real-clock read, never reused; a touch changes the fresh result', T, () => {
       const dir = fixture(runner, 'stat-mtime', {
-        'data/a.txt': 'a',
-        ...tfile(runner, 'mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs).toBe(5000000); });"),
+        'data/a.txt': 'a', 'data/b.txt': 'b',
+        ...tfile(runner, 'mtime', "test('mtime', () => { expect(fs.statSync('data/a.txt').mtimeMs < fs.statSync('data/b.txt').mtimeMs).toBe(true); });"),
       });
       fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 5000);
-      noWrongReuse(runner, dir, F('mtime'), () => fs.utimesSync(path.join(dir, 'data', 'a.txt'), 5000, 6000));
+      fs.utimesSync(path.join(dir, 'data', 'b.txt'), 6000, 6000);
+      notCached(runner, dir, F('mtime'), 'reads a clock Level 0 does not virtualize');
+      fs.utimesSync(path.join(dir, 'data', 'a.txt'), 7000, 7000);
+      const fresh = crun(runner, dir, { cache: false });
+      assert.notEqual(fresh.status, 0, `the touch makes a fresh run fail\n${show(fresh)}`);
+      const r3 = crun(runner, dir);
+      assert.ok(!reused(r3).includes(F('mtime')), show(r3));
+      assert.equal(r3.status, fresh.status);
     });
 
     test('readdir recursive with file types: an entry type changes deep below', T, () => {

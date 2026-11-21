@@ -614,7 +614,9 @@ class Capture {
       if (!s) this.written.set(abs, (s = new Set()));
       s.add(global ? '' : this.label);
       if (global && process.env.DETJS_CACHE_DEBUG) process.stderr.write(`detjs cache debug: start-up write ${abs}\n${new Error().stack}\n`);
-      this.add(['write', this.key(abs)], global);
+      // a write of the main process after the reuse decision (the tests are running, a teardown) is marked: only
+      // what the start-up wrote before the decision can be keyed by content (src/cache/proof.js, G-1401)
+      this.add(global && this.phase === 'run' ? ['write', this.key(abs), 'run'] : ['write', this.key(abs)], global);
       for (const k of ['f', 'd', 's', 'l', 'm', 'e']) this.memo.delete(k + abs);
       this.memo.delete(`d${path.dirname(abs)}`);
       this.memo.delete(`e${path.dirname(abs)}`);
@@ -865,8 +867,17 @@ class Capture {
   }
 
   // -- code ----------------------------------------------------------------------------------------------------
-  module(file) {
+  module(file, dlopened = false) {
     if (!file || typeof file !== 'string') return;
+    // a native addon in the test's own module registry (Vitest's graph, Jest's registries): native code reads files,
+    // the environment and the clock where no wrapper sees it, so the tests of its process are never reused (row
+    // JS-09). An addon reached through Node's loader is attributed at process.dlopen, by its caller (runners and
+    // tools load their own bindings); its bytes stay keyed either way.
+    if (!dlopened && /\.node(?:$|[?#])/i.test(file) && !this.isGlobal) {
+      let f = file.split(/[?#]/)[0];
+      if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { /* keep */ } }
+      if (!TOOL_BINDING.test(f)) this.add(['flag', 'native', `native addon ${this.inRoot(f) ? this.rel(f) : f}`], false);
+    }
     // the same key again (every test end rescans the module registries): nothing to do
     if (this.modsRaw.has(file)) return;
     this.modsRaw.add(file);
@@ -878,6 +889,9 @@ class Capture {
     if (!path.isAbsolute(f) || f.includes('\0')) return;
     if (this.modsSeen.has(f)) return;
     this.modsSeen.add(f);
+    // a native addon loaded for the code under test (not one of the runner's or its tools' own bindings): native
+    // code reads files, the environment and the clock where no wrapper sees it, so the tests of its process are
+    // never reused (row JS-09; its bytes stay keyed for the processes that load it only as infrastructure)
     const w = this.where(f);
     if (w === 'skip' || w === 'proc') return;
     this.busy++;
@@ -972,9 +986,9 @@ class Capture {
     if (map) for (const m of map.values()) this.module(m.file || m.id);
     if (mc && typeof mc.keys === 'function') for (const k of mc.keys()) this.module(k);
     try {
-      for (const k in require.cache) this.module(k);
+      for (const k in require.cache) this.module(k, true); // Node's own loader: a native addon is attributed at dlopen
     } catch { /* no cache */ }
-    for (const f of this.nativeLoads) this.module(f);
+    for (const f of this.nativeLoads) this.module(f, true);
     if (extra) for (const f of extra) this.module(f);
     this.lastScan = sig;
   }
@@ -1086,7 +1100,10 @@ function statsPlain(o) {
   const out = Object.create(realGetProto(o));
   for (const k of Reflect.ownKeys(o)) {
     const d = realGOPD(o, k);
-    realDefine(out, k, d.get !== undefined && STATS_GETTERS.has(d.get) && e ? statsDataDesc(o, k, d) : d);
+    if (d.get !== undefined && STATS_GETTERS.has(d.get) && e) realDefine(out, k, statsDataDesc(o, k, d));
+    // another accessor (Level 0's file-time mapping, src/fstime.js): its value, as on a plain Stats object
+    else if (d.get !== undefined) realDefine(out, k, { value: d.get.call(o), writable: true, enumerable: d.enumerable, configurable: true });
+    else realDefine(out, k, d);
   }
   return out;
 }
@@ -1127,10 +1144,12 @@ function installStatsProto() {
     realDefine(StatsBaseProto, n, { ...realGOPD(StatsBaseProto, n), value: w });
   }
   const custom = Symbol.for('nodejs.util.inspect.custom');
+  // an inspection installed before (Level 0's file-time mapping, src/fstime.js) still handles the objects it maps
+  const prevInspect = realGOPD(StatsBaseProto, custom);
   realDefine(StatsBaseProto, custom, {
-    value: function inspectStats() {
+    value: function inspectStats(...args) {
       const e = STATS_REC.get(this);
-      if (e === undefined) return this; // the same object: Node formats it as usual
+      if (e === undefined) return prevInspect && typeof prevInspect.value === 'function' ? prevInspect.value.apply(this, args) : this;
       if (e.cap.active && !e.cap.busy) { try { e.cap.statWhole(e); } catch { /* ignore */ } }
       return statsPlain(this);
     },
@@ -1528,32 +1547,45 @@ const ENV_PROXIES = new WeakMap();
  * `v8.serialize` and `postMessage` retry with the real environment in its place (which reads all of it), so they
  * succeed or fail as without the cache; `util.types.isProxy` answers for the real environment object.
  */
+const ENV_CAPS = new WeakMap(); // recording environment object -> the capture it reports to
 function installEnv(cap, proc) {
   const env = proc.env;
-  if (env && ENV_PROXIES.has(env)) return;
-  const real = env;
+  let real = env;
+  if (env && ENV_PROXIES.has(env)) {
+    // Level 0's own object (--det without the cache, installed first) is replaced by the capture's: both report
+    // through the capture's (STATE.onEnvRead); never the other way round
+    if (ENV_CAPS.get(env) !== LEVEL0_CAP || cap === LEVEL0_CAP) return;
+    real = ENV_PROXIES.get(env);
+  }
   const custom = Symbol.for('nodejs.util.inspect.custom');
   const stand = Object.create(realGetProto(real));
   realDefine(stand, custom, {
-    value: function inspectEnv() { cap.env('*'); return real; },
+    value: function inspectEnv() { cap.env('*'); return STATE.envView ? STATE.envView.view(real) : real; },
     writable: true, enumerable: false, configurable: true,
   });
+  // STATE.onEnvRead: Level 0's record of environment reads (src/controls.js, audit G-0126); STATE.envView: detjs' own
+  // variables are absent for test code (src/envview.js, audit G-2162)
   const handler = {
     get(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.get(real, k);
     },
     has(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (STATE.envView && STATE.envView.hidden(k)) return false;
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.has', k, real); }
       return Reflect.has(real, k);
     },
     getOwnPropertyDescriptor(_t, k) {
-      if (typeof k === 'string') cap.env(k);
+      if (STATE.envView && STATE.envView.hidden(k)) return undefined;
+      if (typeof k === 'string') { cap.env(k); if (STATE.onEnvRead) STATE.onEnvRead('env.get', k, real); }
       return Reflect.getOwnPropertyDescriptor(real, k);
     },
     ownKeys() {
       cap.env('*');
-      return Reflect.ownKeys(real);
+      if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', real);
+      const keys = Reflect.ownKeys(real);
+      return STATE.envView ? STATE.envView.visibleKeys(keys) : keys;
     },
     set(_t, k, v) { real[k] = v; return true; },
     deleteProperty(_t, k) { delete real[k]; return true; },
@@ -1564,9 +1596,38 @@ function installEnv(cap, proc) {
   try {
     const p = new Proxy(stand, handler);
     ENV_PROXIES.set(p, real);
+    ENV_CAPS.set(p, cap);
     proc.env = p;
     if (proc.env !== p) realDefine(proc, 'env', { value: p, writable: true, configurable: true, enumerable: true });
   } catch { cap.notes.add('process.env not replaceable: environment reads not captured'); }
+}
+
+/**
+ * Level 0 without the cache (`--det`): the same recording environment object, its reads reported to STATE.onEnvRead
+ * only. With the cache on, the capture's own object is already in place and reports them as well.
+ */
+const LEVEL0_CAP = { env() {}, notes: new Set() };
+let level0CloneRetry = false;
+function installLevel0Env(proc) {
+  if (!proc || !proc.env) return;
+  installEnv(LEVEL0_CAP, proc);
+  if (level0CloneRetry) return;
+  level0CloneRetry = true;
+  installCloneRetry(LEVEL0_CAP);
+  const g = globalThis;
+  if (typeof g.structuredClone === 'function' && !g.structuredClone.__detjsCache) {
+    const real = g.structuredClone;
+    const sc = function structuredClone(v, ...rest) {
+      try { return real.call(this, v, ...rest); } catch (err) {
+        const u = unproxyEnv(LEVEL0_CAP, v);
+        if (u === v) throw err;
+        return real.call(this, u, ...rest);
+      }
+    };
+    realDefine(sc, '__detjsCache', { value: true });
+    realDefine(sc, 'length', { value: real.length, configurable: true });
+    try { realDefine(g, 'structuredClone', { ...realGOPD(g, 'structuredClone'), value: sc }); } catch { /* keep */ }
+  }
 }
 
 /** `v` with every recording environment Proxy in it replaced by the environment it stands for (null if none). */
@@ -1576,7 +1637,7 @@ function unproxyEnv(cap, v) {
   const walk = (x, depth) => {
     if (x === null || typeof x !== 'object' || depth > 1000) return x;
     const realEnv = ENV_PROXIES.get(x);
-    if (realEnv !== undefined) { found = true; cap.env('*'); return realEnv; }
+    if (realEnv !== undefined) { found = true; (ENV_CAPS.get(x) || cap).env('*'); if (STATE.onEnvRead) STATE.onEnvRead('env.list', '*', realEnv); return realEnv; }
     if (memo.has(x)) return memo.get(x);
     if (Array.isArray(x)) {
       const out = new Array(x.length);
@@ -1780,15 +1841,21 @@ function installNet(cap) {
  * clock). A test that reads them is not cached.
  */
 function installRealClock(cap) {
+  // returns false when the read was the runner's (not flagged): a caller that dedups reads asks again on the next one
   const real = (what) => {
-    if (!cap.active || cap.busy || cap.isGlobal) return;
+    if (!cap.active || cap.busy || cap.isGlobal) return true;
+    // a clock Level 0 virtualizes in this process (src/clock.js): a clock read keyed by the epoch, not a real one
+    if (STATE.virtualClocks && STATE.virtualClocks.some((v) => String(what).startsWith(v))) return true;
     cap.busy++;
     let infra;
     try { infra = cap.directCaller() === 'infra'; } finally { cap.busy--; }
     if (!infra) cap.flag('clock-real', what);
+    return !infra;
   };
   for (const k of ['uptime', 'cpuUsage', 'resourceUsage']) wrapFn(cap, process, k, () => real(`process.${k}()`));
   STATE.onRealClock = real;
+  // a Level 0 control that could not be installed in a realm (src/controls.js): its source is real and unrecorded
+  STATE.onLevel0Gap = (what) => { if (cap.active && !cap.isGlobal) cap.flag('level0-gap', what); };
   // Temporal.Now (Deno; any runtime that has it): the real clock, which Level 0 does not virtualize (review R-032b
   // F5). timeZoneId() reads the time zone, which is part of the runtime identity, not the clock
   const TN = globalThis.Temporal && globalThis.Temporal.Now;
@@ -1848,11 +1915,69 @@ function installBinding(cap) {
   });
 }
 
+// Native bindings of the runners and their tools (resolvers, bundlers, transformers, watchers): loaded for the runner,
+// not for the code under test. Every other addon loaded in a test process counts as the test's (row JS-09: such a
+// test is never reused); a binding missing here costs reuse, never correctness.
+const TOOL_BINDING = new RegExp(`${INFRA.source}|[\\\\/]node_modules[\\\\/](?:\\.pnpm[\\\\/][^\\\\/]+[\\\\/]node_modules[\\\\/])?(?:@unrs|unrs-resolver|@rollup|rollup|@rolldown|rolldown|@oxc-[a-z-]+|oxc-[a-z-]+|@oxc-parser|lightningcss[a-z-]*|@parcel[\\\\/]watcher|fsevents|@esbuild|esbuild|@swc[a-z-]*|@napi-rs)[\\\\/@]`);
+
+/**
+ * A native binding a runner or tool loads for itself (a transpiler's hash binding, a resolver): the first stack frame
+ * outside the binding's own package belongs to the runner's or a tool's code. A binding reached from any other code
+ * (the test, a library it uses, a loader helper such as node-gyp-build or bindings) is the test's.
+ */
+function loadedByTool(cap, f) {
+  const m = /^(.*[\\/]node_modules[\\/](?:@[^\\/]+[\\/])?[^\\/]+)[\\/]/.exec(f);
+  const own = m ? m[1] + path.sep : null; // an addon of the project itself: its loader is the test's code
+  if (own === null) return false;
+  cap.busy++;
+  try {
+    for (const cs of cap.stackFiles(40, loadedByTool)) {
+      const raw = cs.getFileName && cs.getFileName();
+      if (!raw || raw.startsWith('node:') || raw.startsWith(own) || LOADS_FOR_TEST.test(raw)) continue;
+      const c = cap.frameClass(raw) & 7;
+      if (c === F_USER) return false;
+      if (c === F_INFRA || c === F_DRIVER) return true;
+      // the binding's loader and other libraries in between (index.js of a platform package, node-gyp-build,
+      // bindings): keep looking for the code that wanted it
+    }
+  } finally { cap.busy--; }
+  return false; // no runner or tool frame: the test's (an ES module import chain has no caller frame)
+}
+// a runner's module system loading a module on behalf of the test (Jest's runtime requires `.node` files with the
+// host's require; Vitest's module runner imports externalized dependencies): transparent for the attribution of a
+// native addon
+const LOADS_FOR_TEST = /[\\/]node_modules[\\/](?:\.pnpm[\\/][^\\/]+[\\/]node_modules[\\/])?(?:jest-runtime|vitest|@vitest[\\/]runner|vite-node|vite)[\\/]/;
+
 function installDlopen(cap) {
   wrapFn(cap, process, 'dlopen', (a) => {
     const f = a[1];
-    if (typeof f === 'string') cap.nativeLoads.add(f);
+    if (typeof f !== 'string') return;
+    cap.nativeLoads.add(f);
+    if (!cap.active || cap.busy || cap.isGlobal) return;
+    if (!TOOL_BINDING.test(f) && !loadedByTool(cap, f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
   });
+  // process.dlopen runs once per process (or thread) and addon: a later file of the same process that loads it again
+  // gets Node's require cache (Jest in band requires `.node` files with the host's require). Every load request of a
+  // `.node` file counts, cached or not.
+  const M = require('node:module');
+  // (not wrapFn: its marker would make the loader hooks below skip their own `_load` wrapper, which wraps
+  // node:sqlite; the two compose)
+  const realLoad = M._load;
+  if (typeof realLoad === 'function' && !realLoad.__detjsNative) {
+    const w = function _load(...a) {
+      const req = a[0];
+      if (typeof req === 'string' && /\.node$/i.test(req) && cap.active && !cap.busy && !cap.isGlobal) {
+        try {
+          const parent = a[1];
+          const f = path.isAbsolute(req) ? req : (parent && parent.filename ? path.resolve(path.dirname(parent.filename), req) : req);
+          if (!TOOL_BINDING.test(f) && !loadedByTool(cap, f)) cap.flag('native', `native addon ${f.startsWith(cap.root || '\0') ? path.relative(cap.root, f) : f}`);
+        } catch { /* never break the load */ }
+      }
+      return realLoad.apply(this, a);
+    };
+    Object.defineProperty(w, '__detjsNative', { value: true });
+    M._load = w;
+  }
 }
 
 /**
@@ -2061,9 +2186,31 @@ function installNativeEntropy(cap) {
 // the recorded inputs). The wrappers are removed when the preload phase ends.
 const PRELOAD_SAVED = [];
 
+/** Whether the first frame outside Node and detjs belongs to the runner (vitest, jest, ...: sites.INFRA). */
+function runnerFirst(fn) {
+  const E = Error;
+  const pp = E.prepareStackTrace;
+  const lim = E.stackTraceLimit;
+  const h = {};
+  E.prepareStackTrace = structured;
+  E.stackTraceLimit = 30;
+  try { E.captureStackTrace(h, fn); /* eslint-disable-next-line no-unused-expressions */ h.stack; } finally { E.prepareStackTrace = pp; E.stackTraceLimit = lim; }
+  const { INFRA: RUNNER } = require('../sites');
+  for (const cs of Array.isArray(h.stack) ? h.stack : []) {
+    let f = (cs.getFileName && cs.getFileName()) || '';
+    if (f.startsWith('file://')) { try { f = url.fileURLToPath(f); } catch { /* keep */ } }
+    if (!f || f.startsWith('node:') || f.startsWith('internal/') || f.startsWith(SHELL_DIR) || !f.includes('/')) continue;
+    return RUNNER.test(f);
+  }
+  return false;
+}
+
 function installPreloadClock(cap) {
   const hit = (what) => {
     if (!cap.preload || !cap.active || cap.busy) return;
+    // the runner's own start-up (Vitest's worker, its traces and environment set-up, reached through detjs' deadline
+    // clock) reads the clock while the preload stage lasts: only a read by other code is a preload module's
+    if (runnerFirst(hit)) return;
     cap.add(['flag', 'preload', `${what} read by a preload module before Level 0`], cap.isGlobal);
   };
   const put = (obj, name, what) => {
@@ -2116,6 +2263,9 @@ function offThreadLoader() {
 // (`module.register`, `--loader`), so they are removed when such hooks are registered (the tests are then not
 // cacheable: flag `loader`)
 const SYNC_HOOKS = [];
+// off-thread hooks were registered in this thread (module.register): in-thread hooks registered after them make
+// Node fail every resolution (ERR_METHOD_NOT_IMPLEMENTED), so none is registered any more
+const OFF_THREAD = { registered: false };
 
 function dropSyncHooks() {
   CAPTURE.loadHooked = false; // module loads are no longer seen: scan the registries every time
@@ -2136,6 +2286,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
         if (user) cap.add(['flag', 'loader', `module.register(${String(spec).slice(0, 200)})`], cap.isGlobal);
       }
       dropSyncHooks();
+      OFF_THREAD.registered = true;
       return realRegister.call(this, spec, ...rest);
     };
     realDefine(reg, '__detjsCache', { value: true });
@@ -2152,7 +2303,7 @@ function installLoaderHooks(cap, resolveOnly = false) {
     cap.notes.add('module.registerHooks unavailable (Node < 22.15): ES modules loaded natively are not listed');
     return;
   }
-  if (offThreadLoader()) return;
+  if (offThreadLoader() || OFF_THREAD.registered) return;
   try {
     const hooks = {
       resolve(spec, context, next) {
@@ -2191,4 +2342,4 @@ function installLoaderHooks(cap, resolveOnly = false) {
 const KEY = Symbol.for('detjs.cache.capture');
 const CAPTURE = globalThis[KEY] || (globalThis[KEY] = new Capture());
 
-module.exports = { CAPTURE, Capture, machineFacts, installEnv, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };
+module.exports = { CAPTURE, Capture, machineFacts, installEnv, installLevel0Env, installReflection, flagsOf, toPath, INFRA, SYNC_HOOKS, offThreadLoader, dropSyncHooks };

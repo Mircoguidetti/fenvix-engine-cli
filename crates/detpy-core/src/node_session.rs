@@ -43,11 +43,23 @@ pub const UNCACHEABLE: &[(&str, &str)] = &[
     ("keygen", "OS randomness drawn in native crypto (key generation, randomized encryption or signatures)"),
     ("preload", "a preload module read the clock or OS entropy before Level 0 was installed"),
     ("loader", "an off-thread module loader (--loader, module.register): what it reads is not observable"),
+    // row JS-09: native code reads files, the environment and the clock where no wrapper sees it
+    ("native", "loads a native addon (its reads are not observable)"),
+    // audit G-0181: a control that could not be installed leaves its source real and unrecorded
+    ("level0-gap", "a Level 0 control could not be installed"),
+    // parallel runs (detjs --det-workers): placement-dependent results
+    ("placement", "reads the worker or pool id the runner gives its process (depends on placement)"),
+    ("carried", "ran after a test file that left process-wide state changed in the same process"),
+    ("cross-worker", "touched a path or port another test file running in parallel also touched"),
 ];
+
+/// A flag a shell reports that this table does not know: never ignored (a source the engine cannot attribute
+/// refuses reuse).
+const UNKNOWN_FLAG: &str = "an input the engine cannot key";
 
 /// The description of an uncacheable flag (None: the flag does not refuse caching).
 pub fn uncacheable_flag(flag: &str) -> Option<&'static str> {
-    UNCACHEABLE.iter().find(|(f, _)| *f == flag).map(|(_, d)| *d)
+    Some(UNCACHEABLE.iter().find(|(f, _)| *f == flag).map(|(_, d)| *d).unwrap_or(UNKNOWN_FLAG))
 }
 
 /// The outcome rule and the flag rule: why a result with `outcome` and these flags (in their order of first
@@ -585,8 +597,11 @@ mod tests {
     fn outcome_and_flag_rules() {
         assert_eq!(uncacheable(&[], "failed").as_deref(), Some("outcome failed"));
         assert_eq!(uncacheable(&[], "todo"), None);
-        let f = vec![("note".to_string(), "x".to_string()), ("spawn".to_string(), "ls".to_string()), ("connect".into(), "h".into())];
+        let f = vec![("spawn".to_string(), "ls".to_string()), ("connect".into(), "h".into())];
         assert_eq!(uncacheable(&f, "passed").as_deref(), Some("subprocess: ls"));
+        // a flag the table does not know refuses reuse (P-041): it is never ignored
+        let u = vec![("note".to_string(), "x".to_string()), ("spawn".to_string(), "ls".to_string())];
+        assert_eq!(uncacheable(&u, "passed").as_deref(), Some("an input the engine cannot key: x"));
     }
 
     #[test]

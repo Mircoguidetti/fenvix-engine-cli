@@ -1,0 +1,105 @@
+{
+ "name": "mobx",
+ "runner": "jest",
+ "workers": 4,
+ "plain": {
+  "exit": 1,
+  "wall_s": 35.86
+ },
+ "det_serial": {
+  "exit": 1,
+  "wall_s": 33.56,
+  "tests": 814,
+  "carried": 0
+ },
+ "det_parallel": {
+  "exit": 1,
+  "wall_s": 28.8,
+  "tests": 814,
+  "plan_digest": "43e22b20f420b0e9f31179e77f2ca652",
+  "lanes": [
+   3,
+   10,
+   9,
+   10
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0.002,
+  "carried": 0
+ },
+ "det_parallel_2": {
+  "exit": 1,
+  "wall_s": 39.67,
+  "tests": 814,
+  "plan_digest": "43e22b20f420b0e9f31179e77f2ca652",
+  "lanes": [
+   3,
+   10,
+   9,
+   10
+  ],
+  "deviations": 0,
+  "hazards": 0,
+  "waited_s": 0,
+  "carried": 0
+ },
+ "plan_identical": true,
+ "parallel_vs_serial": {
+  "common": 814,
+  "only_a": 0,
+  "only_b": 0,
+  "equal_fingerprint_and_outcome": 814,
+  "equal_outcome": 814,
+  "differ": []
+ },
+ "cache_cold_parallel": {
+  "exit": 1,
+  "wall_s": 47.83,
+  "recorded": 0,
+  "not_cached": {
+   "reads a clock Level 0 does not virtualize": 841,
+   "outcome failed": 5
+  }
+ },
+ "cache_warm_parallel": {
+  "exit": 1,
+  "wall_s": 54.64,
+  "reused_tests": 0,
+  "reused_files": 0,
+  "ran_files": 32,
+  "total_tests": 814,
+  "reuse_pct": 0.0,
+  "miss_reasons": {
+   "new": 32
+  }
+ },
+ "fresh_serial": {
+  "exit": 1,
+  "wall_s": 35.02,
+  "tests": 814,
+  "carried": 0
+ },
+ "wrong_reuse_vs_fresh_serial": {
+  "reused_checked": 0,
+  "reused_not_in_fresh": 0,
+  "wrong_outcome": 0,
+  "wrong": [],
+  "fingerprint_equal": 0
+ },
+ "cache_verify_parallel": {
+  "exit": 1,
+  "wall_s": 52.22,
+  "verified_tests": 0,
+  "mismatches_tests": 0,
+  "mismatches": []
+ },
+ "cache_warm_serial_on_parallel_store": {
+  "exit": 1,
+  "wall_s": 38.11,
+  "reused_tests": 0,
+  "miss_reasons": {
+   "new": 32
+  }
+ }
+}

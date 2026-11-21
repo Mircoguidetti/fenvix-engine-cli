@@ -1,0 +1,172 @@
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run)  # exit 0, 9.48 s
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:32:18
+   Duration  8.80s (transform 3.92s, setup 528ms, import 10.87s, tests 5.22s, environment 2ms)
+
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 14.50 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:32:27
+   Duration  13.90s (transform 1.34s, setup 95ms, import 4.27s, tests 3.44s, environment 2ms)
+
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 13.25 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:32:42
+   Duration  12.05s (transform 6.46s, setup 1.23s, import 16.10s, tests 10.47s, environment 2ms)
+
+detjs: parallel: 4 lanes, plan dcae2f06cc91d4a00c1c63bfcdcdaccd; 24 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4)  # exit 0, 15.60 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:32:55
+   Duration  14.73s (transform 6.72s, setup 1.11s, import 16.09s, tests 13.23s, environment 2ms)
+
+detjs: parallel: 4 lanes, plan dcae2f06cc91d4a00c1c63bfcdcdaccd (sticky); 24 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache)  # exit 2, 14.39 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+detjs: WARNING tests/node-to-js.ts: lane predecessor tests/json-test-suite.ts died (process 2687)
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:33:11
+   Duration  12.76s (transform 5.58s, setup 883ms, import 14.90s, tests 9.56s, environment 18ms)
+
+detjs: parallel: 4 lanes, plan dcae2f06cc91d4a00c1c63bfcdcdaccd (sticky); 24 files; 1 placement deviations; 0 cross-worker hazards; 0 files with carried state
+detjs: PLACEMENT tests/node-to-js.ts: lane predecessor tests/json-test-suite.ts died (process 2687)
+Error: record input: lone leading surrogate in hex escape at line 1 column 750636
+    at ProofSession.recordAll (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:494:39)
+    at /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:29
+    at ProofSession.quiet (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:222:18)
+    at ProofSession.finishSync (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:12)
+    at Object.main (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/vitest/cli.js:285:8)
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 24 files; recorded 0 tests; check 0.001 s, identity 0.179 s, record 0 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache)  # exit 2, 18.54 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:33:25
+   Duration  17.12s (transform 4.07s, setup 1.52s, import 15.81s, tests 17.10s, environment 2ms)
+
+detjs: parallel: 4 lanes, plan dcae2f06cc91d4a00c1c63bfcdcdaccd (sticky); 24 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+Error: record input: lone leading surrogate in hex escape at line 1 column 750278
+    at ProofSession.recordAll (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:494:39)
+    at /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:29
+    at ProofSession.quiet (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:222:18)
+    at ProofSession.finishSync (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:12)
+    at Object.main (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/vitest/cli.js:285:8)
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 24 files; recorded 0 tests; check 0.001 s, identity 0.149 s, record 0 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det)  # exit 0, 19.41 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:33:44
+   Duration  18.00s (transform 1.51s, setup 112ms, import 4.98s, tests 5.03s, environment 3ms)
+
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-workers=4 --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache --det-cache-verify)  # exit 2, 16.93 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: parallel execution in 4 lanes with a fixed plan (--det-workers) (one file at a time per lane, each in a fresh worker); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:34:04
+   Duration  15.58s (transform 6.94s, setup 1.26s, import 16.53s, tests 14.35s, environment 2ms)
+
+detjs: parallel: 4 lanes, plan dcae2f06cc91d4a00c1c63bfcdcdaccd (sticky); 24 files; 0 placement deviations; 0 cross-worker hazards; 0 files with carried state
+Error: record input: lone leading surrogate in hex escape at line 1 column 750404
+    at ProofSession.recordAll (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:494:39)
+    at /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:29
+    at ProofSession.quiet (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:222:18)
+    at ProofSession.finishSync (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:12)
+    at Object.main (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/vitest/cli.js:285:8)
+detjs cache: would reuse (verify mode: run anyway) 0 tests in 0 files (0 s recorded); ran 24 files; recorded 0 tests; check 0.001 s, identity 0.099 s, record 0 s
+detjs cache: verified 0 results, 0 differ
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+
+
+$ (cd /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml && node /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/bin/detjs.js vitest run --det --det-cache=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml/.detjs-par-cache)  # exit 2, 18.19 s
+detjs 0.1.0: Level 0 active; runner=vitest 4.1.11; controls=fs,isolation,net,order,seeds,time,timers; order fixed (sorted files, declaration order)
+detjs: serial execution (one worker, files in sequence); network=block; timers=virtual; node v22.23.5
+
+ RUN  v4.1.11 /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/.harness-work/par/yaml
+
+
+ Test Files  24 passed (24)
+      Tests  3413 passed | 11 skipped (3424)
+   Start at  12:34:20
+   Duration  16.58s (transform 1.77s, setup 205ms, import 4.33s, tests 4.68s, environment 2ms)
+
+Error: record input: lone leading surrogate in hex escape at line 1 column 750692
+    at ProofSession.recordAll (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:494:39)
+    at /home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:29
+    at ProofSession.quiet (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:222:18)
+    at ProofSession.finishSync (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/cache/proof.js:421:12)
+    at Object.main (/home/user/fenvix-engine-cli/.claude/worktrees/agent-a8538eafab6a5e91f/node/src/vitest/cli.js:285:8)
+detjs cache: reused with proof 0 tests in 0 files (0 s recorded); ran 24 files; recorded 0 tests; check 0.001 s, identity 0.193 s, record 0 s
+detjs cache: receipts .detjs/receipts.jsonl
+detjs: trace .detjs/trace.jsonl: 3421 tests, order digest f8942e743041151d82b9c38cf16b67b7
+

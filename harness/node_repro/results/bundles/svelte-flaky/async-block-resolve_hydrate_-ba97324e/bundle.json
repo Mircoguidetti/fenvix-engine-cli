@@ -1,0 +1,76 @@
+{
+  "test": "packages/svelte/tests/runtime-runes/test.ts::async-block-resolve (hydrate)",
+  "configs_searched": 12,
+  "status": "reproduced",
+  "config": "11",
+  "seed": 11,
+  "kind": "order",
+  "prefix_length": 1853,
+  "minimal_length": 2,
+  "polluters": [
+    "packages/svelte/tests/runtime-runes/test.ts::side-effect-each (dom)"
+  ],
+  "setters": [],
+  "order": [
+    "packages/svelte/tests/runtime-runes/test.ts::side-effect-each (dom)",
+    "packages/svelte/tests/runtime-runes/test.ts::async-block-resolve (hydrate)"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "AssertionError",
+    "call",
+    "expected '<button>0</button>\\n<button>shift</bu\u2026' to deeply equal '<button>1</button>\\n<button>shift</bu\u2026'",
+    "packages/svelte/tests/runtime-runes/samples/async-block-resolve/_config.js:27"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "2fce1b1cc1462e73757ac18934fc3f0c"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 9,
+    "reason": "fs",
+    "description": "event #9: fs.readdirSync @ <deps>/fdir/dist/index.mjs:244 returned different values: \"packages/svelte/tests/runtime-runes/samples/async-block-resolve/_output/client|2|badd6969276a9d10f9f01f3c95b13bd9\" vs \"packages/svelte/tests/runtime-runes/samples/async-block-resolve/_output/client|1|994f73685a75cdbf160b501d252416fb\"",
+    "event_a": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdirSync",
+      "at": "<deps>/fdir/dist/index.mjs:244",
+      "v": "packages/svelte/tests/runtime-runes/samples/async-block-resolve/_output/client|2|badd6969276a9d10f9f01f3c95b13bd9"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "fs",
+      "o": "fs.readdirSync",
+      "at": "<deps>/fdir/dist/index.mjs:244",
+      "v": "packages/svelte/tests/runtime-runes/samples/async-block-resolve/_output/client|1|994f73685a75cdbf160b501d252416fb"
+    },
+    "fingerprints": [
+      "d493b6fd6a6cfc246c1a49725e5c3ab8",
+      "2fce1b1cc1462e73757ac18934fc3f0c"
+    ]
+  },
+  "runs": 43,
+  "seconds": 1991.09,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=11 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/async-block-resolve_hydrate_-ba97324e/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/async-block-resolve_hydrate_-ba97324e",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/svelte-flaky/async-block-resolve_hydrate_-ba97324e",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/svelte-flaky",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

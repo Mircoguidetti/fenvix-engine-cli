@@ -1,0 +1,2 @@
+{"repo": "tanstack-form", "test": "packages/form-core/tests/DynamicValidation.spec.ts::custom validation::rhf validation should work as-expected with async validators", "exit": 0, "wall_s": 61.8, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}
+{"repo": "tanstack-form", "test": "packages/form-core/tests/FormApi.spec.ts::form api::should run validators in order form sync -> field sync -> form async -> field async", "exit": 0, "wall_s": 10.2, "runs": 10, "fails": 10, "identical_fingerprint": true, "matches_bundle": true}

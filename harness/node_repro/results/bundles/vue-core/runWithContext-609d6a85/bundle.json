@@ -1,0 +1,76 @@
+{
+  "test": "packages/runtime-core/__tests__/apiCreateApp.spec.ts::api: createApp::runWithContext",
+  "configs_searched": 5,
+  "status": "reproduced",
+  "config": "4",
+  "seed": 4,
+  "kind": "order",
+  "prefix_length": 3527,
+  "minimal_length": 2,
+  "polluters": [
+    "packages/runtime-core/__tests__/apiCreateApp.spec.ts::api: createApp::config.throwUnhandledErrorInProduction"
+  ],
+  "setters": [],
+  "order": [
+    "packages/runtime-core/__tests__/apiCreateApp.spec.ts::api: createApp::config.throwUnhandledErrorInProduction",
+    "packages/runtime-core/__tests__/apiCreateApp.spec.ts::api: createApp::runWithContext"
+  ],
+  "outcome": "failed",
+  "exception": [
+    "Error",
+    "call",
+    "expected \"inject() can only be used inside setup\" to have been warned. / Actual messages: / - [Vue warn]: injection \"foo\" not found.",
+    "packages/runtime-core/__tests__/apiCreateApp.spec.ts:156"
+  ],
+  "replay": {
+    "runs": 10,
+    "fails": 10,
+    "fingerprints": [
+      "066204ef99bc5a84d1be7236d7b1780c"
+    ],
+    "identical_fingerprint": true
+  },
+  "divergence": {
+    "index": 8,
+    "reason": "outcome-only",
+    "description": "identical observed events, different outcome (passed vs failed): the cause is a source Level 0 does not observe",
+    "event_a": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "passed"
+    },
+    "event_b": {
+      "t": 0,
+      "s": "outcome",
+      "o": "outcome",
+      "at": "",
+      "v": "failed"
+    },
+    "fingerprints": [
+      "d3d5c29d2008c5d159ac4654cc4032b3",
+      "066204ef99bc5a84d1be7236d7b1780c"
+    ]
+  },
+  "runs": 40,
+  "seconds": 2591.82,
+  "controls": [
+    "fs",
+    "isolation",
+    "net",
+    "order",
+    "seeds",
+    "time",
+    "timers"
+  ],
+  "detpy": "0.1.0",
+  "command": "detjs vitest run --det --det-seed=4 --det-order=/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/vue-core/runWithContext-609d6a85/order.txt",
+  "replay_command": "python -m detpy.fenvix_js replay /home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/vue-core/runWithContext-609d6a85",
+  "bundle": "/home/user/fenvix-engine-cli/.claude/worktrees/agent-a3ad69304b4fd787f/harness/node_repro/results/bundles/vue-core/runWithContext-609d6a85",
+  "runner": "vitest",
+  "runner_args": [],
+  "root": "/tmp/claude-0/-home-user/940e5d2f-b0b8-5040-a0a4-0b9e2362a3f3/scratchpad/work/src/vue-core",
+  "node": "v22.23.5",
+  "uncontrolled": []
+}

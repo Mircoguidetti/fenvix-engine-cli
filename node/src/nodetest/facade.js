@@ -101,11 +101,39 @@ function keepLength(w, fn) {
 function makeFacade(real, st) {
   const scopes = []; // open suite callbacks: {key, items}
   const scope = () => (scopes.length ? scopes[scopes.length - 1] : null);
-
-  const flush = (buf) => {
-    const perm = native.shuffleIndices(buf.items.length, st.seed, buf.key);
-    for (const i of perm) buf.items[i]();
+  // --det-order / --det-collect (src/repro.js): each test's id is computed when it is really declared (after the
+  // shuffle: the order it runs in), as src/fileproc.js idFor names it (`file::suite::test`, ` #n` for a repeated
+  // name); a test the plan does not list, and under --det-collect every test, is declared skipped (its body and its
+  // beforeEach/afterEach hooks do not run); under --det-collect the suites' hooks do not run either
+  const planned = Boolean(st.plan || st.collect);
+  const counts = new Map();
+  const idOf = (base) => {
+    const n = (counts.get(base) || 0) + 1;
+    counts.set(base, n);
+    return n === 1 ? base : `${base} #${n}`;
   };
+  const wf = require('../repro').wf;
+
+  // --det-order: the listed order wins over the shuffle (as in the Vitest and Jest shells): declarations are held and
+  // released by the position of their first listed test (a suite: of its first listed descendant), unlisted ones last
+  const ordered = Boolean(st.plan) && !st.collect;
+  const rankOf = (base, isSuite) => {
+    if (!ordered) return 0;
+    let best = Infinity;
+    for (const [id, i] of st.plan.index) {
+      if (i < best && (id === base || id.startsWith(`${base} #`) || (isSuite && id.startsWith(`${base}::`)))) best = i;
+    }
+    return best;
+  };
+  const release = (items, key) => {
+    if (ordered) {
+      for (const it of items.map((f, i) => [f, i]).sort((a, b) => (a[0].rank - b[0].rank) || (a[1] - b[1]))) it[0]();
+      return;
+    }
+    for (const i of native.shuffleIndices(items.length, st.seed, key)) items[i]();
+  };
+  const flush = (buf) => release(buf.items, buf.key);
+  if (st.setRelease) st.setRelease(release);
 
   const declare = (realFn, isSuite) => {
     const w = function detjsDeclare(...args) {
@@ -115,7 +143,7 @@ function makeFacade(real, st) {
       const name = typeof parts.name === 'string' ? parts.name : (parts.fn && parts.fn.name) || '<anonymous>';
       const parent = scope();
       const parentKey = parent ? parent.key : st.fileKey();
-      if (isSuite && st.shuffle && parts.fn) {
+      if (isSuite && (st.shuffle || planned) && parts.fn) {
         const fn = parts.fn;
         const key = `${parentKey}::${name}`;
         parts.fn = keepLength(function detjsSuite(...a) {
@@ -129,8 +157,17 @@ function makeFacade(real, st) {
           return r;
         }, fn);
       }
-      const call = () => trampoline(site)(realFn, this, join(parts, args));
-      if (st.shuffle) {
+      const call = () => {
+        if (planned && !isSuite) {
+          const id = idOf(`${parentKey}::${name}`);
+          const listed = !st.collect && st.plan.index.has(wf(id));
+          if (!listed) parts.options = { ...(parts.options || {}), skip: st.collect ? 'detjs: --det-collect' : 'detjs: not in --det-order' };
+          if (st.onDeclared && (listed || st.collect)) st.onDeclared(id);
+        }
+        return trampoline(site)(realFn, this, join(parts, args));
+      };
+      if (st.shuffle || ordered) {
+        call.rank = rankOf(`${parentKey}::${name}`, isSuite);
         if (parent) { parent.items.push(call); return Promise.resolve(); }
         if (st.rootOpen()) { st.holdRoot(call); return Promise.resolve(); }
       }
@@ -152,6 +189,10 @@ function makeFacade(real, st) {
   facade.test = facade;
   for (const kw of ['skip', 'todo', 'only']) {
     if (isFn(real[kw])) { facade[kw] = declare(real[kw], false); }
+  }
+  if (st.collect) {
+    // collection runs no hook (the bodies of skipped tests do not run; suite and file hooks would)
+    for (const h of ['before', 'after', 'beforeEach', 'afterEach']) if (isFn(real[h])) facade[h] = function detjsNoHook() {};
   }
   if (isFn(real.it)) facade.it = wrapFamily(real.it, false);
   if (isFn(real.describe)) facade.describe = wrapFamily(real.describe, true);

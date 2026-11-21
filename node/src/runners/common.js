@@ -50,14 +50,14 @@ const PRELOAD = path.join(__dirname, 'preload.js');
 function orderFiles(items, cfg, { key = (x) => x, sorted = true } = {}) {
   const list = [...items];
   if (sorted) list.sort((a, b) => { const ka = key(a); const kb = key(b); return ka < kb ? -1 : ka > kb ? 1 : 0; });
-  if (cfg.shuffle && cfg.controls.has('order')) return require('../native').shuffleIndices(list.length, cfg.seed, '').map((i) => list[i]);
+  if (cfg.shuffle && cfg.controls.has('order')) return require('../native').shuffleIndices(list.length, cfg.orderSeed, '').map((i) => list[i]);
   return list;
 }
 
 /** Capture files written for one test file (by its test processes) in the run directory. */
-function captureFiles(run, fileId) {
+function captureFiles(run, fileId, project = '') {
   const dir = path.join(run.dir, 'cache');
-  const prefix = require('../controls').partName(fileId, '').replace(/\.jsonl$/, '');
+  const prefix = require('../controls').partName(fileId, project).replace(/\.jsonl$/, '');
   let names = [];
   try { names = fs.readdirSync(dir); } catch { return []; }
   return names.filter((n) => n.startsWith(`${prefix}-`) && n.endsWith('.json')).map((n) => path.join(dir, n));
@@ -152,7 +152,7 @@ function dropOptions(options, names, valueFlags) {
 
 /** Seed for the runner's own ordering of the tests inside one file (derived by the core from the run's seed). */
 function fileSeed(cfg, fileId) {
-  return BigInt.asUintN(31, BigInt(require('../native').deriveSeed(cfg.seed, `${fileId}\0tests`))).toString();
+  return BigInt.asUintN(31, BigInt(require('../native').deriveSeed(cfg.orderSeed, `${fileId}\0tests`))).toString();
 }
 
 /**
@@ -161,8 +161,8 @@ function fileSeed(cfg, fileId) {
  * found, an unhandled error between tests) makes the whole file a failure, which is never reused. `extra(capture)`
  * may add items (Deno: the module graph and the audit of the runtime's permission checks).
  */
-function settleCapture(run, fileId, status, extra) {
-  const files = captureFiles(run, fileId);
+function settleCapture(run, fileId, status, extra, project = '') {
+  const files = captureFiles(run, fileId, project);
   for (const f of files) {
     let c;
     try { c = JSON.parse(fs.readFileSync(f, 'utf8')); } catch { fs.rmSync(f, { force: true }); continue; }
@@ -251,6 +251,50 @@ async function runFileProcesses(p) {
   return failed ? 1 : 0;
 }
 
+/**
+ * Run the files of a --det session in one runtime process, the runtime's own model (Bun's one global object, Deno's
+ * one process: audit G-0145, G-0146). With the cache the process is the unit (`<runner>`, entries under the project
+ * `process`): every file reused, or every one run in that process. Same parameters as runFileProcesses, with
+ * spawnAll(fileIds, env) -> {status} in place of spawnFile.
+ */
+async function runSharedProcess(p) {
+  const session = require('../session');
+  const controls = require('../controls');
+  const { run, opts, pc } = p;
+  const unit = `<${p.runner}>`;
+  let reused = false;
+  if (pc) {
+    if (!p.fileIds.length) pc.noTestsFound = true;
+    else reused = (await pc.decide([{ fileId: unit, project: UNIT_PROJECT, key: unit, covers: p.fileIds }])).has(unit);
+  }
+  for (const l of session.header(run, opts, { runner: p.runner, runnerVersion: p.runnerVersion, isolation: p.isolationShort || 'one process' })) {
+    process.stdout.write(`${l}\n`);
+  }
+  let status = 0;
+  const executed = [];
+  if (p.fileIds.length && !reused) {
+    const env = { DETJS_FILES: JSON.stringify(p.fileIds) };
+    if (pc) env.DETJS_CACHE_UNIT = `process:${unit}`;
+    const r = p.spawnAll(p.fileIds, env);
+    status = r.status === null || r.status === undefined ? 1 : r.status;
+    for (const f of p.fileIds) executed.push({ fileId: f, part: controls.partName(f, '') });
+    if (pc) settleCapture(run, unit, status, p.extra ? (c) => p.extra(c, unit, r) : null, UNIT_PROJECT);
+  }
+  if (p.afterRun) p.afterRun();
+  let lines = [];
+  if (pc) lines = await pc.finish();
+  const fin = session.finish(run, opts, executed, {
+    runner: p.runner, runner_version: p.runnerVersion, isolation: p.isolation, serial: true, cli_args: p.cliArgs || [], ...(p.meta || {}),
+  });
+  for (const l of [...lines, ...fin.lines]) process.stdout.write(`${l}\n`);
+  if (!p.fileIds.length) {
+    process.stderr.write(`detjs ${p.runner}: no test files found\n`);
+    return 1;
+  }
+  process.stdout.write(`detjs ${p.runner}: ${reused ? 0 : p.fileIds.length} files ran in one process (${status === 0 ? 'passed' : 'failed'}), ${reused ? p.fileIds.length : 0} reused\n`);
+  return status === 0 ? 0 : 1;
+}
+
 /** Digest of a file, or a marker (missing files are configuration too). */
 function fileDigestOr(p) {
   if (!p) return '';
@@ -306,6 +350,8 @@ function nodeOptions(base) {
 /** Environment of a process started by the shell (role: 'runner' = the runner's main process, 'list', 'single'). */
 function childEnv(role, extra = {}) {
   const env = { ...process.env, ...extra };
+  delete env.DETJS_CACHE_UNIT;
+  if (extra.DETJS_CACHE_UNIT) env.DETJS_CACHE_UNIT = extra.DETJS_CACHE_UNIT;
   env.DETJS_NODE_OPTIONS0 = process.env.NODE_OPTIONS || '';
   env.NODE_OPTIONS = nodeOptions(process.env.NODE_OPTIONS);
   env.DETJS_RUNNER_ROLE = role;
@@ -329,7 +375,7 @@ function listChild(ctx, args, extraEnv = {}) {
 
 /** Run a command with the preload; stdio inherited. Returns the exit status. */
 function runChild(ctx, args, { role = 'runner', env: extra = {}, cwd } = {}) {
-  const env = childEnv(role, { ...extra, DETJS_RUNNER_FILES: ctx.filesPath });
+  const env = childEnv(role, { ...extra, DETJS_RUNNER_FILES: ctx.filesPath, ...(ctx.unit ? { DETJS_CACHE_UNIT: `process:${ctx.unit}` } : {}) });
   const r = spawnSync(process.execPath, args, { cwd: cwd || ctx.root, env, stdio: 'inherit' });
   if (r.error) throw r.error;
   return r.status === null ? 1 : r.status;
@@ -389,11 +435,21 @@ async function runShell(spec, argv) {
   });
   const ordered = orderFiles(keyed, run.cfg, { key: (k) => k.key, sorted: found.order !== 'runner' });
   let skip = new Set();
+  // a runner that runs every file in one process (Jasmine, uvu): its own process model is kept under the cache
+  // (audit G-0147, G-0149), so the cache unit is that process, unless --det-isolate gives each file its own
+  const unit = ctx.pc && spec.sharedProcess && !opts.isolate ? `<${spec.name}>` : null;
+  ctx.unit = unit;
   if (ctx.pc) {
-    const parts = { runner: `${spec.name} ${runner.version}`, ...found.config };
+    const parts = { runner: `${spec.name} ${runner.version}`, ...found.config, isolate: Boolean(opts.isolate) };
+    if (unit) parts.plan = ordered.map((k) => k.fileId);
     ctx.pc.setConfig(parts);
     if (found.uncacheable) ctx.pc.noteProject('', found.uncacheable);
-    skip = await ctx.pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: '', key: k.key })));
+    if (unit) {
+      const s = await ctx.pc.decide([{ fileId: unit, project: UNIT_PROJECT, key: unit, covers: ordered.map((k) => k.fileId) }]);
+      if (s.has(unit)) for (const k of ordered) skip.add(k.key);
+    } else {
+      skip = await ctx.pc.decide(ordered.map((k) => ({ fileId: k.fileId, project: '', key: k.key })));
+    }
   }
   const toRun = ordered.filter((k) => !skip.has(k.key));
   fs.writeFileSync(ctx.filesPath, JSON.stringify(toRun.map((k) => ({ abs: k.abs, fileId: k.fileId }))));
@@ -402,6 +458,7 @@ async function runShell(spec, argv) {
   if (!keyed.length) status = spec.noFiles ? spec.noFiles(ctx) : 1;
   else if (!toRun.length) status = 0; // every file reused with proof
   else status = await spec.launch(ctx, toRun.map((k) => k.abs), toRun);
+  if (unit && toRun.length) settleCapture(run, unit, status, null, UNIT_PROJECT);
   if (ctx.pc) {
     if (found.uncacheable) { /* recorded as misses by the project note */ }
     ctx.pc.finishSync();
@@ -424,6 +481,47 @@ function argsPart(rest, volatile) {
 let childStarted = false;
 let filesOpened = 0;
 
+/**
+ * The cache unit of this test process when it is the whole run (a shared-process runner under --det-cache without
+ * --det-isolate): the capture is one log for every file of the process, written once when the process exits, so
+ * the state a file leaves for the next ones is part of what they ran with (the carried-set rule at its widest).
+ */
+function processUnit() {
+  const u = process.env.DETJS_CACHE_UNIT || '';
+  return u.startsWith('process:') ? u.slice('process:'.length) : null;
+}
+const UNIT = { ok: true, files: 0, t0: 0 };
+// the entries of a process unit live under their own project name (`<file>@@process::<test>`), apart from the
+// per-file entries of --det-isolate sessions of the same suite
+const UNIT_PROJECT = 'process';
+
+function installUnitWriter(c) {
+  const unit = processUnit();
+  if (!unit || !require('node:worker_threads').isMainThread) return;
+  UNIT.t0 = realNow();
+  const realEmit = process.emit;
+  let done = false;
+  process.emit = function emit(ev, ...a) {
+    if (ev !== 'exit' || done) return realEmit.call(this, ev, ...a);
+    let r;
+    try { r = realEmit.call(this, ev, ...a); } finally {
+      done = true;
+      const code = process.exitCode !== undefined && process.exitCode !== null ? Number(process.exitCode) : Number(a[0] || 0);
+      const { CAPTURE } = require('../cache/capture');
+      const controls = require('../controls');
+      quiet(() => {
+        try {
+          const capture = CAPTURE.fileCapture({ fileId: unit, project: UNIT_PROJECT, label: unit, ok: UNIT.ok && code === 0 && UNIT.files > 0, duration: (realNow() - UNIT.t0) / 1000 });
+          controls.writeJson(path.join(c.dir, 'cache', `${controls.partName(unit, UNIT_PROJECT).replace(/\.jsonl$/, '')}-${process.pid}-0.json`), capture);
+        } catch (e) {
+          process.stderr.write(`detjs cache: capture of ${unit} not written (counted as not cached): ${e && e.stack}\n`);
+        }
+      });
+    }
+    return r;
+  };
+}
+
 /** Real milliseconds (the test's own clock is virtual under Level 0). */
 function realNow() {
   return require('../clock').REAL.perfNow();
@@ -445,6 +543,7 @@ function child() {
     if (process.env.DETJS_CACHE === '1') {
       const { CAPTURE } = require('../cache/capture');
       CAPTURE.install({ role: 'worker', root: c.root });
+      installUnitWriter(c);
       // OS entropy drawn by the runner itself (tap's mock service keys, ...) is the runner's business: only a draw
       // whose direct caller is not runner infrastructure makes a test not cacheable
       const realLevel = CAPTURE.levelEvent.bind(CAPTURE);
@@ -493,8 +592,9 @@ class ChildFile {
     if (this.cap) {
       // the first file of a process keeps everything logged since the preload (loaders and modules the runner
       // loaded for it before it knew the file's name); a later file of the same process starts afresh
-      if (filesOpened > 0) this.cap.resetFile();
-      this.cap.setCtx('f', fileId);
+      const unit = processUnit();
+      if (filesOpened > 0 && !unit) this.cap.resetFile();
+      this.cap.setCtx('f', unit || fileId);
     }
     filesOpened++;
   }
@@ -554,12 +654,19 @@ class ChildFile {
   /** Rewrite the capture with ok=false (the process failed after the file ended). */
   fail() {
     this.failed = true;
+    if (processUnit()) UNIT.ok = false;
     if (!this.closed) this.close(false);
     else if (this.written) this.writeCapture(false);
   }
 
   writeCapture(ok) {
     if (!this.cap || !this.c.dir) return;
+    if (processUnit()) {
+      // one capture for the whole process (installUnitWriter): this file's verdict joins it
+      UNIT.ok = UNIT.ok && ok;
+      UNIT.files++;
+      return;
+    }
     const controls = require('../controls');
     quiet(() => {
       try {
@@ -568,7 +675,7 @@ class ChildFile {
         controls.writeJson(path.join(this.c.dir, 'cache', name), capture);
         this.written = true;
       } catch (e) {
-        process.stderr.write(`detjs cache: capture of ${this.fileId} not written: ${e && e.stack}\n`);
+        process.stderr.write(`detjs cache: capture of ${this.fileId} not written (counted as not cached): ${e && e.stack}\n`);
       }
     });
   }
@@ -592,8 +699,8 @@ module.exports = {
   // shared
   PRELOAD, orderFiles, captureFiles, markFailed,
   // 1. non-Node runtimes
-  findBinary, splitArgs, optionValue, dropOptions, fileSeed, settleCapture, mergeJunit, runFileProcesses, fileDigestOr, runInherit,
+  findBinary, splitArgs, optionValue, dropOptions, fileSeed, settleCapture, mergeJunit, runFileProcesses, runSharedProcess, fileDigestOr, runInherit,
   // 2. Node runners with a preload (main side, then child side)
   findPackage, pkgDir, fileIdOf, nodeOptions, childEnv, listChild, runChild, fileParts, runShell, argsPart,
-  child, runFiles, quiet, ChildFile, onExit,
+  child, runFiles, quiet, ChildFile, onExit, processUnit, UNIT_PROJECT,
 };
