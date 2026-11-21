@@ -386,7 +386,7 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
-  // the installed dependencies the run loaded (src/loaded.js, review R-055 V5)
+  // the installed dependencies of the project (src/loaded.js, review R-055 V5)
   try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   let reproLines = [];

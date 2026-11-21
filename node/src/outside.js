@@ -94,20 +94,17 @@ function onRead(where, data, n) {
   else if (byProjectOutside()) { const d = contentDigest(data, n); if (d !== null) noteFile(where, d); }
 }
 
-// File metadata (review R-055 V6): existence, type and size seen by the test are `fs.stat` events
-// (docs/VERIFY-CONTRACT.md section 2: `<path>|missing` or `<path>|<type>`, ` size=<n>` for a file whose stat the test
-// got). Times are not part of the value: they are virtual and recorded by src/fstime.js.
+// File metadata (review R-055 V6): existence and the kind of file seen by the test are `fs.stat` events
+// (docs/VERIFY-CONTRACT.md section 2: `<path>|missing`, `<path>|present` (existence, access) or `<path>|<type>`
+// (stat, lstat)). Times are not part of the value: they are virtual and recorded by src/fstime.js.
 function typeOf(st) {
   if (!st) return 'missing';
   return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : st.isSymbolicLink() ? 'link' : 'other';
 }
-function statValue(st, withSize) {
-  const t = typeOf(st);
-  return withSize && t === 'file' ? `${t} size=${st.size}` : t;
-}
-let realLstat = null;
-function probe(p) {
-  try { return STATE.quiet(() => realLstat(p, { throwIfNoEntry: false })) || null; } catch { return null; }
+// the kind only: is*() are keyed by the call for the cache (src/cache/capture.js), a field such as `size` would be
+// a dependency of the test; existence calls record `present` (no second stat)
+function statValue(st) {
+  return typeOf(st);
 }
 function onStat(p, value) {
   if (typeof p === 'number') return;
@@ -147,23 +144,22 @@ function installProcess(patcher) {
     return r;
   });
   // metadata (V6)
-  realLstat = fs.lstatSync;
   w(fs, 'existsSync', (real) => function existsSync(p) {
     const r = real.call(this, p);
-    if (STATE.quietDepth === 0 && typeof p !== 'number') onStat(p, r ? typeOf(probe(p)) : 'missing');
+    if (STATE.quietDepth === 0 && typeof p !== 'number') onStat(p, r ? 'present' : 'missing');
     return r;
   });
   for (const n of ['statSync', 'lstatSync']) {
     w(fs, n, (real) => function statSync(p, ...a) {
       let r;
       try { r = real.call(this, p, ...a); } catch (e) { if (STATE.quietDepth === 0) onStat(p, 'missing'); throw e; }
-      if (STATE.quietDepth === 0) onStat(p, r && typeof r.isFile === 'function' ? statValue(r, true) : 'missing');
+      if (STATE.quietDepth === 0) onStat(p, r && typeof r.isFile === 'function' ? statValue(r) : 'missing');
       return r;
     });
   }
   w(fs, 'accessSync', (real) => function accessSync(p, ...a) {
     try { real.call(this, p, ...a); } catch (e) { if (STATE.quietDepth === 0) onStat(p, 'missing'); throw e; }
-    if (STATE.quietDepth === 0) onStat(p, typeOf(probe(p)));
+    if (STATE.quietDepth === 0) onStat(p, 'present');
   });
   for (const n of ['stat', 'lstat', 'access']) {
     w(fs, n, (real) => function stat(p, ...a) {
@@ -171,7 +167,7 @@ function installProcess(patcher) {
       if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number') {
         const id = STATE.testId;
         a[a.length - 1] = function done(e, st) {
-          if (STATE.testId === id) onStat(p, e ? 'missing' : n === 'access' ? typeOf(probe(p)) : statValue(st, true));
+          if (STATE.testId === id) onStat(p, e ? 'missing' : n === 'access' ? 'present' : statValue(st));
           return cb.apply(this, arguments);
         };
       }
@@ -182,7 +178,7 @@ function installProcess(patcher) {
       const id = STATE.testId;
       let r;
       try { r = await real.call(this, p, ...a); } catch (e) { if (watch && STATE.testId === id) onStat(p, 'missing'); throw e; }
-      if (watch && STATE.testId === id) onStat(p, n === 'access' ? typeOf(probe(p)) : statValue(r, true));
+      if (watch && STATE.testId === id) onStat(p, n === 'access' ? 'present' : statValue(r));
       return r;
     });
   }

@@ -36,10 +36,7 @@ function installProcess() {
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
-  if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
-  // the installed dependencies the run loads (`inputs.deps`, review R-055 V5)
-  require('./loaded').installProcess(c.dir);
-  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
+  if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
   volatile.pinEnv();
   PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
   volatile.pinCpus(PATCHER); // and the CPU count (each runner has its own)

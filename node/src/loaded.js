@@ -1,64 +1,56 @@
 'use strict';
-// Installed dependencies a run loaded (review R-055 V5, docs/VERIFY-CONTRACT.md `inputs.deps`): every file under a
-// node_modules directory in the CommonJS module cache (packages required, and CommonJS packages imported from ESM), by
-// machine-independent path (`<deps>/<package>/<file>`, src/sites.js) and content digest. Each test process appends
-// what it loaded to <run dir>/loaded/<pid>.txt (at every test end and at exit); src/session.js digests the union.
-// Not covered: ESM-only packages (the ESM loader has no cache to read), listed in docs/VERIFY-INPUTS.md.
+// The installed dependencies of the project (review R-055 V5, docs/VERIFY-CONTRACT.md `inputs.deps`): every file under
+// <root>/node_modules (packages, scoped packages, nested node_modules; not the tools' own output: .bin, .cache,
+// .detjs, .vite-temp, ...), by relative path and content digest. It does not depend on which tests ran (a cached or
+// parallel run has the same input as a full serial one). Contents are read once: digests are kept in
+// <root>/.detjs/deps-digests.json keyed by path, size and mtime.
+// Not covered: packages outside <root>/node_modules (a monorepo's hoisted parent directory, a global install),
+// listed in docs/VERIFY-INPUTS.md.
 const fs = require('node:fs');
 const path = require('node:path');
-const { STATE } = require('./state');
-const sites = require('./sites');
 const native = require('./native');
 
-const DEPS = `${path.sep}node_modules${path.sep}`;
-const TOOL_OUTPUT = /[\\/]node_modules[\\/]\.(?!pnpm[\\/])/;
-const done = new Set();
-let dir = null;
-
-function flush() {
-  if (!dir) return;
-  const lines = [];
-  STATE.quietDepth++;
-  try {
-    for (const f of Object.keys(require.cache)) {
-      // tools' own output under node_modules (.detjs, .cache, .vite-temp: generated, per run) is no installed package
-      if (done.has(f) || !f.includes(DEPS) || TOOL_OUTPUT.test(f)) continue;
-      done.add(f);
-      let d;
-      try { d = native.digest(fs.readFileSync(f)); } catch { d = 'unreadable'; }
-      lines.push(`${sites.normPath(f)}\t${d}`);
-    }
-    if (lines.length) {
-      fs.mkdirSync(path.join(dir, 'loaded'), { recursive: true });
-      fs.appendFileSync(path.join(dir, 'loaded', `${process.pid}.txt`), `${lines.join('\n')}\n`);
-    }
-  } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
-}
-
-function installProcess(runDir) {
-  if (dir || !runDir) return;
-  dir = runDir;
-  STATE.onTestEnd.push(flush);
-  process.on('exit', flush);
-}
-
-/** `inputs.deps` of the run: `<n> files <digest>`, or null when no process recorded any. */
-function depsInput(runDir) {
-  const m = new Map();
-  const d = path.join(runDir, 'loaded');
-  let names;
-  try { names = fs.readdirSync(d); } catch { return null; }
-  for (const f of names) {
-    let text;
-    try { text = fs.readFileSync(path.join(d, f), 'utf8'); } catch { continue; }
-    for (const l of text.split('\n')) {
-      const i = l.indexOf('\t');
-      if (i > 0) m.set(l.slice(0, i), l.slice(i + 1));
-    }
+function walk(dir, rel, out) {
+  let ents;
+  try { ents = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+  for (const e of ents) {
+    // a dot directory directly under a node_modules directory is a tool's output (.bin, .cache, .detjs, .vite-temp),
+    // except pnpm's store of the packages (.pnpm; the top-level entries are links into it, and links are not followed)
+    if (e.isDirectory() && e.name.startsWith('.') && e.name !== '.pnpm' && path.basename(dir) === 'node_modules') continue;
+    const r = rel ? `${rel}/${e.name}` : e.name;
+    const abs = path.join(dir, e.name);
+    if (e.isDirectory()) walk(abs, r, out);
+    else if (e.isFile()) out.push([r, abs]);
   }
-  if (!m.size) return null;
-  const keys = [...m.keys()].sort();
-  return `${keys.length} files ${native.digest(Buffer.from(keys.map((k) => `${k}\t${m.get(k)}\n`).join('')))}`;
 }
 
-module.exports = { installProcess, depsInput, flush };
+/** `inputs.deps` of the run: `<n> files <digest>`, or null when the project has no node_modules. */
+function depsInput(runDir) {
+  const root = path.dirname(path.dirname(runDir)); // <root>/.detjs/run-<pid>
+  const nm = path.join(root, 'node_modules');
+  try { if (!fs.statSync(nm).isDirectory()) return null; } catch { return null; }
+  const files = [];
+  walk(nm, '', files);
+  if (!files.length) return null;
+  const cachePath = path.join(root, '.detjs', 'deps-digests.json');
+  let cache = {};
+  try { cache = JSON.parse(fs.readFileSync(cachePath, 'utf8')) || {}; } catch { /* none yet */ }
+  const next = {};
+  const lines = [];
+  files.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+  for (const [r, abs] of files) {
+    let d = 'unreadable';
+    try {
+      const st = fs.statSync(abs);
+      const key = `${st.size}:${st.mtimeMs}`;
+      const c = cache[r];
+      d = c && c[0] === key ? c[1] : native.digest(fs.readFileSync(abs));
+      next[r] = [key, d];
+    } catch { /* unreadable */ }
+    lines.push(`${r}\t${d}\n`);
+  }
+  try { fs.writeFileSync(cachePath, JSON.stringify(next)); } catch { /* read-only: digests are recomputed next time */ }
+  return `${lines.length} files ${native.digest(Buffer.from(lines.join('')))}`;
+}
+
+module.exports = { depsInput };
