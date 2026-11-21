@@ -210,6 +210,43 @@ def test_allowlist_has_a_reason_for_every_entry():
     assert "PATH" not in _proof.ENV_ALLOWLIST and "LD_PRELOAD" not in _proof.ENV_ALLOWLIST
 
 
+@pytest.mark.parametrize("mode", ["default", "default-n2", "fenvix-python"])
+def test_g0164_module_outside_the_root_in_a_files_child_is_an_input(pytester, tmp_path_factory, mode):
+    """Exam F-05.wrong-reuse.pythonpath (run 44851972153): under the per-file default (and `fenvix python`, which runs
+    the xdist controller) a module from PYTHONPATH outside the root, imported at collection, was not an input of the
+    children's results; changing it reused the test as passed."""
+    if mode != "default":
+        pytest.importorskip("xdist")
+    ext = tmp_path_factory.mktemp("outside")
+    _probe(pytester, """
+        import exam_outside
+        def test_outside():
+            assert exam_outside.VALUE == 1
+        """)
+    env = {"PYTHONPATH": str(ext), "DETPY_CACHE_IN_PROCESS": "0"}
+    args = ("-n", "2", "tests") if mode == "default-n2" else ("tests",)
+    prefix = ()
+    if mode == "fenvix-python":
+        fx = shutil.which("fenvix", path=os.path.dirname(sys.executable))
+        if fx is None:
+            pytest.skip("no fenvix command next to this interpreter")
+    for label, value in (("r1", 1), ("after", 22)):
+        (ext / "exam_outside.py").write_text(f"VALUE = {value}\n")
+        if mode == "fenvix-python":
+            out = pytester.path / f"out-{label}.json"
+            p = subprocess.run([fx, "python", "-q", "-p", "no:cacheprovider", "-p", "no:randomly", "--det",
+                                f"--det-cache={pytester.path / '.c'}", f"--det-outcomes={out}", "-rA", "tests"],
+                               cwd=pytester.path, env=dict(os.environ, **env), capture_output=True, text=True,
+                               timeout=600)
+            c = json.loads(out.read_text()).get("cache", {}) if out.exists() else {}
+        else:
+            p, c, _ = run(pytester, label, "-rA", *args, prefix=prefix, env=env)
+        if label == "r1":
+            assert p.returncode == 0, p.stdout + p.stderr
+    assert "tests/test_p.py::test_outside" not in reused(c), ("WRONG REUSE", p.stdout)
+    assert p.returncode == 1, p.stdout
+
+
 def test_g0164_module_from_pythonpath_outside_the_root_is_an_input(pytester, tmp_path_factory):
     ext = tmp_path_factory.mktemp("outside")
     (ext / "outmod_pycache.py").write_text("VALUE = 1\n")
@@ -889,3 +926,57 @@ def test_carried_lines_of_test_files_children_stay_whole(pytester, n):
     lines = (pytester.path / ".c" / "carried.jsonl").read_text().splitlines()
     rows = [json.loads(x) for x in lines if x.strip()]  # a cut line fails here
     assert sum(r["tests"] for r in rows) == 12 * 30, rows
+
+
+@pytest.mark.parametrize("mode", ["in-process", "default", "default-n2"])
+def test_import_time_code_of_another_test_module_is_an_input(pytester, mode):
+    """Exam F-05.probe.import-side-effect (run 44851972153): test_a's module patches json.dumps at import (collection,
+    before every test of the process); test_b was reused as passed after that line was added, while a plain run fails
+    it. A body-only edit of test_a keeps test_b reused (definitions are not import-time effects)."""
+    if mode == "default-n2":
+        pytest.importorskip("xdist")
+    env = {"DETPY_CACHE_IN_PROCESS": "1" if mode == "in-process" else "0"}
+    args = ("-n", "2", "tests") if mode == "default-n2" else ("tests",)
+    b = "tests/test_b.py::test_dump"
+    write(pytester, **{"tests/conftest.py": "", "tests/test_a.py": "def test_nothing():\n    pass\n",
+                       "tests/test_b.py": "import json\n\ndef test_dump():\n    assert json.dumps([1, 2]) == '[1, 2]'\n"})
+    for label in ("r1", "r2"):
+        p, c, _ = run(pytester, label, "-rA", *args, env=env)
+        assert p.returncode == 0, p.stdout + p.stderr
+    assert b in reused(c), c.get("miss_reasons")
+    write(pytester, **{"tests/test_a.py": "def test_nothing():\n    assert 1\n"})
+    p, c, _ = run(pytester, "body", "-rA", *args, env=env)
+    if mode != "in-process":  # in one process test_a's code is in test_b's carried set: it reruns there anyway
+        assert b in reused(c), ("a body-only edit invalidated another module's test", c.get("miss_reasons"))
+    write(pytester, **{"tests/test_a.py": "import json, functools\njson.dumps = functools.partial(json.dumps, "
+                                          "separators=(',', ':'))\n\ndef test_nothing():\n    pass\n"})
+    p, c, _ = run(pytester, "after", "-rA", *args, env=env)
+    assert b not in reused(c), ("WRONG REUSE", p.stdout)
+    assert outcome_of(p, b) == "failed", p.stdout
+
+
+ODPAIR = """
+STATE = {}
+
+def test_a_setter():
+    STATE["x"] = 1
+
+def test_b_victim():
+    assert STATE.get("x") == 1
+"""
+
+
+@pytest.mark.parametrize("args", [("-n", "2"), ("-n", "4"), ("--det-isolate",), ("--det-cache=.c", "-n", "2")],
+                         ids=["n2", "n4", "isolate", "cache-n2"])
+def test_order_dependent_pair_has_the_serial_verdict(pytester, args):
+    """Exam PY-05.odpair and PY-05.probe.isolate (run 44851972153): test_b relies on test_a, earlier in its file. With
+    no --dist asked, -n keeps a file's tests on one worker in order; --det-isolate forks one child per file (per test
+    only with --det-isolate-scope=test): the verdict is the serial one."""
+    if "-n" in args:
+        pytest.importorskip("xdist")
+    write(pytester, **{"tests/conftest.py": "", "tests/test_od.py": ODPAIR})
+    p, _, _ = run(pytester, "plain", "-rA", "tests", cache=False)
+    assert outcome_of(p, "tests/test_od.py::test_b_victim") == "passed", p.stdout
+    p, _, _ = run(pytester, "mode", "-rA", *args, "tests", cache=False)
+    assert outcome_of(p, "tests/test_od.py::test_b_victim") == "passed", p.stdout
+    assert p.returncode == 0, p.stdout + p.stderr

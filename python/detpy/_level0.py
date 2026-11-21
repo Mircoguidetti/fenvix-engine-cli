@@ -105,9 +105,10 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                  "DIR only when every input it depended on (code executed, files read, environment "
                                  "variables read, runtime, configuration) is unchanged; failures are never reused; "
                                  "prints a receipt")),
-    (("--det-cache-verify",), dict(type=float, default=0.0, metavar="FRACTION",
-                                   help="run this random fraction of the reusable tests anyway and compare with the "
-                                        "cached result")),
+    (("--det-cache-verify", "--det-cache-audit"), dict(type=float, default=0.0, metavar="FRACTION",
+                                   dest="det_cache_verify",
+                                   help="the cache audit: run this seeded fraction of the reusable tests fresh anyway "
+                                        "and compare with the cached result (audit G-0204)")),
     (("--det-cache-dists",), dict(action="store_true", default=False,
                                   help="with --det-cache (PROTOTYPE): installed distributions enter a test's key one "
                                        "by one (those it loaded, read or queried) instead of as one digest of the "

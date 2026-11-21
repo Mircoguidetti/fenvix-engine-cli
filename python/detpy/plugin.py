@@ -46,9 +46,10 @@ def pytest_addoption(parser, pluginmanager):
                 help="with --det-cache: run the tests in the session's process(es) as without the cache (the carried-set "
                      "rule keys a test on the earlier tests of its process) instead of one child per test file, the "
                      "default on Linux")
-    g.addoption("--det-isolate-scope", default="test", choices=("test", "file"),
-                help="with --det-isolate: 'test' (default) forks a child per test; 'file' forks one child per test "
-                     "file, whose tests share that child in order (in-process state is carried within the file only)")
+    g.addoption("--det-isolate-scope", default="file", choices=("test", "file"),
+                help="with --det-isolate: 'file' (default) forks one child per test file, whose tests share that child "
+                     "in order (in-process state is carried within the file only, as in the serial run); 'test' forks "
+                     "a child per test")
     _early_reexec(parser, pluginmanager)
 
 

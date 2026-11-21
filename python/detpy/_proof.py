@@ -7,6 +7,7 @@ other runners' shell is the driver in ``runners/``. What counts as an input and 
 
 from __future__ import annotations
 
+import ast
 import json
 import os
 import platform
@@ -965,6 +966,90 @@ def digest_identity(d: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+def _pure_expr(e) -> bool:
+    """An expression whose evaluation at import time defines a value only: constants, names, attribute reads,
+    containers and operators of those, lambdas, and pytest's marks and fixtures (``pytest.mark.x(...)``)."""
+    if e is None or isinstance(e, (ast.Constant, ast.Name, ast.Lambda)):
+        return True
+    if isinstance(e, ast.Attribute):
+        return _pure_expr(e.value)
+    if isinstance(e, (ast.Tuple, ast.List, ast.Set)):
+        return all(_pure_expr(x) for x in e.elts)
+    if isinstance(e, ast.Dict):
+        return all(_pure_expr(k) for k in e.keys if k is not None) and all(_pure_expr(v) for v in e.values)
+    if isinstance(e, ast.Starred):
+        return _pure_expr(e.value)
+    if isinstance(e, ast.UnaryOp):
+        return _pure_expr(e.operand)
+    if isinstance(e, ast.BinOp):
+        return _pure_expr(e.left) and _pure_expr(e.right)
+    if isinstance(e, ast.BoolOp):
+        return all(_pure_expr(x) for x in e.values)
+    if isinstance(e, ast.Compare):
+        return _pure_expr(e.left) and all(_pure_expr(x) for x in e.comparators)
+    if isinstance(e, ast.IfExp):
+        return _pure_expr(e.test) and _pure_expr(e.body) and _pure_expr(e.orelse)
+    if isinstance(e, ast.JoinedStr):
+        return all(_pure_expr(v.value) if isinstance(v, ast.FormattedValue) else True for v in e.values)
+    if isinstance(e, ast.Subscript):
+        return _pure_expr(e.value) and _pure_expr(e.slice)
+    if isinstance(e, ast.Slice):
+        return _pure_expr(e.lower) and _pure_expr(e.upper) and _pure_expr(e.step)
+    if isinstance(e, ast.Call):
+        f = e.func
+        while isinstance(f, (ast.Attribute, ast.Call)):
+            f = f.value if isinstance(f, ast.Attribute) else f.func
+        return (isinstance(f, ast.Name) and f.id == "pytest" and all(_pure_expr(a) for a in e.args)
+                and all(_pure_expr(k.value) for k in e.keywords))
+    return False
+
+
+def _import_effect_nodes(body) -> list:
+    """The top-level statements of a module (and of its class bodies, which run at import too) that may do more
+    than define names: anything but imports, ``def``/``class`` with pure decorators and defaults, docstrings,
+    assignments of pure expressions to names, and ``if``/``try`` around those."""
+    out: list = []
+    for st in body:
+        if isinstance(st, (ast.Import, ast.ImportFrom, ast.Pass)):
+            continue
+        if isinstance(st, ast.Expr) and isinstance(st.value, ast.Constant):
+            continue
+        if isinstance(st, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            a = st.args
+            if all(_pure_expr(d) for d in st.decorator_list) and all(_pure_expr(d) for d in a.defaults) \
+                    and all(_pure_expr(d) for d in a.kw_defaults):
+                continue
+            out.append(st)
+            continue
+        if isinstance(st, ast.ClassDef):
+            if not (all(_pure_expr(d) for d in st.decorator_list) and all(_pure_expr(b) for b in st.bases)
+                    and all(_pure_expr(k.value) for k in st.keywords)):
+                out.append(st)
+                continue
+            out.extend(_import_effect_nodes(st.body))
+            continue
+        if isinstance(st, (ast.Assign, ast.AnnAssign)):
+            targets = st.targets if isinstance(st, ast.Assign) else [st.target]
+            if all(isinstance(t, (ast.Name, ast.Tuple)) and all(isinstance(x, ast.Name) for x in (
+                    t.elts if isinstance(t, ast.Tuple) else [t])) for t in targets) and _pure_expr(st.value):
+                continue
+            out.append(st)
+            continue
+        if isinstance(st, ast.If) and _pure_expr(st.test):
+            out.extend(_import_effect_nodes(st.body))
+            out.extend(_import_effect_nodes(st.orelse))
+            continue
+        if isinstance(st, ast.Try):
+            out.extend(_import_effect_nodes(st.body))
+            for hd in st.handlers:
+                out.extend(_import_effect_nodes(hd.body))
+            out.extend(_import_effect_nodes(st.orelse))
+            out.extend(_import_effect_nodes(st.finalbody))
+            continue
+        out.append(st)
+    return out
+
+
 class ProofSession:
     """One session of the cache with proof, for any runner. The session's bookkeeping (decisions, reports, the record
     plan, the reasons and the summary) is Rust (``_core.CacheSession``, ``crates/detpy-py/src/session.rs``); this
@@ -1131,11 +1216,65 @@ class ProofSession:
             lst.append(n)
         return out
 
+    IMPORT_EFFECTS_FILE = "import-effects.json"
+
+    def _import_effects(self, nids) -> str:
+        """Exam F-05.probe.import-side-effect: every collected test module's import-time code runs before any test of
+        the process (collection), and what it does to other modules' state (``json.dumps = ...``) is not followed by
+        the capture. The digest of the collected modules' top-level statements that may act beyond defining names
+        (``_import_effect_nodes``); a module of definitions and imports only adds nothing."""
+        import hashlib
+
+        h = hashlib.blake2b(digest_size=12)
+        root = self.root
+        for rel in sorted({n.split("::", 1)[0] for n in nids}):
+            path = os.path.join(root, rel)
+            if not rel.endswith(".py"):
+                continue
+            try:
+                with open(path, "rb") as fh:
+                    tree = ast.parse(fh.read(), filename=path)
+            except (OSError, SyntaxError, ValueError):
+                h.update(f"{rel}\0?\0".encode())
+                continue
+            eff = _import_effect_nodes(tree.body)
+            if eff:
+                h.update(f"{rel}\0".encode())
+                for node in eff:
+                    h.update(ast.dump(node).encode())
+                    h.update(b"\0")
+        return h.hexdigest()
+
+    def import_effects_check(self, nids) -> None:
+        """A reused result was recorded after the same import-time effects of the collected test modules (see
+        ``_import_effects``); unknown: not reused."""
+        try:
+            now = _core.detpy_probe_call(lambda: self._import_effects(nids))
+        except Exception:
+            now = None
+        self.effects_now = now
+        stored = self.engine_json_load(os.path.join(self.dir, self.IMPORT_EFFECTS_FILE))
+        self.effects_stored = stored if isinstance(stored, dict) else {}
+        for n in nids:
+            if self._is_hit(n) and (now is None or self.effects_stored.get(n) != now):
+                self._demote(n, "code: import-time code of the collected test modules changed (it runs before every test)")
+
+    def import_effects_save(self) -> None:
+        now = getattr(self, "effects_now", None)
+        if now is None:
+            return
+        stored = dict(getattr(self, "effects_stored", {}))
+        nids = getattr(self, "prefix_nids", None) or []
+        stored.update({n: now for n in nids if not self._is_hit(n)})
+        self.engine_json_save(os.path.join(self.dir, self.IMPORT_EFFECTS_FILE), stored)
+
     def prefix_check(self, nids) -> None:
         """A result recorded in-process is reused only when the tests before it in its process (its file's child, or
         the serial session) are those it was recorded after: a test that did not run then (added, or deselected by
         -k) runs before it in a fresh run and may leave state it reads, and the carried set cannot hold it.
         Unknown: not reused."""
+        self.prefix_nids = list(nids)
+        self.import_effects_check(nids)
         scope = self._prefix_scope()
         self.prefix_scope = scope
         if scope is None:
@@ -1150,6 +1289,7 @@ class ProofSession:
                 self._demote(n, f"placement: the tests before it in its {where} are not those it was recorded after")
 
     def prefix_save(self) -> None:
+        self.import_effects_save()
         now = getattr(self, "prefix_now", None)
         scope = getattr(self, "prefix_scope", None)
         if now is None or scope is None:
@@ -1619,6 +1759,12 @@ class ProofSession:
         self.worker = f"iso{os.getpid()}"
         self.sess.add_fingerprints(fingerprints)
         self.cap.switch("s")
+        try:
+            # audit G-0164 in a child too (exam F-05.wrong-reuse.pythonpath: a module from PYTHONPATH outside the
+            # root, imported at collection in the parent, was not an input of the children's results)
+            self._outside_modules()
+        except Exception:
+            pass
         self.cap.stop()
         self._record_all()
         return self.shard_path, list(self.sess.worker_summary())

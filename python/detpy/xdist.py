@@ -327,6 +327,13 @@ class Controller:
         self.dist = config.getoption("dist", "load") or "load"
         # the --dist the user asked for (xdist turns "no" into "load" under -n): said in the header (audit G-2215)
         self.asked_dist = _asked_dist(config)
+        if self.asked_dist is None and self.dist == "load":
+            # exam PY-05.odpair (audit G-0172, G-0175): with no --dist asked, a test file's tests stay on one worker,
+            # in the serial order, so a test that relies on an earlier test of its file has the serial verdict
+            self.dist = "loadfile"
+            self.dist_note = " (no --dist asked: a file's tests stay together, in the serial order)"
+        else:
+            self.dist_note = ""
         if self.dist in _UNSUPPORTED and config.getoption("det_cache", None):
             # audit G-1548: every worker runs every test: one test id has as many results as workers, so no result
             # is the test's own; the cache cannot record or reuse them. Said, not silently recorded
@@ -720,6 +727,7 @@ class Controller:
         note = ""
         if self.asked_dist and self.asked_dist != self.dist:
             note = f" (--dist={self.asked_dist} asked; pytest-xdist runs {self.dist} under -n)"
+        note += getattr(self, "dist_note", "")
         if self.dist == "worksteal":
             note += " (work stealing is replaced by the fixed plan: LPT on recorded durations, sticky across runs)"
         return [f"detpy: pytest-xdist under a fixed plan (--dist={self.dist}){note}; testrun_uid {self.testrunuid}"]

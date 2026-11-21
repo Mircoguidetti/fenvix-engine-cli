@@ -623,3 +623,22 @@ def test_env_name_not_valid_utf8_refuses_the_test(pytester):
         "reads an environment variable whose name is not valid UTF-8")
     # the variable's value is part of the process environment, a part of every key (py-cache F-05)
     assert res[1]["cache"]["reused_ids"] == []
+
+
+def test_g0204_cache_audit_option_is_listed_and_reruns_reusable_tests(pytester, run_cache):
+    """Audit G-0204 / exam F-05.probe.audit-rerun: `fenvix python --help` lists the cache audit option
+    (--det-cache-audit, the same as --det-cache-verify); with it on, reusable tests run fresh and are compared."""
+    import os
+    import shutil
+    import subprocess
+
+    fx = shutil.which("fenvix", path=os.path.dirname(sys.executable))
+    if fx is not None:
+        p = subprocess.run([fx, "python", "--help"], capture_output=True, text=True, timeout=300)
+        assert "--det-cache-audit" in p.stdout, p.stdout[-2000:]
+    project(pytester, **{"pkg/mod.py": MOD, "test_m.py": TESTS})
+    run_cache()
+    r, reused, data = run_cache("--det-cache-audit=1.0")
+    assert reused == set()
+    assert sorted(data["cache"]["verified_ids"]) == sorted(ids("test_f", "test_g", "test_limit"))
+    assert data["cache"]["verify_mismatches"] == []
