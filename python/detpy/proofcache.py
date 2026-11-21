@@ -355,6 +355,13 @@ class ProofCachePlugin(ProofSession):
             pass
         if self.placement_findings() and session.exitstatus == 0:
             session.exitstatus = pytest.ExitCode.TESTS_FAILED
+        if self.role != "worker" and not self.iso_child \
+                and session.config.pluginmanager.getplugin("terminalreporter") is None:
+            # no terminal reporter (-p no:terminal): no summary hook will run; the summary file still holds it (G-0412)
+            try:
+                self.terminal_summary(_NoTerminal(session.config))
+            except Exception:  # noqa: BLE001 - never break the session's end
+                pass
 
     def check_workers(self, nids: list, assign: dict) -> list:
         """After the plan: reused results that read ``PYTEST_XDIST_WORKER`` and that this run's plan places on
@@ -627,7 +634,30 @@ class ProofCachePlugin(ProofSession):
         except (OSError, ValueError, AttributeError):
             return []
 
+    SUMMARY_FILE = "summary.txt"
+
     def terminal_summary(self, tr) -> None:
+        """The cache's summary, printed and written to ``<cache>/summary.txt`` (audit G-0412: a project that replaces
+        pytest's terminal reporter can swallow every line a plugin prints; the file keeps the summary, a 0-entry store's
+        reasons included, reachable)."""
+        rec = _SummaryRecorder(tr)
+        try:
+            self._terminal_summary(rec)
+        finally:
+            self.summary_saved = True
+            text = "\n".join(rec.lines) + "\n"
+
+            def save(path=os.path.join(self.dir, self.SUMMARY_FILE)):
+                try:
+                    with open(path + f".tmp{os.getpid()}", "w") as fh:
+                        fh.write(text)
+                    os.replace(path + f".tmp{os.getpid()}", path)
+                except OSError:
+                    pass
+
+            _core.detpy_probe_call(save)
+
+    def _terminal_summary(self, tr) -> None:
         found = self.placement_findings()
         if found:
             if getattr(self, "real_clock", False):
@@ -648,7 +678,7 @@ class ProofCachePlugin(ProofSession):
             for nid in sorted(rf):
                 tr.write_line(f"placement: {rf[nid]}", yellow=True)
         tr.section("detpy cache with proof")
-        for text, markup in self.summary_lines(tr.config.option.verbose):
+        for text, markup in self.summary_lines(getattr(tr.config.option, "verbose", 0)):
             tr.write_line(text, **({markup: True} if markup else {}))
         fo = getattr(self.cap, "follower", None)
         why = getattr(fo, "why_not", None) if fo is not None else None
@@ -668,6 +698,37 @@ class ProofCachePlugin(ProofSession):
                 tr.write_line(f"parallel vs serial (P5): {m['proven']} entr(ies) proven equal to the serial result "
                               f"(reusable by serial sessions), {len(m['diverged'])} diverged (not stored: the serial "
                               f"entry stays), {m['unproven']} unproven (no stable serial fingerprint under their key)")
+
+
+class _NoTerminal:
+    def __init__(self, config):
+        self.config = config
+
+    def section(self, *a, **kw):
+        pass
+
+    def write_line(self, *a, **kw):
+        pass
+
+
+class _SummaryRecorder:
+    """The terminal reporter as the cache's summary sees it: every section and line also kept in ``lines``."""
+
+    def __init__(self, tr):
+        self._tr = tr
+        self.lines: list = []
+        self.config = tr.config
+
+    def section(self, title, *a, **kw):
+        self.lines.append(f"== {title} ==")
+        return self._tr.section(title, *a, **kw)
+
+    def write_line(self, text, **kw):
+        self.lines.append(str(text))
+        return self._tr.write_line(text, **kw)
+
+    def __getattr__(self, name):
+        return getattr(self._tr, name)
 
 
 def _location_of(nodeid: str) -> tuple:

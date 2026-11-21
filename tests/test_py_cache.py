@@ -1054,3 +1054,42 @@ def test_a_failure_only_the_per_file_isolation_causes_is_reported_not_the_result
     # serial without the isolation (in-process) gives the pass with no finding
     inproc, _, out3 = run(pytester, "inproc", "-rA", "tests", env={"DETPY_CACHE_IN_PROCESS": "1"})
     assert set(out3.values()) == {"passed"} and "PLACEMENT FINDINGS" not in inproc.stdout, inproc.stdout[-3000:]
+
+
+PROJECT_REPORTER = """
+import pytest
+from _pytest.terminal import TerminalReporter
+
+
+class ProjectReporter(TerminalReporter):
+    def write_line(self, line, **markup):
+        pass
+
+    def section(self, title, sep="=", **kw):
+        pass
+
+
+@pytest.hookimpl(trylast=True)
+def pytest_configure(config):
+    std = config.pluginmanager.getplugin("terminalreporter")
+    if std is not None and not isinstance(std, ProjectReporter):
+        config.pluginmanager.unregister(std)
+        config.pluginmanager.register(ProjectReporter(config), "terminalreporter")
+"""
+
+
+@pytest.mark.parametrize("reporter", ["project", "none"])
+def test_g0412_cache_summary_is_written_when_a_project_reporter_swallows_it(pytester, reporter):
+    """Audit G-0412, exam probe F-05.probe.custom-reporter (claude/exam d92e259): a conftest that replaces pytest's
+    terminal reporter swallowed the cache summary; it is also written to <cache>/summary.txt, with or without a
+    reporter (-p no:terminal)."""
+    write(pytester, **{"tests/conftest.py": PROJECT_REPORTER if reporter == "project" else "",
+                       "tests/test_cr.py": "def test_cr_one():\n    assert sum([1, 2]) == 3\n\n"
+                                           "def test_cr_two():\n    assert 'ab'.upper() == 'AB'\n"})
+    extra = ("-p", "no:terminal") if reporter == "none" else ()
+    run(pytester, "cr1", *extra, "tests")
+    p, cache, _ = run(pytester, "cr2", *extra, "tests")
+    assert p.returncode == 0, p.stdout[-2000:]
+    assert "cache with proof" not in p.stdout  # swallowed, as in the project
+    text = (pytester.path / ".c" / "summary.txt").read_text()
+    assert "detpy cache with proof" in text and "reused 2 result(s) with proof" in text, text
