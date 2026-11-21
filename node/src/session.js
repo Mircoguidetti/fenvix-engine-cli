@@ -283,9 +283,8 @@ function runInputs(run, meta) {
     network: has('net') ? String(run.netMode) : 'open (net control off)',
     urandom: cfg.urandom ? 'controlled' : 'observed',
   };
-  // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; the
-  // Node shell does not record which variables a test read, so the verifier reports a differing one as
-  // `input-differs` for every test of the run
+  // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; a
+  // differing one is reported `input-differs` for the tests that read it (their `env.get` events, src/controls.js)
   const vp = volatile.patterns();
   // while the network is closed the proxy variables are its part (the closed network decides every connection), not
   // inputs; while recording (the real network) they are inputs
