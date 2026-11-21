@@ -61,6 +61,23 @@ All **MEASURED**. The order digest is identical in both runs of each pair (ufo `
 simple-statistics `f093e6a7f14c59e28ad85acb5a32116c`), which is the "parallel fingerprint equals the serial
 fingerprint" claim, directly.
 
+**node:test shards** (`--test-shard=K/N`, in the brief's scope but not examined by the exam) compose with lanes.
+**MEASURED** on simple-statistics, each shard running 4 lanes internally: shards 1/3, 2/3 and 3/3 ran 91, 93 and 93
+tests, summing to **277** — exactly the unsharded run, so no test is lost or run twice. Shard 1/3 serial against
+shard 1/3 in 4 lanes verifies `IDENTICAL`, all 91 tests, 0 not proven.
+
+**Explicit single-worker requests stay serial**, which is the branch added to `resolveWorkers()` for this change
+(previously such a request reached 1 only through the "said nothing" fall-through). **MEASURED**:
+
+| request | result |
+|---|---|
+| `vitest --maxWorkers=1` | serial execution |
+| `vitest --no-file-parallelism` | serial execution |
+| `jest -w 1` | serial execution |
+| `jest --runInBand` | serial execution |
+| `node-test --test-concurrency=1` | serial execution |
+| `node-test --test-concurrency=2` | parallel execution in 2 lanes |
+
 luxon (Jest) is reported separately because it does not pass cleanly in this container for reasons that have nothing
 to do with the engine. **MEASURED**, failing test sets compared as sets:
 

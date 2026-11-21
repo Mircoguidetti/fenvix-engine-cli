@@ -87,6 +87,15 @@ jobs:
           npm install --no-audit --no-fund --ignore-scripts --legacy-peer-deps --no-save vite
           git checkout -- package.json package-lock.json || true
 
+      # The native core of the JavaScript shell. `pip install -e .` above builds the PYTHON extension
+      # (crates/detpy-py); the shell needs crates/detpy-node, which this builds and copies to
+      # node/detjs.<platform>-<arch>.node. Without it every test fails with "native core not found".
+      - name: build the detjs native core
+        working-directory: node
+        run: |
+          npm run build
+          ls -l detjs.*.node
+
       - name: parallel regression tests (plan, fingerprints, hazards, refusals)
         working-directory: node
         run: node --test --test-concurrency=1 test/parallel-p041.test.js
