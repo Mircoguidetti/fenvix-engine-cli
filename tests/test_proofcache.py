@@ -535,10 +535,14 @@ def test_conftest_fixture_change_reruns_only_its_directory(pytester, run_cache):
         "sub2/test_s2.py": "def test_s2(other):\n    assert other == 2\n",
     })
     run_cache()
-    (pytester.path / "sub1/conftest.py").write_text(
-        "import pytest\n\nX = 1\n\n@pytest.fixture\ndef val():\n    return 1\n")
+    # review R-053 K1 and R-052: a conftest.py is in the code prefix of every later test of the process (its fixtures
+    # and import-time code may write state they read), and a test whose prefix changed runs after every earlier test
+    # (its stored needs may be stale). Both tests run; recovering the earlier test's reuse needs the carried set
+    # recomputed from the current code (the cache-inputs session, sessions/2026-11-20-py-cache/PROMPT-cache-inputs.md)
+    (pytester.path / "sub2/conftest.py").write_text(
+        "import pytest\n\nX = 1\n\n@pytest.fixture\ndef other():\n    return 2\n")
     _, reused, _ = run_cache()
-    assert reused == {"sub2/test_s2.py::test_s2"}
+    assert reused == set()
     # a new hook in a conftest can act on every test
     (pytester.path / "sub1/conftest.py").write_text(
         "import pytest\n\nX = 1\n\ndef pytest_runtest_setup(item):\n    pass\n\n"
