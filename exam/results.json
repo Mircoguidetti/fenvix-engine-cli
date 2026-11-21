@@ -1,47 +1,47 @@
 {
  "exam": "go-live acceptance exam (exam/PLAN.md)",
- "run_id": "44851972153",
+ "run_id": "44869317315",
  "base_run": null,
  "rows_rerun_in_run_id": null,
- "release_run_requested": "44851382824",
+ "release_run_requested": "44868747010",
  "artifacts_tested": [
   {
-   "release_run": "44851382824",
-   "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+   "release_run": "44868747010",
+   "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
    "head_branch": "claude/py-cache",
    "event": "workflow_dispatch",
    "selected": "requested",
    "install_ok": true,
    "legs": [
-    "PY-05@linux-x64/py3.12/node22 (exam run 44851972153)",
-    "PY-08@linux-x64/py3.12/node22 (exam run 44851972153)",
-    "PY-05@linux-x64/py3.14/node22 (exam run 44851972153)",
-    "PY-08@linux-x64/py3.14/node22 (exam run 44851972153)",
-    "F-05@linux-x64/py3.12/node22 (exam run 44851972153)",
-    "F-05@linux-x64/py3.14/node22 (exam run 44851972153)"
+    "PY-05@linux-x64/py3.12/node22 (exam run 44869317315)",
+    "PY-08@linux-x64/py3.12/node22 (exam run 44869317315)",
+    "PY-05@linux-x64/py3.14/node22 (exam run 44869317315)",
+    "PY-08@linux-x64/py3.14/node22 (exam run 44869317315)",
+    "F-05@linux-x64/py3.12/node22 (exam run 44869317315)",
+    "F-05@linux-x64/py3.14/node22 (exam run 44869317315)"
    ]
   }
  ],
  "installed": {
-  "44851972153": {
+  "44869317315": {
    "ok": true,
    "source": "ci-artifact",
    "platform": "linux-x64",
    "artifact": "engine-artifact",
-   "artifact_id": "14685597022",
-   "release_run": "44851382824",
-   "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+   "artifact_id": "14693425262",
+   "release_run": "44868747010",
+   "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
    "head_branch": "claude/py-cache",
    "event": "workflow_dispatch",
    "selected": "requested",
-   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r114.85583d6-linux-x86_64",
-   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r114.85583d6-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
-   "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.12.16);artifact fenvix-engine 0.1.0 build r114.85583d6 commit 85583d631431161b6b2e2ee1a3e6295ffed70e6a (linux-x86_64, glibc 2.28+);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
+   "engine_dir": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r120.5295ff0-linux-x86_64",
+   "wheel": "/home/runner/work/_temp/engine-unpacked/fenvix-engine-0.1.0-r120.5295ff0-linux-x86_64/wheels/fenvix-0.1.0-cp312-abi3-manylinux_2_28_x86_64.whl",
+   "version": "fenvix 0.1.0 (engine: detpy 0.1.0, trace encoding 2; Python 3.12.16);artifact fenvix-engine 0.1.0 build r120.5295ff0 commit 5295ff0f78bb97f0df67d9db94e3bd0fc9438379 (linux-x86_64, glibc 2.28+);detjs 0.1.0;fenvix-go absent;fenvix-skip absent;fenvix-agent.jar absent;",
    "sha256": {
-    "fenvix-engine-0.1.0-r114.85583d6-linux-x86_64.tar.gz": "29db135c07ca66e1563d53c7d53add76b95ffecb8728c0c10a3768216db86120",
-    "fenvix-engine-0.1.0-r114.85583d6-linux-x86_64.tar.gz.sha256": "3c8a0f9c4e4d6b27e82c6552abc5421b2159d907cf821ff4dac52ba263c48386",
+    "fenvix-engine-0.1.0-r120.5295ff0-linux-x86_64.tar.gz": "340750e0bbbaeb9a5623a77b4efd48251a5a8bb22afc822ddd6a288338ba3394",
+    "fenvix-engine-0.1.0-r120.5295ff0-linux-x86_64.tar.gz.sha256": "e07b15779bdf4d6bfd7392afcb3ee26d70eb3c7c8a73cbf8839088abeb88ccf3",
     "install_test.py": "40e5ea27180043213c35eae921896b78bd1405a643651023d24f38e33d197750",
-    "fenvix-engine-0.1.0-r114.85583d6-linux-x86_64/VERSION.json": "8e345d70c31052ad446d584312f1d84a34fc2801dfa4d8bf018485a445274f8c"
+    "fenvix-engine-0.1.0-r120.5295ff0-linux-x86_64/VERSION.json": "98a0f3bfa9bc04c8d06ea7c4f996c182c1ac7ca400b5423195cc5902658d564d"
    }
   }
  },
@@ -54,9 +54,9 @@
   "pass": 1,
   "fail": 23,
   "checks": 84,
-  "checks_passed": 60,
+  "checks_passed": 72,
   "gaps_in_scope": 207,
-  "gaps_closed": 20,
+  "gaps_closed": 27,
   "gaps_out_of_scope": 410,
   "gaps_unassignable": 7,
   "gaps_other_row_F14": 15
@@ -118,32 +118,9 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "F-05 linux-x64 py3.12 node22",
-     "job_id": 136685260513,
-     "run_id": "44851972153",
-     "seconds": 192,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.133.1"
-     },
-     "artifact": {
-      "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
-      "head_branch": "claude/py-cache",
-      "event": "workflow_dispatch",
-      "selected": "requested",
-      "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
-     }
-    },
-    "linux-x64/py3.14/node22": {
-     "job": "F-05 linux-x64 py3.14 node22",
-     "job_id": 136685260504,
-     "run_id": "44851972153",
-     "seconds": 194,
+     "job_id": 136740081359,
+     "run_id": "44869317315",
+     "seconds": 200,
      "install_ok": true,
      "runner": {
       "os": "Linux",
@@ -153,13 +130,36 @@
      },
      "artifact": {
       "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
       "head_branch": "claude/py-cache",
       "event": "workflow_dispatch",
       "selected": "requested",
       "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
+      "artifact_id": "14693425262"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "F-05 linux-x64 py3.14 node22",
+     "job_id": 136740081402,
+     "run_id": "44869317315",
+     "seconds": 297,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.376.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14693425262"
      }
     }
    },
@@ -170,7 +170,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -179,7 +179,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -188,7 +188,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 40 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_changed_value[Serializer-<lambda>1]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -197,7 +197,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 40 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_changed_value[Serializer-<lambda>1]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -206,7 +206,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 289, ran 9; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -215,7 +215,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 289, ran 9; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -224,7 +224,7 @@
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 0 tests []; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -233,7 +233,7 @@
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 0 tests []; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -242,7 +242,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 30, ran 620; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -251,7 +251,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 30, ran 620; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -260,7 +260,7 @@
      "ok": true,
      "expected": ">= 90% reused on an unchanged checkout, 0 differing outcomes",
      "observed": "run 2 reused 1324 of 1322 passing (needed >= 1189); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -269,7 +269,7 @@
      "ok": true,
      "expected": "a dependency version change: the dependent test reruns, outcome equals plain",
      "observed": "after six 1.16.0 -> 1.17.0: reused 0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0513"
@@ -281,7 +281,7 @@
      "ok": true,
      "expected": "a test depending on cpu-count is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing cpu-count: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -290,7 +290,7 @@
      "ok": true,
      "expected": "a test depending on umask is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing umask: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -299,7 +299,7 @@
      "ok": true,
      "expected": "a test depending on rlimit is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing rlimit: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -308,16 +308,16 @@
      "ok": false,
      "expected": "a test depending on hostname is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing hostname: reused 0; vs plain: plain run produced no outcomes",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
      "id": "F-05.wrong-reuse.pythonpath",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "a test depending on pythonpath is not reused when it changes (outcome equals plain)",
-     "observed": "run1 ['passed']; after changing pythonpath: reused 1; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_pythonpath.py::test_outside']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "run1 ['passed']; after changing pythonpath: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -326,7 +326,7 @@
      "ok": true,
      "expected": "a test depending on pythonwarnings is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing pythonwarnings: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -335,7 +335,7 @@
      "ok": true,
      "expected": "a test depending on ld-preload is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing ld-preload: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22"
     },
     {
@@ -344,7 +344,7 @@
      "ok": true,
      "expected": "a passing order-dependent test stays passing under --det-cache when its dependency reruns",
      "observed": "after an edit of the module: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0173"
@@ -353,10 +353,10 @@
     {
      "id": "F-05.probe.audit-rerun",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change",
-     "observed": "--det-cache-audit in `fenvix python --help`: False",
-     "run_id": "44851972153",
+     "observed": "--det-cache-audit in `fenvix python --help`: True",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0204"
@@ -368,7 +368,7 @@
      "ok": false,
      "expected": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0004",
@@ -381,7 +381,7 @@
      "ok": false,
      "expected": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0412"
@@ -393,7 +393,7 @@
      "ok": true,
      "expected": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0080"
@@ -402,10 +402,10 @@
     {
      "id": "F-05.probe.import-side-effect",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain",
-     "observed": "2 engine / 2 plain outcomes; differing 1 ['tests/test_exam_ise_b.py::test_dump']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0111"
@@ -417,7 +417,7 @@
      "ok": true,
      "expected": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module",
      "observed": "reused 2 of 2 numpy tests on an unchanged checkout",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0510"
@@ -429,7 +429,7 @@
      "ok": true,
      "expected": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain",
      "observed": "next UTC day (faketime +1d): reused 0 (expected 0); rc=1",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0020",
@@ -444,7 +444,7 @@
      "ok": true,
      "expected": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0016",
@@ -458,7 +458,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -467,7 +467,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src (no flip expected); plain outcome changed for 0 tests []; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -476,7 +476,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 28 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_loads_unsafe[Serializer]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -485,7 +485,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/itsdangerous/encoding.py: edit-src-flip; plain outcome changed for 28 tests ['tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[Serializer]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_bad_signature_exception[serializer_factory1]', 'tests/test_itsdangerous/test_serializer.py::TestSerializer::test_loads_unsafe[Serializer]']; run 2 reused 0, ran 297; outcomes vs plain rerun: 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -494,7 +494,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 289, ran 9; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -503,7 +503,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/test_itsdangerous/test_encoding.py: edit-test; plain outcome changed for 1 tests ['tests/test_itsdangerous/test_encoding.py::test_exam_new_failure']; run 2 reused 289, ran 9; outcomes vs plain rerun: 298 engine / 298 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -512,7 +512,7 @@
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 0 tests []; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -520,8 +520,8 @@
      "leg": "linux-x64/py3.14/node22",
      "ok": false,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
-     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 0 tests []; run 2 reused 0, ran 652; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "edit: src/click/utils.py: edit-src-flip; plain outcome changed for 0 tests []; run 2 reused 0, ran 650; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 1 ['tests/test_termui.py::test_fast_edit']; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -530,7 +530,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 30, ran 620; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -539,7 +539,7 @@
      "ok": true,
      "expected": "EDIT: dependent tests rerun, the others are reused, every outcome equals a plain rerun",
      "observed": "edit: tests/conftest.py: edit-conftest; plain outcome changed for 360 tests ['tests/test_arguments.py::test_argument_unbounded_nargs_cant_have_default', 'tests/test_arguments.py::test_bytes_args', 'tests/test_arguments.py::test_defaults_for_nargs']; run 2 reused 30, ran 620; outcomes vs plain rerun: 650 engine / 650 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -548,7 +548,7 @@
      "ok": true,
      "expected": ">= 90% reused on an unchanged checkout, 0 differing outcomes",
      "observed": "run 2 reused 1324 of 1321 passing (needed >= 1188); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -557,7 +557,7 @@
      "ok": true,
      "expected": "a dependency version change: the dependent test reruns, outcome equals plain",
      "observed": "after six 1.16.0 -> 1.17.0: reused 0; 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0513"
@@ -569,7 +569,7 @@
      "ok": true,
      "expected": "a test depending on cpu-count is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing cpu-count: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -578,7 +578,7 @@
      "ok": true,
      "expected": "a test depending on umask is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing umask: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -587,7 +587,7 @@
      "ok": true,
      "expected": "a test depending on rlimit is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing rlimit: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -596,16 +596,16 @@
      "ok": false,
      "expected": "a test depending on hostname is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing hostname: reused 0; vs plain: plain run produced no outcomes",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
      "id": "F-05.wrong-reuse.pythonpath",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "a test depending on pythonpath is not reused when it changes (outcome equals plain)",
-     "observed": "run1 ['passed']; after changing pythonpath: reused 1; vs plain: 1 engine / 1 plain outcomes; differing 1 ['tests/test_exam_wr_pythonpath.py::test_outside']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "run1 ['passed']; after changing pythonpath: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -614,7 +614,7 @@
      "ok": true,
      "expected": "a test depending on pythonwarnings is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing pythonwarnings: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -623,7 +623,7 @@
      "ok": true,
      "expected": "a test depending on ld-preload is not reused when it changes (outcome equals plain)",
      "observed": "run1 ['passed']; after changing ld-preload: reused 0; vs plain: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22"
     },
     {
@@ -632,7 +632,7 @@
      "ok": true,
      "expected": "a passing order-dependent test stays passing under --det-cache when its dependency reruns",
      "observed": "after an edit of the module: 2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0173"
@@ -641,10 +641,10 @@
     {
      "id": "F-05.probe.audit-rerun",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "`fenvix python --help` lists the cache audit option (--det-cache-audit); a cached run with the audit on reruns a seeded share of reusable tests fresh and reports 0 mismatches on an unchanged checkout and a mismatch after a hidden input change",
-     "observed": "--det-cache-audit in `fenvix python --help`: False",
-     "run_id": "44851972153",
+     "observed": "--det-cache-audit in `fenvix python --help`: True",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0204"
@@ -656,7 +656,7 @@
      "ok": false,
      "expected": "conftest installs a blockbuster-style hook that makes os.path.abspath/realpath raise inside a running asyncio loop; pytest-asyncio tests: plain pass, --det-cache pass with >= 1 test recorded",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0004",
@@ -669,7 +669,7 @@
      "ok": false,
      "expected": "conftest replaces pytest's terminal reporter: --det-cache still records entries, and the cache summary/warnings are still reachable (written to a file or printed) so a 0-entry store has a named reason",
      "observed": "NOT IMPLEMENTED in this exam version: the gap stays open",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0412"
@@ -681,7 +681,7 @@
      "ok": true,
      "expected": "test module binds `_st = os.stat` as a default argument at import; a test asserts _st(P).st_size == N; change P's size: --det-cache run 2 does not reuse the test, outcome equals plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0080"
@@ -690,10 +690,10 @@
     {
      "id": "F-05.probe.import-side-effect",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "add a new test module that patches a library at import time (e.g. sets json default separators); a test in another module depends on it; run 2 of --det-cache (pytest and unittest shell): the affected test is not reused, outcome equals plain",
-     "observed": "2 engine / 2 plain outcomes; differing 1 ['tests/test_exam_ise_b.py::test_dump']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "2 engine / 2 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0111"
@@ -705,7 +705,7 @@
      "ok": true,
      "expected": "test module importing numpy and using np.random under --det: --det-cache twice on an unchanged checkout reuses >= 1 test of that module",
      "observed": "reused 2 of 2 numpy tests on an unchanged checkout",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0510"
@@ -717,7 +717,7 @@
      "ok": true,
      "expected": "test passes only before a deadline D read through (a) datetime.now(), (b) sqlite `date('now')` with a user trace callback set, (c) C time() via ctypes; run 1 --det-cache before D; run 2 with the clock moved past D (libfaketime / next UTC day): not reused, outcome equals plain",
      "observed": "next UTC day (faketime +1d): reused 0 (expected 0); rc=1",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0020",
@@ -732,7 +732,7 @@
      "ok": true,
      "expected": "conftest runs a start-up program at session start (e.g. `git describe` / a script writing a file) and puts its output in os.environ; a test asserts on it; change the program's output (new tag) between run 1 and run 2 of --det-cache: the test is not reused, outcome equals plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "F-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0016",
@@ -746,26 +746,20 @@
     "F-05.edit-src-flip.click @ linux-x64/py3.14/node22",
     "F-05.edit-src-flip.click.n2 @ linux-x64/py3.12/node22",
     "F-05.edit-src-flip.click.n2 @ linux-x64/py3.14/node22",
-    "F-05.probe.audit-rerun @ linux-x64/py3.12/node22",
-    "F-05.probe.audit-rerun @ linux-x64/py3.14/node22",
     "F-05.probe.blockbuster @ linux-x64/py3.12/node22",
     "F-05.probe.blockbuster @ linux-x64/py3.14/node22",
     "F-05.probe.custom-reporter @ linux-x64/py3.12/node22",
     "F-05.probe.custom-reporter @ linux-x64/py3.14/node22",
-    "F-05.probe.import-side-effect @ linux-x64/py3.12/node22",
-    "F-05.probe.import-side-effect @ linux-x64/py3.14/node22",
     "F-05.wrong-reuse.hostname @ linux-x64/py3.12/node22",
-    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22",
-    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.12/node22",
-    "F-05.wrong-reuse.pythonpath @ linux-x64/py3.14/node22"
+    "F-05.wrong-reuse.hostname @ linux-x64/py3.14/node22"
    ],
    "missing_legs": [],
    "n_checks": 56,
-   "n_passed": 40,
+   "n_passed": 46,
    "gaps": {
     "total": 25,
-    "closed": 11,
-    "open": 14,
+    "closed": 13,
+    "open": 12,
     "no_check_ran": 0
    }
   },
@@ -1063,9 +1057,9 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "PY-05 linux-x64 py3.12 node22",
-     "job_id": 136685260497,
-     "run_id": "44851972153",
-     "seconds": 118,
+     "job_id": 136740081390,
+     "run_id": "44869317315",
+     "seconds": 115,
      "install_ok": true,
      "runner": {
       "os": "Linux",
@@ -1075,36 +1069,36 @@
      },
      "artifact": {
       "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
       "head_branch": "claude/py-cache",
       "event": "workflow_dispatch",
       "selected": "requested",
       "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
+      "artifact_id": "14693425262"
      }
     },
     "linux-x64/py3.14/node22": {
      "job": "PY-05 linux-x64 py3.14 node22",
-     "job_id": 136685260510,
-     "run_id": "44851972153",
-     "seconds": 114,
+     "job_id": 136740081338,
+     "run_id": "44869317315",
+     "seconds": 120,
      "install_ok": true,
      "runner": {
       "os": "Linux",
       "arch": "X64",
       "image": "ubuntu24",
-      "image_version": "20261116.376.1"
+      "image_version": "20261116.133.1"
      },
      "artifact": {
       "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
       "head_branch": "claude/py-cache",
       "event": "workflow_dispatch",
       "selected": "requested",
       "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
+      "artifact_id": "14693425262"
      }
     }
    },
@@ -1112,10 +1106,10 @@
     {
      "id": "PY-05.det2",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "--det -n 2 twice: traces identical; outcomes equal serial plain",
-     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 0, \"diverged\": 1330, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"config\": 1330}, \"inputs_recorded\": true, \"identical\": 0}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 1330, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1330}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22"
     },
     {
@@ -1124,7 +1118,7 @@
      "ok": true,
      "expected": "--det -n 4 outcomes equal serial",
      "observed": "1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22"
     },
     {
@@ -1133,16 +1127,16 @@
      "ok": true,
      "expected": "--det --det-cache -n 2 twice: reuse, outcomes equal plain",
      "observed": "run 2 reused 1324 of 1322 passing (needed >= 661); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22"
     },
     {
      "id": "PY-05.odpair",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "an order-dependent pair has the plain verdict serial, -n 2, -n 4, cache -n 2, --det-isolate",
-     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {'n2': {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'failed'}, 'n4': {'tests/test_exam_odpair.py::test_b_victim': 'failed', 'tests/test_exam_odpair.py::test_a_setter': 'passed'}, 'isolate': {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'failed'}}",
-     "run_id": "44851972153",
+     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {}",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0172",
@@ -1154,10 +1148,10 @@
     {
      "id": "PY-05.probe.isolate",
      "leg": "linux-x64/py3.12/node22",
-     "ok": false,
+     "ok": true,
      "expected": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0",
-     "observed": "3 engine / 3 plain outcomes; differing 1 ['tests/test_exam_iso.py::test_b_victim']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0169",
@@ -1170,7 +1164,7 @@
      "ok": false,
      "expected": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid",
      "observed": "values [\"'a97a96ecf2bd0205cafa16c9073cc77d'\", \"'a97a96ecf2bd0205cafa16c9073cc77d'\"]; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"env\": 1}, \"inputs_recorded\": true, \"identical\": 0}",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0174"
@@ -1182,7 +1176,7 @@
      "ok": true,
      "expected": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason",
      "observed": "rc=0; 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; named refusal: False",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0399"
@@ -1194,7 +1188,7 @@
      "ok": true,
      "expected": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)",
      "observed": "rc=4; INTERNALERROR: False; names the xdist version: True",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.12 node22",
      "gaps": [
       "G-0530"
@@ -1203,10 +1197,10 @@
     {
      "id": "PY-05.det2",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "--det -n 2 twice: traces identical; outcomes equal serial plain",
-     "observed": "verify: rc=1 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 0, \"diverged\": 1330, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"config\": 1330}, \"inputs_recorded\": true, \"identical\": 0}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "verify: rc=0 summary={\"runs\": 2, \"tests\": 1330, \"stable\": 1330, \"diverged\": 0, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {}, \"inputs_recorded\": true, \"identical\": 1330}; outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22"
     },
     {
@@ -1215,7 +1209,7 @@
      "ok": true,
      "expected": "--det -n 4 outcomes equal serial",
      "observed": "1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22"
     },
     {
@@ -1224,16 +1218,16 @@
      "ok": true,
      "expected": "--det --det-cache -n 2 twice: reuse, outcomes equal plain",
      "observed": "run 2 reused 1324 of 1321 passing (needed >= 660); outcomes vs plain: 1330 engine / 1330 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22"
     },
     {
      "id": "PY-05.odpair",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "an order-dependent pair has the plain verdict serial, -n 2, -n 4, cache -n 2, --det-isolate",
-     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {'n2': {'tests/test_exam_odpair.py::test_b_victim': 'failed', 'tests/test_exam_odpair.py::test_a_setter': 'passed'}, 'n4': {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'failed'}, 'isolate': {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'failed'}}",
-     "run_id": "44851972153",
+     "observed": "plain {'tests/test_exam_odpair.py::test_a_setter': 'passed', 'tests/test_exam_odpair.py::test_b_victim': 'passed'}; differing modes: {}",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0172",
@@ -1245,10 +1239,10 @@
     {
      "id": "PY-05.probe.isolate",
      "leg": "linux-x64/py3.14/node22",
-     "ok": false,
+     "ok": true,
      "expected": "odpair under `--det --det-isolate` (pytest 8.0 and 9): same verdict as serial --det, or the order dependence is reported as a finding; a unittest.TestCase test passes under --det-isolate on pytest 8.0",
-     "observed": "3 engine / 3 plain outcomes; differing 1 ['tests/test_exam_iso.py::test_b_victim']; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "observed": "3 engine / 3 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0169",
@@ -1261,7 +1255,7 @@
      "ok": false,
      "expected": "pytest-xdist installed, serial run: a test asserts on the testrun_uid fixture vs a stored value; two --det runs give the same uid, and --det-cache does not reuse a result that depended on a different uid",
      "observed": "values [\"'a97a96ecf2bd0205cafa16c9073cc77d'\", \"'a97a96ecf2bd0205cafa16c9073cc77d'\"]; verify rc=1 summary={\"runs\": 2, \"tests\": 1, \"stable\": 0, \"diverged\": 1, \"missing\": 0, \"outcome_unstable\": 0, \"order_identical\": true, \"reasons\": {\"env\": 1}, \"inputs_recorded\": true, \"identical\": 0}",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0174"
@@ -1273,7 +1267,7 @@
      "ok": true,
      "expected": "`--det -d --tx 2*popen//chdir=<tmp> --rsyncdir .` twice: traces verify identical and outcomes equal serial, or the engine refuses with a named reason",
      "observed": "rc=0; 297 engine / 297 plain outcomes; differing 0 []; missing in engine 0 []; extra 0; named refusal: False",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0399"
@@ -1285,7 +1279,7 @@
      "ok": true,
      "expected": "with pytest-xdist 3.6 installed, `--det -n 2` runs or exits with a message naming the required xdist version (no INTERNALERROR)",
      "observed": "rc=4; INTERNALERROR: False; names the xdist version: True",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-05 linux-x64 py3.14 node22",
      "gaps": [
       "G-0530"
@@ -1293,22 +1287,16 @@
     }
    ],
    "failed": [
-    "PY-05.det2 @ linux-x64/py3.12/node22",
-    "PY-05.det2 @ linux-x64/py3.14/node22",
-    "PY-05.odpair @ linux-x64/py3.12/node22",
-    "PY-05.odpair @ linux-x64/py3.14/node22",
-    "PY-05.probe.isolate @ linux-x64/py3.12/node22",
-    "PY-05.probe.isolate @ linux-x64/py3.14/node22",
     "PY-05.probe.testrun-uid @ linux-x64/py3.12/node22",
     "PY-05.probe.testrun-uid @ linux-x64/py3.14/node22"
    ],
    "missing_legs": [],
    "n_checks": 16,
-   "n_passed": 8,
+   "n_passed": 14,
    "gaps": {
     "total": 9,
-    "closed": 3,
-    "open": 6,
+    "closed": 8,
+    "open": 1,
     "no_check_ran": 0
    }
   },
@@ -1353,32 +1341,9 @@
    "legs": {
     "linux-x64/py3.12/node22": {
      "job": "PY-08 linux-x64 py3.12 node22",
-     "job_id": 136685260584,
-     "run_id": "44851972153",
-     "seconds": 56,
-     "install_ok": true,
-     "runner": {
-      "os": "Linux",
-      "arch": "X64",
-      "image": "ubuntu24",
-      "image_version": "20261116.376.1"
-     },
-     "artifact": {
-      "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
-      "head_branch": "claude/py-cache",
-      "event": "workflow_dispatch",
-      "selected": "requested",
-      "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
-     }
-    },
-    "linux-x64/py3.14/node22": {
-     "job": "PY-08 linux-x64 py3.14 node22",
-     "job_id": 136685260519,
-     "run_id": "44851972153",
-     "seconds": 59,
+     "job_id": 136740081427,
+     "run_id": "44869317315",
+     "seconds": 55,
      "install_ok": true,
      "runner": {
       "os": "Linux",
@@ -1388,13 +1353,36 @@
      },
      "artifact": {
       "ok": true,
-      "release_run": "44851382824",
-      "release_commit": "85583d631431161b6b2e2ee1a3e6295ffed70e6a",
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
       "head_branch": "claude/py-cache",
       "event": "workflow_dispatch",
       "selected": "requested",
       "artifact": "engine-artifact",
-      "artifact_id": "14685597022"
+      "artifact_id": "14693425262"
+     }
+    },
+    "linux-x64/py3.14/node22": {
+     "job": "PY-08 linux-x64 py3.14 node22",
+     "job_id": 136740081387,
+     "run_id": "44869317315",
+     "seconds": 62,
+     "install_ok": true,
+     "runner": {
+      "os": "Linux",
+      "arch": "X64",
+      "image": "ubuntu24",
+      "image_version": "20261116.133.1"
+     },
+     "artifact": {
+      "ok": true,
+      "release_run": "44868747010",
+      "release_commit": "5295ff0f78bb97f0df67d9db94e3bd0fc9438379",
+      "head_branch": "claude/py-cache",
+      "event": "workflow_dispatch",
+      "selected": "requested",
+      "artifact": "engine-artifact",
+      "artifact_id": "14693425262"
      }
     }
    },
@@ -1405,7 +1393,7 @@
      "ok": true,
      "expected": "a test reading a child's output is not reused after the child's input changed",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22"
     },
     {
@@ -1414,7 +1402,7 @@
      "ok": true,
      "expected": "a C getenv read that changed is not reused",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22"
     },
     {
@@ -1423,7 +1411,7 @@
      "ok": true,
      "expected": "a test reading the C clock is never reused with a stale outcome",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22"
     },
     {
@@ -1432,7 +1420,7 @@
      "ok": true,
      "expected": "a file outside the root read by the test changed: not reused",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22"
     },
     {
@@ -1441,7 +1429,7 @@
      "ok": true,
      "expected": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22",
      "gaps": [
       "G-0079"
@@ -1453,7 +1441,7 @@
      "ok": true,
      "expected": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.12 node22",
      "gaps": [
       "G-0078"
@@ -1465,7 +1453,7 @@
      "ok": true,
      "expected": "a test reading a child's output is not reused after the child's input changed",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22"
     },
     {
@@ -1474,7 +1462,7 @@
      "ok": true,
      "expected": "a C getenv read that changed is not reused",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22"
     },
     {
@@ -1483,7 +1471,7 @@
      "ok": true,
      "expected": "a test reading the C clock is never reused with a stale outcome",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22"
     },
     {
@@ -1492,7 +1480,7 @@
      "ok": true,
      "expected": "a file outside the root read by the test changed: not reused",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22"
     },
     {
@@ -1501,7 +1489,7 @@
      "ok": true,
      "expected": "test ctypes.CDLL-loads a small shared library built outside the root and asserts its return value; rebuild the library returning another value: run 2 not reused, fails like plain (Linux and macOS arm64)",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22",
      "gaps": [
       "G-0079"
@@ -1513,7 +1501,7 @@
      "ok": true,
      "expected": "test uses a C library reading a data file F outside the root (sqlite3 opening a db file, zlib with a dictionary file read in C, ctypes fopen); run 1 --det-cache pass; change F; run 2 not reused, fails like plain",
      "observed": "run1 ['passed']; run2 reused 0; run2 vs plain under the changed input: 1 engine / 1 plain outcomes; differing 0 []; missing in engine 0 []; extra 0",
-     "run_id": "44851972153",
+     "run_id": "44869317315",
      "job": "PY-08 linux-x64 py3.14 node22",
      "gaps": [
       "G-0078"
@@ -2047,7 +2035,7 @@
   "G-0111": {
    "row": "F-05",
    "check": "F-05.probe.import-side-effect",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "F-05.probe.import-side-effect @ linux-x64/py3.12/node22",
@@ -2467,7 +2455,7 @@
   "G-0169": {
    "row": "PY-05",
    "check": "PY-05.probe.isolate",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "PY-05.odpair @ linux-x64/py3.12/node22",
@@ -2479,7 +2467,7 @@
   "G-0171": {
    "row": "PY-05",
    "check": "PY-05.probe.isolate",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "PY-05.probe.isolate @ linux-x64/py3.12/node22",
@@ -2489,7 +2477,7 @@
   "G-0172": {
    "row": "PY-05",
    "check": "PY-05.odpair",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "PY-05.odpair @ linux-x64/py3.12/node22",
@@ -2519,7 +2507,7 @@
   "G-0175": {
    "row": "PY-05",
    "check": "PY-05.odpair",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "PY-05.odpair @ linux-x64/py3.12/node22",
@@ -2529,7 +2517,7 @@
   "G-0176": {
    "row": "PY-05",
    "check": "PY-05.odpair",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "WRONG-RESULT",
    "checks": [
     "PY-05.odpair @ linux-x64/py3.12/node22",
@@ -2574,7 +2562,7 @@
   "G-0204": {
    "row": "F-05",
    "check": "F-05.probe.audit-rerun",
-   "status": "OPEN",
+   "status": "CLOSED",
    "severity": "BLOCKS-USE",
    "checks": [
     "F-05.probe.audit-rerun @ linux-x64/py3.12/node22",
