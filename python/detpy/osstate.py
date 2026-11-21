@@ -474,12 +474,11 @@ def install(patcher, cfg) -> None:
 
 
 def input_text() -> str:
-    """The ``os`` run input: what the control does in this session (the same text in a serial run and in an xdist
-    controller; a session that could not take the shared temporary directory names the one it took)."""
-    tmp = os.path.basename(TMPDIR) if TMPDIR else "<real>"
-    if tmp.startswith("fenvix-det-gw"):
-        tmp = "fenvix-det" + tmp[len("fenvix-det-gw"):].lstrip("0123456789")
-    return (f"virtual pid; temporary directory {tmp} (fresh); /dev/urandom, /dev/random, /proc/uptime virtual; "
+    """The ``os`` run input: what the control does in this session, never which directory it took (the same text
+    in a serial run, an xdist controller and a session that runs beside another one, which takes ``fenvix-det.1``:
+    the directory's name is not an input, the control is)."""
+    tmp = "fresh per run" if TMPDIR else "real"
+    return (f"virtual pid; temporary directory: {tmp}; /dev/urandom, /dev/random, /proc/uptime virtual; "
             "other files read, devices and OS measurements recorded")
 
 

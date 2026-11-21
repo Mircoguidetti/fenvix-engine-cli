@@ -262,6 +262,29 @@ def test_n_auto_is_sized_on_the_real_machine_under_det(tmp_path):
     assert workers[0].group(1) == workers[1].group(1), (plain.stdout, det.stdout)
 
 
+def test_two_concurrent_runs_on_one_machine_are_identical(project, tmp_path):
+    """A --det session takes <tmp>/fenvix-det; one that runs beside it takes fenvix-det.1. The directory's name is
+    not a run input (the os control is: "temporary directory: fresh per run"), so the two verify IDENTICAL. The
+    concurrent session is made certain by holding the first directory's lock while one run starts."""
+    import fcntl
+
+    tmp = tmp_path / "machine-tmp"
+    tmp.mkdir()
+    env = _env(TMPDIR=str(tmp))
+    fd = os.open(str(tmp / "fenvix-det.lock"), os.O_RDWR | os.O_CREAT, 0o600)
+    fcntl.flock(fd, fcntl.LOCK_EX)  # another session holds fenvix-det
+    try:
+        ta = run_det(project, "beside", env=env)
+    finally:
+        os.close(fd)
+    assert (tmp / "fenvix-det.1").is_dir()
+    tb = run_det(project, "alone", env=env)
+    rc, rep, text = verify(ta, tb)
+    assert rc == 0, text
+    hdr = json.loads(ta.read_text().splitlines()[0])["meta"]["inputs"]
+    assert "fresh per run" in hdr["os"] and "fenvix-det" not in hdr["os"], hdr["os"]
+
+
 def test_declared_irrelevant_env_is_listed_and_ignored(project):
     ta = run_det(project, "a", env=_env(TRUTH_OTHER="1"))
     tb = run_det(project, "b", env=_env(TRUTH_OTHER="2"))
