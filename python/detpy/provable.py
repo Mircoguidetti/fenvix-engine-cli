@@ -120,7 +120,7 @@ class Sensor:
     """
 
     __slots__ = ("tool", "active", "_verdicts", "_keep", "_seen", "outside", "_native_ok", "_native_seen",
-                 "_reason", "_transparent_memo", "_infra_memo")
+                 "_reason", "_transparent_memo", "_infra_memo", "_seen_for", "_native_bad")
 
     def __init__(self) -> None:
         self.tool: int | None = None
@@ -134,7 +134,9 @@ class Sensor:
         # free the object and hand its address to a different callable, and a cache keyed on identity would then
         # answer for the wrong one.
         self._keep: list = []
-        self._seen: set = set()          # gaps already reported for the running test
+        self._seen: set = set()          # gaps already reported for the test named by _seen_for
+        self._seen_for: str | None = None
+        self._native_bad: list = []      # unaudited extensions found, reported again for every later test
         self.outside: set = set()        # gaps found while no test was running
         self._native_ok: frozenset = frozenset()
         self._native_seen: set = set()
@@ -148,13 +150,19 @@ class Sensor:
         if st.nodeid is None:
             self.outside.add(key)
             return
+        # keyed by the running test, not by the process: a set that is never cleared would report a gap for the
+        # first test only and leave every later test of the process looking clean
+        if self._seen_for != st.nodeid:
+            self._seen_for = st.nodeid
+            self._seen = set()
         if key in self._seen:
             return
         self._seen.add(key)
         _state.record_at("other", f"unaccounted.{kind}", site, name)
 
     def start_test(self) -> None:
-        self._seen.clear()
+        self._seen = set()
+        self._seen_for = _state.STATE.nodeid
 
     # -- sensor 1: every call crossing out of Python ---------------------------------------------------
     def _transparent(self, mod: str) -> bool:
@@ -260,12 +268,18 @@ class Sensor:
         for name, m in list(sys.modules.items()):
             if name in self._native_seen:
                 continue
+            self._native_seen.add(name)
             f = getattr(m, "__file__", None)
             if not f or not (f.endswith(".so") or f.endswith(".pyd") or f.endswith(".dylib")):
                 continue
-            self._native_seen.add(name)
             if name not in self._native_ok:
-                self._report("native", name)
+                self._native_bad.append(name)
+        # every unaudited extension loaded at any point so far, for THIS test: the module is still loaded, so its
+        # C code could have run inside this test too. Scanning only what is new keeps the cost to the modules
+        # imported since the last test; reporting all of them keeps the answer right for every test, which is what
+        # this method's contract says ("one imported earlier for all of them").
+        for name in self._native_bad:
+            self._report("native", name)
 
     # -- start and stop --------------------------------------------------------------------------------
     def start(self) -> bool:

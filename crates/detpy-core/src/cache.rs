@@ -126,10 +126,11 @@ impl CachePolicy {
         &self,
         record: &crate::fingerprint::TestRecord,
         provable_meta: Option<&serde_json::Value>,
+        controls: &[String],
         outside: &[String],
         counts: &BTreeMap<Source, u64>,
     ) -> bool {
-        crate::provable::judge_record(record, provable_meta, outside).is_provable()
+        crate::provable::judge_record(record, provable_meta, controls, outside).is_provable()
             && self.forbidden.iter().all(|s| counts.get(s).copied().unwrap_or(0) == 0)
     }
 }

@@ -821,6 +821,19 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     // a run without one cannot have any of its tests reported identical
     let provable_meta: Vec<Option<serde_json::Value>> =
         traces.iter().map(|t| t.header.meta.get("provable").cloned()).collect();
+    // the `--det` controls each run had on: the general rule's `Controlled` answers rest on them, so a run
+    // missing one cannot have any of its tests reported identical (crate::provable::required_controls)
+    let run_controls: Vec<Vec<String>> = traces
+        .iter()
+        .map(|t| {
+            t.header
+                .meta
+                .get("controls")
+                .and_then(|v| v.as_array())
+                .map(|a| a.iter().filter_map(|v| v.as_str().map(str::to_string)).collect())
+                .unwrap_or_default()
+        })
+        .collect();
     // the first run whose inputs differ from run 0's: its differences are every test's first divergent event
     let input_differences: Vec<InputDifference> =
         (1..n).map(|j| diff_inputs(inputs[0].as_ref(), inputs[j].as_ref(), 0, j)).find(|d| !d.is_empty()).unwrap_or_default();
@@ -905,7 +918,12 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
                 .iter()
                 .enumerate()
                 .filter_map(|(i, r)| r.map(|r| (i, r)))
-                .find_map(|(i, r)| match provable::judge_record(r, provable_meta[i].as_ref(), &not_proven_outside) {
+                .find_map(|(i, r)| match provable::judge_record(
+                    r,
+                    provable_meta[i].as_ref(),
+                    &run_controls[i],
+                    &not_proven_outside,
+                ) {
                     Verdict::Provable => None,
                     Verdict::NotProven { kind, detail } => Some((i, r, kind, detail)),
                 })
@@ -1279,7 +1297,10 @@ mod tests {
                 "contract": crate::provable::SENSOR_CONTRACT,
                 "surface": crate::provable::surface_digest(),
                 "runtime": "cpython3.13",
-            }
+            },
+            // the controls the general rule's `Controlled` answers rest on: part of every real trace, and a run
+            // missing one cannot have any test reported identical
+            "controls": crate::provable::required_controls("py-monitoring/1"),
         })
     }
 
@@ -1423,6 +1444,7 @@ mod tests {
             "inputs": m,
             "env_reads_recorded": true,
             "provable": sensor_meta()["provable"].clone(),
+            "controls": sensor_meta()["controls"].clone(),
         });
         t
     }

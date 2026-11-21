@@ -67,9 +67,12 @@ function installProcess() {
   // "accounted" and are left alone). A run that cannot start it declares no sensor in the trace header, and then
   // every test of the run is NOT PROVEN, never IDENTICAL -- crates/detpy-core/src/provable.rs.
   try {
-    if (!require('./provable').install(PATCHER, noteNotProven, projectSite)) {
+    if (!require('./provable').install(PATCHER, noteNotProven)) {
       STATE.__provableReason = require('./provable').reason;
       try { require('./provable').declare(); } catch { /* the run directory is gone */ }
+      // Without the sensor nothing in this process can be shown identical, so nothing in it may be stored for
+      // reuse either: a later run that reused one of its results would have no ground to call it provable.
+      level0Gap(`the general rule's sensor is not running: ${STATE.__provableReason}`, false);
     }
   } catch (e) {
     STATE.__provableReason = `the sensor could not be installed: ${e && e.message}`;
