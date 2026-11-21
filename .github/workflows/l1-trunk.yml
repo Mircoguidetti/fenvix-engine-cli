@@ -23,8 +23,10 @@ permissions:
   contents: write
 
 concurrency:
+  # Never cancel a run in flight: the suites jobs are the measurement this row is judged on, and a later push
+  # (a doc, a harness fix) must not throw away hours of it. Runs queue behind each other instead.
   group: l1-trunk-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 env:
   PYTHONUNBUFFERED: "1"
