@@ -1,125 +1,70 @@
 {
- "nonce": 22,
+ "nonce": 23,
  "jobs": [
   {
    "job": "gate",
-   "name": "actual"
-  },
-  {
-   "job": "gate",
    "name": "documenso"
   },
   {
-   "job": "gate",
-   "name": "sveltekit"
-  },
-  {
-   "job": "gate",
-   "name": "uptime-kuma"
-  },
-  {
-   "job": "hunt",
-   "name": "actual"
-  },
-  {
-   "job": "hunt",
+   "job": "gate2",
    "name": "documenso"
   },
   {
-   "job": "hunt",
-   "name": "sveltekit"
-  },
-  {
-   "job": "hunt",
-   "name": "uptime-kuma"
-  },
-  {
-   "job": "hunt2",
+   "job": "gate3",
    "name": "documenso"
   },
   {
-   "job": "huntp",
+   "job": "gate4",
    "name": "documenso"
-  },
-  {
-   "job": "par",
-   "name": "documenso"
-  },
-  {
-   "job": "par",
-   "name": "sveltekit"
   }
  ],
  "params": {
-  "hunt": {
-   "seeds": 8,
-   "replays": 10,
-   "budget_min": 340,
-   "run_timeout_min": 45,
-   "per_run_s": 900
+  "gate": {
+   "runs": 2,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 120,
+   "per_run_s": 400,
+   "target_timeout_min": 8,
+   "env": {
+    "DETJS_LS_TRACE": "/tmp/ls.trace"
+   }
   },
-  "hunt2": {
-   "seeds": 8,
-   "replays": 10,
-   "budget_min": 340,
-   "run_timeout_min": 45,
-   "per_run_s": 900
+  "gate2": {
+   "runs": 2,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 120,
+   "per_run_s": 400,
+   "target_timeout_min": 8,
+   "env": {
+    "DETJS_LS_TRACE": "/tmp/ls.trace",
+    "DETJS_LS_TEARDOWN": "0"
+   }
   },
-  "hunt:actual": {
-   "from_step": 20
+  "gate3": {
+   "runs": 2,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 120,
+   "per_run_s": 400,
+   "target_timeout_min": 8,
+   "env": {
+    "DETJS_LS_TRACE": "/tmp/ls.trace",
+    "DETJS_LS_TEST_GAP_MS": "0"
+   }
   },
-  "hunt:documenso": {
-   "only": [
-    "delete-recipient.spec.ts",
-    "find-inbox.spec.ts",
-    "delete-organisation.spec.ts",
-    "admin-find-documents.spec.ts",
-    "email-transport-claims.spec.ts",
-    "update-envelope-items.spec.ts",
-    "template-field-prefill.spec.ts"
-   ]
-  },
-  "hunt2:documenso": {
-   "only": [
-    "search-documents.spec.ts",
-    "set-envelope-contents-audit-logs.spec.ts",
-    "set-envelope-contents-ids.spec.ts",
-    "set-envelope-contents-limits.spec.ts",
-    "test-unauthorized-analytics-access.spec.ts",
-    "search-templates.spec.ts"
-   ]
-  },
-  "huntp": {
-   "seeds": 7,
-   "seed_from": 0,
-   "replays": 10,
-   "budget_min": 340,
-   "run_timeout_min": 45,
-   "per_run_s": 900,
-   "workers": 2
-  },
-  "par": {
-   "workers": 2,
-   "runs": 10,
-   "w1_runs": 2,
-   "plain_runs": 1,
-   "budget_min": 340,
-   "run_timeout_min": 45,
-   "per_run_s": 1200
-  },
-  "par:documenso": {
-   "args": [
-    "e2e/api/trpc/admin/delete-recipient.spec.ts",
-    "e2e/api/trpc/admin/admin-find-documents.spec.ts",
-    "e2e/api/trpc/admin/delete-organisation.spec.ts",
-    "e2e/api/trpc/admin/admin-search.spec.ts",
-    "--project=api"
-   ]
-  },
-  "par:sveltekit": {
-   "args": [
-    "client.test.js"
-   ]
+  "gate4": {
+   "runs": 2,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 120,
+   "per_run_s": 400,
+   "target_timeout_min": 8,
+   "env": {
+    "DETJS_LS_TRACE": "/tmp/ls.trace",
+    "DETJS_LS_TRACE_ALL": "1"
+   }
   }
  },
  "suites": false

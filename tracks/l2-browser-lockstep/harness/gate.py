@@ -354,7 +354,7 @@ def keep_trace(path, dst_name):
     return str(dst.relative_to(RESULT.parent))
 
 
-if JOB == "gate":
+if JOB in ("gate", "gate2", "gate3", "gate4"):  # gate2-4: the same gate with other params (A/B variants in one run)
     # Gate (round 4): R --det runs (lockstep on) of each listed target with the same epoch and seed; identical
     # traces are what the gate asks for. A few plain runs of each target are kept for comparison of outcomes.
     os.environ["DETJS_LS_STATS"] = "1"
@@ -400,6 +400,14 @@ if JOB == "gate":
             if r.get("log_tail") and o not in ("passed",):
                 T.setdefault("run_logs", {})[str(i + 1)] = r["log_tail"][-2500:]
             T["errors"].append((r.get("errors") or {}).get(k, "")[:400])
+            lt = os.environ.get("DETJS_LS_TRACE")
+            if lt and Path(lt).exists():
+                # the lockstep coordinator's own trace (DETJS_LS_TRACE, params env): its last lines say what the
+                # engine waited on when a run ended
+                try:
+                    T.setdefault("ls_trace_tail", {})[str(i + 1)] = Path(lt).read_text(errors="replace").splitlines()[-300:]
+                finally:
+                    Path(lt).unlink(missing_ok=True)
             T["walls"].append(r.get("wall_s"))
             st = [x for x in ls_stats(label) if spec["grep"] in x.get("test", "")]
             T["stats"].append(st[-1] if st else None)
