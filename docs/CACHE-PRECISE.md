@@ -167,7 +167,7 @@ Only the earlier tests that left something behind are needed. Section 9 measures
 
 | situation | before (today) | P-061 |
 |---|---|---|
-| `T` fails (no stored result) | every earlier test of its process | `needs(T)` from the stored `mods`/`reads` of the earlier tests and `T`'s loose `reads`, transitively |
+| `T` fails (no stored result) | every earlier test of its process | key, code prefix and needs unchanged: run alone in an isolated child and compared with the stored failure (section 8, phase-1 measurement); otherwise `needs(T)` from the stored `mods`/`reads` of the earlier tests and `T`'s loose `reads`, transitively |
 | `T` is new | every earlier test of its process | `needs(T)` with `R(T)` from the static closure of its file, or `?` when the file cannot be analysed, and the file family unknown |
 | `T`'s test file was edited; `T`'s own unit is unchanged | every earlier test, and every later test of the process | `T` reruns only if its key (units, code prefix as fixed by R-056) says so; its needs as above |
 | an earlier test `t` changed (it runs: new code, new test, failing) | every later test of the process reruns (code prefix) | **conditional reuse** (below) |
@@ -241,6 +241,49 @@ The reuse targets of phase 2 are `test_reuse_*`, marked `xfail(strict=True)` unt
 - a failing test reruns alone, or with its one modifier;
 - a new test runs alone;
 - an edited test file reruns at most its own tests.
+
+### Phase-1 measurement of the premise (prototype probe)
+
+`harness/cache_precise/modprobe.py` is a pure-Python prototype of section 4's walk: module globals only, deep, with
+per-root digests. It ran under plain pytest, CPython 3.13, in this container (MEASURED; the walk is slow in Python:
+54 s on itsdangerous, 434 s on attrs).
+
+| suite | tests | modify anything | minus noise cells (1) | minus declared memos | rest after hypothesis, test-class and counter cells |
+|---|---|---|---|---|---|
+| itsdangerous 2.2.0 | 297 | 18 | 3 | 2 | 2 |
+| attrs 25.3.0 | 1,330 | 1,326 | 772 | 772 | 225 |
+
+(1) `warnings._showwarnmsg_impl`, which pytest's per-test `catch_warnings` swaps, and hypothesis's gc timing counters
+(`junkdrawer._gc_start`, `_gc_cumulative_time`).
+
+What this means for the design:
+
+- **itsdangerous**: the premise holds. Only 2 tests leave state behind, so a new, failing or edited test needs almost
+  nothing.
+- **attrs**: the premise does **not** hold with `M` alone. 722 tests bump `attr._make._CountingAttr.cls_counter`,
+  attrs' global counter: every `attr.ib()` increments it. 212 fill `inspect._shadowed_dict_from_weakref_mro_tuple`
+  (an `lru_cache`), and 58 change hypothesis's settings and thread-local state.
+  - Any running test that reaches `attr` reads the counter. So a failing test at position 1,073 needs about 600 earlier
+    tests, and its needs are transitive: ESTIMATED ~55 % reused, against 90 % required.
+- **Rule added for failing tests (phase 2).** A test whose stored result is a failure (its loose entry), with
+  - an unchanged key,
+  - an unchanged code prefix,
+  - and its needed predecessors unchanged and reused,
+
+  has, by the same determinism argument that makes a reused pass sound, the outcome it had. It runs only for its output,
+  in an **isolated child process** (`--det-isolate` path), with no predecessors, so its own writes do not reach the
+  session. If the child's outcome and failure digest equal the stored ones, that outcome is reported. Otherwise it is a
+  late demotion: it is replayed after its full prefix (section 6).
+
+  With this rule, the attrs no-edit case needs no predecessor at all (ESTIMATED ≥ 99 % reused). The precise needs of
+  section 2 are then only needed for new tests, edited tests and tests whose key changed.
+- **Still open for phase 2: counters.** A new or edited test that reaches `attr` needs every earlier `cls_counter`
+  writer. A rule for "relative-order counters" needs evidence the walk cannot give, and stays unknown until a dynamic
+  read check exists. This bounds the attrs add-test and edit-test reuse; the exam checks this on itsdangerous, where it
+  does not matter.
+- **Declared noise cells (DECLARED, for the coordinator).** Not counting `warnings._showwarnmsg_impl` (pytest
+  infrastructure) and hypothesis's gc timing counters as modifications is a declaration. Hypothesis reads the gc counters
+  for its deadline accounting, which the virtual clock already governs.
 
 ### Finding of phase 1: `putenv` and children under the cache (a wrong outcome, not a wrong reuse)
 
