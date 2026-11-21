@@ -129,6 +129,15 @@ is not reused, and every earlier test of its process runs before it (review R-05
 from the old code). Cost: an edit to a test file reruns every later test of its process (worker), and their
 predecessors.
 
+**Written reuse limit (founder decision 2026-11-21: the Python cache closes with it).** A test that fails, or whose
+test file (or a conftest.py / __init__.py loaded with it) changed, runs every time; when its carried set reached a
+library (most real tests do), every earlier test of its process (worker) runs before it, because it may read state any
+of them left in memory and that state is not tracked per test. Sound (0 wrong reuse), less reuse. MEASURED, exam run
+44925123655 on 2b67ac0, attrs 25.3.0 (where 2 tests fail in the exam's checkout, positions 1,073-1,074 of 1,330):
+unchanged rerun reused 256 of 1,322 passing serially and 0 under -n 2; itsdangerous, one test file edited: 0 of 298
+reused. The same attrs suite with every test passing: 1,330 of 1,330 reused, serial and -n 2 (MEASURED locally).
+Lifting it needs per-test tracking of the state each test changes (a separate session).
+
 `--det-isolate` (one child per test file, or per test) is an explicit choice: no in-process state crosses files.
 
 * **Outcomes under `--det-isolate` of tests that depend on earlier files.** A test that works only after another

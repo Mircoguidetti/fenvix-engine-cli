@@ -65,6 +65,12 @@ What the per-file mode guarantees (coordinator's conditions):
 
 ### F-05 cache with proof (serial and -n), with receipts
 
+* **Exam 44925123655 on 2b67ac0: reuse limit, written (founder decision 2026-11-21, option 2).** PY-08 12/12, no wrong
+  reuse. F-05.no-edit (attrs) reused 256 of 1,322, PY-05.cache2 0 of 1,322, F-05.edit-test.itsdangerous 0 of 298.
+  Cause (MEASURED from the exam's logs and locally): 2 attrs tests fail in the exam's checkout (positions 1,073-1,074);
+  a failing test runs every time and, reaching a library, needs every earlier test (R-050 P2), so the 1,072 before it
+  run; an edited test file likewise (R-052). With every test passing the same suite reuses 1,330 of 1,330 serially and
+  under -n 2 (MEASURED locally). Written in docs/LIMITS.md 10; per-test state tracking goes to a separate session.
 * **Review R-053 (wrong results K1, P, E), fixed.** K1: the conftest.py and __init__.py files of every test file's
   directory chain (existence and content) are in the code prefix. P: the key holds the machine's real CPU set, CPU
   count and host name (`_machine`, `posix.uname`), not the values --det pins for tests (trunk 9e3663a). E:
