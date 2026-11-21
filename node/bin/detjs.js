@@ -28,18 +28,6 @@ async function main(argv) {
   // --det-isolate for Vitest and Jest: one runner session per test (src/isolate.js), which run without it
   if ((cmd === 'vitest' || cmd === 'jest') && !process.env.DETJS_ISOLATE_CHILD
     && rest.some((a) => a === '--det-isolate' || a === '--det-isolate=1' || a === '--det-isolate=true')) return require('../src/isolate').main(cmd, rest);
-  // P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. When a run's lanes turn
-  // out to have shared a path or a fixed port, the files the hazard names are run again in one lane and the
-  // re-run's outcomes are the ones reported (src/parallel-rerun.js). Engaged only for a `--det` run of a runner
-  // that uses lanes, and it costs a second pass only when a hazard is actually found.
-  {
-    const rerun = require('../src/parallel-rerun');
-    if (rerun.shouldWrap(cmd, rest)) {
-      const r = await rerun.main(cmd, rest);
-      if (r.signal) { process.kill(process.pid, r.signal); return 1; }
-      return r.status;
-    }
-  }
   if (cmd === 'vitest') return require('../src/vitest/cli').main(rest);
   if (cmd === 'jest') return require('../src/jest/cli').main(rest);
   if (cmd === 'playwright') return require('../src/playwright/cli').main(rest);
@@ -149,7 +137,28 @@ const PIN_NEEDS_RESTART = PIN && process.env.DETJS_PINNED === undefined && (
   Object.entries(PIN.env).some(([k, v]) => process.env[k] !== v) || (PIN.loc !== 'keep' && process.env.LANGUAGE !== undefined));
 if (PIN && !PIN_NEEDS_RESTART) process.env.DETJS_PINNED = process.env.DETJS_PINNED || `tz=${PIN.tz};locale=${PIN.loc}`;
 
-if (needsEarly(process.argv.slice(2)) || PIN_NEEDS_RESTART) {
+// P1 (docs/LIMITS.md section 10, row JS-07): a placement must never decide an outcome. When a run's lanes turn out
+// to have shared a path or a fixed port, the files the hazard names are run again in one lane and the re-run's
+// outcomes are the ones reported (src/parallel-rerun.js).
+//
+// This sits OUTSIDE the two re-execs below on purpose. Each pass has to be a whole, ordinary detjs invocation: it
+// must do its own early-capture re-exec and its own TZ pinning, exactly as an unwrapped run does. Putting the
+// wrapper inside that chain instead (in `main`) added a process that carried the early-capture preload and the
+// rewritten NODE_OPTIONS, and that process then recorded reads of its own into the run's cache inputs; it broke
+// G-1402, G-1586 and the two `verify-inputs-attacks` data cases, which is how the mistake was found. From here the
+// instrumented part of the chain is byte-identical to an unwrapped run, and the wrapper is just an outer process
+// like the one the early re-exec already starts from.
+const RERUN = require('../src/parallel-rerun');
+if (RERUN.shouldWrap(process.argv[2], process.argv.slice(3))) {
+  RERUN.main(process.argv[2], process.argv.slice(3)).then((r) => {
+    if (r.signal) { process.kill(process.pid, r.signal); return; }
+    process.exitCode = r.status;
+  }, (err) => {
+    const msg = err && err.message ? err.message : String(err);
+    console.error(/^detjs: /.test(msg) && process.env.DETJS_DEBUG !== '1' ? msg : (err && err.stack ? err.stack : err));
+    process.exitCode = 2;
+  });
+} else if (needsEarly(process.argv.slice(2)) || PIN_NEEDS_RESTART) {
   const path = require('node:path');
   let env = { ...process.env };
   if (needsEarly(process.argv.slice(2))) {

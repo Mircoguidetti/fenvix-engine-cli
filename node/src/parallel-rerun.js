@@ -104,7 +104,7 @@ async function main(cmd, argv) {
   const childEnv = { ...process.env, DETJS_HAZARD_RERUN: '1' };
 
   // ---- pass 1: the run exactly as it is today, straight to the user's terminal and the user's files ----
-  const p1 = spawnSync(process.execPath, [BIN, cmd, ...argv], { cwd: root, env: childEnv, stdio: 'inherit' });
+  const p1 = spawnSync(process.execPath, [...process.execArgv, BIN, cmd, ...argv], { cwd: root, env: childEnv, stdio: 'inherit' });
   if (p1.signal) return { signal: p1.signal };
   const status1 = p1.status ?? 1;
 
@@ -128,7 +128,7 @@ async function main(cmd, argv) {
   const fileArgs = cmd === 'jest'
     ? ['--runTestsByPath', ...affected.map((f) => path.resolve(root, f))]
     : affected.map((f) => path.resolve(root, f));
-  const args2 = [BIN, cmd, ...rerunArgs(argv), '--det-workers=1', `--det-trace=${t2path}`,
+  const args2 = [...process.execArgv, BIN, cmd, ...rerunArgs(argv), '--det-workers=1', `--det-trace=${t2path}`,
     ...(cmd === 'vitest' && !argv.includes('run') ? ['run'] : []), ...fileArgs];
   const p2 = spawnSync(process.execPath, args2, { cwd: root, env: childEnv, stdio: 'inherit' });
   if (p2.signal) { fs.rmSync(work, { recursive: true, force: true }); return { signal: p2.signal }; }

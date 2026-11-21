@@ -46,6 +46,10 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
+  # Gate workflow: every matrix runs with `fail-fast: true` (founder, 2026-11-21, "red CI stops everything at
+  # once"). The first red job ends the run: a red job means there is a bug, and the rest of the matrix is then
+  # spent learning nothing. Measurement workflows that are not a pass/fail gate keep `fail-fast: false`, so that a
+  # later push does not throw away hours of data -- this is not one of them.
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -92,7 +96,7 @@ jobs:
     # serial on purpose: some suites change the interpreter's site-packages (R-019c E9/E10) and cannot share it
     timeout-minutes: 240
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
         # 4 machines per version, test files split by size (release/shard.py); each shard is still serial inside
@@ -163,7 +167,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         python: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["3.12", "3.13", "3.14"]' || '["3.13"]') }}
         node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
@@ -197,7 +201,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         node: ${{ fromJSON((github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.depth != 'light')) && '["22", "24", "26"]' || '["24"]') }}
         shard: [0, 1, 2, 3]
@@ -232,7 +236,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         lang: [python, node]
     steps:
@@ -267,7 +271,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         include:
           - {name: "glibc 2.28, CPython 3.12, pytest 8.1, Node 22", image: "quay.io/pypa/manylinux_2_28_x86_64", python: "/opt/python/cp312-cp312/bin/python3.12", node: "22", mode: "--pytest pytest==8.1.*"}

@@ -50,7 +50,12 @@ const verify = (...a) => spawnSync(process.execPath, [BIN, 'verify', ...a], { en
 function refusalIsSound(runner, dir, file, why, change, o = {}) {
   const r1 = run(runner, dir, o.args, { env: o.env, det: o.det });
   assert.equal(r1.status, 0, `run 1 must pass\n${show(r1)}`);
-  assert.match(JSON.stringify(r1.summary.not_cached_detail), why, `not cached for ${why}\n${show(r1)}`);
+  // `o.whyIn` names the field the reason is recorded in: a per-file refusal lands in `not_cached_detail`, a
+  // refusal of the whole project in `misses`. Only a caller that expects a project-level refusal passes it, and
+  // every other assertion below is unchanged either way -- the point of this helper is that nothing is reused and
+  // that the change still makes the cached run fail, whichever reason the engine gave.
+  const whyField = o.whyIn === 'misses' ? r1.summary.misses : r1.summary.not_cached_detail;
+  assert.match(JSON.stringify(whyField), why, `not cached for ${why}\n${show(r1)}`);
   const r2 = run(runner, dir, o.args, { env: o.env, det: o.det });
   assert.equal(r2.status, 0, show(r2));
   assert.ok(!reused(r2).includes(file), `${file} must never be reused\n${show(r2)}`);
@@ -276,7 +281,17 @@ for (const runner of RUNNERS) {
         'pre.cjs': 'globalThis.__preloadedAt = Date.now();\n', 'v.txt': '1',
       });
       const env = { NODE_OPTIONS: `--require ${path.join(dir, 'pre.cjs')}` };
-      refusalIsSound(runner, dir, fileOf(runner, 'a'), /a preload module read the clock or OS entropy before Level 0/, { 'v.txt': '2' }, { env });
+      // Since `--det` is parallel by default (row JS-07, gap G-1044) a Jest run with a NODE_OPTIONS preload
+      // refuses the WHOLE project, not just this file: the preload runs in each worker before the capture, so
+      // what it reads is not observed (node/src/jest/cli.js). That refusal is strictly stronger than the per-file
+      // one this test was first written for -- nothing of the project is reused -- so it is what Jest must say
+      // here, and the rest of refusalIsSound still has to hold. What the coarser refusal costs in reuse is
+      // measured in docs/LIMITS.md P5. Vitest wraps its own workers and still gives the per-file reason.
+      const why = runner === 'jest'
+        ? /NODE_OPTIONS preloads run in Jest workers before the capture/
+        : /a preload module read the clock or OS entropy before Level 0/;
+      refusalIsSound(runner, dir, fileOf(runner, 'a'), why, { 'v.txt': '2' },
+        { env, whyIn: runner === 'jest' ? 'misses' : 'not_cached_detail' });
     });
 
     test('G-1585 loader: an off-thread loader (module.register in an --import preload) makes the tests never reused, and no longer breaks the run', T, () => {
