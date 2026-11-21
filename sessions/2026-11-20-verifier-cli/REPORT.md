@@ -14,9 +14,8 @@ PARTIAL. All four rows work on real projects. Why not DONE:
 - PR #11 is open. It holds F-18 complete, design A for the environment and the CPU count, and the fixes from a
   local run of the frozen exam (`claude/exam` `a6d8824`). It has not been through the CI on its head, the CI exam or
   the reviewer yet.
-- Exam checks still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
-  network, runs in the CI exam) and the F-02 `py-autodoc` target (not found; cause UNKNOWN at this push, under
-  investigation). The Node checks of F-01/F-02/F-03 belong to the Node session.
+- Exam check still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
+  network, runs in the CI exam). The Node checks of F-01/F-02/F-03 belong to the Node session.
 - Reviewer p1-verifier findings #5, #8 and #9 are fixed in PR 2. The reviewer's own tests pass, but PR 2 is not open yet:
   - #5: a polluter was named although the replays did not confirm it
   - #8: traces without run inputs were called IDENTICAL
@@ -65,6 +64,20 @@ without this branch, F-01 passed 3/33. Fixed in this round, each as a class with
 - **Entropy default** (G-1523, above).
 - **F-18**: explore exits 2 on a suite that cannot run; repro shows the collection error; a missing `--python` is one
   line.
+- **A configuration that did not run the target was counted as searched** (F-02, exam `py-autodoc`). Cause
+  (MEASURED, the exam's own project venv): two of the project's modules do not import (`requests` is not installed),
+  so pytest interrupted every `--det` session with 0 tests run, while `--collect-only` still listed the target.
+  repro searched 51 configurations in which the target never ran and reported "passed ... not-found". Fix:
+  - a configuration counts as searched only if the target ran in it; if none ran it, the status is `not-run` with
+    the runner's error lines, and `fenvix repro` exits 2
+  - search, minimisation and replay runs pass `--continue-on-collection-errors`, and the bundle and the printed
+    replay command carry it
+  - tests: `tests/test_fenvix_cli.py::test_a_module_that_does_not_import_does_not_hide_the_target`,
+    `::test_a_target_that_never_ran_is_not_run_not_searched`,
+    `::test_a_runner_that_stops_before_any_test_is_not_run_with_its_error`. The reference spec of the Rust port
+    (`tests/rust_hotpaths_ref/_ref_repro.py`) follows the same rule, and `tests/test_repro_rust.py` still holds.
+  - after the fix, `F-02.py-repro.idoft-py-autodoc` and `F-02.py-replay.idoft-py-autodoc` PASS (MEASURED, frozen exam,
+    local): repro exit 0, replay 10/10 failed with one fingerprint.
 
 Targeted rerun after the fixes (MEASURED): PASS for `random.pinned` (Python, Node), `network.pinned` (Python,
 Node), `hostname.pinned.python`, and the F-02 mdutils/krllint repro and replay checks. Not re-run locally after
@@ -75,7 +88,6 @@ Still failing locally, with owner:
 | check | why | owner |
 |---|---|---|
 | `cassette-redact` | needs the network; this container has none | runs in the CI exam |
-| F-02 `py-autodoc` | target `examples/test_gen_each_case.py::TestUnittest::test_foo_bar` not found in 51 runs; cause UNKNOWN at this push | this session (one bounded investigation) |
 | `hostname.pinned.node` (locale), tz/luxon, fake-timers, node clock sources, node vm, timer consistency, mtime node | Node controls | Node session |
 | F-02/F-03 Node checks | Node adapters | Node session |
 
