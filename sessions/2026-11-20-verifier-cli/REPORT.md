@@ -14,10 +14,10 @@ PARTIAL. All four rows work on real projects. Why not DONE:
 - PR #11 is open. It holds F-18 complete, design A for the environment and the CPU count, and the fixes from a
   local run of the frozen exam (`claude/exam` `a6d8824`). It has not been through the CI on its head, the CI exam or
   the reviewer yet.
-- Exam checks still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
-  network, runs in the CI exam) and three checks added to the frozen exam on 2026-11-21 (`claude/exam` `f6bbcdf`),
-  which are F-01/F-03 gaps planned for the next push on this branch: `F-01.probe.cassette`,
-  `F-01.probe.replay-clients`, `F-03.probe.multi-project`. F-01 and F-03 stay open until they land.
+- Exam checks not passing locally in these rows (see "Exam rows run locally"), each for a reason of this container:
+  `cassette-redact` (it resolves a real host: no network here) and `F-01.probe.replay-clients` (its Deno leg: no
+  deno installed here; httpx, aiohttp, sendmsg, h2 and Bun pass). `F-01.probe.service-host` needs Docker. The CI
+  exam decides these three.
 - Reviewer p1-verifier findings #5, #8 and #9 are fixed in PR 2. The reviewer's own tests pass, but PR 2 is not open yet:
   - #5: a polluter was named although the replays did not confirm it
   - #8: traces without run inputs were called IDENTICAL
@@ -99,9 +99,29 @@ Still failing locally, with owner:
 |---|---|---|
 | `F-03.probe.realm-failure` | PASS | |
 | `F-01.probe.service-host` | not run here | needs Docker (none in this container); the CI exam decides |
-| `F-03.probe.multi-project` | FAIL | Vitest test ids carry no project name, so the node and jsdom parts of one file merge into one test (verify sees 1 of 2). Next push: the project name in the ids when the workspace has more than one project, with the Node repro and cache readers |
-| `F-01.probe.cassette` | FAIL (Python; Node passes) | requests keeps the connection alive: test b's request goes over the socket test a opened and is recorded under a, so b replayed alone finds no recording. Next push: a kept TCP connection is re-attributed to the test that uses it, in record and replay (UDP already does this) |
-| `F-01.probe.replay-clients` | FAIL (httpx, aiohttp; sendmsg and h2 pass) | asyncio TLS uses `SSLContext.wrap_bio` (MemoryBIO), which the network control does not intercept: the cassette holds ciphertext and the random ClientHello never matches, so replay refuses. Next push: plaintext recorded above `wrap_bio` and a replay `SSLObject` stand-in |
+| `F-03.probe.multi-project` | FAIL, then PASS after the fix | Vitest test ids carried no project name, so the node and jsdom parts of one file merged into one test (verify saw 1 of 2) |
+| `F-01.probe.cassette` | FAIL (Python), then PASS (Python and Node) after the fix | requests keeps the connection alive: test b's request went over the socket test a opened and was recorded under a, so b replayed alone found no recording |
+| `F-01.probe.replay-clients` | FAIL (httpx, aiohttp), then httpx and aiohttp PASS after the fix; the check stays FAIL here on its Deno leg (deno not installed) | asyncio's and anyio's TLS run over `SSLContext.wrap_bio`, which the network control did not intercept: the cassette held ciphertext and the random handshake never matched, so replay refused |
+
+Fixed in this round, each as a class with a regression test:
+
+- **Vitest projects** (F-03, `1100f69`, `d74d033`): a test of a named project is `file@@project::name`, the form the
+  cache already uses for its keys. The project name is used whenever the project has one, not only when the
+  workspace has several: a `--project` filter changes the count, and the ids must not change with it. The cache's
+  `testKey` (JS and Rust) and the repro's `fileOfId` accept an id that already carries its project.
+  Test: `node/test/projects.test.js` ("both parts are in the trace and each is compared").
+- **Connections kept alive across tests** (F-01, `1d6d16b`): the first send of a later test on a kept connection
+  continues it under that test (`Cassette::continue_in`). A replayed connection stays open after its last segment
+  unless the recording read the server's end of file, and the next request is answered from the running test's
+  recording. Cassettes written before this keep their end of file after the last segment. The reference spec of
+  the Rust network port follows the same rules. Test:
+  `tests/test_network_gaps.py::test_a_connection_kept_alive_across_tests_replays_each_test_alone_and_in_any_order`
+  (full run, test b alone, reversed order).
+- **TLS over memory BIOs** (F-01, `ca23d6a`): under `--det` record and replay, `SSLContext.sslobject_class` is a
+  `DetSSLObject`. It finds the socket it runs over in its caller (asyncio's transport socket, a stream's raw socket,
+  a socket local), records the plaintext with the handshake's details, and on replay is the identity over the
+  plaintext stream. Test: `tests/test_network_gaps.py::test_tls_over_memory_bios_is_recorded_as_plaintext_and_replayed`
+  (asyncio, and the anyio shape used by httpx).
 
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
@@ -287,8 +307,9 @@ message until then.
 
 ## Next round (explicit gaps, not done here)
 
-- F-01/F-03, next push on this branch (coordinator decision 2026-11-21): `F-03.probe.multi-project`,
-  `F-01.probe.cassette`, `F-01.probe.replay-clients` (causes in the table above).
+- TLS over memory BIOs: the socket is found in the caller's frames. A library that hides its socket deeper than
+  that (no socket, no stream with `extra_attributes` within 8 frames) is recorded as ciphertext and refused on
+  replay, as before this round.
 
 - F-01, CPU count:
   - `psutil.cpu_count` is not pinned (planned in PR 2; it reads `/proc` and `sched_getaffinity` natively).
