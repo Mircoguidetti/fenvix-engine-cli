@@ -93,3 +93,21 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
    3.14: 15 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
    Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
    Node (after the cec096c merge): 854 tests, 853 pass, 0 fail, 1 skipped.
+
+11) Head with review R-050 P2 fixed (in-process default; needs kept for tests without an entry, decision (b);
+    Rust store loose_needs; wheel and Node addon rebuilt and reinstalled), MEASURED 2026-11-21, full suite, three
+    suites in parallel on 4 CPUs:
+== Python 3.12   25 failed, 1158 passed, 104 skipped, 1 deselected  (2440 s)
+== Python 3.13   25 failed, 1156 passed, 106 skipped, 1 deselected  (2323 s)
+== Python 3.14   24 failed, 1160 passed, 103 skipped, 1 deselected  (2573 s)
+   (the classes of 8)-10): reference-trace, timing and control comparisons under three parallel suites)
+   Every failing test rerun alone, per version (plus test_r050_a_late_failure_keeps_the_earlier_independent_tests_reused,
+   added after the full run started):
+   3.12: 26 passed; test_f01_gaps::test_first_run_after_a_checkout... failed in the batch rerun, alone: 1 passed
+   3.13: 27 passed
+   3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   cargo test --release: 192 passed, 0 failed.
+   Node: __NODE__
+   Before (b), decision (a) (every earlier test for any test without an entry) MEASURED locally: about 20 tests
+   per interpreter that assert reuse failed (one failing or refused test reran every earlier test of its process).
