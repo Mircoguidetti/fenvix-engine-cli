@@ -18,10 +18,16 @@ PARTIAL. All four rows work on real projects. Why not DONE:
   `cassette-redact` (it resolves a real host: no network here) and `F-01.probe.replay-clients` (its Deno leg: no
   deno installed here; httpx, aiohttp, sendmsg, h2 and Bun pass). `F-01.probe.service-host` needs Docker. The CI
   exam decides these three.
-- Reviewer p1-verifier findings #5, #8 and #9 are fixed in PR 2. The reviewer's own tests pass, but PR 2 is not open yet:
-  - #5: a polluter was named although the replays did not confirm it
-  - #8: traces without run inputs were called IDENTICAL
-  - #9: replay outside the project root reported the defect as possibly fixed
+- Reviewer p1-verifier findings #5, #8 and #9 and R-050's V10 are fixed in this push (`f1a12f5`). The reviewer's
+  tests (`tests/test_review_p1_findings.py`) and R-050's (`tests/test_review_r050_verifier.py`) are in the branch,
+  unchanged, and pass locally:
+  - #5: a polluter was named although the replays did not confirm it. Now a cause is claimed only for a reproduced
+    bundle; otherwise it is "not established", and the tests it ran with are not named.
+  - #8: traces without run inputs were called IDENTICAL. Now they are "NOT PROVEN" (exit 1).
+  - #9: replay outside the project root reported the defect as possibly fixed. Now it exits 2 and says the test did
+    not run; the bundle records its project root.
+  - V10 (#10, the rest): with a broken module next to good ones, explore reported a clean suite. Now it explores the
+    tests that collect, then exits 2 naming the collection errors (plain pytest cannot run that suite).
 
 Status by row:
 
@@ -312,7 +318,7 @@ message until then.
   replay, as before this round.
 
 - F-01, CPU count:
-  - `psutil.cpu_count` is not pinned (planned in PR 2; it reads `/proc` and `sched_getaffinity` natively).
+  - `psutil.cpu_count` is not pinned (it reads `/proc` and `sched_getaffinity` natively).
   - Child processes see the real count.
   - Class rule: a read of the real CPU count that is not pinned must be recorded as an event (the verifier never
     stays silent about it).
@@ -320,7 +326,6 @@ message until then.
   write facts (a cross-row design, cache row and F-02). See the timing gap above.
 - Python 3.9 projects (the 23 idoft repositories of Block 2): a clean refusal ("Python 3.11+ required") instead of a
   collection crash. The crash is the trunk's `co_qualname` use (`b24770f`), outside these rows.
-- Reviewer p1-verifier findings in PR 2: #5, #8, #9.
 
 ## Gaps of the audit in these rows
 
