@@ -121,6 +121,25 @@ have. It now asks `_me()`, the same question the gate asks. `tests/test_l1_prova
   engage for exploring seeds (`CFG.seed and CFG.preempt`), not for the calm seed 0 that `--det-threads` uses by
   default. UNKNOWN: the cost of the Python fallback for exploring seeds on this lineage.
 
+## One thing I broke and had to repair
+
+Commit `9ccac5fc`, whose message says it is a report change, also reverted five files to the trunk baseline —
+`_level0.py`, `_state.py`, `clock.py`, `plugin.py`, `uncontrolled.py`, 209 deletions. That is the entire
+Python-side integration of this port: the two options, the config, the installs, the per-test hooks, the
+provability decision, the Rust-backed `_state` helpers and the clock sleep hook. At that commit
+`fenvix python --help` listed neither `--det-threads` nor `--det-async`.
+
+Cause: `git checkout <ref> -- <paths>`, which I used to put the trunk's own Python in place while proving the
+anyio hang was not mine, **stages** what it checks out. The index still held those five files when I committed
+what I believed was only a report. The later `git checkout HEAD -- python/detpy/` then restored the damaged
+versions, which concealed it. It surfaced only because a patch anchor that an earlier commit had added was
+missing from the file.
+
+Repaired by restoring all five from `cc3a9479` and verifying them byte-identical to it. `threads.py`, `aio.py` and
+`frames.py` were never staged and were untouched. The matrix results reported here are unaffected: they ran on
+`89d076e8`, which predates the bad commit. Recorded because a reader comparing commits would otherwise find the
+port appearing and disappearing with no explanation.
+
 ## Why the numbers below are believable: three bugs in my own harness
 
 Found by running the harness on a real suite before trusting it, not by it failing.
@@ -210,21 +229,40 @@ budget.
 Assigned to Block 2 by the coordinator with that reproduction. Level 1 happens to unblock it, which is not a fix
 and is not claimed as one.
 
-## Three tests Level 1 breaks, and the fix
+## Three tests I reported Level 1 as breaking: the claim is withdrawn
 
 MEASURED, same selection, `--det --det-threads --det-async`: 3 failed, 84 passed, 1 error, against 87 passed
 plain. All three are `TestBlockingPortal::test_from_async`, parametrised `[asyncio-trio]`, `[asyncio+eager-trio]`
 and `[trio-asyncio]`, failing with `RuntimeError: This portal is not running`.
 
-Cause: anyio's blocking portal runs a **trio** loop in a worker thread. `--det-threads` manages that thread, but
-trio's own synchronization primitives are not scheduling points this scheduler can see, so the portal thread never
-gets the baton while the main thread walks on and finds the portal not running. Breaking a passing test is worse
-than failing to prove one, so this is a defect of the port and not a limit to document.
+I reported that as a defect of this port, with a diagnosis (anyio's blocking portal runs a **trio** loop in a
+worker thread; trio's primitives are not scheduling points this scheduler can see, so the portal thread is
+starved) and a fix (route `trio.run` through `threads._wrap_outside_run`, as uvloop already is). **Both were
+wrong, and the comparison I drew them from was invalid.**
 
-The fix is the mechanism L1 already uses for uvloop: `threads._wrap_outside_run` makes the thread leave the
-scheduler for the whole loop run, records `threads.uncontrolled`, and rejoins afterwards. `trio.run` is looked up
-on the module at call time by anyio's backend, so the existing late-import hook wraps it the same way. Those three
-tests then pass as they do plain and are honestly reported NOT PROVEN.
+What settles it is a minimal probe — a worker thread that calls `trio.run` on a coroutine appending to a list:
+
+| mode | result |
+| --- | --- |
+| plain pytest | 1 passed |
+| `--det` | **1 failed** — `assert [] == [1]`: the coroutine never ran |
+| `--det --det-threads` | 1 failed, the same way |
+
+So trio in a worker thread is already broken by **Level 0 alone**, with no Level 1 option. The three anyio
+failures are almost certainly that same Level 0 defect, surfacing only once `--det-threads` lifts the `--det`
+hang that was hiding the rest of the file.
+
+The invalid step was mine: I compared Level 1 against **plain pytest** (87 passed) because `--det` hangs on that
+file and could not provide a baseline. "Passes plain, fails under L1" says nothing about what L1 broke when
+`--det` breaks it too. The right baseline was unavailable, and I should have said so instead of attributing it.
+
+The `trio.run` wrap is kept, but **not as a fix and not claimed as one**. MEASURED: it does not change the anyio
+result (3 failed / 84 passed with and without it). It is kept because a thread running a trio loop genuinely is
+not controlled by this scheduler, so it should leave the scheduler and the test should be marked — MEASURED, it
+records `threads.uncontrolled` and `uncontrolled.thread`, which is the honest answer rather than a scheduler
+recording `sched.*` events around a loop whose scheduling it does not own.
+
+Handed to Block 2 with the hang, as the same family: trio under `--det` is a Level 0 defect.
 
 ## The exam
 
