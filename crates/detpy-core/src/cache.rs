@@ -108,8 +108,28 @@ impl Default for CachePolicy {
 impl CachePolicy {
     /// `counts` are the per-source event counts of the test (from its record).
     pub fn admit(&self, verdict: &TestVerdict, counts: &BTreeMap<Source, u64>) -> bool {
+        // `Status::Stable` is itself the general rule's answer: the verifier reaches it only through
+        // [`crate::provable::judge`], which is default-deny, so a test the sensor could not fully account for
+        // never gets here. The two extra conditions are the cache's own: enough runs, and none of the sources
+        // this policy forbids outright.
         verdict.status == Status::Stable
             && verdict.fingerprints.len() >= self.min_runs
+            && self.forbidden.iter().all(|s| counts.get(s).copied().unwrap_or(0) == 0)
+    }
+
+    /// Admit a test straight from its record, without going through the verifier: the same predicate, for a
+    /// producer that has one run in hand (the cache with proof, deciding whether to store what it just saw).
+    ///
+    /// This is the second caller of [`crate::provable::judge`] the founder's rule asks for: the cache must not
+    /// have a reuse rule of its own.
+    pub fn admit_record(
+        &self,
+        record: &crate::fingerprint::TestRecord,
+        provable_meta: Option<&serde_json::Value>,
+        outside: &[String],
+        counts: &BTreeMap<Source, u64>,
+    ) -> bool {
+        crate::provable::judge_record(record, provable_meta, outside).is_provable()
             && self.forbidden.iter().all(|s| counts.get(s).copied().unwrap_or(0) == 0)
     }
 }

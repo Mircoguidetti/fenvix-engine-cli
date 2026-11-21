@@ -139,6 +139,12 @@ pub struct Outcome {
 /// The reason a set of flags makes a test not cacheable (`None`: cacheable as far as flags go).
 pub fn uncacheable(flags: &BTreeSet<&str>, control_urandom: bool) -> Option<&'static str> {
     let has = |f: &str| flags.contains(f);
+    // The general rule ([`crate::provable`]) before the named flags: the wide sensor saw the test do something
+    // the accounting table does not account for. The cache and the verifier refuse for the same reason here, so
+    // a channel nobody has thought of is refused by both and not reused by either.
+    if has("unacc") {
+        return Some("did something the engine cannot account for (NOT PROVEN: see the trace's unaccounted list)");
+    }
     if has("badpath") {
         return Some("reads a path that is not valid UTF-8");
     }

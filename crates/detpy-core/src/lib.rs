@@ -15,6 +15,7 @@
 //! * [`repro`]: `detpy repro` / `explore` decisions (search, ddmin, bundles, explore bookkeeping).
 //! * [`reexec`]: `--det`'s re-exec decisions (personality, realpath, precompile stamps).
 //! * [`backend`]: interception backends (Python hooks today, syscalls later).
+//! * [`provable`]: the general rule: a test is IDENTICAL only when everything it did is accounted for.
 
 pub mod backend;
 pub mod cache;
@@ -27,6 +28,7 @@ pub mod fingerprint;
 pub mod host;
 pub mod order;
 pub mod proof;
+pub mod provable;
 pub mod record;
 pub mod recorder;
 // rust-hotpaths-2: repro / reexec decisions
@@ -40,4 +42,5 @@ pub mod verify;
 
 pub use event::{Event, Source};
 pub use fingerprint::{Fingerprinter, TestRecord};
+pub use provable::{account, judge, Accounting, Attestation, Verdict};
 pub use recorder::{Recorder, RecorderConfig};

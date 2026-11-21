@@ -18,7 +18,7 @@ import platform
 import sys
 
 from . import (__version__, _core, _machine, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec,
-               seeds, sqlvirt, uncontrolled)
+               provable, seeds, sqlvirt, uncontrolled)
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale", "os")
@@ -516,8 +516,11 @@ def outside_fields(files=(), env=(), not_proven=()) -> dict:
         # + the runner's own namespace: pytest reads its PYTEST_* variables (PYTEST_ADDOPTS, PYTEST_PLUGINS, ...)
         # before detpy is installed, where no read is observed
         "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env, _runner_env_names())),
+        # + whatever the general rule's wide sensor could not account for while no test was running
         "not_proven_outside_tests": sorted({f"native:{n}" for n in osstate.NATIVE_OUTSIDE}
-                                           | set(envobs.NOT_PROVEN_OUTSIDE).union(*not_proven)),
+                                           | set(envobs.NOT_PROVEN_OUTSIDE)
+                                           | set(provable.SENSOR_OBJ.outside)
+                                           .union(*not_proven)),
     }
 
 
@@ -735,9 +738,14 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
         envobs.install()
         pin_hostname(PATCHER)
         pin_cpu_count(PATCHER)
+        pin_terminal_size(PATCHER)
     if "os" in controls:
         osstate.install(PATCHER, cfg)  # after fstime: wraps its open
     uncontrolled.install(PATCHER)
+    # The general rule's wide sensor, last: it watches every call, this module's own patches included, and the
+    # core's accounting table classifies the engine's own machinery as controlled. A run that cannot start it
+    # declares no sensor, and then every test of the run is NOT PROVEN (never IDENTICAL) -- the honest answer.
+    provable.SENSOR_OBJ.start()
     return rebound
 
 
@@ -778,6 +786,25 @@ def pin_cpu_count(patcher) -> None:
     if hasattr(os, "sched_getaffinity"):
         patcher.set(os, "sched_getaffinity", lambda pid: set(range(n)))
     patcher.set(multiprocessing, "cpu_count", lambda: n)
+
+
+#: Terminal size under --det. The real one differs between machines and between a terminal and a pipe, and the
+#: runner's own formatting reads it, so it is CI-volatile in exactly the sense design A pins (same class as the
+#: host name and the CPU count). 80x24 is the POSIX default and what every stdlib fallback uses.
+PINNED_TERMINAL_SIZE = (80, 24)
+
+
+def pin_terminal_size(patcher) -> None:
+    """Design A, same class as the host name: the terminal size differs between runners and between a terminal and
+    a pipe. Under --det ``os.get_terminal_size`` and ``shutil.get_terminal_size`` answer
+    ``PINNED_TERMINAL_SIZE``, so the general rule can account for them (``provable.rs``: ``Controlled``) instead of
+    reporting every run NOT PROVEN for a value the runner reads to lay out its own output."""
+    import shutil
+
+    cols, lines = PINNED_TERMINAL_SIZE
+    if hasattr(os, "get_terminal_size"):
+        patcher.set(os, "get_terminal_size", lambda fd=1: os.terminal_size((cols, lines)))
+    patcher.set(shutil, "get_terminal_size", lambda fallback=(cols, lines): os.terminal_size((cols, lines)))
 
 
 class real_cpu_count:
@@ -905,6 +932,7 @@ def begin_test(nodeid: str, index: int) -> None:
     st.recorder.begin_test(nodeid, index)
     _state.reset_threads()
     uncontrolled.start_test()
+    provable.SENSOR_OBJ.start_test()
     if "os" in controls:
         osstate.start_test()
     if "time" in controls:
@@ -926,6 +954,9 @@ def end_test(outcome: str):
     if "net" in controls:
         network.end_test()
     uncontrolled.end_test()  # threads that ran during the test (G-0180)
+    # a native extension loaded by this test (or before it): its own C reads raise no call and no audit event,
+    # so a module nobody audited makes the test NOT PROVEN (the declared residual of docs/REPORT-verifier-rule.md)
+    provable.SENSOR_OBJ.check_native()
     st.nodeid = None
     return st.recorder.end_test(outcome)
 
@@ -972,6 +1003,15 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     # read by every test as far as the verifier knows (R-054 N2)
     meta.update(outside_fields())
     _HEADER["outside"] = outside_fields()
+    # The general rule (docs/REPORT-verifier-rule.md, crates/detpy-core/src/provable.rs): what this run watched.
+    # The verifier reports a test IDENTICAL only when the run declared a sensor it knows, so leaving this out is
+    # not a cosmetic omission -- it is the run saying "I cannot show anything identical", which is what a run
+    # without a sensor must say.
+    ph = provable.SENSOR_OBJ.header()
+    if ph is not None:
+        meta["provable"] = ph
+    elif provable.SENSOR_OBJ.reason:
+        meta["provable_absent"] = provable.SENSOR_OBJ.reason
     return meta
 
 

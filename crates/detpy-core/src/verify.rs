@@ -8,6 +8,7 @@
 
 use crate::event::{Event, Source};
 use crate::fingerprint::{TestRecord, UNCONTROLLED_PREFIX};
+use crate::provable::{self, Verdict};
 use crate::trace::{order_digest, read_trace, Trace, TraceError};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
@@ -72,6 +73,12 @@ pub enum Reason {
     Deps,
     /// The project's own source the run loaded differs (`inputs.code`): an edit, committed or not.
     Code,
+    /// The run declared no wide sensor, or one this core does not understand: nothing says what the test did, so
+    /// it cannot be shown identical (the general rule, [`crate::provable`]).
+    Sensor,
+    /// The sensor saw the test call something the accounting table does not account for: a standard-library
+    /// callable with no rule, a module nobody wrote a rule for, an audit event with no rule.
+    Api,
 }
 
 impl Reason {
@@ -103,6 +110,8 @@ impl Reason {
             Reason::Native => "native",
             Reason::Deps => "deps",
             Reason::Code => "code",
+            Reason::Sensor => "sensor",
+            Reason::Api => "api",
         }
     }
 
@@ -143,6 +152,10 @@ impl Reason {
             "net" => Reason::Net,
             "env" => Reason::Env,
             "file" => Reason::Fs,
+            // the general rule's classes ([`crate::provable`])
+            "sensor" => Reason::Sensor,
+            "runtime" => Reason::Runtime,
+            "api" | "module" | "audit" => Reason::Api,
             _ => Reason::Other,
         }
     }
@@ -514,6 +527,51 @@ fn outside_not_proven(entries: &[String]) -> Divergence {
 }
 
 /// A test with identical fingerprints that used a source Level 0 does not control: never reported covered.
+/// Turn a [`Verdict::NotProven`] into the divergence the report shows.
+///
+/// The existing wordings are kept where the gap is one of the channels that already had a rule (a thread, a child
+/// process, a volatile variable, something read outside the tests), so the messages the reports and the exam
+/// depend on do not change. Only the classes the general rule adds get a new sentence.
+fn not_proven_divergence(
+    r: &TestRecord,
+    run: usize,
+    kind: &str,
+    detail: &str,
+    outside: &[String],
+) -> Divergence {
+    // a channel that already had a rule: its own sentence, naming the site the test used it at
+    if !r.uncontrolled.is_empty() && r.uncontrolled.iter().any(|k| k.split(':').next() == Some(kind) || k == kind) {
+        if let Some(d) = uncontrolled_divergence(r, run) {
+            return d;
+        }
+    }
+    if !outside.is_empty() && outside.iter().any(|e| e.split(':').next() == Some(kind)) && r.unaccounted.is_empty() {
+        return outside_not_proven(outside);
+    }
+    let what = match kind {
+        "sensor" => "this run cannot say what the test did",
+        "runtime" => "this runtime was never audited against the engine's accounting table",
+        "native" => "the test loaded a native extension whose own C code the engine has not reasoned about",
+        "module" => "the test used a module the engine has no rule for",
+        "audit" => "the test caused an operation the engine has no rule for",
+        _ => "the test called something the engine cannot account for",
+    };
+    Divergence {
+        run_a: run,
+        run_b: run,
+        index: None,
+        window: None,
+        event_a: None,
+        event_b: None,
+        reason: Reason::of_uncontrolled(kind),
+        description: format!(
+            "{what}: {detail}. Identical fingerprints are no evidence of an identical execution, so the verdict is \
+             NOT PROVEN and the test must be rerun"
+        ),
+        lost_predecessors: Vec::new(),
+    }
+}
+
 fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
     r.uncontrolled.first()?;
     // the first one the test used (event order), else (past the stored events) the first by name
@@ -759,6 +817,10 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
 
     let preds: Vec<Predecessors> = traces.iter().map(Predecessors::of).collect();
     let inputs: Vec<Option<BTreeMap<String, String>>> = traces.iter().map(compared_inputs).collect();
+    // what each run declared about its wide sensor (`meta.provable`): the general rule needs it per run, because
+    // a run without one cannot have any of its tests reported identical
+    let provable_meta: Vec<Option<serde_json::Value>> =
+        traces.iter().map(|t| t.header.meta.get("provable").cloned()).collect();
     // the first run whose inputs differ from run 0's: its differences are every test's first divergent event
     let input_differences: Vec<InputDifference> =
         (1..n).map(|j| diff_inputs(inputs[0].as_ref(), inputs[j].as_ref(), 0, j)).find(|d| !d.is_empty()).unwrap_or_default();
@@ -834,9 +896,23 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         } else if let Some(d) = (1..n).find_map(|j| order_divergence(id, &preds[0], &preds[j], 0, j)) {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
-            match recs.iter().enumerate().find_map(|(i, r)| r.filter(|r| !r.uncontrolled.is_empty()).map(|r| (i, r))) {
-                Some((i, r)) => (Status::NotProven, uncontrolled_divergence(r, i)),
-                None if !not_proven_outside.is_empty() => (Status::NotProven, Some(outside_not_proven(&not_proven_outside))),
+            // Every run agrees on the fingerprint. That is not enough to say IDENTICAL: the general rule
+            // (`crate::provable`) asks whether everything the test did was accounted for, and answers NOT PROVEN
+            // when it was not. `judge_record` is the only predicate allowed to conclude that it was, and the
+            // cache calls the same one, so the two cannot drift apart. Its default is NOT PROVEN, which is what
+            // keeps a channel nobody has thought of yet out of this verdict.
+            match recs
+                .iter()
+                .enumerate()
+                .filter_map(|(i, r)| r.map(|r| (i, r)))
+                .find_map(|(i, r)| match provable::judge_record(r, provable_meta[i].as_ref(), &not_proven_outside) {
+                    Verdict::Provable => None,
+                    Verdict::NotProven { kind, detail } => Some((i, r, kind, detail)),
+                })
+            {
+                Some((i, r, kind, detail)) => {
+                    (Status::NotProven, Some(not_proven_divergence(r, i, &kind, &detail, &not_proven_outside)))
+                }
                 None => (Status::Stable, None),
             }
         } else {
@@ -1187,7 +1263,27 @@ mod tests {
         f.finish(nodeid, 0, outcome)
     }
 
+    /// A trace as a real shell writes it: with the wide sensor declared (`meta.provable`).
+    ///
+    /// The declaration is part of what a run has to say about itself since the general rule exists
+    /// ([`crate::provable`]): without it the core cannot know what was watched, and every test is NOT PROVEN.
+    /// `trace_without_sensor` below builds one that says nothing, which is what an older shell produces.
     fn trace(recs: Vec<TestRecord>) -> Trace {
+        Trace { header: Header::new(sensor_meta(), vec![]), tests: recs, footer: None }
+    }
+
+    fn sensor_meta() -> serde_json::Value {
+        serde_json::json!({
+            "provable": {
+                "sensor": "py-monitoring/1",
+                "contract": crate::provable::SENSOR_CONTRACT,
+                "surface": crate::provable::surface_digest(),
+                "runtime": "cpython3.13",
+            }
+        })
+    }
+
+    fn trace_without_sensor(recs: Vec<TestRecord>) -> Trace {
         Trace { header: Header::new(serde_json::Value::Null, vec![]), tests: recs, footer: None }
     }
 
@@ -1321,7 +1417,13 @@ mod tests {
     fn with_inputs(mut t: Trace, inputs: &[(&str, &str)]) -> Trace {
         let m: serde_json::Map<String, serde_json::Value> =
             inputs.iter().map(|(k, v)| (k.to_string(), serde_json::Value::String(v.to_string()))).collect();
-        t.header.meta = serde_json::json!({ "inputs": m, "env_reads_recorded": true });
+        // the sensor declaration is kept: it is part of every real trace, and dropping it would make every test
+        // NOT PROVEN for want of a sensor instead of for the reason the test is about
+        t.header.meta = serde_json::json!({
+            "inputs": m,
+            "env_reads_recorded": true,
+            "provable": sensor_meta()["provable"].clone(),
+        });
         t
     }
 
@@ -1625,6 +1727,62 @@ mod tests {
         let r = verify(&[ra, rb], &[]);
         assert_eq!(r.tests[0].status, Status::Diverged);
         assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Hashseed);
+    }
+
+    /// The general rule, at the verifier's level: two runs that agree on everything are still NOT PROVEN when the
+    /// run did not say what it watched. This is the clause that makes the default "I do not know" instead of
+    /// "identical", and it does not depend on any list of channels.
+    #[test]
+    fn a_run_that_declares_no_sensor_is_never_identical() {
+        let a = with_inputs(trace_without_sensor(vec![rec("x", &[t("1")], "passed", 100)]), &BASE);
+        let b = with_inputs(trace_without_sensor(vec![rec("x", &[t("1")], "passed", 100)]), &BASE);
+        // with_inputs puts the declaration back, so take it away again: this is what an older shell writes
+        let strip = |mut tr: Trace| {
+            tr.header.meta.as_object_mut().unwrap().remove("provable");
+            tr
+        };
+        let r = verify(&[strip(a), strip(b)], &["a".into(), "b".into()]);
+        assert_eq!(r.tests[0].status, Status::NotProven);
+        assert_eq!(r.summary.stable, 0);
+        assert_eq!(r.summary.not_proven, 1);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Sensor);
+        assert!(!r.tests[0].covered());
+        let text = render_text(&r, false);
+        assert!(text.contains("verdict: NOT PROVEN"), "{text}");
+    }
+
+    /// A sensor built against a different accounting table, or a runtime nobody audited the table against, is
+    /// refused the same way: the core will not apply today's table to yesterday's sensor.
+    #[test]
+    fn a_sensor_or_runtime_the_core_does_not_know_is_never_identical() {
+        for (field, value) in [("surface", "deadbeefdeadbeefdeadbeefdeadbeef"), ("runtime", "cpython3.99")] {
+            let mk = || {
+                let mut tr = with_inputs(trace(vec![rec("x", &[t("1")], "passed", 100)]), &BASE);
+                tr.header.meta["provable"][field] = serde_json::json!(value);
+                tr
+            };
+            let r = verify(&[mk(), mk()], &[]);
+            assert_eq!(r.tests[0].status, Status::NotProven, "{field}");
+            assert_eq!(r.summary.stable, 0, "{field}");
+        }
+    }
+
+    /// The channel nobody has thought of: the sensor reports a name the table does not list, and the verdict is
+    /// NOT PROVEN with that name in it. No channel-specific rule is involved.
+    #[test]
+    fn a_channel_the_table_does_not_know_is_not_proven_and_named() {
+        // `unaccounted.api` + the value is how a shell reports it; the recorder turns it into the record's list
+        let u = Event::new(Source::Other, "unaccounted.api", "t.py:3", "posix.getxattr");
+        let mk = || with_inputs(trace(vec![rec("x", &[u.clone(), t("1")], "passed", 10)]), &BASE);
+        let r = verify(&[mk(), mk()], &[]);
+        assert_eq!(r.tests[0].status, Status::NotProven);
+        assert_eq!(r.tests[0].divergence.as_ref().unwrap().reason, Reason::Api);
+        let d = &r.tests[0].divergence.as_ref().unwrap().description;
+        assert!(d.contains("posix.getxattr"), "{d}");
+        assert!(d.contains("NOT PROVEN"), "{d}");
+        assert_eq!((r.summary.stable, r.summary.not_proven), (0, 1));
+        // and the recorder really did carry it on the record, truncation or not
+        assert_eq!(r.tests[0].distinct_fingerprints, 1);
     }
 
     /// V1, V2 and D1: a mark (or an uncontrolled read outside any test) is NOT PROVEN, never IDENTICAL, never DIVERGENT.

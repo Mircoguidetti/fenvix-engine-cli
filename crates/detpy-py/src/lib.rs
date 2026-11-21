@@ -367,6 +367,46 @@ fn digest(data: &[u8]) -> String {
     digest_bytes(data).short()
 }
 
+// ---------------------------------------------------------------------------
+// The general rule (detpy_core::provable). The table and the predicate live in the core; the Python sensor asks
+// it to classify a callable and reports what it could not place. One implementation, used by the shell here, by
+// the verifier and by the cache.
+
+/// Classify one callable by its defining module and qualified name: `pure`, `controlled`, `recorded`, `input` or
+/// `unaccounted`. Anything the core's table does not list answers `unaccounted`, which is what makes the sensor
+/// default-deny.
+#[pyfunction]
+fn provable_account(module: &str, qualname: &str) -> &'static str {
+    detpy_core::provable::account(module, qualname).as_str()
+}
+
+/// What the shell must write into the trace header as `meta.provable`, with the runtime key it is running on,
+/// as a JSON object. The verifier refuses a trace whose values are not these.
+#[pyfunction]
+fn provable_header(sensor: &str, runtime: &str) -> String {
+    serde_json::json!({
+        "sensor": sensor,
+        "contract": detpy_core::provable::SENSOR_CONTRACT,
+        "surface": detpy_core::provable::surface_digest(),
+        "runtime": runtime,
+    })
+    .to_string()
+}
+
+/// The runtime keys the accounting table was audited against. A run on anything else is NOT PROVEN, so the shell
+/// checks this before claiming a sensor.
+#[pyfunction]
+fn provable_runtimes() -> Vec<&'static str> {
+    detpy_core::provable::AUDITED_RUNTIMES.to_vec()
+}
+
+/// The native extension modules whose own C code the engine has reasoned about. A test that loads any other one
+/// is NOT PROVEN (the declared residual: C code emits no Python-level call).
+#[pyfunction]
+fn provable_native() -> Vec<&'static str> {
+    detpy_core::provable::CONTROLLED_NATIVE.to_vec()
+}
+
 /// Paths of the shared objects mapped into this process (`/proc/self/maps` on Linux, dyld on macOS); None
 /// where the OS gives no list (detpy_core::host).
 #[pyfunction]
@@ -412,6 +452,10 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(digest, m)?)?;
     m.add_function(wrap_pyfunction!(backends, m)?)?;
     m.add_function(wrap_pyfunction!(loaded_images, m)?)?;
+    m.add_function(wrap_pyfunction!(provable_account, m)?)?;
+    m.add_function(wrap_pyfunction!(provable_header, m)?)?;
+    m.add_function(wrap_pyfunction!(provable_runtimes, m)?)?;
+    m.add_function(wrap_pyfunction!(provable_native, m)?)?;
     m.add_function(wrap_pyfunction!(cpu_features, m)?)?;
     m.add_class::<sysmon::LineRecorder>()?;
     m.add_function(wrap_pyfunction!(sysmon::set_audit_hook, m)?)?;
