@@ -1034,6 +1034,7 @@ class _DetSession(_Outcomes):
         finally:
             level0_end(item, self.outcomes.get(item.nodeid, "unknown"))
 
+    @pytest.hookimpl(trylast=True)  # after the project's own session-finish hooks: their reads go in the footer
     def pytest_sessionfinish(self, session, exitstatus):
         st = _state.STATE
         if S.controller is not None:
@@ -1045,6 +1046,10 @@ class _DetSession(_Outcomes):
         if st.recorder is not None and S.controller is None:
             if not S.order_digest:  # collection failed before the trace was opened
                 st.recorder.open(S.trace_path, json.dumps({"detpy": __version__, "collection": "failed"}), [])
+            try:  # what was read after the header, outside any test (R-055 V12): in the footer
+                st.recorder.set_late(json.dumps(_level0.late_inputs()))
+            except Exception:
+                pass
             st.recorder.close()
         if S.net_mode == "record" and S.controller is None:
             S.saved_cassette = network.save_recordings(S.cassette_out or st.config.cassette_path)
@@ -1065,6 +1070,9 @@ class _DetSession(_Outcomes):
             # cold in the first -n run of a cache) lays out no memory a test sees. Review P1 finding 11: counting it
             # made the first -n run after any serial run fully divergent
             _level0.REWRITE["cold"] = 0
+        if S.controller is not None:  # the workers imported the tests (R-055 V4, V5)
+            _level0._CODE_EXTRA[:] = [tuple(o["detpy_code_files"]) for o in S.controller.workeroutput.values()
+                                      if o.get("detpy_code_files")]
         return {
             "detpy": __version__, "seed": cfg.seed, "shuffle": cfg.shuffle, "controls": sorted(cfg.controls),
             "hashseed": os.environ.get("PYTHONHASHSEED"), "reexec": S.reexec_status,
@@ -1077,7 +1085,10 @@ class _DetSession(_Outcomes):
             "runtime": platform.python_implementation(), "runtime_version": platform.python_version(),
             # the run inputs the verifier compares (the workers inherit the controller's environment; their own
             # PYTEST_XDIST_* variables are engine-internal)
-            "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
+            "inputs": {**_level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
+                       # files the workers read outside any test (module scope: the controller imports no test)
+                       **{f"file:{p}": v for o in (S.controller.workeroutput.values() if S.controller else [])
+                          for p, v in sorted((o.get("detpy_files_outside") or {}).items())}},
             "env_reads_recorded": "env" in cfg.controls,
             # what the workers read outside any test, and what the controller did (R-054 N2)
             "env_read_outside_tests": sorted(set(_level0.envobs.OUTSIDE).union(

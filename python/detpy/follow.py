@@ -334,7 +334,7 @@ class Follower:
         env = args[5]
         if shim is not None:
             if env is None:
-                env = [k + b"=" + v for k, v in dict(os.environb._data).items()]  # noqa: SLF001 (no env event)
+                env = [k + b"=" + v for k, v in dict.items(os.environb._data)]  # noqa: SLF001 (no env event)
             env = list(env)
             for i, kv in enumerate(env):
                 if kv.startswith(b"LD_PRELOAD="):

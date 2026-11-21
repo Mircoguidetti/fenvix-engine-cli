@@ -496,7 +496,121 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     # closed they are its part, not inputs; while recording (the real network) they are inputs
     closed = "net" in c and not cfg.record_net
     inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
+    inputs.update(code_inputs(_CODE_EXTRA))
+    inputs["argv"] = argv_input()
+    # files read outside any test before the trace opened (module scope, conftest, a dependency at import): inputs of
+    # every test (R-055 V3); native libraries loaded there through ctypes (R-055 V7, V15)
+    for path, value in sorted(osstate.OUTSIDE_FILES.items()):
+        inputs[f"file:{path}"] = value
+    if osstate.NATIVE_OUTSIDE:
+        inputs["native"] = "loaded outside any test: " + ",".join(sorted(osstate.NATIVE_OUTSIDE))
     return inputs
+
+
+def late_inputs() -> dict:
+    """What the run read outside any test until its end (the footer: the verifier merges it with the header's)."""
+    inputs = {f"file:{p}": v for p, v in sorted(osstate.OUTSIDE_FILES.items())}
+    if osstate.NATIVE_OUTSIDE:
+        inputs["native"] = "loaded outside any test: " + ",".join(sorted(osstate.NATIVE_OUTSIDE))
+    return {"env_read_outside_tests": sorted(envobs.OUTSIDE), "inputs": inputs}
+
+
+_CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)
+
+
+ARGV_PATHS = ("--det-trace", "--det-outcomes", "--det-order", "--det-plan", "--det-compare", "--det-cassette",
+              "--basetemp", "--junitxml",
+              "--junit-xml", "--result-log", "--resultlog")
+
+
+ARGV_PARALLEL = ("-n", "--numprocesses", "--dist", "--maxprocesses", "--max-worker-restart", "-p")
+
+
+def argv_input() -> str:
+    """The command line's options (R-055 V10: a test can read sys.argv; runner options change what runs), without
+    the per-run output paths (traces, outcomes, the order file: their content is an input of its own), the parallel
+    options (the plan is its own input) and plugin switches."""
+    out, skip = [], False
+    for a in sys.argv[1:]:
+        if skip:
+            skip = False
+            continue
+        if a.startswith(ARGV_PATHS):
+            skip = "=" not in a
+            continue
+        if a in ARGV_PARALLEL:
+            skip = True
+            continue
+        if a.startswith(tuple(f"{x}=" for x in ARGV_PARALLEL if x.startswith("--"))) or (a.startswith("-n") and a[2:].isdigit()) \
+                or (a.startswith("-p") and len(a) > 2):
+            continue
+        out.append(a)
+    return _core.digest("\0".join(out).encode("utf-8", "surrogateescape"))[:16] + f" ({len(out)} args)"
+
+
+def _module_files():
+    for m in list(sys.modules.values()):
+        f = getattr(m, "__file__", None)
+        if isinstance(f, str) and f:
+            yield os.path.abspath(f)
+
+
+def _file_identity(path: str) -> str | None:
+    """Content digest of a Python source; size and mtime of anything else (a native extension)."""
+    try:
+        if path.endswith(".py"):
+            with open(path, "rb") as fh:
+                return _core.digest(fh.read())[:16]
+        st = os.stat(path)
+        return f"{st.st_size}:{st.st_mtime_ns}"
+    except OSError:
+        return None
+
+
+def code_inputs(extra: list | None = None) -> dict:
+    """The code that ran, as two run inputs: ``code`` (the project's modules and test files imported so far: an
+    uncommitted edit counts, R-055 V4) and ``deps`` (every other non-standard-library module: an installed dependency
+    changed, R-055 V5); the runner's own packages (pytest, its plugins, detpy) are the ``runner`` input. ``extra``:
+    the lists of xdist workers (the controller imports no test). Modules imported later inside a test are not in it
+    (docs/VERIFY-INPUTS.md, gap)."""
+    code, deps = code_files()
+    for c, d in extra or []:
+        code, deps = sorted(set(code) | set(c)), sorted(set(deps) | set(d))
+    dig = lambda xs: _core.digest("\n".join(xs).encode("utf-8", "surrogateescape"))[:16] + f" ({len(xs)} files)"
+    return {"code": dig(code), "deps": dig(deps)}
+
+
+def code_files() -> tuple:
+    with _state.quiet():
+        root = _sites._rootdir or os.getcwd()
+        stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+        site = tuple(d + os.sep for d in _sites._site_dirs)  # (site-packages sits inside the stdlib directory)
+        own = os.path.dirname(os.path.abspath(__file__)) + os.sep
+        code, deps = [], []
+        for f in sorted(set(_module_files())):
+            if f.startswith(own) or (f.startswith(stdlib) and not f.startswith(site)):
+                continue
+            if _sites._classify(f)[0] == _sites._INFRA or _infra_module_file(f):
+                continue  # the runner (pytest, its plugins, xdist): the `runner` input
+            ident = _file_identity(f)
+            if ident is None:
+                continue
+            if f.startswith(root + os.sep) and "site-packages" not in f and f"{os.sep}.venv{os.sep}" not in f:
+                code.append(f"{os.path.relpath(f, root)}={ident}")
+            else:
+                deps.append(f"{_sites.norm_path(f)}={ident}")
+    return sorted(set(code)), sorted(set(deps))
+
+
+_RUNNER_TOPS = ("pytest", "_pytest", "pluggy", "xdist", "execnet", "iniconfig", "py", "pytest_")
+
+
+def _infra_module_file(f: str) -> bool:
+    parts = f.replace(os.sep, "/").split("/site-packages/", 1)
+    if len(parts) != 2:
+        return False
+    top = parts[1].split("/", 1)[0].removesuffix(".py")
+    return top in _RUNNER_TOPS or top.startswith("pytest_") or top.startswith("_pytest") or top in INFRA_PACKAGES
 
 
 def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -> str:

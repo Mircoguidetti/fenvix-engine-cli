@@ -70,6 +70,15 @@ function installProcess() {
 }
 
 const OWN_ENV = /^(?:DETJS(?:$|_)|FENVIX_CACHE_)/;
+function untracked(name) {
+  const volatile = require('./volatile');
+  if (volatile.KEPT.includes(name) && name !== 'FENVIX_VOLATILE_ENV') return true;
+  if (volatile.PROXY_ENV.has(name)) {
+    const c = cfg();
+    return Boolean(c && c.controls && c.controls.has('net') && String(process.env.DETJS_NET_MODE || '') !== 'record');
+  }
+  return false;
+}
 // a variable read outside any test (module scope of a test file, a before/beforeAll hook, a dependency at import) is
 // no test's event: its name goes to <run dir>/envout/<pid>.txt, the header lists it (src/session.js), and the
 // verifier counts it as read by every test (R-054 N1); '*' for an enumeration
@@ -142,6 +151,12 @@ function installEnvRecord(proc) {
         if (site === null) return; // the runner's own reads
       }
       envSeen.add(key);
+      // a variable that reaches the test but is no run input (CI-volatile and kept, or the proxy variables of the
+      // closed network): the test cannot be proven identical (R-055 V1, V2); a project's FENVIX_VOLATILE_ENV is its
+      // own declaration that the value does not matter
+      if (k !== '*' && untracked(String(k))) {
+        STATE.recordAt('other', 'uncontrolled.env', site, `${k}: read, but its value is no run input`);
+      }
       let value;
       STATE.quietDepth++;
       try {

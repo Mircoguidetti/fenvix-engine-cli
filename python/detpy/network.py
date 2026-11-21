@@ -908,6 +908,19 @@ def _listen(self, *args):
     return r
 
 
+_real_bind = socket.socket.bind
+
+
+def _bind(self, *args):
+    r = _real_bind(self, *args)
+    try:
+        if self.type == socket.SOCK_DGRAM:  # a datagram server of this process answers like a listener
+            _LISTENERS.add(self)
+    except OSError:
+        pass
+    return r
+
+
 def _own_listener(family, address) -> bool:
     for s in list(_LISTENERS):
         try:
@@ -922,6 +935,21 @@ def _own_listener(family, address) -> bool:
         elif isinstance(address, tuple) and len(address) >= 2 and name[1] == address[1]:
             return True
     return False
+
+
+def _caller_depth() -> int:
+    """Depth (for ``uncontrolled._mark`` called from ``_note_live``) of the first frame above it that is neither the
+    standard library (``socket.create_connection``) nor this module: the code that used the endpoint."""
+    import sys
+
+    from . import _sites
+
+    stdlib = tuple(d + os.sep for d in _sites._stdlib_dirs)
+    depth, f = 1, sys._getframe(2)
+    while f is not None and (f.f_code.co_filename.startswith(stdlib) or f.f_code.co_filename == __file__):
+        f = f.f_back
+        depth += 1
+    return depth
 
 
 def _note_live(sock, address) -> None:
@@ -941,7 +969,7 @@ def _note_live(sock, address) -> None:
     from . import uncontrolled
 
     where = address if isinstance(address, str) else ":".join(str(x) for x in address[:2])
-    uncontrolled._mark("net", f"live endpoint {where}", 2)
+    uncontrolled._mark("net", f"live endpoint {where}", _caller_depth())
 
 
 # Installation ---------------------------------------------------------------
@@ -966,6 +994,7 @@ def install(patcher: Patcher, record: bool, cassette_path: str | None, allow_hos
     patcher.set(subprocess.Popen, "__init__", _closed_children(subprocess.Popen.__init__))
     patcher.set(socket.socket, "connect", _connect)
     patcher.set(socket.socket, "listen", _listen)
+    patcher.set(socket.socket, "bind", _bind)
     patcher.set(socket.socket, "connect_ex", _connect_ex)
     # UDP record/replay (audit G-1518): the Python wrapper only where it has work (record mode, or a cassette with
     # UDP exchanges); otherwise the Rust wrapper, whose blocked-event site is its caller's

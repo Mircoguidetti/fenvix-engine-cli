@@ -83,9 +83,11 @@ def test_control_flow_divergence(pytester, run_det):
     run_det(trace=str(p2))
     _, rep = verify(p1, p2)
     d = rep["tests"][0]["divergence"]
-    assert d["reason"] == "time" and d["index"] == 0
-    assert d["event_a"]["at"] == "<end>" and d["event_b"]["o"] == "time.monotonic"
-    assert d["event_b"]["at"] == "test_b.py:4"
+    # the first difference is the existence check the branch depends on (os.stat under os.path.exists, R-055 V6),
+    # before the extra clock read it leads to
+    assert d["reason"] == "fs" and d["index"] == 0, d
+    assert d["event_a"]["o"] == d["event_b"]["o"] == "fs.stat", d
+    assert d["event_a"]["v"].startswith("marker <absent>") and d["event_b"]["at"] == "test_b.py:3", d
 
 
 def test_outcome_only_divergence(pytester, run_det):
@@ -109,7 +111,8 @@ def test_outcome_only_divergence(pytester, run_det):
     assert t["divergence"]["reason"] == "fs", t["divergence"]
     # run 1 finds no file (os.path.exists) and reads nothing; run 2 reads the file run 1 wrote: the first difference
     ev = t["divergence"]["event_b"]
-    assert ev["o"] == "fs.read" and ev["v"].startswith("count "), t["divergence"]
+    # (the existence check is that first difference since R-055 V6: os.path.exists is an fs.stat event)
+    assert ev["o"] in ("fs.read", "fs.stat") and ev["v"].startswith("count "), t["divergence"]
     assert rep["summary"]["outcome_unstable"] == 1
 
 

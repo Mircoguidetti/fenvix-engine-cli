@@ -416,3 +416,17 @@ def test_explore_reports_what_it_found_although_a_module_does_not_import(project
     assert p.returncode == 0, p.stdout + p.stderr
     assert "tests/test_o.py::test_victim" in p.stdout, p.stdout
     assert "does not collect cleanly" in p.stderr and "no_such_module_fenvix" in p.stderr, p.stderr
+
+
+def test_repro_finds_a_test_that_crashes_the_process(tmp_path):
+    # R-055 D3: a test that kills the process after another one (os._exit) is a failure, not a run with no result
+    proj = tmp_path / "p"
+    (proj / "tests").mkdir(parents=True)
+    (proj / "tests" / "__init__.py").write_text("")
+    (proj / "tests" / "test_a.py").write_text("STATE = []\ndef test_a():\n    STATE.append(1)\n")
+    (proj / "tests" / "test_b.py").write_text("import os\nfrom tests.test_a import STATE\ndef test_b():\n"
+                                              "    if STATE:\n        os._exit(1)\n")
+    p = fx("repro", "tests/test_b.py::test_b", "--seeds", "2", "--confirm", "2", "--json", cwd=proj)
+    assert p.returncode == 0, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "reproduced" and b["polluters"] == ["tests/test_a.py::test_a"], b

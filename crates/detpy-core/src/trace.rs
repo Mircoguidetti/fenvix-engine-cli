@@ -48,6 +48,10 @@ pub struct Footer {
     /// Merged trace of a parallel run: digest of the plan (`schedule::plan_digest`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plan_digest: Option<String>,
+    /// What the run read after the header was written, outside any test (a session-finish hook, a finalizer):
+    /// `env_read_outside_tests`, `inputs` (`file:<path>`), merged with the header's by the verifier (R-055 V12).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub late: Option<serde_json::Value>,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -78,6 +82,7 @@ pub fn order_digest<S: AsRef<str>>(ids: &[S]) -> String {
 pub struct TraceWriter {
     out: BufWriter<File>,
     executed: Vec<String>,
+    pub late: Option<serde_json::Value>,
 }
 
 impl TraceWriter {
@@ -87,7 +92,7 @@ impl TraceWriter {
                 std::fs::create_dir_all(parent)?;
             }
         }
-        let mut w = TraceWriter { out: BufWriter::new(File::create(path)?), executed: Vec::new() };
+        let mut w = TraceWriter { out: BufWriter::new(File::create(path)?), executed: Vec::new(), late: None };
         w.write_line(&Line::Header(header.clone()))?;
         Ok(w)
     }
@@ -111,7 +116,13 @@ impl TraceWriter {
 
     pub fn finish_with(mut self, missing: Vec<String>, plan_digest: Option<String>) -> io::Result<Footer> {
         let footer =
-            Footer { n_tests: self.executed.len() as u64, order_digest: order_digest(&self.executed), missing, plan_digest };
+            Footer {
+                n_tests: self.executed.len() as u64,
+                order_digest: order_digest(&self.executed),
+                missing,
+                plan_digest,
+                late: self.late.take(),
+            };
         self.write_line(&Line::Footer(footer.clone()))?;
         Ok(footer)
     }
@@ -522,7 +533,7 @@ mod merge_tests {
         let rec = record("a", 0, "1");
         let line = serde_json::to_string(&TestLine::Test(&rec)).unwrap();
         assert!(!line.contains("worker"));
-        let f = Footer { n_tests: 0, order_digest: "x".into(), missing: vec![], plan_digest: None };
+        let f = Footer { n_tests: 0, order_digest: "x".into(), missing: vec![], plan_digest: None, late: None };
         assert_eq!(serde_json::to_string(&f).unwrap(), r#"{"n_tests":0,"order_digest":"x"}"#);
     }
 }

@@ -133,6 +133,8 @@ impl Reason {
             "io" => Reason::Io,
             "native" => Reason::Native,
             "net" => Reason::Net,
+            "env" => Reason::Env,
+            "file" => Reason::Fs,
             _ => Reason::Other,
         }
     }
@@ -141,6 +143,9 @@ impl Reason {
     pub fn of_input(name: &str) -> Reason {
         if name.starts_with("env:") {
             return Reason::Env;
+        }
+        if name.starts_with("file:") {
+            return Reason::Fs;
         }
         match name {
             "tz" => Reason::Tz,
@@ -246,6 +251,10 @@ pub struct Summary {
     /// Tests that read an environment variable whose value differs between the runs, and are otherwise identical.
     #[serde(default)]
     pub input_differs: usize,
+    /// Diverged tests whose runs observed the same events, but used a source this release does not control (a
+    /// thread, a child process, native code...): not proven identical, no difference seen (R-055 D1).
+    #[serde(default)]
+    pub not_proven: usize,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -290,14 +299,26 @@ pub fn run_inputs(t: &Trace) -> Option<BTreeMap<String, String>> {
     if obj.is_empty() {
         return None;
     }
-    Some(
-        obj.iter()
-            .map(|(k, v)| {
-                let k = if k == "urandom" { "entropy".to_string() } else { k.clone() };
-                (k, v.as_str().map(str::to_string).unwrap_or_else(|| v.to_string()))
-            })
-            .collect(),
-    )
+    let one = |(k, v): (&String, &serde_json::Value)| {
+        let k = if k == "urandom" { "entropy".to_string() } else { k.clone() };
+        (k, v.as_str().map(str::to_string).unwrap_or_else(|| v.to_string()))
+    };
+    let mut m: BTreeMap<String, String> = obj.iter().map(one).collect();
+    // what the run read after the header, outside any test (the footer, R-055 V12): its inputs too
+    if let Some(late) = late(t).and_then(|l| l.get(INPUTS_KEY)).and_then(|v| v.as_object()) {
+        m.extend(late.iter().map(one));
+    }
+    Some(m)
+}
+
+/// The trace footer's `late` object (what was read after the header was written).
+fn late(t: &Trace) -> Option<&serde_json::Value> {
+    t.footer.as_ref().and_then(|f| f.late.as_ref())
+}
+
+/// An input value that names no value (`<random>`: a hash seed nobody fixed): never the same in two runs (R-055 V13).
+fn unknown_value(v: Option<&String>) -> bool {
+    v.is_some_and(|v| v.contains("<random>"))
 }
 
 /// The order in which differing inputs are named: what decides the most first (the interpreter and the runner,
@@ -335,7 +356,7 @@ pub fn diff_inputs(
     let names: BTreeSet<&String> = a.keys().chain(b.keys()).collect();
     let mut out: Vec<InputDifference> = names
         .into_iter()
-        .filter(|k| a.get(*k) != b.get(*k))
+        .filter(|k| a.get(*k) != b.get(*k) || unknown_value(a.get(*k)) || unknown_value(b.get(*k)))
         .map(|k| InputDifference {
             name: k.clone(),
             run_a,
@@ -442,7 +463,10 @@ fn uncontrolled_divergence(r: &TestRecord, run: usize) -> Option<Divergence> {
         "thread" => "started a thread: thread scheduling",
         "child" => "started a child process: what the child does",
         "io" => "waited for I/O readiness: the order in which ready I/O is delivered",
-        "native" => "used a native network client: its connections (outside the closed network and the cassette)",
+        "native" => "ran native code (a native client or a library loaded through ctypes): what it reads",
+        "net" => "talked to a live endpoint the run does not control: its answers",
+        "env" => "read an environment variable that is no run input (CI-volatile, or the closed network's proxy): \
+                  its value",
         _ => "used an uncontrolled source: it",
     };
     let at = ev.as_ref().map(|e| format!(" ({} @ {})", e.op, e.site)).unwrap_or_default();
@@ -697,13 +721,20 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     // test as far as anyone can tell (R-054 N1, N2); "*": the environment was enumerated there
     let outside: BTreeSet<String> = traces
         .iter()
-        .filter_map(|t| t.header.meta.get("env_read_outside_tests").and_then(|v| v.as_array()))
+        .flat_map(|t| {
+            [t.header.meta.get("env_read_outside_tests"), late(t).and_then(|l| l.get("env_read_outside_tests"))]
+        })
+        .flatten()
+        .filter_map(|v| v.as_array())
         .flatten()
         .filter_map(|v| v.as_str().map(str::to_string))
         .collect();
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
+    // native code loaded outside any test in some run (ctypes at import, R-055 V7, V15): no test is proven
+    let native_outside = inputs.iter().flatten().any(|m| m.contains_key("native"));
     for id in ordered {
+        let mut not_proven = false;
         let recs: Vec<Option<&TestRecord>> = indexes.iter().map(|m| m.get(id).copied()).collect();
         let fingerprints: Vec<Option<String>> = recs.iter().map(|r| r.map(|r| r.fingerprint.clone())).collect();
         let outcomes: Vec<Option<String>> = recs.iter().map(|r| r.map(|r| r.outcome.clone())).collect();
@@ -738,7 +769,31 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
             (Status::Diverged, Some(d))
         } else if distinct.len() <= 1 {
             match recs.iter().flatten().find(|r| !r.uncontrolled.is_empty()) {
-                Some(r) => (Status::Diverged, uncontrolled_divergence(r, 0)),
+                Some(r) => {
+                    not_proven = true;
+                    (Status::Diverged, uncontrolled_divergence(r, 0))
+                }
+                // native code loaded outside any test (ctypes at import): what it reads is not observed (R-055 V7)
+                None if native_outside => {
+                    not_proven = true;
+                    (
+                        Status::Diverged,
+                        Some(Divergence {
+                            run_a: 0,
+                            run_b: 0,
+                            index: None,
+                            window: None,
+                            event_a: None,
+                            event_b: None,
+                            reason: Reason::Native,
+                            description: "native code was loaded outside any test (a library through ctypes): what \
+                                          it reads is not observed, so identical fingerprints are no evidence of an \
+                                          identical execution"
+                                .into(),
+                            lost_predecessors: Vec::new(),
+                        }),
+                    )
+                }
                 None => (Status::Stable, None),
             }
         } else {
@@ -785,7 +840,12 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         };
         match status {
             Status::Stable => summary.stable += 1,
-            Status::Diverged => summary.diverged += 1,
+            Status::Diverged => {
+                summary.diverged += 1;
+                if not_proven && status == Status::Diverged {
+                    summary.not_proven += 1;
+                }
+            }
             Status::Missing => summary.missing += 1,
             Status::InputDiffers => summary.input_differs += 1,
         }
@@ -970,6 +1030,14 @@ pub fn render_text(report: &Report, show_stable: bool) -> String {
         )
     } else if s.diverged == 0 && s.missing == 0 && s.input_differs == 0 {
         format!("IDENTICAL: all {} tests ran with the same inputs and observed the same events", s.tests)
+    } else if s.missing == 0 && s.diverged > 0 && s.not_proven == s.diverged && s.input_differs == 0 {
+        // R-055 D1: no difference was seen; the tests used sources this release does not control
+        format!(
+            "NOT PROVEN: {} of {} tests used a source this release does not control (thread, child process, native \
+             code, a live endpoint...); no difference was observed, but identical events are no evidence of an \
+             identical execution",
+            s.not_proven, s.tests
+        )
     } else if s.diverged == 0 && s.missing == 0 {
         let names: Vec<&str> = report
             .input_differences

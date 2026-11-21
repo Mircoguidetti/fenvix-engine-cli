@@ -79,6 +79,36 @@ def with_collection_errors(args: list) -> list:
     return args if CONTINUE_ON_COLLECTION_ERRORS in args else [CONTINUE_ON_COLLECTION_ERRORS, *args]
 
 
+def _crashed_run(trace: Path, order, code: int) -> dict | None:
+    """A run whose process died (``os._exit``, a signal, a fatal error) wrote no outcomes file: the tests its trace
+    finished keep their outcomes, and the first test of its order that did not finish crashed it, a failure
+    (R-055 D3: a crash was no failure, so repro never found it and explore called the suite clean)."""
+    if not order or code in (2, 3, 4, 5):  # pytest's own: interrupted, internal or usage error, no tests (no crash)
+        return None
+    done, fps = {}, {}
+    try:
+        with open(trace, encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    j = json.loads(line)
+                except ValueError:
+                    continue
+                if j.get("type") == "test" and j.get("nodeid"):
+                    done[j["nodeid"]] = j.get("outcome", "unknown")
+                    if j.get("fingerprint"):
+                        fps[j["nodeid"]] = j["fingerprint"]
+    except OSError:
+        return None
+    crashed = next((n for n in order if n not in done), None)
+    if crashed is None:
+        return None
+    outcomes = {n: done[n] for n in order if n in done}
+    outcomes[crashed] = "error"
+    fps[crashed] = _core.digest(f"crash: exit status {code}".encode())[:32]  # the same crash, the same fingerprint
+    return {"order": list(order), "outcomes": outcomes, "fingerprints": fps,
+            "exceptions": {crashed: ["crash", "", f"the process exited with status {code} during this test", ""]}}
+
+
 @dataclass
 class Runner:
     """Runs pytest --det in a project directory and reads its outcomes file."""
@@ -131,6 +161,9 @@ class Runner:
                 data = json.loads(out.read_text())
             except ValueError:
                 data = {}
+        if not data.get("outcomes") and code not in (0, None) and not timed_out and order is not None:
+            # (a run with a given order: repro's; a whole-suite run that crashed stays a run with no result)
+            data = _crashed_run(trace, order, code) or data
         r = Run(config, data.get("order", order or []), data.get("outcomes", {}), data.get("fingerprints", {}),
                 data.get("exceptions", {}), dur, code, str(trace), timed_out,
                 {k: data.get(k) for k in ("controls", "seed", "order_missing")})
@@ -419,8 +452,11 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
     # a module that does not import: the tests that collect are explored, and the suite is reported as not
     # collecting cleanly (plain pytest stops at collection there; R-050 V10)
     collection_errors = getattr(runner, "problem", "") if collected else ""
+    crashed_seeds = []
     while (s := book.next_seed()) is not None:
         r = runner.run(str(s), None, f"seed-{s}")
+        if not r.outcomes and r.exit_code not in (0, None) and not r.timed_out:
+            crashed_seeds.append(s)
         if r.order:
             runner.orders.setdefault(str(s), list(r.order))
         if not runner.keep_traces:
@@ -445,6 +481,8 @@ def explore(runner: Runner, *, budget_s: float, max_seeds: int, out_dir: Path, c
         summary["suite_error"] = runner.problem
     if collection_errors:
         summary["collection_errors"] = collection_errors
+    if crashed_seeds:
+        summary["crashed_seeds"] = crashed_seeds
     (out_dir / "explore.json").write_text(json.dumps(summary, indent=1))
     return summary
 

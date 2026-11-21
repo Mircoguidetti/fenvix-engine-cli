@@ -39,18 +39,25 @@ def _dig(key, value) -> str:
 def _make(base):
     class _Observed(base):
         def __getitem__(self, key):
+            _tls.inside = True
             try:
                 v = base.__getitem__(self, key)
             except KeyError:
                 if _ACTIVE:
                     _note_value("env.get", key, None)
                 raise
+            finally:
+                _tls.inside = False
             if _ACTIVE:
                 _note_value("env.get", key, v)
             return v
 
         def __contains__(self, key):
-            r = base.__contains__(self, key)
+            _tls.inside = True
+            try:
+                r = base.__contains__(self, key)
+            finally:
+                _tls.inside = False
             if _ACTIVE:
                 _note_flag(key, r)
             return r
@@ -58,7 +65,13 @@ def _make(base):
         def __iter__(self):
             if _ACTIVE:
                 _note_list(self)
-            return base.__iter__(self)
+            _tls.inside = True
+            try:
+                keys = list(dict.keys(self._data))  # (base.__iter__ lists _data: read silently here)
+            finally:
+                _tls.inside = False
+            for k in keys:
+                yield self.decodekey(k)
 
     _Observed.__name__ = base.__name__
     _Observed.__qualname__ = base.__qualname__
@@ -71,9 +84,52 @@ def _make(base):
 OUTSIDE: set = set()
 
 
+def _infra_reader() -> bool:
+    """The read outside a test comes from the runner's machinery (pytest, its plugins, detpy: the first frame past the
+    standard library), not from the project's code: not an input of the tests."""
+    import sys
+
+    from . import _level0, _sites
+
+    f = sys._getframe(3)
+    while f is not None:
+        kind = _sites._classify(f.f_code.co_filename)[0]
+        if kind != _sites._STDLIB and not f.f_code.co_filename.startswith(_OWN_DIR):
+            top = str(f.f_globals.get("__name__") or "").split(".", 1)[0]
+            return kind == _sites._INFRA or top in _level0.INFRA_PACKAGES or top.startswith("pytest_")
+        f = f.f_back
+    return True
+
+
+_OWN_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
+
+
 def _outside(name: str) -> None:
-    if not _state.is_quiet():
+    if not _state.is_quiet() and not _infra_reader():
         OUTSIDE.add(name)
+
+
+def _untracked(name: str) -> bool:
+    """A variable whose value is no run input although it reaches the test: CI-volatile and kept (TMPDIR,
+    RUNNER_TEMP...), and the proxy variables while the network is closed (R-055 V1, V2). Those a project declares
+    with FENVIX_VOLATILE_ENV are its own declaration that the value does not matter, and are not."""
+    from . import _level0
+
+    if name in _level0.VOLATILE_KEPT and name != "FENVIX_VOLATILE_ENV":
+        return True
+    if name in _level0.PROXY_ENV:
+        cfg = _state.STATE.config
+        return cfg is not None and "net" in cfg.controls and not getattr(cfg, "record_net", False)
+    return False
+
+
+def _note_untracked(key) -> None:
+    """A test that reads such a variable cannot be proven identical: ``uncontrolled.env``."""
+    name = _name(key)
+    if _untracked(name):
+        from . import uncontrolled
+
+        uncontrolled._mark("env", f"{name}: read, but its value is no run input", 3)
 
 
 def _note_value(op, key, v) -> None:
@@ -82,6 +138,7 @@ def _note_value(op, key, v) -> None:
         return
     if _state.is_quiet():
         return
+    _note_untracked(key)
     try:
         _state.record("other", op, _dig(key, v), 2)
     except Exception:
@@ -94,6 +151,7 @@ def _note_flag(key, present) -> None:
         return
     if _state.is_quiet():
         return
+    _note_untracked(key)
     try:
         _state.record("other", "env.has", f"{_name(key)}={'set' if present else 'unset'}", 2)
     except Exception:
@@ -162,79 +220,83 @@ def _note_list(env) -> None:
         pass
 
 
-class _PosixEnviron(dict):
-    """``posix.environ`` under the env control: the same bytes mapping ``os.environ`` keeps (its ``_data``), whose
-    reads are events like ``os.environ``'s (docs/VERIFY-INPUTS.md: a read through posix.environ was no event). A dict
-    subclass over the live data: every read goes to that data, so ``os.environ`` writes are seen."""
+import threading as _threading
 
-    def __init__(self, data):
-        super().__init__()
-        self._d = data
+_tls = _threading.local()  # inside: os.environ's own methods are reading _data (their read is the event)
+
+
+class _RecData(dict):
+    """``os.environ._data``, ``os.environb._data`` and ``posix.environ`` under the env control: the same storage (a
+    dict holding the environment, as before), whose reads by the code under test are events like ``os.environ``'s
+    (R-055 V11; posix.environ in docs/VERIFY-INPUTS.md). os.environ's own methods read it silently (their read is
+    already the event); the engine reads it with ``dict`` methods, which bypass these."""
+
+    def _rec(self):
+        return _ACTIVE and not getattr(_tls, "inside", False)
 
     def __getitem__(self, key):
         try:
-            v = self._d[key]
+            v = dict.__getitem__(self, key)
         except KeyError:
-            if _ACTIVE:
+            if self._rec():
                 _note_value("env.get", key, None)
             raise
-        if _ACTIVE:
+        if self._rec():
             _note_value("env.get", key, v)
         return v
 
     def get(self, key, default=None):
-        v = self._d.get(key)
-        if _ACTIVE:
+        v = dict.get(self, key)
+        if self._rec():
             _note_value("env.get", key, v)
         return default if v is None else v
 
     def __contains__(self, key):
-        r = key in self._d
-        if _ACTIVE:
+        r = dict.__contains__(self, key)
+        if self._rec():
             _note_flag(key, r)
         return r
 
     def _listed(self):
-        if _ACTIVE:
+        if self._rec():
             _note_list(os.environ)
-        return self._d
 
     def __iter__(self):
-        return iter(self._listed())
-
-    def __len__(self):
-        return len(self._d)
+        self._listed()
+        return dict.__iter__(self)
 
     def keys(self):
-        return self._listed().keys()
+        self._listed()
+        return dict.keys(self)
 
     def items(self):
-        return self._listed().items()
+        self._listed()
+        return dict.items(self)
 
     def values(self):
-        return self._listed().values()
+        self._listed()
+        return dict.values(self)
 
     def copy(self):
-        return dict(self._listed())
-
-    def __repr__(self):
-        return repr(self._d)
-
-    def __setitem__(self, key, value):
-        self._d[key] = value
-
-    def __delitem__(self, key):
-        del self._d[key]
+        self._listed()
+        return dict(dict.items(self))
 
 
 def _install_posix() -> None:
+    data = getattr(os.environ, "_data", None)
+    if not isinstance(data, dict) or isinstance(data, _RecData):
+        return
+    rec = _RecData(dict.items(data))
+    os.environ._data = rec
+    if getattr(os, "environb", None) is not None and getattr(os.environb, "_data", None) is data:
+        os.environb._data = rec
     try:
         import posix
+
+        if posix.environ is data:
+            posix.environ = rec
     except ImportError:  # pragma: no cover - not POSIX
-        return
-    data = getattr(os.environ, "_data", None)
-    if isinstance(data, dict) and not isinstance(posix.environ, _PosixEnviron):
-        posix.environ = _PosixEnviron(data)
+        pass
 
 
 def install() -> None:

@@ -363,11 +363,28 @@ def _engine_probe(p: str) -> bool:
 _IMPORTED = (".py", ".pyc", ".pyo", ".pyi", ".pth", ".so", ".pyd")
 
 
+# files read outside any test (module scope of a test file or conftest, a dependency at import, a hook): path ->
+# content digest. No test's event: they are run inputs (`file:<path>`, _level0.run_inputs / the trace footer), so two
+# runs where one differs are never identical (R-055 V3)
+OUTSIDE_FILES: dict = {}
+
+
 def _audit(event, args):
+    if event == "sqlite3.connect":
+        _audit_sqlite(args)
+        return
+    if event == "ctypes.dlopen":
+        _audit_dlopen(args)
+        return
     if event != "open" or not _ACTIVE:
         return
     st = _state.STATE
-    if st.nodeid is None or st.recorder is None or getattr(_tls, "busy", False) or _state.is_quiet():
+    if getattr(_tls, "busy", False) or _state.is_quiet():
+        return
+    if st.nodeid is None:
+        _audit_outside(args)
+        return
+    if st.recorder is None:
         return
     try:
         path, _mode, flags = args
@@ -409,6 +426,196 @@ def _audit(event, args):
     finally:
         _tls.busy = False
 
+
+def _readable_path(args):
+    try:
+        path, _mode, flags = args
+    except ValueError:
+        return None, None
+    if path is None or isinstance(path, int):
+        return None, None
+    if isinstance(flags, int) and ((flags & _O_ACC) == os.O_WRONLY or flags & os.O_TRUNC):
+        return None, None
+    p = os.fsdecode(path) if isinstance(path, (bytes, os.PathLike)) else path
+    if not isinstance(p, str):
+        return None, None
+    if not os.path.isabs(p):
+        p = os.path.join(_sites._real_getcwd(), p)
+    p = os.path.normpath(p)
+    if p in _QUIET_DEVICES or p.startswith(_QUIET_PREFIXES) or _excluded(p) or _engine_probe(p):
+        return None, None
+    return p, flags
+
+
+def _audit_outside(args) -> None:
+    if _real_getpid() != _SESSION_PID:
+        return
+    _tls.busy = True
+    try:
+        p, flags = _readable_path(args)
+        if p is None or _plugin_site(_user_depth(2)):
+            return
+        got = _digest_file(p)
+        if got is None:
+            return
+        kind, value = got
+        if kind == "absent" and isinstance(flags, int) and flags & os.O_CREAT:
+            return
+        OUTSIDE_FILES[_sites.norm_path(p)] = "<absent>" if kind == "absent" else ("<device>" if kind == "device" else value)
+    except Exception:  # never break the code under test
+        pass
+    finally:
+        _tls.busy = False
+
+
+def _audit_sqlite(args) -> None:
+    """``sqlite3.connect(path)``: the database file is read by C code, not through ``open`` (R-055 V7): its content
+    is an input like a file the test reads (an event in a test, a run input outside one)."""
+    if not _ACTIVE or getattr(_tls, "busy", False) or _state.is_quiet() or _real_getpid() != _SESSION_PID:
+        return
+    try:
+        db = args[0]
+        p = os.fsdecode(db) if isinstance(db, (bytes, os.PathLike)) else db
+        if not isinstance(p, str) or p in ("", ":memory:") or p.startswith("file:"):
+            if isinstance(p, str) and p.startswith("file:") and "mode=memory" not in p:
+                p = p[5:].split("?", 1)[0]
+            else:
+                return
+        if not os.path.isabs(p):
+            p = os.path.join(_sites._real_getcwd(), p)
+        p = os.path.normpath(p)
+    except Exception:
+        return
+    _tls.busy = True
+    try:
+        got = _digest_file(p)
+        if got is None:
+            return
+        kind, value = got
+        value = "<absent>" if kind == "absent" else value
+        if _state.STATE.nodeid is None:
+            OUTSIDE_FILES[_sites.norm_path(p)] = value
+        else:
+            _state.record("fs", "sqlite.open", f"{_sites.norm_path(p)} {value}", _user_depth(2))
+    except Exception:
+        pass
+    finally:
+        _tls.busy = False
+
+
+def _audit_dlopen(args) -> None:
+    """``ctypes`` loads a native library: its C code reads files, the environment and the clock unobserved (R-055
+    V7, V15). In a test: ``uncontrolled.native`` (never identical); outside one: every test is marked through the
+    header (``native_loaded_outside_tests``)."""
+    if not _ACTIVE or _state.is_quiet() or _real_getpid() != _SESSION_PID:
+        return
+    try:
+        name = args[0]
+    except Exception:
+        return
+    if name is None:  # CDLL(None): the process itself (libc): its getenv is recorded (envobs)
+        return
+    label = os.path.basename(os.fsdecode(name)) if isinstance(name, (bytes, str, os.PathLike)) else str(name)
+    if _state.STATE.nodeid is None:
+        NATIVE_OUTSIDE.add(label)
+        return
+    from . import uncontrolled
+
+    uncontrolled._mark("native", f"ctypes loaded {label}", 3)
+
+
+NATIVE_OUTSIDE: set = set()
+
+
+def _stat_observed(real, op: str):
+    """``os.stat`` / ``os.lstat`` (and through them ``os.path.exists``, ``getmtime``, ``getsize``, ``pathlib``): a
+    file's existence, size and modification time read by the test are an input like its bytes (R-055 V6). The event
+    carries what the test got (after the virtual file times of fstime); directories and the access time are left
+    out (both change as the run itself reads and writes)."""
+    def wrapper(path, *args, **kwargs):
+        try:
+            res = real(path, *args, **kwargs)
+        except FileNotFoundError:
+            _note_stat(op, path, None)
+            raise
+        _note_stat(op, path, res)
+        return res
+
+    wrapper.__name__ = getattr(real, "__name__", op)
+    wrapper.__doc__ = getattr(real, "__doc__", None)
+    wrapper.__wrapped__ = real
+    return wrapper
+
+
+_EXISTS = frozenset(("exists", "lexists", "isfile", "isdir", "islink", "is_file", "is_dir", "is_symlink",
+                     "is_fifo", "is_socket", "is_block_device", "is_char_device", "ismount", "samefile", "_is_dir"))
+
+
+def _stat_question() -> str:
+    """What the caller of os.stat asked (a few frames up, in genericpath / posixpath / pathlib): ``exists`` (the
+    kind only), ``size``, ``mtime``, or everything (a direct stat: st_size, st_mtime... all reach the code)."""
+    import sys
+
+    try:
+        f = sys._getframe(3)
+    except ValueError:
+        return ""
+    for _ in range(4):
+        if f is None:
+            break
+        n = f.f_code.co_name
+        if n in _EXISTS:
+            return "exists"
+        if n == "getsize":
+            return "size"
+        if n == "getmtime":
+            return "mtime"
+        if not f.f_code.co_filename.startswith(_STDLIB_PREFIX):
+            break
+        f = f.f_back
+    return ""
+
+
+_STDLIB_PREFIX = tuple(d + os.sep for d in _sites._stdlib_dirs)
+
+
+def _note_stat(op, path, res) -> None:
+    st = _state.STATE
+    if not _ACTIVE or st.nodeid is None or st.recorder is None or getattr(_tls, "busy", False) or _state.is_quiet():
+        return
+    if isinstance(path, int) or _real_getpid() != _SESSION_PID:
+        return
+    _tls.busy = True
+    try:
+        p = os.fsdecode(path) if isinstance(path, (bytes, os.PathLike)) else path
+        if not isinstance(p, str):
+            return
+        if not os.path.isabs(p):
+            p = os.path.join(_sites._real_getcwd(), p)
+        p = os.path.normpath(p)
+        if p in _QUIET_DEVICES or p.startswith(_QUIET_PREFIXES) or _excluded(p):
+            return
+        depth = _user_depth(2)
+        if _plugin_site(depth):
+            return
+        asked = _stat_question()
+        if res is None:
+            value = "<absent>"
+        elif _stat.S_ISDIR(res.st_mode):
+            value = "<dir>"
+        elif asked == "exists":  # os.path.exists / isfile / Path.exists...: what the caller gets is the kind
+            value = f"{_stat.S_IFMT(res.st_mode):o}"
+        elif asked == "size":
+            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_size}"
+        elif asked == "mtime":
+            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_mtime_ns}"
+        else:
+            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_size} {res.st_mtime_ns}"
+        _state.record("fs", op, f"{_sites.norm_path(p)} {value}", depth)
+    except Exception:  # never break the code under test
+        pass
+    finally:
+        _tls.busy = False
 
 _HOOKED = [False]
 
@@ -452,6 +659,8 @@ def install(patcher, cfg) -> None:
 
         patcher.set(_thread, "get_native_id", get_native_id)
     _prev_open = io.open
+    patcher.set(os, "stat", _stat_observed(os.stat, "fs.stat"))
+    patcher.set(os, "lstat", _stat_observed(os.lstat, "fs.lstat"))
     patcher.set(io, "open", open_)
     patcher.set(builtins, "open", open_)
     if TMPDIR is None:

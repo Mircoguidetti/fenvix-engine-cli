@@ -1,5 +1,6 @@
 'use strict';
 const volatile = require('./volatile');
+const sites = require('./sites');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.
@@ -290,6 +291,23 @@ function runInputs(run, meta) {
   };
   // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; a
   // differing one is reported `input-differs` for the tests that read it (their `env.get` events, src/controls.js)
+  // what the run's processes read outside any test (files, src/outside.js) and the dependency modules they loaded:
+  // run inputs of every test (R-055 V3, V5)
+  const lines = (kind) => {
+    const out = new Map();
+    try {
+      for (const f of fs.readdirSync(path.join(run.dir, kind)).sort()) {
+        for (const l of fs.readFileSync(path.join(run.dir, kind, f), 'utf8').split('\n')) {
+          const i = l.indexOf('\t');
+          if (i > 0) out.set(l.slice(0, i), l.slice(i + 1));
+        }
+      }
+    } catch { /* none */ }
+    return out;
+  };
+  for (const [k, v] of [...lines('filesout')].sort()) inputs[k.startsWith('stat:') ? `file:${k}` : `file:${k}`] = v;
+  const deps = [...lines('depsout')].map(([k, v]) => `${sites.normPath(k)}=${v}`).sort();
+  inputs.deps = `${dig(deps.join('\n'))} (${deps.length} files)`;
   const vp = volatile.patterns();
   // while the network is closed the proxy variables are its part (the closed network decides every connection), not
   // inputs; while recording (the real network) they are inputs

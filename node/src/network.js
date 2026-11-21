@@ -1041,7 +1041,11 @@ function installDgram(patcher) {
     if (a.length >= 3 && typeof a[0] === 'number' && typeof a[1] === 'number' && !(typeof msg === 'string')) { port = a[2]; address = a[3]; } else { port = a[0]; address = a[1]; }
     if (port === undefined || port === null) return realSend.call(this, msg, ...rest); // connected socket: checked at connect
     const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
-    if (!POLICY.external(host, port)) return realSend.call(this, msg, ...rest);
+    if (!POLICY.external(host, port)) {
+      // a datagram to a local or allowed endpoint: its answers are not this run's (R-055 V8): never identical
+      if (STATE.testId !== null && STATE.quietDepth === 0) STATE.record('other', 'uncontrolled.net', `live endpoint ${host}:<port> (udp)`);
+      return realSend.call(this, msg, ...rest);
+    }
     return refuse(this, POLICY.hostname(host), port, cb);
   });
   patcher.set(P, 'connect', function connect(port, address, cb) {

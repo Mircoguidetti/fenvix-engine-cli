@@ -570,6 +570,13 @@ def cmd_explore(argv: list) -> int:
         for ln in err.splitlines()[1:]:
             print("    " + ln, file=sys.stderr)
         return 2
+    if s.get("crashed_seeds"):
+        # R-055 E1: a run that died with no test result is a defect, whatever the other seeds found
+        cs = s["crashed_seeds"]
+        print(f"{PROG} explore: {len(cs)} seed run(s) crashed with no test result (seed(s) {', '.join(map(str, cs))}): "
+              f"the process died during a test; the failing tests above name the test it died in when its order is "
+              f"known", file=sys.stderr)
+        return 1
     if s.get("collection_errors"):
         # plain pytest cannot run this suite (it stops at collection): the exploration above covers the tests that
         # collected. Failing tests it found are findings all the same (exit 0); finding none is no verdict that the

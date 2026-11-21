@@ -1430,6 +1430,9 @@ fn m_sendto<'py>(py: Python<'py>, a: Args<'_, 'py>) -> PyResult<Bound<'py, PyAny
                     record(py, "socket.sendto", join3(&host, &pb, " blocked"))?;
                     return Err(n.blocked(py, &join3(&host, &pb, " (udp)"))?);
                 }
+            } else if let Ok(f) = n.g(py, intern!(py, "_note_live")) {
+                // a datagram to a local or allowed endpoint: like a connection to one (R-055 V8)
+                f.call1((slf, address))?;
             }
         }
     }

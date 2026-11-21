@@ -193,6 +193,31 @@ The attacks found five channels where verify said IDENTICAL although the test ob
 and Node reads of project files. The remaining gaps (C `getenv` in extensions, Python reads after the trace opened,
 the Node configuration's dependencies, Deno/Bun untested here, `sys.argv`/cwd on Python) are listed in the document.
 
+### R-055 (full review of `688e4fe`): every defect fixed
+
+R-055 found 26 wrong IDENTICAL verdicts in 16 channels (F-01 no, F-03 no), and E1, D1, D3. Its tests
+(`tests/test_review_r055_verifier.py`, 19; `node/test/review-r055.test.js`, 8) are in the branch unchanged, and its
+section of `docs/VERIFY-INPUTS.md` is copied in, with the status of each channel. After the fixes (MEASURED, local,
+Python 3.13, Node 22): 18 of 19 Python cases and 8 of 8 Node cases pass. The one left, V14 (`getrusage`), fails on its
+own precondition here: the two runs' `ru_maxrss` were equal on this machine, so the attack changed nothing the test saw;
+the engine records the real counters as an event (my test `test_cpu_time_clocks_are_virtual` shows the divergence).
+
+What changed, as rules (docs/VERIFY-INPUTS.md, "Status of the R-055 channels"):
+- reading a CI-volatile kept variable or a closed network's proxy variable: `uncontrolled.env`, never identical (V1, V2)
+- files read outside any test: run inputs `file:<path>`; reads after the header: the trace footer (`late`) (V3, V12)
+- run inputs `code`, `deps` and `argv` (V4, V5, V10); an input `<random>` never equal (V13)
+- `os.stat`/`lstat` and Node `existsSync`/`statSync`/`lstatSync`: events with what the caller asked (V6)
+- sqlite database files read like files; ctypes libraries: `uncontrolled.native` (V7, V15)
+- UDP and unix-socket live endpoints: `uncontrolled.net` from the frame that used them (V8, V9)
+- `os.environ._data`/`posix.environ`: one recording mapping (V11); `process.loadEnvFile` read like a file (V16)
+- explore exits 1 when seeds crashed with no result (E1); NOT PROVEN headline for uncontrolled-only differences (D1);
+  repro counts a test that kills the process as a failure (D3)
+
+Changed expectations in my own earlier tests, each because a stricter event is now the first difference:
+`test_fingerprint.py::test_control_flow_divergence` (the existence check before the clock read),
+`::test_outcome_only_divergence` (`fs.stat` or `fs.read`), `test_f01_gaps.py::test_cpu_time_clocks_are_virtual`
+(getrusage's real counters are an event). No reviewer's test was changed.
+
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
 - Node 22, 24 and 26: 858/858 each.
