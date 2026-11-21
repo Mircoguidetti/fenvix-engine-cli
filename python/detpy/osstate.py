@@ -368,6 +368,21 @@ _IMPORTED = (".py", ".pyc", ".pyo", ".pyi", ".pth", ".so", ".pyd")
 # content digest. No test's event: they are run inputs (`file:<path>`, _level0.run_inputs / the trace footer), so two
 # runs where one differs are never identical (R-055 V3)
 OUTSIDE_FILES: dict = {}
+# files this process created outside any test (opened with O_CREAT while absent, a SQLite database connected to while
+# absent): their content is this run's own output, so a later read of them (or of a file named after them: a SQLite
+# journal, coverage's suffixed data files) outside any test is not an input. pytest-cov's ``.coverage.<host>.pid<N>.
+# <random>`` files made every test of two runs diverge on a run input that only named the run's own output (MEASURED,
+# exam PY-06.pytest-cov.det2, 297/297).
+CREATED: set = set()
+
+
+def _created_by_run(p: str) -> bool:
+    if p in CREATED:
+        return True
+    for c in CREATED:
+        if p.startswith(c) and p[len(c):len(c) + 1] in (".", "-"):
+            return True
+    return False
 
 
 def _audit(event, args):
@@ -428,6 +443,24 @@ def _audit(event, args):
         _tls.busy = False
 
 
+def _note_created(args) -> None:
+    """An ``open`` outside any test that creates its file: the file is this run's output from now on."""
+    try:
+        path, _mode, flags = args
+    except ValueError:
+        return
+    if path is None or isinstance(path, int) or not (isinstance(flags, int) and flags & os.O_CREAT):
+        return
+    p = os.fsdecode(path) if isinstance(path, (bytes, os.PathLike)) else path
+    if not isinstance(p, str):
+        return
+    if not os.path.isabs(p):
+        p = os.path.join(_sites._real_getcwd(), p)
+    p = os.path.normpath(p)
+    if not os.path.lexists(p):
+        CREATED.add(p)
+
+
 def _readable_path(args):
     try:
         path, _mode, flags = args
@@ -453,8 +486,9 @@ def _audit_outside(args) -> None:
         return
     _tls.busy = True
     try:
+        _note_created(args)
         p, flags = _readable_path(args)
-        if p is None or _plugin_site(_user_depth(2)):
+        if p is None or _plugin_site(_user_depth(2)) or _created_by_run(p):
             return
         got = _digest_file(p)
         if got is None:
@@ -495,6 +529,11 @@ def _audit_sqlite(args) -> None:
         kind, value = got
         value = "<absent>" if kind == "absent" else value
         if _state.STATE.nodeid is None:
+            if kind == "absent":
+                CREATED.add(p)  # SQLite creates it: this run's own database, not an input
+                return
+            if _created_by_run(p):
+                return
             OUTSIDE_FILES[_sites.norm_path(p)] = value
         else:
             _state.record("fs", "sqlite.open", f"{_sites.norm_path(p)} {value}", _user_depth(2))

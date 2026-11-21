@@ -510,6 +510,58 @@ def _os_times():
     return os.times_result((e / NS, 0.0, 0.0, 0.0, (_MONO_BASE_NS + e) / NS))
 
 
+_TM_GUARDED = [False]
+
+
+def guard_time_machine() -> None:
+    """time-machine (before 3.x, e.g. 2.16.0) patches C functions in place: its ``patch_if_needed`` writes its own
+    function pointers into the method table of whatever ``time.time``, ``datetime.datetime.now``, ... are when it
+    runs. Under --det those are the engine's stand-ins, whose tables are not CPython's, and the process crashed
+    (MEASURED: segmentation fault in time-machine 2.16.0's own suite, exam PY-06.time-machine). While it patches, it
+    is shown the interpreter's own functions; the stand-ins come back right after. Travels still reach the virtual
+    clock through ``_time_machine_ns``. Called when the controls start and before every test (time-machine is
+    usually imported by a test module, after the controls)."""
+    if _TM_GUARDED[0] or CLOCK is None:
+        return
+    tm = sys.modules.get("_time_machine")
+    real_patch = getattr(tm, "patch_if_needed", None) if tm is not None else None
+    if real_patch is None:
+        return
+    _TM_GUARDED[0] = True
+    reals = {"time": real_time, "time_ns": real_time_ns, "monotonic": real_monotonic,
+             "monotonic_ns": real_monotonic_ns, "gmtime": real_gmtime, "localtime": real_localtime,
+             "strftime": real_strftime}
+    if real_clock_gettime is not None:
+        reals["clock_gettime"] = real_clock_gettime
+    if real_clock_gettime_ns is not None:
+        reals["clock_gettime_ns"] = real_clock_gettime_ns
+
+    def patch_if_needed(*a, **kw):
+        import ctypes
+        import gc
+
+        saved = {n: _time.__dict__.get(n) for n in reals}
+        d = gc.get_referents(real_datetime.__dict__)[0]
+        saved_dt = {n: d.get(n) for n in ("now", "utcnow")}
+        try:
+            for n, f in reals.items():
+                setattr(_time, n, f)
+            d["now"], d["utcnow"] = _real_dt_now, _real_dt_utcnow
+            ctypes.pythonapi.PyType_Modified(ctypes.py_object(real_datetime))
+            return real_patch(*a, **kw)
+        finally:
+            for n, f in saved.items():
+                if f is not None:
+                    setattr(_time, n, f)
+            for n, f in saved_dt.items():
+                if f is not None:
+                    d[n] = f
+            ctypes.pythonapi.PyType_Modified(ctypes.py_object(real_datetime))
+
+    patch_if_needed.__wrapped__ = real_patch
+    tm.patch_if_needed = patch_if_needed
+
+
 def uninstall() -> None:
     global CLOCK
     CLOCK = None
@@ -519,6 +571,7 @@ def uninstall() -> None:
 
 def start_test() -> None:
     if CLOCK is not None:
+        guard_time_machine()
         CLOCK.start_test()
 
 

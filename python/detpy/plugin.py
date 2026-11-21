@@ -401,8 +401,8 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
 
     def _read_pyc(source, pyc, trace=lambda x: None):
         config = _REWRITE_CONFIG[0]
-        if config is None:
-            return None
+        if config is None or _state.STATE.nodeid is not None:
+            return None  # a module a test writes and imports (pytester): from source in every run, see _rewrite_test
         t = keyed_tail(config)
         name = pyc.name
         if t is None or not name.endswith(tail):
@@ -425,6 +425,11 @@ def _cache_rewritten_tests(config, patcher=None) -> bool:
 
     def _rewrite_test(fn, config):
         stamp, co = real(fn, config)
+        if _state.STATE.nodeid is not None:
+            # rewritten while a test runs (pytester's inner sessions, a test importing a file it wrote): compiled
+            # from source in every run and never cached, so the first run and every later one do the same thing
+            # (counting it as cold made the first run of pytest-mock's own suite divergent in all 82 tests, MEASURED)
+            return stamp, marshal.loads(marshal.dumps(co))
         t = keyed_tail(config)
         if t is None:
             return stamp, co
@@ -517,6 +522,17 @@ def _plugin_rewrite_files(limit: int = 20000) -> list[str]:
 
     out: list[str] = []
     seen: set = set()
+    # pytest's own module that the pytester plugin registers for rewrite (``pytest_plugins = ["pytester"]``): it was
+    # rewritten from source in the first run only, a cold module in that run's bytecode input (P-064)
+    try:
+        import _pytest
+
+        pa = os.path.join(os.path.dirname(os.path.abspath(_pytest.__file__)), "pytester_assertions.py")
+        if os.path.isfile(pa):
+            seen.add(pa)
+            out.append(pa)
+    except Exception:
+        pass
     for dist in importlib.metadata.distributions():
         try:
             if not any(ep.group == "pytest11" for ep in dist.entry_points):

@@ -698,7 +698,11 @@ pub fn clock_lock_acquire<'py>(
 pub(crate) fn time_machine_ns<'py>(py: Python<'py>, e: &Bound<'py, PyAny>) -> PyResult<Bound<'py, PyAny>> {
     let none = || py.None().into_bound(py);
     let tm = sys_module(py, &g(py, intern!(py, "sys"))?, intern!(py, "time_machine"))?;
-    let stack = if tm.is_none() { none() } else { getattr_or(&tm, intern!(py, "traveller_stack"), none())? };
+    // time-machine 3.x keeps its travels in `traveller_stack`, 2.x in `coordinates_stack` (same fields)
+    let mut stack = if tm.is_none() { none() } else { getattr_or(&tm, intern!(py, "traveller_stack"), none())? };
+    if stack.is_none() && !tm.is_none() {
+        stack = getattr_or(&tm, intern!(py, "coordinates_stack"), none())?;
+    }
     if !stack.is_truthy()? {
         return Ok(none());
     }
