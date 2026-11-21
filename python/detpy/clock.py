@@ -404,7 +404,77 @@ def install(patcher: Patcher, epoch_ns: int, tick_ns: int, skip_module, adapt_af
         patcher.set(resource, "getrusage", getrusage)
     except ImportError:  # pragma: no cover - not on POSIX
         pass
+    _install_timed_waits(patcher)
     return rebind_module_references(patcher, replacements, skip_module)
+
+
+def _advance_timeout(timeout) -> None:
+    """A wait that timed out lasted its timeout on the virtual clock (rounded up to the millisecond, as the selector
+    rule in Rust)."""
+    try:
+        ns = int(float(timeout) * 1_000_000_000)
+    except (TypeError, ValueError, OverflowError):
+        return
+    if ns > 0 and CLOCK is not None:
+        CLOCK.advance(-(-ns // 1_000_000) * 1_000_000)
+
+
+def _install_timed_waits(patcher: Patcher) -> None:
+    """The waits with a timeout that the selector and condition rules do not cover (exam F-01.probe.c-wait):
+    ``select.select`` and blocking socket operations with a timeout (``settimeout``) advance the virtual clock by
+    their timeout when they time out, as ``time.sleep`` does; ``timeit``'s timed loop, which reads no clock inside,
+    costs one tick per iteration, so ``Timer.autorange`` ends (on the virtual clock it measured one tick whatever the
+    number and never reached its 0.2 s)."""
+    import select as _sel
+    import socket as _sock
+    import timeit as _timeit
+
+    real_select = _sel.select
+
+    def select(rlist, wlist, xlist, timeout=None):
+        ready = real_select(rlist, wlist, xlist, timeout)
+        if timeout is not None and not any(ready):
+            _advance_timeout(timeout)
+        return ready
+
+    select.__wrapped__ = real_select
+    select.__doc__ = real_select.__doc__
+    patcher.set(_sel, "select", select)
+
+    def timed(real):
+        def method(self, *args, **kwargs):
+            try:
+                return real(self, *args, **kwargs)
+            except TimeoutError:
+                t = self.gettimeout()
+                if t:
+                    _advance_timeout(t)
+                raise
+
+        method.__wrapped__ = real
+        method.__name__ = getattr(real, "__name__", "method")
+        method.__doc__ = getattr(real, "__doc__", None)
+        return method
+
+    for name in ("recv", "recv_into", "recvfrom", "recvfrom_into", "recvmsg", "recvmsg_into", "accept", "send",
+                 "sendall", "sendto"):
+        real = getattr(_sock.socket, name, None)
+        if real is not None:
+            patcher.set(_sock.socket, name, timed(real))
+
+    real_timeit = _timeit.Timer.timeit
+
+    def timeit(self, number=_timeit.default_number):
+        t = real_timeit(self, number)
+        if CLOCK is None:
+            return t
+        cost = int(number) * int(CLOCK.tick_ns)
+        CLOCK.advance(cost)
+        return t + cost / 1_000_000_000
+
+    timeit.__wrapped__ = real_timeit
+    timeit.__doc__ = real_timeit.__doc__
+    patcher.set(_timeit.Timer, "timeit", timeit)
 
 
 def _loop_time(self):

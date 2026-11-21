@@ -478,7 +478,7 @@ def input_text() -> str:
     in a serial run, an xdist controller and a session that runs beside another one, which takes ``fenvix-det.1``:
     the directory's name is not an input, the control is)."""
     tmp = "fresh per run" if TMPDIR else "real"
-    return (f"virtual pid; temporary directory: {tmp}; /dev/urandom, /dev/random, /proc/uptime virtual; "
+    return (f"virtual pid; temporary directory: {tmp}; entropy devices and /proc/uptime virtual; "
             "other files read, devices and OS measurements recorded")
 
 
