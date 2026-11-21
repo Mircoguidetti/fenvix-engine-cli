@@ -1,0 +1,132 @@
+name: l1-trunk
+
+# PY-07 (Level 1 on the trunk lineage): deterministic threads and asyncio, --det-threads / --det-async.
+# Triggered by a push to claude/l1-trunk. Iteration happens locally on one version; this is the full matrix.
+#   build   -> the fenvix wheel, once per Python version (3.12, 3.13, 3.14)
+#   engine  -> the engine's own suite (tests/) per version: the regression gate, because this work changed the
+#              Rust record hot path, time.sleep and the uncontrolled marking
+#   probes  -> the PY-07 conditions the frozen exam checks, run here against this branch directly:
+#              the two options exist; 8 runs of a thread race and an executor race under the options give one
+#              outcome and one fingerprint; the same runs without the options are never reported identical
+#   suites  -> harness/l1_trunk/measure.py on real suites pinned by exam/projects.py: the two numbers this row is
+#              judged on (how many tests move from NOT PROVEN to IDENTICAL, and the slowdown), plus the tests L1
+#              breaks and the tests that LOSE a proof, which are what decide whether it ships
+# No step raises a timeout to get green: a run that reaches its budget is reported as a hang.
+
+on:
+  push:
+    branches: [claude/l1-trunk]
+    paths-ignore: ["docs/**", "sessions/**", "**/results/**"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: l1-trunk-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHONUNBUFFERED: "1"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - run: pip install maturin
+      - run: maturin build --release --compatibility linux -o dist
+      - uses: actions/upload-artifact@v4
+        with: {name: "wheel-${{ matrix.python }}", path: dist/*.whl}
+
+  engine:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: "wheel-${{ matrix.python }}", path: dist}
+      - run: pip install dist/*.whl pytest
+      - name: engine suite
+        run: python -m pytest tests/ -q -p no:cacheprovider
+
+  probes:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: "wheel-${{ matrix.python }}", path: dist}
+      - run: pip install dist/*.whl pytest
+      - name: PY-07 probe conditions
+        run: python harness/l1_trunk/probes.py --out "probe-${{ matrix.python }}.json"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "probes-${{ matrix.python }}", path: "probe-${{ matrix.python }}.json"}
+
+  suites:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix:
+        python: ["3.12", "3.13", "3.14"]
+        suite: [anyio, requests, networkx]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "${{ matrix.python }}"}
+      - uses: actions/download-artifact@v4
+        with: {name: "wheel-${{ matrix.python }}", path: dist}
+      - run: pip install dist/*.whl pytest
+      - name: clone and install the pinned suite
+        run: python harness/l1_trunk/suites.py --suite "${{ matrix.suite }}" --dir /tmp/suites
+      - name: measure movement and slowdown
+        run: |
+          python harness/l1_trunk/measure.py --suite "/tmp/suites/${{ matrix.suite }}" \
+            --name "${{ matrix.suite }}-py${{ matrix.python }}" --runs 3 \
+            --args "$(python harness/l1_trunk/suites.py --suite '${{ matrix.suite }}' --print-args)" \
+            --out harness/l1_trunk/results
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: "measure-${{ matrix.suite }}-${{ matrix.python }}", path: harness/l1_trunk/results/*.json}
+
+  report:
+    needs: [engine, probes, suites]
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.13"}
+      - uses: actions/download-artifact@v4
+        with: {path: all}
+      - name: aggregate
+        run: |
+          mkdir -p harness/l1_trunk/results
+          find all -name '*.json' -exec cp {} harness/l1_trunk/results/ \; || true
+          python harness/l1_trunk/measure.py --aggregate harness/l1_trunk/results | tee summary.txt
+      - uses: actions/upload-artifact@v4
+        with: {name: summary, path: summary.txt}
