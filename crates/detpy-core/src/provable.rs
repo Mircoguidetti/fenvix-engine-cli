@@ -189,11 +189,18 @@ const INFRA_PREFIXES: &[&str] = &[
     "detpy", "_pytest", "pytest", "pluggy", "iniconfig", "_distutils_hack", "exceptiongroup", "detjs",
 ];
 
-/// Native extension modules whose own C code the engine has reasoned about.
+/// Native extension modules whose own C code the engine has reasoned about, **by name**.
 ///
-/// A test that loads any other extension module is NOT PROVEN: its C code could read a file or the real clock
-/// without emitting anything a sensor can see (the declared residual). The list is deliberately short; it grows
-/// only by someone auditing an extension and saying so here.
+/// This list is only for extensions that are not already covered by where they live. The shells decide the rest
+/// by path, which is what makes the rule portable: the interpreter's own extension modules are part of the
+/// interpreter and pinned by the `runtime` input, and the engine's and the runner's are the declared controlled
+/// set (Rule E). Which standard-library modules are separate shared objects at all depends on how the
+/// interpreter was built -- MEASURED: `_asyncio` and thirteen others are separate `.so` files on the hosted
+/// CPython 3.13 that CI uses and built into the binary in the development container -- so a list of names is the
+/// wrong instrument for them.
+///
+/// A test that loads an extension covered by neither is NOT PROVEN: its C code could read a file or the real
+/// clock without emitting anything a sensor can see (the declared residual).
 pub const CONTROLLED_NATIVE: &[&str] = &[
     // the engine's own extension and the accelerators of the pure modules above
     "detpy._core",
@@ -674,7 +681,10 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             | "DEFAULT_MIN_VERSION" | "checkServerIdentity" | "constants" | "sessionIdContext" => {
                 Accounting::Recorded
             }
-            "isIP" | "isIPv4" | "isIPv6" | "getheapsnapshot" => Accounting::Pure,
+            "isIP" | "isIPv4" | "isIPv6" => Accounting::Pure,
+            // the module's own argument normalisation (`net._normalizeArgs`): a function of its arguments, and
+            // whatever it is normalising for is recorded at the call it leads to
+            "_normalizeArgs" | "_createServerHandle" | "_setSimultaneousAccepts" => Accounting::Pure,
             _ => Accounting::Unaccounted,
         },
         "dns" | "dns/promises" => match export {
@@ -720,6 +730,9 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             // pinned or virtual under `--det`
             "hrtime" | "uptime" | "pid" | "ppid" | "cwd" | "chdir" | "umask" | "getuid" | "geteuid" | "getgid"
             | "getegid" | "getgroups" | "setuid" | "setgid" | "title" => Accounting::Controlled,
+            // hands out a builtin module: what is in it is this table's own business, and what was loaded is
+            // `inputs.code` / `inputs.deps`
+            "getBuiltinModule" => Accounting::Input,
             // the run's identity, compared as run inputs
             "argv" | "argv0" | "execPath" | "execArgv" | "version" | "versions" | "platform" | "arch"
             | "config" | "release" | "features" | "allowedNodeEnvironmentFlags" | "debugPort" => Accounting::Input,
@@ -757,12 +770,24 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
             }
             _ => Accounting::Unaccounted,
         },
+        // A vm context of the code under test is not outside the engine: `children.js` installs the Level 0
+        // controls into every one it creates, and a context it cannot reach is already reported
+        // (`uncontrolled.level0`). Compiling code carries no outside information either -- the code itself is
+        // `inputs.code`. What is left is the heap, which nothing pins.
+        "vm" => match export {
+            "createContext" | "runInNewContext" | "runInContext" | "runInThisContext" | "compileFunction"
+            | "Script" | "createScript" | "isContext" | "SourceTextModule" | "SyntheticModule" | "Module"
+            | "USE_MAIN_CONTEXT_DEFAULT_LOADER" => Accounting::Controlled,
+            "constants" => Accounting::Pure,
+            _ => Accounting::Unaccounted,
+        },
         "module" => match export {
             // the loader's own internals, which the runner and Node itself call constantly: what they resolve and
-            // load is `inputs.code` and `inputs.deps`, the run inputs the verifier compares
-            "_load" | "_resolveFilename" | "_resolveLookupPaths" | "_findPath" | "_nodeModulePaths" | "_stat"
-            | "_initPaths" | "_preloadModules" | "_extensions" | "_cache" | "_pathCache" | "_debug"
-            | "globalPaths" | "runMain" | "wrapper" => Accounting::Input,
+            // load is `inputs.code` and `inputs.deps`, the run inputs the verifier compares. Matched by prefix
+            // because the set differs between Node versions (`_readPackage` is not in every one) and every member
+            // of it is the same claim.
+            _ if export.starts_with('_') => Accounting::Input,
+            "globalPaths" | "runMain" | "wrapper" => Accounting::Input,
             // what was loaded is `inputs.code` and `inputs.deps`
             "builtinModules" | "createRequire" | "isBuiltin" | "syncBuiltinESMExports" | "findSourceMap"
             | "SourceMap" | "Module" | "register" | "registerHooks" | "wrap" | "getCompileCacheDir"
@@ -780,6 +805,13 @@ pub fn account_node(module: &str, export: &str) -> Accounting {
 /// against another. The shell writes the value it was built with into the trace header; [`judge`] refuses a trace
 /// whose digest is not this one.
 pub fn surface_digest() -> String {
+    // A build constant, so it is derived once. `judge` asks for it on every test of every run, and deriving it
+    // costs about 18 us, which a large verify would spend tens of thousands of times over.
+    static CACHED: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    CACHED.get_or_init(derive_surface_digest).clone()
+}
+
+fn derive_surface_digest() -> String {
     let mut buf = Vec::new();
     buf.extend_from_slice(&SENSOR_CONTRACT.to_le_bytes());
     for part in [AUDITED_RUNTIMES, PURE_MODULES, INFRA_PREFIXES, CONTROLLED_NATIVE, NODE_PURE_MODULES,
@@ -869,6 +901,30 @@ const NODE_PROBE_NAMES: &[(&str, &str)] = &[
     ("inspector", "open"),
 ];
 
+/// The `--det` controls the table's `Controlled` answers rest on, for a given sensor.
+///
+/// Every `Controlled` answer is a promise that `--det` gave both runs the same value, and every one of those
+/// promises is kept by a control the user can switch off (`--det-disable`). With the control off there is no
+/// patch, so no event and no pinned value either -- and the table would still answer `Controlled`, which would be
+/// a false IDENTICAL. So `judge` refuses a run that is missing any of these before it looks at a single name.
+///
+/// The two shells pin different things (Node pins the host name and the CPU count unconditionally, where Python
+/// does it under `env`), so the list is per sensor; it stays here rather than in the shells, because this is part
+/// of the rule.
+pub fn required_controls(sensor: &str) -> &'static [&'static str] {
+    if sensor.starts_with("py-") {
+        // time: the virtual clock. seeds: the generators. fs: enumeration order. net: the closed network.
+        // env: environment reads, the host name, the CPU count, the terminal size. os: the stat observer, the
+        // pinned process id and working directory. tz / locale: pinned. hashseed: `builtins.hash`.
+        &["time", "seeds", "fs", "net", "env", "os", "tz", "locale", "hashseed"]
+    } else if sensor.starts_with("node-") {
+        &["time", "seeds", "fs", "net", "timers"]
+    } else {
+        // a sensor the core does not know: clause 1 of `judge` has already refused it
+        &[]
+    }
+}
+
 /// What one shell reports about one test, and what the run as a whole declared about its sensor.
 ///
 /// Everything here is a statement of fact by the shell. The decision is [`judge`]'s alone.
@@ -882,6 +938,8 @@ pub struct Attestation<'a> {
     pub surface: Option<&'a str>,
     /// `meta.provable.runtime`: the runtime key the run names, matched against [`AUDITED_RUNTIMES`].
     pub runtime: Option<&'a str>,
+    /// `meta.controls`: the `--det` controls the run had on. Every entry of [`required_controls`] must be here.
+    pub controls: &'a [String],
     /// Per test: what the sensor saw and could not place, already named (`api:posix.getxattr`,
     /// `module:ctypes`, `native:lxml.etree`, `audit:os.getxattr`).
     pub unaccounted: &'a [String],
@@ -963,14 +1021,28 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
         }
         None => return not_proven("runtime", "the run named no runtime for the accounting table".into()),
     }
-    // 3. The channel rules that were already there. These come before the wide sensor's own findings on purpose:
+    // 3. Every control the table's `Controlled` answers rest on must have been on. One switched off turns a
+    //    promise of "the same value in every run" into an unpinned, unrecorded read.
+    for need in required_controls(sensor) {
+        if !att.controls.iter().any(|c| c == need) {
+            return not_proven(
+                "config",
+                format!(
+                    "the run had the control `{need}` off, and the engine's accounting rests on it; controls on: \
+                     {}",
+                    if att.controls.is_empty() { "none recorded".to_string() } else { att.controls.join(", ") }
+                ),
+            );
+        }
+    }
+    // 4. The channel rules that were already there. These come before the wide sensor's own findings on purpose:
     //    both answers are NOT PROVEN, but "the test started a thread" tells the reader more than
     //    "it called _thread.start_joinable_thread, which is not accounted for". The specific name wins over the
     //    generic one whenever the engine has it.
     if let Some(first) = att.marks.first() {
         return not_proven(first.split(':').next().unwrap_or(first), format!("uncontrolled source: {first}"));
     }
-    // 4. What the sensor saw and could not place. This is the clause that covers channel number 27: nothing in
+    // 5. What the sensor saw and could not place. This is the clause that covers channel number 27: nothing in
     //    the engine knows the name, and the verdict is NOT PROVEN all the same.
     if let Some(first) = att.unaccounted.first() {
         let kind = first.split(':').next().unwrap_or("api");
@@ -978,7 +1050,7 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
         let more = if rest > 0 { format!(" (and {rest} more)") } else { String::new() };
         return not_proven(kind, format!("not accounted for: {first}{more}"));
     }
-    // 5. Something outside any test.
+    // 6. Something outside any test.
     if let Some(first) = att.outside.first() {
         return not_proven(
             first.split(':').next().unwrap_or("fs"),
@@ -992,7 +1064,12 @@ pub fn judge(att: &Attestation<'_>) -> Verdict {
 ///
 /// `header` is the run's `meta.provable` object. This is what [`verify`](crate::verify) and the cache both call,
 /// so there is one implementation of the rule and not three.
-pub fn judge_record(record: &TestRecord, header: Option<&serde_json::Value>, outside: &[String]) -> Verdict {
+pub fn judge_record(
+    record: &TestRecord,
+    header: Option<&serde_json::Value>,
+    controls: &[String],
+    outside: &[String],
+) -> Verdict {
     let get = |k: &str| header.and_then(|h| h.get(k)).and_then(|v| v.as_str());
     let unaccounted = record.unaccounted.clone();
     let att = Attestation {
@@ -1000,6 +1077,7 @@ pub fn judge_record(record: &TestRecord, header: Option<&serde_json::Value>, out
         contract: header.and_then(|h| h.get("contract")).and_then(|v| v.as_u64()).map(|v| v as u32),
         surface: get("surface"),
         runtime: get("runtime"),
+        controls,
         unaccounted: &unaccounted,
         marks: &record.uncontrolled,
         outside,
@@ -1011,26 +1089,37 @@ pub fn judge_record(record: &TestRecord, header: Option<&serde_json::Value>, out
 mod tests {
     use super::*;
 
-    fn att<'a>(unaccounted: &'a [String], marks: &'a [String]) -> Attestation<'a> {
+    fn all_controls() -> Vec<String> {
+        required_controls("py-monitoring/1").iter().map(|s| s.to_string()).collect()
+    }
+
+    fn att<'a>(unaccounted: &'a [String], marks: &'a [String], controls: &'a [String]) -> Attestation<'a> {
         Attestation {
             sensor: Some("py-monitoring/1"),
             contract: Some(SENSOR_CONTRACT),
-            surface: None, // filled by the caller through `with_surface`
+            surface: None, // filled by the caller through `good`
             runtime: Some("cpython3.13"),
+            controls,
             unaccounted,
             marks,
             outside: &[],
         }
     }
 
-    fn good<'a>(unaccounted: &'a [String], marks: &'a [String], surface: &'a str) -> Attestation<'a> {
-        Attestation { surface: Some(surface), ..att(unaccounted, marks) }
+    fn good<'a>(
+        unaccounted: &'a [String],
+        marks: &'a [String],
+        surface: &'a str,
+        controls: &'a [String],
+    ) -> Attestation<'a> {
+        Attestation { surface: Some(surface), ..att(unaccounted, marks, controls) }
     }
 
     #[test]
     fn a_clean_run_with_a_known_sensor_is_provable() {
         let s = surface_digest();
-        assert_eq!(judge(&good(&[], &[], &s)), Verdict::Provable);
+        let c = all_controls();
+        assert_eq!(judge(&good(&[], &[], &s, &c)), Verdict::Provable);
     }
 
     #[test]
@@ -1046,31 +1135,67 @@ mod tests {
     #[test]
     fn an_unknown_contract_or_table_is_not_proven() {
         let s = surface_digest();
-        let a = Attestation { contract: Some(SENSOR_CONTRACT + 1), ..good(&[], &[], &s) };
+        let c = all_controls();
+        let a = Attestation { contract: Some(SENSOR_CONTRACT + 1), ..good(&[], &[], &s, &c) };
         assert!(!judge(&a).is_provable());
-        let a = Attestation { surface: Some("deadbeef"), ..att(&[], &[]) };
+        let a = Attestation { surface: Some("deadbeef"), ..att(&[], &[], &c) };
         assert!(!judge(&a).is_provable());
-        let a = Attestation { surface: None, ..att(&[], &[]) };
+        let a = Attestation { surface: None, ..att(&[], &[], &c) };
         assert!(!judge(&a).is_provable());
     }
 
     #[test]
     fn an_unaudited_runtime_is_not_proven() {
         let s = surface_digest();
-        let a = Attestation { runtime: Some("cpython3.99"), ..good(&[], &[], &s) };
+        let c = all_controls();
+        let a = Attestation { runtime: Some("cpython3.99"), ..good(&[], &[], &s, &c) };
         match judge(&a) {
             Verdict::NotProven { kind, .. } => assert_eq!(kind, "runtime"),
             v => panic!("expected NotProven, got {v:?}"),
         }
-        let a = Attestation { runtime: None, ..good(&[], &[], &s) };
+        let a = Attestation { runtime: None, ..good(&[], &[], &s, &c) };
         assert!(!judge(&a).is_provable());
+    }
+
+    #[test]
+    fn a_control_the_accounting_rests_on_being_off_is_not_proven() {
+        // every `Controlled` answer is a promise kept by a control the user can switch off. With it off there is
+        // no patch, so no pinned value and no event -- and a table that still said `Controlled` would be a false
+        // IDENTICAL.
+        let s = surface_digest();
+        let full = all_controls();
+        for drop in required_controls("py-monitoring/1") {
+            let c: Vec<String> = full.iter().filter(|x| x.as_str() != *drop).cloned().collect();
+            match judge(&good(&[], &[], &s, &c)) {
+                Verdict::NotProven { kind, detail } => {
+                    assert_eq!(kind, "config", "dropping {drop}: {detail}");
+                    assert!(detail.contains(drop), "dropping {drop} is not named: {detail}");
+                }
+                v => panic!("dropping the control {drop} still gave {v:?}"),
+            }
+        }
+        // and with every one of them on, the run is provable again
+        assert_eq!(judge(&good(&[], &[], &s, &full)), Verdict::Provable);
+        // a run that records no controls at all cannot be identical either
+        assert!(!judge(&good(&[], &[], &s, &[])).is_provable());
+    }
+
+    #[test]
+    fn the_two_shells_rest_on_different_controls() {
+        assert!(required_controls("py-monitoring/1").contains(&"os"));
+        assert!(required_controls("py-monitoring/1").contains(&"hashseed"));
+        // Node pins the host name and the CPU count unconditionally, so it needs no `env` control for them
+        assert!(!required_controls("node-surface/1").contains(&"env"));
+        assert!(required_controls("node-surface/1").contains(&"timers"));
+        assert!(required_controls("something-else/9").is_empty());
     }
 
     #[test]
     fn anything_the_sensor_could_not_place_is_not_proven() {
         let s = surface_digest();
+        let c = all_controls();
         let u = vec!["api:posix.getxattr".to_string()];
-        match judge(&good(&u, &[], &s)) {
+        match judge(&good(&u, &[], &s, &c)) {
             Verdict::NotProven { kind, detail } => {
                 assert_eq!(kind, "api");
                 assert!(detail.contains("posix.getxattr"), "{detail}");
@@ -1078,7 +1203,7 @@ mod tests {
             v => panic!("expected NotProven, got {v:?}"),
         }
         let u = vec!["native:lxml.etree".to_string(), "api:x.y".to_string()];
-        match judge(&good(&u, &[], &s)) {
+        match judge(&good(&u, &[], &s, &c)) {
             Verdict::NotProven { kind, detail } => {
                 assert_eq!(kind, "native");
                 assert!(detail.contains("and 1 more"), "{detail}");
@@ -1090,8 +1215,9 @@ mod tests {
     #[test]
     fn the_older_channel_marks_still_decide() {
         let s = surface_digest();
+        let c = all_controls();
         let m = vec!["thread".to_string()];
-        match judge(&good(&[], &m, &s)) {
+        match judge(&good(&[], &m, &s, &c)) {
             Verdict::NotProven { kind, .. } => assert_eq!(kind, "thread"),
             v => panic!("expected NotProven, got {v:?}"),
         }
@@ -1102,9 +1228,10 @@ mod tests {
         // a test that starts a thread also calls _thread.start_joinable_thread, which the table does not account
         // for. Both answers are NOT PROVEN; the report must say "thread", which tells the reader what happened.
         let s = surface_digest();
+        let c = all_controls();
         let u = vec!["api:_thread.start_joinable_thread".to_string()];
         let m = vec!["thread".to_string()];
-        match judge(&good(&u, &m, &s)) {
+        match judge(&good(&u, &m, &s, &c)) {
             Verdict::NotProven { kind, detail } => {
                 assert_eq!(kind, "thread", "{detail}");
                 assert!(detail.contains("thread"), "{detail}");
@@ -1112,7 +1239,7 @@ mod tests {
             v => panic!("expected NotProven, got {v:?}"),
         }
         // with no mark, the sensor's own finding is the answer: the general rule still bites
-        match judge(&good(&u, &[], &s)) {
+        match judge(&good(&u, &[], &s, &c)) {
             Verdict::NotProven { kind, detail } => {
                 assert_eq!(kind, "api");
                 assert!(detail.contains("_thread.start_joinable_thread"), "{detail}");
@@ -1124,8 +1251,9 @@ mod tests {
     #[test]
     fn something_outside_any_test_is_not_proven() {
         let s = surface_digest();
+        let c = all_controls();
         let outside = vec!["env:TMPDIR".to_string()];
-        let a = Attestation { outside: &outside, ..good(&[], &[], &s) };
+        let a = Attestation { outside: &outside, ..good(&[], &[], &s, &c) };
         match judge(&a) {
             Verdict::NotProven { kind, .. } => assert_eq!(kind, "env"),
             v => panic!("expected NotProven, got {v:?}"),

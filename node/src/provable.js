@@ -34,7 +34,27 @@
 //   (`node:inspector`, `node:v8`, `node:repl`).
 
 const native = require('./native');
+const sites = require('./sites');
 const { STATE } = require('./state');
+
+/**
+ * True when the call is one the test is answerable for.
+ *
+ * `sites.resolve()` gives null for the runner's own machinery and the engine's, and '<node>' when no user frame
+ * is in reach at all. Everything else -- a project file, and a package under `<deps>/` -- is watched.
+ */
+function watchedSite() {
+  const c = STATE.config;
+  if (!c || !c.sites) return true;   // sites are not being resolved: do not lose the gap
+  const site = STATE.quiet(() => sites.resolve());
+  if (site === null || site === '<node>') return false;   // the runner's own machinery, or no user frame at all
+  if (STATE.testId !== null) return true;                 // inside a test: whatever the test reached counts
+  // Outside any test the run is the runner setting itself up, and a package it pulled in for its own purposes --
+  // a reporter asking tty.isatty to decide on colour, a loader reading a package.json -- is not something a test
+  // observed. Only the project's own code counts there, which is the same line controls.js' noteOutside draws for
+  // environment reads outside any test.
+  return !site.startsWith('<');
+}
 
 /** Name and version of this sensor, as the trace header declares it. */
 const SENSOR = 'node-surface/1';
@@ -44,16 +64,37 @@ function runtimeKey() {
   return `node${process.versions.node.split('.')[0]}`;
 }
 
-const seen = new Set();          // gaps already reported for the running test
+let seen = new Set();            // gaps already reported for the test named by seenFor
+let seenFor = null;
 const outside = new Set();       // gaps found while no test was running
 let noteOutside = null;          // set by install(): controls.js' writer for not_proven_outside_tests
 let active = false;
 let reason = null;               // why there is no sensor, when there is none
 
-/** Builtins that are safe and useful to arm before any test runs: the engine patches into most of them. */
-const EAGER = new Set(['fs', 'fs/promises', 'os', 'net', 'dns', 'crypto', 'http', 'https', 'child_process',
-  'worker_threads', 'timers', 'timers/promises', 'perf_hooks', 'path', 'util', 'events', 'stream', 'buffer',
-  'url', 'querystring', 'assert', 'zlib', 'module', 'tls', 'dgram', 'string_decoder', 'console']);
+/**
+ * Builtins the sensor loads and arms itself, before any test file is loaded.
+ *
+ * Curated rather than "every builtin": requiring all of them pulls in the deprecated `node:domain` and
+ * `node:sys`, which warn on load and which the sensor would then have charged the run for -- MEASURED, it made
+ * every test NOT PROVEN with `module:domain` and `module:sys`. And evaluating `node:test`, `node:repl`,
+ * `node:inspector`, `node:trace_events`, `node:cluster` or `node:wasi` is not neutral: those exist to start
+ * something.
+ *
+ * The list is the modules the engine patches into, the pure ones (arming them is a no-op), and the few
+ * unaccounted ones that are safe to require -- the last group only so that `syncBuiltinESMExports()` carries
+ * their wrappers into the ESM named bindings, since an ESM `import` never passes through the CJS loader.
+ * Anything else is armed if and when something loads it through that loader.
+ */
+const PREARM = new Set([
+  // the engine patches into these
+  'fs', 'fs/promises', 'os', 'net', 'dns', 'dns/promises', 'crypto', 'http', 'https', 'http2', 'tls', 'dgram',
+  'child_process', 'worker_threads', 'timers', 'timers/promises', 'perf_hooks', 'module',
+  // pure: arming is a no-op, listed so the set reads as the whole covered surface
+  'path', 'util', 'events', 'stream', 'buffer', 'url', 'querystring', 'assert', 'zlib', 'string_decoder',
+  'console',
+  // unaccounted, but safe to require: armed so an ESM import of them meets the wrappers
+  'v8', 'vm', 'tty', 'async_hooks', 'readline', 'readline/promises',
+]);
 
 /** Builtin modules this sensor has already looked at. */
 const armed = new Set();
@@ -61,14 +102,17 @@ const armed = new Set();
 /**
  * One gap. Inside a test it is an event of that test; outside one it goes to the header.
  *
- * `atProjectSite` is the engine's existing rule for what counts (controls.js `projectSite`): a call whose nearest
- * frame outside detjs is the runner's own machinery or a package's is not something the test observed -- the
- * runner's identity is a run input and nothing writes its environment during a run (Rule E of the PROVABLE
- * measurement). Without this the sensor charges every run with the worker channel the runner talks to its parent
- * over, which no test ever sees.
+ * `atWatchedSite` exempts only the runner's own machinery and the engine's (Rule E of the PROVABLE measurement:
+ * the runner's identity is a run input and nothing writes its environment during a run). Without it the sensor
+ * charges every run with the worker channel the runner talks to its parent over, which no test ever sees.
+ *
+ * A PACKAGE IS NOT EXEMPT. controls.js' `projectSite` additionally rejects `<deps>/...`, which is right for
+ * deciding whose environment read to record but wrong here: a gap a test reaches through an ordinary dependency
+ * is still a gap the test has, and dropping it would be a false IDENTICAL. The Python sensor makes the same
+ * choice -- site-packages is `_USER` there, and only the runner's own paths are `_INFRA`.
  */
-function report(kind, name, atProjectSite) {
-  if (atProjectSite && !atProjectSite()) return;
+function report(kind, name, atWatchedSite) {
+  if (atWatchedSite && !atWatchedSite()) return;
   const key = `${kind}:${name}`;
   if (STATE.testId === null) {
     if (outside.has(key)) return;
@@ -76,13 +120,21 @@ function report(kind, name, atProjectSite) {
     if (noteOutside) { try { noteOutside(key); } catch { /* the run directory is gone */ } }
     return;
   }
+  // keyed by the running test, not by the process: a set that is never cleared would report a gap for the first
+  // test only and leave every later test of the worker looking clean
+  if (seenFor !== STATE.testId) { seenFor = STATE.testId; seen = new Set(); }
   if (seen.has(key)) return;
   seen.add(key);
   STATE.recordAt('other', `unaccounted.${kind}`, '<sensor>', name);
+  // The engine's existing "never reuse this test" signal. Without it the cache could store a test the rule
+  // refuses, and a later run that reused it would declare the result provable on a premise that was never true
+  // (session.js provableField's cache-only branch rests on exactly this).
+  if (STATE.onLevel0Gap) { try { STATE.onLevel0Gap(`not accounted for: ${key}`); } catch { /* best effort */ } }
 }
 
 function startTest() {
-  seen.clear();
+  seen = new Set();
+  seenFor = STATE.testId;
 }
 
 /**
@@ -92,8 +144,8 @@ function startTest() {
  * `real.apply(this, args)` throws "Class constructor cannot be invoked without 'new'". The Proxy also keeps the
  * name, the length, the prototype and every own property without copying any of them.
  */
-function wrap(real, name, key, projectSite) {
-  const mark = () => report('api', `${name}.${key}`, projectSite);
+function wrap(real, name, key) {
+  const mark = () => report('api', `${name}.${key}`, watchedSite);
   const w = new Proxy(real, {
     apply(t, thisArg, args) { mark(); return Reflect.apply(t, thisArg, args); },
     construct(t, args, newTarget) { mark(); return Reflect.construct(t, args, newTarget); },
@@ -125,12 +177,9 @@ function patchedKeys(patcher, obj) {
   return out;
 }
 
-function arm(patcher, name, exports_, projectSite) {
+function arm(patcher, name, exports_) {
   let policy;
   try { policy = native.provableModulePolicy(name); } catch { policy = 'unknown'; }
-  // the table has no rule for this module at all, so reaching it is itself the gap: the caller marks on load
-  // rather than wrapping a surface nothing is claimed about
-  if (policy === 'unknown') return -1;
   if (policy === 'pure') return 0;
   if (!exports_ || (typeof exports_ !== 'object' && typeof exports_ !== 'function')) return 0;
   let keys;
@@ -140,14 +189,18 @@ function arm(patcher, name, exports_, projectSite) {
   for (const k of keys) {
     if (engine.has(k)) continue;                      // the engine's own patch accounts for it
     let verdict;
-    try { verdict = native.provableAccount(name, k); } catch { verdict = 'unaccounted'; }
+    // the table has no rule for this module at all, so nothing in it is accounted for
+    try { verdict = policy === 'unknown' ? 'unaccounted' : native.provableAccount(name, k); }
+    catch { verdict = 'unaccounted'; }
     if (verdict !== 'unaccounted') continue;
     let real;
     try { real = exports_[k]; } catch { continue; }   // a getter that throws: left alone
     if (typeof real !== 'function' || WRAPPED.has(real)) continue;
-    if (patcher.set(exports_, k, wrap(real, name, k, projectSite))) n++;
+    if (patcher.set(exports_, k, wrap(real, name, k))) n++;
   }
-  return n;
+  // a module the table has no rule for: reaching it at all is the gap, so the caller marks on load as well as
+  // relying on the wrappers above (an ESM `import` of it never passes through the CJS loader)
+  return policy === 'unknown' ? -1 : n;
 }
 
 /**
@@ -157,7 +210,7 @@ function arm(patcher, name, exports_, projectSite) {
  * Returns true when a sensor is active. False means this run declares none, and then every test of the run comes
  * out NOT PROVEN -- the honest answer, not a reason to stop watching.
  */
-function install(patcher, notePut, projectSite) {
+function install(patcher, notePut) {
   noteOutside = notePut || null;
   if (process.env.FENVIX_NO_PROVABLE_SENSOR) {
     // turning the sensor off cannot buy a green: with no declaration the core refuses every test of the run.
@@ -176,20 +229,28 @@ function install(patcher, notePut, projectSite) {
   const builtins = (mod.builtinModules || []).filter((m) => !m.startsWith('_'));
   const unknown = new Set();
 
-  const armOne = (name, exports_) => {
-    if (arm(patcher, name, exports_, projectSite) === -1) unknown.add(name);
+  const armOne = (name, exports_, byUs) => {
+    if (arm(patcher, name, exports_) === -1 && !byUs) unknown.add(name);
   };
 
   // `process` is the one global that is module-shaped, and the one every test touches
-  armOne('process', process);
+  armOne('process', process, true);
 
   // The builtins the engine itself patches into are armed now, before any test file is loaded, so a test cannot
   // hold a reference to an unwrapped export. The rest are armed the first time something loads them:
   // `node:repl`, `node:inspector` and `node:trace_events` do real work on first load and must not be pulled in
   // by the sensor itself.
+  // Armed now, before any test file is loaded, so a test cannot hold a reference to an unwrapped export AND the
+  // `syncBuiltinESMExports()` that controls.js calls right after carries these wrappers into the ESM named
+  // bindings too. That matters: an ESM `import`/`import()` of a builtin never passes through the CJS loader, so
+  // the lazy hook below would never see it. Everything is armed except the few whose evaluation is not something
+  // the sensor should trigger by itself; for those, and only for those, the lazy hook is the only cover and an
+  // ESM import of one is a declared residual.
   for (const name of builtins) {
-    if (!EAGER.has(name)) continue;
-    try { armOne(name, require(name.startsWith('node:') ? name : `node:${name}`)); armed.add(name); }
+    if (!PREARM.has(name)) continue;
+    // `byUs`: the sensor loaded it, so loading is not something a test did and must not be marked. The wrappers
+    // it installs still mark any USE of an unaccounted export, which is what the verdict turns on.
+    try { armOne(name, require(name.startsWith('node:') ? name : `node:${name}`), true); armed.add(name); }
     catch { /* not available on this Node version */ }
   }
 
@@ -203,12 +264,12 @@ function install(patcher, notePut, projectSite) {
         const bare = String(request).replace(/^node:/, '');
         if (!armed.has(bare) && builtins.includes(bare)) {
           armed.add(bare);
-          if (arm(patcher, bare, r, projectSite) === -1) {
+          if (arm(patcher, bare, r) === -1) {
             unknown.add(bare);
-            report('module', bare, projectSite);
+            report('module', bare, watchedSite);
           }
         } else if (unknown.has(bare)) {
-          report('module', bare, projectSite);
+          report('module', bare, watchedSite);
         }
       } catch { /* never fail a load because of the sensor */ }
       return r;
