@@ -119,10 +119,11 @@ partial key. Each row has a test that changes only that input and requires the t
 
 Under `--det-cache` the tests run in the session's process(es), as plain `pytest` (or `pytest -n`) runs them
 (coordinator decision 2026-11-21, review R-050 P2): the reported outcome of every test is that run's. A test is keyed
-on the earlier tests of its process whose state it may have consumed (its carried set); a test with no stored result
-(new, failed, or never cacheable: it starts a process, reads file times, ...) runs after every earlier test of its
-process, so those are not reused in that session. Cost: a failing or never-cacheable test late in a process
-(worker) reruns its predecessors; the reuse share this costs on moto and litellm is UNKNOWN until measured.
+on the earlier tests of its process whose state it may have consumed (its carried set). A test with no stored result
+(failed, or never cacheable: it starts a process, reads file times, ...) keeps the carried set it had when it last
+ran, and those tests run before it whenever it runs; a new test runs after every earlier test of its process. Cost:
+a failing or never-cacheable test reruns the tests of its carried set, every earlier test of the process when it
+reached a library; the reuse share this costs on moto and litellm is UNKNOWN until measured.
 
 `--det-isolate` (one child per test file, or per test) is an explicit choice: no in-process state crosses files.
 

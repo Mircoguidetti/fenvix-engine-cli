@@ -69,14 +69,23 @@ What the per-file mode guarantees (coordinator's conditions):
   c5f9c39): an earlier file pollutes shared state; plain pytest and `--det` fail the victim, `--det-cache` reported
   "2 passed". Two fixes: (1) the in-process default above; (2) a hole of the in-process mode too, trunk included: a
   test with no stored result (new, failed, never cacheable) was given no needs, so on the next warm run its
-  predecessors were reused, not run, and the victim passed. It now runs after every earlier test of its process
-  (`_proof.py: demote_for_running`, coordinator decision (a)). P1 and P2 copied in, cold and warm, and the polluter
-  fixed: `test_r050_p2_...`, `test_r050_p1_...`; `test_in_process_is_the_default_under_the_cache_and_per_file_is_a_choice`.
-  Two tests asserted the unsound reuse and now expect the sound order: `test_py08_a_test_that_starts_a_process_runs_every_time`
-  (`test_pure`, before a never-recorded test, runs every time, reason `placement: a predecessor of ...`) and
-  `test_status_of_an_unlinked_temporary_file_is_not_a_refusal` (`test_size` before the never-cacheable `test_time`
-  runs with the whole file; selected alone it is reused). Cost: a failing or never-cacheable test reruns the earlier
-  tests of its process; the reuse share on moto and litellm is UNKNOWN until the coordinator's targeted dispatch.
+  predecessors were reused, not run, and the victim passed. Coordinator decision (b): the store keeps the carried set
+  of a test that ran and has no entry (`Store::loose_needs`, merged like entries, in shards too); those tests run
+  before it whenever it runs; a test that never ran (new) needs every earlier test of its process. Decision (a) (every
+  earlier test for any test without an entry) was tried first and MEASURED too costly locally: about 20 tests per
+  interpreter of detpy's own suites lost all reuse (one failing test at the end of a file or process reran
+  everything before it), so it was not pushed. P1 and P2 copied in, cold and warm, and the polluter fixed:
+  `test_r050_p2_...` (also checks the victim's kept needs), `test_r050_p1_...`;
+  `test_in_process_is_the_default_under_the_cache_and_per_file_is_a_choice`.
+  Tests that asserted the unsound reuse of a predecessor of a failing, never-cacheable or new test now expect it to
+  run, each with the reason in a comment: `test_py08_a_test_that_starts_a_process_runs_every_time`,
+  `test_status_of_an_unlinked_temporary_file_is_not_a_refusal` (selected alone, `test_size` is reused),
+  `test_proofcache_follow.py` (7 tests), `test_proofcache.py` (3), `test_culprit_keys`, `test_review_r009` (git),
+  `test_r015_fixes`, `test_runners_unittest` (a new module), and the four `*_rust` cache-reference tests (their one
+  file ends with a failing test: the warm run may reuse none; the stores are still compared byte for byte). Cost:
+  a failing or never-cacheable test reruns the earlier tests of its carried set, which E7 widens to every earlier
+  test when it reaches a library (common); a new test reruns every earlier test of its process once. The reuse share
+  on moto and litellm is UNKNOWN until the coordinator's targeted dispatch.
 * **Per-file default (reverted 2026-11-21: now `--det-isolate` only)** (section 0; `python/detpy/isolate.py: FileIsolate`, `plugin.py`): one child per test file;
   the file's tests run in it in order and the cache records them at the end of the child; children's shards are folded
   into one per process (`Shard::absorb`). A file whose tests are all reused forks no child. Under -n the files are the
