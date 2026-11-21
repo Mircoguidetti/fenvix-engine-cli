@@ -276,12 +276,22 @@ def managed() -> bool:
 def will_manage() -> bool:
     """A thread started now (``threading.Thread.start``, ``_thread.start_new_thread``) is scheduled.
 
-    ``detpy.uncontrolled`` asks this before marking a test ``uncontrolled.thread``: while the scheduler is active
-    the interleaving is a run input, recorded as the ``sched.thread`` choice events of the trace, so the test can be
-    proven identical. If the scheduler ever loses control of a thread it says so itself
+    ``detpy.uncontrolled`` asks this before marking a test ``uncontrolled.thread``: when the answer is yes the
+    interleaving is a run input, recorded as the ``sched.thread`` choice events of the trace, so the test can be
+    proven identical. If the scheduler then loses control of the thread it says so itself
     (``_record_uncontrolled`` -> ``uncontrolled.mark_thread_escaped``) and the test is NOT PROVEN again.
+
+    This is the gate of ``_wrap_start_thread``, which is what actually decides: a thread is adopted only when the
+    thread *starting* it is itself managed (``_me()``; not an unmanaged thread such as a pool worker that existed
+    before the test, and not a finalizer running inside the scheduler's critical section), and the scheduler is
+    active. Answering from ``CFG.enabled and S.active`` alone would suppress the mark for threads the scheduler
+    never takes, which is a claim we cannot back.
+
+    The one part of that gate left out is ``_started_by_infra``: a thread started by pytest or a plugin stays
+    unmanaged, but such a thread has no user call site, so ``_mark`` records nothing for it either way. It cannot
+    turn into a missing mark, and it is depth-sensitive, which this caller's frame would get wrong.
     """
-    return CFG.enabled and S.active
+    return CFG.enabled and _me() is not None
 
 
 _DETPY_DIR = os.path.dirname(os.path.abspath(__file__))
