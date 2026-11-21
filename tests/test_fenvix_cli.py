@@ -443,7 +443,9 @@ def test_explore_finds_the_target_when_another_module_does_not_import(project):
     """
     (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
     out = project / "ex"
-    p = fx("explore", "--budget", "20", "--out", str(out), "--json", cwd=project)
+    # --budget is in MINUTES, and explore needs a seed where the target fails and one where it passes before it
+    # can call it flaky, so the budget has to cover several seed runs
+    p = fx("explore", "--budget", "3", "--max-seeds", "4", "--out", str(out), "--json", cwd=project)
     assert p.returncode == 0, p.stdout + p.stderr
     s = json.loads(p.stdout[p.stdout.index("\n{\n"):])
     assert "tests/test_o.py::test_victim" in json.dumps(s), s

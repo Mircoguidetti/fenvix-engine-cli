@@ -324,16 +324,28 @@ function envReadOutside(dir) {
  * which is the honest answer: that part's tests were not watched. Node runs tests in worker processes and merges
  * their traces here, so a worker's sensor is not otherwise visible where the header is built.
  */
-function provableField(dir) {
+function provableField(dir, reusedTests, order) {
   const lines = [...runLines(dir, 'prov')];
-  if (!lines.length) return {};
   const absent = lines.find((l) => l.startsWith('absent '));
   if (absent) return { provable_absent: absent.slice('absent '.length) };
   const decls = new Set(lines.filter((l) => l.startsWith('ok ')).map((l) => l.slice('ok '.length)));
-  if (decls.size !== 1) {
+  if (decls.size === 1) {
+    try { return { provable: JSON.parse([...decls][0]) }; } catch { return {}; }
+  }
+  if (decls.size > 1) {
     return { provable_absent: `the run's processes declared ${decls.size} different sensors` };
   }
-  try { return { provable: JSON.parse([...decls][0]) }; } catch { return {}; }
+  // No process declared anything. That is right for a run in which nothing ran: every test came from the cache,
+  // which admits a test only when the rule proved it at the time it was recorded (crates/detpy-core/src/cache.rs
+  // admit_record -> provable::judge). There was nothing for this run to watch, and the fingerprints it compares
+  // are the ones the recording run was held to, so the run declares the build's own table.
+  const reused = (reusedTests || []).length;
+  if (reused > 0 && reused === (order || []).length) {
+    try {
+      return { provable: JSON.parse(native.provableHeader('cache-reuse/1', require('./provable').runtimeKey())) };
+    } catch { return {}; }
+  }
+  return {};
 }
 
 function runLines(dir, sub) {
@@ -395,7 +407,7 @@ function finish(run, opts, files, meta) {
     // The general rule (crates/detpy-core/src/provable.rs): what this run watched. The verifier reports a test
     // IDENTICAL only when the run declared a sensor it knows, so leaving this out is not a cosmetic omission --
     // it is the run saying "I cannot show anything identical", which is what a run without a sensor must say.
-    ...provableField(run.dir),
+    ...provableField(run.dir, reusedTests, order),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
