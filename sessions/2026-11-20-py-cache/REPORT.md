@@ -130,6 +130,18 @@ Fixed with a regression test copied from each probe (each fails without its fix)
 * Trunk 74d42b3 merged (PY-05.det2's `config` divergence: two -n 2 runs digested a cold rewrite cache differently;
   `test_harness_parallel_proof` passes after the merge).
 
+* **Exam rerun** (run 44869317315 on 5295ff0f, MEASURED by the exam): PY-08 12/12, F-05 46/56, PY-05 14/16; the
+  coordinator classed every remaining failure as a harness defect or a NOT IMPLEMENTED probe, except
+  F-05.probe.custom-reporter (`claude/exam` d92e259, proof run 44872193223), an engine gap, fixed next.
+* **F-05.probe.custom-reporter** (G-0412): a project reporter that swallows the terminal output hid the cache
+  summary. The summary is now also written to `<cache>/summary.txt` (atomically), and written from session finish
+  when no terminal reporter is registered (`-p no:terminal`).
+  `test_g0412_cache_summary_is_written_when_a_project_reporter_swallows_it[project,none]`.
+* **moto** (after the exam): the per-file child's failures that need earlier files' state are replayed in one
+  process and reported as placement findings (section 2.9).
+* Trunk cec096c (PR #8, Node) merged; the Node suite and the Python suites rerun after it (`gates/local-suites-final.txt`
+  section 10).
+
 Not mine per coordinator: F-05.edit-src-flip.click, F-05.wrong-reuse.hostname and the probes the exam marks NOT
 IMPLEMENTED (blockbuster, custom-reporter). PY-05.probe.testrun-uid: the two values are equal; verify reports an
 `env` divergence because the probe hands each run a different `EXAM_OUT` path that the test reads (a true input
@@ -237,9 +249,10 @@ and py3.14; the same result on both legs):
 Fixed since (section 1, exam round; each with a regression test, MEASURED locally): pythonpath, import-side-effect,
 odpair, probe.isolate, audit-rerun, det2 (trunk merge). Expected on the rerun: PY-05 7/8 (testrun-uid: probe issue),
 F-05 24/28 (click flip, hostname: not mine; blockbuster, custom-reporter: NOT IMPLEMENTED in this exam version).
-UNKNOWN until the coordinator reruns the exam on the pushed head.
+MEASURED on the rerun (44869317315 on 5295ff0f): PY-08 12/12, F-05 46/56, PY-05 14/16 (the rerun exam has more
+checks). The custom-reporter fix is after that run: UNKNOWN until the exam reruns on the final head.
 
-**Local suites** at the pushed head: `gates/local-suites-final.txt` (section 9). Every failure of the full parallel
+**Local suites** at the pushed head: `gates/local-suites-final.txt` (section 10). Every failure of the full parallel
 runs passes alone, except the 3.14 interpreter's known four (`os.getrandom` absent, `mock_open` TypeError), which
 fail the same with the trunk engine in that interpreter.
 

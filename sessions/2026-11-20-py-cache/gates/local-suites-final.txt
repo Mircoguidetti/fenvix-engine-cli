@@ -78,3 +78,18 @@ this head (the venvs hold an installed copy; a stale one made ~115 tests fail on
    3.14: 22 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
    Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
    Node unchanged since 8) (no JS or addon change): 628 tests, 627 pass, 0 fail, 1 skipped.
+
+10) Final head (b23026c4 placement replay in one process + trunk cec096c merged + 8b93c009 G-0412 cache summary
+    file; Node addon rebuilt, wheel rebuilt and reinstalled in every venv), MEASURED 2026-11-21, full suite, three
+    suites in parallel on 4 CPUs:
+== Python 3.12   21 failed, 1160 passed, 104 skipped, 1 deselected  (2303 s)
+== Python 3.13   21 failed, 1158 passed, 106 skipped, 1 deselected  (2211 s)
+== Python 3.14   19 failed, 1163 passed, 103 skipped, 1 deselected  (2438 s)
+   (the same classes as 8) and 9): reference-trace, timing and control comparisons; the controls_f01 ones name a
+   temporary directory fenvix-det vs fenvix-det.1, i.e. the three parallel suites sharing /tmp)
+   Every failing test rerun alone, per version, with /tmp cleared:
+   3.12: 21 passed
+   3.13: 21 passed
+   3.14: 15 passed, 4 failed = the interpreter's known four (os.getrandom x2, test_clock_rust mock_open x2), as in 1)
+   Runners suites (tests/test_runners_*.py, venv-runners): 213 passed, 2 skipped.
+   Node (after the cec096c merge): 854 tests, 853 pass, 0 fail, 1 skipped.
