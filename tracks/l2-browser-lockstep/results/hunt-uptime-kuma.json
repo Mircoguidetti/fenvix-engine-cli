@@ -3,10 +3,10 @@
  "job": "hunt",
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
- "status": "running",
- "run_id": "44904997963",
- "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
- "setup_s": 61,
+ "status": "ok",
+ "run_id": "44909741100",
+ "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
+ "setup_s": 66,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -24,8 +24,8 @@
  "pw_dir": ".",
  "pw_args": [],
  "runs": [],
- "epoch": "2026-11-21T12:48:00Z",
- "measured_at": "2026-11-21T12:48:55Z",
+ "epoch": "2026-11-21T13:47:00Z",
+ "measured_at": "2026-11-21T13:47:03Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
@@ -69,8 +69,8 @@
      "Error: expect(locator).toHaveValue(expected) failed",
      "Error: expect(locator).toHaveValue(expected) failed"
     ],
-    "fingerprints": 10,
-    "reproduced": false,
+    "fingerprints": 1,
+    "reproduced": true,
     "replay_match": [
      true,
      true,
@@ -83,28 +83,7 @@
      true,
      true
     ],
-    "divergence": {
-     "run_a": 0,
-     "run_b": 1,
-     "index": 125,
-     "window": null,
-     "event_a": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:3001 ddbeababa545ad8a581b76dbdd4573c7 189"
-     },
-     "event_b": {
-      "t": 0,
-      "s": "other",
-      "o": "server.fingerprint",
-      "at": "",
-      "v": "http://localhost:3001 71e0d7698170ef23b1b5bf5e25f98c79 189"
-     },
-     "reason": "other",
-     "description": "event #125: server.fingerprint @  returned different values: \"http://localhost:3001 ddbeababa545ad8a581b76dbdd4573c7 189\" vs \"http://localhost:3001 71e0d7698170ef23b1b5bf5e25f98c79 189\""
-    }
+    "divergence": null
    },
    {
     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
@@ -127,6 +106,9 @@
      "timedOut",
      "timedOut",
      "timedOut",
+     "timedOut",
+     "timedOut",
+     "timedOut",
      "timedOut"
     ],
     "replay_errors": [
@@ -136,10 +118,13 @@
      "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
+     "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded."
     ],
-    "fingerprints": null,
-    "reproduced": false,
+    "fingerprints": 1,
+    "reproduced": true,
     "replay_match": [
      true,
      true,
@@ -147,15 +132,19 @@
      true,
      true,
      true,
+     true,
+     true,
+     true,
      true
-    ]
+    ],
+    "divergence": null
    }
   ],
   "runs": [
    {
     "label": "h-latency-s1",
     "rc": 1,
-    "wall_s": 71.5,
+    "wall_s": 67.5,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -164,7 +153,7 @@
    {
     "label": "h-latency-s1-r1",
     "rc": 1,
-    "wall_s": 69.9,
+    "wall_s": 65.3,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -173,7 +162,7 @@
    {
     "label": "h-latency-s1-r2",
     "rc": 1,
-    "wall_s": 71.0,
+    "wall_s": 65.0,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -182,7 +171,7 @@
    {
     "label": "h-latency-s1-r3",
     "rc": 1,
-    "wall_s": 70.3,
+    "wall_s": 64.5,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -191,7 +180,7 @@
    {
     "label": "h-latency-s1-r4",
     "rc": 1,
-    "wall_s": 70.1,
+    "wall_s": 64.4,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -200,7 +189,7 @@
    {
     "label": "h-latency-s1-r5",
     "rc": 1,
-    "wall_s": 70.3,
+    "wall_s": 64.5,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -209,7 +198,7 @@
    {
     "label": "h-latency-s1-r6",
     "rc": 1,
-    "wall_s": 70.2,
+    "wall_s": 64.7,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -218,7 +207,7 @@
    {
     "label": "h-latency-s1-r7",
     "rc": 1,
-    "wall_s": 66.9,
+    "wall_s": 64.6,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -227,7 +216,7 @@
    {
     "label": "h-latency-s1-r8",
     "rc": 1,
-    "wall_s": 67.6,
+    "wall_s": 64.8,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -236,7 +225,7 @@
    {
     "label": "h-latency-s1-r9",
     "rc": 1,
-    "wall_s": 68.1,
+    "wall_s": 64.3,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -245,7 +234,7 @@
    {
     "label": "h-latency-s1-r10",
     "rc": 1,
-    "wall_s": 67.9,
+    "wall_s": 64.7,
     "counts": {
      "passed": 6,
      "failed": 1
@@ -254,7 +243,7 @@
    {
     "label": "h-timeout_body-s1",
     "rc": 1,
-    "wall_s": 175.8,
+    "wall_s": 154.2,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -263,7 +252,7 @@
    {
     "label": "h-timeout_body-s1-r1",
     "rc": 1,
-    "wall_s": 171.2,
+    "wall_s": 158.3,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -272,7 +261,7 @@
    {
     "label": "h-timeout_body-s1-r2",
     "rc": 1,
-    "wall_s": 174.3,
+    "wall_s": 156.1,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -281,7 +270,7 @@
    {
     "label": "h-timeout_body-s1-r3",
     "rc": 1,
-    "wall_s": 173.4,
+    "wall_s": 153.6,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -290,7 +279,7 @@
    {
     "label": "h-timeout_body-s1-r4",
     "rc": 1,
-    "wall_s": 161.6,
+    "wall_s": 153.8,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -299,7 +288,7 @@
    {
     "label": "h-timeout_body-s1-r5",
     "rc": 1,
-    "wall_s": 175.8,
+    "wall_s": 153.6,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -308,7 +297,7 @@
    {
     "label": "h-timeout_body-s1-r6",
     "rc": 1,
-    "wall_s": 175.4,
+    "wall_s": 153.4,
     "counts": {
      "passed": 6,
      "timedOut": 1
@@ -317,12 +306,43 @@
    {
     "label": "h-timeout_body-s1-r7",
     "rc": 1,
-    "wall_s": 165.8,
+    "wall_s": 153.8,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r8",
+    "rc": 1,
+    "wall_s": 154.2,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r9",
+    "rc": 1,
+    "wall_s": 153.3,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r10",
+    "rc": 1,
+    "wall_s": 151.6,
     "counts": {
      "passed": 6,
      "timedOut": 1
     }
    }
-  ]
- }
+  ],
+  "reproduced": 2,
+  "found_seed": 2,
+  "n": 2
+ },
+ "elapsed_min": 40.2
 }
