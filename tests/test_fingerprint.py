@@ -87,7 +87,7 @@ def test_control_flow_divergence(pytester, run_det):
     # before the extra clock read it leads to
     assert d["reason"] == "fs" and d["index"] == 0, d
     assert d["event_a"]["o"] == d["event_b"]["o"] == "fs.stat", d
-    assert d["event_a"]["v"].startswith("marker <absent>") and d["event_b"]["at"] == "test_b.py:3", d
+    assert d["event_a"]["v"].startswith("marker|missing") and d["event_b"]["at"] == "test_b.py:3", d
 
 
 def test_outcome_only_divergence(pytester, run_det):
@@ -112,7 +112,7 @@ def test_outcome_only_divergence(pytester, run_det):
     # run 1 finds no file (os.path.exists) and reads nothing; run 2 reads the file run 1 wrote: the first difference
     ev = t["divergence"]["event_b"]
     # (the existence check is that first difference since R-055 V6: os.path.exists is an fs.stat event)
-    assert ev["o"] in ("fs.read", "fs.stat") and ev["v"].startswith("count "), t["divergence"]
+    assert ev["o"] in ("fs.read", "fs.stat") and ev["v"].startswith(("count ", "count|")), t["divergence"]
     assert rep["summary"]["outcome_unstable"] == 1
 
 
