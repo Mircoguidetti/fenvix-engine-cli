@@ -1,4 +1,5 @@
 'use strict';
+const volatile = require('./volatile');
 // Installation of the Level 0 controls and per-file / per-test lifecycle,
 // shared by the Vitest and Jest shells.
 const fs = require('node:fs');
@@ -35,6 +36,10 @@ function installProcess() {
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
   if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
+  // design A (2026-11-20): CI-volatile variables pinned, and the host name (each runner has its own)
+  volatile.pinEnv();
+  PATCHER.set(require('node:os'), 'hostname', () => volatile.PINNED_HOSTNAME);
+  volatile.pinCpus(PATCHER); // and the CPU count (each runner has its own)
   // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=set|unset`
   // (`env.has`, `env.list` of the names for enumerations): which variable, not its value, as detpy's envobs (design A,
   // 2026-11-20). The value is a run input (`env:NAME`, src/session.js): a differing one is reported `input-differs`

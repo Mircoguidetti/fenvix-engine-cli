@@ -66,6 +66,11 @@ async function loadBaseRunner(imp = (url) => import(url)) {
   throw new Error(`detjs: cannot find the default test runner of vitest in ${dir}`);
 }
 
+/** The id head of a test file: `file`, or `file@@project` in a named Vitest project (src/cache/proof.js testKey). */
+function qualified(fileId, project) {
+  return project ? `${fileId}@@${project}` : fileId;
+}
+
 function fileIdOf(file, root) {
   return path.relative(root, file.filepath).split(path.sep).join('/');
 }
@@ -144,6 +149,9 @@ function makeRunner(Base, realm = globalThis) {
       for (const file of files) {
         const fileId = fileIdOf(file, this.__det.root);
         const label = this.config.name ? `${this.config.name}|${fileId}` : fileId;
+        // a test of a named project carries the project (`file@@project::test`, the cache's form): the same file run
+        // by two projects (a workspace with node and jsdom) is two tests in the trace, compared each on its own
+        const base = qualified(fileId, this.config.name);
         // ids in declaration order (duplicates numbered before any shuffle)
         const flat = [];
         const walk = (suite, prefix) => {
@@ -152,12 +160,12 @@ function makeRunner(Base, realm = globalThis) {
             if (t.type === 'suite') { this.__det.ids.set(t, id); walk(t, id); } else { flat.push([t, id]); this.__det.fileOf.set(t, file); }
           }
         };
-        this.__det.ids.set(file, fileId);
-        walk(file, fileId);
+        this.__det.ids.set(file, base);
+        walk(file, base);
         const unique = controls.uniqueIds(flat.map(([, id]) => id));
         flat.forEach(([t], i) => this.__det.ids.set(t, unique[i]));
         if (c.controls.has('order') && c.shuffle && file.tasks) {
-          const keyOf = (t) => (t === file ? label : `${label}${this.__det.ids.get(t).slice(fileId.length)}`);
+          const keyOf = (t) => (t === file ? label : `${label}${this.__det.ids.get(t).slice(base.length)}`);
           const shuffled = controls.shuffleTree(file.tasks, c.orderSeed, label, keyOf, (t) => (t.type === 'suite' ? t.tasks : null));
           file.tasks.splice(0, file.tasks.length, ...shuffled);
         }
@@ -175,12 +183,12 @@ function makeRunner(Base, realm = globalThis) {
       // a concurrent test (test.concurrent, describe.concurrent, sequence.concurrent): its own Level 0 context, entered
       // before the first await so that the hooks, the test and everything they start run in it (src/concur.js)
       if (this.__det.active && test.concurrent && test.type === 'test' && !this.__det.ctx.has(test)) {
-        const cid = this.__det.ids.get(test) || `${test.file ? fileIdOf(test.file, this.__det.root) : '?'}::${test.name}`;
+        const cid = this.__det.ids.get(test) || `${test.file ? qualified(fileIdOf(test.file, this.__det.root), this.config.name) : '?'}::${test.name}`;
         this.__det.ctx.set(test, concur.begin(cid, () => { STATE.initConcurrent(cid); if (CAP) CAP.setCtx('t'); }));
       }
       if (super.onBeforeRunTask) await super.onBeforeRunTask(test);
       if (!this.__det.active) return;
-      const id = this.__det.ids.get(test) || `${test.file ? fileIdOf(test.file, this.__det.root) : '?'}::${test.name}`;
+      const id = this.__det.ids.get(test) || `${test.file ? qualified(fileIdOf(test.file, this.__det.root), this.config.name) : '?'}::${test.name}`;
       const ctx = this.__det.ctx.get(test);
       if (ctx) {
         if (test.mode !== 'run' && test.mode !== 'queued') this.__endConcurrent(test, ctx, test.mode === 'todo' ? 'todo' : 'skipped');

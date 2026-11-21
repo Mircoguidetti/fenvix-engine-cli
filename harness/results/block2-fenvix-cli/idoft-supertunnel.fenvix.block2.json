@@ -1,0 +1,501 @@
+{
+ "name": "idoft-supertunnel",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "supertunnel/ssh/continuous_test.py::test_backoff",
+  "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+  "supertunnel/ssh/continuous_test.py::test_run",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+  "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+  "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012284",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 9V74 80-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 2.004,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.877,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.941,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 2.015,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.929,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.984,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 2.071,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.542,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.543,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.537,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.536,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.537,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.596,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.539,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.552,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.545,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.542,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.617,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.545,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.543,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.546,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.618,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.552,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.549,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.535,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.539,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.539,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.539,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.538,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.559,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.586,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.538,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.538,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.543,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.538,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.538,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.545,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.537,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.542,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.576,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.556,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.554,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.551,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.54,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.541,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 39.47 s; 0 flaky failing tests (0 always failing, not flaky); 0 replay bundles; 0 distinct first diverging events, 0 distinct polluter sets\n{\n  \"seeds\": 50,\n  \"seconds\": 39.47,\n  \"runs\": 50,\n  \"collected\": 0,\n  \"failing_tests\": 0,\n  \"always_failing\": [],\n  \"flaky_failing\": [],\n  \"bundles\": [],\n  \"not_reproduced_budget\": [],\n  \"families_by_divergence\": {},\n  \"families_by_polluter\": {},\n  \"seeds_log\": [\n    {\n      \"seed\": 1,\n      \"seconds\": 2.004,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 2,\n      \"seconds\": 1.877,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 3,\n      \"seconds\": 1.941,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 4,\n      \"seconds\": 2.015,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 5,\n      \"seconds\": 1.929,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 6,\n      \"seconds\": 1.984,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 7,\n      \"seconds\": 2.071,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 8,\n      \"seconds\": 0.542,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 9,\n      \"seconds\": 0.543,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 10,\n      \"seconds\": 0.537,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 11,\n      \"seconds\": 0.536,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 12,\n      \"seconds\": 0.54,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 13,\n      \"seconds\": 0.537,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 14,\n      \"seconds\": 0.596,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 15,\n      \"seconds\": 0.539,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 16,\n      \"seconds\": 0.552,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 17,\n      \"seconds\": 0.545,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 18,\n      \"seconds\": 0.542,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 19,\n      \"seconds\": 0.617,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n",
+ "bundles": [
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_backoff",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_continuous_repr",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous_hang",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_run_continuous_raise",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Entering interactive session-Action.CONNECTED]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[Host example.com not responding-Action.DISCONNECTED]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "supertunnel/ssh/continuous_test.py::test_ssh_log_line[debug1: Reading configuration-Action.CONTINUE]",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  }
+ ],
+ "seconds": 39.53
+}

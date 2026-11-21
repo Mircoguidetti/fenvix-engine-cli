@@ -2,10 +2,9 @@
 
 ``os.environ[k]``, ``os.environ.get(k)``, ``os.getenv(k)``, ``k in os.environ`` and enumerations of the
 environment become events of source ``other`` with op ``env.get`` / ``env.has`` / ``env.list`` and the value
-``NAME=<digest of the value>`` (never the value itself: environments hold secrets). Two runs where a test read a
-variable with different values diverge at that read, and the verifier names the variable (G-1517). Variables read by
-C code or by child processes leave no event: every variable is also a run input (``_level0.env_inputs``), so a
-difference there is reported for every test.
+``NAME=set`` / ``NAME=<unset>`` (which variable, never its value). Every variable's value is a run input
+(``_level0.env_inputs``, CI-volatile ones excepted): two runs where a test read a variable with different values are
+reported ``input-differs`` for that test, naming the variable (design A, 2026-11-20).
 
 The time zone and the locale are pinned by their own controls (``_level0.pin_tz_locale``); the other variables are
 the project's own configuration and are not changed, only observed.
@@ -31,10 +30,10 @@ def _name(key) -> str:
 
 
 def _dig(key, value) -> str:
-    if value is None:
-        return f"{_name(key)}=<unset>"
-    raw = value if isinstance(value, bytes) else str(value).encode("utf-8", "surrogateescape")
-    return f"{_name(key)}={_core.digest(raw)[:12]}"
+    """``NAME=set`` / ``NAME=<unset>``: which variable the test read, not its value (design A, 2026-11-20). The value
+    is a run input (``_level0.env_inputs``): when it differs between runs, the verifier reports the tests that read
+    it as ``input-differs`` (named), not as diverged."""
+    return f"{_name(key)}=<unset>" if value is None else f"{_name(key)}=set"
 
 
 def _make(base):

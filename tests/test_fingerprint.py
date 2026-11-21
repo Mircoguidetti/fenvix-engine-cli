@@ -44,8 +44,8 @@ def test_entropy_is_reported_with_exact_site(pytester, run_det):
         """
     )
     p1, p2 = pytester.path / "1.jsonl", pytester.path / "2.jsonl"
-    run_det(trace=str(p1))
-    result, _ = run_det(f"--det-compare={p1}", trace=str(p2))
+    run_det("--det-entropy=observe", trace=str(p1))  # observed entropy (the default controls it)
+    result, _ = run_det("--det-entropy=observe", f"--det-compare={p1}", trace=str(p2))
     result.stdout.fnmatch_lines([
         "*covered=0 not-covered=1*",
         "*NOT COVERED by Level 0: test_u.py::test_uuid [[]entropy[]]*",
@@ -147,8 +147,8 @@ def test_divergence_beyond_stored_events(pytester, run_det):
         """
     )
     p1, p2 = pytester.path / "1.jsonl", pytester.path / "2.jsonl"
-    run_det("--det-max-events=5", trace=str(p1))
-    run_det("--det-max-events=5", trace=str(p2))
+    run_det("--det-max-events=5", "--det-entropy=observe", trace=str(p1))  # observed entropy
+    run_det("--det-max-events=5", "--det-entropy=observe", trace=str(p2))
     _, rep = verify(p1, p2)
     d = rep["tests"][0]["divergence"]
     assert d["reason"] == "beyond-trace" and d["index"] is None

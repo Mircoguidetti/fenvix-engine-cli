@@ -1,0 +1,477 @@
+{
+ "name": "idoft-devtracker",
+ "kind": "flaky",
+ "status": "ok",
+ "python": "3.9",
+ "tool": "fenvix",
+ "seeds": 50,
+ "confirm": 10,
+ "targets": [
+  "devtracker/test_devtracker.py::test_add_start",
+  "devtracker/test_devtracker.py::test_current_status",
+  "devtracker/test_devtracker.py::test_make_project_csv",
+  "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+  "devtracker/test_devtracker.py::test_start_time",
+  "devtracker/test_devtracker.py::test_today_report_err_one"
+ ],
+ "runner": {
+  "cpus": 4,
+  "platform": "linux",
+  "RUNNER_NAME": "GitHub Actions 1000012264",
+  "RUNNER_OS": "Linux",
+  "RUNNER_ARCH": "X64",
+  "RUNNER_ENVIRONMENT": "github-hosted",
+  "ImageOS": "ubuntu26",
+  "ImageVersion": "20261116.202.1",
+  "cpu_model": "AMD EPYC 7763 64-Core Processor"
+ },
+ "seeds_log": [
+  {
+   "seed": 1,
+   "seconds": 1.872,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 2,
+   "seconds": 1.867,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 3,
+   "seconds": 1.872,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 4,
+   "seconds": 1.856,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 5,
+   "seconds": 1.88,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 6,
+   "seconds": 1.857,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 7,
+   "seconds": 1.879,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 8,
+   "seconds": 0.656,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 9,
+   "seconds": 0.674,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 10,
+   "seconds": 0.678,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 11,
+   "seconds": 0.652,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 12,
+   "seconds": 0.655,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 13,
+   "seconds": 0.653,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 14,
+   "seconds": 0.675,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 15,
+   "seconds": 0.656,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 16,
+   "seconds": 0.645,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 17,
+   "seconds": 0.652,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 18,
+   "seconds": 0.646,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 19,
+   "seconds": 0.643,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 20,
+   "seconds": 0.649,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 21,
+   "seconds": 0.655,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 22,
+   "seconds": 0.651,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 23,
+   "seconds": 0.649,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 24,
+   "seconds": 0.652,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 25,
+   "seconds": 0.658,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 26,
+   "seconds": 0.658,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 27,
+   "seconds": 0.654,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 28,
+   "seconds": 0.694,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 29,
+   "seconds": 0.673,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 30,
+   "seconds": 0.661,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 31,
+   "seconds": 0.656,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 32,
+   "seconds": 0.659,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 33,
+   "seconds": 0.668,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 34,
+   "seconds": 0.643,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 35,
+   "seconds": 0.642,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 36,
+   "seconds": 0.651,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 37,
+   "seconds": 0.658,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 38,
+   "seconds": 0.649,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 39,
+   "seconds": 0.651,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 40,
+   "seconds": 0.65,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 41,
+   "seconds": 0.673,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 42,
+   "seconds": 0.646,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 43,
+   "seconds": 0.644,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 44,
+   "seconds": 0.65,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 45,
+   "seconds": 0.66,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 46,
+   "seconds": 0.644,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 47,
+   "seconds": 0.649,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 48,
+   "seconds": 0.658,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 49,
+   "seconds": 0.684,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  },
+  {
+   "seed": 50,
+   "seconds": 0.654,
+   "tests": 0,
+   "failing": [],
+   "exit": 2,
+   "timed_out": false
+  }
+ ],
+ "explore_exit": 0,
+ "explore_printed": "fenvix explore: 50 seeds in 43.22 s; 0 flaky failing tests (0 always failing, not flaky); 0 replay bundles; 0 distinct first diverging events, 0 distinct polluter sets\n{\n  \"seeds\": 50,\n  \"seconds\": 43.22,\n  \"runs\": 50,\n  \"collected\": 0,\n  \"failing_tests\": 0,\n  \"always_failing\": [],\n  \"flaky_failing\": [],\n  \"bundles\": [],\n  \"not_reproduced_budget\": [],\n  \"families_by_divergence\": {},\n  \"families_by_polluter\": {},\n  \"seeds_log\": [\n    {\n      \"seed\": 1,\n      \"seconds\": 1.872,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 2,\n      \"seconds\": 1.867,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 3,\n      \"seconds\": 1.872,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 4,\n      \"seconds\": 1.856,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 5,\n      \"seconds\": 1.88,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 6,\n      \"seconds\": 1.857,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 7,\n      \"seconds\": 1.879,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 8,\n      \"seconds\": 0.656,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 9,\n      \"seconds\": 0.674,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 10,\n      \"seconds\": 0.678,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 11,\n      \"seconds\": 0.652,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 12,\n      \"seconds\": 0.655,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 13,\n      \"seconds\": 0.653,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 14,\n      \"seconds\": 0.675,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 15,\n      \"seconds\": 0.656,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 16,\n      \"seconds\": 0.645,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 17,\n      \"seconds\": 0.652,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 18,\n      \"seconds\": 0.646,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n    },\n    {\n      \"seed\": 19,\n      \"seconds\": 0.643,\n      \"tests\": 0,\n      \"failing\": [],\n      \"exit\": 2,\n      \"timed_out\": false\n",
+ "bundles": [
+  {
+   "test": "devtracker/test_devtracker.py::test_add_start",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_current_status",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_make_project_csv",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_make_project_csv_initalize",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_start_time",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  },
+  {
+   "test": "devtracker/test_devtracker.py::test_today_report_err_one",
+   "status": "not-found",
+   "cause_line": null,
+   "replay_line": null,
+   "exit": 0
+  }
+ ],
+ "seconds": 43.3
+}

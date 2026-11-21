@@ -190,6 +190,27 @@ impl Cassette {
         lock(&self.inner).find(nodeid, host, port, nth).map(|(i, _)| i)
     }
 
+    /// `nodeid` goes on with connection `idx` of `from` (kept alive across tests): the index of its continuation.
+    fn continue_in(&self, from: &str, idx: usize, nodeid: &str) -> PyResult<usize> {
+        lock(&self.inner).continue_in(from, idx, nodeid).ok_or_else(|| PyKeyError::new_err(format!("{from}#{idx}")))
+    }
+
+    /// The server closed this connection (a read returned end of file): its replay ends with end of file.
+    fn set_closed(&self, nodeid: &str, idx: usize) -> PyResult<()> {
+        let mut c = lock(&self.inner);
+        let conn = c.connection_mut(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        conn.kept_open = false;
+        Ok(())
+    }
+
+    /// Whether the replay keeps this connection open after its last segment (a later test went on using it, or
+    /// the server had not closed it).
+    fn keeps_open(&self, nodeid: &str, idx: usize) -> PyResult<bool> {
+        let c = lock(&self.inner);
+        let conn = c.connection(nodeid, idx).ok_or_else(|| PyKeyError::new_err(format!("{nodeid}#{idx}")))?;
+        Ok(conn.keep())
+    }
+
     /// `(host, port, tls, n_segments)` of a recorded connection.
     fn info(&self, nodeid: &str, idx: usize) -> PyResult<(String, u16, bool, usize)> {
         let c = lock(&self.inner);

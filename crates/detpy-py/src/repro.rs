@@ -199,8 +199,19 @@ fn repro_reproduce<'py>(
             result.set_item("status", "not-collected")?;
             return Ok((result, None, None));
         }
-        Repro::NotFound { searched } => {
+        Repro::NotRun { tried } => {
+            result.set_item("configs_searched", 0)?;
+            result.set_item("configs_not_run", tried)?;
+            result.set_item("status", "not-run")?;
+            result.set_item("runs", runs_done()?)?;
+            result.set_item("seconds", elapsed_2(t_start))?;
+            return Ok((result, None, None));
+        }
+        Repro::NotFound { searched, not_run } => {
             result.set_item("configs_searched", searched)?;
+            if not_run > 0 {
+                result.set_item("configs_not_run", not_run)?;
+            }
             result.set_item("status", "not-found")?;
             result.set_item("runs", runs_done()?)?;
             result.set_item("seconds", elapsed_2(t_start))?;

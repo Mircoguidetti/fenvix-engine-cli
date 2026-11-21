@@ -191,7 +191,9 @@ def read_many(jobs: list, workdir: str, min_parallel: int = 64) -> list:
     import subprocess
     import sys
 
-    n = min(os.cpu_count() or 1, 8)
+    from . import _machine
+
+    n = min(_machine.cpu_count() or 1, 8)
     if n < 2 or len(jobs) < min_parallel:
         return [read_facts(*j) for j in jobs]
     shares = [jobs[k::n] for k in range(n)]

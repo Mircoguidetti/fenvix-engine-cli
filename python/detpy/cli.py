@@ -112,8 +112,10 @@ def main(argv: list[str] | None = None) -> int:
         return 2
     print(report_json if args.json else text, end="\n" if args.json else "")
     s = json.loads(report_json)["summary"]
-    # an empty run (collection failed) verifies nothing (G-1538)
-    return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
+    # an empty run (collection failed) verifies nothing (G-1538); 3: input differs only (design A)
+    from .fenvix import verify_exit_code
+
+    return verify_exit_code(s)
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -5,6 +5,9 @@
                                             the other Python runners, deterministically
     fenvix vitest|jest|mocha|node-test|ava|tap|uvu|jasmine|bun|deno|playwright [args]
                                             the JavaScript runners (detjs), deterministically
+    fenvix python [pytest args]             pytest with the detpy plugin, as given (the release-1 name)
+    fenvix python-runner RUNNER [args]      a Python runner shell, as given (the release-1 name)
+    fenvix node RUNNER [args]               detjs RUNNER, as given (the release-1 name)
     fenvix repro TEST [options] [-- runner args]
                                             turn a flaky test into a reproducible defect: cause, seed, order,
                                             replay command, proof (the failure replayed N/N with one fingerprint)
@@ -288,10 +291,20 @@ def _uncontrolled_of(bundle_dir: Path, test: str) -> list:
 
 
 def cause_of(b: dict) -> str:
-    """One sentence: why the test fails (from the bundle)."""
+    """One sentence: why the test fails (from the bundle). A cause is claimed only for a reproduced bundle: the
+    polluters, setters or seed found while searching are a cause only when the failure then replays every time
+    (reviewer #5: a failure decided outside the process was blamed on the test that happened to run before it)."""
     kind = b.get("kind")
     cfg = b.get("config")
     where = "the fixed order" if cfg == "fixed" else f"--det-seed={cfg}"
+    if b.get("status") != "reproduced":
+        rp = b.get("replay") or {}
+        tried = b.get("polluters") or b.get("setters") or []
+        return (f"not established: the configuration it failed under does not fail every time "
+                f"({rp.get('fails', '?')}/{rp.get('runs', '?')} replays), so neither the test order nor the seed "
+                f"explains it: the outcome depends on something fenvix does not control (state outside the process, "
+                f"another source)" + (f"; the tests it ran with ({', '.join(tried)}) are not shown to be the cause"
+                                       if tried else ""))
     if kind == "order" and b.get("polluters"):
         return (f"test order: it fails when run after {', '.join(b['polluters'])} "
                 f"(state left behind by {'that test' if len(b['polluters']) == 1 else 'those tests'})")
@@ -311,14 +324,28 @@ def render_repro(b: dict, out: Path) -> str:
     test = b.get("test", "?")
     status = b.get("status", "?")
     lines = [f"{PROG} repro: {test}"]
+    if status == "not-collected" and b.get("suite_error"):
+        lines.append(f"  not collected: the suite did not collect cleanly, so the test was not found "
+                     f"({b['suite_error'].splitlines()[0]}). The runner said:")
+        lines += ["    " + ln for ln in b["suite_error"].splitlines()[1:]]
+        return "\n".join(lines)
     if status == "not-collected":
         lines.append(f"  not collected: no test has this id. Use an id as the runner prints it (`{PROG} pytest "
                      f"--collect-only -q`, or the nodeid lines of .detpy/trace.jsonl); for unittest, Django, nose2, "
                      f"ward, zope or doctest suites add --runner NAME.")
         return "\n".join(lines)
+    if status == "not-run":
+        lines.append(f"  not run: none of the {b.get('configs_not_run', '?')} configuration(s) tried ran the test, so "
+                     f"nothing was searched (a crash or an error before it, or a skip)")
+        if b.get("suite_error"):
+            lines.append(f"  the runner said ({b['suite_error'].splitlines()[0]}):")
+            lines += ["    " + ln for ln in b["suite_error"].splitlines()[1:]]
+        return "\n".join(lines)
     if status == "not-found":
-        lines.append(f"  not reproduced: it passed in the fixed order and under {b.get('configs_searched', '?')} "
-                     f"configuration(s) searched (raise --seeds, or run `{PROG} explore`)")
+        nr = b.get("configs_not_run")
+        lines.append(f"  not reproduced: it passed in all {b.get('configs_searched', '?')} configuration(s) in which it "
+                     f"ran (raise --seeds, or run `{PROG} explore`)"
+                     + (f"; {nr} more did not run it and are not counted" if nr else ""))
         return "\n".join(lines)
     if status == "not-minimised":
         lines.append(f"  failure found under {b.get('config')} but the run budget ran out while minimising "
@@ -329,26 +356,44 @@ def render_repro(b: dict, out: Path) -> str:
     unc = _uncontrolled_of(bundle_dir, test)
     if status == "reproduced":
         fps = b.get("fingerprints") or rp.get("fingerprints") or []
-        lines.append(f"  status:  REPRODUCED: failed {rp.get('fails')}/{rp.get('runs')} replays with one fingerprint"
+        lines.append(f"  status: REPRODUCED: failed {rp.get('fails')}/{rp.get('runs')} replays with one fingerprint"
                      f"{' ' + fps[0] if fps else ''}")
     else:
-        lines.append(f"  status:  NOT REPRODUCIBLE under fenvix: failed {rp.get('fails')}/{rp.get('runs')} replays, "
+        lines.append(f"  status: NOT REPRODUCIBLE under fenvix: failed {rp.get('fails')}/{rp.get('runs')} replays, "
                      f"identical fingerprint: {rp.get('identical_fingerprint')}"
                      + (f"; the test uses a source this release does not control: {', '.join(unc)}" if unc else ""))
-    lines.append(f"  cause:   {cause_of(b)}")
+    lines.append(f"  cause: {cause_of(b)}")
     cfg = b.get("config")
-    lines.append(f"  seed:    {'none (fixed order)' if cfg == 'fixed' else cfg}")
-    lines.append(f"  order:   {' -> '.join(b.get('order') or [])}")
+    lines.append(f"  seed: {'none (fixed order)' if cfg == 'fixed' else cfg}")
+    lines.append(f"  order: {' -> '.join(b.get('order') or [])}")
     exc = b.get("exception")
     if exc:
         if isinstance(exc, (list, tuple)) and len(exc) >= 3:
             exc = f"{exc[2]}" + (f" ({exc[3]})" if len(exc) > 3 and exc[3] else "")
-        lines.append(f"  error:   {str(exc).splitlines()[0][:300]}")
-    lines.append(f"  replay:  {PROG} replay {_q(bundle_dir)}")
+        lines.append(f"  error: {str(exc).splitlines()[0][:300]}")
+    # replay: the failing run itself, once, as a command a developer (or CI) runs: it fails when the defect reproduces
+    # and takes runner arguments (`-x`, `--det-trace=PATH`); check: N replays with one fingerprint
+    one = _product_command(b.get("command"))
+    if one:
+        lines.append(f"  replay: {one}")
+    lines.append(f"  check: {PROG} replay {_q(bundle_dir)}  (replays {rp.get('runs') or 10}x, exit 0 when every run "
+                 f"fails with the bundle's fingerprint)")
     if b.get("command"):
-        lines.append(f"  rerun:   {b['command']}")
-    lines.append(f"  bundle:  {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
+        lines.append(f"  rerun: {b['command']}")
+    lines.append(f"  bundle: {bundle_dir} ({b.get('runs')} runs, {b.get('seconds')} s)")
     return "\n".join(lines)
+
+
+def _product_command(cmd) -> str | None:
+    """The bundle's single-run command (``pytest --det ...``, ``python -m detpy RUNNER --det ...``) as the product
+    command: ``fenvix pytest --det ...``, ``fenvix RUNNER --det ...``."""
+    if not cmd or not isinstance(cmd, str):
+        return None
+    for prefix, repl in (("pytest ", f"{PROG} pytest "), ("python -m pytest ", f"{PROG} pytest "),
+                         ("python -m detpy ", f"{PROG} ")):
+        if cmd.startswith(prefix):
+            return repl + cmd[len(prefix):]
+    return None
 
 
 def _slug(test: str) -> str:
@@ -358,6 +403,11 @@ def _slug(test: str) -> str:
 
 
 def render_replay(res: dict, bundle: Path) -> str:
+    if res.get("status") == "not-collected":
+        err = res.get("suite_error") or ""
+        return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: the test was not collected, so the replay "
+                          f"says nothing about the defect ({err.splitlines()[0] if err else 'no output'})"]
+                         + ["    " + ln for ln in err.splitlines()[1:]])
     ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint")
     head = "REPRODUCED" if ok else "NOT REPRODUCED"
     lines = [f"{PROG} replay: {res.get('test')}: {head}: failed {res.get('fails')}/{res.get('runs')} runs, "
@@ -409,13 +459,13 @@ def cmd_repro(argv: list) -> int:
     ns = p.parse_args(argv)
     ns.runner_args = extra
     a = pick_adapter(ns.runner, test=ns.test)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
     try:
         b = a.repro(ns)
-    except ValueError as e:  # an unusable --plan
+    except (ValueError, RuntimeError, OSError) as e:  # an unusable --plan, a suite that cannot be collected
         print(f"{PROG} repro: {e}", file=sys.stderr)
         return 2
     if not ns.keep_work:  # audit G-2021: the runs' work files (outcomes, traces, orders) are not left behind
@@ -423,6 +473,8 @@ def cmd_repro(argv: list) -> int:
     print((getattr(a, "render_repro", None) or render_repro)(b, Path(ns.out)))
     if ns.json:
         print(json.dumps(b, indent=2))
+    if b.get("status") == "not-run":  # nothing was searched: an error, not a verdict on the test
+        return 2
     return 0 if b.get("status") == "reproduced" else 1
 
 
@@ -479,11 +531,15 @@ def cmd_explore(argv: list) -> int:
         ns.runner_args = [*ns.runner_args, *selected]
         print(f"{PROG} explore: {len(selected)} test file(s) selected: {', '.join(selected[:10])}", file=sys.stderr)
     a = pick_adapter(ns.runner)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
-    s = a.explore(ns)
+    try:
+        s = a.explore(ns)
+    except (RuntimeError, OSError) as e:  # a suite that cannot be collected
+        print(f"{PROG} explore: the suite cannot run: {e}", file=sys.stderr)
+        return 2
     ran = [x.get("seed") for x in s.get("seeds_log", []) if isinstance(x, dict) and x.get("seed") is not None]
     st = {"first_seed": ns.first_seed, "last_seed": max(ran) if ran else ns.first_seed - 1,
           "previous_last_seed": state.get("last_seed")}
@@ -499,7 +555,33 @@ def cmd_explore(argv: list) -> int:
                   f"{_q(Path(ns.out) / 'bundles' / _slug(bdl.get('test', '')))}")
     if ns.json:
         print(json.dumps(s, indent=2))
+    if not s.get("collected") and not any(isinstance(x, dict) and x.get("tests") for x in s.get("seeds_log", [])):
+        # reviewer #10: an exploration where no test ran found nothing because nothing ran, not because the suite
+        # is stable: exit 2 and say why
+        err = s.get("suite_error") or "no test was collected"
+        print(f"{PROG} explore: the suite did not run: no test ran under {len(ran)} seed(s) "
+              f"({err.splitlines()[0]}). Nothing was explored.", file=sys.stderr)
+        for ln in err.splitlines()[1:]:
+            print("    " + ln, file=sys.stderr)
+        return 2
+    if s.get("collection_errors"):
+        # R-050 V10: plain pytest cannot run this suite (it stops at collection): the exploration above covers the
+        # tests that collected, and the suite is not reported clean
+        err = s["collection_errors"]
+        print(f"{PROG} explore: the suite does not collect cleanly ({err.splitlines()[0]}): only the "
+              f"{s.get('collected', 0)} test(s) that collected were explored. The runner said:", file=sys.stderr)
+        for ln in err.splitlines()[1:]:
+            print("    " + ln, file=sys.stderr)
+        return 2
     return 0
+
+
+def _python_problem(python: str) -> str | None:
+    """The sentence for a --python that cannot run (reviewer #12: not a traceback)."""
+    path = shutil.which(python) if os.sep not in python else python
+    if path and os.path.isfile(path) and os.access(path, os.X_OK):
+        return None
+    return f"--python {python}: no such executable interpreter"
 
 
 def cmd_replay(argv: list) -> int:
@@ -518,12 +600,18 @@ def cmd_replay(argv: list) -> int:
               f".detpy/repro/ by `{PROG} repro`)", file=sys.stderr)
         return 2
     a = pick_adapter(ns.runner, bundle=bundle)
-    why = a.available()
+    why = a.available() or _python_problem(ns.python)
     if why:
         print(f"{PROG}: {why}", file=sys.stderr)
         return 2
-    res = a.replay(bundle, ns.runs, ns.python)
+    try:
+        res = a.replay(bundle, ns.runs, ns.python)
+    except (ValueError, RuntimeError, OSError) as e:  # not the project root, a suite that cannot be collected
+        print(f"{PROG} replay: {e}", file=sys.stderr)
+        return 2
     print(json.dumps(res, indent=2) if ns.json else render_replay(res, bundle))
+    if res.get("status") == "not-collected":
+        return 2
     return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
 
 
@@ -535,7 +623,9 @@ def cmd_verify(argv: list) -> int:
         "IDENTICAL only when every run had the same inputs (time zone, locale, environment, seed, hash seed, clock, "
         "network, ...), ran it after the same tests, it used no source this release does not control (threads, "
         "child processes, I/O readiness) and it observed the same events with the same outcome. Otherwise the "
-        "first divergent event is named. Exit 0 when every test is identical.")
+        "first divergent event is named. A test that read an environment variable whose value differs between the "
+        "runs, and is otherwise identical, is reported INPUT DIFFERS, naming the variable. Exit 0 when every test "
+        "is identical, 3 when the only differences are such inputs, 1 otherwise, 2 on unreadable traces.")
     p.add_argument("traces", nargs="+", help="trace files (.detpy/trace.jsonl, --det-trace=PATH)")
     p.add_argument("--json", action="store_true", help="print the full report as JSON")
     p.add_argument("--show-stable", action="store_true", help="also list the identical tests")
@@ -556,8 +646,18 @@ def cmd_verify(argv: list) -> int:
         return 2
     report = json.loads(report_json)
     print(report_json if ns.json else text.replace("detpy verify", f"{PROG} verify", 1), end="" if not ns.json else "\n")
-    s = report["summary"]
-    return 0 if s["tests"] > 0 and s["diverged"] == 0 and s["missing"] == 0 else 1
+    return verify_exit_code(report["summary"])
+
+
+def verify_exit_code(s: dict) -> int:
+    """0: every test identical. 1: a test diverged or is missing, no test ran, or a trace does not record its run
+    inputs (not proven). 3: the only differences are
+    environment variables tests read (input differs, design A). 2: unreadable or incompatible traces."""
+    if s["tests"] == 0 or s["diverged"] or s["missing"]:
+        return 1
+    if not s.get("inputs_recorded", True):  # same events, inputs unknown: not proven identical (reviewer #8)
+        return 1
+    return 3 if s.get("input_differs") else 0
 
 
 def foreign_detpy_owners() -> list:

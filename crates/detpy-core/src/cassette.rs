@@ -70,6 +70,22 @@ pub struct Connection {
     /// (audit G-1522).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_info: Option<serde_json::Value>,
+    /// A later test went on using this connection (a client that keeps connections alive): its exchanges are
+    /// recorded under that test (`Cassette::continue_in`), and the replay keeps the connection open for them.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub continued: bool,
+    /// The server had not closed the connection when the recording ended (no end of file read): the replay keeps
+    /// it open for a next request, as the server did. False in cassettes written before this field: those replay
+    /// as before (end of file after the last segment).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub kept_open: bool,
+}
+
+impl Connection {
+    /// Whether the replay keeps the connection open after its last segment.
+    pub fn keep(&self) -> bool {
+        self.continued || self.kept_open
+    }
 }
 
 impl Connection {
@@ -204,13 +220,31 @@ impl Cassette {
     /// Start recording a new connection for `nodeid`; returns its index.
     pub fn open(&mut self, nodeid: &str, host: &str, port: u16) -> usize {
         let conns = self.tests.entry(nodeid.to_string()).or_default();
-        conns.push(Connection { host: host.to_string(), port, tls: false, udp: false, segments: Vec::new(), tls_info: None });
+        conns.push(Connection {
+            host: host.to_string(),
+            port,
+            tls: false,
+            udp: false,
+            segments: Vec::new(),
+            tls_info: None,
+            continued: false,
+            kept_open: true,
+        });
         conns.len() - 1
     }
 
     pub fn open_udp(&mut self, nodeid: &str, host: &str, port: u16) -> usize {
         let conns = self.tests.entry(nodeid.to_string()).or_default();
-        conns.push(Connection { host: host.to_string(), port, tls: false, udp: true, segments: Vec::new(), tls_info: None });
+        conns.push(Connection {
+            host: host.to_string(),
+            port,
+            tls: false,
+            udp: true,
+            segments: Vec::new(),
+            tls_info: None,
+            continued: false,
+            kept_open: false,
+        });
         conns.len() - 1
     }
 
@@ -225,6 +259,17 @@ impl Cassette {
 
     pub fn connection_mut(&mut self, nodeid: &str, idx: usize) -> Option<&mut Connection> {
         self.tests.get_mut(nodeid).and_then(|c| c.get_mut(idx))
+    }
+
+    /// `nodeid` goes on with connection `idx` of `from` (kept alive across tests): that one is marked continued, and
+    /// a connection to the same host is opened for `nodeid` (with its TLS details); returns its index.
+    pub fn continue_in(&mut self, from: &str, idx: usize, nodeid: &str) -> Option<usize> {
+        let old = self.connection_mut(from, idx)?;
+        old.continued = true;
+        let next = Connection { segments: Vec::new(), continued: false, kept_open: true, ..old.clone() };
+        let conns = self.tests.entry(nodeid.to_string()).or_default();
+        conns.push(next);
+        Some(conns.len() - 1)
     }
 
     /// Find the `nth` (0-based) recorded connection of `nodeid` to `host:port`.
@@ -288,7 +333,7 @@ mod tests {
 
     #[test]
     fn append_merges_same_direction() {
-        let mut c = Connection { host: "h".into(), port: 80, tls: false, udp: false, segments: vec![], tls_info: None };
+        let mut c = Connection { host: "h".into(), port: 80, tls: false, udp: false, segments: vec![], tls_info: None, continued: false, kept_open: false };
         c.append(Direction::Send, b"GET ");
         c.append(Direction::Send, b"/ HTTP/1.0\r\n\r\n");
         c.append(Direction::Recv, b"HTTP/1.0 200 OK\r\n");
@@ -297,6 +342,21 @@ mod tests {
         assert_eq!(c.segments.len(), 2);
         assert_eq!(c.segments[0].data, b"GET / HTTP/1.0\r\n\r\n");
         assert_eq!(c.segments[1].data, b"HTTP/1.0 200 OK\r\n\r\nbody");
+    }
+
+    #[test]
+    fn a_connection_kept_alive_continues_in_the_next_test() {
+        let mut c = Cassette::default();
+        let i = c.open("t::a", "example.com", 443);
+        c.connection_mut("t::a", i).unwrap().tls = true;
+        let j = c.continue_in("t::a", i, "t::b").unwrap();
+        assert!(c.connection("t::a", i).unwrap().continued);
+        let k = c.connection("t::b", j).unwrap();
+        assert!(k.tls && !k.continued && k.segments.is_empty() && k.host == "example.com" && k.port == 443);
+        assert_eq!(c.find("t::b", "example.com", 443, 0).map(|(x, _)| x), Some(j));
+        assert!(c.continue_in("t::none", 0, "t::b").is_none());
+        let back: Cassette = serde_json::from_str(&serde_json::to_string(&c).unwrap()).unwrap();
+        assert_eq!(back, c);
     }
 
     #[test]

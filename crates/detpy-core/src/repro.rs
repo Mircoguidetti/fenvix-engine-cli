@@ -280,7 +280,12 @@ pub struct Bundle<R> {
 #[derive(Clone, Debug)]
 pub enum Repro<R> {
     NotCollected,
-    NotFound { searched: usize },
+    /// The target is collected but no configuration ran it (every run stopped before it: collection errors, a
+    /// crash, a skip). Nothing was searched, so nothing is claimed about the defect.
+    NotRun { tried: usize },
+    /// `searched`: configurations in which the target ran and passed; `not_run`: configurations that did not run it
+    /// (never counted as searched).
+    NotFound { searched: usize, not_run: usize },
     NotMinimised { searched: usize, config: String, prefix_length: usize },
     Bundle { searched: usize, bundle: Bundle<R> },
 }
@@ -346,20 +351,28 @@ pub fn reproduce<D: Driver>(d: &mut D, p: &ReproParams<'_>) -> Result<Repro<D::R
     let mut passing: Vec<String> = p.known_pass.to_vec();
     let mut found = None;
     let mut searched = 0usize;
+    let mut not_run = 0usize;
     for config in search_configs(p.seeds, p.known_fail) {
         let order = b.prefix(&config, target)?;
         let r = b.run(&config, order.clone(), &format!("search-{config}"))?;
-        searched += 1;
+        // a configuration counts as searched only if the target ran in it: a run that stopped before the target
+        // (collection errors, a crash) or skipped it says nothing about the defect
         match b.verdict(&r, target)? {
             Verdict::Fail => {
+                searched += 1;
                 found = Some((config, order));
                 break;
             }
-            Verdict::Passed => passing.push(config),
-            Verdict::Other => {}
+            Verdict::Passed => {
+                searched += 1;
+                passing.push(config)
+            }
+            Verdict::Other => not_run += 1,
         }
     }
-    let Some((config, order)) = found else { return Ok(Repro::NotFound { searched }) };
+    let Some((config, order)) = found else {
+        return Ok(if searched == 0 { Repro::NotRun { tried: not_run } } else { Repro::NotFound { searched, not_run } });
+    };
     let before: Vec<String> = order[..order.iter().position(|x| x == target).unwrap()].to_vec();
     let prefix_length = before.len() + 1;
 

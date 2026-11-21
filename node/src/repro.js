@@ -42,9 +42,12 @@ function readOrder(file) {
   return fs.readFileSync(file, 'utf8').split('\n').map((l) => l.replace(/\r$/, '')).filter((l) => l.trim() && !l.startsWith('#'));
 }
 
+/** The test file of an id (`file::test`, or `file@@project::test` for a test of a named Vitest project). */
 function fileOfId(id) {
   const i = id.indexOf('::');
-  return i < 0 ? id : id.slice(0, i);
+  const head = i < 0 ? id : id.slice(0, i);
+  const j = head.indexOf('@@');
+  return j < 0 ? head : head.slice(0, j);
 }
 
 function makePlan(ids) {

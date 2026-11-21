@@ -68,6 +68,13 @@ class Run:
         return self.outcomes.get(nid, "missing")
 
 
+def with_collection_errors(args: list) -> list:
+    """A module that fails to import must not stop the collected tests (the target) from running."""
+    args = list(args)
+    flag = "--continue-on-collection-errors"
+    return args if flag in args else [flag, *args]
+
+
 @dataclass
 class Runner:
     """Runs pytest --det in a project directory and reads its outcomes file."""
@@ -85,7 +92,8 @@ class Runner:
     log: list = field(default_factory=list)
 
     def _cmd(self, config: str, extra: list) -> list:
-        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det", *self.pytest_args, *extra]
+        cmd = [self.python, "-m", "pytest", "-q", "-p", "no:cacheprovider", "--det",
+               *with_collection_errors(self.pytest_args), *extra]
         if config != FIXED:
             cmd.append(f"--det-seed={int(config)}")
         return cmd
@@ -261,19 +269,28 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         # fail (state from a later test, or a non-L0 source), keep searching.
         configs = [known_fail] + [c for c in configs if c != known_fail]
     searched = 0
+    not_run = 0  # configurations that did not run the target: never counted as searched
     for config in configs:
         order = prefix_through(runner.order_of(config), target)
         r = run_order(config, order, f"search-{config}")
-        searched += 1
         if is_fail(r.outcome(target)):
+            searched += 1
             found = (config, order, r)
             break
         if r.outcome(target) == "passed":
+            searched += 1
             passing.append(config)
+        else:
+            not_run += 1
     result = {"test": target, "configs_searched": searched}
     if found is None:
-        result.update(status="not-found", runs=runner.runs - runs_at_start,
-                      seconds=round(time.monotonic() - t_start, 2))
+        if searched == 0:  # no configuration ran the target: nothing was searched
+            result.update(status="not-run", configs_not_run=not_run)
+        else:
+            result.update(status="not-found")
+            if not_run:
+                result["configs_not_run"] = not_run
+        result.update(runs=runner.runs - runs_at_start, seconds=round(time.monotonic() - t_start, 2))
         return result
     config, order, first_fail = found
     before = order[: order.index(target)]
@@ -355,6 +372,8 @@ def reproduce(runner: Runner, target: str, *, collected: list | None = None, see
         if pass_run is not None and os.path.exists(pass_run.trace):
             shutil.copy2(pass_run.trace, b / "pass.trace.jsonl")
         args = list(command_args if command_args is not None else runner.pytest_args)
+        if isinstance(runner, Runner):  # the printed replay command runs the bundle as the search did
+            args = with_collection_errors(args)
         result["command"] = " ".join(shlex.quote(a) for a in
                                      ["pytest", "--det", *seed_args, f"--det-order={b / 'order.txt'}", *args])
         result["replay_command"] = f"detpy replay {shlex.quote(str(b))}"

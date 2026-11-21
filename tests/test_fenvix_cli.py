@@ -92,12 +92,26 @@ def test_repro_prints_cause_seed_order_and_replay_command(project):
     p = fx("repro", "tests/test_o.py::test_victim", "--confirm", "4", "--seeds", "3", cwd=project)
     assert p.returncode == 0, p.stdout + p.stderr
     out = p.stdout
-    assert "status:  REPRODUCED: failed 4/4 replays with one fingerprint" in out, out
-    assert "cause:   test order: it fails when run after tests/test_o.py::test_polluter" in out, out
-    assert "seed:    none (fixed order)" in out, out
-    assert "order:   tests/test_o.py::test_polluter -> tests/test_o.py::test_victim" in out, out
-    line = next(x for x in out.splitlines() if x.strip().startswith("replay:"))
-    bundle = line.split("fenvix replay ", 1)[1].strip()
+    assert "status: REPRODUCED: failed 4/4 replays with one fingerprint" in out, out
+    assert "cause: test order: it fails when run after tests/test_o.py::test_polluter" in out, out
+    assert "seed: none (fixed order)" in out, out
+    assert "order: tests/test_o.py::test_polluter -> tests/test_o.py::test_victim" in out, out
+    # replay: the single failing run as a product command; it takes runner arguments and fails when the defect
+    # reproduces (what CI and the exam run: `<replay> --det-trace=T`, then `fenvix verify` of the traces)
+    replay = next(x.strip()[len("replay: "):] for x in out.splitlines() if x.strip().startswith("replay: "))
+    assert replay.startswith("fenvix pytest --det ") and "--det-order=" in replay, replay
+    traces = []
+    for i in range(2):
+        t = project / f"replay-{i}.jsonl"
+        r = subprocess.run([*FX, *replay.split()[1:], "-p", "no:cacheprovider", f"--det-trace={t}"], cwd=project,
+                           env=_env(), capture_output=True, text=True, timeout=600)
+        assert r.returncode == 1 and t.exists(), r.stdout + r.stderr
+        traces.append(str(t))
+    v = fx("verify", *traces, cwd=project)
+    assert v.returncode == 0, v.stdout
+    # check: N replays with one fingerprint
+    line = next(x for x in out.splitlines() if x.strip().startswith("check: "))
+    bundle = line.split("fenvix replay ", 1)[1].split()[0].strip()
     data = json.loads((project / bundle / "bundle.json").read_text())
     assert data["runner"] == "pytest" and data["status"] == "reproduced"
     # G-0178 / G-0991: the first divergent event against the passing run names the polluter, not an unrelated event
@@ -113,6 +127,81 @@ def test_repro_of_an_unknown_test_says_so(project):
     p = fx("repro", "tests/test_o.py::nope", cwd=project)
     assert p.returncode == 1
     assert "not collected" in p.stdout and "None" not in p.stdout, p.stdout  # G-2209
+
+
+@pytest.fixture
+def broken(tmp_path):
+    (tmp_path / "tests").mkdir()
+    (tmp_path / "tests" / "test_broken.py").write_text("def test_ok(:\n    pass\n")
+    return tmp_path
+
+
+def test_explore_does_not_exit_0_when_the_suite_cannot_run(broken):
+    # reviewer p1-verifier #10: an exploration where nothing ran is not a stable suite
+    p = fx("explore", "--budget", "0.3", "--max-seeds", "2", "--out", str(broken / "ex"), cwd=broken)
+    assert p.returncode == 2, p.stdout + p.stderr
+    assert "the suite did not run" in p.stderr and "SyntaxError" in p.stderr, p.stderr
+    assert "Traceback" not in p.stderr
+    p = fx("explore", "--budget", "0.3", "--max-seeds", "1", "--out", str(broken / "ex"), "--", "--bogus-flag",
+           cwd=broken)
+    assert p.returncode == 2 and "the suite cannot run" in p.stderr and "--bogus-flag" in p.stderr, p.stderr
+    assert "Traceback" not in p.stderr
+
+
+def test_repro_on_a_suite_that_does_not_collect_shows_the_collection_error(broken):
+    # reviewer p1-verifier #12: not "no test has this id" when the file itself does not import
+    p = fx("repro", "tests/test_broken.py::test_ok", "--seeds", "1", "--confirm", "1", cwd=broken)
+    assert p.returncode == 1
+    assert "did not collect cleanly" in p.stdout and "SyntaxError" in p.stdout, p.stdout
+    assert "no test has this id" not in p.stdout
+
+
+def test_a_module_that_does_not_import_does_not_hide_the_target(project):
+    # exam F-02 py-autodoc: another module fails to import, so a plain pytest session is "Interrupted" and runs no
+    # test. repro's runs continue past collection errors, so the target runs, and the replay command does the same
+    (project / "tests" / "test_needs_missing_dep.py").write_text("import no_such_module_fenvix\n\ndef test_x():\n    pass\n")
+    out = project / "bundles"
+    p = fx("repro", "tests/test_o.py::test_victim", "--seeds", "2", "--confirm", "2", "--out", str(out), "--json",
+           cwd=project)
+    assert p.returncode == 0, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "reproduced" and b["polluters"] == ["tests/test_o.py::test_polluter"], b
+    assert "--continue-on-collection-errors" in b["command"], b["command"]
+    r = fx("replay", b["bundle"], "--runs", "2", cwd=project)
+    assert r.returncode == 0, r.stdout + r.stderr
+
+
+def test_a_target_that_never_ran_is_not_run_not_searched(project):
+    # a configuration where the target has no outcome is never counted as searched: here it is skipped everywhere,
+    # so nothing was searched (exit 2), not "passed under N configurations"
+    (project / "tests" / "test_s.py").write_text("import pytest\n\n@pytest.mark.skip\ndef test_never():\n    assert 0\n")
+    p = fx("repro", "tests/test_s.py::test_never", "--seeds", "2", "--confirm", "1", "--json", cwd=project)
+    assert p.returncode == 2, p.stdout + p.stderr
+    b = json.loads(p.stdout[p.stdout.index("\n{\n"):])
+    assert b["status"] == "not-run" and b["configs_searched"] == 0 and b["configs_not_run"] == 3, b
+    assert "not run: none of the 3 configuration(s) tried ran the test" in p.stdout
+    assert "passed" not in p.stdout[:p.stdout.index("\n{\n")]
+
+
+def test_a_runner_that_stops_before_any_test_is_not_run_with_its_error(project):
+    # every run stops before the first test (here a conftest hook raises): not-run, the runner's error lines, exit 2
+    (project / "tests" / "conftest.py").write_text(
+        "def pytest_collection_finish(session):\n"
+        "    if not session.config.option.collectonly:\n"
+        "        raise RuntimeError('fenvix-exam-boom: the session cannot start')\n")
+    p = fx("repro", "tests/test_o.py::test_victim", "--seeds", "1", "--confirm", "1", cwd=project)
+    assert p.returncode == 2, p.stdout + p.stderr
+    assert "not run: none of the 2 configuration(s) tried ran the test" in p.stdout, p.stdout
+    assert "fenvix-exam-boom" in p.stdout, p.stdout
+    assert "not reproduced" not in p.stdout
+
+
+@pytest.mark.parametrize("cmd", [("explore", "--budget", "0.1"), ("repro", "tests/test_o.py::test_victim")])
+def test_a_missing_python_is_one_line_not_a_traceback(project, cmd):
+    # reviewer p1-verifier #12
+    p = fx(*cmd, "--python", "/nonexistent/python", cwd=project)
+    assert p.returncode == 2
+    assert p.stderr.strip() == "fenvix: --python /nonexistent/python: no such executable interpreter", p.stderr
 
 
 def test_replay_of_a_non_bundle_is_one_line(tmp_path):
@@ -203,8 +292,8 @@ def test_repro_and_replay_work_for_the_unittest_shell(tmp_path):
     p = fx("repro", "test_u.py::T::test_d_victim", "--runner", "unittest", "--confirm", "3", "--seeds", "2", "--",
            "discover", "-p", "test_*.py", cwd=tmp_path)
     assert p.returncode == 0, p.stdout + p.stderr
-    assert "cause:   test order: it fails when run after test_u.py::T::test_b_polluter" in p.stdout, p.stdout
-    assert "rerun:   python -m detpy unittest --det --det-order=" in p.stdout, p.stdout
+    assert "cause: test order: it fails when run after test_u.py::T::test_b_polluter" in p.stdout, p.stdout
+    assert "rerun: python -m detpy unittest --det --det-order=" in p.stdout, p.stdout
     bundle = next((tmp_path / ".detpy" / "repro").glob("test_d_victim-*"))
     assert json.loads((bundle / "bundle.json").read_text())["runner"] == "unittest"
     r = fx("replay", str(bundle), "--runs", "2", cwd=tmp_path)
@@ -294,3 +383,13 @@ def test_explore_with_targets_reports_each_target_as_block2_reads_it(project):
     cause, replay = h.parse_fenvix_defects(p.stdout)[target]
     assert cause.startswith("test order: it fails when run after tests/test_o.py::test_polluter"), cause
     assert replay.startswith("replay: fenvix replay "), replay
+
+
+def test_image_help_lists_every_product_command_on_its_own_line():
+    """F-18: `fenvix --help` of the runner image (release/fenvix) names each command at the start of a line."""
+    p = subprocess.run([sys.executable, str(ROOT / "release" / "fenvix"), "--help"], capture_output=True, text=True)
+    assert p.returncode == 0
+    import re
+
+    for cmd in ("python", "node", "repro", "explore", "replay", "verify", "version", "pytest"):
+        assert re.search(rf"^\s+fenvix {cmd}\b", p.stdout, re.M), (cmd, p.stdout)

@@ -480,6 +480,21 @@ def _rewrite_candidates(config, limit: int = 20000) -> list[str]:
         patterns = ["test_*.py", "*_test.py"]
     root = str(config.rootpath) if hasattr(config, "rootpath") else os.getcwd()
     out: list[str] = []
+    # the modules of installed pytest plugins (distributions with a pytest11 entry point): pytest rewrites all of
+    # them on import, in the main process and in each -n worker (which imports more of them, xdist's own included)
+    try:
+        from importlib.metadata import distributions
+
+        for dist in distributions():
+            if not any(ep.group == "pytest11" for ep in dist.entry_points):
+                continue
+            for f in dist.files or ():
+                if str(f).endswith(".py"):
+                    path = str(dist.locate_file(f))
+                    if os.path.isfile(path):
+                        out.append(path)
+    except Exception:
+        pass
     for d, dirs, files in os.walk(root):
         dirs[:] = sorted(x for x in dirs if not x.startswith(".") and x not in _SKIP_DIRS
                          and not os.path.exists(os.path.join(d, x, "pyvenv.cfg")))
@@ -731,7 +746,8 @@ def pytest_configure(config):
     if not config.getoption("det", False):
         # audit G-1532, G-1533: a --det option without --det did nothing, silently
         for opt, flag in (("det_seed", "--det-seed"), ("det_isolate", "--det-isolate"), ("det_order", "--det-order"),
-                          ("det_record", "--det-record"), ("det_urandom", "--det-urandom")):
+                          ("det_record", "--det-record"), ("det_urandom", "--det-urandom"),
+                          ("det_entropy", "--det-entropy")):
             if config.getoption(opt, None) not in (None, False):
                 raise pytest.UsageError(f"{flag} needs --det (without it the run is not deterministic; add --det, "
                                         f"or run `fenvix pytest`, which adds it)")
@@ -1062,6 +1078,7 @@ class _DetSession(_Outcomes):
             # the run inputs the verifier compares (the workers inherit the controller's environment; their own
             # PYTEST_XDIST_* variables are engine-internal)
             "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
+            "env_reads_recorded": "env" in cfg.controls,
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
@@ -1137,3 +1154,17 @@ def level0_end(item, outcome: str):
         S.fingerprints[item.nodeid] = fp
         item.user_properties.append(("detpy_fingerprint", fp))
     return fp
+
+
+@pytest.hookimpl(tryfirst=True, optionalhook=True)
+def pytest_xdist_auto_num_workers(config):
+    """``-n auto`` / ``-n logical`` is the engine's planning: sized on the real machine, not on the CPU count
+    ``--det`` pins for tests (design A). xdist's own detection, with the real functions."""
+    if not S.active:
+        return None
+    try:
+        from xdist import plugin as _xp
+    except ImportError:
+        return None
+    with _level0.real_cpu_count():
+        return _xp.pytest_xdist_auto_num_workers(config)

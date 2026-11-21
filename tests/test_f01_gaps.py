@@ -225,8 +225,8 @@ def test_a():
 def test_entropy_divergence_hints_at_det_urandom(tmp_path):
     """G-2210."""
     proj = project(tmp_path, "import uuid\n\ndef test_u():\n    uuid.uuid4()\n")
-    _, a = det(proj, "a")
-    _, b = det(proj, "b")
+    _, a = det(proj, "a", "--det-entropy=observe")  # observed (the default controls it)
+    _, b = det(proj, "b", "--det-entropy=observe")
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(a), str(b)], capture_output=True,
                        text=True)
     assert p.returncode == 1 and "hint [entropy]" in p.stdout and "--det-urandom" in p.stdout, p.stdout
@@ -400,3 +400,20 @@ def test_a_run_that_compiled_test_modules_is_never_identical_to_a_warm_one(tmp_p
     p = subprocess.run([sys.executable, "-m", "detpy.fenvix", "verify", str(cold), str(warm)], capture_output=True,
                        text=True, timeout=120)
     assert p.returncode == 1 and "bytecode" in p.stdout, p.stdout
+
+
+def test_waits_that_time_out_and_timeit_follow_the_virtual_clock(tmp_path):
+    """Exam F-01.probe.c-wait and probe.timeit: select.select and a socket read that time out last their timeout on
+    the virtual clock (as time.sleep); timeit's timed loop costs one tick per iteration, so autorange ends, with the
+    same result in every run."""
+    proj = project(tmp_path, "import select, socket, time, timeit\n\n"
+                             "def test_wait():\n    t = time.monotonic()\n    select.select([], [], [], 0.3)\n"
+                             "    a, b = socket.socketpair()\n    a.settimeout(0.3)\n    try:\n        a.recv(1)\n"
+                             "    except socket.timeout:\n        pass\n    assert time.monotonic() - t >= 0.55\n\n"
+                             "def test_timeit():\n    n, t = timeit.Timer('pass').autorange()\n    print('TIMEIT', n, t)\n")
+    outs = []
+    for tag in ("a", "b"):
+        p, _ = det(proj, tag)
+        assert p.returncode == 0, p.stdout + p.stderr
+        outs.append([ln for ln in p.stdout.splitlines() if "TIMEIT" in ln])
+    assert outs[0] and outs[0] == outs[1], outs

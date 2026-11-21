@@ -397,3 +397,197 @@ def test_native_network_clients_are_never_identical(tmp_path):
     assert by["test_db"]["divergence"]["reason"] == "native", by["test_db"]
     assert by["test_curl"]["divergence"]["reason"] == "native", by["test_curl"]
     assert by["test_plain"]["status"] == "stable"
+
+
+class _KeepAlive(http.server.BaseHTTPRequestHandler):
+    """HTTP/1.1 with keep-alive: one connection serves several requests (requests, urllib3 and httpx pools)."""
+
+    protocol_version = "HTTP/1.1"
+
+    def do_GET(self):
+        body = json.dumps({"path": self.path}).encode()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def log_message(self, *a):
+        pass
+
+
+KEPT = '''
+import http.client, json, os, urllib.parse
+
+_PROXY = urllib.parse.urlsplit(os.environ["HTTP_PROXY"])
+CONN = {}
+
+def _get(path):
+    # one connection for the module, opened by the first test that needs it and kept alive for the next one
+    if "c" not in CONN:
+        CONN["c"] = http.client.HTTPConnection(_PROXY.hostname, _PROXY.port, timeout=5)
+    c = CONN["c"]
+    c.request("GET", "http://api.example.invalid" + path)
+    return json.loads(c.getresponse().read())["path"]
+
+def test_a():
+    assert _get("/a") == "http://api.example.invalid/a"
+
+def test_b():
+    assert _get("/b") == "http://api.example.invalid/b"
+'''
+
+
+def test_a_connection_kept_alive_across_tests_replays_each_test_alone_and_in_any_order(pytester, run_det, monkeypatch):
+    """exam F-01.probe.cassette: test b's request goes over the connection test a opened. It is recorded under b
+    (the connection continues in b), so b replays alone and the tests replay in another order; the full run still
+    replays over the one kept connection."""
+    srv = http.server.ThreadingHTTPServer(("127.0.0.1", 0), _KeepAlive)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    monkeypatch.setenv("HTTP_PROXY", f"http://127.0.0.1:{srv.server_port}")
+    pytester.makepyfile(test_k=KEPT)
+    cassette = pytester.path / "cassette.json"
+    try:
+        rec, _ = run_det(f"--det-cassette={cassette}", "--det-record")
+        rec.assert_outcomes(passed=2)
+    finally:
+        srv.shutdown()
+        srv.server_close()
+    tests = json.loads(cassette.read_text())["tests"]
+    a, b = tests["test_k.py::test_a"], tests["test_k.py::test_b"]
+    assert len(a) == 1 and a[0].get("continued") is True, a
+    assert len(b) == 1 and not b[0].get("continued") and b"/b" in __import__("base64").b64decode(b[0]["segments"][0]["data"]), b
+    run_det(f"--det-cassette={cassette}")[0].assert_outcomes(passed=2)
+    run_det(f"--det-cassette={cassette}", "test_k.py::test_b")[0].assert_outcomes(passed=1)
+    order = pytester.path / "order.txt"
+    order.write_text("test_k.py::test_b\ntest_k.py::test_a\n")
+    run_det(f"--det-cassette={cassette}", f"--det-order={order}")[0].assert_outcomes(passed=2)
+
+
+ASYNC_TLS_CLIENT = '''
+import asyncio, hashlib, os, ssl
+def test_async_tls():
+    host, port = os.environ["TLS_TARGET"].split(":")
+    async def main():
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+        ctx.set_alpn_protocols(["h2", "http/1.1"])
+        # asyncio's TLS runs over memory BIOs (SSLContext.wrap_bio), as in httpx and aiohttp
+        reader, writer = await asyncio.open_connection(host, int(port), ssl=ctx, server_hostname="svc.example")
+        writer.write(b"hello")
+        await writer.drain()
+        data = await reader.read(100)
+        obj = writer.get_extra_info("ssl_object")
+        der = obj.getpeercert(binary_form=True)
+        print("TLS", data, isinstance(obj, ssl.SSLObject), obj.selected_alpn_protocol(), obj.version(),
+              hashlib.sha256(der).hexdigest()[:16])
+        writer.close()
+        return data
+    assert asyncio.run(main()) == b"echo:hello"
+'''
+
+
+BIO_CLIENT = '''
+import hashlib, os, socket, ssl
+
+class Stream:
+    """The shape of anyio's SocketStream (httpx): the raw socket behind extra_attributes."""
+    def __init__(self, sock):
+        self.extra_attributes = {"raw_socket": lambda: sock}
+
+def _pump(transport_stream, obj, inc, out, step):
+    sock = transport_stream.extra_attributes["raw_socket"]()
+    while True:
+        try:
+            r = step()
+            if out.pending:
+                sock.sendall(out.read())
+            return r
+        except ssl.SSLWantReadError:
+            if out.pending:
+                sock.sendall(out.read())
+            data = sock.recv(65536)
+            if not data:
+                inc.write_eof()
+            else:
+                inc.write(data)
+
+def tls_over(transport_stream, ctx):
+    inc, out = ssl.MemoryBIO(), ssl.MemoryBIO()
+    obj = ctx.wrap_bio(inc, out, server_hostname="svc.example")  # as anyio's TLSStream.wrap
+    _pump(transport_stream, obj, inc, out, obj.do_handshake)
+    return obj, inc, out
+
+def test_bio_tls():
+    host, port = os.environ["TLS_TARGET"].split(":")
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    ctx.set_alpn_protocols(["h2", "http/1.1"])
+    stream = Stream(socket.create_connection((host, int(port)), timeout=5))
+    obj, inc, out = tls_over(stream, ctx)
+    _pump(stream, obj, inc, out, lambda: obj.write(b"hello"))
+    data = _pump(stream, obj, inc, out, lambda: obj.read(100))
+    der = obj.getpeercert(binary_form=True)
+    print("TLS", data, isinstance(obj, ssl.SSLObject), obj.selected_alpn_protocol(), obj.version(),
+          hashlib.sha256(der).hexdigest()[:16])
+    assert data == b"echo:hello"
+'''
+
+
+@pytest.mark.parametrize("client,test", [(ASYNC_TLS_CLIENT, "test_async_tls"), (BIO_CLIENT, "test_bio_tls")],
+                         ids=["asyncio", "anyio-shape"])
+def test_tls_over_memory_bios_is_recorded_as_plaintext_and_replayed(tmp_path, client, test):
+    """exam F-01.probe.replay-clients (httpx, aiohttp): asyncio's TLS and anyio's (httpx) go through
+    SSLContext.wrap_bio. The cassette holds the plaintext above TLS (not the ciphertext, whose handshake is random),
+    and the replay answers it offline with the recorded handshake (version, ALPN, peer certificate). The TLS object
+    finds its socket in the caller (asyncio's transport socket, a stream's raw socket)."""
+    import base64
+    import shutil
+    import ssl as _ssl
+
+    ip = _lan_ip()
+    if ip is None or shutil.which("openssl") is None:
+        pytest.skip("no non-loopback interface or no openssl")
+    key, cert = tmp_path / "k.pem", tmp_path / "c.pem"
+    subprocess.run(["openssl", "req", "-x509", "-newkey", "rsa:2048", "-nodes", "-subj", "/CN=svc.example",
+                    "-keyout", str(key), "-out", str(cert), "-days", "2"], check=True, capture_output=True)
+    sctx = _ssl.SSLContext(_ssl.PROTOCOL_TLS_SERVER)
+    sctx.load_cert_chain(cert, key)
+    sctx.set_alpn_protocols(["http/1.1"])
+    srv = socket.create_server((ip, 0))
+    stop = threading.Event()
+
+    def serve():
+        srv.settimeout(0.2)
+        while not stop.is_set():
+            try:
+                conn, _ = srv.accept()
+            except OSError:
+                continue
+            try:
+                with sctx.wrap_socket(conn, server_side=True) as s:
+                    s.sendall(b"echo:" + s.recv(100))
+            except (OSError, _ssl.SSLError):
+                pass
+
+    threading.Thread(target=serve, daemon=True).start()
+    (tmp_path / "test_a.py").write_text(client)
+    cassette = tmp_path / "cassette.json"
+    env = dict(os.environ, TLS_TARGET=f"{ip}:{srv.getsockname()[1]}")
+    env.pop("PYTEST_ADDOPTS", None)
+    base = [sys.executable, "-m", "pytest", "-q", "-s", "-p", "no:cacheprovider", "--det", f"--det-cassette={cassette}"]
+    rec = subprocess.run([*base, "--det-record"], cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    stop.set()
+    srv.close()
+    assert "1 passed" in rec.stdout, rec.stdout + rec.stderr
+    conns = json.loads(cassette.read_text())["tests"][f"test_a.py::{test}"]
+    sent = b"".join(base64.b64decode(s["data"]) for c in conns for s in c["segments"] if s["dir"] == "send")
+    assert sent == b"hello", sent  # the plaintext, not a TLS record
+    assert conns[0]["tls"] and conns[0].get("tls_info"), conns[0]
+    line_rec = next(x for x in rec.stdout.splitlines() if "TLS b" in x)
+    rep = subprocess.run(base, cwd=tmp_path, env=env, capture_output=True, text=True, timeout=300)
+    assert "1 passed" in rep.stdout, rep.stdout + rep.stderr
+    line_rep = next(x for x in rep.stdout.splitlines() if "TLS b" in x)
+    assert line_rep.split("TLS", 1)[1] == line_rec.split("TLS", 1)[1], (line_rec, line_rep)
+    assert "True http/1.1" in line_rep, line_rep

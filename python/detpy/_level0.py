@@ -17,7 +17,8 @@ import os
 import platform
 import sys
 
-from . import __version__, _core, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec, seeds, sqlvirt, uncontrolled
+from . import (__version__, _core, _machine, _sites, _state, clock, envobs, fsorder, fstime, network, osstate, reexec,
+               seeds, sqlvirt, uncontrolled)
 from ._patch import Patcher
 
 CONTROLS = ("order", "seeds", "hashseed", "bytecode", "time", "fs", "net", "env", "tz", "locale", "os")
@@ -29,6 +30,59 @@ LOCALE_FALLBACKS = ("C.UTF-8", "C.utf8", "en_US.UTF-8", "C")
 LOCALE_VARS = ("LC_ALL", "LANG")
 # engine-internal variables: not inputs of the code under test (their effects are recorded as their own inputs)
 ENGINE_ENV_PREFIXES = ("DETPY_", "PYTEST_XDIST_")
+
+# CI-volatile environment (design A, 2026-11-20): variables whose values change from run to run of the same job by
+# construction, never because the project changed.
+# * pinned: under --det (env control) they are set to these values before the tests run, in this process and in the
+#   re-executed one (their children inherit them): run and attempt ids, job and runner names, the host name.
+VOLATILE_PINNED = {
+    "GITHUB_RUN_ID": "0", "GITHUB_RUN_NUMBER": "0", "GITHUB_RUN_ATTEMPT": "1", "GITHUB_JOB": "fenvix",
+    "RUNNER_NAME": "fenvix-runner", "RUNNER_TRACKING_ID": "fenvix", "HOSTNAME": "localhost",
+}
+# * volatile: their values stay (they name paths that must exist, or tokens a tool needs), but they are never run
+#   inputs and reads of them record no value: temp and workspace paths, per-step files, CI tokens and endpoints,
+#   session plumbing. FENVIX_VOLATILE_ENV=NAME,PREFIX*,... adds a project's own (a per-run output path).
+VOLATILE_KEPT = (
+    "RUNNER_TEMP", "RUNNER_WORKSPACE", "RUNNER_TOOL_CACHE", "GITHUB_WORKSPACE", "GITHUB_ENV", "GITHUB_PATH",
+    "GITHUB_OUTPUT", "GITHUB_STATE", "GITHUB_STEP_SUMMARY", "GITHUB_EVENT_PATH", "GITHUB_ACTION",
+    "GITHUB_ACTION_PATH", "GITHUB_ACTIONS_STEP_DEBUG", "ACTIONS_RUNTIME_TOKEN", "ACTIONS_RUNTIME_URL",
+    "ACTIONS_ID_TOKEN_REQUEST_TOKEN", "ACTIONS_ID_TOKEN_REQUEST_URL", "ACTIONS_RESULTS_URL", "ACTIONS_CACHE_URL",
+    "ACTIONS_ORCHESTRATION_ID", "TMPDIR", "TEMP", "TMP", "PWD", "OLDPWD", "_", "SHLVL", "INVOCATION_ID",
+    "JOURNAL_STREAM", "SSH_AUTH_SOCK", "SSH_CLIENT", "SSH_CONNECTION", "SSH_TTY", "TERM_SESSION_ID",
+    "WINDOWID", "XDG_SESSION_ID", "XDG_RUNTIME_DIR", "SYSTEMD_EXEC_PID", "FENVIX_VOLATILE_ENV",
+    "SUDO_USER", "SUDO_UID", "SUDO_GID", "SUDO_COMMAND", "SUDO_HOME",  # session of a sudo wrapper
+)
+# the proxy variables the closed network sets for children (network._child_env, network.PROXY_KEYS)
+PROXY_ENV = frozenset(("http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY", "all_proxy", "NO_PROXY",
+                       "no_proxy"))
+PINNED_CPU_COUNT = 2  # os.cpu_count & co. under --det: CI runners differ in CPUs (the engine keeps the real one)
+PINNED_HOSTNAME = "localhost"  # socket.gethostname / platform.node / os.uname().nodename under --det (resolvable)
+
+
+def volatile_env_patterns() -> tuple:
+    """The volatile variables: the built-in ones and FENVIX_VOLATILE_ENV's (NAME or PREFIX*), as (exact, prefixes)."""
+    extra = [x.strip() for x in os.environ.get("FENVIX_VOLATILE_ENV", "").split(",") if x.strip()]
+    exact = set(VOLATILE_PINNED) | set(VOLATILE_KEPT) | {x for x in extra if not x.endswith("*")}
+    prefixes = tuple(x[:-1] for x in extra if x.endswith("*"))
+    return frozenset(exact), prefixes
+
+
+def is_volatile_env(name: str, patterns=None) -> bool:
+    exact, prefixes = patterns or volatile_env_patterns()
+    return name in exact or (bool(prefixes) and name.startswith(prefixes)) or name.startswith(ENGINE_ENV_PREFIXES)
+
+
+def pin_volatile_env(controls) -> list:
+    """Design A: set the pinned CI-volatile variables that are present (``VOLATILE_PINNED``) to their fixed values,
+    before the hash-seed re-exec (the new process starts with them) and in this process. Returns their names."""
+    if "env" not in controls:
+        return []
+    done = []
+    for k, v in VOLATILE_PINNED.items():
+        if k in os.environ and os.environ.get(k) != v:
+            os.environ[k] = v
+            done.append(k)
+    return done
 PATCHER = Patcher()
 INFRA_PREFIXES = ("_pytest", "pytest", "pluggy", "detpy", "_hypothesis_pytestplugin", "xdist", "execnet")
 # top-level packages of the running shell's plugins (pytest plugins): test infrastructure, never rebound to the
@@ -89,9 +143,14 @@ OPTIONS: list[tuple[tuple[str, ...], dict]] = [
                                   f"$FENVIX_LOCALE, else {DEFAULT_LOCALE}, else the first of "
                                   f"{', '.join(LOCALE_FALLBACKS[1:])} that exists). 'keep' keeps the machine's "
                                   "(recorded as a run input)")),
+    (("--det-entropy",), dict(default=None, choices=("control", "observe"), metavar="control|observe",
+                              help="OS entropy (os.urandom, os.getrandom, ssl.RAND_bytes, uuid4, secrets): 'control' "
+                                   "(the default) seeds it per test from --det-seed; 'observe' keeps the real entropy "
+                                   "and records every draw (a test that draws it is never identical; NOT seeded: for "
+                                   "crypto tests)")),
     (("--det-urandom",), dict(action="store_true", default=False,
-                              help="also make os.urandom/uuid4/secrets deterministic (beyond Level 0; NOT for crypto "
-                                   "tests)")),
+                              help="OS entropy controlled (the default since 2026-11-21; kept for older command "
+                                   "lines: see --det-entropy)")),
     (("--det-keep-aslr",), dict(action="store_true", default=False,
                                 help="do not disable address space randomisation when re-executing")),
     (("--det-no-reexec",), dict(action="store_true", default=False,
@@ -143,6 +202,15 @@ CONFIG_KEYS = {"seed": "--det-seed", "tz": "--det-tz", "locale": "--det-locale",
                "tick": "--det-tick", "cassette": "--det-cassette", "cassette_max_age": "--det-cassette-max-age",
                "disable": "--det-disable", "trace": "--det-trace"}
 CONFIG_FLAGS = {"urandom": "--det-urandom", "keep_aslr": "--det-keep-aslr"}
+CONFIG_KEYS["entropy"] = "--det-entropy"
+
+
+def entropy_controlled(ns) -> bool:
+    """Coordinator decision 2026-11-21 (the frozen exam's F-01.random.pinned): OS entropy is controlled by default
+    under --det, like Node's crypto; ``--det-entropy=observe`` keeps it real and observed."""
+    if getattr(ns, "det_urandom", False):  # what the [entropy] hint names: it controls in every case
+        return True
+    return getattr(ns, "det_entropy", None) != "observe"
 
 
 def config_args(root: str | None, given: list) -> list:
@@ -356,9 +424,10 @@ def _digest_text(t: str) -> str:
     return _core.digest(t.encode("utf-8", "surrogateescape"))[:16]
 
 
-def env_inputs() -> dict:
+def env_inputs(skip=()) -> dict:
     """One run input per environment variable (``env:NAME``: a digest of NAME=value, so secrets never reach the
-    trace), engine-internal variables excepted."""
+    trace), engine-internal and CI-volatile variables excepted (``VOLATILE_PINNED``, ``VOLATILE_KEPT``,
+    ``FENVIX_VOLATILE_ENV``). The verifier reports a test that read one whose value differs as ``input-differs``."""
     out = {}
     # the engine's own read (os.environ._data, decoded as os.environ does): not an enumeration by the code under
     # test, which the cache's and the env control's wrappers of os.environ would record (a runner shell writes its
@@ -366,8 +435,9 @@ def env_inputs() -> dict:
     e = os.environ
     data = getattr(e, "_data", None)
     items = list(e.items()) if data is None else [(e.decodekey(k), e.decodevalue(v)) for k, v in dict.items(data)]
+    patterns = volatile_env_patterns()
     for k, v in items:
-        if k.startswith(ENGINE_ENV_PREFIXES):
+        if k.startswith(ENGINE_ENV_PREFIXES) or is_volatile_env(k, patterns) or k in skip:  # engine's, CI-volatile
             continue
         # a name or value that is not valid UTF-8 (surrogate-escaped) is spelled with its bytes escaped: the trace
         # is JSON, and its digest still covers the exact bytes
@@ -416,13 +486,16 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
         "network": (f"{net_mode} allow={','.join(sorted(cfg.allow_hosts))} cassette={cas}" if "net" in c
                     else "open (net control off)"),
         "fs": "sorted" if "fs" in c else "real (fs control off)",
-        "urandom": "controlled" if cfg.control_urandom else "observed",
+        "entropy": "controlled" if cfg.control_urandom else "observed",
         "bytecode": ("precompiled" if reexec.bytecode_active(hashseed_value()) else "default") + _rewrite_input(),
         "aslr": {True: "off", False: "on", None: "unknown"}[reexec.aslr_disabled()],
         "order": "fixed" if "order" in c else "runner order (order control off)",
         "os": osstate.input_text() if "os" in c else "real (os control off)",
     }
-    inputs.update(env_inputs())
+    # the closed network replaces the proxy variables (children get the discard port, network._child_env): while it is
+    # closed they are its part, not inputs; while recording (the real network) they are inputs
+    closed = "net" in c and not cfg.record_net
+    inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
     return inputs
 
 
@@ -431,6 +504,7 @@ def reexec_status(ns, controls, root: str, block: list[str], before_exec=None) -
     deterministic bytecode) when needed and possible; does not return then. Returns the status line otherwise.
     ``before_exec`` runs just before the exec (pytest restores its captured file descriptors)."""
     pin_tz_locale(ns, controls)
+    pin_volatile_env(controls)
     if "hashseed" not in controls:
         return "not-needed"
     want_bytecode = "bytecode" in controls
@@ -461,7 +535,7 @@ def make_config(ns, root: str, controls) -> _state.Config:
         controls=controls,
         record_net=ns.det_record,
         allow_hosts=tuple(ns.det_allow_host),
-        control_urandom=ns.det_urandom,
+        control_urandom=entropy_controlled(ns),
         max_events=ns.det_max_events,
     )
     cfg.cassette_max_age = getattr(ns, "det_cassette_max_age", 0.0) or 0.0
@@ -484,11 +558,73 @@ def install_controls(cfg: _state.Config, root: str | None) -> list:
     if "fs" in controls:
         fsorder.install(PATCHER)
     if "env" in controls:
+        pin_volatile_env(controls)  # no re-exec (or a shell that installs here): pin in this process
         envobs.install()
+        pin_hostname(PATCHER)
+        pin_cpu_count(PATCHER)
     if "os" in controls:
         osstate.install(PATCHER, cfg)  # after fstime: wraps its open
     uncontrolled.install(PATCHER)
     return rebound
+
+
+def pin_hostname(patcher) -> None:
+    """Design A: the host name is CI-volatile (each runner has its own): socket.gethostname, platform.node and
+    os.uname().nodename answer ``PINNED_HOSTNAME`` under --det (``localhost``: it still resolves, to loopback)."""
+    import platform
+    import socket
+
+    patcher.set(socket, "gethostname", lambda: PINNED_HOSTNAME)
+    patcher.set(platform, "node", lambda: PINNED_HOSTNAME)
+    real_uname = getattr(os, "uname", None)
+    if real_uname is not None:
+        def uname():
+            r = real_uname()
+            return os.uname_result((r.sysname, PINNED_HOSTNAME, r.release, r.version, r.machine))
+
+        patcher.set(os, "uname", uname)
+    try:  # platform.uname() caches the node it saw first
+        cached = getattr(platform, "_uname_cache", None)
+        if cached is not None:
+            patcher.set(platform, "_uname_cache", cached._replace(node=PINNED_HOSTNAME))
+    except Exception:
+        pass
+
+
+def pin_cpu_count(patcher) -> None:
+    """Design A, same class as the host name: the CPU count differs between CI runners (pool sizes, chunking, a
+    test that prints it). Under --det os.cpu_count, os.process_cpu_count, os.sched_getaffinity and
+    multiprocessing.cpu_count answer ``PINNED_CPU_COUNT`` (affinity: CPUs 0..N-1). The engine's own work is sized on
+    the real count (``_machine``, captured at import)."""
+    import multiprocessing
+
+    n = PINNED_CPU_COUNT
+    patcher.set(os, "cpu_count", lambda: n)
+    if hasattr(os, "process_cpu_count"):
+        patcher.set(os, "process_cpu_count", lambda: n)
+    if hasattr(os, "sched_getaffinity"):
+        patcher.set(os, "sched_getaffinity", lambda pid: set(range(n)))
+    patcher.set(multiprocessing, "cpu_count", lambda: n)
+
+
+class real_cpu_count:
+    """``with real_cpu_count():`` the engine's own planning (``-n auto``) reads the machine, not the pinned count."""
+
+    def __enter__(self):
+        import multiprocessing
+
+        real = {"cpu_count": _machine._cpu_count, "process_cpu_count": _machine._process_cpu_count,
+                "sched_getaffinity": _machine._sched_getaffinity}
+        self.saved = [(os, k, getattr(os, k)) for k, v in real.items() if v is not None and hasattr(os, k)]
+        self.saved.append((multiprocessing, "cpu_count", multiprocessing.cpu_count))
+        for mod, k, _ in self.saved:
+            setattr(mod, k, real[k] if mod is os else (lambda: _machine.cpu_count() or 1))
+        return self
+
+    def __exit__(self, *exc):
+        for mod, k, v in self.saved:
+            setattr(mod, k, v)
+        return False
 
 
 def hash_checked_imports(root: str) -> bool:
@@ -656,6 +792,9 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     meta["runtime"] = platform.python_implementation()
     meta["runtime_version"] = platform.python_version()
     meta["inputs"] = run_inputs(net_mode, runner, runner_version)
+    # every os.environ read by a test is an event (envobs): the verifier then reports a differing variable only for
+    # the tests that read it (design A)
+    meta["env_reads_recorded"] = "env" in cfg.controls
     return meta
 
 

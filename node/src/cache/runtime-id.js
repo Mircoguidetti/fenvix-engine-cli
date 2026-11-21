@@ -122,7 +122,7 @@ function packageRoots(root, env) {
 }
 
 function treeThreads() {
-  return Math.max(2, Math.min(16, os.availableParallelism ? os.availableParallelism() : 4));
+  return Math.max(2, Math.min(16, require('../volatile').realParallelism()));
 }
 
 /**
@@ -173,7 +173,7 @@ function runtimeIdentity(root, env = process.env, packages = null) {
   loc.intl = [ro.locale, ro.calendar, ro.numberingSystem, new Intl.NumberFormat().resolvedOptions().locale];
   if (env.NODE_ICU_DATA) loc.icuData = native.treeDigest([['icu', env.NODE_ICU_DATA]], '/', [], null, 10000, 2);
   parts.locale = d(loc);
-  parts.cpu = d({ visible: os.availableParallelism ? os.availableParallelism() : os.cpus().length, isa: isaLevel() });
+  parts.cpu = d({ visible: require('../volatile').realParallelism(), isa: isaLevel() });
   lists.lockfiles = LOCKFILES.map((f) => [f, native.fileDigest(path.join(root, f))]).filter(([, x]) => x);
   parts.lockfiles = d(lists.lockfiles);
   const tree = JSON.parse(packages || native.treeDigest(packageRoots(root, env), root, TREE_EXCLUDE, memoPath(), 400000, treeThreads()));

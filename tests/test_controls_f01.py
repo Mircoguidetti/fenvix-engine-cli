@@ -171,7 +171,10 @@ def test_environment(project):
     rec = next(r for r in lines if r.get("type") == "test" and r["nodeid"].endswith("::test_env"))
     reads = [e for e in rec["events"] if e["o"] == "env.get" and e["v"].startswith("PROBE_VAR=")]
     assert reads and reads[0]["at"].startswith("tests/test_probe.py:"), rec["events"]
-    # a different value: divergent, the variable named
+    assert all(e["v"] == "PROBE_VAR=set" for e in reads), reads  # which variable, never its value
+    # a different value: input differs (design A, exit 3), the variable named; a CI-volatile one is pinned
     _, tb, _ = run(project, "d", PROBE_VAR="2")
     rc, text = verify(ta, tb)
-    assert rc == 1 and "PROBE_VAR" in text, text
+    assert rc == 3 and "INPUT DIFFERS: PROBE_VAR" in text, text
+    _identical_runs(project, "env", a_env={"PROBE_VAR": "1", "GITHUB_RUN_ID": "11"},
+                    b_env={"PROBE_VAR": "1", "GITHUB_RUN_ID": "22"})
