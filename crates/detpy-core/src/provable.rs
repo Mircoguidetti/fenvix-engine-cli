@@ -334,8 +334,8 @@ fn builtins_account(qualname: &str, name: &str) -> Accounting {
         // identity and hashing expose the memory layout and the string hash seed; `--det` pins both (ASLR off,
         // a fixed PYTHONHASHSEED through the re-exec)
         "id" | "hash" => Accounting::Controlled,
-        // reads the standard input, which no event carries
-        "input" => Accounting::Unaccounted,
+        // reads the standard input, which no event carries; `breakpoint` enters the debugger, which also does
+        "input" | "breakpoint" => Accounting::Unaccounted,
         // `vars`, `dir`, `globals`, `locals`, `compile`, `exec`, `eval`, `print`, `repr`, and every container,
         // text and number operation: a function of what is already in the process
         _ => {
@@ -376,10 +376,11 @@ fn posix_account(name: &str) -> Accounting {
         "write" | "pwrite" | "writev" | "pwritev" | "close" | "closerange" | "fsync" | "fdatasync" | "ftruncate"
         | "truncate" | "lseek" | "dup" | "dup2" | "pipe" | "pipe2" | "mkdir" | "makedirs" | "rmdir" | "remove"
         | "unlink" | "rename" | "replace" | "link" | "symlink" | "chmod" | "chown" | "lchown" | "fchmod"
-        | "fchown" | "utime" | "mkfifo" | "mknod" | "device_encoding" | "set_inheritable"
-        | "get_inheritable" | "set_blocking" | "get_blocking" | "fspath" | "strerror" | "isatty" => {
-            Accounting::Pure
-        }
+        | "fchown" | "utime" | "mkfifo" | "mknod" | "set_inheritable"
+        | "get_inheritable" | "set_blocking" | "get_blocking" | "fspath" | "strerror" => Accounting::Pure,
+        // whether a descriptor is a terminal, and the encoding that implies, differ between a terminal and a pipe
+        // and between machines, and `--det` pins neither
+        "isatty" | "device_encoding" | "ttyname" => Accounting::Unaccounted,
         // the working directory: pinned to the project root by `--det`
         "getcwd" | "getcwdb" | "chdir" | "fchdir" => Accounting::Controlled,
         // string work on paths, no call to the operating system at all
@@ -407,11 +408,24 @@ fn time_account(name: &str) -> Accounting {
         }
         // CPU time of the process and of the thread: real counters, recorded as an event (R-055 V14)
         "process_time" | "process_time_ns" | "thread_time" | "thread_time_ns" | "times" => Accounting::Recorded,
-        "get_clock_info" => Accounting::Pure,
+        // the machine's clock resolution and monotonic flags: no input pins them
+        "get_clock_info" => Accounting::Unaccounted,
         _ => Accounting::Unaccounted,
     }
 }
 
+/// `_io`: the stream surface over data the engine already accounted for.
+///
+/// The claim rests on the engine's observer at `open`: the `fs.read` event carries the path and the digest of
+/// what was read, so the stream methods that hand those bytes to the test add no information the verifier does
+/// not already compare.
+///
+/// **The one place this table's claim is weaker than the rest**, stated here rather than only in the report: a
+/// stream that is not a file has no such `open` behind it. A test that reads `sys.stdin` goes through the same
+/// `_io` methods, and nothing records what it read. Standard input is a channel the engine already lists as
+/// uncovered (`docs/VERIFY-INPUTS.md`), `builtins.input` is `Unaccounted` above, and under a test runner stdin is
+/// normally closed or replaced — but a test that reads it directly is a gap this entry does not catch. Closing it
+/// needs an event for stdin, not a different answer here.
 fn io_account(name: &str) -> Accounting {
     match name {
         // the bytes a stream returns were accounted for when the file was opened (the `fs.read` event carries the
