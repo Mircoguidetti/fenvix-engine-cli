@@ -239,6 +239,12 @@ def run_pw(label, mode, seed=None, args=None, det_flags=(), timeout_s=None, env_
     if len(rec["errors"]) > 80:
         rec["errors"] = dict(list(rec["errors"].items())[:80])
     rec["trace"] = str(trace) if trace.exists() else None
+    if os.environ.get("L2_LOG_GREP"):  # diagnosis: keep the log lines matching this pattern, passing runs too
+        try:
+            pat = re.compile(os.environ["L2_LOG_GREP"])
+            rec["log_grep"] = [ln[:300] for ln in logf.read_text(errors="replace").splitlines() if pat.search(ln)][-400:]
+        except (OSError, re.error):
+            pass
     counts = {}
     for s in rec["outcomes"].values():
         counts[s] = counts.get(s, 0) + 1
@@ -397,6 +403,8 @@ if JOB in ("gate", "gate2", "gate3", "gate4"):  # gate2-4: the same gate with ot
             T["runs"].append(o)
             if r.get("error"):
                 T.setdefault("run_errors", {})[str(i + 1)] = r["error"][-800:]
+            if r.get("log_grep"):
+                T.setdefault("log_grep", {})[str(i + 1)] = r["log_grep"]
             if r.get("log_tail") and o not in ("passed",):
                 T.setdefault("run_logs", {})[str(i + 1)] = r["log_tail"][-2500:]
             T["errors"].append((r.get("errors") or {}).get(k, "")[:400])

@@ -1,52 +1,25 @@
 {
- "nonce": 26,
+ "nonce": 27,
  "jobs": [
   {
    "job": "gate",
-   "name": "sveltekit"
-  },
-  {
-   "job": "gate",
-   "name": "uptime-kuma"
-  },
-  {
-   "job": "gate2",
-   "name": "sveltekit"
-  },
-  {
-   "job": "gate2",
-   "name": "uptime-kuma"
-  },
-  {
-   "job": "gate3",
-   "name": "sveltekit"
-  },
-  {
-   "job": "gate3",
-   "name": "uptime-kuma"
+   "name": "documenso"
   }
  ],
  "params": {
-  "gate": {},
-  "gate2": {
+  "gate": {
+   "runs": 1,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 60,
+   "per_run_s": 600,
+   "target_timeout_min": 12,
    "env": {
-    "DETJS_LS_FRAME_STOPS": "0"
-   },
-   "runs": 10,
-   "plain_runs": 2,
-   "per_run_s": 240,
-   "budget_min": 330,
-   "target_timeout_min": 10
-  },
-  "gate3": {
-   "env": {
-    "DETJS_LS_BARRIER_TYPES": "Script,Stylesheet,Fetch,XHR,Image"
-   },
-   "runs": 10,
-   "plain_runs": 2,
-   "per_run_s": 240,
-   "budget_min": 330,
-   "target_timeout_min": 10
+    "DETJS_LS_TRACE": "/tmp/ls.trace",
+    "DETJS_LS_TRACE_REAL": "1",
+    "DEBUG": "pw:browser*,pw:api,pw:protocol",
+    "L2_LOG_GREP": "ffmpeg|video|[Tt]rac|close|Close|dispose|artifact|Artifact|screencast|Screencast"
+   }
   }
  },
  "suites": false
