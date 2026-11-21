@@ -135,8 +135,12 @@ for (const runner of RUNNERS) {
       const diff = verify(dir, 'run1.jsonl', 'run3.jsonl');
       const d = diff.tests.find((t) => t.nodeid.endsWith('::local service'));
       assert.equal(d.status, 'diverged', JSON.stringify(diff.summary));
-      assert.equal(d.divergence.reason, 'net', JSON.stringify(d.divergence));
-      assert.match(d.divergence.description, /net\.stream/);
+      // the server reads answer.txt in the test, so the first difference is that read (fs, R-050 N1); the loopback
+      // bytes must differ too
+      const streams = (f) => fs.readFileSync(path.join(dir, f), 'utf8').split('\n').filter((l) => l.startsWith('{"type":"test"'))
+        .map((l) => JSON.parse(l)).filter((t) => t.nodeid.endsWith('::local service')).flatMap((t) => (t.events || []).filter((e) => e.o === 'net.stream').map((e) => e.v));
+      const [s1, s3] = [streams('run1.jsonl'), streams('run3.jsonl')];
+      assert.ok(s1.length === 1 && s3.length === 1 && s1[0] !== s3[0], `the loopback bytes differ: ${s1} vs ${s3}`);
       assert.equal(diff.tests.find((t) => t.nodeid.endsWith('::no network')).status, 'stable');
     });
 

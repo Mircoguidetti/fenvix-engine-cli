@@ -699,6 +699,7 @@ class Worker:
 
         out["detpy_env_outside"] = sorted(_level0.envobs.OUTSIDE)  # R-054 N2: read outside any test
         out["detpy_files_outside"] = dict(_level0.osstate.OUTSIDE_FILES)  # R-055 V3
+        out["detpy_not_proven_outside"] = sorted(_level0.outside_fields()["not_proven_outside_tests"])
         out["detpy_code_files"] = list(_level0.code_files())  # R-055 V4, V5: the controller imports no test
         out["detpy_rewrite_cold"] = _level0.REWRITE["cold"]  # G-0168: modules this worker rewrote from source
         if plugin.S.saved_cassette and plugin.S.cassette_out:

@@ -1,6 +1,5 @@
 'use strict';
 const volatile = require('./volatile');
-const sites = require('./sites');
 // Main-process side of a --det run, shared by `detjs vitest` and `detjs jest`:
 // option parsing, environment for the workers, merge of the per-file trace
 // parts into one trace (same format as the Python shell), comparison report.
@@ -291,23 +290,6 @@ function runInputs(run, meta) {
   };
   // every variable but the engine's and the CI-volatile ones (design A: node/src/volatile.js) is a run input; a
   // differing one is reported `input-differs` for the tests that read it (their `env.get` events, src/controls.js)
-  // what the run's processes read outside any test (files, src/outside.js) and the dependency modules they loaded:
-  // run inputs of every test (R-055 V3, V5)
-  const lines = (kind) => {
-    const out = new Map();
-    try {
-      for (const f of fs.readdirSync(path.join(run.dir, kind)).sort()) {
-        for (const l of fs.readFileSync(path.join(run.dir, kind, f), 'utf8').split('\n')) {
-          const i = l.indexOf('\t');
-          if (i > 0) out.set(l.slice(0, i), l.slice(i + 1));
-        }
-      }
-    } catch { /* none */ }
-    return out;
-  };
-  for (const [k, v] of [...lines('filesout')].sort()) inputs[k.startsWith('stat:') ? `file:${k}` : `file:${k}`] = v;
-  const deps = [...lines('depsout')].map(([k, v]) => `${sites.normPath(k)}=${v}`).sort();
-  inputs.deps = `${dig(deps.join('\n'))} (${deps.length} files)`;
   const vp = volatile.patterns();
   // while the network is closed the proxy variables are its part (the closed network decides every connection), not
   // inputs; while recording (the real network) they are inputs
@@ -331,6 +313,27 @@ function envReadOutside(dir) {
     }
   } catch { /* none read */ }
   return [...names].sort();
+}
+
+/** The lines of every <run dir>/<sub>/*.txt, deduplicated. */
+function runLines(dir, sub) {
+  const out = new Set();
+  const d = path.join(dir, sub);
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) out.add(l);
+    }
+  } catch { /* none */ }
+  return out;
+}
+
+/** Files read while no test ran (src/outside.js; docs/VERIFY-CONTRACT.md `files_read_outside_tests`), sorted. */
+function filesReadOutside(dir) {
+  const out = [];
+  for (const l of runLines(dir, 'filesout')) {
+    try { const e = JSON.parse(l); if (e && typeof e.path === 'string' && typeof e.digest === 'string') out.push({ path: e.path, digest: e.digest }); } catch { /* torn line */ }
+  }
+  return out.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : a.digest < b.digest ? -1 : a.digest > b.digest ? 1 : 0));
 }
 
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
@@ -366,6 +369,9 @@ function finish(run, opts, files, meta) {
     // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
     env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
     env_read_outside_tests: envReadOutside(run.dir),
+    // review R-055 (docs/VERIFY-CONTRACT.md): files read and uncontrolled variables read while no test ran
+    files_read_outside_tests: filesReadOutside(run.dir),
+    not_proven_outside_tests: [...runLines(run.dir, 'npout')].sort(),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,
@@ -380,6 +386,8 @@ function finish(run, opts, files, meta) {
     locale: (() => { try { return `${Intl.DateTimeFormat().resolvedOptions().locale} LC_ALL=${process.env.LC_ALL || ''} LANG=${process.env.LANG || ''} LANGUAGE=${process.env.LANGUAGE || ''}`; } catch { return '?'; } })(),
   };
   try { full.inputs = runInputs(run, meta); } catch (e) { full.inputs_error = String(e && e.message); }
+  // the installed dependencies the run loaded (src/loaded.js, review R-055 V5)
+  try { const d = require('./loaded').depsInput(run.dir); if (d && full.inputs) full.inputs.deps = d; } catch (e) { full.inputs_error = String(e && e.message); }
   const res = native.mergeTraces(all, run.tracePath, JSON.stringify(full), order);
   let reproLines = [];
   try { reproLines = require('./repro').afterMerge(run, opts, files, meta.runner); } catch (e) { reproLines = [`detjs: --det-outcomes not written: ${e && e.message}`]; }

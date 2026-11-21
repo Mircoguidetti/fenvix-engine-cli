@@ -119,18 +119,18 @@ localhost, a unix socket, an env read in a `process.on('exit')` handler.
 
 | # | rule now | attack |
 |---|---|---|
-| V1, V2 | a test that reads a CI-volatile kept variable or (closed network) a proxy variable is `uncontrolled.env`: NOT PROVEN, never identical (a project's `FENVIX_VOLATILE_ENV` names stay readable) | passes (Python, Node) |
-| V3 | a file read outside any test is a run input `file:<path>` = its digest (Python: the header, the footer for reads after it, xdist workers through the controller; Node: every process, through the run directory) | passes (Python, Node) |
-| V4, V5 | run inputs `code` (the project's modules and test files) and `deps` (other non-standard-library modules; Node: the CommonJS modules under node_modules each process loaded), with content digests | passes (Python, Node) |
-| V6 | `os.stat`/`os.lstat` (and through them `os.path.*`, `pathlib`) and Node `existsSync`/`statSync`/`lstatSync` are events with what the caller asked (the kind for exists/is*, size, mtime, or all) | passes (Python, Node) |
-| V7, V15 | `sqlite3.connect(file)`: the database file is read like a file (event or input); a library loaded through ctypes: `uncontrolled.native` (NOT PROVEN) | passes |
+| V1, V2 | a test that reads a CI-volatile kept variable or (closed network) a proxy variable is `uncontrolled.env`: NOT PROVEN, never identical (a project's `FENVIX_VOLATILE_ENV` names stay readable); read outside any test: `not_proven_outside_tests` `env:<NAME>` | passes (Python, Node) |
+| V3 | a file read outside any test is an entry of `files_read_outside_tests` (`{path, digest}`, docs/VERIFY-CONTRACT.md), compared as `file:<path>` (Python: the header, the footer `late` for reads after it, xdist workers through the controller; Node: every process, through the run directory) | passes (Python, Node) |
+| V4, V5 | run inputs `code` (the project's modules and test files) and `deps` (other non-standard-library modules; Node: the CommonJS modules under node_modules each process loaded), `"<n> files <digest>"`, reasons `code` / `deps` | passes (Python, Node) |
+| V6 | `os.stat`/`os.lstat` (and through them `os.path.*`, `pathlib`) and the Node stat family are `fs.stat` events `<path>\|missing` or `<path>\|<type>`, plus ` size=` / ` mtime_ns=` when the call returns them (Python: exists-style calls the type only; Node: type and size, no mtime) | passes (Python, Node) |
+| V7, V15 | `sqlite3.connect(file)`: the database file is read like a file (event or input); a library loaded through ctypes: `uncontrolled.native` in a test, `not_proven_outside_tests` `native:<library>` outside one (NOT PROVEN) | passes |
 | V8, V9 | a datagram or a connection to a live endpoint (UDP, unix socket) is `uncontrolled.net`, from the frame that used it | passes (Python, Node) |
 | V10 | run input `argv`: the options without per-run paths, parallel options and plugin switches | passes |
 | V11 | `os.environ._data`, `os.environb._data` and `posix.environ` are one recording mapping | passes |
-| V12 | what is read after the header (a session-finish hook) goes in the trace footer (`late`), merged by verify | passes |
+| V12 | what is read after the header (a session-finish hook) goes in the trace footer `late`, with the header's field names; verify merges it | passes |
 | V13 | an input value `<random>` never compares equal | passes |
 | V14 | `resource.getrusage`: an event with its real counters | precondition not met locally (see Gaps) |
 | V16 | `process.loadEnvFile`: the `.env` file is read like a file | passes |
 | E1 | explore exits 1 when a seed run died with no test result | passes |
-| D1 | a verdict whose only differences are uncontrolled sources is NOT PROVEN, not DIVERGENT | Rust verify |
+| D1 | status `not-proven` (`summary.not_proven`): a test whose only difference is an uncontrolled source; headline NOT PROVEN, exit 1 | Rust verify (`r055_*` unit tests) |
 | D3 | repro: a test that kills the process is a failure (from the trace: the first test of the order that did not finish), with a fingerprint of its exit status | `tests/test_fenvix_cli.py::test_repro_finds_a_test_that_crashes_the_process` |

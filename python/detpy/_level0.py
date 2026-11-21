@@ -498,21 +498,29 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
     inputs.update(code_inputs(_CODE_EXTRA))
     inputs["argv"] = argv_input()
-    # files read outside any test before the trace opened (module scope, conftest, a dependency at import): inputs of
-    # every test (R-055 V3); native libraries loaded there through ctypes (R-055 V7, V15)
-    for path, value in sorted(osstate.OUTSIDE_FILES.items()):
-        inputs[f"file:{path}"] = value
-    if osstate.NATIVE_OUTSIDE:
-        inputs["native"] = "loaded outside any test: " + ",".join(sorted(osstate.NATIVE_OUTSIDE))
     return inputs
 
 
+def outside_fields(files=(), env=(), not_proven=()) -> dict:
+    """The header fields of what the run did outside any test (docs/VERIFY-CONTRACT.md section 1): the files it read
+    (module scope, conftest, a dependency at import: R-055 V3), the variables it read (R-054 N2) and the uncontrolled
+    sources it used (a CI-volatile or proxy variable, a native library loaded through ctypes: R-055 V1 V2 V7 V15).
+    ``files`` / ``env`` / ``not_proven``: the xdist workers' (plugin._controller_meta)."""
+    fl = {(p, v) for p, v in osstate.OUTSIDE_FILES.items()}
+    for f in files:
+        fl.update(f.items() if isinstance(f, dict) else f)
+    return {
+        "files_read_outside_tests": [{"path": p, "digest": v} for p, v in sorted(fl)],
+        "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env)),
+        "not_proven_outside_tests": sorted({f"native:{n}" for n in osstate.NATIVE_OUTSIDE}
+                                           | set(envobs.NOT_PROVEN_OUTSIDE).union(*not_proven)),
+    }
+
+
 def late_inputs() -> dict:
-    """What the run read outside any test until its end (the footer: the verifier merges it with the header's)."""
-    inputs = {f"file:{p}": v for p, v in sorted(osstate.OUTSIDE_FILES.items())}
-    if osstate.NATIVE_OUTSIDE:
-        inputs["native"] = "loaded outside any test: " + ",".join(sorted(osstate.NATIVE_OUTSIDE))
-    return {"env_read_outside_tests": sorted(envobs.OUTSIDE), "inputs": inputs}
+    """What the run did outside any test until its end (the footer `late`: same field names as the header, the
+    verifier merges them, R-055 V12)."""
+    return outside_fields()
 
 
 _CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)
@@ -576,7 +584,7 @@ def code_inputs(extra: list | None = None) -> dict:
     code, deps = code_files()
     for c, d in extra or []:
         code, deps = sorted(set(code) | set(c)), sorted(set(deps) | set(d))
-    dig = lambda xs: _core.digest("\n".join(xs).encode("utf-8", "surrogateescape"))[:16] + f" ({len(xs)} files)"
+    dig = lambda xs: f"{len(xs)} files " + _core.digest("\n".join(xs).encode("utf-8", "surrogateescape"))[:16]
     return {"code": dig(code), "deps": dig(deps)}
 
 
@@ -911,7 +919,7 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     meta["env_reads_recorded"] = "env" in cfg.controls
     # the variables read outside any test before the trace opened (module scope, conftest, plugins at import):
     # read by every test as far as the verifier knows (R-054 N2)
-    meta["env_read_outside_tests"] = sorted(envobs.OUTSIDE)
+    meta.update(outside_fields())
     return meta
 
 

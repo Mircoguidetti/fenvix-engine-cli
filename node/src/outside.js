@@ -15,6 +15,7 @@ const sites = require('./sites');
 const native = require('./native');
 
 const FDS = new Map(); // fd -> normalized path, for descriptors of outside files opened by the test
+const ENV_LOADED = new Set(); // variables set by process.loadEnvFile (not run inputs)
 
 function outsidePath(p) {
   if (typeof p === 'number') return FDS.get(p) || null;
@@ -37,50 +38,83 @@ function byTest() {
   return STATE.quiet(() => sites.resolve()) !== null;
 }
 
-/** A read outside any test (module scope, a hook, a dependency at import) by the project's own code. */
-function outsideTest() {
-  if (STATE.testId !== null || STATE.quietDepth > 0) return false;
-  if (!STATE.config || !STATE.config.sites) return true;
-  return STATE.quiet(() => sites.resolve()) !== null;
-}
-
-/** <run dir>/<kind>/<pid>.txt, one `key\tvalue` line: read by src/session.js runInputs (run inputs of every test). */
-function noteRun(kind, key, value) {
-  let dir;
-  try { dir = require('./controls').cfg().dir; } catch { return; }
-  if (!dir) return;
-  STATE.quietDepth++;
-  try {
-    fs.mkdirSync(path.join(dir, kind), { recursive: true });
-    fs.appendFileSync(path.join(dir, kind, `${process.pid}.txt`), `${key}\t${value}\n`);
-  } catch { /* the run directory is gone */ } finally { STATE.quietDepth--; }
-}
-
-/** A file read outside any test: a run input `file:<path>` (R-055 V3). */
-function recordOutside(where, data) {
-  let bytes;
-  if (typeof data === 'string') bytes = Buffer.from(data);
-  else if (ArrayBuffer.isView(data)) bytes = Buffer.from(data.buffer, data.byteOffset, data.byteLength);
-  else return;
-  noteRun('filesout', where, `${bytes.length}:${native.digest(bytes)}`);
-}
-
-/** What a stat-family call tells the code: absent, a directory, or size and modification time (R-055 V6). */
-function statValue(p) {
-  return STATE.quiet(() => {
-    try {
-      const st = fs.statSync(p);
-      return st.isDirectory() ? '<dir>' : `${st.size}:${st.mtimeMs}`;
-    } catch { return '<absent>'; }
-  });
-}
-
-function record(where, data, n) {
+function contentDigest(data, n) {
   let bytes;
   if (typeof data === 'string') bytes = Buffer.from(data);
   else if (ArrayBuffer.isView(data)) bytes = Buffer.from(data.buffer, data.byteOffset + (n && n.offset || 0), n && n.length !== undefined ? n.length : data.byteLength);
-  else return;
-  STATE.record('fs', where.startsWith('<') ? 'fs.read.outside' : 'fs.read', `${where}|${bytes.length}:${native.digest(bytes)}`);
+  else return null;
+  return `${bytes.length}:${native.digest(bytes)}`;
+}
+
+function record(where, data, n) {
+  const d = contentDigest(data, n);
+  if (d === null) return;
+  STATE.record('fs', where.startsWith('<') ? 'fs.read.outside' : 'fs.read', `${where}|${d}`);
+}
+
+// Files read while no test runs (review R-055 V3: module scope of a test file, a setup file, a project module at
+// import, `process.loadEnvFile` at module scope): no test's event, so each (path, digest) goes to
+// <run dir>/filesout/<pid>.txt and the trace header lists them (`files_read_outside_tests`, src/session.js,
+// docs/VERIFY-CONTRACT.md); the verifier makes every test diverge when they differ. The module loader's own reads of
+// source files are not entries (`inputs.code` / `inputs.deps` cover them).
+const MODULE_LOADER = /\((?:node:)?internal\/modules\/|at (?:node:)?internal\/modules\//;
+const filesSeen = new Set();
+function byProjectOutside() {
+  if (STATE.testId !== null || STATE.quietDepth > 0) return false;
+  const c = STATE.config;
+  if (!c || !c.dir) return false;
+  const E = Error;
+  const prev = E.stackTraceLimit;
+  E.stackTraceLimit = 40;
+  let stack;
+  try { stack = String(new E().stack || ''); } finally { E.stackTraceLimit = prev; }
+  // the caller of the fs function (the first frame outside detjs): the module loader reading a source file, or code
+  if (MODULE_LOADER.test(stack.split('\n').slice(1).find((l) => !l.includes(sites.SHELL_DIR)) || '')) return false;
+  if (!c.sites) return true;
+  // the project's own code (a test file, a setup file, a project module): not a package's (the runner's caches, a
+  // transformer's files), whose reads are the same tool work in every run
+  const site = STATE.quiet(() => sites.resolve());
+  return site !== null && !site.startsWith('<');
+}
+function noteFile(where, digest) {
+  const key = `${where}\u0000${digest}`;
+  if (filesSeen.has(key)) return;
+  filesSeen.add(key);
+  STATE.quietDepth++;
+  try {
+    const dir = path.join(STATE.config.dir, 'filesout');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${JSON.stringify({ path: where, digest })}\n`);
+  } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
+}
+/** A read of `where` (bytes `data`): an event of the test, or an entry of the run when no test runs. */
+function onRead(where, data, n) {
+  if (!where) return;
+  if (byTest()) record(where, data, n);
+  else if (byProjectOutside()) { const d = contentDigest(data, n); if (d !== null) noteFile(where, d); }
+}
+
+// File metadata (review R-055 V6): existence, type and size seen by the test are `fs.stat` events
+// (docs/VERIFY-CONTRACT.md section 2: `<path>|missing` or `<path>|<type>`, ` size=<n>` for a file whose stat the test
+// got). Times are not part of the value: they are virtual and recorded by src/fstime.js.
+function typeOf(st) {
+  if (!st) return 'missing';
+  return st.isFile() ? 'file' : st.isDirectory() ? 'dir' : st.isSymbolicLink() ? 'link' : 'other';
+}
+function statValue(st, withSize) {
+  const t = typeOf(st);
+  return withSize && t === 'file' ? `${t} size=${st.size}` : t;
+}
+let realLstat = null;
+function probe(p) {
+  try { return STATE.quiet(() => realLstat(p, { throwIfNoEntry: false })) || null; } catch { return null; }
+}
+function onStat(p, value) {
+  if (typeof p === 'number') return;
+  const where = outsidePath(p);
+  if (!where) return;
+  if (byTest()) STATE.record('fs', 'fs.stat', `${where}|${value}`);
+  else if (byProjectOutside()) noteFile(where, `stat:${value}`);
 }
 
 function installProcess(patcher) {
@@ -89,68 +123,84 @@ function installProcess(patcher) {
   const w = (obj, name, make) => { const real = obj && obj[name]; if (typeof real === 'function') patcher.set(obj, name, make(real)); };
   w(fs, 'readFileSync', (real) => function readFileSync(p, ...a) {
     const r = real.call(this, p, ...a);
-    const o = outsidePath(p);
-    if (o && byTest()) record(o, r);
-    else if (o && outsideTest()) recordOutside(o, r);
+    if (STATE.quietDepth === 0) onRead(outsidePath(p), r);
     return r;
-  });
-  // existence, size and modification time of a file the code looks at (R-055 V6)
-  for (const name of ['existsSync', 'statSync', 'lstatSync']) {
-    w(fs, name, (real) => function stat(p, ...a) {
-      const r = real.call(this, p, ...a);
-      const o = typeof p === 'number' ? null : outsidePath(p);
-      if (o && (byTest() || outsideTest())) {
-        const v = statValue(p);
-        if (STATE.testId !== null) STATE.record('fs', 'fs.stat', `${o}|${v}`);
-        else noteRun('filesout', `stat:${o}`, v);
-      }
-      return r;
-    });
-  }
-  // process.loadEnvFile: the .env file is read in C++ (R-055 V16): its content is an input like a file read
-  if (typeof process.loadEnvFile === 'function' && !process.loadEnvFile.__detjs) {
-    const realLoad = process.loadEnvFile;
-    const load = function loadEnvFile(p, ...a) {
-      const file = p === undefined ? '.env' : p;
-      const o = outsidePath(file);
-      if (o && (byTest() || outsideTest())) {
-        let data = null;
-        STATE.quietDepth++;
-        try { data = fs.readFileSync(file); } catch { data = '<absent>'; } finally { STATE.quietDepth--; }
-        if (STATE.testId !== null) record(o, data); else recordOutside(o, data);
-      }
-      return realLoad.call(this, p, ...a);
-    };
-    Object.defineProperty(load, '__detjs', { value: true });
-    patcher.set(process, 'loadEnvFile', load);
-  }
-  // the dependency modules this process loaded (CommonJS): their identity is a run input `deps` (R-055 V5)
-  process.once('exit', () => {
-    let lines = [];
-    try {
-      lines = Object.keys(require('node:module')._cache || {})
-        .filter((f) => f.includes(`${path.sep}node_modules${path.sep}`) && !f.startsWith(sites.SHELL_DIR))
-        .map((f) => { try { const st = fs.statSync(f); return `${f}\t${st.size}:${st.mtimeMs}`; } catch { return null; } })
-        .filter(Boolean);
-    } catch { /* none */ }
-    for (const l of lines) { const [k, v] = l.split('\t'); noteRun('depsout', k, v); }
   });
   w(fs, 'readFile', (real) => function readFile(p, ...a) {
     const cb = a[a.length - 1];
-    const o = typeof cb === 'function' ? outsidePath(p) : null;
+    const o = typeof cb === 'function' && STATE.quietDepth === 0 ? outsidePath(p) : null;
     if (o && byTest()) {
       const id = STATE.testId;
       a[a.length - 1] = function done(e, data) { if (!e && STATE.testId === id) record(o, data); return cb.apply(this, arguments); };
+    } else if (o && byProjectOutside()) {
+      a[a.length - 1] = function done(e, data) { if (!e) { const d = contentDigest(data); if (d !== null) noteFile(o, d); } return cb.apply(this, arguments); };
     }
     return real.call(this, p, ...a);
   });
   w(fs.promises, 'readFile', (real) => async function readFile(p, ...a) {
-    const o = outsidePath(p);
+    const o = STATE.quietDepth === 0 ? outsidePath(p) : null;
     const mine = o && byTest();
+    const outside = o && !mine && byProjectOutside();
     const r = await real.call(this, p, ...a);
     if (mine) record(o, r);
+    else if (outside) { const d = contentDigest(r); if (d !== null) noteFile(o, d); }
     return r;
   });
+  // metadata (V6)
+  realLstat = fs.lstatSync;
+  w(fs, 'existsSync', (real) => function existsSync(p) {
+    const r = real.call(this, p);
+    if (STATE.quietDepth === 0 && typeof p !== 'number') onStat(p, r ? typeOf(probe(p)) : 'missing');
+    return r;
+  });
+  for (const n of ['statSync', 'lstatSync']) {
+    w(fs, n, (real) => function statSync(p, ...a) {
+      let r;
+      try { r = real.call(this, p, ...a); } catch (e) { if (STATE.quietDepth === 0) onStat(p, 'missing'); throw e; }
+      if (STATE.quietDepth === 0) onStat(p, r && typeof r.isFile === 'function' ? statValue(r, true) : 'missing');
+      return r;
+    });
+  }
+  w(fs, 'accessSync', (real) => function accessSync(p, ...a) {
+    try { real.call(this, p, ...a); } catch (e) { if (STATE.quietDepth === 0) onStat(p, 'missing'); throw e; }
+    if (STATE.quietDepth === 0) onStat(p, typeOf(probe(p)));
+  });
+  for (const n of ['stat', 'lstat', 'access']) {
+    w(fs, n, (real) => function stat(p, ...a) {
+      const cb = a[a.length - 1];
+      if (typeof cb === 'function' && STATE.quietDepth === 0 && typeof p !== 'number') {
+        const id = STATE.testId;
+        a[a.length - 1] = function done(e, st) {
+          if (STATE.testId === id) onStat(p, e ? 'missing' : n === 'access' ? typeOf(probe(p)) : statValue(st, true));
+          return cb.apply(this, arguments);
+        };
+      }
+      return real.call(this, p, ...a);
+    });
+    w(fs.promises, n, (real) => async function stat(p, ...a) {
+      const watch = STATE.quietDepth === 0 && typeof p !== 'number';
+      const id = STATE.testId;
+      let r;
+      try { r = await real.call(this, p, ...a); } catch (e) { if (watch && STATE.testId === id) onStat(p, 'missing'); throw e; }
+      if (watch && STATE.testId === id) onStat(p, n === 'access' ? typeOf(probe(p)) : statValue(r, true));
+      return r;
+    });
+  }
+  // process.loadEnvFile (V16): C++ reads the file; its bytes are a read like readFileSync's, and the variables it
+  // sets were no run input (src/controls.js records a digest of their values)
+  if (typeof process.loadEnvFile === 'function') {
+    const realLoad = process.loadEnvFile;
+    patcher.set(process, 'loadEnvFile', function loadEnvFile(p = '.env') {
+      let bytes = null;
+      try { bytes = STATE.quiet(() => fs.readFileSync(p)); } catch { /* the real call reports it */ }
+      const r = realLoad.call(this, p);
+      if (bytes) {
+        onRead(outsidePath(p), bytes);
+        try { for (const k of Object.keys(require('node:util').parseEnv(bytes.toString('utf8')))) ENV_LOADED.add(k); } catch { /* old Node */ }
+      }
+      return r;
+    });
+  }
   w(fs, 'openSync', (real) => function openSync(p, ...a) {
     const fd = real.call(this, p, ...a);
     const o = typeof p === 'number' ? null : outsidePath(p);
@@ -201,4 +251,4 @@ function installProcess(patcher) {
   });
 }
 
-module.exports = { installProcess, outsidePath };
+module.exports = { installProcess, outsidePath, ENV_LOADED };

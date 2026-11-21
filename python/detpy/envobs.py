@@ -82,6 +82,7 @@ def _make(base):
 # at import): no test's event, so the header lists them and the verifier counts them as read by every test
 # (R-054 N2); "*" when the environment was enumerated
 OUTSIDE: set = set()
+NOT_PROVEN_OUTSIDE: set = set()  # "env:<NAME>" read outside any test, no run input (R-055 V1, V2)
 
 
 def _infra_reader() -> bool:
@@ -106,7 +107,8 @@ _OWN_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 def _outside(name: str) -> None:
     if not _state.is_quiet() and not _infra_reader():
-        OUTSIDE.add(name)
+        # a CI-volatile or proxy variable is no run input: every test is NOT PROVEN (docs/VERIFY-CONTRACT.md 3)
+        (NOT_PROVEN_OUTSIDE.add(f"env:{name}") if _untracked(name) else OUTSIDE.add(name))
 
 
 def _untracked(name: str) -> bool:

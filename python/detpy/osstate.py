@@ -506,7 +506,7 @@ def _audit_sqlite(args) -> None:
 def _audit_dlopen(args) -> None:
     """``ctypes`` loads a native library: its C code reads files, the environment and the clock unobserved (R-055
     V7, V15). In a test: ``uncontrolled.native`` (never identical); outside one: every test is marked through the
-    header (``native_loaded_outside_tests``)."""
+    header (``not_proven_outside_tests``: ``native:<library>``)."""
     if not _ACTIVE or _state.is_quiet() or _real_getpid() != _SESSION_PID:
         return
     try:
@@ -599,19 +599,19 @@ def _note_stat(op, path, res) -> None:
         if _plugin_site(depth):
             return
         asked = _stat_question()
+        # docs/VERIFY-CONTRACT.md section 2: `<path>|missing` or `<path>|<type>`, plus what the call returns of size
+        # and modification time (an exists-style call: the type only)
         if res is None:
-            value = "<absent>"
-        elif _stat.S_ISDIR(res.st_mode):
-            value = "<dir>"
-        elif asked == "exists":  # os.path.exists / isfile / Path.exists...: what the caller gets is the kind
-            value = f"{_stat.S_IFMT(res.st_mode):o}"
-        elif asked == "size":
-            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_size}"
-        elif asked == "mtime":
-            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_mtime_ns}"
+            value = "missing"
         else:
-            value = f"{_stat.S_IFMT(res.st_mode):o} {res.st_size} {res.st_mtime_ns}"
-        _state.record("fs", op, f"{_sites.norm_path(p)} {value}", depth)
+            fmt = _stat.S_IFMT(res.st_mode)
+            value = {_stat.S_IFREG: "file", _stat.S_IFDIR: "dir", _stat.S_IFLNK: "link"}.get(fmt, "other")
+            if value != "dir" and asked != "exists":
+                if asked in ("", "size"):
+                    value += f" size={res.st_size}"
+                if asked in ("", "mtime"):
+                    value += f" mtime_ns={res.st_mtime_ns}"
+        _state.record("fs", "fs.stat", f"{_sites.norm_path(p)}|{value}", depth)
     except Exception:  # never break the code under test
         pass
     finally:

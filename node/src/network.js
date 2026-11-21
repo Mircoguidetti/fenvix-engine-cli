@@ -1039,22 +1039,74 @@ function installDgram(patcher) {
     let port;
     let address;
     if (a.length >= 3 && typeof a[0] === 'number' && typeof a[1] === 'number' && !(typeof msg === 'string')) { port = a[2]; address = a[3]; } else { port = a[0]; address = a[1]; }
-    if (port === undefined || port === null) return realSend.call(this, msg, ...rest); // connected socket: checked at connect
-    const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
-    if (!POLICY.external(host, port)) {
-      // a datagram to a local or allowed endpoint: its answers are not this run's (R-055 V8): never identical
-      if (STATE.testId !== null && STATE.quietDepth === 0) STATE.record('other', 'uncontrolled.net', `live endpoint ${host}:<port> (udp)`);
+    if (port === undefined || port === null) { // connected socket: checked at connect; its peer is the connect's
+      if (this[UDP_PEER]) udpSent(this[UDP_PEER][0], this[UDP_PEER][1], msg, a);
       return realSend.call(this, msg, ...rest);
     }
+    const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
+    if (!POLICY.external(host, port)) { udpSent(host, port, msg, a); return realSend.call(this, msg, ...rest); }
     return refuse(this, POLICY.hostname(host), port, cb);
   });
   patcher.set(P, 'connect', function connect(port, address, cb) {
     if (typeof address === 'function') { cb = address; address = undefined; }
     if (POLICY === null) return realConnect.call(this, port, address, cb);
     const host = address === undefined || address === null ? (this.type === 'udp6' ? '::1' : '127.0.0.1') : String(address);
-    if (!POLICY.external(host, port)) return realConnect.call(this, port, address, cb);
+    if (!POLICY.external(host, port)) { this[UDP_PEER] = [host, port]; return realConnect.call(this, port, address, cb); }
     return refuse(this, POLICY.hostname(host), port, cb);
   });
+  // datagrams a test receives from a peer it sent to
+  const realEmit = P.emit;
+  patcher.set(P, 'emit', function emit(ev, msg, rinfo, ...rest) {
+    if (ev === 'message' && rinfo && STATE.testId !== null) udpRecv(rinfo.address, rinfo.port, msg);
+    return realEmit.call(this, ev, msg, rinfo, ...rest);
+  });
+  STATE.onTestStart.push(() => { UDP.clear(); });
+  STATE.onTestEnd.push(() => {
+    // one `net.stream` per UDP peer, in the order of first use (docs/VERIFY-CONTRACT.md section 2, review R-055 V8)
+    const dig = (d) => `${d.n}:${d.h.copy().digest('hex').slice(0, 16)}`;
+    for (const [label, e] of UDP) STATE.recordAt('net', 'net.stream', e.site, `udp ${label} sent=${dig(e.send)} recv=${dig(e.recv)}`);
+    UDP.clear();
+  });
+}
+
+// UDP to a live local endpoint (review R-055 V8): like a local TCP connection, a `net.connect` event when the test
+// first sends to a peer, and at its end a `net.stream` with the digests of the datagrams sent and received
+const UDP = new Map(); // `<host>:<port label>` -> { site, send, recv }
+const UDP_PEER = Symbol('detjs.udpPeer');
+function udpEntry(host, port, create) {
+  const label = `${host}:${portLabel(port)}`;
+  let e = UDP.get(label);
+  if (!e && create) {
+    const site = siteHere();
+    if (site === null) return null; // the runner's own datagrams
+    e = { site, send: newDir(), recv: newDir() };
+    UDP.set(label, e);
+    STATE.record('net', 'net.connect', `${label} udp local`);
+  }
+  return e || null;
+}
+function udpBytes(msg, a) {
+  if (typeof msg === 'string') return Buffer.from(msg);
+  if (Array.isArray(msg)) return Buffer.concat(msg.map((m) => (typeof m === 'string' ? Buffer.from(m) : Buffer.from(m.buffer, m.byteOffset, m.byteLength))));
+  if (ArrayBuffer.isView(msg)) {
+    const b = Buffer.from(msg.buffer, msg.byteOffset, msg.byteLength);
+    return a.length >= 2 && typeof a[0] === 'number' && typeof a[1] === 'number' ? b.subarray(a[0], a[0] + a[1]) : b;
+  }
+  return Buffer.alloc(0);
+}
+function udpSent(host, port, msg, a) {
+  if (STATE.testId === null || STATE.quietDepth > 0) return;
+  const e = udpEntry(host, port, true);
+  if (!e) return;
+  const b = udpBytes(msg, a);
+  e.send.n += b.length;
+  e.send.h.update(b);
+}
+function udpRecv(host, port, msg) {
+  const e = udpEntry(host, port, false);
+  if (!e || !Buffer.isBuffer(msg)) return;
+  e.recv.n += msg.length;
+  e.recv.h.update(msg);
 }
 
 /**

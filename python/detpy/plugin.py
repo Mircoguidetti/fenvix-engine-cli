@@ -1070,6 +1070,7 @@ class _DetSession(_Outcomes):
             # cold in the first -n run of a cache) lays out no memory a test sees. Review P1 finding 11: counting it
             # made the first -n run after any serial run fully divergent
             _level0.REWRITE["cold"] = 0
+        outs = list(S.controller.workeroutput.values()) if S.controller is not None else []
         if S.controller is not None:  # the workers imported the tests (R-055 V4, V5)
             _level0._CODE_EXTRA[:] = [tuple(o["detpy_code_files"]) for o in S.controller.workeroutput.values()
                                       if o.get("detpy_code_files")]
@@ -1085,14 +1086,13 @@ class _DetSession(_Outcomes):
             "runtime": platform.python_implementation(), "runtime_version": platform.python_version(),
             # the run inputs the verifier compares (the workers inherit the controller's environment; their own
             # PYTEST_XDIST_* variables are engine-internal)
-            "inputs": {**_level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
-                       # files the workers read outside any test (module scope: the controller imports no test)
-                       **{f"file:{p}": v for o in (S.controller.workeroutput.values() if S.controller else [])
-                          for p, v in sorted((o.get("detpy_files_outside") or {}).items())}},
+            "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
             "env_reads_recorded": "env" in cfg.controls,
-            # what the workers read outside any test, and what the controller did (R-054 N2)
-            "env_read_outside_tests": sorted(set(_level0.envobs.OUTSIDE).union(
-                *[o.get("detpy_env_outside") or [] for o in (S.controller.workeroutput.values() if S.controller else [])])),
+            # what the workers did outside any test (module scope: the controller imports no test), and the
+            # controller (R-054 N2, R-055 V3)
+            **_level0.outside_fields(files=[o.get("detpy_files_outside") or {} for o in outs],
+                                     env=[o.get("detpy_env_outside") or [] for o in outs],
+                                     not_proven=[o.get("detpy_not_proven_outside") or [] for o in outs]),
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):
@@ -1143,12 +1143,14 @@ class _DetSession(_Outcomes):
             return
         s = rep["summary"]
         tr.write_line(f"compare with {rep['labels'][0]}: covered={s['stable']} not-covered={s['diverged']} "
-                      f"missing={s['missing']} outcome-unstable={s['outcome_unstable']}"
+                      f"missing={s['missing']} not-proven={s.get('not_proven', 0)} "
+                      f"outcome-unstable={s['outcome_unstable']}"
                       f"{'' if s['order_identical'] else ' (ORDER DIFFERS)'}")
         for t in rep["tests"]:
             d = t.get("divergence")
-            if d and t["status"] == "diverged":
-                tr.write_line(f"NOT COVERED by Level 0: {t['nodeid']} [{d['reason']}]", yellow=True)
+            if d and t["status"] in ("diverged", "not-proven"):
+                what = "NOT COVERED by Level 0" if t["status"] == "diverged" else "NOT PROVEN (uncontrolled source)"
+                tr.write_line(f"{what}: {t['nodeid']} [{d['reason']}]", yellow=True)
                 tr.write_line(f"    {d['description']}")
 
 
