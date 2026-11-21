@@ -4,9 +4,9 @@
  "repo": "documenso/documenso",
  "ref": "3462785230b2f1ab6d9b9e3d506100c917896eeb",
  "status": "running",
- "run_id": "44783946608",
- "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
- "setup_s": 336,
+ "run_id": "44904997963",
+ "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
+ "setup_s": 315,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -29,8 +29,8 @@
   "--project=license"
  ],
  "runs": [],
- "epoch": "2026-11-20T17:43:00Z",
- "measured_at": "2026-11-20T17:43:17Z",
+ "epoch": "2026-11-21T12:54:00Z",
+ "measured_at": "2026-11-21T12:54:15Z",
  "machine": "4 vCPU, Ubuntu 22.04.5 LTS",
  "hunt": {
   "seeds": 7,
@@ -46,24 +46,6 @@
       0,
       "timedOut",
       "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      1,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
       null
      ]
     ],
@@ -84,24 +66,6 @@
       "timedOut",
       "Tearing down \"context\" exceeded the test timeout of 60000ms.",
       null
-     ],
-     [
-      1,
-      "failed",
-      "TimeoutError: locator.click: Timeout 15000ms exceeded.",
-      null
-     ],
-     [
-      2,
-      "timedOut",
-      "Tearing down \"context\" exceeded the test timeout of 60000ms.",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
      ]
     ],
     "seed": null,
@@ -118,24 +82,6 @@
     "tried": [
      [
       0,
-      "failed",
-      "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
-      null
-     ],
-     [
-      1,
-      "failed",
-      "PrismaClientKnownRequestError:",
-      null
-     ],
-     [
-      2,
-      "failed",
-      "PrismaClientKnownRequestError:",
-      null
-     ],
-     [
-      3,
       "failed",
       "TimeoutError: frame.goto: Timeout 30000ms exceeded.",
       null
@@ -158,24 +104,6 @@
       "passed",
       "",
       null
-     ],
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
      ]
     ],
     "seed": null,
@@ -195,24 +123,6 @@
       "passed",
       "",
       null
-     ],
-     [
-      1,
-      "passed",
-      "",
-      null
-     ],
-     [
-      2,
-      "passed",
-      "",
-      null
-     ],
-     [
-      3,
-      "passed",
-      "",
-      null
      ]
     ],
     "seed": null,
@@ -220,6 +130,18 @@
     "replay_errors": [],
     "fingerprints": null,
     "reproduced": false
+   }
+  ],
+  "runs": [
+   {
+    "label": "h-latency-s0",
+    "rc": 1,
+    "wall_s": 1174.9,
+    "counts": {
+     "failed": 4,
+     "passed": 18,
+     "timedOut": 4
+    }
    }
   ]
  }
