@@ -51,6 +51,11 @@ function splitPwFlags(argv) {
       env[PW_FLAGS[k]] = val === 'on' ? '1' : val === 'off' ? (k === '--det-server' ? '0' : 'off') : val;
       continue;
     }
+    if (k === '--det-cache-state') {
+      // the start state a caller restored before the run (the cache keys on it; nothing is restored here)
+      env.DETJS_PW_CACHE_STATE = path.resolve(v !== undefined ? v : argv[++i]);
+      continue;
+    }
     if (k === '--det-state') {
       env.DETJS_PW_STATE = path.resolve(v !== undefined ? v : argv[++i]);
       continue;
@@ -148,8 +153,20 @@ async function main(argv) {
     if (args[i] === '--reporter') { args[i + 1] = `${args[i + 1]},${reporter}`; hasReporter = true; }
     else if (args[i].startsWith('--reporter=')) { args[i] = `${args[i]},${reporter}`; hasReporter = true; }
   }
-  // Point 3: DETJS_PW_WORKERS=N runs N Playwright workers on one schedule (the hub, hub.js); default one worker.
-  const nWorkers = Math.max(1, Number(process.env.DETJS_PW_WORKERS || 1));
+  // Point 3: `--workers N` (or -j N, or DETJS_PW_WORKERS=N) runs N Playwright workers on one schedule (the hub,
+  // hub.js); default one worker. A percentage (Playwright's "50%") is taken of the machine's cores.
+  let wantWorkers = process.env.DETJS_PW_WORKERS || null;
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    let v = null;
+    if (a === '--workers' || a === '-j') { v = args[i + 1]; args.splice(i, 2); i--; }
+    else if (a.startsWith('--workers=')) { v = a.slice(10); args.splice(i, 1); i--; }
+    if (v !== null) wantWorkers = v;
+  }
+  if (wantWorkers && String(wantWorkers).endsWith('%')) {
+    wantWorkers = Math.max(1, Math.floor((require('node:os').availableParallelism() * parseFloat(wantWorkers)) / 100));
+  }
+  const nWorkers = Math.max(1, Number(wantWorkers || 1) || 1);
   args.push(`--config=${wrapper}`, `--workers=${nWorkers}`, '--retries=0');
   let hub = null;
   if (nWorkers > 1 && pwEnv.DETJS_PW_LOCKSTEP !== '0') {
@@ -167,6 +184,7 @@ async function main(argv) {
     if (pwEnv[envName] !== undefined) replay.push(`${flag}=${pwEnv[envName] === '1' ? 'on' : pwEnv[envName] === '0' || pwEnv[envName] === 'off' ? 'off' : pwEnv[envName]}`);
   }
   if (cfg.index >= 0) replay.push(`--config=${path.relative(cwd, cfg.file)}`);
+  if (nWorkers > 1) replay.push(`--workers=${nWorkers}`); // the hub's schedule depends on the number of workers
   // Playwright options that create or shape the projects must be in the replay too (round 3, review R-011 H3):
   // actual runs `--browser=chromium` with a config that has no projects; the printed `--project=chromium` alone
   // matched no project, so the command ran no test.
@@ -183,6 +201,8 @@ async function main(argv) {
     ...pwEnv,
     DETJS_PW_REPORTER: hasReporter ? '' : reporter,
     DETJS_PW_REPLAY: JSON.stringify(replay),
+    DETJS_PW_NWORKERS: String(nWorkers),
+    DETJS_FS_REALDEP_RECORD: '0', // fstime.js: file ages are real-time values in app servers
     DETJS_PW_REPLAY_PW: JSON.stringify(replayPw),
     DETJS_PW_CWD: cwd,
     DETJS_PW_TRACE: runEnv.tracePath,
@@ -196,6 +216,32 @@ async function main(argv) {
   };
   if (process.env.DETJS_ROOT === undefined) env.DETJS_ROOT = root;
   env.PATH = binPath(cwd, env.PATH);
+  // --det-cache=DIR: the selection is reused when every input of its recorded run is unchanged (cache.js)
+  let cache = null;
+  if (opts.cache) {
+    const C = require('./cache');
+    const pc = new C.PwCache(opts.cache, cwd);
+    const stateFile = pwEnv.DETJS_PW_STATE || pwEnv.DETJS_PW_CACHE_STATE || null;
+    const st = C.stateKey(stateFile);
+    const key = pc.key({
+      root: cwd, selection: rest.filter((a) => !a.startsWith('--det')),
+      detjs: session.VERSION, playwright: version, node: process.version, platform: `${process.platform}-${process.arch}`,
+      seed: String(runEnv.cfg.seed), shuffle: !!runEnv.cfg.shuffle, epoch: opts.epoch, workers: nWorkers,
+      controls: Object.fromEntries(Object.entries(pwEnv).filter(([k2]) => k2 !== 'DETJS_PW_STATE' && k2 !== 'DETJS_PW_CACHE_STATE').sort()),
+      ls_env: Object.fromEntries(Object.entries(process.env).filter(([k2]) => /^DETJS_(LS|PW)_/.test(k2) && !/^DETJS_PW_(DIAG_DIR|INPUTS|TRACE|EXECUTABLE)$/.test(k2)).sort()),
+      state: st ? { digest: st.digest, saved: st.saved } : null,
+      env: C.envKey(process.env),
+    });
+    const verdict = opts.cacheVerify ? { miss: '--det-cache-verify: run anyway' } : pc.check(key);
+    cache = { pc, key, verdict, statePorts: st ? st.ports : [], C, opts };
+    if (verdict.hit) {
+      fs.rmSync(wrapper, { force: true });
+      if (hub) hub.close();
+      return reuseRun(cache, runEnv, cwd, opts);
+    }
+    process.stderr.write(`detjs: cache: selection not reused (${verdict.miss}); running it\n`);
+    env.DETJS_PW_INPUTS = path.join(runEnv.dir, 'inputs');
+  }
   process.stderr.write(`detjs ${session.VERSION}: Level 2 browser prototype; playwright ${version}; seed ${env.DETJS_SEED}${runEnv.cfg.shuffle ? ' (seeded order)' : ''}; epoch ${opts.epoch}; vtime=${env.DETJS_PW_VTIME || 'paced'}; net=${env.DETJS_PW_NET || 'on'}; server=${env.DETJS_PW_SERVER === '0' ? 'off' : 'on'}; workers=${nWorkers}\n`);
   let code;
   try {
@@ -204,6 +250,7 @@ async function main(argv) {
     fs.rmSync(wrapper, { force: true });
     if (hub) hub.close();
   }
+  if (cache) cacheAfterRun(cache, runEnv, cwd, code, env);
   // Keep the app servers' trace parts for diagnosis; drop the worker buckets.
   const parts = path.join(runEnv.dir, 'parts');
   if (fs.existsSync(parts) && fs.readdirSync(parts).length) {
@@ -223,6 +270,74 @@ async function main(argv) {
   return code;
 }
 
+function summaryPaths(cwd, opts) {
+  return {
+    receipts: path.resolve(cwd, opts.cacheReceipts || path.join('.detjs', 'receipts.jsonl')),
+    summary: path.resolve(cwd, opts.cacheSummary || path.join('.detjs', 'cache-summary.json')),
+  };
+}
+
+function writeSummary(cwd, opts, summary, receipts) {
+  const p = summaryPaths(cwd, opts);
+  fs.mkdirSync(path.dirname(p.summary), { recursive: true });
+  fs.writeFileSync(p.summary, `${JSON.stringify(summary, null, 1)}\n`);
+  fs.writeFileSync(p.receipts, receipts.map((r) => JSON.stringify(r)).join('\n') + (receipts.length ? '\n' : ''));
+}
+
+/** A cache hit: the recorded run stands for this one (trace, outcomes, exit code), with its receipt. */
+function reuseRun(cache, runEnv, cwd, opts) {
+  const { hit: e, receipt } = cache.verdict;
+  fs.mkdirSync(path.dirname(runEnv.tracePath), { recursive: true });
+  try { fs.copyFileSync(cache.pc.traceOf(e), runEnv.tracePath); } catch { /* the entry kept no trace */ }
+  fs.rmSync(runEnv.dir, { recursive: true, force: true });
+  const ids = Object.keys(e.outcomes);
+  const counts = {};
+  for (const o of Object.values(e.outcomes)) counts[o] = (counts[o] || 0) + 1;
+  const receipts = ids.map((id) => ({ nodeid: id, reused: true, outcome: e.outcomes[id], fingerprint: e.fingerprints[id], ...receipt }));
+  writeSummary(cwd, opts, { runner: 'playwright', level: 'L2-browser', unit: 'selection', reused: ids.length, ran: 0, outcomes: e.outcomes,
+    counts, entry: cache.key.id, receipt }, receipts);
+  process.stderr.write(`detjs: cache: selection reused with proof: ${ids.length} tests (${Object.entries(counts).map(([k, v]) => `${v} ${k}`).join(', ')}), `
+    + `recorded ${e.recorded_at}; ${receipt.compared.key_fields} key fields, ${receipt.compared.files} files and ${receipt.compared.dirs} directory listings unchanged\n`);
+  process.stderr.write(`detjs: trace ${path.relative(cwd, runEnv.tracePath)}\n`);
+  return e.exit_code === 0 ? 0 : 1;
+}
+
+/** After a run under --det-cache: record it when its inputs are complete, and write the summary. */
+function cacheAfterRun(cache, runEnv, cwd, code, env) {
+  const { pc, key, C } = cache;
+  const dirs = [env.DETJS_PW_INPUTS];
+  // app servers started outside the run with `detjs serve --det-cache=DIR` (still running)
+  const live = path.join(pc.dir, 'live');
+  let external = 0;
+  try {
+    for (const n of fs.readdirSync(live)) {
+      const pid = Number((/-(\d+)$/.exec(n) || [])[1]);
+      let alive = false;
+      try { process.kill(pid, 0); alive = true; } catch { /* gone */ }
+      if (alive) { dirs.push(path.join(live, n)); external++; }
+    }
+  } catch { /* none */ }
+  const inputs = pc.collect(dirs, { statePorts: cache.statePorts, browser: process.env.DETJS_PW_EXECUTABLE || null, externalServers: external });
+  const drop = (p) => /[\\/](?:test-results|playwright-report|blob-report|\.detjs)(?:[\\/]|$)/.test(p) || p.startsWith(pc.dir) || p.startsWith(require('node:os').tmpdir());
+  for (const p of [...inputs.files]) if (drop(p) && !p.startsWith(require('node:os').tmpdir())) inputs.files.delete(p);
+  for (const p of [...inputs.dirs]) if (drop(p)) inputs.dirs.delete(p);
+  const res = C.traceResults(runEnv.tracePath);
+  const n = Object.keys(res.outcomes).length;
+  let recorded = false;
+  if (!n) inputs.why.push('no test ran');
+  if (!inputs.why.length && !(cache.verdict.miss || '').startsWith('--det-cache-verify')) {
+    pc.record(key, inputs, { ...res, code, trace: runEnv.tracePath, run: process.env.GITHUB_RUN_ID || null });
+    recorded = true;
+  }
+  const receipts = Object.keys(res.outcomes).map((id) => ({ nodeid: id, reused: false, outcome: res.outcomes[id], fingerprint: res.fingerprints[id], why: cache.verdict.miss }));
+  writeSummary(cwd, cache.opts, { runner: 'playwright', level: 'L2-browser', unit: 'selection', reused: 0, ran: n,
+    outcomes: res.outcomes, recorded, not_cacheable: inputs.why, miss: cache.verdict.miss, entry: key.id,
+    inputs: { files: inputs.files.size, dirs: inputs.dirs.size, processes: inputs.roles, connections: inputs.conns, listens: inputs.listens } }, receipts);
+  process.stderr.write(recorded
+    ? `detjs: cache: recorded this selection (${n} tests; ${inputs.files.size} files, ${inputs.dirs.size} directory listings as inputs)\n`
+    : `detjs: cache: not recorded: ${inputs.why.join('; ')}\n`);
+}
+
 /** `detjs serve [--det options] -- command args`: an app server under the server controls. */
 async function serve(argv) {
   const sep = argv.indexOf('--');
@@ -234,11 +349,12 @@ async function serve(argv) {
   const root = process.env.DETJS_ROOT || process.cwd();
   const runEnv = session.prepare(opts, root, 'server');
   const env = {
-    ...process.env, ...pwEnv, DETJS_ROOT: root,
+    ...process.env, ...pwEnv, DETJS_ROOT: root, DETJS_FS_REALDEP_RECORD: '0',
     DETJS_DIR: path.join(root, '.detjs', 'serve'),
     NODE_OPTIONS: `${process.env.NODE_OPTIONS || ''} --require ${path.join(__dirname, 'boot.js')}`.trim(),
   };
   env.PATH = binPath(process.cwd(), env.PATH);
+  if (opts.cache) env.DETJS_PW_INPUTS = path.join(path.resolve(root, opts.cache), 'live', `serve-${process.pid}`);
   fs.rmSync(runEnv.dir, { recursive: true, force: true });
   fs.mkdirSync(path.join(env.DETJS_DIR, 'parts'), { recursive: true });
   return run(cmd[0], cmd.slice(1), env);

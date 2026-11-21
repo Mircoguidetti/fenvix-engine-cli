@@ -12,6 +12,10 @@ const LAUNCHERS = /^(npm|npm-cli|npx|npx-cli|pnpm|pnpm\.c?js|yarn|yarn\.c?js|cor
 
 function role() {
   if (process.env.DETJS !== '1') return null;
+  // Off-thread module loader hooks (`--import=tsx`, module.register) run in a worker thread that gets the same
+  // --require preloads: controls there would start a second coordinator in the same process (with several Playwright
+  // workers it took over the worker's place at the hub: MEASURED locally, documenso with 2 workers hung at T=20 ms).
+  if (!require('node:worker_threads').isMainThread) return null;
   const main = process.argv[1] || '';
   if (process.env.TEST_WORKER_INDEX !== undefined || /[\\/]playwright[\\/]lib[\\/](worker|common)[\\/]/.test(main)) return 'worker'; // child process entry (1.3x: common/process.js)
   // The runner and its helpers (loader, test server) live in node_modules; an app whose own path
@@ -27,5 +31,9 @@ function role() {
 }
 
 const r = role();
+// --det-cache: every Node process of the run records its inputs (inputs.js), the launchers and the runner too
+if (process.env.DETJS_PW_INPUTS && process.env.DETJS === '1') {
+  try { require('./inputs').install(r || (require('node:worker_threads').isMainThread ? 'runner' : 'thread')); } catch (e) { process.stderr.write(`detjs: input recording failed: ${e.message}\n`); }
+}
 if (r === 'worker') require('./worker');
 else if (r === 'server') require('./server');

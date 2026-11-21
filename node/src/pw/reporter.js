@@ -65,8 +65,9 @@ class DetjsReporter {
       runner: 'playwright',
       runner_version: this.pwVersion,
       level: 'L2-browser',
-      serial: true,
-      isolation: 'playwright --workers=1, fullyParallel off',
+      serial: Number(process.env.DETJS_PW_NWORKERS || 1) <= 1,
+      workers: Number(process.env.DETJS_PW_NWORKERS || 1),
+      isolation: `playwright --workers=${Number(process.env.DETJS_PW_NWORKERS || 1)}${Number(process.env.DETJS_PW_NWORKERS || 1) > 1 ? ' on one schedule (hub)' : ''}, fullyParallel off`,
     };
     rec.open(this.trace, JSON.stringify(meta), ids);
     let i = 0;
