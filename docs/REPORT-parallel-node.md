@@ -231,12 +231,16 @@ is true for Jest suites. It needs an owner.
 
 ## 5. Exam status (JS-07, frozen at `claude/exam`, read and not modified)
 
-| check | what it requires | result |
+Run with the exam's own harness, not a hand-written equivalent: `exam/` extracted from `claude/exam` with
+`git archive` and the sha256 of `rows_js.py`, `lib.py`, `fam.py`, `projects.py` and `run.py` checked against the
+branch before running, then `python3 run.py --rows JS-07`. **3 of 4 checks pass.** Verbatim verdicts:
+
+| check | result | the harness's own line |
 |---|---|---|
-| `JS-07.kept` | plain `--det` Vitest run uses >= 2 workers | **PASS** (4 lanes; the first probe file saw 2 files running, was 1) |
-| `JS-07.det2` | two `--det` runs verify identical, outcomes equal a plain run's | **PASS** (ufo, `IDENTICAL`, 471 tests, 0 not proven) |
-| `JS-07.cache2` | second `--det-cache` run reuses >= 50% of passing tests with proof | **PASS** (471 of 471 reused, ran 0 files) |
-| `JS-07.jest-kept` | `jest --ci --det -w 2` keeps 2 workers **and** `rc == 0` | **PARTIAL** — see below |
+| `JS-07.kept` | **PASS** | `files announced while the first file ran: 2 (per file: [2, 3, 4, 4]); engine says serial: False` |
+| `JS-07.det2.ufo` | **PASS** | `summary={"runs": 2, "tests": 471, "stable": 471, "diverged": 0, "missing": 0, "outcome_unstable": 0, "order_identical": true, "reasons": {}, "not_proven": 0}` |
+| `JS-07.cache2.ufo` | **PASS** | `run 2 reused 471 (needed >= 235 of 471 passing); outcomes vs plain: 13 files / 471 tests, differing files 0 []` |
+| `JS-07.jest-kept` | **FAIL** | `rc=1; engine forces serial/in-band: False` |
 
 `JS-07.jest-kept`: the parallelism half is correct and **MEASURED** — `parallel execution in 2 lanes with a fixed
 plan (-w)`, and the check's `in ?band|serial|one worker` pattern does not match the output. The check also requires
@@ -244,14 +248,23 @@ plan (-w)`, and the check's `in ?band|serial|one worker` pattern does not match 
 7 more need a real `TZ`. No test was skipped, quarantined or weakened to change this; it needs a runner with full
 ICU and a time zone set, which the exam machines may well have.
 
-Two notes on the frozen exam, for whoever owns it:
+`JS-07.jest-kept` looks **unpassable as written on this runtime, whatever the engine does**, which is a matter for
+whoever owns the exam rather than for this block: the check asserts `rc == 0` over luxon's whole suite, and 4 of
+luxon 3.5.0's tests fail under **plain jest 29 with no engine at all** on Node 22 with ICU 78.3 (output calendar,
+`numberingSystem`, non-breakable spaces — luxon's expectations predate this ICU). An older Node or ICU would
+presumably pass. Nothing in the engine can make those 4 green, and nothing should.
 
-- **`JS-07.kept` passes on a clean clone and fails on a re-run.** **MEASURED**: the probe reports 2 concurrent files
-  on a fresh plan state and 1 on every run after. The probe's four files all append to one `EXAM_OUT` file, which is
-  a genuine cross-lane write-write hazard; the engine learns it and puts them in a single lane from then on
-  (limit P2, §6). Correct engine behaviour, order-dependent check.
+Two further notes on the frozen exam, for whoever owns it:
+
 - The exam's JS-07 contains **no node:test shard or `--test-concurrency` check**, though the brief asks for them.
-  node:test parallel was built and proven anyway (§2), but the exam does not examine it.
+  node:test parallel and shards were built and proven anyway (§2), but the exam does not examine them.
+- `JS-07.kept` is safe from limit P2 (§6), though not by its own doing. The probe's four files all append to one
+  `EXAM_OUT` file, a genuine cross-lane write-write hazard that the engine learns and then serializes, so the probe
+  reports 2 concurrent files on a fresh plan state and 1 on every subsequent run **in the same project directory**
+  (**MEASURED**). The check escapes this because `lib.Ctx.clone()` does `shutil.rmtree` on the project directory
+  once per `run.py` process, which takes `.detjs/plan-state.json` with it. Confirmed: a second `run.py --only
+  JS-07.kept` against the same `--work` directory passes identically. So the check is reliable, and the underlying
+  engine behaviour in P2 is still worth a decision.
 
 ## 6. Blockers and limits
 
