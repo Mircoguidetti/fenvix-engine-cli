@@ -4,9 +4,9 @@
  "repo": "sveltejs/kit",
  "ref": "7a1296872cde5e807832f7714c635df956d37643",
  "status": "ok",
- "run_id": "44904997963",
- "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
- "setup_s": 30,
+ "run_id": "44909741100",
+ "engine_commit": "cb8849a5620959c299160a0c2409fcd6c73a258a",
+ "setup_s": 29,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -26,8 +26,8 @@
   "test/playwright"
  ],
  "runs": [],
- "epoch": "2026-11-21T12:48:00Z",
- "measured_at": "2026-11-21T12:48:27Z",
+ "epoch": "2026-11-21T13:46:00Z",
+ "measured_at": "2026-11-21T13:46:36Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -64,16 +64,16 @@
     ""
    ],
    "walls": [
-    13.9,
-    13.8,
-    13.8,
-    13.8,
-    13.8,
-    13.8,
-    13.8,
-    13.8,
-    13.9,
-    13.8
+    18.0,
+    18.1,
+    18.4,
+    17.4,
+    18.4,
+    17.5,
+    18.4,
+    18.4,
+    18.6,
+    18.2
    ],
    "stats": [
     null,
@@ -115,17 +115,17 @@
        "s": "other",
        "o": "server.fingerprint",
        "at": "",
-       "v": "http://localhost:5301 887384551f6dce9287e82a894054881d 8079"
+       "v": "http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612"
       },
       "event_b": {
        "t": 0,
        "s": "other",
        "o": "server.fingerprint",
        "at": "",
-       "v": "http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079"
+       "v": "http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612"
       },
       "reason": "other",
-      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 887384551f6dce9287e82a894054881d 8079\" vs \"http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079\""
+      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612\" vs \"http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612\""
      }
     }
    ],
@@ -144,17 +144,17 @@
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:5301 887384551f6dce9287e82a894054881d 8079"
+      "v": "http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612"
      },
      "event_b": {
       "t": 0,
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079"
+      "v": "http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612"
      },
      "reason": "other",
-     "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 887384551f6dce9287e82a894054881d 8079\" vs \"http://localhost:5301 06a17348db078e8d798dabb42abfbe97 8079\""
+     "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 367ab7f668d69cf849b182ac0741d549 5612\" vs \"http://localhost:5301 09ea91492e7f582c2dad3fb4e43d9895 5612\""
     }
    }
   },
@@ -192,16 +192,16 @@
     ""
    ],
    "walls": [
-    116.3,
-    116.4,
-    119.5,
-    119.5,
-    116.3,
-    117.1,
-    122.0,
-    119.5,
-    119.8,
-    119.4
+    124.4,
+    126.4,
+    129.0,
+    125.4,
+    125.1,
+    124.6,
+    128.9,
+    125.4,
+    127.0,
+    125.5
    ],
    "stats": [
     null,
@@ -243,17 +243,17 @@
        "s": "other",
        "o": "server.fingerprint",
        "at": "",
-       "v": "http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277"
+       "v": "http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809"
       },
       "event_b": {
        "t": 0,
        "s": "other",
        "o": "server.fingerprint",
        "at": "",
-       "v": "http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278"
+       "v": "http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814"
       },
       "reason": "other",
-      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277\" vs \"http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278\""
+      "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809\" vs \"http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814\""
      }
     },
     {
@@ -266,11 +266,11 @@
     {
      "key": "client.test.js::data-sveltekit attributes::data-sveltekit-preload-data network failure does not trigger navigation [chromium-dev]",
      "status": "diverged",
-     "distinct_fingerprints": 2,
+     "distinct_fingerprints": 3,
      "runs": 10,
      "divergence": {
       "run_a": 0,
-      "run_b": 9,
+      "run_b": 3,
       "index": 4,
       "window": null,
       "event_a": {
@@ -285,10 +285,10 @@
        "s": "other",
        "o": "server.fingerprint",
        "at": "",
-       "v": "http://localhost:5301 7168492f62cdc8871122eeec9dbb4f8c 176"
+       "v": "http://localhost:5301 4cf07c4fa57645427db311a9226f90d2 179"
       },
       "reason": "other",
-      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 36338b55cb9d3fef710608f12793de54 175\" vs \"http://localhost:5301 7168492f62cdc8871122eeec9dbb4f8c 176\""
+      "description": "event #4: server.fingerprint @  returned different values: \"http://localhost:5301 36338b55cb9d3fef710608f12793de54 175\" vs \"http://localhost:5301 4cf07c4fa57645427db311a9226f90d2 179\""
      }
     }
    ],
@@ -307,20 +307,20 @@
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277"
+      "v": "http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809"
      },
      "event_b": {
       "t": 0,
       "s": "other",
       "o": "server.fingerprint",
       "at": "",
-      "v": "http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278"
+      "v": "http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814"
      },
      "reason": "other",
-     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 ae04b50c644d551495336b1e854b5caf 9277\" vs \"http://localhost:5301 b35a109e7f2ee5d6a111af4557267b31 9278\""
+     "description": "event #31: server.fingerprint @  returned different values: \"http://localhost:5301 f2a97cb1675d4a230fb6efe3bc0b7789 6809\" vs \"http://localhost:5301 9dda3cf19d6ac58a2f16efd78b36d3f5 6814\""
     }
    }
   }
  ],
- "elapsed_min": 22.7
+ "elapsed_min": 25.0
 }
