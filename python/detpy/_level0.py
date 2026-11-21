@@ -497,6 +497,7 @@ def run_inputs(net_mode, runner: str, runner_version) -> dict:
     closed = "net" in c and not cfg.record_net
     inputs.update(env_inputs(skip=PROXY_ENV if closed else ()))
     inputs.update(code_inputs(_CODE_EXTRA))
+    _HEADER["code"] = {k: inputs[k] for k in ("code", "deps")}
     inputs["argv"] = argv_input()
     return inputs
 
@@ -507,20 +508,43 @@ def outside_fields(files=(), env=(), not_proven=()) -> dict:
     sources it used (a CI-volatile or proxy variable, a native library loaded through ctypes: R-055 V1 V2 V7 V15).
     ``files`` / ``env`` / ``not_proven``: the xdist workers' (plugin._controller_meta)."""
     fl = {(p, v) for p, v in osstate.OUTSIDE_FILES.items()}
+    fl |= {(p, f"stat:{v}") for p, v in osstate.OUTSIDE_STATS.items()}
     for f in files:
         fl.update(f.items() if isinstance(f, dict) else f)
     return {
         "files_read_outside_tests": [{"path": p, "digest": v} for p, v in sorted(fl)],
-        "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env)),
+        # + the runner's own namespace: pytest reads its PYTEST_* variables (PYTEST_ADDOPTS, PYTEST_PLUGINS, ...)
+        # before detpy is installed, where no read is observed
+        "env_read_outside_tests": sorted(set(envobs.OUTSIDE).union(*env, _runner_env_names())),
         "not_proven_outside_tests": sorted({f"native:{n}" for n in osstate.NATIVE_OUTSIDE}
                                            | set(envobs.NOT_PROVEN_OUTSIDE).union(*not_proven)),
     }
 
 
+def _runner_env_names() -> set:
+    return {k for k in dict.keys(os.environ._data) if isinstance(k, bytes)
+            for k in [os.fsdecode(k)] if k.startswith("PYTEST_") and not k.startswith(ENGINE_ENV_PREFIXES)} \
+        if isinstance(getattr(os.environ, "_data", None), dict) else set()
+
+
 def late_inputs() -> dict:
     """What the run did outside any test until its end (the footer `late`: same field names as the header, the
-    verifier merges them, R-055 V12). Empty fields are left out: an empty dict when nothing was read."""
-    return {k: v for k, v in outside_fields().items() if v}
+    verifier merges them, R-055 V12): only what the header does not already say, an empty dict when nothing was
+    read after it. A project module first imported inside a test (R-055) changes ``code`` / ``deps``: recomputed."""
+    now, then = outside_fields(), _HEADER.get("outside") or {}
+    late = {}
+    for k, v in now.items():
+        old = then.get(k) or []
+        new = [x for x in v if x not in old]
+        if new:
+            late[k] = new
+    inputs = {k: v for k, v in code_inputs(_CODE_EXTRA).items() if (_HEADER.get("code") or {}).get(k) != v}
+    if inputs:
+        late["inputs"] = inputs
+    return late
+
+
+_HEADER: dict = {}  # what the trace header said (late_inputs: the footer carries only what is new)
 
 
 _CODE_EXTRA: list = []  # xdist controller: the workers' (code, deps) lists (plugin._controller_meta)
@@ -531,15 +555,43 @@ ARGV_PATHS = ("--det-trace", "--det-outcomes", "--det-order", "--det-plan", "--d
               "--junit-xml", "--result-log", "--resultlog")
 
 
-ARGV_PARALLEL = ("-n", "--numprocesses", "--dist", "--maxprocesses", "--max-worker-restart", "-p")
+ARGV_PARALLEL = ("-n", "--numprocesses", "--dist", "--maxprocesses", "--max-worker-restart")
+
+
+def effective_args() -> list:
+    """The whole effective command line, in pytest's order: the ini ``addopts``, ``PYTEST_ADDOPTS``, then the
+    invocation's arguments (R-055: a plugin switch, an option given only through the environment or the ini file
+    changes what runs as much as one typed on the command line)."""
+    import shlex
+
+    try:
+        from . import plugin
+
+        config = plugin.S.config
+    except Exception:
+        config = None
+    if config is None:
+        return list(sys.argv[1:])
+    args = list(config.invocation_params.args)
+    env = os.environ.get("PYTEST_ADDOPTS")
+    if env:
+        try:
+            args = [*shlex.split(env), *args]
+        except ValueError:
+            args = [env, *args]
+    try:
+        args = [*config.getini("addopts"), *args]
+    except (ValueError, KeyError):
+        pass
+    return [str(a) for a in args]
 
 
 def argv_input() -> str:
-    """The command line's options (R-055 V10: a test can read sys.argv; runner options change what runs), without
-    the per-run output paths (traces, outcomes, the order file: their content is an input of its own), the parallel
-    options (the plan is its own input) and plugin switches."""
+    """The effective command line (R-055 V10: a test can read sys.argv; runner options, plugin switches, addopts and
+    PYTEST_ADDOPTS change what runs), without the per-run output paths (traces, outcomes, the order file: their content
+    is an input of its own) and the parallel options (the plan is its own input)."""
     out, skip = [], False
-    for a in sys.argv[1:]:
+    for a in effective_args():
         if skip:
             skip = False
             continue
@@ -549,8 +601,7 @@ def argv_input() -> str:
         if a in ARGV_PARALLEL:
             skip = True
             continue
-        if a.startswith(tuple(f"{x}=" for x in ARGV_PARALLEL if x.startswith("--"))) or (a.startswith("-n") and a[2:].isdigit()) \
-                or (a.startswith("-p") and len(a) > 2):
+        if a.startswith(tuple(f"{x}=" for x in ARGV_PARALLEL if x.startswith("--"))) or (a.startswith("-n") and a[2:].isdigit()):
             continue
         out.append(a)
     return _core.digest("\0".join(out).encode("utf-8", "surrogateescape"))[:16] + f" ({len(out)} args)"
@@ -920,6 +971,7 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     # the variables read outside any test before the trace opened (module scope, conftest, plugins at import):
     # read by every test as far as the verifier knows (R-054 N2)
     meta.update(outside_fields())
+    _HEADER["outside"] = outside_fields()
     return meta
 
 

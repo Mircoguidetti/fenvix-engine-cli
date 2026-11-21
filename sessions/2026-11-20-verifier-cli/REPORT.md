@@ -193,6 +193,33 @@ The attacks found five channels where verify said IDENTICAL although the test ob
 and Node reads of project files. The remaining gaps (C `getenv` in extensions, Python reads after the trace opened,
 the Node configuration's dependencies, Deno/Bun untested here, `sys.argv`/cwd on Python) are listed in the document.
 
+### Session closed mid-round: coordinator review of bf13934 (state at the last commit)
+
+Done (committed, targeted, MEASURED on CPython 3.12): `tests/test_review_r055_verifier.py` 24/24, which includes the
+five new cases (os.access, a stat at module scope, a module imported inside a test, a `-p` switch, PYTEST_ADDOPTS)
+and V14, made reliable with `PYTHONMALLOC=malloc_debug` in run 1 (maxrss 43916 vs 48580 KiB locally).
+- `os.access`: an `fs.stat` event (`osstate._access_observed`, rebound like stat).
+- A stat outside any test: `files_read_outside_tests` entry `stat:<value>` (`osstate.OUTSIDE_STATS`, xdist too).
+- `argv`: the effective command line (ini addopts + PYTEST_ADDOPTS + invocation args, `-p` included;
+  `_level0.effective_args`).
+- A variable read by pytest or a plugin outside a test counts (`envobs._reader_kind`); every PYTEST_* variable
+  present counts too, because pytest reads them before detpy is installed. The runner's enumerations do not count.
+- The footer `late` carries only what the header does not already say, plus `code` / `deps` recomputed when a
+  module was imported inside a test.
+- `_stat_question` walks past detpy's own frames instead of a fixed frame offset.
+
+Half-done: `tests/test_capture_rust.py::test_capture_sessions_match_reference` still fails ("session 1: stores
+differ"). Cause found: the reference capture (`tests/rust_hotpaths_ref/_ref_proofcache.py`, compiled under detpy's
+own file name by `_capref.py`) calls `os.path.exists` / `os.stat` from Python on files the test opens. The new
+`fs.stat` observer records those calls as the test's (`config.txt|file size=...` before the `fs.read`), and the Rust
+capture makes the same checks in C, which is not observed. The fingerprints differ, so the stores do. This is a stale
+reference, not a capture regression. A module marker did not work, because the reference's frames carry detpy's
+file name. Next step: have the reference call `osstate._real_stat` / run its checks under `_state.quiet()`, or make
+`_note_stat` skip calls whose nearest non-stdlib caller is a detpy frame that is not a pass-through wrapper. Then
+rerun the capture test and the R-055 file.
+
+Not done: `network._own_listener` matches by port only (minor, reported by the coordinator).
+
 ### R-055 integration with the Node session (docs/VERIFY-CONTRACT.md)
 
 The R-055 work was split by the coordinator: the Node session wrote `node/src` and the contract, this session the

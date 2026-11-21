@@ -85,9 +85,9 @@ OUTSIDE: set = set()
 NOT_PROVEN_OUTSIDE: set = set()  # "env:<NAME>" read outside any test, no run input (R-055 V1, V2)
 
 
-def _infra_reader() -> bool:
-    """The read outside a test comes from the runner's machinery (pytest, its plugins, detpy: the first frame past the
-    standard library), not from the project's code: not an input of the tests."""
+def _reader_kind() -> str:
+    """Who reads outside a test: ``"project"`` (the project's code), ``"runner"`` (pytest or a plugin: the first frame
+    past the standard library and detpy), or ``"engine"`` (detpy itself, or the standard library alone)."""
     import sys
 
     from . import _level0, _sites
@@ -97,18 +97,30 @@ def _infra_reader() -> bool:
         kind = _sites._classify(f.f_code.co_filename)[0]
         if kind != _sites._STDLIB and not f.f_code.co_filename.startswith(_OWN_DIR):
             top = str(f.f_globals.get("__name__") or "").split(".", 1)[0]
-            return kind == _sites._INFRA or top in _level0.INFRA_PACKAGES or top.startswith("pytest_")
+            infra = kind == _sites._INFRA or top in _level0.INFRA_PACKAGES or top.startswith("pytest_")
+            return "runner" if infra else "project"
         f = f.f_back
-    return True
+    return "engine"
+
+
+def _infra_reader() -> bool:
+    return _reader_kind() != "project"
 
 
 _OWN_DIR = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
 
 def _outside(name: str) -> None:
-    if not _state.is_quiet() and not _infra_reader():
+    if _state.is_quiet():
+        return
+    who = _reader_kind()
+    if who == "project":
         # a CI-volatile or proxy variable is no run input: every test is NOT PROVEN (docs/VERIFY-CONTRACT.md 3)
         (NOT_PROVEN_OUTSIDE.add(f"env:{name}") if _untracked(name) else OUTSIDE.add(name))
+    elif who == "runner" and name != "*":
+        # a variable pytest or a plugin reads changes what runs for every test (R-055): read by every test as far as
+        # the verifier knows. Its enumerations of the environment (a subprocess environment copy) are not.
+        OUTSIDE.add(name)
 
 
 def _untracked(name: str) -> bool:

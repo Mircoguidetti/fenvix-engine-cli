@@ -573,22 +573,47 @@ def _rebind_stat(patcher, name, wrapper) -> None:
                     pass
 
 
+def _access_observed(real):
+    """``os.access``: whether a path is there and usable is what the test learns (R-055, docs/VERIFY-CONTRACT.md
+    section 2: an ``fs.stat`` event, ``<path>|missing`` when access fails, else its type)."""
+    def access(path, mode, *args, **kwargs):
+        r = real(path, mode, *args, **kwargs)
+        if not kwargs.get("dir_fd") and not isinstance(path, int):
+            res = None
+            if r:
+                try:
+                    res = _real_stat(path)
+                except OSError:
+                    res = None
+            _note_stat("fs.access", path, res, "exists")
+        return r
+
+    access.__name__ = getattr(real, "__name__", "access")
+    access.__doc__ = getattr(real, "__doc__", None)
+    access.__wrapped__ = real
+    return access
+
+
+OUTSIDE_STATS: dict = {}  # path -> stat value, for metadata calls made outside any test (files_read_outside_tests)
+
+
 _EXISTS = frozenset(("exists", "lexists", "isfile", "isdir", "islink", "is_file", "is_dir", "is_symlink",
                      "is_fifo", "is_socket", "is_block_device", "is_char_device", "ismount", "samefile", "_is_dir"))
 
 
 def _stat_question() -> str:
-    """What the caller of os.stat asked (a few frames up, in genericpath / posixpath / pathlib): ``exists`` (the
-    kind only), ``size``, ``mtime``, or everything (a direct stat: st_size, st_mtime... all reach the code)."""
+    """What the caller of os.stat asked (a few frames up, in genericpath / posixpath / pathlib, or the cache's own
+    replacements of them): ``exists`` (the kind only), ``size``, ``mtime``, or everything (a direct stat: st_size,
+    st_mtime... all reach the code). detpy's own frames (this wrapper, the cache's wrappers, which differ between
+    its Python and Rust captures) are walked through, not counted: the answer depends on the caller only."""
     import sys
 
     try:
-        f = sys._getframe(3)
+        f = sys._getframe(1)
     except ValueError:
         return ""
-    for _ in range(4):
-        if f is None:
-            break
+    stdlib = 0
+    while f is not None and stdlib < 4:
         n = f.f_code.co_name
         if n in _EXISTS:
             return "exists"
@@ -596,7 +621,12 @@ def _stat_question() -> str:
             return "size"
         if n == "getmtime":
             return "mtime"
-        if not f.f_code.co_filename.startswith(_STDLIB_PREFIX):
+        fn = f.f_code.co_filename
+        if fn.startswith(_OWN):
+            pass
+        elif fn.startswith(_STDLIB_PREFIX) or fn.startswith("<frozen"):
+            stdlib += 1
+        else:
             break
         f = f.f_back
     return ""
@@ -605,9 +635,12 @@ def _stat_question() -> str:
 _STDLIB_PREFIX = tuple(d + os.sep for d in _sites._stdlib_dirs)
 
 
-def _note_stat(op, path, res) -> None:
+def _note_stat(op, path, res, asked=None) -> None:
     st = _state.STATE
-    if not _ACTIVE or st.nodeid is None or st.recorder is None or getattr(_tls, "busy", False) or _state.is_quiet():
+    if not _ACTIVE or getattr(_tls, "busy", False) or _state.is_quiet():
+        return
+    outside = st.nodeid is None  # module scope, conftest, a hook: an entry of files_read_outside_tests (R-055)
+    if not outside and st.recorder is None:
         return
     if isinstance(path, int) or _real_getpid() != _SESSION_PID:
         return
@@ -624,7 +657,8 @@ def _note_stat(op, path, res) -> None:
         depth = _user_depth(2)
         if _plugin_site(depth):
             return
-        asked = _stat_question()
+        if asked is None:
+            asked = _stat_question()
         # docs/VERIFY-CONTRACT.md section 2: `<path>|missing` or `<path>|<type>`, plus what the call returns of size
         # and modification time (an exists-style call: the type only)
         if res is None:
@@ -637,7 +671,10 @@ def _note_stat(op, path, res) -> None:
                     value += f" size={res.st_size}"
                 if asked in ("", "mtime"):
                     value += f" mtime_ns={res.st_mtime_ns}"
-        _state.record("fs", "fs.stat", f"{_sites.norm_path(p)}|{value}", depth)
+        if outside:
+            OUTSIDE_STATS[_sites.norm_path(p)] = value
+        else:
+            _state.record("fs", "fs.stat", f"{_sites.norm_path(p)}|{value}", depth)
     except Exception:  # never break the code under test
         pass
     finally:
@@ -687,6 +724,7 @@ def install(patcher, cfg) -> None:
     _prev_open = io.open
     for name in ("stat", "lstat"):
         _rebind_stat(patcher, name, _stat_observed(getattr(os, name), f"fs.{name}"))
+    _rebind_stat(patcher, "access", _access_observed(os.access))
     patcher.set(io, "open", open_)
     patcher.set(builtins, "open", open_)
     if TMPDIR is None:

@@ -239,8 +239,11 @@ def c_hash_no_reexec(tmp_path):  # V13: --det-no-reexec: the hash seed is "<rand
 
 
 def c_rusage(tmp_path):  # V14: resource usage of the process
-    return (T("import resource\ndef test_x():\n    _w(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)\n"), None,
-            {})
+    # coordinator (CI 44929696261): run 1 must really use more memory. PYTHONMALLOC=malloc_debug is read by the
+    # interpreter in C (no run input) and adds the debug allocator's padding: a larger ru_maxrss (MEASURED locally
+    # 43916 vs 48580 KiB)
+    return (T("import resource\ndef test_x():\n    _w(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)\n"),
+            envset({}, {"PYTHONMALLOC": "malloc_debug"}), {})
 
 
 def c_native_getenv(tmp_path):  # V15: C code that calls getenv itself (listed gap, no test until now)
@@ -275,6 +278,61 @@ VERIFY_CASES = {
     "V14-rusage": c_rusage,
     "V15-native-getenv-in-C": c_native_getenv,
 }
+
+
+# --- coordinator review of bf13934: five more wrong IDENTICALs ------------------------------------------------------
+
+def p_access(tmp_path):  # os.access is not observed (VERIFY-CONTRACT s.2 lists it under fs.stat)
+    f = tmp_path / "o.txt"
+
+    def before(i, proj, env):
+        if i == 0:
+            f.write_text("x")
+        elif f.exists():
+            f.unlink()
+    return T(f"def test_x():\n    _w(os.access({str(f)!r}, os.R_OK))\n"), before, {}
+
+
+def p_stat_module(tmp_path):  # a stat outside any test is dropped; contract: files_read_outside_tests "stat:<value>"
+    f = tmp_path / "o2.txt"
+
+    def before(i, proj, env):
+        if i == 0:
+            f.write_text("x")
+        elif f.exists():
+            f.unlink()
+    return T(f"FAST = os.path.exists({str(f)!r})\ndef test_x():\n    _w(FAST)\n"), before, {}
+
+
+def p_late_import(tmp_path):  # a module imported inside a test is in no code input
+    files = T("def test_x():\n    from calc_mod import V\n    _w(V)\n")
+    files["tests/calc_mod.py"] = "V = 0\n"
+
+    def before(i, proj, env):
+        (proj / "tests" / "calc_mod.py").write_text(f"V = {i}\n")
+    return files, before, {}
+
+
+WARN = "import warnings\ndef test_x():\n    try:\n        warnings.warn('x'); r = 1\n    except UserWarning:\n        r = 2\n    _w(r)\n"
+
+
+def p_plugin_switch(tmp_path):  # the argv input drops -p
+    files = T(WARN)
+    files["pytest.ini"] = "[pytest]\nfilterwarnings = error\n"
+    return files, None, {"args": lambda i: ("tests",) if i == 0 else ("-p", "no:warnings", "tests")}
+
+
+def p_addopts(tmp_path):  # PYTEST_ADDOPTS / ini addopts read by pytest itself never count
+    return T(WARN), envset({}, {"PYTEST_ADDOPTS": "-W error::UserWarning"}), {}
+
+
+VERIFY_CASES.update({
+    "P-os.access": p_access,
+    "P-stat-at-module-scope": p_stat_module,
+    "P-module-imported-in-a-test": p_late_import,
+    "P-plugin-switch": p_plugin_switch,
+    "P-PYTEST_ADDOPTS": p_addopts,
+})
 
 
 @pytest.mark.parametrize("name", list(VERIFY_CASES))
