@@ -72,6 +72,10 @@ without this branch, F-01 passed 3/33. Fixed in this round, each as a class with
 - **Entropy default** (G-1523, above).
 - **F-18**: explore exits 2 on a suite that cannot run; repro shows the collection error; a missing `--python` is one
   line.
+- **The entropy run input named the device** (F-02, exam `numpy-repro`, interim CI exam run 44891607359): the
+  input was `urandom`, so every bundle's provenance of a numpy test said "urandom". It is now `entropy`, the name of
+  the option and of the verify reason (Python and Node headers); verify reads `urandom` in older traces as the same
+  input. `F-02.probe.numpy-repro` and `F-03.probe.numpy` PASS locally after it (MEASURED).
 - **A configuration that did not run the target was counted as searched** (F-02, exam `py-autodoc`). Cause
   (MEASURED, the exam's own project venv): two of the project's modules do not import (`requests` is not installed),
   so pytest interrupted every `--det` session with 0 tests run, while `--collect-only` still listed the target.
@@ -281,7 +285,7 @@ message until then.
 - `--ignore-env` declares variables irrelevant and lists them.
 - Each reason prints a hint. The Node shell records the same inputs.
 - Tests: `tests/test_verifier_truth.py` (one per input in the family: clock, seed, hash seed, network, fs, env,
-  tz, locale, urandom, order, uncontrolled sources), the Rust unit tests in `crates/detpy-core/src/verify.rs`, and
+  tz, locale, entropy, order, uncontrolled sources), the Rust unit tests in `crates/detpy-core/src/verify.rs`, and
   `node/test/verifier-inputs.test.js`.
 
 ## F-18 one `fenvix` command
