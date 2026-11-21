@@ -3,10 +3,10 @@
  "job": "hunt",
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
- "status": "ok",
- "run_id": "44783946608",
- "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
- "setup_s": 73,
+ "status": "running",
+ "run_id": "44904997963",
+ "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
+ "setup_s": 61,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -24,8 +24,8 @@
  "pw_dir": ".",
  "pw_args": [],
  "runs": [],
- "epoch": "2026-11-20T17:35:00Z",
- "measured_at": "2026-11-20T17:35:58Z",
+ "epoch": "2026-11-21T12:48:00Z",
+ "measured_at": "2026-11-21T12:48:55Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "hunt": {
   "seeds": 8,
@@ -69,7 +69,7 @@
      "Error: expect(locator).toHaveValue(expected) failed",
      "Error: expect(locator).toHaveValue(expected) failed"
     ],
-    "fingerprints": 2,
+    "fingerprints": 10,
     "reproduced": false,
     "replay_match": [
      true,
@@ -85,25 +85,25 @@
     ],
     "divergence": {
      "run_a": 0,
-     "run_b": 7,
-     "index": 121,
+     "run_b": 1,
+     "index": 125,
      "window": null,
      "event_a": {
       "t": 0,
-      "s": "net",
-      "o": "browser.done",
+      "s": "other",
+      "o": "server.fingerprint",
       "at": "",
-      "v": "5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 4d3d6a4f2a2f61551f7a38dbbce5c41f"
+      "v": "http://localhost:3001 ddbeababa545ad8a581b76dbdd4573c7 189"
      },
      "event_b": {
       "t": 0,
-      "s": "net",
-      "o": "browser.done",
+      "s": "other",
+      "o": "server.fingerprint",
       "at": "",
-      "v": "5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 6abb41f3c3b10b5a8ab1a1d6e8c320cb"
+      "v": "http://localhost:3001 71e0d7698170ef23b1b5bf5e25f98c79 189"
      },
-     "reason": "net",
-     "description": "event #121: browser.done @  returned different values: \"5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 4d3d6a4f2a2f61551f7a38dbbce5c41f\" vs \"5 GET http://localhost:3001/socket.io/?EIO=4&transport=polling&t=9esxhpsf&sid=cMSABw_7EKqU3RDmAAAJ 200 6abb41f3c3b10b5a8ab1a1d6e8c320cb\""
+     "reason": "other",
+     "description": "event #125: server.fingerprint @  returned different values: \"http://localhost:3001 ddbeababa545ad8a581b76dbdd4573c7 189\" vs \"http://localhost:3001 71e0d7698170ef23b1b5bf5e25f98c79 189\""
     }
    },
    {
@@ -127,9 +127,6 @@
      "timedOut",
      "timedOut",
      "timedOut",
-     "timedOut",
-     "timedOut",
-     "timedOut",
      "timedOut"
     ],
     "replay_errors": [
@@ -139,13 +136,10 @@
      "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded.",
-     "Test timeout of 60000ms exceeded.",
-     "Test timeout of 60000ms exceeded.",
-     "Test timeout of 60000ms exceeded.",
      "Test timeout of 60000ms exceeded."
     ],
-    "fingerprints": 1,
-    "reproduced": true,
+    "fingerprints": null,
+    "reproduced": false,
     "replay_match": [
      true,
      true,
@@ -153,17 +147,182 @@
      true,
      true,
      true,
-     true,
-     true,
-     true,
      true
-    ],
-    "divergence": null
+    ]
    }
   ],
-  "reproduced": 1,
-  "found_seed": 2,
-  "n": 2
- },
- "elapsed_min": 49.0
+  "runs": [
+   {
+    "label": "h-latency-s1",
+    "rc": 1,
+    "wall_s": 71.5,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r1",
+    "rc": 1,
+    "wall_s": 69.9,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r2",
+    "rc": 1,
+    "wall_s": 71.0,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r3",
+    "rc": 1,
+    "wall_s": 70.3,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r4",
+    "rc": 1,
+    "wall_s": 70.1,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r5",
+    "rc": 1,
+    "wall_s": 70.3,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r6",
+    "rc": 1,
+    "wall_s": 70.2,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r7",
+    "rc": 1,
+    "wall_s": 66.9,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r8",
+    "rc": 1,
+    "wall_s": 67.6,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r9",
+    "rc": 1,
+    "wall_s": 68.1,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-latency-s1-r10",
+    "rc": 1,
+    "wall_s": 67.9,
+    "counts": {
+     "passed": 6,
+     "failed": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1",
+    "rc": 1,
+    "wall_s": 175.8,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r1",
+    "rc": 1,
+    "wall_s": 171.2,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r2",
+    "rc": 1,
+    "wall_s": 174.3,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r3",
+    "rc": 1,
+    "wall_s": 173.4,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r4",
+    "rc": 1,
+    "wall_s": 161.6,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r5",
+    "rc": 1,
+    "wall_s": 175.8,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r6",
+    "rc": 1,
+    "wall_s": 175.4,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   },
+   {
+    "label": "h-timeout_body-s1-r7",
+    "rc": 1,
+    "wall_s": 165.8,
+    "counts": {
+     "passed": 6,
+     "timedOut": 1
+    }
+   }
+  ]
+ }
 }
