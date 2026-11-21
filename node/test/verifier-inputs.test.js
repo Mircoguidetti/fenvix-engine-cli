@@ -85,3 +85,33 @@ test('a constant uncontrolled source: same fingerprint in both runs, never ident
   assert.notEqual(by.child.status, 'stable', JSON.stringify(by.child));
   assert.equal(by.child.divergence.reason, 'child', JSON.stringify(by.child));
 });
+
+// R-050 N1, the other side: a file outside the project read with the same contents in both runs keeps the test
+// identical (the event carries path and digest, no run-dependent value); the same on Vitest and Jest
+for (const runner of ['node-test', 'vitest', 'jest']) {
+  test(`${runner}: an outside file with the same contents in both runs: identical; different contents: divergent`, T, () => {
+    const os = require('node:os');
+    const ext = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'vi-outside-')), 'cfg.txt');
+    const files = runner === 'node-test'
+      ? { 'tests/o.test.mjs': `import { test } from 'node:test'; import fs from 'node:fs';\ntest('reads', () => { fs.readFileSync(${JSON.stringify(ext)}, 'utf8'); });\n` }
+      : runner === 'vitest'
+        ? { 'tests/o.test.mjs': `import { test } from 'vitest'; import fs from 'node:fs';\ntest('reads', async () => { await fs.promises.readFile(${JSON.stringify(ext)}, 'utf8'); });\n`, 'vitest.config.mjs': "export default { test: { include: ['tests/**/*.test.mjs'] } };\n" }
+        : { 'tests/o.test.js': `const fs = require('node:fs');\ntest('reads', () => { const fd = fs.openSync(${JSON.stringify(ext)}, 'r'); const b = Buffer.alloc(8); fs.readSync(fd, b); fs.closeSync(fd); });\n`, 'jest.config.js': "module.exports = { testMatch: ['**/tests/**/*.test.js'], testEnvironment: 'node' };\n" };
+    const dir = fixture('verifier-inputs', `outside-${runner}`, files);
+    const runOnce = (name, content) => {
+      fs.writeFileSync(ext, content);
+      const r = crun(runner, dir, runner === 'vitest' ? ['run'] : [], { cache: false, env: { TZ: 'UTC' } });
+      assert.equal(r.status, 0, show(r));
+      const dst = path.join(dir, `${name}.jsonl`);
+      fs.copyFileSync(path.join(dir, '.detjs', 'trace.jsonl'), dst);
+      return dst;
+    };
+    const a = runOnce('a', 'same');
+    const b = runOnce('b', 'same');
+    const c = runOnce('c', 'other');
+    const same = JSON.parse(native.verify([a, b]));
+    assert.equal(same.summary.stable, same.summary.tests, JSON.stringify(same.summary));
+    const diff = JSON.parse(native.verify([a, c]));
+    assert.equal(diff.summary.stable, 0, JSON.stringify(diff.summary));
+  });
+}

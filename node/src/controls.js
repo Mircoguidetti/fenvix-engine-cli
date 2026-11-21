@@ -33,6 +33,7 @@ function installProcess() {
   if (c.controls.has('seeds')) seeds.installProcess(PATCHER, c);
   if (c.controls.has('time')) clock.installProcess(PATCHER, c);
   if (c.controls.has('fs')) fsorder.installProcess(PATCHER, c);
+  if (c.controls.has('fs')) require('./outside').installProcess(PATCHER); // files outside the project: recorded (R-050 N1)
   if (c.controls.has('net')) STATE.netMode = network.installProcess(PATCHER, c);
   // environment reads (audit G-0126): every variable a test reads is an event `env.get NAME=<digest of the value>`
   // (`env.has`, `env.list` for enumerations); values never reach the trace
