@@ -697,6 +697,7 @@ class Worker:
         out["detpy_trace"] = plugin.S.trace_path
         from . import _level0
 
+        out["detpy_env_outside"] = sorted(_level0.envobs.OUTSIDE)  # R-054 N2: read outside any test
         out["detpy_rewrite_cold"] = _level0.REWRITE["cold"]  # G-0168: modules this worker rewrote from source
         if plugin.S.saved_cassette and plugin.S.cassette_out:
             out["detpy_cassette"] = plugin.S.cassette_out

@@ -70,6 +70,25 @@ function installProcess() {
 }
 
 const OWN_ENV = /^(?:DETJS(?:$|_)|FENVIX_CACHE_)/;
+// a variable read outside any test (module scope of a test file, a before/beforeAll hook, a dependency at import) is
+// no test's event: its name goes to <run dir>/envout/<pid>.txt, the header lists it (src/session.js), and the
+// verifier counts it as read by every test (R-054 N1); '*' for an enumeration
+const outsideSeen = new Set();
+function noteOutside(op, k) {
+  if (STATE.quietDepth > 0) return;
+  const name = op === 'env.list' ? '*' : String(k);
+  if (name !== '*' && OWN_ENV.test(name)) return;
+  if (outsideSeen.has(name)) return;
+  const c = cfg();
+  if (!c || !c.dir) return;
+  outsideSeen.add(name);
+  STATE.quietDepth++;
+  try {
+    const dir = path.join(c.dir, 'envout');
+    fs.mkdirSync(dir, { recursive: true });
+    fs.appendFileSync(path.join(dir, `${process.pid}.txt`), `${name}\n`);
+  } catch { /* the run directory is gone (the run ended) */ } finally { STATE.quietDepth--; }
+}
 let envSeen = new Set();
 require('./concur').register({ name: 'env', save: () => envSeen, restore: (x) => { envSeen = x; } });
 function installEnvRecord(proc) {
@@ -77,7 +96,8 @@ function installEnvRecord(proc) {
     STATE.__envHooked = true;
     STATE.onTestStart.push(() => { envSeen = new Set(); });
     STATE.onEnvRead = (op, k, realEnv) => {
-      if (STATE.testId === null || STATE.quietDepth > 0 || STATE.recorder === null) return;
+      if (STATE.testId === null) { noteOutside(op, k); return; }
+      if (STATE.quietDepth > 0 || STATE.recorder === null) return;
       if (k !== '*' && OWN_ENV.test(k)) return;
       const key = `${op}\u0000${k}`;
       if (envSeen.has(key)) return;

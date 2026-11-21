@@ -410,12 +410,16 @@ def render_replay(res: dict, bundle: Path) -> str:
         return "\n".join([f"{PROG} replay: {res.get('test')}: NOT RUN: {why}, so the replay says nothing about the "
                           f"defect ({err.splitlines()[0] if err else 'no output'})"]
                          + ["    " + ln for ln in err.splitlines()[1:]])
-    ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint")
+    # the check promised by repro's `check:` line: every run fails with the bundle's fingerprint (R-054)
+    ok = res.get("fails") == res.get("runs") and res.get("identical_fingerprint") and res.get("matches_bundle")
     head = "REPRODUCED" if ok else "NOT REPRODUCED"
     lines = [f"{PROG} replay: {res.get('test')}: {head}: failed {res.get('fails')}/{res.get('runs')} runs, "
              f"identical fingerprint: {res.get('identical_fingerprint')}, same fingerprint as the bundle: "
              f"{res.get('matches_bundle')}"]
-    if not ok:
+    if not ok and res.get("fails") and res.get("fails") == res.get("runs"):
+        lines.append("  it still fails, but not as recorded (another fingerprint): a different failure, or the code, "
+                     "dependencies or environment changed since the bundle was written")
+    elif not ok:
         lines.append("  the defect no longer fails the same way: fixed, or it depends on something the bundle "
                      "does not hold (code, dependencies, environment changed since it was written)")
     return "\n".join(lines)
@@ -618,7 +622,7 @@ def cmd_replay(argv: list) -> int:
     print(json.dumps(res, indent=2) if ns.json else render_replay(res, bundle))
     if res.get("status") in ("not-collected", "not-run"):
         return 2
-    return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] else 1
+    return 0 if res["fails"] == res["runs"] and res["identical_fingerprint"] and res.get("matches_bundle") else 1
 
 
 def cmd_verify(argv: list) -> int:

@@ -42,15 +42,18 @@ for (const [name, envA, envB, reason, det] of [
   ['seed', { TZ: 'UTC', DETJS_SEED: '1' }, { TZ: 'UTC', DETJS_SEED: '2' }, 'seed', undefined],
 ]) {
   test(`runs differing only in ${name} are divergent and name it`, T, () => {
-    const dir = fixture('verifier-inputs', name, { 'tests/a.test.mjs': BODY });
+    // env: the tests read the variable (a variable no test reads keeps them identical: 'no test reads' below)
+    const body = name === 'env'
+      ? BODY.replace(/test\('(local date|plain)', \(\) => \{/g, "test('$1', () => { void process.env.NODE_TRUTH_FLAG;")
+      : BODY;
+    const dir = fixture('verifier-inputs', name, { 'tests/a.test.mjs': body });
     const a = runTo(dir, 'a', envA, det);
     const b = runTo(dir, 'b', envB, det);
     const rep = JSON.parse(native.verify([a, b]));
     assert.equal(rep.summary.stable, 0, JSON.stringify(rep.summary));
     assert.equal(rep.input_differences[0].reason, reason, JSON.stringify(rep.input_differences));
     for (const t of rep.tests) assert.equal(t.divergence.reason, reason, t.nodeid);
-    // design A: a differing environment variable is `input-differs` (the Node shell does not record which test
-    // read it: every test), never `diverged`
+    // design A: a differing environment variable the tests read is `input-differs`, never `diverged`
     if (name === 'env') for (const t of rep.tests) assert.equal(t.status, 'input-differs', t.nodeid);
   });
 }

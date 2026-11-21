@@ -1079,6 +1079,9 @@ class _DetSession(_Outcomes):
             # PYTEST_XDIST_* variables are engine-internal)
             "inputs": _level0.run_inputs(S.net_mode, "pytest", pytest.__version__),
             "env_reads_recorded": "env" in cfg.controls,
+            # what the workers read outside any test, and what the controller did (R-054 N2)
+            "env_read_outside_tests": sorted(set(_level0.envobs.OUTSIDE).union(
+                *[o.get("detpy_env_outside") or [] for o in (S.controller.workeroutput.values() if S.controller else [])])),
         }
 
     def pytest_terminal_summary(self, terminalreporter, exitstatus, config):

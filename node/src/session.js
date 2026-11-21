@@ -298,6 +298,18 @@ function runInputs(run, meta) {
 
 const ENV_UNRECORDED_RUNNERS = new Set(['bun', 'deno']);
 
+/** The variables the run's processes read outside any test (src/controls.js noteOutside), sorted. */
+function envReadOutside(dir) {
+  const names = new Set();
+  const d = path.join(dir, 'envout');
+  try {
+    for (const f of fs.readdirSync(d)) {
+      for (const l of fs.readFileSync(path.join(d, f), 'utf8').split('\n')) if (l) names.add(l);
+    }
+  } catch { /* none read */ }
+  return [...names].sort();
+}
+
 /** Merge the parts of the run into the final trace. `files`: [{fileId, part}] in execution order. */
 function finish(run, opts, files, meta) {
   // what the main process (globalSetup) recorded
@@ -330,6 +342,7 @@ function finish(run, opts, files, meta) {
     // Deno's own environment APIs are not recorded. Without this the verifier counts every differing variable as
     // read by every test (exam F-01.hostname.pinned.node: USER/LOGNAME under sudo, read by no test)
     env_reads_recorded: !ENV_UNRECORDED_RUNNERS.has(String((meta && meta.runner) || '')),
+    env_read_outside_tests: envReadOutside(run.dir),
     cassette_max_age_days: run.cfg.cassetteMaxAge || 0,
     cassette_oldest_days: run.cassetteOldestDays === undefined ? null : run.cassetteOldestDays,
     node: process.version,

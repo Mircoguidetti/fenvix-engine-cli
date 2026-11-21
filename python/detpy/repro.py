@@ -387,11 +387,13 @@ def replay(bundle: Path, runs: int, python: str = sys.executable) -> dict:
             return {"test": data.get("test"), "runs": runs, "fails": 0, "identical_fingerprint": False,
                     "matches_bundle": False, "status": "not-collected",
                     "suite_error": getattr(runner, "problem", "") or f"runner exit {rs[-1].exit_code}: the test was not collected"}
-        if isinstance(outcome, str) and outcome.startswith("skip"):
-            # R-051 R3: collected but its body did not run (skipped, quarantined): the replay says nothing either
+        if isinstance(outcome, str) and (outcome.startswith("skip") or outcome.startswith("xfail")):
+            # R-051 R3, R-054 N3: collected but skipped, or marked as an expected failure (xfail, run=False or not):
+            # quarantined, its result is not a failure of the defect, so the replay says nothing either
+            why = "its body did not run" if outcome.startswith("skip") else "it is marked as an expected failure"
             return {"test": data.get("test"), "runs": runs, "fails": 0, "identical_fingerprint": False,
                     "matches_bundle": False, "status": "not-run",
-                    "suite_error": f"the test was {outcome}: its body did not run"}
+                    "suite_error": f"the test was {outcome}: {why}"}
     return _core.repro_replay_verdict(data, rs, runs)
 
 

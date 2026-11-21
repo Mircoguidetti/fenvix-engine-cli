@@ -65,8 +65,22 @@ def _make(base):
     return _Observed
 
 
+# names of the variables read outside any test (module scope of a test file or conftest, a plugin or a dependency
+# at import): no test's event, so the header lists them and the verifier counts them as read by every test
+# (R-054 N2); "*" when the environment was enumerated
+OUTSIDE: set = set()
+
+
+def _outside(name: str) -> None:
+    if not _state.is_quiet():
+        OUTSIDE.add(name)
+
+
 def _note_value(op, key, v) -> None:
-    if _state.STATE.nodeid is None or _state.is_quiet():
+    if _state.STATE.nodeid is None:
+        _outside(_name(key))
+        return
+    if _state.is_quiet():
         return
     try:
         _state.record("other", op, _dig(key, v), 2)
@@ -75,7 +89,10 @@ def _note_value(op, key, v) -> None:
 
 
 def _note_flag(key, present) -> None:
-    if _state.STATE.nodeid is None or _state.is_quiet():
+    if _state.STATE.nodeid is None:
+        _outside(_name(key))
+        return
+    if _state.is_quiet():
         return
     try:
         _state.record("other", "env.has", f"{_name(key)}={'set' if present else 'unset'}", 2)
@@ -84,7 +101,10 @@ def _note_flag(key, present) -> None:
 
 
 def _note_list(env) -> None:
-    if _state.STATE.nodeid is None or _state.is_quiet():
+    if _state.STATE.nodeid is None:
+        _outside("*")
+        return
+    if _state.is_quiet():
         return
     try:
         names = sorted(k if isinstance(k, bytes) else os.fsencode(k)

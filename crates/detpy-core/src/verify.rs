@@ -692,6 +692,14 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
     // a shell that does not record environment reads (meta.env_reads_recorded is not true: the Node shell, a
     // Python run without the env control) cannot say which test read a variable: every test counts as reading it
     let reads_recorded = traces.iter().all(|t| t.header.meta.get("env_reads_recorded").and_then(|v| v.as_bool()) == Some(true));
+    // variables read outside any test (module scope, hooks, a dependency at import): no test's event, read by every
+    // test as far as anyone can tell (R-054 N1, N2); "*": the environment was enumerated there
+    let outside: BTreeSet<String> = traces
+        .iter()
+        .filter_map(|t| t.header.meta.get("env_read_outside_tests").and_then(|v| v.as_array()))
+        .flatten()
+        .filter_map(|v| v.as_str().map(str::to_string))
+        .collect();
     let mut summary = Summary { runs: n, inputs_recorded: n > 0 && inputs.iter().all(|i| i.is_some()), ..Default::default() };
     let mut tests = Vec::with_capacity(ordered.len());
     for id in ordered {
@@ -755,7 +763,8 @@ pub fn verify(traces: &[Trace], labels: &[String]) -> Report {
         let (status, divergence) = match status {
             Status::Stable | Status::Diverged if !env_diffs.is_empty() => {
                 let mut read = env_reads(&recs);
-                read.all |= !reads_recorded;
+                read.all |= !reads_recorded || outside.contains("*");
+                read.names.extend(outside.iter().cloned());
                 let hit: Vec<&InputDifference> = env_diffs
                     .iter()
                     .filter(|d| read.all || read.names.contains(d.name.trim_start_matches("env:")))

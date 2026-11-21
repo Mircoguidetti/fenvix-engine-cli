@@ -795,6 +795,9 @@ def trace_meta(status: str, net_mode, rebound: int, order_digest: str, runner: s
     # every os.environ read by a test is an event (envobs): the verifier then reports a differing variable only for
     # the tests that read it (design A)
     meta["env_reads_recorded"] = "env" in cfg.controls
+    # the variables read outside any test before the trace opened (module scope, conftest, plugins at import):
+    # read by every test as far as the verifier knows (R-054 N2)
+    meta["env_read_outside_tests"] = sorted(envobs.OUTSIDE)
     return meta
 
 
