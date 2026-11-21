@@ -1,11 +1,28 @@
 {
- "nonce": 28,
+ "nonce": 29,
  "jobs": [
   {
    "job": "gate",
-   "name": "sveltekit"
+   "name": "documenso"
+  },
+  {
+   "job": "gate2",
+   "name": "documenso"
   }
  ],
- "params": {},
+ "params": {
+  "gate2": {
+   "runs": 2,
+   "plain_runs": 0,
+   "diag_runs": 0,
+   "budget_min": 60,
+   "per_run_s": 600,
+   "target_timeout_min": 12,
+   "env": {
+    "DETJS_LS_TRACE": "/tmp/ls.trace",
+    "DETJS_LS_TRACE_REAL": "1"
+   }
+  }
+ },
  "suites": false
 }

@@ -157,7 +157,8 @@ function patchDispatcher(DC) {
   const orig = DC.prototype.dispatch;
   DC.prototype.dispatch = async function dispatch(message) {
     let type = '';
-    try { const d = this._dispatcherByGuid.get(message.guid); type = d ? d._type : ''; } catch { /* ignore */ }
+    let dispatcher = null;
+    try { dispatcher = this._dispatcherByGuid.get(message.guid); type = dispatcher ? dispatcher._type : ''; } catch { /* ignore */ }
     if (message.method === '__waitInfo__') {
       // Client-side waits (waitForURL, waitForEvent, waitForResponse, waitForLoadState ...): the runner waits for
       // the page, without a call in flight and often without a deadline (navigation timeout 0).
@@ -181,8 +182,16 @@ function patchDispatcher(DC) {
       // A navigation the runner starts must reach the queue (its document request) before the next decision.
       if (/^(goto|reload|goBack|goForward)$/.test(message.method)) { navMark = { open: true }; LS.navPending.push(navMark); }
     }
-    const closing = CLOSE_CALLS.test(k);
-    if (closing && CALLS.closing++ === 0) { CALLS.closeSince = realNow(); CALLS.closeAct = ACT.n; }
+    // A close is real work only until its object (the context, the page) is closed: Playwright's dispatch of the call
+    // returns later, after more engine time (MEASURED, run 44960350311, documenso: browserContext.close succeeded on
+    // the client 0.5 s after it started, then the call stayed in flight for about 2 s of engine time, which as
+    // "busy" crawled at one 3 s stall per frame step: 6.5 min). After the close event it is an ordinary wait.
+    let closing = CLOSE_CALLS.test(k);
+    const endClosing = () => { if (!closing) return; closing = false; CALLS.closing--; activity(); if (LS) LS.poke(); };
+    if (closing) {
+      if (CALLS.closing++ === 0) { CALLS.closeSince = realNow(); CALLS.closeAct = ACT.n; }
+      try { const obj = dispatcher && dispatcher._object; if (obj && typeof obj.once === 'function') obj.once('close', endClosing); } catch { /* ignore */ }
+    }
     CALLS.inflight++;
     CALLS.byMethod.set(k, (CALLS.byMethod.get(k) || 0) + 1);
     activity();
@@ -191,7 +200,7 @@ function patchDispatcher(DC) {
     } finally {
       if (navMark && navMark.open) { navMark.open = false; const i = LS.navPending.indexOf(navMark); if (i >= 0) LS.navPending.splice(i, 1); }
       if (REALWORK.test(k)) CALLS.realwork--;
-      if (closing) CALLS.closing--;
+      endClosing();
       CALLS.inflight--;
       const c = CALLS.byMethod.get(k) - 1;
       if (c) CALLS.byMethod.set(k, c); else CALLS.byMethod.delete(k);
