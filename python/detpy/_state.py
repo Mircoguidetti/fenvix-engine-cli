@@ -26,6 +26,10 @@ class Config:
     control_urandom: bool = False
     max_events: int = 10_000
     cassette_max_age: float = 0.0
+    # Level 1 (--det-async, --det-threads), None when the option was not given. The scheduler's own settings live
+    # here so that every runner (pytest, unittest, django, doctest, nose2) installs them the same way.
+    det_async: dict | None = None  # seed, grace, wait, settle
+    det_threads: dict | None = None  # seed, grace, deadlock, preempt, stuck
 
 
 @dataclass
@@ -62,6 +66,23 @@ def set_event_listener(fn) -> None:
 # and ``_sites``' classification cache by ``l0_configure`` below); the Python original is
 # ``tests/rust_hotpaths_ref/_ref_l0_state.py``.
 record = _core.l0_record
+
+
+# --det-threads / --det-async, both per thread and kept in Rust next to the quiet flag, so ``record`` reads them
+# without entering the interpreter:
+#
+# * ``set_tkey(key)`` / ``get_tkey()``: the event key of a thread the scheduler manages (``threads.Thread.key``).
+#   Without it ``record`` keys a thread's events by its OS ident, which the OS hands out again once the thread
+#   ends: a later thread would take the finished one's column and the trace would differ between runs over
+#   nothing the test did (``--det-threads`` round 2).
+# * ``set_event_buffer(buf)``: while ``buf`` is a list, this thread's events are appended to it instead of
+#   recorded, and ``detpy.aio`` records them with ``record_at`` at the virtual time the loop delivers the
+#   executor job's result, instead of wherever the pool happened to run it.
+#
+# Both return the previous value, so a caller restores it in a ``finally``.
+set_tkey = _core.l0_set_tkey
+get_tkey = _core.l0_get_tkey
+set_event_buffer = _core.l0_set_event_buffer
 
 
 def record_at(source: str, op: str, site: str, value: str) -> None:

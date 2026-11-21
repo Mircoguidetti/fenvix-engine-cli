@@ -190,6 +190,9 @@ class _Sched:
         self.site_counts: dict = {}
         self.stats = {"decisions": 0, "switches": 0, "escapes": 0, "deadlocks": 0, "timer_jumps": 0,
                       "managed": 0, "spin_yields": 0, "spin_ticks": 0, "interrupted": 0}
+        # Per test, for the rule (see _note_unmanaged): threads this scheduler took, thread starts it saw and
+        # refused, and threads it lost control of. Reset by start_test.
+        self.att = {"adopted": 0, "unmanaged": 0, "escaped": 0}
         self.spin_ns = 0  # virtual time the next failed poll of a spinning holder charges
         self.watchdog_on = False
         self.watchdog_beats = 0  # rounds of the watchdog (tests check it still runs)
@@ -350,6 +353,7 @@ def _record_uncontrolled(why: str) -> None:
     run input, so this test must not be reported identical, exactly as without --det-threads.
     """
     _dbg("uncontrolled: " + why)
+    S.att["escaped"] += 1
     st = _state.STATE
     if st.recorder is not None and st.nodeid is not None:
         st.recorder.record("other", "threads.uncontrolled", "<threads>", why, 0)
@@ -1088,10 +1092,30 @@ def _started_by_infra() -> bool:
     return True
 
 
+def _note_unmanaged(why: str) -> None:
+    """The scheduler saw a thread start and did not take it.
+
+    This is the counterweight to ``sched.thread.adopted``: it is what makes "every thread of this test was
+    adopted" a statement the trace can falsify, instead of one inferred from silence. The rule needs it, because
+    a thread the scheduler never took is not controlled however the option was spelled on the command line.
+    """
+    S.att["unmanaged"] += 1
+    _record("sched.thread.unmanaged", f"{_child_sid()}:{why}")
+
+
 def _wrap_start_thread(real):
     def start_thread(function, *args, **kwargs):
+        if CFG.enabled:
+            # a library imported during the test (anyio imports trio here, not at collection) is still caught:
+            # the thread that will run its loop is started after the import
+            _patch_late_imports()
         me = _me()
         if me is None or _started_by_infra():
+            if CFG.enabled:
+                # why it was refused, in the gate's own terms: no running scheduler, a starting thread that is
+                # not itself managed (a pool worker alive before the test, a finalizer inside the critical
+                # section), or test infrastructure
+                _note_unmanaged("inactive" if not S.active else ("parent-unmanaged" if me is None else "infra"))
             return real(function, *args, **kwargs)
         _enter(me)
         _check_depth()
@@ -1105,6 +1129,10 @@ def _wrap_start_thread(real):
         S.mu.release()
         if thread_obj is not None:
             thread_obj._detpy_t = t
+        # Recorded outside the critical section: the scheduler took this thread, with the key it will never
+        # reuse and the site that started it.
+        S.att["adopted"] += 1
+        _record("sched.thread.adopted", f"{t.key[1]}:{t.sid}")
 
         def prologue():
             _tls.t = t
@@ -2041,22 +2069,40 @@ def _wrap_outside_run(real, why: str):
 
 def _patch_late_imports() -> None:
     """Libraries imported after the scheduler was installed (uvloop is imported by
-    anyio's test plugin on first use)."""
-    if _LATE["uvloop"] or _LATE["patcher"] is None:
+    anyio's test plugin on first use; trio by anyio's trio backend)."""
+    if _LATE["patcher"] is None or (_LATE["uvloop"] and _LATE["trio"]):
         return
-    uv = sys.modules.get("uvloop")
-    loop = getattr(uv, "Loop", None) if uv is not None else None
-    if isinstance(loop, type) and "run_forever" not in vars(loop):
-        _LATE["patcher"].set(loop, "run_forever", _wrap_outside_run(loop.run_forever, "a uvloop event loop"))
-        _LATE["uvloop"] = True
+    if not _LATE["uvloop"]:
+        uv = sys.modules.get("uvloop")
+        loop = getattr(uv, "Loop", None) if uv is not None else None
+        if isinstance(loop, type) and "run_forever" not in vars(loop):
+            _LATE["patcher"].set(loop, "run_forever", _wrap_outside_run(loop.run_forever, "a uvloop event loop"))
+            _LATE["uvloop"] = True
+    if not _LATE["trio"]:
+        # A trio loop is not an asyncio one: --det-async does not drive it, and trio's own synchronization
+        # primitives are not scheduling points this scheduler can see. A thread running one is therefore not
+        # controlled, whatever the scheduler records around it, so it leaves the scheduler for the whole run as a
+        # uvloop thread does and the escape marks the test uncontrolled.thread.
+        #
+        # This is here for that honesty and NOT as a fix for anyio's blocking-portal tests. I added it believing
+        # it would fix them and MEASURED that it does not: trio in a worker thread already fails under plain
+        # --det, with no Level 1 option, which is a Level 0 defect and not this row's (minimal repro in
+        # docs/REPORT-l1-trunk.md). It adds no failures of its own: anyio tests/test_from_thread.py -k asyncio is
+        # 3 failed / 84 passed under --det --det-threads --det-async with and without it.
+        tr = sys.modules.get("trio")
+        run = getattr(tr, "run", None) if tr is not None else None
+        if callable(run) and getattr(run, "__wrapped__", None) is None:
+            _LATE["patcher"].set(tr, "run", _wrap_outside_run(run, "a trio event loop"))
+            _LATE["trio"] = True
 
 
-_LATE = {"patcher": None, "uvloop": False}
+_LATE = {"patcher": None, "uvloop": False, "trio": False}
 
 
 def start_test() -> None:
     _patch_late_imports()
     S.site_counts = {}
+    S.att = {"adopted": 0, "unmanaged": 0, "escaped": 0}
     me = _me()
     if me is not None and CFG.seed and CFG.preempt and me.idx == 0:
         _install_tracer(me)

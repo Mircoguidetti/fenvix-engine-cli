@@ -135,6 +135,50 @@ _other_threads_alive = _core.clock_other_threads_alive
 _in_event_loop = _core.clock_in_event_loop
 _children_alive = _core.clock_children_alive  # live child processes (Linux: /proc/self/task/*/children)
 
+# Level 1 sleep hooks (--det-threads, --det-async). ``detpy.threads`` and ``detpy.aio`` set these when they install
+# and clear them when they uninstall; ``_set_l1_hooks`` then tells the Rust ``sleep`` whether any is set. While none
+# is (every run without the L1 options) the Rust path is exactly what it was: one atomic read per sleep. While one
+# is, the Rust stand-in validates ``secs``, ends the run of clock reads and records the event as before, then hands
+# the sleep to ``_sleep_l1`` below, because what a sleep means then is the thread scheduler's business.
+_on_sleep = None  # detpy.aio: charge the sleep to the executor job running it
+_sched_sleep = None  # detpy.threads: virtual sleep of a managed thread (a timer of the scheduler)
+_sched_managed = None  # detpy.threads: True when the calling thread is scheduled
+
+
+def _set_l1_hooks() -> None:
+    _core.clock_set_l1_hooks(_on_sleep is not None or _sched_managed is not None)
+
+
+def _sleep_l1(secs, ns: int) -> None:
+    """``time.sleep(secs)`` under --det-threads / --det-async (``ns`` = the sleep in virtual ns).
+
+    Called by the Rust stand-in after its argument validation, ``other_event`` and the ``time.sleep`` event, in
+    place of the plain "advance the clock, wait for real if someone observes real time" tail.
+    """
+    if _on_sleep is not None:
+        _on_sleep(ns)  # --det-async: charge the sleep to the executor job running it
+    if _sched_managed is not None and _sched_managed():
+        # --det-threads: the sleep is a timer of the thread scheduler (the clock jumps when no thread can run),
+        # unless someone outside the process observes real time: then wait for real, outside the scheduler.
+        if not (_state.STATE.config.sleep == "real" or (_in_event_loop() and _on_sleep is None)
+                or _core.clock_external_started() or _children_alive()):
+            _sched_sleep(ns)
+            return
+        from . import threads
+
+        CLOCK.advance(ns)
+        with threads.external():
+            real_sleep(secs)
+        return
+    CLOCK.advance(ns)
+    if (_state.STATE.config.sleep == "real" or _other_threads_alive()
+            or (_in_event_loop() and _on_sleep is None)
+            or _core.clock_external_started() or _children_alive()):
+        # Someone observes real time: another thread or a child process may need this time to make progress.
+        real_sleep(secs)
+    else:
+        real_sleep(0)  # still yield the GIL / scheduler
+
 # _EXTERNAL: set when the running test starts another process (subprocess, fork, spawn): from then on, until the test
 # ends, sleeps also wait for real, because the external work advances in real time even after it detached (daemons).
 # A Rust flag (``_core.clock_external_started()``), cleared by ``start_test``.

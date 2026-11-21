@@ -212,6 +212,7 @@ class Scheduler:
     def __init__(self, loop) -> None:
         self.loop = loop
         self.thread_id = threading.get_ident()
+        self._real_fd_test = None  # nodeid this loop was last seen watching a real descriptor in
         clk = _clock()
         self.vt = clk.mono_ns(clk.elapsed) / NS if clk is not None else 1000.0
         self.synced_vt = self.vt  # loop time already reflected in the Level 0 clock
@@ -446,6 +447,7 @@ class Scheduler:
         events = loop._selector.select(timeout)
         ssock = getattr(loop, "_ssock", None)
         sfd = ssock.fileno() if ssock is not None else -1
+        self._note_descriptors(sfd)
         out = []
         for key, mask in events:
             if key.fd == sfd:
@@ -454,6 +456,37 @@ class Scheduler:
             out.append((_io_label(key, mask), key, mask))
         out.sort(key=lambda x: (x[1].fd, x[2]))  # canonical order (fd), then the seed decides
         return out
+
+    def _note_descriptors(self, sfd: int) -> None:
+        """Record once per test that this loop watches a descriptor that is not its own wake-up pipe.
+
+        The scheduler chooses the order ready I/O is delivered in and records every choice, which makes a run
+        that saw different readiness diverge rather than pass for identical. That is a defence, not control: what
+        the kernel made ready, and when, is still the real world's. So a loop that watches a real descriptor
+        keeps ``uncontrolled.io`` and the test stays NOT PROVEN (coordinator, 2026-11-21: "Recording the
+        readiness sequence is a good defence and it is not the same thing as controlling it").
+
+        Checked on every poll until one is found, so a descriptor registered later in the test is not missed, and
+        recorded at most once per loop and test.
+        """
+        st = _state.STATE
+        if st.nodeid is None or self._real_fd_test == st.nodeid:
+            return
+        try:
+            for k in (self.loop._selector.get_map() or {}).values():
+                if k.fd != sfd:
+                    self._real_fd_test = st.nodeid
+                    _state.record_at("other", "sched.io.real_fd", f"<loop {self.index}>", f"fd {k.fd}")
+                    # and mark the test now, rather than only telling the rule about it: the mark is what this
+                    # release's verifier reads, so the strict line has to be enforced here to be enforced at all
+                    from . import uncontrolled
+
+                    uncontrolled.mark_io_escaped(f"loop {self.index} watches fd {k.fd}, which is not its own "
+                                                 f"wake-up pipe: the readiness of a real descriptor is the real "
+                                                 f"world's, recorded but not controlled")
+                    return
+        except Exception:  # never break the code under test
+            pass
 
     def _foreign(self) -> list:
         return self._take_pool()
