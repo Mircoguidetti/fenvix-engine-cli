@@ -71,6 +71,16 @@ def install(patcher: Patcher, control_urandom: bool) -> None:
         patcher.set(random, "randbytes", _core.stand_in("randbytes", inst.randbytes, "random", "randbytes"))
     patcher.set(random, "seed", _core.stand_in("module_seed", inst.seed, "random", "seed"))
     patcher.set(os, "urandom", _urandom)
+    try:  # review R-053 E: the same function reached through posix (os.urandom is posix.urandom)
+        import posix
+
+        if getattr(posix, "urandom", None) is _real_urandom:
+            patcher.set(posix, "urandom", _urandom)
+        if hasattr(os, "getrandom") and getattr(posix, "getrandom", None) is getattr(os, "getrandom", None):
+            patcher.set(posix, "getrandom", _core.stand_in("urandom", globals(), "posix", "getrandom",
+                                                           wrapped=posix.getrandom, fname="urandom"))
+    except ImportError:  # pragma: no cover - not POSIX
+        pass
     patcher.set(random, "_urandom", _core.stand_in("urandom", globals(), "random", "_urandom", wrapped=_real_urandom,
                                                    fname="urandom"))
     # review R-023b N5: the kernel pool through os.getrandom and OpenSSL's generator (seeded from it) are OS entropy

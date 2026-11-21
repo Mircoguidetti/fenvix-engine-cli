@@ -887,11 +887,15 @@ def process_identity() -> dict:
     d: dict = {}
     env = _raw_environ()
     d["environment"] = {k: _core.env_value_digest(v) for k, v in sorted(env.items()) if not _env_allowed(k)}
+    # review R-053 P: the machine's real values, not the ones --det pins for the tests (_level0.pin_cpu_count,
+    # pin_hostname): a test can read the real ones through posix / _socket, so they stay in every key
+    from . import _machine
+
     try:
-        d["cpus"] = sorted(os.sched_getaffinity(0))
-    except (AttributeError, OSError):
+        d["cpus"] = sorted(_machine._sched_getaffinity(0)) if _machine._sched_getaffinity is not None else None
+    except OSError:
         d["cpus"] = None
-    d["cpu_count"] = os.cpu_count()
+    d["cpu_count"] = _machine._cpu_count()
     try:
         u = os.umask(0)
         os.umask(u)
@@ -911,8 +915,10 @@ def process_identity() -> dict:
     except ImportError:
         d["rlimits"] = None
     try:
-        d["host"] = os.uname().nodename
-    except AttributeError:
+        import posix
+
+        d["host"] = posix.uname().nodename
+    except (ImportError, AttributeError):
         d["host"] = platform.node()
     d["warnoptions"] = list(sys.warnoptions)
     d["xoptions"] = sorted((str(k), str(v)) for k, v in getattr(sys, "_xoptions", {}).items())
@@ -1316,6 +1322,18 @@ class ProofSession:
             present = {n for lst in lists for n in lst}
             lists = [[n for n in order if n in present]]
 
+        def loaded_with(rel):
+            """review R-053 K1: the conftest.py and __init__.py files pytest loads with a test file (its directory and
+            every parent up to the root): their import-time code and fixtures act on the state as the test file's do"""
+            out = []
+            d = os.path.dirname(rel)
+            while True:
+                for name in ("conftest.py", "__init__.py"):
+                    out.append(os.path.join(d, name) if d else name)
+                if not d:
+                    return out
+                d = os.path.dirname(d)
+
         def compute():
             now = {}
             for lst in lists:
@@ -1323,9 +1341,11 @@ class ProofSession:
                 done = set()
                 for n in lst:
                     rel = n.split("::", 1)[0]
-                    if rel not in done:
-                        done.add(rel)
-                        h.update(f"{rel}\0{digest_of(rel)}\0".encode())
+                    for f in [rel, *loaded_with(rel)]:
+                        if f not in done:
+                            done.add(f)
+                            # an absent file reads "?": one that appears changes the digest
+                            h.update(f"{f}\0{digest_of(f)}\0".encode())
                     now[n] = h.copy().hexdigest()
             return now
 
