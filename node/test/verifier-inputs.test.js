@@ -57,11 +57,11 @@ for (const [name, envA, envB, reason] of [
 test('CI-volatile variables are never inputs (design A): runs differing only in them are identical', T, () => {
   const dir = fixture('verifier-inputs', 'volatile', { 'tests/a.test.mjs': BODY });
   const a = runTo(dir, 'a', { TZ: 'UTC', GITHUB_RUN_ID: '11', RUNNER_TEMP: '/tmp/r1', EXAM_OUT: '/o/1', FENVIX_VOLATILE_ENV: 'EXAM_*' });
-  const b = runTo(dir, 'b', { TZ: 'UTC', GITHUB_RUN_ID: '22', RUNNER_TEMP: '/tmp/r2', EXAM_OUT: '/o/2', FENVIX_VOLATILE_ENV: 'EXAM_*' });
+  const b = runTo(dir, 'b', { TZ: 'UTC', GITHUB_RUN_ID: '22', RUNNER_TEMP: '/tmp/r2', EXAM_OUT: '/o/2', FENVIX_VOLATILE_ENV: 'EXAM_*', HTTPS_PROXY: 'http://127.0.0.1:9', SUDO_USER: 'exam' });
   const rep = JSON.parse(native.verify([a, b]));
   assert.equal(rep.summary.stable, rep.summary.tests, JSON.stringify(rep.input_differences));
   const hdr = JSON.parse(fs.readFileSync(a, 'utf8').split('\n')[0]).meta;
-  for (const k of ['env:GITHUB_RUN_ID', 'env:RUNNER_TEMP', 'env:EXAM_OUT']) assert.ok(!(k in hdr.inputs), k);
+  for (const k of ['env:GITHUB_RUN_ID', 'env:RUNNER_TEMP', 'env:EXAM_OUT', 'env:HTTPS_PROXY', 'env:SUDO_USER']) assert.ok(!(k in hdr.inputs), k);
 });
 
 test('the CPU count is pinned under --det (design A); the engine keeps the real one', T, () => {

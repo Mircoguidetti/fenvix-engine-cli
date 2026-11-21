@@ -183,8 +183,11 @@ function runInputs(run, meta) {
   // Node shell does not record which variables a test read, so the verifier reports a differing one as
   // `input-differs` for every test of the run
   const vp = volatile.patterns();
+  // while the network is closed the proxy variables are its part (the closed network decides every connection), not
+  // inputs; while recording (the real network) they are inputs
+  const closed = has('net') && String(run.netMode) !== 'record';
   for (const [k, v] of Object.entries(process.env)) {
-    if (volatile.isVolatile(k, vp)) continue;
+    if (volatile.isVolatile(k, vp) || (closed && volatile.PROXY_ENV.has(k))) continue;
     inputs[`env:${k}`] = dig(`${k}=${v}`);
   }
   return inputs;

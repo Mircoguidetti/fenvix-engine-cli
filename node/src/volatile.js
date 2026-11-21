@@ -18,8 +18,11 @@ const KEPT = [
   'ACTIONS_ORCHESTRATION_ID', 'TMPDIR', 'TEMP', 'TMP', 'PWD', 'OLDPWD', '_', 'SHLVL', 'INVOCATION_ID',
   'JOURNAL_STREAM', 'SSH_AUTH_SOCK', 'SSH_CLIENT', 'SSH_CONNECTION', 'SSH_TTY', 'TERM_SESSION_ID',
   'WINDOWID', 'XDG_SESSION_ID', 'XDG_RUNTIME_DIR', 'SYSTEMD_EXEC_PID', 'FENVIX_VOLATILE_ENV',
+  'SUDO_USER', 'SUDO_UID', 'SUDO_GID', 'SUDO_COMMAND', 'SUDO_HOME',
 ];
 const PINNED_HOSTNAME = 'localhost';
+// the proxy variables (python/detpy/_level0.py PROXY_ENV): not inputs while the network is closed (session.runInputs)
+const PROXY_ENV = new Set(['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY', 'all_proxy', 'NO_PROXY', 'no_proxy']);
 // CPU count: CI runners differ (pool sizes, chunking, a test that prints it). Under --det os.cpus() has
 // PINNED_CPUS entries and os.availableParallelism() answers PINNED_CPUS; the engine sizes its own work on the real
 // machine (REAL, captured when this module loads).
@@ -63,4 +66,4 @@ function pinEnv() {
   return done;
 }
 
-module.exports = { PINNED, KEPT, PINNED_HOSTNAME, PINNED_CPUS, patterns, isVolatile, pinEnv, pinCpus, realParallelism };
+module.exports = { PINNED, KEPT, PINNED_HOSTNAME, PINNED_CPUS, PROXY_ENV, patterns, isVolatile, pinEnv, pinCpus, realParallelism };
