@@ -4,9 +4,9 @@
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
  "status": "ok",
- "run_id": "44953971010",
- "engine_commit": "5359adff409d65833a1e09fa3027bc04f3a850f4",
- "setup_s": 76,
+ "run_id": "44958432899",
+ "engine_commit": "f4902c1a1f3be935457200f92904043e8ed0e478",
+ "setup_s": 74,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -24,8 +24,8 @@
  "pw_dir": ".",
  "pw_args": [],
  "runs": [],
- "epoch": "2026-11-21T22:03:00Z",
- "measured_at": "2026-11-21T22:03:21Z",
+ "epoch": "2026-11-21T22:56:00Z",
+ "measured_at": "2026-11-21T22:56:18Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -62,16 +62,16 @@
     ""
    ],
    "walls": [
-    87.6,
-    86.9,
-    85.9,
-    87.2,
-    86.1,
-    86.0,
-    86.4,
-    86.1,
+    85.0,
+    84.9,
+    85.2,
+    85.2,
+    85.1,
     85.5,
-    87.1
+    85.4,
+    85.0,
+    85.6,
+    85.3
    ],
    "stats": [
     null,
@@ -100,30 +100,18 @@
    "verify_all": [
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
      "runs": 10,
      "divergence": {
       "run_a": 0,
-      "run_b": 1,
-      "index": 55,
+      "run_b": 0,
+      "index": null,
       "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "dom.digest",
-       "at": "",
-       "v": "f87a93771b7c02d443e47f54c68b1140"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/icon.svg -"
-      },
-      "reason": "other",
-      "description": "event #55: [other] dom.digest @  = f87a93771b7c02d443e47f54c68b1140  <>  [sched] sched.io @  = 0/1:browser GET http://localhost:3001/icon.svg -"
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
      }
     },
     {
@@ -274,16 +262,16 @@
     ""
    ],
    "walls": [
-    109.0,
-    109.7,
-    109.0,
-    109.6,
-    109.6,
-    108.4,
-    109.3,
-    110.1,
-    109.3,
-    110.6
+    107.0,
+    106.4,
+    106.2,
+    106.4,
+    106.7,
+    106.4,
+    106.4,
+    106.7,
+    106.7,
+    106.8
    ],
    "stats": [
     null,
@@ -312,30 +300,18 @@
    "verify_all": [
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
-     "status": "diverged",
-     "distinct_fingerprints": 2,
+     "status": "not-proven",
+     "distinct_fingerprints": 1,
      "runs": 10,
      "divergence": {
       "run_a": 0,
-      "run_b": 2,
-      "index": 55,
+      "run_b": 0,
+      "index": null,
       "window": null,
-      "event_a": {
-       "t": 0,
-       "s": "other",
-       "o": "dom.digest",
-       "at": "",
-       "v": "f87a93771b7c02d443e47f54c68b1140"
-      },
-      "event_b": {
-       "t": 0,
-       "s": "sched",
-       "o": "sched.io",
-       "at": "",
-       "v": "0/1:browser GET http://localhost:3001/icon.svg -"
-      },
-      "reason": "other",
-      "description": "event #55: [other] dom.digest @  = f87a93771b7c02d443e47f54c68b1140  <>  [sched] sched.io @  = 0/1:browser GET http://localhost:3001/icon.svg -"
+      "event_a": null,
+      "event_b": null,
+      "reason": "sensor",
+      "description": "this run cannot say what the test did: the run declared no sensor: nothing shows what the test did, so it cannot be shown identical. Identical fingerprints are no evidence of an identical execution, so the verdict is NOT PROVEN and the test must be rerun"
      }
     },
     {
@@ -453,5 +429,5 @@
    }
   }
  ],
- "elapsed_min": 33.7
+ "elapsed_min": 33.0
 }
