@@ -14,8 +14,10 @@ PARTIAL. All four rows work on real projects. Why not DONE:
 - PR #11 is open. It holds F-18 complete, design A for the environment and the CPU count, and the fixes from a
   local run of the frozen exam (`claude/exam` `a6d8824`). It has not been through the CI on its head, the CI exam or
   the reviewer yet.
-- Exam check still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
-  network, runs in the CI exam). The Node checks of F-01/F-02/F-03 belong to the Node session.
+- Exam checks still failing locally in these rows (see "Exam rows run locally"): `cassette-redact` (needs the
+  network, runs in the CI exam) and three checks added to the frozen exam on 2026-11-21 (`claude/exam` `f6bbcdf`),
+  which are F-01/F-03 gaps planned for the next push on this branch: `F-01.probe.cassette`,
+  `F-01.probe.replay-clients`, `F-03.probe.multi-project`. F-01 and F-03 stay open until they land.
 - Reviewer p1-verifier findings #5, #8 and #9 are fixed in PR 2. The reviewer's own tests pass, but PR 2 is not open yet:
   - #5: a polluter was named although the replays did not confirm it
   - #8: traces without run inputs were called IDENTICAL
@@ -91,7 +93,17 @@ Still failing locally, with owner:
 | `hostname.pinned.node` (locale), tz/luxon, fake-timers, node clock sources, node vm, timer consistency, mtime node | Node controls | Node session |
 | F-02/F-03 Node checks | Node adapters | Node session |
 
-## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push)
+### Checks added to the frozen exam on 2026-11-21 (MEASURED, `claude/exam` `f6bbcdf`, local, merged build)
+
+| check | result | cause / what is missing |
+|---|---|---|
+| `F-03.probe.realm-failure` | PASS | |
+| `F-01.probe.service-host` | not run here | needs Docker (none in this container); the CI exam decides |
+| `F-03.probe.multi-project` | FAIL | Vitest test ids carry no project name, so the node and jsdom parts of one file merge into one test (verify sees 1 of 2). Next push: the project name in the ids when the workspace has more than one project, with the Node repro and cache readers |
+| `F-01.probe.cassette` | FAIL (Python; Node passes) | requests keeps the connection alive: test b's request goes over the socket test a opened and is recorded under a, so b replayed alone finds no recording. Next push: a kept TCP connection is re-attributed to the test that uses it, in record and replay (UDP already does this) |
+| `F-01.probe.replay-clients` | FAIL (httpx, aiohttp; sendmsg and h2 pass) | asyncio TLS uses `SSLContext.wrap_bio` (MemoryBIO), which the network control does not intercept: the cassette holds ciphertext and the random ClientHello never matches, so replay refuses. Next push: plaintext recorded above `wrap_bio` and a replay `SSLObject` stand-in |
+
+## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
 - Node 22, 24 and 26: 632/632 each.
 - Python 3.13 (full suite): 1097 passed, 69 skipped, 1 xfailed, 0 failed.
@@ -271,6 +283,9 @@ message until then.
 - The release-1 node step now prints its log when it fails.
 
 ## Next round (explicit gaps, not done here)
+
+- F-01/F-03, next push on this branch (coordinator decision 2026-11-21): `F-03.probe.multi-project`,
+  `F-01.probe.cassette`, `F-01.probe.replay-clients` (causes in the table above).
 
 - F-01, CPU count:
   - `psutil.cpu_count` is not pinned (planned in PR 2; it reads `/proc` and `sched_getaffinity` natively).
