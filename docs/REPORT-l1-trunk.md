@@ -64,6 +64,89 @@ My half of that contract is `meta.controls` carrying `threads` and `async`, sinc
 if the header names it. DECLARED: I will not suppress the sensor from this side to get a green. That would be a
 second implementation of their rule, which is the one thing this row was told not to build.
 
+## The attestation shape, for whoever picks this up
+
+This is the design the coordinator approved and handed to Block 1. **Block 1 did not land it.** Until the clause
+below exists in `provable.rs`, a deterministically scheduled thread is NOT PROVEN on the current trunk whatever
+this row does, because `account("threading", "start")` answers `Accounting::Unaccounted` and the sensor sees the
+call. My side is implemented and pushed; their side is not written.
+
+### Why a per-call join is unsound, and the aggregate is not
+
+The first shape made a thread start `Controlled` when the run's controls contained `threads`. That was refused,
+correctly: it makes Controlled rest on the *absence* of a mark, which is default-allow for the channel the moment
+the option is on — the same inversion as the 8.4% silent-claim blind spot.
+
+The coordinator then asked for a per-thread record that `judge` could require for *that* thread. That cannot be
+done soundly: `provable.py` turns a `sys.monitoring` CALL event into `api:threading.start` for the test, with no
+identity for which start it was. There is nothing on the sensor side to pair a record with, and an invented
+pairing is worse than an honest aggregate. So the clause works on a per-test aggregate that is strictly stronger
+than "the feature was on": **every thread start this test made was adopted, and nothing escaped.** The per-thread
+events remain in the trace as the evidence behind the counts. (Deviation accepted by the coordinator.)
+
+### Trace vocabulary (implemented, source `sched`, written by `detpy.threads`)
+
+* `sched.thread.adopted` — value `<thread idx>:<creation site#n>`. One per thread the scheduler took.
+* `sched.thread.unmanaged` — value `<creation site#n>:<why>`, `why` one of `inactive` | `parent-unmanaged` |
+  `infra`. One per start the scheduler saw and refused. **This is the part that makes the design work**: without
+  the counterweight, "all adopted" is inferred from silence, which is the thing the rule exists to remove.
+* `threads.uncontrolled` — unchanged, the escape; it also marks `uncontrolled.thread`.
+* `sched.io.real_fd` — a scheduler-driven loop watches a descriptor that is not its own wake-up pipe. It also
+  marks `uncontrolled.io` (see the strict io line), so the line is enforced on this lineage and not merely
+  signalled to a judge that does not exist here yet.
+
+### The attestation Block 1 was to add
+
+```rust
+/// Per test: what the Level 1 thread scheduler did. None = the run had no `--det-threads`.
+pub sched_threads: Option<SchedThreads>,
+pub struct SchedThreads { pub adopted: u32, pub unmanaged: u32, pub escaped: u32 }
+
+/// Per test: what the Level 1 asyncio scheduler drove. None = the run had no `--det-async`.
+pub sched_io: Option<SchedIo>,
+pub struct SchedIo { pub loops: u32, pub real_fd: u32, pub escaped: u32 }
+```
+
+**Counts, not booleans.** The shell states what happened; `judge` decides what it means. No `all_adopted: true`.
+
+### The two clauses
+
+`threading.start`, `_thread.start_new_thread`, `_thread.start_joinable_thread` answer `Controlled` only when all
+of: `controls` contains `threads`; `sched_threads` is `Some(s)`; `s.unmanaged == 0`; `s.escaped == 0`;
+`s.adopted >= 1`; and **the test record is not `truncated`**. Otherwise `Unaccounted`, exactly as today.
+
+`uncontrolled.io` is suppressed, and selector readiness answers `Controlled`, only when all of: `controls`
+contains `async`; `sched_io` is `Some(s)`; `s.real_fd == 0`; `s.escaped == 0`; `s.loops >= 1`; and the record is
+not `truncated`.
+
+`s.adopted >= 1` is a **cross-check between two independent observers**: if the sensor saw a thread start and the
+scheduler took none, the two disagree and the answer must be refusal. The coordinator asked Block 1 to generalise
+that: when the sensor and a control disagree, refuse.
+
+### The truncation hole, found in my own proposal after sending it
+
+My first version had `judge` count the `sched.thread.*` events. Ordinary events are discarded past
+`--det-max-events` (default 10,000):
+
+```rust
+// crates/detpy-core/src/fingerprint.rs
+if self.events.len() < self.max_events { self.events.push(event); } else { self.truncated = true; }
+```
+
+So on a long test the refusal records fall off the end, `unmanaged` counts 0 because the **evidence was discarded
+rather than because nothing was refused**, and `judge` answers Controlled. A false green, reached by concluding
+from an absence — the same inversion one level down, in the shape I had just written to replace it.
+
+Fix, which the codebase already models twenty lines above that branch (the `uncontrolled.*` kinds are kept in a
+set outside the event list precisely so truncation cannot drop them): `Fingerprinter` keeps the five counts as a
+per-test aggregate, incremented in `push` **before** the truncation branch, and emits them in `TestRecord`; the
+shell builds the attestation from those, not from the events. **Block 1 owns those field names** (their clause
+consumes them) and was to land them; I emit into whatever they are called. The `truncated` condition above is
+approved unconditionally and holds even if the aggregate is implemented wrongly.
+
+I went looking for this because the previous message had just been corrected for the same class of mistake, and
+I generalised the correction instead of applying it once. No test caught it.
+
 ## How a scheduled thread becomes provable without touching the verdict
 
 `python/detpy/uncontrolled.py` is the only producer of the thread mark: it patches `threading.Thread.start` and
@@ -210,6 +293,21 @@ so these numbers can be compared with the ones that study reported.
 UNKNOWN until those jobs land: the provable-share movement and the slowdown on real suites. They are what the row
 is judged on and they are not in hand yet. Nothing here should be read as if they were.
 
+### The engine-suite before/after did NOT finish
+
+It was running when work stopped, and it has no result. What exists: MEASURED, 84 failed / 963 passed locally and
+**89 failed / 965 passed on a clean GitHub runner (3.13)**. Those numbers are reported with the caveat that
+matters: **it is not established whether any of them is caused by this port.** A 29-failure subset
+(`test_r032b_engine.py`, `test_review_r017.py`, `test_sqlite_virtual.py`) was compared against the branch point
+and came back byte-identical — 29 = 29, the same test ids — so those 29 are pre-existing. The other ~60 were
+never baselined.
+
+The comparison is set up and re-runnable: a git worktree at `bbb7a8a1` with its own venv and its own `maturin
+develop` build lives outside the repository, and `harness/l1_trunk` has no dependency on it. Run both suites
+sequentially in the same container, diff the `FAILED` id sets, and `comm -13 base mine` is the regression list.
+**Do not** do what the first attempt did and swap files in the main working tree: that is what caused the
+accidental revert recorded above.
+
 ## A hang on the trunk, found while measuring, and not this row's
 
 MEASURED on this container, anyio at the pinned corpus commit, `pytest tests/test_from_thread.py -k asyncio`:
@@ -301,10 +399,27 @@ work, and I will not pretend otherwise:
 * DECLARED: I will not report PY-07 green on an INCONCLUSIVE probe. A check that could not observe the thing it
   is checking has not passed.
 
-**For the founder.** Three ways out, none of which I can take alone: run the exam's PY-07 leg on a runner where
-the races do occur; let the exam's probe-stable treat "stable under the options, race not exercised" as a
-separate, named outcome rather than a failure (an exam change, his call); or accept the row on the evidence that
-does exist — the measured movement above, the escape behaviour, and the tests that pin both directions.
+**Decided by the coordinator, not escalated: run the leg under CPU contention.** The reasoning, which generalises:
+the check's precondition is ">= 2 distinct outcomes in 8 plain runs". Making that precondition *true* by running
+on a loaded machine is not changing the check — it still asserts exactly what it asserted and passes on its own
+terms. Changing what counts as exercised would be an exam change, and the exam is frozen. Accepting the row on an
+unobserved check is a green on a doubt.
+
+So: reproduce the L1 study's own "loaded" mode (background CPU load while the 8 plain runs execute) and show that
+the race appears under load on the exam's runner class. **NOT DONE — work stopped before this ran.** The executor
+race already shows 2 outcomes unloaded on this container, so it is the one to get green first. If the thread race
+still does not appear under load, that probe is unexercisable on our runner class, and *that* is the founder
+question, with the 0-in-40 evidence above attached.
+
+Mechanics, also the coordinator's (row X-01, not this row): `exam.yml` is not on the default branch, so GitHub
+offers no manual dispatch; it installs a `release-1.yml` engine artifact rather than a branch. The route is a
+green `release-1.yml` run on `claude/l1-trunk`, whose run id the coordinator dispatches the exam with
+(`rows=PY-07`, `release_run=<id>`). **NOT DONE** — that run was never started, because the engine before/after had
+to finish first (it runs from the main tree) and then the branch had to be rebased onto the current trunk tip.
+
+One caveat for whoever starts that run: this branch predates `provable.rs`, so an artifact built from it is the
+one configuration in which the movement still works, because the sensor is not there to refuse thread starts. An
+exam result from it would flatter PY-07 by examining a lineage that no longer exists. Rebase first.
 
 Separately: `exam.yml` is not on the repository's default branch, so GitHub does not offer it as a manual
 dispatch; only a push to `claude/exam` triggers it, and it installs a `release-1.yml` engine artifact rather than
