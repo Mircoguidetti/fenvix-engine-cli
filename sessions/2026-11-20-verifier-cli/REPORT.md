@@ -177,6 +177,22 @@ F-18 5/5, F-01 32/33, F-02 16/17, F-03 15/18 (MEASURED, that run). The five fail
 - `node/test/verifier-inputs.test.js` "runs differing only in env": its tests now read the variable; the case where
   nothing reads it is the test added in `d917b43`.
 
+### Every input channel of a test (founder decision, `2023045`)
+
+`docs/VERIFY-INPUTS.md` lists every way a Python or Node test can read its environment and inputs (environment
+variables through every API and at every point: test body, module scope, conftest and setup files, hooks and fixtures
+of every scope, the runner's configuration, dependencies at import and in the test, threads, child processes; files
+in and outside the project; time, entropy, host, CPU, time zone, locale; network), the rule verify applies to each,
+and one attack test per channel: `tests/test_verify_inputs_attacks.py` (27 cases) and
+`node/test/verify-inputs-attacks.test.js` (22 cases). Each changes one channel between two runs and checks that verify
+says IDENTICAL only if the test observed the same value. All pass locally (MEASURED, Python 3.13, Node 22).
+
+The attacks found five channels where verify said IDENTICAL although the test observed different values; fixed:
+`posix.environ` and ctypes `getenv` (Python), live endpoints the closed network lets through (Python:
+`uncontrolled.net` unless the test's own listener), the runner configuration's env reads in the Node main process,
+and Node reads of project files. The remaining gaps (C `getenv` in extensions, Python reads after the trace opened,
+the Node configuration's dependencies, Deno/Bun untested here, `sys.argv`/cwd on Python) are listed in the document.
+
 ## Local suites before the PR #11 push (MEASURED, this container, editable installs, the code head of this push: the branch merged with release-1 `cec096c`)
 
 - Node 22, 24 and 26: 858/858 each.
