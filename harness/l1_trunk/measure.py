@@ -42,8 +42,10 @@ MODES = {
     "det": ["--det"],
     "l1": ["--det", "--det-threads", "--det-async"],
 }
-# The statuses `fenvix verify` gives a test; "identical" is the only one that is a proof.
-PROVEN = "identical"
+# `fenvix verify --json` gives a test one of these (verify.rs `Status`, kebab-case): stable, diverged, missing,
+# input-differs, not-proven. "stable" means the same fingerprint in every run with nothing uncontrolled, which is
+# what the report prints as IDENTICAL: it is the only one that is a proof. Everything else is not.
+PROVEN = "stable"
 
 
 def run_once(suite: Path, args: list, mode: str, trace: Path | None, timeout: float) -> dict:
@@ -103,7 +105,12 @@ def movement(det: dict, l1: dict, det_out: dict, l1_out: dict) -> dict:
         if b and a and len(b) == 1 and len(a) == 1 and b != a:
             broken.append({"nodeid": nodeid, "det": b[0], "l1": a[0]})
     common = len(set(det) & set(l1))
+    # every transition by name, so a move to "diverged" cannot hide inside "not proven any more"
+    import collections
+
+    transitions = collections.Counter(f"{b}->{l1[n]}" for n, b in det.items() if n in l1)
     return {
+        "transitions": dict(transitions),
         "tests_compared": common,
         "moved_to_proven": moved,
         "n_moved": len(moved),
@@ -141,6 +148,11 @@ def measure(suite: Path, name: str, args: list, runs: int, out: Path, timeout: f
     times = {m: [] for m in MODES}
     runs_log = {m: [] for m in MODES}
     traces = {m: [] for m in MODES}
+    # One engine run first, discarded. The first --det run of an environment compiles the standard library and
+    # site-packages under PYTHONHASHSEED=0 into a cache shared by every later run, which cost 5.4 s of a 5.4 s run
+    # when this was MEASURED on anyio: whichever mode happens to run first would otherwise carry that one-off and
+    # the slowdown would be a fiction. Not counted, not verified.
+    warmup = run_once(suite, args, "det", work / "warmup.jsonl", timeout)
     for r in range(runs):  # interleaved: round r of every mode before round r+1
         for mode in MODES:
             trace = work / f"{mode}-{r}.jsonl" if mode != "plain" else None
@@ -153,11 +165,15 @@ def measure(suite: Path, name: str, args: list, runs: int, out: Path, timeout: f
             times[mode].append(res["seconds"])
             if trace is not None and trace.exists():
                 traces[mode].append(trace)
-    ver = {m: verify(traces[m], suite) for m in ("det", "l1")}
+    # `fenvix verify` compares two or more runs: with one round there is nothing to compare and it answers rc 2.
+    ver = {m: (verify(traces[m], suite) if len(traces[m]) >= 2 else
+               {"rc": None, "report": None, "error": f"{len(traces[m])} trace(s): verify needs two or more"})
+           for m in ("det", "l1")}
     det_s, l1_s = statuses(ver["det"].get("report")), statuses(ver["l1"].get("report"))
     return {
         "name": name,
         "suite": str(suite),
+        "warmup": {"seconds": round(warmup["seconds"], 3), "rc": warmup["rc"], "timed_out": warmup["timed_out"]},
         "args": args,
         "runs": runs,
         "python": platform.python_version(),
