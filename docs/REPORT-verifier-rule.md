@@ -380,6 +380,23 @@ recorded in `sessions/2026-11-19-parallel-proof/REPORT.md` ("session 5 counted 2
 while the walk ran on the same 4 cores; it passed 2 of 2 times alone afterwards"). It ran here with the Node suite
 on the same 4 cores at load average 3, and is to be re-run alone.
 
+## 9b. One existing test the decision in section 10 invalidates
+
+`tests/test_f01_gaps.py::test_numpy_imported_lazily_and_unseeded_generators` asserts that two `--det` runs of a
+numpy test verify IDENTICAL. Under the native-extension rule numpy is a third-party compiled extension nobody has
+audited, so the verdict is NOT PROVEN and that assertion fails.
+
+**I have not touched the test and I have not added numpy to `CONTROLLED_NATIVE`.** "The engine seeds numpy's
+generators" is not the same claim as "numpy's C code reads nothing the engine cannot see", and the second cannot
+be established here. This is the decision in section 10 showing up inside the engine's own suite rather than in
+the abstract; if it goes the way of option 1, numpy is the first extension to audit and this test goes green with
+it. Recorded here rather than worked around, as the rules for this block require.
+
+Also still failing, and unrelated to the rule: `test_capture_sessions_match_reference` session 5 on
+`child_entropy_draws` (section 11 — the load-sensitive flake), and
+`test_review_r055_verifier.py::...[V14-rusage]`, whose precondition (two runs with different `ru_maxrss`) does not
+hold on this machine and which the previous round already recorded.
+
 ## 10. For the founder to decide
 
 The rule refuses any test that loads a native extension not on an audited list, because a C extension's own reads
