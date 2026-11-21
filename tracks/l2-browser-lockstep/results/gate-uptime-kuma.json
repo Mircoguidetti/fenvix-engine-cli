@@ -4,9 +4,9 @@
  "repo": "louislam/uptime-kuma",
  "ref": "e6ea9509e68b31a996f3fdf5c24cfba24340962b",
  "status": "ok",
- "run_id": "44783946608",
- "engine_commit": "ea649fcb86a3fb8533b97a6a82d5b3b20ff42cc6",
- "setup_s": 98,
+ "run_id": "44904997963",
+ "engine_commit": "ddf386f3226eb2c5043d5614fc1f9af5358e24b7",
+ "setup_s": 63,
  "params": {
   "plain": 20,
   "stress": 10,
@@ -24,8 +24,8 @@
  "pw_dir": ".",
  "pw_args": [],
  "runs": [],
- "epoch": "2026-11-20T17:36:00Z",
- "measured_at": "2026-11-20T17:36:20Z",
+ "epoch": "2026-11-21T12:49:00Z",
+ "measured_at": "2026-11-21T12:49:02Z",
  "machine": "4 vCPU, Ubuntu 26.04.1 LTS",
  "gate": [
   {
@@ -62,16 +62,16 @@
     ""
    ],
    "walls": [
-    65.1,
-    65.1,
-    65.2,
-    65.1,
-    65.3,
-    65.1,
-    65.0,
-    65.2,
-    65.2,
-    65.0
+    57.3,
+    55.2,
+    56.7,
+    56.1,
+    54.7,
+    56.0,
+    56.6,
+    56.6,
+    55.7,
+    57.3
    ],
    "stats": [
     null,
@@ -100,38 +100,143 @@
    "verify_all": [
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 59,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 95ecf00c66ca9a4f651da10c96e905a4 115"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 d172299a9fef8e35d85cbe3542eba9a9 115"
+      },
+      "reason": "other",
+      "description": "event #59: server.fingerprint @  returned different values: \"http://localhost:3001 95ecf00c66ca9a4f651da10c96e905a4 115\" vs \"http://localhost:3001 d172299a9fef8e35d85cbe3542eba9a9 115\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 144,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 f03dc5e43b3e201dd85b05b62c7d429f 504"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 fe5765f9c8fc0317e64ba15a473b09a8 504"
+      },
+      "reason": "other",
+      "description": "event #144: server.fingerprint @  returned different values: \"http://localhost:3001 f03dc5e43b3e201dd85b05b62c7d429f 504\" vs \"http://localhost:3001 fe5765f9c8fc0317e64ba15a473b09a8 504\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 123,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 a7fb9613c0ec25560ed1557999e30240 211"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 41ea2c16ca2ef9c0f08e26644f98551d 211"
+      },
+      "reason": "other",
+      "description": "event #123: server.fingerprint @  returned different values: \"http://localhost:3001 a7fb9613c0ec25560ed1557999e30240 211\" vs \"http://localhost:3001 41ea2c16ca2ef9c0f08e26644f98551d 211\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 35,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 72813074f99150e0ade882639807a4da 13"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 5f32e980d53c94ae411cd8e48d3289e4 13"
+      },
+      "reason": "other",
+      "description": "event #35: server.fingerprint @  returned different values: \"http://localhost:3001 72813074f99150e0ade882639807a4da 13\" vs \"http://localhost:3001 5f32e980d53c94ae411cd8e48d3289e4 13\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 142,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 25356f1189a72b929f7302a50451e971 217"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 0c904514dac3d6db3b8c82f35946379b 217"
+      },
+      "reason": "other",
+      "description": "event #142: server.fingerprint @  returned different values: \"http://localhost:3001 25356f1189a72b929f7302a50451e971 217\" vs \"http://localhost:3001 0c904514dac3d6db3b8c82f35946379b 217\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
@@ -142,18 +247,60 @@
     },
     {
      "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 223,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 782a61bde37cf0625d8a5127aa49c5ff 1363"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 eb85dbef86633212649bb851442274d5 1363"
+      },
+      "reason": "other",
+      "description": "event #223: server.fingerprint @  returned different values: \"http://localhost:3001 782a61bde37cf0625d8a5127aa49c5ff 1363\" vs \"http://localhost:3001 eb85dbef86633212649bb851442274d5 1363\""
+     }
     }
    ],
    "verify": {
     "key": "monitor-history-settings.spec.js::Monitor history settings::saves the data retention period [specs]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 10,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 223,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:3001 782a61bde37cf0625d8a5127aa49c5ff 1363"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:3001 eb85dbef86633212649bb851442274d5 1363"
+     },
+     "reason": "other",
+     "description": "event #223: server.fingerprint @  returned different values: \"http://localhost:3001 782a61bde37cf0625d8a5127aa49c5ff 1363\" vs \"http://localhost:3001 eb85dbef86633212649bb851442274d5 1363\""
+    }
    }
   },
   {
@@ -190,16 +337,16 @@
     ""
    ],
    "walls": [
-    85.6,
-    85.7,
-    85.6,
-    85.7,
-    86.1,
-    85.4,
-    86.0,
-    85.6,
-    85.6,
-    85.7
+    77.9,
+    76.0,
+    74.6,
+    75.8,
+    74.4,
+    75.2,
+    77.5,
+    79.5,
+    77.0,
+    77.9
    ],
    "stats": [
     null,
@@ -228,38 +375,143 @@
    "verify_all": [
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup sqlite [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 59,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 86175d56f1324929f49b0839288f48bb 115"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 375bfa9f1c740491ce379d650f9022c3 115"
+      },
+      "reason": "other",
+      "description": "event #59: server.fingerprint @  returned different values: \"http://localhost:3001 86175d56f1324929f49b0839288f48bb 115\" vs \"http://localhost:3001 375bfa9f1c740491ce379d650f9022c3 115\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::setup admin [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 144,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 b035db207b82a39ca20b45cd63101305 504"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 76e3a0c0a56bb938d3fc6b784bf778d6 504"
+      },
+      "reason": "other",
+      "description": "event #144: server.fingerprint @  returned different values: \"http://localhost:3001 b035db207b82a39ca20b45cd63101305 504\" vs \"http://localhost:3001 76e3a0c0a56bb938d3fc6b784bf778d6 504\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::login [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 123,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 6a56e21ec75bb193bf21a041f4f55bc3 211"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 fd6821a930635e49ca872dee4b6c6e48 211"
+      },
+      "reason": "other",
+      "description": "event #123: server.fingerprint @  returned different values: \"http://localhost:3001 6a56e21ec75bb193bf21a041f4f55bc3 211\" vs \"http://localhost:3001 fd6821a930635e49ca872dee4b6c6e48 211\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::failed login shows error alert [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 35,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 200c1690eac0570ce79e580a55c6d25c 13"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 5348688c288d95ff54c85bcd5c56f901 13"
+      },
+      "reason": "other",
+      "description": "event #35: server.fingerprint @  returned different values: \"http://localhost:3001 200c1690eac0570ce79e580a55c6d25c 13\" vs \"http://localhost:3001 5348688c288d95ff54c85bcd5c56f901 13\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::logout [run-once setup]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 142,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 c86fda7fc69e0f4a7c6075eda26a2a08 217"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 46d4d88942bdca692ad0cda1e22389c5 217"
+      },
+      "reason": "other",
+      "description": "event #142: server.fingerprint @  returned different values: \"http://localhost:3001 c86fda7fc69e0f4a7c6075eda26a2a08 217\" vs \"http://localhost:3001 46d4d88942bdca692ad0cda1e22389c5 217\""
+     }
     },
     {
      "key": "setup-process.once.js::Uptime Kuma Setup::take sqlite snapshot [run-once setup]",
@@ -270,20 +522,62 @@
     },
     {
      "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-     "status": "stable",
-     "distinct_fingerprints": 1,
+     "status": "diverged",
+     "distinct_fingerprints": 10,
      "runs": 10,
-     "divergence": null
+     "divergence": {
+      "run_a": 0,
+      "run_b": 1,
+      "index": 785,
+      "window": null,
+      "event_a": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 05d1994f6deeea046a7c0a33f9088a85 8172"
+      },
+      "event_b": {
+       "t": 0,
+       "s": "other",
+       "o": "server.fingerprint",
+       "at": "",
+       "v": "http://localhost:3001 177d999d31378b7ec04212b95952a631 8172"
+      },
+      "reason": "other",
+      "description": "event #785: server.fingerprint @  returned different values: \"http://localhost:3001 05d1994f6deeea046a7c0a33f9088a85 8172\" vs \"http://localhost:3001 177d999d31378b7ec04212b95952a631 8172\""
+     }
     }
    ],
    "verify": {
     "key": "status-page.spec.js::Status Page::RSS feed escapes malicious monitor names [specs]",
-    "status": "stable",
-    "distinct_fingerprints": 1,
+    "status": "diverged",
+    "distinct_fingerprints": 10,
     "runs": 10,
-    "divergence": null
+    "divergence": {
+     "run_a": 0,
+     "run_b": 1,
+     "index": 785,
+     "window": null,
+     "event_a": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:3001 05d1994f6deeea046a7c0a33f9088a85 8172"
+     },
+     "event_b": {
+      "t": 0,
+      "s": "other",
+      "o": "server.fingerprint",
+      "at": "",
+      "v": "http://localhost:3001 177d999d31378b7ec04212b95952a631 8172"
+     },
+     "reason": "other",
+     "description": "event #785: server.fingerprint @  returned different values: \"http://localhost:3001 05d1994f6deeea046a7c0a33f9088a85 8172\" vs \"http://localhost:3001 177d999d31378b7ec04212b95952a631 8172\""
+    }
    }
   }
  ],
- "elapsed_min": 26.2
+ "elapsed_min": 23.0
 }
